@@ -121,11 +121,7 @@
 <li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
+			<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 		</div>
 	</div>
@@ -264,11 +260,7 @@
 	</div>
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
+			<a href="{$item.productPageUrl}"><img src="{$item.productImage}" class="itemlist-item-productimage"></a>
 			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 		</div>
 		{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
@@ -276,11 +268,7 @@
   <div class="itemlist-center-content">
 	<div class="itemlist-item-header">
 		{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
-    {if $item.discontinued}
-      <span class="itemlist-item-header-name">{$item.productName}</span>{sp}
-    {else}
-      <a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
-    {/if}
+		<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
 		{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
 		{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
 		{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}		
@@ -329,11 +317,7 @@
   </div>
   {else}
     <div class="itemlist-item-unavailable">
-      {if $item.discontinued}
-        <div>Item Discontinued</div>
-      {else}
-        <div>Item Unavailable</div>
-      {/if}
+      <div>Item Unavailable</div>
     </div>
     {if $type == 'shopfromlists' and not $replaced}
     <div class="itemlist-item-header-buttons"><span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" data-alignpopup="tc-bc">Remove</span></div>
@@ -366,11 +350,7 @@
 <li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
+			<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
 		</div>
 	</div>
