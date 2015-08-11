@@ -17,7 +17,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BannerModel;
-import com.freshdirect.fdstore.content.CMSContentFactory;
+import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.CategoryModel;
