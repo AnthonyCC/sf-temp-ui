@@ -4,13 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
 import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -27,6 +29,13 @@ public class FDPromotionEligibility implements Serializable {
 	private final Set<String> appliedPromos = new LinkedHashSet<String>();
 	
 	private final Set<String> recommendedPromos = new LinkedHashSet<String>();
+	
+	private final Map<String, FDMinDCPDTotalPromoData> minDCPDTotalPromos = new LinkedHashMap<String, FDMinDCPDTotalPromoData>();//<promo code, FDMinDCPDTotalPromoModel from CartStrategy>
+	
+	
+	public FDPromotionEligibility(){
+		System.out.println("this is FDPromotionEligibility");
+	}
 	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);
@@ -147,5 +156,11 @@ public class FDPromotionEligibility implements Serializable {
 		}
 		return eligibleProdSamples;
 	}
+
+	public Map<String, FDMinDCPDTotalPromoData> getMinDCPDTotalPromos() {
+		return minDCPDTotalPromos;
+	}
+
+	
 
 }
