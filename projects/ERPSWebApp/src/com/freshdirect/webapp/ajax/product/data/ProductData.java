@@ -35,6 +35,11 @@ public class ProductData extends BasicProductData implements SkuData {
     protected boolean available;
 
     /**
+     * Is product discontinued for sale?
+     */
+    protected boolean isDiscontinued;
+
+    /**
      * This flag signals that product data is rather incomplete Expect that most of them are not populated It might only be turned on when populating products / skus without
      * backing data in ERPS
      * 
@@ -242,6 +247,14 @@ public class ProductData extends BasicProductData implements SkuData {
     @Override
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public boolean isDiscontinued() {
+        return isDiscontinued;
+    }
+
+    public void setDiscontinued(boolean isDiscontinued) {
+        this.isDiscontinued = isDiscontinued;
     }
 
     public String getDepartmentDesc() {
