@@ -36,6 +36,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class XmlContentService extends SimpleContentService implements ContentServiceI {
 
 	private final Category LOGGER = LoggerFactory.getInstance(XmlContentService.class);	
+	private CmsNodeHandler handler = null;
 	
 	
 	protected XmlContentService(ContentTypeServiceI typeService) {
@@ -47,6 +48,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 	 */
 	public XmlContentService(ContentTypeServiceI typeService, CmsNodeHandler nodeHandler, String resourceFiles) {
 	    super(typeService);
+	    handler = nodeHandler;
 	    init(nodeHandler, resourceFiles, null);
 	}
 
@@ -124,5 +126,4 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 			}
 		}
 	}
-
 }

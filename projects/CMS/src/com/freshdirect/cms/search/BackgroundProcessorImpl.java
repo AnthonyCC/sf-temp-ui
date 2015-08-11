@@ -25,6 +25,7 @@ import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishDao;
 import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishTask;
+import com.freshdirect.cms.publish.PublishX;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -127,11 +128,8 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 status.setStatus("Finished.");
                 return values.size();
             }
-            
-            
         });
     }
-
 
     @Override
     public Future<Integer> backgroundReindex() {
@@ -204,28 +202,25 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 	if (publishTasks != null) {
                 		// Go through each Stores
                 		Collection<ContentKey> storeKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE);
-
                 		final int n = storeKeys.size();
                 		int k=0;
-
                 		for (final ContentKey storeKey : storeKeys) {
                 			k++;
-
                 			publish.setStoreId(storeKey.getId());
                 			publish.setPath(publish.getBasePath() + "/" + publish.getStoreId());
-
                 			LOG.info("=== Start publish for store: " + publish.getStoreId() + "  ("+k+"/"+n+") ===");
-                		
 		                    for (PublishTask task : publishTasks) {
 		                        status.setStatus("Publish step :" + task.getComment());
-		
 		                        publishDao.beginTransaction();
-		                        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
+		                        if(publish instanceof PublishX){
+		                        	//No messages for feed publish now.
+		                        	//publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
+		                        } else {
+		                        	publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
+		                        }
 		                        publish.setLastModified(new Date());
 		                        publishDao.savePublish(publish);
-		                        
 		                        publishDao.commitTransaction();
-		
 		                        task.execute(publish);
 		                    }
                 		}
@@ -284,7 +279,4 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
         }
         return reindexer;
     }
-
-
-
 }

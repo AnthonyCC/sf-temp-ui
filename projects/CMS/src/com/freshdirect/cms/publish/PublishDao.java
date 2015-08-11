@@ -102,7 +102,7 @@ public class PublishDao extends HibernateDaoSupport {
 				p.setLastModified(records.getDate(5));
 				p.setStatus(EnumPublishStatus.getEnum(records.getString(6)));
 				
-				p.setMessages(Collections.EMPTY_LIST);
+				p.setMessages(Collections.<PublishMessage>emptyList());
 				
 				// add to list
 				results.add(p);
@@ -116,17 +116,62 @@ public class PublishDao extends HibernateDaoSupport {
 	}
 	
 	/**
+	 * Fetch publish objects without getting their children too.
+	 * Basically it is a hack as hibernate force eager load causing a tremendous amount of subselects.
+	 * We only need the publish objects.
+	 * 
+	 * @param qualifiers SQL qualifiers following WHERE keyword
+	 * @param orderBy
+	 * @return (List<Publish>) publishes
+	 */
+	public List<Publish> fetchPublishesX(String qualifiers, String orderBy) {
+		List<Publish> results = new ArrayList<Publish>();
+
+		Connection conn = currentSession().connection();
+		
+		StringBuffer cmd = new StringBuffer("SELECT ID, CRO_MOD_DATE, USER_ID, DESCRIPTION, LAST_MODIFIED, STATUS FROM CMS.PUBLISHX");
+		if (qualifiers != null) {
+			cmd.append(" WHERE " + qualifiers);
+		}
+		if (orderBy != null) {
+			cmd.append(" ORDER BY " + orderBy);
+		}
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(cmd.toString());
+			
+			ResultSet records = stmt.executeQuery();
+			
+			while(records.next()) {
+				PublishX p = new PublishX();
+				p.setId(records.getString(1));
+				p.setTimestamp(records.getTimestamp(2));
+				p.setUserId(records.getString(3));
+				p.setDescription(records.getString(4));
+				p.setLastModified(records.getDate(5));
+				p.setStatus(EnumPublishStatus.getEnum(records.getString(6)));
+				p.setMessages(Collections.<PublishMessage>emptyList());
+				results.add(p);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+		}
+
+		return results;
+	}
+	
+	/**
 	 *  Return all Publish objects, orderred by the specified column.
 	 * 
 	 * @param orderBy the order by clause
 	 * @return all Publish objects, ordered by the specified column
 	 */
-	public List getAllPublishesOrdered(String orderBy) {
+	public List<Publish> getAllPublishesOrdered(String orderBy) {
 		return query("from Publish order by " + orderBy);
 	}
 	
-	public Publish getPublish(String publishId) {
-		return (Publish) load(Publish.class, publishId);
+	public Publish getPublish(String publishId, Class clazz) {
+		return (Publish) load(clazz, publishId);
 	}
 	
 	/**
@@ -147,6 +192,17 @@ public class PublishDao extends HibernateDaoSupport {
 			return null;
 		}
 	}
+	
+	public PublishX getMostRecentPublishX() {
+		try {
+			List<PublishX> list = query("from PublishX "
+			               + " where timestamp = (select max(publishX.timestamp) from PublishX publishX "
+	                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
+			return list.size() > 0 ? list.get(0) : null;
+		} catch (ConstraintViolationException e) {
+			return null;
+		}
+	}
 
 	
         /**
@@ -154,9 +210,9 @@ public class PublishDao extends HibernateDaoSupport {
          * 
          *  @return the most recent Publish object.
          */
-        public Publish getMostRecentNotCompletedPublish() {
-            try {
-                    List<Publish> list = query("from Publish "
+   public Publish getMostRecentNotCompletedPublish() {
+	   try {
+		   List<Publish> list = query("from Publish "
                                    + " where timestamp = (select max(publish.timestamp) from Publish publish) ");
     
                     return list.size() > 0 ? list.get(0) : null;
@@ -189,4 +245,13 @@ public class PublishDao extends HibernateDaoSupport {
 		saveOrUpdate(publish);
 	}
 
+	public PublishX getMostRecentNotCompletedPublishX() {
+		try {
+            List<PublishX> list = query("from PublishX "
+                           + " where timestamp = (select max(publishX.timestamp) from PublishX publishX) ");
+            return list.size() > 0 ? list.get(0) : null;
+		} catch (ConstraintViolationException e) {
+            return null;
+		}	
+	}
 }

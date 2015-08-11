@@ -23,7 +23,7 @@ public abstract class CmsNodeHandler extends DefaultHandler {
 		return contentService;
 	}
 
-	void setContentService(ContentServiceI contentService) {
+	public void setContentService(ContentServiceI contentService) {
 		this.contentService = contentService;
 	}
 

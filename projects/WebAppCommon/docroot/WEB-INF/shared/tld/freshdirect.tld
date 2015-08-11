@@ -5669,5 +5669,29 @@
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>
-</tag-file>
+	</tag-file>
+	<tag-file>
+       <name>GreetingPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/greeting.tag</path>
+	</tag-file>
+	<tag-file>
+       <name>PeekAheadPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/peekAhead.tag</path>
+	</tag-file>
+	<tag-file>
+       <name>TrendingPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/trending.tag</path>
+	</tag-file>
+	<tag-file>
+       <name>EssentialsPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/essentials.tag</path>
+	</tag-file>
+	<tag-file>
+       <name>FeaturedProductPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/featuredproduct.tag</path>
+	</tag-file>
+	<tag-file>
+       <name>FeaturedCategoryPreviewTag</name>
+       <path>/WEB-INF/shared/tags/cmspreview/featuredcategory.tag</path>
+	</tag-file>
 </taglib>

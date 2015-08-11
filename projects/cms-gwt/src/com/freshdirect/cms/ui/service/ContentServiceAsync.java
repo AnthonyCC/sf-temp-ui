@@ -39,13 +39,17 @@ public interface ContentServiceAsync {
     void getDomainValues(List<ContentNodeModel> domains, AsyncCallback<Map<String, List<ContentNodeModel>>> callback);
 
     void getPublishHistory(PagingLoadConfig config, AsyncCallback<List<GwtPublishData>> callback);
+
+    void getPublishHistoryByType(PagingLoadConfig config, String type,  AsyncCallback<List<GwtPublishData>> callback);
     
     void startPublish(String comment, AsyncCallback<String> callback);
+    
+    void startPublishX(String comment, AsyncCallback<String> callback);
     
     void getProductConfigParams( String skuKey, AsyncCallback<ProductConfigParams> callback ); 
 
 	void getPublishData(ChangeSetQuery publishId, AsyncCallback<GwtPublishData> callback);
-
+	
     void getNavigableRelations(String contentType, AsyncCallback<NavigableRelationInfo> callback);
     
     void getGoogleMapsApiKey(AsyncCallback<String> callback);

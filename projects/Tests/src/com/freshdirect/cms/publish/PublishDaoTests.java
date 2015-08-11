@@ -42,7 +42,7 @@ public class PublishDaoTests extends CmsDaoTestCaseSupport {
 		publishDao.savePublish(publish);
 		publishDao.currentSession().flush();
 		
-		Publish 		ppublish = publishDao.getPublish(publish.getId());
+		Publish 		ppublish = publishDao.getPublish(publish.getId(), Publish.class);
 		
 		assertEquals(publish, ppublish);
 	}
@@ -66,14 +66,14 @@ public class PublishDaoTests extends CmsDaoTestCaseSupport {
 		publishDao.savePublish(publish);
 		publishDao.currentSession().flush();
 		
-		ppublish = publishDao.getPublish(publish.getId());
+		ppublish = publishDao.getPublish(publish.getId(), Publish.class);
 		assertNotNull(ppublish);
 		
 		publishDao.deletePublish(publish);
 		
 		gotException = false;
 		try {
-			ppublish = publishDao.getPublish(publish.getId());
+			ppublish = publishDao.getPublish(publish.getId(), Publish.class);
 		} catch (ObjectDeletedException e) {
 			gotException = true;
 		}
@@ -237,7 +237,7 @@ public class PublishDaoTests extends CmsDaoTestCaseSupport {
 		publishDao.savePublish(publish);
 		publishDao.currentSession().flush();
 		
-		List			    messages;
+		List<PublishMessage>			    messages;
 		PublishMessage	message;
 		
 		messages = publish.getMessages();
@@ -251,7 +251,7 @@ public class PublishDaoTests extends CmsDaoTestCaseSupport {
 		publishDao.currentSession().flush();
 		
 		
-		Publish 		ppublish = publishDao.getPublish(publish.getId());
+		Publish 		ppublish = publishDao.getPublish(publish.getId(), Publish.class);
 		
 		assertEquals(publish, ppublish);
 		

@@ -50,15 +50,23 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		// use lightweight fetch instead of hibernate
 		return publishDao.fetchPublishes(null, "timestamp desc");
 	}
+	
+	public List<Publish> getPublishHistoryByType(String type) {
+		if(type == null){
+			return getPublishHistory();
+		} else {
+			return publishDao.fetchPublishesX(null, "cro_mod_date desc");
+		}
+	}
 
 	private void storePublish(final Publish publish) {
 		publishDao.savePublish(publish);
 	}
 
-	public Publish getPublish(String id) {
-		return publishDao.getPublish(id);
+	public Publish getPublish(String id, Class clazz) {
+		return publishDao.getPublish(id, clazz);
 	}
-
+	
 	public void updatePublish(final Publish publish) {
 		publishDao.savePublish(publish);
 	}
@@ -70,6 +78,11 @@ public class DbPublishService extends DbService implements PublishServiceI {
 	 */
 	public Publish getMostRecentPublish() {
 		return publishDao.getMostRecentPublish();
+	}
+	
+	@Override
+	public PublishX getMostRecentPublishX() {
+		return publishDao.getMostRecentPublishX();
 	}
 
 	/**
@@ -100,5 +113,9 @@ public class DbPublishService extends DbService implements PublishServiceI {
 
 		processor.executePublish(publish);
 		return publish.getId();
+	}
+	
+	public PublishX getMostRecentNotCompletedPublishX() {
+		return publishDao.getMostRecentNotCompletedPublishX();
 	}
 }

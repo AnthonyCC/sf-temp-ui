@@ -41,6 +41,7 @@ import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishServiceI;
+import com.freshdirect.cms.publish.PublishX;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
@@ -170,14 +171,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return new CmsUser(user.getName(), user.isAllowedToWrite(), user.isAdmin());
     }
     
-    
-    
-    
-    
-    
     // ====================== Content tree ====================== 
-    
-    
     public List<TreeContentNodeModel> search( String searchTerm ) {
 		Collection<SearchHit> hits = (Collection<SearchHit>)CmsManager.getInstance().search( searchTerm, false, MAX_HITS );
 		List<ContentNodeI> resultNodes = new ArrayList<ContentNodeI>( hits.size() );
@@ -245,13 +239,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         }
         return nodes;
     }
-
-	
-
 	
     // ====================== Node data ====================== 
-	
-	
     public GwtNodeData loadNodeData( String nodeKey ) throws ServerException {
         try {
             ContentNodeI node;
@@ -280,13 +269,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return TranslatorToGwt.gwtNodeDataSkeleton(type, id);
     }
 
-    
-    
-    
-    
     // ====================== Save ====================== 	
-   
-    
     public GwtSaveResponse save(Collection<GwtContentNode> nodes) throws ServerException {
 		GwtUser user = getUser();
 		
@@ -335,12 +318,17 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     // ====================== Changesets & Publish ======================
 	private PublishServiceI getPublishService() {
-        return (PublishServiceI) FDRegistry.getInstance().getService(PublishServiceI.class);
+        return (PublishServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.publish.PublishService",PublishServiceI.class);
     }
+	
+	private PublishServiceI getFeedPublishService() {
+        return (PublishServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.publish.FeedPublishService",PublishServiceI.class);
+    }
+
+	
     private static ChangeLogServiceI getChangeLogService() {
         return (ChangeLogServiceI) FDRegistry.getInstance().getService(ChangeLogServiceI.class);
     }
-
     
     public ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) throws ServerException {
         try { 
@@ -395,10 +383,19 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             Publish publish;
             if ("latest".equalsIgnoreCase(query.getPublishId())) {
                 timestamp = new Date();
-                publish = service.getMostRecentPublish();
+                if(query.getPublishType() == null)
+                	publish = service.getMostRecentPublish();
+                else {
+                	publish = service.getMostRecentPublishX();
+                }
                 prevTimestamp = publish != null ? publish.getTimestamp() : TIME_ZERO;
             } else {
-                publish = service.getPublish(query.getPublishId());
+                if(query.getPublishType() == null){
+                	publish = service.getPublish(query.getPublishId(), Publish.class);
+                } else {
+                	publish = service.getPublish(query.getPublishId(), PublishX.class);
+                }
+                
                 Publish prevPublish = service.getPreviousPublish(publish);
                 prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
                 timestamp = publish.getTimestamp();
@@ -522,6 +519,44 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             throw TranslatorToGwt.wrap(e);
         }
     }
+    
+    /**
+     * 
+     * @param comment
+     * @return
+     * @throws ServerException 
+     */
+    public String startPublishX(String comment) throws ServerException {
+        try {
+	        GwtUser user = getUser();
+	        if (!user.isPublishAllowed()) {
+	            throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
+	        }
+                LOG.info("start publish called by " + user.getName() + " : '" + comment + "'");
+	        PublishX recentPublish = getFeedPublishService().getMostRecentNotCompletedPublishX();
+                LOG.info("most recent publish : " + recentPublish + ", status : " + (recentPublish != null ? recentPublish.getStatus() : null)
+                        + ", id : "+ (recentPublish != null ? recentPublish.getId() : null));
+                
+                if (recentPublish != null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
+                    LOG.info("publish in progress ...: "+recentPublish.getId());
+                    return recentPublish.getId();
+                }
+	        
+	        Date date = new Date();
+	        
+	        PublishX publish = new PublishX();
+	        publish.setTimestamp(date);
+	        publish.setUserId(user.getName());
+	        publish.setStatus(EnumPublishStatus.PROGRESS);
+	        publish.setDescription(comment);
+	        publish.setLastModified(date);
+	        LOG.info("starting new publish by " + user.getName() + ", with comment : '" + comment + "'");
+	        return getFeedPublishService().doPublish(publish);
+        } catch (Throwable e) {
+            LOG.error("RuntimeException for startPublish ", e);
+            throw TranslatorToGwt.wrap(e);
+        }
+    }
 
 	public GwtPublishData getPublishData(ChangeSetQuery query) throws ServerException {
 		try {
@@ -532,12 +567,19 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			Publish publish;			
 			PublishServiceI service = getPublishService();
 			
-            if ("latest".equalsIgnoreCase(query.getPublishId())) {
-                publish = service.getMostRecentPublish();
+            if(query.getPublishType() == null){
+				if ("latest".equalsIgnoreCase(query.getPublishId())) {
+	                publish = service.getMostRecentPublish();
+	            } else {
+	                publish = service.getPublish(query.getPublishId(), Publish.class);
+	            }
             } else {
-                publish = service.getPublish(query.getPublishId());
-            }                      
-            
+	            if ("latest".equalsIgnoreCase(query.getPublishId())) {
+	                publish = service.getMostRecentPublishX();
+	            } else {
+	                publish = service.getPublish(query.getPublishId(), PublishX.class);
+	            }
+            }
 			if (publish == null) {
 				publishData = new GwtPublishData();
 			} else {
@@ -607,12 +649,29 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 		}
 	}
 
-    
-    
+	public List<GwtPublishData> getPublishHistoryByType(PagingLoadConfig config, String type) throws ServerException {
+		try {
+			PublishServiceI ps = getPublishService();
+			List<Publish> listPublishes = ps.getPublishHistoryByType(type);
+			if (listPublishes.size() == 0)
+				return new ArrayList<GwtPublishData>();
+			List<GwtPublishData> result = new ArrayList<GwtPublishData>(listPublishes.size());
+			for (Publish p : listPublishes) {
+				result.add(TranslatorToGwt.getPublishData(p));
+			}
+			int start = config.getOffset();
+			int limit = listPublishes.size();
+			if (config.getLimit() > 0) {
+				limit = Math.min(start + config.getLimit(), limit);
+			}
+			return new ArrayList<GwtPublishData>(result.subList(start, limit));
+		} catch (Throwable e) {
+			LOG.error("RuntimeException in getPublishHistory", e);
+			throw TranslatorToGwt.wrap(e);
+		}
+	}
     
     // ====================== Other stuff ======================     
-    
-
     @Override
     public String generateUniqueId(String type) {
         return CmsManager.getInstance().getTypeService().generateUniqueId(ContentType.get(type));
@@ -702,4 +761,3 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     	return result;
     }
 }
-

@@ -2491,6 +2491,25 @@
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
+	<ContentTypeDef name="Schedule" generateId="true">
+		<AttributeDefs>
+		    <AttributeDef name="EndTime" type="TS" label="End Time" required="false"/>
+			<AttributeDef name="StartDate" type="DT" label="Start Date" required="false"/>
+			<AttributeDef name="EndDate" type="DT" label="End Date" required="false"/>
+			<AttributeDef name="StartTime" type="TS" label="Start Time" required="false"/>
+			<EnumDef type="S" name="Day"  label="Day">
+				<EnumValue value="AllDay" label="All Day"/>
+				<EnumValue value="Sunday" label="Sunday"/>
+				<EnumValue value="Monday" label="Monday"/>
+				<EnumValue value="Tuesday" label="Tuesday"/>
+				<EnumValue value="Wednesday" label="Wednesday"/>
+				<EnumValue value="Thursday" label="Thursday"/>
+				<EnumValue value="Friday" label="Friday"/>
+				<EnumValue value="Saturday" label="Saturday"/>
+			</EnumDef>
+		</AttributeDefs>
+	</ContentTypeDef>	
+	
 	<ContentTypeDef name="Section" generateId="false">
 		<AttributeDefs>
 			<AttributeDef name="Type" type="S" label="Type" required="false"/>
@@ -2530,7 +2549,7 @@
 	<ContentTypeDef name="TextComponent" generateId="false">
 		<AttributeDefs>
 			<AttributeDef name="Text" type="S" label="Text" required="false"/>
-			<AttributeDef name="Default" type="B" label="Default" required="false"/>
+			<AttributeDef name="Type" type="S" label="Type" required="false"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 	
@@ -2593,7 +2612,7 @@
 	
 	<ContentTypeDef name="PickListItem" generateId="false">
 		<AttributeDefs>
-		    <AttributeDef name="Default" type="S" label="Default" required="false"/>
+		    <AttributeDef name="Default" type="B" label="Default" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef cardinality="One" name="PickListItemProduct" label="Product">

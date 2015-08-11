@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.freshdirect.cms.ui.client.views.AdministrationView;
 import com.freshdirect.cms.ui.client.views.BulkLoaderView;
 import com.freshdirect.cms.ui.client.views.ChangeSetQueryView;
+import com.freshdirect.cms.ui.client.views.FeedPublishView;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.client.views.PublishView;
 import com.freshdirect.cms.ui.model.GwtUser;
@@ -92,6 +93,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	private Anchor administrationLink;
 	private Anchor publishLink;
 	private Anchor changesLink;
+	private Anchor feedPublishLink;
 	
     
     /**
@@ -171,6 +173,15 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             }
             return;
         }
+        if ("feed-publish".equals(historyToken)) {
+            GwtUser currentUser = CmsGwt.getCurrentUser();
+            if (currentUser!=null && currentUser.isAllowedToWrite()) {
+            	activateLink(feedPublishLink);
+            	switchView(FeedPublishView.getInstance());            	
+            }
+            return;
+        }
+        
 		if ( "changeset-query".equals( historyToken ) ) {
 			activateLink( changesLink );
 			switchView( ChangeSetQueryView.getInstance() );
@@ -229,6 +240,13 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             publishLink.addStyleName("commandLink");
             publishLink.addClickHandler(commandLinkHandler);
             this.header.addToButtonPanel(publishLink);
+        }
+        
+        if (currentUser.isAllowedToWrite()) {
+            feedPublishLink = new Anchor("Feed Publish", "#feed-publish");
+            feedPublishLink.addStyleName("commandLink");
+            feedPublishLink.addClickHandler(commandLinkHandler);
+            this.header.addToButtonPanel(feedPublishLink);
         }
         
 		if (currentUser.isAdmin()) {

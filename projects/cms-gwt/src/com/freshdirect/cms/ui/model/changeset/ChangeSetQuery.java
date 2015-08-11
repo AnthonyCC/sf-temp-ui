@@ -16,6 +16,8 @@ public class ChangeSetQuery implements Serializable {
     protected Date		startDate;
     protected Date		endDate;
     
+    protected String publishType;
+    
     int start = 0;    
     int limit = 0;
     
@@ -53,17 +55,14 @@ public class ChangeSetQuery implements Serializable {
         this.direction = copy.direction;
         this.contentType = copy.contentType;
         this.contributor = copy.contributor;        
-        
+        this.publishType = copy.publishType;
         this.publishDirection = copy.publishDirection;
         this.publishSortType = copy.publishSortType;
         this.messageSeverity = copy.messageSeverity;
-        
         this.user = copy.user;
         this.startDate = copy.startDate;
         this.endDate = copy.endDate;
-//        this.nodeKeys = copy.nodeKeys;
     }
-    
     
     public String getContentKey() {
         return contentKey;
@@ -154,7 +153,6 @@ public class ChangeSetQuery implements Serializable {
 		this.changeSetQuery = changeSetQuery;
 	}
 
-    
     public SortDir getDirection() {
         return direction;
     }
@@ -203,10 +201,17 @@ public class ChangeSetQuery implements Serializable {
 	public void setEndDate( Date endDate ) {
 		this.endDate = endDate;
 	}
-	
-    @Override
+
+	public String getPublishType() {
+		return publishType;
+	}
+
+	public void setPublishType(String publishType) {
+		this.publishType = publishType;
+	}
+
+	@Override
     public String toString() {
         return "ChangeSetQuery[" + start + ',' + limit + (publishId != null ? " publishId:" + publishId : "") + (contentKey != null ? " contentKey:" + contentKey : "") + "]";
     }
-
 }

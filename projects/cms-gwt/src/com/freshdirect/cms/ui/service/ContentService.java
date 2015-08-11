@@ -66,7 +66,11 @@ public interface ContentService extends RemoteService {
     
     List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException;
 
+    List<GwtPublishData> getPublishHistoryByType(PagingLoadConfig config, String type) throws ServerException;
+    
     String startPublish(String comment) throws ServerException;
+    
+    String startPublishX(String comment) throws ServerException;
     
     ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException;
     

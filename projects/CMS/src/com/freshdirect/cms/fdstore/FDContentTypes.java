@@ -82,6 +82,12 @@ public class FDContentTypes {
 	public final static ContentType CATEGORY_SECTION = ContentType.get("CategorySection");
 	public final static ContentType GLOBAL_NAVIGATION = ContentType.get("GlobalNavigation");
 	public final static ContentType WEBPAGE = ContentType.get("WebPage");
+	public final static ContentType SCHEDULE = ContentType.get("Schedule");
+	public final static ContentType ANCHOR = ContentType.get("Anchor");
+	public final static ContentType PICK_LIST = ContentType.get("PickList");
+	public final static ContentType PICK_LIST_ITEM = ContentType.get("PickListItem");
+	public final static ContentType TEXT_COMPONENT = ContentType.get("TextComponent");
+	public final static ContentType SECTION = ContentType.get("Section");
 	public final static ContentType STOPWORDS = ContentType.get("Stopwords");
 	private FDContentTypes() {
 	}

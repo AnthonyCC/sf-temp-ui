@@ -5,6 +5,7 @@ import java.util.Date;
 public class CMSPageRequest {
 	private String pageType;
 	private Date requestedDate;
+	private boolean ignoreSchedule;
 	
 	public String getPageType() {
 		return pageType;
@@ -20,5 +21,13 @@ public class CMSPageRequest {
 
 	public void setRequestedDate(Date requestedDate) {
 		this.requestedDate = requestedDate;
+	}
+
+	public boolean isIgnoreSchedule() {
+		return ignoreSchedule;
+	}
+
+	public void setIgnoreSchedule(boolean ignoreSchedule) {
+		this.ignoreSchedule = ignoreSchedule;
 	}
 }

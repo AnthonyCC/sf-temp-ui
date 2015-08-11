@@ -27,6 +27,14 @@ public interface PublishServiceI {
 	 * @return List of {@link Publish}
 	 */
 	public List<Publish> getPublishHistory();
+	
+	
+	/**
+	 * Get all publishes.
+	 * 
+	 * @return List of {@link Publish}
+	 */
+	public List<Publish> getPublishHistoryByType(String type);
 
 	/**
 	 * Get information about a specific publish.
@@ -34,7 +42,7 @@ public interface PublishServiceI {
 	 * @param id the id of the publish.
 	 * @return Publish, or null if not found
 	 */
-	public Publish getPublish(String id);
+	public Publish getPublish(String id,Class clazz);
 
 	/**
 	 * Get information about the last publish, which is finished.
@@ -69,5 +77,11 @@ public interface PublishServiceI {
 	 * @throws ConcurrentPublishException if there's a publish already in progress
 	 */
 	public String doPublish(Publish publish) throws ConcurrentPublishException;
+
+
+	public PublishX getMostRecentNotCompletedPublishX();
+
+
+	public PublishX getMostRecentPublishX();
 
 }

@@ -746,6 +746,7 @@ public class FDStoreProperties {
 	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
 	private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
 	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
+	private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1181,6 +1182,7 @@ public class FDStoreProperties {
 		
 		//APPDEV-1215 Sustainable Seafood
 		defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
+		defaults.put(PROP_FEED_PUBLISH_URL, "http://localhost:7001/crm/feed_publish");
 		
 		//SEM Project (APPDEV-1598)
 		defaults.put(PROP_SEM_PIXELS, "");
@@ -1481,7 +1483,6 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
-        
 	
 		refresh();
     }
@@ -3723,5 +3724,9 @@ public class FDStoreProperties {
 	}
 	public static String getProductSamplesTitle(){
 		return get(PROP_PRODUCT_SAMPLES_TITLE);
+	}
+
+	public static String getFeedPublishURL() {
+		return get(PROP_FEED_PUBLISH_URL);
 	}
 }

@@ -176,7 +176,7 @@
 <strong>Brand</strong>
 {foreach $brand in $brands}
 {if $brand.contentPath}
-<a class="pdp-accordion-description-brand" href="javascript:pop('{$brand.contentPath}', 560, 585);">About {$brand.name}</a>
+<a class="pdp-accordion-description-brand" href="javascript:pop('{$brand.contentPath}', 560, 585);">About <span itemprop="brand">{$brand.name}</span></a>
 {else}
 <span itemprop="brand" class="pdp-accordion-description-brand" >{$brand.name}</span>
 {/if}

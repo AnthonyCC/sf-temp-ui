@@ -5,9 +5,11 @@
  * @param? akaName
  */
 {template .productName}
-	<h1 class="pdpTitle" itemprop="name" style="display:inline">
+	<h1 class="pdpTitle" style="display:inline">
+		<span itemprop="name">
 		{if $productName}{$productName}{/if}
 		{if $akaName}<p class="productDisplay-akaName">"{$akaName|noAutoescape}"</p>{/if}
+        </span>
         <span class="annotation cssbutton transparent white icon-info2-before notext">?</span>
   	</h1>
 {/template}
