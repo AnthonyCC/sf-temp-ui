@@ -777,7 +777,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			try{
 				HttpServletResponse response = this.getWebActionContext().getResponse();				
 					//response.sendRedirect(this.ccdProblemPage);				
-				user.setAddressVerificationError(true);				
+				user.setAddressVerificationError(true);		
+				cart.setDeliveryReservation(null);
 				String message =ae.getMessage();
 				message=message.replace("9999",user.getCustomerServiceContact());
 				LOGGER.error( message, ae );
