@@ -55,6 +55,18 @@
         <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
       </div>
 
+      <div id="cartheader">
+        <soy:render template="expressco.cartheader" data="${cartDataPotato}" />
+      </div>
+
+      <div id="productsamplecarousel">
+        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato}" />
+      </div>
+
+      <div id="questions">
+        <soy:render template="expressco.cartheaderQuestions" data="${cartDataPotato}" />
+      </div>
+
       <%-- cart content --%>
       <div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines">
       </div>

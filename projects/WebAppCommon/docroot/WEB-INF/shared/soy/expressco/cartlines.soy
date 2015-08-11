@@ -8,17 +8,9 @@
  * @param? userRecognized is the user recognized?
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
- * @param? deliveryCharge
- * @param? estimatedTotal subtotal
  * @param? couponMessage subtotal
- * @param? productSamplesTab sample products
  */
 {template .viewcartlines autoescape="false"}
-{call .cartheader}
-  {param total: $estimatedTotal /}
-  {param deliveryCharge: $deliveryCharge /}
-  {param productSamplesTab: $productSamplesTab /}
-{/call}
 {call .couponMessage}
   {param couponMessage: $couponMessage /}
 {/call}
@@ -90,10 +82,9 @@
 {/template}
 
 /**
- * @param? total Estimated total
+ * @param? estimatedTotal Estimated total
  * @param? deliveryCharge Formatted price value
  * @param? cartChangedByCleanUp Boolean flag
- * @param? productSamplesTab sample products
  */
 {template .cartheader autoescape="false"}
 <div class='cartheader'>
@@ -109,10 +100,10 @@
         <div class="charges__rowcell charges-price">{$deliveryCharge}</div>
       </div>
       {/if}
-      {if $total}
+      {if $estimatedTotal}
       <div class="charges__row">
         <div class="charges__rowcell charges-text">Estimated Total:</div>
-        <div class="charges__rowcell charges-price">{$total}</div>
+        <div class="charges__rowcell charges-price">{$estimatedTotal}</div>
       </div>
       {/if}
     </div>
@@ -129,12 +120,23 @@
   <div>and have been removed from your cart.</div>
 </div>
 {/if}
+{/template}
+
+/**
+ * @param? productSamplesTab sample products
+ */
+{template .productSampleCarouselWrapper}
+{if $productSamplesTab}
+<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+  {call expressco.productSampleCarousel data="$productSamplesTab" /}
+</div>
+{/if}
+{/template}
+
+/**
+*/
+{template .cartheaderQuestions}
 <div class='cartheader__questions'>
-  {if $productSamplesTab}
-  <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-    {call expressco.productSampleCarousel data="$productSamplesTab" /}
-  </div>
-  {/if}
   <div class='questions__left'>
     <strong>Questions?</strong> <a href='/help/index.jsp' class='questions__link'>Get help online</a> or call 1-212-796-8002
   </div>

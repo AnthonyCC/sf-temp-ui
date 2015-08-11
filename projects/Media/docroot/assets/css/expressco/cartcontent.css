@@ -401,6 +401,8 @@
 
 .cartheader{
   padding:20px 0;
+  border-bottom: 1px solid #e7e5e4;
+  margin-bottom: 20px;
 }
 
 .cartheader__text,
@@ -508,11 +510,6 @@
 .charges-price{
   font-size:13px;
   font-weight:bold;
-}
-
-.cartheader__questions{
-  border-top:1px solid #e7e5e4;
-  margin-top:20px;
 }
 
 .questions__left,
@@ -692,36 +689,36 @@
   z-index: 1000;
 }
 
-.view_cart .product-sample-carousel [data-component="carousel-list"]{
+.#productsamplecarousel .product-sample-carousel [data-component="carousel-list"]{
 	text-align:center;
 }
 
-.view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
-.view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
-.view_cart .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
-.view_cart .product-sample-carousel[product-count="2"] [data-component="carousel-next"],
-.view_cart .product-sample-carousel[product-count="3"] [data-component="carousel-prev"],
-.view_cart .product-sample-carousel[product-count="3"] [data-component="carousel-next"]{
+#productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
+#productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
+#productsamplecarousel .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
+#productsamplecarousel .product-sample-carousel[product-count="2"] [data-component="carousel-next"],
+#productsamplecarousel .product-sample-carousel[product-count="3"] [data-component="carousel-prev"],
+#productsamplecarousel .product-sample-carousel[product-count="3"] [data-component="carousel-next"]{
   background:none;
   display:none;
 }
 
-.view_cart .product-sample-carousel[product-count="1"] [data-component="carousel"],
-.view_cart .product-sample-carousel[product-count="2"] [data-component="carousel"],
-.view_cart .product-sample-carousel[product-count="3"] [data-component="carousel"]{
+#productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel"],
+#productsamplecarousel .product-sample-carousel[product-count="2"] [data-component="carousel"],
+#productsamplecarousel .product-sample-carousel[product-count="3"] [data-component="carousel"]{
   padding-right:0;
   padding-left:0;
 }
 
-.view_cart .product-sample-carousel [data-component="carousel"]{
+#productsamplecarousel .product-sample-carousel [data-component="carousel"]{
   margin:0;
 }
 
-.view_cart .product-sample-carousel [data-component="carousel-mask"]{
+#productsamplecarousel .product-sample-carousel [data-component="carousel-mask"]{
 	margin-top: 20px;
 }
 
-.view_cart .product-sample-carousel h2.product-sample-header{
+#productsamplecarousel .product-sample-carousel h2.product-sample-header{
 	 -moz-user-select: none; 
      -khtml-user-select: none; 
      -webkit-user-select: none; 
@@ -738,7 +735,7 @@
   vertical-align:top;
 }
 
-.view_cart .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
+#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
   width: 280px; /* 124 + 156 */
 }
 
@@ -772,8 +769,8 @@
 }
 
 /* carousel & popup items for 1 and 2 items */
-.view_cart .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count1,
-.view_cart .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count2{
+#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count1,
+#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.item-count2{
   width: 354px; /* 154 + 200 */
 }
 
@@ -815,7 +812,7 @@
   padding-right:0;
 }
 
-.view_cart .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.productSamplingItem.item-count3 {
+#productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li.productSamplingItem.item-count3 {
   width: 304px; /* 124 + 180 */
 }
 

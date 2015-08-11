@@ -162,6 +162,9 @@ var FreshDirect = FreshDirect || {};
           if (ajaxData.coremetrics) {
             fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
           }
+          
+          fd.common.dispatcher.signal('cartHeader', ajaxData);
+          fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
 
           fd.expressco.checkout.coFlowChecker.checkFlow();
           try {
@@ -182,6 +185,32 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
+
+  var cartHeader = Object.create(WIDGET,{
+    signal:{
+      value:'cartHeader'
+    },
+    template: {
+      value:expressco.cartheader
+    },
+    placeholder:{
+      value:'#cartheader'
+    }
+  });
+  cartHeader.listen();
+
+  var productSampleCarousel = Object.create(WIDGET,{
+    signal:{
+      value:'productSampleCarousel'
+    },
+    template: {
+      value:expressco.productSampleCarouselWrapper
+    },
+    placeholder:{
+      value:'#productsamplecarousel'
+    }
+  });
+  productSampleCarousel.listen();
 
   var atcHandler = Object.create(fd.common.signalTarget, {
     signal: {
@@ -230,7 +259,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('change', cartcontent.placeholder + ' [data-component="cartline"] select',
     cartcontent.onQuantityChange.bind(cartcontent));
 
-  $(document).on('click', cartcontent.placeholder + ' [data-component="emptycart"]',
+  $(document).on('click', '#questions [data-component="emptycart"]',
     cartcontent.onEmptyCart.bind(cartcontent));
 
   $(document).on('click', cartcontent.placeholder + ' [data-component="updatecart"]',
