@@ -31,6 +31,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.cms.CMSPublishManager;
 import com.freshdirect.fdstore.content.CMSAnchorModel;
@@ -312,7 +313,7 @@ public class CMSContentFactory {
 	public CMSImageModel createImage(ContentKey key){
 		CMSImageModel image = new CMSImageModel();
 		ContentNodeI contentNode = getContentNodeByKey(key);
-		image.setPath((String)contentNode.getAttributeValue("path"));
+		image.setPath(getMediaPath((String)contentNode.getAttributeValue("path")));
 		image.setHeight((Integer)contentNode.getAttributeValue("height"));
 		image.setWidth((Integer)contentNode.getAttributeValue("width"));
 		return image;
@@ -510,6 +511,14 @@ public class CMSContentFactory {
 			if (reader != null)
 				reader.close();
 		}
+	}
+	
+	public String getMediaPath(String url){
+		String fullUrl = null; 
+		if(url != null){
+			fullUrl = FDStoreProperties.getMediaPath() != null ? FDStoreProperties.getMediaPath() + url : url;
+		}
+		return fullUrl;
 	}
 	
 }
