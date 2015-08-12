@@ -401,7 +401,9 @@ public class TimeslotLogic {
 
 	public static OrderContext getOrderContext(FDUserI user) {
 		OrderContext context = new OrderContext();
-			context.setOrderId(user.getIdentity().getErpCustomerPK());
+			if(user!=null && user.getIdentity()!=null){
+				context.setOrderId(user.getIdentity().getErpCustomerPK());
+			}
 			if(user != null && user.getShoppingCart() != null){
 				if(user.getShoppingCart() instanceof FDModifyCartModel){
 					context.setAction(EnumOrderAction.MODIFY);
