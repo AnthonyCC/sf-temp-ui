@@ -5676,7 +5676,7 @@
 	</tag-file>
 	<tag-file>
        <name>PeekAheadPreviewTag</name>
-       <path>/WEB-INF/shared/tags/cmspreview/peekAhead.tag</path>
+       <path>/WEB-INF/shared/tags/cmspreview/peekahead.tag</path>
 	</tag-file>
 	<tag-file>
        <name>TrendingPreviewTag</name>
