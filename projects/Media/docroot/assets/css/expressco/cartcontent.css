@@ -714,13 +714,6 @@
 	margin-top: 20px;
 }
 
-#productsamplecarousel .product-sample-carousel h2.product-sample-header{
-	 -moz-user-select: none; 
-     -khtml-user-select: none; 
-     -webkit-user-select: none; 
-     -o-user-select: none; 
-}
-
 /* carousel & popup items for more than 3 items */
 .productSamplingItem.portrait-item{
   padding-left:124px; /* 114px + 2*5px padding */

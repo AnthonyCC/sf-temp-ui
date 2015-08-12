@@ -146,7 +146,7 @@ StringBuffer buffer = new StringBuffer(
 
 
 
-<form name="viewcart" method="post" style="margin:0px ! important" id="viewcart">
+<form name="viewcart" id="viewcart" method="post" style="margin:0px ! important" fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
 	<div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
@@ -236,17 +236,6 @@ StringBuffer buffer = new StringBuffer(
 	<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>	
 <%}%>
 
-<script>
-	//APPDEV-4203 Product Sampling
-	var ProductSamplesMaxQuantityLimit = <%= FDStoreProperties.getProductSamplesMaxQuantityLimit() %>;
-	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
-	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
-	jQuery(".product-sample-carousel li.portrait-item").each(function( index ) {
-		if( jQuery( this ).find(".atc-info div.incart-info").attr( "data-amount" ) >= ProductSamplesMaxQuantityLimit){
-			jQuery( this ).addClass("unavailable");
-		}
-	});
-</script>
 
 </tmpl:put>
 </fd:RedemptionCodeController>

@@ -116,7 +116,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	font-size: 20px;
 	font-weight: bold;
 	padding: 15px 14px 10px;
-  margin-bottom: 0;
+	margin-bottom: 0;
 	line-height: 20px;
 	text-align: left;
 	background: #f0f5e1;
@@ -127,8 +127,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	background: -ms-linear-gradient(top,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
 	background: linear-gradient(to bottom,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f5e1', endColorstr='#b3b3b0',GradientType=0 );
-  cursor: pointer;
-  position: relative;
+	cursor: pointer;
+	position: relative;
+	-moz-user-select: none; 
+	-khtml-user-select: none; 
+	-webkit-user-select: none; 
+	-o-user-select: none; 
 }
 
 .product-sample-carousel h2.product-sample-header:hover {
