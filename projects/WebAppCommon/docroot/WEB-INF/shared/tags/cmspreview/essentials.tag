@@ -13,7 +13,7 @@
 <c:if test="${component.componentType eq 'PICKLIST'}">
 <div class="moduleEssentials1">
 		<div class="ModuleBanner">
-			<img src="${component.image}" width="${component.image.image.width}" height="${component.image.image.height}">
+			<img src="${component.image.image.path}" width="${component.image.image.width}" height="${component.image.image.height}">
 			<h2 style="background:blue">${component.name}</h2>
 		</div>
 		<div style="height:5px;"><br/></div>

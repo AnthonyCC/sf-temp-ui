@@ -10,6 +10,7 @@
 		${component.text}	
 	</c:if>
 	<c:if test="${component.componentType eq 'ANCHOR'}">
+		<a href="${component.url}">${component.text}</a>
 	</c:if>
 	</div>	
 </c:forEach>

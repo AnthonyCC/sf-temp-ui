@@ -8,8 +8,8 @@
 <c:if test="${component.componentType eq 'BANNER'}">
 	<div class="ModuleBanner">
 		<img src="${component.image.path}" width="${component.image.width}" height="${component.image.height}">
-		<h6 style="color:green">Bagels</h6>
-		<h2 style="color:green">Product Category</h2>
+		<h6 style="color:green">${component.flagText}</h6>
+		<h2 style="color:green">${component.name}</h2>
 	</div>
 </c:if>
 </c:forEach>
