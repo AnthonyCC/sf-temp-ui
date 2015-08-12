@@ -1,10 +1,12 @@
+<%@ tag body-content="tagdependent" description="Trending Tag" %>
+
 <%@tag import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@tag import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@tag import="com.freshdirect.cms.ContentKey"%>
 <%@tag import="com.freshdirect.fdstore.content.CMSPickListItemModel"%>
 <%@tag import="com.freshdirect.cms.ContentType"%>
 <%@tag import="com.freshdirect.cms.application.CmsManager"%>
-<%@ tag body-content="scriptless" description="Trending Tag" %>
+
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ attribute name="section" type="com.freshdirect.fdstore.content.CMSSectionModel" required="false" %>
 

@@ -1,4 +1,5 @@
-<%@ tag body-content="scriptless" description="Greetings Tag" %>
+<%@ tag body-content="tagdependent" description="Greetings Tag" %>
+
 <%@ tag import="com.freshdirect.fdstore.content.CMSComponentType"%>
 <%@ tag import="com.freshdirect.fdstore.content.CMSSectionModel"%>
 <%@ attribute name="section" type="com.freshdirect.fdstore.content.CMSSectionModel" required="false" %>
