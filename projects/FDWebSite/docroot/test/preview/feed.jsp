@@ -25,8 +25,8 @@
 			String date = request.getParameter("dateTime");
 			pageRequest.setRequestedDate(new Date());
 			pageRequest.setPageType(pageName);
-			pageRequest.setPreview(true);
-			pageRequest.setIgnoreSchedule(true);
+			pageRequest.setPreview(request.getParameter("preview") != null);
+			pageRequest.setIgnoreSchedule(request.getParameter("ignoreSchedule") != null);
 			List<CMSWebPageModel> pages = factory.getCMSPageByParameters(pageRequest);
 		%>
 		<c:set var="pages" value="<%=pages %>"/>
