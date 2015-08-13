@@ -1362,7 +1362,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			mi = miw.getMunicipalityInfo(deliveryAddress.getState(), county, deliveryAddress.getCity());
 		} else {
 			StateCounty stateCounty = fdMan.getStateCountyByZipcode(zipcode);
-			mi = miw.getMunicipalityInfo(stateCounty.getState(), stateCounty.getCounty(), null);
+			mi = miw.getMunicipalityInfo((stateCounty!=null)?stateCounty.getState():null, (stateCounty!=null)?stateCounty.getCounty():null, null);
 		}
 		
 		if(mi != null ){
