@@ -65,6 +65,15 @@
 						<td class="promo_detail_label">Need Dry Goods:</td>
 						<td class="alignL"><%= (promotion.isNeedDryGoods()) ? "Yes" : "No" %></td>
 					</tr>
+					
+									
+					<% if ( promotion.getDcpdMinSubtotal() != null && !"".equals(promotion.getDcpdMinSubtotal()) && !"0.00".equals(FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getDcpdMinSubtotal()))) ) { %>
+						<tr>
+							<td class="promo_detail_label">DCPD Subtotal >=</td>
+							<td class="alignL"><%= (promotion.getDcpdMinSubtotal() != null && !"".equals(promotion.getDcpdMinSubtotal())) ? "$ "+FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getDcpdMinSubtotal())) : "" %></td>
+						</tr>
+					<% } %>
+					
 						<% if (dpcdDeptsCart.size() > 0) { %>
 							<tr>
 								<td class="promo_detail_label">Has Department<%=(dpcdDeptsCart.size() > 1)?"s":""%>:</td>
