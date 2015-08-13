@@ -101,7 +101,7 @@ public class FormMetaDataService {
 		}
 		if (ccExpireMonth.length() == 2) {
 			tCcExpireMonth = ccExpireMonth;
-		} else if (ccExpireMonth.indexOf("0") < 1) {
+        } else if (ccExpireMonth.indexOf('0') < 1) {
 			tCcExpireMonth = "0" + ccExpireMonth;
 		}
 		for (int mnth = 1; mnth < 13; mnth++) {

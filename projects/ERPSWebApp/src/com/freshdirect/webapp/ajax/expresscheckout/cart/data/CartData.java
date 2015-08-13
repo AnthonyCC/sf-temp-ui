@@ -17,9 +17,7 @@ import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
  * 
  * @author treer
  */
-public class CartData extends AbstractCoremetricsResponse implements Serializable {
-
-	private static final long serialVersionUID = -5968293697377155974L;
+public class CartData extends AbstractCoremetricsResponse {
 
 	/**
 	 * Optional global error message
@@ -303,18 +301,23 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
 			SectionInfo other = (SectionInfo) obj;
 			if (sectionTitle == null) {
-				if (other.sectionTitle != null)
-					return false;
-			} else if (!sectionTitle.equals(other.sectionTitle))
-				return false;
+                if (other.sectionTitle != null) {
+                    return false;
+                }
+            } else if (!sectionTitle.equals(other.sectionTitle)) {
+                return false;
+            }
 			return true;
 		}
 

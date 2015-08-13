@@ -268,7 +268,7 @@ public class SinglePageCheckoutFacade {
     }
 
     /** based on step_3_choose.jsp */
-    private void processGiftCards(FDUserI user, HttpServletRequest request, FormPaymentData formPaymentData) {
+    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData) {
 
         try {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
@@ -365,7 +365,7 @@ public class SinglePageCheckoutFacade {
     private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
-        processGiftCards(user, request, formPaymentData);
+        processGiftCards(user, formPaymentData);
 
         if (formPaymentData.isCoveredByGiftCard()) {
             paymentService.setNoPaymentMethod(user, request);

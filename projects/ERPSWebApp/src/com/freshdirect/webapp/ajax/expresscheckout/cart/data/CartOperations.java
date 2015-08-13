@@ -976,8 +976,9 @@ public class CartOperations {
 				//
 				String selected = null;
 				for (int j = 0; j < options.length; j++) {
-					if (options[j].isSelected())
+                    if (options[j].isSelected()) {
 						selected = options[j].getName();
+                    }
 				}
 				varMap.put(variation.getName(), selected);
 			} else if (optionName != null && !"".equals(optionName)) {

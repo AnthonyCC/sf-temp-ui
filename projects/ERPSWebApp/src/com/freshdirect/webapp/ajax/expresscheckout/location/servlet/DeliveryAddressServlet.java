@@ -64,7 +64,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 					String ebtPaymentRemovalApproved = FormDataService.defaultService().get(deliveryAddressRequest, "ebtPaymentRemovalApproved");
 					List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 					ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-					if (ebtPaymentRemovalApproved == null && deliveryAddressId != null && deliveryAddress != null && !deliveryAddressId.equals(deliveryAddress)) {
+                        if (ebtPaymentRemovalApproved == null && deliveryAddressId != null && deliveryAddress != null && !deliveryAddressId.equals(deliveryAddress.getId())) {
 						validationErrors.addAll(DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByAddressId(user, deliveryAddressId));
 					}
 					if (validationErrors.isEmpty()) {

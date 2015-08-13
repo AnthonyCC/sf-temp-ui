@@ -128,6 +128,7 @@ public class PaymentService {
     }
 
     public PaymentEditData loadUserPaymentMethod(FDUserI user, String paymentId) {
+        PaymentEditData paymentEditData = null;
         ErpPaymentMethodI payment = null;
         for (ErpPaymentMethodI paymentMethod : user.getPaymentMethods()) {
             if (paymentMethod.getPK().getId().equals(paymentId)) {
@@ -135,7 +136,10 @@ public class PaymentService {
                 break;
             }
         }
-        return populatePaymentEditData(payment);
+        if (payment != null) {
+            paymentEditData = populatePaymentEditData(payment);
+        }
+        return paymentEditData;
     }
 
     private void sortPaymentMethods(FDUserI user, List<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
@@ -167,8 +171,8 @@ public class PaymentService {
 
     };
 
-    private static final Comparator<ErpPaymentMethodI> PAYMENT_COMPARATOR_BY_ID_REVERSED = ComparatorChain.<ErpPaymentMethodI> reverseOrder(ComparatorChain
-            .create(PAYMENT_COMPARATOR_BY_ID));
+    private static final Comparator<ErpPaymentMethodI> PAYMENT_COMPARATOR_BY_ID_REVERSED = ComparatorChain
+            .<ErpPaymentMethodI> reverseOrder(ComparatorChain.create(PAYMENT_COMPARATOR_BY_ID));
 
     public void sortPaymentMethodsByIdReserved(List<ErpPaymentMethodI> paymentMethods) {
         Collections.sort(paymentMethods, PAYMENT_COMPARATOR_BY_ID_REVERSED);
@@ -325,10 +329,8 @@ public class PaymentService {
             Date date = sf.parse(month.trim() + year.trim(), new ParsePosition(0));
             expCal.setTime(date);
             expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
-        } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-            if (abaRouteNumber != null && !"".equals(abaRouteNumber)) {
-                abaRouteNumber = StringUtils.leftPad(abaRouteNumber, 9, "0");
-            }
+        } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && abaRouteNumber != null && !"".equals(abaRouteNumber)) {
+            abaRouteNumber = StringUtils.leftPad(abaRouteNumber, 9, "0");
         }
         paymentMethod.setExpirationDate(expCal.getTime());
         paymentMethod.setName(formData.get(PaymentMethodName.ACCOUNT_HOLDER));
@@ -356,10 +358,8 @@ public class PaymentService {
         paymentMethod.setBestNumberForBillingInquiries(formData.get("phone"));
 
         String terms = formData.get(PaymentMethodName.TERMS);
-        if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-            if ("on".equals(terms) && !PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
-                paymentMethod.setIsTermsAccepted(true);
-            }
+        if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && "on".equals(terms) && !PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
+            paymentMethod.setIsTermsAccepted(true);
         }
 
         return paymentMethod;

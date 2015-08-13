@@ -291,7 +291,7 @@ public class DeliveryAddressService {
 		if (deliveryAddress instanceof ErpDepotAddressModel) {
 			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) deliveryAddress;
 			if (depotAddress.isPickup()) {
-				FDDeliveryDepotModel depotModel = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+                FDDeliveryDepotModel depotModel = FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
 				if (depotModel != null) {
 					for (Object deliveryLocationModel : depotModel.getLocations()) {
 						if (deliveryLocationModel instanceof FDDeliveryDepotLocationModel) {
@@ -384,13 +384,13 @@ public class DeliveryAddressService {
 			deliveryLocationData.setCompanyName(deliveryAddress.getCompanyName());
 		}
 
-		if (deliveryAddress.getPhone() != null && !"".equals(deliveryAddress.getPhone())) {
+        if (deliveryAddress.getPhone() != null && !"".equals(deliveryAddress.getPhone().toString())) {
 			deliveryLocationData.setPhone(deliveryAddress.getPhone().getPhone());
 			deliveryLocationData.setPhoneExtension(deliveryAddress.getPhone().getExtension());
 			deliveryLocationData.setPhoneType(deliveryAddress.getPhone().getType());
 		}
 
-		if (deliveryAddress.getAltContactPhone() != null && !"".equals(deliveryAddress.getAltContactPhone())) {
+        if (deliveryAddress.getAltContactPhone() != null && !"".equals(deliveryAddress.getAltContactPhone().toString())) {
 			deliveryLocationData.setAlternativePhone(deliveryAddress.getAltContactPhone().getPhone());
 			deliveryLocationData.setAlternativePhoneExtension(deliveryAddress.getAltContactPhone().getExtension());
 			deliveryLocationData.setAlternativePhoneType(deliveryAddress.getAltContactPhone().getType());
@@ -445,7 +445,7 @@ public class DeliveryAddressService {
 		pickupDepotLocationData.setPopupUrl(preparePickupPopupUrl(deliveryDepotModel.getDepotCode(), addressId));
 		pickupDepotLocationData.setOpeningHours(OpeningHourConstants.getOpeningHours());
 
-		if (customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone())) {
+        if (customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone().toString())) {
 			pickupDepotLocationData.setPhone(customerInfoModel.getOtherPhone().getPhone());
 		}
 
@@ -476,8 +476,9 @@ public class DeliveryAddressService {
 		final List<FDDeliveryDepotModel> pickupDepotModels = new ArrayList<FDDeliveryDepotModel>();
 		for (Object pickupDepotObj : FDDeliveryManager.getInstance().getPickupDepots()) {
 			final FDDeliveryDepotModel pickupDepotModel = (FDDeliveryDepotModel) pickupDepotObj;
-			if (!(HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode()) || pickupDepotModel.isDeactivated()))
-				pickupDepotModels.add(pickupDepotModel);
+            if (!(HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode()) || pickupDepotModel.isDeactivated())) {
+                pickupDepotModels.add(pickupDepotModel);
+            }
 		}
 		return pickupDepotModels;
 	}

@@ -4,8 +4,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -23,7 +21,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class GiftCardService {
@@ -50,7 +47,7 @@ public class GiftCardService {
 				validationResult.add(new ValidationError(GIVEX_NUM_FIELD_ID, formatMessage(SystemMessageList.ACCOUNT_LOCKED_FOR_GC, customerServiceContact)));
 			} else {
 				String givexNum = FormDataService.defaultService().get(requestData, GIVEX_NUM_FIELD_ID);
-				if (givexNum != null && givexNum.trim().length() > 0) {
+                if (givexNum != null && !givexNum.trim().isEmpty()) {
 					try {
 						ErpGiftCardModel gcModel = FDCustomerManager.applyGiftCard(user.getIdentity(), givexNum.trim(), info);
 						if (gcModel.getBalance() == 0) {

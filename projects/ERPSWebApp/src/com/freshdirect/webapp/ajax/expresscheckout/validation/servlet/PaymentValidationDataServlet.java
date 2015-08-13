@@ -12,36 +12,36 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.service.PaymentVal
 
 public class PaymentValidationDataServlet extends BaseJsonServlet {
 
-	private static final long serialVersionUID = -7582639712245761241L;
+    private static final long serialVersionUID = -7582639712245761241L;
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		try {
-			final FormDataRequest paymentValidationRequest = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
-			final ValidationResult validationResult = new ValidationResult();
-			validationResult.setFdform(paymentValidationRequest.getFormId());
-			validationResult.getErrors().addAll(PaymentValidationDataService.defaultService().prepareAndValidate(paymentValidationRequest));
-			final FormDataResponse deliveryAddressResponse = createPaymentValidationResponse(paymentValidationRequest, validationResult);
-			writeResponseData(response, deliveryAddressResponse);
-		} catch (final Exception e) {
-			BaseJsonServlet.returnHttpError(500, "Error while validate payment for user " + user.getUserId(), e);
-		}
-	}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
+        try {
+            FormDataRequest paymentValidationRequest = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
+            ValidationResult validationResult = new ValidationResult();
+            validationResult.setFdform(paymentValidationRequest.getFormId());
+            validationResult.getErrors().addAll(PaymentValidationDataService.defaultService().prepareAndValidate(paymentValidationRequest));
+            FormDataResponse deliveryAddressResponse = createPaymentValidationResponse(validationResult);
+            writeResponseData(response, deliveryAddressResponse);
+        } catch (Exception e) {
+            BaseJsonServlet.returnHttpError(500, "Error while validate payment for user " + user.getUserId(), e);
+        }
+    }
 
-	@Override
-	protected int getRequiredUserLevel() {
-		return FDUserI.SIGNED_IN;
-	}
+    @Override
+    protected int getRequiredUserLevel() {
+        return FDUserI.SIGNED_IN;
+    }
 
-	private FormDataResponse createPaymentValidationResponse(FormDataRequest paymentValidationRequest, ValidationResult formValidation) {
-		final FormDataResponse deliveryAddressResponse = new FormDataResponse();
-		deliveryAddressResponse.setValidationResult(formValidation);
-		return deliveryAddressResponse;
-	}
+    private FormDataResponse createPaymentValidationResponse(ValidationResult formValidation) {
+        FormDataResponse deliveryAddressResponse = new FormDataResponse();
+        deliveryAddressResponse.setValidationResult(formValidation);
+        return deliveryAddressResponse;
+    }
 
-	@Override
-	protected boolean synchronizeOnUser() {
-		return false;
-	}
+    @Override
+    protected boolean synchronizeOnUser() {
+        return false;
+    }
 
 }

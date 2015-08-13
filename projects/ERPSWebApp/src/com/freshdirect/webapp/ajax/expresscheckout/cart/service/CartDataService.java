@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -125,7 +124,7 @@ public class CartDataService {
         }
         CartData cartData = new CartData();
         synchronized (cart) {
-            populateSubTotalBox(cartData, cart, user, request);
+            populateSubTotalBox(cartData, cart, user);
         }
         return cartData.getSubTotalBox();
     }
@@ -283,9 +282,9 @@ public class CartDataService {
     }
 
     public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Integer> recentIds, ProductModel productNode,
-            FDUserI user) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
+            FDUserI user) {
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
-        populateCartDataItemWithUnitPriceAndQuantity(cartLine.getPrice(), item, fdProduct, productNode.getPriceCalculator());
+        populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
         item.setImage(productNode.getProdImage().getPathWithPublishId());
         if (cartLine.isSoldBySalesUnits()) {
             cartLineSoldBySaleUnit(cartLine, fdProduct, item);
@@ -334,7 +333,7 @@ public class CartDataService {
         return cartLine.hasScaledPricing() || (cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0);
     }
 
-    private void populateCartDataItemWithUnitPriceAndQuantity(double price, CartData.Item item, FDProduct fdProduct, PriceCalculator priceCalculator) {
+    private void populateCartDataItemWithUnitPriceAndQuantity(CartData.Item item, FDProduct fdProduct, PriceCalculator priceCalculator) {
         try {
             ZonePriceInfoModel zpi = priceCalculator.getZonePriceInfoModel();
             if (zpi != null) {
@@ -423,7 +422,7 @@ public class CartDataService {
             cartData.setItemCount(itemCount.getValue());
             cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
             cartData.setEstimatedTotal(JspMethods.formatPrice(cart.getTotal()));
-            populateSubTotalBox(cartData, cart, user, request);
+            populateSubTotalBox(cartData, cart, user);
             populateSubTotalBoxForNonAlcoholSections(cart, sections, getSubTotalTextForNonAlcoholicSections(cartHasEstimatedLines, cartHasWine));
             if (FDUserI.GUEST < user.getLevel()) {
                 cartData.setUserRecognized(true);
@@ -507,12 +506,12 @@ public class CartDataService {
     private SortedSet<Integer> populateRecentIds(FDCartModel cart) {
         SortedSet<Integer> recentIds = new TreeSet<Integer>();
         for (FDCartLineI rc : cart.getRecentOrderLines()) {
-            recentIds.add(new Integer(rc.getRandomId()));
+            recentIds.add(Integer.valueOf(rc.getRandomId()));
         }
         return recentIds;
     }
 
-    private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, ServletRequest request) throws FDResourceException {
+    private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         cartData.getSubTotalBox().put("subTotalBox", subTotalBox);
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart.getSubTotal());
@@ -528,7 +527,7 @@ public class CartDataService {
     }
 
     private String getSubTotalTextForNonAlcoholicSections(Boolean cartHasEstimatedLines, Boolean cartHasWine) {
-        StringBuilder subTotalText = new StringBuilder();
+        StringBuilder subTotalText = new StringBuilder(32);
         if (cartHasWine) {
             subTotalText.append("FreshDirect ");
         }
