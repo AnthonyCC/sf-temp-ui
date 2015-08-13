@@ -513,7 +513,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			this.getShoppingCart().setChargeWaived(EnumChargeType.DLVPREMIUM, true, "DELIVERY");
 		this.promotionEligibility = new FDPromotionEligibility();
 		// apply promotions
-		FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this), promotionEligibility);
+		this.promotionEligibility =FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this), promotionEligibility);
 		//Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy
 		this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
     }

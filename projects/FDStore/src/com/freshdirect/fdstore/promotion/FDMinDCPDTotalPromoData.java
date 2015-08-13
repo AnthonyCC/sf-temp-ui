@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -7,7 +8,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
-public class FDMinDCPDTotalPromoData {
+public class FDMinDCPDTotalPromoData implements Serializable{
 	private String promotionCode;
 	private double headerDiscAmount;
 	private double dcpdMinTotal;
