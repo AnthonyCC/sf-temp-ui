@@ -51,7 +51,7 @@
 				<% }else{ %>
 					<% if ( promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal()) && !"0.00".equals(FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal()))) ) { %>
 						<tr>
-							<td class="promo_detail_label">Subtotal >=</td>
+							<td class="promo_detail_label">Order Subtotal >=</td>
 							<td class="alignL"><%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ? "$ "+FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal())) : "" %></td>
 						</tr>
 					<% } %>
