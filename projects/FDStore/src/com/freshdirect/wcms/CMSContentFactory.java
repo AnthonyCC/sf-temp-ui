@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -135,12 +136,20 @@ public class CMSContentFactory {
 		return pickLists;
 	}
 	
-	
 	public final List<CMSWebPageModel> getCMSPageByParameters(CMSPageRequest pageRequest){
-		String data = getFeedContent();
 		List<CMSWebPageModel> response = new ArrayList<CMSWebPageModel>();
-		if(data != null){
-			Map<ContentKey, ContentNodeI> contentNodes = loadNodesFromXMLString(data);
+		Map<ContentKey,ContentNodeI> contentNodes = new HashMap<ContentKey,ContentNodeI>();
+		//if preview load from cms db, else read from erps feed table.
+		if(pageRequest.isPreview()){
+			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"));
+			contentNodes = getContentService().getContentNodes(keys);
+		} else {
+			String data = getFeedContent();
+			if(data != null){
+				contentNodes = loadNodesFromXMLString(data);
+			} 
+		}
+		if(contentNodes != null && !contentNodes.isEmpty()){
 			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
 				ContentNodeI contentNode = contentNodeEntry.getValue();
 				CMSWebPageModel page = getCMSPage(contentNode, pageRequest);
@@ -272,7 +281,6 @@ public class CMSContentFactory {
 		}
 		return anchors;
 	}
-	
 	
 	public CMSAnchorModel createAnchor(ContentNodeI componentNode){
 		CMSAnchorModel anchor = new CMSAnchorModel();
@@ -433,7 +441,6 @@ public class CMSContentFactory {
 				Calendar endDateCalendar = getCalendar(schedule.getEndDate(),1);
 				Calendar startDateCalendar = getCalendar(schedule.getStartDate(),0);
 				if(startDateCalendar != null && endDateCalendar != null && currentDate.after(startDateCalendar) && currentDate.before(endDateCalendar)){
-					
 					if(schedule.getStartTime() != null && schedule.getEndTime() != null){
 						TimeOfDay startingTime = new TimeOfDay(schedule.getStartTime());
 						TimeOfDay endingTime = new TimeOfDay(schedule.getEndTime());
@@ -520,5 +527,4 @@ public class CMSContentFactory {
 		}
 		return fullUrl;
 	}
-	
 }

@@ -6,6 +6,7 @@ public class CMSPageRequest {
 	private String pageType;
 	private Date requestedDate;
 	private boolean ignoreSchedule;
+	private boolean preview;
 	
 	public String getPageType() {
 		return pageType;
@@ -29,5 +30,13 @@ public class CMSPageRequest {
 
 	public void setIgnoreSchedule(boolean ignoreSchedule) {
 		this.ignoreSchedule = ignoreSchedule;
+	}
+
+	public boolean isPreview() {
+		return preview;
+	}
+
+	public void setPreview(boolean preview) {
+		this.preview = preview;
 	}
 }

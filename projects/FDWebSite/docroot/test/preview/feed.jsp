@@ -11,25 +11,23 @@
 	<body>
 		<div>
 			<form action="">
-				<input name="pageName" type="text" value="Feed"/>
-				<input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
+				Name: <input name="pageName" type="text" value="Feed"/>
+				Date: <input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
+				Preview: <input name="preview" type="checkbox"/>
+				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
 				<input type="submit"/>			
 			</form>
 		</div>
 		<%
 			CMSContentFactory factory = CMSContentFactory.getInstance();
 			CMSPageRequest pageRequest = new CMSPageRequest();
-			
-			
 			String pageName = request.getParameter("pageName") != null ? request.getParameter("pageName") : "Feed";
 			String date = request.getParameter("dateTime");
 			pageRequest.setRequestedDate(new Date());
 			pageRequest.setPageType(pageName);
-			out.println(date);
-			out.println(pageName);
+			pageRequest.setPreview(true);
+			pageRequest.setIgnoreSchedule(true);
 			List<CMSWebPageModel> pages = factory.getCMSPageByParameters(pageRequest);
-			String greetingText = "Welcome";
-			
 		%>
 		<c:set var="pages" value="<%=pages %>"/>
 		<div id="moduleContainer">
