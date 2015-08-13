@@ -42,15 +42,27 @@ public class StructureValidator implements ContentValidatorI {
 		TYPES.add(FDContentTypes.RECIPE_VARIANT);
 		TYPES.add(FDContentTypes.STARTER_LIST);
 	}
+	
+	private final static Set<ContentType> IGNORABLE_TYPES = new HashSet<ContentType>();
+	static{
+		IGNORABLE_TYPES.add(FDContentTypes.IMAGE_BANNER);
+		IGNORABLE_TYPES.add(FDContentTypes.ANCHOR);
+		IGNORABLE_TYPES.add(FDContentTypes.SECTION);
+		IGNORABLE_TYPES.add(FDContentTypes.WEBPAGE);
+	}
 
 	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
-		ContentType t = node.getKey().getType();
-		if ( TYPES.contains( t ) ) {
+		if(TYPES.contains(node.getKey().getType())){
 			Set<ContentKey> parentKeys = service.getParentKeys( node.getKey() );
-			if ( parentKeys.size() > 1 ) {
-				delegate.record( node.getKey(), "Cannot have multiple parents. " + parentKeys );
+			Set<ContentKey> nonIgnorableKeys = new HashSet<ContentKey>();
+			for(ContentKey contenkey:parentKeys){
+				if(!IGNORABLE_TYPES.contains(contenkey.getType())){
+					nonIgnorableKeys.add(contenkey);
+				}
+			}
+			if ( nonIgnorableKeys.size() > 1 ) {
+				delegate.record( node.getKey(), "Cannot have multiple parents. " + nonIgnorableKeys );
 			}
 		}
 	}
-
 }
