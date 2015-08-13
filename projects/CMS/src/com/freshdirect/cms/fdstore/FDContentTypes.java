@@ -23,13 +23,11 @@ public class FDContentTypes {
 	public final static ContentType DOMAIN = ContentType.get("Domain");
 	public final static ContentType DOMAINVALUE = ContentType.get("DomainValue");
 	public final static ContentType COMPONENT_GROUP = ContentType.get("ComponentGroup");
-
 	public final static ContentType ERP_MATERIAL = ContentType.get("ErpMaterial");
 	public final static ContentType ERP_SALES_UNIT = ContentType.get("ErpSalesUnit");
 	public final static ContentType ERP_CLASS = ContentType.get("ErpClass");
 	public final static ContentType ERP_CHARACTERISTIC = ContentType.get("ErpCharacteristic");
 	public final static ContentType ERP_CHARACTERISTIC_VALUE = ContentType.get("ErpCharacteristicValue");
-
 	public final static ContentType MENU_ITEM = ContentType.get("MenuItem");
 	public static final ContentType RECIPE = ContentType.get("Recipe");
 	public static final ContentType RECIPE_VARIANT = ContentType.get("RecipeVariant");
@@ -42,40 +40,26 @@ public class FDContentTypes {
 	public static final ContentType BOOK_RETAILER = ContentType.get("BookRetailer");
 	public static final ContentType RECIPE_SEARCH_PAGE = ContentType.get("RecipeSearchPage");
 	public static final ContentType RECIPE_SEARCH_CRITERIA = ContentType.get("RecipeSearchCriteria");
-	
 	public static final ContentType YMAL_SET = ContentType.get("YmalSet");
-	
 	public static final ContentType STARTER_LIST = ContentType.get("StarterList");
-	
 	public static final ContentType SYNONYM = ContentType.get("Synonym");
 	public static final ContentType SPELLING_SYNONYM = ContentType.get("SpellingSynonym");
-
 	public static final ContentType SEARCH_RELEVANCY_LIST = ContentType.get("SearchRelevancyList");
 	public static final ContentType SEARCH_RELEVANCY_HINT = ContentType.get("SearchRelevancyHint");
-        
 	public static final ContentType WORD_STEMMING_EXCEPTION = ContentType.get("WordStemmingException");
-	
    	public static final ContentType FAVORITE_LIST = ContentType.get("FavoriteList");
-	
    	public static final ContentType RECOMMMENDER = ContentType.get("Recommender");
    	public static final ContentType RECOMMENDER_STRATEGY = ContentType.get("RecommenderStrategy");   	
-   	
    	public static final ContentType FAQ = ContentType.get("FAQ");
- 
-        public final static ContentType PRODUCER = ContentType.get("Producer");
-        public final static ContentType PRODUCER_TYPE = ContentType.get("ProducerType");
-
-        public final static ContentType TILE = ContentType.get("Tile");
-        public final static ContentType TILE_LIST = ContentType.get("TileList");
-
+   	public final static ContentType PRODUCER = ContentType.get("Producer");
+   	public final static ContentType PRODUCER_TYPE = ContentType.get("ProducerType");
+   	public final static ContentType TILE = ContentType.get("Tile");
+   	public final static ContentType TILE_LIST = ContentType.get("TileList");
 	public final static ContentType HOLIDAY_GREETING = ContentType.get("HolidayGreetings");
 	public final static ContentType MYFD = ContentType.get("MyFD");
-	
 	public final static ContentType YOUTUBE_VIDEO = ContentType.get("YoutubeVideo");
 	public final static ContentType DONATION_ORGANIZATION = ContentType.get("DonationOrganization");
-
 	public final static ContentType PAGE = ContentType.get("Page");
-	
 	public final static ContentType TAG = ContentType.get("Tag");
 	public final static ContentType PRODUCT_FILTER = ContentType.get("ProductFilter");
 	public final static ContentType SUPER_DEPARTMENT = ContentType.get("SuperDepartment");
@@ -88,8 +72,8 @@ public class FDContentTypes {
 	public final static ContentType PICK_LIST_ITEM = ContentType.get("PickListItem");
 	public final static ContentType TEXT_COMPONENT = ContentType.get("TextComponent");
 	public final static ContentType SECTION = ContentType.get("Section");
+	public final static ContentType IMAGE_BANNER = ContentType.get("ImageBanner");
 	public final static ContentType STOPWORDS = ContentType.get("Stopwords");
 	private FDContentTypes() {
 	}
-
 }
