@@ -110,9 +110,21 @@ Recipes
 				<xsl:text> - (</xsl:text><xsl:value-of select="configurationDesc"/><xsl:text>) </xsl:text>
 			</xsl:if> 
 			<xsl:if test="unitPrice!=''">
+				<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<xsl:text>(</xsl:text><xsl:value-of select="unitPrice"/><xsl:text>) </xsl:text>
+				</xsl:if>
+				<xsl:if test="starts-with(departmentDesc, 'FREE')">
+				<xsl:text>FREE</xsl:text>
+				</xsl:if>
 			</xsl:if>
+			<xsl:choose>
+			<xsl:when test="starts-with(departmentDesc, 'FREE')">
+			<xsl:text>Free</xsl:text>			
+			</xsl:when>
+			<xsl:otherwise>
 			<xsl:text>$</xsl:text><xsl:value-of select='format-number(price, "###,##0.00", "USD")'/>
+			</xsl:otherwise>
+			</xsl:choose>
 			<xsl:if test="estimatedPrice = 'true'">*</xsl:if> 
 			<xsl:if test="tax = 'true'"><xsl:text>  </xsl:text>T</xsl:if> 
 			<xsl:if test="scaledPricing = 'true'"><xsl:text>  </xsl:text>S</xsl:if> 
