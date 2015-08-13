@@ -208,6 +208,12 @@ var FreshDirect = FreshDirect || {};
     },
     placeholder:{
       value:'#productsamplecarousel'
+    },
+    callback: {
+      value: function(value){
+        this.render(value);
+        fd.components.carousel && fd.components.carousel.initialize();
+      }
     }
   });
   productSampleCarousel.listen();
