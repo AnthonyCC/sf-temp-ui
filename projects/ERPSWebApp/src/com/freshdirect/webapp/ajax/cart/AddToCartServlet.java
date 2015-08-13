@@ -58,7 +58,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 
     private static final Logger LOG = LoggerFactory.getInstance(AddToCartServlet.class);
     private static final String SIMPLE_PENDING_ATC_ITEM_GROUP = "_simple_";
-    private static final Pattern ONLY_OLD_VIEW_CART_PAGES_PATTERN = Pattern.compile("http://[^/]+(/checkout)*/view_cart.jsp");
+    private static final Pattern ONLY_OLD_VIEW_CART_PAGES_PATTERN = Pattern.compile("https?://[^/]+(/checkout)*/view_cart.jsp");
 
     /**
      * A simple tuple implementation of the following triple external agency, external group, external source
