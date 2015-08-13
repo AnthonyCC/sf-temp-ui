@@ -92,7 +92,7 @@ public class FeedPublishView extends LayoutContainer implements PublishListener 
 		ChangeSetQuery query = new ChangeSetQuery();
 		query.setPublishId(publishId);
 		query.setPublishType("X");
-		CmsGwt.getContentService().getPublishData(query, new BaseCallback<GwtPublishData>() {
+		CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
 			@Override
 			public void onSuccess(GwtPublishData result) {
 				setOverview(result);
@@ -106,7 +106,7 @@ public class FeedPublishView extends LayoutContainer implements PublishListener 
 		ChangeSetQuery query = new ChangeSetQuery();
 		query.setPublishId(publishId);
 		query.setPublishType("X");
-		CmsGwt.getContentService().getPublishData(query, new BaseCallback<GwtPublishData>() {
+		CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
 			@Override
 			public void onSuccess(GwtPublishData result) {
 				if (result.isInProgress()) {

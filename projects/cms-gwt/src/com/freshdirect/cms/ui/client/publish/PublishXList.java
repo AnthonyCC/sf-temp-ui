@@ -103,7 +103,7 @@ public class PublishXList extends LayoutContainer {
 	}
 
 	protected class ProgressPublishWidget extends Html {
-		static final int POLL_INTERVAL = 1 * 100; // 10 seconds
+		static final int POLL_INTERVAL = 5 * 1000; // 10 seconds
 
 		private GwtPublishData publish;
 		private Timer timer;
@@ -204,7 +204,7 @@ public class PublishXList extends LayoutContainer {
 							ChangeSetQuery query = new ChangeSetQuery();
 							query.setPublishId(progressId);
 							query.setPublishType("X");
-							CmsGwt.getContentService().getPublishData(query, new BaseCallback<GwtPublishData>() {
+							CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
 								@Override
 								public void onSuccess(GwtPublishData result) {
 									if (!result.isInProgress()) {

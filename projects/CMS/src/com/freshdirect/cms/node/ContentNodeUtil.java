@@ -55,7 +55,9 @@ public class ContentNodeUtil {
 		new AttributeLabelProvider("GLANCE_NAME"),
 		new AttributeLabelProvider("name"),
 		new AttributeLabelProvider("title"),
-		new AttributeLabelProvider("attribute")});
+		new AttributeLabelProvider("attribute"),
+		new AttributeLabelProvider("PAGE_TITLE"),
+		new AttributeLabelProvider("Name")});
 
 	/**
 	 * Get a human-readable label for a content node.

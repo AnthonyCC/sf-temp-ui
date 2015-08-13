@@ -27,11 +27,11 @@ public class CMSPublishManager {
 		}
 	}
 	
-	public static String getLatestFeed() throws FDResourceException {
+	public static String getLatestFeed(String storeId) throws FDResourceException {
 		String response = null;
 		CMSManagerSB sb = getCMSManagerSB();
 		try {
-			response = sb.getLatestFeed();
+			response = sb.getLatestFeed(storeId);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}

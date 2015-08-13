@@ -63,6 +63,7 @@ public interface ContentService extends RemoteService {
     Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains) throws ServerException;
 
     GwtPublishData getPublishData(ChangeSetQuery publishId) throws ServerException;
+    GwtPublishData getPublishDataX(ChangeSetQuery publishId) throws ServerException;
     
     List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException;
 

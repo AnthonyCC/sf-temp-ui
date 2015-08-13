@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class CMSManagerDAO {
@@ -29,14 +30,14 @@ public class CMSManagerDAO {
 		ps.execute();
 	}
 	
-	public static String getFeedContent(Connection connection){
+	public static String getFeedContent(Connection connection, String storeName){
 		StringBuilder response = new StringBuilder();
 		BufferedReader reader = null;
 		InputStream stream = null;
 		try{
-			PreparedStatement statement = connection.prepareStatement("select * from erps.feed where cro_mod_datetime = (select max(cro_mod_datetime) from erps.feed)");
+			PreparedStatement statement = connection.prepareStatement("select * from erps.feed where cro_mod_datetime = (select max(cro_mod_datetime) from erps.feed where storeid = ?)");
 			ResultSet resultSet = statement.executeQuery();
-			
+			statement.setString(1, StringUtils.defaultString(storeName, "FDX"));
 			while(resultSet.next()){
 				Blob blob = resultSet.getBlob("DATA");
 				stream = blob.getBinaryStream();

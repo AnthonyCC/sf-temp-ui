@@ -9,6 +9,7 @@ public class CMSImageBannerModel extends CMSComponentModel{
 	private String flagText;
 	private String flagColor;
 	private String price;
+	private String target;
 	
 	public String getDescription() {
 		return description;
@@ -45,5 +46,11 @@ public class CMSImageBannerModel extends CMSComponentModel{
 	}
 	public void setAnchors(List<CMSAnchorModel> anchors) {
 		this.anchors = anchors;
+	}
+	public String getTarget() {
+		return target;
+	}
+	public void setTarget(String target) {
+		this.target = target;
 	}
 }

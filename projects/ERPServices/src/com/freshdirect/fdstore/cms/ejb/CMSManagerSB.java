@@ -5,5 +5,5 @@ import javax.ejb.EJBObject;
 
 public interface CMSManagerSB extends EJBObject {
 	public void createFeed(String feedId, String storeId, String feedData) throws RemoteException;
-	public String getLatestFeed() throws RemoteException;
+	public String getLatestFeed(String storeId) throws RemoteException;
 }

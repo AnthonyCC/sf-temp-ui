@@ -17,6 +17,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime.Property;
@@ -145,7 +146,7 @@ public class CMSContentFactory {
 			contentNodes = getContentService().getContentNodes(keys);
 		} else {
 			String data = getFeedContent();
-			if(data != null){
+			if(StringUtils.isNotBlank(data)){
 				contentNodes = loadNodesFromXMLString(data);
 			} 
 		}
@@ -253,16 +254,20 @@ public class CMSContentFactory {
 						addComponentsToSection(components,createImageBanner(componentNode));
 					} else {
 						//Send as raw component with id.
-						String componentType = componentKey.getType().getName();
-						CMSComponentModel component = new CMSComponentModel();
-						component.setId(componentKey.getId());
-						component.setComponentType(CMSComponentType.valueOf(componentType.toUpperCase()));
-						addComponentsToSection(components,component);
+						addComponentsToSection(components,createGenericComponent(componentKey));
 					}
 				}
 			}
 		}
 		return components;
+	}
+	
+	public CMSComponentModel createGenericComponent(ContentKey componentKey){
+		String componentType = componentKey.getType().getName();
+		CMSComponentModel component = new CMSComponentModel();
+		component.setId(componentKey.getId());
+		component.setComponentType(CMSComponentType.valueOf(componentType.toUpperCase()));
+		return component;
 	}
 	
 	private void addComponentsToSection(List<CMSComponentModel> components, CMSComponentModel component){
@@ -308,6 +313,7 @@ public class CMSContentFactory {
 			banner.setDescription((String)componentNode.getAttributeValue("Description"));
 			banner.setType((String)componentNode.getAttributeValue("Type"));
 			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
+			banner.setTarget(((ContentKey)componentNode.getAttributeValue("ImageBannerImage")).getEncoded());
 			banner.setAnchors(createAnchor(getContentKeysList(componentNode,"ImageBannerLink")));
 		}
 		return banner;
@@ -488,7 +494,7 @@ public class CMSContentFactory {
 	private String getFeedContent(){
 		String response = null;
 		try {
-			response =  CMSPublishManager.getLatestFeed();
+			response =  CMSPublishManager.getLatestFeed(CmsManager.getInstance().getSingleStoreKey().getId());
 		} catch (FDResourceException e) {
 			LOG.error(e);
 		}

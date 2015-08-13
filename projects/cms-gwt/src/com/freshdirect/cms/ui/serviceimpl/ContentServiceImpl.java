@@ -567,19 +567,12 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			Publish publish;			
 			PublishServiceI service = getPublishService();
 			
-            if(query.getPublishType() == null){
-				if ("latest".equalsIgnoreCase(query.getPublishId())) {
-	                publish = service.getMostRecentPublish();
-	            } else {
-	                publish = service.getPublish(query.getPublishId(), Publish.class);
-	            }
-            } else {
-	            if ("latest".equalsIgnoreCase(query.getPublishId())) {
-	                publish = service.getMostRecentPublishX();
-	            } else {
-	                publish = service.getPublish(query.getPublishId(), PublishX.class);
-	            }
-            }
+			if ("latest".equalsIgnoreCase(query.getPublishId())) {
+	            publish = service.getMostRecentPublish();
+	        } else {
+	            publish = service.getPublish(query.getPublishId(), Publish.class);
+	        }
+            
 			if (publish == null) {
 				publishData = new GwtPublishData();
 			} else {
@@ -597,6 +590,63 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 					changeCount += length;
 				}
 			}
+			
+			publishData.setChangeCount(changeCount);
+			
+			if (publish != null) {
+				for (PublishMessage message : publish.getMessages() ){
+					switch (message.getSeverity()) {
+						// Failure
+						case 0:
+						// Error
+						case 1:
+						// Warning
+						case 2: publishData.addMessage(String.valueOf(message.getSeverity()));
+					}				
+				}
+				
+				Collections.sort(publishData.getContributors());
+				Collections.sort(publishData.getTypes());
+				Collections.sort(publishData.getMessages());
+			}
+			return publishData;			
+			
+        } catch (Throwable e) {
+            LOG.error("RuntimeException in getPublishHistory", e);
+            throw TranslatorToGwt.wrap(e);
+        }
+	}
+	
+	public GwtPublishData getPublishDataX(ChangeSetQuery query) throws ServerException {
+		try {
+			GwtPublishData publishData;
+			Publish publish;			
+			PublishServiceI service = getFeedPublishService();
+			
+        
+	        if ("latest".equalsIgnoreCase(query.getPublishId())) {
+	            publish = service.getMostRecentPublishX();
+	        } else {
+	            publish = service.getPublish(query.getPublishId(), PublishX.class);
+	        }
+            
+			if (publish == null) {
+				publishData = new GwtPublishData();
+			} else {
+				publishData = TranslatorToGwt.getPublishData(publish);
+			}
+            publishData.setId(query.getPublishId());
+            publishData.setFullyLoaded(true);            
+			int changeCount = 0;
+			/*for (GwtChangeSet change : changes) {				
+				
+				for (GwtNodeChange nodechange : change.getNodeChanges()) {
+					int length = nodechange.length();
+					publishData.addContributor(change.getUserId(), length);
+					publishData.addType(nodechange.getType(), length);		
+					changeCount += length;
+				}
+			}*/
 			
 			publishData.setChangeCount(changeCount);
 			

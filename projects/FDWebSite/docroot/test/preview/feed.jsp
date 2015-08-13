@@ -9,15 +9,7 @@
 <html>
 	<head><title>Feed</title></head>
 	<body>
-		<div>
-			<form action="">
-				Name: <input name="pageName" type="text" value="Feed"/>
-				Date: <input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
-				Preview: <input name="preview" type="checkbox"/>
-				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
-				<input type="submit"/>			
-			</form>
-		</div>
+		
 		<%
 			CMSContentFactory factory = CMSContentFactory.getInstance();
 			CMSPageRequest pageRequest = new CMSPageRequest();
@@ -30,7 +22,17 @@
 			List<CMSWebPageModel> pages = factory.getCMSPageByParameters(pageRequest);
 		%>
 		<c:set var="pages" value="<%=pages %>"/>
-		<div id="moduleContainer">
+		<div>
+		<div id="forms">
+			<form action="">
+				Name: <input name="pageName" type="text" value="Feed"/>
+				Date: <input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
+				Preview: <input name="preview" type="checkbox"/>
+				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
+				<input type="submit"/>			
+			</form>
+		</div>
+		<div id="moduleContainer" style="width:30%">
 		<c:forEach var="page" items="${pages}">
 		<c:forEach var="section" items="${page.sections}">
 			<c:if test="${section.type eq 'PeakAhead'}">
@@ -55,10 +57,11 @@
 		<div style="height:2px;"><br/></div>
 		</c:forEach>
 		</div>
+		</div>
 	</body>
 <style>
 /* Needs to moved to separate css file */	
-#moduleContainer{margin: 0px 500px 0px 500px;border: 1px solid black;}
+#moduleContainer{margin: 0px 0px 0px 0px;border: 1px solid black;}
 .moduleGreeting{background-color: blue;text-align: center;color: white;}
 .moduleEssentials1{}
 .ModuleBanner{position: relative;}

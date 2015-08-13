@@ -8,6 +8,7 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -29,12 +30,12 @@ public class CMSManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public String getLatestFeed() throws RemoteException{
+	public String getLatestFeed(String storeName) throws RemoteException{
 		Connection conn = null;
 		String response = null;
 		try {
 			conn = getConnection();
-			response = CMSManagerDAO.getFeedContent(conn);
+			response = CMSManagerDAO.getFeedContent(conn, storeName);
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle);
 			throw new EJBException(sqle.getMessage());
