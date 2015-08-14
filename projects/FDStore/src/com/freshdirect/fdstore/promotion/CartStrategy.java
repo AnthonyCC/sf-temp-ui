@@ -177,7 +177,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 				if(null != orderLines && !orderLines.isEmpty()){
 				for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
 					FDCartLineI cartLine = iterator.next();
-					if(contentKeys.size() > 0 || null !=dcpdData.get(EnumDCPDContentType.BRAND)){
+					if(contentKeys.size() > 0 || null !=dcpdData.get(EnumDCPDContentType.BRAND) || null !=dcpdData.get(EnumDCPDContentType.SKU)){
 						int lAllowORdeny = evaluate(cartLine, promotionCode, context);
 						if(PromotionStrategyI.ALLOW == lAllowORdeny){
 							cartDcpdSubtotal = cartDcpdSubtotal+cartLine.getPrice();
