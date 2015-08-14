@@ -87,14 +87,18 @@ public class DlvTimeslotStats {
 	public void apply(FDDeliveryTimeslotModel deliveryModel) {
 		deliveryModel.setAlcoholDelivery(isAlcoholDelivery);
 		// deliveryModel.setTimeslotList(timeslotList);
+		deliveryModel.setZones(zonesMap);
+		deliveryModel.setZoneCtActive(ctActive);
+		deliveryModel.setHasCapacity(hasCapacity);
 		deliveryModel.setKosherSlotAvailable(isKosherSlotAvailable);
+		deliveryModel.setGeoRestrictionmessages(messages);
 		deliveryModel.setMaxDiscount(maxDiscount);
 		deliveryModel.setAlcoholRestrictedCount(alcoholSlots);
+		deliveryModel.setEcoFriendlyCount(ecoFriendlySlots);
+		deliveryModel.setNeighbourhoodCount(neighbourhoodSlots);
 		deliveryModel.setPercSlotsSold(totalSlots > 0 ? Math
 				.round((soldOut / totalSlots) * 100) : 0.0);
 		deliveryModel.setEarlyAMCount(earlyAmSlots);
-		deliveryModel.setZones(zonesMap);
-		deliveryModel.setHasCapacity(hasCapacity);
 	}
 
 	/**
