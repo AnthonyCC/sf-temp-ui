@@ -218,7 +218,9 @@ public class ViewCartCarouselService {
         List<FDCartLineI> orderLines = cart.getOrderLines();
         if (null != orderLines && !orderLines.isEmpty()) {
             for (FDCartLineI orderLine : orderLines) {
-                orderLinesSkuCodeWithQuantity.put(orderLine.getProductRef().lookupProductModel().getDefaultSku().getSkuCode(), orderLine.getQuantity());
+                if (orderLine.getSkuCode() != null) {
+                    orderLinesSkuCodeWithQuantity.put(orderLine.getSkuCode(), orderLine.getQuantity());
+                }
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
                     productSamplesInCart.add(orderLine);
                 }
