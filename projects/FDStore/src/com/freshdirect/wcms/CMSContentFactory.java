@@ -197,7 +197,11 @@ public class CMSContentFactory {
 				webPage.setSections(sections);
 			}
 		}
-		return webPage;
+		if(webPage.getSections() != null){
+			return webPage;
+		} else {
+			return null;
+		}
 	}
 	
 	public final List<CMSSectionModel> getPageSections(ContentNodeI pageNode, CMSPageRequest request){
@@ -290,12 +294,8 @@ public class CMSContentFactory {
 	public CMSAnchorModel createAnchor(ContentNodeI componentNode){
 		CMSAnchorModel anchor = new CMSAnchorModel();
 		anchor.setUrl((String)componentNode.getAttributeValue("Url"));
-		ContentKey contentKey = (ContentKey)componentNode.getAttributeValue("Target");
-		if(contentKey != null){
-			anchor.setTarget(contentKey.getEncoded());
-		}
+		anchor.setTarget(getEncodedContentKey(componentNode, "Target"));
 		anchor.setText((String)componentNode.getAttributeValue("Text"));
-		
 		if("Button".equals(componentNode.getAttributeValue("Type"))){
 			anchor.setComponentType(CMSComponentType.BUTTON);
 		} else {
@@ -313,7 +313,7 @@ public class CMSContentFactory {
 			banner.setDescription((String)componentNode.getAttributeValue("Description"));
 			banner.setType((String)componentNode.getAttributeValue("Type"));
 			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
-			banner.setTarget(((ContentKey)componentNode.getAttributeValue("ImageBannerImage")).getEncoded());
+			banner.setTarget(getEncodedContentKey(componentNode,"Target"));
 			banner.setAnchors(createAnchor(getContentKeysList(componentNode,"ImageBannerLink")));
 		}
 		return banner;
@@ -327,9 +327,11 @@ public class CMSContentFactory {
 	public CMSImageModel createImage(ContentKey key){
 		CMSImageModel image = new CMSImageModel();
 		ContentNodeI contentNode = getContentNodeByKey(key);
-		image.setPath(getMediaPath((String)contentNode.getAttributeValue("path")));
-		image.setHeight((Integer)contentNode.getAttributeValue("height"));
-		image.setWidth((Integer)contentNode.getAttributeValue("width"));
+		if(contentNode != null){
+			image.setPath(getMediaPath((String)contentNode.getAttributeValue("path")));
+			image.setHeight((Integer)contentNode.getAttributeValue("height"));
+			image.setWidth((Integer)contentNode.getAttributeValue("width"));
+		}
 		return image;
 	}
 	
@@ -345,6 +347,14 @@ public class CMSContentFactory {
 					pickList.setType((String)contentNode.getAttributeValue("Type"));
 					pickList.setDescription((String)contentNode.getAttributeValue("Description"));
 					ContentKey pickListMedia = (ContentKey)contentNode.getAttributeValue("PickListMedia");
+					List<ContentKey> keys = getContentKeysList(contentNode, "PickListProduct");
+					List<String> productList = new ArrayList<String>();
+					if(keys != null){
+						for(ContentKey key:keys){
+							productList.add(key.getEncoded());
+						}
+						pickList.setProducts(productList);
+					}
 					if(pickListMedia != null){
 						pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia)));
 					}
@@ -483,14 +493,6 @@ public class CMSContentFactory {
 		return property.getAsText();
 	}
 	
-	private ContentServiceI getContentService(){
-		return CmsManager.getInstance();
-	}
-	
-	private List<ContentKey> getContentKeysList(ContentNodeI contentNode,String attributeName){
-		return  (List<ContentKey>)contentNode.getAttributeValue(attributeName);	
-	}
-
 	private String getFeedContent(){
 		String response = null;
 		try {
@@ -526,11 +528,28 @@ public class CMSContentFactory {
 		}
 	}
 	
+	public String getEncodedContentKey(ContentNodeI contentNode, String attributeName){
+		String encodedKey = null;
+		ContentKey key = (ContentKey)contentNode.getAttributeValue(attributeName);
+		if(key != null){
+			encodedKey = key.getEncoded();
+		}
+		return encodedKey;
+	}
+
+	private List<ContentKey> getContentKeysList(ContentNodeI contentNode,String attributeName){
+		return  (List<ContentKey>)contentNode.getAttributeValue(attributeName);	
+	}
+	
 	public String getMediaPath(String url){
 		String fullUrl = null; 
 		if(url != null){
 			fullUrl = FDStoreProperties.getMediaPath() != null ? FDStoreProperties.getMediaPath() + url : url;
 		}
 		return fullUrl;
+	}
+	
+	private ContentServiceI getContentService(){
+		return CmsManager.getInstance();
 	}
 }

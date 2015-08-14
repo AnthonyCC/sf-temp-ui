@@ -8,7 +8,6 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

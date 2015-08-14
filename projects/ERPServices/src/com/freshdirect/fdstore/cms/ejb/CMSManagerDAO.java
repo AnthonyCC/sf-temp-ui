@@ -35,9 +35,10 @@ public class CMSManagerDAO {
 		BufferedReader reader = null;
 		InputStream stream = null;
 		try{
-			PreparedStatement statement = connection.prepareStatement("select * from erps.feed where cro_mod_datetime = (select max(cro_mod_datetime) from erps.feed where storeid = ?)");
-			ResultSet resultSet = statement.executeQuery();
+			PreparedStatement statement = connection.prepareStatement("select * from erps.feed where cro_mod_datetime = (select max(cro_mod_datetime) from erps.feed where storeid = ?) and storeid = ?");
 			statement.setString(1, StringUtils.defaultString(storeName, "FDX"));
+			statement.setString(2, StringUtils.defaultString(storeName, "FDX"));
+			ResultSet resultSet = statement.executeQuery();
 			while(resultSet.next()){
 				Blob blob = resultSet.getBlob("DATA");
 				stream = blob.getBinaryStream();

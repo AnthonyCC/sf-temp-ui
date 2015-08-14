@@ -2071,14 +2071,14 @@
 					<CmsSection>
 						<title>Categories</title>
 						<fields>
-						    <CmsMultiColumnField>
+						    <CmsField><attribute>PickListProduct</attribute></CmsField>
+							<CmsField><attribute>PickListPickList</attribute></CmsField>
+							<CmsMultiColumnField>
 						    	<attribute>PickListPickListItem</attribute>
 						    	<columns>
 						    		<CmsField><attribute>PickListItemProduct$FULL_NAME</attribute></CmsField>
 						    	</columns>
-						    </CmsMultiColumnField> 
-						    <!-- <CmsField><attribute>PickListPickListItem</attribute></CmsField> -->
-							<CmsField><attribute>PickListPickList</attribute></CmsField>
+						    </CmsMultiColumnField>
 						</fields>
 					</CmsSection>
 				</sections>
