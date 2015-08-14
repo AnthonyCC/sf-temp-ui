@@ -219,6 +219,9 @@ public class ViewCartCarouselService {
         if (null != orderLines && !orderLines.isEmpty()) {
             for (FDCartLineI orderLine : orderLines) {
                 if (orderLine.getSkuCode() != null) {
+                    // TODO: THE NPE POSSIBILITY NEEDS TO BE CHECKED IN CODE AND DATABASE! IT SEEMS TO BE A DATA ISSUE
+                    // original line: orderLinesSkuCodeWithQuantity.put(orderLine.getProductRef().lookupProductModel().getDefaultSku().getSkuCode(), orderLine.getQuantity());
+                    // issue with PROD user: johannarfarina@gmail.com
                     orderLinesSkuCodeWithQuantity.put(orderLine.getSkuCode(), orderLine.getQuantity());
                 }
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
