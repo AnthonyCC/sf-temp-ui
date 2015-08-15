@@ -1382,6 +1382,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.searchredesign2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");

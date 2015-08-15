@@ -145,7 +145,9 @@
         	$('#login_cont_formContent').hide();
     	}
     });
-    var alignLoginDropbox = function() {
+    
+	
+	var alignLoginDropbox = function() {
 		//call this each time to ensure alignment
 		var cssObj = ($("#locabar_loginButton")) ? $("#locabar_loginButton").offset() : null;
 		if (cssObj == null) { return; }
@@ -155,31 +157,31 @@
     	
     }
 	$(window).resize(function() {
-		alignLoginDropbox();
+		if (!$('#locabar_loginButton').hasClass('loginButtonSocial')) {
+			alignLoginDropbox();
+		}
 	});
-    
-    if ($('#login_cont_formContent').length == 0) {
-    	var loginDropboxHtml = '';
-    	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
-    		loginDropboxHtml += '<form id="login_cont_formContentForm">';
-    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
-    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
-        		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
-    		loginDropboxHtml += '</form>';
-			loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
-				loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
-				loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
-			loginDropboxHtml += '</div>';
-    		loginDropboxHtml += '<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
-    	loginDropboxHtml += '</div>';
-    	
-    	$(document).ready(function() {
-			$('body').append(loginDropboxHtml);
-		});
-		
-	}
-
 	$(document).ready(function() {
+		if (!$('#locabar_loginButton').hasClass('loginButtonSocial')) {
+			if ($('#login_cont_formContent').length == 0) {
+		    	var loginDropboxHtml = '';
+		    	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
+		    		loginDropboxHtml += '<form id="login_cont_formContentForm">';
+		    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
+		    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+		        		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
+		    		loginDropboxHtml += '</form>';
+					loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
+						loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
+						loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
+					loginDropboxHtml += '</div>';
+		    		loginDropboxHtml += '<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
+		    	loginDropboxHtml += '</div>';
+		    	
+				$('body').append(loginDropboxHtml);
+			}
+		}
+		
 	    $('#login_cont_formContentForm_signIn').click(function(event){
 			event.preventDefault();
 	    	$('#login_cont_formContentForm').submit();
@@ -250,7 +252,9 @@
 	    });
 	    
 		$('#locabar_loginButton').click(function(event) {
-			alignLoginDropbox();
+			if (!$('#locabar_loginButton').hasClass('loginButtonSocial')) {
+				alignLoginDropbox();
+			}
 			
 	        //first
 	       	$("#locabar_loginButton").toggleClass("loginButtonTab");
