@@ -9,6 +9,7 @@
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? couponMessage subtotal
+ * @param populateDCPDPromoDiscount
  */
 {template .viewcartlines autoescape="false"}
 {call .couponMessage}
@@ -18,6 +19,7 @@
   {foreach $section in $cartSections}
    {call .cartsection data="$section"}
     {param cartlineType: 'YOUR_CART' /}
+    {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
    {/call}
   {/foreach}
 </div>
@@ -152,12 +154,15 @@
  * @param cartLines List of cartline items
  * @param info Cartsection additional info
  * @param cartlineType Cartsection type: wine or fallback
+ * @param populateDCPDPromoDiscount
  */
 {template .cartsection autoescape="false"}
 <div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
   <h2 class='cartsection__title'>{if $info.recipe}Recipe: <span class="cartsection__title-noweight">{$title}</span>{else}{$title}{/if}{if $info.recipe and $cartlineType == 'YOUR_CART'}<span data-component="removeRecipeButton"><img src="/media_stat/images/icon-trash.png" alt="Delete" class='cartline-delete-image' />Delete all recipe ingredients</span>{/if}</h2>
   {foreach $cartline in $cartLines}
-    {delcall expressco.cartline data="$cartline" variant="$cartlineType"}{/delcall}
+    {delcall expressco.cartline data="$cartline" variant="$cartlineType"}{/delcall} 
+    {$cartline.id}
+    {$populateDCPDPromoDiscount}
   {/foreach}
 
   {if $info.subTotal}
