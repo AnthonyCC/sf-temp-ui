@@ -55,6 +55,7 @@ public class CartData extends AbstractCoremetricsResponse {
 	private Object header;
 
 	private Map<String, List<CartSubTotalFieldData>> subTotalBox = new HashMap<String, List<CartSubTotalFieldData>>();
+	private Map<String, String> populateDCPDPromoDiscount = new HashMap<String, String>();
 
 	private List<CartSubTotalFieldData> additionalInfo = new ArrayList<CartSubTotalFieldData>();
 
@@ -79,7 +80,7 @@ public class CartData extends AbstractCoremetricsResponse {
 	private ModifyCartData modifyCartData;
 
     private ProductSamplesCarousel productSamplesTab;
-
+	
 	public String getErrorMessage() {
 		return errorMessage;
 	}
@@ -885,5 +886,15 @@ public class CartData extends AbstractCoremetricsResponse {
     public void setProductSamplesTab(ProductSamplesCarousel productSamplesTab) {
         this.productSamplesTab = productSamplesTab;
     }
+
+	public void setDCPDDiscountMessage(
+			Map<String, String> populateDCPDPromoDiscount) {
+		this.populateDCPDPromoDiscount = populateDCPDPromoDiscount;
+	}
+	
+	public Map<String, String> getDCPDDiscountMessage(
+			Map<String, String> populateDCPDPromoDiscount) {
+		return this.populateDCPDPromoDiscount;
+	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,6 +46,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.EnumCouponDisplayStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -414,6 +416,7 @@ public class CartDataService {
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
                 sectionList.add(item);
+                cartData.setDCPDDiscountMessage(populateDCPDPromoDiscount(user, request, cartLine));
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
@@ -434,14 +437,59 @@ public class CartDataService {
             cartData.setErrorMessage(null);
             cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
-            cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+            cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));            
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
         }
     }
 
-    private ProductData populateCouponInfo(FDCartLineI cartLine, FDUserI user) {
+    private Map<String, String> populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
+    	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
+    	Map<String, String> dcpdCartlineMessage = new HashMap<String, String>();
+		String dcpdMinMessage = "";
+		String promoKey = "";
+		List<String> usedDcpdDiscounts = new ArrayList<String>();
+	
+		if(null!=dcpdMinPromo && dcpdMinPromo.size()>0){
+	
+		for(Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();){			
+			promoKey = iter.next();
+		
+			if(!usedDcpdDiscounts.contains(promoKey)){
+				FDMinDCPDTotalPromoData dcpdPromoModel = dcpdMinPromo.get(promoKey);
+				List<FDCartLineI> dcpdCartLines = dcpdPromoModel.getDcpdCartLines();
+			
+					for(FDCartLineI dcpdCartLine:dcpdCartLines){
+						if(cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())){
+							StringBuffer sb = new StringBuffer();
+							sb.append("Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
+							
+							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
+							if(id.equals("") && dcpdPromoModel.getBrandNames().size()>0){
+								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
+							}
+							if(null==id || "".equals(id)){
+								sb.append(" promotional products");
+							}
+							else{
+							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"style='color:(255,0,0)'> promotional products</a>");
+							}
+							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
+							dcpdMinMessage = sb.toString();						
+							usedDcpdDiscounts.add(promoKey);
+							dcpdCartlineMessage.put(cartLine.getCartlineId(), dcpdMinMessage);
+							break;
+						}
+					}
+				}
+			}
+		}
+		dcpdCartlineMessage.put("abc", "def");
+		return dcpdCartlineMessage;
+	}
+
+	private ProductData populateCouponInfo(FDCartLineI cartLine, FDUserI user) {
         ProductData productData = new ProductData();
         ProductDetailPopulator.postProcessPopulate(user, productData, cartLine.getSkuCode(), true, cartLine);
         return productData;
