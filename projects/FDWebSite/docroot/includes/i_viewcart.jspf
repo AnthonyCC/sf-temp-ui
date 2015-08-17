@@ -675,7 +675,7 @@ asyncPixelWithTimeout();
 								sb.append(" promotional products");
 							}
 							else{
-							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id> promotional products</a>");
+							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"> promotional products</a>");
 							}
 							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
 							dcpdMinMessage = sb.toString();
