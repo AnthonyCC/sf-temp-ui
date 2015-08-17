@@ -416,7 +416,7 @@ public class CartDataService {
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
                 sectionList.add(item);
-                cartData.setDCPDDiscountMessage(populateDCPDPromoDiscount(user, request, cartLine));
+                cartData.setPopulateDCPDPromoDiscount(populateDCPDPromoDiscount(user, request, cartLine));
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
