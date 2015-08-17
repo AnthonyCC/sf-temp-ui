@@ -466,7 +466,7 @@ public class CartDataService {
 							sb.append("Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
 							
 							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
-							if(id.equals("") && dcpdPromoModel.getBrandNames().size()>0){
+							if(id.equals("") && null!=dcpdPromoModel.getBrandNames() && dcpdPromoModel.getBrandNames().size()>0){
 								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
 							}
 							if(null==id || "".equals(id)){
