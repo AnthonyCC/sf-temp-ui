@@ -160,9 +160,9 @@
 <div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
   <h2 class='cartsection__title'>{if $info.recipe}Recipe: <span class="cartsection__title-noweight">{$title}</span>{else}{$title}{/if}{if $info.recipe and $cartlineType == 'YOUR_CART'}<span data-component="removeRecipeButton"><img src="/media_stat/images/icon-trash.png" alt="Delete" class='cartline-delete-image' />Delete all recipe ingredients</span>{/if}</h2>
   {foreach $cartline in $cartLines}
-    {delcall expressco.cartline data="$cartline" variant="$cartlineType"}{/delcall} 
-    {$cartline.id}
-    {if isNonnull($populateDCPDPromoDiscount[$cartline.id])}$populateDCPDPromoDiscount[$cartline.id]{/if}
+    {delcall expressco.cartline data="$cartline" variant="$cartlineType"}
+		{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
+    {/delcall} 
   {/foreach}
 
   {if $info.subTotal}
@@ -195,6 +195,7 @@
  * @param? hasDepositValue Boolean
  * @param? hasScaledPricing Boolean
  * @param? freeSamplePromoProduct Boolean free sample product
+ * @param? populateDCPDPromoDiscount
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -234,6 +235,7 @@
         {/call}
       </div>
       {/if}
+      {if isNonnull($populateDCPDPromoDiscount[$id])}<br><div class="red">{$populateDCPDPromoDiscount[$id]}</div>{/if}
     </div>
   </div>
   <div class='cartline-delete cartline-box'>
