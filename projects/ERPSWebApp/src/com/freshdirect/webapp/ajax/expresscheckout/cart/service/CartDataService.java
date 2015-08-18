@@ -368,6 +368,7 @@ public class CartDataService {
 
     private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
         try {
+        	Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
             List<FDCartLineI> cartLines = loadCartOrderLines(userId, cart);
             Map<SectionInfo, List<CartData.Item>> sectionMap = new HashMap<SectionInfo, List<CartData.Item>>();
             Map<String, String> sectionHeaderImgMap = new HashMap<String, String>();
@@ -417,7 +418,11 @@ public class CartDataService {
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
                 sectionList.add(item);
-                cartData.setPopulateDCPDPromoDiscount(populateDCPDPromoDiscount(user, request, cartLine, item));
+                String dcpdMessage = populateDCPDPromoDiscount(user, request, cartLine);
+                if(null != dcpdMessage && !"".equals(dcpdMessage)){
+                dcpdCartlineMessage.put(item.getId(), dcpdMessage);
+                }
+                cartData.setPopulateDCPDPromoDiscount(dcpdCartlineMessage);
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
@@ -445,9 +450,8 @@ public class CartDataService {
         }
     }
 
-    private Map<Integer, String> populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Item item) {
-    	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
-    	Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
+    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
+    	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();    	
 		String dcpdMinMessage = "";
 		String promoKey = "";
 		List<String> usedDcpdDiscounts = new ArrayList<String>();
@@ -464,30 +468,29 @@ public class CartDataService {
 					for(FDCartLineI dcpdCartLine:dcpdCartLines){
 						if(cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())){
 							StringBuffer sb = new StringBuffer();
-							sb.append("Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
+							sb.append(" Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
 							
 							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
-							if(id.equals("") && null!=dcpdPromoModel.getBrandNames() && dcpdPromoModel.getBrandNames().size()>0){
-								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
-							}
+							/*for brand page*/
+//							if(id.equals("") && null!=dcpdPromoModel.getBrandNames() && dcpdPromoModel.getBrandNames().size()>0){
+//								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
+//							}
 							if(null==id || "".equals(id)){
 								sb.append(" promotional products");
 							}
 							else{
-							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"style='color:(255,0,0)'> promotional products</a>");
+							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"> promotional products</a>");
 							}
 							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
 							dcpdMinMessage = sb.toString();						
 							usedDcpdDiscounts.add(promoKey);
-							dcpdCartlineMessage.put(item.getId(), dcpdMinMessage);
 							break;
 						}
 					}
 				}
 			}
 		}
-		dcpdCartlineMessage.put(1, "def");
-		return dcpdCartlineMessage;
+		return dcpdMinMessage;
 	}
 
 	private ProductData populateCouponInfo(FDCartLineI cartLine, FDUserI user) {
