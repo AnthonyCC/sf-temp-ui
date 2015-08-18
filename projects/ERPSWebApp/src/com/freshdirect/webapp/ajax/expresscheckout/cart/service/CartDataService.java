@@ -54,6 +54,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Item;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Section;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.SectionInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
@@ -416,7 +417,7 @@ public class CartDataService {
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
                 sectionList.add(item);
-                cartData.setPopulateDCPDPromoDiscount(populateDCPDPromoDiscount(user, request, cartLine));
+                cartData.setPopulateDCPDPromoDiscount(populateDCPDPromoDiscount(user, request, cartLine, item));
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
@@ -444,9 +445,9 @@ public class CartDataService {
         }
     }
 
-    private Map<String, String> populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
+    private Map<Integer, String> populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Item item) {
     	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
-    	Map<String, String> dcpdCartlineMessage = new HashMap<String, String>();
+    	Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
 		String dcpdMinMessage = "";
 		String promoKey = "";
 		List<String> usedDcpdDiscounts = new ArrayList<String>();
@@ -478,14 +479,14 @@ public class CartDataService {
 							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
 							dcpdMinMessage = sb.toString();						
 							usedDcpdDiscounts.add(promoKey);
-							dcpdCartlineMessage.put(cartLine.getCartlineId(), dcpdMinMessage);
+							dcpdCartlineMessage.put(item.getId(), dcpdMinMessage);
 							break;
 						}
 					}
 				}
 			}
 		}
-		dcpdCartlineMessage.put("abc", "def");
+		dcpdCartlineMessage.put(1, "def");
 		return dcpdCartlineMessage;
 	}
 
