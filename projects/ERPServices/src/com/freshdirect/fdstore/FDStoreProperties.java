@@ -747,7 +747,8 @@ public class FDStoreProperties {
 	private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
 	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
 	private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
-
+	private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1478,13 +1479,13 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
 		
-		refresh();
+		
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
-	
+        defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
 		refresh();
     }
 
@@ -3730,4 +3731,9 @@ public class FDStoreProperties {
 	public static String getFeedPublishURL() {
 		return get(PROP_FEED_PUBLISH_URL);
 	}
+	
+	public static String getCtCapacityEligibleProfiles() {
+		return get(CTCAPACITY_ELIGIBLE_PROFILES);
+	}
+	
 }

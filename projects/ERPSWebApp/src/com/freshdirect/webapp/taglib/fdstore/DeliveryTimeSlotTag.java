@@ -280,7 +280,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 		// TimeSlot event specific block
 		{
-		
+			event.setSameDay(deliveryModel.isShowPremiumSlots()?"X":"");
 			// build session event
 			if (FDStoreProperties.isSessionLoggingEnabled() && result.isSuccess() &&
 					(
@@ -319,8 +319,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		//set cart to model
 		deliveryModel.setShoppingCart(cart);
 		
-		//deliveryModel.setSameDayCutoff(stats.getSameDayCutoff());
-		//deliveryModel.setSameDayCutoffUTC(stats.getSameDayCutoffUTC());
+		deliveryModel.setSameDayCutoff(stats.getSameDayCutoff());
+		deliveryModel.setSameDayCutoffUTC(stats.getSameDayCutoffUTC());
 		
 		result.setDeliveryTimeslotModel(deliveryModel);
 		

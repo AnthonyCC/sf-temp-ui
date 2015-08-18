@@ -172,7 +172,8 @@ public class LogisticsDataDecoder {
 				new TimeOfDay(timeslot.getCutoffTime()), timeslot.getPremiumCutoffTime()!=null ? new TimeOfDay(timeslot.getPremiumCutoffTime()): null,
 				timeslot.getCutoffDateTime(), timeslot.getPremiumCutoffDateTime(),
 				timeslot.getZoneId(), timeslot.getZoneCode(), timeslot.isNormalAvailCapacity(), timeslot.isAvailCTCapacity(), timeslot.getGeoRestricted(), 
-				timeslot.isTimeslotRestricted(), timeslot.isUnavailable(), timeslot.getEcoFriendly(), timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(),
+				timeslot.isTimeslotRestricted(), timeslot.isTimeslotRemoved(), timeslot.getStoreFrontAvailable(), timeslot.isUnavailable(), timeslot.getEcoFriendly(), 
+				timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(), timeslot.isFdxSlot(),
 				timeslot.getTotalAvailable(), timeslot.getBaseAvailable(), timeslot.getChefsTableAvailble(), timeslot.isRadius(), timeslot.getTravelZone(), 
 				timeslot.getModX(), timeslot.getModY(), timeslot.getAdditionalDistance(), EnumRegionServiceType.getEnum(timeslot.getRegionServiceType()));
 		return t;

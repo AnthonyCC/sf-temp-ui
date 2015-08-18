@@ -71,6 +71,57 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.regionSvcType = regionSvcType;
 	}
 
+	public FDTimeslot(String id, Date deliveryDate, TimeOfDay dlvStartTime,
+			TimeOfDay dlvEndTime, TimeOfDay cutoffTime, TimeOfDay premiumCutoffTime, Date cutoffDateTime, Date premiumCutoffDateTime, 
+			String zoneId, String zoneCode,
+			boolean normalAvailCapacity, boolean availCTCapacity,
+			boolean isGeoRestricted, boolean isTimeslotRestricted, boolean isTimeslotRemoved, String storeFrontAvailable,
+			boolean isUnavailable, boolean isEcoFriendly, boolean isSoldOut, boolean isDepot, 
+			boolean isPremiumSlot, boolean isFdxSlot, double totalAvailable, double baseAvailable, double chefsTableAvailble,
+			boolean hasSteeringRadius, String travelZone, double minDurationForModStart, double minDurationForModification,
+			int additionalDistance, EnumRegionServiceType regionSvcType)
+	{
+		super();
+		this.id = id;
+		this.deliveryDate = deliveryDate;
+		this.dlvStartTime = dlvStartTime;
+		this.dlvEndTime = dlvEndTime;
+		this.cutoffTime = cutoffTime;
+		this.premiumCutoffTime = premiumCutoffTime;
+		
+		this.cutoffDateTime = cutoffDateTime;
+		this.premiumCutoffDateTime = premiumCutoffDateTime;
+		
+		this.zoneId = zoneId;
+		this.zoneCode = zoneCode;
+		
+		this.normalAvailCapacity = normalAvailCapacity;
+		this.availCTCapacity = availCTCapacity;
+		
+		this.isGeoRestricted = isGeoRestricted;
+		this.isTimeslotRestricted = isTimeslotRestricted;
+		this.isUnavailable = isUnavailable;
+		this.isEcoFriendly = isEcoFriendly;
+		this.isSoldOut = isSoldOut;
+		this.isDepot = isDepot;
+		this.isPremiumSlot = isPremiumSlot;
+		
+		this.isTimeslotRemoved = isTimeslotRemoved;
+		this.storeFrontAvailable = storeFrontAvailable;
+		this.isFdxSlot = isFdxSlot;
+		
+		this.totalAvailable = totalAvailable;
+		this.baseAvailable = baseAvailable;
+		this.chefsTableAvailble = chefsTableAvailble;
+		this.additionalDistance = additionalDistance;
+		
+		this.travelZone = travelZone;
+		this.minDurationForModStart = minDurationForModStart;
+		this.minDurationForModification = minDurationForModification;
+		this.regionSvcType = regionSvcType;
+	}
+
+	
 	private static final long serialVersionUID = 4180048326412481300L;
 
 	private final static Logger LOGGER = LoggerFactory

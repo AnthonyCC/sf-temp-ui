@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
@@ -39,6 +40,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Profile;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
@@ -397,7 +399,26 @@ public class TimeslotLogic {
 		context.setOrderId(id);
 		context.setType(EnumOrderType.REGULAR);
 		return context;
-}
+	}
+	
+	public static Profile getCustomerProfile(FDUserI user){
+		try {
+			if(user.getFDCustomer()!=null && 
+					user.getFDCustomer().getProfile()!=null)
+			{
+				ProfileModel profile=user.getFDCustomer().getProfile();
+				Profile p = new Profile();
+				String[] eligibleProfiles = FDStoreProperties.getCtCapacityEligibleProfiles().split(",");
+				for(String s: eligibleProfiles){
+					p.setAttribute(s, profile.getAttribute(s));
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.info("exception while getting eligible customer profiles");
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static OrderContext getOrderContext(FDUserI user) {
 		OrderContext context = new OrderContext();
