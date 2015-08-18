@@ -162,7 +162,7 @@
   {foreach $cartline in $cartLines}
     {delcall expressco.cartline data="$cartline" variant="$cartlineType"}{/delcall} 
     {$cartline.id}
-    {$populateDCPDPromoDiscount}
+    {if isNonnull($populateDCPDPromoDiscount[$cartline.id])}$populateDCPDPromoDiscount[$cartline.id]{/if}
   {/foreach}
 
   {if $info.subTotal}
