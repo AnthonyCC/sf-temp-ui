@@ -199,6 +199,19 @@ var FreshDirect = FreshDirect || {};
   });
   cartHeader.listen();
 
+  var billingReferenceInfo = Object.create(WIDGET,{
+    signal:{
+      value:'billingReferenceInfo'
+    },
+    template: {
+      value:expressco.billingReferenceInfo
+    },
+    placeholder:{
+      value:'#billingReferenceInfoContainer'
+    }
+  });
+  billingReferenceInfo.listen();
+
   var productSampleCarousel = Object.create(WIDGET,{
     signal:{
       value:'productSampleCarousel'

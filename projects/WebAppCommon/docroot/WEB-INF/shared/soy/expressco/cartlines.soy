@@ -411,16 +411,11 @@
         </form>
       </div>
       {/if}
-      {if $billingReferenceInfo.corporateUser}
-      <div class='promotion-item'>
-        <form fdform="checkout" action="#">
-          <p class='promotion-text'>Billing reference/Client code</p>
-          <div>
-            <input type="text" class="promotion-input" name="billingReference" value="{$billingReferenceInfo.billingReference ? $billingReferenceInfo.billingReference : ''}" placeholder="Enter here" />
-          </div>
-        </form>
-      </div>
+      <span id="billingReferenceInfoContainer">
+      {if $billingReferenceInfo}
+        {call .billingReferenceInfo data="$billingReferenceInfo" /}
       {/if}
+      </span>
     </div>
     {if $userRecognized and $deliveryPassTrialExpired}
     <div class='total__deliverypass'>
@@ -457,6 +452,23 @@
     {/call}
   </div>
 </div>
+{/template}
+
+/**
+ * @param corporateUser
+ * @param billingReference
+ */
+{template .billingReferenceInfo}
+  {if $corporateUser}
+  <div class='promotion-item'>
+    <form fdform="checkout" action="#">
+      <p class='promotion-text'>Billing reference/Client code</p>
+      <div>
+        <input type="text" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+      </div>
+    </form>
+  </div>
+  {/if}
 {/template}
 
 /**
