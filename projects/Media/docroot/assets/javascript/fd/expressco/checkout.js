@@ -84,18 +84,19 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
     id: "checkout",
     submit: function (e) {
+      var formData = fd.modules.common.forms.serialize('checkout');
+
       e.preventDefault();
       e.stopPropagation();
 
+      formData.action = 'placeOrder';
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
         method: "POST",
         data: {
           data: JSON.stringify({
             fdform: "checkout",
-            formdata: {
-              action: 'placeOrder'
-            }
+            formdata: formData
           })
         }
       });

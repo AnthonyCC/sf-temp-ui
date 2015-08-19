@@ -43,6 +43,8 @@
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
+ * @param? corporateUser corporate user
+ * @param? billingReference billing reference
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  */
@@ -59,6 +61,8 @@
   {param additionalInfo: $additionalInfo /}
   {param goGreen: $goGreen /}
   {param userRecognized: $userRecognized /}
+  {param corporateUser: $corporateUser /}
+  {param billingReference: $billingReference /}
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
 {/call}
@@ -381,6 +385,8 @@
  * @param? userRecognized is the user recognized?
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
+ * @param? corporateUser corporate user
+ * @param? billingReference billing reference
  */
 {template .total autoescape="false"}
 <div class='total'>
@@ -404,6 +410,16 @@
             <input type="text" class="promotion-input" name="givexNum" placeholder="Enter here" />
             <input type="hidden" name="action" value="applyGiftCard" />
             <button class="cssbutton green">apply</button>
+          </div>
+        </form>
+      </div>
+      {/if}
+      {if $corporateUser}
+      <div class='promotion-item'>
+        <form fdform="checkout" action="#">
+          <p class='promotion-text'>Billing reference/Client code</p>
+          <div>
+            <input type="text" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
           </div>
         </form>
       </div>
