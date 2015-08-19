@@ -84,7 +84,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	} else { 
 		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">sign up</button><% 
 	} 
-%></tmpl:put> --%>
+%></tmpl:put>
 
 <tmpl:put name="loginButton">
 	<% if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) { %>
