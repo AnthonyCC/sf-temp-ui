@@ -147,7 +147,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException, ReservationException {
-		FDReservation rsv = FDCustomerManager.makeReservation(user.getIdentity(), timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
+		FDReservation rsv = FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
 		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
 		user.setReservation(rsv);
 	}

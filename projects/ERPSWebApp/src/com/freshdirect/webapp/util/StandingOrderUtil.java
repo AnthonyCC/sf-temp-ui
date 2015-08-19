@@ -400,7 +400,7 @@ public class StandingOrderUtil {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
-				(ranges, event, contactAddress, customerUser.getHistoricOrderSize(), 
+				(ranges, event, TimeslotLogic.encodeCustomer(contactAddress, customerUser), 
 						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR))
 				.getTimeslotList().get(0);
 		
@@ -1219,7 +1219,8 @@ class TimeslotReservationInfo {
 		deliveryAddress = FDCustomerManager.getAddress(customer, deliveryAddressId);
 		try { 
 			LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
-			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, 
+					TimeslotLogic.encodeCustomer(deliveryAddress, customerUser), false,
 					null, false, event, false);
 			
 			selectedTimeslot = timeslot;
@@ -1227,7 +1228,8 @@ class TimeslotReservationInfo {
 		} catch ( ReservationException e ) {
 			if(forceCapacity){
 				try {
-					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, 
+							TimeslotLogic.encodeCustomer(deliveryAddress, customerUser), false,
 							null, forceCapacity, event, false);
 					
 				} catch (ReservationException e1) {						

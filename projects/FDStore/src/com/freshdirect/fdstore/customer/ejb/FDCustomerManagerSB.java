@@ -535,7 +535,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public FDCustomerCreditHistoryModel getCreditHistory(FDIdentity identity) throws FDResourceException, RemoteException;
 	
-	public FDReservation makeReservation(FDIdentity identity, String timeslotId, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced) throws FDResourceException, ReservationException, RemoteException;
+	public FDReservation makeReservation(FDUserI user, String timeslotId, EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced) throws FDResourceException, ReservationException, RemoteException;
 	
 	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException, RemoteException;
 	

@@ -367,7 +367,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			
 			// Fetch time slots
 			deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					ranges, event, address, user.getHistoricOrderSize(), 
+					ranges, event, TimeslotLogic.encodeCustomer(address, user), 
 					TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE));
 			
 			FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
@@ -433,7 +433,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		int responseTime;
 		
 		FDDeliveryTimeslots deliveryTimeslots = FDDeliveryManager.getInstance().
-					getTimeslotsForDateRangeAndZone(dateRanges, event, address, user.getHistoricOrderSize(), forceOrder, deliveryInfo, 
+					getTimeslotsForDateRangeAndZone(dateRanges, event, TimeslotLogic.encodeCustomer(address, user), forceOrder, deliveryInfo, 
 							TimeslotLogic.getOrderContext(user));
 			
 		for(FDTimeslotList timeslotList : deliveryTimeslots.getTimeslotList()) {	

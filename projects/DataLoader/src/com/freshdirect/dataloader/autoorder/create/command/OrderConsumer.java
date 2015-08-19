@@ -181,7 +181,7 @@ public class OrderConsumer implements IConsumer {
 			TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), 
 					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
 			
-			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, event, address, null, 
+			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, event, TimeslotLogic.encodeCustomer(address, null), 
 					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()))
 					.getTimeslotList().get(0).getTimeslots();
 				
@@ -211,7 +211,7 @@ public class OrderConsumer implements IConsumer {
 			
 			FDReservation reservation = FDDeliveryManager.getInstance()
 											.reserveTimeslot(slot.getId(), identity.getErpCustomerPK()
-														, EnumReservationType.STANDARD_RESERVATION, address, false,null, false, event, false);
+														, EnumReservationType.STANDARD_RESERVATION, TimeslotLogic.encodeCustomer(address, null), false,null, false, event, false);
 			cart.setDeliveryReservation(reservation);
 
 			//cart.setDeliveryChargeWaived(true);

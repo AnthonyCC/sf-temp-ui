@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -84,6 +82,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfDates;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
+import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
@@ -511,24 +510,24 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, OrderContext context) throws FDResourceException {
+			Customer customer, OrderContext context) throws FDResourceException {
 		
-		return getTimeslotsForDateRangeAndZone(dateranges, event, address, orderSize, false, false, context);
+		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo, OrderContext context) throws FDResourceException{
+			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context) throws FDResourceException{
 		return getTimeslotsForDateRangeAndZone(dateranges, event,
-			 address, orderSize, null, forceOrder, deliveryInfo, context);
+			 customer, null, forceOrder, deliveryInfo, context);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo,
+			Customer customer, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo,
 			OrderContext context) throws FDResourceException {
 		try {			
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryTimeslots response = logisticsService.getTimeslots(LogisticsDataEncoder.encodeTimeslotRequest(dateranges, event,
-					 address, orderSize, forceOrder, deliveryInfo, context));
+					 customer, forceOrder, deliveryInfo, context));
 			FDDeliveryTimeslots result = LogisticsDataDecoder.decodeDeliveryTimeslots(response);
 			return result;
 			
@@ -574,7 +573,7 @@ public class FDDeliveryManager {
 		String timeslotId,
 		String customerId,
 		EnumReservationType type,
-		ContactAddressModel address,
+		Customer customer,
 		boolean chefsTable,
 		String ctDeliveryProfile,
 		boolean isForced, TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException {
@@ -586,7 +585,7 @@ public class FDDeliveryManager {
 					 timeslotId,
 					 customerId,
 					 type,
-					 address,
+					 customer,
 					 chefsTable,
 					 ctDeliveryProfile,
 					 isForced,  event, hasSteeringDiscount);

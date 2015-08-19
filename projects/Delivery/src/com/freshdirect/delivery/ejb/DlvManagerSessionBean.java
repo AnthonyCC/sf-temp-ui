@@ -43,14 +43,12 @@ import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
 import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
-import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -61,6 +59,7 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.UpdateOrderSizeRequest;
 import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
+import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.model.ActualOrderSizeInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
@@ -422,7 +421,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
-			EnumReservationType type, ContactAddressModel address,
+			EnumReservationType type, Customer customer,
 			boolean chefsTable, String ctDeliveryProfile, boolean isForced,
 			TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException{
 	try {
@@ -432,7 +431,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				 timeslotId,
 				 customerId,
 				 type,
-				 address,
+				 customer,
 				 chefsTable,
 				 ctDeliveryProfile,
 				 isForced,  event, hasSteeringDiscount));

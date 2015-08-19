@@ -138,7 +138,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						timeSlot.getId(),
 						custId,
 						EnumReservationType.STANDARD_RESERVATION,
-						erpAddress,
+						TimeslotLogic.encodeCustomer(erpAddress, user),
 						chefsTable,
 						null, isForced,event, hasSteeringDiscount);
 				TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());

@@ -19,6 +19,7 @@ import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
@@ -32,7 +33,7 @@ public interface DlvManagerSB extends EJBObject {
 	public void sendOrderSizeFeed() throws FDResourceException, RemoteException;
 	public void sendLateOrderFeed() throws FDResourceException, RemoteException;
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
-			EnumReservationType type, ContactAddressModel address,
+			EnumReservationType type, Customer customer,
 			boolean chefsTable, String ctDeliveryProfile, boolean isForced,
 			TimeslotEvent event, boolean hasSteeringDiscount) throws RemoteException, ReservationException, FDResourceException;
 	public void commitReservation(String rsvId, String customerId,

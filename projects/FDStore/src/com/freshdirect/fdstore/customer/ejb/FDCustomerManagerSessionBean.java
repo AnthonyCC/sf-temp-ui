@@ -185,6 +185,7 @@ import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -2078,6 +2079,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
 			}
 			throw re;
+		/*} catch (ErpAuthorizationException re) {
+			try{
+				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
+			}catch(Exception e){
+				LOGGER.info("There was an error releasing the reservation" + reservationId);
+			}
+			throw re;*/
 		} catch (RemoteException re) {
 			try{
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
@@ -2739,7 +2747,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
 			}
 			throw re;
-		} catch (RemoteException re) {
+		/*} catch (ErpAuthorizationException re) {
+			try{
+				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
+						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
+				}
+			}catch(Exception e){
+				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
+			}
+			throw re;*/
+		}  catch (RemoteException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
 					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
@@ -4085,12 +4103,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 */
 	//Logistics Redesign - commenting the logic that is handled in logistics
-	public FDReservation makeReservation(FDIdentity identity,
+	public FDReservation makeReservation(FDUserI user,
 			String timeslotId, EnumReservationType rsvType, String addressId,
 			FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event, boolean isForced) throws FDResourceException,
 			ReservationException {
 		
-		ErpAddressModel address=getAddress(identity,addressId);
+		FDIdentity identity = user.getIdentity();
+		ErpAddressModel address=getAddress(identity, addressId);
 		/*geocodeAddress(address);
 		FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, address.getBuildingId(), false);
 		
@@ -4102,7 +4121,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					- System.currentTimeMillis(), DateUtil.HOUR);
 		}
 */
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslotId, identity.getErpCustomerPK(), rsvType, address, chefsTable, null, isForced, event, false);
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslotId, identity.getErpCustomerPK(), rsvType, 
+				TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false);
 
 		/*if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,

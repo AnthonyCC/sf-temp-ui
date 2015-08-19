@@ -48,7 +48,7 @@ import com.freshdirect.logistics.delivery.model.TimeslotContext;
 
 public class LogisticsDataEncoder {
 
-public static Address encodeAddress(ContactAddressModel model) {
+	public static Address encodeAddress(ContactAddressModel model) {
 		
 		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
 				model.getCountry(), model.getFirstName(), model.getLastName(), model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
@@ -105,7 +105,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 		return request;
 	}
 
-	private static Customer encodeCustomer(ContactAddressModel address, String customerId) {
+	public static Customer encodeCustomer(ContactAddressModel address, String customerId) {
 		Customer customer = new Customer();
 		customer.setAddress(encodeAddress(address));
 		String custId = (customerId == null)?address.getCustomerId():customerId;
@@ -155,18 +155,17 @@ public static Address encodeAddress(ContactAddressModel model) {
 
 	public static ReserveTimeslotRequest encodeReserveTimeslotRequest(String timeslotId,
 			String customerId, EnumReservationType type,
-			ContactAddressModel address, boolean chefsTable,
+			Customer customer, boolean chefsTable,
 			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
 			boolean hasSteeringDiscount) {
-		ReserveTimeslotRequest request = new ReserveTimeslotRequest(timeslotId, encodeCustomer(address, customerId),
+		ReserveTimeslotRequest request = new ReserveTimeslotRequest(timeslotId, customer,
 				encodeCart(event), type.getName(), chefsTable, isForced, hasSteeringDiscount);
 		return request;
 		
 	}
 
 	public static TimeslotRequest encodeTimeslotRequest(List<com.freshdirect.framework.util.DateRange> dateranges,
-			TimeslotEvent event, ContactAddressModel address,
-			CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo, OrderContext context) {
+			TimeslotEvent event, Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context) {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		for(com.freshdirect.framework.util.DateRange daterange: dateranges){
 			DateRange range = new DateRange(daterange.getStartDate(), daterange.getEndDate());
@@ -174,9 +173,9 @@ public static Address encodeAddress(ContactAddressModel model) {
 			ranges.add(range);
 		}
 		
-		TimeslotRequest request = new TimeslotRequest(ranges, encodeCustomer(address, null, orderSize), 
+		TimeslotRequest request = new TimeslotRequest(ranges, customer, 
 				encodeCart(event), context, forceOrder, deliveryInfo , 
-				(address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.name(), encodeTimeslotContext(), event.isLogged());
+				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(), encodeTimeslotContext(), event.isLogged());
 		return request;
 		
 	}

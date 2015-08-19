@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
@@ -25,6 +26,7 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -40,6 +42,8 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Customer;
+import com.freshdirect.logistics.delivery.dto.OrderHistory;
 import com.freshdirect.logistics.delivery.dto.Profile;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
@@ -402,24 +406,34 @@ public class TimeslotLogic {
 	}
 	
 	public static Profile getCustomerProfile(FDUserI user){
+		Profile p = new Profile();
 		try {
-			if(user.getFDCustomer()!=null && 
+			if(user!=null && user.getIdentity()!=null && user.getFDCustomer()!=null && 
 					user.getFDCustomer().getProfile()!=null)
 			{
-				ProfileModel profile=user.getFDCustomer().getProfile();
-				Profile p = new Profile();
+				ProfileModel profile=user.getFDCustomer().getProfile();	
 				String[] eligibleProfiles = FDStoreProperties.getCtCapacityEligibleProfiles().split(",");
 				for(String s: eligibleProfiles){
 					p.setAttribute(s, profile.getAttribute(s));
 				}
+				
 			}
-		} catch (FDResourceException e) {
+		} catch (Exception e) {
 			LOGGER.info("exception while getting eligible customer profiles");
-			e.printStackTrace();
 		}
-		return null;
+		return p;
 	}
 
+	public static Customer encodeCustomer(ContactAddressModel address, FDUserI user) throws FDResourceException {
+		Customer customer = LogisticsDataEncoder.encodeCustomer(address, 
+				(user!=null && user.getIdentity()!=null)?user.getIdentity().getErpCustomerPK():null, (user!=null)?user.getHistoricOrderSize():null);
+		OrderHistory orderHistory = new OrderHistory();
+		orderHistory.setSettledOrderCount((user!=null && user.getOrderHistory()!=null)?user.getOrderHistory().getSettledOrderCount():0);
+		customer.setOrderHistory(orderHistory);
+		customer.setProfile(getCustomerProfile(user));
+		return customer;
+	}
+	
 	public static OrderContext getOrderContext(FDUserI user) {
 		OrderContext context = new OrderContext();
 			if(user!=null && user.getIdentity()!=null){

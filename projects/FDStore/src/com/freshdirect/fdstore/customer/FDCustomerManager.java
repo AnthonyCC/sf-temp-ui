@@ -112,6 +112,7 @@ import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -811,7 +812,7 @@ public class FDCustomerManager {
 	}
 
 	public static FDReservation makeReservation(
-		FDIdentity identity,
+		FDUserI user,
 		String timeslotId,
 		EnumReservationType rsvType,
 		String addressId,
@@ -820,8 +821,7 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-
-			return sb.makeReservation(identity, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			return sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
