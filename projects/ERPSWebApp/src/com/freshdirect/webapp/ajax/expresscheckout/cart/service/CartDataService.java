@@ -369,6 +369,8 @@ public class CartDataService {
     private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
         try {
         	Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
+        	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
+        	List<String> usedDcpdDiscounts = new ArrayList<String>();
             List<FDCartLineI> cartLines = loadCartOrderLines(userId, cart);
             Map<SectionInfo, List<CartData.Item>> sectionMap = new HashMap<SectionInfo, List<CartData.Item>>();
             Map<String, String> sectionHeaderImgMap = new HashMap<String, String>();
@@ -418,11 +420,10 @@ public class CartDataService {
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
                 sectionList.add(item);
-                String dcpdMessage = populateDCPDPromoDiscount(user, request, cartLine);
+                String dcpdMessage = populateDCPDPromoDiscount(user, request, cartLine, dcpdMinPromo, usedDcpdDiscounts);
                 if(null != dcpdMessage && !"".equals(dcpdMessage)){
                 dcpdCartlineMessage.put(item.getId(), dcpdMessage);
                 }
-                cartData.setPopulateDCPDPromoDiscount(dcpdCartlineMessage);
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
@@ -459,14 +460,11 @@ public class CartDataService {
         return billingReferenceInfo;
     }
 
-    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {
-    	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();    	
+    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo, List<String> usedDcpdDiscounts) {    	
 		String dcpdMinMessage = "";
-		String promoKey = "";
-		List<String> usedDcpdDiscounts = new ArrayList<String>();
-	
+		String promoKey = "";		
+			
 		if(null!=dcpdMinPromo && dcpdMinPromo.size()>0){
-	
 		for(Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();){			
 			promoKey = iter.next();
 		
