@@ -425,6 +425,7 @@ public class CartDataService {
                 dcpdCartlineMessage.put(item.getId(), dcpdMessage);
                 }
             }
+            cartData.setPopulateDCPDPromoDiscount(dcpdCartlineMessage);
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
             Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
             cartData.setCartSections(sections);
