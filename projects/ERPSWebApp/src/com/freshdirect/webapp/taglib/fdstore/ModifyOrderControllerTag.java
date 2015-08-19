@@ -127,6 +127,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
         this.successPage = sp;
     }
 
+    @Override
     public int doStartTag() throws JspException {
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -543,6 +544,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
             throw new JspException(fdae.getMessage());
         }
 		session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
+        session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
 	}
 
 
@@ -601,8 +603,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				ErpPaymentMethodI tmpPM = null;
 				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
 				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
-					tmpPM = (ErpPaymentMethodModel) p;
+					ErpPaymentMethodI p = it.next();
+					tmpPM = p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
 						paymentMethod = tmpPM;
 						break;
@@ -725,7 +727,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
 				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
 					ErpPaymentMethodI p = it.next();
-					tmpPM = (ErpPaymentMethodModel) p;
+					tmpPM = p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
 						paymentMethod = tmpPM;
 						break;
@@ -830,8 +832,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				ErpPaymentMethodI tmpPM = null;
 				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
 				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
-					tmpPM = (ErpPaymentMethodModel) p;
+					ErpPaymentMethodI p = it.next();
+					tmpPM = p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
 						paymentMethod = tmpPM;
 						break;
@@ -890,7 +892,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				ErpPaymentMethodI tmpPM = null;
 				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
 				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
+					ErpPaymentMethodI p = it.next();
 					tmpPM = p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
 						paymentMethod = tmpPM;

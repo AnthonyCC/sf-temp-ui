@@ -67,6 +67,7 @@ public class SinglePageCheckoutFacade {
     private static final String WARNING_MESSAGE_LABEL = "warning_message";
     private static final String EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL = "/expressco/view_cart.jsp";
     private static final String CART_DATA_JSON_KEY = "cartData";
+    private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
 
     private static final Category LOGGER = LoggerFactory.getInstance(SinglePageCheckoutFacade.class);
 
@@ -113,13 +114,14 @@ public class SinglePageCheckoutFacade {
             throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
+        HttpSession session = request.getSession();
         switch (pageAction) {
             case ADD_DELIVERY_ADDRESS_METHOD:
                 //$FALL-THROUGH$
             case EDIT_DELIVERY_ADDRESS_METHOD:
                 //$FALL-THROUGH$
             case DELETE_DELIVERY_ADDRESS_METHOD:
-                result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+                result.put(ADDRESS_JSON_KEY, loadAddress(user, session));
                 result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
                 result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                         availabilityService.selectWarningType(user)));
@@ -127,14 +129,15 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
-                    result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+                    result.put(ADDRESS_JSON_KEY, loadAddress(user, session));
                     result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
-                    Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
+                    Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
                         result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                     }
                     result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                             availabilityService.selectWarningType(user)));
+                    result.put(BILLING_REFERENCE_INFO_JSON_KEY, CartDataService.defaultService().populateBillingReferenceInfo(session, user));
                 }
                 break;
             case ADD_PAYMENT_METHOD:
@@ -252,6 +255,8 @@ public class SinglePageCheckoutFacade {
                 String addressId = cart.getDeliveryReservation().getAddressId();
                 DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true, actionResult,
                         null, null, null, null, null, null);
+                String billingReference = cart.getPaymentMethod().getBillingRef();
+                session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
                 String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
                 PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
                 for (ActionError error : actionResult.getErrors()) {

@@ -72,7 +72,7 @@ public interface SessionName {
 	public static final String SESSION_QS_CONFIG_REPLACEMENTS = "quickshop-config-replacements";
 	public static final String MODIFY_CART_PRESELECTION_COMPLETED = "modifyCartPreSelectionCompleted";
 	public static final String CART_PAYMENT_SELECTION_DISABLED = "cartPaymentSelectionDisabled";
-
+    public static final String PAYMENT_BILLING_REFERENCE = "paymentBillingReference";
 
 	
 }

@@ -53,8 +53,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.BillingReferenceInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Item;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Section;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.SectionInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
@@ -437,8 +437,10 @@ public class CartDataService {
                 cartData.setUserRecognized(true);
                 cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
             }
+            HttpSession session = request.getSession();
+            cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);
-            cartData.setModifyCartData(isModifyOrderMode(request.getSession()));
+            cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
             cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
@@ -448,6 +450,13 @@ public class CartDataService {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
         }
+    }
+
+    public BillingReferenceInfo populateBillingReferenceInfo(HttpSession session, FDUserI user) {
+        BillingReferenceInfo billingReferenceInfo = new BillingReferenceInfo();
+        billingReferenceInfo.setBillingReference((String) session.getAttribute(SessionName.PAYMENT_BILLING_REFERENCE));
+        billingReferenceInfo.setCorporateUser(user.isCorporateUser());
+        return billingReferenceInfo;
     }
 
     private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine) {

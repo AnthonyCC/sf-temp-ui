@@ -43,8 +43,7 @@
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
- * @param? corporateUser corporate user
- * @param? billingReference billing reference
+ * @param? billingReferenceInfo billing reference info
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  */
@@ -61,8 +60,7 @@
   {param additionalInfo: $additionalInfo /}
   {param goGreen: $goGreen /}
   {param userRecognized: $userRecognized /}
-  {param corporateUser: $corporateUser /}
-  {param billingReference: $billingReference /}
+  {param billingReferenceInfo: $billingReferenceInfo /}
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
 {/call}
@@ -385,8 +383,7 @@
  * @param? userRecognized is the user recognized?
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
- * @param? corporateUser corporate user
- * @param? billingReference billing reference
+ * @param? billingReferenceInfo billing reference
  */
 {template .total autoescape="false"}
 <div class='total'>
@@ -414,12 +411,12 @@
         </form>
       </div>
       {/if}
-      {if $corporateUser}
+      {if $billingReferenceInfo.corporateUser}
       <div class='promotion-item'>
         <form fdform="checkout" action="#">
           <p class='promotion-text'>Billing reference/Client code</p>
           <div>
-            <input type="text" class="promotion-input" name="billingReference" value="{$billingReference ? $billingReference : ''}" placeholder="Enter here" />
+            <input type="text" class="promotion-input" name="billingReference" value="{$billingReferenceInfo.billingReference ? $billingReferenceInfo.billingReference : ''}" placeholder="Enter here" />
           </div>
         </form>
       </div>

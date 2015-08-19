@@ -90,6 +90,8 @@ public class CheckoutService {
 	public FormDataResponse submitOrder(FDUserI user, FormDataRequest requestData, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
+        String billingReference = FormDataService.defaultService().get(requestData, "billingReference");
+        session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
 		boolean checkoutPageReloadNeeded = false;
 		FormRestriction restriction = preCheckOrder(user);
 		UnavailabilityData atpFailureData = null;
@@ -103,6 +105,9 @@ public class CheckoutService {
         if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty()) {
 			checkPlaceOrderResult = checkPlaceOrder(user);
 			if (checkPlaceOrderResult.isPassed()) {
+                if (user.isCorporateUser()) {
+                    cart.getPaymentMethod().setBillingRef(billingReference);
+                }
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
 				String outcome = null;
 				if (cart.isAvailabilityChecked()) {
@@ -119,6 +124,7 @@ public class CheckoutService {
 					responseData.getSubmitForm().getResult().put("redirectUrl", "/expressco/success.jsp?orderId=" + orderId);
 					responseData.getSubmitForm().setSuccess(true);
 					session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
+                    session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
 				} else {
 					checkoutPageReloadNeeded = true;
 				}
