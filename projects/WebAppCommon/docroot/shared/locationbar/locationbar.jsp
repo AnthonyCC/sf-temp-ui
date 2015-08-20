@@ -1,5 +1,4 @@
 <%@page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel"%>
-<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
@@ -21,25 +20,9 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
 String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
 Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED_ATTR);
-MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 %>
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout.jsp">
-
-<%if (masqueradeContext!=null) {
-	String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
-%>
-<tmpl:put name="topwarningbar">
-	<div id="topwarningbar">
-		You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
-		<%if (makeGoodFromOrderId!=null) {%>
-			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
-			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
-			<a class="imgButtonOrange" href="/cancelmakegood.jsp">Cancel MakeGood</a>
-		<%}%>
-	</div>
-</tmpl:put>
-<%}%>
 
 <tmpl:put name="zipcode"><span class="zipcode orange"><%= selectedAddress.getZipCode() %></span> </tmpl:put>
 <% 
@@ -91,7 +74,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 	} %> 
 </tmpl:put>
 
-<%-- <tmpl:put name="loginButton">
+<tmpl:put name="loginButton">
 	<button class="loginButton" id="locabar_loginButton">log in</button>
 </tmpl:put>
 <tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
@@ -124,7 +107,6 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">sign up</button><%
 	} 
 %></tmpl:put>
-
 <%
 	if (user!=null && user.getLevel() == FDUserI.SIGNED_IN) {
 		%><tmpl:put name="buttons"><tmpl:get name="cheftable" /><tmpl:get name="logoutButton" /></tmpl:put><%
