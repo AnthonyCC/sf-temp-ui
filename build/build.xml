@@ -407,7 +407,7 @@
         <delete dir="${basedir}/projects/CRM/docroot/help"/>
         <delete dir="${basedir}/projects/CRM/docroot/survey"/>
         <delete dir="${basedir}/projects/CRM/docroot/includes/delivery"/>
-        <!-- delete dir="${basedir}/projects/CRM/docroot/includes/product"/ -->
+        <delete dir="${basedir}/projects/CRM/docroot/includes/product"/>
         <delete dir="${basedir}/projects/CRM/docroot/includes/registration"/>
         <delete dir="${basedir}/projects/CRM/docroot/includes/promotions"/>
         <delete dir="${basedir}/projects/CRM/docroot/supervisor/test/debug"/>
