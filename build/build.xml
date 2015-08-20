@@ -443,9 +443,9 @@
         <copy todir="${basedir}/projects/CRM/docroot/includes/delivery">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/delivery"/>
         </copy>
-        <!-- copy todir="${basedir}/projects/CRM/docroot/includes/product">
+        <copy todir="${basedir}/projects/CRM/docroot/includes/product">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/product"/>
-        </copy -->
+        </copy >
         <copy todir="${basedir}/projects/CRM/docroot/includes/registration">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/registration"/>
         </copy>
