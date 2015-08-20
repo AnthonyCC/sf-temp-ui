@@ -16,8 +16,10 @@ public class SustainabilityRatingComparator implements Comparator<FilteringProdu
 	@Override
 	public int compare(FilteringProductItem o1, FilteringProductItem o2) {
 
-		EnumSustainabilityRating oli1=null;
+		/*EnumSustainabilityRating oli1=null;
 		try {
+			
+			
 			oli1 = o1.getFdProductInfo().getSustainabilityRating();
 		} catch (FDResourceException e) {
         	LOGGER.error(e);
@@ -42,7 +44,7 @@ public class SustainabilityRatingComparator implements Comparator<FilteringProdu
 		} 
 		if (oli1.getId()<oli2.getId()) {
 			return 1; //default is desc
-		}
+		}*/ //::FDX::
 		return 0;
 	}
 

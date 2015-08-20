@@ -260,16 +260,18 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 	private static void appendCoreScriptInternal(StringBuffer buf, FDUserI customer, FDProductInfo productInfo, FDProduct product) {
 		Pricing pricing = product.getPricing();
-		MaterialPrice[] availMatPrices = pricing.getZonePrice(customer.getPricingZoneId()).getMaterialPrices();
+		MaterialPrice[] availMatPrices = pricing.getZonePrice(customer.getUserContext().getPricingContext().getZoneInfo()).getMaterialPrices();
 		MaterialPrice[] matPrices = null;
 		List<MaterialPrice> matPriceList=  new ArrayList<MaterialPrice>();
-		if(productInfo.isGroupExists()) {
+		String salesOrg=customer.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+		String distributionChannel=customer.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+		if(productInfo.isGroupExists(salesOrg,distributionChannel)) {
 			//Has a Group Scale associated with it. Check if there is GS price defined for
 			//current pricing zone.
-			FDGroup group = productInfo.getGroup();
+			FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
 			MaterialPrice[] grpPrices = null;
 			try {
-				grpPrices = GroupScaleUtil.getGroupScalePrices(group, customer.getPricingZoneId());
+				grpPrices = GroupScaleUtil.getGroupScalePrices(group, customer.getUserContext().getPricingContext().getZoneInfo());
 			}catch(FDResourceException fe){
 				//Never mind. Show regular price for the material.
 			}
@@ -309,7 +311,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 					};
 		}
 		*/
-		CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
+		CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices(customer.getUserContext().getPricingContext());
 		SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
 
 		

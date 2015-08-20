@@ -78,7 +78,8 @@ public class InventoryWarmupSessionBean extends SessionBeanSupport {
         // do the products in this category
         //
 		Collection prods = catModel.getProducts();
-		cart.setOrderLines( new CartLineFactory().createOrderLines(prods) );
+		
+		cart.setOrderLines( new CartLineFactory().createOrderLines(prods,ContentFactory.getInstance().getCurrentUserContext()) );
 
         //
         // perform availability check

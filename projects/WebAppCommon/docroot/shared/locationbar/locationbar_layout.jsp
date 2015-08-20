@@ -1,5 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="fd" uri="freshdirect" %>
+<tmpl:get name="topwarningbar" />
 <div id="locationbar">
 	<span class="zipdisplay">
 		<span class="vertCenter"><label>Your ZIP Code: </label><span class="address"><tmpl:get name="zipdisplay" /></span></span>

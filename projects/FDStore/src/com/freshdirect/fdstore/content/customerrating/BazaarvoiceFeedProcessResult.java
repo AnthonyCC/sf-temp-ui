@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content.customerrating;
 
 import java.io.Serializable;
 
+@Deprecated
 public class BazaarvoiceFeedProcessResult implements Serializable{
 	
 	/**

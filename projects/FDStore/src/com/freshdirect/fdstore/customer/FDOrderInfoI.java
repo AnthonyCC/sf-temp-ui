@@ -9,6 +9,7 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 
@@ -89,4 +90,12 @@ public interface FDOrderInfoI extends Serializable {
 	public boolean isMakeGood();
 	
 	public boolean isNewOrder();
+	
+	public EnumEStoreId getEStoreId();
+	
+	public String getPlantId();
+	
+	public String getSalesOrg();
+	
+	public String getDistributionChannel();
 }

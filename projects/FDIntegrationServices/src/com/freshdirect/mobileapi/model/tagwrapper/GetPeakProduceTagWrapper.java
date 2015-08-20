@@ -34,7 +34,7 @@ public class GetPeakProduceTagWrapper extends GetterTagWrapper {
 			((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
 			((GetPeakProduceTag) wrapTarget).setUseMinCount(false);
 			
-			 return (Collection<Object>) ((GetPeakProduceTag) wrapTarget).getPeakProduce(department, maxPeakProduceCount);
+			 return (Collection<Object>) ((GetPeakProduceTag) wrapTarget).getPeakProduce(department, maxPeakProduceCount,getUser().getUserContext());
         
 		}
         return new ArrayList<Object>();

@@ -1,7 +1,12 @@
 package com.freshdirect.dataloader.sap.jco.server.param;
 
+/**
+ * 
+ */
 public class GroupScalePriceParameter extends AbstractMaterialParameter 
 {
+	private static final long serialVersionUID = -2269445689066126945L;
+
 	private String groupId;
 	private double price;
 	private String pricingUnitCode;
@@ -11,110 +16,133 @@ public class GroupScalePriceParameter extends AbstractMaterialParameter
 	private String scaleUnitCode;
 	private String zoneId;
 	private String grpLongDesc;
-			
-	public void setGroupId(final String groupId)
-	{
-		this.groupId = groupId;
-	}
-		
-	public String getGroupId() 
+	
+	/**
+	 * @return the groupId
+	 */
+	public String getGroupId()
 	{
 		return groupId;
 	}
-		
-		
-	public void setPrice(final double price)
+	/**
+	 * @param groupId the groupId to set
+	 */
+	public void setGroupId(String groupId)
 	{
-		this.price = price;
+		this.groupId = groupId;
 	}
-	
-		
-	public double getPrice() 
+	/**
+	 * @return the price
+	 */
+	public double getPrice()
 	{
 		return price;
 	}
-		
-		
-	public void setPricingUnitCode(final String pricingUnitCode)
+	/**
+	 * @param price the price to set
+	 */
+	public void setPrice(double price)
 	{
-		this.pricingUnitCode = pricingUnitCode;
+		this.price = price;
 	}
-	
-		
-	public String getPricingUnitCode() 
+	/**
+	 * @return the pricingUnitCode
+	 */
+	public String getPricingUnitCode()
 	{
 		return pricingUnitCode;
 	}
-		
-		
-	public void setGrpScaleQuantity(final long grpScaleQuantity)
+	/**
+	 * @param pricingUnitCode the pricingUnitCode to set
+	 */
+	public void setPricingUnitCode(String pricingUnitCode)
 	{
-		this.grpScaleQuantity = grpScaleQuantity;
+		this.pricingUnitCode = pricingUnitCode;
 	}
-	
-		
-	public long getGrpScaleQuantity() 
+	/**
+	 * @return the grpScaleQuantity
+	 */
+	public long getGrpScaleQuantity()
 	{
 		return grpScaleQuantity;
 	}
-		
-		
-	public void setGrpShortDesc(final String grpShortDesc)
+	/**
+	 * @param grpScaleQuantity the grpScaleQuantity to set
+	 */
+	public void setGrpScaleQuantity(long grpScaleQuantity)
 	{
-		this.grpShortDesc = grpShortDesc;
+		this.grpScaleQuantity = grpScaleQuantity;
 	}
-	
-		
-	public String getGrpShortDesc() 
+	/**
+	 * @return the grpShortDesc
+	 */
+	public String getGrpShortDesc()
 	{
 		return grpShortDesc;
 	}
-		
-		
-	public void setGrpExpiryIndicator(final String grpExpiryIndicator)
+	/**
+	 * @param grpShortDesc the grpShortDesc to set
+	 */
+	public void setGrpShortDesc(String grpShortDesc)
 	{
-		this.grpExpiryIndicator = grpExpiryIndicator;
+		this.grpShortDesc = grpShortDesc;
 	}
-	
-		
-	public String getGrpExpiryIndicator() 
+	/**
+	 * @return the grpExpiryIndicator
+	 */
+	public String getGrpExpiryIndicator()
 	{
 		return grpExpiryIndicator;
 	}
-		
-		
-	public void setScaleUnitCode(final String scaleUnitCode)
+	/**
+	 * @param grpExpiryIndicator the grpExpiryIndicator to set
+	 */
+	public void setGrpExpiryIndicator(String grpExpiryIndicator)
 	{
-		this.scaleUnitCode = scaleUnitCode;
+		this.grpExpiryIndicator = grpExpiryIndicator;
 	}
-	
-		
-	public String getScaleUnitCode() 
+	/**
+	 * @return the scaleUnitCode
+	 */
+	public String getScaleUnitCode()
 	{
 		return scaleUnitCode;
 	}
-		
-		
-	public void setZoneId(final String zoneId)
+	/**
+	 * @param scaleUnitCode the scaleUnitCode to set
+	 */
+	public void setScaleUnitCode(String scaleUnitCode)
 	{
-		this.zoneId = zoneId;
+		this.scaleUnitCode = scaleUnitCode;
 	}
-	
-		
-	public String getZoneId() 
+	/**
+	 * @return the zoneId
+	 */
+	public String getZoneId()
 	{
 		return zoneId;
 	}
-		
-		
-	public void setGrpLongDesc(final String grpLongDesc)
+	/**
+	 * @param zoneId the zoneId to set
+	 */
+	public void setZoneId(String zoneId)
 	{
-		this.grpLongDesc = grpLongDesc;
+		this.zoneId = zoneId;
 	}
-	
-		
-	public String getGrpLongDesc() 
+	/**
+	 * @return the grpLongDesc
+	 */
+	public String getGrpLongDesc()
 	{
 		return grpLongDesc;
 	}
+	/**
+	 * @param grpLongDesc the grpLongDesc to set
+	 */
+	public void setGrpLongDesc(String grpLongDesc)
+	{
+		this.grpLongDesc = grpLongDesc;
+	}
+			
+
 }

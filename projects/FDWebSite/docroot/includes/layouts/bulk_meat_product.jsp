@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
 <%@ page import="java.io.InputStream"%>
 <%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -350,7 +351,7 @@ String prodDescPath = null;
 <%
             skuPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
         blkFDProd = FDCachedFactory.getProduct(productInfo);
-            if ("LB".equalsIgnoreCase((blkFDProd.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getMaterialPrices()[0]).getPricingUnit())) {
+            if ("LB".equalsIgnoreCase((blkFDProd.getPricing().getZonePrice(user.getPricingContext().getZoneInfo()).getMaterialPrices()[0]).getPricingUnit())) {
                 isOnePricedByLb = true;
             }
             skuSalesUnit = blkFDProd.getSalesUnits()[0].getName();

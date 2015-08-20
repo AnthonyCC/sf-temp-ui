@@ -9,25 +9,34 @@ public enum EnumEStoreId {
 	FD("FreshDirect"), FDX("FDX");
 	
 	private static Category LOGGER = LoggerFactory.getInstance(EnumEStoreId.class);
-	private String contentKey;
+
+	/**
+	 * CMS Content ID
+	 */
+	private final String contentId;
 
 	private EnumEStoreId(String contentKey) {
-		this.contentKey = contentKey;
+		this.contentId = contentKey;
 	}
 	
-	public String getContentKey() {
-		return contentKey;
+	/**
+	 * @return the ID part of the corresponding CMS content key
+	 * @see {@link FDContentTypes#STORE}
+	 * @see {#link ContentKey}
+	 */
+	public String getContentId() {
+		return contentId;
 	}
 
-	static EnumEStoreId valueOfContentKey(String contentKey){
-		if (contentKey != null ){
+	public static EnumEStoreId valueOfContentId(String contentId){
+		if (contentId != null ){
 			for (EnumEStoreId value : EnumEStoreId.values()){
-				if (contentKey.equals(value.getContentKey())){
+				if (contentId.equals(value.getContentId())){
 					return value;
 				}
 			}
 		}		
-		LOGGER.error("Cannot resolve EnumEStoreId with contentKey: " + contentKey);
+		LOGGER.error("Cannot resolve EnumEStoreId with contentKey: " + contentId);
 		return null;
 	}
 }

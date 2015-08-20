@@ -44,7 +44,7 @@ public class CrmResubmitOrdersTag extends AbstractControllerTag {
 			actionResult.addError(new ActionError("submitted", "There were "+saleIds.length+" orders marked for resubmittal."));
 			for (idIdx = 0; idIdx < saleIds.length; idIdx++) {
 				try {
-					FDOrderI order = FDCustomerManager.getOrder(saleIds[idIdx]);
+					FDOrderI order = FDCustomerManager.getOrderForCRM(saleIds[idIdx]);
 					String erpCustomerId = order.getCustomerId();
 					FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerId);
 					FDIdentity fdIdentity = new FDIdentity(erpCustomerId, fdCustomer.getPK().getId());

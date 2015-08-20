@@ -73,13 +73,13 @@ public class FDCompositeAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-23"), 900000));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		this.availabilities.put("one", new FDStockAvailability(erpInv, 30, 1, 1, null));
+		this.availabilities.put("one", new FDStockAvailability(erpInv, 30, 1, 1));
 
 		erpEntries = new ArrayList();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19"), 900000));
 		erpInv = new ErpInventoryModel("000000000100200400", new Date(), erpEntries);
 
-		this.availabilities.put("two", new FDStockAvailability(erpInv, 30, 1, 1, null));
+		this.availabilities.put("two", new FDStockAvailability(erpInv, 30, 1, 1));
 
 		List restrictions = new ArrayList();
 		restrictions.add(new OneTimeRestriction("12312323",

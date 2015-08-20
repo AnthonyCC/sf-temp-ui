@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ejb.EJBLocalHome;
 import javax.naming.Context;
@@ -16,11 +18,15 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDPlantMaterial;
 import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.TestFDInventoryCache;
+import com.freshdirect.framework.util.DayOfWeekSet;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 
 /**
@@ -78,11 +84,24 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         return createProductInfo(sku, now, materials, inventoryCache, EnumAvailabilityStatus.AVAILABLE);
     }
     
-    public static FDProductInfo createProductInfo(String sku, Date now, String[] materials, TestFDInventoryCache inventoryCache, EnumAvailabilityStatus status) {
+    public static FDProductInfo createProductInfo(String sku, Date now, String[] materials, TestFDInventoryCache inventoryCache, final EnumAvailabilityStatus status) {
         ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-        ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
-        dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-        return new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, status, now,inventoryCache,null,null,dummyList, null, null, null, new Date[0],null);
+        ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO);
+        dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
+        Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
+			{
+				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+			}
+		};
+		
+		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
+			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),status.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+			};
+		};
+		;
+		
+		return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
+        
     }
     
     

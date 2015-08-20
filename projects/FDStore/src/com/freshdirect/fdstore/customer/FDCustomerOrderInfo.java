@@ -50,6 +50,8 @@ public class FDCustomerOrderInfo implements Serializable {
 	private Date endTime;
 	private EnumReservationType rsvType;
 	private String emailType;
+	private String eStore;
+	private String facility;
 
 	public String getEmailType() {
 		return emailType;
@@ -251,6 +253,22 @@ public class FDCustomerOrderInfo implements Serializable {
 		this.lastCroModDate = lastCroModDate;
 	}
 	
+	public String geteStore() {
+		return eStore;
+	}
+
+	public void seteStore(String eStore) {
+		this.eStore = eStore;
+	}
+
+	public String getFacility() {
+		return facility;
+	}
+
+	public void setFacility(String facility) {
+		this.facility = facility;
+	}
+
 	public final static Comparator CustomerNameComparator = new OrderInfoComparator() {
 		protected Comparable getValue(FDCustomerOrderInfo o) {
 			return (o.getLastName() + o.getFirstName()).toLowerCase();
@@ -346,6 +364,18 @@ public class FDCustomerOrderInfo implements Serializable {
 			String type = o.isVIP() ? "vip" : "";
 			type += o.isChefsTable() ? "chef" : "";
 			return type;
+		}
+	};
+
+	public final static Comparator StoreComparator = new OrderInfoComparator() {
+		protected Comparable getValue(FDCustomerOrderInfo o) {
+			return o.geteStore();
+		}
+	};
+
+	public final static Comparator FacilityComparator = new OrderInfoComparator() {
+		protected Comparable getValue(FDCustomerOrderInfo o) {
+			return o.getFacility();
 		}
 	};
 

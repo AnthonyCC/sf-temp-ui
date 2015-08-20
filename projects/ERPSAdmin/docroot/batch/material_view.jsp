@@ -25,7 +25,7 @@
                 <tr><td class="field_title">SAP ID</td><td class="field"><%= material.getSapId() %></td></tr>
                 <tr><td class="field_title">SAP Description</td><td class="field"><%= material.getDescription() %></td></tr>
                 <tr><td class="field_title">Base Unit</td><td class="field"><%= material.getBaseUnit() %></td></tr>
-                <tr><td class="field_title">ATP Rule</td><td class="field"><%= material.getATPRule().getDisplayName() %></td></tr>
+                <tr><td class="field_title">ATP Rule</td><td class="field"><%--= material.getATPRule().getDisplayName() --%></td></tr><!-- TODO: Display this info for each plant -->
             </table>
             <br>
             

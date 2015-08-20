@@ -14,7 +14,8 @@
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.EnumWineRating"%><html>
+<%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Filter Test</title>
@@ -46,7 +47,7 @@ filter.addFilterValue(ContentFactory.getInstance().getDomainValueForWineCategory
 					<%
 						price = JspMethods.formatPrice(productInfo, user.getPricingContext());
 						
-						hasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
+						hasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale();
 						if (hasWas) {
 							basePrice = JspMethods.formatSalePrice(productInfo,user.getPricingContext());
 						}

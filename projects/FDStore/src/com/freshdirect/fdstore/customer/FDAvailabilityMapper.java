@@ -67,17 +67,7 @@ class FDAvailabilityMapper {
 			int orderlineSize = cartline.getErpOrderLineSize();
 
 			FDAvailabilityI inv;
-			Date[] availDates = cartline.lookupFDProductInfo().getAvailabilityDates(); 
-			if(availDates != null && availDates.length > 0) {
-				//Limited Availability Line item.
-				if(sameDeliveryDate && cartline instanceof FDModifyCartLineI) {
-					// orderlines that came from the original order are always available
-					inv = NullAvailability.AVAILABLE;					
-				} else {
-					inv = fdInvs.get(posex);
-
-				}
-			} else {
+			
 				//Regular Availability item.
 				if (skipModifyLines && (cartline instanceof FDModifyCartLineI)) {
 					// orderlines that came from the original order are always available
@@ -87,7 +77,7 @@ class FDAvailabilityMapper {
 					inv = fdInvs.get(posex);
 
 				}
-			}
+			
 
 
 			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();

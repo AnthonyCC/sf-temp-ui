@@ -8,6 +8,7 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
 import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilterCacheStrategy;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductFilterModel;
@@ -40,8 +41,8 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 		try {
 			FDProduct fdProd = ctx.getFdProduct();
-
-			FDKosherInfo kInfo = fdProd.getKosherInfo();
+			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDKosherInfo kInfo = fdProd.getKosherInfo(plantID);
 			
 			final int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;
 

@@ -12,6 +12,7 @@ public class EnumOrderType extends Enum {
 	public final static EnumOrderType DEPOT = new EnumOrderType("DEPOT");
 	public final static EnumOrderType PICKUP = new EnumOrderType("PICKUP");
 	public final static EnumOrderType CORPORATE = new EnumOrderType("CORPORATE");
+	public final static EnumOrderType FDX = new EnumOrderType("FDX");
 
 	public EnumOrderType(String name) {
 		super(name);

@@ -38,13 +38,13 @@ public class ZoneCondition implements ConditionI {
 		this.expression = expression;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
+	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

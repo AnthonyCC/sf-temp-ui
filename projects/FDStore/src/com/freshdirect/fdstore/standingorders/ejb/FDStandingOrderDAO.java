@@ -1533,7 +1533,7 @@ public class FDStandingOrderDAO {
 		try {
 			FDCachedFactory.getProductInfo(sourceSku).getVersion();
 			FDProductInfo fdProductInfo = FDCachedFactory.getProductInfo(sourceSku);
-			if (fdProductInfo.isDiscontinued() == true) {
+			if (fdProductInfo.isDiscontinued("1000","1000") == true) {//::FDX:: 
 				isSkuValidButDiscontinued = true;
 			}
 			else{

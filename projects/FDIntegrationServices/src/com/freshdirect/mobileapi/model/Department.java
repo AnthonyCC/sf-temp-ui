@@ -7,6 +7,8 @@ import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
+import com.freshdirect.mobileapi.controller.data.ImageBanner;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 
 public class Department extends ProductContainer {
     private String name;
@@ -20,6 +22,8 @@ public class Department extends ProductContainer {
     private List<Image> images = new ArrayList<Image>();
     
     private List<DepartmentSection> sections = new ArrayList<DepartmentSection>();
+    
+    private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
     
     public static Department wrap(DepartmentModel model) {
     	return wrapDepartment(model, 0);
@@ -74,7 +78,42 @@ public class Department extends ProductContainer {
         if (banner != null && banner.getImage() != null) {
             result.setBanner(new Image(banner.getImage()));
         }
-               
+        
+       List<com.freshdirect.fdstore.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
+       List<ImageBanner> heroCarouselImgBannerList = new ArrayList<ImageBanner>();
+      
+       for(com.freshdirect.fdstore.content.ImageBanner heroCarousel: heroCarouselList){
+    	   
+		if (heroCarousel != null) {
+			
+			ImageBanner heroCarouselImgBanner = new ImageBanner();
+			
+			heroCarouselImgBanner.setFlagColor(heroCarousel.getFlagColor());
+			heroCarouselImgBanner.setFlagText(heroCarousel.getFlagText());
+			if (heroCarousel.getImageBannerImage() != null) {
+				heroCarouselImgBanner.setImage(new Image(heroCarousel
+						.getImageBannerImage()).getSource());
+			}
+			heroCarouselImgBanner.setPrice(heroCarousel.getPrice());
+			if (heroCarousel.getTarget() != null
+					&& heroCarousel.getTarget().getContentKey() != null) {
+				heroCarouselImgBanner.setTargetTypeId(heroCarousel
+						.getTarget().getContentKey().getEncoded());
+			}
+			heroCarouselImgBanner.setText(heroCarousel.getName());
+
+			if (heroCarouselImgBanner != null) {
+				heroCarouselImgBannerList.add(heroCarouselImgBanner);
+			}
+
+		}
+		
+		if(heroCarouselImgBannerList!=null && heroCarouselImgBannerList.size()!= 0) {
+		result.setHeroCarousel(heroCarouselImgBannerList);
+		}
+		
+       }
+		
         return result;
     }
     
@@ -127,6 +166,14 @@ public class Department extends ProductContainer {
 
 	public void setSections(List<DepartmentSection> sections) {
 		this.sections = sections;
+	}
+
+	public List<ImageBanner> getHeroCarousel() {
+		return heroCarousel;
+	}
+
+	public void setHeroCarousel(List<ImageBanner> heroCarousel) {
+		this.heroCarousel = heroCarousel;
 	}
 	
 	

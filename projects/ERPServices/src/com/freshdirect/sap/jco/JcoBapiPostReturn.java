@@ -81,6 +81,14 @@ public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturn
 		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZH00");
 		this.returnValuesIn.setValue("AMOUNT", phoneCharge);
 	}
+	
+	public void setTipAmount(double amount)
+	{
+		this.returnValuesIn.appendRow();
+		this.returnValuesIn.setValue("NAME", " ");
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZH00");//::FDX::
+		this.returnValuesIn.setValue("AMOUNT", amount);
+	}
 
 	
 	public void addLineDiscounts(InvoiceLineDiscount lineDiscount)
@@ -90,6 +98,8 @@ public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturn
 		this.discountDetailsIn.setValue("LINE_ITEM", lineDiscount.getInvoiceLineNumber());
 		this.discountDetailsIn.setValue("COUPON_ID", lineDiscount.getDiscountCode());		
 	}
+
+	
 
 	/*****************
 	public void addAffiliateCharges(AffiliateCharges affiliateCharges) {

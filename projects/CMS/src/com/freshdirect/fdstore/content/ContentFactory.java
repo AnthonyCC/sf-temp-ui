@@ -26,6 +26,8 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.common.context.FulfillmentContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDException;
@@ -77,7 +79,7 @@ public class ContentFactory {
 	/** Map of sku codes / product nodes */
 	private LruCache<String,ContentKey> skuProduct;
 	
-	private ThreadLocal<PricingContext> currentPricingContext;
+	private ThreadLocal<UserContext> currentUserContext;
 	private ThreadLocal<Boolean> eligibleForDDPP;
 	
 	private class WineIndex {
@@ -178,16 +180,16 @@ public class ContentFactory {
 		this.nodesByKey = new ConcurrentHashMap<ContentKey, ContentNodeModel>();
 		this.skuProduct = new LruCache<String,ContentKey>(40000);
 		
-		currentPricingContext = new ThreadLocal<PricingContext>() {
+		currentUserContext = new ThreadLocal<UserContext>() {
 			@SuppressWarnings( "synthetic-access" )
 			@Override
-			protected PricingContext initialValue() {
+			protected UserContext initialValue() {
 				try {
-					throw new FDException("initializing current pricing context with default value");
+					throw new FDException("initializing current user context with default value");
 				} catch (FDException e) {
 					LOGGER.warn(e.getMessage(), e);
 				}
-				return PricingContext.DEFAULT;
+				return UserContext.createDefault();
 			}
 		};
 		
@@ -629,13 +631,13 @@ public class ContentFactory {
 		return Collections.unmodifiableSet(s);
 	}
 	
-	public PricingContext getCurrentPricingContext() {
-		return currentPricingContext.get();
+	public UserContext getCurrentUserContext() {
+		return currentUserContext.get();
 	}
 	
-	public void setCurrentPricingContext(PricingContext pricingContext) {
+	public void setCurrentUserContext(UserContext userContext) {
 		//LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
-		currentPricingContext.set(pricingContext);
+		currentUserContext.set(userContext);
 	}
 	
 	public Boolean  isEligibleForDDPP() {

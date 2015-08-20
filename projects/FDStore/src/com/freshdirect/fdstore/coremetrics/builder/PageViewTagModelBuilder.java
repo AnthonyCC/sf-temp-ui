@@ -8,6 +8,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilterValue;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 
 public class PageViewTagModelBuilder  {
@@ -33,6 +34,8 @@ public class PageViewTagModelBuilder  {
 	private WineFilterValue wineFilterValue;
 	private boolean wineFilterValueSet;
 	private PageViewTagModel tagModel = new PageViewTagModel();
+	
+	private CmContext context = CmContext.getContext();
 	
 	public PageViewTagModel buildTagModel() throws SkipTagException {
 		if (input == null) {
@@ -107,10 +110,20 @@ public class PageViewTagModelBuilder  {
 			String fileName = TagModelUtil.dropExtension(uriAfterSlash);
 			
 			if ("search".equalsIgnoreCase(fileName) || "srch".equalsIgnoreCase(fileName) && (input.page == null || "SEARCH".equalsIgnoreCase(input.page))){
-				processSearchAttributes();
-				tagModel.setPageId("search");
-				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
-				decoratePageIdWithCatId(tagModel);
+				
+				if ("pres_picks".equalsIgnoreCase(input.page) && input.ppParentType != null) {
+					// DDPP / President's Picks case
+					// rule: category ID := embodying content ID
+					findCurrentFolder( input.ppParentId );
+					processDeptOrCat();
+
+					tagModel.setPageId("search");
+				} else {
+					processSearchAttributes();
+					tagModel.setPageId("search");
+					tagModel.setCategoryId(CustomCategory.SEARCH.toString());
+					decoratePageIdWithCatId(tagModel);
+				}
 
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
@@ -222,12 +235,18 @@ public class PageViewTagModelBuilder  {
 		
 		//could not identify category from uri, fallback to other category
 		if (tagModel.getCategoryId()==null) {
-			tagModel.setCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
 			tagModel.setPageId(uriAfterSlash);
 			decoratePageIdWithCatId(tagModel);
-		} 
+			setPrefixedCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
+		} else {
+			setPrefixedCategoryId(tagModel.getCategoryId());
+		}
 	}
 
+	
+	private void setPrefixedCategoryId(final String categoryId) {
+		tagModel.setCategoryId( context.prefixedCategoryId(categoryId) );
+	}
 
 	/**
 	 * Find the current container content node (LeftNav)

@@ -12,6 +12,7 @@ package com.freshdirect.erp.model;
 import com.freshdirect.erp.DurableModelI;
 import com.freshdirect.erp.ErpModelSupport;
 import com.freshdirect.erp.ErpVisitorI;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * ErpMaterialPrice model class.
@@ -40,6 +41,12 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 	private String sapZoneId;
 	
 	private double promoPrice;
+	
+	/** Sales Organisation */
+	private String salesOrg;
+	
+	/** Distribution Channel */
+	private String distChannel;
 	/**
 	 * Default constructor.
 	 */
@@ -56,7 +63,7 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 	 * @param scaleQuantity Scale quantity
 	 * @param scaleUnit Scale unit of measure
 	 */
-	public ErpMaterialPriceModel(String sapId, double price, String pricingUnit, double scaleQuantity, String scaleUnit, String sapZoneId, double promoPrice) {
+	public ErpMaterialPriceModel(String sapId, double price, String pricingUnit, double scaleQuantity, String scaleUnit, String sapZoneId, double promoPrice, String salesOrg, String distChannel) {
 		this.setSapId(sapId);
 		this.setPrice(price);
 		this.setPricingUnit(pricingUnit);
@@ -64,6 +71,14 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 		this.setScaleUnit(scaleUnit);		
 		this.setSapZoneId(sapZoneId);
 		this.setPromoPrice(promoPrice);
+		if("1000".equals(salesOrg)) {
+			salesOrg="0001";
+			distChannel="01";
+		}
+		this.setSalesOrg(StringUtil.isEmpty(salesOrg)?"0001":salesOrg);
+		this.setDistChannel(StringUtil.isEmpty(distChannel)?"01":distChannel);
+		this.setSalesOrg("1000".equals(getSalesOrg())?"0001":getSalesOrg());
+		this.setDistChannel("1000".equals(getDistChannel())?"01":getDistChannel());
 	}
 	
 	/**
@@ -190,6 +205,34 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 
 	public void setPromoPrice(double promoPrice) {
 		this.promoPrice = promoPrice;
+	}
+
+	/**
+	 * @return the salesOrg
+	 */
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	/**
+	 * @param salesOrg the salesOrg to set
+	 */
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	/**
+	 * @return the distChannel
+	 */
+	public String getDistChannel() {
+		return distChannel;
+	}
+
+	/**
+	 * @param distChannel the distChannel to set
+	 */
+	public void setDistChannel(String distChannel) {
+		this.distChannel = distChannel;
 	}
 
 	

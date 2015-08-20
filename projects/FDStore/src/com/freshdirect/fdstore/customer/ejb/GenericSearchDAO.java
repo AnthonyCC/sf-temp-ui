@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserCouponUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -578,6 +579,10 @@ public class GenericSearchDAO {
 			oInfo.setEndTime(rs.getTimestamp("ENDTIME"));
 			oInfo.setCutoffTime(rs.getTimestamp("CUTOFFTIME"));
 			oInfo.setRsvType(EnumReservationType.getEnum(rs.getString("TYPE")));
+
+			//TODO FDX - add these columns to query
+			oInfo.seteStore("TODO");
+			oInfo.setFacility("TODO");
 			
 			lst.add(oInfo);
 		}
@@ -665,6 +670,10 @@ public class GenericSearchDAO {
 			oInfo.setEndTime(rs.getTimestamp("ENDTIME"));
 			oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
 			oInfo.setRouteNum(rs.getString("TRUCK_NUMBER"));
+			
+			//TODO FDX - add these columns to query
+			oInfo.seteStore("TODO");
+			oInfo.setFacility("TODO");
 			
 			lst.add(oInfo);
 		}

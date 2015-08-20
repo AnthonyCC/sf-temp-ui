@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
@@ -27,6 +29,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
@@ -391,11 +395,19 @@ public class OrderLineUtil {
 	 */
 	public static void cleanup(FDProductSelectionI prodSel) throws FDResourceException, FDInvalidConfigurationException {
 
-		ProductModel prodNode;
-                prodNode = prodSel.getProductRef().lookupProductModel();
-                if (prodNode == null) {
-                    throw new FDInvalidConfigurationException("Product is missing : " + prodSel.getProductRef().getCategoryId() + '/'
-                            + prodSel.getProductRef().getProductId() + ", sku :" + prodSel.getSkuCode());
+		ProductModel prodNode = null;
+		ProductReference ref = prodSel.getProductRef();
+
+		// lookup product in non-CRM mode
+		if (ref != null && !ProductReferenceImpl.NULL_REF.equals(ref)) {
+			prodNode = ref.lookupProductModel();
+			if (prodNode == null) {
+				throw new FDInvalidConfigurationException(
+						"Product is missing : "
+								+ ref.getCategoryId() + '/'
+								+ ref.getProductId()
+								+ ", sku :" + prodSel.getSkuCode());
+			}
 		}
 
 		// find most recent fd product based on sku
@@ -407,14 +419,16 @@ public class OrderLineUtil {
 			throw new FDInvalidConfigurationException(e);
 		}
 
-		if (!productInfo.isAvailable()) {
+
+        ZoneInfo zone=prodSel.getUserContext().getPricingContext().getZoneInfo();
+		if (!productInfo.isAvailable(zone.getSalesOrg(), zone.getDistributionChanel())) {
 			
 			// throw new
 			// FDInvalidConfigurationException.Unavailable("Product "+prodNode.getFullName()+"["
 			// +prodSel.getSkuCode()+"] is no longer available");
 			// APPDEV-3050
 			throw new FDInvalidConfigurationException.Unavailable(
-					prodNode.getFullName()
+				prodSel.getSkuCode()
 							+ " is discontinued or is no longer available.");
 		}
 
@@ -427,7 +441,7 @@ public class OrderLineUtil {
 
 		ensureValidConfiguration(product, prodSel);
 
-		if (prodNode.hasComponentGroups()) {
+		if (prodNode != null && prodNode.hasComponentGroups()) {
 			boolean charAvail = prodNode.isCharacteristicsComponentsAvailable(prodSel);
 			//LOGGER.warn("OrderLineUtil.cleanup() "+prodNode +" -> "+charAvail);
 			if (!charAvail) {
@@ -497,5 +511,51 @@ public class OrderLineUtil {
 		}
 		
 		return depts;
+	}
+	public static boolean isInvalid(FDCartLineI prodSel,UserContext userCtx)  {
+		
+				ProductModel prodNode;
+		        prodNode = prodSel.getProductRef().lookupProductModel();
+		        if (prodNode == null) {
+		            /*throw new FDInvalidConfigurationException("Product is missing : " + prodSel.getProductRef().getCategoryId() + '/'
+		                    + prodSel.getProductRef().getProductId() + ", sku :" + prodSel.getSkuCode());
+		                    */
+		        	return true;
+		        }
+		        ZoneInfo zone=userCtx.getPricingContext().getZoneInfo();
+		        // find most recent fd product based on sku
+		        FDProductInfo productInfo;
+				try {
+					productInfo = FDCachedFactory.getProductInfo(prodSel.getSkuCode());
+					
+				} catch (FDSkuNotFoundException e) {
+					//throw new FDInvalidConfigurationException(e);
+					return true;
+				} catch (FDResourceException e) {
+					return true;
+				}
+		
+				if (!productInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
+					
+					/*throw new FDInvalidConfigurationException.Unavailable(
+							prodNode.getFullName()
+									+ " is discontinued or is no longer available.");
+									*/
+					return true;
+				}
+		
+		return false;
+	}
+	
+	public static List<FDCartLineI> getInvalidLines(List<FDCartLineI> productSelections, UserContext userCtx) {
+			List<FDCartLineI> invalidSelections = new ArrayList<FDCartLineI>(productSelections.size());
+
+		for ( FDCartLineI ps : productSelections ) {
+			
+				if(OrderLineUtil.isInvalid(ps,userCtx))
+					invalidSelections.add(ps);
+		}
+
+		return invalidSelections;
 	}
 }

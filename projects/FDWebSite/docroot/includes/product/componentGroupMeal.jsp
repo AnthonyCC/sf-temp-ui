@@ -12,6 +12,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -121,7 +122,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 	
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getPricingContext().getZoneId());
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getUserContext());
 }
 
 
@@ -205,7 +206,7 @@ if (pgErrs.size()>0) {
 	    <span class="title13"><%=productNode.getSubtitle()%></span><br>
   <%      } %>  
 	    <span class="space2pix"><br></span>
-	  <span class="title16"><%= JspMethods.formatPrice(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	  <span class="title16"><%= JspMethods.formatPrice(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
 	  <br><span class="space8pix"><br></span>
 	</td></tr>
 	<tr>

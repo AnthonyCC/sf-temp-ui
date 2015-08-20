@@ -2,6 +2,8 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
+import com.freshdirect.common.pricing.ZoneInfo;
+
 public class ZonePriceInfoModel implements Serializable, Cloneable {
     private static final long serialVersionUID = -652975300786917834L;
 
@@ -10,7 +12,7 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 
 	private final double promoPrice;
 	
-	private final String sapZoneId;
+	private final ZoneInfo zoneInfo;
 	
 	private final boolean itemOnSale;
 	
@@ -29,12 +31,12 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	
 
 	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
-			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId) {
-		this( sellingPrice, promoPrice, defaultPriceUnit, displayableDefaultPriceUnit, itemOnSale, dealPercentage, tieredDealPercentage, sapZoneId, true );
+			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, ZoneInfo zoneInfo) {
+		this( sellingPrice, promoPrice, defaultPriceUnit, displayableDefaultPriceUnit, itemOnSale, dealPercentage, tieredDealPercentage, zoneInfo, true );
 	}
 	
 	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
-			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId, boolean showBurstImage) {
+			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, ZoneInfo zoneInfo, boolean showBurstImage) {
 		this.defaultPriceUnit = defaultPriceUnit != null ? defaultPriceUnit.intern() : null;
 		this.displayableDefaultPriceUnit = displayableDefaultPriceUnit != null ? displayableDefaultPriceUnit.intern() : null;
 		this.sellingPrice = sellingPrice;
@@ -43,7 +45,7 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
         this.dealPercentage=dealPercentage;
         this.tieredDealPercentage=tieredDealPercentage;
         this.highestDealPercentage=Math.max(dealPercentage, tieredDealPercentage);
-        this.sapZoneId = sapZoneId != null ? sapZoneId.intern() : null;
+        this.zoneInfo = zoneInfo;
         this.showBurstImage=showBurstImage;
 	}
 	
@@ -105,8 +107,8 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 		return this.itemOnSale;
 	}
 
-	public String getSapZoneId() {
-		return sapZoneId;
+	public ZoneInfo getZoneInfo() {
+		return zoneInfo;
 	}
 
 	public boolean isShowBurstImage() {
@@ -115,7 +117,7 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	
 	 @Override
      public String toString() {
-         return "ZonePriceInfoModel[" + sapZoneId + " sellingPrice:" + sellingPrice + " promoPrice:" + promoPrice + " itemOnSale:" + itemOnSale
+         return "ZonePriceInfoModel[" + zoneInfo + " sellingPrice:" + sellingPrice + " promoPrice:" + promoPrice + " itemOnSale:" + itemOnSale
                  + " dealPercentage:" + dealPercentage + " tieredDealPercentage:" + tieredDealPercentage + " highestDealPercentage:" + highestDealPercentage
                  + " showBurstImage:" + showBurstImage + "]";
      }

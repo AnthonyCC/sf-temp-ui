@@ -9,6 +9,7 @@ import org.apache.log4j.Category;
 
 import weblogic.auddi.util.Logger;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -23,6 +24,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTagSupport{
 	
@@ -99,8 +101,9 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 		
 		FDDeliveryServiceSelectionResult result=FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(GIFTCARD_DEFAULT_ZPCOD);//new DlvServiceSelectionResult();
 		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
-//		result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);				
-		FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE);
+//		result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);	
+		StoreContext storeContext =StoreContextUtil.getStoreContext(request.getSession());
+		FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE, storeContext.getEStoreId());
 		
 		FDSessionUser user = new FDSessionUser(fduser,request.getSession());
 		user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);

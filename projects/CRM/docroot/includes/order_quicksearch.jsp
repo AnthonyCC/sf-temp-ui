@@ -10,6 +10,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<%--
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+	OBSOLETE : 2015.04.17_12.32.05.PM : batchley
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+--%>
+
 				<table cellpadding="0" cellspacing="2" class="home_search_module_field" align="center">
 					<tr valign="bottom">
 						<td width="55"></td>

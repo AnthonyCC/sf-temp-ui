@@ -26,16 +26,16 @@ public class ImpressionEventAggregator extends RecommendationEventAggregator {
 		return aggregator;
 	}
 
-	public ImpressionEventAggregator(int maxEntries, int maxCount) {
+	protected ImpressionEventAggregator(int maxEntries, int maxCount) {
 		super(maxEntries, maxCount);
 	}
 
-	protected FDRecommendationEvent createInstance(String variantId, String contentId, Date date) {
+	protected FDRecommendationEvent createInstance(String variantId, String contentId, Date date, String eStoreId) {
 		
-		return new FDRecommendationEvent.Impression(variantId,contentId,date);
+		return new FDRecommendationEvent.Impression(variantId,contentId,date, eStoreId);
 	}
 
-	protected Class getEventClass() {
+	protected Class<? extends FDRecommendationEvent> getEventClass() {
 		return FDRecommendationEvent.Impression.class;
 	}
 

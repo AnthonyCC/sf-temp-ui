@@ -26,6 +26,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 /**
  * @author jng
  */
+@Deprecated
 public class PromoCustomerControllerTag extends AbstractControllerTag {
 
 	private static SimpleDateFormat SDF = new SimpleDateFormat("MMM-dd-yyyy");

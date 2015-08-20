@@ -25,6 +25,7 @@ public class SapPostReturnCommand extends SapCommandSupport {
 	private double deliveryCharge;
 	private double phoneCharge;
 	private final List couponDiscounts = new ArrayList();
+	private double tipAmount;
 
 	public SapPostReturnCommand(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
@@ -39,7 +40,7 @@ public class SapPostReturnCommand extends SapCommandSupport {
 		}
 		bapi.setDeliveryCharge(this.deliveryCharge);
 		bapi.setPhoneCharge(this.phoneCharge);
-
+        bapi.setTipAmount(this.tipAmount); 
 		for (Iterator i = affiliateCharges.iterator(); i.hasNext();) {
 			bapi.addAffiliateCharges((AffiliateCharges) i.next());
 		}
@@ -51,6 +52,11 @@ public class SapPostReturnCommand extends SapCommandSupport {
 		this.invoke(bapi);
 	}
 
+	public void setTipAmount(double tip) {
+		this.tipAmount=tip;
+	}
+	
+	
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}

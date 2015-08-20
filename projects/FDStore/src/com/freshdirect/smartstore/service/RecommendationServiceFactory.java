@@ -167,14 +167,6 @@ public class RecommendationServiceFactory {
 			serviceConfig.setConfigStatus(statuses = new TreeMap<String, ConfigurationStatus>());
 
 		if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
-			/****
-			 * Smart Savings is no longer supported.
-			 * Marked for removal.
-			 * 
-			smartSave = extractSmartSave(serviceConfig, statuses, variant
-					.getSiteFeature());
-			variant.setSmartSavings(smartSave);
-			****/
 			// if smart saving used, we will return items from the cart.
 			includeCartItems = extractIncludeCartItems(serviceConfig, statuses,
 					smartSave);
@@ -285,11 +277,12 @@ public class RecommendationServiceFactory {
 			return new NullRecommendationService(variant);
 
 		// If composite
-		if (RecommendationServiceType.FREQUENTLY_BOUGHT_DYF.equals(serviceType)) {
+		/* if (RecommendationServiceType.FREQUENTLY_BOUGHT_DYF.equals(serviceType)) {
 			service = new MostFrequentlyBoughtDyfVariant(variant, sampler, includeCartItems);
 		} else if (RecommendationServiceType.RANDOM_DYF.equals(serviceType)) {
 			service = new RandomDyfVariant(variant, sampler, includeCartItems);
-		} else if (RecommendationServiceType.NIL.equals(serviceType) || RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
+		} else */
+		if (RecommendationServiceType.NIL.equals(serviceType) || RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
 			service = new NullRecommendationService(variant);
 		} else if (RecommendationServiceType.FEATURED_ITEMS.equals(serviceType)) {
 			service = new FeaturedItemsRecommendationService(variant, sampler, includeCartItems);
@@ -821,12 +814,12 @@ public class RecommendationServiceFactory {
 		ConfigurationStatus status;
 		String samplingStrategy = config.get(CKEY_SAMPLING_STRATEGY);
 		if (samplingStrategy == null) {
-			if (RecommendationServiceType.RANDOM_DYF.equals(config.getType())) {
+			/* if (RecommendationServiceType.RANDOM_DYF.equals(config.getType())) {
 				samplingStrategy = "uniform";
 				status = new ConfigurationStatus(CKEY_SAMPLING_STRATEGY, null,
 						samplingStrategy,
 						EnumConfigurationState.UNCONFIGURED_OVERRIDDEN);
-			} else if (RecommendationServiceType.FAVORITES.equals(config.getType())
+			} else */ if (RecommendationServiceType.FAVORITES.equals(config.getType())
 					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())
 					|| RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(
 							config.getType())) {
@@ -842,12 +835,12 @@ public class RecommendationServiceFactory {
 			}
 		} else {
 			samplingStrategy = samplingStrategy.toLowerCase();
-			if (RecommendationServiceType.RANDOM_DYF.equals(config.getType())) {
+			/* if (RecommendationServiceType.RANDOM_DYF.equals(config.getType())) {
 				status = new ConfigurationStatus(CKEY_SAMPLING_STRATEGY,
 						samplingStrategy, "uniform",
 						EnumConfigurationState.CONFIGURED_OVERRIDDEN);
 				samplingStrategy = "uniform";
-			} else if (RecommendationServiceType.FAVORITES.equals(config.getType())
+			} else */ if (RecommendationServiceType.FAVORITES.equals(config.getType())
 					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())
 					|| RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(
 							config.getType())) {

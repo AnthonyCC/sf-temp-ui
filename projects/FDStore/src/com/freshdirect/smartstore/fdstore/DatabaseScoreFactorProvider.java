@@ -12,6 +12,8 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -26,6 +28,8 @@ public class DatabaseScoreFactorProvider {
 
     private ScoreFactorSB                      scoreFactorSB  = null;
 
+    private String eStoreId	= EnumEStoreId.FD.getContentId();
+    
     public synchronized static DatabaseScoreFactorProvider getInstance() {
         if (instance == null) {
             try {
@@ -49,7 +53,7 @@ public class DatabaseScoreFactorProvider {
             if (erpCustomerId == null) {
                 return Collections.emptyMap();
             }
-            return getSessionBean().getPersonalizedFactors(erpCustomerId, factors);
+            return getSessionBean().getPersonalizedFactors(eStoreId, erpCustomerId, factors);
         } catch (RemoteException e) {
             LOGGER.warn(e);
             throw new FDRuntimeException(e);
@@ -58,7 +62,7 @@ public class DatabaseScoreFactorProvider {
 
     public Map<String,double[]> getGlobalFactors(List<String> factors) {
         try {
-            return getSessionBean().getGlobalFactors(factors);
+            return getSessionBean().getGlobalFactors(eStoreId, factors);
         } catch (RemoteException e) {
             LOGGER.warn(e);
             throw new FDRuntimeException(e);
@@ -85,7 +89,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getPersonalizedProducts(String erpCustomerId) {
         try {
-            return getSessionBean().getPersonalizedProducts(erpCustomerId);
+            return getSessionBean().getPersonalizedProducts(eStoreId, erpCustomerId);
         } catch (RemoteException e) {
             LOGGER.warn(e);
             throw new FDRuntimeException(e);
@@ -94,7 +98,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getGlobalProducts() {
         try {
-            return getSessionBean().getGlobalProducts();
+            return getSessionBean().getGlobalProducts(eStoreId);
         } catch (RemoteException e) {
             LOGGER.warn(e);
             throw new FDRuntimeException(e);
@@ -110,6 +114,7 @@ public class DatabaseScoreFactorProvider {
      * @return List<ContentKey>
      * @throws RemoteException
      */
+	@Deprecated
     public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) {
         try {
             return getSessionBean().getProductRecommendations(recommender, key);
@@ -128,6 +133,7 @@ public class DatabaseScoreFactorProvider {
      * @return List<ContentKey>
      * @throws RemoteException
      */
+	@Deprecated
     public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) {
         try {
             return getSessionBean().getPersonalRecommendations(recommender, erpCustomerId);
@@ -138,6 +144,8 @@ public class DatabaseScoreFactorProvider {
     }
 
     private DatabaseScoreFactorProvider() throws NamingException, RemoteException, CreateException {
+    	this.eStoreId = CmsManager.getInstance().getEStoreId();
+
         scoreFactorSB = FDServiceLocator.getInstance().getScoreFactorHome().create();
     }
 
@@ -146,6 +154,7 @@ public class DatabaseScoreFactorProvider {
         return scoreFactorSB;
     }
     
+    @Deprecated
     public EnumWinePrice getPreferredWinePrice(String erpCustomerId) {
         try {
             return scoreFactorSB.getPreferredWinePrice(erpCustomerId);

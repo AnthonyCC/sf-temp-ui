@@ -1,9 +1,15 @@
 package com.freshdirect.erp;
 
 import com.freshdirect.framework.core.ModelSupport;
-
+/**
+ * 
+ * @author ksriram
+ *
+ */
 public class ErpProductPromotionInfo extends ModelSupport {
 
+	private static final long serialVersionUID = 1L;
+	
 	private int version;
 	private String zoneId;
 	private String skuCode;
@@ -13,6 +19,8 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	private String erpCategory;
 	private int erpCatPosition;
 	private String erpPromtoionId;
+	private String salesOrg;
+	private String distChannel;
 	
 	public String getFeatured() {
 		return featured;
@@ -89,5 +97,17 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	}
 	public void setErpPromtoionId(String erpPromtoionId) {
 		this.erpPromtoionId = erpPromtoionId;
+	}	
+	public String getSalesOrg() {
+		return salesOrg;
+	}	
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}	
+	public String getDistChannel() {
+		return distChannel;
+	}	
+	public void setDistChannel(String distChannel) {
+		this.distChannel = distChannel;
 	}
 }

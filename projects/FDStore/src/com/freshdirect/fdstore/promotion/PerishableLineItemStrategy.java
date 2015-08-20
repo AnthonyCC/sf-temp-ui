@@ -23,12 +23,18 @@ public class PerishableLineItemStrategy implements LineItemStrategyI {
 
 	}
 	
+	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
 		// TODO Auto-generated method stub
 		if (lineItem.lookupFDProduct().isQualifiedForPromotions()){
 			return ALLOW;
 		}
 		return DENY;
+	}
+	
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }
 

@@ -41,7 +41,7 @@
 			String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		%>
 		
-		<fd:GetOrder id='cart' saleId='<%=orderNumber%>'>
+		<fd:GetOrder id='cart' saleId='<%=orderNumber%>' crm="<%= true %>">
 			<%
 				ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
 				String pymtDetailWidth="630";

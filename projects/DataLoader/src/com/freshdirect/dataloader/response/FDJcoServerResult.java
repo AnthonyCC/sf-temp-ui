@@ -14,8 +14,11 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * @author kkanuganti
  *
  */
+@SuppressWarnings("javadoc")
 public class FDJcoServerResult implements Serializable
 {
+	private static final long serialVersionUID = -6851628699408348451L;
+	
 	public final static String OK_STATUS = "OK".intern();
 	public final static String WARNING_STATUS = "Warning".intern();
 	public final static String ERROR_STATUS = "Error".intern();

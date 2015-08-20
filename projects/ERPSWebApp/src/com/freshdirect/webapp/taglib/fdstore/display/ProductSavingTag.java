@@ -9,6 +9,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
@@ -23,9 +24,9 @@ public class ProductSavingTag extends BodyTagSupportEx {
 	private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
 	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
 
-	public static String getGroupPrice(FDGroup group, String zoneId) throws FDResourceException {
+	public static String getGroupPrice(FDGroup group, ZoneInfo pricingZone) throws FDResourceException {
 		StringBuffer buf = new StringBuffer();
-		MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneId);
+		MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, pricingZone);
         GroupScalePricing grpPricing = GroupScaleUtil.lookupGroupPricing(group);
         
 		if (matPrice != null) {
@@ -125,7 +126,7 @@ public class ProductSavingTag extends BodyTagSupportEx {
 			MaterialPrice matPrice = null;
 			
 			if (group != null) {
-				matPrice = GroupScaleUtil.getGroupScalePrice(group, price.getPricingContext().getZoneId());
+				matPrice = GroupScaleUtil.getGroupScalePrice(group, price.getPricingContext().getZoneInfo());
 			}
 
 			if (!excludeGroupSavings && matPrice != null) {

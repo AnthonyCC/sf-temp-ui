@@ -39,6 +39,10 @@
 						checkPremiumSlot(premiumslotId.value, formId);
 					}
 				</script>
+				
+				<% if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable()) { %>
+					<a class="imgButtonOrange" href="/checkout/step_2_select.jsp?forceorder=true" class="checkout">FORCE ORDER</a>
+				<% } %>
 				<button class="imgButtonOrange" onclick="step2Validator('step2Form'); return false;">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 				<% }							
 			} else if (uriNextButton.indexOf("step_3") > -1) {

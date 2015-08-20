@@ -27,9 +27,13 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.controller.data.AllProductsResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.CatalogInfoResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
+import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
@@ -41,6 +45,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.mobileapi.util.SortType;
 
 /**
  * @author Sivachandar
@@ -62,9 +67,16 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
     
     private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts";
-    
-    private static final String ACTION_NAVIGATION ="navigation";
 
+    private static final String ACTION_NAVIGATION ="navigation";
+    
+    private static final String ACTION_GET_CATALOG_FOR_ADDRESS="getCatalogForAddress";
+    
+    private static final String ACTION_GET_CATALOG_ID_FOR_ADDRESS="getCatalogIdForAddress";
+
+    private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
+    
+    private static final String ACTION_GET_ALL_PRODUCTS_EX = "getAllProductsEX";
 
 	private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
@@ -74,7 +86,7 @@ public class BrowseController extends BaseController {
 	protected boolean validateUser() {
 		return false;
 	}
-    
+
     public void addSections(DepartmentModel storeDepartment, Department result) {
     	//Department sections are added here
     	//Call BrowseUtil to populate all the categories.
@@ -87,13 +99,14 @@ public class BrowseController extends BaseController {
      */
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
-
+    	String postData = getPostData(request, response);
+    	long startTime=System.currentTimeMillis();
     	if (user == null) {
     		user = fakeUser(request.getSession());
     	}
 
     	// Retrieving any possible payload
-        String postData = getPostData(request, response);
+        
         BrowseQuery requestMessage = null;
 
         LOG.debug("BrowseController PostData received: [" + postData + "]");
@@ -158,6 +171,7 @@ public class BrowseController extends BaseController {
 	           }
 	        } else if(ACTION_GET_ALL_PRODUCTS.equals(action)){
 	        	
+	        	
 	        	AllProductsResult res = new AllProductsResult();
 	        	//get the list of products (this will be done recursively) 
 	        	List<Product> products =  BrowseUtil.getAllProducts(requestMessage, user, request);
@@ -165,6 +179,8 @@ public class BrowseController extends BaseController {
 	        	res.setProductsFromModel(products);
 	        	//set the response and return the json.
 	        	setResponseMessage(model, res, user);
+	        	long endTime=System.currentTimeMillis();
+	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
 	            return model;
 	        	
 	        	
@@ -177,10 +193,57 @@ public class BrowseController extends BaseController {
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
 	        	result.setProductsFromModel(products);
+	        }else if(ACTION_GET_CATALOG_FOR_ADDRESS.equals(action)){
+	        	
+	        
+	        	CatalogInfoResult res = new CatalogInfoResult();
+	        	//get the list of products (this will be done recursively) 
+	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user, request);
+	        	//populate the response with the products...
+	        	res.setCatalogInfo(catalogInfo);
+	        	//set the response and return the json.
+	        	setResponseMessage(model, res, user);
+	        	long endTime=System.currentTimeMillis();
+	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
+	            return model;
+	        	
+	        	
+	        } else if(ACTION_GET_CATALOG_ID_FOR_ADDRESS.equals(action)){
+	        	
+	        
+	        	CatalogInfoResult res = new CatalogInfoResult();
+	        	CatalogInfo catalogInfo =  BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	res.setCatalogInfo(catalogInfo);
+	        	setResponseMessage(model, res, user);
+	            return model;
+	            
+	        } else if(ACTION_GET_SORT_OPTIONS_FOR_CATEGORY.equals(action)){
+	        	//List<SortType> optionList = BrowseUtil.getSortOptionsForCategory(requestMessage, user, request);
+	        	//SortOptionResult res = new SortOptionResult();
+	        	//res.setSortOptions(optionList);
+	        	SortOptionInfo options = BrowseUtil.getSortOptionsForCategory(requestMessage, user, request);
+	        	SortOptionResult res = new SortOptionResult();
+	        	res.setSortOptionInfo(options);
+	        	setResponseMessage(model, res, user);
+	        	return model;
+	        } else if(ACTION_GET_ALL_PRODUCTS_EX.equals(action)){
+	        	
+	        	AllProductsResult res = new AllProductsResult	();
+	        	//get the list of products (this will be done recursively) 
+	        	List<String> products =  BrowseUtil.getAllProductsEX(requestMessage, user, request);
+	        	//populate the response with the products...
+	        	res.setProductIds(products);
+	        	//set the response and return the json.
+	        	setResponseMessage(model, res, user);
+	        	long endTime=System.currentTimeMillis();
+	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
+	            return model;
 	        }
         }
 
         setResponseMessage(model, result, user);
+        long endTime=System.currentTimeMillis();
+    	LOG.debug(((endTime-startTime)/1000)+" seconds");
         return model;
     }
     

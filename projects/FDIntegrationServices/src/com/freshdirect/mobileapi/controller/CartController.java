@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -48,12 +49,16 @@ public class CartController extends BaseController {
     private static final String PARAM_COUPON_ID = "couponId";
 
     private static final String PARAM_CART_LINE_ID = "cartLineId";
+    
+    private static final String PARAM_TIP_AMOUNT = "tipAmount";
 
     private static final String ACTION_REMOVE_ALCOHOL = "removealcoholfromcart";
 
     private static final String ACTION_REMOVE_PROMO = "removepromo";
 
     private static final String ACTION_APPLY_PROMO = "applypromo";
+    
+    private static final String ACTION_APPLY_CODE = "applycode";
 
     private static final String ACTION_REMOVE_ALL_ITEMS_FROM_CART = "removeallitems";
 
@@ -72,6 +77,8 @@ public class CartController extends BaseController {
     private static final String ACTION_COUPON_CLIP = "clipcoupon";
     
     private static final String ACTION_VIEW_CARTLINE = "viewitem";
+    
+    private static final String ACTION_SET_TIP = "settip";
 
     protected boolean validateCart() {
         return true;
@@ -115,7 +122,25 @@ public class CartController extends BaseController {
                 SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
                 model = applyPromoCode(model, user, reqestMessage, request);
             }
-        } else if (ACTION_REMOVE_PROMO.equals(action)) {
+        } else if(ACTION_APPLY_CODE.equals(action)){
+            String promoId = request.getParameter(PARAM_PROMO_ID);
+            if (promoId != null) {
+            	if(isValidPromoId(user, promoId)){
+            		model = applyPromoCode(model, user, promoId, request);
+            	} else {
+            		model = applyCode(model, user, promoId, request);
+            	}
+                
+            } else {
+                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
+                if(isValidPromoId(user, reqestMessage.getId())){
+                	model = applyPromoCode(model, user, reqestMessage, request);
+                } else {
+                	model = applyCode(model, user, reqestMessage, request);
+                }
+            }      	
+        }else if (ACTION_REMOVE_PROMO.equals(action)) {
+        
             String promoId = request.getParameter(PARAM_PROMO_ID);
             if (promoId != null) {
                 model = removePromoCode(model, user, promoId, request);
@@ -141,12 +166,24 @@ public class CartController extends BaseController {
 			} catch (ModelException e) {
 				throw new ServiceException(e);
 			}
+        } else if(ACTION_SET_TIP.equals(action)) {
+        	String tipAmount = request.getParameter(PARAM_TIP_AMOUNT);
+        	double _tip = Double.parseDouble(tipAmount);
+        	user.getShoppingCart().setTip(_tip);
+        	Message responseMessage = Message.createSuccessMessage("Tip added successfully.");
+			setResponseMessage(model, responseMessage, user);
         }
 
         return model;
     }
     
-    /**
+    private boolean isValidPromoId(SessionUser user, String promoId) throws FDResourceException {
+        Cart cart = user.getShoppingCart();
+        boolean isValidPromoId = cart.isValidPromoId(promoId, user);
+       return isValidPromoId;
+    }
+
+	/**
      * @param model
      * @param request
      * @param response
@@ -205,7 +242,7 @@ public class CartController extends BaseController {
      * @throws JsonException
      * @throws FDException 
      */
-    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException, FDException {
+    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
         Cart cart = user.getShoppingCart();
         CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
@@ -256,28 +293,34 @@ public class CartController extends BaseController {
         Cart cart = user.getShoppingCart();
         Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage
                 .getProductConfiguration().getCategoryId(), null, user);
-        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
-            responseMessage = new Message();
-            responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+        if(product != null){
+	        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+	            responseMessage = new Message();
+	            responseMessage.setStatus(Message.STATUS_FAILED);
+	            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+	        } else {
+	            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
+	            ActionResult result = resultBundle.getActionResult();
+	            propogateSetSessionValues(request.getSession(), resultBundle);
+	
+	            if (result.isSuccess()) {
+	                List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
+	
+	                CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
+	                responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+	                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+	                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
+	                responseMessage.setSuccessMessage("Item has been added to cart successfully.");
+	            } else {
+	                responseMessage = getErrorMessage(result, request);
+	            }
+	            responseMessage.addWarningMessages(result.getWarnings());
+	
+	        }
         } else {
-            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
-            ActionResult result = resultBundle.getActionResult();
-            propogateSetSessionValues(request.getSession(), resultBundle);
-
-            if (result.isSuccess()) {
-                List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
-
-                CartDetail cartDetail = cart.getCartDetail(user, null, reqestMessage.isQuickBuy());
-                responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
-                responseMessage.setSuccessMessage("Item has been added to cart successfully.");
-            } else {
-                responseMessage = getErrorMessage(result, request);
-            }
-            responseMessage.addWarningMessages(result.getWarnings());
-
+        	responseMessage = new Message();
+        	responseMessage.setStatus(Message.STATUS_FAILED);   
+        	responseMessage = Message.createFailureMessage("Products are not available.");
         }
         setResponseMessage(model, responseMessage, user);
         return model;
@@ -408,7 +451,21 @@ public class CartController extends BaseController {
             throws FDException, JsonException {
         return applyPromoCode(model, user, reqestMessage.getId(), request);
     }
-
+    
+    /**
+     * @param model
+     * @param user
+     * @param reqestMessage
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView applyCode(ModelAndView model, SessionUser user, SimpleRequest reqestMessage, HttpServletRequest request)
+            throws FDException, JsonException {
+        return applyCode(model, user, reqestMessage.getId(), request);
+    }
+    
     /**
      * @param model
      * @param user
@@ -453,6 +510,37 @@ public class CartController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
+    
+    /**
+     * @param model
+     * @param user
+     * @param promoId
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView applyCode(ModelAndView model, SessionUser user, String givexNum, HttpServletRequest request)
+            throws FDException, JsonException {
+        Cart cart = user.getShoppingCart();
+        ResultBundle resultBundle = cart.applycode(givexNum, user);
+
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        
+        Message responseMessage = null;
+        
+        if(result.getError("card_zero_balance")!=null || result.getError("account_locked")!=null ||  result.getError("account_locked")!=null || result.getError("card_on_hold")!=null || result.getError("card_in_use")!=null){
+        	responseMessage = getErrorMessage(result, request);
+        } else if(result.getErrors().size() == 0){
+       	responseMessage = Message.createSuccessMessage("Giftcard has been applied successfully.");
+        } else {
+        	responseMessage = getErrorMessage(result, request);
+        }
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+
 
     /**
      * @param model

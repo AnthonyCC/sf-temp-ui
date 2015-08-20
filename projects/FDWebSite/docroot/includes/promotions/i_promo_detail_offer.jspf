@@ -34,7 +34,6 @@
 		isEmptyPromoOffer = true;
 	}
 %>
-
 <table width="100%">
 	<tr>
 		<td class="vTop">
@@ -147,11 +146,10 @@
 										<% 
 											for (int n = 0; n < dpcdDepts.size(); n++) {
 												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDepts.get(n);
-												ContentNodeModel deptRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 										%>
 												<tr>
 													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-													<td class="bordLgrayDash padL8R16"><%= (deptRef!=null)?deptRef.getFullName():"" %></td>
+													<td class="bordLgrayDash padL8R16"></td>
 												</tr>
 										<% } %>
 										</table>
@@ -166,11 +164,10 @@
 										<% 
 											for (int n = 0; n < dpcdCats.size(); n++) {
 												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdCats.get(n);
-												ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 										%>
 												<tr>
 													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-													<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+													<td class="bordLgrayDash padL8R16"></td>
 												</tr>
 										<% } %>
 										</table>
@@ -185,11 +182,10 @@
 										<% 
 											for (int n = 0; n < dpcdRCats.size(); n++) {
 												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRCats.get(n);
-												ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 										%>
 												<tr>
 													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-													<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+													<td class="bordLgrayDash padL8R16"></td>
 												</tr>
 										<% } %>
 										</table>
@@ -204,11 +200,10 @@
 										<% 
 											for (int n = 0; n < dpcdRecipes.size(); n++) {
 												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRecipes.get(n);
-												ContentNodeModel recipeRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 										%>
 												<tr>
 													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-													<td class="bordLgrayDash padL8R16"><%= (recipeRef!=null)?recipeRef.getFullName():"" %></td>
+													<td class="bordLgrayDash padL8R16"></td>
 												</tr>
 										<% } %>
 										</table>
@@ -225,11 +220,10 @@
 												//show ineligible
 												for (int n = 0; n < dpcdSkusExcluded.size(); n++) {
 													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkusExcluded.get(n);
-													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 											%>
 													<tr>
 														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+														<td class="bordLgrayDash padL8R16"></td>
 													</tr>
 											<%
 												}
@@ -237,11 +231,10 @@
 												//show eligible
 												for (int n = 0; n < dpcdSkus.size(); n++) {
 													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkus.get(n);
-													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 												%>
 													<tr>
 														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+														<td class="bordLgrayDash padL8R16"></td>
 													</tr>
 											<%
 												}
@@ -261,11 +254,10 @@
 												//show ineligible
 												for (int n = 0; n < dpcdBrandsExcluded.size(); n++) {
 													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrandsExcluded.get(n);
-													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 											%>
 													<tr>
 														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+														<td class="bordLgrayDash padL8R16"></td>
 													</tr>
 											<%
 												}
@@ -273,11 +265,10 @@
 												//show eligible
 												for (int n = 0; n < dpcdBrands.size(); n++) {
 													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrands.get(n);
-													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 												%>
 													<tr>
 														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+														<td class="bordLgrayDash padL8R16"></td>
 													</tr>
 											<%
 												}
@@ -314,36 +305,16 @@
 						<tr>
 							<td class="promo_detail_label">Sample Product:</td>
 							<td class="alignL">
-								<% ContentNodeModel node = ContentFactory.getInstance().getContentNode(promotion.getCategoryName());
-								ProductModel prodRef = null;
-								if(null != node && node instanceof CategoryModel){
-									prodRef = ContentFactory.getInstance().getProductByName(promotion.getCategoryName(), promotion.getProductName());
-								}
-								if (prodRef != null) { %>
-									<%= prodRef.getFullName() %><br /><br />
-									<table style="border-collapse: collapse;">
-										<tr>
-											<td class="bordLgrayDash gray8pt padL8R16">cat id</td>
-											<td class="bordLgrayDash padL8R16"><%= promotion.getCategoryName() %></td>
-										</tr>
-										<tr>
-											<td class="bordLgrayDash gray8pt padL8R16">prod id</td>
-											<td class="bordLgrayDash padL8R16"><%= promotion.getProductName() %></td>
-										</tr>
-									</table>
-								<% }else{ %>
 								<table style="border-collapse: collapse;">
 										<tr>
-											<td class="bordLgrayDash gray8pt padL8R16">cat id</td>
+											<td class="bordLgrayDash gray8pt padL8R16">cat id: <%= promotion.getCategoryName() %></td>
 											<td class="bordLgrayDash padL8R16">&nbsp;</td>
 										</tr>
 										<tr>
-											<td class="bordLgrayDash gray8pt padL8R16">prod id</td>
+											<td class="bordLgrayDash gray8pt padL8R16">prod id <%= promotion.getProductName() %></td>
 											<td class="bordLgrayDash padL8R16">&nbsp;</td>
 										</tr>
 									</table>
-<!--									<span class="error">Error with Sample Product, verify catId and prodId.</span>-->
-								<% } %>
 							</td>
 						</tr>
 					<% } %>

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -25,13 +26,13 @@ public class FDProductPromotionFactory {
 	private static SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
 
 	
-	private Map<String, Map<String,List<FDProductPromotionInfo>>> promotionMap = new LinkedHashMap<String, Map<String,List<FDProductPromotionInfo>>>();
+	private Map<String, Map<ZoneInfo,List<FDProductPromotionInfo>>> promotionMap = new LinkedHashMap<String, Map<ZoneInfo,List<FDProductPromotionInfo>>>();
 	private Date presPickLastPublished;
 //	private Date productsAssortmentLastPublished;
 //	private Date currentTime;
 	
-	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
-		protected Map<String,List<FDProductPromotionInfo>> load() {
+	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<ZoneInfo,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
+		protected Map<ZoneInfo,List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRESIDENT'S PICK PRODUCT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+presPickLastPublished);
 				/*try {
@@ -39,7 +40,7 @@ public class FDProductPromotionFactory {
 				} catch (ParseException e) {
 				}*/
 				Date currentTime = new Date();
-				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = null;
+				Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap = null;
 				if(null !=presPickLastPublished){
 					productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),presPickLastPublished);					
 				}else{
@@ -83,7 +84,7 @@ public class FDProductPromotionFactory {
 		try {
 //			List<FDProductPromotion> promoList = ProductPromotionManager.getProductPromotionsRT(EnumProductPromotionType.PRESIDENTS_PICKS.getName());
 //			for ( FDProductPromotion promo : promoList ) {
-			Map<String,List<FDProductPromotionInfo>> promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName());
+			Map<ZoneInfo,List<FDProductPromotionInfo>> promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName());
 			if(null !=promoInfos && !promoInfos.isEmpty()){
 				this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
 			}
@@ -107,8 +108,8 @@ public class FDProductPromotionFactory {
 		return sharedInstance;
 	}
 
-	protected synchronized Map<String, Map<String,List<FDProductPromotionInfo>>> getPromotionMap() {
-		Map<String,List<FDProductPromotionInfo>> promoInfos = this.presPickPromotion.get();
+	protected synchronized Map<String, Map<ZoneInfo,List<FDProductPromotionInfo>>> getPromotionMap() {
+		Map<ZoneInfo,List<FDProductPromotionInfo>> promoInfos = this.presPickPromotion.get();
 		if(null !=promoInfos && !promoInfos.isEmpty()){
 			this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
 		}
@@ -121,12 +122,12 @@ public class FDProductPromotionFactory {
 	
 	
 	
-	public Map<String,List<FDProductPromotionInfo>> getProductPromotion(String type) {
+	public Map<ZoneInfo,List<FDProductPromotionInfo>> getProductPromotion(String type) {
 		return this.getPromotionMap().get(type);
 	}
 	
 	public List<FDProductPromotionInfo> getProductPromotion(String type,String zoneId) {
-		Map<String,List<FDProductPromotionInfo>> map =getProductPromotion(type);
+		Map<ZoneInfo,List<FDProductPromotionInfo>> map =getProductPromotion(type);
 		List<FDProductPromotionInfo> promotionProducts = null;
 		if(null != map){
 			promotionProducts = map.get(zoneId);

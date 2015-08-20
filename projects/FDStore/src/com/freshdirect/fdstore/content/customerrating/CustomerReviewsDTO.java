@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.content.customerrating;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+@Deprecated
 public class CustomerReviewsDTO implements Serializable {
 
 	/**

@@ -179,6 +179,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		} %>
 	</tmpl:put>
 	<tmpl:put name="next-button">
+		<%if(user.getMasqueradeContext()!=null) {%>
+			Don't send email invoice<input type="checkbox" name="silent_mode">
+		<%}%>
 		<% if (__noErr) { %>
 			<% if (abstractTimeslots) { %>
 				<button class="imgButtonOrange" type="submit">Click here to save your standing order</button>

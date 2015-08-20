@@ -3,35 +3,35 @@ package com.freshdirect.fdstore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import com.freshdirect.common.pricing.ZoneInfo;
 
 public class GrpZonePriceListing implements Serializable {
 	
 	//zoneId -> GrpZonePriceModel
-	Map<String, GrpZonePriceModel> grpZonePriceMap = new HashMap<String, GrpZonePriceModel>();
+	Map<ZoneInfo, GrpZonePriceModel> grpZonePriceMap = new HashMap<ZoneInfo, GrpZonePriceModel>();
 	 
 	public GrpZonePriceListing() {
 		
 	}
 
-	public void reloadZonePrices(Map zonePriceMap) {
+	public void reloadZonePrices(Map<ZoneInfo, GrpZonePriceModel> zonePriceMap) {
 		this.grpZonePriceMap.clear();
 		this.grpZonePriceMap.putAll(zonePriceMap);
 	}
 	
-	public void addGrpZonePrice(String zoneId, GrpZonePriceModel zonePrice){
-		grpZonePriceMap.put(zoneId, zonePrice);
+	public void addGrpZonePrice(ZoneInfo zoneInfo, GrpZonePriceModel zonePrice){
+		grpZonePriceMap.put(zoneInfo, zonePrice);
 	}
 	
 	public GrpZonePriceListing addGrpZonePrice(GrpZonePriceModel zonePrice) {
-	    grpZonePriceMap.put(zonePrice.getSapZoneId(), zonePrice);
+	    grpZonePriceMap.put(zonePrice.getSapZone(), zonePrice);
 	    return this;
 	}
 	
-	public GrpZonePriceModel getGrpZonePrice(String zoneId) {
-		return grpZonePriceMap.get(zoneId);
+	public GrpZonePriceModel getGrpZonePrice(ZoneInfo zoneInfo) {
+		return grpZonePriceMap.get(zoneInfo);
 	}
 	
 	public Collection<GrpZonePriceModel> getGrpZonePrices() {

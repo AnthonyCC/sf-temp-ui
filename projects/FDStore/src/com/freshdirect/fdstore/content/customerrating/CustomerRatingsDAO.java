@@ -17,6 +17,7 @@ import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
+@Deprecated
 public class CustomerRatingsDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CustomerRatingsDAO.class);

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -40,11 +41,14 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.content.ProxyProduct;
+import com.freshdirect.fdstore.content.SkuReference;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.MathUtil;
 
@@ -54,7 +58,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
-
+	
 	private final ProductReference productRef;
 	protected final ErpOrderLineModel orderLine;
 
@@ -71,34 +75,36 @@ public class FDProductSelection implements FDProductSelectionI {
 	private Date deliveryStartDate;
 	private EnumSaleStatus saleStatus;
 	
-	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String pZoneId) {
-		this(sku, productRef, configuration, null, pZoneId);
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, UserContext ctx) {
+		this(sku, productRef, configuration, null, ctx);
 	}
 
-	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext ctx) {
 		this.orderLine = new ErpOrderLineModel();
 
 		this.orderLine.setSku(sku);
-		this.productRef = new ProductReference((productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef);
+		this.productRef = new ProductReferenceImpl((productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef);
 		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
 		
 		this.orderLine.setVariantId(variantId);
 		//For now setting the default. Need to be parameterized
-		this.orderLine.setPricingContext(new PricingContext(pZoneId));
+		this.orderLine.setUserContext(ctx);
+		
+		this.orderLine.setEStoreId(ctx.getStoreContext().getEStoreId());
+		
+		
+		
 		
 	}
 
-	protected FDProductSelection(ErpOrderLineModel orderLine) {
+	protected FDProductSelection(ErpOrderLineModel orderLine, final boolean lazy) {
 		this.orderLine = orderLine;
-		
-		ProductModel pm;
-		try {
-			pm = ContentFactory.getInstance().getProduct(this.getSkuCode());
-		} catch (FDSkuNotFoundException e) {
-			pm = null;
-		}
 
-		this.productRef = new ProductReference(pm);
+		if (!lazy) {
+			this.productRef = new SkuReference(this.getSkuCode());
+		} else {
+			this.productRef = ProductReferenceImpl.NULL_REF;
+		}
 	}
 
 	//
@@ -223,15 +229,25 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setAlcohol(fdProduct.isAlcohol());
 				this.orderLine.setWine(fdProduct.isWine());
 				this.orderLine.setBeer(fdProduct.isBeer());
-				this.orderLine.setAffiliate(fdProduct.getAffiliate());
-				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());				
+				this.orderLine.setAffiliate(fdProduct.getAffiliate(this.getUserContext().getStoreContext().getEStoreId()));
+				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());
+				
 			}
 			
 			this.performPricing();
 
-			ProductModel pm = this.lookupProduct();
-			if (pm != null) {
-				this.orderLine.setPerishable(pm.isPerishable());
+			
+			if (this.productRef == null || ProductReferenceImpl.NULL_REF.equals( this.productRef )) {
+				// salvage original descriptions
+				this.setDepartmentDesc(this.orderLine.getDepartmentDesc());
+				this.setDescription(this.orderLine.getDescription());
+				this.setConfigurationDesc(this.orderLine.getConfigurationDesc());				
+			} else {			
+				ProductModel pm = this.lookupProduct();
+				if (pm != null) {
+					this.orderLine.setPerishable(pm.isPerishable());
+					OrderLineUtil.describe(this);				
+				}
 			}
 
 			if(this.lookupProduct()!=null){
@@ -250,8 +266,13 @@ public class FDProductSelection implements FDProductSelectionI {
 	//
 
 	public ProductModel lookupProduct() {
+		// In CRM no product models are expected
+		if (this.productRef == null || ProductReferenceImpl.NULL_REF.equals(productRef)) {
+			return null;
+		}
+		
 	    return ProductPricingFactory.getInstance().getPricingAdapter(this.productRef.lookupProductModel(),
-                getPricingContext() != null ? getPricingContext() : PricingContext.DEFAULT);
+                getUserContext().getPricingContext() != null ? getUserContext().getPricingContext() : PricingContext.DEFAULT);
 	}
 
 	public FDProduct lookupFDProduct() {
@@ -407,16 +428,20 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	public boolean isKosher() {
 		try {
-			ProductModel pm = this.lookupProduct();
-			return pm == null ? false : pm.getPriceCalculator().isKosherProductionItem();
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
+			FDProduct pr = lookupFDProduct();
+			return pr.isKosherProduction(getUserContext().getFulfillmentContext().getPlantId());
+		} catch (Exception exc) {
+			return false;
 		}
 	}
-	
+
 	public boolean isPlatter() {
-		FDProduct fdProduct = this.lookupFDProduct();
-		return fdProduct.isPlatter();
+		try {
+			FDProduct fdProduct = this.lookupFDProduct();
+			return fdProduct.isPlatter(getUserContext().getFulfillmentContext().getPlantId());
+		} catch (Exception exc) {
+			return false;
+		}
 	}
 
 	public boolean isSoldBySalesUnits() {
@@ -437,7 +462,14 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean hasScaledPricing() {
 		FDProduct fdProduct = this.lookupFDProduct();
 		Pricing price = fdProduct.getPricing();
-		MaterialPrice[] materialPrices = price.getZonePrice(getPricingContext().getZoneId()).getMaterialPrices();
+		ZonePriceModel zpm=price.getZonePrice(getUserContext().getPricingContext().getZoneInfo());
+		MaterialPrice[] materialPrices=null;
+		if(zpm!=null)
+			materialPrices = zpm.getMaterialPrices();
+		else return false;
+		
+		if(materialPrices==null)
+			return false;
 		return !materialPrices[0].isWithinBounds(this.getQuantity());
 	}
 
@@ -502,7 +534,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public ErpAffiliate getAffiliate() {
-		return this.lookupFDProduct().getAffiliate();
+		return this.lookupFDProduct().getAffiliate(this.orderLine.getUserContext().getStoreContext().getEStoreId());
 	}
 
 	protected void performPricing() {
@@ -512,16 +544,19 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 		try {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), null, 0.0, pricingUnit,null);
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getUserContext().getPricingContext(), null, 0.0, pricingUnit,null,this.orderLine.getScaleQuantity());
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);
 			}else
 			{
 				FDGroup group = this.getFDGroup();
 
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, this.getGroupQuantity(), pricingUnit,this.getCouponDiscount());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getUserContext().getPricingContext(), group, this.getGroupQuantity(), pricingUnit,this.getCouponDiscount(),this.orderLine.getScaleQuantity());
 				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue() - price.getCouponDiscountValue());
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
+				this.orderLine.setPricingZoneId(price.getZoneInfo().getPricingZoneId());
+				this.orderLine.setSalesOrg(price.getZoneInfo().getSalesOrg());
+				this.orderLine.setDistChannel(price.getZoneInfo().getDistributionChanel());
 			}	
 			
 			//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$Price is set here?" + this.getDescription() + " -price:" + this.orderLine.getPrice() + " -discount:" + this.orderLine.getDiscountAmount());
@@ -621,7 +656,7 @@ public class FDProductSelection implements FDProductSelectionI {
 			if(group == null) {//If not in the line item level check sku level.
 				FDProductInfo _p=this.lookupFDProductInfo();
 				if(_p!=null)
-					group = _p.getGroup();
+					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
 			}
 		 
 		 return group;
@@ -643,12 +678,12 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.fixedPrice=price;
 	}
 	
-	public PricingContext getPricingContext() {
-		return orderLine.getPricingContext();
+	public UserContext getUserContext() {
+		return orderLine.getUserContext();
 	}
 	
-	public void setPricingContext(PricingContext pCtx) {
-		this.orderLine.setPricingContext(pCtx);
+	public void setUserContext(UserContext uCtx) {
+		this.orderLine.setUserContext(uCtx);
 	}
 	
 	public List<ErpClientCode> getClientCodes() {
@@ -681,7 +716,8 @@ public class FDProductSelection implements FDProductSelectionI {
 		try {
 				FDGroup group = this.getFDGroup();
 				if(group != null) {
-					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext(), group, 0.0, this.price.getBasePriceUnit(),this.getCouponDiscount());
+					//System.out.println("getGroupScaleSavings=>"+this.lookupFDProduct().getSkuCode());
+					FDConfiguredPrice regPrice = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getUserContext().getPricingContext(), group, this.getGroupQuantity(), this.price.getBasePriceUnit(),this.getCouponDiscount(),this.orderLine.getScaleQuantity());
 					savings = regPrice.getConfiguredPrice() - (regPrice.getPromotionValue() + this.orderLine.getPrice()+regPrice.getCouponDiscountValue());
 				}
 		} catch (PricingException e) {
@@ -766,6 +802,18 @@ public class FDProductSelection implements FDProductSelectionI {
 	@Override
 	public void setExternalSource(String externalSource) {
 		this.orderLine.setExternalSource(externalSource);
+	}
+
+	@Override
+	public Double getScaleQuantity() {
+		this.orderLine.getScaleQuantity();
+		return null;
+	}
+
+	@Override
+	public void setScaleQuantity(Double scaleQuantity) {
+		this.orderLine.setScaleQuantity(scaleQuantity);
+		this.fireConfigurationChange();		
 	}
 	
 }

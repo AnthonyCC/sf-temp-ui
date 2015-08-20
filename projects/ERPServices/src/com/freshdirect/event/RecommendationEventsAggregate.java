@@ -19,6 +19,7 @@ public class RecommendationEventsAggregate implements Serializable {
 	private String variantId;
 	private Date date;
 	private int frequency;
+	private String eStoreId;
 	
 	/**
 	 * Constructor.
@@ -31,12 +32,14 @@ public class RecommendationEventsAggregate implements Serializable {
 		String contentId,
 		String variantId,
 		Date date,
-		int frequency) {
+		int frequency,
+		String eStoreId) {
 		
 		this.contentId = contentId;
 		this.variantId = variantId;
 		this.date = date;
 		this.frequency = frequency;
+		this.eStoreId = eStoreId;
 	}
 	
 	public String getVariantId() {
@@ -53,6 +56,10 @@ public class RecommendationEventsAggregate implements Serializable {
 	
 	public int getFrequency() {
 		return frequency;
+	}
+	
+	public String getEStoreId() {
+		return eStoreId;
 	}
 
 }

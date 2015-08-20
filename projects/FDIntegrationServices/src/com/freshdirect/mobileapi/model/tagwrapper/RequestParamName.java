@@ -14,6 +14,21 @@ public interface RequestParamName {
     public static final String REQ_PARAM_BYPASS_ACCOUNT_CHECK = PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK;
 
     public static final String REQ_PARAM_SLOT_ID = "deliveryTimeslotId";
+    
+    public static final String REQ_PARAM_MOBILE_NUMBER = "mobile_number";       
+    public static final String REQ_PARAM_TEXT_OFFERS = "text_offers";
+    public static final String REQ_PARAM_TEXT_DELIVERY = "text_delivery";
+    public static final String REQ_PARAM_ORDER_NOTICES = "order_notices";
+    public static final String REQ_PARAM_ORDER_EXCEPTIONS = "order_exceptions";
+    public static final String REQ_PARAM_OFFERS = "offers";
+    public static final String REQ_PARAM_PARTNER_MESSAGES = "partner_messages";
+    public static final String REQ_PARAM_ORDER_NOTICES_EXISTING = "order_notice_existing";
+    public static final String REQ_PARAM_ORDER_EXCETION_EXISTING = "order_exception_existing";
+    public static final String REQ_PARAM_OFFER_EXISTING = "offer_existing";
+    public static final String REQ_PARAM_PARTNER_EXISTING = "partner_existing";
+    public static final String REQ_PARAM_MOBILE_EXISTING = "mobile_existing";
+    
+    public static final String REQ_PARAM_EMAIL_PREFERENCE_LEVEL = "receive_emailLevel";
 
     public static final String REQ_PARAM_CHEF_TABLE = "chefstable";
 
@@ -274,11 +289,15 @@ public interface RequestParamName {
     
     public static final String  REQ_PARAM_CORP_SERVICE_TYPE = "corpServiceType";
     
-    public static final String  REQ_PARAM_DELIVERY_STATUS = "requestedServiceTypeDlvStatus";
+    public static final String  REQ_PARAM_AVAILABLE_SERVICE_TYPE = "availableServiceTypes";
     
+    public static final String  REQ_PARAM_DELIVERY_STATUS = "requestedServiceTypeDlvStatus";    
+       
     public static final String  REQ_PARAM_REFERRAL_REGISTRATION = "referralRegistration";
     
     public static final String  REQ_PARAM_LITE_SIGNUP = "LITESIGNUP"; 
+    
+    public static final String  REQ_PARAM_LITE_SIGNUP_SOCIAL = "LITESIGNUP_SOCIAL";
     
     public static final String REQ_PARAM_CUSTOMER_EBT = "ebt";
     
@@ -311,5 +330,7 @@ public interface RequestParamName {
     
     public static final String REQ_PARAM_EXTERNAL_SOURCE = "externalSource";
     
+    public static final String REQ_PARAM_USER_TOKEN ="userToken";
     
+    public static final String REQ_PARAM_PROVIDER ="provider";
 }

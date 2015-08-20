@@ -180,6 +180,12 @@ public class ErpClassEntityBean extends VersionedEntityBeanSupport {
 
 	}
 
+	/**
+	 * @param sapId
+	 * @return VersionedPrimaryKey
+	 * 
+	 * @throws FinderException
+	 */
 	public VersionedPrimaryKey ejbFindBySapId(String sapId) throws FinderException {
 
 		Connection conn = null;
@@ -192,6 +198,48 @@ public class ErpClassEntityBean extends VersionedEntityBeanSupport {
 
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("Unable to find a Class with an SAP ID = " + sapId);
+			}
+
+			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
+
+			rs.close();
+			ps.close();
+
+			return vpk;
+
+		} catch (SQLException sqle) {
+			throw new EJBException("Unable to find a Class by its SAP ID : " + sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				throw new EJBException(sqle);
+			}
+		}
+
+	}
+	
+	/**
+	 * @param sapId
+	 * @param version
+	 * @return VersionedPrimaryKey
+	 * 
+	 * @throws FinderException
+	 */
+	public VersionedPrimaryKey ejbFindBySapIdAndVersion(String sapId, int version) throws FinderException {
+
+		Connection conn = null;
+		try 
+		{
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id from erps.class where sap_id = ? and version = ?");
+			ps.setString(1, sapId);
+			ps.setInt(2, version);
+			ResultSet rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				throw new FinderException("Unable to find a Class with an SAP ID = " + sapId);
 			}
 
 			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);

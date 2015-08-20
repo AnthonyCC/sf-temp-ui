@@ -154,7 +154,9 @@ public class ProductRecommenderUtil {
 				for (DepartmentModel deptModel : superDeptModel.getDepartments()) {
 
 					//TODO: hide department from this functionality
-					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+					FDSessionUser user = null;
+					if(session!=null)
+							user=(FDSessionUser) session.getAttribute(SessionName.USER);
 					Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
 					products.addAll(results.getAllProducts()); //TODO de we need to provide site feature id for CM?
 					cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
@@ -358,7 +360,7 @@ public class ProductRecommenderUtil {
 			try {
 				// Use YMAL_PDTL recommender
 				Recommendations r = ProductRecommenderUtil.doRecommend(
-						user, null, EnumSiteFeature.getEnum("YMAL_PDTL"),
+						user, null, EnumSiteFeature.YMAL,
 						MAX_XSELL_PRODS,
 						Collections.<ContentKey> emptySet(), product);
 

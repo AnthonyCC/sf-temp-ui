@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -180,7 +181,7 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 	
 	@Override
-	public PricingContext getPricingContext() {
+	public UserContext getUserContext() {
 		return null;
 	}
 

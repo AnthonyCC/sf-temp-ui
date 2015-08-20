@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.erp.ejb;
 
 import java.rmi.RemoteException;
@@ -25,11 +17,13 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
+import com.freshdirect.erp.EnumProductApprovalStatus;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.collection.PersistentReferences;
@@ -41,7 +35,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.VersionedEntityBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
-import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -57,7 +50,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
+	private static final long serialVersionUID = 4175026067622154552L;
+
 	private final static Category LOGGER = LoggerFactory.getInstance(ErpMaterialEntityBean.class);
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	/** SAP unique material number */
@@ -74,20 +70,22 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 	/** Characteristic name for sales unit, null if none */
 	private String salesUnitCharacteristic;
-
-	/** the ATPRule to use when checking for availablility of this material */
-	private EnumATPRule atpRule;
-
-	/** the lead time in days to stock this product **/
-	private int leadTime;
     
+	/** skucode */
+	private String skuCode;
+	
+	/** days fresh */
+	private String daysFresh;
+	
+	/** Type material */
+	private String materialType;
+	
+	/** material approval status */
+	private EnumProductApprovalStatus approvedStatus;
+   
+	/** isTaxable */
 	private boolean taxable;
-    
-	private boolean kosherProduction;
-	
-	private boolean platter;
-	
-	private DayOfWeekSet blockedDays;
+
 
 	/**
 	 * Collection of dependent ErpMaterialPrice persistent beans.
@@ -130,6 +128,10 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 * @associates <{ErpSalesUnitPersistentBean}>
 	 */
 	private DisplaySalesUnitList displaySalesUnits;
+	
+	private PlantMaterialList materialPlants;
+	
+	private MaterialSalesAreaList materialSalesAreas;
 	/**
 	 * Template method that returns the cache key to use for caching resources.
 	 *
@@ -143,19 +145,21 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.sapId = null;
 		this.baseUnit = null;
 		this.description = null;
-		this.atpRule = null;
-		this.leadTime = -1;
+		this.daysFresh = null;
 		this.upc = null;
 		this.quantityCharacteristic = null;
 		this.salesUnitCharacteristic = null;
-        this.alcoholicContent = null;
-        this.blockedDays = null;
+      this.alcoholicContent = null;
+      this.skuCode = null;
+      this.materialType = null;
 		this.prices = new MaterialPriceList();
 		this.salesUnits = new SalesUnitList();
 		this.classes = new ClassList();
 		this.displaySalesUnits = new DisplaySalesUnitList();
 		// find home for objects in remote object list
 		this.classes.setEJBHome(getClassHome());
+		this.materialPlants = new PlantMaterialList();
+		this.materialSalesAreas = new MaterialSalesAreaList();
 	}
 
 	private static ErpClassHome getClassHome() {
@@ -171,27 +175,14 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 *
 	 * @return ErpMaterialModel object.
 	 */
-	public ModelI getModel() {
+	public ModelI getModel()
+	{
 		// build the material model
-		ErpMaterialModel model =
-			new ErpMaterialModel(
-				this.sapId,
-				this.baseUnit,
-				this.description,
-				this.atpRule,
-				this.leadTime,
-				this.upc,
-				this.quantityCharacteristic,
-				this.salesUnitCharacteristic,
-                this.alcoholicContent,
-                this.taxable,
-                this.kosherProduction,
-                this.platter,
-                this.blockedDays,
-				this.prices.getModelList(),
-				this.salesUnits.getModelList(),
-				this.classes.getModelList(),
-				this.displaySalesUnits.getModelList());
+		ErpMaterialModel model = new ErpMaterialModel(this.sapId, this.baseUnit, this.description, this.upc,
+				this.quantityCharacteristic, this.salesUnitCharacteristic, this.alcoholicContent, this.taxable, this.skuCode,
+				this.daysFresh, this.approvedStatus, this.materialType, this.prices.getModelList(), this.salesUnits.getModelList(),
+				this.classes.getModelList(), this.displaySalesUnits.getModelList(), this.materialPlants.getModelList(),this.materialSalesAreas.getModelList());
+
 		super.decorateModel(model);
 		return model;
 	}
@@ -205,21 +196,36 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.sapId = m.getSapId();
 		this.baseUnit = m.getBaseUnit() != null ? m.getBaseUnit().intern() : null;
 		this.description = m.getDescription();
-		this.atpRule = m.getATPRule();
-		this.leadTime = m.getLeadTime();
 		this.upc = m.getUPC();
 		this.quantityCharacteristic = m.getQuantityCharacteristic();
 		this.salesUnitCharacteristic = m.getSalesUnitCharacteristic();
-        this.alcoholicContent = m.getAlcoholicContent();
-        this.taxable = m.isTaxable();
-		this.kosherProduction = m.isKosherProduction();
-		this.platter = m.isPlatter();
-		this.blockedDays = m.getBlockedDays();
+      this.alcoholicContent = m.getAlcoholicContent();
+      this.taxable = m.isTaxable();
+		this.skuCode = m.getSkuCode();
+		this.daysFresh = m.getDaysFresh();
+		this.materialType = m.getMaterialType();
+		this.approvedStatus = m.getApprovalStatus();
 		this.setPricesFromModel(m.getPrices());
 		this.setSalesUnitsFromModel(m.getSalesUnits());
 		this.setClassesFromModel(m.getClasses());
+		this.setMaterialPlantsFromModel(m.getMaterialPlants());
+		this.setMaterialSalesAreasFromModel(m.getMaterialSalesAreas());
+	}
+	
+	/**
+	 * Overriden isModified.
+	 */
+	public boolean isModified()
+	{
+		// check children too
+		return super.isModified() || this.prices.isModified() || this.salesUnits.isModified() || this.materialPlants.isModified() || this.materialSalesAreas.isModified();
 	}
 
+	/**
+	 * @param sapId
+	 * @return VersionedPrimaryKey
+	 * @throws FinderException
+	 */
 	public VersionedPrimaryKey ejbFindBySapId(String sapId) throws FinderException {
 
 		Connection conn = null;
@@ -253,6 +259,84 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		}
 
 	}
+	
+	/**
+	 * @param skuCode
+	 * @return VersionedPrimaryKey
+	 * @throws FinderException
+	 */
+	public VersionedPrimaryKey ejbFindBySkuCode(String skuCode) throws FinderException {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=(select max(version) from erps.material where skucode=?)");
+			ps.setString(1, skuCode);
+			ps.setString(2, skuCode);
+			ResultSet rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
+			}
+
+			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
+
+			rs.close();
+			ps.close();
+
+			return vpk;
+
+		} catch (SQLException sqle) {
+			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				throw new EJBException(sqle);
+			}
+		}
+
+	}
+	
+	/**
+	 * @param skuCode
+	 * @return VersionedPrimaryKey
+	 * @throws FinderException
+	 */
+	public VersionedPrimaryKey ejbFindBySkuCodeAndVersion(String skuCode, int version) throws FinderException {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=?");
+			ps.setString(1, skuCode);
+			ps.setInt(2, version);
+			ResultSet rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
+			}
+
+			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
+
+			rs.close();
+			ps.close();
+
+			return vpk;
+
+		} catch (SQLException sqle) {
+			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				throw new EJBException(sqle);
+			}
+		}
+
+	}
 
 	/**
 	 * Load the row with specified PK into a payload object.
@@ -266,30 +350,30 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 */
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
-		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, BASE_UNIT, DESCRIPTION, ATP_RULE, LEAD_TIME, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, KOSHER_PRODUCTION, PLATTER, BLOCKED_DAYS FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
 		ps.setString(1, vpk.getId());
 		ps.setInt(2, vpk.getVersion());
 		
 		ResultSet rs = ps.executeQuery();
-		if (!rs.next()) {
+		if (!rs.next())
+		{
 			return null;
 		}
 
 		ErpMaterialPayload p = new ErpMaterialPayload();
 		p.sapId = rs.getString(1);
-		p.baseUnit = rs.getString(2);
-		p.description = rs.getString(3);
-		p.atpRule = EnumATPRule.getEnum(rs.getInt(4));
-		p.leadTime = rs.getInt(5);
-		p.quantityCharacteristic = rs.getString(6);
-		p.salesUnitCharacteristic = rs.getString(7);
-		p.UPC = rs.getString(8);
-        p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(9));
-		p.taxable = "X".equalsIgnoreCase(rs.getString(10));
-        p.kosherProduction = "X".equalsIgnoreCase(rs.getString(11));
-        p.platter = "X".equalsIgnoreCase(rs.getString(12));
-		p.blockedDays = DayOfWeekSet.decode(rs.getString(13));
-        
+		p.skuCode = rs.getString(2);
+		p.baseUnit = rs.getString(3);
+		p.description = rs.getString(4);
+		p.quantityCharacteristic = rs.getString(5);
+		p.salesUnitCharacteristic = rs.getString(6);
+		p.UPC = rs.getString(7);
+      p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
+		p.taxable = "X".equalsIgnoreCase(rs.getString(9));
+      p.daysFresh = rs.getString(10);
+      p.materialType = rs.getString(11);
+      p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(12));
+      
 		rs.close();
 		ps.close();
 
@@ -303,6 +387,10 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		p.classes.load(conn);
 		p.displaySalesUnitList.setParentPK(pk);
 		p.displaySalesUnitList.load(conn);
+		p.plantMaterials.setParentPK(pk);
+		p.plantMaterials.load(conn);
+		p.materialSalesAreas.setParentPK(pk);
+		p.materialSalesAreas.load(conn);
 
 		return p;
 	}
@@ -317,20 +405,21 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.sapId = p.sapId;
 		this.baseUnit = p.baseUnit != null ? p.baseUnit.intern() : null;
 		this.description = p.description;
-		this.atpRule = p.atpRule;
-		this.leadTime = p.leadTime;
 		this.upc = p.UPC;
 		this.quantityCharacteristic = p.quantityCharacteristic;
 		this.salesUnitCharacteristic = p.salesUnitCharacteristic;
-        this.alcoholicContent = p.alcoholicContent;
-        this.taxable = p.taxable;
-        this.kosherProduction = p.kosherProduction;
-        this.platter = p.platter;
-        this.blockedDays = p.blockedDays;
+		this.alcoholicContent = p.alcoholicContent;
+		this.taxable = p.taxable;
+		this.daysFresh = p.daysFresh;
+		this.approvedStatus = p.approvedStatus;
+		this.materialType = p.materialType;
 		this.prices = p.prices;
 		this.salesUnits = p.salesUnits;
 		this.classes = p.classes;
 		this.displaySalesUnits = p.displaySalesUnitList;
+		this.skuCode =p.skuCode;
+		this.materialPlants=p.plantMaterials;
+		this.materialSalesAreas=p.materialSalesAreas;
 
 	}
 
@@ -342,23 +431,22 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		try {
 			String id = this.getNextId(conn, "ERPS");
 
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL (ID, VERSION, SAP_ID, BASE_UNIT, DESCRIPTION, ATP_RULE, LEAD_TIME, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, KOSHER_PRODUCTION, PLATTER, BLOCKED_DAYS) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL (ID, VERSION, SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setString(1, id);
 			ps.setInt(2, version);
 			ps.setString(3, this.sapId);
-			ps.setString(4, this.baseUnit);
-			ps.setString(5, this.description);
-			ps.setInt(6, this.atpRule.getValue());
-			ps.setInt(7, this.leadTime);
-			ps.setString(8, this.quantityCharacteristic);
-			ps.setString(9, this.salesUnitCharacteristic);
-			ps.setString(10, this.upc);
-            ps.setString(11, this.alcoholicContent.getCode());
-            ps.setString(12, this.taxable ? "X" : "");
-            ps.setString(13, this.kosherProduction ? "X" : "");
-			ps.setString(14, this.platter ? "X" : "");
-			ps.setString(15, this.blockedDays == null ? "" : this.blockedDays.encode());
-
+			ps.setString(4, this.skuCode);
+			ps.setString(5, this.baseUnit);
+			ps.setString(6, this.description);
+			ps.setString(7, this.quantityCharacteristic);
+			ps.setString(8, this.salesUnitCharacteristic);
+			ps.setString(9, this.upc);
+			ps.setString(10, null !=this.alcoholicContent? this.alcoholicContent.getCode():"");
+			ps.setString(11, this.taxable ? "X" : "");
+			ps.setString(12, this.daysFresh);
+			ps.setString(13, this.materialType);
+			ps.setString(14, null !=this.approvedStatus?this.approvedStatus.getStatusCode():"N");
+			
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("No database rows created!");
 			}
@@ -373,6 +461,10 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 			this.salesUnits.create(conn);
 			this.classes.setParentPK(this.getPK());
 			this.classes.create(conn);
+			this.materialPlants.setParentPK(this.getPK());
+			this.materialPlants.create(conn);
+			this.materialSalesAreas.setParentPK(this.getPK());
+			this.materialSalesAreas.create(conn);
 
 			return (VersionedPrimaryKey) this.getPK();
 		} catch (SQLException sqle) {
@@ -380,12 +472,142 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 			throw sqle;
 		}
 	}
+	
+	/**
+	 * Store the updated sales unit, price rows, plant material info.
+	 *
+	 * @param conn database connection
+	 * 
+	 * @throws SQLException if a database error occured
+	 */
+	public void store(Connection conn) throws SQLException
+	{
+		
+		if (this.isModified())
+		{
+			PreparedStatement ps = conn.prepareStatement("UPDATE ERPS.MATERIAL SET APPROVAL_STATUS = ? WHERE ID = ?");
+			ps.setString(1, null !=this.approvedStatus?this.approvedStatus.getStatusCode():"N");
+			ps.setString(2, this.getPK().getId());
+			
+			if (ps.executeUpdate() != 1) 
+			{
+				throw new SQLException("Failed to update row");
+			}
+		}
+		
+		// store children
+		if (this.salesUnits.isModified()) {
+			this.salesUnits.store(conn);
+		}
+		
+		if (this.prices.isModified()) {
+			this.prices.store(conn);
+		}
+		
+		if (this.materialPlants.isModified()) {
+			this.materialPlants.store(conn);
+		}
+		
+		if(this.materialSalesAreas.isModified()){
+			this.materialSalesAreas.store(conn);
+		}
+	}
+	
+	
+	/**
+	 * Set ErpSalesUnitModel entries. Overwrites existing collection.
+	 * 
+	 * @param salesUnits collection of ErpSalesUnitModel objects
+	 *
+	 * @return true if the entires were stored
+	 */
+	public boolean setSalesUnits(@SuppressWarnings("rawtypes") Collection salesUnits)
+	{		
+		this.setSalesUnitsFromModel(salesUnits);
+		this.setModified();
+		return true;		
+	}
 
+	/**
+	 * Set ErpSalesUnitModel entries. Overwrites existing collection.
+	 * 
+	 * @param prices collection of ErpSalesUnitModel objects
+	 *
+	 * @return true if the entires were stored
+	 */
+	public boolean setPrices(@SuppressWarnings("rawtypes") Collection prices) {
+		this.setPricesFromModel(prices);
+		this.setModified();
+		return true;	
+	}
+
+	
+	/**
+	 * Set ErpPlantMaterialModel entries. Overwrites existing collection.
+	 * 
+	 * @param plantMaterials collection of ErpPlantMaterialModel objects
+	 *
+	 * @return true if the entires were stored
+	 */
+	public boolean setMaterialPlants(@SuppressWarnings("rawtypes") Collection plantMaterials) {
+		this.setMaterialPlantsFromModel(plantMaterials);
+		this.setModified();
+		return true;	
+	}
+	
 	/**
 	 * Protected setter for pricing conditions. Overwrites existing collection.
 	 *
 	 * @param collection collection of ErpMaterialPriceModel objects
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected void setMaterialPlantsFromModel(Collection collection) {
+		// create persistent bean collection
+		List persistentBeans = new LinkedList();
+		for (Iterator i = collection.iterator(); i.hasNext();) {
+			ErpPlantMaterialModel model = (ErpPlantMaterialModel) i.next();
+			persistentBeans.add(new ErpPlantMaterialPersistentBean(model));
+		}
+	
+		this.materialPlants.set(persistentBeans);
+	}
+
+	
+	/**
+	 * Set ErpPlantMaterialModel entries. Overwrites existing collection.
+	 * 
+	 * @param plantMaterials collection of ErpPlantMaterialModel objects
+	 *
+	 * @return true if the entires were stored
+	 */
+	public boolean setMaterialSalesAreas(@SuppressWarnings("rawtypes") Collection materialSalesAreas) {
+		this.setMaterialSalesAreasFromModel(materialSalesAreas);
+		this.setModified();
+		return true;	
+	}
+	
+	/**
+	 * Protected setter for pricing conditions. Overwrites existing collection.
+	 *
+	 * @param collection collection of ErpMaterialPriceModel objects
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected void setMaterialSalesAreasFromModel(Collection collection) {
+		// create persistent bean collection
+		List persistentBeans = new LinkedList();
+		for (Iterator i = collection.iterator(); i.hasNext();) {
+			ErpMaterialSalesAreaModel model = (ErpMaterialSalesAreaModel) i.next();
+			persistentBeans.add(new ErpMaterialSalesAreaPersistentBean(model));
+		}
+	
+		this.materialSalesAreas.set(persistentBeans);
+	}
+	/**
+	 * Protected setter for pricing conditions. Overwrites existing collection.
+	 *
+	 * @param collection collection of ErpMaterialPriceModel objects
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void setPricesFromModel(Collection collection) {
 		// create persistent bean collection
 		List persistentBeans = new LinkedList();
@@ -393,15 +615,16 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 			ErpMaterialPriceModel model = (ErpMaterialPriceModel) i.next();
 			persistentBeans.add(new ErpMaterialPricePersistentBean(model));
 		}
-		// set it
+	
 		this.prices.set(persistentBeans);
 	}
-
+	
 	/**
 	 * Protected setter for sales units. Overwrites existing collection.
 	 *
 	 * @param collection collection of ErpSalesUnitModel objects
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void setSalesUnitsFromModel(Collection collection) {
 		// create persistent bean collection
 		List persistentBeans = new LinkedList();
@@ -418,6 +641,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 *
 	 * @param collection collection of ErpClassModel objects
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void setClassesFromModel(Collection collection) {
 		// create a list of keys of the remote objects
 		List classPkList = new LinkedList();
@@ -436,20 +660,22 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		String sapId;
 		String baseUnit;
 		String description;
-		EnumATPRule atpRule;
-		int leadTime;
 		String UPC;
 		String quantityCharacteristic;
 		String salesUnitCharacteristic;
-        EnumAlcoholicContent alcoholicContent;
-        boolean taxable;
-        boolean kosherProduction;
-        boolean platter;
-        DayOfWeekSet blockedDays;
-		MaterialPriceList prices = new MaterialPriceList();
+		EnumAlcoholicContent alcoholicContent;
+		boolean taxable;
+		String skuCode;
+		private String daysFresh;
+		private EnumProductApprovalStatus approvedStatus;
+		private String materialType;		
+		
+     	MaterialPriceList prices = new MaterialPriceList();
 		SalesUnitList salesUnits = new SalesUnitList();
 		ClassList classes = new ClassList();
 		DisplaySalesUnitList displaySalesUnitList = new DisplaySalesUnitList();
+		PlantMaterialList plantMaterials = new PlantMaterialList();
+		MaterialSalesAreaList materialSalesAreas = new MaterialSalesAreaList();
 	}
 
 	/**
@@ -497,4 +723,22 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		}
 	}
 	
+	
+	/**
+	 * Inner class for the list of dependent ErpPlantMaterial persistent beans.
+	 */
+	private static class PlantMaterialList extends DependentPersistentBeanList {
+		public void load(Connection conn) throws SQLException {
+			this.set(ErpPlantMaterialPersistentBean.findByParent(conn, (VersionedPrimaryKey) PlantMaterialList.this.getParentPK()));
+		}
+	}
+	
+	/**
+	 * Inner class for the list of dependent ErpPlantMaterial persistent beans.
+	 */
+	private static class MaterialSalesAreaList extends DependentPersistentBeanList {
+		public void load(Connection conn) throws SQLException {
+			this.set(ErpMaterialSalesAreaPersistentBean.findByParent(conn, (VersionedPrimaryKey) MaterialSalesAreaList.this.getParentPK()));
+		}
+	}
 }

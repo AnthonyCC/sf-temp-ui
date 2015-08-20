@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.DbTestCaseSupport;
-import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FraudStrategy;
@@ -88,7 +88,7 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 			PromotionApplicatorI _applicator = i.next();
 			if(_applicator instanceof SampleLineApplicator) {
 				SampleLineApplicator papp2 = (SampleLineApplicator) _applicator;
-				assertEquals(new ProductReference("foo1", "bar1"), papp2.getProductReference());
+				assertEquals(new ProductReferenceImpl("foo1", "bar1"), papp2.getProductReference());
 				assertEquals(30.0, papp2.getMinSubtotal(), 0.001);
 			}
 		}

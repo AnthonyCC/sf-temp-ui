@@ -2,39 +2,6 @@
 <%
     boolean displayLimitedAvailability = false;
     SkuModel a_sku = __prd.getSku(product.getSkuCode());
-    if(displayShortTermUnavailability) {
-        List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
-        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
-%>
-		<div><table width="100%" cellpadding="0" cellspacing="0" border="0">
-		<tr><td align="right">			
-        <span><font class="text11">Limited Delivery Availability</font></span><br/>
-        
-<%
-            Calendar cal = Calendar.getInstance();
-            displayLimitedAvailability = true;
-            for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
-                cal.setTime(l.getRequestedDate());
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                double quantity = l.getQuantity();
-                if(quantity > 0) {
-            %>
-                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
-            <%
-                } else {
-            %>
-                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
-            <%                
-                }
-                
-            }
-%>            
-            </td></tr>
-            </table></div>
-<%
-        }
-    }
-    
     if (!displayLimitedAvailability && displayShortTermUnavailability 
     					&& shortTermUnavailable.size() > 0 
     					&& shortTermUnavailableSkus.contains(a_sku.getSkuCode())) {

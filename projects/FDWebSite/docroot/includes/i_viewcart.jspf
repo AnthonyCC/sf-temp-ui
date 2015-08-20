@@ -1,3 +1,5 @@
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
@@ -100,6 +102,11 @@ YAHOO.util.Event.onDOMReady(FreshDirect.ClientCodes.onLoad);
 
 FDIdentity identity = user.getIdentity();
 
+//MakeGood
+MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+String makeGoodFromOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
+String [] lineReason = request.getParameterValues("ol_credit_reason");
+List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 %>
 <br />
 <div style="width: <%= W_VIEWCART_FULL %>px;">
@@ -380,7 +387,7 @@ asyncPixelWithTimeout();
 		}
 		
 		String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays().isEmpty();
+		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
 		boolean platterDlvInfo = false;
 		if (productNode.isPlatter()) {
 			platterDlvInfo = true;
@@ -423,7 +430,7 @@ asyncPixelWithTimeout();
 				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 			<% }%>
 			<% if (!isFreeProd) { %>	
-				<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+				<%= fdProduct.getKosherInfo(plantID).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
@@ -433,30 +440,7 @@ asyncPixelWithTimeout();
 				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
 	
 	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
-	        			List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
-				        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
-				%>
-						<font class="text11">&nbsp;&nbsp;&nbsp;Limited Delivery Availability:&nbsp;</font>
-				<%        
-	            		Calendar cal = Calendar.getInstance();
-	            		displayLimitedAvailability = true;
-	            		for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
-	                		cal.setTime(l.getRequestedDate());
-	                		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-	                		double quantity = l.getQuantity();
-	                		if(quantity > 0) {
-	            %>
-	                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
-	            <%
-	                		} else {
-	            %>
-	                		<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
-	            <%                
-	                		}
-	                
-	            		}
-	            
-	        		}
+	        			
 				}
 				%>
 				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
@@ -484,6 +468,17 @@ asyncPixelWithTimeout();
 					} %>
 					<display:FDCoupon coupon="<%= curCoupon_viewcart %>" contClass="fdCoupon_cartlineViewCart"></display:FDCoupon>
 				</div>
+				<% if (makeGoodFromOrderId!=null) { %>
+					<td align="right">
+						<input type="hidden" name="orderlineId" value="<%= ((FDCartLineI)cartLine).getOrderLineId() %>" />
+						<select name="ol_credit_reason" class="pulldown_detail">
+							<option value="">select make good reason</option>
+							<logic:iterate id="reason" collection="<%= mg_reason %>" type="com.freshdirect.customer.ErpComplaintReason">
+								<option value="<%= reason.getId() %>" <%= ( lineReason != null && reason.getId().equals(lineReason[viewIndex.intValue()]) ) ? "SELECTED" : "" %>><%= reason.getReason() %></option>
+							</logic:iterate>
+						</select>
+					</td>
+				<% } %>
 			
 			</td>
             <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>

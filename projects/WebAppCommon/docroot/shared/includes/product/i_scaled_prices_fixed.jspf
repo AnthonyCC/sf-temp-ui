@@ -6,8 +6,8 @@
 	// Display scaled pricing for FDProduct product.
 	//
     boolean isGrpScale = false;
-    FDGroup grp = productInfo.getGroup(); 
-    if(grp != null && GroupScaleUtil.getGroupScalePrice(grp,user.getPricingContext().getZoneId()) != null) {                                                                                                                                                                                                                                                                                                                                                                                        
+    FDGroup grp = productInfo.getGroup(user.getPricingContext().getZoneInfo().getSalesOrg(),user.getPricingContext().getZoneInfo().getDistributionChanel()); 
+    if(grp != null && GroupScaleUtil.getGroupScalePrice(grp,user.getPricingContext().getZoneInfo()) != null) {                                                                                                                                                                                                                                                                                                                                                                                        
         isGrpScale = true;	
     }	
     if(isGrpScale) {
@@ -18,9 +18,9 @@
 	} else {//do Regular scale pricing
 		String[] scales = null;
 		if ( isWineLayout ) {
-			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getWineScaleDisplay(true);
+			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneInfo()).getWineScaleDisplay(true);
 		} else {  
-			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
+			    scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneInfo()).getScaleDisplay();
 		}
 		if ( scales!= null && scales.length > 0 ) {
 			%>

@@ -11,6 +11,8 @@ package com.freshdirect.customer;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
+
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
@@ -45,6 +47,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final boolean isMakeGood;
 
 
+
 	private Set usedPromotionCodes = Collections.EMPTY_SET;
 	//DlvPassId will be not null if delivery pass was applied to this order.
 	private String dlvPassId;
@@ -55,6 +58,11 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	
 	private String standingOrderId;
 	private boolean soHolidayMovement;
+	
+	private final EnumEStoreId eStore;
+	private final String plantId;
+	private final String salesOrg;
+	private final String distributionChanel;
 	
 	public ErpSaleInfo(
 		String saleId,
@@ -84,7 +92,12 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		String stopSequence,
 		boolean isMakeGood,
 		String standingOrderId,
-		boolean soHolidayMovement) {
+		boolean soHolidayMovement,
+		EnumEStoreId eStore,
+		String plantId,
+		String salesOrg,
+		String distributionChanel
+			) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -114,6 +127,26 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		
 		this.standingOrderId = standingOrderId;
 		this.soHolidayMovement = soHolidayMovement;
+		this.eStore=eStore;
+		this.plantId=plantId;
+		this.salesOrg=salesOrg;
+		this.distributionChanel=distributionChanel;
+	}
+
+	public EnumEStoreId geteStore() {
+		return eStore;
+	}
+
+	public String getPlantId() {
+		return plantId;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public String getDistributionChanel() {
+		return distributionChanel;
 	}
 
 	public boolean isMakeGood() {
@@ -228,4 +261,28 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	public boolean isSoHolidayMovement(){
 		return soHolidayMovement;
 	}
+
+	@Override
+	public String toString() {
+		return "ErpSaleInfo [amount=" + amount + ", subTotal=" + subTotal
+				+ ", requestedDate=" + requestedDate + ", createRequestedDate="
+				+ createRequestedDate + ", source=" + source
+				+ ", deliveryStart=" + deliveryStart + ", deliveryEnd="
+				+ deliveryEnd + ", cutoffTime=" + cutoffTime
+				+ ", deliveryType=" + deliveryType + ", createDate="
+				+ createDate + ", createBy=" + createBy + ", modSource="
+				+ modSource + ", modDate=" + modDate + ", modBy=" + modBy
+				+ ", pendingCreditAmount=" + pendingCreditAmount
+				+ ", appliedCreditAmount=" + appliedCreditAmount + ", zone="
+				+ zone + ", paymentMethodType=" + paymentMethodType
+				+ ", saleType=" + saleType + ", isMakeGood=" + isMakeGood
+				+ ", usedPromotionCodes=" + usedPromotionCodes + ", dlvPassId="
+				+ dlvPassId + ", truckNumber=" + truckNumber
+				+ ", stopSequence=" + stopSequence + ", standingOrderId="
+				+ standingOrderId + ", soHolidayMovement=" + soHolidayMovement
+				+ ", eStore=" + eStore + ", plantId=" + plantId + ", salesOrg="
+				+ salesOrg + ", distributionChanel=" + distributionChanel + "]";
+	}
+	
+	
 }

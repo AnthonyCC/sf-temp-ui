@@ -18,6 +18,8 @@ public class FDProductPromotionInfo extends ModelSupport {
 	private String erpCategory;
 	private int erpCatPosition;
 	private String erpPromtoionId;
+	private SalesAreaInfo salesArea;
+	
 	public int getVersion() {
 		return version;
 	}
@@ -89,6 +91,18 @@ public class FDProductPromotionInfo extends ModelSupport {
 	}
 	public void setErpPromtoionId(String erpPromtoionId) {
 		this.erpPromtoionId = erpPromtoionId;
+	}
+	/**
+	 * @return the salesArea
+	 */
+	public SalesAreaInfo getSalesArea() {
+		return salesArea;
+	}
+	/**
+	 * @param salesArea the salesArea to set
+	 */
+	public void setSalesArea(SalesAreaInfo salesArea) {
+		this.salesArea = salesArea;
 	}
 	
 	

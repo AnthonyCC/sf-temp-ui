@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.reorder.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -205,7 +207,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 						tag.setDeptId(deptId);
 						tag.setUseMinCount(false);
 
-						Collection<Object> skus = tag.getPeakProduce(department, maxItems);
+						Collection<Object> skus = tag.getPeakProduce(department, maxItems,user.getUserContext());
 						return convertToQuickshopItems(user, maxItems, skus);
 
 					} else if (DEPT_DELI.equals(deptId) || DEPT_CHEESE.equals(deptId) || DEPT_4MM.equals(deptId) || DEPT_RTC.equals(deptId) || DEPT_HEAT.equals(deptId) || DEPT_BAKERY.equals(deptId)
@@ -264,8 +266,14 @@ public class QuickShopCrazyQuickshopRecommendationService {
 
 		// Using something else instead as the root node ... "President's Picks"
 		// should be full of great stuff
-		CategoryModel rootNode = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.get("Category"), "picks_love");
+		CategoryModel rootNode = (CategoryModel) ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, "picks_love");
 
+		// FIXME FDX
+		if (rootNode == null) {
+			LOG.error("Missing root node picks_love");
+			return Collections.EMPTY_LIST;
+		}
+		
 		@SuppressWarnings({ "rawtypes" })
 		List<ContentNodeModel> prespicks = (List) rootNode.getProducts(); // DDPP
 		// content!

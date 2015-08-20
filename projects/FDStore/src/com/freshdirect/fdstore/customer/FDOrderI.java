@@ -21,6 +21,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
@@ -202,4 +203,5 @@ public interface FDOrderI extends FDCartI {
 	Double getEbtPurchaseAmount();
 	public boolean isMakeGood();
 	public String getAuthFailDescription();
+	public ErpDeliveryInfoModel getDeliveryInfo();
 }

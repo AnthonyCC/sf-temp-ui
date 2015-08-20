@@ -58,6 +58,10 @@ public class PaymentMethod {
     public String getAddress2() {
         return paymentMethod.getAddress2();
     }
+    
+    public String getCountry() {
+        return paymentMethod.getCountry();
+    }
 
     public String getApartment() {
         return paymentMethod.getApartment();

@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.Set;
+
 import com.freshdirect.mobileapi.controller.data.PhoneNumber;
 
 public class ShipToAddress extends DeliveryAddress {
@@ -21,8 +23,16 @@ public class ShipToAddress extends DeliveryAddress {
     private PhoneNumber altPhone;
 
     private String altType;
+    
+    private String instructions;
+    
+    private Set availableServiceTypes;
 
-    public ShipToAddress(com.freshdirect.mobileapi.model.ShipToAddress address) {
+	public Set getAvailableServiceTypes() {
+		return availableServiceTypes;
+	}
+
+	public ShipToAddress(com.freshdirect.mobileapi.model.ShipToAddress address) {
         this.id = address.getId();
         if (null != address.getType()) {
             this.type = address.getType().toString();
@@ -51,6 +61,8 @@ public class ShipToAddress extends DeliveryAddress {
             this.altPhone = new PhoneNumber(address.getAltDeliveryPhone().getPhone(), address.getAltDeliveryPhone().getExtension());
         }
         this.altType = (address.getAltType() == null ? null : address.getAltType().getCode());
+        this.instructions = address.getInstructions();
+        this.availableServiceTypes = address.getAvailableServiceTypes();
     }
 
     public String getFirstName() {
@@ -68,6 +80,10 @@ public class ShipToAddress extends DeliveryAddress {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+    
+    public void setAvailableServiceTypes(Set<String> availableServiceTypes) {
+		this.availableServiceTypes = availableServiceTypes;
+	}
 
     public PhoneNumber getContactPhoneNumber() {
         return contactPhoneNumber;
@@ -124,5 +140,13 @@ public class ShipToAddress extends DeliveryAddress {
     public void setAltType(String altType) {
         this.altType = altType;
     }
+
+	public String getInstructions() {
+		return instructions;
+	}
+
+	public void setInstructions(String instructions) {
+		this.instructions = instructions;
+	}
 
 }

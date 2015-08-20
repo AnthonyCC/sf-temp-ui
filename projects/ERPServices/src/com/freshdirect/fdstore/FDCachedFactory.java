@@ -540,7 +540,7 @@ public class FDCachedFactory {
 		FDFactory.refreshNewAndBackViews();
 	}
 
-	public static FDProductInfo addNewAvailabilityInformation(String skuCode, EnumAvailabilityStatus status, EnumOrderLineRating rating, String freshness) throws FDResourceException, FDSkuNotFoundException { 
+	/*public static FDProductInfo addNewAvailabilityInformation(String skuCode, EnumAvailabilityStatus status, EnumOrderLineRating rating, String freshness) throws FDResourceException, FDSkuNotFoundException { 
 	    FDProductInfo prodInfo = getProductInfo(skuCode);
 	    if (status == null) {
 	        status = prodInfo.getAvailabilityStatus();
@@ -558,7 +558,7 @@ public class FDCachedFactory {
 	    productCache.put(new FDSku(skuCode, copyInfo.getVersion()), copyProd);
 
             return copyInfo;
-	}
+	}*/ //::FDX:: Not sure what purpose this serves. Commenting it out
 	
 	public static FDGroup getLatestActiveGroup(String groupId) throws FDResourceException, FDGroupNotFoundException {
 		return FDFactory.getLatestActiveGroup(groupId);

@@ -22,6 +22,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -38,7 +39,7 @@ public class DataGeneratorCompilerTest extends TestCase {
 
     MockDataAccess            input;
 
-    SessionInput          s = new SessionInput("ses1", null, null);
+    SessionInput          s = new SessionInput("ses1", null, null, new FulfillmentContext());
 
     protected void setUp() throws Exception {
         {

@@ -17,7 +17,7 @@
     String orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-<fd:GetOrder id='order' saleId='<%= orderId %>'>
+<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 <fd:ModifyOrderController action="cancel" orderId="<%= orderId %>" result="result" successPage='<%= "/main/order_details.jsp?orderId=" + orderId %>'>
 
 <tmpl:put name='title' direct='true'>Order <%= orderId%> Cancel</tmpl:put>

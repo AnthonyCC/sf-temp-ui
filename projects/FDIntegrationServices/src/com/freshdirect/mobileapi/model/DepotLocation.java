@@ -109,7 +109,7 @@ public class DepotLocation extends DeliveryAddress {
         ErpDepotAddressModel address = new ErpDepotAddressModel(depotAddress);
         address.setRegionId(depot.getRegionId());
         address.setZoneCode(location.getZoneCode());
-        address.setLocationId(location.getPK().getId());
+        address.setLocationId(location.getAddress().getId());
         address.setFacility(location.getFacility());
         if (user.isCorporateUser()) {
             //Dead code since "corpDlvInstructions" used in depot page and depot's been retired

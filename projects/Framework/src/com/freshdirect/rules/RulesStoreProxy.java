@@ -17,18 +17,22 @@ public class RulesStoreProxy implements RulesStoreI {
 		return this.store.getSubsystem();
 	}
 
-	public Map getRules() {
+	@Override
+	public Map<String,Rule> getRules() {
 		return store.getRules();
 	}
 
+	@Override
 	public Rule getRule(String ruleId) {
 		return store.getRule(ruleId);
 	}
 
+	@Override
 	public void storeRule(Rule rule) {
 		this.store.storeRule(rule);
 	}
 
+	@Override
 	public void deleteRule(String ruleId) {
 		this.store.deleteRule(ruleId);
 	}

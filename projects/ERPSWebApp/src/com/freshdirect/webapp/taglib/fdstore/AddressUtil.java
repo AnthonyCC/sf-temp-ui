@@ -103,6 +103,8 @@ public class AddressUtil {
 		
 		response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
 				
+		//response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
+							
 		String apartment = address.getApartment();
 		
         LOGGER.debug("Scrubbing response: "+response.getVerifyResult());

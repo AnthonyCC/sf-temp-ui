@@ -163,7 +163,7 @@ public class Message implements DateFormat, Cloneable {
     public void addErrorMessages(Map<String, String> messages) {
         this.errors.putAll(messages);
     }
-
+    
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }

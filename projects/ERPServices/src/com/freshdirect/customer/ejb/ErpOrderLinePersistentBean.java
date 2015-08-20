@@ -12,10 +12,12 @@ import javax.ejb.EJBException;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -99,7 +101,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP,NVL(SALES_ORG,'0001') SALES_ORG ,NVL(DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL,SCALE_QTY FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -116,8 +118,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING, SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING, SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP,SALES_ORG,DISTRIBUTION_CHANNEL,SCALE_QTY)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -219,6 +221,15 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(40, StringUtil.crop(model.getExternalSource(), 30));
 		ps.setString(41, StringUtil.crop(model.getExternalGroup(), 256));
 		
+		ps.setString(42, model.getSalesOrg());
+		ps.setString(43, model.getDistChannel());
+		
+		if(null!=this.model.getScaleQuantity()){
+			ps.setBigDecimal(44, new BigDecimal(String.valueOf(this.model.getScaleQuantity())));
+		}else{
+			ps.setNull(44, Types.DOUBLE);
+		}
+		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -240,7 +251,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP,SALES_ORG,DISTRIBUTION_CHANNEL,SCALE_QTY FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -305,7 +316,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         	this.model.setFDGroup(group);
         }
         this.model.setGroupQuantity(rs.getDouble("GROUP_QTY"));
-        this.model.setPricingContext(new PricingContext(pricingZoneId==null?ZonePriceListing.MASTER_DEFAULT_ZONE:pricingZoneId)); 
+         
         this.model.setSustainabilityRating(EnumSustainabilityRating.getEnumByStatusCode(NVL.apply(rs.getString("SUSTAINABILITY_RATING"), "X")));
         
 		// deal with no promotion (PROMOTION_TYPE is NULL)
@@ -331,7 +342,26 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
         this.model.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
         this.model.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
-		
+        
+        String salesOrg=rs.getString("SALES_ORG");
+        salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;		
+        this.model.setSalesOrg(salesOrg);
+        String distrChannel=rs.getString("DISTRIBUTION_CHANNEL");
+        distrChannel = "1000".equals(salesOrg)?"01":distrChannel;
+        this.model.setDistChannel(distrChannel);
+        this.model.setScaleQuantity(rs.getDouble("SCALE_QTY"));
+        ZoneInfo pricingZone=null;
+        if(pricingZoneId==null) {
+        	pricingZone=ZonePriceListing.DEFAULT_ZONE_INFO;
+        } else {
+        	pricingZone=new ZoneInfo(pricingZoneId,salesOrg,distrChannel);
+        }
+       UserContext userCtx=new UserContext();
+        userCtx.setPricingContext(new PricingContext( pricingZone));//::FDX:: UserContext is not setup fully here.
+        
+        this.model.setUserContext(userCtx);
+        
+
 		this.unsetModified();
 	}
 	protected CouponLineList getCouponLinePBList() {

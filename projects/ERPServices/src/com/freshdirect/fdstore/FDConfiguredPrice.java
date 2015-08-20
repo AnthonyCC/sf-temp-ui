@@ -3,6 +3,7 @@ package com.freshdirect.fdstore;
 import java.io.Serializable;
 
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZoneInfo;
 
 public class FDConfiguredPrice implements Serializable {
 
@@ -10,15 +11,18 @@ public class FDConfiguredPrice implements Serializable {
 	private final double promotionValue;
 	private final MaterialPrice pricingCondition;
 	private double couponDiscountValue;
+	private final ZoneInfo zoneInfo;
 
 	public FDConfiguredPrice(
 		double configuredPrice,
 		double promotionValue,
-		MaterialPrice pricingCondition) {
+		MaterialPrice pricingCondition,
+		ZoneInfo zoneInfo) {
 
 		this.configuredPrice = configuredPrice;
 		this.promotionValue = promotionValue;
 		this.pricingCondition = pricingCondition;
+		this.zoneInfo=zoneInfo;
 
 	}
 
@@ -26,12 +30,14 @@ public class FDConfiguredPrice implements Serializable {
 			double configuredPrice,
 			double promotionValue,
 			double couponDiscountValue,
-			MaterialPrice pricingCondition) {
+			MaterialPrice pricingCondition,
+			ZoneInfo zoneInfo) {
 
 			this.configuredPrice = configuredPrice;
 			this.promotionValue = promotionValue;
 			this.pricingCondition = pricingCondition;
 			this.couponDiscountValue=couponDiscountValue;
+			this.zoneInfo=zoneInfo;
 
 	}
 	
@@ -57,6 +63,10 @@ public class FDConfiguredPrice implements Serializable {
 
 	public void setCouponDiscountValue(double couponDiscountValue) {
 		this.couponDiscountValue = couponDiscountValue;
+	}
+	
+	public ZoneInfo getZoneInfo() {
+		return zoneInfo;
 	}
 
 }

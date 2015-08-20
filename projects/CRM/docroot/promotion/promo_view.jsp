@@ -12,15 +12,16 @@
 <script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 <tmpl:insert template='/template/top_nav.jsp'>
 <%
-	PromoFilterCriteria  promoFilter =  (PromoFilterCriteria)request.getSession().getAttribute("filter");
+	PromoFilterCriteria promoFilter = (PromoFilterCriteria)request.getSession().getAttribute("filter");
 	String offerType = "";
 	String customerType ="";
 	String promoStatus = "LIVE";
 	String createdBy = "";
 	String modifiedBy = "";
 	String keyword = "";
+	String serviceType = "";
 	if(null == promoFilter || promoFilter.isEmpty()){
-		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword,serviceType);
 	}
 	if(null !=request.getParameter("promo_filter_submit")){
 		offerType =request.getParameter("offerType");
@@ -29,14 +30,16 @@
 		createdBy =request.getParameter("createdBy");
 		modifiedBy =request.getParameter("modifiedBy");
 		keyword =request.getParameter("keyword");
-		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+		serviceType =request.getParameter("serviceType");
+		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword,serviceType);
 	}else if(null != promoFilter && !promoFilter.isEmpty()){
 		offerType = promoFilter.getOfferType();
 		customerType = promoFilter.getCustomerType();
 		promoStatus = promoFilter.getPromoStatus();
 		createdBy = promoFilter.getCreatedBy();
 		modifiedBy = promoFilter.getModifiedBy();
-		keyword = promoFilter.getKeyword();		
+		keyword = promoFilter.getKeyword();
+		serviceType = promoFilter.getServiceType();		
 	}
 	List<String> createdUsers = FDPromotionNewModelFactory.getInstance().getPromotionsCreatedUsers();//(List)request.getAttribute("createdUsers");
 	List<String> modifiedUsers = FDPromotionNewModelFactory.getInstance().getPromotionsModifiedUsers();//(List)request.getAttribute("modifiedUsers");
@@ -59,6 +62,7 @@
 					<td class="grayIta10pt">Status</td>
 					<td class="grayIta10pt">Created By</td>
 					<td class="grayIta10pt">Last modified by</td>
+					<td class="grayIta10pt">Service Type</td>
 					<td class="grayIta10pt">Keyword</td>
 					<td class="grayIta10pt">&nbsp;</td>
 				</tr>
@@ -130,6 +134,15 @@
 						</logic:iterate>
 						</select>
 					</td>
+					<td>
+						<select id="serviceType" name="serviceType" class="promo_filter">
+							<option value="" selected="selected">ALL</option>
+							<option value="RES" <%= "RES".equalsIgnoreCase(serviceType)?"selected":"" %>>RES</option>
+							<option value="FDX" <%= "FDX".equalsIgnoreCase(serviceType)?"selected":"" %>>FDX</option>
+							<option value="COS" <%= "COS".equalsIgnoreCase(serviceType)?"selected":"" %>>COS</option>							
+							<option value="Pickup" <%= "PICKUP".equalsIgnoreCase(serviceType)?"selected":"" %>>Pickup</option>
+						</select>
+					</td>
 					<td><input type="text" id="keyword" name="keyword" class="promo_filter" value="<%=(null !=request.getParameter("promo_filter_submit")) ? keyword : "" %>"/></td>
 					<td><input type="submit" value="FILTER" id="promo_filter_submit" name="promo_filter_submit" class="promo_btn_grn" /></td>
 					<td><input type="submit" value="REFRESH" onclick="" id="promo_refresh_submit" name="promo_refresh_submit" class="promo_btn_grn" /></td>
@@ -144,17 +157,17 @@
 %>
 		<tbody>
 			<tr>
-				<th width="14px" align="center">&nbsp;</th>
-				<th width="193px"><a href="?<%= sort.getFieldParams("name") %>" >Name</a></th>
-				<th width="143px"><a href="?<%= sort.getFieldParams("redemptionCode") %>" >Redemption Code</a></th>
-				<th width="90px"><a href="?<%= sort.getFieldParams("type") %>" >Type</a></th>
-				<th width="275px"><a href="?<%= sort.getFieldParams("description") %>" >Description</a></th>
-				<th width="110px"><a href="?<%= sort.getFieldParams("start") %>" >Start</a></th>
-				<th width="125px"><a href="?<%= sort.getFieldParams("expire") %>" >Expire</a></th>
-				<th width="90px"><a href="?<%= sort.getFieldParams("status") %>" >Status</a></th>
-				<th width="75px"><a href="?<%= sort.getFieldParams("createdBy") %>" >Created</a></th>
-				<th width="75px"><a href="?<%= sort.getFieldParams("modifiedBy") %>" >Modified</a></th>
-				<th><img width="35" height="1" src="/media_stat/crm/images/clear.gif"></th>
+				<th width="16" align="center">&nbsp;</th>
+				<th width="200"><a href="?<%= sort.getFieldParams("name") %>" >Name</a></th>
+				<th width="150"><a href="?<%= sort.getFieldParams("redemptionCode") %>" >Redemption Code</a></th>
+				<th width="100"><a href="?<%= sort.getFieldParams("type") %>" >Type</a></th>
+				<th width="300"><a href="?<%= sort.getFieldParams("description") %>" >Description</a></th>
+				<th width="125"><a href="?<%= sort.getFieldParams("start") %>" >Start</a></th>
+				<th width="150"><a href="?<%= sort.getFieldParams("expire") %>" >Expire</a></th>
+				<th width="100"><a href="?<%= sort.getFieldParams("status") %>" >Status</a></th>
+				<th width="75"><a href="?<%= sort.getFieldParams("createdBy") %>" >Created</a></th>
+				<th width="75"><a href="?<%= sort.getFieldParams("modifiedBy") %>" >Modified</a></th>
+				<th width="75"><img width="35" height="1" src="/media_stat/crm/images/clear.gif"></th>
 				<th><img width="12" height="1" src="/media_stat/crm/images/clear.gif"></th>
 			</tr>
 		</tbody>

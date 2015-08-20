@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+@Deprecated
 public class FDPromotionManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionManager.class);

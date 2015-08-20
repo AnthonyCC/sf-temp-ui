@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+@Deprecated
 public class DownloadFeedProcessTask {
 
 	

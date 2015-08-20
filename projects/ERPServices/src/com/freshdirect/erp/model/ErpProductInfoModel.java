@@ -1,11 +1,16 @@
 package com.freshdirect.erp.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
  * ErpProductInfo model class.
@@ -34,13 +39,21 @@ public class ErpProductInfoModel extends ModelSupport {
 		
 		private final String sapZoneId;
 		
-		public ErpMaterialPrice(double price, String unit, double promoPrice, String scaleUnit, double scaleQuantity, String sapZoneId) {
+		private final String salesOrg;
+		
+		private final String distChannel;
+		
+		public ErpMaterialPrice(double price, String unit, double promoPrice, String scaleUnit, double scaleQuantity, String sapZoneId, String salesOrg, String distChannel) {
 			this.price = price;
 			this.unit = unit;
 			this.promoPrice = promoPrice;
 			this.scaleUnit = scaleUnit;
 			this.scaleQuantity = scaleQuantity;
 			this.sapZoneId = sapZoneId;
+//			this.salesOrg = salesOrg;
+//			this.distChannel = distChannel;
+			this.salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;
+			this.distChannel = "1000".equals(salesOrg)?"01":distChannel;
 		}
 		
 		public double getPrice() {
@@ -70,8 +83,359 @@ public class ErpProductInfoModel extends ModelSupport {
 		public String getSapZoneId() {
 			return sapZoneId;
 		}
+
+		/**
+		 * @return the salesOrg
+		 */
+		public String getSalesOrg() {
+			return salesOrg;
+		}
+
+		/**
+		 * @return the distChannel
+		 */
+		public String getDistChannel() {
+			return distChannel;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((distChannel == null) ? 0 : distChannel.hashCode());
+			long temp;
+			temp = Double.doubleToLongBits(price);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(promoPrice);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			result = prime * result
+					+ ((salesOrg == null) ? 0 : salesOrg.hashCode());
+			result = prime * result
+					+ ((sapZoneId == null) ? 0 : sapZoneId.hashCode());
+			temp = Double.doubleToLongBits(scaleQuantity);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			result = prime * result
+					+ ((scaleUnit == null) ? 0 : scaleUnit.hashCode());
+			result = prime * result + ((unit == null) ? 0 : unit.hashCode());
+			return result;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ErpMaterialPrice other = (ErpMaterialPrice) obj;
+			if (distChannel == null) {
+				if (other.distChannel != null)
+					return false;
+			} else if (!distChannel.equals(other.distChannel))
+				return false;
+			if (Double.doubleToLongBits(price) != Double
+					.doubleToLongBits(other.price))
+				return false;
+			if (Double.doubleToLongBits(promoPrice) != Double
+					.doubleToLongBits(other.promoPrice))
+				return false;
+			if (salesOrg == null) {
+				if (other.salesOrg != null)
+					return false;
+			} else if (!salesOrg.equals(other.salesOrg))
+				return false;
+			if (sapZoneId == null) {
+				if (other.sapZoneId != null)
+					return false;
+			} else if (!sapZoneId.equals(other.sapZoneId))
+				return false;
+			if (Double.doubleToLongBits(scaleQuantity) != Double
+					.doubleToLongBits(other.scaleQuantity))
+				return false;
+			if (scaleUnit == null) {
+				if (other.scaleUnit != null)
+					return false;
+			} else if (!scaleUnit.equals(other.scaleUnit))
+				return false;
+			if (unit == null) {
+				if (other.unit != null)
+					return false;
+			} else if (!unit.equals(other.unit))
+				return false;
+			return true;
+		}
 	}
 	
+	
+	public static class ErpPlantMaterialInfo implements Serializable{
+		
+		
+		private boolean kosherProduction;
+
+		private boolean platter;
+
+		private DayOfWeekSet blockedDays;	
+		
+		/** the ATPRule to use when checking for availablility of this material */
+		private EnumATPRule atpRule;
+		
+		/** product rating */
+		private String rating;
+		
+		private String freshness;
+		
+		/** sustainability rating */
+		private String sustainabilityRating;
+
+		/** the lead time in days to stock this product **/
+		private int leadTime;
+		
+		private String plantId;
+		
+		public ErpPlantMaterialInfo(boolean kosherProduction,
+				boolean platter, DayOfWeekSet blockedDays, EnumATPRule atpRule,
+				String rating, String freshness,
+				String sustainabilityRating,String plantId) {
+			super();
+			this.kosherProduction = kosherProduction;
+			this.platter = platter;
+			this.blockedDays = blockedDays;
+			this.atpRule = atpRule;
+			this.rating = rating;
+			this.freshness = freshness;
+			this.sustainabilityRating = sustainabilityRating;
+			this.plantId = plantId;
+		}
+
+		
+
+		/**
+		 * @return the kosherProduction
+		 */
+		public boolean isKosherProduction() {
+			return kosherProduction;
+		}
+
+		/**
+		 * @return the platter
+		 */
+		public boolean isPlatter() {
+			return platter;
+		}
+
+		/**
+		 * @return the blockedDays
+		 */
+		public DayOfWeekSet getBlockedDays() {
+			return blockedDays;
+		}
+
+		/**
+		 * @return the atpRule
+		 */
+		public EnumATPRule getAtpRule() {
+			return atpRule;
+		}
+
+		/**
+		 * @return the rating
+		 */
+		public String getRating() {
+			return rating;
+		}
+
+		/**
+		 * @return the days_in_house
+		 */
+		public String getFreshness() {
+			return freshness;
+		}
+
+		/**
+		 * @return the sustainabilityRating
+		 */
+		public String getSustainabilityRating() {
+			return sustainabilityRating;
+		}
+
+		/**
+		 * @return the leadTime
+		 */
+		public int getLeadTime() {
+			return leadTime;
+		}
+
+		/**
+		 * @return the plantId
+		 */
+		public String getPlantId() {
+			return plantId;
+		}
+
+
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((atpRule == null) ? 0 : atpRule.hashCode());
+			result = prime * result
+					+ ((freshness == null) ? 0 : freshness.hashCode());
+			result = prime * result + (kosherProduction ? 1231 : 1237);
+			result = prime * result + leadTime;
+			result = prime * result
+					+ ((plantId == null) ? 0 : plantId.hashCode());
+			result = prime * result + (platter ? 1231 : 1237);
+			result = prime * result
+					+ ((rating == null) ? 0 : rating.hashCode());
+			result = prime
+					* result
+					+ ((sustainabilityRating == null) ? 0
+							: sustainabilityRating.hashCode());
+			return result;
+		}
+
+
+
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ErpPlantMaterialInfo other = (ErpPlantMaterialInfo) obj;
+			if (atpRule == null) {
+				if (other.atpRule != null)
+					return false;
+			} else if (!atpRule.equals(other.atpRule))
+				return false;
+			if (freshness == null) {
+				if (other.freshness != null)
+					return false;
+			} else if (!freshness.equals(other.freshness))
+				return false;
+			if (kosherProduction != other.kosherProduction)
+				return false;
+			if (leadTime != other.leadTime)
+				return false;
+			if (plantId == null) {
+				if (other.plantId != null)
+					return false;
+			} else if (!plantId.equals(other.plantId))
+				return false;
+			if (platter != other.platter)
+				return false;
+			if (rating == null) {
+				if (other.rating != null)
+					return false;
+			} else if (!rating.equals(other.rating))
+				return false;
+			if (sustainabilityRating == null) {
+				if (other.sustainabilityRating != null)
+					return false;
+			} else if (!sustainabilityRating.equals(other.sustainabilityRating))
+				return false;
+			return true;
+		}
+
+
+
+		
+	}
+	
+	public static class ErpMaterialSalesAreaInfo implements Serializable{
+		
+		private SalesAreaInfo salesAreaInfo;
+		private String unavailabilityStatus;
+		private Date unavailabilityDate;
+		private String unavailabilityReason;
+		/**
+		 * @param salesAreaInfo
+		 * @param unavailabilityStatus
+		 * @param unavailabilityDate
+		 * @param unavailabilityReason
+		 */
+		public ErpMaterialSalesAreaInfo(SalesAreaInfo salesAreaInfo,
+				String unavailabilityStatus, Date unavailabilityDate,
+				String unavailabilityReason) {
+			super();
+			this.salesAreaInfo = salesAreaInfo;
+			if(unavailabilityStatus==null)
+				this.unavailabilityStatus = EnumAvailabilityStatus.AVAILABLE.getStatusCode();
+			else 
+				this.unavailabilityStatus=unavailabilityStatus;
+			this.unavailabilityDate = unavailabilityDate;
+			this.unavailabilityReason = unavailabilityReason;
+		}
+		/**
+		 * @return the salesAreaInfo
+		 */
+		public SalesAreaInfo getSalesAreaInfo() {
+			return salesAreaInfo;
+		}
+		/**
+		 * @param salesAreaInfo the salesAreaInfo to set
+		 */
+		public void setSalesAreaInfo(SalesAreaInfo salesAreaInfo) {
+			this.salesAreaInfo = salesAreaInfo;
+		}
+		/**
+		 * @return the unavailabilityStatus
+		 */
+		public String getUnavailabilityStatus() {
+			return unavailabilityStatus;
+		}
+		/**
+		 * @param unavailabilityStatus the unavailabilityStatus to set
+		 */
+		public void setUnavailabilityStatus(String unavailabilityStatus) {
+			this.unavailabilityStatus = unavailabilityStatus;
+		}
+		/**
+		 * @return the unavailabilityDate
+		 */
+		public Date getUnavailabilityDate() {
+			return unavailabilityDate;
+		}
+		/**
+		 * @param unavailabilityDate the unavailabilityDate to set
+		 */
+		public void setUnavailabilityDate(Date unavailabilityDate) {
+			this.unavailabilityDate = unavailabilityDate;
+		}
+		/**
+		 * @return the unavailabilityReason
+		 */
+		public String getUnavailabilityReason() {
+			return unavailabilityReason;
+		}
+		/**
+		 * @param unavailabilityReason the unavailabilityReason to set
+		 */
+		public void setUnavailabilityReason(String unavailabilityReason) {
+			this.unavailabilityReason = unavailabilityReason;
+		}
+		
+		
+		
+	}
 	/** version number */
 	private int version;
 
@@ -84,32 +448,14 @@ public class ErpProductInfoModel extends ModelSupport {
 	
 	/** unit prices of materials for this product */
 	private ErpMaterialPrice[] materialPrices;
-	
-	/** Availability checking rule */
-	private final EnumATPRule atpRule;
-
-	/** unavailability status code */
-	private final String unavailabilityStatus;
-
-	/** unavailability date */
-	private final Date unavailabilityDate;
-
-	/** unavailability reason */
-	private final String unavailabilityReason;
-
-	/** sap product description */
-	private final String description;
-	
-	/** sap product rating */
-	private final String rating;
-	
-	/** sap product shelf life **/
-	private final String freshness;
-	
-	
-	private String sustainabilityRating;
+		
+	private String description;
 	
 	private String upc;
+	
+	private ErpPlantMaterialInfo materialPlants[];
+	
+	private ErpMaterialSalesAreaInfo materialSalesAreas[];
 	
 
 	/**
@@ -126,7 +472,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	 * @param rating
 	 * @param freshness 
 	 * @param sustainabilityRating
-	 */
+	 *//*
 	public ErpProductInfoModel(
 		String skuCode,
 		int version,
@@ -177,6 +523,33 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.upc = upc;
 	}
 
+	*/
+	public ErpProductInfoModel(String skuCode,int version, 
+			String[] materialNumbers, String description, ErpMaterialPrice[] materialPrices,
+			String upc, ErpPlantMaterialInfo[] materialPlants,ErpMaterialSalesAreaInfo[] materialSalesAreas) {
+		super();
+		this.version = version;
+		this.skuCode = skuCode;
+		this.materialNumbers = materialNumbers;
+		this.materialPrices = materialPrices;
+		this.description = description;
+		this.upc = upc;
+		this.materialPlants = materialPlants;
+		this.materialSalesAreas = materialSalesAreas;
+	}
+
+	public ErpProductInfoModel( String skuCode,int version,
+			String[] materialNumbers, String description, String upc,
+			ErpPlantMaterialInfo[] materialPlants) {
+		super();
+		this.version = version;
+		this.skuCode = skuCode;
+		this.materialNumbers = materialNumbers;
+		this.description = description;
+		this.upc = upc;
+		this.materialPlants = materialPlants;
+	}
+
 	/**
 	 * Get version number
 	 *
@@ -218,30 +591,42 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.materialPrices = materialPrices;
 	}
 
-	public EnumATPRule getATPRule() {
-		return this.atpRule;
-	}
+	/*public EnumATPRule getATPRule() {
+		if(null !=materialPlants && materialPlants.length > 0){
+			return materialPlants[0].getAtpRule();
+		}
+		return null;
+	}*/
 
 	/** Getter for property unavailabilityDate.
 	 * @return Value of property unavailabilityDate.
 	 */
-	public Date getUnavailabilityDate() {
-		return unavailabilityDate;
-	}
+	/*public Date getUnavailabilityDate() {
+		if(null !=materialSalesAreas && materialSalesAreas.length > 0){
+			return materialSalesAreas[0].getUnavailabilityDate();
+		}
+		return null;
+	}*/
 
 	/** Getter for property unavailabilityReason.
 	 * @return Value of property unavailabilityReason.
 	 */
-	public String getUnavailabilityReason() {
-		return unavailabilityReason;
-	}
+	/*public String getUnavailabilityReason() {
+		if(null !=materialSalesAreas && materialSalesAreas.length > 0){
+			return materialSalesAreas[0].getUnavailabilityReason();
+		}
+		return null;
+	}*/
 
 	/** Getter for property unavailabilityStatus.
 	 * @return Value of property unavailabilityStatus.
 	 */
-	public String getUnavailabilityStatus() {
-		return unavailabilityStatus;
-	}
+	/*public String getUnavailabilityStatus() {
+		if(null !=materialSalesAreas && materialSalesAreas.length > 0){
+			return materialSalesAreas[0].getUnavailabilityStatus();
+		}
+		return null;
+	}*/
 
 	/** Getter for property description.
 	 * @return Value of property description.
@@ -253,39 +638,62 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** Getter for property rating.
 	 * @return Value of property rating.
 	 */
-	public String getRating() {
-		return rating;
-	}
+	/*public String getRating() {
+		if(null !=materialPlants && materialPlants.length > 0){
+			return materialPlants[0].getRating();
+		}
+		return null;
+	}*/
 
 	/** Getter for property freshness.
 	 * @return Value for property freshness.
 	 */
-	public String getFreshness() {
+	/*public String getFreshness() {
 		if(FDStoreProperties.IsFreshnessGuaranteedEnabled()){
-			return freshness;
+			if(null !=materialPlants && materialPlants.length > 0){
+				return materialPlants[0].getFreshness();
+			}
+			return null;
 		}
 		return null;
-	}
-
-	/**
-	 * Setter for property sustainabilityRating.
-	 * 
-	 * @param _sustainabilityRating
-	 */
-	public void setSustainabilityRating(String _sustainabilityRating) {
-		sustainabilityRating = _sustainabilityRating;
-	}
+	}*/
 
 	/**
 	 * Getter for property sustainabilityRating.
 	 * 
 	 * @return Value of property sustainabilityRating.
 	 */
-	public String getSustainabilityRating() {
-		return sustainabilityRating;
-	}
+	/*public String getSustainabilityRating() {
+		if(null !=materialPlants && materialPlants.length > 0){
+			return materialPlants[0].getSustainabilityRating();
+		}
+		return null;
+	}*/
 
 	public String getUpc() {
 		return upc;
 	}
+
+	/**
+	 * @return the materialPlants
+	 */
+	public ErpPlantMaterialInfo[] getMaterialPlants() {
+		return materialPlants;
+	}
+	
+	public ErpMaterialSalesAreaInfo[] getSalesAreas() {
+		return  materialSalesAreas;
+	}
+
+	@Override
+	public String toString() {
+		return "ErpProductInfoModel [version=" + version + ", skuCode="
+				+ skuCode + ", materialNumbers="
+				+ Arrays.toString(materialNumbers) + ", materialPrices="
+				+ Arrays.toString(materialPrices) + ", description="
+				+ description + ", upc=" + upc + ", materialPlants="
+				+ Arrays.toString(materialPlants) + ", materialSalesAreas="
+				+ Arrays.toString(materialSalesAreas) + "]";
+	}
+	
 }

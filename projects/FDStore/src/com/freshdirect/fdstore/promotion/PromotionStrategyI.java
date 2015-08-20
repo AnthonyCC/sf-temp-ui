@@ -2,7 +2,7 @@ package com.freshdirect.fdstore.promotion;
 
 import java.io.Serializable;
 
-public interface PromotionStrategyI extends Serializable {
+public interface PromotionStrategyI extends StoreRequiredI, Serializable {
 
 	public static final int DENY = 0;
 	public static final int ALLOW = 1;
@@ -16,5 +16,4 @@ public interface PromotionStrategyI extends Serializable {
 	 * @return DENY, ALLOW or FORCE
 	 */
 	public int evaluate(String promotionCode, PromotionContextI context);
-
 }

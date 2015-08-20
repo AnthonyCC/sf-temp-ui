@@ -2,29 +2,31 @@ package com.freshdirect.fdstore.oas.ejb;
 
 import java.io.Serializable;
 
+import com.freshdirect.common.pricing.ZoneInfo;
+
 /**@author ekracoff on Jul 22, 2004*/
 public class AdServerRow implements Serializable{
 	private final String productId;
 	private final boolean available;
 	private final String price;
-	private final String zoneId;
+	private final ZoneInfo zone;
 	private final String zoneType;
 
 	public AdServerRow(String productId, boolean isAvailable, String price) {
 		this.productId = productId;
 		this.available = isAvailable;
 		this.price = price;
-		this.zoneId= null;
+		this.zone= null;
 		this.zoneType = null;
 	}
 
 	public AdServerRow(String productId, boolean available, String price,
-			String zoneId, String zoneType) {
+			ZoneInfo zone, String zoneType) {
 		super();
 		this.productId = productId;
 		this.available = available;
 		this.price = price;
-		this.zoneId = zoneId;
+		this.zone = zone;
 		this.zoneType = zoneType;
 	}
 
@@ -53,8 +55,8 @@ public class AdServerRow implements Serializable{
 	/**
 	 * @return the zoneId
 	 */
-	public String getZoneId() {
-		return zoneId;
+	public ZoneInfo getZone() {
+		return zone;
 	}
 
 	/**

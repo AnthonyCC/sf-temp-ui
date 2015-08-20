@@ -11,12 +11,14 @@ package com.freshdirect.erp;
 /**
  * Type-safe enumeration for approval statuses.
  *
- * @version $Revision$
- * @author $Author$
+ * @author kkanuganti
  */
+@SuppressWarnings("javadoc")
 public class EnumApprovalStatus implements java.io.Serializable {
 
-    public final static EnumApprovalStatus LOADING  = new EnumApprovalStatus(-1, "L", "Loading");
+	private static final long serialVersionUID = -5419291639876154517L;
+
+	public final static EnumApprovalStatus LOADING  = new EnumApprovalStatus(-1, "L", "Loading");
 	public final static EnumApprovalStatus NEW      = new EnumApprovalStatus( 0, "N", "New");
 	public final static EnumApprovalStatus REJECTED = new EnumApprovalStatus( 1, "R", "Rejected");
 	public final static EnumApprovalStatus APPROVED = new EnumApprovalStatus( 2, "A", "Approved");
@@ -31,6 +33,30 @@ public class EnumApprovalStatus implements java.io.Serializable {
 		this.statusCode = statusCode;
 		this.displayName = displayName;
 	}
+	
+	public static EnumApprovalStatus getApprovalStatus(String code) {
+      if (LOADING.getStatusCode().equalsIgnoreCase(code))
+      {
+          return LOADING;
+      }
+      else if (NEW.getStatusCode().equalsIgnoreCase(code))
+      {
+          return NEW;
+      }
+      else if (REJECTED.getStatusCode().equalsIgnoreCase(code))
+      {
+          return REJECTED;
+      }
+      else if (APPROVED.getStatusCode().equalsIgnoreCase(code))
+      {
+          return APPROVED;
+      }
+      else if (PROMOTED.getStatusCode().equalsIgnoreCase(code))
+      {
+          return PROMOTED;
+      }
+      return null;
+   }
 
 	public String getStatusCode() {
 		return this.statusCode;

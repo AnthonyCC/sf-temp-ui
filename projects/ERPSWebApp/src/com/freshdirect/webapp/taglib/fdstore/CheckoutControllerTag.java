@@ -13,6 +13,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
@@ -81,6 +82,16 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private final String ebtUnavailableItemsPage	= "/checkout/step_3_unavail.jsp";
 	private final String ebtCRMUnavailableItemsPage	= "/checkout/checkout_EBT_unavail.jsp";
 	
+	public String getPaymentId() {			
+		FDCartModel cart = getCart();
+		String pId = null;
+		ErpPaymentMethodI payMethods=null;
+		if(cart != null){
+			payMethods = cart.getPaymentMethod();				
+			pId = payMethods.getPK().getId();	
+		}
+		return pId==null ? "":pId;	
+	}
 	
 	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
 	public String getEbtUnavailableItemsPage() {
@@ -173,7 +184,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateContainsDlvPassOnly( request, result );
 					UserValidationUtil.validateOrderMinimum( session, result );
-					boolean makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
+					boolean makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null || currentUser.getMasqueradeContext()!=null && currentUser.getMasqueradeContext().getMakeGoodFromOrderId()!=null;
 					if ( !makeGoodOrder ) {
 						// Set the selected gift carts for processing.
 						currentUser.getShoppingCart().setSelectedGiftCards( currentUser.getGiftCardList().getSelectedGiftcards() );
@@ -224,10 +235,18 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					return true;
 				}
 				String outcome = performSubmitOrder(result);
+				
 				// add logic to process make good order complaint.
-				if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) ) {
+				MasqueradeContext masqueradeContext = currentUser.getMasqueradeContext();
+				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
+				
+				if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) || masqueradeMakeGoodOrderId!=null ) {
 					ErpComplaintModel complaintModel = (ErpComplaintModel)session.getAttribute( SessionName.MAKEGOOD_COMPLAINT );
 					String makeGoodOrderId = (String)session.getAttribute( SessionName.RECENT_ORDER_NUMBER );
+					if (makeGoodOrderId == null){
+						makeGoodOrderId = masqueradeMakeGoodOrderId;
+					}
+					
 					complaintModel.setMakegood_sale_id( makeGoodOrderId );
 					try {
 						addMakeGoodComplaint( result, complaintModel );
@@ -237,6 +256,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 					session.removeAttribute( "makeGoodOrder" );
 					session.removeAttribute( "referencedOrder" );
+					session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
+					
+					if (masqueradeContext!=null){
+						masqueradeContext.clearMakeGoodContext();
+					}
 				}
 				currentUser.setSuspendShowPendingOrderOverlay(false);
 				currentUser.setShowPendingOrderOverlay(true);
@@ -313,7 +337,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				m.performAddAndSetPaymentMethod();
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
-					checkEBTRestrictedLineItems(cart, isNotCallCenter);
+					checkEBTRestrictedLineItems(cart, isNotCallCenter);					
 				}
 
 			} else if ( "addPaymentMethod".equalsIgnoreCase( action ) || "gc_addPaymentMethod".equalsIgnoreCase( action ) ) {
@@ -397,7 +421,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			}
 
 			/* reset user to see mergePending overlay again */
-			if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) ) {
+			if ( "true".equals( session.getAttribute( "makeGoodOrder" ) )  || currentUser.getMasqueradeContext()!=null && currentUser.getMasqueradeContext().getMakeGoodFromOrderId()!=null ) {
 				currentUser.setShowPendingOrderOverlay(true);
 			}
 		}
@@ -661,12 +685,19 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		LOGGER.debug( "  Credit Notes: " + complaintModel.getDescription() );
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = getUser().getIdentity();
-		String orderId = (String)session.getAttribute( "referencedOrder" );
-		CrmAgentModel agentModel =CrmSession.getCurrentAgent(session);
-		CrmAgentRole agentRole = agentModel.getRole();
-		boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
-		Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
-		FDCustomerManager.addComplaint( complaintModel, orderId, identity,autoApproveAuthorized,limit );
+		MasqueradeContext masqueradeContext = getUser().getMasqueradeContext();
+
+		if (masqueradeContext==null){
+			String orderId = (String)session.getAttribute( "referencedOrder" );
+			CrmAgentModel agentModel =CrmSession.getCurrentAgent(session);
+			CrmAgentRole agentRole = agentModel.getRole();
+			boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
+			Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
+			FDCustomerManager.addComplaint( complaintModel, orderId, identity,autoApproveAuthorized,limit );
+
+		} else {
+			FDCustomerManager.addComplaint( complaintModel, masqueradeContext.getMakeGoodFromOrderId(), identity, masqueradeContext.isAutoApproveAuthorized(), masqueradeContext.getAutoApprovalLimit());
+		}
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

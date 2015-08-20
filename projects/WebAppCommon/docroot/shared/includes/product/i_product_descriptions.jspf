@@ -1,5 +1,6 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
@@ -318,11 +319,12 @@
 				<fd:SeafoodSustainCheck>
 					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 					<%
-						if ( productInfo.getSustainabilityRating() != null ) { 
+						
+						if ( productInfo.getSustainabilityRating(plantID) != null ) { 
 							
 							String rating="";
 							boolean skipDisplay = true;
-							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
+							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
 							
 							if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 								if (enumRating.getId() == 0) {

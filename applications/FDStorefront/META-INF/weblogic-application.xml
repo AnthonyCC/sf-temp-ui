@@ -4,7 +4,4 @@
   <listener>
     <listener-class>com.freshdirect.fdstore.warmup.WLSWarmup</listener-class>
   </listener>
-  <listener>
-    <listener-class>com.freshdirect.framework.console.DebugConsole</listener-class>
-  </listener>
 </weblogic-application>

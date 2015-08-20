@@ -6,14 +6,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -169,7 +168,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			
 			} else {
 				cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
-						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false);
+						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false, result);
 				skusAndQuantities=getSkusAndQuantities(cart);
 				cart.clearOrderLines();
 			}	
@@ -247,15 +246,16 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		// OrderLineUtil.update(pi, true);
 		
 		Collection<FDCartLineI> cartLines = new ArrayList<FDCartLineI>();
+		ZoneInfo zone=user.getUserContext().getPricingContext().getZoneInfo();
 		
 		for (FDProductSelectionI p : pi) {
 				// p.refreshConfiguration();
 
 			final ProductModel prd = p.getProductRef().lookupProductModel();
 			
-			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
+			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, user.getUserContext());
 			
-			if (cartLine.lookupFDProductInfo().isAvailable()&& !cartLine.lookupProduct().isUnavailable() ) {
+			if (cartLine.lookupFDProductInfo().isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())&& !cartLine.lookupProduct().isUnavailable() ) {
 				cartLines.add(cartLine);
 			}
 		}

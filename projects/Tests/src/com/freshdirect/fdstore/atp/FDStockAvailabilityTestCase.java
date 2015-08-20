@@ -30,7 +30,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 
 		assertTrue(fdInv.availableCompletely(range("2003-01-11", "2003-01-12")).isAvailable());
 		assertTrue(fdInv.availableSomeTime(range("2003-01-11", "2003-01-12")).isAvailable());
@@ -52,7 +52,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-04"), 900000));
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 1, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 1, 1, 1);
 
 		assertTrue(fdInv.availableSomeTime(range("2003-01-01", "2003-01-10")).isAvailable());
 		assertFalse(fdInv.availableCompletely(range("2003-01-01", "2003-01-10")).isAvailable());
@@ -66,7 +66,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 
 		assertFalse(fdInv.availableCompletely(range("2003-01-11", "2003-01-12")).isAvailable());
 		assertFalse(fdInv.availableCompletely(range("2003-01-05", "2003-01-13")).isAvailable());
@@ -81,7 +81,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 0));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 		assertFalse(fdInv.availableCompletely(range("2003-01-01", "2003-01-05")).isAvailable());
 		assertFalse(fdInv.availableCompletely(range("2003-01-01", "2003-01-10")).isAvailable());
 
@@ -90,7 +90,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 1000));
 		erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		fdInv = new FDStockAvailability(erpInv, 30, 1, 1, null);
+		fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 		assertFalse(fdInv.availableCompletely(range("2003-01-01", "2003-01-05")).isAvailable());
 
 	}
@@ -98,7 +98,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	public void testEmptyInventoryAlwaysAvailable() throws ParseException {
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), new ArrayList<ErpInventoryEntryModel>());
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 
 		assertTrue(fdInv.availableCompletely(range("2003-01-06", "2003-01-07")).isAvailable());
 	}
@@ -108,7 +108,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 3.2));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 10, 5, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 10, 5, 1);
 
 		assertStock(fdInv.availableCompletely(range("2003-01-05", "2003-01-06")), 0);
 	}
@@ -118,7 +118,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 3.2));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 10, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 10, 1, 1);
 
 		assertStock(fdInv.availableCompletely(range("2003-01-05", "2003-01-06")), 3);
 	}
@@ -133,7 +133,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 1, 1, 1, null);
+		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 1, 1, 1);
 		
 		assertEquals(DF.parse("2003-01-08"), fdInv.getFirstAvailableDate(range("2003-01-01", "2003-02-01")));
 		assertEquals(DF.parse("2003-01-08"), fdInv.getFirstAvailableDate(range("2003-01-01", "2003-01-09")));

@@ -34,16 +34,18 @@
 								<td><input type="checkbox" id="residential" name="residential" <%= (null!=promoCustModel && promoCustModel.isOrderTypeHome())?"checked":"" %>/> Residential</td>
 								<td><input type="checkbox" id="commerical" name="commerical" <%= (null!=promoCustModel && promoCustModel.isOrderTypeCorporate())?"checked":"" %>/> Commercial</td>
 								<td><input type="checkbox" id="pickup" name="pickup" <%= (null!=promoCustModel && promoCustModel.isOrderTypePickup())?"checked":"" %>/> Pickup</td>
+								<td><input type="checkbox" id="isFdx" name="isFdx" <%= (null!=promoCustModel && promoCustModel.isOrderTypeFDX())?"checked":"" %>/> FDX</td>
 								<td>&nbsp;</td>
 							</tr>
 							<tr>
-								<td colspan="4" class="alignR">
+								<td colspan="5" class="alignR">
 									<a href="#" onclick="selectAllCB('edit_dlvreq_addTypeParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
 									<a href="#" onclick="selectNoneCB('edit_dlvreq_addTypeParent'); return false;" class="greenLink">(Select None)</a>
 								</td>
 							</tr>
 							<tr>
 								<%-- sets the column widths --%>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>

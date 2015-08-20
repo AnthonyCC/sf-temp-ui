@@ -419,6 +419,7 @@
       <role-name>CRM_System</role-name>
       <role-name>CRM_TransportationSupervisor</role-name>
       <role-name>CRM_HR</role-name>
+      <role-name>CRM_FDX</role-name>
     </auth-constraint>
     <user-data-constraint>
       <description>SSL not required</description>
@@ -512,5 +513,9 @@
   <security-role>
     <description>CRM_HR</description>
     <role-name>CRM_HR</role-name>
+  </security-role>
+  <security-role>
+    <description>CRM_FDX</description>
+    <role-name>CRM_FDX</role-name>
   </security-role> 
 </web-app>

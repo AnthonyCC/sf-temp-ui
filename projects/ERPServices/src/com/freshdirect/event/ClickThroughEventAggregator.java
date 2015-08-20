@@ -26,15 +26,15 @@ private static RecommendationEventAggregator aggregator;
 		return aggregator;
 	}
 
-	public ClickThroughEventAggregator(int maxEntries, int maxCount) {
+	protected ClickThroughEventAggregator(int maxEntries, int maxCount) {
 		super(maxEntries, maxCount);
 	}
 
-	protected FDRecommendationEvent createInstance(String variantId, String contentId, Date date) {
-		return new FDRecommendationEvent.ClickThrough(variantId,contentId,date);
+	protected FDRecommendationEvent createInstance(String variantId, String contentId, Date date, String eStoreId) {
+		return new FDRecommendationEvent.ClickThrough(variantId,contentId,date, eStoreId);
 	}
 
-	protected Class getEventClass() {
+	protected Class<? extends FDRecommendationEvent> getEventClass() {
 		return FDRecommendationEvent.ClickThrough.class;
 	}
 

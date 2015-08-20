@@ -100,6 +100,9 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 			if(isMatched && null !=filter.getKeyword() && !"".equalsIgnoreCase(filter.getKeyword().trim())){
 				isMatched = checkKeyword(filter, promotion);
 			}
+			if(isMatched && null !=filter.getServiceType() && !"".equalsIgnoreCase(filter.getServiceType().trim())){
+				isMatched = checkServiceType(filter, promotion);
+			}
 			
 			if(isMatched){
 				filteredPromotions.add(promotion);
@@ -108,6 +111,22 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 		return filteredPromotions;
 	}
 
+
+	private boolean checkServiceType(PromoFilterCriteria filter,
+			FDPromotionNewModel promotion) {
+		boolean retBool = false;
+
+		String serviceType = filter.getServiceType();
+		
+		if (serviceType != null && !"".equalsIgnoreCase(serviceType)) {
+			if ("RES".equalsIgnoreCase(serviceType) && promotion.isForHOME()) { return true; }
+			if ("COS".equalsIgnoreCase(serviceType) && promotion.isForCOS()) { return true; }
+			if ("PICKUP".equalsIgnoreCase(serviceType) && promotion.isForPICKUP()) { return true; }
+			if ("FDX".equalsIgnoreCase(serviceType) && promotion.isForFDX()) { return true; }
+		}
+		
+		return retBool;
+	}
 
 	private boolean checkOfferType(PromoFilterCriteria filter,
 			 FDPromotionNewModel promotion) {

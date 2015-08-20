@@ -934,7 +934,7 @@ public class JspMethods {
 		if (pricingContext == null)
 			pricingContext = PricingContext.DEFAULT;
 		return currencyFormatter.get().format(
-				productInfo.getZonePriceInfo(pricingContext.getZoneId())
+				productInfo.getZonePriceInfo(pricingContext.getZoneInfo())
 						.getDefaultPrice())
 				+ "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 	}
@@ -944,7 +944,7 @@ public class JspMethods {
 		if (pricingContext == null)
 			pricingContext = PricingContext.DEFAULT;
 		return currencyFormatter.get().format(
-				productInfo.getZonePriceInfo(pricingContext.getZoneId())
+				productInfo.getZonePriceInfo(pricingContext.getZoneInfo())
 						.getSellingPrice())
 				+ "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 	}
@@ -958,7 +958,7 @@ public class JspMethods {
 		if (pricingContext == null)
 			pricingContext = PricingContext.DEFAULT;
 		return currencyFormatter.get().format(
-				productInfo.getZonePriceInfo(pricingContext.getZoneId())
+				productInfo.getZonePriceInfo(pricingContext.getZoneInfo())
 						.getDefaultPrice());
 	}
 
@@ -967,12 +967,12 @@ public class JspMethods {
 		if (pricingContext == null)
 			pricingContext = PricingContext.DEFAULT;
 		return currencyFormatter.get().format(
-				productInfo.getZonePriceInfo(pricingContext.getZoneId())
+				productInfo.getZonePriceInfo(pricingContext.getZoneInfo())
 						.getSellingPrice());
 	}
 	
 	public static ZonePriceInfoModel getZonePriceInfo(FDProductInfo productInfo, FDUserI user) {
-	    return productInfo.getZonePriceInfo(user != null ? user.getPricingContext().getZoneId() : PricingContext.DEFAULT.getZoneId());
+	    return productInfo.getZonePriceInfo(user != null ? user.getPricingContext().getZoneInfo() : PricingContext.DEFAULT.getZoneInfo());
 	}
 	
 	public static String[] numToWords = {"zero", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN"  };

@@ -11,7 +11,7 @@ import java.util.List;
  * For example, {@link com.freshdirect.cms.application.service.xml.XmlContentService}
  * records DC metadata here during parsing.
  * 
- * @TODO this could use some refactoring, but sufficient for now.
+ * TODO this could use some refactoring, but sufficient for now.
  */
 public interface ResourceInfoServiceI {
 
@@ -20,7 +20,7 @@ public interface ResourceInfoServiceI {
 	 * 
 	 * @return List of String
 	 */
-	public List getInfoLog();
+	public List<String> getInfoLog();
 
 	/**
 	 * Record a metadata information about the resource.

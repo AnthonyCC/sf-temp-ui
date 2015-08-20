@@ -21,7 +21,7 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>Supervisor Resources > Del. Reservations</tmpl:put>
+<tmpl:put name='title' direct='true'>Admin Tools > Mass Returns</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
@@ -36,6 +36,7 @@
 	   	document.getElementById("searchFlag").value = "true";
 	}
 </script>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 <jsp:include page="/includes/admintools_nav.jsp" />
 <% 
 	String dlvDate = 

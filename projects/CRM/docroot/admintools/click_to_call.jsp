@@ -205,7 +205,7 @@ function selectZones(){
 			<tr><td colspan="8"  align="center" />&nbsp;</td></tr>
 		</table>
 		
-	<div id="result" class="list_content" style="height:70%;">
+	<div id="result" class="" style="height:70%;">
 	<table align="center" width="95%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">     
        
     <%	if (!saveClick2CallResult.isSuccess() ) {	%>

@@ -27,9 +27,13 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.FulfillmentContext;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
@@ -53,14 +57,17 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.OncePerRequestDateCache;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
@@ -69,7 +76,6 @@ import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.StoreModel;
-import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -100,7 +106,6 @@ import com.freshdirect.fdstore.survey.FDSurveyFactory;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
-import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
@@ -114,6 +119,8 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
+import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
@@ -159,7 +166,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean surveySkipped = false;
 
     private transient ErpCustomerInfoModel customerInfoModel;
-    private transient OrderHistoryI cachedOrderHistory;
+    private transient FDOrderHistory cachedOrderHistory;
     private transient CustomerAvgOrderSize historicOrderSize;
     private transient FDCustomerModel cachedFDCustomer;
 	protected transient FDPromotionEligibility promotionEligibility;
@@ -186,7 +193,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	//Contains user specific Delivery Pass Details.
 	private FDUserDlvPassInfo dlvPassInfo;
 
-	private Map assignedCustomerParams;
+	private Map<String,AssignedCustomerParam> assignedCustomerParams;
 
 	private EnumWinePrice preferredWinePrice = null;
 
@@ -218,7 +225,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private Map<String, ErpGCDlvInformationHolder> cachedRecipientInfo = null;
 	
-	private PricingContext pricingContext;
+	private UserContext userContext;
 	
 	protected Boolean isSOEligible = null;
 	protected Boolean hasEBTAlert = null;
@@ -229,7 +236,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	protected SortedSet<IgnoreCaseString> clientCodesHistory = null; 
 	private Map<String, Integer> promoErrorCodes = new ConcurrentHashMap <String, Integer>();
 	
-	private String masqueradeAgent;
+	private MasqueradeContext masqueradeContext;
 	
 	private int ctSlots;
 	private double percSlotsSold;
@@ -279,6 +286,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	/* APPDEV-3756 */
 	private boolean isGlobalNavTutorialSeen = false;
 	private List<ProductReference> productSamples;
+	
+	private boolean crmMode;
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -335,13 +344,20 @@ public class FDUser extends ModelSupport implements FDUserI {
         a.setZipCode(zipCode);
         this.address = a;
         this.invalidateCache();
+        this.userContext=null;
+        this.userContext=getUserContext();
     }
 
     public void setAddress(AddressModel a) {
+    	AddressModel old=this.address;
         this.address = a;
         this.invalidateCache();
+        this.userContext=null;
+        this.userContext=getUserContext();
+        
     }
 
+    
     public AddressModel getAddress() {
         return this.address;
     }
@@ -357,6 +373,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setIdentity(FDIdentity identity) {
         this.identity = identity;
         this.invalidateCache();
+        
     }
 
     public int getLevel() {
@@ -568,6 +585,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.promoVariantMap = null;
 		this.isSOEligible = null;
 		this.hasEBTAlert = null;
+		
     }
     /*
      * This method was introduced as part of PERF-22 task.
@@ -581,6 +599,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         if (this.cachedOrderHistory==null) {
             this.cachedOrderHistory = FDCustomerManager.getOrderHistoryInfo(this.identity);
         }
+        
         return this.cachedOrderHistory;
     }
 
@@ -1183,6 +1202,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public boolean isDlvPassActive(){
+		if(EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) {
+			return false;
+		}
 		if(dlvPassInfo == null){
 			return false;
 		}
@@ -1457,16 +1479,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public boolean isProduceRatingEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.RATING, this);
+		return true;
 	}
 	
 	public boolean isGiftCardsEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.GIFT_CARDS, this);
+		return true;
 	}
 
 
 	public boolean isCCLEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, this);
+		return true;
 	}
 
 	public boolean isCCLInExperienced() {
@@ -1479,12 +1501,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public boolean isDYFEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.DYF, this);
+		return true;
 	}
 
 	//Zone Pricing
 	public boolean isZonePricingEnabled() {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.ZONE_PRICING, this);
+		return true;
 	}
 	
 	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
@@ -1537,7 +1559,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 
-	public void setAssignedCustomerParams(Map assignedCustomerParams) {
+	public void setAssignedCustomerParams(Map<String, AssignedCustomerParam> assignedCustomerParams) {
 		this.assignedCustomerParams = assignedCustomerParams;
 	}
 
@@ -1908,7 +1930,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			FDOrderHistory h = (FDOrderHistory) getOrderHistory();
 			
 			// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
-			for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
+			for (FDOrderInfoI i : h.getFDOrderInfos()) {
 				//LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
 				if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() ) || i.getStandingOrderId() != null ) {
 					return Boolean.TRUE;
@@ -1940,48 +1962,108 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public EnumCheckoutMode getCheckoutMode() {
 		return EnumCheckoutMode.NORMAL;
 	}
-	 
+
+	/** use getUserContext().getPricingContext().getZoneId() instead */
+	@Deprecated
 	public String getPricingZoneId(){
-		 return this.getPricingContext().getZoneId();
+		 return "";
 	}
 	
+	/** use getUserContext().getPricingContext() instead */
+	@Deprecated
 	public PricingContext getPricingContext() {
+		return getUserContext().getPricingContext();
+	}
+
+	public UserContext getUserContext(){
 		try {
-			if(this.pricingContext == null){
+			
+			if(userContext == null){
+				userContext = new UserContext();
+				
+		StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
+				userContext.setStoreContext(storeContext); //TODO this should be changed once FDX_CMS is merged!!! also check StoreContext.createDefault()
+				
+				//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+				boolean alcoholRestrictedByContext=false;
+				if(this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
+					alcoholRestrictedByContext = 	FDUserUtil.isAlcoholRestricted(this.getZipCode());					
+				}
+				
+				userContext.setFdIdentity(getIdentity()); //TODO maybe FDIdentity should be removed from FDUser	
+				ErpAddressModel address=null;
+				if(identity!=null)
+					address=getFulfillmentAddress(identity,storeContext.getEStoreId());
+				else if(this.getAddress()!=null) 
+					address=new ErpAddressModel(this.getAddress());
+				
+				EnumRegionServiceType serviceType=getRegionServiceType(storeContext.getEStoreId());
+				FulfillmentContext fulfillmentContext = new FulfillmentContext();
+				ZoneInfo zoneInfo=null;
+				String pricingZoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
+				if(address!=null) {
+					FulfillmentInfo fulfillmentInfo=getFulfillmentInfo(address,today(),getHistoricOrderSize(), serviceType);
+					fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);
+					fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
+					zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
+				} else {
+					//default
+					fulfillmentContext.setPlantId("1000");
+					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+				}
+				userContext.setFulfillmentContext(fulfillmentContext);
+				userContext.setPricingContext(new PricingContext(zoneInfo));
+				
+
+/*
 				if(this.isZonePricingEnabled()) {
 					//Pricing context is yet to be set. Resolve it now.
-					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
-					//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
-					boolean alcoholRestrictedByContext=false;
-					if(this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
-						String county = FDDeliveryManager.getInstance().lookupCountyByZip(this.getZipCode());
-						String state = FDDeliveryManager.getInstance().lookupStateByZip(this.getZipCode());
-						alcoholRestrictedByContext = FDDeliveryManager.getInstance().checkForAlcoholDelivery(state, county, this.getZipCode());							
+					if(identity!=null)
+						address=getFulfillmentAddress(identity,storeContext.getEStoreId());
+					else if(this.getAddress()!=null) 
+						address=new ErpAddressModel(this.getAddress());
+					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
+
+					 if (userContext.getFdIdentity()!=null && this.isChefsTable() && EnumEStoreId.FDX.getContentId().equals(ContentFactory.getInstance().getStoreKey().getId())) {
+						ZoneInfo parent=new ZoneInfo(zoneId,"0001","01");
+						userContext.setPricingContext(new PricingContext(new ZoneInfo(zoneId,"1300","01",parent)));//::FDX::
+					} else {
+						userContext.setPricingContext(new PricingContext(new ZoneInfo(zoneId,"0001","01")));
 					}
-					
-					this.pricingContext = new PricingContext(zoneId, new UserContext(alcoholRestrictedByContext));					
 				}else {
 					//Set it to Master default zone
-					this.pricingContext = PricingContext.DEFAULT;
-				}
+					userContext.setPricingContext(PricingContext.DEFAULT);
+				}*/
 
 			}
-		}catch (FDResourceException e) {
+		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e, e.getMessage());
 		}
-		return this.pricingContext;
+		
+		
+		return userContext;
 	}
+	
+	
 
+	
+
+	/** use getUserContext().setPricingContext() instead */
+	@Deprecated
 	protected void setPricingContext(PricingContext pricingContext) {
-		this.pricingContext = pricingContext;
+		getUserContext().setPricingContext(pricingContext);
 	}
 
+	/** use getUserContext().resetPricingContext() instead */
+	@Deprecated
 	public void resetPricingContext(){
-		this.setPricingContext(null);
-	} 
-	//Added for Junit testing.
+		getUserContext().resetPricingContext();
+	}
+	
+	/** Added for Junit testing.<br>Use getUserContext().setDefaultPricingContext() instead */
+	@Deprecated
 	public void setDefaultPricingContext() {
-		this.setPricingContext(PricingContext.DEFAULT);
+		getUserContext().setDefaultPricingContext();
 	}
 	
 	public String constructZoneIdForQueryString(){
@@ -2048,15 +2130,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	@Override
-	public void setMasqueradeAgent(String agent) {
-		this.masqueradeAgent = agent;
+	public void setMasqueradeContext(MasqueradeContext ctx) {
+		this.masqueradeContext = ctx;
 	}
 	
 	@Override
-	public String getMasqueradeAgent() {
-		return masqueradeAgent;
+	public MasqueradeContext getMasqueradeContext() {
+		return masqueradeContext;
 	}
 	
+		@Deprecated
 		@Override
         public EnumWinePrice getPreferredWinePrice() {
 	    if (identity == null) {
@@ -2203,8 +2286,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	//mergePendingOrder (APPDEV-2031)
 	
 	public boolean getShowPendingOrderOverlay() {
-		return FDStoreProperties.isPendingOrderPopupEnabled()
-				&& (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay));
+
+		boolean showOverlay = false;
+			MasqueradeContext curContext = getMasqueradeContext();
+			Set<String> mgOLs = null;
+			if (curContext != null) {
+				mgOLs = curContext.getMakeGoodAllowedOrderLineIds();
+			}
+			showOverlay = FDStoreProperties.isPendingOrderPopupEnabled()
+					&& (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay))
+					&& (curContext == null || (curContext != null && mgOLs == null) );
+		
+		return showOverlay;
 	}
 
 	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
@@ -2242,17 +2335,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
 		
 		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.  
+		EnumEStoreId eStore=getUserContext().getStoreContext().getEStoreId();
 		Date currentDate = new Date();
-		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
+		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR,eStore));
 		
 		if (incGiftCardOrds) {
 			//Add gift cards orders too.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD));
+			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD,eStore));
 		}
 
 		if (incDonationOrds) {
 			//ADD Donation Orders too-for Robin Hood.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION));
+			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION,eStore));
 		}
 		
 		List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI> ();
@@ -2405,13 +2499,21 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 		@Override
 	public boolean isPopUpPendingOrderOverlay() {
+		boolean showOverlay = false;
 		try {
-			return getShowPendingOrderOverlay() && getLevel() >= RECOGNIZED
+			MasqueradeContext curContext = getMasqueradeContext();
+			Set<String> mgOLs = null;
+			if (curContext != null) {
+				mgOLs = curContext.getMakeGoodAllowedOrderLineIds();
+			}
+			showOverlay = getShowPendingOrderOverlay() && getLevel() >= RECOGNIZED
+					&& (curContext == null || (curContext != null && mgOLs == null) )
 					&& (hasPendingOrder() || FDStoreProperties.isPendingOrderPopupMocked());
 		} catch (FDResourceException e) {
 			LOGGER.debug("a really unexpected and really unnecessarily delegated exception", e);
-			return false;
+			//return false;
 		}
+		return showOverlay;
 	}
 	
 	
@@ -2882,5 +2984,88 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}			
 		}
 		return false;
+	}
+
+	private ErpAddressModel getFulfillmentAddress(FDIdentity identity,EnumEStoreId eStoreId) throws FDResourceException {
+		
+		ErpAddressModel address=this.getShoppingCart().getDeliveryAddress();
+		if(address==null)
+			address=FDCustomerManager.getLastOrderAddress(identity, eStoreId);
+		
+		if(EnumEStoreId.FDX.equals(eStoreId)&& address==null) {
+				address=FDCustomerManager.getLastOrderAddress(identity, EnumEStoreId.FD);
+		}
+		return address;
+	}
+	
+	private static Date today() {
+		Date d = OncePerRequestDateCache.getToday();
+		if(d == null){
+			d = new Date();
+		}
+		return d;
+	}
+	private EnumRegionServiceType getRegionServiceType(EnumEStoreId eStore) {
+		
+		EnumRegionServiceType serviceType=EnumRegionServiceType.HYBRID;
+		if(EnumEStoreId.FDX.equals(eStore))
+			serviceType=EnumRegionServiceType.FDX;
+		return serviceType;
+	}
+	private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address,	Date today, CustomerAvgOrderSize historicOrderSize, EnumRegionServiceType serviceType) {
+		
+		FulfillmentInfo fulfillmentInfo=null;
+		
+		try {
+			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), null);
+			if(deliveryZoneInfo!=null)
+				fulfillmentInfo=deliveryZoneInfo.getFulfillmentInfo();
+			
+		} catch (FDInvalidAddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if(fulfillmentInfo==null) {
+				fulfillmentInfo=new FulfillmentInfo();
+				fulfillmentInfo.setPlantCode("1000");
+				SalesArea salesArea=new SalesArea();
+				salesArea.setSalesOrg("0001");
+				salesArea.setDistChannel("01");
+				
+				fulfillmentInfo.setSalesArea(salesArea);
+				
+			}
+			
+		}
+		return fulfillmentInfo;
+	}
+	
+	private ZoneInfo getZoneInfo(String pricingZone,SalesArea salesArea) {
+		ZoneInfo zoneInfo=null;
+		ZoneInfo parentZone=null;
+		if(salesArea.getDefaultSalesArea()!=null) {
+			parentZone=new ZoneInfo(pricingZone,salesArea.getDefaultSalesArea().getSalesOrg(),salesArea.getDefaultSalesArea().getDistChannel());
+		}
+		zoneInfo=(parentZone!=null)?new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel(),parentZone):new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel());
+		return zoneInfo;
+	}
+
+	@Override
+	public void resetUserContext() {
+		this.userContext=null;
+	}
+
+	@Override
+	public boolean isCrmMode() {
+		return crmMode;
+	}
+	
+	@Override
+	public void setCrmMode(boolean flag) {
+		crmMode = flag;
 	}
 }

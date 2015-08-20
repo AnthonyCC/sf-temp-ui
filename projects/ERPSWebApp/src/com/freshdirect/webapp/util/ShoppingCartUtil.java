@@ -44,7 +44,7 @@ public class ShoppingCartUtil {
 	public static void restoreCart(HttpSession session) throws FDAuthenticationException, FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		
-		FDCartModel originalCart = FDCustomerManager.getSavedCart(user.getIdentity());//FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
+		FDCartModel originalCart = FDCustomerManager.getSavedCart(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());//FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
 
 		user.setShoppingCart( originalCart );
 		user.invalidateCache();

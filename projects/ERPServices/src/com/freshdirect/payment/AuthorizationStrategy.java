@@ -38,7 +38,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		this.fdAuthInfo = new AuthInfo(
 			sale.getPK().getId(), 
 			sale.getCustomerPk().getId(),
-			ErpAffiliate.getPrimaryAffiliate(),perishableBuffer);
+			ErpAffiliate.getPrimaryAffiliate(sale.geteStoreId()),perishableBuffer);
 		this.bcAuthInfo = new AuthInfo(
 			sale.getPK().getId(),
 			sale.getCustomerPk().getId(),

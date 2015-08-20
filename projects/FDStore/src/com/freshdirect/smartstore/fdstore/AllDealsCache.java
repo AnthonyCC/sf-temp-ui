@@ -16,6 +16,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -91,7 +92,7 @@ public class AllDealsCache {
 							for (Map.Entry<String, Integer> zoneEntry : zoneIndexes.entrySet()) {
 								ProductModel contentNode = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(product);
 								if (contentNode != null && !contentNode.isDiscontinued()) {
-									PriceCalculator pc = new PriceCalculator(new PricingContext(zoneEntry.getKey()), contentNode);
+									PriceCalculator pc = new PriceCalculator(new PricingContext(/*::FDX::zoneEntry.getKey()::FDX::*/ZonePriceListing.DEFAULT_ZONE_INFO), contentNode);
 									value[0][zoneEntry.getValue()] = pc.getDealPercentage();
 									value[1][zoneEntry.getValue()] = pc.getTieredDealPercentage();
 								}
@@ -153,7 +154,7 @@ public class AllDealsCache {
 
 		double[][] value = deals.get(key);
 		if (value != null) {
-			Integer zoneIndex = zoneIndexes.get(pricingContext.getZoneId());
+			Integer zoneIndex = zoneIndexes.get(pricingContext.getZoneInfo().getPricingZoneId()/*::FDX::*/);
 			if (zoneIndex == null)
 				return 0.;
 

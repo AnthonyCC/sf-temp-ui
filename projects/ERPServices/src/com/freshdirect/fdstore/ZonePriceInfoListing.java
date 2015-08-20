@@ -5,29 +5,31 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.common.pricing.ZoneInfo;
+
 public class ZonePriceInfoListing implements Serializable, Cloneable {
 	/**
      * 
      */
     private static final long serialVersionUID = 1L;
     //zoneId -> ZonePriceModel
-	Map<String, ZonePriceInfoModel> zonePriceInfoMap = new HashMap<String, ZonePriceInfoModel>();
+	Map<ZoneInfo, ZonePriceInfoModel> zonePriceInfoMap = new HashMap<ZoneInfo, ZonePriceInfoModel>();
 	 
 	public ZonePriceInfoListing() {
 		
 	}
 
-	public void reloadZonePrices(Map zonePriceMap) {
+	public void reloadZonePrices(Map<ZoneInfo, ZonePriceInfoModel> zonePriceMap) {
 		this.zonePriceInfoMap.clear();
 		this.zonePriceInfoMap.putAll(zonePriceMap);
 	}
 	
-	public void addZonePriceInfo(String zoneId, ZonePriceInfoModel zonePrice){
-		zonePriceInfoMap.put(zoneId, zonePrice);
+	public void addZonePriceInfo(ZoneInfo zoneInfo, ZonePriceInfoModel zonePrice){
+		zonePriceInfoMap.put(zoneInfo, zonePrice);
 	}
 	
-	public ZonePriceInfoModel getZonePriceInfo(String zoneId) {
-		return zonePriceInfoMap.get(zoneId);
+	public ZonePriceInfoModel getZonePriceInfo(ZoneInfo zoneInfo) {
+		return zonePriceInfoMap.get(zoneInfo);
 	}
 	
 	public Collection<ZonePriceInfoModel> getZonePriceInfos() {
@@ -40,15 +42,15 @@ public class ZonePriceInfoListing implements Serializable, Cloneable {
 	
 	public static ZonePriceInfoListing getDummy() {
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.99, 1.99, "LB", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE,false);
-		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.99, 1.99, "LB", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO,false);
+		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
 		return dummyList;
 	}
 	
 	@Override
 	public ZonePriceInfoListing clone() {
 	    ZonePriceInfoListing z = new ZonePriceInfoListing ();
-	    for (Map.Entry<String, ZonePriceInfoModel> e : zonePriceInfoMap.entrySet()) {
+	    for (Map.Entry<ZoneInfo, ZonePriceInfoModel> e : zonePriceInfoMap.entrySet()) {
 	        z.addZonePriceInfo(e.getKey(), e.getValue().clone());
 	    }
 	    return z;

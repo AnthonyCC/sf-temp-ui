@@ -201,6 +201,18 @@
 		vertical-align:middle;
 	}
 
+#topwarningbar {
+	background-color: #e89138;
+	width: 100%;
+	padding: 0.5em;
+	text-align: center;
+	vertical-align: middle;
+	color: #ffffff;
+	font-weight: bold;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 13px;
+}
+
 .partial-delivery-moreinfo .ui-dialog-title {
 	background:url(/media_stat/images/locationbar/more_info_title.png) no-repeat bottom left;
 	height:35px;

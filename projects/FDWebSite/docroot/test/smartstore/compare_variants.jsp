@@ -48,6 +48,7 @@
 <%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
@@ -574,7 +575,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					Customer ID: <%= customerId != null ? customerId : unknown %>
 	    				</p>
 	    				<p class="result">
-	    					Zone ID: <%= si.getPricingContext() != null ? si.getPricingContext().getZoneId() : unknown %>
+	    					Zone ID: <%= si.getPricingContext() != null ? si.getPricingContext().getZoneInfo() : unknown %>
 	    				</p>
 	    				<p class="result">
 	    					Cohort ID: <%= cohortId != null ? cohortId : unknown %>

@@ -20,13 +20,6 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class ErpCharacteristicValuePriceModel extends ModelSupport {
 
-	/**@link dependency*/
-	/*#ErpMaterialModel lnkErpMaterialModel;*/
-
-	/**@link dependency*/
-	/*#ErpCharacteristicValueModel lnkErpCharacteristicValueModel;*/
-
-
 	/** ErpMaterial ID */
 	private String materialId;
 
@@ -44,6 +37,19 @@ public class ErpCharacteristicValuePriceModel extends ModelSupport {
 
 	/** Condition type */
 	private String conditionType;
+	
+	/** Sales Organisation */
+	private String salesOrg;
+	
+	/** Distribution Channel */
+	private String distChannel;
+	
+	private String characteristicValueName;
+	
+	private String characteristicName;
+	
+	private String className;
+	
 
 	/**
 	 * Default constructor.
@@ -61,7 +67,8 @@ public class ErpCharacteristicValuePriceModel extends ModelSupport {
 	 * @param price price in USD
 	 * @param conditionType condition type
 	 */
-	public ErpCharacteristicValuePriceModel(String materialId, String cvId, String sapId, double price, String pricingUnit, String conditionType) {
+	public ErpCharacteristicValuePriceModel(String materialId, String cvId, String sapId, double price, String pricingUnit, String conditionType, String salesOrg, String distChannel,
+			String characteristicValueName, String characteristicName, String className) {
 		super();
 		this.setMaterialId(materialId);
 		this.setCharacteristicValueId(cvId);
@@ -69,6 +76,11 @@ public class ErpCharacteristicValuePriceModel extends ModelSupport {
 		this.setPrice(price);
 		this.setPricingUnit(pricingUnit);
 		this.setConditionType(conditionType);
+		this.setSalesOrg(salesOrg);
+		this.setDistChannel(distChannel);
+		this.setCharacteristicValueName(characteristicValueName);
+		this.setCharacteristicName(characteristicName);
+		this.setClassName(className);
 	}
 
 	/**
@@ -177,5 +189,75 @@ public class ErpCharacteristicValuePriceModel extends ModelSupport {
 	 */
 	public void setConditionType(String conditionType) {
 		this.conditionType = conditionType;
+	}
+
+	/**
+	 * @return the salesOrg
+	 */
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	/**
+	 * @param salesOrg the salesOrg to set
+	 */
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	/**
+	 * @return the distChannel
+	 */
+	public String getDistChannel() {
+		return distChannel;
+	}
+
+	/**
+	 * @param distChannel the distChannel to set
+	 */
+	public void setDistChannel(String distChannel) {
+		this.distChannel = distChannel;
+	}
+
+	/**
+	 * @return the characteristicValueName
+	 */
+	public String getCharacteristicValueName() {
+		return characteristicValueName;
+	}
+
+	/**
+	 * @param characteristicValueName the characteristicValueName to set
+	 */
+	public void setCharacteristicValueName(String characteristicValueName) {
+		this.characteristicValueName = characteristicValueName;
+	}
+
+	/**
+	 * @return the characteristicName
+	 */
+	public String getCharacteristicName() {
+		return characteristicName;
+	}
+
+	/**
+	 * @param characteristicName the characteristicName to set
+	 */
+	public void setCharacteristicName(String characteristicName) {
+		this.characteristicName = characteristicName;
+	}
+
+	/**
+	 * @return the className
+	 */
+	public String getClassName() {
+		return className;
+	}
+
+	/**
+	 * @param className the className to set
+	 */
+	public void setClassName(String className) {
+		this.className = className;
 	}
 }

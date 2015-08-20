@@ -10,7 +10,8 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.common.pricing.PricingContext" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
+<%@ page import="com.freshdirect.fdstore.ZonePriceListing"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ page import='java.util.Random' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
@@ -97,7 +98,7 @@
 
 		//call ftl render
 		MediaUtils.render(ftlPath, sw, params, false, user.getPricingContext() != null ? 
-                user.getPricingContext() : new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
+                user.getPricingContext() : new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO));
 
 
 		/*****  SETUP OUTPUT  *****/

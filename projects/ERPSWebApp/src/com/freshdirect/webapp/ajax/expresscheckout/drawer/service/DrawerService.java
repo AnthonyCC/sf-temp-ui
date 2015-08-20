@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
@@ -27,7 +28,7 @@ public class DrawerService {
 
 	static {
 		PageViewTagModel pvTagModel = new PageViewTagModel();
-		pvTagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
+		pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( CustomCategory.CHECKOUT.toString()));
 		pvTagModel.setPageId("payment");
 		PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
 		PAYMENT_ON_OPEN_COREMETRICS = pvTagModel.toStringList();

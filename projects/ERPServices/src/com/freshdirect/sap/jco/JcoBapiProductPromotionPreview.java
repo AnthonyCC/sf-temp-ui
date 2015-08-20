@@ -211,9 +211,9 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					promotionProducts.add(ppInfo);
 					Collections.sort(promotionProducts, new FDProductPromotionInfoComparator());
 					if(null==erpProductInfoMap.get(skuCode)){
-					ErpProductInfoModel erpProductInfoModel = new ErpProductInfoModel(skuCode,new String[]{matNum},EnumATPRule.JIT,
+					ErpProductInfoModel erpProductInfoModel = null;/*new ErpProductInfoModel(skuCode,new String[]{matNum},EnumATPRule.JIT,
 							EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-							"","","","","","");
+							"","","","","","");*/
 //					erpProductInfoList.add(erpProductInfoModel);
 					erpProductInfoMap.put(skuCode, erpProductInfoModel);
 					}
@@ -269,7 +269,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					}
 					ErpMaterialPrice materialPrice = null;
 					if("R".equalsIgnoreCase(priceType)){
-						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,"",0.0,zoneId);
+						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,"",0.0,zoneId, null, null);//::FDX::
 						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
 							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
 							if(erpMaterialPrice.getPromoPrice()>0 && erpMaterialPrice.getSapZoneId().equals(zoneId)){
@@ -278,7 +278,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 							}							
 						}
 					}else if("S".equalsIgnoreCase(priceType)){
-						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,priceUOM,qty,zoneId);
+						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,priceUOM,qty,zoneId, null, null);//::FDX::
 					}else if("P".equalsIgnoreCase(priceType)){
 						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
 							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
@@ -287,7 +287,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 							}							
 						}
 						if(null==materialPrice){
-							materialPrice = new ErpMaterialPrice(0,priceUOM,price,"",0.0,zoneId);
+							materialPrice = new ErpMaterialPrice(0,priceUOM,price,"",0.0,zoneId,null,null);//::FDX::
 						}
 					}else{
 						LOGGER.warn("ZPRICE_TYPE:"+priceType+", is invalid or empty for Sku:"+skuCode+", Material:"+matNum+" and Zone:"+zoneId);

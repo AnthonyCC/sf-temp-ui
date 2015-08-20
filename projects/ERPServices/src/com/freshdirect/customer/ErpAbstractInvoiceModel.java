@@ -190,4 +190,9 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 		ErpChargeLineModel charge = this.getCharge(EnumChargeType.DLVPREMIUM);
 		return charge==null ? 0.0 : charge.getAmount();
 	}
+    
+    public double getTip() {
+		ErpChargeLineModel charge = getCharge(EnumChargeType.TIP);
+		return charge==null ? 0.0 : charge.getAmount();
+	}
 }

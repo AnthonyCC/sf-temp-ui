@@ -136,7 +136,7 @@ public class WineHomenavTag extends BodyTagSupportEx {
 			try {
 				EnumWineFilterDomain domain = EnumWineFilterDomain.valueOf(domId);
 				PricingContext pricingContext = user != null ? user.getPricingContext() : PricingContext.DEFAULT;
-				String key = domain.name() + ":" + pricingContext.getZoneId();
+				String key = domain.name() + ":" + pricingContext.getZoneInfo();
 				if (!cache.containsKey(key))
 					cache.put(key, new WineFilterValueListLoader(refreshPeriod, domain, pricingContext));
 				items = cache.get(key).get();

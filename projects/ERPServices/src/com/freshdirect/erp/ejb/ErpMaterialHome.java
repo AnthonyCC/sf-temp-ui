@@ -32,6 +32,10 @@ public interface ErpMaterialHome extends EJBHome {
 	public ErpMaterialEB findByPrimaryKey(VersionedPrimaryKey vpk) throws FinderException, RemoteException;
     
     public ErpMaterialEB findBySapId(String sapId) throws FinderException, RemoteException;
+    
+    public ErpMaterialEB findBySkuCode(String skuCode) throws FinderException, RemoteException;
+    
+    public ErpMaterialEB findBySkuCodeAndVersion(String skuCode,int version) throws FinderException, RemoteException;
 
 }
 

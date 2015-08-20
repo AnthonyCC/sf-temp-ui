@@ -20,6 +20,8 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -830,16 +832,17 @@ public class StandingOrderUtil {
 		for (int i = 0; i < detachedList.size(); i++) {
 			FDCartLineI cartLine = detachedList.get(i);
 			int randomId = cartLine.getRandomId();
-			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();		
-			if (!prodInfo.isAvailable()) {
+			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
+			ZoneInfo zone=cartLine.getUserContext().getPricingContext().getZoneInfo();
+			if (!prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
 				String altSkuCode = getAlternateSkuCode(cartLine,excludedProductKeys);
 				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
 					
-				if(prodInfo.isDiscontinued()){
+				if(prodInfo.isDiscontinued(zone.getSalesOrg(),zone.getDistributionChanel())){
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.DISC, err, cartLine.getQuantity(),altSkuCode);
 				}
-				else if(prodInfo.isTempUnavailable() || !prodInfo.isAvailable()){
+				else if(prodInfo.isTempUnavailable(zone.getSalesOrg(),zone.getDistributionChanel()) || !prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())){
 				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity(),altSkuCode);
 				}
 				cart.removeOrderLineById(randomId);				

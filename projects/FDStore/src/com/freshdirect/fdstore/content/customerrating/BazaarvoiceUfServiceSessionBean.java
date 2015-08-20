@@ -5,6 +5,7 @@ import java.util.Map;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SessionBeanSupport;
 
+@Deprecated
 public class BazaarvoiceUfServiceSessionBean extends SessionBeanSupport {
 
 	/**

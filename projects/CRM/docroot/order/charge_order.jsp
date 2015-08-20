@@ -23,7 +23,7 @@
 <% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 
 <crm:GetCurrentAgent id="currentAgent">
-<fd:GetOrder id='order' saleId='<%= orderId %>'>
+<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 
 <crm:GetErpCustomer id="customer" user="<%= user %>">
 

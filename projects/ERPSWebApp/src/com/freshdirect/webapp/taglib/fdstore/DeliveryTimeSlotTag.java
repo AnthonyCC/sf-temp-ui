@@ -35,6 +35,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -172,9 +173,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		DateRange baseRange = createDateRange(1, 8);
 		
-		/*if(EnumEStoreId.FDX.name().equals(user.getUserContext().getStoreContext().getEStoreId())){
+		if(EnumEStoreId.FDX.name().equals(user.getUserContext().getStoreContext().getEStoreId().name())){
 			baseRange = createDateRange(0, 7);
-		}*/
+		}
 		
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
@@ -747,7 +748,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 	
 	@SuppressWarnings("unchecked")
-	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(FDCartModel cart){
+	public Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(FDCartModel cart){
 		Set<EnumDlvRestrictionReason> alcoholReasons = new HashSet<EnumDlvRestrictionReason>();
 		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
 			EnumDlvRestrictionReason reason = i.next();
@@ -759,7 +760,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		return alcoholReasons;
 	}
 	
-	protected static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
+	public static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
 		if(alcoholRestrictions.size()>0 && slot != null){
 			DateRange slotRange = new DateRange(slot.getStartDateTime(),slot.getEndDateTime());		
 			for (Iterator<RestrictionI> i = alcoholRestrictions.iterator(); i.hasNext();) {

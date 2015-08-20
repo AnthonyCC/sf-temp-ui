@@ -3,6 +3,7 @@ package com.freshdirect.fdstore;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 
 public class GroupScalePricing extends FDGroup {
@@ -46,16 +47,16 @@ public class GroupScalePricing extends FDGroup {
 		return grpZonePriceList;
 	}
 	
-	public GrpZonePriceModel getGrpZonePrice(String pZoneId) {
-		try {
-			GrpZonePriceModel grpZpModel = this.grpZonePriceList.getGrpZonePrice(pZoneId);
+	/*public GrpZonePriceModel getGrpZonePrice(ZoneInfo pricingZoneInfo) {
+		try {//::FDX:: this does half the job.
+			GrpZonePriceModel grpZpModel = this.grpZonePriceList.getGrpZonePrice(pricingZoneInfo);
 			if(grpZpModel == null) {
 				//do a item cascading to its parent until we find a price info.
-				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pZoneId);
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo.getPricingZoneId());
 				if(zoneInfo != null && zoneInfo.getParentZone() != null){
 					//This check has been added to make sure the following line does not
 					//throw NPE when master default zone does not have a defined GS price.
-					grpZpModel = getGrpZonePrice(zoneInfo.getParentZone().getSapId());
+					grpZpModel = getGrpZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()));
 				}
 			}
 			return grpZpModel;
@@ -63,8 +64,65 @@ public class GroupScalePricing extends FDGroup {
 		catch(FDResourceException fe){
 			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Group Zone Price Model");
 		}
+		
+		
 	}
+	
+	public GrpZonePriceModel _getGrpZonePrice(ZoneInfo pricingZone) {
+		try {
+			ZoneInfo _pricingZone=pricingZone;
+			GrpZonePriceModel grpZpModel = this.grpZonePriceList.getGrpZonePrice(_pricingZone);
+			while(grpZpModel == null) {
+				//do a item cascading to its parent until we find a price info.
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(_pricingZone.getPricingZoneId());
+				if(zoneInfo != null && zoneInfo.getParentZone() != null){
+					//This check has been added to make sure the following line does not
+					//throw NPE when master default zone does not have a defined GS price.
+					grpZpModel = this.grpZonePriceList.getGrpZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),_pricingZone.getSalesOrg(),_pricingZone.getDistributionChanel()));
+				} else if(zoneInfo != null && zoneInfo.getParentZone() == null) {
+					
+				} else {
+					//::FDX:: do what?
+				}
+			}
+			return grpZpModel;
+		}
+		catch(FDResourceException fe){
+			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Group Zone Price Model");
+		}
+		
+		
+	}*/
 
+	private GrpZonePriceModel _getZonePrice(ZoneInfo pricingZoneInfo) {//new
+		try {
+		
+			GrpZonePriceModel zpModel = this.grpZonePriceList.getGrpZonePrice(pricingZoneInfo.hasParentZone()?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
+			if(zpModel == null) {
+				//::FDX:do a item cascading to its parent until we find a price info.
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo.getPricingZoneId());
+				if(zoneInfo.getParentZone()!=null)
+					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()));
+			}
+			return zpModel;
+		}
+		catch(FDResourceException fe){
+			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Zone Price Model");
+		}
+	}
+	
+	
+	
+	
+	public GrpZonePriceModel getGrpZonePrice(ZoneInfo pricingZoneInfo) {//new
+		ZoneInfo zone=pricingZoneInfo;
+		GrpZonePriceModel zpModel=_getZonePrice(zone);
+		/*while(zpModel==null && zone.hasParentZone()) {
+			zone=zone.getParentZone();
+			zpModel=_getZonePrice(zone);
+		}*/
+		return zpModel;
+	}
 	public List<String> getSkuList() {
 		return skuList;
 	}

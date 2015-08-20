@@ -141,9 +141,15 @@ abstract class JcoBapiFunction implements BapiFunctionI {
 		{
 			code = ret.getString("ID") + "/" + ret.getString("NUMBER");
 		}
-		else
-		{
-			code = ret.getString("CODE");
+		
+			
+		
+		else if (ret.getMetaData().hasField("VBELN") &&
+				ret.getMetaData().hasField("VDATU") &&
+				ret.getMetaData().hasField("MESSAGE")){
+			return new BapiInfo(ret.getString("VBELN"), ret.getString("VDATU"), ret.getString("MESSAGE"));
+		}else {
+		code = ret.getString("CODE");
 		}
 		return new BapiInfo(ret.getString("TYPE"), code, ret.getString("LOG_NO"), ret.getString("LOG_MSG_NO"),
 				ret.getString("MESSAGE") + "," + ret.getString("MESSAGE_V1") + "," + ret.getString("MESSAGE_V2") + ","

@@ -26,4 +26,6 @@ public interface WebOrderViewI {
 	public double getSubtotal();
 	public String getDescription();
 
+	public double getETip();
+
 }

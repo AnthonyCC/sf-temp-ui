@@ -42,8 +42,9 @@ String orderId = (String) request.getParameter("orderId");
 boolean isClassicView = "dept".equalsIgnoreCase(request.getParameter("view"));
 %>
 <tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
+<%@ include file="/includes/i_globalcontext.jspf"%>
 <tmpl:put name='title' direct='true'>Order <%= orderId%> Issue Credits</tmpl:put>
-<fd:GetOrder id='orderI' saleId='<%= orderId %>'>
+<fd:GetOrder id='orderI' saleId='<%= orderId %>' crm="<%= true %>">
 <%
     FDOrderAdapter order = (FDOrderAdapter) orderI;
     ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
@@ -54,6 +55,10 @@ boolean isClassicView = "dept".equalsIgnoreCase(request.getParameter("view"));
     if (noFreeGrouping) {
         // it is already decided so ignore / override URL parameter value
     	isClassicView = order.getComplaintGroupingFashion() == FDOrderAdapter.IC_GROUP_BY_DEPTS;
+    }
+    boolean isFdxOrder = (order.getEStoreId().toString()).equals(_FDXValue);
+    if ( isFdxOrder ) {
+    	isClassicView = true;
     }
 %>
 <fd:GetGiftCardPurchased id="recipients" saleId='<%= orderId %>'>
@@ -265,8 +270,10 @@ var OL_PRICES = {};
 %>			<span style="color: gray;">Order by Cartons</span>
 <%
 		} else {
-%>			<a href="<%= request.getRequestURI() %>?orderId=<%= orderId %>" onclick="return checkFormDirty();">Order by Cartons</a>
-<%
+			
+			if ( !isFdxOrder ) {
+				%><a href="<%= request.getRequestURI() %>?orderId=<%= orderId %>" onclick="return checkFormDirty();">Order by Cartons!</a><%
+			}
 		}
 	} else {
 		if (noFreeGrouping) {

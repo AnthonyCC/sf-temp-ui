@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 
 <%
 
@@ -82,7 +83,7 @@ if(windowSize.equalsIgnoreCase("large")){
 FDProductInfo prodInfo=FDCachedFactory.getProductInfo(request.getParameter("sku"));
 FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 String term = request.getParameter("term");
-String price = JspMethods.formatPrice(prodInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice());
+String price = JspMethods.formatPrice(prodInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneInfo()).getDefaultPrice());
 if(request.getParameter("sku").equals(FDStoreProperties.getTwoMonthTrailDPSku())) {
 	term = "Six-Month";
 	price = FDStoreProperties.getTwoMonthTrailDPrice();

@@ -92,7 +92,8 @@ final class PaymentechConstants implements java.io.Serializable {
 	 static enum MerchantID implements java.io.Serializable {
 			FRESHDIRECT(Merchant.FRESHDIRECT,"087991"),
 			USQ(Merchant.USQ,"105944"),
-			FDW(Merchant.FDW,"238313");
+			FDW(Merchant.FDW,"238313"),
+			FDX(Merchant.FDX,"087991");
 			private Merchant id;
 		    private String value;
 		    private static Map<Merchant, MerchantID> merchantIDs;

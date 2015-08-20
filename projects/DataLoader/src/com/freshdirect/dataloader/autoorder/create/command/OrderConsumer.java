@@ -314,7 +314,7 @@ public class OrderConsumer implements IConsumer {
 					new FDCartLineModel(
 						new FDSku(productInfo),
 						productmodel,
-						new FDConfiguration(quantity, salesUnit.getName(), optionMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+						new FDConfiguration(quantity, salesUnit.getName(), optionMap), null, ContentFactory.getInstance().getCurrentUserContext());
 
 				cartLine.refreshConfiguration();
 				

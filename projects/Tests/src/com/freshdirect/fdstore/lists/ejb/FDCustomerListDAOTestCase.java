@@ -15,6 +15,7 @@ import java.util.Set;
 import org.dbunit.DatabaseUnitException;
 
 import com.freshdirect.DbTestCaseSupport;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -477,7 +478,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		
 		String customerPk = "C1";
 		FDIdentity identity = new FDIdentity(customerPk);
-		List<FDCustomerCreatedList>  lists = dao.getCustomerCreatedLists(conn, identity);
+		List<FDCustomerCreatedList>  lists = dao.getCustomerCreatedLists(conn, identity, StoreContext.createDefault());
 		
 		assertEquals(lists.size(), 3);
 		
@@ -529,7 +530,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 			}
 		}
 				
-		assertEquals(dao.getCustomerCreatedLists(conn, new FDIdentity("C2")).size(), 0);
+		assertEquals(dao.getCustomerCreatedLists(conn, new FDIdentity("C2"), StoreContext.createDefault()).size(), 0);
 
 	}
 
@@ -537,7 +538,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		FDIdentity identity = new FDIdentity("C1");
 		currentDate = REC_DATE;
 		idGenerator.add("L1");
-		dao.createCustomerCreatedList(conn, identity, "Test CCL 1");
+		dao.createCustomerCreatedList(conn, identity, "Test CCL 1", storeContext );
 		
 		FDCustomerCreatedList ccl = dao.getCustomerCreatedList(conn, identity, "L1");
 		assertEquals(ccl.getName(), "Test CCL 1");

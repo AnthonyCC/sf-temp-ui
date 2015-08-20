@@ -161,7 +161,7 @@ public class SamplingTestsBase extends TestCase {
 			ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 			node.setAttributeValue("SS_LEVEL_AGGREGATION", Boolean.TRUE);
 		}
-		SessionInput input = new SessionInput((String) null, null, null) {
+		SessionInput input = new SessionInput((String) null, null, null, null) {
 		    public boolean isNoShuffle() { return false; }
 		};
 

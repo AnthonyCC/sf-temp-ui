@@ -32,6 +32,7 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 
 <%
     FDUserI user = 		  (FDUserI) request.getAttribute("user");
+	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
     ProductModel productNode= (ProductModel)request.getAttribute("productNode");
     String cartMode = 	  (String) request.getAttribute("cartMode");
     

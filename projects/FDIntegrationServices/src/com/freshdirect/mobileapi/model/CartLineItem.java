@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
@@ -44,7 +45,7 @@ public class CartLineItem {
      * @param variantId
      * @param userSelectVariations
      */
-    public CartLineItem(String skuCode, double quantity, String salesUnit, String variantId, Map<String, String> userSelectVariations, String zoneId) {
+    public CartLineItem(String skuCode, double quantity, String salesUnit, String variantId, Map<String, String> userSelectVariations, UserContext userCtx ) {
         // Get FDSku object
         FDProduct product = null;
         try {
@@ -72,7 +73,7 @@ public class CartLineItem {
         Map<String, String> completeVariations = buildSelectedVariations(product.getVariations(), userSelectVariations);
         FDConfiguration fDConfiguration = new FDConfiguration(quantity, salesUnit, completeVariations);
 
-        fdCartline = new FDCartLineModel(fDSku, prodNode, fDConfiguration, variantId, zoneId);
+        fdCartline = new FDCartLineModel(fDSku, prodNode, fDConfiguration, variantId, userCtx);
     }
 
     private Map<String, String> buildSelectedVariations(FDVariation[] variations, Map<String, String> userSelectVariations) {

@@ -195,7 +195,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
         assertNotNull("spe_cooki_cooki category", category);
 
-        SessionInput si = new SessionInput("12345", null, null);
+        SessionInput si = new SessionInput("12345", null, null, null);
         si.setCurrentNode(category);
         si.setNoShuffle(true);
 

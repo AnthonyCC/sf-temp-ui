@@ -102,7 +102,7 @@ public class QuickShopHelper {
 
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 		
-		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
+		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity(), user.getUserContext().getStoreContext());
 		
 		if(items==null || items.isEmpty()){
 			return result;
@@ -575,14 +575,14 @@ public class QuickShopHelper {
 	public static List<FDOrderInfoI> getOrderHistoryInfo(FDUserI user, boolean regularOnly) throws FDResourceException {
 
 		FDOrderHistory history = (FDOrderHistory) user.getOrderHistory();
-		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
+		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR,user.getUserContext().getStoreContext().getEStoreId()));
 		
 		if(!regularOnly){
 			// Add gift cards orders too.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD));
+			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD,user.getUserContext().getStoreContext().getEStoreId()));
 			
 			// ADD Donation Orders too-for Robin Hood.
-			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION));			
+			orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION,user.getUserContext().getStoreContext().getEStoreId()));			
 		}
 		
 
@@ -634,7 +634,7 @@ public class QuickShopHelper {
 			    
 			    try {
 					FDProductInfo prodInfo = FDCachedFactory.getProductInfo(product.getSkuCode());
-					FDProductSelection productSelection = new FDProductSelection(prodInfo, product, product.getConfiguration(), user.getPricingZoneId());
+					FDProductSelection productSelection = new FDProductSelection(prodInfo, product, product.getConfiguration(), user.getUserContext());
 					productSelection.refreshConfiguration();
 				    OrderLineUtil.describe(productSelection);
 				    

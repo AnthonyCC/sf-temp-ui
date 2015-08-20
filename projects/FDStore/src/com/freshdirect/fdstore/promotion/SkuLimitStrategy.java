@@ -18,6 +18,7 @@ public class SkuLimitStrategy implements LineItemStrategyI {
 		this.skuLimit=skuLimit;
 	}
 	
+	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
 		Map<String,Integer> skuCountMap = context.getShoppingCart().getSkuCount();
 		Integer skuCount = skuCountMap.get(promotionCode);
@@ -26,6 +27,11 @@ public class SkuLimitStrategy implements LineItemStrategyI {
 			return ALLOW;
 		}		
 		return DENY;
+	}
+	
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }
 

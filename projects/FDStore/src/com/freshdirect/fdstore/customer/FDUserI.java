@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -20,6 +22,7 @@ import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
@@ -440,14 +443,20 @@ public interface FDUserI extends java.io.Serializable {
 	/** Tells checkout controller the way of work */
 	public EnumCheckoutMode getCheckoutMode();
 	
-    public String getPricingZoneId();
+	/** use getUserContext().getPricingContext().getZoneId() instead */
+	@Deprecated
+	public String getPricingZoneId();
 
+	/** use getUserContext().getPricingContext() instead */
+	@Deprecated
 	public PricingContext getPricingContext();
-
-	//public void setPricingContext(PricingContext pricingContext);
 	
+	/** use getUserContext().resetPricingContext() instead */
+	@Deprecated
 	public void resetPricingContext();
 
+	public UserContext getUserContext();
+	
 	public EnumServiceType getZPServiceType();
 
 	public void setZPServiceType(EnumServiceType serviceType);
@@ -463,10 +472,11 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public void clearPromoErrorCodes();
 	
-	public void setMasqueradeAgent(String agent);
+	public void setMasqueradeContext(MasqueradeContext ctx);
 	
-	public String getMasqueradeAgent();
+	public MasqueradeContext getMasqueradeContext();
 	
+	@Deprecated
 	public EnumWinePrice getPreferredWinePrice();
 	
 	public String getGreeting() throws FDResourceException;
@@ -602,7 +612,16 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isGlobalNavTutorialSeen();
     public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen);
 	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException;
+	//public OrderHistoryI getOrderHistory(EnumEStoreId eStore) throws FDResourceException;
+	public void resetUserContext();
 
 	public boolean isProductSample(ProductReference prodRef);
 
+
+	/**
+	 * Customer objects are treated with some restrictions in CRM.
+	 * Set to true if customer lives in CRM
+	 */
+	public boolean isCrmMode();
+	public void setCrmMode(boolean flag);
 }

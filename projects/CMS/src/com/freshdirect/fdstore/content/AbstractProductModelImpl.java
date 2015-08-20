@@ -144,15 +144,15 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 
 	public PriceCalculator getPriceCalculator() {
-	    return new PriceCalculator(getPricingContext(), this, this.getDefaultSku(getPricingContext()));
+	    return new PriceCalculator(getUserContext().getPricingContext(), this, this.getDefaultSku(getUserContext().getPricingContext()));
 	}
 
     public PriceCalculator getPriceCalculator(String skuCode) {
-        return new PriceCalculator(getPricingContext(), this, this.getValidSkuCode(getPricingContext(), skuCode));
+        return new PriceCalculator(getUserContext().getPricingContext(), this, this.getValidSkuCode(getUserContext().getPricingContext(), skuCode));
     }
 
     public PriceCalculator getPriceCalculator(SkuModel sku) {
-        return new PriceCalculator(getPricingContext(), this, sku);
+        return new PriceCalculator(getUserContext().getPricingContext(), this, sku);
     }
 
 	@Override
@@ -423,9 +423,11 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return getAttribute("RELATED_PRODUCTS_HEADER", null);
 	}
 
+	private String getPlantID() {
+		return ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+	}
 	public List<String> getCountryOfOrigin() throws FDResourceException {
 		List<String> coolInfo = new ArrayList<String>();
-
 		List<SkuModel> skus = getPrimarySkus();
 		// remove the unavailable sku's
 		for ( ListIterator<SkuModel> li = skus.listIterator(); li.hasNext(); ) {
@@ -441,7 +443,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			FDProductInfo productInfo;
 			try {
 				productInfo = sku.getProductInfo();
-				List<String> countries = productInfo.getCountryOfOrigin();
+				List<String> countries = productInfo.getCountryOfOrigin(getPlantID());
 				String text = getCOOLText( countries );
 				if ( !"".equals( text ) )
 					coolInfo.add( text );
@@ -467,7 +469,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 					String domainValue = sku.getVariationMatrix().get( 0 ).getValue();
 					try {
 						productInfo = sku.getProductInfo();
-						countries = productInfo.getCountryOfOrigin();
+						countries = productInfo.getCountryOfOrigin(getPlantID());
 						text = getCOOLText( countries );
 					} catch ( FDSkuNotFoundException ignore ) {
 						text = "";
@@ -584,7 +586,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			if(sku != null){
 				try {
 					FDProductInfo pInfo = sku.getProductInfo();
-					group = pInfo.getGroup();
+					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo().getSalesOrg(),getPriceCalculator().getPricingContext().getZoneInfo().getDistributionChanel());
 					if (group != null) {
 						break;
 					}
@@ -596,16 +598,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return group;
 	}
 	
-	/**
-	 * return default skus limited availability.
-	 */
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
-		SkuModel sku = getDefaultSku();
-		if(sku != null){
-			return sku.getLimitedAvailability();
-		}
-		return null;
-	}
 	
 	@Override
 	public boolean isRetainOriginalSkuOrder() {

@@ -465,6 +465,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			custModel.setOrderTypeHome(true);
 			custModel.setOrderTypeCorporate(true);
 			custModel.setOrderTypePickup(true);
+			custModel.setOrderTypeFDX(true);
 			custModel.setCohorts(cohorts);
 			EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
 			custModel.setDeliveryDayType(deliveryOption);

@@ -14,7 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpClientCode;
@@ -176,6 +177,9 @@ public class CartOperations {
 				cartLine.setCoremetricsPageContentHierarchy( reqData.getCoremetricsPageContentHierarchy() );
 				cartLine.setCoremetricsPageId( reqData.getCoremetricsPageId() );
 				cartLine.setCoremetricsVirtualCategory( reqData.getCoremetricsVirtualCategory() );
+				
+				cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+				cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 
 				cartLinesToAdd.add(cartLine);
 				
@@ -384,7 +388,7 @@ public class CartOperations {
 					if ( deltaQty > 0 ) {
 	
 						FDCartLineI newLine = cartLine.createCopy();
-						newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );					
+						newLine.setUserContext(  user.getUserContext());					
 						newLine.setQuantity( deltaQty );
 						
 						try {
@@ -756,7 +760,19 @@ public class CartOperations {
 		//									VALIDATION
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		String errorMessage = validateQuantity(user,cart,getCartlinesQuantity(prodNode,cartLinesToAdd),prodNode,quantity,0);
+		String errorMessage;
+		
+		MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+		if (masqueradeContext!=null){
+			errorMessage = masqueradeContext.validateAddToCart(item.getLineId());
+			if (errorMessage != null) {
+				responseItem.setStatus( Status.ERROR );
+				responseItem.setMessage(errorMessage);
+				return null;
+			}
+		}
+		
+		errorMessage = validateQuantity(user,cart,getCartlinesQuantity(prodNode,cartLinesToAdd),prodNode,quantity,0);
 		
 		if (errorMessage != null) {
 			responseItem.setStatus( Status.ERROR );
@@ -786,7 +802,8 @@ public class CartOperations {
 		//									ZONE & GROUP PRICING
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		String pricingZoneId = user.getPricingZoneId();
+		//String pricingZoneId = user.getPricingZoneId();
+		//ZoneInfo pricingZone=user.getUserContext().getPricingContext().getZoneInfo();
 		
 		// TODO : anything to do for group pricing ?
 		
@@ -794,7 +811,7 @@ public class CartOperations {
 		//									MAIN PROCESSING
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		FDCartLineI theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, pricingZoneId, null, item.getConfiguration());
+		FDCartLineI theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
 		
 		if ( theCartLine == null ) {
 			responseItem.setStatus( Status.ERROR );
@@ -823,6 +840,9 @@ public class CartOperations {
 		theCartLine.setExternalAgency(ExternalAgency.safeValueOf(item.getExternalAgency()));
 		theCartLine.setExternalSource(item.getExternalSource());
 		theCartLine.setExternalGroup(item.getExternalGroup());
+		
+		
+		
 
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									POST-PROCESSING
@@ -835,6 +855,7 @@ public class CartOperations {
 		theCartLine.setDiscountFlag(discountApplied);
 		
 		
+		
 		//					+++ SMART-STORE +++		
 		// TODO : add smart-store specific tracking
 		//			theCartLine.setYmalCategoryId(catId);
@@ -844,7 +865,7 @@ public class CartOperations {
 		//					+++ ORIGINAL ID +++		
 		// TODO : originating/original ID-s ?
 		//			theCartLine.setOriginatingProductId(originatingProductId);
-		//			theCartLine.setOrderLineId(originalOrderLineId);
+		theCartLine.setOrderLineId(item.getLineId());
 		
 		
 		//				+++ CARTON NUMBER +++
@@ -897,7 +918,7 @@ public class CartOperations {
 	 * @param varMap
 	 * @return
 	 */
-	private static FDCartLineI processSimple(ProductModel prodNode,FDProduct product, double quantity, FDSalesUnit salesUnit,	String origCartLineId, String variantId, String pZoneId, FDGroup group,Map<String,String> varMap) {
+	private static FDCartLineI processSimple(ProductModel prodNode,FDProduct product, double quantity, FDSalesUnit salesUnit,	String origCartLineId, String variantId, UserContext userCtx , FDGroup group,Map<String,String> varMap) {
 		
 		// Does not work with null...
 		if ( varMap == null ) {
@@ -915,7 +936,7 @@ public class CartOperations {
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					variantId, pZoneId);
+					variantId, userCtx);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -924,9 +945,10 @@ public class CartOperations {
 			List<ErpClientCode> clientCodes = Collections.emptyList();
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					origCartLineId, null, false, variantId, pZoneId, clientCodes);
+					origCartLineId, null, false, variantId, userCtx, clientCodes);
 			//Any group info from original cartline is moved to new cartline on modify.
 			cartLine.setFDGroup(group);
+		
 		}
 
 		return cartLine;

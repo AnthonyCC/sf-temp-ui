@@ -98,8 +98,9 @@
 			
 			
 			function nextelCallBack(nextelResult, error){
+				debugger;
 				console.log(error);
-				if(error!=null) return;
+				if(error!=null){$jq('#nextelInfo').html("There was an error. Please try again later."); return;}
 					var result = '';
 					var nextels = nextelResult.list;
 					for(var i=0;i < nextels.length;i++){
@@ -119,7 +120,7 @@
 
 			function cartonScanHistoryCallBack(cartonScanResult, error){
 				console.log(error);
-				if(error!=null) return;
+				if(error!=null){$jq('#cartonScanInfo').html("There was an error. Please try again later."); return;}
 				
 				var result = '';
 				var cartons = cartonScanResult.list;
@@ -162,7 +163,7 @@
 
 			function airClicMsgCallBack(msgResult, error) {
 				console.log(error);
-				if(error!=null) return;
+				if(error!=null){$jq('#airclicMessage').html("There was an error. Please try again later."); return;}
 				
 				var result = '';
 				var messages = msgResult.list;

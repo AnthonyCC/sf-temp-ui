@@ -403,7 +403,7 @@ class TestFDProduct extends FDProduct {
 	
 	public static TestFDProduct createTest(String sku, int version, boolean autoconfig) {
     	Date          now            = new Date();
-    	FDMaterial    material       = new FDMaterial(
+    	FDMaterial    material       = null;/*new FDMaterial(
     			EMPTY_ATTRIBUTES,
     			"000000000123",
     			EnumATPRule.MATERIAL,
@@ -415,7 +415,7 @@ class TestFDProduct extends FDProduct {
     			false, // platter
     			DayOfWeekSet.EMPTY,
     			0
-    	);
+    	);*/
 		FDVariation[] variations;
 		FDSalesUnit[] salesUnits;
 
@@ -459,7 +459,7 @@ class TestFDProduct extends FDProduct {
 
 		// pricing
 		MaterialPrice	mp[]			= {new MaterialPrice(1.0, "SalesUnit1", 0.0)};
-		ZonePriceModel zpModel = new ZonePriceModel(ZonePriceListing.MASTER_DEFAULT_ZONE, mp);
+		ZonePriceModel zpModel = new ZonePriceModel(ZonePriceListing.DEFAULT_ZONE_INFO, mp);
 		ZonePriceListing zpList = new ZonePriceListing();
 		zpList.addZonePrice(zpModel);
 		CharacteristicValuePrice cvp[]	= {};

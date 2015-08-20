@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmVSCampaignModel;
@@ -806,26 +807,17 @@ public class CallCenterServices {
 		}
 	}
 	
-	
-	public static List getTopFaqs() throws FDResourceException {
-		/*if (callCenterHome == null) {
-			lookupManagerHome();
-		}
-		try {
-			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getTopFaqs();
-
-		} catch (CreateException ce) {
-			callCenterHome = null;
-			throw new FDResourceException(ce, "Error creating bean");
-		} catch (RemoteException re) {
-			callCenterHome = null;
-			throw new FDResourceException(re, "Error talking to bean");
-		}*/
+	/**
+	 * 
+	 * @return Content keys of top faq entries
+	 * @throws FDResourceException
+	 * @see {@link ContentKey}
+	 */
+	public static List<String> getTopFaqs() throws FDResourceException {
 		return FDCustomerManager.getTopFaqs();
 	}
 	
-	public static void saveTopFaqs(List faqIds) throws FDResourceException{
+	public static void saveTopFaqs(List<String> faqIds) throws FDResourceException{
 		
 		if (callCenterHome == null) {
 			lookupManagerHome();

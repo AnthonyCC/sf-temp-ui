@@ -76,7 +76,7 @@ public class TestUnavailabilityServlet extends HttpServlet {
 				availableAmount %= 3;
 				List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 				erpEntries.add(new ErpInventoryEntryModel(new Date(), availableAmount++));
-				inv = new FDStockAvailability(new ErpInventoryModel("na", new Date(), erpEntries), cartline.getQuantity(), 1, 1, null);
+				inv = new FDStockAvailability(new ErpInventoryModel("na", new Date(), erpEntries), cartline.getQuantity(), 1, 1);
 			} else {
 				inv = failures.pop();
 			}

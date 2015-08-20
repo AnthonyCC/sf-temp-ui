@@ -464,7 +464,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
            if (isCCLorSO) {
 %>&nbsp;-&nbsp;<a name="remove_link" href="<%= landingPageRoot %>?<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>&qcType=<%= __qc.getProductType() %>" onclick="<%= JSRemoveAction %>(<%=ccListIdStr%>,<%=orderLine.getStatistics().getPK().getId()%>);">REMOVE</a>
 <%         } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST != cartType) {
-%>&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a>
+%>&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your list?');">Delete</a>
 <%      
            }
 	}
@@ -621,7 +621,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
                 <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>
             <%}%>      
         	<% if(orderLine.getStatistics() != null ){ 
-        			%>&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a><%
+        			%>&nbsp;-&nbsp;<a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your list?');">Delete</a><%
         	} %>
         	<% if ( (!(request.getRequestURI().indexOf("makegood")>-1)) || (orderLine.getStatistics() != null) ) { 
         		%></NOBR><%

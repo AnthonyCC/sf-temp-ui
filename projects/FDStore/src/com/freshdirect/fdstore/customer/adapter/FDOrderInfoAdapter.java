@@ -7,6 +7,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -190,5 +191,29 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	
 	public boolean isNewOrder(){
 		return this.getOrderStatus().isNewOrder();
+	}
+
+	@Override
+	public EnumEStoreId getEStoreId() {
+		// TODO Auto-generated method stub
+		return saleInfo.geteStore();
+	}
+
+	@Override
+	public String getPlantId() {
+		// TODO Auto-generated method stub
+		return saleInfo.getPlantId();
+	}
+
+	@Override
+	public String getSalesOrg() {
+		// TODO Auto-generated method stub
+		return saleInfo.getSalesOrg();
+	}
+
+	@Override
+	public String getDistributionChannel() {
+		// TODO Auto-generated method stub
+		return saleInfo.getDistributionChanel();
 	}
 }

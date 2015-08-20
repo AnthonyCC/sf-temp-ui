@@ -9,6 +9,7 @@ public class OrderAmount implements ConditionI {
 	private Double minimum;
 	private Double maximum;
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		FDRuleContextI c = (FDRuleContextI) target;
 		double orderTotal = MathUtil.roundDecimal(c.getOrderTotal());
@@ -43,6 +44,7 @@ public class OrderAmount implements ConditionI {
 		this.minimum = minimum;
 	}
 
+	@Override
 	public boolean validate() {
 		if(minimum == null && maximum == null){
 			return false;

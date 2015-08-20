@@ -12,6 +12,7 @@ public class RedemptionCodeStrategy implements PromotionStrategyI {
 		return this.redemptionCode;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		PromotionI redeemedPromo = context.getRedeemedPromotion();
 		if (redeemedPromo == null || !promotionCode.equals(redeemedPromo.getPromotionCode())) {
@@ -21,6 +22,7 @@ public class RedemptionCodeStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 500;
 	}
@@ -29,4 +31,8 @@ public class RedemptionCodeStrategy implements PromotionStrategyI {
 		return "RedemptionCodeStrategy[" + this.redemptionCode + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

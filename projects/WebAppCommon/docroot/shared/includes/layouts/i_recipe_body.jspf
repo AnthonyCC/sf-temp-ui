@@ -32,6 +32,8 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@page import="com.freshdirect.common.context.UserContext"%>
 
 <% //expanded page dimensions
 final int W_RECIPE_BODY_TOTAL = 806;
@@ -50,7 +52,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
     String          successPage;
 -- Host page will need various Imports...(see recipe.jsp)
 --%><%!
-	public static FDProductSelectionI convertToSelection(ConfiguredProduct confProd, RecipeSection section, String pZoneId) throws FDSkuNotFoundException, FDResourceException {
+	public static FDProductSelectionI convertToSelection(ConfiguredProduct confProd, RecipeSection section, UserContext ctx) throws FDSkuNotFoundException, FDResourceException {
 		FDProductInfo prodInfo = FDCachedFactory.getProductInfo(confProd.getSkuCode());
 		ProductModel prod = ContentFactory.getInstance().getProduct(confProd.getSkuCode());
 
@@ -58,7 +60,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
 		FDProductSelection r = new FDProductSelection(
 			new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 			prod,
-			configuration,pZoneId);
+			configuration,ctx);
 			
 		try {
 			OrderLineUtil.cleanup(r);
@@ -435,7 +437,7 @@ int prodIdx = 0;
         SkuModel            sku          = null;
 
         if (!configuredProduct.isUnavailable()) {
-            orderLine    = convertToSelection(configuredProduct, currSection, user.getPricingContext().getZoneId());
+            orderLine    = convertToSelection(configuredProduct, currSection, user.getUserContext());
             _productNode = orderLine.lookupProduct();
             sku          = _productNode.getSku(orderLine.getSkuCode());
         }

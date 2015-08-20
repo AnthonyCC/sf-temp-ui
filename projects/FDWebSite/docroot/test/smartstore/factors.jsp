@@ -1,4 +1,4 @@
-<%@page import='java.util.*' 
+SC<%@page import='java.util.*' 
 %><%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"
 %><%@page import="org.apache.commons.fileupload.FileItemFactory"
 %><%@page import="org.apache.commons.fileupload.FileItem"
@@ -17,7 +17,12 @@
 %><%@page import="jxl.write.WriteException"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoreProvider"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoresTable"
-%><%@page import="com.freshdirect.framework.util.CSVUtils"%><%!
+%><%@page import="com.freshdirect.framework.util.CSVUtils"%>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
+
+
+<%!
 
 private String makeLinkString(Set loadedFactors, String factor, boolean glob) {
 	StringBuffer buffer = new StringBuffer();
@@ -78,6 +83,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 		
 		List customers = null;
 		String zoneId = null;
+		
 
 		for(Iterator it = items.iterator(); it.hasNext(); ) {
 			FileItem fileItem = (FileItem)it.next();
@@ -106,7 +112,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 			}
 		}
 
-		T = ScoreProvider.getInstance().getAllScores(customers, zoneId);
+		T = ScoreProvider.getInstance().getAllScores(customers, ZonePriceListing.DEFAULT_ZONE_INFO);//::FDX::
 
 	
 		if (html) {	

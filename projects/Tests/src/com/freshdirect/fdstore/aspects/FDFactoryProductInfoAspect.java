@@ -18,14 +18,18 @@ import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDPlantMaterial;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.TestFDInventoryCache;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.DayOfWeekSet;
 
 public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     
@@ -105,6 +109,16 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
         
         Double defPromoPrice = (Double) promoPrices.get(sku);
         double promoPrice = (defPromoPrice != null) ? defPromoPrice.doubleValue() : 0.0;
+        
+        
+        Map<String,FDPlantMaterial> plantInfo=null;
+        Map<String, FDMaterialSalesArea> mAvail=null;
+        
+        
+		
+		
+		
+		
 
         if (avialableSkus.contains(sku)) {
             // return this item as available
@@ -113,12 +127,23 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
             erpEntries.add(new ErpInventoryEntryModel(now, 10000));
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
     		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
-    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO);
+    		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
     		
     		fillZonePriceList(sku, dummyList);
 
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null, null, dummyList, null, null, null, availDates,null);
+    		plantInfo=new HashMap<String,FDPlantMaterial>() {
+    			{
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    			}
+    		};
+    		
+    		mAvail=new HashMap<String, FDMaterialSalesArea>(){
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			};
+    		};
+    		;
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
         } else if (tomorrowAvailable.contains(sku)) {
             // return this item as available by tomorrow, but not today
             Date tomorrow = DateUtil.addDays(now, 1);
@@ -127,19 +152,41 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
 
     		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(price, promoPrice, "ea", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO);
                 fillZonePriceList(sku, dummyList);
-    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null, availDates,null);
+    		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
+    		plantInfo=new HashMap<String,FDPlantMaterial>() {
+    			{
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    			}
+    		};
+    		
+    		mAvail=new HashMap<String, FDMaterialSalesArea>(){
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			};
+    		};
+            //productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null);
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
         } else {
             // fallback: return any unknown item as unavailable
             // a 0 units available starting now
             erpEntries.add(new ErpInventoryEntryModel(now, 0));
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
        		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 0.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
-    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);            
-            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,null, null, dummyList, null, null, null, availDates,null);
+    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 0.0, "ea", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO);
+    		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);          
+    		plantInfo=new HashMap<String,FDPlantMaterial>() {
+    			{
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    			}
+    		};
+    		
+    		mAvail=new HashMap<String, FDMaterialSalesArea>(){
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.DISCONTINUED.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			};
+    		};
+            
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
         }
 
         return productInfo;
@@ -153,7 +200,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
         List<ZonePriceInfoModel> list = zonePrices.get(sku);
         if (list != null) {
             for (ZonePriceInfoModel zp : list) {
-                dummyList.addZonePriceInfo(zp.getSapZoneId(), zp);
+                dummyList.addZonePriceInfo(zp.getZoneInfo(), zp);
             }
         }
     }

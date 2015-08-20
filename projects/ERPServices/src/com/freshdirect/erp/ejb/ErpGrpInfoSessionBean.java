@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBException;
 
@@ -19,6 +20,7 @@ import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -56,17 +58,22 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 	}
 	
 	
-	public FDGroup getGroupIdentityForMaterial(String matId) throws RemoteException {
+	public Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException {
 	     
 		Connection conn = null;
-		FDGroup group=null;
-		try{
-			conn = getConnection();			
-   		    group=ErpGrpInfoDAO.getGroupIdentityForMaterial(conn,matId);			
-		}catch(SQLException sqle){
+		Map<String,FDGroup> groups=null;
+		try
+		{
+			conn = getConnection();
+			groups = ErpGrpInfoDAO.getGroupIdentityForMaterial(conn, matId);
+		}
+		catch(SQLException sqle)
+		{
 			LOGGER.error("Unable to load all findGrpInfoMaster " , sqle);
 			throw new EJBException(sqle);
-		}finally {
+		}
+		finally
+		{
 			try {
 				if (conn != null)
 					conn.close();
@@ -75,8 +82,29 @@ public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 				throw new EJBException(sqle);
 			}
 		}
-		return group;
+		return groups;
 				
+	}
+	
+	public Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(String matId) throws RemoteException {
+		Connection conn = null;
+		Map<SalesAreaInfo, FDGroup> salesAreaGroups = null;
+		try {
+			conn = getConnection();
+			salesAreaGroups = ErpGrpInfoDAO.getGroupIdentitiesForMaterial(conn, matId);
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to load all findGrpInfoMaster ", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}
+		return salesAreaGroups;
 	}
 	
 	public Collection getFilteredSkus(List skuList) throws RemoteException{

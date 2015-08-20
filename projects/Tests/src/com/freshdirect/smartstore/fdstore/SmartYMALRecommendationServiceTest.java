@@ -12,7 +12,6 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
@@ -33,7 +32,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     public void setUp() throws Exception {
         super.setUp();
     	
-        input = new SessionInput("12345", null, null);
+        input = new SessionInput("12345", null, null, null);
         input.setNoShuffle(true);
         input.setMaxRecommendations(10);
     }

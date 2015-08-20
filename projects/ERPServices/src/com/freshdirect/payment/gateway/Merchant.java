@@ -4,5 +4,6 @@ public enum Merchant implements java.io.Serializable {
 
 	FRESHDIRECT,
 	USQ,
-	FDW;
+	FDW,
+	FDX;
 }

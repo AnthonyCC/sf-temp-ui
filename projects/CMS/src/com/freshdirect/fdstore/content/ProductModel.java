@@ -8,7 +8,9 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
@@ -82,8 +84,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		@Override
 		public int doCompare(SkuModel sku1, SkuModel sku2) {
 			try {
-				String zoneId1 = sku1.getPricingContext().getZoneId();
-				String zoneId2 = sku2.getPricingContext().getZoneId();
+				ZoneInfo zoneId1 = sku1.getPricingContext().getZoneInfo();
+				ZoneInfo zoneId2 = sku2.getPricingContext().getZoneInfo();
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
 				if (pi1.getZonePriceInfo(zoneId1).getDefaultPrice() > 
@@ -117,10 +119,10 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	
 	public static class ZonePriceComparator extends SkuInfoComparator {
-	    String zoneId;
+		ZoneInfo zoneInfo;
 	    
-        public ZonePriceComparator(String zoneId) {
-            this.zoneId = zoneId;
+        public ZonePriceComparator(ZoneInfo zoneInfo) {
+            this.zoneInfo = zoneInfo;
         }
 
         @Override
@@ -128,9 +130,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
             try {
                 FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
                 FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
-                if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() > pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() > pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
                     return 1;
-                } else if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() < pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                } else if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() < pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
                     return -1;
                 } else {
                     return 0;
@@ -185,7 +187,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
             
             SkuModel sku1 = model1.getDefaultSku();
             if (sku1 != null) {
-				String zoneId1 = sku1.getPricingContext().getZoneId();
+            	ZoneInfo zoneId1 = sku1.getPricingContext().getZoneInfo();
                 try {
                     price1 = sku1.getProductInfo().getZonePriceInfo(zoneId1).getDefaultPrice();
                 } catch (FDResourceException e) {
@@ -197,7 +199,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
             SkuModel sku2 = model2.getDefaultSku();
             if (sku2 != null) {
-                String zoneId2 = sku2.getPricingContext().getZoneId();
+                ZoneInfo zoneId2 = sku2.getPricingContext().getZoneInfo();
                 try {
                     price2 = sku2.getProductInfo().getZonePriceInfo(zoneId2).getDefaultPrice();
                 } catch (FDResourceException e) {
@@ -226,9 +228,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 			try {
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				
-				EnumOrderLineRating oli1=pi1.getRating();
-				EnumOrderLineRating oli2=pi2.getRating();
+				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+				EnumOrderLineRating oli1=pi1.getRating(plantID);
+				EnumOrderLineRating oli2=pi2.getRating(plantID);
 				
 				
 				if(oli1==null && oli2==null) return 0;
@@ -274,9 +276,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				
-				EnumSustainabilityRating oli1=pi1.getSustainabilityRating();
-				EnumSustainabilityRating oli2=pi2.getSustainabilityRating();
+				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+				EnumSustainabilityRating oli1=pi1.getSustainabilityRating(plantID);
+				EnumSustainabilityRating oli2=pi2.getSustainabilityRating(plantID);
 				
 				
 				if(oli1==null && oli2==null) return 0;
@@ -936,7 +938,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	//Gift Card changes
 	public List getGiftcardType();
 	
-	public PricingContext getPricingContext();
+	public UserContext getUserContext();
 
 	/**
 	 * @param skuCode

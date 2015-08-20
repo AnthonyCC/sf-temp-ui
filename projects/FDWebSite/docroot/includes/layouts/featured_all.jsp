@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -395,7 +396,7 @@ final int W_FEATURED_PADDING = 14;
 				%>
 					<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 						<%
-							lstUnitPrice = "<font class=\"price\"" + ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ? " style=\"color:#C94747\"" : "" ) + ">" + 
+							lstUnitPrice = "<font class=\"price\"" + ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale() ? " style=\"color:#C94747\"" : "" ) + ">" + 
 							                    	JspMethods.formatPrice(productInfo, user.getPricingContext()) + "</font>";
 						%>
 					</fd:FDProductInfo>

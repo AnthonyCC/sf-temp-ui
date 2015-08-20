@@ -22,6 +22,25 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	actionName = "addressCheck";
 }
 %>
+
+<div id="geocode_address" class="home_module home_module home_search_module_container" style="">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;">
+	<tr>
+		<td class="home_module_header_text">
+			Address Validation 
+			<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmAddressValiationHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Address Validation Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a> 
+			&nbsp; <span class="home_search_module_field" style="font-weight: normal;">*Required</span>&nbsp;
+		</td>
+		<td align="right" class="home_search_module_field">
+			<a href="http://www.usps.com/zip4/" target="usps" class="home_search_module_field" title="USPS ZIP check" style="color:#003399; text-decoration:none;">
+				<span style="color:#CC0000;">&raquo;</span> USPS
+			</a>
+		</td>
+	</tr>
+	</table>
+	<div id="monitor_content" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px; overflow-y: auto;">
+		<form name="check_address" method="POST"><span class="space4pix"><br /><br /></span>
+		<input type="hidden" name="checkAddressSubmit" value="addressCheck">
 <crm:GetCurrentAgent id='currentAgent'>
 <fd:ZipPlus4Address actionName='<%=actionName%>' result='result' id='dlvAddress'>
 <%
@@ -44,7 +63,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 		<fd:ErrorHandler result='<%=result%>' name='main_error' id='errorMsg'>
 			<span class="error"><%=errorMsg%></span>
 		</fd:ErrorHandler>
-<table width="80%" bgcolor="#EEEEEE" cellpadding="3" cellspacing="0" style="margin-bottom:8px; border: solid 1px #999999;" align="center">
+				<table width="80%" bgcolor="#EEEEEE" cellpadding="2" cellspacing="0" style="margin-bottom:8px; border: solid 1px #999999;" align="center">
 <tr>
 	<td>
 		<fd:ErrorHandler result='<%=result%>' name='dlv_address' id='errorMsg'>
@@ -75,17 +94,32 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 		<span class="correct"><b>GEOCODE_OK</b></span><br>
 		<% } %>
 	</td>
-	<td width="60%" align="right"><span class="module_header_note"><b>X:</b></span>  <%= CCFormatter.formatLatLong(longitude) %><br><span class="module_header_note"><b>Y:</b></span> <%= CCFormatter.formatLatLong(latitude) %></td>
+					<td style="width: 25px;" align="right">
+						<span class="module_header_note"><b>LAT:</b></span><br />
+						<span class="module_header_note"><b>LON:</b></span>
+					</td>
+					<td  style="width: 75px;" align="right">
+						<%= CCFormatter.formatLatLong(latitude) %><br />
+						<%= CCFormatter.formatLatLong(longitude) %>
+					</td>
+					<td style="width: 55px;" align="right"><a href="https://www.google.com/maps/search/<%= CCFormatter.formatLatLong(latitude) %>,<%= CCFormatter.formatLatLong(longitude) %>" target="_gmap" title="View on Google Maps" class="ui-icon-cc ui-icon-cc-gmap"><span>Google Maps</span></a></td>
 </tr>
 </table>
 <% } %>
-<table border="0" cellspacing="3" cellpadding="0" align="center" class="home_search_module_field">
 <input type="hidden" name="action" value="geocode">
+			<table cellpadding="0" cellspacing="2" class="home_search_module_field" border="0" width="98%">
 	<tr>
-	    <td align="right">* Address</td>
-		<td colspan="2"><input type="text" style="width: 150px;" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" value="<%= dlvAddress.getScrubbedStreet() == null || "".equals(dlvAddress.getScrubbedStreet()) ? dlvAddress.getAddress1() : dlvAddress.getScrubbedStreet() %>"></td>
+				    <td width="80"></td>
+				    <td width="140"></td>
+				    <td width="75"></td>
+				    <td width="30"></td>
+				    <td width=""></td>
+				</tr>
+				<tr>
+				    <td>*&nbsp;Address</td>
+					<td colspan="2"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" value="<%= dlvAddress.getScrubbedStreet() == null || "".equals(dlvAddress.getScrubbedStreet()) ? dlvAddress.getAddress1() : dlvAddress.getScrubbedStreet() %>"></td>
 		<td align="right">Apt. </td>
-        <td>&nbsp<input type="text" class="input_text" size="5" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= dlvAddress.getApartment() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			        <td><input type="text" class="input_text" size="5" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= dlvAddress.getApartment() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 	</tr>
 	
 	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'>
@@ -93,12 +127,12 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	</fd:ErrorHandler>
 	
 	<tr>
-	    <td align="right">Addr. Line 2</td>
+				    <td>&nbsp;&nbsp;Addr.&nbsp;Line 2</td>
 		<td colspan="4"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= dlvAddress.getAddress2() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 
 	</tr>
 	<tr>
-	    <td align="right">* City</td>
+				    <td>*&nbsp;City</td>
 		<td colspan="4"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%= dlvAddress.getCity() %>"></td>
 	</tr>
 	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_CITY.getCode() %>' id='errorMsg'>
@@ -108,7 +142,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 		</tr>
 	</fd:ErrorHandler>
 	<tr>
-		<td align="right">* State</td>
+					<td>*&nbsp;State</td>
 		<td><select name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" class="pulldown">
             <option value="NY" <%= "NY".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NY</option>
 			<option value="NJ" <%= "NJ".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NJ</option>
@@ -121,7 +155,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
   		</select>
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td align="right">* Zip Code</td>
+					<td align="right">*&nbsp;Zip&nbsp;Code</td>
         <td colspan="2"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= dlvAddress.getZipCode() %>"></td>
     </tr>
 	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'>
@@ -162,13 +196,14 @@ if (suggestions != null) {  %>
 <% } %>
 <% List<FDDeliveryZoneInfo> zoneInfo=(List<FDDeliveryZoneInfo>)pageContext.getAttribute("zoneInfo");
    String county=(String)pageContext.getAttribute("county");
-   String COSStatus="", zoneCode="", bulkZone="";
+   String COSStatus="", zoneCode="", bulkZone="", facility="";
    if(zoneInfo!=null){
 	   for(FDDeliveryZoneInfo zInfo : zoneInfo){
 			if(!zInfo.isBulkZone()){ 
 	 				if(zInfo.getZoneCode()!=null && !" ".equals(zInfo.getZoneCode())){
 	 					zoneCode = zInfo.getZoneCode();
-	 				}if(zInfo.isCosEnabled()){
+	 				}
+	 				if (zInfo.isCosEnabled()){
 		  				COSStatus="YES";
 		  		  	}else{
 		  				COSStatus="NO";
@@ -177,19 +212,26 @@ if (suggestions != null) {  %>
 		  		if(zInfo.getZoneCode()!=null && !" ".equals(zInfo.getZoneCode())){
 		  			bulkZone = zInfo.getZoneCode();
 					}
-			} 
+			}
+			if (zInfo.getFulfillmentInfo() != null) {
+				facility = zInfo.getFulfillmentInfo().getPlantCode();
+			}
 		}
    }
    %>
-	<table align="center">
+		<table align="center" cellspacing="4">
  		<tr>
- <%if(zoneCode!="") {%> <td>(Zone Code=<%=zoneCode%>)</td><td>&nbsp;</td><td bgcolor="green"><b><%=bulkZone%></b></td><td>&nbsp;</td>
- <td>(County:</td>&nbsp;<td><%=county%>)</td>
-  <td><span class="correct">(COS Enabled:&nbsp;<%=COSStatus%>)</span></td>
- <%}%> 
-
-  </tr>
-  </table>
+			<% if(zoneCode!="") { %>
+				<td>(Zone Code=<%=zoneCode%>)</td>
+				<% if (bulkZone != "" || true) { %>
+			 		<td><span class="bulkZone"><%= bulkZone %></span></td>
+ 				<% } %> 
+				<td>(County:&nbsp;<%= county %>)</td>
+				<td><span class="cosEnabled">(COS Enabled:&nbsp;<%= COSStatus %>)</span></td>
+			<% } %>
+			
+		</tr>
+  		</table>
   
 <% availServices = (Set)pageContext.getAttribute("availServices");
    EnumDeliveryStatus deliveryStatus=(EnumDeliveryStatus)pageContext.getAttribute("deliveryStatus");
@@ -200,12 +242,15 @@ if (suggestions != null) {  %>
 	       <tr><td>Available Services:</td><td>&nbsp;&nbsp;</td>
 	           <td>
 	            <% for(Iterator svc = availServices.iterator(); svc.hasNext(); ) { 
-	                   EnumServiceType s = (EnumServiceType) svc.next(); 
-	                   if("CORPORATE".equals(s.getName()) && EnumDeliveryStatus.COS_ENABLED.equals(deliveryStatus)){  %>
-	              			<span class="correct">(<%= s.getName() %>)</span>
-	             		<%}else{ %> 			
-	              			(<%= s.getName() %>) &nbsp;
-	            <% } }%>
+	                EnumServiceType s = (EnumServiceType) svc.next(); 
+	                if ("CORPORATE".equals(s.getName()) && EnumDeliveryStatus.COS_ENABLED.equals(deliveryStatus)){  %>
+	              		<span class="correct">(<%= s.getName() %>)</span>
+	              	<% } else if ("FDX".equals(s.getName())) { %>
+		              	(<%= s.getName() %>)<% if (facility != null && facility != "") { %>&nbsp;(Facility:&nbsp;<%= facility %>)<% } %>
+	              	<% } else { %>
+	              		(<%= s.getName() %>) 
+	            	<% }
+				} %>
 	           </td></tr>
 	   </table>
 <%  } }%>
@@ -237,3 +282,7 @@ if (suggestions != null) {  %>
 	} %>
 </fd:ZipPlus4Address>
 </crm:GetCurrentAgent>
+
+		</form>
+	</div>
+</div>

@@ -1,6 +1,8 @@
 package com.freshdirect.customer;
 
-public class VSReasonCodes  {
+import java.io.Serializable;
+
+public class VSReasonCodes implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 	

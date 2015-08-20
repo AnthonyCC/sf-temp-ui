@@ -21,6 +21,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private boolean orderTypeHome;
 	private boolean orderTypePickup;
 	private boolean orderTypeCorporate;
+	private boolean orderTypeFDX;
 	private EnumCardType[] paymentType;
 	private String priorEcheckUse;
 	private boolean excludeSameDayDlv;
@@ -35,7 +36,8 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
 			String[] dpTypes,String dpStatus, Date dpExpStart, Date dpExpEnd,
 			boolean orderTypeHome, boolean orderTypePickup,
-			boolean orderTypeCorporate, EnumCardType[] paymentType,
+			boolean orderTypeCorporate, boolean orderTypeFDX,
+			EnumCardType[] paymentType,
 			String priorEcheckUse,EnumComparisionType echeckMatchType) {
 		super();
 		this.promotionId = promotionId;
@@ -48,6 +50,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.orderTypeHome = orderTypeHome;
 		this.orderTypePickup = orderTypePickup;
 		this.orderTypeCorporate = orderTypeCorporate;
+		this.orderTypeFDX = orderTypeFDX;
 		this.paymentType = paymentType;
 		this.priorEcheckUse = priorEcheckUse;
 		this.dpTypes=dpTypes;
@@ -162,6 +165,12 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	}
 	public void setEcheckMatchType(EnumComparisionType echeckMatchType) {
 		this.echeckMatchType = echeckMatchType;
+	}
+	public boolean isOrderTypeFDX() {
+		return orderTypeFDX;
+	}
+	public void setOrderTypeFDX(boolean orderTypeFDX) {
+		this.orderTypeFDX = orderTypeFDX;
 	}
 	
 	

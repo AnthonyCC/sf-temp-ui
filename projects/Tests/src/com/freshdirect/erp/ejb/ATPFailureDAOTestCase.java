@@ -28,8 +28,8 @@ public class ATPFailureDAOTestCase extends DbTestCaseSupport {
 		// setup
 		List atpFailureInfos = new ArrayList();
 
-		atpFailureInfos.add(new ATPFailureInfo(DF.parse("2004-01-01"), "000000000100200300", 5.5, "EA", 1.5, ""));
-		atpFailureInfos.add(new ATPFailureInfo(DF.parse("2004-01-01"), "000000000100200301", 10, "A05", 0, ""));
+		atpFailureInfos.add(new ATPFailureInfo(DF.parse("2004-01-01"), "000000000100200300", 5.5, "EA", 1.5, "",null));
+		atpFailureInfos.add(new ATPFailureInfo(DF.parse("2004-01-01"), "000000000100200301", 10, "A05", 0, "",null));
 
 		// execute
 		new ATPFailureDAO().create(conn, atpFailureInfos);

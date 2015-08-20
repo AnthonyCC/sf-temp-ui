@@ -36,7 +36,7 @@ final int W_IMAGE_NO_CART = 120;
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId");
 String jspTemplate = (String) request.getAttribute("jspTemplate");
@@ -476,11 +476,11 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 			        }
 			
 			        prodPrice = JspMethods.formatDefaultPrice(productInfo, user.getPricingContext());
-			        hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
+			        hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale();
 			        if(hasWas) {
 			            prodBasePrice=JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
 			        }
-			        deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
+			        deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getHighestDealPercentage();
 			        if (deal > 0) {
 			            dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();        	
 			        }
@@ -560,34 +560,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 						%></font><br />
 						<%
 					    boolean displayLimitedAvailability = false;
-					    
-					    List<FDLimitedAvailabilityInfo> limitedAvailibility = minSku.getLimitedAvailability();
-						if(limitedAvailibility != null && limitedAvailibility.size() > 0) {	%>
-							<div>
-								<table width="100%" cellpadding="0" cellspacing="0" border="0">
-									<tr>
-										<td align="right">			
-				        					<span><font class="text11">Limited Delivery Availability</font></span><br />
-											<%
-				            					Calendar cal = Calendar.getInstance();
-				            					displayLimitedAvailability = true;
-				            					for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
-				                					cal.setTime(l.getRequestedDate());
-				                					int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-				                					double quantity = l.getQuantity();
-				                					if(quantity > 0) { %>
-				                						<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available" />
-				            						<% } else { %>
-				                						<img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable" />
-				            						<% }
-				            					}
-											%>            
-				            			</td>
-				            		</tr>
-				            	</table>
-			            	</div>
-						<% }
-		    				boolean showUnavailableText = true;
+		    			boolean showUnavailableText = true;
 		   				if (!displayLimitedAvailability) {
 			                Date earliestDate = minSku.getEarliestAvailability();
 		       		        Calendar testDate = new GregorianCalendar();

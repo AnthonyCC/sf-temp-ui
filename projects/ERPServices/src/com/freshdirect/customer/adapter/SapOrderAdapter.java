@@ -38,6 +38,7 @@ import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -119,7 +120,7 @@ public class SapOrderAdapter implements SapOrderI {
 			} catch (FDSkuNotFoundException ex) {
 				throw new FDResourceException(ex);
 			}
-			this.orderLines[i] = new SapOrderLineAdapter(fdProduct, erpOrderLine);
+			this.orderLines[i] = new SapOrderLineAdapter(fdProduct, erpOrderLine,erpOrder.getDeliveryInfo().getDeliveryPlantInfo());
 		}
 	}
 
@@ -393,13 +394,16 @@ public class SapOrderAdapter implements SapOrderI {
 
 		/** List of ErpInventoryModel */
 		private List<ErpInventoryModel> inventories = Collections.<ErpInventoryModel>emptyList();
+		private ErpDeliveryPlantInfoModel plantInfo;
 
 		/**
 		 * constructor
+		 * @param plantInfo 
 		 */
-		public SapOrderLineAdapter(FDProduct fdProduct, ErpOrderLineModel orderLine) {
+		public SapOrderLineAdapter(FDProduct fdProduct, ErpOrderLineModel orderLine, ErpDeliveryPlantInfoModel plantInfo) {
 			this.orderLine = orderLine;
 			this.fdProduct = fdProduct;
+			this.plantInfo=plantInfo;
 		}
 
 		/**
@@ -412,7 +416,7 @@ public class SapOrderAdapter implements SapOrderI {
 				Pricing pricing = fdProduct.getPricing();
 				FDConfigurableI prConf = new FDConfiguration(orderLine.getQuantity(), orderLine.getSalesUnit(), orderLine
 					.getOptions());
-				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity());
+				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getUserContext().getPricingContext(), orderLine.getFDGroup(), orderLine.getGroupQuantity(),orderLine.getScaleQuantity());
 				return confPrice.getPricingCondition();
 			} catch (PricingException e) {
 				throw new IllegalStateException("Unable to determine pricing condition");
@@ -550,7 +554,9 @@ public class SapOrderAdapter implements SapOrderI {
 		 * Get the availability check rule.
 		 */
 		public EnumATPRule getAtpRule() {
-			return this.fdProduct.getMaterial().getAtpRule();
+			
+			//return this.fdProduct.getMaterial().getAtpRule();
+			return this.fdProduct.getMaterial().getMaterialPlants().get(plantInfo.getPlantId()).getAtpRule();
 		}
 
 		public double getFixedPrice() {
@@ -581,6 +587,21 @@ public class SapOrderAdapter implements SapOrderI {
 	
 	public double getGcAmount(){
 		return erpOrder.getAppliedGiftCardAmount();
+	}
+
+	@Override
+	public String getPlant() {
+		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId();
+	}
+
+	@Override
+	public String getSalesOrg() {
+		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo().getSalesOrg();
+	}
+
+	@Override
+	public String getDistributionChannel() {
+		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo().getDistChannel();
 	}
 
 }

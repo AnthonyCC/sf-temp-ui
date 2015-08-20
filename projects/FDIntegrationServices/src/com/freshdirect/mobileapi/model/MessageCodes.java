@@ -114,8 +114,7 @@ public interface MessageCodes {
 
     public final static String MSG_RESTRICTED_ADDRESS                                       = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
     
-    public final static String MSG_INVALID_TRANSACTIONCODE ="Invalid Transaction Source ";
-    
+       
     // =============================================== notices =============================== //
     //Minimum Order Amount Error
     public static final String NOTICE_DELIVERY_CUTOFF = "NOTICE_DELIVERY_CUTOFF";
@@ -229,6 +228,25 @@ public interface MessageCodes {
     public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before: ";
     
     public final static String MSG_OUTERSPACE_ADDRESS_MOB			= "We're sorry, but you must have a valid home address in one of our delivery zones in order to register a new delivery location.";
+    
+    public static final String ERR_INVALID_TRANSACTIONCODE = "ERR_INVALID_TRANSACTIONCODE";
+    public final static String MSG_INVALID_TRANSACTIONCODE 	= "Invalid transaction code.";
+    
+    public final static String ERR_MERGE_PAGE_REDIRECT = "ERR_MERGE_PAGE_REDIRECT";
+    public final static String ERR_USER_SOCIAL_PROFILE_NOTFOUND = "ERR_USER_SOCIAL_PROFILE_NOTFOUND";
+    public final static String ERR_SOCIAL_USER_UNRECOGNIZED = "ERR_SOCIAL_USER_UNRECOGNIZED";
+    public final static String ERR_SOCIAL_USER_EMAIL_MISSING = "ERR_SOCIAL_USER_EMAIL_MISSING";
+    public final static String ERR_INVALID_USER_TOKEN = "ERR_INVALID_USER_TOKEN";
+    public final static String ERR_INVALID_PROVIDER = "ERR_INVALID_PROVIDER";
+    public final static String ERR_INVALID_EMAIL_ADDRESS ="ERR_INVALID_EMAIL_ADDRESS";
+    public final static String ERR_INVALID_NEW_TOKEN ="ERR_INVALID_NEW_TOKEN";
+    public final static String ERR_AUTHENTICATION_BY_FD_ACCOUNT_FAILED ="ERR_AUTHENTICATION_BY_FDACCOUNT_FAILED";
+    public final static String ERR_AUTHENTICATION_BY_SOCIAL_ACCOUNT_FAILED ="ERR_AUTHENTICATION_BY_SOCIAL_ACCOUNT_FAILED";
+    public final static String ERR_FD_EMAIL_DONT_MATCH_WITH_SOCIAL_EMAIL="ERR_FD_EMAIL_DONT_MATCH_WITH_SOCIAL_EMAIL";
+    public final static String ERR_LINK_ACCOUNT_FAILED ="ERR_LINK_ACCOUNT_FAILED";
+
+    public final static String ERR_DIR_ADDRESS_SET_EX="Address set Successfully. Cart has invalid items.";
+    
     
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";

@@ -107,7 +107,7 @@ public class ProductPriceFixer {
                 
                 try { 
 
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, PricingContext.DEFAULT, null, 0.0).getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, PricingContext.DEFAULT, null, 0.0,null).getPricingCondition();
 
                     double defaultPrice = pricingCondition.getPrice();
                     String defaultPriceUnit = pricingCondition.getPricingUnit();

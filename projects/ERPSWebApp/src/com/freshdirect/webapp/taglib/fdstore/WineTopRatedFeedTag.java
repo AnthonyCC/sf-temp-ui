@@ -78,7 +78,7 @@ public class WineTopRatedFeedTag extends AbstractGetterTag<List<ProductModel>> {
 	@Override
 	protected List<ProductModel> getResult() throws Exception {
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-		String key = price.name() + "-" + user.getPricingContext().getZoneId();
+		String key = price.name() + "-" + user.getPricingContext().getZoneInfo();
 
 		if (!cache.containsKey(key))
 			cache.put(key, new TopRatedProductsLoader(refreshPeriod, price, user.getPricingContext()));

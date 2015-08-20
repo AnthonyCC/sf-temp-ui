@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.EnumTaxationType;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -22,6 +25,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.PosexUtil;
 
@@ -41,25 +45,46 @@ public class FDCartLineModel extends AbstractCartLine {
 	private String atcItemId;
 	
 	public FDCartLineModel(ErpOrderLineModel orderLine) {
-		this(orderLine, null, null, null);
+		this(orderLine, false);
+	}
+
+	/**
+	 * Convenience constructor
+	 * 
+	 * @param orderLine
+	 * @param lazy
+	 */
+	public FDCartLineModel(ErpOrderLineModel orderLine, final boolean lazy) {
+		this(orderLine, null, null, null, lazy);
+	}
+
+	
+	
+	public FDCartLineModel(
+		ErpOrderLineModel orderLine,
+		ErpInvoiceLineI firstInvoiceLine,
+		ErpInvoiceLineI lastInvoiceLine,
+		ErpReturnLineModel returnLine) {
+		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine, false);
 	}
 
 	public FDCartLineModel(
 		ErpOrderLineModel orderLine,
 		ErpInvoiceLineI firstInvoiceLine,
 		ErpInvoiceLineI lastInvoiceLine,
-		ErpReturnLineModel returnLine) {
-		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine);
+		ErpReturnLineModel returnLine,
+		boolean lazy) {
+		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine, lazy);
 	}
 
-	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
-		super(sku, productRef, configuration, variantId, pZoneId);
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId,UserContext userCtx) {
+		super(sku, productRef, configuration, variantId, userCtx);
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
 	}
 	
 	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId,
-			boolean requestNotification, String variantId, String pZoneId, List<ErpClientCode> clientCodes) {
-		super(sku, productRef, configuration, variantId, pZoneId);
+			boolean requestNotification, String variantId, UserContext userCtx, List<ErpClientCode> clientCodes) {
+		super(sku, productRef, configuration, variantId, userCtx);
 		this.orderLine.setCartlineId(cartlineId);
 		this.orderLine.setRecipeSourceId(recipeSourceId);
 		this.orderLine.setRequestNotification(requestNotification);
@@ -68,34 +93,50 @@ public class FDCartLineModel extends AbstractCartLine {
 	}
 	
 	public FDCartLineModel( FDProductSelectionI ps ) {
-		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getPricingContext().getZoneId() );
+		this( ps.getSku(), ps.getProductRef().lookupProductModel(), ps.getConfiguration(), null, ps.getUserContext());
 	}
 
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
 		this.refreshConfiguration();
 		ErpOrderLineModel ol = (ErpOrderLineModel) this.orderLine.deepCopy();
+		
       
 		try {
 			if(ol.getSku()!=null){
 
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
-
-				EnumOrderLineRating rating=productInfo.getRating();
-				EnumSustainabilityRating sustainabilityRating=productInfo.getSustainabilityRating();
+				
+			
+				//String plantID=(ol.getUserContext().getFulfillmentContext()!=null)?ol.getUserContext().getFulfillmentContext().getPlantId():ol.getPlantID();
+				String plantID=getPlantId();
+				EnumOrderLineRating rating=productInfo.getRating(plantID);
+				EnumSustainabilityRating sustainabilityRating=productInfo.getSustainabilityRating(plantID);
 
 				ol.setProduceRating(rating);
 				ol.setSustainabilityRating(sustainabilityRating);
-				ol.setBasePrice(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSellingPrice());
+				ol.setBasePrice(productInfo.getZonePriceInfo(ol.getUserContext().getPricingContext().getZoneInfo()).getSellingPrice());
 				ol.setBasePriceUnit(productInfo.getDefaultPriceUnit());	
 				//Check if qualified group  scale qty > 0. If yes then set FDGroup appropriately.
 				if(ol.getGroupQuantity() > 0 && ol.getFDGroup() != null){
-						ol.setPricingZoneId(GroupScaleUtil.getGroupPricingZoneId(ol.getFDGroup(), getPricingContext().getZoneId()));
+					
+					/*
+					ZoneInfo pz=GroupScaleUtil.getGroupPricingZoneId(ol.getFDGroup(), getUserContext().getPricingContext().getZoneInfo());
+						
+						
+					ol.setPricingZoneId(getUserContext().getPricingContext().getZoneInfo().getPricingZoneId());
+					ol.setSalesOrg(getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
+					ol.setDistChannel(getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+					*/
 				} else {
 					//not qualified for group scale. clear FD group if present.
 					ol.setFDGroup(null);
-					ol.setPricingZoneId(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSapZoneId());
+					/*ZoneInfo pz=getUserContext().getPricingContext().getZoneInfo();
+					ol.setPricingZoneId(pz.getPricingZoneId());
+					ol.setSalesOrg(pz.getSalesOrg());
+					ol.setDistChannel(pz.getDistributionChanel());*/
 				}
 				ol.setUpc(productInfo.getUpc());
+				//ol.seteStoreType(ol.getUserContext().getStoreContext().getEStoreId().name());
 			}			
 		} catch (FDResourceException e) {
 			e.printStackTrace();
@@ -114,7 +155,7 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	public FDCartLineI createCopy() {
 		FDCartLineModel newLine = new FDCartLineModel(this.getSku(), this
-				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId(), this.getPricingContext().getZoneId());
+				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId(), this.getUserContext());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
 		newLine.setSource(this.source);
@@ -122,6 +163,66 @@ public class FDCartLineModel extends AbstractCartLine {
 		newLine.setExternalSource(getExternalSource());
 		newLine.setExternalGroup(getExternalGroup());
 		return newLine;
+	}
+	
+	//This is not a deep copy, just passing values
+	public boolean copyInto(FDCartLineI into){
+		if(into == null)
+			return false; 
+		
+		try{
+			
+			into.setAddedFrom(getAddedFrom());
+			into.setAddedFromSearch(isAddedFromSearch());
+			into.setAtcItemId(getAtcItemId());
+			into.setCartonNumber(getCartonNumber());
+			into.setConfiguration(getConfiguration());
+			into.setConfigurationDesc(getConfigurationDesc());
+			into.setCoremetricsPageContentHierarchy(getCoremetricsPageContentHierarchy());
+			into.setCoremetricsPageId(getCoremetricsPageId());
+			into.setCoremetricsVirtualCategory(getCoremetricsVirtualCategory());
+//			into.setCouponApplied()
+			into.setCouponDiscount(getCouponDiscount());
+			into.setCouponStatus(getCouponStatus());
+			into.setCustomerListLineId(getCustomerListLineId());
+			into.setDeliveryStartDate(getDeliveryStartDate());
+			into.setDepartmentDesc(getDepartmentDesc());
+			into.setDepositValue(getDepositValue());
+			into.setDiscount(getDiscount());
+			into.setDiscountFlag(isDiscountFlag());
+			into.setEStoreId(getEStoreId());
+			into.setExternalAgency(getExternalAgency());
+			into.setExternalGroup(getExternalGroup());
+			into.setExternalSource(getExternalSource());
+			into.setFDGroup(getFDGroup());
+			into.setFixedPrice(getFixedPrice());
+			into.setGroupQuantity(getGroupQuantity());
+			into.setOptions(getOptions());
+			into.setOrderId(getOrderId());
+			into.setOrderLineId(getOrderLineId());
+			into.setOriginatingProductId(getOriginatingProductId());
+			into.setPlantId(getPlantId());
+			into.setQuantity(getQuantity());
+			into.setRecipeSourceId(getRecipeSourceId());
+			into.setRequestNotification(isRequestNotification());
+			into.setSaleStatus(getSaleStatus());
+			into.setSalesUnit(getSalesUnit());
+			into.setSavingsId(getSavingsId());
+			into.setSku(getSku());
+			//into.setSource(getSource());
+			into.setStatistics(getStatistics());
+			into.setTaxationType(getTaxationType());
+			into.setTaxRate(getTaxRate());
+			into.setUserContext(getUserContext());
+			into.setYmalCategoryId(getYmalCategoryId());
+			into.setYmalSetId(getYmalSetId());
+			
+			
+		} catch (ClassCastException e){
+			//Not a FDCarLineModel instance i guess
+			return false;			
+		}
+		return true;
 	}
 	
 	@Override
@@ -214,5 +315,9 @@ public class FDCartLineModel extends AbstractCartLine {
 	public void setAtcItemId(String atcItemId) {
 		this.atcItemId = atcItemId;
 	}
+
+	
+
+		
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -48,6 +49,7 @@ public class ConversionEventTagModelBuilder  {
 	private String paramName;
 	private String paramValue;
 	
+	private CmContext context = CmContext.getContext();
 	
 	public ConversionEventTagModel buildTagModel() throws SkipTagException{
 		
@@ -68,6 +70,9 @@ public class ConversionEventTagModelBuilder  {
 		} else if (CAT_LOGIN.equalsIgnoreCase(categoryId)){
 			processLogin();
 		}
+		
+		// prefix event category
+		tagModel.setEventCategoryId( context.prefixedCategoryId( tagModel.getEventCategoryId() ) );
 		
 		return tagModel;
 	}
@@ -159,7 +164,7 @@ public class ConversionEventTagModelBuilder  {
 		if(!cart.getDeliveryReservation().getStartTime().equals(originalCart.getDeliveryReservation().getStartTime())){
 			ConversionEventTagModel tsModel = new ConversionEventTagModel();
 			tsModel.setActionType(ACTION_END);
-			tsModel.setEventCategoryId(CAT_ORDER_MODIFIED);
+			tsModel.setEventCategoryId( context.prefixedCategoryId( CAT_ORDER_MODIFIED ));
 			tsModel.setEventId(EVENT_TIME_SLOT_CHANGED);
 			tsModel.setPoints("1");
 			models.add(tsModel);

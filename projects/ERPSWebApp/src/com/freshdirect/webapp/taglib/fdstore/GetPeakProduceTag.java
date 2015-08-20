@@ -19,16 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -69,13 +68,14 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDIdentity identity = user.getIdentity();
+		
 		Collection peakProduce = null;
 		ContentNodeModel node=ContentFactory.getInstance().getContentNode(deptId);
 		if(node instanceof DepartmentModel) {
 			if ("true".equalsIgnoreCase(getGlobalPeakProduceSku)) {
-				peakProduce = getAllPeakProduceForDept((DepartmentModel) node);
+				peakProduce = getAllPeakProduceForDept((DepartmentModel) node,user.getUserContext());
 			} else {
-				peakProduce = getPeakProduce((DepartmentModel) node, MAX_PEAK_PRODUCE_COUNT);
+				peakProduce = getPeakProduce((DepartmentModel) node, MAX_PEAK_PRODUCE_COUNT,user.getUserContext());
 			}
 		}
 
@@ -83,8 +83,8 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return peakProduce;
 	}
 	
-	private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResourceException {
-		
+	private Collection getAllPeakProduceForDept(DepartmentModel dept,UserContext userCtx) throws FDResourceException {
+		String plantID=userCtx.getFulfillmentContext().getPlantId();
 	    List products=new ArrayList();
 		List deptList=new ArrayList();
 		//System.out.println("|=== dept.getContentKey().getId()  :"+dept.getContentKey().getId());
@@ -101,7 +101,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				sku=i.next().toString();
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
-					if(productInfo.isAvailable() && isPeakProduce(productInfo.getRating())) {
+					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && isPeakProduce(productInfo.getRating(plantID))) {
 						
 						try {
 							   ProductModel sm=ContentFactory.getInstance().getProduct(sku);
@@ -123,8 +123,8 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return products;
 	}
 	
-	public Collection getPeakProduce(DepartmentModel dept, int maxPeakProduceCount) throws FDResourceException {
-		
+	public Collection getPeakProduce(DepartmentModel dept, int maxPeakProduceCount,UserContext userCtx) throws FDResourceException {
+		String plantID=userCtx.getFulfillmentContext().getPlantId();
 		List products=new ArrayList(10);
 		List categories=dept.getCategories();
 		Iterator it=categories.iterator();
@@ -133,7 +133,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		while (it.hasNext()) {
 			_products=new ArrayList();
 			catModel=(CategoryModel)it.next();
-			setPeakProduce(catModel,_products);
+			setPeakProduce(catModel,_products,plantID);
 			if(_products!=null) {
 				products.addAll(_products);
 			}
@@ -288,22 +288,22 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	}
 
 	
-	private void setPeakProduce(CategoryModel category, List products) throws FDResourceException {
+	private void setPeakProduce(CategoryModel category, List products,String plantID) throws FDResourceException {
 
 
 	      //System.out.println("-===|||||||---- setPeakProduce :"+products);
 	      //System.out.println("-===|||||||---- setPeakProduce :"+products);
-		List peakProduce=getPeakProduce(category.getProducts());
+		List peakProduce=getPeakProduce(category.getProducts(),plantID);
 		if(peakProduce!=null && peakProduce.size()>0)
 			products.addAll(peakProduce);
 		List subCats=category.getSubcategories();
 		for (int i=0;i<subCats.size();i++) {
-			setPeakProduce((CategoryModel)subCats.get(i),products);
+			setPeakProduce((CategoryModel)subCats.get(i),products,plantID);
 		}
 		
 	}
 	
-	private List getPeakProduce(Collection products) throws FDResourceException {
+	private List getPeakProduce(Collection products,String plantID) throws FDResourceException {
 		
 		
 		if(products==null || products.size()==0) {
@@ -325,7 +325,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 					continue;
 				}
 				try {
-					rating=sku.getProductInfo().getRating();
+					rating=sku.getProductInfo().getRating(plantID);
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}

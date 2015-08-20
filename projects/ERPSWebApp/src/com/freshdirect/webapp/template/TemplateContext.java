@@ -23,6 +23,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
@@ -93,7 +94,7 @@ public class TemplateContext extends BaseTemplateContext{
 			if(null != zones && !zones.isEmpty()){
 				for (Iterator iterator = zones.iterator(); iterator.hasNext();) {
 					String zone = (String) iterator.next();
-					PricingContext context = new PricingContext(zone);
+					PricingContext context = new PricingContext(null);//::FDX::
 					pricingContexts.add(context);
 				}
 			}
@@ -855,7 +856,7 @@ public class TemplateContext extends BaseTemplateContext{
 			MaterialPrice matPrice = null;
 			if(null !=group){
 				try {
-					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZone());
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -927,7 +928,7 @@ public class TemplateContext extends BaseTemplateContext{
 			MaterialPrice matPrice = null;
 			if(null !=group){
 				try {
-					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZoneId());
+					matPrice = GroupScaleUtil.getGroupScalePrice(group, impression.getPricingZone());
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1005,7 +1006,7 @@ public class TemplateContext extends BaseTemplateContext{
 		MaterialPrice matPrice = null;
 		if(null !=group){
 			try {
-				matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneId);
+				matPrice = GroupScaleUtil.getGroupScalePrice(group, null);//::FDX::
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

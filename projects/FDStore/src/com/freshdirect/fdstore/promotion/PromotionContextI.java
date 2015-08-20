@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -96,7 +97,7 @@ public interface PromotionContextI {
 	
 	public void clearHeaderDiscounts();
 	
-	public PricingContext getPricingContext();
+	public UserContext getUserContext();
 	
 	public int getSettledECheckOrderCount();
 	

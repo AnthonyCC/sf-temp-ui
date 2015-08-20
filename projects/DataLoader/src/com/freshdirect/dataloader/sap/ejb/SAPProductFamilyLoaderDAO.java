@@ -15,8 +15,6 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import sun.font.FontManager.FamilyDescription;
-
 import weblogic.auddi.util.Logger;
 
 import com.freshdirect.customer.ErpGrpPriceModel;

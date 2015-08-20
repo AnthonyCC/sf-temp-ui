@@ -78,7 +78,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 			+ "and s.type ='REG' "
 			+ "and s.status <> 'CAN' "
-			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X'";
+			+ "and sa.id = di.salesaction_id and to_char(di.handofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X'";
 
 	private static String GET_ORDERSTATSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ s.status, count(*) as order_count "
 			+ "from cust.customer c, cust.fdcustomer fdc "
@@ -100,7 +100,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 			+ "and s.type ='REG' "
 			+ "and s.status <> 'CAN' "
-			+ "and sa.id = di.salesaction_id and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X' group by s.status";
+			+ "and sa.id = di.salesaction_id and to_char(di.handofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM') and di.delivery_type <> 'X' group by s.status";
 
 	// END HANDOFF QUERIES
 
@@ -897,7 +897,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	
 	// ORDER QUERY
 		private static String GET_ORDERS = "SELECT /*+ USE_NL(s, sa) */ S.ID WEBORDER_ID, S.SAP_NUMBER ERPORDER_ID, S.STATUS,S.TYPE, S.CROMOD_DATE, SA.REQUESTED_DATE, DI.DELIVERY_TYPE, " 
-				+ "DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME,  DI.HANDOFFTIME, DI.ZONE, DI.RESERVATION_ID, DI.ADDRESS1, DI.ADDRESS2, DI.APARTMENT, DI.CITY, DI.STATE, DI.ZIP, DI.COUNTRY, DI.SCRUBBED_ADDRESS FROM cust.sale s, cust.salesaction sa "
+				+ "DI.STARTTIME, DI.ENDTIME, DI.CUTOFFTIME,  DI.HANDOFF_TIME, DI.ZONE, DI.RESERVATION_ID, DI.ADDRESS1, DI.ADDRESS2, DI.APARTMENT, DI.CITY, DI.STATE, DI.ZIP, DI.COUNTRY, DI.SCRUBBED_ADDRESS FROM cust.sale s, cust.salesaction sa "
 				+ ", cust.deliveryinfo di "
 				+ "where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date >= trunc(sysdate) and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 				+ "and s.type ='REG' "
@@ -941,7 +941,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 							.getTime()));
 					o.setCutOffTime(new Date(rs.getTimestamp("CUTOFFTIME")
 							.getTime()));
-					o.setHandoffTime(new Date(rs.getTimestamp("HANDOFFTIME")
+					o.setHandoffTime(new Date(rs.getTimestamp("ENDTIME")
 							.getTime()));
 					
 

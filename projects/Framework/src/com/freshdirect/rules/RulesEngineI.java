@@ -14,7 +14,7 @@ public interface RulesEngineI extends RulesStoreI {
 	 * @param context domain-specific context
 	 * @return Map of String ruleId -> Object outcome (for rules that have fired).
 	 */
-	public Map evaluateRules(Object context);
+	public Map<String, Rule> evaluateRules(Object context);
 
 	/**
 	 * Get all rules that have a RuleRef pointing to ruleId.
@@ -22,6 +22,6 @@ public interface RulesEngineI extends RulesStoreI {
 	 * @param ruleId
 	 * @return Collection of Rules
 	 */
-	public Collection getDependentRules(String ruleId);
+	public Collection<Rule> getDependentRules(String ruleId);
 
 }

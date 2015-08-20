@@ -13,12 +13,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.logistics.framework.util.LoggerFactory;
 
 public class Promotion extends ModelSupport implements PromotionI {
-
+	private static final Logger LOGGER = LoggerFactory.getInstance(Promotion.class.getSimpleName());
+	
 	private static final long	serialVersionUID	= -4069961539775362219L;
 
 	private final EnumPromotionType promotionType;
@@ -29,22 +33,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	private final String name;
 
-	//private boolean maxUsagePerCust;
-
-	//private int rollingExpDays;
-	
-	//private boolean audienceBased;
-
 	private final List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
-	
-	//private final List lineItemStrategies= new ArrayList();
 	
 	private final List<PromotionApplicatorI> applicators = new ArrayList<PromotionApplicatorI>();
 
 	private PromotionApplicatorI applicator;
 	
-	//private PromotionApplicatorI lineItemApplicator;
-
 	private Timestamp lastModified;
 		
 	
@@ -74,9 +68,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.promotionCode = promotionCode;
 		this.description = description;
 		this.name = name;
-		//this.maxUsagePerCust = maxUsagePerCust;
-		//this.rollingExpDays = rollingExpDays;
-		//this.audienceBased = audienceBased;
 		this.lastModified = lastModified;
 		
 	}
@@ -103,57 +94,16 @@ public class Promotion extends ModelSupport implements PromotionI {
 		setPriority();
 	}
 	
-	public List getApplicatorList() {
+	public List<PromotionApplicatorI> getApplicatorList() {
 		return this.applicators;
 	}
-/*	
-	public void addLineItemStrategy(PromotionStrategyI strategy) {
-		this.lineItemStrategies.add(strategy);
-		Collections.sort(this.lineItemStrategies, PRECEDENCE_COMPARATOR);
-	}
-*/	
-/*
-	public void setApplicator(PromotionApplicatorI applicator) {
-		this.applicator = applicator;
-		if(this.isSampleItem())
-			//Sample Promo
-			setPriority(10);
-		else if(this.isWaiveCharge())
-			//Delivery Promo
-			setPriority(20);	
-		else if(this.isExtendDeliveryPass())
-			//Extend Delivery Pass Promo
-			setPriority(30);	
-		else if(this.isLineItemDiscount() && this.isCombineOffer())
-			//Combine offer promotions are guaranteed to apply. 
-			setPriority(35);
-		else if(this.isHeaderDiscount() && this.isCombineOffer())
-			//Combine offer promotions are guaranteed to apply. 
-			setPriority(37);
-		else if(this.isSignupDiscount())
-			//Signup promo
-			setPriority(40);
-		else if(this.isRedemption())
-			//Redemption promo
-			setPriority(50);
-		else if(this.isLineItemDiscount())
-			//DCPD promotion
-			setPriority(60);
-		else{
-			//Any other automatic percent off or dollar off.
-			setPriority(70);
-		}
-	}
 
-	public PromotionApplicatorI getApplicator() {
-		return this.applicator;
-	}
-	*/
-
+	@Override
 	public EnumPromotionType getPromotionType() {
 		return this.promotionType;
 	}
 
+	@Override
 	public String getPromotionCode() {
 		return this.promotionCode;
 	}
@@ -162,10 +112,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return this.name;
 	}
 
+	@Override
 	public String getDescription() {
 		return this.description;
 	}
 
+	@Override
 	public int getPriority() {
 		return priority;
 	}
@@ -228,16 +180,24 @@ public class Promotion extends ModelSupport implements PromotionI {
 	 * @return true if the Promotion is configured properly.
 	 */
 	public boolean isValid() {
-		//return this.applicator != null ;
 		if (this.applicators == null || this.applicators.size() == 0)
 			return false;
 		return true;
 	}
 
+	@Override
 	public boolean evaluate(PromotionContextI context) {
+		final boolean isCrm = context != null && context.getUser() != null
+				&& context.getUser().isCrmMode();
 
-		for (Iterator<PromotionStrategyI> i = this.strategies.iterator(); i.hasNext();) {
-			PromotionStrategyI strategy = i.next();
+		for (PromotionStrategyI strategy : this.strategies) {
+			// check if particular strategy requires CMS in order to evaluate
+			// As CRM became store-less, avoid evaluating these strategies
+			if ( isCrm && strategy.isStoreRequired() ) {
+				LOGGER.debug("Skipping " + strategy + " in CRM mode");
+				continue;
+			}
+			
 			int response = strategy.evaluate(this.promotionCode, context);
 
 			 //System.out.println("Evaluated " + this.promotionCode + " / " +
@@ -265,26 +225,18 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public boolean apply(PromotionContextI context) {
 		boolean applied = false;
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			applied = _applicator.apply(this.promotionCode, context);
 		}
-		//return this.applicator.apply(this.promotionCode, context);
 		return applied;
 	}
-	/*
-	public boolean applyLineItem(PromotionContextI context) {
-		return this.lineItemApplicator.apply(this.promotionCode, context);
-	}
-	*/
 
 	public Collection<PromotionStrategyI> getStrategies() {
 		return Collections.unmodifiableCollection(this.strategies);
 	}
 	
 	public PromotionStrategyI getStrategy(Class<?> strategyClass) {
-		for (Iterator<PromotionStrategyI> i = this.strategies.iterator(); i.hasNext();) {
-			PromotionStrategyI strategy = i.next();
+		for (PromotionStrategyI strategy : this.strategies) {
 			if (strategyClass.isAssignableFrom(strategy.getClass())) {
 				return strategy;
 			}
@@ -292,9 +244,9 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return null;
 	}
 
+	@Override
 	public Date getExpirationDate() {
-		for (Iterator<PromotionStrategyI> i = getStrategies().iterator(); i.hasNext();) {
-			Object obj = i.next();
+		for (PromotionStrategyI obj : this.strategies) {
 			if (obj instanceof DateRangeStrategy) {
 				return ((DateRangeStrategy) obj).getExpirationDate();
 			}
@@ -304,9 +256,9 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	//FIXME List of what? Types are mixed up here (HeaderDiscountRule <--> DCPDiscountRule <--> SignupDiscountRule), 
 	// this will cause ClassCastException-s ( getHeaderDiscountTotal() will try to cast to HeaderDiscountRule for example)
-	public List getHeaderDiscountRules() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+	@Override
+	public List<? extends HeaderDiscountRule> getHeaderDiscountRules() {
+		for (PromotionApplicatorI _applicator : this.applicators) {
 			if (_applicator instanceof SignupDiscountApplicator) {
 				return ((SignupDiscountApplicator) _applicator).getDiscountRules();
 			} else if (_applicator instanceof HeaderDiscountApplicator) {
@@ -314,93 +266,67 @@ public class Promotion extends ModelSupport implements PromotionI {
 				return Arrays.asList(new HeaderDiscountRule[] { rule });
 			}
 		}		
-		/*
-		if (this.applicator instanceof SignupDiscountApplicator) {
-			return ((SignupDiscountApplicator) this.applicator).getDiscountRules();
-		} else if (this.applicator instanceof HeaderDiscountApplicator) {
-			HeaderDiscountRule rule = ((HeaderDiscountApplicator) this.applicator).getDiscountRule();
-			return Arrays.asList(new HeaderDiscountRule[] { rule });
-		}*//* else if (this.applicator instanceof DCPDiscountApplicator) {
-			DCPDiscountRule rule = ((DCPDiscountApplicator) this.applicator).getDiscountRule();
-			return Arrays.asList(new DCPDiscountRule[] { rule });
-		}*/
 		return null;
 	}
 
+	@Override
 	public double getHeaderDiscountTotal() {
-		List discountRules = this.getHeaderDiscountRules();
+		List<? extends HeaderDiscountRule> discountRules = this.getHeaderDiscountRules();
 		if (discountRules == null) {
 			return 0;
 		}
 		double sum = 0;
-		for (Iterator i = discountRules.iterator(); i.hasNext();) {
-			HeaderDiscountRule discountRule = (HeaderDiscountRule) i.next();
+		for (HeaderDiscountRule discountRule : discountRules) {
 			sum += discountRule.getMaxAmount();
 		}
 		return sum;
 	}
 
+	@Override
 	public double getLineItemDiscountPercentage() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof LineItemDiscountApplicator){
 				return ((LineItemDiscountApplicator)_applicator).getPercentOff();
 			}
 		}
-		/*
-		if(applicator instanceof LineItemDiscountApplicator){
-			return ((LineItemDiscountApplicator)applicator).getPercentOff();
-		}
-		*/
 		return 0.0;
 	}
 	
 	public boolean isSampleItem() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof SampleLineApplicator){
 				return true;
 			}
 		}
 		return false;
-		//return this.applicator instanceof SampleLineApplicator;
 	}
 
 	public boolean isWaiveCharge() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof WaiveChargeApplicator){
 				return true;
 			}
 		}
 		return false;
-		//return this.applicator instanceof WaiveChargeApplicator;
 	}
 	
 	public boolean isExtendDeliveryPass() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof ExtendDeliveryPassApplicator){
 				return true;
 			}
 		}
 		return false;
-		//return this.applicator instanceof ExtendDeliveryPassApplicator;
 	}
 	
 	public boolean isHeaderDiscount() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof HeaderDiscountApplicator || 
 					_applicator instanceof PercentOffApplicator){
 				return true;
 			}
 		}
 		return false;
-		
-		//return (this.applicator instanceof HeaderDiscountApplicator || 
-				//this.applicator instanceof PercentOffApplicator); 
-		
 	}
 	
 	public boolean isDollarValueDiscount() {
@@ -409,19 +335,16 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	
 	public boolean isSignupDiscount() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof SignupDiscountApplicator){
 				return true;
 			}
 		}
 		return false;
-		//return this.applicator instanceof SignupDiscountApplicator;
 	}
 	
 	public double getMinSubtotal() {
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if (_applicator instanceof SampleLineApplicator) {
 				return ((SampleLineApplicator) _applicator).getMinSubtotal();
 			}
@@ -435,21 +358,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 				return ((LineItemDiscountApplicator) _applicator).getMinSubtotal();
 			}
 		}
-		/*
-		if (this.applicator instanceof SampleLineApplicator) {
-			return ((SampleLineApplicator) this.applicator).getMinSubtotal();
-		}
-		if (this.applicator instanceof PercentOffApplicator) {
-			return ((PercentOffApplicator) this.applicator).getMinSubtotal();
-		}
-		if (this.applicator instanceof WaiveChargeApplicator) {
-			return ((WaiveChargeApplicator) this.applicator).getMinSubtotal();
-		}
-		if (this.applicator instanceof LineItemDiscountApplicator) {
-			return ((LineItemDiscountApplicator) this.applicator).getMinSubtotal();
-		}
-		*/
-		List discountRules = this.getHeaderDiscountRules();
+		List<? extends HeaderDiscountRule> discountRules = this.getHeaderDiscountRules();
 		if (discountRules == null) {
 			return 0;
 		}
@@ -477,8 +386,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 
 	public boolean isRedemption(){
 		boolean value = false;
-		for (Iterator<PromotionStrategyI> i = getStrategies().iterator(); i.hasNext();) {
-			Object obj = i.next();
+		for (PromotionStrategyI obj : this.strategies) {
 			if (obj instanceof RedemptionCodeStrategy) {
 				//This is redemption promo.
 				value = true;
@@ -490,8 +398,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 	
 	public String getRedemptionCode(){		
 			String value = "";
-			for (Iterator<PromotionStrategyI> i = getStrategies().iterator(); i.hasNext();) {
-				Object obj = i.next();
+			for (PromotionStrategyI obj : this.strategies) {
 				if (obj instanceof RedemptionCodeStrategy) {
 					//This is redemption promo.
 					value = ((RedemptionCodeStrategy)obj).getRedemptionCode();
@@ -506,67 +413,28 @@ public class Promotion extends ModelSupport implements PromotionI {
 		sb.append(this.promotionType).append(" / ").append(this.promotionCode);
 		sb.append(" (").append(this.description).append(")");
 		sb.append("\n\tStrategies=[");
-		for (Iterator<PromotionStrategyI> i = this.strategies.iterator(); i.hasNext();) {
+		for (PromotionStrategyI strategy : this.strategies) {
 			sb.append("\n\t\t");
-			sb.append(i.next());
+			sb.append(strategy);
 		}
 		sb.append("\n\t], Applicator=");
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			sb.append("\n\t\t");
 			sb.append(_applicator);
 		}
 		return sb.toString();
 	}
-/*
-	public boolean evaluateLineItemPromo(PromotionContextI context) {
-		// TODO Auto-generated method stub
-		for (Iterator i = this.lineItemStrategies.iterator(); i.hasNext();) {
-			PromotionStrategyI strategy = (PromotionStrategyI) i.next();
-			int response = strategy.evaluate(this.promotionCode, context);
-
-			 System.out.println("Evaluated " + this.promotionCode + " / " +
-			 strategy.getClass().getName() + " -> " + response);
-
-			switch (response) {
-
-			case PromotionStrategyI.ALLOW:
-				// check next rule
-				continue;
-
-			case PromotionStrategyI.FORCE:
-				// eligible, terminate evaluation
-				return true;
-
-			default:
-				// not eligible, terminate evaluation
-				return false;
-			}
-		}
-
-		return true;
-	}
-		
-*/
 
 	public boolean isLineItemDiscount() {
-		// TODO Auto-generated method stub
-		for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof LineItemDiscountApplicator) {
 				return true;
 			}
 		}
 		return false;
-		//return this.applicator instanceof LineItemDiscountApplicator;
 	}
 	
 	
-/*
-	public Collection getLineItemStrategies() {
-			return Collections.unmodifiableCollection(this.lineItemStrategies);
-	}
-*/
 	public boolean isCombineOffer() {
 		return combineOffer;
 	}
@@ -578,44 +446,35 @@ public class Promotion extends ModelSupport implements PromotionI {
 	public void setRecommendedItemsOnly(boolean recommendedItemsOnly) {
 		this.recommendedItemsOnly = recommendedItemsOnly;
 	}
-	 public boolean isFavoritesOnly(){
-		 for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+
+	@Override
+	public boolean isFavoritesOnly(){
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof LineItemDiscountApplicator){
 				 LineItemDiscountApplicator app = (LineItemDiscountApplicator) _applicator;
 				 return app.isFavoritesOnly();
 			 }
 		 }
-		 /*
-		 if(applicator instanceof LineItemDiscountApplicator){
-			 LineItemDiscountApplicator app = (LineItemDiscountApplicator) applicator;
-			 return app.isFavoritesOnly();
-		 }*/
 		 return false;
 	 }
 
 	 
-	 public double getLineItemDiscountPercentOff(){
+	@Override
+	public double getLineItemDiscountPercentOff(){
 		 double percentOff=0;
-		 for (Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();) {
-			PromotionApplicatorI _applicator = i.next();
+		 for (PromotionApplicatorI _applicator : this.applicators) {
 			if(_applicator instanceof LineItemDiscountApplicator) {
 				LineItemDiscountApplicator app=(LineItemDiscountApplicator)applicator;
 				 percentOff=app.getPercentOff();
 			}
 		 }
-		 /*
-		 if(isLineItemDiscount()){
-			 LineItemDiscountApplicator app=(LineItemDiscountApplicator)applicator;
-			 percentOff=app.getPercentOff();
-		 }*/
 		 return percentOff;
 	 }
 	 
-	 public boolean isFraudCheckRequired(){
+	@Override
+	public boolean isFraudCheckRequired(){
 		 boolean value = false;
-			for (Iterator<PromotionStrategyI> i = getStrategies().iterator(); i.hasNext();) {
-				Object obj = i.next();
+		 for (PromotionStrategyI obj : getStrategies()) {
 				if (obj instanceof FraudStrategy) {
 					//Fruad Check is required for this promo.
 					value = true;
@@ -625,6 +484,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 			return value;		 
 	 }
 
+	@Override
 	public Set<String> getExcludeSkusFromSubTotal() {
 		return excludeSkusFromSubTotal;
 	}
@@ -634,10 +494,10 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 
+	@Override
 	public EnumOfferType getOfferType() {
 		return offerType;
 	}
-
 
 	public void setOfferType(EnumOfferType offerType) {
 		this.offerType = offerType;

@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -285,5 +284,22 @@ public class TestSupport {
 		return mediaMethodNames;
 
 	}
-		
+	
+	
+	public Collection<String> getSkuCodes() {
+		try {
+			TestSupportSB ejb = this.getTestSupportHome().create();
+			
+			return ejb.getSkuCodes();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 }

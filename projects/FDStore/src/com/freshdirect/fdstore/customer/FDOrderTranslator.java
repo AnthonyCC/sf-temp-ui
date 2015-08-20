@@ -16,11 +16,13 @@ import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 
@@ -65,19 +67,54 @@ public class FDOrderTranslator {
 
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines, boolean sameDeliveryDate) throws FDResourceException {
 //		try {
+		    order.seteStoreId(cart.getEStoreId());
 			order.setPaymentMethod(cart.getPaymentMethod());
 			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);
 			order.setSelectedGiftCards(cart.getSelectedGiftCards());
 			FDReservation deliveryReservation = cart.getDeliveryReservation();
 			ErpDeliveryInfoModel deliveryInfo = new ErpDeliveryInfoModel();
-			if (deliveryReservation!=null){ //this may be null in express checkout flow
-				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
+			ErpDeliveryPlantInfoModel plantInfoModel=cart.getDeliveryPlantInfo();
+			if(plantInfoModel!=null) {
+				ErpDeliveryPlantInfoModel dpi=new ErpDeliveryPlantInfoModel();
+				
+				dpi.setPlantId(cart.getDeliveryPlantInfo().getPlantId());
+				dpi.setSalesOrg(cart.getDeliveryPlantInfo().getSalesOrg());
+				dpi.setDistChannel(cart.getDeliveryPlantInfo().getDistChannel());
+				dpi.setDivision(cart.getDeliveryPlantInfo().getDivision());
+				deliveryInfo.setDeliveryPlantInfo(dpi);
 			}
+			if(deliveryReservation!=null)
+				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
+			if(cart.getDeliveryAddress()!=null)
+				deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
+			
 			if(deliveryReservation!=null && deliveryReservation.getTimeslot()!=null) {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
-				deliveryInfo.setDeliveryCutoffTime(deliveryReservation.getCutoffTime());
+				if(EnumEStoreId.FDX.name().equals(cart.getEStoreId().name())){
+					//give minimum time specified in  deliveryReservation.getTimeslot().getMinDurationForModStart() to start order modification
+					// if the sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() is after the timeslot cutoff then 
+					// customer will get till sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() to start order MOD. or 
+					// if the  sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() is before timeslot cutoff then
+					// cusotmer will get min  sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart()
+					// and max till timeslot cutoff to modify the  order
+					
+					Date timeslotCutoff = deliveryReservation.getTimeslot().getCutoffDateTime();
+					Calendar cal = Calendar.getInstance();
+					cal.add(Calendar.MINUTE, (int)deliveryReservation.getTimeslot().getMinDurationForModStart());
+					if(timeslotCutoff.before(cal.getTime())){
+						deliveryInfo.setDeliveryCutoffTime(cal.getTime());
+					}else{
+						deliveryInfo.setDeliveryCutoffTime(timeslotCutoff);
+					}
+					
+				}else{
+					deliveryInfo.setDeliveryCutoffTime(deliveryReservation.getCutoffTime());
+				}
+				
 				order.setRequestedDate(deliveryReservation.getStartTime());
+				deliveryInfo.setMinDurationForModStart(deliveryReservation.getTimeslot().getMinDurationForModStart());
+				deliveryInfo.setMinDurationForModification(deliveryReservation.getTimeslot().getMinDurationForModification());
 			}
 			else {
 				Calendar startTime=Calendar.getInstance();
@@ -90,28 +127,40 @@ public class FDOrderTranslator {
 				order.setRequestedDate(startTime.getTime());
 				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
 			}
-			ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
-			if (deliveryAddress != null){ //this may be null in express checkout flow
-				deliveryInfo.setDeliveryAddress(deliveryAddress);
-				order.setGlCode(lookupGLCode(deliveryAddress));
-				if (deliveryAddress instanceof ErpDepotAddressModel) {
-					ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) deliveryAddress;
-					deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
-					if (depotAddress.isPickup()) {
-						deliveryInfo.setDeliveryType(EnumDeliveryType.PICKUP);
-					} else {
-						deliveryInfo.setDeliveryType(EnumDeliveryType.DEPOT);
-					}
+			deliveryInfo.setDeliveryZone(cart.getZoneInfo().getZoneCode());
+			deliveryInfo.setDeliveryRegionId(cart.getZoneInfo().getRegionId());
+			
+			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
+				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
+				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
+				if (depotAddress.isPickup()) {
+					deliveryInfo.setDeliveryType(EnumDeliveryType.PICKUP);
+				}else{
+					deliveryInfo.setDeliveryType(EnumDeliveryType.DEPOT);
+				}
+			} else {
+				ErpAddressModel address = cart.getDeliveryAddress();
+				if(EnumServiceType.WEB.equals(address.getServiceType())){
+					EnumWebServiceType webServiceType = address.getWebServiceType();
+					deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
+					} else { 
+						
+						if(EnumEStoreId.FDX.equals(cart.getEStoreId())) {
+							deliveryInfo.setDeliveryType(EnumDeliveryType.FDX);
+						}
+						else if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+					deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
 				} else {
-					if (EnumServiceType.WEB.equals(deliveryAddress.getServiceType())){
-						EnumWebServiceType webServiceType = deliveryAddress.getWebServiceType();
+					if (EnumServiceType.WEB.equals(address.getServiceType())){
+						EnumWebServiceType webServiceType = address.getWebServiceType();
 						deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
-					} else if (EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType())){
+					} else if (EnumServiceType.CORPORATE.equals(address.getServiceType())){
 						deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
 					} else {
 						deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
 					}
 				}
+			}
 			}
 			FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 			if (zoneInfo != null) { //this may be null in express checkout flow
@@ -176,6 +225,11 @@ public class FDOrderTranslator {
 		}*/
 	}
 
+	private static Date calcMODCutoffTime(EnumEStoreId eStoreId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void translateOrderLines(FDCartModel cart,
 			boolean skipModifyLines, boolean sameDeliveryDate,
 			List<ErpOrderLineModel> orderLines) throws FDResourceException {
@@ -183,18 +237,11 @@ public class FDOrderTranslator {
 		try {
 			if(null != cart && null != cart.getOrderLines() && null != orderLines){
 				for ( FDCartLineI line : cart.getOrderLines() ) {
-					Date[] availDates = line.lookupFDProductInfo().getAvailabilityDates(); 
-					if(availDates != null && availDates.length > 0) {
-						//Limited Availability Line item.
-						if(sameDeliveryDate && line instanceof FDModifyCartLineI) {
-							continue;
-						}
-					} else {
 						//Regular Availability item.
 						if (skipModifyLines && line instanceof FDModifyCartLineI) {
 							continue;
 						}
-					}
+					
 					num += addTranslatedLine(num, line, orderLines);
 				}
 				for ( FDCartLineI line : cart.getSampleLines() ) {
@@ -213,7 +260,7 @@ public class FDOrderTranslator {
 	public static void translateSubscriptionOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines) throws FDResourceException {
 		try {
 			order.setPaymentMethod(cart.getPaymentMethod());
-			
+			order.seteStoreId(EnumEStoreId.FD);
 			order.setPricingDate(Calendar.getInstance().getTime());
 			order.setRequestedDate(order.getPricingDate());
 			order.setTax(cart.getTaxValue());

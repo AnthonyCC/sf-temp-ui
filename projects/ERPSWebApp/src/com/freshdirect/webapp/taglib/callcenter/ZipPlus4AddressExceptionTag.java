@@ -71,7 +71,16 @@ public class ZipPlus4AddressExceptionTag extends AbstractControllerTag implement
 	private void validateAddress(ExceptionAddress ex, ActionResult result) throws JspException {
 		result.addError(ex.getStreetAddress().equals(""), "streetAddress", SystemMessageList.MSG_REQUIRED);
 
-	
+		try {
+			AddressModel address = new AddressModel(ex.getStreetAddress(), ex.getAptNumLow(), ex.getCity(), ex.getState(), ex.getZip());
+			ex.setStreetAddress(FDDeliveryManager.getInstance().scrubAddress(address).getAddress().getAddress1());
+		} catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+			result.addError(true, "streetAddress", e.getMessage());
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			result.addError(true, "streetAddress", e.getMessage());
+		}
 
 		result.addError(ex.getAddressType() != null
 			&& ((ex.getAddressType().equals(EnumAddressType.HIGHRISE) && (ex.getAptNumLow().equals("") || ex

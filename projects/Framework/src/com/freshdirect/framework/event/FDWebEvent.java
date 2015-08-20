@@ -2,9 +2,7 @@ package com.freshdirect.framework.event;
 
 import java.util.Date;
 
-public class FDWebEvent implements FDEvent {
-	
-	
+public class FDWebEvent extends FDEvent {
 	private static final long serialVersionUID = 3284289023903633757L;
 	
 	private String customerId;
@@ -126,8 +124,9 @@ public class FDWebEvent implements FDEvent {
 		bf.append(";trackingCode=").append(this.trackingCode);
 		bf.append(";trackingCodeEx=").append(this.trackingCodeEx);
 		bf.append(";source=").append(this.source);
+		bf.append(";eStoreId=").append(this.eStoreId);
 		bf.append("\n");
-		
+
 		for(int i = 0; i < this.eventValues.length; i++){
 			bf.append(";Param-").append(i+1).append("=").append(this.eventValues[i]);
 		}

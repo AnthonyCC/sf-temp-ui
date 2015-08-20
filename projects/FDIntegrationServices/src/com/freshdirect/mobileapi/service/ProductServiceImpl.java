@@ -142,6 +142,78 @@ public class ProductServiceImpl implements ProductService {
 
         return result;
     }
+    
+    public List<String> searchProductIds(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
+            String categoryId, String deparmentId, SessionUser user) throws ServiceException{
+    	
+    	List<String> result = new ArrayList<String>();
+
+        List<ProductModel> productModels = null;
+        SmartSearchTag search = null;
+
+        SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+        ResultBundle resultBundle;
+        try {
+            //Rsung - Default sort type if missing
+            if (sortType == null) {
+                sortType = SortType.RELEVANCY;
+            }
+            resultBundle = wrapper.getSearchResult(searchTerm, upc, deparmentId, categoryId, brandId, (page - 1), max, "", sortType.getSortValue());
+            search = (SmartSearchTag) resultBundle.getExtraData(SmartSearchTagWrapper.ID);
+
+            //Set two more mobile specific filters
+            LOG.debug("Total Products before iphone filter: " + search.getNoOfProductsBeforeProductFilters());
+            LOG.debug("Total Products after iphone filter: " + search.getNoOfProducts());
+
+            productModels = search.getProducts(); // changed from search.getPageProducts(); due to APPDEV-2797
+            recentSearchTotalCount = search.getNoOfBrandFilteredProducts();
+            Collection<String>spellingSuggestions = search.getSpellingSuggestions();
+            if (!spellingSuggestions.isEmpty())
+            	spellingSuggestion = spellingSuggestions.iterator().next();
+            LOG.debug("SPELLING SUGGESTION - Did you mean? " + spellingSuggestion);
+        } catch (FDException e) {
+            throw new ServiceException(e);
+        }
+
+        LOG.debug("Total Products retrieved: " + search.getNoOfProductsBeforeProductFilters());
+        LOG.debug("Total Products filtered retrieved: " + search.getNoOfProducts());
+
+        CategoryNodeTree tree = search.getFilteredCategoryTree();
+        departments = new HashSet<Department>();
+        categories = new HashSet<Category>();
+
+        Iterator<TreeElement> categoryIterator = tree.getRoots().iterator();
+        while (categoryIterator.hasNext()) {
+            TreeElement treeElement = categoryIterator.next();
+            ContentNodeModel model = treeElement.getModel();
+
+            if (model instanceof DepartmentModel) {
+                Department department = Department.wrap((DepartmentModel) model);
+                departments.add(department);
+            }
+            Collection<TreeElement> childElement = treeElement.getChildren();
+            Iterator<TreeElement> childIterator = childElement.iterator();
+            while (childIterator.hasNext()) {
+                TreeElement grandSonElement = childIterator.next();
+
+                if (grandSonElement.getModel() instanceof CategoryModel) {
+                    Category category = Category.wrap((CategoryModel) grandSonElement.getModel());
+                    categories.add(category);
+                }
+            }
+        }
+
+        brands = new HashSet<Brand>();
+        brands = new HashSet<Brand>();
+        for (BrandModel brand : search.getBrands()) {
+        	brands.add(Brand.wrap(brand));
+		}
+        
+        for (ProductModel product : productModels)
+            	result.add(product.getContentName());
+
+        return result;
+    }
 
     @Override
     public List<Product> search(String searchTerm) throws ServiceException {

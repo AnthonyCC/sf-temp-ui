@@ -21,6 +21,7 @@ public class EnumChargeType extends Enum {
 	public final static EnumChargeType FDW_RESTOCKING_FEE = new EnumChargeType("RUW", null, "FDW Restocking Fee");
 	public final static EnumChargeType BOUNCED_CHECK = new EnumChargeType("BCF", null, "Bounced Check Fee");
 	public final static EnumChargeType DLVPREMIUM = new EnumChargeType("DPR", "000000000000008888", "Premium Fee");
+	public final static EnumChargeType TIP = new EnumChargeType("TIP", "000000000000006666", "Tip");
 
 	private final String description;
 	private final String materialNumber;

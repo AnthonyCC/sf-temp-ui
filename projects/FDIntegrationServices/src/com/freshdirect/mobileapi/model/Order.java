@@ -18,6 +18,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -32,6 +33,7 @@ import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
@@ -43,6 +45,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrappe
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
 
 public class Order {
 
@@ -112,8 +115,13 @@ public class Order {
             orderDetail.setReservationTimeRange(FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime()));
 
             //Set modification cutoff time
-            orderDetail.setModificationCutoffTime(reservation.getCutoffTime());
-            orderDetail.setModifiable(OrderInfo.isModifiable(reservation.getCutoffTime(), target.getOrderStatus(), target.getOrderType(), target.isMakeGood()));
+            if(EnumEStoreId.FDX.name().equalsIgnoreCase(target.getEStoreId().name())){
+            	orderDetail.setModificationCutoffTime(target.getDeliveryInfo().getDeliveryCutoffTime());
+            	orderDetail.setModifiable(OrderUtil.isModifiable(target.getErpSalesId(), new ActionResult()));
+            }else{
+            	orderDetail.setModificationCutoffTime(reservation.getCutoffTime());
+            	orderDetail.setModifiable(OrderInfo.isModifiable(reservation.getCutoffTime(), target.getOrderStatus(), target.getOrderType(), target.isMakeGood()));
+            }
             
         }
 
@@ -126,7 +134,8 @@ public class Order {
                     : dlvAddress instanceof ErpAddressModel;
             boolean isCorporateOrder = target instanceof FDOrderI ? EnumDeliveryType.CORPORATE.equals((target).getDeliveryType())
                     : dlvAddress instanceof ErpAddressModel;
-
+            boolean isFDXOrder = target instanceof FDOrderI ? EnumDeliveryType.FDX.equals((target).getDeliveryType())
+                    : dlvAddress instanceof ErpAddressModel;
             if (pickupOrder) {
                 String locationId = ((ErpDepotAddressModel) dlvAddress).getLocationId();
                 FDDeliveryDepotModel dm = FDDeliveryManager.getInstance().getDepotByLocationId(locationId);
@@ -135,7 +144,7 @@ public class Order {
                 orderDetail.setDeliveryAddress(location);
 
             } else {
-                if (isHomeOrder || isCorporateOrder) {
+                if (isHomeOrder || isCorporateOrder||isFDXOrder) {
                     orderDetail.setDeliveryAddress(new com.freshdirect.mobileapi.controller.data.response.ShipToAddress(ShipToAddress
                             .wrap(dlvAddress)));
                 } else {

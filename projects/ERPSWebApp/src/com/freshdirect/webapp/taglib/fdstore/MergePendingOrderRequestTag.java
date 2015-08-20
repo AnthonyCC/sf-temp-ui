@@ -77,13 +77,13 @@ public class MergePendingOrderRequestTag extends BodyTagSupportEx {
 							mergePendCart.addOrderLines(mergedLines);
 							mergePendCart.sortOrderLines();
 							// sure what is sure:
-							mergePendCart.setPricingContextToOrderLines(user.getPricingContext());
+							mergePendCart.setUserContextToOrderLines(user.getUserContext());
 
 							for (FDCartLineI cartline : mergedLines) {
 								shoppingCart.removeOrderLineById(cartline.getRandomId()); 
 							}
 							shoppingCart.sortOrderLines();
-							shoppingCart.setPricingContextToOrderLines(user.getPricingContext());
+							shoppingCart.setUserContextToOrderLines(user.getUserContext());
 							user.setShoppingCart(shoppingCart);
 						}
 

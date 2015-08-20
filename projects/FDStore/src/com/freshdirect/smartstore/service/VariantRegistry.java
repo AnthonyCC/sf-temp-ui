@@ -14,12 +14,15 @@ import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.RecommendationServiceConfig;
+import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.external.certona.CertonaInfrastructure;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.impl.NullRecommendationService;
 
 final public class VariantRegistry {
 	
@@ -29,6 +32,9 @@ final public class VariantRegistry {
 	private Map<String, Variant> variantMap;
 	private Map<EnumSiteFeature, Map<String, Variant>> siteFeatureMap;
 
+	private Variant nilVariant;
+	
+	
 	private VariantRegistry() {
 	}
 
@@ -94,11 +100,29 @@ final public class VariantRegistry {
 			Map<EnumSiteFeature, Map<String, Variant>> siteFeatureMapTmp = 
 					new HashMap<EnumSiteFeature, Map<String,Variant>>();
 			
+			siteFeatureMapTmp.put(EnumSiteFeature.NIL, new HashMap<String, Variant>());
 			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
 				siteFeatureMapTmp.put(feature, new HashMap<String, Variant>());
 
 			Set<String> factors = new HashSet<String>();
 
+			if (nilVariant == null) {
+				final Variant _nilVariant = new Variant(
+					Variant.NIL_ID,
+					EnumSiteFeature.NIL,
+					new RecommendationServiceConfig(Variant.NIL_ID, RecommendationServiceType.NIL)
+				);
+
+				NullRecommendationService nilService = new NullRecommendationService( _nilVariant );
+				_nilVariant.setRecommender( nilService );
+
+				nilVariant = _nilVariant;
+				
+			}
+	        // register NIL variant in variant and site feature map
+			variantMapTmp.put(nilVariant.getId(), nilVariant);
+			siteFeatureMapTmp.get(nilVariant.getSiteFeature()).put(nilVariant.getId(), nilVariant);
+			
 			for (Variant variant : variants) {
 				try {
 					RecommendationService rs = RecommendationServiceFactory

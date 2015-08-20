@@ -43,6 +43,7 @@ import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.publish.PublishX;
 import com.freshdirect.cms.search.SearchHit;
+import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
@@ -84,9 +85,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     private final static int      MAX_HITS         = 120;
     
-    // without store root keys
-    private static final String[] ROOTKEYS         = { "FDFolder:sharedResources", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
-            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:donationOrganizationList", YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER };
+    private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
+            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:synonymList",
+            "FDFolder:spellingSynonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, "FDFolder:FAQ", "FDFolder:donationOrganizationList", YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER};
 
     private Set<ContentKey> navRootKeys;
     

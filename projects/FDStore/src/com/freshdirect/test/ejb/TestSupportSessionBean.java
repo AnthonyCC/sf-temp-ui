@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.EJBException;
@@ -178,5 +179,54 @@ public class TestSupportSessionBean extends SessionBeanSupport {
 		}
 
         return fdCustomerPK;
+	}
+
+
+
+	/**
+	 * This query selects all available SKU codes from ERPS db
+	 * Currently it consists about 35800 entries
+	 */
+	private static String SELECT_SKUCODES = "select distinct( skucode ) "
+			+ "from erps.material "
+			+ "where skucode not like '%DISC' "
+			+ "and skucode not like '%TEMP'";
+
+	private static final int SKU_CAPACITY = 36000; // currently 35844
+
+	public Collection<String> getSkuCodes() throws RemoteException {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+
+			stmt = conn.prepareStatement(SELECT_SKUCODES);
+			rs = stmt.executeQuery();
+
+			
+			Collection<String> skuList = new ArrayList<String>( SKU_CAPACITY );
+			
+			while (rs.next()) {
+				skuList.add( rs.getString("skucode") );
+			}
+
+			return skuList;
+		} catch (Exception exc) {
+			throw new EJBException(exc);
+		} finally {
+			if (rs != null) {
+				try { rs.close(); } catch (SQLException e) { throw new EJBException(e); }
+			}
+
+			if (stmt != null) {
+				try { stmt.close(); } catch (SQLException e) { throw new EJBException(e); }
+			}
+			
+			if (conn != null) {
+				try { conn.close(); } catch (SQLException e) { throw new EJBException(e); }
+			}
+		}
 	}
 }

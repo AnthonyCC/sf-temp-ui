@@ -4,7 +4,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.ejb.CreateException;
@@ -15,8 +17,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.CmFacade;
+import com.freshdirect.fdstore.coremetrics.CmInstance;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -65,12 +72,47 @@ public class CoremetricsCdfServiceCmd {
 	
 	public static void main( String[] args ) {	
 		if (FDStoreProperties.isCoremetricsEnabled()){
+			
+			try {
+				Context ctx = FDStoreProperties.getInitialContext();
+			} catch (NamingException exc) {
+				LOGGER.error(exc);
+			}
+			
+			final String param = args.length > 0
+					? args[args.length-1]
+					: null;
+
+			final boolean isMultiStoreEnv = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE).size() > 1;
+			final boolean isDBMode = CmsManager.getInstance().isReadOnlyContent(); 
+					
+			// detect global mode by param
+			final boolean globalParam = ("-g".equals(param) || "--global".equals(param));
+
+			// write out environment
+			LOGGER.debug(">> CMD 'global' param set: " + globalParam);
+			LOGGER.debug(">> multi-store mode detected: " + isMultiStoreEnv);
+			LOGGER.debug(">> CMS DB mode detected: " + isDBMode );
+
+
+			final boolean globalMode = globalParam || isDBMode || isMultiStoreEnv;
+			
+			if (globalMode) {
+				LOGGER.info("*** Run task in global mode ***");
+			} else {
+				LOGGER.info("*** Run task in normal mode ***");
+				
+			}
+			
+			
 			try{
-				CdfProcessResult result = processCdf(); 
+				CdfProcessResult result = globalMode
+						? processGlobalCdf()
+						: processCdf(); 
 				if (!result.isSuccess()) {
 					throw new Exception("ProcessCdf failed: " + result.getError());
 				}
-				
+
 			} catch (Exception e) {
 				LOGGER.error("CoremetricsCdfService failed with Exception...",e);
 				sendExceptionMail(Calendar.getInstance().getTime(), e);
@@ -81,33 +123,115 @@ public class CoremetricsCdfServiceCmd {
 		}
 	}
 
-	private static CdfProcessResult processCdf() {
-		try {
-			LOGGER.info( "Starting to process Coremetrics CDF..." );
-			lookupCdfHome();
+	private abstract static class CdfProcessTemplate {
+		abstract CdfProcessResult process(CoremetricsCdfServiceSB sb) throws RemoteException;
 
-			CoremetricsCdfServiceSB sb = cdfHome.get().create();
-			CdfProcessResult result = sb.processCdf();
+		public CdfProcessResult run() {
+			try {
+				LOGGER.info( "Starting to process Coremetrics CDF..." );
+				lookupCdfHome();
+				
+				
+				// Generate CDF files
+				CoremetricsCdfServiceSB sb = cdfHome.get().create();
 
-			LOGGER.info( "Coremetrics CDF process " + (result.isSuccess() ? "is successful" : "FAILED"));
-			return result;
+				CdfProcessResult result = process(sb);
+
+				// evaluate process result
+				if (result != null) {
+					LOGGER.info( "Coremetrics CDF process " + (result.isSuccess() ? "is successful" : "FAILED"));
+				} else {
+					LOGGER.warn("Actually nothing happened ... zero result.");
+					result = new CdfProcessResult(false, "Premature exit");
+				}
+
+				return result;
+			} catch ( CreateException e ) {
+				invalidateCdfHome();
+				LOGGER.error("CreateException",e);
+				return new CdfProcessResult(false, e.getMessage());
 			
-		} catch ( CreateException e ) {
-			invalidateCdfHome();
-			LOGGER.error("CreateException",e);
-			return new CdfProcessResult(false, e.getMessage());
-		
-		} catch ( RemoteException e ) {
-			invalidateCdfHome();
-			LOGGER.error("RemoteException",e);
-			return new CdfProcessResult(false, e.getMessage());
-		
-		} catch ( FDResourceException e ) {
-			invalidateCdfHome();
-			LOGGER.error("FDResourceException",e);
-			return new CdfProcessResult(false, e.getMessage());
+			} catch ( RemoteException e ) {
+				invalidateCdfHome();
+				LOGGER.error("RemoteException",e);
+				return new CdfProcessResult(false, e.getMessage());
+			
+			} catch ( FDResourceException e ) {
+				invalidateCdfHome();
+				LOGGER.error("FDResourceException",e);
+				return new CdfProcessResult(false, e.getMessage());
+			}
 		}
 	}
+
+
+	private static CdfProcessResult processGlobalCdf() {
+		return new CdfProcessTemplate() {
+			@Override
+			CdfProcessResult process(CoremetricsCdfServiceSB sb) throws RemoteException {
+				CmContext ctx = CmContext.createGlobalContext();
+
+				CdfProcessResult result = sb.processCdf(ctx);
+
+				return result;
+			}
+		}.run();
+	}
+
+
+
+	/**
+	 * Generate CDF files for all available facades (channels) of the store
+	 * Defined in context
+	 *
+	 * @see CmContext
+	 * @see CmFacade
+	 * 
+	 * @return
+	 */
+	private static CdfProcessResult processCdf() {
+		return new CdfProcessTemplate() {
+			@Override
+			CdfProcessResult process(CoremetricsCdfServiceSB sb) throws RemoteException {
+				Collection<CmContext> ctxs = new ArrayList<CmContext>(CmFacade.values().length);
+				
+				// determine basic context from the CM Client ID
+				
+				boolean isTest = false;
+				CmInstance inst = CmInstance.lookupByClientId( FDStoreProperties.getCoremetricsClientId() );
+				
+				if (inst == null) {
+					isTest = true;
+					inst = CmInstance.lookupByTestClientId( FDStoreProperties.getCoremetricsClientId() );
+				}
+
+				if (inst == null) {
+					LOGGER.error("Failed to determine CoreMetrics context, aborting ...");
+					return new CdfProcessResult(false, "Missing CoreMetrics Client ID, perhaps not set in fdstore.properties");
+				}
+
+				// Synthesize contexts for WEB, PHONE and TABLET facades
+				for (CmFacade facade : CmFacade.values()) {
+					ctxs.add(
+						CmContext.createContextFor(inst.getEStoreId(), facade, isTest)
+					);
+				}
+
+				CdfProcessResult result = null;
+				for (CmContext ctx : ctxs) {
+					result = sb.processCdf(ctx);
+					if (!result.isSuccess()) {
+						break;
+					}
+				}
+
+				return result;
+			}
+		}.run();
+	}
+	
+
+
 
 	private static void sendExceptionMail( Date processDate, Throwable exception ) {
 		try {

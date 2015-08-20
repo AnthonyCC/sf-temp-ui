@@ -43,6 +43,9 @@ public class CrmAgentRole extends EnumModel {
 	public static final String TRNSP_CODE="TRNSP";
 	public static final String HR_CODE = "HR";
 	
+	//fdx level
+	public static final String FDX_CODE = "FDX"; //fake placeholder
+	
 	
 
 	public CrmAgentRole(String code, String name, String description) {
@@ -120,6 +123,17 @@ public class CrmAgentRole extends EnumModel {
 			}
 		}
 		return isPrivateCaseAllowedRole;
+	}
+	
+
+	public static boolean isRoleFDX(CrmAgentRole role){
+		boolean isRoleFDX = false;
+		
+		if (null != role){
+			isRoleFDX = role.equals(CrmAgentRole.getEnum(CrmAgentRole.FDX_CODE));
+		}
+		
+		return isRoleFDX;
 	}
 	
 	

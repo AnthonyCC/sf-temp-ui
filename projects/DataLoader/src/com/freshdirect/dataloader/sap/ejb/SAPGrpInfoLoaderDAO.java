@@ -226,7 +226,7 @@ public class SAPGrpInfoLoaderDAO {
     }
 	
 	
-	private static final String GRP_PRICING_ZONE_SQL="INSERT INTO  ERPS.GRP_PRICING ( ID, VERSION, GRP_ID, ZONE_ID, QUANTITY, PRICING_UNIT, PRICE, SCALE_UNIT) VALUES(?,?,?,?,?,?,?,?)";
+	private static final String GRP_PRICING_ZONE_SQL="INSERT INTO  ERPS.GRP_PRICING ( ID, VERSION, GRP_ID, ZONE_ID, QUANTITY, PRICING_UNIT, PRICE, SCALE_UNIT,SALES_ORG,DISTRIBUTION_CHANNEL) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
 	
 	public static void createGrpPricingInfo(Connection con,int batchNumber,String grpId,Set grpPriceList ) throws SQLException{
@@ -247,13 +247,15 @@ public class SAPGrpInfoLoaderDAO {
 	    	    ps.setString(1, id);
 			    ps.setInt(2, batchNumber);
 			    ps.setString(3, grpId);			    
-			    ps.setString(4, zoneModel.getZoneId());
+			    ps.setString(4, zoneModel.getZone().getPricingZoneId());
 			    //ps.setDouble(5, zoneModel.getQty());
 			    ps.setBigDecimal(5, new java.math.BigDecimal(zoneModel.getQty()));
 			    ps.setString(6, zoneModel.getUnitOfMeasure());
 			    //ps.setDouble(7,zoneModel.getPrice());
 			    ps.setBigDecimal(7,new java.math.BigDecimal(zoneModel.getPrice()));
 			    ps.setString(8,zoneModel.getScaleUnit());
+			    ps.setString(9,  zoneModel.getZone().getSalesOrg());
+			    ps.setString(10, zoneModel.getZone().getDistributionChanel());
 			    ps.addBatch();			    			    	    	     		    			    
 	    	  } 
 	    	   

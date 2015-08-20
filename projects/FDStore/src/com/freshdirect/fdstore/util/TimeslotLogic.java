@@ -26,6 +26,7 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;

@@ -21,6 +21,7 @@
 %>
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 List brands=null;
 String catId = request.getParameter("catId");
 String productId = request.getParameter("productId");

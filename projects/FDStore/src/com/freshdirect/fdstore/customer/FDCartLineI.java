@@ -2,15 +2,16 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Set;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
@@ -153,7 +154,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public double getActualPrice();
 	
 	//Returns the zone under which this product has been priced.
-	public PricingContext getPricingContext();
+	public UserContext getUserContext();
 	
 	public void setCartonNumber(String no);
 	public String getCartonNumber();
@@ -179,5 +180,10 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setAtcItemId(String atcItemId);
 	public String getCoremetricsVirtualCategory();
 	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory);
+	public void setEStoreId(EnumEStoreId eStore);
+	public EnumEStoreId getEStoreId();
+	public void setPlantId(String plantId);
+	public String getPlantId();
+	
 
 }

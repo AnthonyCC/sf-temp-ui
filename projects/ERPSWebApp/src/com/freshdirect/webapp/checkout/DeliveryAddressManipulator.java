@@ -16,12 +16,16 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
@@ -36,12 +40,15 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.NVL;
@@ -116,6 +123,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 
 		user.updateUserState();
+		//if(!locationHandlerMode)
+			//user.resetUserContext();
+        
+		
 		session.setAttribute( SessionName.USER, user );
 	}
 
@@ -417,7 +428,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	 */
 	public static void checkAndSetEbtAccepted(String zipCode, FDUserI user, FDCartModel cart) throws FDResourceException {
 		if(null != zipCode){
-			boolean isEBTAccepted = isZipCodeEbtAccepted(zipCode);
+			FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
+			boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 			if(null !=cart.getDeliveryAddress()){
 				cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
 			}
@@ -858,17 +870,96 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 	private static void setDeliveryAddressInternal(FDUserI user, HttpSession session, final FDCartModel cart, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, boolean setServiceType)
 			throws FDResourceException {
-
+		
+		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
+		if(address!=null && !address.equals(cart.getDeliveryAddress()) && _zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()) ) {
+			cart.setZoneInfo( zoneInfo );
+			cart.setDeliveryAddress( address );
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			cart.setZoneInfo( zoneInfo );
+			cart.setDeliveryAddress( address );
+		}
+		
 		cart.setZoneInfo( zoneInfo );
 		cart.setDeliveryAddress( address );
 
-		checkAndSetEbtAccepted(address.getZipCode(), user, user.getShoppingCart());
+		//user.getUserContext().getFulfillmentContext().setPlantId("1000");
+		//user.getUserContext().setPricingContext(new PricingContext(new ZoneInfo(user.getUserContext().getPricingContext().getZoneInfo().getPricingZoneId(),"1000","1000")));
+		
+		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 
 		// store service type except for depot locations
 		if (setServiceType)
 			user.setSelectedServiceType( address.getServiceType() );
 		user.setShoppingCart( cart );
+		//cart.doCleanup();
 		session.setAttribute( SessionName.USER, user );
+		//return user;
+	}
+
+	/**
+	 * @param address
+	 * @param zoneInfo
+	 * @return
+	 */
+	private FDUserI setDeliveryAddressInternal(ErpAddressModel address,
+			FDDeliveryZoneInfo zoneInfo, boolean setServiceType) throws FDResourceException{
+		final FDCartModel cart = getCart();
+		final FDUserI user = this.getUser();
+		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
+		if(address!=null && !address.equals(cart.getDeliveryAddress()) && _zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()) ) {
+			cart.setZoneInfo( zoneInfo );
+			cart.setDeliveryAddress( address );
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			cart.setZoneInfo( zoneInfo );
+			cart.setDeliveryAddress( address );
+		}
+		
+		cart.setZoneInfo( zoneInfo );
+		cart.setDeliveryAddress( address );
+
+		//user.getUserContext().getFulfillmentContext().setPlantId("1000");
+		//user.getUserContext().setPricingContext(new PricingContext(new ZoneInfo(user.getUserContext().getPricingContext().getZoneInfo().getPricingZoneId(),"1000","1000")));
+		
+		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
+
+		// store service type except for depot locations
+		if (setServiceType)
+			user.setSelectedServiceType( address.getServiceType() );
+		user.setShoppingCart( cart );
+		//cart.doCleanup();
+		session.setAttribute( SessionName.USER, user );
+		return user;
 	}
 
 	private static void setSODeliveryAddress(FDUserI user, HttpSession session, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, String pk) throws FDResourceException {
@@ -917,6 +1008,12 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		boolean foundFraud = AddressUtil.updateShipToAddress(request, result, user, shipToAddressId, erpAddress);
 		LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> foundFraud"+foundFraud);
 		return foundFraud;
+		
+	}
+	
+	private static boolean isFulfillmentContextChanged(ErpAddressModel address,	FDDeliveryZoneInfo zoneInfo) {
+		boolean isChanged=false;
+		return isChanged;
 		
 	}
 }

@@ -31,6 +31,10 @@ public class HelpController extends BaseController {
     public static final String TERMS_OF_USE_ACTION = "termsOfUse";
 
     public static final String LEARN_MORE_PROMO_ACTION = "learnMorePromo";
+    public static final String SMS_TERMS_OF_USE = "smstermsofuse";
+    public static final String ALCOHOL_REST = "alcoholrestrictions";
+    public static final String ALCOHOL_AGE_VERI = "alcoholageverification";
+    public static final String BACKUP_DELI_AUTH = "backupdeliveryauthorization";
 
     private String costumerServicePath = "/media/mobile/iphone/contact_us/customer_service_hours.json";
 
@@ -39,6 +43,14 @@ public class HelpController extends BaseController {
     private String helpPath = "/media/mobile/iphone/help/help.json";
     
     private String customerAgreementPath = "/media/mobile/iphone/customer_agreement/customer_agreement.json";
+        
+    private String smsTermsOfUsePath = "/media/mobile/iphone/sms_terms_of_use/sms_terms_of_use.json";
+    
+    private String alcoholRestrictions = "/media/mobile/iphone/alcohol_restrictions/alcohol_restrictions.json";
+    
+    private String alcoholAgeVerification = "/media/mobile/iphone/alcohol_restrictions/alcoholAgeVerification.json";
+    
+    private String backupdeliveryauthorization = "/media/mobile/iphone/backup_delivery_authorization/backupDeliveryAuthorization.json";
     
     private String dpAgreementPath = "/media/editorial/site_pages/deliverypass/DP_terms.json";
     
@@ -74,6 +86,42 @@ public class HelpController extends BaseController {
                 LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
                 data = "";
             }
+        } else if (SMS_TERMS_OF_USE.equals(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + smsTermsOfUsePath);
+                data = ProductUtil.readContent(remoteUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+            
+        } else if (ALCOHOL_REST.equals(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + alcoholRestrictions);                
+                data = ProductUtil.readContent(remoteUrl);                
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+            
+        } else if (ALCOHOL_AGE_VERI.equals(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + alcoholAgeVerification);
+                data = ProductUtil.readContent(remoteUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+            
+        } else if (BACKUP_DELI_AUTH.equals(action)) {
+            try {
+                remoteUrl = new URL(mediaPath + backupdeliveryauthorization);
+                data = ProductUtil.readContent(remoteUrl);
+            } catch (IOException e) {
+                LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
+                data = "";
+            }
+            
         } else if (DP_TERMS_AND_CONDITIONS_ACTION.equalsIgnoreCase(action)) {
             try {
                 remoteUrl = new URL(mediaPath + dpAgreementPath);

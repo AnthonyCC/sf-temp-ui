@@ -3,6 +3,8 @@ package com.freshdirect.framework.conf;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -64,14 +66,23 @@ public class JndiDataSource implements DataSource {
 		}
 	}
 
-	public boolean isWrapperFor(Class arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public Object unwrap(Class arg0) throws SQLException {
+	
+	
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

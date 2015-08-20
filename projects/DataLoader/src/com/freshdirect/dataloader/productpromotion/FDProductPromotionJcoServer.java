@@ -75,6 +75,8 @@ public class FDProductPromotionJcoServer extends FdSapServer
 		final JCoCustomRepository repository = JCo.createCustomRepository("ProductPromotionRepository");
 		final JCoRecordMetaData metaDDPPHeaderList = JCo.createRecordMetaData("DDPPHEADERLIST");
 
+		tableMetaDataList.add(new TableMetaData("VKORG", JCoMetaData.TYPE_CHAR, 4, 0, "Sales Organization"));
+		tableMetaDataList.add(new TableMetaData("VTWEG", JCoMetaData.TYPE_CHAR, 2, 0, "Distribution Channel"));
 		tableMetaDataList.add(new TableMetaData("PROMO", JCoMetaData.TYPE_CHAR, 10, 0, "Promotion"));
 		tableMetaDataList.add(new TableMetaData("PRTYP", JCoMetaData.TYPE_NUM, 3, 0, "Promotion Type"));
 		tableMetaDataList.add(new TableMetaData("PRNAM", JCoMetaData.TYPE_CHAR, 30, 0, "Promotion Name"));
@@ -91,7 +93,9 @@ public class FDProductPromotionJcoServer extends FdSapServer
 
 		final JCoRecordMetaData metaDDPPDtlList = JCo.createRecordMetaData("DDPPITEMLIST");
 		tableMetaDataList = new ArrayList<TableMetaData>();
-		
+	
+		tableMetaDataList.add(new TableMetaData("VKORG", JCoMetaData.TYPE_CHAR, 4, 0, "Sales Organization"));
+		tableMetaDataList.add(new TableMetaData("VTWEG", JCoMetaData.TYPE_CHAR, 2, 0, "Distribution Channel"));
 		tableMetaDataList.add(new TableMetaData("PROMO", JCoMetaData.TYPE_CHAR, 10, 0, "Promotion"));
 		tableMetaDataList.add(new TableMetaData("PRTYP", JCoMetaData.TYPE_NUM, 3, 0, "Promotion Type"));
 		tableMetaDataList.add(new TableMetaData("BISMT", JCoMetaData.TYPE_CHAR, 18, 0, "Web SKU ID"));
@@ -218,6 +222,8 @@ public class FDProductPromotionJcoServer extends FdSapServer
 					String featuredHeader = FDSapHelperUtils.getString(ddppPromoDtlTable.getString("FEATRN"));
 					String category = FDSapHelperUtils.getString(ddppPromoDtlTable.getString("ZCATEGORY"));
 					String categoryPosition = FDSapHelperUtils.getString(ddppPromoDtlTable.getString("CATPOS"));
+					String salesOrg = FDSapHelperUtils.getString(ddppPromoDtlTable.getString("VKORG"));
+					String distChannel = FDSapHelperUtils.getString(ddppPromoDtlTable.getString("VTWEG"));
 
 					if (LOG.isDebugEnabled())
 					{
@@ -248,6 +254,8 @@ public class FDProductPromotionJcoServer extends FdSapServer
 						ppInfo.setFeaturedHeader(featuredHeader);
 						ppInfo.setFeatured(featured);
 						ppInfo.setErpPromtoionId(promoId);
+						ppInfo.setSalesOrg(salesOrg);
+						ppInfo.setDistChannel(distChannel);
 					}
 					else
 					{
@@ -352,15 +360,6 @@ public class FDProductPromotionJcoServer extends FdSapServer
 	}
 
 	/**
-	 * @param serverName
-	 *           the serverName to set
-	 */
-	public void setServerName(final String serverName)
-	{
-		this.serverName = serverName;
-	}
-
-	/**
 	 * @return the serverName
 	 */
 	@Override
@@ -369,19 +368,4 @@ public class FDProductPromotionJcoServer extends FdSapServer
 		return serverName;
 	}
 
-	/**
-	 * @return the functionName
-	 */
-	public String getFunctionName()
-	{
-		return functionName;
-	}
-
-	/**
-	 * @param functionName the functionName to set
-	 */
-	public void setFunctionName(String functionName)
-	{
-		this.functionName = functionName;
-	}
 }

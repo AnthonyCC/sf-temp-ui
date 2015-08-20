@@ -31,6 +31,7 @@ import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.RedeliverySaleInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDConfiguredProductFactory;
 import com.freshdirect.fdstore.FDResourceException;
@@ -47,145 +48,18 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @author $Author:Viktor Szathmary$
  */
 public class ErpSaleInfoDAO {
-
+//
 	private final static Category LOGGER = LoggerFactory.getInstance(ErpSaleInfoDAO.class);
-	/*
-	private static final String QUERY_ORDER_HISTORY =
-		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
-		+ "del.action_date as mod_date, del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type, del.zone,  "
-		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
-		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
-		+ "( select max(sa.amount) from cust.salesaction sa where sale_id=s.id and sa.action_type in ('CRO','MOD','INV') "
-		+ "and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount " 
-		+ "from cust.sale s, cust.salesaction sa, "
-		+ "( select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime, di.delivery_type, di.zone, "
-		+ "(select pi.payment_method_type from cust.paymentinfo pi where pi.salesaction_id = sa.id) as payment_method_type "
-		+ "from cust.sale s, cust.sale_cro_mod_date sac, cust.salesaction sa, cust.deliveryinfo di "
-		+ "where s.id = sac.sale_id and s.id=sa.sale_id and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') " 
-		+ "and sa.action_date=sac.max_date "
-		+ "and s.customer_id=?) del "
-		+ "where sale_id=s.id and sa.action_type = 'CRO' and s.customer_id=? " 
-		+ "and s.id=del.id order by to_number(s.id) desc";
-	*/
-	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,del.referenced_order,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
-		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id,"
-		+ " sa.action_date, sa.source, sa.initiator"
-		+ "         from   cust.sale s, cust.salesaction sa"
-		+ "         where  sale_id = s.id"
-		+ "         and    sa.action_type = 'CRO'"
-		+ "         and    sa.customer_id = s.customer_id"
-		+ "         and    s.customer_id = ?) cre,"
-		+ "       (select  s.id, sa.amount,sa.sub_total"
-		+ "         from   cust.sale s, cust.salesaction sa"
-		+ "         where  sale_id = s.id"
-		+ "         and    sa.action_type in ('CRO', 'MOD', 'INV')"
-		+ "         and    sa.customer_id = s.customer_id"
-		+ "         and    sa.action_date = (select max(action_date)"
-		+ "                                  from   cust.salesaction"
-		+ "                                  where  action_type in ('CRO', 'MOD',"
-		+ "'INV')"
-		+ "                                  and    customer_id = s.customer_id"
-		+ "                                  and    sale_id = s.id)"
-		+ "         and    s.customer_id = ?) sac,"
-		+ "       (select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime,"
-		+ "          di.delivery_type, di.zone, pi.payment_method_type,pi.referenced_order"
-		+ "         from   cust.sale s, cust.salesaction sa, cust.deliveryinfo di, "
-		+ "cust.paymentinfo pi"
-		+ "         where  s.id = sa.sale_id"
-		+ "         and    sa.id = di.salesaction_id"
-		+ "         and    sa.id = pi.salesaction_id"
-		+ "         and    sa.action_type in ('CRO', 'MOD')"
-		+ "         and    sa.customer_id = s.customer_id"
-		+ "         and    sa.action_date = s.cromod_date"
-		+ "         and    s.customer_id = ?) del,"
-		+ "       (select /*+ use_nl(c s) */ s.id, sum(c.amount) as amount"
-		+ "         from   cust.complaint c, cust.sale s"
-		+ "         where  c.sale_id = s.id"
-		+ "         and    c.status = 'APP'"
-		+ "         and    s.customer_id = ?"
-		+ "         group  by s.id) app,"
-		+ "       (select /*+ use_nl(c s) */ s.id, sum(c.amount) as amount"
-		+ "         from   cust.complaint c, cust.sale s"
-		+ "         where  c.sale_id = s.id"
-		+ "         and    c.status = 'PEN'"
-		+ "         and    s.customer_id = ?"
-		+ "         group  by s.id) pen"
-		+ " where  cre.id = sac.id"
-		+ " and    sac.id = del.id"
-		+ " and    del.id = app.id(+)"
-		+ " and    del.id = pen.id(+)"
-		+ " order  by to_number(cre.id) desc";
-	
-	private static String QUERY_ORDER_HISTORY_PYTHIAN="select "+
-	"  min(customer_id) customer_id, id, min(truck_number) truck_number, min(stop_sequence) stop_sequence, min(standingorder_id) standingorder_id, min(dlv_pass_id) dlv_pass_id, min(type) type, min(status) status, "+
-	"  min(create_date) create_date, min(create_source) create_source, min(create_by) create_by, "+
-	"  min(amount) amount, min(sub_total) sub_total, "+
-	"  min(requested_date) requested_date, "+
-	"  min(mod_date) mod_date, "+
-	"  min(mod_source) mod_source, "+
-	"  min(mod_by) mod_by, "+
-	"  min(payment_method_type) payment_method_type, "+
-	"  min(referenced_order) referenced_order, "+
-	"  min(starttime) starttime, "+
-	"  min(endtime) endtime, "+
-	"  min(cutofftime) cutofftime, "+
-	"  min(delivery_type) delivery_type, "+
-	"  min(zone) zone, "+
-	"  min(credit_approved) credit_approved, "+
-	"  min(credit_pending) credit_pending "+
-	"from ( "+
-	"  select "+
-	"    sa.action_type, "+
-	"    s.customer_id, s.id, s.truck_number, s.stop_sequence, s.standingorder_id, s.dlv_pass_id, s.type, s.status, "+
-	"    case when sa.action_type = 'CRO' then sa.action_date else null end as create_date, "+
-	"    case when sa.action_type = 'CRO' then sa.source else null end as create_source, "+
-	"    case when sa.action_type = 'CRO' then sa.initiator else null end as create_by, "+
-	"    first_value(sa.amount) over (partition by s.id order by sa.action_date desc) as amount, "+
-	"    first_value(sa.sub_total) over (partition by s.id order by sa.action_date desc) as sub_total, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then sa.requested_date else null end requested_date, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then sa.action_date else null end mod_date, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then sa.source else null end mod_source, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then sa.initiator else null end mod_by, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then pi.payment_method_type else null end payment_method_type, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then pi.referenced_order else null end referenced_order, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then di.starttime else null end starttime, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then di.endtime else null end endtime, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then di.cutofftime else null end cutofftime, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then di.delivery_type else null end delivery_type, "+
-	"    case when sa.action_type in ('CRO', 'MOD') and sa.action_date = s.cromod_date then di.zone else null end zone, "+
-	"    NVL(ap.app_amount, 0) as credit_approved, "+
-	"    NVL(ap.pen_amount, 0) as credit_pending "+
-	"  from "+
-	"    cust.sale s "+
-	"    join cust.salesaction sa on sa.sale_id = s.id and sa.customer_id = s.customer_id "+
-	"    left outer join cust.deliveryinfo di on di.salesaction_id = sa.id and sa.action_type in ('CRO', 'MOD') "+
-	"    left outer join cust.paymentinfo pi on pi.salesaction_id = sa.id and sa.action_type in ('CRO', 'MOD') "+
-	"    left outer join (select "+
-	"                       s1.customer_id, s1.id, "+
-	"                       sum(case when c.status = 'APP' then c.amount else 0 end) as app_amount, "+
-	"                       sum(case when c.status = 'PEN' then c.amount else 0 end) as pen_amount "+
-	"                     from "+
-	"                       cust.sale s1 "+
-	"                       join cust.complaint c on c.sale_id = s1.id "+
-	"                     where c.status in ('APP', 'PEN') "+
-	"                     group by s1.customer_id, s1.id) ap on ap.id = s.id and ap.customer_id = s.customer_id "+
-	"  where sa.action_type in ('CRO', 'MOD', 'INV') "+
-	"    and s.customer_id =  ? "+
-	") "+
-	"group by id";
-	
-	
-	
-	private static String QUERY_ORDER_HISTORY_NEW=" select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.so_holiday_movement, cre.dlv_pass_id,cre.type, "+
+	private static String QUERY_ORDER_HISTORY=" select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.so_holiday_movement, cre.dlv_pass_id,cre.type, "+
 	"  del.requested_date, cre.requested_date as create_requested_date, cre.status, sac.amount,sac.sub_total,del.payment_method_type,del.referenced_order,  "+
 	"  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,   "+
 	"  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,   "+
 	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='APP' and c.sale_id=cre.id),0) as credit_approved,  "+
-	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='PEN' and c.sale_id=cre.id),0) as credit_pending, del.zone  "+
+	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='PEN' and c.sale_id=cre.id),0) as credit_pending, del.zone,NVL(E_STORE,'FreshDirect') E_STORE,  "+
+	"  NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID"+
 	"  from  "+
 	"    ( select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id, s.so_holiday_movement, "+
-	"     sa.action_date, sa.source, sa.initiator, sa.requested_date         from    "+
+	"     sa.action_date, sa.source, sa.initiator, sa.requested_date,s.E_STORE         from    "+
 	"         cust.sale s, cust.salesaction sa          "+
 	"             where  sale_id = s.id         and    sa.action_type = 'CRO'         and  "+
 	"                        sa.customer_id = s.customer_id         and    s.customer_id =  ?  "+
@@ -203,7 +77,7 @@ public class ErpSaleInfoDAO {
 	"      "+
 	"     ( "+
 	"     select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime,  "+
-	"      di.delivery_type, di.zone,pi.payment_method_type,pi.referenced_order  from  "+
+	"      di.delivery_type, di.zone,pi.payment_method_type,pi.referenced_order,DI.SALES_ORG, DI.DISTRIBUTION_CHANNEL, DI.PLANT_ID  from  "+
 	"       cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.paymentinfo pi        where  "+
 	"        pi.salesaction_id=sa.id and s.id = sa.sale_id  and    sa.id = di.salesaction_id        "+
 	"        and    sa.action_type in ('CRO', 'MOD')         and    sa.customer_id = s.customer_id  "+
@@ -213,52 +87,16 @@ public class ErpSaleInfoDAO {
 	"         where  cre.id = sac.id(+) and     "+
 	"         cre.id = del.id     "+
 	"          order by del.requested_date desc";
-/*	
-	private static final String QUERY_ORDER_HISTORY =
-		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
-		+ "del.action_date as mod_date, del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type, del.zone,  "
-		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
-		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
-		+ "( select max(sa.amount) from cust.salesaction_orig sa where sale_id=s.id and sa.action_type in ('CRO','MOD','INV') "
-		+ "and sa.action_date=(select max(action_date) from cust.salesaction_orig where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount " 
-		+ "from cust.sale_orig s, cust.salesaction_orig sa, "
-		+ "( select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime, di.delivery_type, di.zone, "
-		+ "(select pi.payment_method_type from cust.paymentinfo pi where pi.salesaction_id = sa.id) as payment_method_type "
-		+ "from cust.sale_orig s, cust.sale_cro_mod_date sac, cust.salesaction_orig sa, cust.deliveryinfo di "
-		+ "where s.id = sac.sale_id and s.id=sa.sale_id and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') " 
-		+ "and sa.action_date=sac.max_date "
-		+ "and s.customer_id=?) del "
-		+ "where sale_id=s.id and sa.action_type = 'CRO' and s.customer_id=? " 
-		+ "and s.id=del.id order by to_number(s.id) desc";
-*/	
-	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId, int queryId) throws SQLException {
+
+	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		long startTime=System.currentTimeMillis();
-		PreparedStatement ps =null;
-		
-		if (queryId<1 || queryId>3) {
-			queryId=1;
-			
-		}
-		if (queryId==2) {
-			ps = conn.prepareStatement(QUERY_ORDER_HISTORY_PYTHIAN);
-			ps.setString(1, erpCustomerId);
-			
-		} else	if (queryId==3) {
-			ps = conn.prepareStatement(QUERY_ORDER_HISTORY_NEW);
+		PreparedStatement ps =conn.prepareStatement(QUERY_ORDER_HISTORY);;
 			ps.setString(1, erpCustomerId);
 			ps.setString(2, erpCustomerId);
 			//Added As part of PERF-27 task.
 			ps.setString(3, erpCustomerId);
 		
-		} else {
-			ps = conn.prepareStatement(QUERY_ORDER_HISTORY);
-			ps.setString(1, erpCustomerId);
-			ps.setString(2, erpCustomerId);
-			//Added As part of PERF-27 task.
-			ps.setString(3, erpCustomerId);
-			ps.setString(4, erpCustomerId);
-			ps.setString(5, erpCustomerId);
-		}
+		
 		ResultSet rs = ps.executeQuery();
 		List<ErpSaleInfo> extendedInfos = new ArrayList<ErpSaleInfo>();
 		
@@ -294,12 +132,16 @@ public class ErpSaleInfoDAO {
 					rs.getString("STOP_SEQUENCE"),
 				    (referencedOrder==null || "".equals(referencedOrder))?false:true,
 					rs.getString("STANDINGORDER_ID"),
-					"Y".equalsIgnoreCase(rs.getString("SO_HOLIDAY_MOVEMENT"))
+					"Y".equalsIgnoreCase(rs.getString("SO_HOLIDAY_MOVEMENT")),
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL")
 				));
 		}
 		rs.close();
 		ps.close();
-		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, and returned ").append(extendedInfos.size()).append(" records using queryId of ").append(queryId).toString());
+		LOGGER.info(new StringBuilder("*****run get order history info query ").append(" for customer ").append(erpCustomerId).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, and returned ").append(extendedInfos.size()).append(" records").toString());
 		return extendedInfos;
 	}
 	
@@ -309,9 +151,10 @@ public class ErpSaleInfoDAO {
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
 		+ "( select sa.amount from cust.salesaction sa where sale_id=s.id and sa.action_type in ('CRO','MOD','INV') "
-		+ "and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount " 
+		+ "and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount, " 
+		+" NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "
 		+ "from cust.sale s, cust.salesaction sa, "
-		+ "( select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime, di.delivery_type, di.zone, "
+		+ "( select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime, di.delivery_type, di.zone,di.SALES_ORG,di.DISTRIBUTION_CHANNEL,di.PLANT_ID, "
 		+ "(select pi.payment_method_type from cust.paymentinfo pi where pi.salesaction_id = sa.id) as payment_method_type "
 		+ "from cust.sale s, cust.sale_cro_mod_date sac, cust.salesaction sa, cust.deliveryinfo di "
 		+ "where s.id = sac.sale_id and s.id=sa.sale_id and s.type='REG' and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') " 
@@ -355,7 +198,11 @@ public class ErpSaleInfoDAO {
 					rs.getString("STOP_SEQUENCE"),
 					false,
 					rs.getString("STANDINGORDER_ID"),
-					false
+					false,
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL")
 					));
 		}
 		rs.close();
@@ -744,25 +591,13 @@ public class ErpSaleInfoDAO {
 		else
 			return false;
 	}
-/*
-	private static final String QUERY_WEB_ORDER_HISTORY =
-		"select s.id, s.status, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source, "
-		+ "(select action_date from cust.salesaction where sale_id = s.id and action_type = 'CRO') as create_date, "
-		+ "(select source from cust.salesaction where sale_id = s.id and action_type = 'CRO') as create_source, "
-		+ "di.delivery_type, di.zone, pi.payment_method_type "
-		+ "from cust.sale s, cust.salesaction sa, " 
-		+ "cust.deliveryinfo di, cust.paymentinfo pi "
-		+ "where s.id = sa.sale_id and s.customer_id = ? " 
-		+ "and sa.action_date = (select max_date from cust.sale_cro_mod_date sco where sco.sale_id = s.id) " 
-		+ "and sa.action_type in ('CRO', 'MOD') "
-		+ "and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
-  */
-	//New query using Customer_id index in SALESACTION table.
+
 	private static final String QUERY_WEB_ORDER_HISTORY = 
 		"select	s.id, s.status, s.truck_number, s.stop_sequence, s.standingorder_id as standingorder_id, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
 		+ "		(select action_date from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_date, "
 		+ "		(select source from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_source,"
 		+ "		di.delivery_type, di.zone, pi.payment_method_type "
+		+" NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "
 		+ "	from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.paymentinfo pi "
 		+ "	where s.id = sa.sale_id"
 		+ "		and s.customer_id=sa.customer_id"
@@ -772,19 +607,6 @@ public class ErpSaleInfoDAO {
 		+ "		and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
 		
 
-	/*
-	private static final String QUERY_WEB_ORDER_HISTORY =
-		"select s.id, s.status, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source, "
-		+ "(select action_date from cust.salesaction_orig where sale_id = s.id and action_type = 'CRO') as create_date, "
-		+ "(select source from cust.salesaction_orig where sale_id = s.id and action_type = 'CRO') as create_source, "
-		+ "di.delivery_type, di.zone, pi.payment_method_type "
-		+ "from cust.sale_orig s, cust.salesaction_orig sa, " 
-		+ "cust.deliveryinfo di, cust.paymentinfo pi "
-		+ "where s.id = sa.sale_id and s.customer_id = ? and s.type='REG' " 
-		+ "and sa.action_date = (select max_date from cust.sale_cro_mod_date sco where sco.sale_id = s.id) " 
-		+ "and sa.action_type in ('CRO', 'MOD') "
-		+ "and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
-	*/
 	public static Collection<ErpSaleInfo> getWebOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_WEB_ORDER_HISTORY);
 		ps.setString(1, erpCustomerId);
@@ -819,7 +641,11 @@ public class ErpSaleInfoDAO {
 					rs.getString("STOP_SEQUENCE"),
 					false,
 					rs.getString("STANDINGORDER_ID"),
-					false
+					false,
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL")
 					));
 		}
 		rs.close();
@@ -893,11 +719,11 @@ public class ErpSaleInfoDAO {
 	}
 	
 	private static final String GC_NSM_ORD_SEARCH_QUERY =
-		"select s.id,s.customer_id,s.status,sa.action_date "
+		"select s.id,s.customer_id,s.status,sa.action_date,NVL(E_STORE,'FreshDirect') E_STORE "
 			+ "from cust.sale s, cust.salesaction sa "
 			+ "where s.id=sa.sale_id and s.status = 'NEW' "
 			+ "and s.type='GCD' and sa.action_type in ('AUT')";
-	
+	//NVL(E_STORE,'FreshDirect') E_STORE +" NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "
 	public static List<ErpSaleInfo> getNSMOrdersForGC(Connection conn) throws SQLException{
 		List<ErpSaleInfo> list = new ArrayList<ErpSaleInfo>();
 		PreparedStatement ps = conn.prepareStatement(GC_NSM_ORD_SEARCH_QUERY);
@@ -935,11 +761,33 @@ public class ErpSaleInfoDAO {
 						"",
 						false,
 						null,
-						false);
+						false,
+						EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+						"1000",
+						"1000",
+						"1000");
 						list.add(erpSaleInfo);
 			}
 		}
 		return list;
 	}
+	
+	// get last order's ID for a customer.
+			private static final String lastOrderIDQueryByEStore = "select id from (select s.id from cust.sale s, cust.salesaction sa where s.customer_id =? and s.e_store=? and s.id= sa.sale_id and s.type='REG' and sa.action_type='CRO' order by action_date desc) where rownum =1";
+			
+			public static String getLastOrderID(Connection conn, String erpCustomerId, EnumEStoreId eStore) throws SQLException {
+				String lastOrderID = null;
+				PreparedStatement ps = conn.prepareStatement(lastOrderIDQueryByEStore);
+				ps.setString(1, erpCustomerId);
+				ps.setString(2, eStore.getContentId());
+				ResultSet rs = ps.executeQuery();
+				while(rs.next()){
+					lastOrderID = rs.getString("ID");	
+				}
+				rs.close();
+				ps.close();
+				
+				return lastOrderID;
+			}
 
 }

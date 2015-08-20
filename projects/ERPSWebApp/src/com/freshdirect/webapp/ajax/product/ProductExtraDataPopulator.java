@@ -315,11 +315,11 @@ public class ProductExtraDataPopulator {
 			}
 			
 		}
-
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		// origin (or Country of Origin Label, a.k.a. COOL)
 		if (productInfo != null) {
 			final String skuCode = productInfo.getSkuCode();
-			final List<String> coolList = productInfo.getCountryOfOrigin();
+			final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
 			if (coolList != null && !coolList.isEmpty()) {
 				if (skuCode != null && (skuCode).startsWith("MEA")) {
 					data.setOriginTitle("Born, Raised and Harvested in");
@@ -329,7 +329,7 @@ public class ProductExtraDataPopulator {
 			}
 		}
 		if (productInfo != null) {
-			final List<String> coolList = productInfo.getCountryOfOrigin();
+			final List<String> coolList = productInfo.getCountryOfOrigin(plantID);
 			if (coolList != null && !coolList.isEmpty()) {
 				data.setOrigin( AbstractProductModelImpl.getCOOLText(coolList) );
 			}
@@ -388,7 +388,7 @@ public class ProductExtraDataPopulator {
 			 * According to ticket http://jira.freshdirect.com:8080/browse/APPDEV-2328
 			 */
 			if(defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
+				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
 				if ( enumRating != null) {
 					if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
 						ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
@@ -728,12 +728,11 @@ public class ProductExtraDataPopulator {
 		
 		
 		// --- --- //
-		
 		// Perishable product - freshness warranty
-		if (FDStoreProperties.IsFreshnessGuaranteedEnabled() && productInfo.getFreshness() != null) {
+		if (FDStoreProperties.IsFreshnessGuaranteedEnabled() && productInfo.getFreshness(plantID) != null) {
 			// method above returns either a positive integer encoded in string
 			// or null
-			data.setFreshness( Integer.parseInt(productInfo.getFreshness()) );
+			data.setFreshness( Integer.parseInt(productInfo.getFreshness(plantID)) );
 		}
 		
 		/* Group Scale products */
@@ -764,7 +763,7 @@ public class ProductExtraDataPopulator {
 							group = new FDGroup(grpId, Integer.parseInt(grpVersion));
 						}
 								
-						MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
+						MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getUserContext().getPricingContext().getZoneInfo());
 							
 						if (matPrice != null) {
 							String grpQty = "0";

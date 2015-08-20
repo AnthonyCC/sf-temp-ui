@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.dataloader.sap.ejb;
 
 import java.rmi.RemoteException;
@@ -15,20 +7,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.CreateException;
-import javax.ejb.EJBException;
 import javax.ejb.FinderException;
-import javax.ejb.ObjectNotFoundException;
-import javax.ejb.RemoveException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -41,25 +32,27 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.sap.SAPConstants;
 import com.freshdirect.erp.EnumApprovalStatus;
-import com.freshdirect.erp.PricingFactory;
+import com.freshdirect.erp.EnumProductApprovalStatus;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpClassEB;
 import com.freshdirect.erp.ejb.ErpClassHome;
 import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
-import com.freshdirect.erp.ejb.ErpProductEB;
-import com.freshdirect.erp.ejb.ErpProductHome;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
-import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -67,876 +60,1747 @@ import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * A session bean that takes a set of anonymous models representing erp objects to be created
- * and processes them in the correct order together in a single batch.
- *
- * @version $Revision$
- * @author $Author$
+ * A session bean that takes a set of anonymous models representing ERP objects
+ * to be created and processes them in the correct order together in a single
+ * batch (version).
+ * 
+ * @author kkanuganti
  */
 public class SAPLoaderSessionBean extends SessionBeanSupport {
-    
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
 
-    /** logger for messages
-     */
-    private static Category LOGGER = LoggerFactory.getInstance( SAPLoaderSessionBean.class );
-    
-    /** Creates new SAPLoaderSessionBean */
-    public SAPLoaderSessionBean() {
-        super();
-    }
-    
-    /**
-     * Template method that returns the cache key to use for caching resources.
-     *
-     * @return the bean's home interface name
-     */
-    protected String getResourceCacheKey() {
-        return "com.freshdirect.dataloader.sap.ejb.SAPLoaderHome";
-    }
-    
-    /** naming context for locating remote objects
-     */
-    Context initCtx = null;
-    
-    /** the batch number currently begin worked on
-     */
-    private transient int batchNumber = -1;
-    /** the date and time processing started on the current batch
-     */
-    private transient Timestamp batchTimestamp = null;
-    
-    /** a cache of models of classes created during this batch
-     */
-    private transient HashMap<String, ErpClassModel> createdClasses = null;
-    /** a cache of materials created during this batch
-     */
-    private transient HashMap<String, ErpMaterialModel> createdMaterials = null;
-    
-    
-    /**
-     * performs the batch load.  processes each of the objects in the correct order.
-     *
-     * @param deletedMaterials the collection of materials to discontinue
-     * @param classes the collection of classes to create or update in this batch
-     * @param activeMaterials the collection of materials to create of update in this batch
-     * @param characteristicValuePrices the collection of characteristic value prices to create or update in this batch
-     * @throws LoaderException any problems encountered while creating or updating objects in the system
-     */
-    public void loadData(Map<String, ErpClassModel> classes, Map<ErpMaterialModel, 
-            Map<String, Object>> materials, 
-            Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws LoaderException {
-    
-        LOGGER.debug("\nBeginning SAPLoaderSessionBean loadData\n");
-        
-        try {
-            //
-            // get the naming context
-            //
-            this.initCtx =  new InitialContext();
-            
-            try {
-                //
-                // do batch setup
-                //
-                beforeBatch();
-                
-                UserTransaction utx = getSessionContext().getUserTransaction();
-                //
-                // set a timeout period for this transaction (in seconds)
-                //
-                utx.setTransactionTimeout(30000);
-                try {
-                    utx.begin();
-                    //
-                    // run the batch steps
-                    //
-                    processClasses(classes);
-                    processMaterials(materials);
-                    processCharacteristicValuePrices(characteristicValuePrices);
-                    processProducts(materials);
-                    batchComplete();
-                    
-                    try {
-                        //
-                        // try to commit all the changes together
-                        //
-                        utx.commit();
-                        LOGGER.debug("\nCompleted SAPLoaderSessionBean loadData\n");
-                    } catch (RollbackException re) {
-                        utx.setRollbackOnly();
-                        LOGGER.error("\nUnable to update ERPS objects.  UserTransaction had already rolled back before attempt to commit.", re);
-                        throw new LoaderException(re, "Unable to update ERPS objects.  UserTransaction had already rolled back before attempt to commit.");
-                    } catch (HeuristicMixedException hme) {
-                        utx.setRollbackOnly();
-                        LOGGER.error("\nUnable to update ERPS objects.  TransactionManager aborted due to mixed heuristics.", hme);
-                        throw new LoaderException(hme, "Unable to update ERPS objects.  TransactionManager aborted due to mixed heuristics.");
-                    } catch (HeuristicRollbackException hre) {
-                        utx.setRollbackOnly();
-                        LOGGER.error("\nUnable to update ERPS objects.  TransactionManager heuristically rolled back transaction.", hre);
-                        throw new LoaderException(hre, "Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.");
-                    } catch (RuntimeException rune) {
-                        utx.setRollbackOnly();
-                        LOGGER.error("\nUnexpected runtime exception in SAPLoaderSessionBean loadData", rune);
-                        throw new LoaderException(rune, "Unexpected runtime exception");
-                    }
-                    
-                } catch (LoaderException le) {
-                    utx.setRollbackOnly();
-                    LOGGER.error("\n\nAborting SAPLoaderSessionBean loadData\n", le);
-                    utx.rollback();
-                    afterBatchFailed(le);
-                    throw(le);
-                }
-                
-            } catch (NotSupportedException nse) {
-                LOGGER.error("\nUnable to update ERPS objects.  Unable to begin a UserTransaction.", nse);
-                throw new LoaderException(nse, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
-            } catch (SystemException se) {
-                LOGGER.error("\nUnable to update ERPS objects.  Unable to begin a UserTransaction.", se);
-                throw new LoaderException(se, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
-            } finally {
-                //
-                // close the naming context
-                //
-                try {
-                    this.initCtx.close();
-                } catch (NamingException ne) {
-                    //
-                    // don't need to rethrow this since the transaction has already completed or failed
-                    //
-                    LOGGER.warn("Had difficulty closing naming context after transaction had completed.  " + ne.getMessage());
-                }
-            }
-            
-        } catch (NamingException ne) {
-            LOGGER.error("\nUnable to get naming context to locate components required by the loader.", ne);
-            throw new LoaderException(ne, "Unable to get naming context to locate components required by the loader.");
-        }
-    }
-    
-    /**
-     * does set up at the beginning of a batch load
-     * @throws EJBException any problems during setup
-     */
-    public void beforeBatch() throws LoaderException {
-        //
-        // set the creation time for this batch
-        //
-        this.batchTimestamp = new Timestamp(new java.util.Date().getTime());
-        //
-        // get the user transaction
-        //
-        UserTransaction utx = getSessionContext().getUserTransaction();
-        Connection conn = null;
-        try {
-            utx.begin();
-            //
-            // set a timeout period for this transaction (in seconds)
-            //
-            utx.setTransactionTimeout(3000);
-            //
-            // get the next batch number from the batch sequence
-            //
-            
-            try {
-                conn = getConnection();
-                //
-                // get a new batch number
-                //
-                PreparedStatement ps = conn.prepareStatement("select erps.batch_seq.nextval from dual");
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    this.batchNumber = rs.getInt(1);
-                } else {
-                    LOGGER.error("Unable to begin new batch.  Didn't get a new batch number.");
-                    throw new LoaderException("Unable to begin new batch.  Didn't get a new batch number.");
-                }
-                rs.close();
-                ps.close();
-                //
-                // make an entry in the history table
-                //
-                ps = conn.prepareStatement("insert into erps.history (version, date_created, created_by, approval_status) values (?,?,?,?)");
-                ps.setInt(1, this.batchNumber);
-                ps.setTimestamp(2, this.batchTimestamp);
-                ps.setString(3, "Loader");
-                ps.setString(4, EnumApprovalStatus.LOADING.getStatusCode());
-                int rowsaffected = ps.executeUpdate();
-                if (rowsaffected != 1) {
-                    throw new LoaderException("Unable to begin new batch.  Couldn't update loader history table.");
-                }
-                rs.close();
-                ps.close();
-                
-                conn.close();
-                
-                try {
-                    utx.commit();
-                } catch (RollbackException re) {
-                    LOGGER.error("\nUnable to start a batch.  UserTransaction had already rolled back before attempt to commit.", re);
-                    throw new LoaderException(re, "Unable to start a batch.  UserTransaction had already rolled back before attempt to commit.");
-                } catch (HeuristicMixedException hme) {
-                    LOGGER.error("\nUnable to start a batch.  TransactionManager aborted due to mixed heuristics.", hme);
-                    throw new LoaderException(hme, "Unable to start a batch.  TransactionManager aborted due to mixed heuristics.");
-                } catch (HeuristicRollbackException hre) {
-                    LOGGER.error("\nUnable to start a batch.  TransactionManager heuristically rolled back transaction.", hre);
-                    throw new LoaderException(hre, "Unable to start a batch.  TransactionManager heuristically rolled back transaction.");
-                }
-                
-            } catch (SQLException sqle) {
-                LOGGER.error("Unable to begin new batch.", sqle);
-                utx.setRollbackOnly();
-                close(conn);
-                utx.rollback();
-                throw new LoaderException("Unable to begin a new batch.  " + sqle.getMessage());
-            }
-            
-        } catch (NotSupportedException nse) {
-            LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", nse);
-            throw new LoaderException(nse, "Unable to start batch.  Unable to begin a UserTransaction.");
-        } catch (SystemException se) {
-            LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", se);
-            throw new LoaderException(se, "Unable to start batch.  Unable to begin a UserTransaction.");
-        }
-        finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException sqle2) {
-                    sqle2.printStackTrace();
-                    LOGGER.error("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.", sqle2);
-                    throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  " + sqle2);
-                }
-            }
-        }
-    }
-    
-    /**
-     * @param classes
-     * @throws LoaderException  */
-    private void processClasses(Map<String, ErpClassModel> classes) throws LoaderException {
-        //
-        // create a new HashMap of models of classes so that subsequent loader steps can
-        // form the proper foreign key relationships in the database
-        //
-        createdClasses = new HashMap<String, ErpClassModel>();
-        try {
-            LOGGER.info("\nStarting to process Classes for batch number " + this.batchNumber + "\n");
-            LOGGER.info("\nProcessing " + classes.size() + " classes\n");
-            ErpClassHome classHome = (ErpClassHome) initCtx.lookup("java:comp/env/ejb/ErpClass");
-            
-            Iterator<String> classKeyIter = classes.keySet().iterator();
-            while (classKeyIter.hasNext()) {
-                ErpClassModel erpClsModel = classes.get(classKeyIter.next());
-                //
-                // create the new class
-                //
-                LOGGER.info("\nCreating Class " + erpClsModel.getSapId() + "\n");
-                ErpClassEB erpClsEB = classHome.create(this.batchNumber, erpClsModel);
-                //
-                // read back the model as a sanity check
-                //
-                erpClsModel = (ErpClassModel) erpClsEB.getModel();
-                LOGGER.info("\nSuccessfully created Class " + erpClsModel.getSapId() + ", id= " + erpClsModel.getPK().getId() + "\n");
-                //
-                // add this model to the createdClasses HashMap, keyed by Name
-                //
-                createdClasses.put(erpClsModel.getSapId(), erpClsModel);
-                
-            }
-            LOGGER.info("\nCompleted processing Classes for batch number " + this.batchNumber + "\n");
-        } catch (NamingException ne) {
-            throw new LoaderException(ne, "Unable to find home for ErpClass");
-        } catch (CreateException ce) {
-            throw new LoaderException(ce, "Unable to create a new version of an ErpClass");
-        } catch (RemoteException re) {
-            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpClass");
-        }
-    }
-    
-    /**
-     * @param activeMaterials
-     * @throws LoaderException  */
-    private void processMaterials(Map<ErpMaterialModel, Map<String, Object>> activeMaterials) throws LoaderException {
-        //
-        // create a new HashMap of models of materials so that subsequent loader steps can
-        // form the proper foreign key relationships in the database
-        //
-        createdMaterials = new HashMap<String, ErpMaterialModel>();
-        try {
-            LOGGER.info("\nStarting to process Materials for batch number " + this.batchNumber + "\n");
-            LOGGER.info("\nProcessing " + activeMaterials.size() + " materials\n");
-            ErpMaterialHome matlHome = (ErpMaterialHome) initCtx.lookup("java:comp/env/ejb/ErpMaterial");
-            
-            Iterator<ErpMaterialModel> matlIter = activeMaterials.keySet().iterator();
-            while (matlIter.hasNext()) {
-                ErpMaterialModel erpMatlModel = matlIter.next();
-                Map<String, Object> extraInfo = activeMaterials.get(erpMatlModel);
-                //
-                // set some additional properties on the material model that couldn't have been set
-                // until the classes had been created first
-                //
-                Set<String> classNames = (Set<String>) extraInfo.get(SAPConstants.CLASS);
-                if (classNames != null) {
-                    LinkedList<ErpClassModel> matlClasses = new LinkedList<ErpClassModel>();
-                    Iterator<String> matlClassIter = classNames.iterator();
-                    while (matlClassIter.hasNext()) {
-                        String className = matlClassIter.next();
-                        ErpClassModel erpClsModel = createdClasses.get(className);
-                        if (erpClsModel == null) {
-                            throw new LoaderException("Unable to form an association between Material number " + erpMatlModel.getSapId() + " and Class " + className);
-                        }
-                        matlClasses.add(erpClsModel);
-                    }
-                    erpMatlModel.setClasses(matlClasses);
-                }
-                //
-                // create the new material
-                //
-                LOGGER.info("\nCreating new Material " + erpMatlModel.getDescription() + "\n");
-                ErpMaterialEB erpMatlEB = matlHome.create(this.batchNumber, erpMatlModel);
-                //
-                // read back the model as a sanity check
-                //
-                erpMatlModel = (ErpMaterialModel) erpMatlEB.getModel();
-                LOGGER.info("\nSuccessfully created Material " + erpMatlModel.getDescription() + ", id= " + erpMatlModel.getPK().getId() + "\n");
-                //
-                // add this model to the createdMaterials HashMap, keyed by SapID (material number)
-                //
-                createdMaterials.put(erpMatlModel.getSapId(), erpMatlModel);
-                
-            }
-            LOGGER.info("\nCompleted processing Materials for batch number " + this.batchNumber + "\n");
-        } catch (NamingException ne) {
-            throw new LoaderException(ne, "Unable to find home for ErpMaterial");
-        } catch (CreateException ce) {
-            throw new LoaderException(ce, "Unable to create a new version of an ErpMaterial");
-        } catch (RemoteException re) {
-            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpMaterial");
-        }
-    }
-    
-    /**
-     * @param characteristicValuePrices
-     * @throws LoaderException  */
-    private void processCharacteristicValuePrices(Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws LoaderException {
-        try {
-            LOGGER.info("\nStarting to process CharacteristicValuePrices for batch number " + this.batchNumber + "\n");
-            LOGGER.info("\nProcessing " + characteristicValuePrices.size() + " characteristic value prices\n");
-            ErpCharacteristicValuePriceHome cvpHome = (ErpCharacteristicValuePriceHome) initCtx.lookup("java:comp/env/ejb/ErpCharacteristicValuePrice");
-            
-            Iterator<ErpCharacteristicValuePriceModel> cvpKeyIter = characteristicValuePrices.keySet().iterator();
-            while (cvpKeyIter.hasNext()) {
-                ErpCharacteristicValuePriceModel erpCvpModel = cvpKeyIter.next();
-                Map<String,String> extraInfo = characteristicValuePrices.get(erpCvpModel);
-                //
-                // set some additional properties on the characteristic value price model that couldn't have been set
-                // until the classes and materials had been created first
-                //
-                //  find the material for this characteristic value price
-                //
-                String matlNumber = extraInfo.get(SAPConstants.MATERIAL_NUMBER);
-                ErpMaterialModel erpMatl = createdMaterials.get(matlNumber);
-                //
-                // if erpMatl wasn't in the list of created materials, this
-                // characteristic value price was exported as part of a discontinued material.
-                // don't insert this characteristic value price.
-                //
-                if (erpMatl != null) {
-                    erpCvpModel.setMaterialId(erpMatl.getPK().getId());
-                    //
-                    // find the characteristic value for this characteristic value price
-                    //
-                    String charValueName = extraInfo.get(SAPConstants.CHARACTERISTIC_VALUE);
-                    try {
-                        String clsName = extraInfo.get(SAPConstants.CLASS);
-                        ErpClassModel erpClass = createdClasses.get(clsName);
-                        String characName = extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
-                        ErpCharacteristicModel erpCharac = erpClass.getCharacteristic(characName);
-                        ErpCharacteristicValueModel erpCharVal = erpCharac.getCharacteristicValue(charValueName);
-                        erpCvpModel.setCharacteristicValueId(erpCharVal.getPK().getId());
-                    } catch (NullPointerException npe) {
-                        npe.printStackTrace();
-                        throw new LoaderException("Unable to form an association between CharacteristicValuePrice " + erpCvpModel.getSapId() + " and CharacteristicValue " + charValueName);
-                    }
-                    //
-                    // create the new characteristic value price
-                    //
-                    LOGGER.info("\nCreating new CharacteristicValuePrice " + erpCvpModel.getSapId() + "\n");
-                    ErpCharacteristicValuePriceEB erpCvpEB = cvpHome.create(this.batchNumber, erpCvpModel);
-                    //
-                    // read back the model as a sanity check
-                    //
-                    erpCvpModel = (ErpCharacteristicValuePriceModel) erpCvpEB.getModel();
-                    LOGGER.info("\nSuccessfully created CharacteristicValuePrice " + erpCvpModel.getSapId() + ", id= " + erpCvpModel.getPK().getId() + "\n");
-                }
-            }
-            LOGGER.info("\nCompleted processing CharacteristicValuePrices for batch number " + this.batchNumber + "\n");
-        } catch (NamingException ne) {
-            throw new LoaderException(ne, "Unable to find home for ErpCharacteristicValuePrice");
-        } catch (CreateException ce) {
-            throw new LoaderException(ce, "Unable to create a new version of an ErpCharacteristicValuePrice");
-        } catch (RemoteException re) {
-            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpCharacteristicValuePrice");
-        }
-    }
-    
-	//
-	// this query finds all current products that relate to a specific material
-	//
-	private final static String QUERY =
-		"select p.sku_code from erps.product p, erps.materialproxy mpx, erps.material m " +
-		"where m.sap_id=? and p.id=mpx.product_id and mpx.mat_id=m.id " +
-		"and m.version=(select max(version) from erps.material where sap_id=m.sap_id and version<>?)";
-	    
-    /**
-     * @param activeMaterials
-     * @throws LoaderException  */
-    private void processProducts(Map<ErpMaterialModel, Map<String, Object>> activeMaterials) throws LoaderException {
-        
-        Connection conn = null;
-        String skuCode = null;
-        
-        try {
-            LOGGER.info("\nStarting to process default Products for batch number " + this.batchNumber + "\n");
-            LOGGER.info("\nProcessing " + createdMaterials.size() + " products\n");
-            ErpProductHome productHome = (ErpProductHome) initCtx.lookup("java:comp/env/ejb/ErpProduct");
-            
-            conn = getConnection();
-            
-            Iterator<ErpMaterialModel> matlIter = activeMaterials.keySet().iterator();
-            while (matlIter.hasNext()) {
-                //
-                // list of all products that are affected by activating this material
-                //
-                Set<String> affectedSkus = new HashSet<String>();
-                //
-                // first get the anonymous material model so we can get the SKU of the default product
-                // from its extra info
-                //
-                ErpMaterialModel anonMatlModel = matlIter.next();
-                Map<String, Object> extraInfo = activeMaterials.get(anonMatlModel);
-                affectedSkus.add((String) extraInfo.get(SAPConstants.SKU));
-                String unavailStatus = (String) extraInfo.get("UNAVAILABILITY_STATUS");
-                java.util.Date unavailDate = (java.util.Date) extraInfo.get("UNAVAILABILITY_DATE");
-                String unavailReason = (String) extraInfo.get("UNAVAILABILITY_REASON");
-                String rating = (String) extraInfo.get("RATING");
-                String days_fresh = (String) extraInfo.get("DAYS_FRESH");
-                String days_in_house = (String) extraInfo.get("DAYS_IN_HOUSE");
-                String sustainabilityRating = (String) extraInfo.get("SUSTAINABILITY_RATING");                //
-                // now get the real material model that we created previously to we can create the
-                // material proxy and product objects that relate to a material
-                //
-                ErpMaterialModel erpMatlModel = createdMaterials.get(anonMatlModel.getSapId());
-                //
-                // find the sku codes of the other products affected by this material
-                //
-                try {
-                    PreparedStatement ps = conn.prepareStatement(QUERY);
-                    ps.setString(1, anonMatlModel.getSapId());
-                    ps.setInt(2, this.batchNumber);
-                    ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        affectedSkus.add(rs.getString(1));
-                    }
-                    rs.close();
-                    ps.close();
-                } catch (SQLException sqle) {
-                    LOGGER.error("Unable to find virtual products to create for material " + anonMatlModel.getSapId(), sqle);
-                    throw new LoaderException("Unable to find virtual products to create for material " + anonMatlModel.getSapId() + "\n" + sqle.getMessage());
-                }
-                Iterator<String> skuIter = affectedSkus.iterator();
-                while (skuIter.hasNext()) {
-                    skuCode = skuIter.next();
-                    LOGGER.info("\nWorking on sku: " + skuCode + "\n");
-					ErpProductModel erpProductModel = new ErpProductModel();
-					erpProductModel.setProxiedMaterial(erpMatlModel);
+	private static final long serialVersionUID = -3595874586761397842L;
 
-                    //
-                    // if this product is a new version of a previously existing product, make sure to carry forward
-                    // any hidden sales units or characteristic values
-                    //
-                    try {
-                        ErpProductEB origPrdEB = (ErpProductEB) productHome.findBySkuCode(skuCode);
-                        ErpProductModel origPrdModel = (ErpProductModel) origPrdEB.getModel();
+	/**
+	 * logger for messages
+	 */
+	private static Category LOG = LoggerFactory.getInstance(SAPLoaderSessionBean.class);
 
-                        // keep track of used to be hidden
-                        List<ErpSalesUnitModel> origHiddenSalesUnits = new ArrayList<ErpSalesUnitModel>();
-                        List<ErpCharacteristicValueModel> origHiddenCharVals = new ArrayList<ErpCharacteristicValueModel>();
+	/** Creates new SAPLoaderSessionBean */
+	public SAPLoaderSessionBean() {
+		super();
+	}
 
-                        ///if (origPrdModel.getMaterialProxies().size() > 0) {
-                        {
-                            // if there is a material proxy, figure out what should be hidden
+	/**
+	 * Template method that returns the cache key to use for caching resources.
+	 * 
+	 * @return the bean's home interface name
+	 */
+	protected String getResourceCacheKey() {
+		return "com.freshdirect.dataloader.sap.ejb.SAPLoaderHome";
+	}
 
-                            VersionedPrimaryKey[] hiddenSuPKs = origPrdModel.getHiddenSalesUnitPKs();
-                            for (VersionedPrimaryKey hiddenSuPK : hiddenSuPKs) {
-                                for (Iterator suIter = origPrdModel.getProxiedMaterial().getSalesUnits().iterator(); suIter.hasNext();) {
-                                    ErpSalesUnitModel origSu = (ErpSalesUnitModel) suIter.next();
-                                    if (hiddenSuPK.getId().equals(origSu.getPK().getId())) {
-                                        origHiddenSalesUnits.add(origSu);
-                                    }
-                                }
-                            }
-                            VersionedPrimaryKey[] hiddenCvPKs = origPrdModel.getHiddenCharacteristicValuePKs();
-                            for (VersionedPrimaryKey hiddenCvPK : hiddenCvPKs) {
-                                for (Iterator chIter = origPrdModel.getProxiedMaterial().getCharacteristics().iterator(); chIter.hasNext();) {
-                                    ErpCharacteristicModel origChar = (ErpCharacteristicModel) chIter.next();
-                                    for (Iterator<ErpCharacteristicValueModel> cvIter = origChar.getCharacteristicValues().iterator(); cvIter.hasNext();) {
-                                        ErpCharacteristicValueModel origCharVal = cvIter.next();
-                                        if (hiddenCvPK.getId().equals(origCharVal.getPK().getId())) {
-                                            origHiddenCharVals.add(origCharVal);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        //
-                        // find hidden sales unit PKs in new version
-                        //
-                        ArrayList<PrimaryKey> hiddenSuPKs = new ArrayList<PrimaryKey>();
-                        Iterator newSuIter = erpMatlModel.getSalesUnits().iterator();
-                        while (newSuIter.hasNext()) {
-                            ErpSalesUnitModel newSu = (ErpSalesUnitModel) newSuIter.next();
-                            Iterator<ErpSalesUnitModel> hiddenSuIter = origHiddenSalesUnits.iterator();
-                            while (hiddenSuIter.hasNext()) {
-                                ErpSalesUnitModel hiddenSu = hiddenSuIter.next();
-                                if (newSu.getAlternativeUnit().equalsIgnoreCase(hiddenSu.getAlternativeUnit())) {
-                                    hiddenSuPKs.add(newSu.getPK());
-                                    System.out.println("hiding sales unit " + newSu.getAlternativeUnit());
-                                }
-                            }
-                        }
-						erpProductModel.setHiddenSalesUnitPKs(hiddenSuPKs.toArray(new VersionedPrimaryKey[0]));
-                        
-                        //if (origPxyModel != null) {
-                       	{
-                            //
-                            // find hidden characteristic value PKs in new version
-                            //
-                            ArrayList<PrimaryKey> hiddenCvPKs = new ArrayList<PrimaryKey>();
-                            Iterator newCharIter = erpMatlModel.getCharacteristics().iterator();
-                            while(newCharIter.hasNext()) {
-                                ErpCharacteristicModel newCharac = (ErpCharacteristicModel) newCharIter.next();
-                                Iterator<ErpCharacteristicValueModel> newCvIter = newCharac.getCharacteristicValues().iterator();
-                                while (newCvIter.hasNext()) {
-                                    ErpCharacteristicValueModel newCharVal = newCvIter.next();
-                                    
-                                    Iterator origCharIter = origPrdModel.getProxiedMaterial().getCharacteristics().iterator();
-                                    while (origCharIter.hasNext()) {
-                                        ErpCharacteristicModel origCharModel = (ErpCharacteristicModel) origCharIter.next();
-                                        Iterator<ErpCharacteristicValueModel> origCvIter = origCharModel.getCharacteristicValues().iterator();
-                                        while (origCvIter.hasNext()) {
-                                            ErpCharacteristicValueModel origCvModel = origCvIter.next();
-                                            
-                                            Iterator<ErpCharacteristicValueModel> origHiddenCharValsIter = origHiddenCharVals.iterator();
-                                            while (origHiddenCharValsIter.hasNext()) {
-                                                ErpCharacteristicValueModel origHiddenCv = origHiddenCharValsIter.next();
-                                                
-                                                if ( newCharac.getName().equalsIgnoreCase(origCharModel.getName())
-                                                && newCharVal.getName().equalsIgnoreCase(origCvModel.getName())
-                                                && origCvModel.getName().equalsIgnoreCase(origHiddenCv.getName())
-                                                ) {
-                                                    hiddenCvPKs.add(newCharVal.getPK());
-                                                    System.out.println("hiding char value " + newCharac.getName() + ":" + newCharVal.getName());
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                }
-                            }
-							erpProductModel.setHiddenCharacteristicValuePKs(hiddenCvPKs.toArray(new VersionedPrimaryKey[0]));
-                        }
-                    } catch (ObjectNotFoundException onfe) {
-                        // no such sku, no big deal
-                        // this will happen when we are creating the default version
-                        // of a product for the first time
-                    }
-                    //
-                    // ask the pricing factory to figure out what the default price should be
-                    // for a product consisting of only one material
-                    //
-                    Pricing pr = PricingFactory.getPricing(erpMatlModel, new ErpCharacteristicValuePriceModel[0]);
-                    double defaultPrice = 0.0;
-                    String defaultPriceUnit = " ";
-                    //
-                    // if we have valid sales units for the material, use the pricing engine
-                    // otherwise, just use nil pricing (0 price, no price unit)
-                    //
-                    
-                   
-                    
-                    if (erpProductModel.getSalesUnits().size() > 0) {
-                        //
-                        // find the sales unit with the lowest ratio
-                        //
-                    	
-                    /*	
-                        List units = new ArrayList(erpProductModel.getSalesUnits());
-                        Collections.sort(units, salesUnitComparator);
-                        ErpSalesUnitModel lowestRatio = (ErpSalesUnitModel) units.get(0);
-                        //
-                        // perform the pricing using the pricing engine
-                        //
-                        
-                        try {
-							FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
-                            
-							MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice(pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)).getPricingCondition();
-                            
-                            defaultPrice = pricingCondition.getPrice();
-                            defaultPriceUnit = pricingCondition.getPricingUnit();
-                            
-                        } catch (PricingException pe) {
-                            String message = "Unable to perform pricing for product " + skuCode + " from erps.material " + erpMatlModel.getSapId();
-                            LOGGER.error(message, pe);
-                            throw new LoaderException(pe, message);
-                        }
-                        */
-                    } else {
-                        throw new LoaderException("There are no sales units for material " + erpMatlModel.getSapId() + " in product " + skuCode + ".  Perhaps they have all been hidden?");
-                    }
-                    
-                    
-                    //
-                    // creating product
-                    //
-					erpProductModel.setSkuCode(skuCode);
-					//erpProductModel.setDefaultPrice(defaultPrice);
-					//erpProductModel.setDefaultPriceUnit(defaultPriceUnit);
-					erpProductModel.setUnavailabilityStatus(unavailStatus);
-					erpProductModel.setUnavailabilityDate(unavailDate);
-					erpProductModel.setUnavailabilityReason(unavailReason);
-					erpProductModel.setRating(rating);
+	/**
+	 * naming context for locating remote objects
+	 */
+	Context initCtx = null;
 
-					erpProductModel.setDaysFresh(days_fresh);
-					erpProductModel.setDaysInHouse(days_in_house);
-					erpProductModel.setSustainabilityRating(sustainabilityRating);
-					//erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
-					//erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
+	/**
+	 * a cache of models of classes created during this batch
+	 */
+	// private transient HashMap<String, ErpClassModel> createdClasses = null;
 
-                    
-                    //
-                    // if the default price ends up being zero, this is carried over from an old-style discontinued product
-                    //
-					
-				/*	
-                    if (defaultPrice == 0.0) {
-                        LOGGER.error("\nSomehow price ended up being 0.  What happened?");
-                        erpProductModel.setUnavailabilityDate(new java.util.Date());
-                        erpProductModel.setUnavailabilityStatus("DISC");
-                        erpProductModel.setUnavailabilityReason("Discontinued by SAP");
-                    }
-                 */   
-                    //
-                    // create the new product
-                    //
-                    ErpProductEB erpProductEB = null;
-                    LOGGER.info("\nCreating new Product " + erpProductModel.getSkuCode() + "\n");
-                    try {
-                        erpProductEB = productHome.create(this.batchNumber, erpProductModel);
-                    } catch (CreateException ce) {
-                        if (ce.getMessage().indexOf("unique constraint") > -1) {
-                            //
-                            // check to see if the exception was caused by a unique constraint violation
-                            // if so, it means we really want to replace a product that had been deactivated
-                            // in the deactivateDeletedProducts step, remove and then re-create
-                            //
-                            try {
-                            	System.out.println("skuCode :"+skuCode);
-                                erpProductEB  = productHome.findBySkuCodeAndVersion(skuCode, this.batchNumber);
-                                erpProductEB.remove();
-                                erpProductEB = productHome.create(this.batchNumber, erpProductModel);
-                            } catch (ObjectNotFoundException onfe) {
-                                //
-                                // why would this happen?  if we previously violated the unique constraint,
-                                // we ought to be able to locate the item that caused the exception
-                                //
-                                LOGGER.warn("\nInteresting inconsistency while trying to update SKU " + skuCode, onfe);
-                                throw ce;
-                            }
-                        } else {
-                            LOGGER.error("\nUnusual CreateException occurred while trying to update SKU " + skuCode, ce);
-                            //
-                            // if not, then some other problem occurred, rethrow the exception
-                            //
-                            throw ce;
-                        }
-                    }
-                    //
-                    // read back the model as a sanity check if an instance of an ErpProductEntityBean is available
-                    //
-                    if (erpProductEB != null) {
-                        erpProductModel = (ErpProductModel) erpProductEB.getModel();
-                        LOGGER.info("\nSuccessfully created Product " + erpProductModel.getSkuCode() + ", id= " + erpProductModel.getPK().getId() + "\n");
-                    }
-                }
-            }
-            LOGGER.info("\nCompleted processing Products for batch number " + this.batchNumber + "\n");
-        } catch (NamingException ne) {
-            throw new LoaderException(ne, "Unable to find home for ErpProduct["+skuCode+"]");
-        } catch (CreateException ce) {
-            throw new LoaderException(ce, "Unable to create a new version of an ErpProduct["+skuCode+"]");
-        } catch (FinderException fe) {
-            throw new LoaderException(fe, "Unable to locate an ErpProduct["+skuCode+"]");
-        } catch (RemoveException re) {
-            throw new LoaderException(re, "Unable to remove an ErpProduct["+skuCode+"] before re-creation");
-        } catch (RemoteException re) {
-            throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpProduct["+skuCode+"]");
-        } catch (SQLException sqle) {
-            throw new LoaderException(sqle, "Unexpected SQL exception while trying to create an ErpProduct["+skuCode+"]");
-        } finally {
-            close(conn);
-        }
-    }
-    
-    /**
-     *
-     * a convenience object that can compare sales units by their ratio (numerator / denominator)
-     *
-     */
-    private static Comparator salesUnitComparator = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            ErpSalesUnitModel su1 = (ErpSalesUnitModel) o1;
-            ErpSalesUnitModel su2 = (ErpSalesUnitModel) o2;
-            double ratio1 = su1.getNumerator()/su1.getDenominator();
-            double ratio2 = su2.getNumerator()/su2.getDenominator();
-            if (ratio1 < ratio2){
-            	if(!su1.isDisplayInd() ||(su1.isDisplayInd()==su2.isDisplayInd())){
-            		return -1;
-            	}else{
-            		return 1;
-            	}
-            }                
-            else if (ratio2 < ratio1){
-            	if(!su2.isDisplayInd() ||(su1.isDisplayInd()==su2.isDisplayInd())){
-            		return 1;
-            	}else{
-            		return -1;
-            	}
-            }
-            else
-                return 0;
-        }
-    };
-    
-    /**
-     * makes an entry in the history table indicating that a batch succeeded and is ready for review
-     *
-     * @throws LoaderException any unexpected errors updating the history table
-     */
-    public void batchComplete() throws LoaderException {
-        
-        Connection conn = null;
-        try {
-            //
-            // get connection
-            //
-            conn = getConnection();
+	/**
+	 * a cache of materials created during this batch
+	 */
+	// private transient ErpMaterialModel createdMaterial = null;
 
-            PreparedStatement ps = conn.prepareStatement("update erps.history set approval_status=? where version=?");
-            ps.setString(1, EnumApprovalStatus.NEW.getStatusCode());
-            ps.setInt(2, batchNumber);
-            int rowsaffected = ps.executeUpdate();
-            if (rowsaffected != 1) {
-                throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.");
-            }
-            ps.close();
-            ps = null;
-            
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            LOGGER.error("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.", sqle);
-            throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  " + sqle);
-        } finally {
-            close(conn);
-        }
-        
-    }
-    
-    /**
-     * makes an entry in the history table indicating that a batch failed and was rejected automatically
-     *
-     * @throws LoaderException any unexpected errors updating the history table
-     */
-    public void afterBatchFailed(Exception ex) throws LoaderException {
-        //
-        // an error occurred while doing the load and the transaction was rolled back
-        // make a note in the history table so there don't appear to be any gaps in the
-        // version numbers
-        //
-        // do this step in a separate transaction
-        //
-        UserTransaction utx = getSessionContext().getUserTransaction();
-        
-        System.out.println("Batch version is " + batchNumber);
-        
-        Connection conn = null;
-        try {
-            //
-            // start the transaction
-            //
-            utx.begin();
-            try {
-                //
-                // get connection
-                //
-                conn = getConnection();
-                
-                PreparedStatement ps = conn.prepareStatement("update erps.history set approval_status=?, description=? where version=?");
-                ps.setString(1, EnumApprovalStatus.REJECTED.getStatusCode());
-                ps.setString(2, "This batch failed and was automatically rejected by the loader.  " + ex.getMessage());
-                ps.setInt(3, batchNumber);
-                int rowsaffected = ps.executeUpdate();
-                if (rowsaffected != 1) {
-                    throw new LoaderException("Unable to complete a failed batch.  Couldn't update loader history table to mark a failed batch as rejected.");
-                }
-                ps.close();
-                ps = null;
-                
-                conn.close();
-                conn = null;
-                
-                try {
-                    //
-                    // commit
-                    //
-                    utx.commit();
-                } catch (RollbackException re) {
-                    LOGGER.error("\nUnable to complete a failed batch.  UserTransaction had already rolled back before attempt to commit.", re);
-                    throw new LoaderException(re, "Unable to complete a failed batch.  UserTransaction had already rolled back before attempt to commit.");
-                } catch (HeuristicMixedException hme) {
-                    LOGGER.error("\nUnable to complete a failed batch.  TransactionManager aborted due to mixed heuristics.", hme);
-                    throw new LoaderException(hme, "Unable to complete a failed batch.  TransactionManager aborted due to mixed heuristics.");
-                } catch (HeuristicRollbackException hre) {
-                    LOGGER.error("\nUnable to complete a failed batch.  TransactionManager heuristically rolled back transaction.", hre);
-                    throw new LoaderException(hre, "Unable to complete a failed batch.  TransactionManager heuristically rolled back transaction.");
-                }
-            } catch (SQLException sqle) {
-                utx.setRollbackOnly();
-                //
-                // rollback
-                //
-                close(conn);
-                utx.rollback();
-                sqle.printStackTrace();
-                LOGGER.error("Unable to complete a failed batch.  Couldn't update loader history table to mark a failed batch as rejected.", sqle);
-                throw new LoaderException("Unable to complete a failed batch.  Couldn't update loader history table to mark a failed batch as rejected.  " + sqle);
-            }
-        } catch (NotSupportedException nse) {
-            LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", nse);
-            throw new LoaderException(nse, "Unable to complete a failed batch.  Unable to begin a UserTransaction.");
-        } catch (SystemException se) {
-            LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", se);
-            throw new LoaderException(se, "Unable to complete a failed batch.  Unable to begin a UserTransaction.");
-        }finally {
-            close(conn);
-        }
-        
-    }
-    
+	/**
+	 * @return int the batch version
+	 * @throws LoaderException
+	 */
+	public int createBatch() throws LoaderException {
+		// get the user transaction
+		UserTransaction utx = getSessionContext().getUserTransaction();
+		Connection conn = null;
+		int batchNumber;
+		try {
+			utx.begin();
+
+			// set a timeout period for this transaction (in seconds)
+			utx.setTransactionTimeout(3000);
+
+			// get the next batch number from the batch sequence
+			try {
+				conn = getConnection();
+				// get a new batch number
+				PreparedStatement ps = conn.prepareStatement("select erps.batch_seq.nextval from dual");
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					batchNumber = rs.getInt(1);
+				} else {
+					LOG.error("Unable to begin new batch.  Didn't get a new batch number.");
+					throw new LoaderException("Unable to begin new batch.  Didn't get a new batch number.");
+				}
+				rs.close();
+				ps.close();
+
+				// make an entry in the history table
+				ps = conn
+						.prepareStatement("insert into erps.history (version, date_created, created_by, approval_status) values (?,?,?,?)");
+				ps.setInt(1, batchNumber);
+				ps.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
+				ps.setString(3, "Loader");
+				ps.setString(4, EnumApprovalStatus.LOADING.getStatusCode());
+				int rowsaffected = ps.executeUpdate();
+				if (rowsaffected != 1) {
+					throw new LoaderException("Unable to begin new batch.  Couldn't update loader history table.");
+				}
+				rs.close();
+				ps.close();
+
+				conn.close();
+
+				try {
+					utx.commit();
+				} catch (RollbackException re) {
+					LOG.error(
+							"Unable to start a batch.  UserTransaction had already rolled back before attempt to commit.",
+							re);
+					throw new LoaderException(re,
+							"Unable to start a batch.  UserTransaction had already rolled back before attempt to commit.");
+				} catch (HeuristicMixedException hme) {
+					LOG.error("Unable to start a batch.  TransactionManager aborted due to mixed heuristics.", hme);
+					throw new LoaderException(hme,
+							"Unable to start a batch.  TransactionManager aborted due to mixed heuristics.");
+				} catch (HeuristicRollbackException hre) {
+					LOG.error("Unable to start a batch.  TransactionManager heuristically rolled back transaction.",
+							hre);
+					throw new LoaderException(hre,
+							"Unable to start a batch.  TransactionManager heuristically rolled back transaction.");
+				}
+
+			} catch (SQLException sqle) {
+				LOG.error("Unable to begin new batch.", sqle);
+				utx.setRollbackOnly();
+				close(conn);
+				utx.rollback();
+				throw new LoaderException("Unable to begin a new batch.  " + sqle.getMessage());
+			}
+
+		} catch (NotSupportedException nse) {
+			LOG.error("Unable to complete a failed batch.  Unable to begin a UserTransaction.", nse);
+			throw new LoaderException(nse, "Unable to start batch.  Unable to begin a UserTransaction.");
+		} catch (SystemException se) {
+			LOG.error("Unable to complete a failed batch.  Unable to begin a UserTransaction.", se);
+			throw new LoaderException(se, "Unable to start batch.  Unable to begin a UserTransaction.");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					sqle2.printStackTrace();
+					LOG.error(
+							"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.",
+							sqle2);
+					throw new LoaderException(
+							"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  "
+									+ sqle2);
+				}
+			}
+		}
+		return batchNumber;
+	}
+
+	/**
+	 * Makes an entry in the history table indicating that a batch succeeded and
+	 * is ready for review
+	 * 
+	 * @param batchNumber
+	 * @param batchStatus
+	 * 
+	 * @throws LoaderException
+	 *             any unexpected errors updating the history table
+	 */
+	public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws LoaderException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			PreparedStatement ps = conn.prepareStatement("update erps.history set approval_status=? where version=?");
+			ps.setString(1, batchStatus.getStatusCode());
+			ps.setInt(2, batchNumber);
+
+			int rowsaffected = ps.executeUpdate();
+
+			if (rowsaffected != 1) {
+				throw new LoaderException(
+						"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.");
+			}
+			ps.close();
+			ps = null;
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			LOG.error(
+					"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.",
+					sqle);
+			throw new LoaderException(
+					"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  "
+							+ sqle);
+		} finally {
+			close(conn);
+		}
+	}
+
+	/**
+	 * @return ErpMaterialBatchHistoryModel the batch model
+	 * 
+	 * @throws LoaderException
+	 */
+	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws LoaderException {
+		ErpMaterialBatchHistoryModel batchModel = null;
+
+		UserTransaction utx = getSessionContext().getUserTransaction();
+		Connection conn = null;
+		try {
+			utx.begin();
+			utx.setTransactionTimeout(3000);
+
+			try {
+				conn = getConnection();
+
+				PreparedStatement ps = conn
+						.prepareStatement("select version, date_created, approval_status from erps.history where date_created = (select max(date_created) from erps.history) ");
+
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					batchModel = new ErpMaterialBatchHistoryModel();
+					batchModel.setVersion(rs.getInt(1));
+					batchModel.setCreatedDate(rs.getTimestamp(2));
+					batchModel.setStatus(EnumApprovalStatus.getApprovalStatus(rs.getString(3)));
+				}
+				rs.close();
+				ps.close();
+
+				conn.close();
+
+				try {
+					utx.commit();
+				} catch (RollbackException re) {
+					LOG.error(
+							"Unable to get batch details.  UserTransaction had already rolled back before attempt to commit.",
+							re);
+					throw new LoaderException(re,
+							"Unable to get batch details.  UserTransaction had already rolled back before attempt to commit.");
+				} catch (HeuristicMixedException hme) {
+					LOG.error("Unable to get batch details.  TransactionManager aborted due to mixed heuristics.", hme);
+					throw new LoaderException(hme,
+							"Unable to start a batch.  TransactionManager aborted due to mixed heuristics.");
+				} catch (HeuristicRollbackException hre) {
+					LOG.error(
+							"Unable to get batch details.  TransactionManager heuristically rolled back transaction.",
+							hre);
+					throw new LoaderException(hre,
+							"Unable to get batch details.  TransactionManager heuristically rolled back transaction.");
+				}
+
+			} catch (SQLException sqle) {
+				LOG.error("Unable to get batch details.", sqle);
+				utx.setRollbackOnly();
+				close(conn);
+				utx.rollback();
+				throw new LoaderException("Unable to get batch details.  " + sqle.getMessage());
+			}
+
+		} catch (NotSupportedException nse) {
+			LOG.error("Unable to complete a failed batch.  Unable to begin a UserTransaction.", nse);
+			throw new LoaderException(nse, "Unable to start batch.  Unable to begin a UserTransaction.");
+		} catch (SystemException se) {
+			LOG.error("Unable to complete a failed batch.  Unable to begin a UserTransaction.", se);
+			throw new LoaderException(se, "Unable to start batch.  Unable to begin a UserTransaction.");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					sqle2.printStackTrace();
+					LOG.error(
+							"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.",
+							sqle2);
+					throw new LoaderException(
+							"Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  "
+									+ sqle2);
+				}
+			}
+		}
+		return batchModel;
+	}
+
+	/**
+	 * performs the batch load. processes each of the objects in the correct
+	 * order.
+	 * 
+	 * @param batchNumber
+	 *            the batch number
+	 * @param classes
+	 *            the collection of classes to create or update in this batch
+	 * @param material
+	 *            the material to create in this batch
+	 * @param characteristicValuePrices
+	 *            the collection of characteristic value prices to create or
+	 *            update in this batch
+	 * @throws LoaderException
+	 *             any problems encountered while creating or updating objects
+	 *             in the system
+	 */
+	public void loadData(int batchNumber, ErpMaterialModel material, Map<String, ErpClassModel> classes,
+			Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices)
+			throws LoaderException {
+
+		LOG.debug("Beginning to load data for material +");
+		try {
+			this.initCtx = new InitialContext();
+			try {
+				UserTransaction utx = getSessionContext().getUserTransaction();
+				utx.setTransactionTimeout(3000);
+				try {
+					utx.begin();
+					refillMaterialModel(material);
+					Map<String, ErpClassModel> createdClasses = processClass(batchNumber, material, classes);
+					material = processMaterial(batchNumber, material, createdClasses);
+					processCharacteristicValuePrices(batchNumber, characteristicValuePrices, material, createdClasses);
+
+					try {
+						// try to commit all the changes together
+						utx.commit();
+						LOG.debug("Completed SAPLoaderSessionBean loadData");
+					} catch (RollbackException re) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  UserTransaction had already rolled back before attempt to commit.",
+								re);
+						throw new LoaderException(re,
+								"Unable to update ERPS objects.  UserTransaction had already rolled back before attempt to commit.");
+					} catch (HeuristicMixedException hme) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  TransactionManager aborted due to mixed heuristics.",
+								hme);
+						throw new LoaderException(hme,
+								"Unable to update ERPS objects.  TransactionManager aborted due to mixed heuristics.");
+					} catch (HeuristicRollbackException hre) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.",
+								hre);
+						throw new LoaderException(hre,
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.");
+					} catch (RuntimeException rune) {
+						utx.setRollbackOnly();
+						LOG.error("Unexpected runtime exception in SAPLoaderSessionBean loadData", rune);
+						throw new LoaderException(rune, "Unexpected runtime exception");
+					}
+
+				} catch (LoaderException le) {
+					utx.setRollbackOnly();
+					LOG.error("Aborting SAPLoaderSessionBean loadData", le);
+					utx.rollback();
+					throw (le);
+				}
+			} catch (NotSupportedException nse) {
+				LOG.error("Unable to update ERPS objects.  Unable to begin a UserTransaction.", nse);
+				throw new LoaderException(nse, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} catch (SystemException se) {
+				LOG.error("Unable to update ERPS objects.  Unable to begin a UserTransaction.", se);
+				throw new LoaderException(se, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} finally {
+				// close the naming context
+				try {
+					this.initCtx.close();
+				} catch (NamingException ne) {
+					// don't need to re-throw this since the transaction has
+					// already completed or failed
+					LOG.warn("Had difficulty closing naming context after transaction had completed.  "
+							+ ne.getMessage());
+				}
+			}
+		} catch (NamingException ne) {
+			LOG.error("Unable to get naming context to locate components required by the loader.", ne);
+			throw new LoaderException(ne, "Unable to get naming context to locate components required by the loader.");
+		}
+	}
+
+	/**
+	 * @param classes
+	 * @throws LoaderException
+	 */
+	private Map<String, ErpClassModel> processClass(int batchNumber, ErpMaterialModel material, Map<String, ErpClassModel> classes)
+			throws LoaderException {
+		// create a new HashMap of models of classes so that subsequent loader
+		// steps can form the proper foreign key relationships in the database
+		Map<String, ErpClassModel> createdClasses = new HashMap<String, ErpClassModel>();
+		try {
+			if (classes != null) {
+				LOG.info("Starting to process " + classes.size() + " Classes for batch " + batchNumber);
+
+				ErpClassHome classHome = (ErpClassHome) initCtx.lookup("java:comp/env/ejb/ErpClass");
+
+				Iterator<String> classKeyIter = classes.keySet().iterator();
+				while (classKeyIter.hasNext()) {
+					ErpClassModel erpClsModel = classes.get(classKeyIter.next());
+					populateMaterialSalesUnitChar(erpClsModel,material);
+					erpClsModel = loadClass(batchNumber, classHome, erpClsModel);
+					createdClasses.put(erpClsModel.getSapId(), erpClsModel);
+				}
+				LOG.info("Completed processing Classes for batch " + batchNumber + "");
+			}
+		} catch (NamingException ne) {
+			throw new LoaderException(ne, "Unable to find home for ErpClass");
+		} catch (CreateException ce) {
+			throw new LoaderException(ce, "Unable to create a new version of an ErpClass");
+		} catch (RemoteException re) {
+			throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpClass");
+		}
+		return createdClasses;
+	}
+
+	/**
+	 * @param batchNumber
+	 * @param classHome
+	 * @param erpClsModel
+	 * @throws RemoteException
+	 * @throws CreateException
+	 */
+	private ErpClassModel loadClass(int batchNumber, ErpClassHome classHome, ErpClassModel erpClsModel)
+			throws RemoteException, CreateException {
+		ErpClassEB erpClsEB = null;
+		try {
+			erpClsEB = classHome.findBySapIdAndVersion(erpClsModel.getSapId(), batchNumber);
+			erpClsModel = (ErpClassModel) erpClsEB.getModel();
+		} catch (FinderException e) {
+			LOG.info("Creating Class " + erpClsModel.getSapId() + "");
+			erpClsEB = classHome.create(batchNumber, erpClsModel);
+			erpClsModel = (ErpClassModel) erpClsEB.getModel();
+			LOG.info("Successfully created Class " + erpClsModel.getSapId() + ", id= " + erpClsModel.getPK().getId()
+					+ "");
+		}
+		// add this model to the createdClasses HashMap, keyed by Name
+		// createdClasses.put(erpClsModel.getSapId(), erpClsModel);
+		return erpClsModel;
+	}
+
+	/**
+	 * @param activeMaterials
+	 * @throws LoaderException
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	private ErpMaterialModel processMaterial(int batchNumber, ErpMaterialModel materialModel,
+			Map<String, ErpClassModel> classMap) throws LoaderException {
+		try {
+			ErpMaterialHome materialHome = (ErpMaterialHome) initCtx.lookup("java:comp/env/ejb/ErpMaterial");
+
+			if (classMap != null) {
+				LinkedList<ErpClassModel> matlClasses = new LinkedList<ErpClassModel>();
+				Iterator<String> matlClassIter = classMap.keySet().iterator();
+				while (matlClassIter.hasNext()) {
+					String className = matlClassIter.next();
+					ErpClassModel erpClsModel = classMap.get(className);
+					/*
+					 * ErpClassModel erpClsModel =
+					 * createdClasses.get(className); if (erpClsModel == null) {
+					 * throw new LoaderException(
+					 * "Unable to form an association between the material number "
+					 * + materialModel.getSapId() + " and Class " + className);
+					 * }
+					 */
+					matlClasses.add(erpClsModel);
+				}
+				materialModel.setClasses(matlClasses);
+			}
+
+//			refillMaterialModel(materialModel, materialHome);
+
+			// create the new material
+			LOG.info("Creating new material " + materialModel.getSapId() + ", version " + batchNumber);
+
+			ErpMaterialEB erpMatlEB = materialHome.create(batchNumber, materialModel);
+			materialModel = (ErpMaterialModel) erpMatlEB.getModel();
+
+			LOG.info("Successfully created Material " + materialModel.getSapId() + ", id= "
+					+ materialModel.getPK().getId() + "");
+
+			// set the model to the createdMaterial object
+			// createdMaterial = materialModel;
+		} catch (NamingException ne) {
+			throw new LoaderException(ne, "Unable to find home for ErpMaterial");
+		} catch (CreateException ce) {
+			throw new LoaderException(ce, "Unable to create a new version of an ErpMaterial");
+		} catch (RemoteException re) {
+			throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpMaterial");
+		}
+		return materialModel;
+	}
+
+	/**
+	 * @param materialModel
+	 * @param materialHome
+	 * @throws RemoteException
+	 */
+	private void refillMaterialModel(ErpMaterialModel materialModel)
+			throws NamingException,LoaderException {
+		ErpMaterialHome materialHome = (ErpMaterialHome) initCtx.lookup("java:comp/env/ejb/ErpMaterial");
+
+		// if previously existing product, make sure to carry forward any
+		// hidden sales units, prices or plant materials
+		ErpMaterialEB materialEB = null;
+		try {
+			materialEB = materialHome.findBySapId(materialModel.getSapId());
+			ErpMaterialModel existingMaterialModel = (ErpMaterialModel) materialEB.getModel();
+
+			// clone the salesunit, prices & plant materials from previous
+			// version if any before creating new entry
+			if (existingMaterialModel != null) {
+				// sales units
+				List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+				if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
+					materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+				}
+
+				// prices
+				List<ErpMaterialPriceModel> existingPriceRows = existingMaterialModel.getPrices();
+				if (null != existingPriceRows && !existingPriceRows.isEmpty()) {
+					materialModel.setPrices(clonePrices(existingPriceRows));
+				}
+
+				// plant specific material
+				List<ErpPlantMaterialModel> existingMaterialPlantModels = existingMaterialModel.getMaterialPlants();
+				if (null != existingMaterialPlantModels && !existingMaterialPlantModels.isEmpty()) {
+					materialModel.setMaterialPlants(clonePlantModels(existingMaterialPlantModels));
+				}
+				// sales area specific material availability info
+				List<ErpMaterialSalesAreaModel> existinMaterialSalesAreaModels = existingMaterialModel
+						.getMaterialSalesAreas();
+				if (null != existinMaterialSalesAreaModels && !existinMaterialSalesAreaModels.isEmpty()) {
+					materialModel.setMaterialSalesAreas(cloneSalesAreas(existinMaterialSalesAreaModels));
+				}
+			}
+		} catch (FinderException e) {
+			// No entry found for the material. Create new entry!
+		} catch (RemoteException re) {
+			throw new LoaderException(re, "Unexpected system level exception while trying to create an ErpMaterial");
+		}
+	}
+
+	/**
+	 * @param existinMaterialSalesAreaModels
+	 * @return
+	 */
+	private List<ErpMaterialSalesAreaModel> cloneSalesAreas(
+			List<ErpMaterialSalesAreaModel> existinMaterialSalesAreaModels) {
+		List<ErpMaterialSalesAreaModel> materialSalesAreaModels = null;
+		if (existinMaterialSalesAreaModels != null && existinMaterialSalesAreaModels.size() > 0) {
+			materialSalesAreaModels = new ArrayList<ErpMaterialSalesAreaModel>();
+			for (ErpMaterialSalesAreaModel materialSalesAreaModel : existinMaterialSalesAreaModels) {
+				materialSalesAreaModels.add(cloneMaterialSalesAreaModel(materialSalesAreaModel));
+			}
+		}
+		return materialSalesAreaModels;
+	}
+
+	/**
+	 * @param existingMaterialPlantModels
+	 * @return
+	 */
+	private List<ErpPlantMaterialModel> clonePlantModels(List<ErpPlantMaterialModel> existingMaterialPlantModels) {
+		List<ErpPlantMaterialModel> plantMaterials = null;
+		if (existingMaterialPlantModels != null && existingMaterialPlantModels.size() > 0) {
+			plantMaterials = new ArrayList<ErpPlantMaterialModel>();
+			for (ErpPlantMaterialModel plantMaterialModel : existingMaterialPlantModels) {
+				plantMaterials.add(clonePlantMaterialModel(plantMaterialModel));
+			}
+		}
+		return plantMaterials;
+	}
+
+	/**
+	 * @param model
+	 * @return ErpPlantMaterialModel
+	 */
+	private ErpPlantMaterialModel clonePlantMaterialModel(ErpPlantMaterialModel model) {
+		ErpPlantMaterialModel plantMaterialModel = null;
+		if (model != null) {
+			plantMaterialModel = new ErpPlantMaterialModel();
+			plantMaterialModel.setPlantId(model.getPlantId());
+			/*
+			 * plantMaterialModel.setSalesOrg(model.getSalesOrg());
+			 * plantMaterialModel.setDistChannel(model.getDistChannel());
+			 * 
+			 * plantMaterialModel.setUnavailabilityStatus(model.
+			 * getUnavailabilityStatus());
+			 * plantMaterialModel.setUnavailabilityReason
+			 * (model.getUnavailabilityReason());
+			 * plantMaterialModel.setUnavailabilityDate
+			 * (model.getUnavailabilityDate());
+			 */
+			plantMaterialModel.setAtpRule(model.getAtpRule());
+			plantMaterialModel.setBlockedDays(model.getBlockedDays());
+			plantMaterialModel.setLeadTime(model.getLeadTime());
+			plantMaterialModel.setDays_in_house(model.getDays_in_house());
+
+			plantMaterialModel.setKosherProduction(model.isKosherProduction());
+			plantMaterialModel.setPlatter(model.isPlatter());
+			plantMaterialModel.setRating(model.getRating());
+			plantMaterialModel.setSustainabilityRating(model.getSustainabilityRating());
+
+		}
+		return plantMaterialModel;
+	}
+
+	/**
+	 * @param model
+	 * @return ErpMaterialSalesAreaModel
+	 */
+	private ErpMaterialSalesAreaModel cloneMaterialSalesAreaModel(ErpMaterialSalesAreaModel model) {
+		ErpMaterialSalesAreaModel materialSalesAreaModel = null;
+		if (model != null) {
+			materialSalesAreaModel = new ErpMaterialSalesAreaModel();
+			materialSalesAreaModel.setSalesOrg(model.getSalesOrg());
+			materialSalesAreaModel.setDistChannel(model.getDistChannel());
+			materialSalesAreaModel.setUnavailabilityStatus(model.getUnavailabilityStatus());
+			materialSalesAreaModel.setUnavailabilityReason(model.getUnavailabilityReason());
+			materialSalesAreaModel.setUnavailabilityDate(null != model.getUnavailabilityDate() ? model
+					.getUnavailabilityDate() : SAPConstants.THE_FUTURE);
+			materialSalesAreaModel.setSkuCode(model.getSkuCode());
+		}
+		return materialSalesAreaModel;
+	}
+
+	/**
+	 * @param priceRow
+	 * @return ErpMaterialPriceModel
+	 */
+	private ErpMaterialPriceModel clonePriceRow(ErpMaterialPriceModel priceRow) {
+		if (priceRow != null) {
+			ErpMaterialPriceModel priceRowModel = new ErpMaterialPriceModel();
+
+			priceRowModel.setSalesOrg(priceRow.getSalesOrg());
+			priceRowModel.setDistChannel(priceRow.getDistChannel());
+			priceRowModel.setPrice(priceRow.getPrice());
+			priceRowModel.setPricingUnit(priceRow.getPricingUnit());
+			priceRowModel.setScaleQuantity(priceRow.getScaleQuantity());
+			priceRowModel.setScaleUnit(priceRow.getScaleUnit());
+			priceRowModel.setSapId(priceRow.getSapId());
+			priceRowModel.setSapZoneId(priceRow.getSapZoneId().length()<=6?"0000"+priceRow.getSapZoneId():priceRow.getSapZoneId());
+
+			return priceRowModel;
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param salesUnitModel
+	 * @return ErpSalesUnitModel
+	 */
+	private ErpSalesUnitModel cloneSalesUnitModel(ErpSalesUnitModel salesUnitModel) {
+		if (salesUnitModel != null) {
+			ErpSalesUnitModel salesUnit = new ErpSalesUnitModel();
+
+			salesUnit.setDenominator(salesUnitModel.getDenominator());
+			salesUnit.setAlternativeUnit(salesUnitModel.getAlternativeUnit());
+			salesUnit.setDescription(salesUnitModel.getDescription());
+			salesUnit.setNumerator(salesUnitModel.getNumerator());
+			salesUnit.setBaseUnit(salesUnitModel.getBaseUnit());
+			salesUnit.setDisplayInd(salesUnitModel.isDisplayInd());
+
+			salesUnit.setUnitPriceNumerator(salesUnitModel.getNumerator());
+			salesUnit.setUnitPriceDenominator(salesUnitModel.getDenominator());
+			salesUnit.setUnitPriceUOM(salesUnitModel.getAlternativeUnit());
+			salesUnit.setUnitPriceDescription(salesUnitModel.getDescription());
+
+			return salesUnit;
+		}
+		return null;
+	}
+
+	/**
+	 * @param characteristicValuePrices
+	 * @throws LoaderException
+	 */
+	private void processCharacteristicValuePrices(int batchNumber,
+			Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices,
+			ErpMaterialModel createdMaterial, Map<String, ErpClassModel> createdClasses) throws LoaderException {
+		try {
+			if (characteristicValuePrices != null) {
+				LOG.info("Processing " + characteristicValuePrices.size() + " characteristic value prices for batch "
+						+ batchNumber);
+
+				ErpCharacteristicValuePriceHome cvpHome = (ErpCharacteristicValuePriceHome) initCtx
+						.lookup("java:comp/env/ejb/ErpCharacteristicValuePrice");
+
+				Iterator<ErpCharacteristicValuePriceModel> cvpKeyIter = characteristicValuePrices.keySet().iterator();
+				while (cvpKeyIter.hasNext()) {
+					ErpCharacteristicValuePriceModel erpCvpModel = cvpKeyIter.next();
+					Map<String, String> extraInfo = characteristicValuePrices.get(erpCvpModel);
+
+					// find the material for this characteristic value price
+					String materialNo = extraInfo.get(SAPConstants.MATERIAL_NUMBER);
+
+					// If created material wasn't in the list of created
+					// materials, this characteristic value price was exported
+					// as part of a discontinued material.
+					// don't insert this characteristic value price.
+
+					if (createdMaterial != null) {
+						erpCvpModel.setMaterialId(createdMaterial.getPK().getId());
+
+						// find the characteristic value for this characteristic
+						// value price
+						String charValueName = extraInfo.get("CHARACTERISTIC_VALUE");
+						try {
+							ErpClassModel erpClass = createdClasses.get(extraInfo.get("CLASS"));
+							ErpCharacteristicModel erpCharacteristic = erpClass.getCharacteristic(extraInfo
+									.get("CHARACTERISTIC_NAME"));
+
+							ErpCharacteristicValueModel erpCharVal = erpCharacteristic
+									.getCharacteristicValue(charValueName);
+							erpCvpModel.setCharacteristicValueId(erpCharVal.getPK().getId());
+						} catch (NullPointerException npe) {
+							npe.printStackTrace();
+							throw new LoaderException("Unable to form an association between CharacteristicValuePrice "
+									+ erpCvpModel.getSapId() + " and CharacteristicValue " + charValueName);
+						}
+
+						
+						// create the new characteristic value price
+						LOG.info("Creating new Characteristic Value Price " + erpCvpModel.getSapId() + "");
+						if(erpCvpModel.getPrice() > 0){
+							ErpCharacteristicValuePriceEB erpCvpEB = cvpHome.create(batchNumber, erpCvpModel);
+	
+							// read back the model as a sanity check
+							erpCvpModel = (ErpCharacteristicValuePriceModel) erpCvpEB.getModel();
+							LOG.info("Successfully created CharacteristicValuePrice " + erpCvpModel.getSapId() + ", id= "
+									+ erpCvpModel.getPK().getId() + "");
+						}
+					}
+					LOG.debug("Completed processing CharacteristicValuePrices for batch " + batchNumber
+							+ " materialNo " + materialNo);
+				}
+			}
+		} catch (NamingException ne) {
+			throw new LoaderException(ne, "Unable to find home for ErpCharacteristicValuePrice");
+		} catch (CreateException ce) {
+			throw new LoaderException(ce, "Unable to create a new version of an ErpCharacteristicValuePrice");
+		} catch (RemoteException re) {
+			throw new LoaderException(re,
+					"Unexpected system level exception while trying to create an ErpCharacteristicValuePrice");
+		}
+	}
+
+	/**
+	 * Method to process sales unit for each material.
+	 * 
+	 * @param materialNo
+	 *            the material number
+	 * @param salesUnits
+	 *            the collection of sales unit to create
+	 * 
+	 * @throws LoaderException
+	 *             any problems encountered while creating or updating objects
+	 *             in the system
+	 */
+	public void loadSalesUnits(int batchNumber, String materialNo, HashSet<ErpSalesUnitModel> salesUnits)
+			throws LoaderException {
+
+		LOG.debug("Beginning to load sales unit data for material " + materialNo);
+		ErpMaterialModel materialModel = null;
+		try {
+			this.initCtx = new InitialContext();
+			try {
+				UserTransaction utx = getSessionContext().getUserTransaction();
+				utx.setTransactionTimeout(3000);
+				try {
+					utx.begin();
+					ErpMaterialEB materialEB = null;
+					try {
+						ErpMaterialHome materialHome = (ErpMaterialHome) initCtx
+								.lookup("java:comp/env/ejb/ErpMaterial");
+
+						// find global material
+						/*
+						 * materialEB = materialHome.findBySapId(materialNo);
+						 * ErpMaterialModel erpMaterialModel =
+						 * (ErpMaterialModel) materialEB.getModel();
+						 * updateMaterialApprovalStatus(erpMaterialModel);
+						 * 
+						 * Collections.sort(priceRows, matlPriceComparator);
+						 * materialEB.setPrices(priceRows);
+						 */
+
+						materialEB = materialHome.findBySapId(materialNo);
+						ErpMaterialModel existingMaterialModel = (ErpMaterialModel) materialEB.getModel();
+
+						// clone the salesunit, prices & plant materials from
+						// previous version if any before creating new entry
+						if (existingMaterialModel != null) {
+
+							materialModel = cloneGlobalMaterialModel(existingMaterialModel);
+
+							List<ErpClassModel> classes = existingMaterialModel.getClasses();
+							List<ErpClassModel> clonedClasses = new ArrayList<ErpClassModel>();
+							clonedClasses = cloneAndLoadClasses(batchNumber, classes, clonedClasses);
+							materialModel.setClasses(clonedClasses);
+
+							// sales units
+							if (null != salesUnits && !salesUnits.isEmpty()) {
+								materialModel.setSalesUnits(new ArrayList<ErpSalesUnitModel>(salesUnits));
+							}
+
+							// prices
+							List<ErpMaterialPriceModel> existingPriceRows = existingMaterialModel.getPrices();
+							if (null != existingPriceRows && !existingPriceRows.isEmpty()) {
+								materialModel.setPrices(clonePrices(existingPriceRows));
+							}
+
+							List<ErpPlantMaterialModel> existingPlantModels = existingMaterialModel.getMaterialPlants();
+							if (null != existingPlantModels && !existingPlantModels.isEmpty()) {
+								materialModel.setMaterialPlants(clonePlantModels(existingPlantModels));
+							}
+
+							List<ErpMaterialSalesAreaModel> existingSalesAreas = existingMaterialModel
+									.getMaterialSalesAreas();
+							if (null != existingSalesAreas && !existingSalesAreas.isEmpty()) {
+								materialModel.setMaterialSalesAreas(cloneSalesAreas(existingSalesAreas));
+							}
+
+							updateMaterialApprovalStatus(materialModel);
+							// create the new material
+							LOG.info("Creating new material " + materialModel.getSapId() + ", version " + batchNumber);
+
+							ErpMaterialEB erpMatlEB = materialHome.create(batchNumber, materialModel);
+							materialModel = (ErpMaterialModel) erpMatlEB.getModel();
+
+							LOG.info("Successfully created Material " + materialModel.getSapId() + ", id= "
+									+ materialModel.getPK().getId() + "");
+
+							// set the model to the createdMaterial object
+							// createdMaterial = materialModel;
+
+							cloneAndLoadCharacteristicValuePrices(batchNumber, materialModel,
+									existingMaterialModel.getPK(),existingMaterialModel.getCharacteristics());
+						}
+					} catch (FinderException fe) {
+						throw new LoaderException("No base product found for the material");
+					} catch (RemoteException re) {
+						throw new LoaderException(re,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					} catch (CreateException ce) {
+						throw new LoaderException(ce,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					}
+
+					try {
+						utx.commit();
+						LOG.debug("Completed loading price rows data for material " + materialNo);
+					} catch (RollbackException re) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.",
+								re);
+						throw new LoaderException(re,
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.");
+					} catch (HeuristicMixedException hme) {
+						utx.setRollbackOnly();
+						LOG.error("Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.",
+								hme);
+						throw new LoaderException(hme,
+								"Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.");
+					} catch (HeuristicRollbackException hre) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.",
+								hre);
+						throw new LoaderException(hre,
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.");
+					} catch (RuntimeException rune) {
+						utx.setRollbackOnly();
+						LOG.error("Unexpected runtime exception in SAPLoaderSessionBean loadPriceRows", rune);
+						throw new LoaderException(rune, "Unexpected runtime exception");
+					}
+
+				} catch (LoaderException le) {
+					utx.setRollbackOnly();
+					LOG.error("Aborting loadPriceRows", le);
+					utx.rollback();
+					throw (le);
+				}
+			} catch (NotSupportedException nse) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", nse);
+				throw new LoaderException(nse, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} catch (SystemException se) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", se);
+				throw new LoaderException(se, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} finally {
+				try {
+					this.initCtx.close();
+				} catch (NamingException ne) {
+					// don't need to re-throw this since the transaction has
+					// already completed or failed
+					LOG.warn("Had difficulty closing naming context after transaction had completed.  "
+							+ ne.getMessage());
+				}
+			}
+		} catch (NamingException ne) {
+			LOG.error("Unable to get naming context to locate components required by the loader.", ne);
+			throw new LoaderException(ne, "Unable to get naming context to locate components required by the loader.");
+		}
+
+	}
+
+	/**
+	 * @param result
+	 * @param materialMap
+	 * @param materialClassMap
+	 * @param variantPriceMap
+	 */
+	@SuppressWarnings("unused")
+	private void setCharacteristicSalesUnit(ErpMaterialModel erpMaterial, List<ErpSalesUnitModel> salesUnits,
+			Map<String, Map<ErpCharacteristicValuePriceModel, Map<String, String>>> variantPriceMap) {
+		// TODO, set the materiai characteristicsalesunit
+	}
+
+	/**
+	 * Method to process price rows for each material.
+	 * 
+	 * @param materialNo
+	 * @param priceRows
+	 * 
+	 * @throws RemoteException
+	 * @throws LoaderException
+	 */
+	public void loadPriceRows(int batchNumber, String materialNo, List<ErpMaterialPriceModel> priceRows)
+			throws RemoteException, LoaderException {
+
+		LOG.debug("Beginning to load price rows data for material " + materialNo);
+		ErpMaterialModel materialModel = null;
+		try {
+			this.initCtx = new InitialContext();
+			try {
+				UserTransaction utx = getSessionContext().getUserTransaction();
+				utx.setTransactionTimeout(3000);
+				try {
+					utx.begin();
+					ErpMaterialEB materialEB = null;
+					try {
+						ErpMaterialHome materialHome = (ErpMaterialHome) initCtx
+								.lookup("java:comp/env/ejb/ErpMaterial");
+
+						// find global material
+						/*
+						 * materialEB = materialHome.findBySapId(materialNo);
+						 * ErpMaterialModel erpMaterialModel =
+						 * (ErpMaterialModel) materialEB.getModel();
+						 * updateMaterialApprovalStatus(erpMaterialModel);
+						 * 
+						 * Collections.sort(priceRows, matlPriceComparator);
+						 * materialEB.setPrices(priceRows);
+						 */
+
+						materialEB = materialHome.findBySapId(materialNo);
+						ErpMaterialModel existingMaterialModel = (ErpMaterialModel) materialEB.getModel();
+
+						// clone the salesunit, prices & plant materials from
+						// previous version if any before creating new entry
+						if (existingMaterialModel != null) {
+
+							materialModel = cloneGlobalMaterialModel(existingMaterialModel);
+
+							List<ErpClassModel> classes = existingMaterialModel.getClasses();
+							List<ErpClassModel> clonedClasses = new ArrayList<ErpClassModel>();
+							clonedClasses = cloneAndLoadClasses(batchNumber, classes, clonedClasses);
+							materialModel.setClasses(clonedClasses);
+
+							// cloneAndLoadCharacteristicValuePrices(batchNumber,
+							// existingMaterialModel);
+
+							// sales units
+							List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+							if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
+								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+							}
+
+							// prices
+							if (null != priceRows && !priceRows.isEmpty()) {
+								Collections.sort(priceRows, matlPriceComparator);
+								materialModel.setPrices(priceRows);
+							}
+
+							List<ErpPlantMaterialModel> existingPlantModels = existingMaterialModel.getMaterialPlants();
+							if (null != existingPlantModels && !existingPlantModels.isEmpty()) {
+								materialModel.setMaterialPlants(clonePlantModels(existingPlantModels));
+							}
+
+							List<ErpMaterialSalesAreaModel> existingSalesAreas = existingMaterialModel
+									.getMaterialSalesAreas();
+							if (null != existingSalesAreas && !existingSalesAreas.isEmpty()) {
+								materialModel.setMaterialSalesAreas(cloneSalesAreas(existingSalesAreas));
+							}
+
+							updateMaterialApprovalStatus(materialModel);
+
+							// create the new material
+							LOG.info("Creating new material " + materialModel.getSapId() + ", version " + batchNumber);
+
+							ErpMaterialEB erpMatlEB = materialHome.create(batchNumber, materialModel);
+							materialModel = (ErpMaterialModel) erpMatlEB.getModel();
+
+							LOG.info("Successfully created Material " + materialModel.getSapId() + ", id= "
+									+ materialModel.getPK().getId() + "");
+
+							// set the model to the createdMaterial object
+							// createdMaterial = materialModel;
+
+							cloneAndLoadCharacteristicValuePrices(batchNumber, materialModel,
+									existingMaterialModel.getPK(),existingMaterialModel.getCharacteristics());
+						}
+					} catch (FinderException fe) {
+						throw new LoaderException("No base product found for the material");
+					} catch (RemoteException re) {
+						throw new LoaderException(re,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					} catch (CreateException ce) {
+						throw new LoaderException(ce,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					}
+
+					try {
+						utx.commit();
+						LOG.debug("Completed loading price rows data for material " + materialNo);
+					} catch (RollbackException re) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.",
+								re);
+						throw new LoaderException(re,
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.");
+					} catch (HeuristicMixedException hme) {
+						utx.setRollbackOnly();
+						LOG.error("Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.",
+								hme);
+						throw new LoaderException(hme,
+								"Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.");
+					} catch (HeuristicRollbackException hre) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.",
+								hre);
+						throw new LoaderException(hre,
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.");
+					} catch (RuntimeException rune) {
+						utx.setRollbackOnly();
+						LOG.error("Unexpected runtime exception in SAPLoaderSessionBean loadPriceRows", rune);
+						throw new LoaderException(rune, "Unexpected runtime exception");
+					}
+
+				} catch (LoaderException le) {
+					utx.setRollbackOnly();
+					LOG.error("Aborting loadPriceRows", le);
+					utx.rollback();
+					throw (le);
+				}
+			} catch (NotSupportedException nse) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", nse);
+				throw new LoaderException(nse, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} catch (SystemException se) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", se);
+				throw new LoaderException(se, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} finally {
+				try {
+					this.initCtx.close();
+				} catch (NamingException ne) {
+					// don't need to re-throw this since the transaction has
+					// already completed or failed
+					LOG.warn("Had difficulty closing naming context after transaction had completed.  "
+							+ ne.getMessage());
+				}
+			}
+		} catch (NamingException ne) {
+			LOG.error("Unable to get naming context to locate components required by the loader.", ne);
+			throw new LoaderException(ne, "Unable to get naming context to locate components required by the loader.");
+		}
+	}
+
+	/**
+	 * Method to process plant info for each material.
+	 * 
+	 * @param materialNo
+	 * @param materialPlants
+	 * 
+	 * @throws RemoteException
+	 * @throws LoaderException
+	 */
+	/*
+	 * public void loadMaterialPlants(String materialNo,
+	 * List<ErpPlantMaterialModel> materialPlants) throws RemoteException,
+	 * LoaderException { LOG.debug("Beginning to load plant data for material "
+	 * + materialNo); try { this.initCtx = new InitialContext(); try {
+	 * UserTransaction utx = getSessionContext().getUserTransaction();
+	 * 
+	 * utx.setTransactionTimeout(3000); try { utx.begin(); ErpMaterialEB
+	 * materialEB = null; try { ErpMaterialHome materialHome = (ErpMaterialHome)
+	 * initCtx .lookup("java:comp/env/ejb/ErpMaterial");
+	 * 
+	 * // find global material materialEB =
+	 * materialHome.findBySapId(materialNo); ErpMaterialModel erpMaterialModel =
+	 * (ErpMaterialModel) materialEB.getModel();
+	 * updateMaterialApprovalStatus(erpMaterialModel);
+	 * 
+	 * materialEB.setMaterialPlants(materialPlants); } catch (FinderException
+	 * fe) { throw new
+	 * LoaderException("No base product found for the material"); } catch
+	 * (RemoteException re) { throw new LoaderException(re,
+	 * "Unexpected system level exception while trying to create an ErpPlantMaterialModel"
+	 * ); }
+	 * 
+	 * try { utx.commit();
+	 * LOG.debug("Completed loading plant data for material " + materialNo); }
+	 * catch (RollbackException re) { utx.setRollbackOnly(); LOG.error(
+	 * "Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit."
+	 * , re); throw new LoaderException(re,
+	 * "Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit."
+	 * ); } catch (HeuristicMixedException hme) { utx.setRollbackOnly();
+	 * LOG.error(
+	 * "Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics."
+	 * , hme); throw new LoaderException(hme,
+	 * "Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics."
+	 * ); } catch (HeuristicRollbackException hre) { utx.setRollbackOnly();
+	 * LOG.error(
+	 * "Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction."
+	 * , hre); throw new LoaderException(hre,
+	 * "Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction."
+	 * ); } catch (RuntimeException rune) { utx.setRollbackOnly(); LOG.error(
+	 * "Unexpected runtime exception in SAPLoaderSessionBean loadMaterialPlants"
+	 * , rune); throw new LoaderException(rune, "Unexpected runtime exception");
+	 * }
+	 * 
+	 * } catch (LoaderException le) { utx.setRollbackOnly();
+	 * LOG.error("Aborting loadMaterialPlants", le); utx.rollback(); throw (le);
+	 * } } catch (NotSupportedException nse) {
+	 * LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction."
+	 * , nse); throw new LoaderException(nse,
+	 * "Unable to update ERPS objects.  Unable to begin a UserTransaction."); }
+	 * catch (SystemException se) {
+	 * LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction."
+	 * , se); throw new LoaderException(se,
+	 * "Unable to update ERPS objects.  Unable to begin a UserTransaction."); }
+	 * finally { try { this.initCtx.close(); } catch (NamingException ne) { //
+	 * don't need to re-throw this since the transaction has // already
+	 * completed or failed LOG.warn(
+	 * "Had difficulty closing naming context after transaction had completed.  "
+	 * + ne.getMessage()); } } } catch (NamingException ne) { LOG.error(
+	 * "Unable to get naming context to locate components required by the loader."
+	 * , ne); throw new LoaderException(ne,
+	 * "Unable to get naming context to locate components required by the loader."
+	 * ); } }
+	 */
+
+	/**
+	 * 
+	 * @param materialNo
+	 * @param salesAreas
+	 * @throws RemoteException
+	 * @throws LoaderException
+	 */
+	/*
+	 * public void loadMaterialSalesAreas(String materialNo,
+	 * List<ErpMaterialSalesAreaModel> salesAreas) throws RemoteException,
+	 * LoaderException { LOG.debug("Beginning to load plant data for material "
+	 * + materialNo); try { this.initCtx = new InitialContext(); try {
+	 * UserTransaction utx = getSessionContext().getUserTransaction();
+	 * 
+	 * utx.setTransactionTimeout(3000); try { utx.begin(); ErpMaterialEB
+	 * materialEB = null; try { ErpMaterialHome materialHome = (ErpMaterialHome)
+	 * initCtx .lookup("java:comp/env/ejb/ErpMaterial");
+	 * 
+	 * // find global material materialEB =
+	 * materialHome.findBySapId(materialNo); ErpMaterialModel erpMaterialModel =
+	 * (ErpMaterialModel) materialEB.getModel();
+	 * updateMaterialApprovalStatus(erpMaterialModel);
+	 * 
+	 * materialEB.setMaterialSalesAreas(salesAreas); } catch (FinderException
+	 * fe) { throw new LoaderException("No base product found for the material:"
+	 * + materialNo); } catch (RemoteException re) { throw new
+	 * LoaderException(re,
+	 * "Unexpected system level exception while trying to create an ErpMaterialSalesAreaModel"
+	 * ); }
+	 * 
+	 * try { utx.commit();
+	 * LOG.debug("Completed loading plant data for material " + materialNo); }
+	 * catch (RollbackException re) { utx.setRollbackOnly(); LOG.error(
+	 * "Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit."
+	 * , re); throw new LoaderException(re,
+	 * "Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit."
+	 * ); } catch (HeuristicMixedException hme) { utx.setRollbackOnly();
+	 * LOG.error(
+	 * "Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics."
+	 * , hme); throw new LoaderException(hme,
+	 * "Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics."
+	 * ); } catch (HeuristicRollbackException hre) { utx.setRollbackOnly();
+	 * LOG.error(
+	 * "Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction."
+	 * , hre); throw new LoaderException(hre,
+	 * "Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction."
+	 * ); } catch (RuntimeException rune) { utx.setRollbackOnly(); LOG.error(
+	 * "Unexpected runtime exception in SAPLoaderSessionBean loadMaterialPlants"
+	 * , rune); throw new LoaderException(rune, "Unexpected runtime exception");
+	 * }
+	 * 
+	 * } catch (LoaderException le) { utx.setRollbackOnly();
+	 * LOG.error("Aborting loadMaterialPlants", le); utx.rollback(); throw (le);
+	 * } } catch (NotSupportedException nse) {
+	 * LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction."
+	 * , nse); throw new LoaderException(nse,
+	 * "Unable to update ERPS objects.  Unable to begin a UserTransaction."); }
+	 * catch (SystemException se) {
+	 * LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction."
+	 * , se); throw new LoaderException(se,
+	 * "Unable to update ERPS objects.  Unable to begin a UserTransaction."); }
+	 * finally { try { this.initCtx.close(); } catch (NamingException ne) { //
+	 * don't need to re-throw this since the transaction has // already
+	 * completed or failed LOG.warn(
+	 * "Had difficulty closing naming context after transaction had completed.  "
+	 * + ne.getMessage()); } } } catch (NamingException ne) { LOG.error(
+	 * "Unable to get naming context to locate components required by the loader."
+	 * , ne); throw new LoaderException(ne,
+	 * "Unable to get naming context to locate components required by the loader."
+	 * ); } }
+	 */
+
+	/**
+	 * Method to check the material completion to set the approval status
+	 * 
+	 * @param erpMaterialModel
+	 */
+	public void updateMaterialApprovalStatus(ErpMaterialModel erpMaterialModel) {
+		if (erpMaterialModel != null) {
+			String materialType = erpMaterialModel.getMaterialType();
+			erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);//TODO: Decide whether to use this flag or not.
+			if ("HAWA".equalsIgnoreCase(materialType)) {
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getMaterialPlants() != null
+						&& erpMaterialModel.getPrices() != null && erpMaterialModel.getSalesUnits().size() > 0
+						&& erpMaterialModel.getMaterialPlants().size() > 0 && erpMaterialModel.getPrices().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			} else if ("FERT".equalsIgnoreCase(materialType)) {
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getMaterialPlants() != null
+						&& erpMaterialModel.getPrices() != null && erpMaterialModel.getSalesUnits().size() > 0
+						&& erpMaterialModel.getMaterialPlants().size() > 0 && erpMaterialModel.getPrices().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			} else if ("NLAG".equalsIgnoreCase(materialType)) {
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getMaterialPlants() != null
+						&& erpMaterialModel.getPrices() != null && erpMaterialModel.getSalesUnits().size() > 0
+						&& erpMaterialModel.getMaterialPlants().size() > 0 && erpMaterialModel.getPrices().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			} else if ("ZALT".equalsIgnoreCase(materialType)) {
+				// adding based on ERP chart, not sure how materials of this
+				// type are handled without plant info.
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getPrices() != null
+						&& erpMaterialModel.getSalesUnits().size() > 0 && erpMaterialModel.getPrices().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			} else if ("UNBW".equalsIgnoreCase(materialType)) {
+				// adding based on ERP chart, not sure how materials of this
+				// type are handled without price info.
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getMaterialPlants() != null
+						&& erpMaterialModel.getSalesUnits().size() > 0
+						&& erpMaterialModel.getMaterialPlants().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			} else if ("ZMKT".equalsIgnoreCase(materialType)) {
+				// adding based on ERP chart, not sure how materials of this
+				// type are handled without price info.
+				if (erpMaterialModel.getSalesUnits() != null && erpMaterialModel.getMaterialPlants() != null
+						&& erpMaterialModel.getSalesUnits().size() > 0
+						&& erpMaterialModel.getMaterialPlants().size() > 0) {
+					erpMaterialModel.setApprovalStatus(EnumProductApprovalStatus.APPROVED);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * a convenience object that can compare sales units by their ratio
+	 * (numerator / denominator)
+	 * 
+	 */
+	@SuppressWarnings("rawtypes")
+	private static Comparator salesUnitComparator = new Comparator() {
+		public int compare(Object o1, Object o2) {
+			ErpSalesUnitModel su1 = (ErpSalesUnitModel) o1;
+			ErpSalesUnitModel su2 = (ErpSalesUnitModel) o2;
+			double ratio1 = su1.getNumerator() / su1.getDenominator();
+			double ratio2 = su2.getNumerator() / su2.getDenominator();
+			if (ratio1 < ratio2) {
+				if (!su1.isDisplayInd() || (su1.isDisplayInd() == su2.isDisplayInd())) {
+					return -1;
+				} else {
+					return 1;
+				}
+			} else if (ratio2 < ratio1) {
+				if (!su2.isDisplayInd() || (su1.isDisplayInd() == su2.isDisplayInd())) {
+					return 1;
+				} else {
+					return -1;
+				}
+			} else
+				return 0;
+		}
+	};
+
+	private Comparator<ErpMaterialPriceModel> matlPriceComparator = new Comparator<ErpMaterialPriceModel>() {
+		public int compare(ErpMaterialPriceModel price1, ErpMaterialPriceModel price2) {
+			if (price1.getScaleQuantity() == price2.getScaleQuantity())
+				return 0;
+			else if (price1.getScaleQuantity() < price2.getScaleQuantity())
+				return -1;
+			else
+				return 1;
+		}
+	};
+
+	/**
+	 * Method to Save Plant and Sales Area info for each material.
+	 * @param batchNumber
+	 * @param materialNo
+	 * @param plants
+	 * @param salesAreas
+	 * @throws RemoteException
+	 * @throws LoaderException
+	 */
+	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo, List<ErpPlantMaterialModel> plants,
+			List<ErpMaterialSalesAreaModel> salesAreas) throws RemoteException, LoaderException {
+		LOG.debug("Beginning to load plants and salesarea rows data for material " + materialNo);
+		ErpMaterialModel materialModel = null;
+		try {
+			this.initCtx = new InitialContext();
+			try {
+				UserTransaction utx = getSessionContext().getUserTransaction();
+				utx.setTransactionTimeout(3000);
+				try {
+					utx.begin();
+					ErpMaterialEB materialEB = null;
+					try {
+						ErpMaterialHome materialHome = (ErpMaterialHome) initCtx
+								.lookup("java:comp/env/ejb/ErpMaterial");
+
+						// find global material
+						/*
+						 * materialEB = materialHome.findBySapId(materialNo);
+						 * ErpMaterialModel erpMaterialModel =
+						 * (ErpMaterialModel) materialEB.getModel();
+						 * updateMaterialApprovalStatus(erpMaterialModel);
+						 * 
+						 * Collections.sort(priceRows, matlPriceComparator);
+						 * materialEB.setPrices(priceRows);
+						 */
+
+						materialEB = materialHome.findBySapId(materialNo);
+						ErpMaterialModel existingMaterialModel = (ErpMaterialModel) materialEB.getModel();
+
+						// clone the salesunit, prices & plant materials from
+						// previous version if any before creating new entry
+						if (existingMaterialModel != null) {
+
+							materialModel = cloneGlobalMaterialModel(existingMaterialModel);
+
+							List<ErpClassModel> classes = existingMaterialModel.getClasses();
+							List<ErpClassModel> clonedClasses = new ArrayList<ErpClassModel>();
+							clonedClasses = cloneAndLoadClasses(batchNumber, classes, clonedClasses);
+							materialModel.setClasses(clonedClasses);
+
+							// cloneAndLoadCharacteristicValuePrices(batchNumber,
+							// existingMaterialModel);
+
+							// sales units
+							List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+							if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
+								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+							}
+
+							// prices
+							List<ErpMaterialPriceModel> existingPriceRows = existingMaterialModel.getPrices();
+							if (null != existingPriceRows && !existingPriceRows.isEmpty()) {
+								materialModel.setPrices(clonePrices(existingPriceRows));
+							}
+
+							if (null != plants && !plants.isEmpty()) {
+								materialModel.setMaterialPlants(plants);
+							}
+							if (null != salesAreas && !salesAreas.isEmpty()) {
+								for (Iterator iterator = salesAreas.iterator(); iterator.hasNext();) {
+									ErpMaterialSalesAreaModel salesAreaModel = (ErpMaterialSalesAreaModel) iterator
+											.next();
+									salesAreaModel.setSkuCode(existingMaterialModel.getSkuCode());
+									
+								}
+								materialModel.setMaterialSalesAreas(salesAreas);
+							}
+
+							updateMaterialApprovalStatus(materialModel);
+
+							// create the new material
+							LOG.info("Creating new material " + materialModel.getSapId() + ", version " + batchNumber);
+
+							ErpMaterialEB erpMatlEB = materialHome.create(batchNumber, materialModel);
+							materialModel = (ErpMaterialModel) erpMatlEB.getModel();
+
+							LOG.info("Successfully created Material " + materialModel.getSapId() + ", id= "
+									+ materialModel.getPK().getId() + "");
+
+							// set the model to the createdMaterial object
+							// createdMaterial = materialModel;
+
+							cloneAndLoadCharacteristicValuePrices(batchNumber, materialModel,
+									existingMaterialModel.getPK(),existingMaterialModel.getCharacteristics());
+						}
+					} catch (FinderException fe) {
+						throw new LoaderException("No base product found for the material");
+					} catch (RemoteException re) {
+						throw new LoaderException(re,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					} catch (CreateException ce) {
+						throw new LoaderException(ce,
+								"Unexpected system level exception while trying to create an ErpMaterialPriceModel");
+					}
+
+					try {
+						utx.commit();
+						LOG.debug("Completed loading plants and salesarea rows data for material " + materialNo);
+					} catch (RollbackException re) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.",
+								re);
+						throw new LoaderException(re,
+								"Unable to update ERPS objects. UserTransaction had already rolled back before attempt to commit.");
+					} catch (HeuristicMixedException hme) {
+						utx.setRollbackOnly();
+						LOG.error("Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.",
+								hme);
+						throw new LoaderException(hme,
+								"Unable to update ERPS objects. TransactionManager aborted due to mixed heuristics.");
+					} catch (HeuristicRollbackException hre) {
+						utx.setRollbackOnly();
+						LOG.error(
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.",
+								hre);
+						throw new LoaderException(hre,
+								"Unable to update ERPS objects.  TransactionManager heuristically rolled back transaction.");
+					} catch (RuntimeException rune) {
+						utx.setRollbackOnly();
+						LOG.error("Unexpected runtime exception in SAPLoaderSessionBean loadPriceRows", rune);
+						throw new LoaderException(rune, "Unexpected runtime exception");
+					}
+
+				} catch (LoaderException le) {
+					utx.setRollbackOnly();
+					LOG.error("Aborting loadMaterialPlantsAndSalesAreas", le);
+					utx.rollback();
+					throw (le);
+				}
+			} catch (NotSupportedException nse) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", nse);
+				throw new LoaderException(nse, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} catch (SystemException se) {
+				LOG.error("Unable to update ERPS objects. Unable to begin a UserTransaction.", se);
+				throw new LoaderException(se, "Unable to update ERPS objects.  Unable to begin a UserTransaction.");
+			} finally {
+				try {
+					this.initCtx.close();
+				} catch (NamingException ne) {
+					// don't need to re-throw this since the transaction has
+					// already completed or failed
+					LOG.warn("Had difficulty closing naming context after transaction had completed.  "
+							+ ne.getMessage());
+				}
+			}
+		} catch (NamingException ne) {
+			LOG.error("Unable to get naming context to locate components required by the loader.", ne);
+			throw new LoaderException(ne, "Unable to get naming context to locate components required by the loader.");
+		}
+	}
+
+	/**
+	 * @param batchNumber
+	 * @param existingMaterialModel
+	 * @throws NamingException
+	 * @throws FinderException
+	 * @throws RemoteException
+	 * @throws CreateException
+	 */
+	private void cloneAndLoadCharacteristicValuePrices(int batchNumber, ErpMaterialModel materialModel,
+			PrimaryKey existingMatPk, List<ErpCharacteristicModel> oldCharacteristics) throws NamingException, RemoteException, CreateException {
+		ErpCharacteristicValuePriceHome cvpHome = (ErpCharacteristicValuePriceHome) initCtx
+				.lookup(ErpServicesProperties.getCharacteristicValuePriceHome());
+		try {
+			Collection<ErpCharacteristicValuePriceEB> cvPriceEBs = cvpHome.findByMaterial((VersionedPrimaryKey) existingMatPk);
+			if (null != cvPriceEBs && !cvPriceEBs.isEmpty()) {
+				for (Iterator<ErpCharacteristicValuePriceEB> i = cvPriceEBs.iterator(); i.hasNext();) {
+					ErpCharacteristicValuePriceModel cvpModel = (ErpCharacteristicValuePriceModel) i.next().getModel();
+					for (ErpCharacteristicModel oldCharcModel : oldCharacteristics) {
+						List<ErpCharacteristicValueModel> oldCharcValues = oldCharcModel.getCharacteristicValues();
+						for (ErpCharacteristicValueModel oldCharcValueModel : oldCharcValues) {
+							if(cvpModel.getCharacteristicValueId().equalsIgnoreCase(oldCharcValueModel.getId())){
+								cvpModel.setCharacteristicName(oldCharcModel.getName());
+								cvpModel.setCharacteristicValueName(oldCharcValueModel.getName());
+							}
+						}
+						
+					}
+					ErpCharacteristicValuePriceModel clonedCvpModel = cloneCharacteristicValuePriceModel(cvpModel);
+					clonedCvpModel.setMaterialId(materialModel.getId());
+					if(cvpModel.getPrice() > 0){
+						if (null != materialModel.getCharacteristics()) {
+//							for (ErpClassModel classModel : (List<ErpClassModel>) materialModel.getClasses()) {
+							for (ErpCharacteristicModel charcModel : (List<ErpCharacteristicModel>) materialModel.getCharacteristics()) {
+//								if (classModel.getSapId().equals(clonedCvpModel.getClassName())) {
+//									ErpCharacteristicModel charcModel = classModel.getCharacteristic(clonedCvpModel
+//											.getCharacteristicName());
+									if (null != charcModel && charcModel.getName().equalsIgnoreCase(clonedCvpModel.getCharacteristicName())){
+										ErpCharacteristicValueModel charcValModel = charcModel
+												.getCharacteristicValue(clonedCvpModel.getCharacteristicValueName());
+										if(null !=charcValModel){
+											clonedCvpModel.setCharacteristicValueId(charcValModel.getPK().getId());
+											
+											clonedCvpModel.setConditionType(cvpModel.getConditionType());
+											clonedCvpModel.setPrice(cvpModel.getPrice());
+											clonedCvpModel.setSapId(cvpModel.getSapId());
+											clonedCvpModel.setPricingUnit(cvpModel.getPricingUnit());
+											clonedCvpModel.setSalesOrg(cvpModel.getSalesOrg());
+											clonedCvpModel.setDistChannel(cvpModel.getDistChannel());
+										}
+									}
+//								}
+	
+							}
+						}
+						if(clonedCvpModel.getPrice() >0 && null !=clonedCvpModel.getCharacteristicValueId()){
+							ErpCharacteristicValuePriceEB erpCvpEB = cvpHome.create(batchNumber, clonedCvpModel);
+							clonedCvpModel = (ErpCharacteristicValuePriceModel) erpCvpEB.getModel();
+						}
+					}
+				}
+			}
+		} catch (FinderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param batchNumber
+	 * @param classes
+	 * @param clonedClasses
+	 * @throws NamingException
+	 * @throws RemoteException
+	 * @throws CreateException
+	 */
+	private List<ErpClassModel> cloneAndLoadClasses(int batchNumber, List<ErpClassModel> classes,
+			List<ErpClassModel> clonedClasses) throws NamingException, RemoteException, CreateException {
+		if (null != classes && !classes.isEmpty()) {
+			ErpClassHome classHome = (ErpClassHome) initCtx.lookup("java:comp/env/ejb/ErpClass");
+			for (ErpClassModel classModel : classes) {
+				ErpClassModel clonedClassModel = cloneClassModel(classModel);
+				clonedClassModel = loadClass(batchNumber, classHome, clonedClassModel);
+				clonedClasses.add(clonedClassModel);
+			}
+		}
+		return clonedClasses;
+	}
+
+	/**
+	 * @param existingPriceRows
+	 * @return
+	 */
+	private List<ErpMaterialPriceModel> clonePrices(List<ErpMaterialPriceModel> existingPriceRows) {
+		List<ErpMaterialPriceModel> priceRows = null;
+		if (existingPriceRows != null && existingPriceRows.size() > 0) {
+			priceRows = new ArrayList<ErpMaterialPriceModel>();
+			for (ErpMaterialPriceModel priceRow : existingPriceRows) {
+				priceRows.add(clonePriceRow(priceRow));
+			}
+			Collections.sort(priceRows, matlPriceComparator);
+		}
+		return priceRows;
+	}
+
+	/**
+	 * @param unitList
+	 * @param existingSalesUnitModels
+	 * @return
+	 */
+	private List<ErpSalesUnitModel> cloneSalesUnits(List<ErpSalesUnitModel> existingSalesUnitModels) {
+		List<ErpSalesUnitModel> clonedSalesUnits = null;
+		if (existingSalesUnitModels != null && existingSalesUnitModels.size() > 0) {
+			clonedSalesUnits = new ArrayList<ErpSalesUnitModel>();
+			for (ErpSalesUnitModel salesUnitModel : existingSalesUnitModels) {
+				clonedSalesUnits.add(cloneSalesUnitModel(salesUnitModel));
+			}
+			Collections.sort(clonedSalesUnits, salesUnitComparator);
+
+		}
+		return clonedSalesUnits;
+	}
+
+	private ErpClassModel cloneClassModel(ErpClassModel classModel) {
+		ErpClassModel clonedClassModel = new ErpClassModel();
+		clonedClassModel.setSapId(classModel.getSapId());
+		clonedClassModel.setCharacteristics(cloneCharacteristics(classModel.getCharacteristics()));
+		return clonedClassModel;
+	}
+
+	private List<ErpCharacteristicModel> cloneCharacteristics(List<ErpCharacteristicModel> characteristics) {
+		List<ErpCharacteristicModel> clonedCharacteristics = new ArrayList<ErpCharacteristicModel>();
+		for (ErpCharacteristicModel erpCharcModel : characteristics) {
+			ErpCharacteristicModel clonedCharcModel = new ErpCharacteristicModel();
+			clonedCharcModel.setName(erpCharcModel.getName());
+			for (Iterator<ErpCharacteristicValueModel> iterator = erpCharcModel.getCharacteristicValues().iterator(); iterator
+					.hasNext();) {
+				ErpCharacteristicValueModel erpCharacValModel = (ErpCharacteristicValueModel) iterator.next();
+				ErpCharacteristicValueModel clonedCharcValModel = new ErpCharacteristicValueModel();
+				clonedCharcValModel.setName(erpCharacValModel.getName());
+				clonedCharcValModel.setDescription(erpCharacValModel.getDescription());
+				clonedCharcModel.addCharacteristicValue(clonedCharcValModel);
+			}
+			clonedCharacteristics.add(clonedCharcModel);
+		}
+		return clonedCharacteristics;
+	}
+
+	/**
+	 * @param charcValPriceModel
+	 * @return
+	 */
+	private ErpCharacteristicValuePriceModel cloneCharacteristicValuePriceModel(
+			ErpCharacteristicValuePriceModel charcValPriceModel) {
+		ErpCharacteristicValuePriceModel clonedCharcValPriceModel = new ErpCharacteristicValuePriceModel();
+		clonedCharcValPriceModel.setConditionType(charcValPriceModel.getConditionType());
+		clonedCharcValPriceModel.setPrice(charcValPriceModel.getPrice());
+		clonedCharcValPriceModel.setSapId(charcValPriceModel.getSapId());
+		clonedCharcValPriceModel.setPricingUnit(charcValPriceModel.getPricingUnit());
+		clonedCharcValPriceModel.setSalesOrg(charcValPriceModel.getSalesOrg());
+		clonedCharcValPriceModel.setDistChannel(charcValPriceModel.getDistChannel());
+		clonedCharcValPriceModel.setCharacteristicValueName(charcValPriceModel.getCharacteristicValueName());
+		clonedCharcValPriceModel.setCharacteristicName(charcValPriceModel.getCharacteristicName());
+		clonedCharcValPriceModel.setClassName(charcValPriceModel.getClassName());
+		return clonedCharcValPriceModel;
+	}
+
+	/**
+	 * 
+	 * @param materialModel
+	 * @return
+	 */
+	private ErpMaterialModel cloneGlobalMaterialModel(ErpMaterialModel materialModel) {
+		ErpMaterialModel clonedMatModel = new ErpMaterialModel();
+		clonedMatModel.setSapId(materialModel.getSapId());
+		clonedMatModel.setSkuCode(materialModel.getSkuCode());
+		clonedMatModel.setBaseUnit(materialModel.getBaseUnit());
+		clonedMatModel.setDescription(materialModel.getDescription());
+		clonedMatModel.setUPC(materialModel.getUPC());
+		clonedMatModel.setDaysFresh(materialModel.getDaysFresh());
+		clonedMatModel.setMaterialType(materialModel.getMaterialType());
+		clonedMatModel.setTaxable(materialModel.isTaxable());
+		clonedMatModel.setAlcoholicContent(materialModel.getAlcoholicContent());
+		clonedMatModel.setQuantityCharacteristic(materialModel.getQuantityCharacteristic());
+		clonedMatModel.setSalesUnitCharacteristic(materialModel.getSalesUnitCharacteristic());
+		return clonedMatModel;
+
+	}
+
+	private void populateMaterialSalesUnitChar(ErpClassModel erpClass, ErpMaterialModel erpMaterial) throws LoaderException {
+		List<ErpCharacteristicModel> charList = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics());
+		ListIterator<ErpCharacteristicModel> charListIter = charList.listIterator();
+		while (charListIter.hasNext()) {
+			ErpCharacteristicModel erpCharac = charListIter.next();
+
+			boolean isSalesUnit = false;
+			boolean matchError = false;
+
+			//
+			// try to find a match between characteristic value names
+			// and sales unit names
+			//
+			int matchCount = 0;
+			Iterator<ErpCharacteristicValueModel> charValIter = erpCharac.getCharacteristicValues().iterator();
+			if (null != erpMaterial.getSalesUnits()) {
+				while (charValIter.hasNext()) {
+					ErpCharacteristicValueModel erpCharValue = charValIter.next();
+					Iterator salesUnitIter = erpMaterial.getSalesUnits().iterator();
+					while (salesUnitIter.hasNext()) {
+						ErpSalesUnitModel erpSalesUnit = (ErpSalesUnitModel) salesUnitIter.next();
+						if (erpCharValue.getName().equals(erpSalesUnit.getAlternativeUnit())) {
+							//
+							// found a match
+							//
+							++matchCount;
+						}
+					}
+				}
+			}
+			//
+			// see if matches were found between the characteristic values and
+			// the sales units
+			//
+			if ((matchCount != 0) && (matchCount == erpMaterial.numberOfSalesUnits())
+					&& (matchCount == erpCharac.numberOfCharacteristicValues())) {
+				//
+				// if the match count is equal to the number of sales units a
+				// material has and the number of values
+				// of the matched characteristic, then the characterisitic is a
+				// sales unit
+				//
+				erpMaterial.setSalesUnitCharacteristic(erpCharac.getName());
+				isSalesUnit = true;
+			} else if ((matchCount != 0)
+					&& ((matchCount != erpMaterial.numberOfSalesUnits()) || (matchCount != erpCharac
+							.numberOfCharacteristicValues()))) {
+				//
+				// if some matches were found, but the number of matches isn't
+				// equal to the number of
+				// sales units for the material or the number of values for the
+				// matched characteristic
+				// this probably means that there was some data entry error on
+				// the SAP side and we should flag this as an exception
+				//
+				matchError = true;
+				throw new LoaderException("There was a mismatch between the sales units for Material "
+						+ erpMaterial.getSapId() + " and the values of Characteristic " + erpCharac.getName()
+						+ " in Class " + erpClass.getSapId());
+
+			}
+
+			//
+			// if the characteristic was really a sales unit and no erroneous
+			// partial matches were found
+			// remove the characteristic from the class
+			//
+			/*if (isSalesUnit && !matchError) {
+				//
+				// get the list of characteristic from the class
+				//
+				List<ErpCharacteristicModel> characs = new ArrayList<ErpCharacteristicModel>(
+						erpClass.getCharacteristics());
+				ListIterator<ErpCharacteristicModel> clIter = characs.listIterator();
+				while (clIter.hasNext()) {
+					if (clIter.next().getName().equals(erpCharac.getName())) {
+						//
+						// remove the characteristic that matched the sales
+						// units from the list
+						//
+						clIter.remove();
+						break;
+					}
+				}*/
+				//
+				// set the list of characteristics back on the class
+				//
+//				erpClass.setCharacteristics(characs);
+//			}
+
+		}
+	}
 }

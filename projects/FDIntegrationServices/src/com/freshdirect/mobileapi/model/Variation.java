@@ -12,13 +12,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public class Variation {
 
@@ -38,7 +41,7 @@ public class Variation {
 
     private String name;
 
-    private String description;
+	private String description;
     
     private String helpNote;
 
@@ -50,7 +53,7 @@ public class Variation {
             }
         }
     }
-
+    
     public static Variation wrap(FDVariation variation, Product product) {
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
         Variation result = new Variation();
@@ -61,10 +64,16 @@ public class Variation {
 
         for (FDVariationOption fdOption : options) {
             VariationOption option = new VariationOption(fdOption);
+            try	{
+            	ProductModel pm = ContentFactory.getInstance().getProduct(fdOption.getSkuCode());
+            	option.setId(pm.getContentName());
+            } catch(Exception e){
+            	
+            }
             result.options.add(option);
             double cvprice = 0.0;
 
-            CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), fdOption.getName());
+            CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), fdOption.getName(),product.pricingContext);
             if (cvp != null) {
                 cvprice = cvp.getPrice();
             }

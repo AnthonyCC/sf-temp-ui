@@ -96,11 +96,26 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 
 		bapi.setOrderHeaderIn(new BapiSalesOrderCreate.OrderHeaderIn() {
 			public String getSalesOrg() {
-				return SapProperties.getSalesOrg();
+				
+				String salesOrg=order.getSalesOrg();
+				if("1000".equals(salesOrg))
+					return "0001";
+				else if("2000".equals(salesOrg))
+					return "1300";
+				else if("3000".equals(salesOrg))
+					return "X200";
+				return salesOrg;
 			}
 
 			public String getDistrChan() {
-				return SapProperties.getDistrChan();
+				String distChannel=order.getDistributionChannel();
+				if("1000".equals(distChannel))
+					return "01";
+				else if("2000".equals(distChannel))
+					return "02";
+				else if("3000".equals(distChannel))
+					return "03";
+				return distChannel;
 			}
 
 			public String getDivision() {

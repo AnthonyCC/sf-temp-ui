@@ -22,6 +22,7 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspTableSorter;
 
+@Deprecated
 public class GetAllPromotionsTag extends AbstractGetterTag {
 
 	protected Object getResult() throws Exception {

@@ -60,6 +60,9 @@ public class CmsFilteringNavigator {
 	//search query param
 	private String searchParams = null;
 	
+	//used in masquerade mode
+	private String listSearchParams = null;
+		
 	private String activeTab = "product";
 	
 	private FilteringFlowType pageType = null;
@@ -141,6 +144,10 @@ public class CmsFilteringNavigator {
 					} else if("searchParams".equalsIgnoreCase(param)) {
 						
 						cmsFilteringNavigator.setSearchParams(paramValue);
+						
+					} else if("listSearchParams".equalsIgnoreCase(param)) {
+						
+						cmsFilteringNavigator.setListSearchParams(paramValue);
 						
 					} else if("ppPreviewId".equalsIgnoreCase(param)) {
 						
@@ -234,7 +241,12 @@ public class CmsFilteringNavigator {
 				break;
 			case SEARCH:
 				queryString.append("searchParams=").append(searchParams);
+				if (listSearchParams!=null){
+					queryString.append("&").append("listSearchParams=").append(listSearchParams);
+				}
 				queryString.append("&");
+				break;
+			default:
 				break;
 		}
 		if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
@@ -434,5 +446,13 @@ public class CmsFilteringNavigator {
 
 	public void setPpPreviewId(String ppPreviewId) {
 		this.ppPreviewId = ppPreviewId;
+	}
+
+	public String getListSearchParams() {
+		return listSearchParams;
+	}
+
+	public void setListSearchParams(String listSearchParams) {
+		this.listSearchParams = listSearchParams;
 	}
 }

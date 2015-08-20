@@ -12,9 +12,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
-<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
-<style type="text/css">
-</style>
 <logic:present name="reservations">
 <table width="100%" cellpadding="0" cellspacing="0 border="0" bgcolor="#FFFFFF"> 
 	<tr>

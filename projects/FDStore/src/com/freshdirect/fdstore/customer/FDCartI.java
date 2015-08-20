@@ -8,9 +8,11 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
@@ -82,6 +84,10 @@ public interface FDCartI extends java.io.Serializable {
 	
 	public double getDepositValue();
 
+	public double getTip();
+	
+	public void setTip(double tip);
+
 	/**
 	 * @return total price of order in USD, with promotions, taxes, etc
 	 */
@@ -145,5 +151,9 @@ public interface FDCartI extends java.io.Serializable {
 	public List<DlvPassAvailabilityInfo> getUnavailablePasses();
 
 	public void refreshAll(boolean b) throws FDResourceException, FDInvalidConfigurationException;
+	public EnumEStoreId getEStoreId();
+
+	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo();
+	
 
 }

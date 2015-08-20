@@ -2,16 +2,23 @@ package com.freshdirect.dataloader.sap.jco.server;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.mail.MessagingException;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.dataloader.response.FDJcoServerNotification;
+import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
@@ -55,6 +62,8 @@ public abstract class FdSapServer
 	static MyTIDHandler myTIDHandler = null;
 		
 	private String programId;
+	
+	protected JCoTable materialErrorTable;
 	
 	/**
 	 * Convenience method to output the attributes of a function
@@ -172,11 +181,12 @@ public abstract class FdSapServer
 		if (repository instanceof JCoCustomRepository)
 		{
 			final String repDest = server.getRepositoryDestination();
-			LOG.debug("Repository destination for Server: "+ getServerName() +" , destination: "+ repDest);
 			if (repDest != null)
-			{
+			{				
 				try
 				{
+					LOG.debug("Repository destination for Server: "+ getServerName() +" , destination: "+ repDest);
+					
 					((JCoCustomRepository) repository).setDestination(JCoDestinationManager.getDestination(repDest));
 
 				}
@@ -637,6 +647,71 @@ public abstract class FdSapServer
 			}
 		}
 		return paddedStr;
+	}
+	
+	/**
+	 * @param matNo
+	 * @param result
+	 * @param errorMessage
+	 */
+	public void populateResponseRecord(final FDJcoServerResult result, final String matNo, final String errorMessage)
+	{
+		if (matNo != null && result != null)
+		{
+			materialErrorTable.appendRow();
+			materialErrorTable.setValue("MATNR", matNo);
+			materialErrorTable.setValue("ERROR", errorMessage);
+		}
+		
+		if(result != null)
+		{
+			result.addError(matNo, errorMessage);
+		}
+	}
+	
+	/**
+	 * @param result
+	 * @param exportName 
+	 * @param batchNumber 
+	 */
+	public void emailFailureReport(FDJcoServerResult result, String exportName, String batchNumber)
+	{
+		try
+		{
+			if (result.getError() != null && result.getError().getMessages() != null && result.getError().getMessages().size() > 0)
+			{
+				Date currentDate = new Date();
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy 'at' hh:mm:ss a zzz");
+				String subject = exportName + " export for the delivery date " + dateFormatter.format(currentDate);
+
+				StringBuffer buf = new StringBuffer();
+				String br = "\n";
+				
+				buf.append(exportName + " export report for ").append(dateFormatter.format(currentDate));
+				if(batchNumber != null)
+				{
+					buf.append(", batch "+ batchNumber);
+				}
+				buf.append(br);
+				buf.append(br);
+				buf.append("Material No.").append("\t\t\t").append("Error Message").append(br);
+				buf.append("----------------------------------------------------------------------------------").append(br);
+				
+				FDJcoServerNotification error = result.getError();
+				for (Map.Entry<String, String> errorEntry : error.getMessages().entrySet())
+				{
+					buf.append(errorEntry.getKey()).append("\t\t\t").append(errorEntry.getValue()).append(br);
+				}
+
+				ErpMailSender mailer = new ErpMailSender();
+				mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(), ErpServicesProperties.getCronFailureMailTo(), "",
+						subject, buf.toString(), true, "");
+			}
+		}
+		catch (MessagingException e)
+		{
+			LOG.warn("Error sending report email: ", e);
+		}
 	}
 
 	/**

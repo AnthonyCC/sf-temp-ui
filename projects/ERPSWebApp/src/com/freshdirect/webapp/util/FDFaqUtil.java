@@ -41,7 +41,7 @@ public class FDFaqUtil {
 	public static String getFaqHomeId() {
 		ContentKey storeKey = CmsManager.getInstance().getSingleStoreKey();
 
-		return storeKey != null && EnumEStoreId.FDX.getContentKey().equalsIgnoreCase( storeKey.getId() )
+		return storeKey != null && EnumEStoreId.FDX.getContentId().equalsIgnoreCase( storeKey.getId() )
 				? FAQ_HOME_FDX
 				: FAQ_HOME_FD;
 	}

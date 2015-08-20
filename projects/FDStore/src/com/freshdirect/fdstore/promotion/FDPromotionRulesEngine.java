@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.promotion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,18 +20,17 @@ public class FDPromotionRulesEngine implements Serializable {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionRulesEngine.class);
 	
-	public static List getEligiblePromotions(PromotionContextI ctx) {
-		Map firedRules = getRulesEngine().evaluateRules(ctx);
+	public static List<String> getEligiblePromotions(PromotionContextI ctx) {
+		Map<String, Rule> firedRules = getRulesEngine().evaluateRules(ctx);
 		
 		if(firedRules.isEmpty()) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		
-		List promoCodes = new ArrayList();
-		for(Iterator i = firedRules.values().iterator(); i.hasNext(); ){
-			Rule r = (Rule) i.next();
+		List<String> promoCodes = new ArrayList<String>();
+		for (Rule r : firedRules.values()) {
 			if(r.validate()) {
-				promoCodes.add(r.getOutcome());
+				promoCodes.add((String) r.getOutcome());
 			}
 		}
 		

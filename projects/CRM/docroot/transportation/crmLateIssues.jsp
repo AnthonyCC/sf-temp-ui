@@ -231,7 +231,7 @@ String successPage = "/transportation/crmLateIssues.jsp?lateLog=true&dlvDate="+f
 				  	    <select name="frmReportedBy_<%=i%>">
 				  	    	<option value="">Select one</option>
 				  			<option <%=  "driver".equalsIgnoreCase(frmReportedBy) ? "selected" : "" %> value="Driver">Driver</option>
-				  			<option <%="customer".equalsIgnoreCase(frmReportedBy) ? "selected" : "" %> value="Customer">Customer</option
+				  			<option <%="customer".equalsIgnoreCase(frmReportedBy) ? "selected" : "" %> value="Customer">Customer</option>
 				  		</select> 	<b>At:</b>
 				  	 <input type="text" name="frmReportedAt_<%=i%>"   onKeypress="javascript:alert('please use button');return false;" id="frmReportedAt_<%=i%>" size="18" value="<%=frmReportedAt%>">
 				  	 <button id="trigger_<%=i%>" style="font-size: 9px;">Select Time</button></td>

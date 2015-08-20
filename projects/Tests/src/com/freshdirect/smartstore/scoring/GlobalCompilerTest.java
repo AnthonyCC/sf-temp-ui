@@ -114,7 +114,7 @@ public class GlobalCompilerTest extends TestCase {
     
     
     public void testRecommenderService() throws CompileException {
-        SessionInput s = new SessionInput("", null, null);
+        SessionInput s = new SessionInput("", null, null, null);
         s.setNoShuffle(true);
         
         {

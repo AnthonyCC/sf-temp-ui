@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -32,6 +33,7 @@ import com.freshdirect.mobileapi.controller.data.response.WhatsGoodCategories;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.model.PairItProductModel;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SalesUnit;
@@ -77,6 +79,8 @@ public class ProductController extends BaseController {
     private static final String PRODUCT_MORE_INFO_TEMPLATE = "product-more-info";
     
     public static final String GET_REALTED_PRODUCTS_ACTION = "getrelatedproducts";
+    
+    public static final String GET_RECOMMENDED_PRODUCTS_ACTION = "recommended";
 
     @Override
     protected boolean validateUser() {
@@ -105,7 +109,9 @@ public class ProductController extends BaseController {
                 model = getWhatsGoodProducts(model, request, response, user, categoryId);
             } else if (GET_REALTED_PRODUCTS_ACTION.equals(action)) {
                 model = getRelatedProducts(model, request, response, user);
-            } else {
+            } else if(GET_RECOMMENDED_PRODUCTS_ACTION.equals(action)){
+            	model = getRecommendedProducts(model, request, response, user);
+            }else {
                 model = getProduct(model, request, response, user);
             }
         } catch (ModelException e) {
@@ -115,7 +121,32 @@ public class ProductController extends BaseController {
         return model;
     }
 
-    private ModelAndView getRelatedProducts(ModelAndView model,
+    private ModelAndView getRecommendedProducts(ModelAndView model,
+			HttpServletRequest request, HttpServletResponse response,
+			SessionUser user) throws JsonException {
+    	 String categoryId = request.getParameter("categoryId");
+         String productId = request.getParameter("productId");
+         com.freshdirect.mobileapi.controller.data.PairItProductModel result = new com.freshdirect.mobileapi.controller.data.PairItProductModel();
+         ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
+         if (product == null) {
+             product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + productId));
+         }
+         if(product!=null){
+        	 com.freshdirect.mobileapi.model.PairItProductModel p = new PairItProductModel();
+        	 p.setCompleteMeal(product);
+        	 if(p.getPairItProductIds()!=null && p.getPairItProductIds().size() > 0) {
+        	 result.setPairItProductIds(p.getPairItProductIds());
+        	 } else {
+        		 result.addDebugMessage("No pair it product is available for this product");
+        	 }
+         } else {
+        	 result.addDebugMessage("Requested product not available");
+         }
+          setResponseMessage(model, result, user);
+		return model;
+	}
+
+	private ModelAndView getRelatedProducts(ModelAndView model,
             HttpServletRequest request, HttpServletResponse response,
             SessionUser user) throws JsonException {
         String categoryId = request.getParameter("categoryId");

@@ -688,3 +688,5 @@ table.promo_table1 tr.flatRow td {
 .calendar tr.time, .calendar td.time {
 	float: none;
 }
+
+.promo_filter { max-width: 150px; }

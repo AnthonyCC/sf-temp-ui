@@ -108,8 +108,9 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
     if (!abstractTimeslots)
 	    successPage = "/checkout/step_2_check.jsp?successPage="+URLEncoder.encode(successPage);
 
+    boolean forceOrder = user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable() && Boolean.parseBoolean(request.getParameter("forceorder"));
 %>
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" timeSlotContext="<%=timeSlotCtx %>" >
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" timeSlotContext="<%=timeSlotCtx %>" forceOrder="<%= forceOrder %>">
 
 <%	
 

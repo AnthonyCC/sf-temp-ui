@@ -35,13 +35,15 @@ public class SearchResultsUtil {
 		
 		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
 		CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(nav.getId());
-		boolean isPpPreview = (null == category.getProductPromotionType() || null == nav.getPpPreviewId()) ? false : true;
-	
-		if(!isPpPreview){
-			promotionProducts = category.getProducts();
-		}else{
-			promotionProducts = category.getPromotionPageProductsForPreview(nav.getPpPreviewId());
-		}
+		
+		boolean isPpPreview = (category==null ||null == category.getProductPromotionType() || null == nav.getPpPreviewId()) ? false : true;
+	    if(category!=null) {
+			if(!isPpPreview){
+				promotionProducts = category.getProducts();
+			}else{
+				promotionProducts = category.getPromotionPageProductsForPreview(nav.getPpPreviewId());
+			}
+	    }
 		
 		List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
 		
@@ -134,7 +136,7 @@ public class SearchResultsUtil {
 					ProductImpression pi = null;
 					ProductModelPromotionAdapter productModelAdapter = null;
 					if ( contentNode instanceof ProductModel ) {
-						ProductModel pricedProdModel = new ProductModelPricingAdapter( (ProductModel)contentNode, user.getPricingContext() );
+						ProductModel pricedProdModel = new ProductModelPricingAdapter( (ProductModel)contentNode );
 						pi = confStrat.configure(pricedProdModel, confContext);
 						// TODO: "013" is the 'new' ribbon, hardcoded here
 						ddppProducts.add(new ProductModelPromotionAdapter (pi.getProductModel(), true, "013", pi.getSku().getSkuCode()));			

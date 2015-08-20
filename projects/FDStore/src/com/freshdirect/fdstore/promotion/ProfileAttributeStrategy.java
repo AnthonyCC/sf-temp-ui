@@ -21,6 +21,7 @@ public class ProfileAttributeStrategy implements PromotionStrategyI {
 		return this.desiredValue;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 
 		if (attributeName == null) {
@@ -34,6 +35,7 @@ public class ProfileAttributeStrategy implements PromotionStrategyI {
 		return DENY;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 1000;
 	}
@@ -42,4 +44,8 @@ public class ProfileAttributeStrategy implements PromotionStrategyI {
 		return "ProfileAttributeStrategy[...]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

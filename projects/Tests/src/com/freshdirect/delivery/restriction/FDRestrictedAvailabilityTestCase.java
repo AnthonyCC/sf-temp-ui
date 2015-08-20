@@ -65,7 +65,7 @@ public class FDRestrictedAvailabilityTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDStockAvailability inventory = new FDStockAvailability(erpInv, 30, 1, 1,null);
+		FDStockAvailability inventory = new FDStockAvailability(erpInv, 30, 1, 1);
 
 		this.ri = new FDRestrictedAvailability(inventory, restrictionList);
 	}

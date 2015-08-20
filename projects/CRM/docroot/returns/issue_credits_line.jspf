@@ -5,8 +5,6 @@
 <%@ page import="com.freshdirect.customer.ErpComplaintLineModel"%>
 <%@ page import="com.freshdirect.customer.ErpComplaintReason" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
@@ -62,9 +60,12 @@ String [] _is_form_amount = request.getParameterValues("ol_credit_amount");
 boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].length() > 0 && !"0".equalsIgnoreCase(_is_form_returnQty[_is_index]);
 
 
-
-        if ( _is_lastdept == null || !_is_lastdept.equalsIgnoreCase( _is_orderline.getDepartmentDesc() ) ) {
-            _is_lastdept = _is_orderline.getDepartmentDesc();
+		String ___curDeptDesc =  _is_orderline.getDepartmentDesc();
+		if (___curDeptDesc.startsWith("Recipe:")) {  // get the dept of the primary home of this item
+			___curDeptDesc = "Recipes";
+		}
+        if ( _is_lastdept == null || !_is_lastdept.equalsIgnoreCase( ___curDeptDesc ) ) {
+            _is_lastdept = ___curDeptDesc;
 
 
 %>
@@ -100,14 +101,6 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         }
 
 		String deptDesc=_is_lastdept;
-		if (_is_lastdept.startsWith("Recipe:")) {  // get the dept of the primary home of this item
-			ProductModel prodModl = ContentFactory.getInstance().getProduct(_is_orderline.getSku().getSkuCode());
-			if (prodModl!=null){
-				if (prodModl.getPrimaryHome()!=null) {
-					deptDesc=prodModl.getPrimaryHome().getDepartment().getFullName();
-				}
-			}
-		}
 
 		// random generated id
         String rid = Long.toHexString( 1000000000+Math.round(1000000000*Math.random()) );

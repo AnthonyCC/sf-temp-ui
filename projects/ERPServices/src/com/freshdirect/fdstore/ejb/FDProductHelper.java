@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -20,6 +22,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.AttributeComparator;
@@ -45,19 +48,25 @@ import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
-import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDNutritionCache;
+import com.freshdirect.fdstore.FDNutritionPanelCache;
+import com.freshdirect.fdstore.FDPlantMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -65,11 +74,11 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
-import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDProductHelper {
@@ -82,42 +91,42 @@ public class FDProductHelper {
 	private transient ErpGrpInfoHome grpHome = null;
 	private transient ErpProductFamilyHome erpProductFamilyHome = null;
 
-	public FDProduct getFDProduct(ErpProductModel product) throws FDResourceException {
+	public FDProduct getFDProduct(ErpMaterialModel material) throws FDResourceException {
 		// debug
-		if (DEBUG) LOGGER.debug( new DebugVisitor(product) );
+		if (DEBUG) LOGGER.debug( new DebugVisitor(material) );
 
 		// load attributes for tree
-		this.bindAttributes( product );
+		this.bindAttributes( material );
 
 		// construct sales units
-		FDSalesUnit[] salesUnits = this.getSalesUnits(product.getSalesUnits());
+		FDSalesUnit[] salesUnits = this.getSalesUnits(material.getSalesUnits());
 
 		// construct variations
-		FDVariation[] variations = this.getVariations(product.getCharacteristics());
+		FDVariation[] variations = this.getVariations(material.getCharacteristics());
 		
 		
 		
 		// build Pricing object
-		Pricing pricing = this.getPricing(product.getProxiedMaterial());
+		Pricing pricing = this.getPricing(material);
 		
 		// get version
-		int version = ((VersionedPrimaryKey)product.getPK()).getVersion();
+		int version = ((VersionedPrimaryKey)material.getPK()).getVersion();
 		
 		// get attributes for material
-		AttributesI attribs = new AttributeCollection(product.getProxiedMaterial().getAttributes());
+		AttributesI attribs = new AttributeCollection(material.getAttributes());
 		
 		// get nutrition information
-		ErpNutritionModel nutrModel = FDNutritionCache.getInstance().getNutrition(product.getSkuCode());
+		ErpNutritionModel nutrModel = FDNutritionCache.getInstance().getNutrition(material.getSkuCode());
 
 		// construct display sales units
-		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(product.getDisplaySalesUnits());
+		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(material.getDisplaySalesUnits());
 		
 		// get nutrition panel information
-		NutritionPanel nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel(product.getSkuCode());
+		NutritionPanel nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel(material.getSkuCode());
 
 		// create FDMaterial
-		ErpMaterialModel material = product.getProxiedMaterial();
-		FDMaterial fdMaterial =
+//		ErpMaterialModel material = product.getProxiedMaterial();
+/*		FDMaterial fdMaterial =
 			new FDMaterial(
 				attribs,
 				material.getSapId(),
@@ -129,7 +138,20 @@ public class FDProductHelper {
 				material.isKosherProduction(),
 				material.isPlatter(),
 				material.getBlockedDays(),
-				material.getLeadTime());
+				material.getLeadTime());*/
+		
+		FDMaterial fdMaterial =
+				new FDMaterial(
+					attribs,
+					material.getSapId(),
+					material.getSalesUnitCharacteristic(),
+					material.getQuantityCharacteristic(),
+					material.getAlcoholicContent(),
+					material.isTaxable(),material.getSkuCode());
+		 Map<String, FDPlantMaterial> plantMaterialMap = getMaterialPlants( material.getMaterialPlants());
+		fdMaterial.setMaterialPlants(plantMaterialMap);
+		Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreaMap = getMaterialSalesAreas(material.getMaterialSalesAreas());
+		fdMaterial.setMaterialSalesAreas(materialSalesAreaMap);
 		
 		// Construct FDNutrition from ErpNutritionModel.value map
 		ArrayList<FDNutrition> nutrition = new ArrayList<FDNutrition>();
@@ -140,9 +162,56 @@ public class FDProductHelper {
 		}
 
 		// construct FDProduct
-		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, nutritionPanel,product.getUpc());
+		return new FDProduct(material.getSkuCode(), version, null, fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits, nutritionPanel,material.getUPC());
+	}
+
+	private Map<String, FDPlantMaterial>  getMaterialPlants(List<ErpPlantMaterialModel> erpPlantMaterialList) {		
+		FDPlantMaterial plantMaterial = null;//new ArrayList<FDPlantMaterial>();
+		Map<String, FDPlantMaterial> plantMaterialMap = new HashMap<String, FDPlantMaterial>();
+		if(null !=erpPlantMaterialList)
+		for (Iterator iterator = erpPlantMaterialList.iterator(); iterator.hasNext();) {
+			ErpPlantMaterialModel plantMaterialModel = (ErpPlantMaterialModel) iterator.next();
+			plantMaterial =plantMaterialMap.get(plantMaterialModel.getPlantId());
+			if(null == plantMaterial){
+				plantMaterial = new FDPlantMaterial(plantMaterialModel.getAtpRule(), plantMaterialModel.isKosherProduction(), plantMaterialModel.isPlatter(), plantMaterialModel.getBlockedDays(), plantMaterialModel.getLeadTime(), plantMaterialModel.getPlantId());	
+				plantMaterialMap.put(plantMaterialModel.getPlantId(),plantMaterial);			
+			}
+		}
+		return plantMaterialMap;
 	}
 	
+	private Map<SalesAreaInfo, FDMaterialSalesArea>  getMaterialSalesAreas(List<ErpMaterialSalesAreaModel> erpMaterialSalesAreaList) {		
+		FDMaterialSalesArea materialSalesArea = null;//new ArrayList<FDPlantMaterial>();
+		Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreaMap = new HashMap<SalesAreaInfo, FDMaterialSalesArea>();
+		if(null !=erpMaterialSalesAreaList)
+		for (Iterator iterator = erpMaterialSalesAreaList.iterator(); iterator.hasNext();) {
+			ErpMaterialSalesAreaModel materialSalesAreaModel = (ErpMaterialSalesAreaModel) iterator.next();
+			SalesAreaInfo salesAreaInfo =new SalesAreaInfo(materialSalesAreaModel.getSalesOrg(), materialSalesAreaModel.getDistChannel());
+			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
+			if(null == materialSalesArea){
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason());
+				materialSalesAreaMap.put(salesAreaInfo,materialSalesArea);
+			}						
+		}
+		return materialSalesAreaMap;
+	}
+	
+	private Map<String, FDMaterialSalesArea>  getMaterialSalesAreas(ErpMaterialSalesAreaInfo[] salesAreas) {		
+		FDMaterialSalesArea materialSalesArea = null;//new ArrayList<FDPlantMaterial>();
+		Map<String, FDMaterialSalesArea> materialSalesAreaMap = new HashMap<String, FDMaterialSalesArea>();
+		if(null !=salesAreas)
+		for (int i=0;i<salesAreas.length;i++) {
+			ErpMaterialSalesAreaInfo materialSalesAreaModel = salesAreas[i];
+			SalesAreaInfo salesAreaInfo =materialSalesAreaModel.getSalesAreaInfo();
+			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
+			if(null == materialSalesArea){
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason());
+				materialSalesAreaMap.put(new String(salesAreaInfo.getSalesOrg()+salesAreaInfo.getDistChannel()).intern(),materialSalesArea);
+			}						
+		}
+		return materialSalesAreaMap;
+	}
+	/*
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {
 		
 		String s = erpProductInfo.getUnavailabilityStatus();
@@ -253,7 +322,78 @@ public class FDProductHelper {
 					erpProductInfo.getUpc(), availDates,familyId);
 	
 	}
+	*/
+	public FDProductInfo getFDProductInfoNew(ErpProductInfoModel erpProductInfo) throws FDResourceException {
+		
+		List<ErpMaterialPrice> matPrices = Arrays.asList(erpProductInfo.getMaterialPrices());
+		Collections.sort(matPrices, PricingFactory.ERP_MAT_PRICE_COMPARATOR);
+		ErpPlantMaterialInfo[] matPlants = erpProductInfo.getMaterialPlants();
+		Map<String, FDMaterialSalesArea> materialSalesAreaMap = getMaterialSalesAreas(erpProductInfo.getSalesAreas());
+		
+		List<FDPlantMaterial> fdPlantMaterials = new ArrayList<FDPlantMaterial>();
+		for (ErpPlantMaterialInfo erpPlantMaterialInfo : matPlants) {
+			EnumAvailabilityStatus status = null;
+			FDPlantMaterial plantMaterial = new FDPlantMaterial(erpPlantMaterialInfo.getAtpRule(), erpPlantMaterialInfo.isKosherProduction(), erpPlantMaterialInfo.isPlatter(), erpPlantMaterialInfo.getBlockedDays(), erpPlantMaterialInfo.getLeadTime(), erpPlantMaterialInfo.getPlantId()
+					,erpPlantMaterialInfo.getFreshness(),EnumOrderLineRating.getEnumByStatusCode(erpPlantMaterialInfo.getRating()),EnumSustainabilityRating.getEnumByStatusCode(erpPlantMaterialInfo.getSustainabilityRating()));
+			
+			fdPlantMaterials.add(plantMaterial);
+			
+		}
+		
+		ZonePriceInfoListing zonePriceInfoList = new ZonePriceInfoListing();
+			ZoneInfo pricingZone=null;
+			ZoneInfo mpPricingZone=null;
+			List<ErpMaterialPrice> subList = new ArrayList<ErpMaterialPrice>();
+			for(Iterator<ErpMaterialPrice> it = matPrices.iterator() ; it.hasNext();){
+				ErpMaterialPrice matPrice = it.next();
+				mpPricingZone=new ZoneInfo(matPrice.getSapZoneId(),"1000".equals(matPrice.getSalesOrg())?"0001":matPrice.getSalesOrg(), "1000".equals(matPrice.getDistChannel())?"01":matPrice.getDistChannel());
+				if(pricingZone==null ||pricingZone.equals(mpPricingZone)) {
+					subList.add(matPrice);
+				}
+				else if(!pricingZone.equals(mpPricingZone)) {
+					ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, pricingZone);
+					zonePriceInfoList.addZonePriceInfo(pricingZone, zpInfoModel);
+					subList.clear();
+					subList.add(matPrice);
+				}
+				pricingZone = mpPricingZone;
+			}
+			//Do the same for the last zone in the list.
+			ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, pricingZone);
+			zonePriceInfoList.addZonePriceInfo(pricingZone, zpInfoModel);
+			subList.clear();
+//		}
+		//Get Group Identify if applicable.
+			 Map<String,FDGroup> groups = null;
+		if(FDStoreProperties.isGroupScaleEnabled()) {//otherwise group will not be associated with the product.
+			ErpGrpInfoSB remote;
+			try {
+				if (this.grpHome ==null) {
+					this.lookupGroupPriceHome();
+				}
+				remote = this.grpHome.create();
+				groups = remote.getGroupIdentityForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} catch (CreateException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			}					
+		}
+		
+		return new FDProductInfo(
+			erpProductInfo.getSkuCode(),
+			erpProductInfo.getVersion(),
+			erpProductInfo.getMaterialSapIds(),
+			null,
+			groups,
+			erpProductInfo.getUpc(),
+			fdPlantMaterials,
+			zonePriceInfoList,
+			materialSalesAreaMap);
 	
+	}
 	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {
 	        public int compare(ErpMaterialPrice price1, ErpMaterialPrice price2) {
 	            if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
@@ -262,7 +402,7 @@ public class FDProductHelper {
 	        }
 	    };
 
-	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List<ErpMaterialPrice> matPriceList, String sapZoneId) {
+	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List<ErpMaterialPrice> matPriceList, ZoneInfo pricingZone) {
 		double defaultPrice=0.0;
 		String defaultPriceUnit = "";
 		double promoPrice = 0.0;
@@ -287,7 +427,7 @@ public class FDProductHelper {
 				}else if(basePrice.getPrice() >=nextPrice.getPrice()){
 					newSubList.add(nextPrice);
 				}else{
-					LOGGER.debug("scale price is less then promo price :"+sapZoneId);
+					LOGGER.debug("scale price is less then promo price :"+pricingZone);
 				}
 				
 				if(nextPrice.getPrice()<=basePrice.getPrice()){
@@ -347,7 +487,7 @@ public class FDProductHelper {
 				itemOnSale, 
 				dealsPercentage, 
 				tieredDeal, 
-				sapZoneId,
+				pricingZone,
 				isShowBurstImage
 				);
 	}
@@ -366,6 +506,19 @@ public class FDProductHelper {
 		}
 	}
 	
+	protected void bindAttributes(ErpMaterialModel material) {
+		
+		GetRootNodesErpVisitor rootNodesVisitor = new GetRootNodesErpVisitor(material);
+		String[] rootIds = rootNodesVisitor.getRootIds();
+		if (rootIds.length!=0) {
+			
+			FlatAttributeCollection attrz = FDAttributeCache.getInstance().getAttributes(rootIds);
+			
+			material.accept( new SetAttributesErpVisitor(attrz) );
+		} else {
+			material.accept( new SetAttributesErpVisitor(new FlatAttributeCollection()) );
+		}
+	}
 	protected ErpNutritionModel getNutrition(ErpProductModel product) throws FDResourceException {
 		if (this.nutritionHome==null) {
 			this.lookupNutritionHome();

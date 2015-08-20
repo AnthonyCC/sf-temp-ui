@@ -5,8 +5,18 @@ public class VariationOption {
     private String name;
 
     private String description;
+    
+    private String productId;
 
-    /** Chararcteristic value description */
+    public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	/** Chararcteristic value description */
     private String cvp;
 
     public String getName() {

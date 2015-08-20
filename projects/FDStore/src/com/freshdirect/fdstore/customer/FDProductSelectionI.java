@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -223,9 +223,9 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	 */
 	public void setOriginatingProductId(String originatingProductId);
 
-	public PricingContext getPricingContext();
+	public UserContext getUserContext();
 
-	public void setPricingContext(PricingContext pCtx);
+	public void setUserContext(UserContext uCtx);
 
 	
 	public void setFDGroup(FDGroup group);
@@ -299,4 +299,7 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public boolean isWine();
 	
 	public boolean isBeer();
-}
+	
+	public Double getScaleQuantity();	
+	
+	public void setScaleQuantity(Double scaleQuantity);}

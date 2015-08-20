@@ -38,7 +38,7 @@ public class ProductItemSorterFactory {
 		initAvailName(SortStrategyType.EXPERT_RATING, 				new ExpertRatingComparator());
 		initAvailName(SortStrategyType.PRICE, 						new PriceComparator());
 		initAvailName(SortStrategyType.SALE, 						new SaleComparator());
-		initAvailName(SortStrategyType.SUSTAINABILITY_RATING, 		new SustainabilityRatingComparator());
+		//initAvailName(SortStrategyType.SUSTAINABILITY_RATING, 		new SustainabilityRatingComparator()); //::FDX::
 		initAvailName(SortStrategyType.DEPARTMENT, 					new PrimaryDepartmentComparator());
 		initAvailName(SortStrategyType.E_COUPON_POPULARITY, 		adapterForProductModel(FilteringComparatorUtil.COUPON_POPULARITY_COMPARATOR));
 		initAvailName(SortStrategyType.E_COUPON_START_DATE, 		adapterForProductModel(FilteringComparatorUtil.COUPON_START_DATE_COMPARATOR));

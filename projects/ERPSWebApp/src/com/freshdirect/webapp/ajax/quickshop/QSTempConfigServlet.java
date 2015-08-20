@@ -65,7 +65,7 @@ public class QSTempConfigServlet extends BaseJsonServlet {
     		}
     		FDConfiguration config = new FDConfiguration(Double.parseDouble(source.getQuantity()), source.getSalesUnit(), source.getConfiguration());
     		
-        	FDProductSelection mockSelection = new FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()), pm, config, pm.getPricingContext().getZoneId());
+        	FDProductSelection mockSelection = new FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()), pm, config, pm.getUserContext());
         	mockSelection.setCustomerListLineId(source.getLineId());
         	mockSelection.setOrderLineId(source.getLineId());
         	

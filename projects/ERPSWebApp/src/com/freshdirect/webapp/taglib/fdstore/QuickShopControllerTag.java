@@ -93,7 +93,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				|| ((this.orderId != null) && (quickCart != null) && !this.orderId.equalsIgnoreCase(quickCart.getOrderId()))) {
 
 				quickCart = new QuickCart();
-				quickCart.setUserZoneId(user.getPricingZoneId());
+				quickCart.setUserContext(user.getUserContext());
 				quickCart.setOrderId(this.orderId);
 				quickCart.setProductType(QuickCart.PRODUCT_TYPE_PRD);
 				
@@ -150,7 +150,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 						// FIX
 						quickCart.setProductType(QuickCart.PRODUCT_TYPE_CCL);
 						quickCart.setDeliveryDate(new Date());
-						quickCart.setUserZoneId(user.getPricingZoneId());
+						quickCart.setUserContext(user.getUserContext());
 						quickCart.setName(FDListManager.getListName(user.getIdentity(), ccListId));
 
 						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);
@@ -221,7 +221,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				quickCart.setProductType(QuickCart.PRODUCT_TYPE_STARTER_LIST);
 				quickCart.clearProducts();
 				quickCart.setDeliveryDate(new Date());
-                quickCart.setUserZoneId(user.getPricingZoneId());
+                quickCart.setUserContext(user.getUserContext());
 				StarterList sList = (StarterList)ContentFactory.getInstance().getContentNode(this.starterListId);
 				for(Iterator i = sList.getListContents().iterator(); i.hasNext(); ) {
 					try {
@@ -236,7 +236,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					    FDProductInfo prodInfo = FDCachedFactory.getProductInfo(product.getSkuCode());
 					
 					    FDProductSelection productSelection =
-					    	new FDProductSelection(prodInfo,product,product.getConfiguration(), user.getPricingZoneId());
+					    	new FDProductSelection(prodInfo,product,product.getConfiguration(), user.getUserContext());
 
 					    OrderLineUtil.describe(productSelection);
 					    quickCart.addProduct(productSelection);

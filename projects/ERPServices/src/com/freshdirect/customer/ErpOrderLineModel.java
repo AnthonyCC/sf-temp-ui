@@ -6,9 +6,10 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -86,7 +87,16 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private ExternalAgency externalAgency; //e.g. Foodily
 	private String externalSource; //e.g. Recipe source
 	private String externalGroup; //e.g. Recipe name
+	
+	private String salesOrg;
+	private String distChannel;
+	private EnumEStoreId eStoreId; //TODO:Create an EnumType for eStores.
+	
+	private String plantID;
     
+	
+	private Double scaleQuantity;
+	
     public FDGroup getFDGroup() {
 		return group;
 	}
@@ -144,7 +154,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String savingsId;
     
     //Added for Zone Pricing
-    private PricingContext pricingCtx;
+    private UserContext userCtx;
     private String pricingZoneId;
     
     private List<ErpClientCode> clientCodes = new ArrayList<ErpClientCode>();
@@ -346,12 +356,12 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     	return price;
     }
 
-	public PricingContext getPricingContext() {
-		return pricingCtx;
+	public UserContext getUserContext() {
+		return userCtx;
 	}
 
-	public void setPricingContext(PricingContext pricingCtx) {
-		this.pricingCtx = pricingCtx;
+	public void setUserContext(UserContext userCtx) {
+		this.userCtx = userCtx;
 	}
 	
 	public String getPricingZoneId() {
@@ -492,6 +502,60 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setBeer(boolean beer) {
 		this.beer = beer;
 	}
+	/**
+	 * @return the salesOrg
+	 */
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	/**
+	 * @param salesOrg the salesOrg to set
+	 */
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	/**
+	 * @return the distChannel
+	 */
+	public String getDistChannel() {
+		return distChannel;
+	}
+
+	/**
+	 * @param distChannel the distChannel to set
+	 */
+	public void setDistChannel(String distChannel) {
+		this.distChannel = distChannel;
+	}
+
+	public void setEStoreId(EnumEStoreId eStore) {
+		this.eStoreId=eStore;
+	}
+	
+	public EnumEStoreId getEStoreId() {
+		return this.eStoreId;
+	}
+	
+	public String getPlantID() {
+		return plantID;
+	}
+
+	
+	public void setPlantID(String plantID) {
+		this.plantID = plantID;
+	}
+
+	public Double getScaleQuantity() {
+		return scaleQuantity;
+	}
+
+	public void setScaleQuantity(Double scaleQuantity) {
+		this.scaleQuantity = scaleQuantity;
+	}
+
+	
 }
 	
 

@@ -38,7 +38,7 @@ public class CachingCompilerTest extends TestCase {
         compiler.setCaching(true);
         compiler.setGlobalVariables(Collections.singleton("globalfact"));
 
-        input = new SessionInput("12345", null, null);
+        input = new SessionInput("12345", null, null, null);
         input.setNoShuffle(true);
         input.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {
@@ -48,7 +48,7 @@ public class CachingCompilerTest extends TestCase {
             input.setExplicitList(explicitList);
         }
 
-        input2 = new SessionInput("12345", null, null);
+        input2 = new SessionInput("12345", null, null, null);
         input2.setNoShuffle(true);
         input2.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {

@@ -160,9 +160,9 @@ public class AddressModel extends ModelSupport implements AddressI {
 	 * Check match on address1, address2, apt, city, state, zipcode.
 	 */
 	public boolean isSameLocation(BasicAddressI address) {
-		return this.getAddress1().equalsIgnoreCase(address.getAddress1())
-			&& this.getCity().equalsIgnoreCase(address.getCity())
-			&& this.getState().equalsIgnoreCase(address.getState())
+		return NVL.apply(this.getAddress1(),"").equalsIgnoreCase(address.getAddress1())
+			&& NVL.apply(this.getCity(),"").equalsIgnoreCase(address.getCity())
+			&& NVL.apply(this.getState(),"").equalsIgnoreCase(address.getState())
 			&& this.getZipCode().equalsIgnoreCase(address.getZipCode())
 			&& NVL.apply(this.getAddress2(), "").equalsIgnoreCase(NVL.apply(address.getAddress2(), ""))
 			&& NVL.apply(this.getApartment(), "").equalsIgnoreCase(NVL.apply(address.getApartment(), ""));

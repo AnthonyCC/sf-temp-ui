@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -363,7 +364,8 @@ public class CartOperations {
 					if ( deltaQty > 0 ) {
 	
 						FDCartLineI newLine = cartLine.createCopy();
-						newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );					
+//						newLine.setPricingContext( new PricingContext( user.getPricingZoneId() ) );
+						newLine.setUserContext(user.getUserContext() );
 						newLine.setQuantity( deltaQty );
 						
 						try {
@@ -769,7 +771,7 @@ public class CartOperations {
 		//									MAIN PROCESSING
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		FDCartLineI theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, pricingZoneId, null, item.getConfiguration());
+		FDCartLineI theCartLine = processSimple(prodNode, product, quantity, salesUnit, null, variantId, user.getUserContext(), null, item.getConfiguration());
 		
 		if ( theCartLine == null ) {
 			responseItem.setStatus( Status.ERROR );
@@ -872,7 +874,7 @@ public class CartOperations {
 	 * @param varMap
 	 * @return
 	 */
-	private static FDCartLineI processSimple(ProductModel prodNode,FDProduct product, double quantity, FDSalesUnit salesUnit,	String origCartLineId, String variantId, String pZoneId, FDGroup group,Map<String,String> varMap) {
+	private static FDCartLineI processSimple(ProductModel prodNode,FDProduct product, double quantity, FDSalesUnit salesUnit,	String origCartLineId, String variantId, UserContext userContext, FDGroup group,Map<String,String> varMap) {
 		
 		// Does not work with null...
 		if ( varMap == null ) {
@@ -890,7 +892,7 @@ public class CartOperations {
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					variantId, pZoneId);
+					variantId, userContext);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -899,7 +901,7 @@ public class CartOperations {
 			List<ErpClientCode> clientCodes = Collections.emptyList();
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					origCartLineId, null, false, variantId, pZoneId, clientCodes);
+					origCartLineId, null, false, variantId, userContext, clientCodes);
 			//Any group info from original cartline is moved to new cartline on modify.
 			cartLine.setFDGroup(group);
 		}

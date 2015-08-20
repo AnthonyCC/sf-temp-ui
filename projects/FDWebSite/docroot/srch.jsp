@@ -89,6 +89,9 @@
   </tmpl:put>
 
   <tmpl:put name='tabs' direct='true'>
+    <div id="listsearch">
+        <soy:render template="srch.listSearch" data="${browsePotato.searchParams}" />
+    </div>
     <section class="page-type">
         <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
     </section>

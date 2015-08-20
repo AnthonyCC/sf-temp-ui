@@ -34,7 +34,9 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 					"OUT" is sold out
 			*/
 			String rhStatus = FDStoreProperties.getRobinHoodStatus();
-			EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus();
+			String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+			String distrChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+			EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus(salesOrg,distrChannel);
 			double availableQty = UserUtil.getRobinHoodAvailability(DateUtil.truncate(new Date()),productInfo);
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			FDCartModel cart = user.getDonationCart();
@@ -87,7 +89,7 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 									} 
 									qty = Math.floor( (qty-1.0)/1.0 )*1.0  + 1.0;
 									document.rh_form.quantity.value = qty;
-									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()%>);
+									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice()%>);
 								}
 							</script>
 						<table border="0" cellspacing="0" cellpadding="2" width="<%=W_ROBINHOOD_LANDING_TOTAL-190%>">

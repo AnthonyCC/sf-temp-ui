@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -29,6 +30,8 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.attributes.EnumAttributeType;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -158,9 +161,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 											
 						populateNutritionInfo(fdProduct, product);									
 						
-						populateConfigurationsInfo(fdProduct, product);										
+						populateConfigurationsInfo(fdProduct, product,productModel.getUserContext().getPricingContext());										
 						
-						populateRatingInfo(fdProductInfo,  product);
+						populateRatingInfo(fdProductInfo,  product,"1000");//::FDX:: What plant to consider?
 											
 						populateInventoryInfo(fdProductInfo,  product);
 						
@@ -279,6 +282,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	private void populateProductBasicInfo(ProductModel productModel,
 			FDProductInfo fdProductInfo, FDProduct fdProduct, Product product) {
 		
+		ZoneInfo zone=productModel.getUserContext().getPricingContext().getZoneInfo();
 		product.setSkuCode(fdProduct.getSkuCode());
 		product.setUpc(fdProductInfo.getUpc());
 		product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
@@ -287,7 +291,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setProdUrl(URL_DOMAIN+PreviewLinkProvider.getLink(productModel.getContentKey()));
 		populateParentInfo(productModel, product);
 		product.setDeptId(productModel.getDepartment().getContentName());
-		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");
+		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel())?fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()).getStatusCode():"");
 		product.setMinQuantity(""+productModel.getQuantityMinimum());
 		product.setMaxQuantity(""+productModel.getQuantityMaximum());
 		product.setQtyIncrement(""+productModel.getQuantityIncrement());
@@ -382,7 +386,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	}
 
 	private void populateConfigurationsInfo(
-			FDProduct fdProduct, Product product) {
+			FDProduct fdProduct, Product product,PricingContext pCtx) {
 		
 		Configurations configurations = new Configurations();
 		product.setConfigurations(configurations);			
@@ -398,7 +402,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 				if(null !=options){
 					for (int k = 0; k < options.length; k++) {
 						FDVariationOption fdVariationOption = options[k];
-						CharacteristicValuePrice[] cvPrices =fdProduct.getPricing().getCharacteristicValuePrices();
+						CharacteristicValuePrice[] cvPrices =fdProduct.getPricing().getCharacteristicValuePrices(pCtx);
 						VariationOption variationOption = new VariationOption();
 						double price = 0.0;
 						String pricingUnit = "NA";
@@ -444,26 +448,26 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	}
 
 	private void populateRatingInfo(FDProductInfo fdProductInfo,
-			 Product product) {
+			 Product product,String plantID) {
 		
 		Ratings ratings = new Ratings();
 		product.setRatings(ratings);
 		Rating rating = null;
-		if(null !=fdProductInfo.getSustainabilityRating()){
+		if(null !=fdProductInfo.getSustainabilityRating(plantID)){
 			rating = new Rating();			
 			ratings.getRating().add(rating);
 					
 			rating.setRatingType(SUSTAINABILITY_RATING);			
-			rating.setDesc(fdProductInfo.getSustainabilityRating().getShortDescription());
-			rating.setRatingType(fdProductInfo.getSustainabilityRating().getStatusCode());
+			rating.setDesc(fdProductInfo.getSustainabilityRating(plantID).getShortDescription());
+			rating.setRatingType(fdProductInfo.getSustainabilityRating(plantID).getStatusCode());
 		}
-		if(null !=fdProductInfo.getRating()){
+		if(null !=fdProductInfo.getRating(plantID)){
 			rating = new Rating();			
 			ratings.getRating().add(rating);
 			
 			rating.setRatingType(RATING);			
-			rating.setDesc(fdProductInfo.getRating().getShortDescription());
-			rating.setRatingType(fdProductInfo.getRating().getStatusCode());
+			rating.setDesc(fdProductInfo.getRating(plantID).getShortDescription());
+			rating.setRatingType(fdProductInfo.getRating(plantID).getStatusCode());
 		}
 	}
 
@@ -473,7 +477,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		GroupScalePricing gsp = null;
 		GroupPrices groupPrices;
 		try {
-			FDGroup fdGroup =FDCachedFactory.getProductInfo(skucode).getGroup();			
+               FDGroup fdGroup =FDCachedFactory.getProductInfo(skucode).getGroup(ZonePriceListing.DEFAULT_SALES_ORG,ZonePriceListing.DEFAULT_DIST_CHANNEL);			
 			gsp = null !=fdGroup?FDCachedFactory.getGrpInfo(fdGroup):null;
 		} catch (FDSkuNotFoundException e) {
 			// DO Nothing
@@ -486,12 +490,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			GroupPrice groupPrice = new GroupPrice();			
 			groupPrices.getGroupPrice().add(groupPrice);
 			
-			groupPrice.setZoneCode(ZonePriceListing.MASTER_DEFAULT_ZONE);
+			groupPrice.setZoneCode(ZonePriceListing.DEFAULT_ZONE_INFO.getPricingZoneId());//::FDX::
 			groupPrice.setGroupMaterials(gsp.getMatList().toString());
-			if(null !=gsp.getGrpZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE)){
-				groupPrice.setUnitPrice(BigDecimal.valueOf(gsp.getGrpZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaxUnitPrice()));
-				groupPrice.setUnitWeight(gsp.getGrpZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaterialPrices()[0].getPricingUnit());
-				groupPrice.setGroupQuantity(""+gsp.getGrpZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaterialPrices()[0].getScaleLowerBound());
+			if(null !=gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO)){//::FDX::
+				groupPrice.setUnitPrice(BigDecimal.valueOf(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaxUnitPrice()));//::FDX::
+				groupPrice.setUnitWeight(gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getPricingUnit());//::FDX::
+				groupPrice.setGroupQuantity(""+gsp.getGrpZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0].getScaleLowerBound());//::FDX::
 			}
 			groupPrice.setGroupId(gsp.getGroupId());
 			groupPrice.setGroupDesc(gsp.getLongDesc());
@@ -503,7 +507,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		Prices prices = new Prices();
 		product.setPrices(prices);
 		
-		ZonePriceModel zpModel = fdProduct.getPricing().getZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE);
+		ZonePriceModel zpModel = fdProduct.getPricing().getZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO);
 		MaterialPrice[] materialPrices =zpModel.getMaterialPrices();
 		for (MaterialPrice materialPrice : materialPrices) {
 			Price price = new Price();			

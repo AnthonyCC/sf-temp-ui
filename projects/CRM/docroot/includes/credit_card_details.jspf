@@ -301,7 +301,7 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 			</tr>
             <tr>
 				<td align="right">Bypass AVS Check:</td>
-				<td><font color="red"><input type="checkbox" name="bypass_avs" <%=bypassAVSCheck?"checked":""%></font></td>
+				<td><font color="red"><input type="checkbox" name="bypass_avs" <%=bypassAVSCheck?"checked":""%> ></font></td>
 			</tr>
             <tr><td align="right">Country:</td>
 			<td>

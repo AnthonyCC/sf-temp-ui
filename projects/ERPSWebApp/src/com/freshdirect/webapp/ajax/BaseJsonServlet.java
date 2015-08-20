@@ -225,7 +225,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		}
         
 		// set current pricing context
-		ContentFactory.getInstance().setCurrentPricingContext(user.getPricingContext());
+		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
 		
 		return user;		
 	}

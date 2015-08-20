@@ -15,10 +15,10 @@ public class FDPricingEngine {
 	private FDPricingEngine() {
 	}
 
-	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty, String pricingUnit, ErpCouponDiscountLineModel couponDiscount)
+	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx, FDGroup group, double grpQty, String pricingUnit, ErpCouponDiscountLineModel couponDiscount, Double scaleQuantity)
 		throws PricingException {
 
-		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf, pCtx, group, grpQty);
+		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf, pCtx, group, grpQty,scaleQuantity);
 
 		final double price;
 		final double discountValue;
@@ -41,7 +41,7 @@ public class FDPricingEngine {
 				discountValue = price - discountedPrice.getPrice();
 			}
 		}
-		fdConfiguredPrice =new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition());
+		fdConfiguredPrice =new FDConfiguredPrice(price, discountValue, configuredPrice.getPricingCondition(),configuredPrice.getZoneInfo());
 		discountedPrice =null!=discountedPrice?discountedPrice:configuredPrice.getPrice();
 		//Apply coupon discount if any, after applying line-item discounts.
 		if(null != couponDiscount){

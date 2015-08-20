@@ -6,6 +6,7 @@ import java.util.List;
 import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -53,6 +54,7 @@ public class SmartCategoryRecommenderTest extends RecommendationServiceTestBase 
 		SessionInput input = new SessionInput.Builder().setCustomerId("fd1")
 				.setServiceType(EnumServiceType.HOME)
 				.setPricingContext(PricingContext.DEFAULT)
+				.setFulfillmentContext(new FulfillmentContext())
 				// .setCurrentNode(ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY,
 				// "smcat1"))
 				.setExplicitList(expList).build();

@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.smartstore.CartTabStrategyPriority;
@@ -38,7 +39,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ? and v.archived = 'N'";
 
-	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc, sf.smart_saving FROM cust.ss_site_feature sf";
+	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc, sf.smart_saving FROM cust.ss_site_feature sf WHERE E_STORE = ?";
 
 	private static final String GET_TAB_STRAT_PRIOS = "SELECT SITE_FEATURE_ID, PRIMARY_PRIORITY, SECONDARY_PRIORITY "
 			+ "FROM CUST.SS_TAB_STRATEGY_PRIORITY WHERE TAB_STRATEGY_ID = ?";
@@ -236,12 +237,13 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	/**
 	 * Get the available site features.
 	 * 
+	 * @param eStoreId {@link EnumEStoreId}
 	 * @return available site features , {@link DynamicSiteFeature}<
 	 *         {@link DynamicSiteFeature}>
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Collection<DynamicSiteFeature> getSiteFeatures() throws RemoteException, SQLException {
+	public Collection<DynamicSiteFeature> getSiteFeatures(final String eStoreId) throws RemoteException, SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
@@ -251,6 +253,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 			conn = getConnection();
 
 			ps = conn.prepareStatement(GET_ALL_SITE_FEATURES_QUERY);
+			ps.setString(1, eStoreId);
 
 			rs = ps.executeQuery();
 			while (rs.next()) {

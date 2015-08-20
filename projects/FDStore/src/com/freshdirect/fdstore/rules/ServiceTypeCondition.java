@@ -20,6 +20,7 @@ public class ServiceTypeCondition implements ConditionI {
 		this.type = type;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		if(this.serviceType == null) {
 			this.serviceType = EnumServiceType.getEnum(type);
@@ -32,6 +33,7 @@ public class ServiceTypeCondition implements ConditionI {
 		return this.serviceType.equals(dlvCtx.getServiceType());
 	}
 
+	@Override
 	public boolean validate() {
 		return EnumServiceType.getEnum(this.type) != null;
 	}

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 
@@ -14,7 +15,7 @@ public class GrpZonePriceModel implements Serializable {
 		this.materialPrices = materialPrices;
 	}
 
-	private String sapZoneId;
+	private ZoneInfo zoneInfo;
 	public boolean isGrpScalePresent() {
 		return grpScalePresent;
 	}
@@ -31,13 +32,13 @@ public class GrpZonePriceModel implements Serializable {
 	 * @return array of MaterialPrice objects
 	 */
 	
-	public GrpZonePriceModel(String sapZoneId, MaterialPrice[] matPrices) {
-		this.sapZoneId = sapZoneId;
+	public GrpZonePriceModel(ZoneInfo zoneInfo, MaterialPrice[] matPrices) {
+		this.zoneInfo = zoneInfo;
 		this.materialPrices = matPrices;
 	}
 	
-	public GrpZonePriceModel(String sapZoneId, MaterialPrice[] matPrices,boolean isGrpScalePresent) {
-		this.sapZoneId = sapZoneId;
+	public GrpZonePriceModel(ZoneInfo zoneInfo, MaterialPrice[] matPrices,boolean isGrpScalePresent) {
+		this.zoneInfo = zoneInfo;
 		this.materialPrices = matPrices;
 		this.grpScalePresent=isGrpScalePresent;
 	}
@@ -46,8 +47,8 @@ public class GrpZonePriceModel implements Serializable {
 		return this.materialPrices;
 	}
 
-	public String getSapZoneId() {
-		return this.sapZoneId;
+	public ZoneInfo getSapZone() {
+		return this.zoneInfo;
 	}
 	/**
 	 * Get matching pricing condition for pricing unit.

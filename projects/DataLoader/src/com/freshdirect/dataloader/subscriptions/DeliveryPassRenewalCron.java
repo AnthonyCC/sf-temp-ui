@@ -297,7 +297,7 @@ public class DeliveryPassRenewalCron {
 		//TODO Need to pre-select pricing zone based on last order delivery type and zipcode.
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
 				, new FDConfiguration(quantity, salesUnit
-				.getName(), varMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+				.getName(), varMap), null, ContentFactory.getInstance().getCurrentUserContext());
 
 		try {
 			cartLine.refreshConfiguration();

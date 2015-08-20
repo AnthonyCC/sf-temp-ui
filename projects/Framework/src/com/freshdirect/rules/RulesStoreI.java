@@ -14,7 +14,7 @@ public interface RulesStoreI {
 	 * 
 	 * @return Map of String ruleId -> Rules
 	 */
-	public Map getRules();
+	public Map<String,Rule> getRules();
 
 	public Rule getRule(String ruleId);
 

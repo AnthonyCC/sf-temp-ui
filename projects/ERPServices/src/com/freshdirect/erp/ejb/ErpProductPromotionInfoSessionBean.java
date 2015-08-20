@@ -11,6 +11,7 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -24,9 +25,9 @@ public class ErpProductPromotionInfoSessionBean extends SessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( ErpProductPromotionInfoSessionBean.class );
 
-	public Map<String,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException, RemoteException{
+	public Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException, RemoteException{
 		Connection conn = null;
-		Map<String, List<FDProductPromotionInfo>> productPromoInfoMap=null;
+		Map<ZoneInfo, List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try{
 			conn = getConnection();			
 			productPromoInfoMap=ErpProductPromotionInfoDAO.getAllProductsByType(conn,ppType,null);
@@ -46,9 +47,9 @@ public class ErpProductPromotionInfoSessionBean extends SessionBeanSupport {
 		return productPromoInfoMap;
 	}
 	
-	public Map<String,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublishDate) throws FDResourceException, RemoteException{
+	public Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublishDate) throws FDResourceException, RemoteException{
 		Connection conn = null;
-		Map<String,List<FDProductPromotionInfo>> productPromoInfoMap=null;
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try{
 			conn = getConnection();			
 			productPromoInfoMap=ErpProductPromotionInfoDAO.getAllProductsByType(conn,ppType,lastPublishDate);
@@ -104,9 +105,9 @@ public class ErpProductPromotionInfoSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public  Map<String,Map<String,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType, Date lastPublishDate) throws FDResourceException, RemoteException{
+	public  Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType, Date lastPublishDate) throws FDResourceException, RemoteException{
 		Connection conn = null;
-		Map<String,Map<String,List<FDProductPromotionInfo>>> promotionProducts=null;
+		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> promotionProducts=null;
 		try{
 			conn = getConnection();			
 			promotionProducts=ErpProductPromotionInfoDAO.getAllPromotionsByType(conn,ppType,lastPublishDate);

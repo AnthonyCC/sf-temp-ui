@@ -259,7 +259,6 @@
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/> <!-- Coremetrics background service -->
-		<checkoutLabeled dir="projects/BazaarvoiceService"/> <!-- Bazaarvoice background service -->
 		<checkoutLabeled dir="projects/Athena"/>
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
@@ -314,7 +313,6 @@
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
-		<checkoutLatest dir="projects/BazaarvoiceService"/>
 		<checkoutLatest dir="projects/Athena"/>
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
@@ -397,7 +395,6 @@
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
-		<mkdir dir="${work.dir}/BazaarvoiceService"/>
     		<mkdir dir="${work.dir}/Athena"/>
 	</target>
 
@@ -410,7 +407,7 @@
         <delete dir="${basedir}/projects/CRM/docroot/help"/>
         <delete dir="${basedir}/projects/CRM/docroot/survey"/>
         <delete dir="${basedir}/projects/CRM/docroot/includes/delivery"/>
-        <delete dir="${basedir}/projects/CRM/docroot/includes/product"/>
+        <!-- delete dir="${basedir}/projects/CRM/docroot/includes/product"/ -->
         <delete dir="${basedir}/projects/CRM/docroot/includes/registration"/>
         <delete dir="${basedir}/projects/CRM/docroot/includes/promotions"/>
         <delete dir="${basedir}/projects/CRM/docroot/supervisor/test/debug"/>
@@ -446,9 +443,9 @@
         <copy todir="${basedir}/projects/CRM/docroot/includes/delivery">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/delivery"/>
         </copy>
-        <copy todir="${basedir}/projects/CRM/docroot/includes/product">
+        <!-- copy todir="${basedir}/projects/CRM/docroot/includes/product">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/product"/>
-        </copy>
+        </copy -->
         <copy todir="${basedir}/projects/CRM/docroot/includes/registration">
             <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/registration"/>
         </copy>
@@ -492,7 +489,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,BazaarvoiceService,Athena" description="Build everything">
+	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -516,7 +513,6 @@
 					<fileset dir="${work.dir}" includes="FDLogisticsIntegration.jar" />
 					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
 					<fileset dir="${work.dir}" includes="CoremetricsService.jar" />
-					<fileset dir="${work.dir}" includes="BazaarvoiceService.jar" />
 				</copy>
 
 				<junit fork="yes">
@@ -551,7 +547,6 @@
 		                <pathelement location="${work.dir}/FDLogisticsIntegration-emma.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService-emma.jar"/>
-						<pathelement location="${work.dir}/BazaarvoiceService-emma.jar"/>
 		            </classpath>
 		            <!-- emma -->
 		            <jvmarg value="-Demma.coverage.out.file=${work.dir}/logs/coverage.emma" />
@@ -594,7 +589,6 @@
 		   				<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService.jar"/>
-						<pathelement location="${work.dir}/BazaarvoiceService.jar"/>
 		   			</classpath>
 				</junit>
 				
@@ -1768,7 +1762,6 @@
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${work.dir}/CoremetricsService.jar"/>
-			<pathelement location="${work.dir}/BazaarvoiceService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
 			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
@@ -1954,22 +1947,6 @@
 			classpathref="CoremetricsService.classpath"/>
 	</target>
 	
-	<target name="BazaarvoiceService" description="Build Bazaarvoice Service">
-		<path id="BazaarvoiceService.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/FDStore.jar"/>
-			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-		</path>
-
-		<makeProject project="BazaarvoiceService" classpathref="BazaarvoiceService.classpath"/>
-		<!--makeEjbProject
-			project="BazaarvoiceService"
-			classpathref="BazaarvoiceService.classpath"/-->
-	</target>
 	
 	<target name="Athena" description="Build Athena">
 			<!-- directory for compiled stuff -->
@@ -2113,7 +2090,6 @@
 						<pathelement path="${work.dir}/ERPSWebApp.jar"/>
 						<pathelement path="${work.dir}/StandingOrdersService.jar"/>
 						<pathelement path="${work.dir}/CoremetricsService.jar"/>
-						<pathelement path="${work.dir}/BazaarvoiceService.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
@@ -2139,7 +2115,6 @@
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="StandingOrdersService.jar"/>
 				<include name="CoremetricsService.jar"/>
-				<include name="BazaarvoiceService.jar"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
@@ -2220,7 +2195,6 @@
 				<include name="FDLogisticsIntegration.jar"/>
 				<include name="StandingOrdersService.jar"/>
 				<include name="CoremetricsService.jar"/>
-				<include name="BazaarvoiceService.jar"/>
 			</libraries>
 			<lib>
 				<include name="oscache-2.4.1.jar"/>
@@ -2586,7 +2560,6 @@
             <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
-				<zipfileset src="${work.dir}/BazaarvoiceService.jar" excludes="META-INF/*"/>
 
 			<!-- Tools -->
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>

@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -46,12 +47,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	}
 
 	public void setPaymentMethod() throws FDResourceException {
+		FDUserI user = getUser();
 		String paymentId = request.getParameter( "paymentMethodList" );
 		String billingRef = request.getParameter( "billingRef" );
 		setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
 	}
 	
 	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName) throws FDResourceException {
+		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );	
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
@@ -62,6 +65,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				result.addError( true, "referencedOrder", "Reference Order number is required for a make good order" );
 				return;
 			}
+		} else if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().getMakeGoodFromOrderId()!=null) {
+			referencedOrder = user.getMasqueradeContext().getMakeGoodFromOrderId();
+			makeGoodOrder = true;
 		}
 		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, referencedOrder );
 	}
@@ -72,6 +78,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
+		FDUserI user = getUser();
+		
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
 			makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
 			referencedOrder = NVL.apply( request.getParameter( "referencedOrder" ), "" ).trim();
@@ -79,6 +87,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				result.addError( true, "referencedOrder", "Reference Order number is required for a make good order" );
 				return;
 			}
+		} else if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().getMakeGoodFromOrderId()!=null) {
+			makeGoodOrder = true;
+			referencedOrder = user.getMasqueradeContext().getMakeGoodFromOrderId();
 		}else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0){
 			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
 			return;
@@ -136,7 +147,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 		//Checking for CC a/c's or at least one valid CC. If NO, restricting the customer to place order using E-check
 		String app = (String) session.getAttribute( SessionName.APPLICATION);
-		if (!"CALLCENTER".equalsIgnoreCase(app) && EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && result.isSuccess()) {
+		if (!"CALLCENTER".equalsIgnoreCase(app) && !makeGoodOrder && EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && result.isSuccess()) {
 			int numCreditCards=0;
 			boolean isValidCreditCardAvailable = false;
 			for (ErpPaymentMethodI paymentM : paymentMethods) {

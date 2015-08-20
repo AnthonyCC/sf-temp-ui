@@ -16,6 +16,7 @@ This include expects the following:
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -130,7 +131,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 
     	String variantId = request.getParameter("variant");
 
-    	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId,user.getPricingContext().getZoneId());
+    	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId,user.getUserContext());
     }
 
 
@@ -166,7 +167,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
@@ -404,7 +405,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
     if (_defaultSku!=null) {
 	FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
-	if (fdprd.getKosherInfo().isKosherProduction()) { %>
+	if (fdprd.getKosherInfo(plantID).isKosherProduction()) { %>
 	    <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
 	    <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 	    <%

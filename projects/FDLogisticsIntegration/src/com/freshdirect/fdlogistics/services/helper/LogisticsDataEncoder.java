@@ -45,23 +45,26 @@ import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.Subscription;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 
 public class LogisticsDataEncoder {
 
 	public static Address encodeAddress(ContactAddressModel model) {
 		
-		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
-				model.getCountry(), model.getFirstName(), model.getLastName(), model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
-				model.getCompanyName());
+		Address address = new Address(model.getId(), model.getAddress1(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode());
+		address.setServiceType(model.getServiceType().getName());
+		address.setAddress2(model.getAddress2());
+		address.setCompanyName(model.getCompanyName());
 		return address;
 		
 	}
 
 	public static Address encodeAddress(AddressModel model) {
 		
-		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
-				model.getCountry(), "", "", model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
-				model.getCompanyName());
+		Address address = new Address(model.getId(), model.getAddress1(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode());
+		address.setServiceType(model.getServiceType().getName());
+		address.setAddress2(model.getAddress2());
+		address.setCompanyName(model.getCompanyName());
 		return address;
 		
 	}
@@ -113,7 +116,6 @@ public class LogisticsDataEncoder {
 		customer.setAlternateCustomerId(custId);
 		customer.setFirstName(address.getFirstName());
 		customer.setLastName(address.getLastName());
-		customer.setServiceType(address.getServiceType().getName());
 		customer.setOrderSize(new CustomerAvgOrderSize(0,0,0));
 		return customer;
 	}
@@ -183,7 +185,15 @@ public class LogisticsDataEncoder {
 	private static TimeslotContext encodeTimeslotContext() {
 		return TimeslotContext.CHECK_AVAILABLE_TIMESLOTS;
 	}
-	
+
+	private static OrderContext encodeOrderContext(String customerId) {
+		OrderContext context = new OrderContext();
+		context.setAction(EnumOrderAction.CREATE);
+		context.setOrderId(customerId);
+		context.setType(EnumOrderType.REGULAR);
+		return context;
+	}
+
 	public static TimeslotIdRequest encodeTimeslotRequest(String timeslotId,
 			String buildingId, boolean checkPremium) {
 		
@@ -285,6 +295,12 @@ public class LogisticsDataEncoder {
 		subscription.setSmsOptinDate(receivedDate);
 		
 		request.setSubscription(subscription);
+		return request;
+	}
+
+	public static CreateOrderRequest encodeUpdateOrderRequest(String orderId,
+			String parentOrderId, double tip, String reservationId) {
+		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId);
 		return request;
 	}
 	

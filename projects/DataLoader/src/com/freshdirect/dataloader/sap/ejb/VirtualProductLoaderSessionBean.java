@@ -263,7 +263,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 try {
 					FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
                     
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE), null, 0.0) .getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO), null, 0.0,null) .getPricingCondition();
                     
                     defaultPrice = pricingCondition.getPrice();
                     defaultPriceUnit = pricingCondition.getPricingUnit();

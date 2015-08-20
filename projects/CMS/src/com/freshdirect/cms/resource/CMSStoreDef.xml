@@ -2550,6 +2550,7 @@
 		<AttributeDefs>
 			<AttributeDef name="Text" type="S" label="Text" required="false"/>
 			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+			<AttributeDef name="Default" type="B" label="Default" required="false"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 	

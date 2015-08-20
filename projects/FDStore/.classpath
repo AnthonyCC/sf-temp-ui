@@ -5,7 +5,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jxl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/scarab-java-client-2.6.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jtidy-r938.jar"/>

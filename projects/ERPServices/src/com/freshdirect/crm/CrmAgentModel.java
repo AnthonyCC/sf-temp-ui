@@ -26,6 +26,8 @@ public class CrmAgentModel extends ModelSupport {
 	private List<String> agentCaseQueues;
 	private boolean masqueradeAllowed = false;
 	private String ldapId;
+	private String curStoreContext = null;
+	private String curFacilityContext = null;
 
 	public CrmAgentModel() {
 		super();
@@ -208,6 +210,15 @@ public class CrmAgentModel extends ModelSupport {
 		return false;
 	}
 	
+	public boolean isFDX() {
+		if ( CrmAgentRole.getEnum(this.roleCode).equals(CrmAgentRole.getEnum(CrmAgentRole.FDX_CODE)) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
 	public void setMasqueradeAllowed( boolean flag ) {
 		masqueradeAllowed = flag;
 	}
@@ -222,5 +233,18 @@ public class CrmAgentModel extends ModelSupport {
 
 	public void setLdapId(String ldapId) {
 		this.ldapId = ldapId;
+	}
+
+
+	//TODO : faking facility
+	public String getCurFacilityContext() {
+		if (this.curFacilityContext == null) {
+			this.setCurFacilityContext("All");
+		}
+		return curFacilityContext;
+	}
+
+	public void setCurFacilityContext(String curFacilityContext) {
+		this.curFacilityContext = curFacilityContext;
 	}
 }

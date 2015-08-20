@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
@@ -18,7 +19,7 @@
 		<%  if(null == custCoupon_singSku){
 				custCoupon_singSku =user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT,((ProductModel) productNode).getParentId(),((ProductModel) productNode).getContentName());
 			}
-			final ZonePriceInfoModel _uZoneId = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId());
+			final ZonePriceInfoModel _uZoneId = productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo());
 			final String _defPrice = currencyFormatter.format(_uZoneId.getDefaultPrice());
 			final boolean _isOnSale = _uZoneId.isItemOnSale();
 		

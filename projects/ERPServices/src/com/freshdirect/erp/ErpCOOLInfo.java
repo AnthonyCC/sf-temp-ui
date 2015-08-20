@@ -12,28 +12,28 @@ public class ErpCOOLInfo implements Serializable {
 	private String sapDesc;
 	private List<String> countryInfo;
 	private Date lastModifiedDate;
+	private String plantId;
 	
-	public ErpCOOLInfo(String sapID,String sapDesc, List<String> countryInfo) {
-		this.sapID=sapID;
-		this.sapDesc=sapDesc;
-		this.countryInfo=countryInfo;
+	public ErpCOOLInfo(String sapID, String sapDesc, List<String> countryInfo, String plantId)
+	{
+		this.sapID = sapID;
+		this.sapDesc = sapDesc;
+		this.countryInfo = countryInfo;
+		this.plantId = plantId;
 	}
-	
-	public ErpCOOLInfo(String sapID,String sapDesc, List<String> countryInfo,Date lastModifiedDate) {
-		this.sapID=sapID;
-		this.sapDesc=sapDesc;
-		this.countryInfo=countryInfo;
-		this.lastModifiedDate=lastModifiedDate;
+
+	public ErpCOOLInfo(String sapID, String sapDesc, List<String> countryInfo, Date lastModifiedDate, String plantId)
+	{
+		this.sapID = sapID;
+		this.sapDesc = sapDesc;
+		this.countryInfo = countryInfo;
+		this.lastModifiedDate = lastModifiedDate;
+		this.plantId = plantId;
 	}
 	
 	public List<String> getCountryInfo() {
 		return countryInfo;
 	}
-	
-	public void setCountryInfo(List<String> countryInfo) {
-		this.countryInfo = countryInfo;
-	}
-
 	public String getSapID() {
 		return sapID;
 	}
@@ -52,9 +52,18 @@ public class ErpCOOLInfo implements Serializable {
 			.append(sapDesc)
 			.append(" lastModifiedDate: ")
 			.append(lastModifiedDate)
+			.append(" plantId: ")
+			.append(plantId)
 			.append(" countryInfo: ")
 			.append(countryInfo.toString())
 			.append("]").toString();
+	}
+
+	/**
+	 * @return the plantId
+	 */
+	public String getPlantId() {
+		return plantId;
 	}
 
 }

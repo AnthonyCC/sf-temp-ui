@@ -13,7 +13,7 @@ public class LimitedUseStrategy implements PromotionStrategyI {
 		return this.maxUsage;
 	}
 
-	
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		int usage = context.getPromotionUsageCount(promotionCode);
 		if (usage >= this.maxUsage) {
@@ -28,6 +28,7 @@ public class LimitedUseStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 10;
 	}
@@ -36,4 +37,8 @@ public class LimitedUseStrategy implements PromotionStrategyI {
 		return "LimitedUseStrategy[" + this.maxUsage + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

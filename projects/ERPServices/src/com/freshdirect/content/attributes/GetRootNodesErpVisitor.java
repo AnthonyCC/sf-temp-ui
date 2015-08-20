@@ -10,6 +10,7 @@ package com.freshdirect.content.attributes;
 
 import java.util.LinkedList;
 import com.freshdirect.erp.*;
+import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductModel;
 
 /**
@@ -38,6 +39,17 @@ public class GetRootNodesErpVisitor implements ErpVisitorI {
 		this.clear();
 		product.accept(this);
 	}
+	
+	/**
+	 * Visiting constructor.
+	 *
+	 * @param material ErpMaterial to visit
+	 */
+	public GetRootNodesErpVisitor(ErpMaterialModel material) {
+		this.clear();
+		material.accept(this);
+	}
+
 
 	/**
 	 * Callback method, called by the model object when visitor enters.

@@ -118,6 +118,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -133,7 +134,6 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -421,13 +421,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser createNewUser(String zipCode, EnumServiceType serviceType)
+	public FDUser createNewUser(String zipCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
 			throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createUser(conn, zipCode, serviceType);
+			FDUser user = FDUserDAO.createUser(conn, zipCode, serviceType, eStoreId);
 
 			return user;
 
@@ -438,12 +438,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser createNewUser(AddressModel address, EnumServiceType serviceType) throws FDResourceException {
+	public FDUser createNewUser(AddressModel address, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType);
+			FDUser user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType, eStoreId);
 
 			return user;
 
@@ -454,12 +454,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType) throws FDResourceException {
+	public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createDepotUser(conn, depotCode, serviceType);
+			FDUser user = FDUserDAO.createDepotUser(conn, depotCode, serviceType, eStoreId);
 
 			return user;
 
@@ -471,12 +471,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, null);
+	}
+
+	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, eStoreId, false);
+	}
+	
+	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
+			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -495,13 +503,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 	
-	public FDUser getFDUserWithCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
+			FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, false);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -516,14 +524,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	}
 
-	public FDUser recognizeByEmail(String email)
+	public FDUser recognizeByEmail(String email, EnumEStoreId eStoreId)
 			throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.recognizeWithEmail(conn, email);
+			FDUser user = FDUserDAO.recognizeWithEmail(conn, email, eStoreId);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -760,14 +768,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return dlvPassInfo;
 	}
 
-	public FDUser recognize(String cookie) throws FDAuthenticationException,
+	public FDUser recognize(String cookie, EnumEStoreId eStoreId) throws FDAuthenticationException,
 			FDResourceException {
 
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.reconnizeWithCookie(conn, cookie);
+			FDUser user = FDUserDAO.reconnizeWithCookie(conn, cookie, eStoreId);
 
 			LOGGER.debug("got FDUser via cookie id"+ user.getUserServiceType());
 
@@ -851,7 +859,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
-		} 
+		}/* catch (FDInvalidAddressException e) {
+			throw new FDResourceException(e);
+		}*/
 	}
 
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
@@ -1032,7 +1042,51 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
+	
+	public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
+		try {
+			// find ERPCustomerEB by userid & password
+			ErpCustomerEB erpCustomerEB;
+			try {
+				
+				erpCustomerEB = this.getErpCustomerHome().findByUserId(userId);
+				
+			} catch (ObjectNotFoundException ex) {
+				throw new FDAuthenticationException(
+						"Invalid username or password");
+			}
+			
+			// check the active flag
+			if (!erpCustomerEB.isActive()) {
+				
+				/*FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(erpCustomerEB.getPK().getId());
+				if(fdCustomerEB!=null && fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
+					
+				}
+				else {
+					throw new FDAuthenticationException("Account disabled");
+				}*/
+				throw new FDAuthenticationException("Account disabled");
+			}
+			// find respective FDCustomerEB
+			String erpCustId = erpCustomerEB.getPK().getId();
+			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
+					.findByErpCustomerId(erpCustomerEB.getPK().getId());
+			fdCustomerEB.incrementLoginCount();
 
+			// String cookie = this.translate( erpCustomerEB.getUserId() );
+			return new FDIdentity(erpCustId, fdCustomerEB.getPK().getId());
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (FinderException ce) {
+			throw new FDResourceException(ce);
+		}
+	}
+
+
+	
+	
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
@@ -1833,8 +1887,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// do nothing
 		}
 		TimeslotEvent event = new TimeslotEvent((info.getSource()!=null)?info.getSource().getCode():"", 
-				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), 
-				false, info.getFdUserId(), EnumCompanyCode.fd.name());
+				createOrder.isDlvPassApplied(),createOrder.getDeliverySurcharge(), Util.isDlvChargeWaived(createOrder), false, info.getFdUserId(), "fd");
 		
 		if(createOrder.hasCouponDiscounts()){
 			Date date = new Date();
@@ -1995,6 +2048,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					identity.getErpCustomerPK(), 
 					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+			//if its fdx estore then make a call to logistics to store fdx order.
+			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name())){
+				FDDeliveryManager.getInstance().submitOrder(pk.getId(), null,
+					createOrder.getTip(), reservationId);
+			}
+			
 			LOGGER.info("After commiting the reservation "+reservationId);
 			
 			if (null != createOrder.getSelectedGiftCards()
@@ -2063,6 +2122,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
 			//Moving the commit reservation section to the end of place order flow as reservation can be committed to logistics and still place order fails because of the auth.
+			/*LOGGER.info("Before commiting the reservation "+reservationId);
+			FDDeliveryManager.getInstance().commitReservation(reservationId, 
+					identity.getErpCustomerPK(), 
+					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
+					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+			LOGGER.info("After commiting the reservation "+reservationId);*/
 			
 			return pk.getId();
 
@@ -2731,7 +2796,32 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
+			//if its fdx estore then make a call to logistics to store fdx order.
+			if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
+				FDDeliveryManager.getInstance().modifyOrder(saleId, null,
+						order.getTip(), newReservationId);
+			}
+			
+			
 			//Moving the commit reservation section to the end of modify order flow as reservation can be committed to logistics and still modify order fails because of the auth.
+			// Deal with Reservation in DLV
+						/*newReservationId = order.getDeliveryInfo()
+								.getDeliveryReservationId();
+						if (!newReservationId.equals(oldReservationId)) {
+							// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+
+							// reservation has changed so release old reservation
+							FDDeliveryManager.getInstance().releaseReservation(
+									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
+							// now commit the new Reservation
+							// dlvSB.commitReservation(newReservationId,
+							// identity.getErpCustomerPK(), saleId);
+							
+							FDDeliveryManager.getInstance().commitReservation(
+									newReservationId, identity.getErpCustomerPK(), 
+									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
+									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+						}*/
 
 		} catch (DeliveryPassException de) {
 			throw de;
@@ -3313,16 +3403,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			ProductModel p = ContentFactory.getInstance().getProduct(
 					ol.getSku().getSkuCode());
-			SkuModel skuModel = p.getSku(ol.getSku().getSkuCode()); 
-			Date[] availableDates = skuModel.getProductInfo().getAvailabilityDates();
-			if(FDStoreProperties.isLimitedAvailabilityEnabled() && availableDates != null && availableDates.length > 0){
-				//only if Limited Availability sku
-				return new FDStockAvailability(erpInv, skuModel.getProductInfo().getInventory(),
-						 ol.getQuantity(), p.getQuantityMinimum(), p.getQuantityIncrement(), availableDates);
-			} else {
-				return new FDStockAvailability(erpInv, 
-						 ol.getQuantity(), p.getQuantityMinimum(), p.getQuantityIncrement(), availableDates);
-			}
+			
+			return new FDStockAvailability(erpInv, 
+						 ol.getQuantity(), p.getQuantityMinimum(), p.getQuantityIncrement());
+			
 		} catch (FDSkuNotFoundException e) {
 			throw new FDResourceException(e);
 		}
@@ -3368,13 +3452,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId);
+						erpCustomerId,null);
 				lst.add(fi);
 			}
 		}
 
 		this.storeATPFailureInfos(lst);
 	}
+
+	public FDOrderI getOrderForCRM(FDIdentity identity, String saleId)
+			throws FDResourceException {
+
+		FDOrderI order = getOrderForCRM(saleId);
+		if (!order.getCustomerId().equals(identity.getErpCustomerPK())) {
+			throw new FDResourceException("Sale doesn't belong to customer");
+		}
+		return order;
+	}
+
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId)
 			throws FDResourceException {
@@ -3386,6 +3481,28 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return order;
 	}
 
+
+	public FDOrderI getOrderForCRM(String saleId) throws FDResourceException {
+		try {
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
+
+			LOGGER.debug(new String("ordernum: "
+					+ saleId
+					+ "   rsrvID: "
+					+ saleModel.getRecentOrderTransaction().getDeliveryInfo()
+							.getDeliveryReservationId()));
+			
+			return new FDOrderAdapter(saleModel, true);
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}		
+	}
+
+	
 	public FDOrderI getOrder(String saleId) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -3397,7 +3514,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					+ saleModel.getRecentOrderTransaction().getDeliveryInfo()
 							.getDeliveryReservationId()));
 			
-			return new FDOrderAdapter(saleModel);
+			return new FDOrderAdapter(saleModel, false);
 			
 
 		} catch (CreateException ce) {
@@ -3774,6 +3891,71 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	
+	public void updateOrderInModifyState(ErpSaleModel sale)	throws FDResourceException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.updateOrderInModifyState(conn, sale.getId());
+			 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	
+	}
+	
+	public void updateOrderInProcess(String orderNum)	throws FDResourceException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.updateOrderInProcess(conn, orderNum);
+			 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	
+	}
+	
+
+	public boolean isReadyForPick(String orderNum) throws FDResourceException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDUserDAO.isReadyForPick(conn, orderNum);
+			 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	
+	}
+	
+
+	public void releaseModificationLock(String orderId)	throws FDResourceException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.releaseModificationLock(conn, orderId);
+			 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	
+	}
+	
+	
+	
 	public void storeCohortName(FDUser user) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -4191,21 +4373,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException {
 
 		if (reservation != null) {
-
-			ErpAddressModel address = getAddress(identity,
-					reservation.getAddressId());
-
-			// restore reservation is false
-			FDDeliveryManager.getInstance().releaseReservation(
-					reservation.getId(), address, event, false);
-
+			
+			ErpAddressModel address = getAddress(identity, reservation
+					.getAddressId());
+			
+			//restore reservation is false
+			FDDeliveryManager.getInstance().releaseReservation(reservation.getId(), address , event, false);
 		
-			this.logActivity(getReservationActivityLog(
-					reservation.getTimeslot(), actionInfo,
-					EnumAccountActivityType.CANCEL_PRE_RESERVATION,
-					reservation.getReservationType()));
+			this.logActivity(getReservationActivityLog(reservation
+					.getTimeslot(), actionInfo,
+					EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation
+							.getReservationType()));
 		}
-
 		/*
 		 * catch (RemoteException e) { throw new FDResourceException(e); } catch
 		 * (CreateException e) { throw new FDResourceException(e); }
@@ -7564,7 +7743,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 			return county;
+	}
+	public String getLastOrderID(FDIdentity identity,EnumEStoreId eStoreId)
+			throws FDResourceException {
+		try {
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this
+					.getErpCustomerManagerHome().create();
+			return sb
+					.getLastOrderID(new PrimaryKey(identity.getErpCustomerPK()),eStoreId);
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
 		}
-		
+	}
 }
 

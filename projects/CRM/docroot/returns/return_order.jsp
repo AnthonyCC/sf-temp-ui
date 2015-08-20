@@ -22,7 +22,7 @@
 	}
 %>
 <fd:returnController result="result" actionName="<%=action%>" orderNumber="<%=orderId%>" successPage="<%=successPage%>">
-<fd:GetOrder id='order' saleId='<%= orderId %>'>
+<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 <%
 	//
 	// Get customer info from the order

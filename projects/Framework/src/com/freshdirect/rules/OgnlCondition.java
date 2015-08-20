@@ -22,6 +22,7 @@ public class OgnlCondition implements ConditionI {
 		this.expression = expression;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		try {
 			Boolean result = (Boolean) Ognl.getValue(this.getCondition(), new OgnlContext(), target);
@@ -52,6 +53,7 @@ public class OgnlCondition implements ConditionI {
 		this.expression = expression;
 	}
 
+	@Override
 	public boolean validate() {
 		try {
 			Ognl.parseExpression(this.expression);

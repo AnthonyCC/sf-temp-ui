@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -130,25 +131,26 @@ public class PricingEngine {
 	 *
 	 * @param pricing Pricing object
 	 * @param configuration PricingConfiguration object
+	 * @param scaleQuantity 
 	 * 
 	 * @return price in USD
 	 *
 	 * @throws PricingException
 	 */
-	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx, FDGroup group, double grpQuantity) throws PricingException {
+	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx, FDGroup group, double grpQuantity, Double scaleQuantity) throws PricingException {
 
 		if (DEBUG) LOGGER.debug("getConfiguredPrice got " + configuration);
 
 		// calculate base price
-		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx, group, grpQuantity);
+		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx, group, grpQuantity,scaleQuantity);
 		if (DEBUG) LOGGER.debug("getConfiguredPrice basePrice: "+basePrice);
 
 		// calculate characteristic value prices
-		double surcharge = calculateCVPrices(pricing, configuration);
+		double surcharge = calculateCVPrices(pricing, configuration,pCtx);
 		if (DEBUG) LOGGER.debug("getConfiguredPrice surcharges: "+surcharge);
 
 		Price pr = new Price(MathUtil.roundDecimal(basePrice.getPrice().getBasePrice()), MathUtil.roundDecimal(surcharge));
-		return new ConfiguredPrice(pr, basePrice.getPricingCondition());
+		return new ConfiguredPrice(pr, basePrice.getPricingCondition(),basePrice.getZoneInfo());
 	}
 
 	/*
@@ -161,28 +163,29 @@ public class PricingEngine {
 	*/
 	/**
 	 * Calculate material price.
+	 * @param scaleQuantity 
 	 *
 	 * @return price in USD
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration, PricingContext ctx, FDGroup group, double grpQuantity) throws PricingException {
+	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration, PricingContext ctx, FDGroup group, double grpQuantity, Double scaleQuantity) throws PricingException {
 		// calculate price
 		// check grpPrice exists
 		//Group Scale Pricing
 		if (group != null)
 		{
 				try{
-					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneId());
+					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneInfo());
 					if(grpMaterialPrice != null) {
 						//Group Price exists for this zone.
 						if(grpQuantity > 0 && grpQuantity >= grpMaterialPrice.getScaleLowerBound()){
 							//Required when multiple group scale prices are supported.
 							// find pricing condition for quantity (in scaleUnit)
 							//MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePriceByQty(group, ctx.getZoneId(), grpQuantity);
-							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice);		
+							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,ctx.getZoneInfo());		
 						} else {
-							return calculateSimplePrice(pricing, configuration, ctx.getZoneId());
+							return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
 						}
 					}
 				}catch(FDResourceException fe){
@@ -190,10 +193,20 @@ public class PricingEngine {
 				}
 		}
 		//Regular Pricing
-		if (pricing.getZonePrice(ctx.getZoneId()).hasScales()) {
-			return calculateScalePrice(pricing, configuration, ctx.getZoneId());		
+		ZonePriceModel zonePriceModel=pricing.getZonePrice(ctx.getZoneInfo());
+		if(zonePriceModel==null) {
+			ZoneInfo zone=ctx.getZoneInfo();
+			while(zone.hasParentZone() && zonePriceModel==null ) {
+				zone=zone.getParentZone();
+				zonePriceModel=pricing.getZonePrice(zone);
+			}
+		}
+		if(zonePriceModel==null) 
+			throw new PricingException("No price defined for "+ctx.getZoneInfo());
+		if (zonePriceModel.hasScales()) {
+			return calculateScalePrice(pricing, configuration, ctx.getZoneInfo(),scaleQuantity);		
 		} else {
-			return calculateSimplePrice(pricing, configuration, ctx.getZoneId());
+			return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
 		}
 	}
 
@@ -205,7 +218,7 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateGrpScalePrice(Pricing pricing, FDConfigurableI configuration, double grpQuantity, MaterialPrice grpMaterialPrice) throws PricingException {
+	private static ConfiguredPrice calculateGrpScalePrice(Pricing pricing, FDConfigurableI configuration, double grpQuantity, MaterialPrice grpMaterialPrice,ZoneInfo zone) throws PricingException {
 		
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
@@ -225,26 +238,27 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + grpMaterialPrice.getPrice() + "]");
 
 		double price = pricingQuantity * grpMaterialPrice.getPrice();
-		return new ConfiguredPrice(new Price(price), grpMaterialPrice);
+		return new ConfiguredPrice(new Price(price), grpMaterialPrice,zone);
 	}
 
 	
 	
 	/**
 	 * Perform pricing with scales.
+	 * @param scaleQuantity 
 	 *
 	 * @return material price
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateScalePrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
+	private static ConfiguredPrice calculateScalePrice(Pricing pricing, FDConfigurableI configuration, ZoneInfo pricingZone, Double scaleQuantity) throws PricingException {
 		
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
 		
 		// pricing with scales
-		String scaleUnit = pricing.getZonePrice(pZoneId).getScaleUnit();
-		double scaledQuantity;
+		String scaleUnit = pricing.getZonePrice(pricingZone).getScaleUnit();
+		double scaledQuantity ;
 		if ( !salesUnit.equals(scaleUnit) ) {
 			// different UOMs, perform conversion
 			SalesUnitRatio ratio = pricing.findSalesUnitRatio(salesUnit);
@@ -252,7 +266,8 @@ public class PricingEngine {
 				throw new PricingException("No salesUnitRatio found for "+salesUnit+" in "+pricing);
 			}
 			// mutliply by ratio
-			scaledQuantity = quantity * ratio.getRatio();		
+			scaledQuantity = scaleQuantity==null? (quantity * ratio.getRatio()): (scaleQuantity * ratio.getRatio());		
+			
 			if ( !scaleUnit.equals( ratio.getSalesUnit() ) ) {
 				// this is not the scale unit yet, we need another conversion (division)
 				ratio = pricing.findSalesUnitRatio( scaleUnit );
@@ -262,12 +277,17 @@ public class PricingEngine {
 				scaledQuantity /= ratio.getRatio();
 			}
 		} else {
+			if(null==scaleQuantity){
 			scaledQuantity = quantity;
+			}else{
+				scaledQuantity = scaleQuantity;
+	
+			}
 		}
 		if (DEBUG) LOGGER.debug("Scale pricing - scaledQuantity "+scaledQuantity+" "+scaleUnit);
 
 		// find pricing condition for quantity (in scaleUnit)
-		MaterialPrice materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice(scaledQuantity);
+		MaterialPrice materialPrice = pricing.getZonePrice(pricingZone).findMaterialPrice(scaledQuantity);
 	
 		double pricingQuantity;
 		if ( !salesUnit.equals(materialPrice.getPricingUnit()) ) {
@@ -284,7 +304,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + materialPrice.getPrice() + "]");
 
 		double price = pricingQuantity * materialPrice.getPrice();
-		return new ConfiguredPrice(new Price(price), materialPrice);
+		return new ConfiguredPrice(new Price(price), materialPrice,pricingZone);
 	}
 
 	/**
@@ -293,13 +313,21 @@ public class PricingEngine {
 	 * @return material price
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateSimplePrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
+	private static ConfiguredPrice calculateSimplePrice(Pricing pricing, FDConfigurableI configuration, ZoneInfo pricingZone) throws PricingException {
 
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
 
 		// regular pricing
-		MaterialPrice materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice(salesUnit);
+		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
+		ZoneInfo pz=pricingZone;
+		while(zpm==null && pz.hasParentZone() ) {
+			pz=pz.getParentZone();
+			zpm=pricing.getZonePrice(pz);
+			
+		}
+		
+		MaterialPrice materialPrice = zpm.findMaterialPrice(salesUnit);
 		if (materialPrice==null) {
 			// not found, we need a ratio
 			SalesUnitRatio ratio = pricing.findSalesUnitRatio(salesUnit);
@@ -308,21 +336,25 @@ public class PricingEngine {
 			}
 
 			// find pricing condition by pricing unit
-			materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice( ratio.getSalesUnit() );
+			zpm=pricing.getZonePrice(pricingZone);
+			if (zpm == null) {
+				throw new PricingException("No materialPrice found for "+ratio.getSalesUnit());
+			}
+			materialPrice = zpm.findMaterialPrice( ratio.getSalesUnit() );
 			if (materialPrice == null) {
 				throw new PricingException("No materialPrice found for "+ratio.getSalesUnit());
 			}
 			if (DEBUG) LOGGER.debug("calculateMaterialPrice ["+quantity+" * "+ratio.getRatio()+" * "+materialPrice.getPrice()+"]");
 			
 			double price = quantity * ratio.getRatio() * materialPrice.getPrice();
-			return new ConfiguredPrice(new Price(price), materialPrice);
+			return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone());
 
 		} else {
 			// found, just apply price
 			if (DEBUG) LOGGER.debug("calculateMaterialPrice ["+quantity+" * "+materialPrice.getPrice()+"]");
 
 			double price = quantity * materialPrice.getPrice();
-			return new ConfiguredPrice(new Price(price), materialPrice);
+			return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone());
 		}
 	}
 
@@ -331,8 +363,8 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	private static double calculateCVPrices(Pricing pricing, FDConfigurableI configuration) throws PricingException {
-
+	private static double calculateCVPrices(Pricing pricing, FDConfigurableI configuration,PricingContext pCtx) throws PricingException {
+        
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
 		Map options = configuration.getOptions();
@@ -346,7 +378,7 @@ public class PricingEngine {
 			//null check instead of throwing exception in findCharacteristicValuePrice
 			chValue = (chValue == null) ? "" : chValue;
 			if (DEBUG) LOGGER.debug("trying to price CV "+characteristic+","+chValue);
-			CharacteristicValuePrice cvp = pricing.findCharacteristicValuePrice(characteristic, chValue);
+			CharacteristicValuePrice cvp = pricing.findCharacteristicValuePrice(characteristic, chValue,pCtx);
 			if (cvp==null) {
 				if (DEBUG) LOGGER.debug("No pricing info, assuming 0, skipping");
 				continue;

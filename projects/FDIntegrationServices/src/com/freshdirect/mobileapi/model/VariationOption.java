@@ -14,6 +14,8 @@ public class VariationOption {
 
     String characteristicValuePrice;
 
+    String id;
+    
     FDVariationOption option;
 
     public VariationOption(FDVariationOption option) {
@@ -42,6 +44,14 @@ public class VariationOption {
         return name;
     }
 
+    public String getId(){
+    	return this.id;
+    }
+    
+    public void setId(String id){
+    	this.id = id;
+    }
+    
     public boolean isUnAvailable() {
         boolean unAvailable = false;
         String optSkuCode = option.getSkuCode();

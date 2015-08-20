@@ -62,11 +62,11 @@ class SalesOrderSimulateHelper extends SalesOrderHelper {
 
 		this.bapi.setOrderHeaderIn(new BapiSalesOrderSimulate.OrderHeaderIn() {
 			public String getSalesOrg() {
-				return SapProperties.getSalesOrg();
+				return sapOrder.getSalesOrg();
 			}
 
 			public String getDistrChan() {
-				return SapProperties.getDistrChan();
+				return sapOrder.getDistributionChannel();
 			}
 
 			public String getDivision() {

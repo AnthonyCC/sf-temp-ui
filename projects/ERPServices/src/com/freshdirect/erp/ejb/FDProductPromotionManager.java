@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.productpromotion.FDProductPromotionFactory;
@@ -23,7 +24,7 @@ public class FDProductPromotionManager {
 		return instance;
 	}
 	
-	public static Map<String,List<FDProductPromotionInfo>> getProductPromotion(String ppType) throws FDResourceException{
+	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getProductPromotion(String ppType) throws FDResourceException{
 		return FDProductPromotionFactory.getInstance().getProductPromotion(ppType);
 	}
 	

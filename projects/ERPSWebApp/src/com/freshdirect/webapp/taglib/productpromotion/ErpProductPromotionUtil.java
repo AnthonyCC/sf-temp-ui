@@ -10,6 +10,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -22,6 +23,7 @@ import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 public class ErpProductPromotionUtil {
 
 	public static final String DEFAULT_ZONE = "0000100000";
+	public static final ZoneInfo DEFAULT_ZONE_INFO = new ZoneInfo("0000100000","0001","01");
 	public static List<ErpZoneMasterInfo> zoneList =  getAvailablePricingZones();
 	/*public static Object getAvailableDepartments(){		
 		try {

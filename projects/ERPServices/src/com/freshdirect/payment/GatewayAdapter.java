@@ -429,6 +429,8 @@ public class GatewayAdapter {
 			return Merchant.FRESHDIRECT;
 		else if (Merchant.FDW.name().equalsIgnoreCase(merchantID))
 			return Merchant.FDW;
+		else if (Merchant.FDX.name().equalsIgnoreCase(merchantID))
+			return Merchant.FDX;
 		else 
 			return Merchant.USQ;
 	}

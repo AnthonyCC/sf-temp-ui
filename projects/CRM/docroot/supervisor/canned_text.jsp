@@ -57,7 +57,6 @@
 		}
 	}
 %>
-<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 <style type="text/css">
 body {
 	background-color: #FFFFFF;

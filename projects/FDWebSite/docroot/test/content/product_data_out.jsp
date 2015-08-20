@@ -13,7 +13,7 @@
 		SkuModel sRef = null;
 		
 		pRef = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:"+pId));
-
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		//if not a product, check for a SKU instead
 		if (pRef == null) {
 			//get sku model
@@ -31,7 +31,7 @@
 					out.print(pRef.getProductRating());
 				}else if (sRef instanceof SkuModel) {
 					//sku
-					out.print(sRef.getProductInfo().getRating());
+					out.print(sRef.getProductInfo().getRating(plantID));
 				}
 			}
 		}

@@ -17,7 +17,7 @@ public class ATPFailureDAO {
 	public void create(Connection conn, List atpFailureInfos) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO ERPS.ATP_FAILURE(REQUESTED_DATE, MATERIAL_SAP_ID, QUANTITY_REQ, SALES_UNIT, QUANTITY_AVAIL, TIMESTAMP, CUSTOMER_ID) VALUES (?,?,?,?,?,SYSDATE, ?)");
+				"INSERT INTO ERPS.ATP_FAILURE(REQUESTED_DATE, MATERIAL_SAP_ID, QUANTITY_REQ, SALES_UNIT, QUANTITY_AVAIL, TIMESTAMP, CUSTOMER_ID, PLANT_ID) VALUES (?,?,?,?,?,SYSDATE, ?,?)");
 
 		for (Iterator i = atpFailureInfos.iterator(); i.hasNext();) {
 			ATPFailureInfo info = (ATPFailureInfo) i.next();
@@ -28,6 +28,7 @@ public class ATPFailureDAO {
 			ps.setString(4, info.getSalesUnit());
 			ps.setDouble(5, info.getAvailableQuantity());
 			ps.setString(6, info.getErpCustomerId());
+			ps.setString(7, info.getPlantId());
 
 			ps.addBatch();
 		}

@@ -74,6 +74,9 @@ public interface SessionParamName {
      public static final String SMART_STORE_PREV_RECOMMENDATIONS = SessionName.SMART_STORE_PREV_RECOMMENDATIONS;
 
      public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
+     
+     public final static String CURRENT_CART = SessionName.CURRENT_CART; // used to hang on the user's anonymous cart for merge_cart
+    
 
 
 

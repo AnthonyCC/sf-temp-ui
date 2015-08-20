@@ -83,7 +83,7 @@ final int W_YA_MODIFY_ORDER = 970;
 			FDUserI currentUser = (FDUserI) session.getAttribute(SessionName.USER);
 			// !!! huh?
 			//FDCartModel originalCart = FDCustomerManager.loadShoppingCart(identity);
-			FDCartModel originalCart = FDCustomerManager.getSavedCart(identity);//FDCustomerManager.recognize(identity).getShoppingCart();
+			FDCartModel originalCart = FDCustomerManager.getSavedCart(identity,currentUser.getUserContext().getStoreContext().getEStoreId());//FDCustomerManager.recognize(identity).getShoppingCart();
 %>		
 		<%if(originalCart.numberOfOrderLines() > 0){%>			
 			We won't forget the items that are in your cart now - you'll see them again as soon as you're done making changes.<br><br> 

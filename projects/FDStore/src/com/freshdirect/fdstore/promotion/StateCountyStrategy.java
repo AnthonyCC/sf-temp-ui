@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -47,22 +49,22 @@ public class StateCountyStrategy implements PromotionStrategyI {
 		this.actionDate = actionDate;
 	}
 
-	public HashSet<String> getCounty() {
+	public Set<String> getCounty() {
 		if(county != null)
 			return county;
 		else 
-			return new HashSet();
+			return Collections.emptySet();
 	}
 
 	public void setCounty(HashSet<String> county) {
 		this.county = county;
 	}
 
-	public HashSet<String> getStates() {
+	public Set<String> getStates() {
 		if(states != null)
 			return states;
 		else
-			return new HashSet();
+			return Collections.emptySet();
 	}
 
 	public void setStates(HashSet<String> states) {
@@ -173,8 +175,11 @@ public class StateCountyStrategy implements PromotionStrategyI {
 
 	@Override
 	public int getPrecedence() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

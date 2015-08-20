@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -94,14 +95,14 @@ public class ErpGrpPriceModel extends ModelSupport {
 	}
 	
 	
-	public Collection<ErpGrpPriceZoneModel> getGrpZoneModel(String zoneId){
+	public Collection<ErpGrpPriceZoneModel> getGrpZoneModel(ZoneInfo zone){
 		
     	List<ErpGrpPriceZoneModel> zoneList=new ArrayList<ErpGrpPriceZoneModel>();
     		if(this.zoneModelList!=null && this.zoneModelList.size()>0){
     			Iterator<ErpGrpPriceZoneModel> iterator=this.zoneModelList.iterator();
     			while(iterator.hasNext()){
     				ErpGrpPriceZoneModel mat=(ErpGrpPriceZoneModel)iterator.next();
-    				if(mat.getZoneId().equalsIgnoreCase(zoneId)){    	
+    				if(mat.getZone().equals(zone)){    	
     					zoneList.add(mat);
     					//break;
     				}    				    				
@@ -112,16 +113,16 @@ public class ErpGrpPriceModel extends ModelSupport {
 	}
 	
 
-    public Collection<ErpGrpPriceZoneModel> getGrpPriceModel(String zoneId){
+    public Collection<ErpGrpPriceZoneModel> getGrpPriceModel(ZoneInfo zone){
     			
     	Collection<ErpGrpPriceZoneModel> grpZoneModelList;
     	try{
-    		grpZoneModelList=getGrpZoneModel(zoneId);
+    		grpZoneModelList=getGrpZoneModel(zone);
 			
 			if(grpZoneModelList == null || grpZoneModelList.size()==0) {
 				//do a item cascading to its parent until we find a price info.
-				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(zoneId);
-				grpZoneModelList = getGrpPriceModel(zoneInfo.getParentZone().getSapId());
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(zone.getPricingZoneId());
+				grpZoneModelList = getGrpPriceModel(new ZoneInfo(zoneInfo.getParentZone().getSapId(),zone.getSalesOrg(),zone.getDistributionChanel()));
 			}
 			return grpZoneModelList;
 		}
@@ -135,7 +136,7 @@ public class ErpGrpPriceModel extends ModelSupport {
 		// sort by zone id ascending
 		Collections.sort(orderedList, new Comparator<ErpGrpPriceZoneModel>() {
 			public int compare(ErpGrpPriceZoneModel z1, ErpGrpPriceZoneModel z2) {
-				return z1.getZoneId().compareTo(z2.getZoneId());
+				return z1.getZone().compareTo(z2.getZone());
 			}
 		} );
 		return orderedList;

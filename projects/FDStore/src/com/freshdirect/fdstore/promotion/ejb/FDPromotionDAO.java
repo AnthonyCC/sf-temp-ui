@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -660,7 +660,7 @@ public class FDPromotionDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
+			promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 		}
 
 		

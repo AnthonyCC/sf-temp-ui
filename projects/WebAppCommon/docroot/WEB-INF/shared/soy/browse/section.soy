@@ -12,6 +12,8 @@
     <a href="/browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
       {if $image}
         <img src="{$image}" alt="">
+      {else}
+      	<img src="/media/images/temp/soon_80x60.gif" alt="">
       {/if}
       {if $name}
         <div class="name">{$name}</div>
@@ -21,6 +23,8 @@
     <span class="disabled">
       {if $image}
         <img src="{$image}" alt="">
+      {else}
+      	<img src="/media/images/temp/soon_80x60.gif" alt="">
       {/if}
       {if $name}
         <div class="name">{$name}</div>

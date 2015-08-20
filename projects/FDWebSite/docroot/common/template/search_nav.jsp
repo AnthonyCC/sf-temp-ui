@@ -2,7 +2,6 @@
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
-%><%@ page import="com.freshdirect.fdstore.util.SiteFeatureHelper" 
 %><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <% //expanded page dimensions

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.promotion;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -57,7 +58,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 			return false;
 		}
 		try {
-			FDCartLineI cartLine = this.createSampleLine(promotionCode, context.getPricingContext());
+			FDCartLineI cartLine = this.createSampleLine(promotionCode, context.getUserContext());
 			if (cartLine != null) {
 				context.addSampleLine(cartLine);
 				return true;
@@ -69,10 +70,10 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	}
 
 	/** @return null if product is not found */
-	private FDCartLineI createSampleLine(String promotionCode, PricingContext pricingCtx) throws FDResourceException {
+	private FDCartLineI createSampleLine(String promotionCode, UserContext userCtx) throws FDResourceException {
 		ProductModel product = null;	
 		try{
-			product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel(),pricingCtx);	
+			product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel(),userCtx.getPricingContext());	
 
 		}catch(Exception ex){
 			// This is to handle when a invalid category id or product id is set to the sampe promo. 
@@ -104,7 +105,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 			new FDCartLineModel(
 				new FDSku(fdp),
 				product,
-				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null, pricingCtx.getZoneId());
+				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null, userCtx);
 
 		cartLine.setDiscount(new Discount(promotionCode, EnumDiscountType.SAMPLE, 1.0));
 

@@ -1,5 +1,10 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.mobileapi.controller.data.Message;
 
@@ -12,7 +17,13 @@ public class Visitor extends Message {
 	private String apartment;
 	private String city;
 	private String state;
-	
+	private Set availableServiceTypes;
+	public Set getAvailableServiceTypes() {
+		return availableServiceTypes;
+	}
+	public void setAvailableServiceTypes(Set availableServiceTypes) {
+		this.availableServiceTypes = availableServiceTypes;
+	}
 	public String getAddress1() {
 		return address1;
 	}

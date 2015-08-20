@@ -75,6 +75,7 @@ public class WebOrderViewFactory {
 	private static List<ErpAffiliate> getShownAffiliates(List<FDCartLineI> cartLines) {
 		ErpAffiliate[] affils = new ErpAffiliate[] {
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_FD),
+			ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW),
@@ -126,6 +127,7 @@ public class WebOrderViewFactory {
 		protected double tax;
 		protected double subtotal;
 		protected double depositValue;
+		protected double eTip;
 
 		public AbstractOrderView(ErpAffiliate affiliate, List<FDCartLineI> lines, boolean hideDescription, boolean modified) {
 			this.affiliate = affiliate;
@@ -207,6 +209,11 @@ public class WebOrderViewFactory {
 				}
 			}
 			return false;
+		}
+		
+		@Override
+		public double getETip() {
+			return eTip;
 		}
 
 	}

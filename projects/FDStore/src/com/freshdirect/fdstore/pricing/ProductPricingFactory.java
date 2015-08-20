@@ -29,10 +29,11 @@ public class ProductPricingFactory {
 	public ProductModelPricingAdapter getPricingAdapter(ProductModel pm, PricingContext pCtx){
 		if (pm == null) {
 			return null;
+			
 		} else if(pm instanceof ProductModelPricingAdapter) {
 			return (ProductModelPricingAdapter)pm;
 		} else {
-			return new ProductModelPricingAdapter(pm, pCtx);
+			return new ProductModelPricingAdapter(pm);
 		}
 	}
 

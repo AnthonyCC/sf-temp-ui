@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDResourceException;
@@ -27,6 +28,7 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.util.JspMethods;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class AddSavedRecipientControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
@@ -89,7 +91,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);
         if(fs_user==null){
         	try{
-        	FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE);
+        		StoreContext storeContext =StoreContextUtil.getStoreContext(session);
+	        	FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE,storeContext.getEStoreId());
         	fs_user = new FDSessionUser(fduser,request.getSession());        	
         	fs_user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
     		//Added the following line for zone pricing to keep user service type up-to-date.

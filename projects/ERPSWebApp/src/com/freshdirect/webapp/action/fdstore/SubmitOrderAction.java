@@ -490,7 +490,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		}
 		
 		boolean sendEmail = true;
-		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null || user.getMasqueradeContext()!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
 		
 		if (EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
 			//
@@ -693,6 +693,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				// Clear the cart from the session by replacing it with a new cart
 				user.setShoppingCart( new FDCartModel() );
 				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
+				user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
+				user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
+				user.getShoppingCart().setEStoreId(cart.getEStoreId());
 				// user.updateSurcharges();
 				user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
 

@@ -55,6 +55,8 @@ public class ProductSearchResult {
     private Image thumbnail = new Image();
     
     private Image detailImage = new Image();
+    
+    private Image zoomImage = new Image();
 
     private Image thumbBurst = null;
 
@@ -176,8 +178,14 @@ public class ProductSearchResult {
 	        this.detailImage.setHeight(detailImage.getHeight());
 	        this.detailImage.setWidth(detailImage.getWidth());
 	        this.detailImage.setSource(detailImage.getPath());
+        }        
+        
+        com.freshdirect.fdstore.content.Image zoomImg = product.getImage(ImageType.ZOOM);
+        if(zoomImg != null) {
+        this.zoomImage.setHeight(zoomImg.getHeight());
+        this.zoomImage.setWidth(zoomImg.getWidth());
+        this.zoomImage.setSource(zoomImg.getPath());
         }
-       
         
         setQuantityMaximum(product.getQuantityMaximum());
         setQuantityMinimum(product.getQuantityMinimum());
@@ -488,5 +496,15 @@ public class ProductSearchResult {
 
 	public void setUtSalesUnit(String utSalesUnit) {
 		this.utSalesUnit = utSalesUnit;
+	}
+
+	public Image getZoomImage() {
+		return zoomImage;
+	}
+
+	public void setZoomImage(Image zoomImage) {
+		this.zoomImage = zoomImage;
 	}	
+	
+	
 }

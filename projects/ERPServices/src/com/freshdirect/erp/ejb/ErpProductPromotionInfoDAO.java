@@ -15,10 +15,17 @@ import org.apache.log4j.Category;
 
 import weblogic.auddi.util.Logger;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpProductPromotionInfoDAO implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1850046746832219296L;
 
 	private static Category LOGGER = LoggerFactory.getInstance( ErpProductPromotionInfoDAO.class );
 	
@@ -34,10 +41,8 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	private static final String COLUMN_ERP_CATEGORY="ERP_CATEGORY";
 	private static final String COLUMN_ERP_CAT_POSITION="ERP_CAT_POSITION";
 	private static final String COLUMN_ERP_PP_ID="ERP_PP_ID";
-	
-	private static final String FEATURED="FEATURED";
-	private static final String NON_FEATURED="NON_FEATURED";
-	
+	private static final String COLUMN_SALES_ORG="SALES_ORG";
+	private static final String COLUMN_DISTRIBUTION_CHANNEL="DISTRIBUTION_CHANNEL";
 	
 	private static final String ALL_ZONES_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S') and ppg.type=? order by ppg.zone_id,  to_number(ppg.erp_cat_position),to_number(ppg.priority),ppg.featured ";
 	private static final String ALL_ZONES_REFRESH_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S' and PPH.DATE_CREATED > ? ) and ppg.type=? order by ppg.zone_id, to_number(ppg.erp_cat_position),to_number(ppg.priority),ppg.featured ";
@@ -47,11 +52,11 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	 * @param ppType
 	 * @return
 	 */	 
-	public static Map<String,List<FDProductPromotionInfo>> getAllProductsByType(Connection conn, String ppType, Date lastPublishDate) throws SQLException{
+	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(Connection conn, String ppType, Date lastPublishDate) throws SQLException{
 		
 		   PreparedStatement ps = null;
 		   ResultSet rs = null;
-		   Map<String,List<FDProductPromotionInfo>> zonePromoProdMap = new HashMap<String,List<FDProductPromotionInfo>>();
+		   Map<ZoneInfo,List<FDProductPromotionInfo>> zonePromoProdMap = new HashMap<ZoneInfo,List<FDProductPromotionInfo>>();
 		   List<FDProductPromotionInfo> promotionProducts =null;;	
 	       try {
 	    	   if(lastPublishDate !=null){
@@ -67,11 +72,13 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	    	   rs = ps.executeQuery();
 	           while (rs.next()) {
 	            	 String zoneId = rs.getString(COLUMN_ZONE_ID);
+	            	 SalesAreaInfo saleAreaInfo =new SalesAreaInfo(rs.getString(COLUMN_SALES_ORG), rs.getString(COLUMN_DISTRIBUTION_CHANNEL));
+	            	 ZoneInfo zoneInfo =new ZoneInfo(zoneId,saleAreaInfo.getSalesOrg(),saleAreaInfo.getDistChannel());
 	            	 boolean isFeatured = "X".equalsIgnoreCase(rs.getString(COLUMN_FEATURED))?true:false;
-	            	 promotionProducts = zonePromoProdMap.get(zoneId);
+	            	 promotionProducts = zonePromoProdMap.get(zoneInfo);
 	            	 if(null == promotionProducts){
 	            		 promotionProducts = new ArrayList<FDProductPromotionInfo>();
-	            		 zonePromoProdMap.put(zoneId, promotionProducts);
+	            		 zonePromoProdMap.put(zoneInfo, promotionProducts);
 	            	 }
 	            	 FDProductPromotionInfo promotionProduct = new FDProductPromotionInfo();
 	            	 promotionProduct.setId(rs.getString(COLUMN_ID));
@@ -86,6 +93,7 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	            	 promotionProduct.setErpCategory(rs.getString(COLUMN_ERP_CATEGORY));
 	            	 promotionProduct.setErpCatPosition(null !=rs.getString(COLUMN_ERP_CAT_POSITION)?Integer.parseInt(rs.getString(COLUMN_ERP_CAT_POSITION)):0);
 	            	 promotionProduct.setErpPromtoionId(rs.getString(COLUMN_ERP_PP_ID));
+	            	 promotionProduct.setSalesArea(saleAreaInfo);
 	            	 promotionProducts.add(promotionProduct);	            	 
 	           }
 	       }catch(SQLException e){
@@ -131,6 +139,7 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	            	 promotionProduct.setType(rs.getString(COLUMN_TYPE));
 	            	 promotionProduct.setErpCategory(rs.getString(COLUMN_ERP_CATEGORY));
 	            	 promotionProduct.setErpCatPosition(Integer.parseInt(rs.getString(COLUMN_ERP_CAT_POSITION)));
+	            	 promotionProduct.setSalesArea(new SalesAreaInfo(rs.getString(COLUMN_SALES_ORG), rs.getString(COLUMN_DISTRIBUTION_CHANNEL)));
 	            	 promotionProducts.add(promotionProduct);		            	 
 	             }
 	       }catch(SQLException e){
@@ -160,13 +169,13 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	 * @param ppType
 	 * @return
 	 */	 
-	public static Map<String,Map<String,List<FDProductPromotionInfo>>> getAllPromotionsByType(Connection conn, String ppType, Date lastPublishDate) throws SQLException{
+	public static Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getAllPromotionsByType(Connection conn, String ppType, Date lastPublishDate) throws SQLException{
 		
 		   PreparedStatement ps = null;
 		   ResultSet rs = null;
-		   Map<String,Map<String,List<FDProductPromotionInfo>>> promoProdMap = new HashMap<String,Map<String,List<FDProductPromotionInfo>>>();
+		   Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> promoProdMap = new HashMap<String,Map<ZoneInfo,List<FDProductPromotionInfo>>>();
 		   List<FDProductPromotionInfo> promotionProducts =null;
-		   Map<String,List<FDProductPromotionInfo>> promotionZoneProducts = null;
+		   Map<ZoneInfo,List<FDProductPromotionInfo>> promotionZoneProducts = null;
 	       try {
 	    	   if(lastPublishDate !=null){
 	    		   ps = conn.prepareStatement(ALL_PROMOTION_REFRESH_PRODUCTS_SQL);
@@ -182,17 +191,19 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	           while (rs.next()) {
 	            	 String ppId = rs.getString(COLUMN_ERP_PP_ID);
 	            	 String zoneId = rs.getString(COLUMN_ZONE_ID);
+	            	 SalesAreaInfo saleAreaInfo =new SalesAreaInfo(rs.getString(COLUMN_SALES_ORG), rs.getString(COLUMN_DISTRIBUTION_CHANNEL));
+	            	 ZoneInfo zoneInfo =new ZoneInfo(zoneId,saleAreaInfo.getSalesOrg(),saleAreaInfo.getDistChannel());
 	            	 boolean isFeatured = "X".equalsIgnoreCase(rs.getString(COLUMN_FEATURED))?true:false;
 	            	 promotionZoneProducts = promoProdMap.get(ppId);
 	            	 if(null ==promotionZoneProducts){
-	            		 promotionZoneProducts = new HashMap<String,List<FDProductPromotionInfo>>();
+	            		 promotionZoneProducts = new HashMap<ZoneInfo,List<FDProductPromotionInfo>>();
 	            		 promoProdMap.put(ppId, promotionZoneProducts);
 	            	 }
 	            	 
-	            	 promotionProducts = promotionZoneProducts.get(zoneId);
+	            	 promotionProducts = promotionZoneProducts.get(zoneInfo);
 	            	 if(null == promotionProducts){
 	            		 promotionProducts = new ArrayList<FDProductPromotionInfo>();
-	            		 promotionZoneProducts.put(zoneId, promotionProducts);
+	            		 promotionZoneProducts.put(zoneInfo, promotionProducts);
 	            	 }
 	            	 FDProductPromotionInfo promotionProduct = new FDProductPromotionInfo();
 	            	 promotionProduct.setId(rs.getString(COLUMN_ID));
@@ -207,6 +218,7 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	            	 promotionProduct.setErpCategory(rs.getString(COLUMN_ERP_CATEGORY));
 	            	 promotionProduct.setErpCatPosition(null !=rs.getString(COLUMN_ERP_CAT_POSITION)?Integer.parseInt(rs.getString(COLUMN_ERP_CAT_POSITION)):0);
 	            	 promotionProduct.setErpPromtoionId(rs.getString(COLUMN_ERP_PP_ID));
+	            	 promotionProduct.setSalesArea(saleAreaInfo);
 	            	 promotionProducts.add(promotionProduct);	            	 
 	           }
 	       }catch(SQLException e){

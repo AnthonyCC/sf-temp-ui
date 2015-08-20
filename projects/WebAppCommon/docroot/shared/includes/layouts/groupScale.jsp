@@ -139,7 +139,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 	//********** Start of Stuff to let JSPF's become JSP's **************
 	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
+	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 	//using getAttribute across the board here, set the values in parent - group.jsp so we can remove them from the URL
 	String catId = request.getAttribute("catId").toString();
 		if ("".equals(catId)) { catId = null; }
@@ -157,6 +157,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 	if (deptId != null) {
 		currentFolder=ContentFactory.getInstance().getContentNode(deptId);
+		
 		isDepartment = true;
 	} else if (catId != null) {
 		currentFolder=ContentFactory.getInstance().getContentNode(catId);
@@ -455,12 +456,12 @@ final int W_GROUPSCALE_TOTAL = 601;
 						JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
 					}
 
-					prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
-					hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
+					prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice());
+					hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale();
 					if(hasWas) {
-						prodBasePrice=currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice());
+						prodBasePrice=currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getSellingPrice());
 					}
-					deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
+					deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getHighestDealPercentage();
 					if (deal > 0) {
 						dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
 					}

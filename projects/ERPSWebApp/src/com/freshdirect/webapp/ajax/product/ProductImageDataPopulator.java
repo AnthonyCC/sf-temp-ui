@@ -109,7 +109,7 @@ public class ProductImageDataPopulator {
 			 * According to ticket http://jira.freshdirect.com:8080/browse/APPDEV-2328
 			 */
 			if(productInfo != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating();
+				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
 				if ( enumRating != null) {
 					if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
 						ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");

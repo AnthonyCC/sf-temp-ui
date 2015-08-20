@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CmInitTag extends AbstractCmTag {
@@ -31,8 +33,10 @@ public class CmInitTag extends AbstractCmTag {
 	}
 	
 	private String getSetClientIdScript(){
+		final CmContext ctx = CmContext.getContext();
+
 		String setClientIdScript = getFormattedTag( 
-				toJsVar(FDStoreProperties.getCoremetricsClientId()), 
+				toJsVar(ctx.getCompoundId()), 
 				FDStoreProperties.getCoremetricsDataCollectionMethod(), //boolean value
 				toJsVar(FDStoreProperties.getCoremetricsDataCollectionDomain()), 
 				toJsVar(FDStoreProperties.getCoremetricsCookieDomain()) );

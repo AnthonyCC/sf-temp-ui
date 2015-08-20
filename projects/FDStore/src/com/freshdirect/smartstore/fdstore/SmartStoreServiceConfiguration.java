@@ -45,11 +45,11 @@ public class SmartStoreServiceConfiguration {
 	}
 
 
-	public Collection<DynamicSiteFeature> loadDynamicSiteFeatures() {
+	public Collection<DynamicSiteFeature> loadDynamicSiteFeatures(String eStoreId) {
 		try {
 			SmartStoreServiceConfigurationSB sb;
 			sb = FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
-			return sb.getSiteFeatures();
+			return sb.getSiteFeatures(eStoreId);
 		} catch (RemoteException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
 			return Collections.emptyList();

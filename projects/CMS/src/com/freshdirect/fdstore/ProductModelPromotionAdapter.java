@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.erp.model.ErpProductInfoModel;
@@ -455,27 +456,27 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public PriceCalculator getPriceCalculator() {
 		if(!isPreview){
-			return productModel.getPriceCalculator(ppSkuCode,getPricingContext());
+			return productModel.getPriceCalculator(ppSkuCode,getUserContext().getPricingContext());
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
 	@Override
 	public PriceCalculator getPriceCalculator(String skuCode) {
 		if(!isPreview){
-			return productModel.getPriceCalculator(skuCode,getPricingContext());
+			return productModel.getPriceCalculator(skuCode,getUserContext().getPricingContext());
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
 	@Override
 	public PriceCalculator getPriceCalculator(SkuModel sku) {	
 		if(!isPreview){
-			return productModel.getPriceCalculator(sku,getPricingContext());
+			return productModel.getPriceCalculator(sku,getUserContext().getPricingContext());
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
@@ -484,7 +485,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		if(!isPreview){
 			return productModel.getPriceCalculator(ppSkuCode,pricingContext);
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
@@ -494,7 +495,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		if(!isPreview){	
 			return productModel.getPriceCalculator(skuCode, pricingContext);
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
@@ -504,7 +505,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		if(!isPreview){
 			return productModel.getPriceCalculator(sku, pricingContext);
 		}else{
-			return new ProductPromoPreviewPriceCalculator(getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
+			return new ProductPromoPreviewPriceCalculator(getUserContext().getPricingContext(),productModel,productModel.getSku(ppSkuCode),fdProdInfo,fdProduct);
 		}
 	}
 
@@ -519,13 +520,9 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
-	public PricingContext getPricingContext() {	
-		/*if(!isPreview){
-			return  productModel.getPricingContext();
-		}else{*/
-			return ContentFactory.getInstance().getCurrentPricingContext();
-//		}
-//		return productModel.getPricingContext();
+	public UserContext getUserContext() {	
+		
+			return productModel.getUserContext();
 	}
 
 	@Override
@@ -1151,10 +1148,7 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.getEarliestAvailability();
 	}
 
-	@Override
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {		 
-		return productModel.getLimitedAvailability();
-	}
+	
 
 	@Override
 	public boolean isAvailableWithin(int days) {		 

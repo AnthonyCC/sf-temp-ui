@@ -10,11 +10,13 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.mockejb.interceptor.AspectSystem;
+import org.python.modules.newmodule;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
@@ -232,12 +234,12 @@ public class ExternalRecommenderTest extends TestCase {
 		}
 		try {
 			DataGenerator generator = compiler.createDataGenerator("ext3", "PersonalizedItems_foo()");
-			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			List<? extends ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(0, nodes.size());
 
 			// should return different result for different user
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
 			assertEquals("a1", nodes.get(0).getContentKey().getId());
@@ -248,7 +250,7 @@ public class ExternalRecommenderTest extends TestCase {
 			recommender.setChange(true);
 			
 			// change should take effect only after timeout
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
 			assertEquals("a1", nodes.get(0).getContentKey().getId());
@@ -261,7 +263,7 @@ public class ExternalRecommenderTest extends TestCase {
 				fail("thread interrupted while asleep");
 			}
 			// now it should really take effect
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(4, nodes.size());
 			assertEquals("b1", nodes.get(0).getContentKey().getId());
@@ -272,7 +274,7 @@ public class ExternalRecommenderTest extends TestCase {
 
 			// should return no results for unknown users (even if the
 			// communication fails internally)
-			input = new SessionInput("unknown", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("unknown", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(0, nodes.size());
 		} catch (CompileException e) {
@@ -303,7 +305,7 @@ public class ExternalRecommenderTest extends TestCase {
 		try {
 			// testing currentNode and explicitList combined into a single list
 			DataGenerator generator = compiler.createDataGenerator("ext7", "RelatedItems_baz(toList(currentNode,explicitList))");
-			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			SessionInput input = new SessionInput("123", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			input.setCurrentNode(ContentFactory.getInstance().getContentNode("e1"));
 			List<? extends ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
@@ -312,7 +314,7 @@ public class ExternalRecommenderTest extends TestCase {
 			assertEquals("e3", nodes.get(2).getContentKey().getId());
 
 			// should return the same for different user
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			input.setCurrentNode(ContentFactory.getInstance().getContentNode("e1"));
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(3, nodes.size());
@@ -321,12 +323,12 @@ public class ExternalRecommenderTest extends TestCase {
 			assertEquals("e3", nodes.get(2).getContentKey().getId());
 
 			// no result if no input
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			nodes = generator.generate(input, new MockDataAccess());
 			assertEquals(0, nodes.size());
 
 			// works for items coming from explicit list
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			List<ContentNodeModel> explicitList = new ArrayList<ContentNodeModel>();
 			explicitList.add(ContentFactory.getInstance().getContentNode("e1"));
 			input.setExplicitList(explicitList);
@@ -337,7 +339,7 @@ public class ExternalRecommenderTest extends TestCase {
 			assertEquals("e3", nodes.get(2).getContentKey().getId());
 
 			// works for multiple items coming from various sources
-			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			input.setCurrentNode(ContentFactory.getInstance().getContentNode("e1"));
 			explicitList = new ArrayList<ContentNodeModel>();
 			explicitList.add(ContentFactory.getInstance().getContentNode("a1"));
@@ -355,7 +357,7 @@ public class ExternalRecommenderTest extends TestCase {
 		}
 		try {
 			DataGenerator generator = compiler.createDataGenerator("ext8", "RelatedItems_baz(recentItems)");
-			SessionInput input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			SessionInput input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT, new FulfillmentContext());
 			Set<ContentKey> recentItems = new HashSet<ContentKey>();
 			input.setRecentItems(recentItems);
 			recentItems.add(ContentKey.create(ContentType.get("Product"), "a1"));

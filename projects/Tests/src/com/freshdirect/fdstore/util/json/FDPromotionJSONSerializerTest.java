@@ -73,7 +73,8 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				1, 2,
 				new String[]{"C1", "C2", "C3"},new String[]{"MKT0072336", "MKT0072335"},
 				"dpStatus1",
-				aDate, aDate, true, false, false,
+				aDate, aDate,
+				true, false, false, false, /* order types */
 				new EnumCardType[]{EnumCardType.AMEX, EnumCardType.GCP},
 				"tejbetok",EnumComparisionType.EQUAL);
 

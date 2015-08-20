@@ -19,10 +19,14 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -43,11 +47,13 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.util.LocatorUtil;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.util.RequestClassifier;
 import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
 import com.freshdirect.webapp.util.RobotUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 
 public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport
@@ -140,6 +146,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (user == null) {
+        	StoreContextUtil.getStoreContext(session);
             // try to figure out user identity based on persistent cookie
             try {
                 //LOGGER.debug("attempting to load user from cookie");
@@ -235,7 +242,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
  	                return SKIP_BODY;
             	}
             	
-            	if ((user=useIpLocator(request)) == null){
+            	if ((user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse)pageContext.getResponse(), this.address)) == null){
 
 	            	StringBuffer redirBuf = new StringBuffer();
 	                //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
@@ -286,7 +293,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
      	                return SKIP_BODY;
                 	}
                 	
-                	if (user!=null || (user=useIpLocator(request))==null){ //only do IP Sniff if user was null originally, else redirect to login page
+                	if (user!=null || (user=LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse)pageContext.getResponse(), this.address))==null){ //only do IP Sniff if user was null originally, else redirect to login page
 	                	doRedirect(user == null);
 	                    return SKIP_BODY;
                 	}
@@ -299,21 +306,23 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (user != null) {
-            ContentFactory.getInstance()
-                          .setCurrentPricingContext(user.getPricingContext());
-            WineFilter.clearAvailabilityCache((user.getPricingContext() != null)
-                ? user.getPricingContext() : PricingContext.DEFAULT);
+        	UserContext userCtx=user.getUserContext();
+            ContentFactory.getInstance().setCurrentUserContext(userCtx);
+            
+            WineFilter.clearAvailabilityCache((userCtx != null)
+                ? userCtx.getPricingContext() : PricingContext.DEFAULT);
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
         } else {
             LOGGER.warn("cannot set pricing context");
-            ContentFactory.getInstance().setCurrentPricingContext(PricingContext.DEFAULT);
+            ContentFactory.getInstance().setCurrentUserContext(UserContext.createDefault());
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled());
         }
 
         // Set/clear masquerade agent for activity logging
         if (user != null) {
-            FDActionInfo.setMasqueradeAgentTL(user.getMasqueradeAgent());
+            MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+        	FDActionInfo.setMasqueradeAgentTL(masqueradeContext==null ? null : masqueradeContext.getAgentId());
             user.setClientIp(RequestUtil.getClientIp(request));
             user.setServerName(RequestUtil.getServerName());
         }
@@ -395,15 +404,15 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (result.isSuccess() && (serviceResult != null)) {
-            newSession();
+        	LocatorUtil.newSession(request.getSession(), request, (HttpServletResponse)pageContext.getResponse());
 
             EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 
             if (EnumDeliveryStatus.DELIVER.equals(dlvStatus) ||
                     EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
                 try {
-                    this.createUser(EnumServiceType.HOME,
-                        serviceResult.getAvailableServices());
+                	LocatorUtil.createUser(EnumServiceType.HOME,
+                            serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse)pageContext.getResponse(), this.address);
                 } catch (FDResourceException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -413,8 +422,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 return EVAL_BODY_INCLUDE;
             } else {
                 try {
-                    this.createUser(EnumServiceType.PICKUP,
-                        serviceResult.getAvailableServices());
+                    LocatorUtil.createUser(EnumServiceType.PICKUP,
+                        serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse)pageContext.getResponse(), this.address);
                 } catch (FDResourceException e) {
                     e.printStackTrace();
                 }
@@ -647,9 +656,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             if (user != null) {
                 oldCart = user.getShoppingCart();
             }
-
+            StoreContext storeContext =StoreContextUtil.getStoreContext(session);
             user = new FDSessionUser(FDCustomerManager.createNewUser(
-                        this.address, serviceType), session);
+                        this.address, serviceType,storeContext.getEStoreId()), session);
             user.setUserCreatedInThisSession(true);
             user.setSelectedServiceType(serviceType);
             //Added the following line for zone pricing to keep user service type up-to-date.

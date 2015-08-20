@@ -23,7 +23,7 @@ public class OnSaleFilter extends AbstractProductItemFilter {
 			return false;
 		}
 
-		final PriceCalculator pricing = ctx.getProductModel().getPriceCalculator(ContentFactory.getInstance().getCurrentPricingContext());
+		final PriceCalculator pricing = ctx.getProductModel().getPriceCalculator(ContentFactory.getInstance().getCurrentUserContext().getPricingContext());
 
 		if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
 			return invertChecker(true);

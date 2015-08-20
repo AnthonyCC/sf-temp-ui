@@ -27,6 +27,7 @@
 
 <tmpl:put name='content' direct='true'>
 
+<%@ include file="/includes/i_globalcontext.jspf" %>
 
 <jsp:include page="/includes/admintools_nav.jsp" />
 <div class="home_search_module_content" style="height:100%;">

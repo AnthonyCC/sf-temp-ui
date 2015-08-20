@@ -8,11 +8,12 @@ public class ActiveInactiveStrategy implements PromotionStrategyI {
 		this.active = active;
 	}
 
+	@Override
 	public int getPrecedence() {
-		// TODO Auto-generated method stub
 		return 30;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
 		
@@ -24,5 +25,10 @@ public class ActiveInactiveStrategy implements PromotionStrategyI {
 	
 	public boolean isActive() {
 		return this.active;
+	}
+
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.affiliate.dao.ErpAffiliateDAO;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.enums.EnumModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 /**
  * EnumModel representing an affiliated company. 
@@ -24,6 +25,7 @@ public class ErpAffiliate extends EnumModel {
 	public static final String CODE_BC = "BC";
 	public static final String CODE_USQ = "USQ";
 	public static final String CODE_FDW = "FDW";
+	public static final String CODE_FDX = "FDX";
 
 	private final String depositConditionType;
 	private final String taxConditionType;
@@ -47,7 +49,7 @@ public class ErpAffiliate extends EnumModel {
 	}
 
 	public boolean isPrimary() {
-		return this.getCode().equals(CODE_FD);
+		return CODE_FD.equals(this.getCode())||CODE_FDX.equals(this.getCode());
 	}
 	
 	public String getMerchant(EnumCardType cardType) {
@@ -89,6 +91,10 @@ public class ErpAffiliate extends EnumModel {
 	public static ErpAffiliate getPrimaryAffiliate() {
 		loadEnums();
 		return (ErpAffiliate) enums.get(CODE_FD);
+	}
+	public static ErpAffiliate getPrimaryAffiliate(EnumEStoreId eStore) {
+		loadEnums();
+		return EnumEStoreId.FDX.equals(eStore)?(ErpAffiliate) enums.get(CODE_FDX):(ErpAffiliate) enums.get(CODE_FD);
 	}
 
 	public static ErpAffiliate getEnum(String code) {

@@ -4,6 +4,7 @@
 
 package com.freshdirect.fdstore.lists;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -118,6 +119,9 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 		return cachedProduct; 
 	}
 	 
+	public UserContext getUserContext() {
+		return ContentFactory.getInstance().getCurrentUserContext();
+	}
 
 	public FDProductSelectionI convertToSelection() throws IllegalStateException, FDSkuNotFoundException, FDResourceException{
 		FDProductInfo prodInfo = FDCachedFactory.getProductInfo(this.getSkuCode());
@@ -125,7 +129,7 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 		
 		FDProductSelection r = new  FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 									  prod,
-									  this.configuration, prod.getPricingContext().getZoneId());
+									  this.configuration, getUserContext());
 		
 		r.setCustomerListLineId(this.getPK() == null ? null : this.getPK().getId());
 		

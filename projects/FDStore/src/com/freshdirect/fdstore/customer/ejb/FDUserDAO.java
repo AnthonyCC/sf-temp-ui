@@ -20,7 +20,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -58,7 +60,7 @@ public class FDUserDAO {
 		return buff.toString();
 	}
 
-	private static FDUser createUser(Connection conn, String cookie, String street, String apt, String zipCode, String depotCode, EnumServiceType serviceType) throws SQLException {
+	private static FDUser createUser(Connection conn, String cookie, String street, String apt, String zipCode, String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws SQLException {
 		
 		System.out.println("inside the create user .. creating the user");
 		String id = SequenceGenerator.getNextId(conn, "CUST");
@@ -104,6 +106,7 @@ public class FDUserDAO {
 
 		ps.close();
 
+		createFDUserEStore(conn, zipCode, serviceType, eStoreId, id);
 		FDUser user = new FDUser(new PrimaryKey(id));
 		user.setCookie(cookie);
 		user.setZipCode(zipCode);
@@ -113,6 +116,45 @@ public class FDUserDAO {
 		
 		// no need to create children, a new user doesn't have a cart yet
 		return user;
+	}
+
+	/**
+	 * @param conn
+	 * @param zipCode
+	 * @param serviceType
+	 * @param eStoreId
+	 * @param id
+	 * @throws SQLException
+	 */
+	private static void createFDUserEStore(Connection conn, String zipCode,
+			EnumServiceType serviceType, EnumEStoreId eStoreId, String id)
+			throws SQLException {
+		PreparedStatement ps;
+		ps = conn.prepareStatement("INSERT INTO CUST.FDUSER_ESTORE (FDUSER_ID, E_STORE, ZIPCODE, SERVICE_TYPE, ZP_SERVICE_TYPE, CREATED) values (?,?,?,?,?,SYSDATE)");
+		ps.setString(1, id);
+		ps.setString(2, eStoreId.getContentId());
+		if (zipCode != null) {
+			ps.setString(3, zipCode);
+		} else {
+			ps.setNull(3, Types.VARCHAR);
+		}
+		if(serviceType != null){
+			ps.setString(4, serviceType.getName());
+		} else {
+			ps.setNull(4, Types.VARCHAR);
+		}
+		//Add for zone pricing.
+		if(serviceType != null){
+			ps.setString(5, serviceType.getName());
+		} else {
+			ps.setNull(5, Types.VARCHAR);
+		}		
+		
+		if (ps.executeUpdate() != 1) {
+			throw new SQLException("Row not created");
+		}
+
+		ps.close();
 	}
 
 	private static void setAddressbyZipCode(Connection conn,
@@ -146,14 +188,39 @@ public class FDUserDAO {
 		return erpOrderlines;
 	}
 
-	private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines) {
+	/**
+	 * Load cart into user instance
+	 * 
+	 * @param conn JDBC connection
+	 * @param user customer instance
+	 * @param lazy Lazy mode == prevent orderlines accessing ProductModels. Good for CRM and other store-less apps
+	 *  
+	 * @throws SQLException
+	 */
+	private static void loadCart(Connection conn, FDUser user, final boolean lazy) throws SQLException {
+		FDCartModel cart = new FDCartModel();
+
+		List<ErpOrderLineModel> loadCartLines = FDCartLineDAO.loadCartLines(conn, user.getPK(), user.getUserContext().getStoreContext().getEStoreId());
+		cart.addOrderLines(convertToCartLines(loadCartLines, lazy));
+
+		cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
+		delPlantInfo.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
+		delPlantInfo.setSalesOrg(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
+		delPlantInfo.setDistChannel(user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+		cart.setDeliveryPlantInfo(delPlantInfo);
+		user.setShoppingCart(cart);
+	}
+	
+	
+	private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines, final boolean lazy) {
 
 		List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
 		for (int i = 0; i < erplines.size(); i++) {
 			ErpOrderLineModel ol = erplines.get(i);
 
 			FDCartLineI cartLine;
-			cartLine = new FDCartLineModel(ol);
+			cartLine = new FDCartLineModel(ol, lazy);
 
 			cartlines.add(cartLine);
 		}
@@ -161,46 +228,56 @@ public class FDUserDAO {
 		return cartlines;
 	}
 
-	public static FDUser createDepotUser(Connection conn, String depotCode, EnumServiceType serviceType) throws SQLException {
-		FDUser user = createUser(conn, newCookieId(), null, null, null, depotCode, serviceType);
+	public static FDUser createDepotUser(Connection conn, String depotCode, EnumServiceType serviceType,EnumEStoreId eStoreId) throws SQLException {
+		FDUser user = createUser(conn, newCookieId(), null, null, null, depotCode, serviceType, eStoreId);
 		return user;
 	}
 
-	public static FDUser createUser(Connection conn, String zipCode, EnumServiceType serviceType) throws SQLException {
-		FDUser user = createUser(conn, newCookieId(), null, null, zipCode, null, serviceType);
+	public static FDUser createUser(Connection conn, String zipCode, EnumServiceType serviceType,EnumEStoreId eStoreId) throws SQLException {
+		FDUser user = createUser(conn, newCookieId(), null, null, zipCode, null, serviceType, eStoreId);
 		return user;
 	}
 
-	public static FDUser createUser(Connection conn, AddressModel address, EnumServiceType serviceType) throws SQLException {
-		FDUser user = createUser(conn, newCookieId(), address.getAddress1(), address.getApartment(), address.getZipCode(), null, serviceType);
+	public static FDUser createUser(Connection conn, AddressModel address, EnumServiceType serviceType,EnumEStoreId eStoreId) throws SQLException {
+		FDUser user = createUser(conn, newCookieId(), address.getAddress1(), address.getApartment(), address.getZipCode(), null, serviceType, eStoreId);
 		return user;
 	}
 	
 	private static final String LOAD_FROM_IDENTITY_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		",fdc.referer_customer_id, fdu.default_list_id " +
-		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci,CUST.FDUSER_ESTORE fde " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
-		"AND erpc.id = ci.customer_id";
+		"AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
 
-	public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity) throws SQLException, FDResourceException {
+	/**
+	 * Recognize customer with given identity
+	 * 
+	 * @param conn JDBC Connection
+	 * @param identity Identity
+	 * @param eStoreId 
+	 * @param lazy Lazy mode for cartlines
+	 * @return
+	 * @throws SQLException
+	 */
+	public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws SQLException, FDResourceException {
 		LOGGER.debug("attempting to load FDUser from identity");
 		PreparedStatement ps = conn.prepareStatement(LOAD_FROM_IDENTITY_QUERY);
 		ps.setString(1, identity.getErpCustomerPK());
+		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
 		setAddressbyZipCode(conn,user.getZipCode(),user);
 		
 		if (!user.isAnonymous()) {
-			FDCartModel cart = new FDCartModel();
-			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
-			user.setShoppingCart(cart);
+			loadCart(conn, user, lazy);
 			//Load GC recipients if any. 
 			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
 			user.setExternalPromoCampaigns(loadExternalCampaigns(conn, identity.getErpCustomerPK()));
+			
 		}
 		user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		
@@ -211,25 +288,24 @@ public class FDUserDAO {
 	}
 
 	private static final String LOAD_FROM_EMAIL_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.zipcode,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
 		",fdc.referer_customer_id, fdu.default_list_id " +
-		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.FDUSER_ESTORE fde " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
-		"AND erpc.id = ci.customer_id";
+		"AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
 
-	public static FDUser recognizeWithEmail(Connection conn, String email) throws SQLException, FDResourceException {
+	public static FDUser recognizeWithEmail(Connection conn, String email, EnumEStoreId eStoreId) throws SQLException, FDResourceException {
 		LOGGER.debug("attempting to load FDUser based on user id (email)");
 		PreparedStatement ps = conn.prepareStatement(LOAD_FROM_EMAIL_QUERY);
 		ps.setString(1, email);
+		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
 		setAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
-			FDCartModel cart = new FDCartModel();
-			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
-			user.setShoppingCart(cart);
+			loadCart(conn, user, false);
 			if(user.getIdentity()!=null)
 				user.setExternalPromoCampaigns(loadExternalCampaigns(conn, user.getIdentity().getErpCustomerPK()));
 			
@@ -262,27 +338,26 @@ public class FDUserDAO {
 	}
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.zipcode,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		",rl.referral_link, fdc.referer_customer_id, fdu.default_list_id " +
-		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.REFERRAL_LINK rl  " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.REFERRAL_LINK rl, CUST.FDUSER_ESTORE fde  " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
 		"AND erpc.id = ci.customer_id(+) " +
-		"and  RL.CUSTOMER_ID(+) = ERPC.ID";
+		"and  RL.CUSTOMER_ID(+) = ERPC.ID AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
 
-	public static FDUser reconnizeWithCookie(Connection conn, String cookie) throws SQLException, FDResourceException {
+	public static FDUser reconnizeWithCookie(Connection conn, String cookie, EnumEStoreId eStoreId) throws SQLException, FDResourceException {
 		LOGGER.debug("attempting to load FDUser from cookie");
 
 		PreparedStatement ps = conn.prepareStatement(LOAD_FROM_COOKIE_QUERY);
 		ps.setString(1, cookie);
+		ps.setString(2, null !=eStoreId?eStoreId.getContentId():EnumEStoreId.FD.getContentId());
 		ResultSet rs = ps.executeQuery();
 		FDUser user = loadUserFromResultSet(rs);
 		setAddressbyZipCode(conn,user.getZipCode(),user);
 
 		if (!user.isAnonymous()) {
-			FDCartModel cart = new FDCartModel();
-			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
-			user.setShoppingCart(cart);
+			loadCart(conn, user, false);
 			//Load GC recipients if any. 
 			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
@@ -456,11 +531,36 @@ public class FDUserDAO {
 			throw new SQLException("FDUser Row not updated :"+user.getPK().getId());
 		}
 		ps.close();
-
+		
+		ps = conn.prepareStatement("UPDATE CUST.FDUSER_ESTORE SET ZIPCODE=?, SERVICE_TYPE=?, ZP_SERVICE_TYPE=?, CREATED=SYSDATE WHERE FDUSER_ID=? AND E_STORE=?");
+		
+		if (user.getZipCode() != null) {
+			ps.setString(1, user.getZipCode());
+		} else {
+			ps.setNull(1, Types.VARCHAR);
+		}
+		if(user.getSelectedServiceType() != null){
+			ps.setString(2, user.getSelectedServiceType().getName());
+		} else {
+			ps.setNull(2, Types.VARCHAR);
+		}
+		if(user.getZPServiceType() != null){
+			ps.setString(3, user.getZPServiceType().getName());
+		} else {
+			ps.setNull(3, Types.VARCHAR);
+		}
+		ps.setString(4, user.getId());
+		ps.setString(5, user.getUserContext().getStoreContext().getEStoreId().getContentId());
+		if (ps.executeUpdate() != 1) {
+//			throw new SQLException("FDUser Row not updated :"+user.getPK().getId());
+			createFDUserEStore(conn, user.getZipCode(),user.getSelectedServiceType(),user.getUserContext().getStoreContext().getEStoreId(),user.getId());
+		}
+		
 		// store children
 
-		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?");
+		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?");
 		ps.setString(1, user.getPK().getId());
+		ps.setString(2, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 		ps.executeUpdate();
 		ps.close();
 
@@ -472,13 +572,14 @@ public class FDUserDAO {
 			throw new FDRuntimeException(e);
 		}
 		
-		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine);
+		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine,user.getUserContext().getStoreContext());
 		//Store GC Recipient List if any.
 		if(user.getRecipientList() != null){
 			SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipientList().getRecipients());
 		}
 	}
-	
+
+		
 	
 	/**
 	 * [APPREQ-369] Store Cohort ID for the given user
@@ -935,34 +1036,99 @@ public class FDUserDAO {
 		return isFeatureEnabled;
 	}
 	
+
+	
+	
 	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
 			"Ceil(Avg(tbl.NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(tbl.NUM_ALCOHOL_CARTONS)) ACOUNT " +
 			"from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s " +
 			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
 	
 	
-	public static CustomerAvgOrderSize getHistoricOrderSize(Connection conn, String customerId)  throws SQLException{
-		
-		
-PreparedStatement ps =
-   conn.prepareStatement(ORDERSIZE_ESTIMATION_QUERY);
-ps.setString(1, customerId);
-ps.setInt(2, 5);
+	public static CustomerAvgOrderSize getHistoricOrderSize(Connection conn,
+			String customerId) throws SQLException {
 
+		PreparedStatement ps = conn
+				.prepareStatement(ORDERSIZE_ESTIMATION_QUERY);
+		ps.setString(1, customerId);
+		ps.setInt(2, 5);
 
 		ResultSet rs = ps.executeQuery();
-	
-			if (rs.next()) {
-				CustomerAvgOrderSize model = new CustomerAvgOrderSize();
-		    		model.setNoOfCartons(rs.getInt("CCOUNT")+ rs.getInt("ACOUNT"));
-		    		model.setNoOfFreezers(rs.getInt("FCOUNT")); 
-		    		return model;
-		    	
-			}
-			rs.close();
-			ps.close();
-		
+
+		if (rs.next()) {
+			CustomerAvgOrderSize model = new CustomerAvgOrderSize();
+			model.setNoOfCartons(rs.getInt("CCOUNT") + rs.getInt("ACOUNT"));
+			model.setNoOfFreezers(rs.getInt("FCOUNT"));
+			return model;
+
+		}
+		rs.close();
+		ps.close();
+
 		return null;
+	}
+
+	private static final String UPDATEORDER_MODIFYSTATE = "update cust.sale set IN_MODIFY = ? where id = ?";
+			
+	public static void updateOrderInModifyState(Connection conn, String id) throws SQLException {
+
+		PreparedStatement ps = conn.prepareStatement(UPDATEORDER_MODIFYSTATE);
+		ps.setString(1, "X");
+		ps.setString(2, id);
+		int rowcount = ps.executeUpdate();
+		if(rowcount != 0)
+			LOGGER.info("order is locked in  modify successful");
+		ps.close();
+	
+	}
+
+	private static final String IS_READY_FOR_PICK = "select 1 from cust.sale where IN_MODIFY is null and id = ?";
+
+	public static boolean isReadyForPick(Connection conn, String id) throws SQLException {
+
+
+		PreparedStatement ps = conn
+				.prepareStatement(IS_READY_FOR_PICK);
+		ps.setString(1, id);
+
+		ResultSet rs = ps.executeQuery();
+
+		if (rs.next()) {
+			return true;
+		}
+		rs.close();
+		ps.close();
+
+		return false;
+	
+	}
+
+	private static final String UPDATE_ORDER_INPROCESS = "update cust.sale set status = decode(status, 'SUB', 'PNA', 'PRC') where status in ('AUT', 'AVE', 'SUB') and id = ?";
+	
+	public static void updateOrderInProcess(Connection conn, String orderNum) throws SQLException {
+
+		PreparedStatement ps = conn.prepareStatement(UPDATE_ORDER_INPROCESS);
+		ps.setString(1, orderNum);
+		int rowcount = ps.executeUpdate();
+		if(rowcount != 0)
+			LOGGER.info("order is in process");
+		ps.close();
+		
+	}
+	
+	private static final String UNLOCKORDER_MODIFYSTATE = "update cust.sale set IN_MODIFY = NULL where id = ?";
+
+
+	public static void releaseModificationLock(Connection conn, String orderId) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UNLOCKORDER_MODIFYSTATE);
+		ps.setString(1, orderId);
+		int rowcount = ps.executeUpdate();
+		if(rowcount != 0)
+			LOGGER.info("order is locked in  modify successful");
+		ps.close();
+	
+	
 	}
 	
 	

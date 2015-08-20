@@ -247,7 +247,7 @@ public class Product {
 
                     Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel)
                     															, skuModel
-                    															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy));
+                    															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy),user.getUserContext().getFulfillmentContext().getPlantId());
                     this.skus.add(sku);
                 }
             }
@@ -262,7 +262,8 @@ public class Product {
                 if (this.defaultSku == null) {
                     this.defaultSku = Sku.wrap(defaultPriceCalculator
                     								, defaultPriceCalculator.getSkuModel()
-                    								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx, isQuickBuy));
+                    								, findCoupon(defaultPriceCalculator.getSkuModel(), user, cartLine, ctx, isQuickBuy)
+                    								,user.getUserContext().getFulfillmentContext().getPlantId());
                 }
             }
 
@@ -355,7 +356,8 @@ public class Product {
             this.displayEstimatedQuantity = !this.displaySalesUnitsOnly && this.isPricedByLB && !this.isSoldByLB;
             this.salesUnitFirst = (sellBySalesUnit == null) && !this.hasSingleSalesUnit && this.isPricedByLB && !this.isSoldByLB;
             this.hasVariationMatrix = this.defaultSku.hasVariationMatrix();
-            this.displayShortTermUnavailability = this.defaultProduct.getMaterial().getBlockedDays().isEmpty();
+            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            this.displayShortTermUnavailability = this.defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
             if (productModel.getVariationMatrix() == null) {
                 this.domains = Collections.EMPTY_LIST;
             } else {
@@ -512,10 +514,10 @@ public class Product {
         if (isAvailable()) {
 
             List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());
+                        
             Collections.sort(variations, new VariationComparator());
 
             for (FDVariation variation : variations) {
-                //LOG.debug("Variation added: " + variation.getName());
                 this.variations.add(Variation.wrap(variation, this));
             }
         }
@@ -599,14 +601,14 @@ public class Product {
 			FDProduct fdProduct = pricing.getProduct();
 			if (fdProduct != null) 
 			{
-				/*boolean organicClaim = fdProduct.hasOANClaim();
+				boolean organicClaim = fdProduct.hasOANClaim();
 				if(organicClaim) {
 					types.add("Organic");
-				}	*/
-				boolean organic = fdProduct.hasOrganicClaim();
+				}	
+/*				boolean organic = fdProduct.hasOrganicClaim();
 				if(organic) {
 					types.add("Organic");
-				}	
+				}	*/
 			}
 			
 			String fullName = productModel.getFullName();
@@ -1472,8 +1474,8 @@ public class Product {
         kosherRestrictions = new HashMap<String, String>();
         if (isAvailable()) {
             FDProduct defaultSku = this.defaultSku.getOriginalSku().getProduct();
-
-            if (defaultSku.getKosherInfo().isKosherProduction()) {
+            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            if (defaultSku.getKosherInfo(plantID).isKosherProduction()) {
                 GetDlvRestrictionsTagWrapper tagWrapper = new GetDlvRestrictionsTagWrapper(user);
                 List<RestrictionI> restrictions = tagWrapper.getRestrictions(EnumDlvRestrictionReason.KOSHER);
                 for (RestrictionI restriction : restrictions) {
@@ -1678,7 +1680,7 @@ public class Product {
         FDConfiguration configuration = new FDConfiguration(quantity, salesUnit.getName(), options);
 
         if (sku != null && salesUnit != null && quantity > 0.0) {
-            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(),quantity);
+            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo().getSalesOrg(),pricingContext.getZoneInfo().getDistributionChanel()),quantity,null);
             price = configuredPrice.getPrice().getPrice();
         }
         return price;
@@ -1801,13 +1803,12 @@ public class Product {
         Product result = null;
 
         productModel = ContentFactory.getInstance().getProductByName(categoryId, id);
-
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
             productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
         }
-        try {
-            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);
+        try {            
+            result = Product.wrap(productModel, user.getFDSessionUser().getUser(), cartLine, EnumCouponContext.PRODUCT);            
         } catch (ModelException e) {
             throw new ServiceException(e.getMessage(), e);
         }

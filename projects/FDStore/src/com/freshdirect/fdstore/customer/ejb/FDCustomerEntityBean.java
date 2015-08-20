@@ -16,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -24,9 +26,11 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -60,6 +64,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private String passwordHint;
 	private String depotCode;
 	private int pymtVerifyAttempts;
+	private FDCustomerEStorePersistentBean customerEStore;
 	/**
 	 * Copy into model.
 	 *
@@ -78,6 +83,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setPasswordHint(this.passwordHint);
 		model.setDepotCode(this.depotCode);
 		model.setPasswordRequestExpiration(this.passwordRequestExpiration);
+		model.setCustomerEStoreModel((FDCustomerEStoreModel)this.customerEStore.getModel());
 		return model;
 	}
 
@@ -95,6 +101,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.profile.setFromModel(m.getProfile());
 		this.passwordHint = m.getPasswordHint();
 		this.depotCode = m.getDepotCode();
+		this.customerEStore.setFromModel(m.getCustomerEStoreModel());
 		this.setModified();
 	}
 
@@ -318,8 +325,24 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		//create children
 		this.profile.setParentPK(this.getPK());
 		this.profile.create(conn);
+		
+		this.customerEStore.setParentPK(this.getPK());
+		replaceCustomerEStoreModel();
+		this.customerEStore.create(conn);
 
 		return this.getPK();
+	}
+
+	/**
+	 * 
+	 */
+	private void replaceCustomerEStoreModel() {
+		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
+		customerEStoreModel.seteStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+		customerEStoreModel.setDefaultShipToAddressPK(this.getDefaultShipToAddressPK());
+		customerEStoreModel.setDefaultPaymentMethodPK(this.getDefaultPaymentMethodPK());
+		customerEStoreModel.setDefaultDepotLocationPK(this.getDefaultDepotLocationPK());
+		customerEStore.setFromModel(customerEStoreModel);
 	}
 
 	public void load(Connection conn) throws SQLException {
@@ -350,6 +373,16 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		// load children
 		this.profile.setParentPK(this.getPK());
 		this.profile.load(conn);
+		
+		this.customerEStore.setParentPK(this.getPK());
+		this.customerEStore.load(conn);
+		
+		//Assigning the Estore specific values. 
+		if(null !=this.customerEStore.getModel() && null !=((FDCustomerEStoreModel)this.customerEStore.getModel()).geteStoreId()){
+			this.defaultShipToAddressPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultShipToAddressPK();
+			this.defaultPaymentMethodPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultPaymentMethodPK();
+			this.defaultDepotLocationPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultDepotLocationPK();
+		}
 	}
 
 	public void store(Connection conn) throws SQLException {
@@ -383,6 +416,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		if(this.profile.isModified()){
 			this.profile.store(conn);
 		}
+		
+		replaceCustomerEStoreModel();
+		customerEStore.store(conn);
 
 	}
 
@@ -423,6 +459,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordHint = null;
 		this.depotCode = null;
 		this.pymtVerifyAttempts=0;
+		customerEStore = new FDCustomerEStorePersistentBean();
 	}
 
 	public String getErpCustomerPK() {
@@ -591,5 +628,5 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		 
 		this.pymtVerifyAttempts=0;
 		this.setModified();
-	}
+	}	
 }

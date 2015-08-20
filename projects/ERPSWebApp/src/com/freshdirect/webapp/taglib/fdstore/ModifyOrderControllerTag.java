@@ -30,6 +30,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -49,6 +50,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -239,7 +241,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			throw new JspException("No customer was found for the requested action.");
 		}
         
-        EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+        EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null || user.getMasqueradeContext()!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
 
         // !!! determine this
 		boolean sendEmail = true;
@@ -372,11 +374,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Modify order: load the shopping cart with the old items
 		//
 		try {
-			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding);
+			modifyOrder(request, currentUser, orderId, session, null, EnumCheckoutMode.NORMAL, mergePernding, results);
 
 			//set user as having seen the overlay and used it (in case of login step)
 			currentUser.setSuspendShowPendingOrderOverlay(true);
-		} catch (FDException ex) {
+		}catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);
 			throw new JspException(ex.getMessage());
 		}
@@ -396,7 +398,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
-			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending)
+			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending, ActionResult results)
 					throws FDResourceException, FDInvalidConfigurationException{
 
 		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel ) {
@@ -413,6 +415,25 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
+		
+		if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())){
+			if (EnumSaleStatus.INPROCESS.equals(order.getSaleStatus()) || new Date().after(order.getDeliveryInfo().getDeliveryCutoffTime())) {
+				results.addError(true, "invalid_reservation", MessageFormat.format(
+					SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF_MODIFY,
+					new Object[] {order.getDeliveryInfo().getDeliveryCutoffTime()}) );
+			}else{
+				// Give minimum MOD_Y min for order modification and max till the timeslot cutoff. if sysdate + MOD_Y is past cutoff then give till sysdate + MOD_Y to modify the order. if less then
+				// give till cutoff time.
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, (int)order.getDeliveryInfo().getMinDurationForModification());
+				if(cal.getTime().after(order.getDeliveryReservation().getCutoffTime())){
+					order.getDeliveryInfo().setDeliveryCutoffTime(cal.getTime());
+				}else{
+					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryReservation().getCutoffTime());
+				}
+			}
+		}
+		
 		FDCustomerManager.storeUser(currentUser.getUser());
 		FDModifyCartModel cart = new FDModifyCartModel(order);
 		
@@ -479,6 +500,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		ModifyOrderHelper.handleCoupons(session);
 
 		ModifyOrderHelper.updateSession(currentUser, session);
+		
+		FDCustomerManager.updateOrderInModifyState(order);
         
         return cart;
 	}

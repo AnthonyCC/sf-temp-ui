@@ -7,7 +7,8 @@ import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class CrmGetCustomerInfoTag extends AbstractGetterTag {
+public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
+	private static final long serialVersionUID = 5664099748140954763L;
 
 	private FDUserI user;
 
@@ -15,7 +16,8 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		this.user = user;
 	}
 
-	protected Object getResult() throws Exception {
+	@Override
+	protected CrmCustomerInfoI getResult() throws Exception {
 		if (this.user == null) {
 			throw new IllegalArgumentException("No id provided customer");
 		}

@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -28,12 +29,12 @@ public class ProductPromotionInfoManager {
 	
 	private static ErpProductPromotionInfoHome managerHome = null;
 	
-	public static Map<String,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException{
+	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException{
 		lookupManagerHome();
 
 		try {
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<String,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType);
+			Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType);
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -44,12 +45,12 @@ public class ProductPromotionInfoManager {
 		}		
 	}
 	
-	public static Map<String,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException{
+	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException{
 		lookupManagerHome();
 
 		try {
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<String,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
+			Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -139,12 +140,12 @@ public class ProductPromotionInfoManager {
 		}		
 	}
 		
-	public static Map<String,Map<String,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,Date lastPublishedDate) throws FDResourceException{
+	public static Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,Date lastPublishedDate) throws FDResourceException{
 		lookupManagerHome();
 
 		try {
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<String,Map<String,List<FDProductPromotionInfo>>> productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
+			Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

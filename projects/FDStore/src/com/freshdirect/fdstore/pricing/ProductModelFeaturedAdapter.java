@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.erp.model.ErpProductInfoModel;
@@ -473,8 +474,8 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
-	public PricingContext getPricingContext() {		 
-		return productModel.getPricingContext();
+	public UserContext getUserContext() {		 
+		return productModel.getUserContext();
 	}
 
 	@Override
@@ -1100,10 +1101,7 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 		return productModel.getEarliestAvailability();
 	}
 
-	@Override
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {		 
-		return productModel.getLimitedAvailability();
-	}
+	
 
 	@Override
 	public boolean isAvailableWithin(int days) {		 

@@ -16,7 +16,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	lastDept = cartLine.getDepartmentDesc() ;
 
 	if (view.isDisplayDepartment()) {
-		if (lastDept.startsWith("Recipe: ")) {
+		if (null != lastDept && lastDept.startsWith("Recipe: ")) {
 			if (firstRecipe) {
 				%>
 				<tr>

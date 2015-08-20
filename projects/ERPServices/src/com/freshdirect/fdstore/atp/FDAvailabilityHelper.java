@@ -49,13 +49,6 @@ public class FDAvailabilityHelper {
 		return av.getFirstAvailableDate(new DateRange(startCal.getTime(), endCal.getTime()));
 	}
 
-	public static List<FDLimitedAvailabilityInfo> getLimitedAvailabilityInfo(FDAvailabilityI av) {
-		if(av instanceof FDStockAvailability){
-			FDStockAvailability availability = (FDStockAvailability) av;
-			return availability.getLimitedAvailabilityInfo();
-			
-		}
-		return null;
-	}
+	
 	
 }

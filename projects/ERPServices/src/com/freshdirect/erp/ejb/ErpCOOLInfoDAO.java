@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -19,16 +20,18 @@ public class ErpCOOLInfoDAO implements java.io.Serializable {
 	
 	private static final long	serialVersionUID	= -1514506712650886097L;
 	
-	private static final String INSERT_COOL_INFO="INSERT INTO ERPS.COOL_INFO (ID, MAT_SAP_ID, MAT_SAP_DESC,COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5,DATE_MODIFIED) VALUES (?,?,?,?,?,?,?,?,SYSDATE)";
-	private static final String UPDATE_COOL_INFO="UPDATE ERPS.COOL_INFO SET COUNTRY1=?,COUNTRY2=?,COUNTRY3=?,COUNTRY4=?,COUNTRY5=?, DATE_MODIFIED=SYSDATE WHERE MAT_SAP_ID=?";
-	private static final String SELECT_COOL_INFO_FOR_MATERIAL="SELECT COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5 FROM ERPS.COOL_INFO WHERE MAT_SAP_ID=?";
-	private static final String LOAD_COOL_INFO="SELECT  MAT_SAP_ID,MAT_SAP_DESC,COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5,DATE_MODIFIED,ID FROM ERPS.COOL_INFO WHERE DATE_MODIFIED > ? ORDER BY ID ";
+	private static final String INSERT_COOL_INFO="INSERT INTO ERPS.COOL_INFO (ID, MAT_SAP_ID, MAT_SAP_DESC,COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5,DATE_MODIFIED,PLANT_ID) VALUES (?,?,?,?,?,?,?,?,SYSDATE,?)";
+	private static final String UPDATE_COOL_INFO="UPDATE ERPS.COOL_INFO SET COUNTRY1=?,COUNTRY2=?,COUNTRY3=?,COUNTRY4=?,COUNTRY5=?, DATE_MODIFIED=SYSDATE WHERE MAT_SAP_ID=? AND PLANT_ID=?";
+	private static final String SELECT_COOL_INFO_FOR_MATERIAL="SELECT COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5 FROM ERPS.COOL_INFO WHERE MAT_SAP_ID=? AND PLANT_ID=?";
+	private static final String LOAD_COOL_INFO="SELECT  MAT_SAP_ID,MAT_SAP_DESC,COUNTRY1,COUNTRY2,COUNTRY3,COUNTRY4,COUNTRY5,DATE_MODIFIED,ID,PLANT_ID FROM ERPS.COOL_INFO WHERE DATE_MODIFIED > ? ORDER BY ID ";
 	private static final int MAX_COUNTRY=5;
 	
-	public Map<String,ErpCOOLInfo> load(Connection conn, Date since)throws SQLException {
+	private static final Map<ErpCOOLKey,ErpCOOLInfo> EMPTY_MAP=new HashMap<ErpCOOLKey,ErpCOOLInfo>();
+	
+	public Map<ErpCOOLKey,ErpCOOLInfo> load(Connection conn, Date since)throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Map<String, ErpCOOLInfo> erpCOOLInfo=null;
+		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=null;
 		try {			
 			ps = conn.prepareStatement(LOAD_COOL_INFO);
 			ps.setTimestamp(1, new Timestamp(since.getTime()));
@@ -38,16 +41,20 @@ public class ErpCOOLInfoDAO implements java.io.Serializable {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();
 		}
-		return erpCOOLInfo==null?new HashMap<String,ErpCOOLInfo>():erpCOOLInfo;
+		return erpCOOLInfo==null?EMPTY_MAP:erpCOOLInfo;
 	}
 	
-	private Map<String, ErpCOOLInfo> getErpCOOLInfo(ResultSet rs) throws SQLException {
+	private Map<ErpCOOLKey, ErpCOOLInfo> getErpCOOLInfo(ResultSet rs) throws SQLException {
 		
-		Map<String, ErpCOOLInfo> erpCOOLInfo=new HashMap<String, ErpCOOLInfo>();
+		Map<ErpCOOLKey, ErpCOOLInfo> erpCOOLInfo=null;
 		ErpCOOLInfo info=null;
+		ErpCOOLKey key=null;
 		while(rs.next()) {
-			info=new ErpCOOLInfo(rs.getString(1),rs.getString(2),getCountryInfo(rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)),rs.getTimestamp(8));
-			erpCOOLInfo.put(info.getSapID(), info);
+			if(erpCOOLInfo==null)
+				erpCOOLInfo=new HashMap<ErpCOOLKey, ErpCOOLInfo>();
+			info=new ErpCOOLInfo(rs.getString(1),rs.getString(2),getCountryInfo(rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7)),rs.getTimestamp(8),rs.getString(10));
+			key= new ErpCOOLKey(info.getSapID(),info.getPlantId());
+			erpCOOLInfo.put(key, info);
 		}
 		return erpCOOLInfo;
 	}
@@ -73,7 +80,7 @@ public class ErpCOOLInfoDAO implements java.io.Serializable {
 		for ( ErpCOOLInfo info : erpCOOLInfo ) {
 			System.out.println(info);
 			matID=info.getSapID();
-			if(exists(conn,matID)) {
+			if(exists(conn, matID, info.getPlantId())) {
 				update(conn,info);
 			} else {
 				insert(conn,info);
@@ -96,6 +103,7 @@ public class ErpCOOLInfoDAO implements java.io.Serializable {
 				country=(i<size)?info.getCountryInfo().get(i).toString():"";
 				ps.setString(i+4,country );
 			}			
+			ps.setString(9, info.getPlantId());
 			ps.executeUpdate();
 		} finally {
 			if (ps != null) ps.close();
@@ -113,22 +121,24 @@ public class ErpCOOLInfoDAO implements java.io.Serializable {
 			for(int i=0;i<MAX_COUNTRY;i++) {
 				country=(i<size)?info.getCountryInfo().get(i).toString():"";
 				ps.setString(i+1,country );
-			}
+			}			
 			ps.setString(MAX_COUNTRY+1, info.getSapID());
+			ps.setString(MAX_COUNTRY+2, info.getPlantId());
 			ps.executeUpdate();
 		} finally {
 			if (ps != null) ps.close();
 		}		
 	}
 
-	private boolean exists(Connection conn,String sapID) throws SQLException {
+	private boolean exists(Connection conn,String sapID, String plantId) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {			
 			ps = conn.prepareStatement(SELECT_COOL_INFO_FOR_MATERIAL);
 			ps.setString(1, sapID);
+			ps.setString(2, plantId);
 			rs = ps.executeQuery();
-			return rs.next()?true:false;  						
+			return rs.next() ? true : false;					
 		} finally {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();

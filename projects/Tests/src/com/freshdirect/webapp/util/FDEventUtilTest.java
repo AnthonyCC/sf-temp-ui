@@ -23,6 +23,7 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.customer.ErpClientCode;
@@ -281,11 +282,12 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 			 * This condition is true whenever there is a new item
 			 * added to the cart.
 			 */
+			
 			cartLine =
 				new FDCartLineModel(
 					new FDSku(product),
 					prodNode,
-					new FDConfiguration(quantity, salesUnit.getName(), varMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+					new FDConfiguration(quantity, salesUnit.getName(), varMap), null, UserContext.createDefault());
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -298,7 +300,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 					new FDSku(product),
 					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false, null, ZonePriceListing.MASTER_DEFAULT_ZONE, clientCodes);
+					origCartLineId, null, false, null, UserContext.createDefault(), clientCodes);
 		}
 
 		try {

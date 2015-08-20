@@ -7,16 +7,17 @@ import java.util.Set;
  */
 public class UniqueUseStrategy implements PromotionStrategyI {
 
-	private final Set usedSaleIds;
+	private final Set<String> usedSaleIds;
 
-	public UniqueUseStrategy(Set usedSaleIds) {
+	public UniqueUseStrategy(Set<String> usedSaleIds) {
 		this.usedSaleIds = usedSaleIds;
 	}
 
-	public Set getUsedSaleIds() {
+	public Set<String> getUsedSaleIds() {
 		return this.usedSaleIds;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		if (usedSaleIds.isEmpty()) {
 			return ALLOW;
@@ -31,6 +32,7 @@ public class UniqueUseStrategy implements PromotionStrategyI {
 		return DENY;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 1000;
 	}
@@ -39,4 +41,8 @@ public class UniqueUseStrategy implements PromotionStrategyI {
 		return "UniqueUseStrategy[" + this.usedSaleIds + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

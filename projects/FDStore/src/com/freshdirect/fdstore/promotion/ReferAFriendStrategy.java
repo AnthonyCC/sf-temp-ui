@@ -47,4 +47,8 @@ public class ReferAFriendStrategy implements PromotionStrategyI {
 		return 0;
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

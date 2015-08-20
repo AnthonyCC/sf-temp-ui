@@ -23,6 +23,7 @@ import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
 
 public class CheckoutControllerTagWrapper extends ControllerTagWrapper implements RequestParamName, SessionParamName, MessageCodes {
 
@@ -30,11 +31,12 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
     public static final String ACTION_SET_DELIVERY_ADDRESS = "setDeliveryAddress";
     
-
+    public static final String REQUESTED_PAYMENT_ID = "requestedPaymentId";
+    
     public static final String ACTION_EDIT_SET_DELIVERY_ADDRESS = "editAndSetDeliveryAddress"; //Not supported
 
     public static final String ACTION_DELETE_DELIVERY_ADDRESS = "deleteDeliveryAddress"; //Not supported
-
+    
     public static final String ACTION_RESERVE_DELIVERY_TIMESLOT = "reserveDeliveryTimeSlot";
 
     public static final String ACTION_SUBMIT_ORDER = "submitOrder";
@@ -99,7 +101,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         //Check redirect status on credit card auth failure
         if ((result.getActionResult() == null) && (redirectUrl != null)) {
             ActionResult actionResult = new ActionResult();
-            if (redirectUrl.equals(wrappedTag.getCcdProblemPage())) {
+            if (redirectUrl.startsWith(wrappedTag.getCcdProblemPage())) {
                 actionResult.addError(new ActionError(ERR_CREDIT_CARD_PROBLEM, ERR_CREDIT_CARD_PROBLEM_MSG));
             } else if (redirectUrl.equals(wrappedTag.getAuthCutoffPage())) {
                 actionResult.addError(new ActionError(ERR_PAYMENT_ACCOUNT_PROBLEM, ERR_PAYMENT_ACCOUNT_PROBLEM_MSG));
@@ -158,18 +160,21 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
         addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
         addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
+        
         if(deliveryAddress.isDoorman()) {
-        	
-        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses
+			//APPDEV-4228  Doorman Property  not Adding/Editing addresses
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getDeliveryCode());
+        } else if (deliveryAddress.isNeighbor()) { 
+//APPDEV-4228  Doorman Property  not Adding/Editing addresses
+        	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NEIGHBOR.getName());
+        	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NEIGHBOR.getDeliveryCode());
         } else {
-        	
-        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses        	
+//APPDEV-4228  Doorman Property  not Adding/Editing addresses        	
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getDeliveryCode());
         }
-
+        
         addRequestValue(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(), deliveryAddress.getAlternateFirstName());
         addRequestValue(EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), deliveryAddress.getAlternateLastName());
         addRequestValue(EnumUserInfoName.DLV_ALT_APARTMENT.getCode(), deliveryAddress.getAlternateApartment());
@@ -283,9 +288,26 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
 
         getWrapTarget().setActionName(ACTION_ADD_SET_PAYMENT_METHOD);
-        setMethodMode(true);
-        
+        setMethodMode(true);        
         return doPaymentTagLogic();
+    }
+    
+    public ResultBundle savePaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
+    	ResultBundle resultBundle;
+    	String pId = paymentMethod.getPaymentMethodId();    	
+    	if ( pId == null || pId.length() <= 0 ){        	
+    		addAndSetPaymentMethod(paymentMethod);            
+            resultBundle = new ResultBundle(executeTagLogic(), this);            
+            resultBundle.addExtraData(REQUESTED_PAYMENT_ID,  
+            		((CheckoutControllerTag) getWrapTarget()).getPaymentId());   
+        } else {           	               
+            editPaymentMethod(paymentMethod);
+    		resultBundle = new ResultBundle(executeTagLogic(), this);
+    		resultBundle.addExtraData(REQUESTED_PAYMENT_ID,  
+            		((CheckoutControllerTag) getWrapTarget()).getPaymentId());
+        }
+    	
+        return resultBundle;
     }
 
     public ResultBundle editPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
@@ -399,8 +421,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         LOGGER.debug("setCheckoutDeliveryAddress[END] :"+ selectAddressId + ","+type);
         return new ResultBundle(actionResult, this);
     }
-
-
+    
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
@@ -410,6 +431,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
+    
+    
     
     /*
      * DUP: com.freshdirect.webapp.taglib.fdstore.AgeVerificationControllerTag

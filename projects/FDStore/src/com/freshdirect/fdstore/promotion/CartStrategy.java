@@ -19,15 +19,23 @@ import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
 public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrategyI {
 	private static final long serialVersionUID = -3120395698927259060L;
 
+	// FIXME: FD only content keys!
 	private final static String[] DRY_GOODS = { "gro", "spe" };
 	private boolean needDryGoods;	
 	private int minSkuQuantity;
-	private Map<EnumDCPDContentType, Set<String>> dcpdData = new HashMap<EnumDCPDContentType, Set<String>>();//Will contain only SKU and BRAND types.
+	//Will contain only SKU and BRAND types.
+	private Map<EnumDCPDContentType, Set<String>> dcpdData = new HashMap<EnumDCPDContentType, Set<String>>();
 	private Double totalDcpdSubtotal;
 	private Double cartDcpdSubtotal = 0.0;
 	private FDMinDCPDTotalPromoData minDcpdTotalPromoData = new FDMinDCPDTotalPromoData();
 	
-	
+
+	/**
+	 * Interface {@link PromotionStrategyI}
+	 * Called from {@link CompositeStrategy} and from {@link Promotion}
+	 * 
+	 * @return PromotionStrategyI value
+	 */
 	public Double getTotalDcpdSubtotal() {
 		return totalDcpdSubtotal;
 	}
@@ -38,6 +46,8 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
+		final Set<ContentKey> contentKeys = getContentKeys();
+		
 		int qualifiedSku=0;
 		int allowORdeny = PromotionStrategyI.RESET;
 		FDCartModel cart = context.getShoppingCart();
@@ -51,8 +61,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 					List<FDCartLineI> orderLines = cart.getOrderLines();
 					if(null != orderLines && !orderLines.isEmpty()){
 						
-						for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
-							FDCartLineI cartLine = iterator.next();
+						for (final FDCartLineI cartLine : orderLines) {
 							if(contentKeys.size() > 0)
 								allowORdeny = evaluate(cartLine, promotionCode, context);
 							if(PromotionStrategyI.ALLOW != allowORdeny){
@@ -84,9 +93,17 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 	}
 	
 
+
+	/**
+	 * Interface {@link LineItemStrategyI}
+	 * Overrides {@link DCPDLineItemStrategy}
+	 * 
+	 * @return PromotionStrategyI value
+	 */
 	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode,
 			PromotionContextI context) {
+		final Set<ContentKey> contentKeys = getContentKeys();
 		boolean eligible = false;
 		ProductModel model = lineItem.getProductRef().lookupProductModel();
 		String productId = null !=model ?model.getContentKey().getId():"";
@@ -103,12 +120,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 			}
 		}
 		if(!eligible){
-//			Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
 			Set<String> brandSet =dcpdData.get(EnumDCPDContentType.BRAND);
-			/*if(null != skuSet && skuSet.contains(lineItem.getSkuCode())){
-				qualifiedSku = qualifiedSku++;
-				eligible = true;
-			}*/
 			if(!eligible && brandSet != null && (lineItem.hasBrandName(brandSet))){
 				eligible = true;
 			}
@@ -123,7 +135,6 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 
 	@Override
 	public int getPrecedence() {
-		// TODO Auto-generated method stub
 		return 0;
 	}	
 
@@ -165,6 +176,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 
 	public int evaluate(String promotionCode, PromotionContextI context, boolean dcpdMinSubtotalCheck) {
 		cartDcpdSubtotal=0.0;
+		final Set<ContentKey> contentKeys = getContentKeys();
 		int allowORdeny = PromotionStrategyI.RESET;
 		DCPDPromoProductCache dcpdCache = context.getUser().getDCPDPromoProductCache();
 		if(!dcpdMinSubtotalCheck){
@@ -219,4 +231,12 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		}
 		return allowORdeny;
 	}
+	@Override
+	public String toString() {
+		return "CartItemStrategy [contentKeys="
+				+ rawContentKeys + ", needDryGoods=" + needDryGoods
+				+ ", minSkuQuantity=" + minSkuQuantity + ", dcpdData="
+				+ dcpdData.toString() + "]";
+	}
+
 }

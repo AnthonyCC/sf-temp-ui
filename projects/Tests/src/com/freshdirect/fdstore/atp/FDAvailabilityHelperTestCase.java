@@ -36,7 +36,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDAvailabilityI av = new FDStockAvailability(erpInv, 1, 1, 1,null);
+		FDAvailabilityI av = new FDStockAvailability(erpInv, 1, 1, 1);
 
 		assertNull(firstAv(av, "2004-01-23", 1));
 		assertNull(firstAv(av, "2004-01-23", 2));
@@ -51,7 +51,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
-		FDAvailabilityI av = new FDStockAvailability(erpInv, 1, 1, 1,null);
+		FDAvailabilityI av = new FDStockAvailability(erpInv, 1, 1, 1);
 
 		assertNull(firstAv(av, "2004-01-23", 1));
 		assertNull(firstAv(av, "2004-01-23", 2));

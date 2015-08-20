@@ -1,15 +1,16 @@
 package com.freshdirect.fdstore.content.customerrating;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+@Deprecated
 public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,CustomerRatingsDTO>> {
 
 	private static CustomerRatingsContext instance = null;
@@ -53,32 +54,6 @@ public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,
 	}
 	
 	protected Map<String,CustomerRatingsDTO> load() {
-		try {
-			if(!FDStoreProperties.isProductRatingReload()){
-				return referent;
-			}
-			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
-			//LAST_REFRESH = man.getLastRefresh();
-			return man.getCustomerRatings();
-		} catch (FDResourceException e) {
-			LOGGER.error("Refreshing customer ratings failed!",e);
-			return referent;
-		}
+		return Collections.emptyMap();
 	}
-	
-	/*protected boolean isExpired() {
-		try {
-			if(!FDStoreProperties.isProductRatingReload()){
-				return false;
-			}
-			BazaarvoiceUfServiceManager man = BazaarvoiceUfServiceManager.getInstance();
-			if (LAST_REFRESH == 0) return true;
-			return man.getLastRefresh() - LAST_REFRESH > 0;
-		} catch (FDResourceException e) {
-			LOGGER.error("Refreshing customer ratings failed!",e);
-			return true;
-		}
-	}*/
-
-	
 }

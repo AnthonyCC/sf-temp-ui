@@ -117,7 +117,7 @@ public class ProductItemFilterFactory {
 			return new PriceFilter(filterModel, parentId, user);
 		
 		case SUSTAINABILITY_RATING:
-			return new SustainabilityRatingFilter(filterModel, parentId);
+			return new SustainabilityRatingFilter(filterModel, parentId,user);
 			
 		case TAG:
 			return new TagFilter(filterModel, parentId);

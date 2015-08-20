@@ -12,7 +12,7 @@ import java.util.Date;
  * @author istvan
  *
  */
-public abstract class FDRecommendationEvent implements FDEvent, Cloneable {
+public abstract class FDRecommendationEvent extends FDEvent implements Cloneable {
 	
 	private static final long serialVersionUID = 1204785178521111739L;
 	
@@ -27,10 +27,11 @@ public abstract class FDRecommendationEvent implements FDEvent, Cloneable {
 	 * @param contentId
 	 * @param timestamp
 	 */
-	protected FDRecommendationEvent(String variantId, String contentId, Date timestamp) {
+	protected FDRecommendationEvent(String variantId, String contentId, Date timestamp, String eStoreId) {
 		this.variantId = variantId;
 		this.contentId = contentId;
 		this.timestamp = timestamp;	
+		this.eStoreId = eStoreId;
 	}
 
 	public String getVariantId() {
@@ -78,8 +79,8 @@ public abstract class FDRecommendationEvent implements FDEvent, Cloneable {
 		 * @param contentId
 		 * @param timestamp
 		 */
-		public Impression(String variantId, String contentId, Date timestamp) {
-			super(variantId, contentId, timestamp);
+		public Impression(String variantId, String contentId, Date timestamp, String eStoreId) {
+			super(variantId, contentId, timestamp, eStoreId);
 		}
 
 		private static final long serialVersionUID = 2286824559331191047L;
@@ -98,8 +99,8 @@ public abstract class FDRecommendationEvent implements FDEvent, Cloneable {
 		 * @param contentId
 		 * @param timestamp
 		 */
-		public ClickThrough(String variantId, String contentId, Date timestamp) {
-			super(variantId, contentId, timestamp);
+		public ClickThrough(String variantId, String contentId, Date timestamp, String eStoreId) {
+			super(variantId, contentId, timestamp, eStoreId);
 		}
 
 		private static final long serialVersionUID = 2286824559331191047L;

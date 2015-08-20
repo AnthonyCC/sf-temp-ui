@@ -19,7 +19,10 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     private ErpAddressModel deliveryAddress;
     private EnumDeliveryType deliveryType;
     private String deliveryRegionId;
+    private ErpDeliveryPlantInfoModel deliveryPlantInfo;
     private Date deliveryHandoffTime;
+    private double minDurationForModStart;
+    private double minDurationForModification;
     
    
     public String getDeliveryReservationId() { return deliveryReservationId; }
@@ -51,6 +54,18 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     
 	public Date getDeliveryHandoffTime() { return deliveryHandoffTime; }
 	public void setDeliveryHandoffTime(Date deliveryHandoffTime) { this.deliveryHandoffTime = deliveryHandoffTime; }
-
-    
+	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo() {		return deliveryPlantInfo;	}
+	public void setDeliveryPlantInfo(ErpDeliveryPlantInfoModel deliveryPlantInfo) {		this.deliveryPlantInfo = deliveryPlantInfo;	}
+	public double getMinDurationForModStart() {
+		return minDurationForModStart;
+	}
+	public void setMinDurationForModStart(double minDurationForModStart) {
+		this.minDurationForModStart = minDurationForModStart;
+	}
+	public double getMinDurationForModification() {
+		return minDurationForModification;
+	}
+	public void setMinDurationForModification(double minDurationForModification) {
+		this.minDurationForModification = minDurationForModification;
+	}
 }

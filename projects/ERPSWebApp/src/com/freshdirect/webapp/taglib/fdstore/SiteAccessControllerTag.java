@@ -2,6 +2,8 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -34,6 +37,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
@@ -56,11 +60,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String resultName = null;
 
 	private EnumServiceType serviceType = null;
-
+	
+	//EnumAvailableServiceType
 
 	private AddressModel address = null;
 	private EnumDeliveryStatus requestedServiceTypeDlvStatus;
+	private Set availableServiceTypes;
 	
+
 	public void setAction(String action) {
 		this.action = action;
 	}
@@ -119,6 +126,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	
 	public String getFailureCorporatePageCRM() {
 		return failureCorporatePageCRM;
+	}
+
+	public Set getAvailableServiceTypes() {
+		return availableServiceTypes;
+	}
+
+	public void setAvailableServiceTypes(Set availableServiceTypes) {
+		this.availableServiceTypes = availableServiceTypes;
 	}
 
 	public void setFailureCorporatePageCRM(String failureCorporatePageCRM) {
@@ -281,7 +296,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					checkByAddress(request, result);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
 					doPrereg(request, result);
-				} else if ("signupLite".equalsIgnoreCase(action)) {
+				} else if ("signupLite".equalsIgnoreCase(action)) { 
 					HttpSession session = this.pageContext.getSession();
 					FDDeliveryServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
 					if(serviceResult!=null)
@@ -323,9 +338,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							} else {
 								//Delivery to corporate
 								doRedirect(moreIngoPage);
+								
 							}
 						} else {
 							//Home delivery
+							
+							
+							
 							if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus) || EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)) {
 								// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
 								return doRedirect(failedHomePage);
@@ -337,6 +356,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 								//All set. The zipcode is good. Proceed to direct registration. No more info needed.
 								doRegistration(result);
 							}
+							
+							
+							
 						}
 					}
 				}
@@ -368,7 +390,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		try {
 			String res = ra.executeEx();
 			if((Action.SUCCESS).equals(res)) {
-				this.setSuccessPage("/registration/signup_lite.jsp");										
+				this.setSuccessPage("/social/signup_lite.jsp");										
 				HttpSession session = pageContext.getSession();
 				session.setAttribute("LITESIGNUP_COMPLETE", "true");
 				session.removeAttribute("LITEACCOUNTINFO");
@@ -569,8 +591,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					SystemMessageList.MSG_UNRECOGNIZE_STATE);
 			}
 			
-			if (result.isSuccess()) {
-				this.address = AddressUtil.scrubAddress(this.address, true, result);
+			try{			
+				if (result.isSuccess()) {
+					this.address = AddressUtil.scrubAddress(this.address, true, result);
+				}
+			} catch(Exception ee){
+				//result.addError(new ActionError(EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS));
 			}
 		}
 		
@@ -601,6 +627,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(this.address);
 			//request.setAttribute(REQUESTED_SERVICE_TYPE_DLV_STATUS, serviceResult.getServiceStatus(this.serviceType));
 			setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
+			this.setAvailableServiceTypes(serviceResult.getAvailableServices());
+						
+			
 			EnumDeliveryStatus reqStatus = serviceResult.getServiceStatus(this.serviceType);
 			EnumDeliveryStatus altStatus = serviceResult.getServiceStatus(altServiceType);
 			
@@ -773,7 +802,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				if (user != null) {
 					oldCart = user.getShoppingCart();
 				}
-				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
+				StoreContext storeContext =StoreContextUtil.getStoreContext(session);
+				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType, storeContext.getEStoreId()), session);
 				user.setUserCreatedInThisSession(true);
 				
 				if(this.address!=null && user.getAddress()!=null && 
@@ -784,8 +814,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				user.setSelectedServiceType(serviceType);
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(serviceType);
-				user.setAvailableServices(availableServices);
-	
+				user.setAvailableServices(availableServices);			
 				
 				if (oldCart != null) {
 					user.setShoppingCart(oldCart);
@@ -806,7 +835,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					user.setZPServiceType(serviceType);
 					user.setAvailableServices(availableServices);
 					//Need to reset the pricing context so the pricing context can be recalculated.
-					user.resetPricingContext();
+					//user.resetPricingContext();
+					//user.setP
 					CookieMonster.storeCookie(user, response);
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(SessionName.USER, user);

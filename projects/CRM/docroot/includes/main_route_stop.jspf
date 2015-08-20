@@ -1,4 +1,5 @@
 <%@ page import="java.text.*" %>
+<%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text" style="background-color:#CCFF99;border-bottom: 2px #000000 solid;border-top: 1px #000000 solid;">
 <form name="routestop_report" method="post" action="/reports/route_stop_report.jsp">
  <input type="hidden" name="xPortVS" value='no'>
@@ -16,7 +17,8 @@
  String route = request.getParameter("route") != null ? request.getParameter("route") : " ";
  String stop1 = request.getParameter("stop1") != null ? request.getParameter("stop1") : " ";
  String stop2= request.getParameter("stop2") != null ? request.getParameter("stop2") : " ";
- %>
+ %>  
+<%@ include file="/includes/i_globalcontext.jspf" %>
 <script language="JavaScript">
     function checkForm(thisForm) {
         var okToSubmit= true;
@@ -82,7 +84,7 @@
     }
 </script>
     <tr>
-        <td width="15%"><table><tr><td><span class="sub_nav_title">Orders by Route & Stop</span></td></tr></table></td>
+        <td width="15%"><table><tr><td><span class="sub_nav_title">Orders by <%= ((globalContextStore).equals("FDX")) ? "Trip" : "Route" %> & Stop</span></td></tr></table></td>
         <td width="55%" align="center"><table><tr><td>
             Date<font color="red">*</font> 
             <select name="month" required="true" class="pulldown">
@@ -104,9 +106,11 @@
                             <%  } %>
             </select>
             &nbsp;
-            Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
+            <%= ((globalContextStore).equals("FDX")) ? "Trip" : "Wave" %> <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
             &nbsp;
-            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
+            	Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            <% if ((globalContextStore).equals("FDX")) { %></span><% } %>
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 
@@ -128,4 +132,3 @@
 	</script>
     </form>
 </table>
-<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>

@@ -9,6 +9,8 @@ import com.freshdirect.webapp.taglib.fdstore.RedemptionCodeControllerTag;
 public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper implements RequestParamName, SessionParamName {
 
     public static final String ACTION_REMOVE_CODE = "removeCode";
+    
+    public static final String ACTION_PROMO_GIFT_CODE = "applyCode";
 
     public static final String ACTION_REMOVE_GIFT_CARD = "removeGiftCard";
 
@@ -48,6 +50,17 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
         addRequestValue(REQ_PARAM_IS_PROMO_ELIGIBLE, false);
         addRequestValue(REQ_PARAM_PROMO_ERROR_FLAG, "");
         getWrapTarget().setActionName(ACTION_APPLY_CODE);
+        setMethodMode(true);
+        ResultBundle result = new ResultBundle(executeTagLogic(), this);
+        return result;
+    }
+    
+    public ResultBundle applyCode(String code) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_RECENT_ORDER_NUMBER, }, new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
+
+        addRequestValue(REQ_PARAM_REDEMPTION_CODE, code);       
+        getWrapTarget().setActionName(ACTION_PROMO_GIFT_CODE);
         setMethodMode(true);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
         return result;

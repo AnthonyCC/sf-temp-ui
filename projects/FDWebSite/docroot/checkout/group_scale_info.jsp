@@ -19,6 +19,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.Promotion' %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@page import="com.freshdirect.common.pricing.util.GroupScaleUtil"%>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@page import="com.freshdirect.fdstore.FDGroup"%>
 <%!
 private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
@@ -41,7 +42,7 @@ if(result == null){
 		json.put("status", "error");
 }
 else {
-	MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
+	MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getUserContext().getPricingContext().getZoneInfo());
 	buf1.append( " <span class=\"text14rbold\">Buy More &amp; Save!</span><br />" );
 	buf1.append( "<span class=\"text12bold\">Any "+result.getLongDesc()+"</span><br />" );
 	buf1.append( "<span class=\"text14rbold\">" );

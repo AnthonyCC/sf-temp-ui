@@ -18,6 +18,8 @@ import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSessionBean;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+//import com.freshdirect.logistics.delivery.model.PlantSalesArea;
+//import com.freshdirect.logistics.delivery.model.SalesArea;
 
 public class FDZoneInfoManager {
 	private final static Category LOGGER = LoggerFactory.getInstance(FDZoneInfoManager.class);
@@ -55,6 +57,18 @@ public class FDZoneInfoManager {
             throw new FDResourceException(re, "Error talking to session bean");
         }
         return zoneId;
+        
     }
+    
+    /*public static PlantSalesArea getPlantInfo() {
+    	SalesArea sa=new SalesArea("SO1","DC1","DIV1");
+    	SalesArea dsa=new SalesArea("SO","DC","DIV");
+    	
+    	PlantSalesArea psa=new PlantSalesArea();
+    	psa.setCode("1000");//Plant ID
+    	psa.setDefaultSalesArea(dsa);
+    	psa.setSalesArea(sa);
+    	return psa;
+    }*/
 
 }

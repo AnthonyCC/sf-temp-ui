@@ -1,13 +1,14 @@
 package com.freshdirect.fdstore.customer.adapter;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -17,23 +18,15 @@ import com.freshdirect.framework.util.MathUtil;
 
 public class OrderPromotionHelper {
 
-	private OrderPromotionHelper() {
-		
-	}
-
 	/**
 	 * @return applicable discount
 	 */
 	public static double getApplicableSignupAmount(FDCartModel cart, double amount, double maxAmountPerSku) {
-		List lines = cart.getOrderLines();
-
 		double promotionValue = 0.0;
 
-		HashMap appliedValue = new HashMap();
+		Map<String, Double> appliedValue = new HashMap<String, Double>();
 
-		for (Iterator i = lines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
-
+		for (final FDCartLineI line : cart.getOrderLines()) {
 			if (line.lookupFDProduct().isQualifiedForPromotions()) {
 				double applicablePromotion = 0.0;
 				if (promotionValue < amount) {
@@ -71,11 +64,11 @@ public class OrderPromotionHelper {
 	 * @param percentOff
 	 * @return
 	 */
-	public static double getApplicableCategoryDiscount(List eligibleCartLines, double percentOff) { 
+	public static double getApplicableCategoryDiscount(List<FDCartLineI> eligibleCartLines, double percentOff) { 
 		double promotionValue = 0.0;
-		//HashMap appliedValue = new HashMap();
-		for (Iterator i = eligibleCartLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+
+		
+		for (final FDCartLineI line : eligibleCartLines) {
 			//Calculate the line discount value.
 			double lineValue = MathUtil.roundDecimal(line.getPrice() * percentOff);
 			promotionValue += lineValue;
@@ -85,50 +78,13 @@ public class OrderPromotionHelper {
 		return promotionValue;
 	}
 
-
-	/**
-	 * 
-	 * @param cart
-	 * @param deptKeys
-	 * @param catKeys
-	 * @param recipeIds
-	 * @return List of cartlines eligible for category discount.
-	 */
 	
-	public static boolean evaluateProductForDCPDPromo(ProductModel model, Set contentKeys) {
-		Set virtualCats = null;
-		//ProductModel model = cartLine.getProductRef().lookupProduct();
-		/*
-		 * Load all parents of this cartline product if either eligible
-		 * department set or category set is not empty.
-		 * 
-		 */
-		ContentKey cKey = model.getContentKey();
-		Set parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
-		/*
-		 * The reason for adding the productModel's parent node to the parent set
-		 * is when a product has its parent category set at runtime.
-		 */ 
-		//parentKeys.add(model.getParentNode().getContentKey());
-		//Handling Products in Eligible Departments/Categories.
-		if(CollectionUtils.containsAny(contentKeys, parentKeys)){
-			return true;
-		}else{			
-			//Check for virtual category.
-			if(virtualCats == null){
-				//Load the first time only within this method.
-				virtualCats = ContentNodeModelUtil.findVirtualCategories(contentKeys, false);
-			}
-			//Handling Products in Eligible Virtual Categories.
-			if(virtualCats.size() > 0 && ContentNodeModelUtil.isProductInVirtualCategories(virtualCats, model)){
-				return true;
-			}
-		}
-		return false;
+	public static boolean evaluateProductForDCPDPromo(ProductModel model, Set<ContentKey> contentKeys) {
+		return evaluateProductForDCPDPromoWithRecCategory(model, contentKeys, false);
 	}
 	
-	public static boolean evaluateProductForDCPDPromoWithRecCategory(ProductModel model, Set contentKeys, boolean loopEnabled) {
-		Set virtualCats = null;
+	public static boolean evaluateProductForDCPDPromoWithRecCategory(ProductModel model, Set<ContentKey> contentKeys, boolean loopEnabled) {
+		Set<CategoryModel> virtualCats = null;
 		//ProductModel model = cartLine.getProductRef().lookupProduct();
 		/*
 		 * Load all parents of this cartline product if either eligible
@@ -136,7 +92,7 @@ public class OrderPromotionHelper {
 		 * 
 		 */
 		ContentKey cKey = model.getContentKey();
-		Set parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
+		Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
 		/*
 		 * The reason for adding the productModel's parent node to the parent set
 		 * is when a product has its parent category set at runtime.

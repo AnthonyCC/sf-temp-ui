@@ -1,7 +1,9 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.FeaturedCategory;
 
@@ -15,8 +17,7 @@ public class HomeResponse extends Message {
 	//Featured Categories contain the categories and the products.
 	private List<FeaturedCategory> featuredCategories;
 	
-	private Configuration configuration = new Configuration();
-	
+
 	public List<Idea> getCarouselItems() {
 		return carouselItems;
 	}
@@ -41,11 +42,15 @@ public class HomeResponse extends Message {
 		this.featuredCategories = featuredCategories;
 	}
 
-	public Configuration getConfiguration() {
-		return configuration;
-	}
+	
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}	
+	
+
+	
+
+	
+	
+	
+	
+
 }

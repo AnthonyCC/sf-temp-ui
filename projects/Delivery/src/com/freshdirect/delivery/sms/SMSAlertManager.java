@@ -18,6 +18,7 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -80,7 +81,7 @@ public class SMSAlertManager {
 		return isSent;
 	}
 	
-	public void captureMessageRelayed(String mobileNumber, String shortCode, String carrierName, String receivedDate, String message) throws FDResourceException{
+	public void captureMessageRelayed(String mobileNumber, String shortCode, String carrierName, String receivedDate, String message, EnumEStoreId eStoreId) throws FDResourceException{
 		
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
@@ -88,7 +89,7 @@ public class SMSAlertManager {
 			String formattedMobileNumber=formatMobileNumber(mobileNumber);
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-			smsAlertSB.updateSmsReceived(formattedMobileNumber, shortCode, carrierName, date, message);
+			smsAlertSB.updateSmsReceived(formattedMobileNumber, shortCode, carrierName, date, message, eStoreId);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
@@ -98,9 +99,7 @@ public class SMSAlertManager {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
-		
-	}
-	
+	}	
 	private String formatMobileNumber(String mobileNumber){
 		
 		if(StringUtils.isNotEmpty(mobileNumber) && mobileNumber.length() > 10){

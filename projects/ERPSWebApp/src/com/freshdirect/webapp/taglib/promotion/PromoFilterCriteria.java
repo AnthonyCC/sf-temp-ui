@@ -8,13 +8,14 @@ public class PromoFilterCriteria {
 	private String createdBy;
 	private String modifiedBy;
 	private String keyword;
+	private String serviceType;
 	
 	public PromoFilterCriteria() {
 		super();
 	}
 	public PromoFilterCriteria(String offerType, String customerType,
 			String promoStatus, String createdBy, String modifiedBy,
-			String keyword) {
+			String keyword, String serviceType) {
 		super();
 		this.offerType = offerType;
 		this.customerType = customerType;
@@ -22,6 +23,7 @@ public class PromoFilterCriteria {
 		this.createdBy = createdBy;
 		this.modifiedBy = modifiedBy;
 		this.keyword = keyword;
+		this.serviceType = serviceType;
 	}
 	public String getOfferType() {
 		return offerType;
@@ -59,15 +61,24 @@ public class PromoFilterCriteria {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
 	
 	public boolean isEmpty(){
 		boolean isEmtpy = true;
-		if((null != offerType && !offerType.trim().equalsIgnoreCase("")) 
-				|| (null != customerType && !customerType.trim().equalsIgnoreCase(""))
-				|| (null != promoStatus && !promoStatus.trim().equalsIgnoreCase("")) 
-				|| (null != createdBy && !createdBy.trim().equalsIgnoreCase("")) 
-				|| (null != modifiedBy && !modifiedBy.trim().equalsIgnoreCase("")) 
-				|| (null != keyword && !keyword.trim().equalsIgnoreCase(""))){
+		if(
+			(null != offerType && !offerType.trim().equalsIgnoreCase("")) 
+			|| (null != customerType && !customerType.trim().equalsIgnoreCase(""))
+			|| (null != promoStatus && !promoStatus.trim().equalsIgnoreCase("")) 
+			|| (null != createdBy && !createdBy.trim().equalsIgnoreCase("")) 
+			|| (null != modifiedBy && !modifiedBy.trim().equalsIgnoreCase("")) 
+			|| (null != keyword && !keyword.trim().equalsIgnoreCase(""))
+			|| (null != serviceType && !serviceType.trim().equalsIgnoreCase(""))
+		){
 			isEmtpy = false;
 		}
 		return isEmtpy;

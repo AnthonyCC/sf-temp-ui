@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.log4j.Category;
 
@@ -28,10 +27,10 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 	private static Category LOGGER = LoggerFactory.getInstance(RecommendationEventLoggerSessionBean.class);
 	
 	private static final String IMPRESSION_INSERT = 
-		"INSERT INTO CUST.LOG_IMPRESSIONS (CONTENT_ID,VARIANT_ID,TIMESTAMP,FREQUENCY) VALUES(?,?,?,?)";
+		"INSERT INTO CUST.LOG_IMPRESSIONS (CONTENT_ID,VARIANT_ID,TIMESTAMP,FREQUENCY, E_STORE) VALUES(?,?,?,?,?)";
 	
 	private static final String CLICKTHROUGH_INSERT =
-		"INSERT INTO CUST.LOG_CLICKTHROUGHS (CONTENT_ID,VARIANT_ID,TIMESTAMP,FREQUENCY) VALUES(?,?,?,?)";
+		"INSERT INTO CUST.LOG_CLICKTHROUGHS (CONTENT_ID,VARIANT_ID,TIMESTAMP,FREQUENCY, E_STORE) VALUES(?,?,?,?,?)";
 	
 	private void logRecommendationEvent(Connection conn, FDRecommendationEvent event, int frequency) {
 		PreparedStatement ps = null;
@@ -47,6 +46,7 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 			ps.setString(2, event.getVariantId());
 			ps.setDate(3, new java.sql.Date(event.getTimeStamp().getTime()));
 			ps.setInt(4, frequency);
+			ps.setString(5, event.getEStoreId());
 			
 			if (ps.executeUpdate() != 1) {
 				throw new FDRuntimeException("Could not execute " + statement);
@@ -63,7 +63,7 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private void logRecommendationEvents(Connection conn, Class eventClazz, Collection events) {
+	private void logRecommendationEvents(Connection conn, Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) {
 	
 		if (events.size() == 0) return;
 		
@@ -78,13 +78,13 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 			ps = conn.prepareStatement(statement);
 			
 			int totalToWrite = 0;
-			for(Iterator i = events.iterator(); i.hasNext();) {
-				RecommendationEventsAggregate eventAggregate = (RecommendationEventsAggregate)i.next();
+			for(RecommendationEventsAggregate eventAggregate : events) {
 				if (eventAggregate.getFrequency() == 0) continue;
 				ps.setString(1, eventAggregate.getContentId());
 				ps.setString(2, eventAggregate.getVariantId());
 				ps.setDate(3, new java.sql.Date(eventAggregate.getDate().getTime()));
 				ps.setInt(4, eventAggregate.getFrequency());
+				ps.setString(5, eventAggregate.getEStoreId());
 				ps.addBatch();
 				++totalToWrite;
 			}
@@ -110,11 +110,11 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public void log(Class eventClazz, Collection events) throws RemoteException {
+	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			logRecommendationEvents(conn,eventClazz,events);
+			logRecommendationEvents(conn, eventClazz, events);
 		} catch (SQLException e) {
 			LOGGER.warn("Could not log " + events.size() + " impressions",e);
 			throw new RemoteException("Could not log " + events.size() + " impressions",e);
@@ -122,12 +122,12 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
                     close(conn);
 		}
 	}
-	
+
 	public void log(FDRecommendationEvent event, int frequency) throws RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			logRecommendationEvent(conn,event,frequency);
+			logRecommendationEvent(conn, event, frequency);
 		} catch (SQLException e) {
 			LOGGER.warn("Could not log event: " + event,e);
 			throw new RemoteException("Could not log event: " + event,e);

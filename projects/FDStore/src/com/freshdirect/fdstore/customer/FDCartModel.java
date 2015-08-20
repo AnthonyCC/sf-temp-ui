@@ -19,6 +19,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -26,12 +27,14 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -40,13 +43,16 @@ import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
@@ -199,6 +205,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * @supplierCardinality 0..*
 	 */
 	protected final List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>();
+	
+	protected final List<FDCartLineI> invalidLines = new ArrayList<FDCartLineI>();
 
 	private final List<FDCartLineI> sampleLines = new ArrayList<FDCartLineI>();
 
@@ -207,6 +215,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private List<ErpAppliedCreditModel> customerCredits = new ArrayList<ErpAppliedCreditModel>();
 	
 	private FDReservation deliveryReservation = null;
+	
+	private Date modificationCutoffTime =  null;
 
 	private ErpAddressModel deliveryAddress;
 
@@ -264,6 +274,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private Set<String> recentlyAppliedCoupons = new HashSet<String>();
 	
 	private EnumTransactionSource source;
+	private EnumEStoreId eStore;
+	private ErpDeliveryPlantInfoModel deliveryPlantInfo;
 	
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -287,6 +299,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}*/
 	
 	public boolean isDlvPassApplied() {
+		if(EnumEStoreId.FDX.equals(getEStoreId()))
+			return false;
 		return dlvPassApplied;
 	}
 
@@ -329,6 +343,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		setZoneInfo(cart.zoneInfo);
 		setDeliveryReservation(cart.deliveryReservation);
 		setDeliveryAddress(cart.deliveryAddress);
+		setDeliveryPlantInfo(cart.deliveryPlantInfo);
 		setPaymentMethod(cart.paymentMethod);
 	}
 
@@ -458,6 +473,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	public FDCartLineI getOrderLineById(int randomId) {
 		int idx = this.getOrderLineIndex(randomId);
+		//FDCartLineI c=this.getOrderLineById(randomId);
 		return idx == -1 ? null : this.getOrderLine(idx);
 	}
 
@@ -481,6 +497,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.orderLines.remove(index);
 		this.recentOrderLines.clear();
 		this.clearAvailability();
+		
 	}
 
 	public boolean removeOrderLineById(int randomId) {
@@ -731,6 +748,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.deliveryReservation = deliveryReservation;
 	}
 	
+	public Date getModificationCutoffTime() {
+		return this.modificationCutoffTime;
+	}
+
+	public void setModificationCutoffTime(Date modificationCutoffTime) {
+		this.modificationCutoffTime = modificationCutoffTime;
+	}
+	
 	public String getDeliveryZone() {
 		if(this.zoneInfo != null)
 			return this.zoneInfo.getZoneCode();
@@ -909,6 +934,17 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	public void setDeliveryAddress(ErpAddressModel deliveryAddress) {
 		this.deliveryAddress = deliveryAddress;
+		//
+		/*ErpDeliveryPlantInfoModel dpi=this.getDeliveryPlantInfo();
+		if (dpi!=null) {
+			dpi.setPlantId("1000");
+			dpi.setSalesOrg("1000");
+			dpi.setDistChannel("1000");
+			
+		}*/
+		
+		
+			
 	}
 
 	public boolean isCsrWaivedDeliveryCharge() {
@@ -1242,14 +1278,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.sortOrderLines();
 		
 		if( this.orderLines.size()>0){		  	
-			  this.calculateGroupPrice((orderLines.get(0).getPricingContext()!=null)?orderLines.get(0).getPricingContext().getZoneId():ZonePriceListing.MASTER_DEFAULT_ZONE);
+			PricingContext pCtx=orderLines.get(0).getUserContext().getPricingContext();
+			  this.calculateGroupPrice((pCtx!=null)?pCtx.getZoneInfo():ZonePriceListing.DEFAULT_ZONE_INFO);
+			  this.calculateScaleQuantity();
 		}
 		
 	}
 
 	public void refreshAll(boolean recalculateGroupScale) throws FDResourceException, FDInvalidConfigurationException {
 		if( this.orderLines.size()>0 && recalculateGroupScale){		  	
-			  this.calculateGroupPrice((orderLines.get(0).getPricingContext()!=null)?orderLines.get(0).getPricingContext().getZoneId():ZonePriceListing.MASTER_DEFAULT_ZONE);
+			PricingContext pCtx=orderLines.get(0).getUserContext().getPricingContext();
+			  this.calculateGroupPrice((pCtx!=null)?pCtx.getZoneInfo():ZonePriceListing.DEFAULT_ZONE_INFO);
+			  this.calculateScaleQuantity();
+
 		}
 
 		for ( FDCartLineI cartLine : orderLines ) {
@@ -1258,7 +1299,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		
 	}
 
-	protected void calculateGroupPrice(String pZoneId) throws FDResourceException{
+	protected void calculateGroupPrice(ZoneInfo pricingZone ) throws FDResourceException{
 		List<FDCartLineI> eligibleCartLines = new ArrayList<FDCartLineI>();
 		Map<FDGroup, Double> groupMap = new HashMap<FDGroup, Double>();
 		Map<FDGroup, Double> qualifiedGroupMap = new HashMap<FDGroup, Double>();
@@ -1268,7 +1309,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			cartLine.setGroupQuantity(0.0);
 			FDGroup group = cartLine.getFDGroup();
 			if(group != null){
-				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, pZoneId);
+				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, pricingZone);
 				if(matPrice != null){
 					eligibleCartLines.add(cartLine);
 					if(!groupMap.containsKey(group)){
@@ -1313,7 +1354,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				}
 			}
 		} 
-		checkNewLinesForUpgradedGroup(pZoneId, groupMap, qualifiedGroupMap,
+		checkNewLinesForUpgradedGroup(pricingZone, groupMap, qualifiedGroupMap,
 				qualifiedGrpIdMap);
 		for ( FDCartLineI qCartLine : eligibleCartLines ) {
 			FDGroup qGroup = qCartLine.getFDGroup();
@@ -1326,7 +1367,29 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 	}
 
-	protected void checkNewLinesForUpgradedGroup(String pZoneId,
+	public  void calculateScaleQuantity() {
+		//String key=null;
+		Map<FDSku,Double> scaleQuantityMap=new HashMap<FDSku, Double>();
+		Double scale=null;
+		for ( FDCartLineI cartLine : orderLines ) {
+			//key=populateScaleKey(cartLine);
+			scale=scaleQuantityMap.get(cartLine.getSku());
+			if(scale==null){
+				scale=new Double(0.0);
+			}
+			scale=scale+cartLine.getQuantity();
+			scaleQuantityMap.put(cartLine.getSku(), scale);
+		}
+		
+		for(FDCartLineI cartLine : orderLines){
+			//key=populateScaleKey(cartLine);
+
+			cartLine.setScaleQuantity(scaleQuantityMap.get(cartLine.getSku()));
+		}
+	}
+
+
+	protected void checkNewLinesForUpgradedGroup(ZoneInfo pricingZone,
 			Map<FDGroup, Double> groupMap,
 			Map<FDGroup, Double> qualifiedGroupMap,
 			Map<String, FDGroup> qualifiedGrpIdMap) throws FDResourceException{
@@ -1466,6 +1529,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public void handleDeliveryPass() {
+		if(EnumEStoreId.FDX.equals(getEStoreId()))
+			return;
+		
 		int count = 0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
@@ -1532,6 +1598,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public boolean containsUnlimitedPass(){
+		if(EnumEStoreId.FDX.equals(getEStoreId()))
+			return false;
 		boolean contains = false;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
@@ -1726,18 +1794,34 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return true;
 	}
 
-	public void setPricingContextToOrderLines(PricingContext pCtx) {
+	public void setUserContextToOrderLines(UserContext uCtx) {
+		List<FDCartLineI> invalids=new ArrayList<FDCartLineI>(orderLines.size());
 		for (FDCartLineI cartLine : this.orderLines) {
-			cartLine.setPricingContext(pCtx);
+			cartLine.setUserContext(uCtx);
+			
 			try {
 				OrderLineUtil.cleanup(cartLine);
 			} catch (FDInvalidConfigurationException e) {
-				LOGGER.debug(e.getMessage());
+				invalids.add(cartLine);
+				LOGGER.error(e.getMessage());
 			} catch(FDResourceException e1){
-				LOGGER.debug(e1.getMessage());
+				LOGGER.error(e1.getMessage());
 			}
 			
 		}
+		
+		if(invalids.size()>0)
+			this.setInvalidOrderLines(invalids);
+		for(FDCartLineI cartLine:invalids) {
+			this.orderLines.remove(cartLine);
+		}
+		/*try {
+			this.refreshAll(true);
+		}catch ( FDResourceException e ) {
+			LOGGER.error( "Cart refresh failed", e );
+		} catch ( FDInvalidConfigurationException e ) {
+			LOGGER.error( "Cart refresh failed, invalid configuration", e );
+		}*/
 	}
 
 	public int getDlvPassExtendDays() {
@@ -1864,6 +1948,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	}   
 
+	public void setTip(double tip) {
+		this.setChargeAmount(EnumChargeType.TIP, tip);
+	}
+	
+	public double getTip() {
+		return this.getChargeAmount(EnumChargeType.TIP);
+	}
 	
     public void setDlvPassPremiumAllowedTC(boolean dlvPassPremiumAllowedTC){
     	this.dlvPassPremiumAllowedTC = dlvPassPremiumAllowedTC;
@@ -1900,4 +1991,37 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return source;
 	}
 	
+	
+	public EnumEStoreId getEStoreId() {
+		
+		return eStore;
+}
+	
+	public void setEStoreId(EnumEStoreId eStore) {
+		this.eStore = eStore;
+	}
+
+	@Override
+	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo() {
+		return this.deliveryPlantInfo;
+	}
+	
+	public  void setDeliveryPlantInfo(ErpDeliveryPlantInfoModel deliveryPlantInfo) {
+		 this.deliveryPlantInfo=deliveryPlantInfo;
+	}
+	
+	public void setInvalidOrderLines(List<FDCartLineI> lines) {
+		
+		this.invalidLines.clear();
+		this.invalidLines.addAll(lines);
+	}
+	
+	public List<FDCartLineI> getInvalidOrderLines() {
+		return invalidLines;
+	}
+	
+	public boolean hasInvalidLines() {
+		
+		return invalidLines.size()>0?true:false;
+	}
 }

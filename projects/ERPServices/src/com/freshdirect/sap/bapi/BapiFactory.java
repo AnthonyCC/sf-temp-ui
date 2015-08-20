@@ -126,4 +126,14 @@ public abstract class BapiFactory {
 	 */
 	public abstract BapiCartonDetailsForSale getBapiCartonDetailsForSale()
 			throws SapException;
+	
+	/**
+	 * @return BapiSendSettlementByCommand
+	 * @throws SapException
+	 */
+	public abstract BapiSendPickEligibleOrders getBapiSendPickEligibleOrders()
+			throws SapException;
+	
 }
+
+

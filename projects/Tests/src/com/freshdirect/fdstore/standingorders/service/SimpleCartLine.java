@@ -8,17 +8,19 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumATCContext;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -157,7 +159,7 @@ public class SimpleCartLine implements FDCartLineI {
 	}
 	
 	@Override
-	public PricingContext getPricingContext() {
+	public UserContext getUserContext() {
 		return null;
 	}
 
@@ -569,7 +571,7 @@ public class SimpleCartLine implements FDCartLineI {
 	}
 
 	@Override
-	public void setPricingContext(PricingContext pCtx) {
+	public void setUserContext(UserContext userCtx) {
 	}
 
 	@Override
@@ -809,6 +811,42 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public void setExternalSource(String externalSource) {
+	}
+
+	@Override
+	public void setEStoreId(EnumEStoreId eStore) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumEStoreId getEStoreId() {
+		// TODO Auto-generated method stub
+		return EnumEStoreId.FD;
+	}
+
+	@Override
+	public void setPlantId(String plantId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getPlantId() {
+		// TODO Auto-generated method stub
+		return "1000";
+	}
+
+	@Override
+	public Double getScaleQuantity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setScaleQuantity(Double scaleQuantity) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

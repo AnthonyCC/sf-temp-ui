@@ -20,18 +20,18 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 			<img src="/media_stat/images/giftcards/your_account/check_address_hdr.gif" width="132" height="16" alt="Check An Address" style="float: left;" />
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" />
 			<div id="gcCheckAddressBoxErr">
-				<span id="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.<br />
+				<span id="gcCheckAddressBoxMsg" class="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.<br />
 			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
 			</div><br />
 			<img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<th width="130" align="right">Street Address 1:</th>
-					<td><input name="address1" id="address1" value="" /></td>
+					<td><input name="address1" id="address1" class="gcCheckAddress-address1" value="" /></td>
 				</tr>
 				<tr valign="middle">
 					<th width="130" align="right">Street Address 2:</th>
-					<td><input name = "address2" id="address2" value="" /></td>
+					<td><input name = "address2" class="gcCheckAddress-address2" id="address2" value="" /></td>
 				</tr>
 				<tr>
 					<th width="130" align="right">City/Town:</th>
@@ -45,11 +45,11 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<th width="130" align="right">ZIP Code:</th>
-					<td><input name="zipcode" id="zipcode" value="" /></td>
+					<td><input name="zipcode" id="zipcode" class="gcCheckAddress-zipcode" value="" /></td>
 				</tr>
 				<tr>
 					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
-					<td><a href="#" onclick="checkAddress(); return false;"><img id ="checkAddrBtnImg" src="/media_stat/images/giftcards/your_account/chk_addr_btn.gif" width="102" height="25" alt="CHECK ADDRESS" border="0" /></a></td>
+					<td><a href="#" onclick="checkAddress(); return false;"><img id="checkAddrBtnImg" class="checkAddrBtnImg" src="/media_stat/images/giftcards/your_account/chk_addr_btn.gif" width="102" height="25" alt="CHECK ADDRESS" border="0" /></a></td>
 				</tr>
 			</table>
 		</div>

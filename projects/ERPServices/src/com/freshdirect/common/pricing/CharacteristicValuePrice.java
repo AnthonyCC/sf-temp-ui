@@ -33,13 +33,20 @@ public class CharacteristicValuePrice implements Serializable {
 	/** How to apply condition (cond. type) */
 	private int applyHow;
 	
+	/** Sales Organisation */
+	private String salesOrg;
+	
+	/** Distribution Channel */
+	private String distChannel;
 
-	public CharacteristicValuePrice(String charName, String charValueName, double price, String pricingUnit, int applyHow) {
+	public CharacteristicValuePrice(String charName, String charValueName, double price, String pricingUnit, int applyHow, String salesOrg, String distChannel) {
 		this.charName=charName;
 		this.charValueName=charValueName;
 		this.price=price;
 		this.pricingUnit=pricingUnit;
 		this.applyHow=applyHow;
+		this.salesOrg = salesOrg;
+		this.distChannel = distChannel;
 	}
 
 	public String getCharacteristicName() {
@@ -72,6 +79,20 @@ public class CharacteristicValuePrice implements Serializable {
 	 */
 	public int getApplyHow() {
 		return this.applyHow;
+	}
+
+	/**
+	 * @return the salesOrg
+	 */
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	/**
+	 * @return the distChannel
+	 */
+	public String getDistChannel() {
+		return distChannel;
 	}
 
 	@Override

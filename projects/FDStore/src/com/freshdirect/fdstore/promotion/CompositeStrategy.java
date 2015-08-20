@@ -1,13 +1,12 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class CompositeStrategy implements PromotionStrategyI {
 
-	private List strategies = new ArrayList();
-	private int operator;
+	private List<PromotionStrategyI> strategies = new ArrayList<PromotionStrategyI>();
+	private final int operator;
 	
 	public static final int OR = 0;
 	public static final int AND = 1;
@@ -20,15 +19,21 @@ public class CompositeStrategy implements PromotionStrategyI {
 		strategies.add(strategy);
 	}
 	
-	public void addStrategies(List strategies) {
+	public void addStrategies(List<PromotionStrategyI> strategies) {
 		strategies.addAll(strategies);
 	}
-	
-	
+
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
+		final boolean isCrm = context != null && context.getUser() != null
+				&& context.getUser().isCrmMode();
 		int result = -1;
-		for (Iterator i = this.strategies.iterator(); i.hasNext();){
-			PromotionStrategyI strategy = (PromotionStrategyI) i.next();
+		for (PromotionStrategyI strategy : this.strategies) {
+			// skip CMS heavy strategies in CRM ...
+			if (isCrm && strategy.isStoreRequired()) {
+				continue;
+			}
+
 			int response = strategy.evaluate(promotionCode, context);
 			switch(operator) {
 				case OR: result = (result == -1) ? response : result | response;
@@ -41,33 +46,8 @@ public class CompositeStrategy implements PromotionStrategyI {
 		return result;
 	}
 
-/*	switch(operator){
-	case OR:
-		switch (response) {
-			case PromotionStrategyI.ALLOW:
-				//eligible, Allow
-				return ALLOW;
-				
-			default:
-				// not eligible, go to next
-				result = DENY;
-				continue;
-			}
-	case AND:
-		switch (response) {
-			case PromotionStrategyI.ALLOW:
-				// eligible, go to next
-				result = ALLOW;
-				continue;
-				
-			default:
-				// not eligible, Deny
-				return DENY;
-		}
-	default:
-		//Invalid Operator
-		return DENY;		
-}*/
+
+	@Override
 	public int getPrecedence() {
 		return 1100;
 	}
@@ -77,4 +57,11 @@ public class CompositeStrategy implements PromotionStrategyI {
 		return "CompositeAttributeStrategy[...]";
 	}
 
+	/**
+	 * Be permissive here, defer to evaluate phase
+	 */
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

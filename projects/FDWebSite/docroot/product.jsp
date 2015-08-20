@@ -45,7 +45,7 @@ if (productNode==null) {
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", productNode.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote,SideCartBottom");
-
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 // [redirection] if the previewmode is true then do not honor the hide-URL settting
 if (!ContentFactory.getInstance().getPreviewMode() && productNode.isHidden()) {
     String redirectURL = response.encodeRedirectURL(productNode.getHideUrl());

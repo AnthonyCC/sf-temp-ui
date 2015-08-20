@@ -47,7 +47,7 @@ public class ProductGroupPricingTag extends BodyTagSupportEx {
 
 			String label = null;
 			if (group != null)
-				label = ProductSavingTag.getGroupPrice(group, price.getPricingContext().getZoneId());
+				label = ProductSavingTag.getGroupPrice(group, price.getPricingContext().getZoneInfo());
 
 			if (label != null && !label.isEmpty()) {
 				return label;

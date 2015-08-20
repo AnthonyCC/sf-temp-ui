@@ -24,6 +24,7 @@ import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
 import com.freshdirect.delivery.sms.SmsCustInfo;
 import com.freshdirect.delivery.sms.SmsUtil;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -202,7 +203,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param message
 	 */
 	public void updateSmsReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message) {
+			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) {
 		Connection con = null;
 		try {
 			con = this.getConnection();
@@ -211,7 +212,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			String confirmed = isConfirmed(message);
 			List<SmsCustInfo> customerInfoList = getCustomerInfoList(con, phone.getPhone());
 			for (SmsCustInfo customerInfo : customerInfoList) {
-				updateSmsMessagesReceived(phone.getPhone(), shortCode, carrierName, receivedDate, message, customerInfo, con, confirmed);
+				updateSmsMessagesReceived(phone.getPhone(), shortCode, carrierName, receivedDate, message, customerInfo, con, confirmed, eStoreId);
 				if(!confirmed.equals("YES") && !confirmed.equals("STOP")){
 					break;
 				}
@@ -235,7 +236,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	}
 	
 	private void updateSmsMessagesReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed) 
+			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed, EnumEStoreId eStoreId) 
 					throws SQLException, SmsServiceException, FDResourceException {
 		
 		PreparedStatement ps=null, ps1 = null;

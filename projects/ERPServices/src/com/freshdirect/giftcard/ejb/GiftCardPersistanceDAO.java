@@ -27,6 +27,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -529,9 +530,10 @@ public class GiftCardPersistanceDAO {
 		ps.close();
 	}
 
-	private static final String SELECT_ORDERS_WITH_GC="SELECT DISTINCT S.ID, S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL, SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE "+  
-													  " FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC "+													 
-													  "	WHERE S.ID=SA.SALE_ID AND "+
+	private static final String SELECT_ORDERS_WITH_GC="SELECT DISTINCT S.ID, S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL, SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE, "+
+			                                          " NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "+
+													  " FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC,cust.deliveryinfo di "+													 
+													  "	WHERE S.ID=SA.SALE_ID AND sa.id=di.salesaction_id AND "+
 													  " S.CUSTOMER_ID=? AND "+
 													  " S.CUSTOMER_ID=SA.CUSTOMER_ID AND"+
 													  " SA.ID=AGC.SALESACTION_ID AND"+ 
@@ -572,7 +574,11 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null,false,null,false);			
+					null,false,null,false,
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL"));			
 			saleList.add(info);
 		} 
 		
@@ -616,8 +622,9 @@ public class GiftCardPersistanceDAO {
 	}
 	
 	
-	private static final String SELECT_ORDERS_WITH_GC_CERT="SELECT DISTINCT S.ID,S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL,SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE "+ 
-															" FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC WHERE S.ID=SA.SALE_ID AND S.CUSTOMER_ID=? AND "+
+	private static final String SELECT_ORDERS_WITH_GC_CERT="SELECT DISTINCT S.ID,S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL,SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE, "+
+			                                               " NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "+
+															" FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC,cust.deliveryinfo di WHERE S.ID=SA.SALE_ID AND S.CUSTOMER_ID=? AND sa.id=di.salesaction_id AND "+
 															" S.CUSTOMER_ID=SA.CUSTOMER_ID AND SA.ID=AGC.SALESACTION_ID AND  S.STATUS<>'CAN' AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.ACTION_DATE=S.CROMOD_DATE AND "+
 															" AGC.CERTIFICATE_NUM=?";
 
@@ -657,7 +664,11 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false, null,false);			
+					null, false, null,false,
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL"));			
 			saleList.add(info);
 		} 
 		
@@ -666,8 +677,9 @@ public class GiftCardPersistanceDAO {
 		return saleList;
 	}
 	
-	private static final String SELECT_APPLIED_GC_ORDERS="SELECT DISTINCT S.ID,S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL,SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE "+ 
-	" FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC WHERE S.ID=SA.SALE_ID AND "+
+	private static final String SELECT_APPLIED_GC_ORDERS="SELECT DISTINCT S.ID,S.CUSTOMER_ID, SA.AMOUNT, SA.SUB_TOTAL,SA.REQUESTED_DATE, S.STATUS ,SA.SOURCE AS CREATE_SOURCE, SA.ACTION_DATE AS CREATE_DATE, SA.INITIATOR AS CREATED_BY, S.TYPE, "+
+                                                        " NVL(E_STORE,'FreshDirect') E_STORE, NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID "+
+	" FROM CUST.SALESACTION SA,CUST.SALE S, CUST.APPLIED_GIFT_CARD AGC,cust.deliveryinfo di WHERE S.ID=SA.SALE_ID AND sa.id=di.salesaction_id AND "+
 	" S.CUSTOMER_ID=SA.CUSTOMER_ID AND SA.ID=AGC.SALESACTION_ID AND  S.STATUS<>'CAN' AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.ACTION_DATE=S.CROMOD_DATE AND "+
 	" AGC.CERTIFICATE_NUM=?";
 
@@ -707,7 +719,11 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false, null,false);			
+					null, false, null,false,
+					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
+					rs.getString("PLANT_ID"),
+					rs.getString("SALES_ORG"),
+					rs.getString("DISTRIBUTION_CHANNEL"));			
 			saleList.add(info);
 		} 
 

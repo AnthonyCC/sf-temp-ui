@@ -30,7 +30,9 @@ public class LoggedIn extends Message {
     
     private boolean isBrowseEnabled;
     
-    private int orderCount;
+    private String newUser;
+
+	private int orderCount;
     
     //Added during Mobile Coremetrics Implementation
     private String selectedServiceType;
@@ -176,4 +178,14 @@ public class LoggedIn extends Message {
 		this.onMailingList = onMailingList;
 	}
 	//*************************************************************8
+
+	   
+    public String getNewUser() {
+		return newUser;
+	}
+
+	public void setNewUser(String newUser) {
+		this.newUser = newUser;
+	}
+	
 }

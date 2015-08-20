@@ -447,10 +447,12 @@ public class HelperFunctions {
      * @param model
      * @return List<ContentNodeModel>
      */
+	@Deprecated
     public static List<ContentNodeModel> getProductRecommendationFromVendor(String recommender, ContentNodeModel model) {
         return SmartStoreUtil.toContentNodesFromKeys(DatabaseScoreFactorProvider.getInstance().getProductRecommendations(recommender, model.getContentKey()));
     }
 
+	@Deprecated
     public static List<ContentNodeModel> getUserRecommendationFromVendor(String recommender, String erpCustomerId) {
         return SmartStoreUtil.toContentNodesFromKeys(DatabaseScoreFactorProvider.getInstance().getPersonalRecommendations(recommender, erpCustomerId));
     }
@@ -818,6 +820,7 @@ public class HelperFunctions {
 		.setCustomerId(input.getCustomerId())
 		.setServiceType(input.getCustomerServiceType())
 		.setPricingContext(input.getPricingContext())
+		.setFulfillmentContext(input.getFulfillmentContext())
 		.setCurrentNode(input.getCurrentNode())
 		.setNoShuffle(input.isNoShuffle())
 		.setTraceMode(input.isTraceMode())

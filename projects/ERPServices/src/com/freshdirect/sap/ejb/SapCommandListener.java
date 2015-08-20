@@ -100,6 +100,7 @@ public class SapCommandListener extends MessageDrivenBeanSupport {
 
 		} catch (JMSException ex) {
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException"+ webOrderNumber, ex);
+			//return;
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
 

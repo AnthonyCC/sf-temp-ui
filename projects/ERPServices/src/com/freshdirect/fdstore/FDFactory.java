@@ -35,6 +35,7 @@ import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
  * Singleton class for accessing the FD-layer factory session bean.
@@ -467,22 +468,36 @@ public class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList(),pinfo.getGroup(),pinfo.getSustainabilityRating(),
-			pinfo.getUpc(), pinfo.getAvailabilityDates(),pinfo.getFamilyID());
+			null, pinfo.getZonePriceInfoList(),pinfo.getGroups(),
+			pinfo.getUpc(),pinfo.getFamilyID(),pinfo.getPlantMaterialInfo(),pinfo.getAvailability());
+		
+		/*(String skuCode, int version, 
+	    		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
+	    		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
+	    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
+	    		String upc,List<FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea)*/
+		
+		
 	}
 	
 	/**
 	 * Utility method: create a temporarily unavailable fake FDProductInfo
 	 */
 	private static FDProductInfo getPreviewProductInfo(String skuCode) {
-		return new FDProductInfo(
-			skuCode,
-			0,
-			null,
-			EnumATPRule.JIT,
-			EnumAvailabilityStatus.TEMP_UNAV,
-			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,null,null,ZonePriceInfoListing.getDummy(), null,null, null, new Date[0],null);
+		Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
+			{
+				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+			}
+		};
+		
+		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
+			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.TEMP_UNAV.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+			};
+		};
+		;
+		
+		return new FDProductInfo(skuCode,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
+		
 	}
 
 

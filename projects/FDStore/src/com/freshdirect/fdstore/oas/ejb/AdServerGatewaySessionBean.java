@@ -107,15 +107,15 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 				if(zonePrices!= null && zonePrices.size() > 0){
 					for (Iterator iterator = zonePrices.iterator(); iterator.hasNext();) {
 						ZonePriceModel zonePriceModel = (ZonePriceModel) iterator.next();
-						MaterialPrice[] prices = sku.getProduct().getPricing().getZonePrice(zonePriceModel.getSapZoneId()).getMaterialPrices();						
+						MaterialPrice[] prices = sku.getProduct().getPricing().getZonePrice(zonePriceModel.getPricingZone()).getMaterialPrices();						
 						for (int i=0; i<prices.length; i++) {
 							MaterialPrice mp = prices[i];
 							String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
 							if(!FDStoreProperties.isZonePricingAdEnabled()){
-								if("M".equalsIgnoreCase(getZoneType(zonePriceModel.getSapZoneId())))
-								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getSapZoneId(), getZoneType(zonePriceModel.getSapZoneId())));
+								if("M".equalsIgnoreCase(getZoneType(zonePriceModel.getPricingZone().getPricingZoneId())))//::FDX::
+								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getPricingZone(), getZoneType(zonePriceModel.getPricingZone().getPricingZoneId())));
 							}else{
-								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getSapZoneId(), getZoneType(zonePriceModel.getSapZoneId())));
+								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getPricingZone(), getZoneType(zonePriceModel.getPricingZone().getPricingZoneId())));
 							}
 						}
 					}
@@ -155,16 +155,16 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 						MaterialPrice[] prices =grpPriceModel.getMaterialPrices();
 						for (int i=0; i<prices.length; i++) {
 							MaterialPrice mp = prices[i];
-							if(!GroupScaleUtil.isGroupPriceValid(gsPricing, grpPriceModel.getSapZoneId(), mp)){
+							if(!GroupScaleUtil.isGroupPriceValid(gsPricing, grpPriceModel.getSapZone(), mp)){//::FDX::
 								//Group Price is invalid. so ignore
 								continue;
 							}
 							String price = mp.getScaleLowerBound() + "@" + PRICE_FORMATTER.format(mp.getPrice());
 							if(!FDStoreProperties.isZonePricingAdEnabled()){
-								if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZoneId())))
-								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+								if("M".equalsIgnoreCase(getZoneType(grpPriceModel.getSapZone().getPricingZoneId())))
+								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZone(), getZoneType(grpPriceModel.getSapZone().getPricingZoneId())));//::FDX::
 							}else{
-								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZoneId(), getZoneType(grpPriceModel.getSapZoneId())));
+								results.add(new AdServerRow(gsPricing.getGroupId(), gsPricing.isActive(), price, grpPriceModel.getSapZone(), getZoneType(grpPriceModel.getSapZone().getPricingZoneId())));//::FDX::
 							}
 						}
 					}

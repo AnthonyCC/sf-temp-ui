@@ -1,41 +1,35 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.erp.ejb;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 
-import java.rmi.RemoteException;
-import javax.ejb.*;
+import javax.ejb.CreateException;
+import javax.ejb.EJBHome;
+import javax.ejb.FinderException;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 
 /**
  * ErpClass entity home interface.
  *
- * @version    $Revision$
- * @author     $Author$
+ * @author kkanuganti
  */
+@SuppressWarnings("javadoc")
 public interface ErpClassHome extends EJBHome {
 
 	/**
 	 * Create from model with specified version.
-	 *
-	 * @param version entity version
-	 * @param model ErpClassModel object
 	 */
 	public ErpClassEB create(int version, ModelI model) throws CreateException, RemoteException;
-
+	
 	public ErpClassEB findByPrimaryKey(VersionedPrimaryKey vpk) throws FinderException, RemoteException;
-    
-    public ErpClassEB findBySapId(String sapId) throws FinderException, RemoteException;
-    
-    public Collection findAllClasses() throws FinderException, RemoteException;
+
+	public ErpClassEB findBySapId(String sapId) throws FinderException, RemoteException;
+
+	public ErpClassEB findBySapIdAndVersion(String sapId, int version) throws FinderException, RemoteException;
+
+	public Collection findAllClasses() throws FinderException, RemoteException;
 
 }
 

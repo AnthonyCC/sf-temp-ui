@@ -12,11 +12,15 @@ public class CrmOrderStatusReportLine {
 	private final String saleId;
 	private final EnumSaleStatus status;
 	private final String sapNumber;
+	private final String eStore;
+	private final String facility;
 	
-	public CrmOrderStatusReportLine (String saleId, EnumSaleStatus status, String sapNumber){
+	public CrmOrderStatusReportLine (String saleId, EnumSaleStatus status, String sapNumber, String eStore, String facility){
 		this.saleId = saleId;
 		this.status = status;
 		this.sapNumber = sapNumber;
+		this.eStore = eStore;
+		this.facility = facility;
 	}
 
 	public String getSaleId() {
@@ -29,5 +33,13 @@ public class CrmOrderStatusReportLine {
 
 	public EnumSaleStatus getStatus() {
 		return status;
+	}
+	
+	public String geteStore() {
+		return eStore;
+	}
+	
+	public String getFacility() {
+		return facility;
 	}
 }

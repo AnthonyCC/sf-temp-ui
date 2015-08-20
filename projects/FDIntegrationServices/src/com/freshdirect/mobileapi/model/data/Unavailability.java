@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -40,7 +41,7 @@ import com.freshdirect.webapp.util.ShoppingCartUtil;
 
 public class Unavailability {
 	public static class Line {
-		private String availableQuantity;
+		private String availableQuantity="0";
 		private String cartLineId;
 		private List<ProductSearchResult> recommendedProducts = new ArrayList<ProductSearchResult>();
 		private String description;
@@ -91,6 +92,7 @@ public class Unavailability {
 	private List<Unavailability.Line> replaceableLines = new ArrayList<Unavailability.Line>();
 	private List<Unavailability.Line> nonReplaceableLines = new ArrayList<Unavailability.Line>();
 	private List<Unavailability.Line> passes = new ArrayList<Unavailability.Line>();
+	private List<Unavailability.Line> invalidLines = new ArrayList<Unavailability.Line>();
 	private ArrayList<String> issues;
 	
 //	private static Unavailability wrap(UnavailabilityData data, SessionUser user) {
@@ -140,7 +142,8 @@ public class Unavailability {
 		}
 		data.setIssues(issues);
 
-//		processDeliveryPasses(data, cart, user);
+	//processDeliveryPasses(data, cart, user);
+	processInvalidLines(data, cart, user);
 		return data;
 	}
 	
@@ -170,7 +173,7 @@ public class Unavailability {
 			FDCartLineI cartLine, FDAvailabilityInfo info,
 			FDSessionUser user) {
 		Line line = new Line();
-		line.setCartLineId(cartLine.getCartlineId());
+		line.setCartLineId(Integer.toString((cartLine.getRandomId())));
 		
 		if (info instanceof FDRestrictedAvailabilityInfo) {
 			RestrictionI restriction = ((FDRestrictedAvailabilityInfo)info).getRestriction();
@@ -248,7 +251,7 @@ public class Unavailability {
 		if (productReference != null){
 			for (ProductModel replacementProduct : ProductRecommenderUtil.getUnavailableReplacementProducts(productReference.lookupProductModel(), user.getCheckoutUnavailableProductKeys())){
 				try {
-					Product prod = Product.wrap(replacementProduct);
+					Product prod = Product.wrap(replacementProduct, user);
 					replacements.add(ProductSearchResult.wrap(prod));
 				} catch (ModelException e) {
 				}	
@@ -296,6 +299,22 @@ public class Unavailability {
 			}
 		}
 	}
+	private static void processInvalidLines(Unavailability data,
+			FDCartModel cart, FDSessionUser user) {
+		
+		List<FDCartLineI> invalidLines = OrderLineUtil.getInvalidLines(cart.getOrderLines(), user.getUserContext());
+				
+		//List<FDCartLineI> invalidLines =cart.getInvalidOrderLines();
+		
+			for (FDCartLineI info : invalidLines) {
+				
+				Line line = new Line();
+				line.setCartLineId(String.valueOf(info.getRandomId()));
+				line.setDescription(info.getSkuCode()+" is not available");
+				data.getInvalidLines().add(line);
+			}
+		
+	}
 
 	protected static String traceFor(Throwable e) {
 		if (e == null) return "No Exception";
@@ -327,6 +346,11 @@ public class Unavailability {
 	public List<Unavailability.Line> getPasses() {
 		return passes;
 	}
+	
+	public List<Unavailability.Line> getInvalidLines() {
+		return invalidLines;
+	}
+	
 	public void setDeliveryDate(String deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
@@ -344,6 +368,10 @@ public class Unavailability {
 	}
 	public void setPasses(List<Unavailability.Line> passes) {
 		this.passes = passes;
+	}
+	
+	public void setInvalidLines(List<Unavailability.Line> lines) {
+		this.invalidLines = lines;
 	}
 
 	public ArrayList<String> getIssues() {

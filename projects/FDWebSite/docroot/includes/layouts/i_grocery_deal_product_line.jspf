@@ -1,9 +1,11 @@
 <%@ page import="java.text.NumberFormat" %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 
 <fd:FDProductInfo id="productInfo" skuCode="<%=sku.getSkuCode()%>">
 
 <%
-{
+{ String salesOrg=user.getPricingContext().getZoneInfo().getSalesOrg();
+  String distrChannel=user.getPricingContext().getZoneInfo().getDistributionChanel();
         FDProduct product = null;
         String salesUnitDescription = "NA";
         String salesUnitName = "NA";
@@ -106,8 +108,8 @@
 
        
     <%  if (!skuAvailable) {  %>
-    <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
-    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) {    %>
+    <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason(salesOrg,distrChannel)?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
+    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale()) {    %>
     <TD WIDTH="200" ALIGN="LEFT">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font>
     <font style="FONT-SIZE: 7pt; COLOR: #888">(<font style="text-decoration: line-through;"><%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %></font>)</font>
     </TD>

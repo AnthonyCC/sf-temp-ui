@@ -10,10 +10,12 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.*;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
 
 import com.freshdirect.fdstore.*;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.*;
 
 /**
@@ -48,7 +50,8 @@ public class CookieMonster {
 		LOGGER.debug("Found cookie " + COOKIE_NAME + " = " + val);
 
 		try {
-			com.freshdirect.fdstore.customer.FDUser user = FDCustomerManager.recognize(val);
+			StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
+			com.freshdirect.fdstore.customer.FDUser user = FDCustomerManager.recognize(val,storeContext.getEStoreId());
 			return new FDSessionUser(user, request.getSession());
 
 		} catch (FDAuthenticationException ex) {

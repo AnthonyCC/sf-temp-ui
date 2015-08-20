@@ -403,10 +403,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
 				}
-			}else{
+			}
+			//commenting this logic as per ponnu based on the FDX mobile save requirements without checking notification preferences
+			/*else{
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_OPTIN_REQ);
 				return;
-			}
+			}*/
 		} else if(!"Y".equalsIgnoreCase(order_notices)&&!"Y".equalsIgnoreCase(order_exceptions) &&
 				!"Y".equalsIgnoreCase(offers)&& !"Y".equalsIgnoreCase(partner_messages) && (mobile_number == null || mobile_number.length() == 0)){
 			optOut=true;

@@ -6,11 +6,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -48,15 +48,15 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	private static final long serialVersionUID = -6112229358347075169L;
 
-	private final PricingContext pricingCtx;
+	private final UserContext userCtx;
 	private final ProductModel prodModel;
 
-	public ProductModelPricingAdapter(ProductModel pModel, PricingContext pCtx) {
+	public ProductModelPricingAdapter(ProductModel pModel) {
 		if (pModel == null) {
 			throw new IllegalArgumentException("product model cannot be null");
 		}
 		this.prodModel = pModel;
-		this.pricingCtx = pCtx;
+		this.userCtx = pModel.getUserContext();
 	}
 
 	@Override
@@ -90,18 +90,18 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 
 	public PriceCalculator getPriceCalculator() {
-		return new PriceCalculator(pricingCtx, prodModel, prodModel
-				.getDefaultSku(pricingCtx));
+		return new PriceCalculator(userCtx.getPricingContext(), prodModel, prodModel
+				.getDefaultSku(userCtx.getPricingContext()));
 	}
 
 	public PriceCalculator getPriceCalculator(String skuCode) {
-		return new PriceCalculator(pricingCtx, prodModel, prodModel
-				.getValidSkuCode(pricingCtx, skuCode));
+		return new PriceCalculator(userCtx.getPricingContext(), prodModel, prodModel
+				.getValidSkuCode(userCtx.getPricingContext(), skuCode));
 	}
 	
 	@Override
 	public PriceCalculator getPriceCalculator(SkuModel sku) {
-	    return new PriceCalculator(pricingCtx, prodModel, sku);
+	    return new PriceCalculator(userCtx.getPricingContext(), prodModel, sku);
 	}
 
 	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
@@ -419,9 +419,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	 *         is available. if no SKUs are available, returns null.
 	 */
 	public SkuModel getDefaultSku() {
-		SkuModel defaultSku = this.prodModel.getDefaultSku(pricingCtx);
+		SkuModel defaultSku = this.prodModel.getDefaultSku(userCtx.getPricingContext());
 		return defaultSku != null ? new SkuModelPricingAdapter(defaultSku,
-				pricingCtx) : null;
+				userCtx.getPricingContext()) : null;
 	}
 
 	@Override
@@ -573,7 +573,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	@Override
 	public SkuModel getPreferredSku() {
 		return new SkuModelPricingAdapter(this.prodModel.getPreferredSku(),
-				pricingCtx);
+				userCtx.getPricingContext());
 	}
 
 	@Override
@@ -787,7 +787,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		List<SkuModel> skuAdapters = new ArrayList<SkuModel>(skuModels.size());
 		for (Iterator<SkuModel> it = skuModels.iterator(); it.hasNext();) {
 			SkuModel sku = it.next();
-			skuAdapters.add(new SkuModelPricingAdapter(sku, pricingCtx));
+			skuAdapters.add(new SkuModelPricingAdapter(sku, userCtx.getPricingContext()));
 		}
 		return skuAdapters;
 
@@ -1214,10 +1214,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public boolean isUnavailable() {
 		return this.prodModel.isUnavailable();
 	}
-	@Override
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
-		return this.prodModel.getLimitedAvailability();
-	}
+	
 
 	@Override
 	public List<ProductModel> getRelatedProducts() {
@@ -1260,8 +1257,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.getContentName();
 	}
 
-	public PricingContext getPricingContext() {
-		return this.pricingCtx;
+	public UserContext getUserContext() {
+		return this.userCtx;
 	}
 
 	@Override

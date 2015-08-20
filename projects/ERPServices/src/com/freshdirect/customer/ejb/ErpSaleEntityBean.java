@@ -65,6 +65,7 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.EntityBeanSupport;
@@ -104,7 +105,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false);
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null);
 		complaints = new ErpComplaintList();
 	}
 
@@ -345,7 +346,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		setPK(new PrimaryKey(getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE) values (?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE,E_STORE) values (?,?,?,?,?,?,?,?)");
 		ps.setString(1, getPK().getId());
 		ps.setString(2, model.getCustomerPk().getId());
 		ps.setString(3, model.getStatus().getStatusCode());
@@ -362,6 +363,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ps.setString(6,model.getType().getSaleType());
 		//Added as part of PERF-27 task.
 		ps.setTimestamp(7, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+		ps.setString(8, model.geteStoreId().getContentId());
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -514,7 +516,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID FROM CUST.SALE WHERE ID=?");
+			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID,NVL(E_STORE,'FreshDirect') E_STORE  FROM CUST.SALE WHERE ID=?");
 		ps.setString(1, getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -532,6 +534,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		if(_saleType!=null) {
 			saleType=EnumSaleType.getSaleType(_saleType);
 		}
+		String eStoreKey = rs.getString("E_STORE");
+		EnumEStoreId eStoreId = (null ==eStoreKey||"".equals(eStoreKey))?EnumEStoreId.FD:EnumEStoreId.valueOfContentId(eStoreKey);
 		rs.close();
 		ps.close();
 		boolean hasSignature = false;
@@ -572,7 +576,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature);
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId);
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);

@@ -107,6 +107,27 @@
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+    
+    <session>
+      <ejb-name>FDSocialManager</ejb-name>
+      <home>com.freshdirect.fdstore.social.ejb.FDSocialManagerHome</home>
+      <remote>com.freshdirect.fdstore.social.ejb.FDSocialManagerSB</remote>
+      <ejb-class>com.freshdirect.fdstore.social.ejb.FDSocialManagerSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <ejb-ref>
+        <ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
+        <remote>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB</remote>
+      </ejb-ref>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    
     <session>
       <ejb-name>FDListManager</ejb-name>
       <home>com.freshdirect.fdstore.lists.ejb.FDListManagerHome</home>
@@ -409,6 +430,7 @@
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+    <!-- Deprecated : BazaarvoiceUfService -->
     <session>
       <ejb-name>BazaarvoiceUfService</ejb-name>
       <home>com.freshdirect.fdstore.content.customerrating.BazaarvoiceUfServiceHome</home>

@@ -1,10 +1,12 @@
 package com.freshdirect.webapp.action.fdstore;
 
+import java.util.HashMap;
+
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Category;
-
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -26,6 +28,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.fdstore.social.ejb.FDSocialManager;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyFactory;
@@ -38,6 +41,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -50,6 +54,8 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
+import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.AccountUtil;
 
@@ -186,10 +192,11 @@ public class RegistrationAction extends WebActionSupport {
 				fdCustomer.setDepotCode(user.getDepotCode());
 				fdCustomer.setDefaultDepotLocationPK(addInfo.getLocationId());
 				fdCustomer.setDepotCode(user.getDepotCode());
-
+	
 				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
-
-				try {
+	
+			try {
+					LOGGER.info("Entering final Registration.");
 					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
 					//user.getShoppingCart().setZoneInfo(zoneInfo);
 					user.setIdentity(regIdent);
@@ -273,6 +280,7 @@ public class RegistrationAction extends WebActionSupport {
 
 	public String executeEx() throws Exception {
 	    //ALLOW_ALL = true;
+		LOGGER.info("Inside executeEx");
 		HttpSession session = this.getWebActionContext().getSession();
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 		ActionResult actionResult = this.getResult();
@@ -292,11 +300,19 @@ public class RegistrationAction extends WebActionSupport {
 				cInfo.workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
 				cInfo.workPhoneExt = NVL.apply(request.getParameter("busphoneext"), "").trim();
 			}
+			this.validateLiteSignup();
+			
 		}
+		else
+		{
+			aInfo.validateEx(actionResult);
+			cInfo.validateEx(actionResult);
+		}
+			
+		
 
 		//EnumServiceType serviceType = addInfo.getAddressType();
-		aInfo.validateEx(actionResult);
-		cInfo.validateEx(actionResult);
+		
 		
 		if(session.getAttribute("REFERRALNAME") != null ) {
 			
@@ -313,7 +329,14 @@ public class RegistrationAction extends WebActionSupport {
 			}
 		}
 
-		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
+	
+	
+		if (!actionResult.isSuccess() && !ALLOW_ALL) {
+			LOGGER.info("ActionResult not succeed");
+			
+			 for(ActionError error : actionResult.getErrors()) {
+				 LOGGER.error(error.getDescription()); }
+			
 			return ERROR;
 		}
 		
@@ -407,17 +430,17 @@ public class RegistrationAction extends WebActionSupport {
 					//save original zip code before it's overwritten by dummy value
 					CmRegistrationTag.setRegistrationOrigZipCode(session, user.getZipCode());
 					
-					/*
-					 * Alternatively we can pass the actual city,state and zipcode to SAP.
-					 */
+					
+					 //Alternatively we can pass the actual city,state and zipcode to SAP.
+					 
 					//Lookup state and city by zipcode.
-					/*
+					
 					StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
 					erpAddress.setCity(scinfo.getCity());
 					erpAddress.setState(scinfo.getState());
 					erpAddress.setCountry("US");
 					erpAddress.setZipCode(addInfo.getZipCode());
-					*/
+					
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
 				}
@@ -430,7 +453,8 @@ public class RegistrationAction extends WebActionSupport {
 	
 				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
 	
-				try {
+			try {
+					LOGGER.info("Entering final Registration.");
 					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
 					//user.getShoppingCart().setZoneInfo(zoneInfo);
 					user.setIdentity(regIdent);
@@ -457,6 +481,52 @@ public class RegistrationAction extends WebActionSupport {
 					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
 					session.setAttribute(SessionName.USER, user);
 					
+					// Code for merging social network this the newly registered
+					// account.
+					@SuppressWarnings("unchecked")
+					HashMap<String, String> socialUser = (HashMap<String, String>) session
+							.getAttribute(SessionName.SOCIAL_USER);
+					
+					//String lastPage = (String)session.getAttribute("lastpage");
+					
+					// For mobile api
+			
+					String userToken = (String)request.getAttribute("userToken");
+					String provider= (String)request.getAttribute("provider");
+					
+					if(userToken != null && userToken.length() > 0 && provider != null && provider.length() > 0)
+					{
+						SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+						if(userToken != null)
+							socialUser = socialProvider.getSocialUserProfileByUserToken(userToken, provider);
+						
+						
+					}
+					
+					
+					if(socialUser != null && socialUser.get("email") != null /* && lastPage.equalsIgnoreCase("signup_lite_social") */ )
+					{
+						LOGGER.info("socialUser email:"+socialUser.get("email"));
+						LOGGER.info("user email:"+ user.getUserId());
+						//LOGGER.info("last page:"+ lastPage);
+						
+						try {
+
+							FDSocialManager.mergeSocialAccountWithUser(
+									socialUser.get("email"),
+									socialUser.get("userToken"),
+									socialUser.get("identityToken"),
+									socialUser.get("provider"),
+									socialUser.get("displayName"),
+									socialUser.get("preferredUsername"),
+									socialUser.get("email"), socialUser.get("emailVerified"));
+
+						} catch (FDResourceException e1) {
+							LOGGER.error("merge:" + e1.getMessage());
+						}
+						//session.setAttribute("lastpage","socialregistration");
+					}
+				
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
@@ -532,10 +602,9 @@ public class RegistrationAction extends WebActionSupport {
 		ContactInfo cInfo = new ContactInfo(request);
 		AccountInfo aInfo = new AccountInfo(request);
 
-		aInfo.validateEx(actionResult);
+		aInfo.validateExSLite(actionResult);
 		cInfo.validateEx(actionResult);
-		AccountUtil.validatePassword(actionResult, aInfo.password, aInfo.repeatPassword);
-		
+		AccountUtil.validatePasswordEx(actionResult, aInfo.password, aInfo.repeatPassword);		
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
 				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				
@@ -676,6 +745,7 @@ public class RegistrationAction extends WebActionSupport {
 		private boolean receiveNews;
 		private boolean plainTextEmail;
 		private boolean termsAccepted;
+		private boolean socialLoginOnly;
 
 		public AccountInfo(HttpServletRequest request) {
 			this.initialize(request);
@@ -686,8 +756,13 @@ public class RegistrationAction extends WebActionSupport {
 			this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
 			this.repeatEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "").trim();
 			this.altEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode()), "").trim();
-
-			this.password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim();
+			if(request.getParameter("LITESIGNUP_SOCIAL") != null && "true".equals(request.getParameter("LITESIGNUP_SOCIAL")))
+			{	
+				this.password="^0X!3X!X!1^";  //Dummy password for social login. will not be exposed to anyone. 
+				this.socialLoginOnly = true;
+			}
+			else 
+				this.password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim();
 			this.repeatPassword = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_PASSWORD.getCode()), "").trim();
 			this.passwordHint = NVL.apply(request.getParameter("password_hint"), "").trim();
 
@@ -709,6 +784,7 @@ public class RegistrationAction extends WebActionSupport {
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
 
+			/*
 			if ("".equals(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
 			} else if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
@@ -719,11 +795,12 @@ public class RegistrationAction extends WebActionSupport {
 				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);
 
 			AccountUtil.validatePassword(actionResult, password, repeatPassword);
+			*/
 
 			actionResult
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
-			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+			// actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
 		}
 
 		public void validateEx(ActionResult actionResult) {
@@ -733,6 +810,7 @@ public class RegistrationAction extends WebActionSupport {
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
 			
+			/*
 			if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
 			} else if ("".equals(repeatEmailAddress)) {
@@ -743,12 +821,29 @@ public class RegistrationAction extends WebActionSupport {
 				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);
 			
 			AccountUtil.validatePasswordEx(actionResult, password, repeatPassword);
+			*/
+			/*actionResult
+				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
+			*/
+			/*
+			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+			*/
+		}
+		
+		public void validateExSLite(ActionResult actionResult) {
+			actionResult.addError("".equals(emailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_REQUIRED);
 
+			actionResult.addError(!actionResult.hasError(EnumUserInfoName.EMAIL.getCode())
+				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
+				SystemMessageList.MSG_EMAIL_FORMAT);
+			
+			
 			actionResult
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
-
-			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+			
 		}
+
+		
 		
 		public void decorateCustomerInfo(ErpCustomerInfoModel customerInfo) {
 			customerInfo.setEmail(this.emailAddress);
@@ -763,6 +858,7 @@ public class RegistrationAction extends WebActionSupport {
 			erpCustomer.setUserId(this.emailAddress);
 			erpCustomer.setPasswordHash(MD5Hasher.hash(this.password));
 			erpCustomer.setActive(true);
+			erpCustomer.setSocialLoginOnly(this.socialLoginOnly);
 			return erpCustomer;
 		}
 
@@ -873,6 +969,9 @@ public class RegistrationAction extends WebActionSupport {
 		public String getZipCode() {
 			return this.zipcode;
 		}
-	}
+		
+	}	
+	
+	
 
 }

@@ -8,6 +8,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
+@Deprecated
 public abstract class BaseContentKeyRecommendationService extends AbstractRecommendationService {
 	/**
 	 * Recommend a list of {@link ContentKey}s.

@@ -1,4 +1,12 @@
-
+<%@page import="com.freshdirect.webapp.crm.CrmMasqueradeUtil"%>
+<%@page import="com.freshdirect.security.ticket.MasqueradeParams"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderI"%>
+<%@page import="com.freshdirect.security.ticket.MasqueradePurposeBuilder"%>
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.customer.EnumAccountActivityType"%>
@@ -30,29 +38,45 @@
 	//session = request.getSession(true);
 	String loginKey = request.getParameter("loginKey");
 	String agentId = request.getParameter("agentId");
-	String customerId = request.getParameter("customerId");
+
+	final MasqueradeParams params = new MasqueradeParams(request);
+
+	final String customerId = params.userId;
 	
 	out.print( "loginKey = " + loginKey + "<br/>" );
 	out.print( "agentId = " + agentId + "<br/>" );
-	out.print( "customerId = " + customerId + "<br/>" );
+	out.print( "customerId = " + params.userId + "<br/>" );
+	out.print( "forceOrderAvailable = " + params.forceOrderAvailable + "<br/>" );
+	out.print( "makeGoodFromOrderId = " + params.makeGoodFromOrderId + "<br/>" );
+	out.print( "autoApproveAuthorized = " + params.autoApproveAuthorized + "<br/>" );
+	out.print( "autoApprovalLimit = " + params.autoApprovalLimit + "<br/>" );
+	out.print( "shopFromOrderId = " + params.shopFromOrderId + "<br/>" );
+	out.print( "modifyOrderId = " + params.modifyOrderId + "<br/>" );
 	
 	try {
 		
-		Ticket ticket = TicketService.getInstance().use( loginKey, agentId, customerId );
+		Ticket ticket = TicketService.getInstance().use( loginKey, agentId, 
+			MasqueradePurposeBuilder.buildPurpose(params)
+		);
 		
 	} catch ( IllegalArgumentException ex ) {
+		LOGGER.error(ex);
 		out.print("Missing arguments.<br/>");
 		return;
 	} catch ( NoSuchTicketException ex ) {
+		LOGGER.error(ex);
 		out.print("Ticket does not exist.<br/>");
 		return;
 	} catch ( TicketExpiredException ex ) {
+		LOGGER.error(ex);
 		out.print("Ticket is expired.<br/>");
 		return;
 	} catch ( IllegalTicketUseException ex ) {
+		LOGGER.error(ex);
 		out.print("Ticket is invalid.<br/>");
 		return;
 	} catch ( FDResourceException ex ) {
+		LOGGER.error(ex);
 		out.print("Validating ticket failed due to FDResourceException.<br/>");
 		return;
 	}
@@ -61,7 +85,7 @@
 	
 	TestSupport s = TestSupport.getInstance();
 	
-	String erp_id = s.getErpIDForUserID(customerId);;
+	String erp_id = s.getErpIDForUserID(customerId);
 	String cust_id = s.getFDCustomerIDForErpId(erp_id);
 	FDIdentity identity = new FDIdentity(erp_id, cust_id);	
 	
@@ -73,13 +97,41 @@
 		
 		loginUser = FDCustomerManager.recognize( identity );
     	// masquerade
-    	loginUser.setMasqueradeAgent(agentId);
+    	// FIXME context builing should be extracted to a builder class
+    	MasqueradeContext ctx = new MasqueradeContext();
+    	ctx.setAgentId(agentId);
+    	ctx.setHasCustomerCase(params.hasCustomerCase);
+    	ctx.setForceOrderAvailable(params.forceOrderAvailable);
+    	ctx.setAutoApprovalLimit(params.autoApprovalLimit);
+    	ctx.setAutoApproveAuthorized(params.autoApproveAuthorized);
+		
+    	if (params.makeGoodFromOrderId!=null) {
+    		final FDOrderI _order = FDCustomerManager.getOrder(loginUser.getIdentity(), params.makeGoodFromOrderId);
+    		
+			ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
+			Set<String> makeGoodAllowedOrderLineIds = new HashSet<String>();
+			ctx.setMakeGoodAllowedOrderLineIds(makeGoodAllowedOrderLineIds);    	
+			
+			for (FDCartLineI mgOrderLine : _order.getOrderLines()){
+				makeGoodAllowedOrderLineIds.add(mgOrderLine.getOrderLineId());
+	    	}
+		}
 
+    	// set masqueraded context for customer
+    	loginUser.setMasqueradeContext(ctx);
+    	if (params.makeGoodFromOrderId!=null) {
+			loginUser.getShoppingCart().clearOrderLines();
+		}
+    	
+    	
     	UserUtil.createSessionUser(request, response, loginUser);
+	
 	} catch ( FDAuthenticationException ex ) {
+		LOGGER.error(ex);
 		out.print("Authentication failed.");
 		return;	
 	} catch ( FDResourceException ex ) {
+		LOGGER.error(ex);
 		out.print("Login failed due to FDResourceException.");
 		return;
 	}
@@ -93,12 +145,15 @@
 		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN, loginUser.getPrimaryKey());
 		ActivityLog.getInstance().logActivity( ai.createActivity() );
 	} catch ( FDResourceException ex ) {
+		LOGGER.error(ex);
 		ex.printStackTrace();
 		out.print( "Activity logging failed due to FDResourceException. <br/>" );
 	}
 	
 	out.print("Logged in. Redirecting to StoreFront.<br/>");
+
+	// make redirection based on params
+	String redirectUri = CrmMasqueradeUtil.getRedirectionUri(params);
 	
-	response.sendRedirect("/index.jsp");
-	
+	response.sendRedirect(redirectUri);
 %>

@@ -72,14 +72,17 @@ public class Sku {
     private String sustainabilityRatingDescription;    
 
     private FDCustomerCoupon coupon; //Used for ECoupon display
+    
+    private String plantID;
 
-    private Sku(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon) throws FDResourceException, FDSkuNotFoundException {
+    private Sku(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon,String plantID) throws FDResourceException, FDSkuNotFoundException {
         this.skuModel = skuModel;
         this.variationMatrix = skuModel.getVariationMatrix();
         this.variationOptions = skuModel.getVariationOptions();
         this.priceCalc = priceCalc;
         this.productInfo = priceCalc.getProductInfo();
         this.coupon = coupon;
+        this.plantID=plantID;
 
         // BEGIN i_product_skus_rating
         boolean matchFound = false; //default to false
@@ -117,15 +120,15 @@ public class Sku {
         }
 
         if (matchFound) {
-            if (this.productInfo.getRating() != null) {
-                EnumOrderLineRating enumRating = this.productInfo.getRating();
+            if (this.productInfo.getRating(plantID) != null) {
+                EnumOrderLineRating enumRating = this.productInfo.getRating(plantID);
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                     this.rating = enumRating.getStatusCodeInDisplayFormat();
                     this.ratingDescription = enumRating.getShortDescription();
                 }
             }
-            if (this.productInfo.getSustainabilityRating() != null) {
-                EnumSustainabilityRating enumRating = this.productInfo.getSustainabilityRating();
+            if (this.productInfo.getSustainabilityRating(plantID) != null) {
+                EnumSustainabilityRating enumRating = this.productInfo.getSustainabilityRating(plantID);
                 if (enumRating != null && enumRating.isEligibleToDisplay()
                 		&& MobileApiProperties.isSustainabilityRatingEnabled()) {
                     this.sustainabilityRating = enumRating.getStatusCodeInDisplayFormat();
@@ -137,9 +140,9 @@ public class Sku {
 
     }
     
-    public static Sku wrap(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon) {
+    public static Sku wrap(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon,String plantID) {
         try {
-            return new Sku(priceCalc, skuModel, coupon);
+            return new Sku(priceCalc, skuModel, coupon,plantID);
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -394,7 +397,7 @@ public class Sku {
     //Added for Group Scale
     public FDGroup getFDGroup(){
     	if(getGroupPrice() > 0.0)
-    		return productInfo.getGroup();
+    		return productInfo.getGroup(priceCalc.getPricingContext() .getZoneInfo().getSalesOrg(),priceCalc.getPricingContext().getZoneInfo().getDistributionChanel());
     	else 
     		return null;
    }

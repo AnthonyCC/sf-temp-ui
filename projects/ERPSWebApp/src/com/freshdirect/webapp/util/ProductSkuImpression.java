@@ -15,15 +15,16 @@ public class ProductSkuImpression extends ProductImpression {
     protected SkuModel selectedSku;
     
     public ProductSkuImpression(ProductModel productModel, String selectedSkuCode) {
+    	
         super(productModel, null);
         this.selectedSku = productModel.getSku(selectedSkuCode);
         if (selectedSku == null) 
                 throw new FDRuntimeException(selectedSkuCode + " not in " + productModel.getFullName());
-        setCalculator(new PriceCalculator(productModel.getPricingContext(), this.productModel, selectedSku));
+        setCalculator(new PriceCalculator(productModel.getUserContext().getPricingContext(), this.productModel, selectedSku));
     }
 
     public ProductSkuImpression(ProductModel productModel, SkuModel sku) {
-        super(productModel, new PriceCalculator(productModel.getPricingContext(), productModel, sku));
+        super(productModel, new PriceCalculator(productModel.getUserContext().getPricingContext(), productModel, sku));
         this.selectedSku = sku;
     }
 

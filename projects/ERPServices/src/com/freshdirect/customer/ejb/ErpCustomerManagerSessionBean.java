@@ -94,9 +94,9 @@ import com.freshdirect.customer.adapter.SapOrderAdapter;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
@@ -799,10 +799,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 */
 	public ErpOrderHistory getOrderHistoryInfo(PrimaryKey erpCustomerPk) {
 		Connection conn = null;
-		int query=FDStoreProperties.getOrderHistoryQueryId();
+		
 		try {
 			conn = this.getConnection();
-			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId(), query);
+			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
 
 			return new ErpOrderHistory(history);
 
@@ -2261,10 +2261,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			deliveryAmount += misc.getTotalAmount();
 			deliveryAmount += misc.getTotalAmount() * misc.getTaxRate();
 		}
+		
+		ErpChargeLineModel tip = invoice.getCharge(EnumChargeType.TIP);
+		double tipAmount=0;
+		if (tip != null) {
+			tipAmount = tip.getTotalAmount();
+		}
 		command.setDeliveryCharge(deliveryAmount);
 		
 		command.setPhoneCharge(invoice.getPhoneCharge());
 		command.setPromotionAmount(invoice.getDiscountAmount());
+		command.setTipAmount(tipAmount);
 		
 		if(cancelCoupons){
 			for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
@@ -2921,6 +2928,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					}
 				} catch (SQLException e) {
 					LOGGER.warn("SQLException while cleaning: ", e);
+				}
+			}
+		}
+		public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				return ErpSaleInfoDAO.getLastOrderID(conn, erpCustomerPk.getId(),eStore);
+			} catch (SQLException se) {
+				throw new EJBException(se);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+						conn = null;
+					}
+				} catch (SQLException se) {
+					LOGGER.warn("SQLException while cleaning up", se);
 				}
 			}
 		}

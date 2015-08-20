@@ -23,4 +23,8 @@ public class MinimumSubtotalStrategy implements PromotionStrategyI {
 		return this.ALLOW;
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

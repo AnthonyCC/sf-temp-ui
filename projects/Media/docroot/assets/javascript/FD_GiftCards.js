@@ -923,40 +923,64 @@ function showDialogs() {
 					}
 				},
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
-			})
+			});
+
+	}
+	
+	function checkAddrShowCRM() {
+		$jq('.gcCheckAddressBoxMsg').html('Do we deliver to your recipient? If you know their address, enter it below and find out.');
+
+		//default state choice if needed
+		/*var state = null;
+		$$('state').each( function() { if (this.checked) { state = this.value; } });
+		if (state == null) {
+			if ($('stateNY') && !$('stateNY').checked) {
+				$('stateNY').checked = true;
+			}
+		}*/
+		
+		var olDialog = doOverlayDialogBySelector('.gcCheckAddressBoxContent');
+		olDialog.dialog('option', 'title', 'Check An Address');
 
 	}
 
 	function checkAddress() {
-		var state = null;
-		if ($('stateNY') && $('stateNY').checked) {
-			state = 'NY';
-		} else if ($('stateNJ') && $('stateNJ').checked) {
-			state = 'NJ';
-		} else if ($('stateCT') && $('stateCT').checked) {
-			state = 'CT';
-		} else if ($('statePA') && $('statePA').checked) {
-			state = 'PA';
-		} else if ($('stateDE') && $('stateDE').checked) {
-			state = 'DE';
+		var address1 = $jq('.gcCheckAddress-address1').val(),
+		address2 = $jq('.gcCheckAddress-address2').val(),
+		city = $jq('.gcCheckAddress-city').val(),
+		state = $jq('[name=state]:checked').val(),
+		zipcode = $jq('.gcCheckAddress-zipcode').val();
+		
+		if ($jq('#uimodal-output').length !== 0 && $jq('#uimodal-output').find('.gcCheckAddress-address1')) {
+			address1 = $jq('#uimodal-output').find('.gcCheckAddress-address1').val();
 		}
+		if ($jq('#uimodal-output').length !== 0 && $jq('#uimodal-output').find('.gcCheckAddress-address2')) {
+			address2 = $jq('#uimodal-output').find('.gcCheckAddress-address2').val();
+		}
+		if ($jq('#uimodal-output').length !== 0 && $jq('#uimodal-output').find('.gcCheckAddress-city')) {
+			city = $jq('#uimodal-output').find('.gcCheckAddress-city').val();
+		}
+		if ($jq('#uimodal-output').length !== 0 && $jq('#uimodal-output').find('.gcCheckAddress-zipcode')) {
+			zipcode = $jq('#uimodal-output').find('.gcCheckAddress-zipcode').val();
+		}
+		
 
-		if (state != null) {
+		if (state !== '') {
 			new Ajax.Request('/gift_card/postbacks/checkAddress.jsp', {
 				parameters: {
-					address1: $('address1').value,
-					address2 : $('address2').value,
-					city : $('city').value,
+					address1: address1,
+					address2 : address2,
+					city : city,
 					state: state,
-					zipcode: $('zipcode').value
+					zipcode: zipcode
 				},
 				onSuccess: function(transport) {
 					//display returned messages
 					var params = transport.responseText.evalJSON(true);
-					$('gcCheckAddressBoxMsg').innerHTML =  params.message;
-					$('checkAddrBtnImg').src =  '/media_stat/images/giftcards/your_account/chk_another_addr_btn.gif';
-					$('checkAddrBtnImg').width='145';
-					$('checkAddrBtnImg').height='25';
+					$jq('.gcCheckAddressBoxMsg').html(params.message);
+					$jq('.checkAddrBtnImg').attr('src', '/media_stat/images/giftcards/your_account/chk_another_addr_btn.gif');
+					$jq('.checkAddrBtnImg').width(145);
+					$jq('.checkAddrBtnImg').height(25);
 				}
 			});
 		} else {
@@ -969,7 +993,7 @@ function showDialogs() {
  *	---------------------------------*/
 
 	function checkBalanceShow() {
-		Modalbox.show($('gcCheckBalanceBox'), {
+		/*Modalbox.show($('gcCheckBalanceBox'), {
 				loadingString: 'Loading Window...',
 				closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
 				closeString: 'Close Window',
@@ -982,19 +1006,26 @@ function showDialogs() {
 				centered: true,
 				afterLoad: function() { window.scrollTo(0,0); },
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
-			})
+			})*/
+		var olDialog = doOverlayDialogBySelector($jq('.gcCheckBalanceBox'));
+		olDialog.dialog('option', 'title', 'Check Gift Card Balance');
 
 	}
 
 	function checkBalance() {
+		var givexNum = $jq('.gcCheckBalanceBox_gcNumb').val();
+		if ($jq('#uimodal-output').length !== 0 && $jq('#uimodal-output').find('.gcCheckBalanceBox_gcNumb')) {
+			givexNum = $jq('#uimodal-output').find('.gcCheckBalanceBox_gcNumb').val();
+		}
+		
 		new Ajax.Request('/gift_card/postbacks/gc_balance.jsp', {
 				parameters: {
-					givexNum: $('gcCheckBalanceBox_gcNumb').value
+					givexNum: givexNum
 				},
 				onSuccess: function(transport) {
 					//display returned messages
 					var params = transport.responseText.evalJSON(true);
-					$('gcCheckBalanceBoxMsg').innerHTML =  params.message;
+					$jq('.gcCheckBalanceBoxMsg').html(params.message);
 				}
 			});
 	}

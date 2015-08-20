@@ -21,7 +21,6 @@ import com.freshdirect.logistics.controller.data.request.CustomerSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ScrubbedAddressRequest;
 import com.freshdirect.logistics.controller.data.response.ChefsTableResponse;
 import com.freshdirect.logistics.delivery.dto.Addresses;
-import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.Customers;
 import com.freshdirect.logistics.delivery.model.ActionError;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
@@ -50,7 +49,7 @@ public class CustomerController extends BaseController {
 		return customers; 
 	
 	}
-
+	
 	@RequestMapping(value = "/addresses", method = RequestMethod.POST)
 	public @ResponseBody
 	Addresses getAddressDetails(@RequestBody AddressSearchRequest request) {
@@ -67,7 +66,7 @@ public class CustomerController extends BaseController {
 		return addresses; 
 	
 	}
-	
+
 	
 	
 	@RequestMapping(value = "/get/address", method = RequestMethod.POST)
@@ -99,7 +98,7 @@ public class CustomerController extends BaseController {
 				response.setChefsTable(customerInfo.isChefsTable());
 			} catch (FDResourceException e) {
 				response.setStatus(Result.STATUS_FAILED);
-}
+			}
 		
 		return response;
 	}

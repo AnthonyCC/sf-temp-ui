@@ -23,6 +23,8 @@ public abstract class FDCustomerList extends ModelSupport {
 	/** The timestamp of the last modification of the list. */
 	protected Date modificationDate;
 	
+	protected String eStoreType;
+	
 	protected List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 
 	
@@ -197,6 +199,18 @@ public abstract class FDCustomerList extends ModelSupport {
 		return recipeId;
 	}
 	
+	/**
+	 * @return the eStoreType
+	 */
+	public String geteStoreType() {
+		return eStoreType;
+	}
+	/**
+	 * @param eStoreType the eStoreType to set
+	 */
+	public void seteStoreType(String eStoreType) {
+		this.eStoreType = eStoreType;
+	}
 	public void setRecipeId( String recipeId ) {
 		this.recipeId = recipeId;
 	}

@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.customer.EnumPaymentType"%>
 <%@ page import='com.freshdirect.fdlogistics.model.*'%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
@@ -240,6 +241,11 @@
             <%= paymentMethod.getName()%><BR>
             <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
             <BR>
+			<%if (!EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())) {%>
+				<b>Payment:</b> <span style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></span><br>
+				Referenced order: <%= paymentMethod.getReferencedOrder() %><br>
+				<br>
+			<%}%>
             <% if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {%>
             <b>Account Address:</b><BR>
             <font class="space4pix"><br></font>

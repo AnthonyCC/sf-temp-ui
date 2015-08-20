@@ -10,7 +10,8 @@ public enum EnumTransactionSource {
 	TRANSPORTATION("TRA", "Transportation"),
 	IPHONE_WEBSITE("IPW", "iPhone"),	
 	STANDING_ORDER("STO", "Standing Order"),
-	ANDROID_WEBSITE("ANW", "Android")
+	ANDROID_WEBSITE("ANW", "Android"),
+	FDX_IPHONE("IFX", "FDX iPhone")
 	;
 
 	EnumTransactionSource(String code, String name) {
@@ -44,6 +45,8 @@ public enum EnumTransactionSource {
 				return STANDING_ORDER;
 			case 7:
 				return ANDROID_WEBSITE;
+			case 8:
+				return FDX_IPHONE;	
 			default:
 				return null;
 		}
@@ -65,6 +68,8 @@ public enum EnumTransactionSource {
 			return STANDING_ORDER;
 		}else if(ANDROID_WEBSITE.getCode().equalsIgnoreCase(code)){
 			return ANDROID_WEBSITE;
+		}else if(FDX_IPHONE.getCode().equalsIgnoreCase(code)){
+			return FDX_IPHONE;
 		}else{
 			try {
 				return getTransactionSource( Integer.parseInt(code) );

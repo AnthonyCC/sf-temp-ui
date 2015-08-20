@@ -50,7 +50,9 @@ public class FilterCollector {
 
 			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
-				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo());
+				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+	            
+				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
 				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
 				collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
 			}
@@ -126,7 +128,7 @@ public class FilterCollector {
 	}
 
 	private void collectShowMeOnlyOnSaleFilter(ProductModel product, Set<String> showMeOnlyOfSearchResults) {
-		final PriceCalculator pricing = product.getPriceCalculator(ContentFactory.getInstance().getCurrentPricingContext());
+		final PriceCalculator pricing = product.getPriceCalculator(ContentFactory.getInstance().getCurrentUserContext().getPricingContext());
 		if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
 			showMeOnlyOfSearchResults.add("onsale");
 		}

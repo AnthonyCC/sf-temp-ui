@@ -50,9 +50,13 @@
 		hasInvoice = true;
 		hasReturn = order.hasSettledReturn() || order.hasRefusedDelivery();
 	}
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = ((FDOrderAdapter) order).getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 %>
     <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("details"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=details<%=(_forPrint)?"&for=print":""%>">Details</a></div>
-    <%if ( (order.getCartonContents() != null) &&  (order.getCartonContents().size() > 0) ){ %>
+    <%if (!isFdxOrder && (order.getCartonContents() != null) &&  (order.getCartonContents().size() > 0) ){ %>
         <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("carton"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=carton<%=(_forPrint)?"&for=print":""%>">Missing</a></div>
     <%}%>
 <div class="sub_nav">&nbsp;</div>
@@ -239,7 +243,7 @@
 		    <% } %>
 		</tr>
 	<%  } %>
-	<fd:GetOrder id='cart' saleId='<%=orderId%>'>
+	<fd:GetOrder id='cart' saleId='<%=orderId%>' crm="<%= true %>">
 	<%--<%  if (cart.getTotalAppliedGCAmount() > 0.0) {%>
 		<tr>
 		    <td colspan="3"></td>

@@ -1,3 +1,8 @@
+<%@page import="com.freshdirect.webapp.crm.CrmMasqueradeUtil"%>
+<%@page import="com.freshdirect.webapp.crm.security.MenuManager"%>
+<%@page import="com.freshdirect.crm.CrmAgentRole"%>
+<%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%>
+<%@page import="com.freshdirect.security.ticket.MasqueradePurposeBuilder"%>
 <%@ taglib uri="crm" prefix="crm" %>
 
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
@@ -5,6 +10,7 @@
 <%@ page import="com.freshdirect.security.ticket.Ticket"%>
 <%@ page import="com.freshdirect.security.ticket.TicketService"%>
 <%@ page import="com.freshdirect.ErpServicesProperties"%>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 
 <%-- === Masquerade! === --%>
 
@@ -25,13 +31,18 @@
 	Customer is : <%= user.getUserId() + " - " + user.getFirstName() + ", " + user.getLastName() + " [" + user.getFDCustomer().getErpCustomerPK() + "]" %><br/>
 	<%
 		try {
-			Ticket token = TicketService.getInstance().create( agent.getUserId(), user.getUserId(), ErpServicesProperties.getMasqueradeSecurityTicketExpiration() );
-			String url = ErpServicesProperties.getMasqueradeStoreFrontBaseUrl()	+ "980ff88b1adf961750ca413752af6f10/d56b699830e77ba53855679cb1d252da.jsp?"
-					+ "agentId=" + agent.getUserId()
-					+ "&customerId=" + user.getUserId()
-					+ "&loginKey=" + token.getKey();
+			String eStoreId = request.getParameter("estore");
+			if ("All".equalsIgnoreCase(eStoreId) || "All".equalsIgnoreCase(globalContextStore)) { //fallback
+				eStoreId = "FD";
+			}
+			if (eStoreId == null) {
+				eStoreId = globalContextStore;
+			}
+			
+			final String url = CrmMasqueradeUtil.generateLaunchURL(agent, request, user, eStoreId); 
+			
 			response.sendRedirect( url );
-			%><%
+			%><%= url %><%
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 			%> Sorry, masquerade feature is not available due to some technical error. Please try again later.<br/> Error message: <%= ex.getMessage() %><br/><%

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -22,17 +23,17 @@ public class FDProductAssortmentPromotionFactory {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(FDProductAssortmentPromotionFactory.class);	
 	
-	private Map<String, Map<String,Map<String,List<FDProductPromotionInfo>>>> promotionMap = new LinkedHashMap<String, Map<String,Map<String,List<FDProductPromotionInfo>>>>();
+	private Map<String, Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>>> promotionMap = new LinkedHashMap<String, Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>>>();
 	private Date lastPublished;
 	
 	
 	
-	private ExpiringReference< Map<String,Map<String,List<FDProductPromotionInfo>>>> productsAssortmentPromotion = new ExpiringReference<Map<String,Map<String,List<FDProductPromotionInfo>>>>(5 * 60 * 1000) {
-		protected Map<String,Map<String,List<FDProductPromotionInfo>>> load() {
+	private ExpiringReference< Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>>> productsAssortmentPromotion = new ExpiringReference<Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>>>(5 * 60 * 1000) {
+		protected Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> load() {
 			try {
 				LOGGER.info("REFRESHING PRODUCTS ASSORTMENT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+lastPublished);				
 				Date currentTime = new Date();
-				Map<String,Map<String,List<FDProductPromotionInfo>>> productPromoInfoMap = null;
+				Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap = null;
 				if(null !=lastPublished){
 					productPromoInfoMap = ProductPromotionInfoManager.getAllPromotionsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),lastPublished);					
 				}else{
@@ -54,7 +55,7 @@ public class FDProductAssortmentPromotionFactory {
 	
 	private void loadPromotions(){
 		try {			
-			Map<String,Map<String,List<FDProductPromotionInfo>>> promoInfos = ProductPromotionInfoManager.getAllPromotionsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),null);
+			Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> promoInfos = ProductPromotionInfoManager.getAllPromotionsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),null);
 			if(null !=promoInfos && !promoInfos.isEmpty()){
 				this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
 			}
@@ -74,11 +75,11 @@ public class FDProductAssortmentPromotionFactory {
 		return sharedInstance;
 	}
 
-	protected synchronized Map<String,Map<String, Map<String,List<FDProductPromotionInfo>>>> getPromotionMap() {
+	protected synchronized Map<String,Map<String, Map<ZoneInfo,List<FDProductPromotionInfo>>>> getPromotionMap() {
 		
-		Map<String,Map<String,List<FDProductPromotionInfo>>> promoInfos = this.productsAssortmentPromotion.get();
+		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> promoInfos = this.productsAssortmentPromotion.get();
 		if(null !=promoInfos && !promoInfos.isEmpty()){
-			Map<String,Map<String,List<FDProductPromotionInfo>>> lPromos =this.promotionMap.get(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
+			Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> lPromos =this.promotionMap.get(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
 			lPromos.putAll(promoInfos);
 			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),lPromos);
 		}
@@ -87,13 +88,13 @@ public class FDProductAssortmentPromotionFactory {
 	
 	
 	
-	public 	Map<String,Map<String,List<FDProductPromotionInfo>>> getProductPromotion(String type) {
+	public 	Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getProductPromotion(String type) {
 		return this.getPromotionMap().get(type);
 	}
 	
-	public Map<String,List<FDProductPromotionInfo>> getProductPromotion(String type,String ppId) {
-		Map<String,Map<String,List<FDProductPromotionInfo>>> map =getProductPromotion(type);
-		Map<String,List<FDProductPromotionInfo>> promotionZoneProducts= null;
+	public Map<ZoneInfo,List<FDProductPromotionInfo>> getProductPromotion(String type,String ppId) {
+		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> map =getProductPromotion(type);
+		Map<ZoneInfo,List<FDProductPromotionInfo>> promotionZoneProducts= null;
 		if(null != map){
 			promotionZoneProducts = map.get(ppId);
 		}

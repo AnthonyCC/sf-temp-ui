@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
@@ -279,7 +280,7 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return Double.MAX_VALUE;
 			}
 
-			return skuModel.getProductInfo().getZonePriceInfo(skuModel.getPricingContext().getZoneId()).getDefaultPrice();
+			return skuModel.getProductInfo().getZonePriceInfo(skuModel.getPricingContext().getZoneInfo()).getDefaultPrice();
 
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Catching FDResourceException after calling getPrice method in ItemGrabber");
@@ -313,8 +314,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return Integer.MAX_VALUE;
 			}
 			
-			
-			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo();
+			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(plantID);
 			
 			if (kosherInfo == null || !kosherInfo.hasKosherSymbol() || kosherInfo.getKosherSymbol().equals(EnumKosherSymbolValue.NONE)) {
 				return Integer.MAX_VALUE;

@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.wcms.CMSContentFactory;
@@ -23,12 +22,8 @@ import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StoreModel;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
-import com.freshdirect.mobileapi.controller.data.response.Configuration;
 import com.freshdirect.mobileapi.controller.data.response.FeaturedCategoriesResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeGetAllResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeResponse;
@@ -187,11 +182,7 @@ public class HomeController extends BaseController {
         
         
         //-------------------------------------------- END ------------------------------------------------------------------  
-        Configuration configuration = new Configuration();
-        configuration.setAkamaiImageConvertorEnabled( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor, user.getFDSessionUser().getUser()));
-        configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
-        configuration.setStoreVersion(PublishId.getInstance().getPublishId());
-        response.setConfiguration(configuration);
+        response.setConfiguration(getConfiguration(user));
 		
 		// Add all these to the response and send back the model.
         setResponseMessage(model, response, user);

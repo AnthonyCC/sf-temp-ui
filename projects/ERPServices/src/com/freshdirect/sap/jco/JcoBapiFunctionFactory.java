@@ -15,6 +15,8 @@ import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
+
+import com.freshdirect.sap.bapi.BapiSendPickEligibleOrders;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
 import com.freshdirect.sap.bapi.BapiSendSettlementByCommand;
 import com.freshdirect.sap.ejb.SapException;
@@ -199,6 +201,19 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		try
 		{
 			return new JcoBapiCartonDetailsForSale();
+		} 
+		catch (JCoException e)
+		{
+			throw new SapException(e);
+		}
+	}
+
+	@Override
+	public BapiSendPickEligibleOrders getBapiSendPickEligibleOrders()
+			throws SapException {
+		try
+		{
+			return new JcoBapiSendPickEligibleOrders();
 		} 
 		catch (JCoException e)
 		{

@@ -1224,11 +1224,11 @@ public class FDPromotionManagerNewDAO {
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
 			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type, ordertype_fdx)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=?,ordertype_fdx=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1333,6 +1333,7 @@ public class FDPromotionManagerNewDAO {
 				}else{
 					ps.setNull(index++, Types.VARCHAR);
 				}
+				ps.setString(index++, model.isOrderTypeFDX() ? "X" : " ");
 				if (null !=model.getId()) {
 					ps.setString(index++, promotionId);
 				}
@@ -1564,6 +1565,7 @@ public class FDPromotionManagerNewDAO {
 			promoCustStrategyModel.setOrderTypeCorporate("X".equalsIgnoreCase(rs.getString("ORDERTYPE_CORPORATE"))?true:false);
 			promoCustStrategyModel.setExcludeSameDayDlv("Y".equalsIgnoreCase(rs.getString("EXCLUDE_SAMEDAY_DELIVERY"))?true:false);
 			promoCustStrategyModel.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
+			promoCustStrategyModel.setOrderTypeFDX("X".equalsIgnoreCase(rs.getString("ORDERTYPE_FDX"))?true:false);
 			String paymentType = rs.getString("PAYMENT_TYPE");
 			if(null !=paymentType){
 				String[] paymentTypes = paymentType.split(",");
@@ -2790,7 +2792,7 @@ public class FDPromotionManagerNewDAO {
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"UPDATE CUST.PROMO_CUST_STRATEGY SET ORDERTYPE_HOME = ?, ORDERTYPE_CORPORATE = ?, ORDERTYPE_PICKUP= ?, EXCLUDE_SAMEDAY_DELIVERY=?,DELIVERY_DAY_TYPE=? WHERE ID = ?");
+				"UPDATE CUST.PROMO_CUST_STRATEGY SET ORDERTYPE_HOME = ?, ORDERTYPE_CORPORATE = ?, ORDERTYPE_PICKUP= ?, EXCLUDE_SAMEDAY_DELIVERY=?,DELIVERY_DAY_TYPE=?, ORDERTYPE_FDX= ? WHERE ID = ?");
 		int i = 1;
 		List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 		if(null != custStrategies && !custStrategies.isEmpty()){
@@ -2805,10 +2807,11 @@ public class FDPromotionManagerNewDAO {
 				}else{
 					ps.setNull(i++, Types.VARCHAR);
 				}
+				ps.setString(i++, promoCustModel.isOrderTypeFDX()?"X":"");
 				ps.setString(i++, promoCustModel.getPK().getId());
 			}
 			else{
-				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE) VALUES(?,?,?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE,ORDERTYPE_FDX) VALUES(?,?,?,?,?,?,?,?)");
 				ps.setString(i++, SequenceGenerator.getNextId(conn,"CUST"));
 				ps.setString(i++, promoCustModel.getPromotionId());
 				ps.setString(i++, promoCustModel.isOrderTypeHome()?"X":"");
@@ -2820,6 +2823,7 @@ public class FDPromotionManagerNewDAO {
 				}else{
 					ps.setNull(i++, Types.VARCHAR);
 				}
+				ps.setString(i++, promoCustModel.isOrderTypeFDX()?"X":"");
 			}		
 			
 			if (ps.executeUpdate() != 1) {
@@ -3695,7 +3699,7 @@ public class FDPromotionManagerNewDAO {
 	private static String INSERT_PROMO_CUST_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cust_strategy " +
 		"(id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
 			"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type) " + 
-		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,? from cust.promotion_new where batch_id = ?";
+		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,? from cust.promotion_new where batch_id = ?";
 	
 	private static void storeCustomerStrategyForBatch(Connection conn, String batchId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -3758,6 +3762,7 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(8, model.isOrderTypeHome() ? "X" : " ");
 				ps.setString(9, model.isOrderTypePickup() ? "X" : " ");
 				ps.setString(10, model.isOrderTypeCorporate() ? "X" : " ");
+				ps.setString(11, model.isOrderTypeFDX() ? "X" : " ");
 				
 				EnumCardType[] paymentTypes = model.getPaymentType();
 				StringBuffer paymentType = new StringBuffer();
@@ -3769,20 +3774,20 @@ public class FDPromotionManagerNewDAO {
 					}
 					paymentType.append(paymentTypes[paymentTypes.length-1]);						
 				}
-				ps.setString(11,paymentType.toString());
-				ps.setString(12, model.getPriorEcheckUse());
+				ps.setString(12,paymentType.toString());
+				ps.setString(13, model.getPriorEcheckUse());
 				if(null !=model.getDeliveryDayType()){
-					ps.setString(13,model.getDeliveryDayType().getName());
-				}else{
-					ps.setNull(13, Types.VARCHAR);
-				}
-				if(null !=model.getEcheckMatchType()){
-					ps.setString(14,model.getEcheckMatchType().getName());
+					ps.setString(14,model.getDeliveryDayType().getName());
 				}else{
 					ps.setNull(14, Types.VARCHAR);
 				}
+				if(null !=model.getEcheckMatchType()){
+					ps.setString(15,model.getEcheckMatchType().getName());
+				}else{
+					ps.setNull(16, Types.VARCHAR);
+				}
 				
-				ps.setString(15, promotion.getBatchId());			
+				ps.setString(17, promotion.getBatchId());			
 	
 				ps.execute();
 			}

@@ -109,5 +109,10 @@ public class FDInvoiceAdapter implements Serializable {
     public List<ErpDiscountLineModel> getActualDiscounts(){    	
     	return invoice.getDiscounts();
     }
+    
+    public double getInvoicedTip(){
+    	ErpChargeLineModel c = getCharge(EnumChargeType.TIP);
+    	return c != null ? c.getTotalAmount() : 0.0;
+    }
 	
 }

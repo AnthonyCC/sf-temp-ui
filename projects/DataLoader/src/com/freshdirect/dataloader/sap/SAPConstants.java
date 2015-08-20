@@ -53,7 +53,7 @@ public interface SAPConstants {
 	public static final String VALIDITY_START_DATE = "Validity Start Date";
 	public static final String CONDITION_RECORD_NUMBER = "Condition Record Number";
 	public static final String CONFIGURATION_PROFILE_NAME = "Configuration Profile Name";
-	public static final String CLASS = "Class";
+	public static final String CLASS = "CLASS";
 	public static final String CHARACTERISTIC_NAME = "Characteristic Name";
 	public static final String CHARACTERISTIC_VALUE = "Characteristic Value";
 	public static final String CHARACTERISTIC_VALUE_DESC = "Characteristic Value Description";

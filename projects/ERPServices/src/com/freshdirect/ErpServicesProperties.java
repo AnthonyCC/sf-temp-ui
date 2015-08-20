@@ -181,6 +181,7 @@ public class ErpServicesProperties {
 	private final static String SO_TECH_FROM = "standingorders.technical.error.from.address";
 	
 	private final static String MASQUERADE_STOREFRONT_BASEURL = "masquerade.storefront.baseurl";
+	private final static String MASQUERADE_FDX_STOREFRONT_BASEURL = "masquerade.fdx.storefront.baseurl";
 	private final static String MASQUERADE_SECURITYTICKET_EXPIRATION = "masquerade.securityticket.expiration";
 	
 	private final static String PROP_CRON_FAILURE_MAIL_TO = "cron.mail.to";
@@ -212,6 +213,8 @@ public class ErpServicesProperties {
 	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_USER		= "product.feed.uploader.ftp.user";
 	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD	= "product.feed.uploader.ftp.passwd";
 	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR	= "product.feed.uploader.ftp.workdir";
+	
+	private final static String PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY   = "erpservices.materialbatch.status.expiry"; // in minutes
 	
 	static {
 		Properties defaults = new Properties();
@@ -355,6 +358,7 @@ public class ErpServicesProperties {
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
+		defaults.put( MASQUERADE_FDX_STOREFRONT_BASEURL, "http://fdx.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
 		defaults.put(PROP_CARD_VERIFICATION_AUTH_AMOUNT,"1");
 		
@@ -382,6 +386,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_HOST, "web01.stdev05.nyc1.freshdirect.com");
 		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_USER, "fdadmin");
 		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD, "fd8848admin");
+		
+		defaults.put(PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY, "30");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -843,6 +849,10 @@ public class ErpServicesProperties {
 		return config.getProperty(MASQUERADE_STOREFRONT_BASEURL);
 	}
 	
+	public static String getMasqueradeFDXStoreFrontBaseUrl() {
+		return config.getProperty(MASQUERADE_FDX_STOREFRONT_BASEURL);
+	}
+	
 	public static int getMasqueradeSecurityTicketExpiration() {
 		return Integer.parseInt( config.getProperty(MASQUERADE_SECURITYTICKET_EXPIRATION) );
 	}
@@ -888,6 +898,10 @@ public class ErpServicesProperties {
 	
 	public static String getDPReportMailCC() {
 		return config.getProperty(PROP_DP_REPORT_MAIL_CC);
+	}
+	
+	public static int getMaterialBatchLoaderStatusExpiry(){
+		return Integer.parseInt(config.getProperty(PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY));
 	}
 	
 }

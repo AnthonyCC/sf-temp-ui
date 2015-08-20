@@ -9,15 +9,15 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class AssignedCustomerStrategy implements PromotionStrategyI {
 
-	private final Map assignedCustomers;
+	private final Map<String,AssignedCustomerParam> assignedCustomers;
 	private Integer rollingExpirationDays = null;
 	private boolean isMaxUsagePerCustomer = false;
 	
 	public AssignedCustomerStrategy() {
-		this.assignedCustomers = new HashMap();
+		this.assignedCustomers = new HashMap<String,AssignedCustomerParam>();
 	}
 
-	public AssignedCustomerStrategy(Map assignedCustomers, Integer rollingExpirationDays, boolean isMaxUsagePerCustomer) {
+	public AssignedCustomerStrategy(Map<String,AssignedCustomerParam> assignedCustomers, Integer rollingExpirationDays, boolean isMaxUsagePerCustomer) {
 		this();
 		this.assignedCustomers.putAll(assignedCustomers);
 		setRollingExpirationDays(rollingExpirationDays);
@@ -32,6 +32,7 @@ public class AssignedCustomerStrategy implements PromotionStrategyI {
 		return (AssignedCustomerParam)this.assignedCustomers.get(customerId);
 	}
 	
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		FDIdentity identity = context.getIdentity();
 		if(identity != null) {
@@ -65,6 +66,7 @@ public class AssignedCustomerStrategy implements PromotionStrategyI {
 	
 	public void setIsMaxUsagePerCustomer(boolean isMaxUsagePerCustomer) { this.isMaxUsagePerCustomer = isMaxUsagePerCustomer; }
 
+	@Override
 	public int getPrecedence() {
 		return 800;
 	}
@@ -72,5 +74,9 @@ public class AssignedCustomerStrategy implements PromotionStrategyI {
 	public String toString() {
 		return "AssignedCustomerStrategy [" + this.assignedCustomers.size() + " customers]";
 	}
-	
+
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

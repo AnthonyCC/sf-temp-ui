@@ -182,7 +182,7 @@ public class CustomerSummaryUtil {
 			String saleId = CrmManager.getInstance().getLastDeliveredOrder(user.getIdentity().getErpCustomerPK());
 
 			if (saleId != null)
-				anOrder = FDCustomerManager.getOrder( saleId );
+				anOrder = FDCustomerManager.getOrderForCRM( saleId );
 		} catch (FDResourceException e) {
 		}
 

@@ -13,6 +13,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
 import com.freshdirect.framework.util.DateUtil;
@@ -34,11 +35,11 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		return instance;
 	}
 	
-	protected Map<String, ErpCOOLInfo> loadData(Date since) {
+	protected Map<ErpCOOLKey, ErpCOOLInfo> loadData(Date since) {
 		try {
 			LOGGER.info("REFRESHING");
 			ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
-			Map<String, ErpCOOLInfo> data = sb.load(since);
+			Map<ErpCOOLKey, ErpCOOLInfo> data = sb.load(since);
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
@@ -63,9 +64,10 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		return d;
 	}
 	
-	public List<String> getCOOLInfo(String sapMatID) {		 
+	public List<String> getCOOLInfo(String sapMatID, String plantID) {		 
 		if(sapMatID==null||"".equals(sapMatID)) return null;
-		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(sapMatID);
+		ErpCOOLKey key= new ErpCOOLKey(sapMatID,plantID);
+		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(key);
 		return info!=null? info.getCountryInfo():null;
 	}
 	

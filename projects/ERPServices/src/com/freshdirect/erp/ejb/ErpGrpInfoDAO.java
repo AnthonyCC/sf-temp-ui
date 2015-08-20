@@ -7,24 +7,23 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Formatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
-import org.jaxen.function.StringFunction;
 
 import weblogic.auddi.util.Logger;
 
-import com.freshdirect.customer.EnumZoneServiceType;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
-import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpGrpInfoDAO {
@@ -60,18 +59,20 @@ public class ErpGrpInfoDAO {
 	}
     
 	
-	private static final String GRP_PRICING_SELECT_MAT_SQL="select  SAP_ID , VERSION from ERPS.GRP_SCALE_MASTER G "+
-															"where ID IN "+ 
-															"(select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?) "+
-															"and version=(select max(version) version from ERPS.GRP_SCALE_MASTER where sap_id=G.SAP_ID) "+ 
-															"and ACTIVE='X'"; 
+	private static final String GRP_PRICING_SELECT_MAT_SQL="SELECT  DISTINCT SAP_ID , g.VERSION,NVL(GP.SALES_ORG,'0001') SALES_ORG, NVL(GP.DISTRIBUTION_CHANNEL,'01') DISTRIBUTION_CHANNEL FROM ERPS.GRP_SCALE_MASTER G, erps.grp_pricing gp "+ 
+            " WHERE g.ID IN "+
+            " (select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?) "+
+            " AND g.version=(SELECT MAX(version) version FROM ERPS.GRP_SCALE_MASTER WHERE sap_id=G.SAP_ID) "+
+            " AND ACTIVE='X'      and gp.grp_id=g.id ";
 
 
-	public static FDGroup getGroupIdentityForMaterial(Connection conn,String matId) throws SQLException{
+	public static Map<String,FDGroup> getGroupIdentityForMaterial(Connection conn,String matId) throws SQLException{
 		FDGroup group=null;
 	   PreparedStatement ps = null;
 	   ResultSet rs = null;
 	   int resultCount = 0;	
+	   Map<String,FDGroup> groups=new HashMap<String,FDGroup>();
+	   String key="";
 		try {	    	   	    	   	    	   
 			ps = conn.prepareStatement(GRP_PRICING_SELECT_MAT_SQL);
 			ps.setString(1,matId);
@@ -80,8 +81,12 @@ public class ErpGrpInfoDAO {
 			while (rs.next()) {
 				String sapId=rs.getString("SAP_ID");
 				int version=rs.getInt("VERSION");
+				key=rs.getString("SALES_ORG")+"-"+rs.getString("DISTRIBUTION_CHANNEL");
 				group = new FDGroup(sapId, version);
-				resultCount++;
+				if(groups.containsKey(key))
+					resultCount++;
+				else 
+					groups.put(key, group);
 			}
 		}catch(SQLException e){
 			throw e;
@@ -94,9 +99,44 @@ public class ErpGrpInfoDAO {
  	    	//Do not associate the group info with the material/product.
  	    	return null;
  	    }
-		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+group);
-		return group; 			
-}
+		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
+		return groups; 			
+	}
+	
+	private static final String GRP_PRICING_SELECT_MAT_SALES_AREA_SQL="select  SAP_ID , g.VERSION,gp.sales_org,GP.DISTRIBUTION_CHANNEL from ERPS.GRP_SCALE_MASTER g, ERPS.GRP_PRICING gp" 
+                                                           +" where g.id=gp.grp_id and g.ID IN"  
+                                                           +" (select distinct GRP_ID from ERPS.MATERIAL_GRP where mat_id=?)" 
+                                                           +" and g.version=(select max(version) version from ERPS.GRP_SCALE_MASTER where sap_id=G.SAP_ID)"  
+                                                           +" and ACTIVE='X'"; 
+	public static Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(Connection conn,String matId) throws SQLException{
+		Map<SalesAreaInfo, FDGroup> salesAreaGroups = new HashMap<SalesAreaInfo, FDGroup>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {	    	   	    	   	    	   
+			ps = conn.prepareStatement(GRP_PRICING_SELECT_MAT_SALES_AREA_SQL);
+			ps.setString(1,matId);
+			//ps.setString(2,matId);
+			rs = ps.executeQuery();	 
+			while (rs.next()) {				
+				String sapId=rs.getString("SAP_ID");
+				int version=rs.getInt("VERSION");
+				FDGroup group = new FDGroup(sapId, version);
+				String salesOrg = rs.getString("SALES_ORG");
+				String distChannel = rs.getString("DISTRIBUTION_CHANNEL");
+				SalesAreaInfo salesArea = new SalesAreaInfo(salesOrg, distChannel);
+				if(!salesAreaGroups.containsKey(salesArea)){
+					salesAreaGroups.put(salesArea, group);
+				}
+			}
+		}catch(SQLException e){
+			throw e;
+		}finally{
+	    	   if(rs != null) rs.close();
+	    	   if(ps != null) ps.close();
+	    }
+		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
+		return salesAreaGroups; 			
+	}
 	
 	private static final String GRP_PRICING_SELECT_SQL="select  ID ,SAP_ID   ,SHORT_DESC  ,LONG_DESC  ,ACTIVE "+   
     													" from  ERPS.GRP_SCALE_MASTER where sap_id=? and version=?"; 
@@ -139,7 +179,7 @@ public class ErpGrpInfoDAO {
 	
 	
 	
-	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION FROM ERPS.GRP_PRICING "+
+	public static final String GRP_PRICING_ZONE_SELECT_SQL=" select ID  ,GRP_ID ,ZONE_ID ,QUANTITY ,PRICING_UNIT ,SCALE_UNIT,PRICE ,VERSION, NVL(SALES_ORG,'0001') as SALES_ORG,NVL(DISTRIBUTION_CHANNEL,'01') as DISTRIBUTION_CHANNEL FROM ERPS.GRP_PRICING "+
 															" WHERE GRP_ID=? AND VERSION= ?";
 	
 	public static Set<ErpGrpPriceZoneModel> getGrpPricingInfo(Connection con,String grpId,int version) throws SQLException{
@@ -162,7 +202,11 @@ public class ErpGrpInfoDAO {
 	            	 String unitOfMeasure=rs.getString("PRICING_UNIT");
 	            	 String scaleUnit=rs.getString("SCALE_UNIT");	
 	            	 double price=rs.getDouble("PRICE");
-	            	 ErpGrpPriceZoneModel  grpPriceZoneInfo=new ErpGrpPriceZoneModel(zoneId,quantity,unitOfMeasure,price, scaleUnit);	            	 
+	            	 String salesOrg = rs.getString("SALES_ORG");
+	            	 String distChannel = rs.getString("DISTRIBUTION_CHANNEL");
+	            	 if(salesOrg==null)salesOrg="0001";
+	            	 if(distChannel==null)distChannel="01";
+	            	 ErpGrpPriceZoneModel  grpPriceZoneInfo=new ErpGrpPriceZoneModel(new ZoneInfo(zoneId,salesOrg, distChannel),quantity,unitOfMeasure,price, scaleUnit);	            	 
 	            	 grpPriceZoneInfo.setId(id);
 	            	 zoneList.add(grpPriceZoneInfo);
 	             }
@@ -301,9 +345,10 @@ public class ErpGrpInfoDAO {
 	}
 	
 	
-	public static final String GRP_PRICING_SKU_SELECT_SQL= "SELECT  p.sku_code FROM erps.product p, erps.materialproxy mpx, erps.material m, "+
-	 "(SELECT MAX(version) v, sap_id s FROM erps.material WHERE sap_id IN <XYZ> GROUP BY sap_id) T "+
-	" WHERE p.id = mpx.product_id AND  m.id= mpx.mat_id AND m.version=T.v AND M.SAP_ID=T.s ";
+	public static final String GRP_PRICING_SKU_SELECT_SQL="SELECT  SKUCODE from erps.material m, "+
+    " (SELECT MAX(version) v,  sap_id FROM erps.material WHERE sap_id IN <XYZ> GROUP BY sap_id) T "+ 
+   " WHERE T.v=m.version and T.sap_id=M.SAP_ID ";
+	
 	public static List<String> getSkuCodes(Connection conn, Set<String> matIds) throws SQLException{
 		   List<String> skuList=new ArrayList<String>();
 		   PreparedStatement ps = null;
@@ -328,7 +373,7 @@ public class ErpGrpInfoDAO {
 	    	   ps = conn.prepareStatement(query);
 	    	   rs = ps.executeQuery();
 	             while (rs.next()) {
-	            	 String skuCode=rs.getString("SKU_CODE");	            
+	            	 String skuCode=rs.getString("SKUCODE");	            
 	            	 skuList.add(skuCode);
 	             }
 	       }catch(SQLException e){

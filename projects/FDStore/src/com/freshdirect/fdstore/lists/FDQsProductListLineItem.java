@@ -37,7 +37,7 @@ public class FDQsProductListLineItem extends FDCustomerProductListLineItem {
 		
 		FDProductSelection r = new  FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 									  prod,
-									  getConfiguration(), prod.getPricingContext().getZoneId());
+									  getConfiguration(), getUserContext());
 		
 		r.setCustomerListLineId(this.getPK() == null ? null : this.getPK().getId());
 		r.setDeliveryStartDate(deliveryStartDate);

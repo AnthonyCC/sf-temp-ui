@@ -13,22 +13,19 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
+import com.freshdirect.erp.EnumProductApprovalStatus;
 import com.freshdirect.erp.ErpVisitorI;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.framework.collection.LocalObjectList;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
- * ErpMaterial model class.
- *
- * @version    $Revision$
- * @author     $Author$
- * @stereotype fd-model
+ * @author kkanuganti
  */
 public class ErpMaterialModel extends ErpMaterialInfoModel {
+
+	private static final long serialVersionUID = -9146434132902323525L;
 
 	/** Base unit of measure */
 	private String baseUnit;
@@ -38,27 +35,28 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 
 	/** Characteristic name for sales unit, null if none */
 	private String salesUnitCharacteristic;
-
-	/** the ATPRule to use when checking for availablility of this material */
-	private EnumATPRule atpRule;
-
-	/** the lead time in days to stock this product **/
-	private int leadTime;
-
+	
 	/** the alcoholic content of this material */
 	private EnumAlcoholicContent alcoholicContent;
 
+	/** Is Taxable */
 	private boolean taxable;
 
-	private boolean kosherProduction;
+	/** Approval status of the material */
+	private EnumProductApprovalStatus approvalStatus;
 
-	private boolean platter;
-
-	private DayOfWeekSet blockedDays;
+	/** Type of material */
+	private String materialType;
 	
 	private double basePrice;
 	
 	private String basePricingUnit;
+	
+	/** SKU code */
+	private String skuCode;
+	
+	/** product total shelf life */
+	private String daysFresh;
 
 	/**
 	 * Collection of material pricing conditions
@@ -88,6 +86,10 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	 * @associates <{com.freshdirect.erp.model.ErpSalesUnitModel}>
 	 */
 	private LocalObjectList displaySalesUnits = new LocalObjectList();
+	
+	private LocalObjectList materialPlants = new LocalObjectList();
+	
+	private LocalObjectList materialSalesAreas = new LocalObjectList();
 
 	/**
 	 * Default constructor.
@@ -97,30 +99,32 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	}
 
 	/**
-	 * Constructor with all properties.
+	 * @param sapId
+	 * @param baseUnit
+	 * @param description
+	 * @param upc
+	 * @param quantityCharacteristic
+	 * @param salesUnitCharacteristic
+	 * @param alcoholicContent
+	 * @param taxable
+	 * @param approvalStatus
+	 * @param materialType
+	 * @param skuCode
+	 * @param daysFresh
+	 * @param prices
+	 * @param salesUnits
+	 * @param classes
+	 * @param displaySalesUnits
+	 * @param materialPlants
+	 * @param materialSalesAreas
 	 */
-	public ErpMaterialModel(
-		String sapId,
-		String baseUnit,
-		String description,
-		EnumATPRule atpRule,
-		int leadTime,
-		String upc,
-		String quantityCharacteristic,
-		String salesUnitCharacteristic,
-		EnumAlcoholicContent alcoholicContent,
-		boolean taxable,
-		boolean kosherProduction,
-		boolean platter,
-		DayOfWeekSet blockedDays,
-		List prices,
-		List salesUnits,
-		List classes,
-		List displaySalesUnits ) {
+	public ErpMaterialModel(String sapId, String baseUnit, String description, String upc, String quantityCharacteristic,
+			String salesUnitCharacteristic, EnumAlcoholicContent alcoholicContent, boolean taxable, 
+			String skuCode, String daysFresh, EnumProductApprovalStatus approvalStatus,
+			String materialType, List prices, List salesUnits, List classes, List displaySalesUnits, List materialPlants, List materialSalesAreas)
+	{
 		super(sapId, description);
 		this.setBaseUnit(baseUnit);
-		this.setATPRule(atpRule);
-		this.setLeadTime(leadTime);
 		this.setUPC(upc);
 		this.setQuantityCharacteristic(quantityCharacteristic);
 		this.setSalesUnitCharacteristic(salesUnitCharacteristic);
@@ -129,10 +133,13 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.setClasses(classes);
 		this.setAlcoholicContent(alcoholicContent);
 		this.setTaxable(taxable);
-		this.setKosherProduction(kosherProduction);
-		this.setPlatter(platter);
-		this.setBlockedDays(blockedDays);
 		this.setDisplaySalesUnits(displaySalesUnits);
+		this.setSkuCode(skuCode);
+		this.setDaysFresh(daysFresh);
+		this.setMaterialType(materialType);
+		this.setApprovalStatus(approvalStatus);
+		this.setMaterialPlants(materialPlants);
+		this.setMaterialSalesAreas(materialSalesAreas);
 	}
 
 	/**
@@ -154,42 +161,6 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	}
 
 	/**
-	 * Get ATPRule for this material.
-	 *
-	 * @return the ATPRule
-	 */
-	public EnumATPRule getATPRule() {
-		return this.atpRule;
-	}
-
-	/**
-	 * Set ATPRule for this material
-	 *
-	 * @param the ATPRule to use when checking availability of this product
-	 */
-	public void setATPRule(EnumATPRule rule) {
-		this.atpRule = rule;
-	}
-
-	/**
-	 * Get lead time for this material.
-	 *
-	 * @return the lead time in days
-	 */
-	public int getLeadTime() {
-		return this.leadTime;
-	}
-
-	/**
-	 * Set lead time for this material
-	 *
-	 * @param the lead time in days required to stock this product
-	 */
-	public void setLeadTime(int days) {
-		this.leadTime = days;
-	}
-
-	/**
 	 * Get Characteristic name that shall contain the Quantity.
 	 * Optional, can be null.
 	 *
@@ -202,7 +173,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	/**
 	 * Set Characteristic name that shall contain the Quantity.
 	 *
-	 * @return quantity characteristic name (can be null)
+	 * quantity characteristic name (can be null)
 	 */
 	public void setQuantityCharacteristic(String quantityCharacteristic) {
 		this.quantityCharacteristic = quantityCharacteristic;
@@ -408,30 +379,6 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		taxable = b;
 	}
 
-	public boolean isKosherProduction() {
-		return kosherProduction;
-	}
-
-	public void setKosherProduction(boolean b) {
-		kosherProduction = b;
-	}
-
-	public boolean isPlatter() {
-		return platter;
-	}
-
-	public void setPlatter(boolean b) {
-		platter = b;
-	}
-
-	public DayOfWeekSet getBlockedDays() {
-		return this.blockedDays;
-	}
-
-	public void setBlockedDays(DayOfWeekSet blockedDays) {
-		this.blockedDays = blockedDays;
-	}
-
 	public double getBasePrice() {
 		return basePrice;
 	}
@@ -465,4 +412,91 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	public List getDisplaySalesUnits() {
 		return Collections.unmodifiableList(this.displaySalesUnits);
 	}
+
+	public String getSkuCode() {
+		return skuCode;
+	}
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+
+	/**
+	 * @return the daysFresh
+	 */
+	public String getDaysFresh()
+	{
+		return daysFresh;
+	}
+
+	/**
+	 * @param daysFresh the daysFresh to set
+	 */
+	public void setDaysFresh(String daysFresh)
+	{
+		this.daysFresh = daysFresh;
+	}
+
+	/**
+	 * @return the approvalStatus
+	 */
+	public EnumProductApprovalStatus getApprovalStatus()
+	{
+		return approvalStatus;
+	}
+
+	/**
+	 * @param approvalStatus the approvalStatus to set
+	 */
+	public void setApprovalStatus(EnumProductApprovalStatus approvalStatus)
+	{
+		this.approvalStatus = approvalStatus;
+	}
+
+	/**
+	 * @return the materialType
+	 */
+	public String getMaterialType()
+	{
+		return materialType;
+	}
+
+	/**
+	 * @param materialType the materialType to set
+	 */
+	public void setMaterialType(String materialType)
+	{
+		this.materialType = materialType;
+	}
+
+	/**
+	 * @return the materialPlants
+	 */
+	public List getMaterialPlants() {
+		return Collections.unmodifiableList(this.materialPlants);
+	}
+
+	/**
+	 * @param materialPlants the materialPlants to set
+	 */
+	public void setMaterialPlants(List materialPlants) {
+		this.materialPlants.set(materialPlants);
+	}
+
+	/**
+	 * @return the materialSalesAreas
+	 */
+	public List getMaterialSalesAreas() {
+		return Collections.unmodifiableList(this.materialSalesAreas);
+	}
+
+	/**
+	 * @param materialSalesAreas the materialSalesAreas to set
+	 */
+	public void setMaterialSalesAreas(List materialSalesAreas) {
+		this.materialSalesAreas.set(materialSalesAreas);
+	}
+	
+	
+	
 }

@@ -37,15 +37,20 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 	/** Inventory level quantity in base UOM */
 	private double quantity;
 
+	/**
+	 * inventory plantId 
+	 */
+	private String plantId;
 
 	/**
 	 * Load constructor.
 	 */
-	public ErpInventoryEntryPersistentBean(PrimaryKey pk, Date startDate, double quantity) {
+	public ErpInventoryEntryPersistentBean(PrimaryKey pk, Date startDate, double quantity, String plantId) {
 		super();
 		this.setPK(pk);
 		this.startDate = startDate;
 		this.quantity = quantity;
+		this.plantId = plantId;
 	}
 
 	/**
@@ -65,8 +70,9 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 	 */
 	public ModelI getModel() {
 		ErpInventoryEntryModel model = new ErpInventoryEntryModel(
-			this.startDate,
-			this.quantity
+				this.startDate,
+				this.quantity,
+				this.plantId
 		);
 		super.decorateModel(model);
 		return model;
@@ -79,6 +85,7 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 		ErpInventoryEntryModel m = (ErpInventoryEntryModel)model;
 		this.startDate = m.getStartDate();
 		this.quantity = m.getQuantity();
+		this.plantId = m.getPlantId();
 	}
 
 
@@ -94,14 +101,14 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT START_DATE, QUANTITY FROM ERPS.INVENTORY_ENTRY WHERE MATERIAL_SAP_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT START_DATE, QUANTITY, PLANT_ID FROM ERPS.INVENTORY_ENTRY WHERE MATERIAL_SAP_ID=?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			Date stDate = rs.getDate(1);
 			ErpInventoryEntryPersistentBean bean =	new ErpInventoryEntryPersistentBean(
 				new PrimaryKey( QuickDateFormat.SHORT_DATE_FORMATTER.format(stDate) ),
-				stDate, rs.getDouble(2) );
+				stDate, rs.getDouble(2), rs.getString(3));
 			bean.setParentPK(parentPK);
             lst.add(bean);
 		}
@@ -113,10 +120,11 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(
-			"INSERT INTO ERPS.INVENTORY_ENTRY (MATERIAL_SAP_ID,START_DATE,QUANTITY) values (?,?,?)" );
+			"INSERT INTO ERPS.INVENTORY_ENTRY (MATERIAL_SAP_ID, START_DATE, QUANTITY, PLANT_ID) values (?,?,?,?)" );
 		ps.setString(1, this.getParentPK().getId());
 		ps.setDate(2, new java.sql.Date(this.startDate.getTime()) );
 		ps.setDouble(3, this.quantity );
+		ps.setString(4, this.plantId);
 		try {
 			ps.executeUpdate();
 			this.setPK( new PrimaryKey( QuickDateFormat.SHORT_DATE_FORMATTER.format(this.startDate) ) );
@@ -134,10 +142,11 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 	}
 
 	public void store(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE ERPS.INVENTORY_ENTRY SET QUANTITY=? WHERE MATERIAL_SAP_ID=? AND START_DATE=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE ERPS.INVENTORY_ENTRY SET QUANTITY=? WHERE MATERIAL_SAP_ID = ? AND START_DATE = ? AND PLANT_ID = ?");
 		ps.setDouble(1, this.quantity );
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDate(3, new java.sql.Date(this.startDate.getTime()) );
+		ps.setDate(3, new java.sql.Date(this.startDate.getTime()));
+		ps.setString(4, this.plantId);
 		ps.executeUpdate();
 		ps.close();
 		this.unsetModified();
@@ -145,9 +154,10 @@ public class ErpInventoryEntryPersistentBean extends DependentPersistentBeanSupp
 
 	public void remove(Connection conn) throws SQLException {
 		// remove self
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM ERPS.INVENTORY_ENTRY WHERE MATERIAL_SAP_ID=? AND START_DATE=?");
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM ERPS.INVENTORY_ENTRY WHERE MATERIAL_SAP_ID = ? AND START_DATE = ? AND PLANT_ID = ?");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setDate(2, new java.sql.Date(this.startDate.getTime()) );
+		ps.setString(3, this.plantId);
 		ps.executeUpdate();
 		ps.close();
 		this.setPK(null); // make it anonymous

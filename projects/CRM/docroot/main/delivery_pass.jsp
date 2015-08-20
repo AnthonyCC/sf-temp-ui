@@ -159,24 +159,22 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 					if(user.isEligibleForDeliveryPass() && DeliveryPassUtil.isEligibleStatus(status)) {
 				%>	
 				<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
-				<form name="signup" method="POST">
-				<input type="hidden" name="action" value="">
-					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
-				</form>
+					<% if(hasCustomerCase) { %>
+						<a href="/main/masquerade.jsp?destination=dp_search_results" target="_blank"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
+					<% } else { %>
+						<span class="cust_module_content_edit">-Case required to buy DeliveryPass-</span>
+					<% } %>
 				<% } %>
 				<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
-				<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
-				     user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
-				     if(hasCustomerCase) {
-				 %> 
-				 <a href="/main/place_auto_renew_order.jsp"><b>Click here to buy Auto Renew FreshDirect Unlimited.<b></a>
-				 <%  } else {%>
-				 <%=caseRequiredForManualRenewal%>
-				 <%  }
-				   } }
-				 %>  
-                
-				<%
+					<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
+						user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
+						    if(hasCustomerCase) { %> 
+						 		<a href="/main/place_auto_renew_order.jsp"><b>Click here to buy Auto Renew FreshDirect Unlimited.<b></a>
+						 	<%  } else {%>
+						 		<%=caseRequiredForManualRenewal%>
+						 	<% }
+						}
+					}
 				} else {
 				%>
 				Customer is not eligible for DeliveryPass.
@@ -217,12 +215,13 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
                    %>
                              <% if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()<FDStoreProperties.getMaxDlvPassPurchaseLimit())) {
                               %>
-                              <% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
-				<form name="signup" method="POST">
-				<input type="hidden" name="action" value="">
-					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
-				</form>
-				<% } %>
+							<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"buyDeliveryPass")){%>
+								<tr><td colspan="2"><% if(hasCustomerCase) { %>
+									<a href="/main/masquerade.jsp?destination=dp_search_results" target="_blank"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
+								<% } else { %>
+									<span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required. <span class="cust_module_content_edit">-Case required to buy DeliveryPass-</span>
+								<% } %></td></tr>
+							<% } %>
 				     <% }%>
 				     <tr>
 				     

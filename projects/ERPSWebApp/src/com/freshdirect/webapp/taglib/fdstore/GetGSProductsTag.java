@@ -73,7 +73,7 @@ public class GetGSProductsTag extends BodyTagSupport {
 				} else {			
 					group = new FDGroup(grpId, Integer.parseInt(version));
 				}
-				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
+				MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getUserContext().getPricingContext().getZoneInfo());
 				if (matPrice != null) {
 					String grpQty = "0";
 					String grpTotalPrice = "0";
@@ -112,7 +112,7 @@ public class GetGSProductsTag extends BodyTagSupport {
 						ProductModel priorityProd = ContentFactory.getInstance().getProduct(prioritySku);
 						if (priorityProd != null) {
 							SkuModel sku = priorityProd.getSku(prioritySku);
-							if(sku != null && sku.getProductInfo().isGroupExists()){
+							if(sku != null && sku.getProductInfo().isGroupExists(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel())){
 								skuModels.add(sku);
 								matIds.add(sku.getProduct().getMaterial().getMaterialNumber());
 							}
@@ -134,7 +134,7 @@ public class GetGSProductsTag extends BodyTagSupport {
 							SkuModel sku = pm.getSku(curSku);
 							String matId = sku.getProduct().getMaterial().getMaterialNumber();
 							//if matIds.contains(matId) then its a virtual sku. do not include it.
-							if(sku != null && sku.getProductInfo().isGroupExists() && !matIds.contains(matId)) {
+							if(sku != null && sku.getProductInfo().isGroupExists(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel()) && !matIds.contains(matId)) {
 								skuModels.add(sku);
 								matIds.add(matId);
 							}

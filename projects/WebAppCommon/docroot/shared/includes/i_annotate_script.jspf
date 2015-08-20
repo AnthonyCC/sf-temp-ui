@@ -1,7 +1,10 @@
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <script language="JavaScript">
 	var annotation = "<B>SKUs</B><BR>";
 	var detailAnnotation = annotation;
 	<%
+	 String salesOrg="";
+	 String distrChannel="";
 	for (Iterator skuIter = productNode.getSkus().iterator(); skuIter.hasNext(); ) {
     	SkuModel skuModel = (SkuModel) skuIter.next();
 
@@ -23,6 +26,8 @@
     	try {
     		fdProdInfo = FDCachedFactory.getProductInfo( skuModel.getSkuCode() );
     		fdProd = FDCachedFactory.getProduct( fdProdInfo );
+    		salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+    		distrChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
     	} catch (FDSkuNotFoundException ex) {}
     %>
     ann="&nbsp;";
@@ -35,7 +40,7 @@
 
     detailAnnotation+="&nbsp;&nbsp;&nbsp;";
     detailAnnotation+="<%= fdProd==null ? "NO PROD" : fdProd.getMaterial().getMaterialNumber().substring(9) %>";
-    detailAnnotation+=" <%= fdProdInfo==null ? "NO PRODINFO" :fdProdInfo.getAvailabilityStatus().getShortDescription() %>";
+    detailAnnotation+=" <%= fdProdInfo==null ? "NO PRODINFO" :fdProdInfo.getAvailabilityStatus(salesOrg,distrChannel).getShortDescription() %>";
     detailAnnotation+="<BR><BR>";
     <%
     }

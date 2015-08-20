@@ -15,7 +15,9 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
@@ -34,6 +36,7 @@ import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
@@ -49,8 +52,10 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpSubmitFailedModel;
 import com.freshdirect.customer.ErpTransactionI;
 import com.freshdirect.customer.ErpTransactionModel;
+import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -65,6 +70,8 @@ import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
@@ -76,6 +83,7 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
@@ -112,21 +120,66 @@ public class FDOrderAdapter implements FDOrderI {
 
 	/** Creates new FDOrderAdapter */
 	public FDOrderAdapter(ErpSaleModel sale) {
-		init(sale);
+		init(sale, false);
+	}
+
+	public FDOrderAdapter(ErpSaleModel sale, boolean lazy) {
+		init(sale, lazy);
 	}
 
 	public ErpSaleModel getSale() {
 		return sale;
 	}
 
-	/** Adapt a sale */
-	protected void init(ErpSaleModel saleModel) {
+	/** Adapt a sale
+	 * @param saleModel Sale object
+	 * @param lazy if true, initialize cartline items from orderlines as much as possible
+	 * avoiding using product models. Retained for FDX CRM. 
+	 */
+	protected void init(ErpSaleModel saleModel, final boolean lazy) {
 		this.sale = saleModel;
 		erpOrder = sale.getRecentOrderTransaction();
+		erpOrder.seteStoreId(sale.geteStoreId());
 
+		try {
+			List<ErpPaymentMethodI> paymentList = (List<ErpPaymentMethodI>)FDCustomerManager.getPaymentMethods(new FDIdentity(sale.getCustomerPk().getId()));
+			
+			  if(paymentList!=null && paymentList.size()>0){
+				
+				a:for(int j=0;j<paymentList.size();j++){
+					ErpPaymentMethodI custPayment=paymentList.get(j);
+					if(isMatching(custPayment, erpOrder.getPaymentMethod())) {
+						erpOrder.setPaymentMethod(custPayment);
+						break a;
+					}
+				}
+			  }
+		} catch (FDResourceException e1) {
+			LOGGER.info("payment method not found"+e1);
+		}		
+		  
 		ErpDeliveryInfoModel delInfo = erpOrder.getDeliveryInfo();
 		try {
 			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
+			
+			if(EnumEStoreId.FDX.name().equals(erpOrder.geteStoreId().name())){
+				Date cutoffTime = delInfo.getDeliveryCutoffTime(); // Delivery Info stores the correct cutoff time for the order modify
+				
+				/*Date timeslotCutoff = deliveryReservation.getTimeslot().getCutoffDateTime();
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, (int)deliveryReservation.getTimeslot().getMinDurationForModification());
+				if(timeslotCutoff.before(cal.getTime())){
+						delInfo.setDeliveryCutoffTime(cal.getTime());
+				}else{
+						delInfo.setDeliveryCutoffTime(timeslotCutoff);
+				}
+				*/
+				if(deliveryReservation!=null){
+				FDTimeslot timeslot = deliveryReservation.getTimeslot();
+				timeslot.setCutoffTime(new TimeOfDay(cutoffTime)); // restoring the cutoff from Delivery Info instead of recalc.
+				deliveryReservation.setTimeslot(timeslot);
+				}
+			}
 			if (deliveryReservation == null) {
 				//!!! this is just a temporary fix until pre-reserve slots is completely implemented
 				FDTimeslot t = new FDTimeslot();
@@ -184,9 +237,12 @@ public class FDOrderAdapter implements FDOrderI {
 
 		orderLines = new ArrayList<FDCartLineI>();
 		sampleLines = new ArrayList<FDCartLineI>();
+		ErpDeliveryPlantInfoModel dpi=erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
 		List<ErpOrderLineModel> erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {
 			ErpOrderLineModel ol = erpLines.get(i);
+			ol.setPlantID(dpi.getPlantId());
+			
 			String olNum = ol.getOrderLineNumber();
 			ErpInvoiceLineI firstInvoiceLine = getFirstInvoiceLine(olNum);
 			ErpInvoiceLineI lastInvoiceLine = getLastInvoiceLine(olNum);
@@ -194,12 +250,18 @@ public class FDOrderAdapter implements FDOrderI {
 
 
 			FDCartLineI cartLine;
-			cartLine = new FDCartLineModel(ol, firstInvoiceLine, lastInvoiceLine, returnLine);
+			cartLine = new FDCartLineModel(ol, firstInvoiceLine, lastInvoiceLine, returnLine, lazy);
 			cartLine.setCouponDiscount(ol.getCouponDiscount());
+			cartLine.setEStoreId(erpOrder.geteStoreId());
+			cartLine.getUserContext().setStoreContext(StoreContext.createStoreContext(erpOrder.geteStoreId()));
+			
 			//If gift card sku load the fixed frice into cartline.
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
 				cartLine.setFixedPrice(ol.getPrice());
 			}
+
+			
+			
 			try {
 				if(cartLine.lookupFDProduct()!=null){
 					cartLine.refreshConfiguration();					
@@ -211,12 +273,12 @@ public class FDOrderAdapter implements FDOrderI {
 				// salvage original descriptions
 				cartLine.setDepartmentDesc(ol.getDepartmentDesc());
 				cartLine.setDescription(ol.getDescription());
-				cartLine.setConfigurationDesc(ol.getConfigurationDesc());
-
+				cartLine.setConfigurationDesc(ol.getConfigurationDesc());				
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e, "Difficulty recreating orderline " + i + " in sale " + sale.getPK());
 			}
-
+			
+				
 			if (cartLine.isSample()) {
 				sampleLines.add(cartLine);
 			} else {
@@ -261,6 +323,25 @@ public class FDOrderAdapter implements FDOrderI {
 		cartonMetrics = sale.getCartonMetrics();
 	}
 
+	private static boolean isMatching(ErpPaymentMethodI custPymt,ErpPaymentMethodI salePymt) {
+		
+		if(custPymt==null || salePymt==null)
+			 return false;
+		if(StringUtil.isEmpty(salePymt.getProfileID())) {
+			if(EnumPaymentMethodType.GIFTCARD.equals(salePymt.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(salePymt.getPaymentMethodType())) {
+			    
+				if(salePymt.getPaymentMethodType().equals(custPymt.getPaymentMethodType()))
+					return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
+				else
+					return false;
+			}
+			return false;
+		}
+		else return salePymt.getProfileID().equals(custPymt.getProfileID());
+		
+	}
+	
+	
 	public boolean isModifiedOrder() {
 		for ( ErpTransactionModel m : sale.getTransactions() ) {
 			if ( m instanceof ErpModifyOrderModel) {
@@ -592,7 +673,7 @@ public class FDOrderAdapter implements FDOrderI {
 		return erpOrder.getDeliveryInfo().getDeliveryType();
 	}
 
-	private ErpDeliveryInfoModel getDeliveryInfo() {
+	public ErpDeliveryInfoModel getDeliveryInfo() {
 		return erpOrder.getDeliveryInfo();
 	}
 
@@ -1494,5 +1575,27 @@ public class FDOrderAdapter implements FDOrderI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public double getTip() {
+		return this.getChargeAmountDiscountApplied(EnumChargeType.TIP);
+}
+
+	@Override
+	public void setTip(double tip) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumEStoreId getEStoreId() {
+		// TODO Auto-generated method stub
+		return sale.geteStoreId();
+	}
+
+	@Override
+	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo() {
+		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
+	}	
 
 }

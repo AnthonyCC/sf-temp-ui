@@ -24,6 +24,7 @@ import com.freshdirect.WineUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
@@ -58,6 +59,7 @@ import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
@@ -234,7 +236,7 @@ public class ProductDetailPopulator {
 		}
 		
 		if ( lineData == null ) {
-			lineData = new FDProductSelection( fdProduct, product, getProductConfiguration( product, fdProduct ), user.getPricingContext().getZoneId() );		
+			lineData = new FDProductSelection( fdProduct, product, getProductConfiguration( product, fdProduct ), user.getUserContext() );		
 			try {
 				lineData.refreshConfiguration();
 			} catch (FDInvalidConfigurationException e) {
@@ -306,7 +308,7 @@ public class ProductDetailPopulator {
 		}
 		
 		if ( lineData == null ) {
-			lineData = new FDProductSelection( fdProduct, product, getProductConfiguration( product, fdProduct ), user.getPricingContext().getZoneId() );		
+			lineData = new FDProductSelection( fdProduct, product, getProductConfiguration( product, fdProduct ), user.getUserContext() );		
 			try {
 				lineData.refreshConfiguration();
 			} catch (FDInvalidConfigurationException e) {
@@ -359,7 +361,7 @@ public class ProductDetailPopulator {
 		
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
-			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
 		if (PopulatorUtil.isProductIncomplete(product)) {
@@ -536,8 +538,11 @@ public class ProductDetailPopulator {
 		// APPDEV - 4270 Optimize the webpage changes to append the domain
 		String domains = FDStoreProperties.getSubdomains();
 		data.setAkaName( product.getAka() );
+		if(product.getProdImage()!=null)
 		data.setProductImage( domains + product.getProdImage().getPathWithPublishId() );
+		if(product.getDetailImage()!=null)
 		data.setProductDetailImage( domains + product.getDetailImage().getPathWithPublishId() );
+		if(product.getZoomImage()!=null)
 		data.setProductZoomImage( domains + product.getZoomImage().getPathWithPublishId() );
 		
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
@@ -713,9 +718,10 @@ public class ProductDetailPopulator {
 				item.setMsgLeadTime( "" );
 			}
 		}
-		
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+        
 		// Kosher restrictions
-		if ( fdProduct != null && fdProduct.getKosherInfo() != null && fdProduct.getKosherInfo().isKosherProduction() ) {
+		if ( fdProduct != null && fdProduct.getKosherInfo(plantID) != null && fdProduct.getKosherInfo(plantID).isKosherProduction() ) {
 			try {
 				DlvRestrictionsList globalRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
@@ -753,10 +759,12 @@ public class ProductDetailPopulator {
 			}
 			
 		}
+		
 		// earliest availability - product not yet available but will in the near future
 		if (sku != null) {
 			item.setMsgEarliestAvailability( sku.getEarliestAvailabilityMessage() );
 		}
+		
 	}
 
 	/**
@@ -799,7 +807,7 @@ public class ProductDetailPopulator {
 
 		// Set data
 		
-		populateSkuVariations(data, getVariations( fdProduct, currentConfig ) );
+		populateSkuVariations(data, getVariations( fdProduct, currentConfig,user.getUserContext().getPricingContext() ) );
 		data.setLabel( getLabel( sku ) );
 		
 		data.setSalesUnitLabel( product.getSalesUnitLabel() );
@@ -940,7 +948,7 @@ public class ProductDetailPopulator {
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
 		boolean isBackInStock = product.isBackInStock();
-		ProductReference prodRef = new ProductReference(product);
+		ProductReference prodRef = new ProductReferenceImpl(product);
 		boolean isFree = user.isProductSample(prodRef);
 	
 		item.setDeal( deal );
@@ -1012,7 +1020,7 @@ public class ProductDetailPopulator {
 		variables[0] = ScoreProvider.USER_FREQUENCY;
 		variables[1] = ScoreProvider.RECENCY_DISCRETIZED;
 		String userId = user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null;
-		double[] scores = ScoreProvider.getInstance().getVariables(userId, productModel.getPricingContext(), productModel.getContentKey(), variables);
+		double[] scores = ScoreProvider.getInstance().getVariables(userId, productModel.getUserContext().getPricingContext(), productModel.getContentKey(), variables);
 		item.setFrequency(scores[0]);
 		item.setRecency(scores[1]);
 	}
@@ -1160,17 +1168,17 @@ public class ProductDetailPopulator {
 
 	private static void populateSubtotalInfo( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
 	
-		String pricingZoneId = priceCalculator.getPricingContext().getZoneId();
-		MaterialPrice[] availMatPrices = fdProduct.getPricing().getZonePrice( pricingZoneId ).getMaterialPrices();
+		ZoneInfo pricingZone = priceCalculator.getPricingContext().getZoneInfo();
+		MaterialPrice[] availMatPrices = fdProduct.getPricing().getZonePrice( pricingZone ).getMaterialPrices();
 		MaterialPrice[] matPrices = null;
 		List<MaterialPrice> matPriceList = new ArrayList<MaterialPrice>();
 	
-		if ( productInfo.isGroupExists() ) {
+		if ( productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) ) {
 			// Has a Group Scale associated with it. Check if there is GS price defined for current pricing zone.
-			FDGroup group = productInfo.getGroup();
+			FDGroup group = productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel());
 			MaterialPrice[] grpPrices = null;
 			try {
-				grpPrices = GroupScaleUtil.getGroupScalePrices( group, pricingZoneId );
+				grpPrices = GroupScaleUtil.getGroupScalePrices( group, pricingZone );
 			} catch ( FDResourceException fe ) {
 				// Never mind. Show regular price for the material.
 			}
@@ -1197,13 +1205,13 @@ public class ProductDetailPopulator {
 	
 		if ( fdProduct.getPricing() != null ) {
 			item.setAvailMatPrices( matPrices );
-			item.setCvPrices( fdProduct.getPricing().getCharacteristicValuePrices() );
+			item.setCvPrices( fdProduct.getPricing().getCharacteristicValuePrices(priceCalculator.getPricingContext()) );
 			item.setSuRatios( fdProduct.getPricing().getSalesUnitRatios() );
 		}
-		if ( productInfo.isGroupExists() && productInfo.getGroup() != null ) {
-			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( productInfo.getGroup(), pricingZoneId ) );
+		if ( productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) && productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) != null ) {
+			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()), pricingZone ) );
 		}
-		ZonePriceInfoModel zone = productInfo.getZonePriceInfo( pricingZoneId );
+		ZonePriceInfoModel zone = productInfo.getZonePriceInfo( pricingZone );
 		if ( zone != null && zone.isItemOnSale() ) {
 			item.setWasPrice( zone.getSellingPrice() );
 		}
@@ -1214,11 +1222,12 @@ public class ProductDetailPopulator {
 		MaterialPrice matPrice = null;
 		GroupScalePricing grpPricing = null;
 		
-		FDGroup group = productInfo.getGroup();
+		FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo().getSalesOrg(),
+						                     priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel());
 		
 		if ( group != null ) {
 			grpPricing = GroupScaleUtil.lookupGroupPricing( group );
-			matPrice = GroupScaleUtil.getGroupScalePrice( group, priceCalculator.getPricingContext().getZoneId() );
+			matPrice = GroupScaleUtil.getGroupScalePrice( group, priceCalculator.getPricingContext().getZoneInfo() );
 		}
 	
 		StringBuilder buf = new StringBuilder();
@@ -1226,7 +1235,7 @@ public class ProductDetailPopulator {
 			
 			// Group scale pricing (a.k.a. mix'n'match)
 			item.setMixNMatch( true );
-			item.setDealInfo( ProductSavingTag.getGroupPrice( group, priceCalculator.getPricingContext().getZoneId() ) );
+			item.setDealInfo( ProductSavingTag.getGroupPrice( group, priceCalculator.getPricingContext().getZoneInfo() ) );
 			
 			item.setGrpShortDesc( grpPricing.getShortDesc() );
 			item.setGrpLongDesc( grpPricing.getLongDesc() );
@@ -1408,7 +1417,7 @@ public class ProductDetailPopulator {
 	}
 
 
-	public static List<Variation> getVariations( FDProduct fdProd, Map<String, String> currentConfig ) {
+	public static List<Variation> getVariations( FDProduct fdProd, Map<String, String> currentConfig,PricingContext pCtx ) {
 		FDVariation[] variations = fdProd.getVariations();
 		List<Variation> varList = new ArrayList<Variation>();
 		
@@ -1453,7 +1462,7 @@ public class ProductDetailPopulator {
 				v.setName( vName );
 				v.setLabel( varOpt.getDescription() );	        			
 				v.setSelected( currentConfig == null ? false : vName.equals( currentConfig.get( varName ) ) );
-				CharacteristicValuePrice cvp = fdProd.getPricing().findCharacteristicValuePrice(varName, vName);
+				CharacteristicValuePrice cvp = fdProd.getPricing().findCharacteristicValuePrice(varName, vName,pCtx);
 				v.setCvp(cvp == null ? "0" : JspMethods.formatPrice( cvp.getPrice() ) );
 				varOpts.add( v );
 			}

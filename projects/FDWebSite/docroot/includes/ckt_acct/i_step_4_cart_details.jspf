@@ -23,7 +23,6 @@
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
 %>
-
 <%
 	boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
 	if (cart instanceof FDOrderI) {    	
@@ -129,7 +128,7 @@ int idx = 0;
 			lastDept = cartLine.getDepartmentDesc() ;
 			
 			if (view.isDisplayDepartment() || hasNewItems) {
-				if (lastDept.startsWith("Recipe: ")) {
+				if (null != lastDept &&lastDept.startsWith("Recipe: ")) {
 					if (firstRecipe) {
 						%>
 						<tr>
@@ -317,7 +316,11 @@ int idx = 0;
 	
 		%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Fee<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">
+				Delivery Fee<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:
+				<%if (!cart.isChargeWaived(EnumChargeType.DELIVERY) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
+				Force Waive <input type="checkbox" value="true" <%=((FDCartModel)cart).isCsrWaivedDeliveryCharge()?"checked":"" %> name="waive_delivery_fee"><%}%>
+			</td>
 			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
 			<td></td>
 			<td colspan="6"><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
@@ -326,21 +329,50 @@ int idx = 0;
 	}if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 			%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">
+				Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:
+				<%if (!cart.isChargeWaived(EnumChargeType.DLVPREMIUM) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
+					Force Waive <input type="checkbox" value="true" <%=((FDCartModel)cart).isCsrWaivedDeliveryPremium()?"checked":"" %> name="waive_delivery_premium_fee">
+				<%}%>
+			</td>
 			<td align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?"$0.0":JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>
 			<td></td>
 			<td colspan="6"><%= cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T":""%></td>
 		</tr>
 			<%
-	}if (cart.getMiscellaneousCharge() > 0.0) {%>
+	}
+	if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
 		    	<td></td>
 			<td colspan="6"><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
 		</tr>
-	<%  } %>
-
+	<%  } 
+	if (cart.getPhoneCharge() > 0 && !isReceiptPage && user.getMasqueradeContext()!=null){%>
+	<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right">Waive Phone Handling Charge<input type="checkbox" value="true" <%=cart.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee"></td>
+			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.PHONE)){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getPhoneCharge()) %><%}%></td>
+			<td colspan="7">&nbsp;</td>
+		</tr>
+		
+	<%}%>
+	
+	<%
+		double restockingFee = 0.0;
+		if (cart instanceof FDOrderI && ((FDOrderI)cart).hasSettledReturn() && user.getMasqueradeContext()!=null) {
+			restockingFee = ((FDOrderI)cart).getRestockingCharges();
+			if (restockingFee > 0) {
+				%>
+				<tr valign="top" class="orderSummary">
+					<td colspan="3" align="right">Restocking Fees:</td>
+					<td align="right"><%=currencyFormatter.format(restockingFee)%></td>
+					<td colspan="7">&nbsp;</td>
+				</tr>
+				<%
+			}
+		}
+	%>
 
 	<%
 	if (cart.getTaxValue() > 0) {
@@ -448,6 +480,11 @@ int idx = 0;
 	<tr><td colspan="8" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 	
 </table>
+
+<%	if (!isReceiptPage && user.getMasqueradeContext()!=null) { %>
+	<div>CUSTOMER INVOICE MESSAGE: <INPUT TYPE="text" NAME="csr_message" SIZE="55"></div>
+<%	} %>
+
 <%
 	if (isReceiptPage) {
 		%>

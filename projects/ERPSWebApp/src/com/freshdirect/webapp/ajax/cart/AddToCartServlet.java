@@ -278,13 +278,93 @@ public class AddToCartServlet extends BaseJsonServlet {
                     responseData.setRedirectUrl(referer);
                 }
             }
+            writeResponseData( response, responseData );
+			
+    	} catch (Exception e) {
+        	returnHttpError( 500, "Error while adding items to cart for user " + user.getUserId(), e );	// 500 Internal Server Error
+		}
+	}
+            
 
-            writeResponseData(response, responseData);
+	public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items, String eventSource) throws FDResourceException, HttpErrorResponse {
+		
+		// Create response data object
+		AddToCartResponseData responseData = new AddToCartResponseData();
+		PendingPopupData pendingData = new PendingPopupData();
+		
+		//create order infos
+		pendingData.setOrderInfos(getPendingOrderInfos(user));
+		
+		//event source
+		pendingData.setEventSource(eventSource);
+		
+		//convert pending items
+		List<QuickShopLineItem> pendingItems = new ArrayList<QuickShopLineItem>();
+		for(AddToCartItem item : items){
+			try {
+				//prepare productSelection in order to reuse QuickShopHelper's createItemCore method
+	        	ProductModel pm = null;
+	        	FDProductInfo prodInfo = null;
+	    		if(item.getSkuCode()!=null){
+	    			pm = ContentFactory.getInstance().getProduct(item.getSkuCode());
+	    			prodInfo = FDCachedFactory.getProductInfo(item.getSkuCode());
+	    		}else{
+	    			throw new FDResourceException("Cannot create item");
+	    		}
+	    		FDConfiguration config = new FDConfiguration(Double.parseDouble(item.getQuantity()), item.getSalesUnit(), item.getConfiguration());
+	    		
+	        	FDProductSelection mockSelection = new FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()), pm, config, ContentFactory.getInstance().getCurrentUserContext());
+	        	mockSelection.setCustomerListLineId(item.getLineId());
+	        	
+	        	QuickShopLineItemWrapper result = QuickShopHelper.createItemCore(mockSelection, null, null, user, null);
+	        	
+	        	if(result==null){
+	        		continue;
+	        	}
+	        	
+	        	QuickShopLineItem quickShopLineItem = result.getItem();
+	        	quickShopLineItem.setItemId(item.getAtcItemId());
+	        	quickShopLineItem.setExternalAgency(item.getExternalAgency());
+	        	quickShopLineItem.setExternalGroup(item.getExternalGroup());
+	        	quickShopLineItem.setExternalSource(item.getExternalSource());
+	        	
+				pendingItems.add(quickShopLineItem);
+			} catch (FDSkuNotFoundException e) {
+				continue; //skip item for now
+			} catch (FDResourceException e){
+				continue; //skip item for now
+			}
+		}
+		pendingData.setPendingItems(pendingItems);
+		
+		//convert cart items
+		List<QuickShopLineItem> cartItems = new ArrayList<QuickShopLineItem>();
+		for(FDCartLineI cartLine : cart.getOrderLines()){
+			QuickShopLineItemWrapper wrapper = QuickShopHelper.createItemCore(cartLine, null, null, user, null); //mock it with past orders enum
+			if(wrapper!=null){
+	        	QuickShopLineItem quickShopLineItem = wrapper.getItem();
+	        	if (cartLine.getExternalAgency()!=null){
+	        		quickShopLineItem.setExternalAgency(cartLine.getExternalAgency().toString());
+	        	}
+	        	quickShopLineItem.setExternalGroup(cartLine.getExternalGroup());
+	        	quickShopLineItem.setExternalSource(cartLine.getExternalSource());
+				cartItems.add(quickShopLineItem);
+			}
+		}
+		pendingData.setCartData(cartItems);
+		
+		responseData.setPendingPopupData(pendingData);
+		writeResponseData( response, responseData );
+	}
+	
+	/*private static List<PendingPopupOrderInfo> getPendingOrderInfos(FDUserI user) throws FDResourceException{
+		
+		List<PendingPopupOrderInfo> result = new ArrayList<PendingPopupOrderInfo>();
 
         } catch (Exception e) {
             returnHttpError(500, "Error while adding items to cart for user " + user.getUserId(), e); // 500 Internal Server Error
         }
-    }
+    }*/
 
     public static FDCartModel modifyOrder(HttpServletRequest request, FDUserI user, FDCartModel cart, AddToCartRequestData reqData) throws HttpErrorResponse {
 
@@ -340,7 +420,7 @@ public class AddToCartServlet extends BaseJsonServlet {
         return cart;
     }
 
-    public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items, String eventSource)
+    /*public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items, String eventSource)
             throws FDResourceException, HttpErrorResponse {
 
         // Create response data object
@@ -410,7 +490,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 
         responseData.setPendingPopupData(pendingData);
         writeResponseData(response, responseData);
-    }
+    }*/
 
     private static List<PendingPopupOrderInfo> getPendingOrderInfos(FDUserI user) throws FDResourceException {
 
@@ -472,4 +552,5 @@ public class AddToCartServlet extends BaseJsonServlet {
         responseItem.setStatus(AddToCartResponseDataItem.Status.SUCCESS);
         return responseItem; // validation is OK
     }
+    
 }

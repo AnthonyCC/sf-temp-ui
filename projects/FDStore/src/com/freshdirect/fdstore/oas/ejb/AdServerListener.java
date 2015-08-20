@@ -71,7 +71,7 @@ public class AdServerListener extends MessageDrivenBeanSupport{
 			nameValues.add(new NameValuePair("product_id", row.getProductId()));
 			nameValues.add(new NameValuePair("price", row.getPrice()));
 			nameValues.add(new NameValuePair("available", row.isAvailable()?"Yes":"No"));
-			nameValues.add(new NameValuePair("zoneId", row.getZoneId()));
+			nameValues.add(new NameValuePair("zoneId", row.getZone().getPricingZoneId()));
 			nameValues.add(new NameValuePair("zoneType",row.getZoneType()));
 		};
 		nameValues.add(new NameValuePair("zonePricingEnabled",String.valueOf(FDStoreProperties.isZonePricingAdEnabled())));

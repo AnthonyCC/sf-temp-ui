@@ -268,7 +268,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     private void parseOrderLines(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException, JspException {
         
         List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
-        FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
+        FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrderForCRM(this.orderId);
         
         Map<String,OLStat> olstat = new HashMap<String,OLStat>();
         
@@ -727,7 +727,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
      * utility method
      */
     private FDOrderI getOrder(String orderId) throws FDResourceException {
-        return FDCustomerManager.getOrder(orderId);
+        return FDCustomerManager.getOrderForCRM(orderId);
     }   
     
    /* private List getGiftCardRecipients(String saleId) throws FDResourceException{

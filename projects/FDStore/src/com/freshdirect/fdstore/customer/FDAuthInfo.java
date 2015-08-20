@@ -26,6 +26,8 @@ public class FDAuthInfo implements Serializable {
 	private String abaRouteNumber;
 	private EnumBankAccountType bankAccountType;
 	private EnumSaleType orderType;
+	private String eStore;
+	private String facility;
 	
 	public FDAuthInfo (String saleId){
 		this.saleId = saleId;
@@ -150,6 +152,22 @@ public class FDAuthInfo implements Serializable {
 
 	public void setOrderType(String orderType) {
 		this.orderType = EnumSaleType.getSaleType(orderType);
+	}
+
+	public String geteStore() {
+		return eStore;
+	}
+
+	public void seteStore(String eStore) {
+		this.eStore = eStore;
+	}
+
+	public String getFacility() {
+		return facility;
+	}
+
+	public void setFacility(String facility) {
+		this.facility = facility;
 	}
 	
 }

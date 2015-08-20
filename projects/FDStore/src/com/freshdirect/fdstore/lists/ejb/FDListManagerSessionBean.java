@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -103,14 +104,14 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException {
+	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		//long startTime=System.currentTimeMillis();
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>(100);
-			List<FDQsProductListLineItem> source = dao.getQsSpecificEveryItemEverOrderedList(conn, identity);
+			List<FDQsProductListLineItem> source = dao.getQsSpecificEveryItemEverOrderedList(conn, identity, storeContext);
 			for(FDQsProductListLineItem item : source){
 				if(item.getDeleted()==null){
 					try {
@@ -130,7 +131,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
-	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity) throws FDResourceException {
+	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity,StoreContext storeContext) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -138,7 +139,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>(100);
 			List<FDQsProductListLineItem> source;
 			try {
-				source = dao.getQsSpecificEveryItemEverOrderedListTopItemsTopItems(conn, identity);
+				source = dao.getQsSpecificEveryItemEverOrderedListTopItemsTopItems(conn, identity, storeContext);
 			} catch (FDSkuNotFoundException e1) {
 				throw new FDResourceException(e1);
 			}
@@ -223,13 +224,13 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 
     // CCL
-	public String createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, FDCustomerListExistsException {
+	public String createCustomerCreatedList(FDIdentity identity, StoreContext storeContext, String listName) throws FDResourceException, FDCustomerListExistsException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 			if (dao.isCustomerList(conn,identity,EnumCustomerListType.CC_LIST,listName)) throw new FDCustomerListExistsException();
-			return dao.createCustomerCreatedList(conn, identity, listName);
+			return dao.createCustomerCreatedList(conn, identity, listName, storeContext);
 		} catch (FDCustomerListExistsException e) {
 			this.getSessionContext().setRollbackOnly();
 			throw e;
@@ -241,9 +242,9 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
     // CCL
-	public void deleteCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException {
+	public void deleteCustomerCreatedList(FDIdentity identity, String listName, StoreContext storeContext) throws FDResourceException {
 		Connection conn = null;
-		if (getCustomerCreatedLists(identity).size() <= 1) {
+		if (getCustomerCreatedLists(identity, storeContext).size() <= 1) {
 			// don't delete the last list.
 			return;
 		}
@@ -289,13 +290,13 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	private static final String DEFAULT_CCL_NAME_SUFFIX = "'s List";
 	
 	// CCL
-	public List<FDCustomerCreatedList> getCustomerCreatedLists(FDIdentity identity) throws FDResourceException {
+	public List<FDCustomerCreatedList> getCustomerCreatedLists(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 
-			List<FDCustomerCreatedList> lists = dao.getCustomerCreatedLists(conn, identity); 
+			List<FDCustomerCreatedList> lists = dao.getCustomerCreatedLists(conn, identity, storeContext); 
 			if (lists.isEmpty()) { 
 				/*FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
 				if (user.isAnonymous()) {
@@ -307,8 +308,8 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 				}
 				String firstName = null !=customerInfo.getFirstName()? customerInfo.getFirstName():"";
 				String defaultName = firstName+ DEFAULT_CCL_NAME_SUFFIX;
-				dao.createCustomerCreatedList(conn, identity, defaultName);
-				lists = dao.getCustomerCreatedLists(conn, identity);
+				dao.createCustomerCreatedList(conn, identity, defaultName, storeContext);
+				lists = dao.getCustomerCreatedLists(conn, identity, storeContext);
 			}
 			OrderLineUtil.cleanProductLists(lists);
 			return lists;
@@ -320,7 +321,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	// CCL
-	public List<FDCustomerListInfo> getCustomerCreatedListInfos(FDIdentity identity) throws FDResourceException {
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -332,7 +333,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 				ErpCustomerInfoModel customerInfo =FDCustomerFactory.getErpCustomerInfo(identity);
 				String firstName = null !=customerInfo && null !=customerInfo.getFirstName()? customerInfo.getFirstName():"";
 				String defaultName = firstName+ DEFAULT_CCL_NAME_SUFFIX;
-				dao.createCustomerCreatedList(conn, identity, defaultName);
+				dao.createCustomerCreatedList(conn, identity, defaultName, storeContext);
 				lists = dao.getCustomerCreatedListInfos(conn, identity);
 			}
 			return lists;

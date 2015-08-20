@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
-public interface LineItemStrategyI extends Serializable {
+public interface LineItemStrategyI extends StoreRequiredI, Serializable {
 
 	public static final int DENY = 0;
 	public static final int ALLOW = 1;
@@ -17,5 +17,4 @@ public interface LineItemStrategyI extends Serializable {
 	 * @return DENY, ALLOW or FORCE
 	 */
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context);
-
 }

@@ -10,9 +10,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:css href="/ccassets/css/crm.css"/>
-<style type="text/css">
-</style>
 <script>
 function openURL(inLocationURL) {
 

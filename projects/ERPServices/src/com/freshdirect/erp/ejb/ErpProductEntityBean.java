@@ -510,5 +510,11 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 			super.setParentId(parentId);
 		}
 	}
+
+	@Override
+	public void store(Connection conn) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

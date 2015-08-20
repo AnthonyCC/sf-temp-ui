@@ -19,8 +19,11 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -29,6 +32,9 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.CmFacade;
+import com.freshdirect.fdstore.coremetrics.CmInstance;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -52,9 +58,28 @@ public class CdfProcessTask {
 	// New Hack for fixing the Parent Category ID
 	private Map<String, String> catToParentCatMapping = new HashMap<String, String>();
 	
+	
+	private final CmContext context;
+	private final String clientId;
+
+	
+	public CdfProcessTask() {
+		this(null);
+	}
+
+	public CdfProcessTask(CmContext ctx) {
+		this.context = ctx != null ? ctx : CmContext.getContext();
+
+		this.clientId = this.context.getClientId();
+	}
+	
+	
 	public CdfProcessResult process(){
+		LOGGER.info("CDF process started with context: " + context.getInstance());
+		
 		mapCatToParentCat();
 		generateCdfModel();
+		prefixCategoryIds();
 		try {
 			saveCdfFile();
 			uploadFile();
@@ -76,7 +101,12 @@ public class CdfProcessTask {
 		catToParentCatMapping.put(EnumEventSource.qs_ymal.toString(), EnumEventSource.REORDER.toString());
 		catToParentCatMapping.put(EnumEventSource.qs_tabbedRecommender.toString(), EnumEventSource.REORDER.toString());
 	}
+
 	
+	private CdfRowModel buildModel(String categoryId, String categoryName, String parentCategoryId) {
+		return new CdfRowModel(this.clientId, categoryId, categoryName, parentCategoryId);
+	}
+
 	private void generateCdfModel(){
 
 		Set<String> categoryKeys = new HashSet<String>(); 
@@ -108,30 +138,84 @@ public class CdfProcessTask {
 			addCmPageViewTagCategory(externalAgency.toString(), categoryKeys);
 		}
 		
+		// CMS block
 		
-		//super department flow
-		Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
-		
-		for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(ContentType.get("SuperDepartment"))) {
-			ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
-			
-			if (superDeptNode instanceof SuperDepartmentModel) {
-				SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
-				String superDeptId = superDept.getContentName();
-				cdfRowModels.add(new CdfRowModel(superDeptId, superDept.getFullName(), null));
+		final CmsManager svc = CmsManager.getInstance();
 
-				for (DepartmentModel dept : superDept.getDepartments()){
-					if (processedDepartments.add(dept)){
-						processCmsCategory(dept, superDeptId);
+		if (CmInstance.GLOBAL == context.getInstance()) {
+			
+			// Get available stores
+			final Set<ContentKey> storeKeys = svc.getContentKeysByType(FDContentTypes.STORE);
+			
+			for (final ContentKey theStoreKey : storeKeys) {
+				Set<ContentKey> processedDeptKeys = new HashSet<ContentKey>();
+				
+				ContentNodeI store = svc.getContentNode(theStoreKey);
+				if (store == null)
+					continue;
+				
+				
+				List<ContentKey> superDeptKeys = (List<ContentKey>) store.getAttributeValue("superDepartments");
+				if (superDeptKeys != null) {
+					for (final ContentKey superDeptKey : superDeptKeys) {
+						ContentNodeI superDept = svc.getContentNode(superDeptKey);
+	
+						// add superdept
+						cdfRowModels.add(buildModel(superDeptKey.getId(), (String) superDept.getAttributeValue("FULL_NAME"), null));
+						
+						// process depts reachable through superdepts
+						List<ContentKey> deptKeys = (List<ContentKey>) superDept.getAttributeValue("departments");
+						if (deptKeys != null) {
+							for (final ContentKey deptKey : deptKeys) {
+								if (processedDeptKeys.add(deptKey)) {
+									processCmsNode(deptKey,superDeptKey, svc );
+								}
+							}
+						}
+						
+						// process the rest
+						List<ContentKey> deptKeysRem = (List<ContentKey>) store.getAttributeValue("departments");
+						deptKeysRem.removeAll(processedDeptKeys);
+						for (final ContentKey deptKey : deptKeysRem) {
+							processCmsNode(deptKey, null, svc );
+						}
+					}
+				} else {
+					// no super departmens, just walk down the old path
+					List<ContentKey> deptKeysRem = (List<ContentKey>) store.getAttributeValue("departments");
+					for (final ContentKey deptKey : deptKeysRem) {
+						processCmsNode(deptKey, null, svc );
+					}
+				}
+				
+				
+			}
+			
+		} else {		
+			//super department flow
+			Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
+			
+			for (ContentKey superDeptKey : svc.getContentKeysByType(ContentType.get("SuperDepartment"))) {
+				ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
+				
+				if (superDeptNode instanceof SuperDepartmentModel) {
+					SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
+					String superDeptId = superDept.getContentName();
+					cdfRowModels.add(buildModel(superDeptId, superDept.getFullName(), null));
+	
+					for (DepartmentModel dept : superDept.getDepartments()){
+						if (processedDepartments.add(dept)){
+							processCmsCategory(dept, superDeptId);
+						}
 					}
 				}
 			}
-		}
-		
-		//remaining departments
-		for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
-			if (!processedDepartments.contains(dept)) {
-				processCmsCategory(dept, null);
+			
+			//remaining departments
+			for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
+				if (!processedDepartments.contains(dept)) {
+					processCmsCategory(dept, null);
+				}
 			}
 		}
 	}
@@ -139,7 +223,7 @@ public class CdfProcessTask {
 	private void addCmPageViewTagCategory(String catId, Set<String> categoryKeys){
 		
 		if (categoryKeys.add(catId.toUpperCase())) {
-			cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId
+			cdfRowModels.add(buildModel(catId, "Category: " + catId
 												, catToParentCatMapping.containsKey(catId) ? catToParentCatMapping.get(catId) : null ));
 		}
 	}
@@ -147,35 +231,73 @@ public class CdfProcessTask {
 	private void addSiteFeatureKeys(Collection<EnumSiteFeature> siteFeatures) {
 		for (EnumSiteFeature f : siteFeatures) {
 			final String key = f.getName();
-			cdfRowModels.add(new CdfRowModel(key, "SmartStore: " + key, null));
+			cdfRowModels.add(buildModel(key, "SmartStore: " + key, null));
 		}
 	}
 	
 	private void addMobileKeys() {
+		final CmInstance inst = context.getInstance();
+
+		if (inst != CmInstance.GLOBAL && !inst.getFacade().isMobile()) {
+			// Nothing to see here ... leave the scene now!
+			return;
+		}
+
+
 		// [id],MOBILE,"MOBILE",      <---- there is no parent MOBILE category today
 		// [id],MOBILE_OTHER,"MOBILE OTHER",MOBILE
 		// [id],MOBILE_ALL,"MOBILE ALL",MOBILE
 
-		cdfRowModels.add(new CdfRowModel("MOBILE", "Category: MOBILE", null));
-		cdfRowModels.add(new CdfRowModel("MOBILE_OTHER", "Category: MOBILE_OTHER", "MOBILE"));
-		cdfRowModels.add(new CdfRowModel("MOBILE_ALL", "Category: MOBILE ALL", "MOBILE"));
+		cdfRowModels.add(buildModel("MOBILE", "Category: MOBILE", null));
+		cdfRowModels.add(buildModel("MOBILE_OTHER", "Category: MOBILE_OTHER", "MOBILE"));
+		cdfRowModels.add(buildModel("MOBILE_ALL", "Category: MOBILE ALL", "MOBILE"));
 		
 		// APPDEV-4008 CDF File Updates for Coremetrics with New Ipad App
-		cdfRowModels.add(new CdfRowModel("ME", "ME", null));	
-		cdfRowModels.add(new CdfRowModel("MY_ITEMS", "MY ITEMS", "ME"));
-		cdfRowModels.add(new CdfRowModel("MY_ORDERS", "MY ORDERS", "ME"));
-		cdfRowModels.add(new CdfRowModel("MY_SHOPPING_LISTS", "MY LISTS", "ME"));
-		
-		cdfRowModels.add(new CdfRowModel("IDEAS", "IDEAS", null));	
-		cdfRowModels.add(new CdfRowModel("IDEAS_SHOPPINGSHORTCUTS", "SHOPPING SHORTCUTS", "IDEAS"));
-		cdfRowModels.add(new CdfRowModel("IDEAS_PRODUCERS", "PRODUCERS", "IDEAS"));
-		cdfRowModels.add(new CdfRowModel("IDEAS_DISHES", "DELICIOUS DISHES", "IDEAS"));		
+		if (inst == CmInstance.GLOBAL || CmFacade.TABLET == inst.getFacade()) {
+			cdfRowModels.add(buildModel("ME", "ME", null));	
+			cdfRowModels.add(buildModel("MY_ITEMS", "MY ITEMS", "ME"));
+			cdfRowModels.add(buildModel("MY_ORDERS", "MY ORDERS", "ME"));
+			cdfRowModels.add(buildModel("MY_SHOPPING_LISTS", "MY LISTS", "ME"));
+
+			cdfRowModels.add(buildModel("IDEAS", "IDEAS", null));	
+			cdfRowModels.add(buildModel("IDEAS_SHOPPINGSHORTCUTS", "SHOPPING SHORTCUTS", "IDEAS"));
+			cdfRowModels.add(buildModel("IDEAS_PRODUCERS", "PRODUCERS", "IDEAS"));
+			cdfRowModels.add(buildModel("IDEAS_DISHES", "DELICIOUS DISHES", "IDEAS"));		
+		}
 	}
+	
+
+
+	private void processCmsNode(ContentKey aKey, ContentKey parentKey, ContentServiceI svc) {
+		ContentNodeI node = svc.getContentNode(aKey);
+		if (node == null)
+			return;
+
+		// process current node
+		cdfRowModels.add(buildModel(aKey.getId(), (String) node.getAttributeValue("FULL_NAME"), parentKey != null ? parentKey.getId() : null ));
+		
+		// descend
+		final ContentType t = aKey.getType();
+		List<ContentKey> subKeys = null;
+		if (FDContentTypes.DEPARTMENT.equals( t )) {
+			subKeys = (List<ContentKey>) node.getAttributeValue("categories");
+		} else if (FDContentTypes.CATEGORY.equals( t )) {
+			subKeys = (List<ContentKey>) node.getAttributeValue("subcategories");
+		}
+
+		if (subKeys != null) {
+			for (ContentKey subKey : subKeys) {
+				processCmsNode(subKey, aKey, svc);
+			}
+		}
+		
+	}
+	
 	
 	private void processCmsCategory(ProductContainer cat, String parentCatId) {
 		
 		String catId = cat.getContentKey().getId();
-		cdfRowModels.add(new CdfRowModel(catId, cat.getFullName(), parentCatId));
+		cdfRowModels.add(buildModel(catId, cat.getFullName(), parentCatId));
 		
 		List<CategoryModel> subCats = cat.getSubcategories();
 		if ( subCats != null) {
@@ -184,10 +306,22 @@ public class CdfProcessTask {
 			}
 		}
 	}
-	
+
+	private void prefixCategoryIds() {
+		// Category IDs are not prefixed in global context
+		if (CmInstance.GLOBAL == context.getInstance()) {
+			return;
+		}
+
+		final String prefix = context.getInstance().name();
+		for (CdfRowModel model : cdfRowModels) {
+			model.prefixCategoryId(prefix);
+		}
+	}
+
 	private void saveCdfFile() throws FDResourceException {
 		String rootDirectory =  RuntimeServiceUtil.getInstance().getRootDirectory();
-		cdfFileName = "CDF_" + FDStoreProperties.getCoremetricsClientId() + ".csv";
+		cdfFileName = "CDF_" + clientId + ".csv";
 		cdfFilePath = rootDirectory + File.separator + cdfFileName;
 		LOGGER.info("saving Coremetrics CDF to " + cdfFilePath);
 		
@@ -213,7 +347,7 @@ public class CdfProcessTask {
 	private void uploadFile() throws FDResourceException {
 		
 		String ftpUrl = FDStoreProperties.getCoremetricsFtpUrl();
-		String ftpUser = FDStoreProperties.getCoremetricsClientId() + "-import";
+		String ftpUser = clientId + "-import";
 		String ftpPassword = FDStoreProperties.getCoremetricsFtpPassword();
 		int sftpPort = FDStoreProperties.getCoremetricsFtpSftpPort();
 		boolean secure = FDStoreProperties.isCoremetricsFtpSecure();

@@ -107,22 +107,19 @@
 					}
 				%>
 
-<% 
-if(airclic_msg && FDStoreProperties.isAirclicEnabled())
-{%>
-<%@ include file="/includes/airclic_msg.jspf%>
-<% 	
-}
-%>
+	<% 
+	if(airclic_msg && FDStoreProperties.isAirclicEnabled()) { %>
+		<%@ include file="/includes/airclic_msg.jspf" %>
+	<% } %>
 	<%@ include file="/includes/i_order_dlv_payment.jspf"%>
 	
 	<%	boolean showEditOrderButtons = false;
 		boolean showFeesSection = true;
 		boolean cartMode = false; %>
 	<%if(!isGiftCardOrder) {%>
-	<%@ include file="/includes/i_cart_details.jspf"%>
+		<%@ include file="/includes/i_cart_details.jspf"%>
 	<%}else{ %>
-	<%@ include file="/includes/i_gc_cart_details.jspf"%>
+		<%@ include file="/includes/i_gc_cart_details.jspf"%>
 	<%} %>
 	<%-- ^^^^^^^^^^^^^^^^^^^^^^^ BEGIN ORDER NOTES SECTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ --%>
 	<table width="100%" cellpadding="2" cellspacing="0" border="0" class="list_header">

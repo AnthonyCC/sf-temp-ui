@@ -17,8 +17,10 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -35,7 +37,6 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
-import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -48,9 +49,9 @@ class FDCustomerListDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(FDCustomerListDAO.class);
 		
-	private static final String CREATE_LIST = "INSERT INTO CUST.CUSTOMERLIST (ID,CUSTOMER_ID,TYPE,NAME,CREATE_DATE,MODIFICATION_DATE,RECIPE_ID,RECIPE_NAME) VALUES (?,?,?,?,?,?,?,?)";
+	private static final String CREATE_LIST = "INSERT INTO CUST.CUSTOMERLIST (ID,CUSTOMER_ID,TYPE,NAME,CREATE_DATE,MODIFICATION_DATE,RECIPE_ID,RECIPE_NAME,E_STORE) VALUES (?,?,?,?,?,?,?,?,?)";
 	
-	private static final String UPDATE_LIST = "UPDATE CUST.CUSTOMERLIST SET CUSTOMER_ID=? ,TYPE =? ,NAME=?, MODIFICATION_DATE=?, RECIPE_ID=?, RECIPE_NAME=? WHERE ID=?";
+	private static final String UPDATE_LIST = "UPDATE CUST.CUSTOMERLIST SET CUSTOMER_ID=? ,TYPE =? ,NAME=?, MODIFICATION_DATE=?, RECIPE_ID=?, RECIPE_NAME=?, E_STORE=? WHERE ID=?";
 
 	public void updateCustomerList(Connection conn, FDCustomerList list) throws SQLException {			
 	  PreparedStatement ps=null; 
@@ -65,8 +66,9 @@ class FDCustomerListDAO {
 			ps.setTimestamp(4, ts);
 			ps.setString(5, list.getRecipeId());
 			ps.setString(6, list.getRecipeName());
+			ps.setString(7, list.geteStoreType());
 
-			ps.setString(7, list.getId());
+			ps.setString(8, list.getId());
 
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
@@ -81,7 +83,7 @@ class FDCustomerListDAO {
 		}
 	}
 
-	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate, String recipeId, String recipeName) throws SQLException {
+	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate, String recipeId, String recipeName,String eStoreType) throws SQLException {
 				
 		String id = getNextId(conn);
 				
@@ -96,6 +98,7 @@ class FDCustomerListDAO {
 		ps.setTimestamp(6, new Timestamp(modificationDate.getTime()));
 		ps.setString(7, recipeId);
 		ps.setString(8, recipeName);
+		ps.setString(9, eStoreType);
 	
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -115,9 +118,9 @@ class FDCustomerListDAO {
 	}	
 				
 	// CCL
-	private FDCustomerCreatedList createCustomerCreatedList(Connection conn, PrimaryKey customerPk, String name, Date createDate, Date modificationDate, String recipeId, String recipeName ) 
+	private FDCustomerCreatedList createCustomerCreatedList(Connection conn, PrimaryKey customerPk, String name, Date createDate, Date modificationDate, String recipeId, String recipeName,String eStoreType ) 
 	throws SQLException {
-		return (FDCustomerCreatedList) createList(conn, customerPk, EnumCustomerListType.CC_LIST,  name, createDate, modificationDate, recipeId, recipeName);
+		return (FDCustomerCreatedList) createList(conn, customerPk, EnumCustomerListType.CC_LIST,  name, createDate, modificationDate, recipeId, recipeName, eStoreType);
 	}
 		
 	private static final String LOAD_CUSTOMER_LIST_DETAILS = "SELECT * from CUST.CUSTOMERLIST_DETAILS cld WHERE LIST_ID = ? and DELETE_DATE is null";
@@ -413,7 +416,7 @@ class FDCustomerListDAO {
 	
 	private String persistList(Connection conn, FDCustomerList list) throws SQLException {
 		
-		FDCustomerList persistedList = createList(conn, list.getCustomerPk(), list.getType(), list.getName(), list.getCreateDate(), list.getModificationDate(), list.getRecipeId(), list.getRecipeName());
+		FDCustomerList persistedList = createList(conn, list.getCustomerPk(), list.getType(), list.getName(), list.getCreateDate(), list.getModificationDate(), list.getRecipeId(), list.getRecipeName(), list.geteStoreType());
 
 		list.setPK(persistedList.getPK());
 		list.setCreateDate(persistedList.getCreateDate());
@@ -544,20 +547,20 @@ class FDCustomerListDAO {
 	private String QUERY_EVERY_ITEM_QS_1 =
 	"SELECT ol.sku_code, ol.sales_unit, ol.configuration, ol.quantity, starttime, s.id AS sale_id, s.status, ol.recipe_source_id, ol.id AS orderline_id  FROM "+
     " (select  s,  sa, starttime from (SELECT s.id s, sa.id sa, di.starttime FROM cust.sale s, cust.salesaction sa,cust.deliveryinfo di  WHERE s.type='REG' AND "+ 
-    " s.customer_id= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE>? "+
+    " s.customer_id= ? AND NVL(s.e_store,'FreshDirect')= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE>? "+
     " AND s.customer_id=sa.customer_id and sa.id=DI.SALESACTION_ID order by di.starttime desc ) where rownum<=100 ) T, cust.sale s, cust.salesaction sa,cust.orderline ol WHERE s.id=sa.sale_id AND sa.id=ol.salesaction_id "+ 
      " AND NVL(ol.promotion_type,0)<> 3 AND NVL(ol.delivery_grp, 0) = 0 and s.id=T.s and  sa.id=T.sa "; 
 	
-		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity) throws SQLException {
+		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity, StoreContext storeContext) throws SQLException {
 			//long startTime=System.currentTimeMillis();
 			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
-			
 			
 			Calendar timeLimit = Calendar.getInstance();
 			timeLimit.add(Calendar.MONTH, QUICKSHOP_MONTH_LIMIT);
 			
 			ps.setString(1, identity.getErpCustomerPK());
-			ps.setDate(2, new java.sql.Date(timeLimit.getTimeInMillis()));
+			ps.setString(2, storeContext.getEStoreId().getContentId());
+			ps.setDate(3, new java.sql.Date(timeLimit.getTimeInMillis()));
 			
 			ResultSet rs = ps.executeQuery();
 			
@@ -586,7 +589,7 @@ class FDCustomerListDAO {
 		}
 		
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
-		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity) throws SQLException, FDSkuNotFoundException {
+		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity, StoreContext storeContext) throws SQLException, FDSkuNotFoundException {
 			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
 			
 			
@@ -594,7 +597,8 @@ class FDCustomerListDAO {
 			timeLimit.add(Calendar.MONTH, QUICKSHOP_MONTH_LIMIT);
 			
 			ps.setString(1, identity.getErpCustomerPK());
-			ps.setDate(2, new java.sql.Date(timeLimit.getTimeInMillis()));
+			ps.setString(2, storeContext.getEStoreId().getContentId());
+			ps.setDate(3, new java.sql.Date(timeLimit.getTimeInMillis()));
 			
 			ResultSet rs = ps.executeQuery();
 			
@@ -639,23 +643,24 @@ class FDCustomerListDAO {
 	 * @param listName new CCL list name
 	 * @return the ID of the new list
 	 */
-	public String createCustomerCreatedList(Connection conn, FDIdentity identity, String listName)	throws SQLException {
-		FDCustomerCreatedList newList = createCustomerCreatedList(conn,new PrimaryKey(identity.getErpCustomerPK()),listName,null ,null, null, null);
+	public String createCustomerCreatedList(Connection conn, FDIdentity identity, String listName, StoreContext storeContext)	throws SQLException {
+		FDCustomerCreatedList newList = createCustomerCreatedList(conn,new PrimaryKey(identity.getErpCustomerPK()),listName,null ,null, null, null, storeContext.getEStoreId().getContentId());
 		return newList.getId();
 	}
 	
 	
 	private static final String LOAD_CUSTOMER_CREATED_LISTS = 
-		"SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.type = '" + EnumCustomerListType.CC_LIST.getName() + "'";
+		"SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND NVL(cl.e_store,'FreshDirect') = ? AND cl.type = '" + EnumCustomerListType.CC_LIST.getName() + "'";
 	
 	// CCL, ?? maybe sorted by last accessed, it could be faster in SQL? This is the default order
 	/**
 	 * @return List<FDCustomerCreatedList> 
 	 */
-	public List<FDCustomerCreatedList> getCustomerCreatedLists(Connection conn, FDIdentity identity) 
+	public List<FDCustomerCreatedList> getCustomerCreatedLists(Connection conn, FDIdentity identity, StoreContext storeContext) 
 	throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_CREATED_LISTS);
 		ps.setString(1, identity.getErpCustomerPK());
+		ps.setString(2, storeContext.getEStoreId().getContentId());
 		ResultSet rs = ps.executeQuery();
 		
 		
@@ -963,7 +968,7 @@ class FDCustomerListDAO {
 	// FIXME this method is not called from anywhere! why?
 	public FDStandingOrderList createStandingOrderList(Connection conn, FDIdentity identity, String name) 
 	throws SQLException {
-		return (FDStandingOrderList) createList(conn, new PrimaryKey(identity.getErpCustomerPK()), EnumCustomerListType.SO,  name, null, null, null, null);
+		return (FDStandingOrderList) createList(conn, new PrimaryKey(identity.getErpCustomerPK()), EnumCustomerListType.SO,  name, null, null, null, null,null);
 	}
 
 

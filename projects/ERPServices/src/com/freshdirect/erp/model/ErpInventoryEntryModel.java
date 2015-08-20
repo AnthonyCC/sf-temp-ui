@@ -12,6 +12,7 @@ package com.freshdirect.erp.model;
 import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.sap.SapProperties;
 
 /**
  * ErpUnavailabilityEntry model class. 
@@ -29,12 +30,26 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 
 	/** Inventory level quantity in base UOM */
 	private double quantity;
+	
+	private String plantId;
 
 	/**
 	 * Default constructor.
 	 */
 	public ErpInventoryEntryModel() {
 		super();
+	}
+	
+	/**
+	 * Constructor with all properties.
+	 *
+	 * @param startDate start date of inventory entry
+	 * @param quantity Inventory level quantity in base UOM
+	 */
+	public ErpInventoryEntryModel(Date startDate, double quantity) {
+		this.plantId=SapProperties.getPlant();
+		this.startDate = startDate;
+		this.quantity = quantity;
 	}
 
 	/**
@@ -43,8 +58,9 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 	 * @param startDate start date of inventory entry
 	 * @param quantity Inventory level quantity in base UOM
 	 */
-	public ErpInventoryEntryModel(Date startDate, double quantity) {
+	public ErpInventoryEntryModel(Date startDate, double quantity, String plantId) {
 		super();
+		this.plantId = plantId;
 		this.startDate = startDate;
 		this.quantity = quantity;
 	}
@@ -66,14 +82,29 @@ public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
 	public double getQuantity(){
 		return this.quantity;
 	}
-
-	public int compareTo(Object o) {
-		ErpInventoryEntryModel other = (ErpInventoryEntryModel)o;
-		return this.startDate.compareTo( other.startDate );
+	
+	/**
+	 * @return the plantId
+	 */
+	public String getPlantId()
+	{
+		return plantId;
 	}
 	
 	public String toString() {
-		return "ErpInventoryEntryModel[" + this.startDate + " " + this.quantity + "]";
+		return "ErpInventoryEntryModel[" + this.plantId + " " + this.startDate + " " + this.quantity + "]";
 	}
 
+	@Override
+	public int compareTo(Object o)
+	{
+		ErpInventoryEntryModel other = (ErpInventoryEntryModel) o;
+		int i = this.plantId.compareTo(other.plantId);
+	   if (i != 0)
+	   {
+	   	return i;
+	   }
+
+	   return  this.startDate.compareTo(other.startDate);
+	}
 }

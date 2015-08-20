@@ -12,6 +12,7 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
+@Deprecated
 public class GetPromotionTag extends AbstractGetterTag {
 
 	private String promotionId;

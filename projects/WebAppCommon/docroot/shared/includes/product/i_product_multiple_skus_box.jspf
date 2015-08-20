@@ -20,6 +20,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 <%@page import="com.freshdirect.framework.util.DateUtil"%>
 <%@page import="com.freshdirect.ErpServicesProperties"%>
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -171,7 +172,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
                           %>
                           <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
 							<fd:FDProduct id="product" productInfo="<%= productInfo %>">
-							<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+							<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale() ) { %>
 						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 						      <br/>
@@ -264,7 +265,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 			} 
 		  %></span> <span style="white-space: nowrap;"><%
 			if (!allSamePrice) { // extra space below for Size desc and price %> 
-				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale() ) { %>
 			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
 			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 			      <br/>
@@ -302,7 +303,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
                            }
 	
                            if (!allSamePrice) { // extra space below for Size desc and price %> 
-                           	<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
+                           	<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale()) { %>
                                 <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
                                 <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
                                 <br/>

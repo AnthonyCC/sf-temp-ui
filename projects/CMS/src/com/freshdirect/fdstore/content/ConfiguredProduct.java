@@ -11,7 +11,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -21,7 +21,6 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -408,8 +407,9 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	}
 	
 	@Override
-	public PricingContext getPricingContext(){
-		return new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
+	public UserContext getUserContext(){
+		//return new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO);
+		return getProduct().getUserContext();
 	}
 
     @Override

@@ -243,7 +243,9 @@ public class ProductPriceTag extends BodyTagSupport {
             String skuCode = productInfo.getSkuCode();
             String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
             String scaleString = null;
-            FDGroup group = productInfo.getGroup();
+            String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
+    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
+            FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
 
             if (group == null) {
                 //Try getting the group from Product Impression which loops through all skus
@@ -255,7 +257,7 @@ public class ProductPriceTag extends BodyTagSupport {
             if (group != null) {
                 try {
                     MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group,
-                            impression.getPricingZoneId());
+                            impression.getPricingZone());
 
                     GroupScalePricing gsPricing = GroupScaleUtil.lookupGroupPricing(group);
                     if(null !=gsPricing){

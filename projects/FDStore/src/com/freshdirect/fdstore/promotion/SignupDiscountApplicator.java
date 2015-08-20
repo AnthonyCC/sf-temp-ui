@@ -15,12 +15,13 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 	private final static Category LOGGER = LoggerFactory.getInstance(SignupDiscountApplicator.class);
 
 	/** List of SignupDiscountRule */
-	private final List discountRules;
+	private final List<SignupDiscountRule> discountRules;
 
 	public SignupDiscountApplicator(SignupDiscountRule[] discountRules) {
 		this.discountRules = Arrays.asList(discountRules);
 	}
 
+	@Override
 	public boolean apply(String promotionCode, PromotionContextI context) {
 
 		// select appropriate discount rule for this order
@@ -54,7 +55,7 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 	}
 
 	/** @return List of SignupDiscountRule */
-	public List getDiscountRules() {
+	public List<SignupDiscountRule> getDiscountRules() {
 		return Collections.unmodifiableList(this.discountRules);
 	}
 
@@ -66,6 +67,7 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 		//default implementatio since this applicator is obsolete.
 	}
 	
+	@Override
 	public DlvZoneStrategy getDlvZoneStrategy() {
 		return null;
 	}

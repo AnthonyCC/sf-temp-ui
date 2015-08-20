@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
@@ -91,7 +92,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		String searchTerm = nav.getSearchTerm();
 		if (searchTerm != null && searchTerm.trim().length() > 0) {
 			PageViewTagModel pvTagModel = new PageViewTagModel();
-			pvTagModel.setCategoryId("quickshop | search");
+			pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( "quickshop | search"));
 			pvTagModel.setPageId("past_orders");
 			pvTagModel.setSearchTerm(searchTerm);
 			pvTagModel.setSearchResults(Integer.toString(result.getItems().size()));

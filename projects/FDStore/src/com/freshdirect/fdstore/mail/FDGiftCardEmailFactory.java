@@ -6,6 +6,7 @@ package com.freshdirect.fdstore.mail;
 import java.util.Date;
 import java.util.Map;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -176,8 +177,8 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 				try {
 					FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 					ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
-					String pricingZoneId =  order.getOrderLine(0).getPricingContext().getZoneId();
-					map.put("defaultPrice",productInfo.getZonePriceInfo(pricingZoneId).getDefaultPrice());
+					ZoneInfo zoneInfo =  order.getOrderLine(0).getUserContext().getPricingContext().getZoneInfo();
+					map.put("defaultPrice",productInfo.getZonePriceInfo(zoneInfo).getDefaultPrice());
 					map.put("defaultPriceUnit",productInfo.getDefaultPriceUnit().toLowerCase());
 					map.put("productFullName", productModel.getFullName());
 				} catch (FDResourceException e) {

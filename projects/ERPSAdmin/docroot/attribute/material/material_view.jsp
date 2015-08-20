@@ -54,14 +54,14 @@
                 <tr><td class="field_title">SAP Description</td><td class="field"><%= material.getDescription() %></td></tr>
                 <tr><td class="field_title">Label Name</td><td><input type=text size=60 name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.LABEL_NAME.getName()) %>' value='<%= material.getAttribute(EnumAttributeName.LABEL_NAME) %>'></td></tr>
                 <tr><td class="field_title">Base Unit</td><td class="field"><%= material.getBaseUnit() %></td></tr>
-                <tr><td class="field_title">ATP Rule</td><td class="field"><%= material.getATPRule().getDisplayName() %></td></tr>
+                <tr><td class="field_title">ATP Rule</td><td class="field"><%--= material.getATPRule().getDisplayName() --%></td></tr><!-- TODO: Display this info for each plant -->
             </table>
             <br>
             
             <!-- taxable, promotional and kosher production status -->
             <table cellspacing=2 cellpadding=2>
                 <tr><td class="field_title">Taxable</td><td><%= material.isTaxable()%></td><tr>
-                <tr><td class="field_title">Kosher Production</td><td><%= material.isKosherProduction() %></td><tr>
+                <tr><td class="field_title">Kosher Production</td><td><%--= material.isKosherProduction() --%></td><tr><!-- TODO: Display this info for each plant -->
                 <tr><td class="field_title">Eligible for Perishable Only Promotion</td><td><input type='checkbox' value='true' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.CUST_PROMO.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"CHECKED":"" %>></td><tr>
             </table>
 
@@ -172,7 +172,15 @@
 
                         <!-- material prices -->
             <table cellspacing=2 cellpadding=2>
-                <tr><th>Pricing Unit</th><th>Price</th><th>Scale Quantity</th><th>Scale Unit</th><th>Zone Pricing</th></tr>
+                <tr>
+                	<th>Pricing Unit</th>
+                	<th>Price</th>
+                	<th>Scale Quantity</th>
+                	<th>Scale Unit</th>
+                	<th>Zone Pricing</th>
+                	<th>Sales Org</th>
+                	<th>Dist Channel</th>
+                </tr>
                 <logic:iterate id="materialPrice" collection="<%= material.getPrices() %>" type="com.freshdirect.erp.model.ErpMaterialPriceModel">
                 <tr>
                     <td><%= materialPrice.getPricingUnit() %></td>
@@ -180,6 +188,8 @@
                     <td><%= materialPrice.getScaleQuantity() %></td>
                     <td><%= materialPrice.getScaleUnit() %></td>
                     <td><%= materialPrice.getSapZoneId() %></td>
+                    <td><%= materialPrice.getSalesOrg() %></td>
+                    <td><%= materialPrice.getDistChannel() %></td>
                 </tr>
                 </logic:iterate>
             </table>

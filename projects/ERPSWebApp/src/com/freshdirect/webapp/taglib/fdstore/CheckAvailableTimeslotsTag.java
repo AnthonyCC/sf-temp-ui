@@ -14,6 +14,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -74,6 +75,8 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 		 			result.addError(new ActionError("technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		 		}
 	 			user.getShoppingCart().setDeliveryAddress((ErpAddressModel)response.getAddress());
+	 			user.resetUserContext();
+	 			user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 	 			pageContext.getSession().setAttribute(SessionName.USER, user);
 	 		}
 	 	}

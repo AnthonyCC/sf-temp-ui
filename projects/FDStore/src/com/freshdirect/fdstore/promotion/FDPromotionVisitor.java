@@ -28,7 +28,7 @@ public class FDPromotionVisitor {
 	public static FDPromotionEligibility evaluateAndApplyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		long startTime = System.currentTimeMillis();
 				
-		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
+		List<String> ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
 		eligibilities = evaluatePromotions(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
@@ -39,8 +39,7 @@ public class FDPromotionVisitor {
 		
         //Add applied line item discounts to the applied list.
         Set<String> appliedSet =  context.getLineItemDiscountCodes();
-        for (Iterator<String> i = appliedSet.iterator(); i.hasNext();) {
-        	String code = i.next();
+        for (final String code : appliedSet) {
         	if(eligibilities.isEligible(code)) 
         		eligibilities.setApplied(code);
         }
@@ -112,6 +111,13 @@ public class FDPromotionVisitor {
 	
     
 
+	/**
+	 * Smart Savings no longer effective
+	 * 
+	 * @param context
+	 * @param eligibilities
+	 */
+	@Deprecated
 	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		//Reload the promo variant map based on new promotion eligibilities.	
 		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);
@@ -125,9 +131,8 @@ public class FDPromotionVisitor {
          boolean apply_raf_promo = true;
          
          //Get All Automatic Promo codes.  Evaluate them.
-         Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions(); 
-         for (Iterator i = promotions.iterator(); i.hasNext();) {
-               PromotionI autopromotion  = (PromotionI) i.next(); 
+         Collection<PromotionI> promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
+         for (PromotionI autopromotion : promotions) {
                String promoCode = autopromotion.getPromotionCode();               
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
@@ -172,17 +177,15 @@ public class FDPromotionVisitor {
          return eligibilities;
    }
 
-	protected static List resolveConflicts(boolean allowMultipleHeader, List promotions) {
+	protected static List<PromotionI> resolveConflicts(boolean allowMultipleHeader, List<PromotionI> promotions) {
 		if (promotions.isEmpty() || promotions.size() == 1) {
 			return promotions;
 		}
 
-		List l = new ArrayList(promotions);
-		Collections.sort(l, new Comparator() {
-			public int compare(Object o1, Object o2) {
-				Promotion p1 = (Promotion) o1;
-				Promotion p2 = (Promotion) o2;
-				return p1.getPriority() - p2.getPriority();
+		List<PromotionI> l = new ArrayList<PromotionI>(promotions);
+		Collections.sort(l, new Comparator<PromotionI>() {
+			public int compare(PromotionI o1, PromotionI o2) {
+				return o1.getPriority() - o2.getPriority();
 			}
 		});
 		/*
@@ -191,8 +194,8 @@ public class FDPromotionVisitor {
 		 * is present. Otherwise it restores all the automatic header discounts.
 		 */
 		boolean found = false;
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			Promotion p = (Promotion) i.next();
+		for (Iterator<PromotionI> i = l.iterator(); i.hasNext();) {
+			PromotionI p = (PromotionI) i.next();
 			if (!found && (
 							(!allowMultipleHeader && (p.isHeaderDiscount() || p.isLineItemDiscount())&& p.isRedemption()) 
 							|| 
@@ -214,10 +217,9 @@ public class FDPromotionVisitor {
 	 * Resolve potential conflicts b/w promotions (by altering eligibilities).
 	 */
 	private static void resolveConflicts(FDPromotionEligibility eligibilities) {
-		Set promoCodes = eligibilities.getEligiblePromotionCodes();
-		List promos = new ArrayList(promoCodes.size());
-		for (Iterator i = promoCodes.iterator(); i.hasNext();) {
-			String promoCode = (String) i.next();
+		Set<String> promoCodes = eligibilities.getEligiblePromotionCodes();
+		List<PromotionI> promos = new ArrayList<PromotionI>(promoCodes.size());
+		for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 			promos.add(promo);
 		}
@@ -226,8 +228,8 @@ public class FDPromotionVisitor {
 
 		if (promos.size() <= promoCodes.size()) {
 			Set<String> actualPromoCodes = new LinkedHashSet<String>(promos.size());
-			for (Iterator<Promotion> i = promos.iterator(); i.hasNext();) {
-				Promotion promo = (Promotion) i.next();
+			for (Iterator<PromotionI> i = promos.iterator(); i.hasNext();) {
+				PromotionI promo = (PromotionI) i.next();
 				actualPromoCodes.add(promo.getPromotionCode());
 			}
 
@@ -273,11 +275,10 @@ public class FDPromotionVisitor {
 		return true;
 	}			
 
-	private static Set applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
+	private static Set<String> applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
         String headerPromoCode = "";
       //Step 1: Process all sample, delivery promo, extend DP promo, automatic non-combinable header and line item offers.
-        for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
-              String promoCode = (String) i.next();
+        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
               PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
               if(!promo.isRedemption())
               if(!promo.isDollarValueDiscount() || (!promo.isCombineOffer())) {
@@ -299,8 +300,7 @@ public class FDPromotionVisitor {
         boolean isCombinableOfferApplied = false;
         //Step 2: Process all automatic combinable header and line item offers.
         Set<String> combinableOffers = new HashSet<String>();
-        for (Iterator<String> i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
-            String promoCode = (String) i.next();
+        for (final String promoCode : eligibilities.getEligiblePromotionCodes()) {
             PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
             if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
           	  	//Process all automatic combinable header and line item offers.
@@ -310,11 +310,6 @@ public class FDPromotionVisitor {
                 		  isCombinableOfferApplied = true;  
                 		  combinableOffers.add(promoCode);
                 	  } 
-                	  /*
-                	  if(!promo.isLineItemDiscount()){
-	                      //Add applied  promos to the applied list. 
-	                      eligibilities.setApplied(promoCode);
-                  	  }*/
                   }
             }
       }

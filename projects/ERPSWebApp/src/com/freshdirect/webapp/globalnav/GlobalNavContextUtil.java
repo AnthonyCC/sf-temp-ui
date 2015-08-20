@@ -18,10 +18,8 @@ public class GlobalNavContextUtil {
 			globalNavId = "GlobalNavFdx"; //simple logic, export this into CMS if necessary
 		} else {
 			final boolean isFreeToHaveBeers = user == null
-					|| user.getPricingContext() == null
-					|| user.getPricingContext().getUserContext() == null
-					|| !user.getPricingContext().getUserContext()
-							.isAlcoholRestricted();
+					|| user.getUserContext() == null
+					|| !user.getUserContext().getFulfillmentContext().isAlcoholRestricted();
 
 			if (isFreeToHaveBeers) {
 				globalNavId = "GlobalNavWithWine"; //with wine

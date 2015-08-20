@@ -1,4 +1,5 @@
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%
 	String snav_pageURI = request.getRequestURI();
 	boolean summary_gc = snav_pageURI.indexOf("giftcard/index.jsp") > -1 || snav_pageURI.indexOf("gift_card/giftcard_summary.jsp") > -1;
@@ -30,6 +31,7 @@ if(!bulk_purchase_gc){
 	boolean giftcard_generate = snav_pageURI.indexOf("generate_new_giftcard.jsp") > -1;
 	boolean bt_giftcard = snav_pageURI.indexOf("bt_giftcard.jsp") > -1;
 	boolean check_balance = snav_pageURI.indexOf("check_balance") > -1;
+	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
 %>
 
 <div class="cust_nav_gc" style="height: 28px;">
@@ -60,11 +62,11 @@ if(!bulk_purchase_gc){
 		<a href="/gift_card/giftcard_summary.jsp" class="<% if (summary_gc) { %>cust_gc_sub_nav_on<% 
 			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Summary</a>
 
-		<a href="/gift_card/purchase/add_giftcard.jsp" class="<% if (purchase_gc) { %>cust_gc_sub_nav_on<% 
-			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Purchase</a>
+		<span style="display: inline-block; <%=(hasCustomerCase) ? "padding:0;" : "" %>" class="<%=(hasCustomerCase) ? "cust_gc_sub_nav" : "cust_sub_nav_text cust_gc_sub_nav" %>"><% if (hasCustomerCase) { %><a href="/main/masquerade.jsp?destination=gc" class="<% if (purchase_gc) { %>cust_gc_sub_nav_on<% 
+			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>" target="_blank"><% } %>Purchase<% if (hasCustomerCase) { %></a><% } %></span>
 		
-		<a href="/gift_card/purchase/add_bulk_giftcard.jsp" class="<% if (bulk_purchase_gc) { %>cust_gc_sub_nav_on<% 
-			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Buy&nbsp;in&nbsp;Bulk</a>
+		<span style="display: inline-block; <%=(hasCustomerCase) ? "padding:0;" : "" %>" class="<%=(hasCustomerCase) ? "cust_gc_sub_nav" : "cust_sub_nav_text cust_gc_sub_nav" %>"><% if (hasCustomerCase) { %><a href="/main/masquerade.jsp?destination=gc_bulk" class="<% if (bulk_purchase_gc) { %>cust_gc_sub_nav_on<% 
+			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>" target="_blank"><% } %>Buy&nbsp;in&nbsp;Bulk<% if (hasCustomerCase) { %></a><% } %></span>
 
 		<a href="/gift_card/purchase_history.jsp?showAllPurchased=true" class="<% if (purchase_history) { %>cust_gc_sub_nav_on<% 
 			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Purchase&nbsp;History</a>
@@ -78,7 +80,7 @@ if(!bulk_purchase_gc){
 		<a href="/gift_card/bt_giftcard.jsp" class="<% if (bt_giftcard) { %>cust_gc_sub_nav_on<% 
 			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Balance&nbsp;Transfer</a>
 
-        <div class="cust_gc_sub_nav"><a href="#" onclick="checkAddrShow(); return false;" class="cust_sub_nav_text">Check&nbsp;Delivery&nbsp;Area</a></div>
+        <div class="cust_gc_sub_nav"><a href="#" onclick="checkAddrShowCRM(); return false;" class="cust_sub_nav_text">Check&nbsp;Delivery&nbsp;Area</a></div>
 	</div>
 </div>
 

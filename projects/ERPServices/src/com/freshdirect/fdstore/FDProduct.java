@@ -342,7 +342,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).hasNutritionInfo(type);
 	}
 
-	public FDKosherInfo getKosherInfo() {
+	public FDKosherInfo getKosherInfo(String plantID) {
 		
 		EnumKosherSymbolValue kSym = FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getKosherSymbol();
 		int kPri = 999;
@@ -351,14 +351,14 @@ public class FDProduct extends FDSku implements AttributesI {
 		}
 
 		EnumKosherTypeValue kTyp = FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getKosherType();
-
-		boolean kPrd = material.isKosherProduction();
+        
+		boolean kPrd = material.isKosherProduction(plantID);
 
 		return new FDKosherInfo(kSym, kTyp, kPrd, kPri);
 	}
 
-	    public boolean isKosherProduction() {
-	        return material.isKosherProduction();
+	    public boolean isKosherProduction(String plantID) {
+	    	return material.isKosherProduction(plantID);
 	    }
 	
 	public List<FDNutrition> getNutrition() {
@@ -404,8 +404,8 @@ public class FDProduct extends FDSku implements AttributesI {
 		return this.material.isTaxable();
 	}
 
-	public boolean isPlatter() {
-		return this.material.isPlatter();
+	public boolean isPlatter(String plantID) {
+		return this.material.isPlatter(plantID);
 	}
 
 	public int getDepositsPerEach() {
@@ -417,7 +417,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean isPricedByLb() {
-		return ("LB".equalsIgnoreCase((this.pricing.getZonePriceList().getZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaterialPrices()[0]).getPricingUnit()));
+		return ("LB".equalsIgnoreCase((this.pricing.getZonePriceList().getZonePrice(ZonePriceListing.DEFAULT_ZONE_INFO).getMaterialPrices()[0]).getPricingUnit()));
 	}
 
 	public boolean hasSingleSalesUnit() {
@@ -450,7 +450,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		return false;
 	}
 	
-	public ErpAffiliate getAffiliate() {
+	public ErpAffiliate getAffiliate(EnumEStoreId eStore) {
 		if (this.isWine()) {
 			if(EnumAlcoholicContent.BC_WINE.equals(this.material.getAlcoholicContent()))
 				return ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
@@ -459,7 +459,7 @@ public class FDProduct extends FDSku implements AttributesI {
 			if(EnumAlcoholicContent.FD_WINE.equals(this.material.getAlcoholicContent()))
 				return ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 		}
-		return ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
+		return EnumEStoreId.FDX.equals(eStore)?ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX): ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
 	}
 
 	public boolean isQualifiedForPromotions() {

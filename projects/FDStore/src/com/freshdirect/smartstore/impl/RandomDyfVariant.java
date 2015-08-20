@@ -26,6 +26,7 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  * 
  * @author istvan
  */
+@Deprecated
 public class RandomDyfVariant extends DYFService {
 	private static final Category LOGGER = LoggerFactory.getInstance(RandomDyfVariant.class);
 

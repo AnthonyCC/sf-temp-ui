@@ -14,7 +14,6 @@ ln -sf  ../../../../projects/WebAppCommon/docroot/WEB-INF/shared        projects
 ln -sf  ../../../projects/FDWebSite/docroot/help                        projects/CRM/docroot/help
 ln -sf  ../../../projects/FDWebSite/docroot/survey                      projects/CRM/docroot/survey
 ln -sf  ../../../../projects/FDWebSite/docroot/includes/delivery        projects/CRM/docroot/includes/delivery
-ln -sf  ../../../../projects/FDWebSite/docroot/includes/product         projects/CRM/docroot/includes/product
 ln -sf  ../../../../projects/FDWebSite/docroot/includes/registration    projects/CRM/docroot/includes/registration
 ln -sf  ../../../../projects/FDWebSite/docroot/includes/promotions      projects/CRM/docroot/includes/promotions
 ln -sf  ../../../../../projects/FDWebSite/docroot/test/debug            projects/CRM/docroot/supervisor/test/debug

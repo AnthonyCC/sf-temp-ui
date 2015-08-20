@@ -89,7 +89,7 @@
 			</td><td class="25%">&nbsp;</td></tr></form></table></span>
 </div>
 
-<div class="content" style="height: 80%;">
+<div class="" style="height: 80%;">
 	<div class="list_header" style="padding-top: 4px; padding-bottom: 4px;">
 	<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="list_header_text">
 	    <TR>

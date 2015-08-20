@@ -607,6 +607,9 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	}
 	
 	public List verifyStatusAndBalance(List giftcards, boolean reloadBalance ) {
+		if (FDStoreProperties.isGivexBlackHoleEnabled()) {
+			return giftcards;
+		}else{
 		 List verifiedList = new ArrayList();
 		 for(Iterator iter = giftcards.iterator(); iter.hasNext();) {
 			 ErpGiftCardModel giftcard = (ErpGiftCardModel) iter.next();
@@ -615,9 +618,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			 verifiedList.add(giftcard);
 		 }
 		 return verifiedList;
+		}
 	}
 	
 	public ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel giftcard, boolean reloadBalance) {
+		if (FDStoreProperties.isGivexBlackHoleEnabled()) {
+			return giftcard;
+		}else{
 		Connection conn = null;
 		GivexResponseModel response = null;
 		try {
@@ -678,6 +685,7 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
                     close(conn);
 		}
 		return giftcard;
+		}
 	}
 	
 	private void applyPendingAuthsToBalance(Connection conn, ErpGiftCardModel giftcard) throws SQLException {

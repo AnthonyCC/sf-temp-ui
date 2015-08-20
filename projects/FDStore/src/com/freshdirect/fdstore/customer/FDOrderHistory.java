@@ -10,17 +10,18 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 
 public class FDOrderHistory extends ErpOrderHistory {
 
 	private static final long	serialVersionUID	= -4179034756408883935L;
 	
-	private final List<FDOrderInfoAdapter> fdOrderInfos;
+	private final List<FDOrderInfoI> fdOrderInfos;
 
 	public FDOrderHistory(Collection<ErpSaleInfo> erpSaleInfos) {
 		super(erpSaleInfos);
-		this.fdOrderInfos = new ArrayList<FDOrderInfoAdapter>(erpSaleInfos.size());
+		this.fdOrderInfos = new ArrayList<FDOrderInfoI>(erpSaleInfos.size());
 		for ( ErpSaleInfo esi : erpSaleInfos ) {
 			fdOrderInfos.add( new FDOrderInfoAdapter( esi ) );
 		}
@@ -28,14 +29,29 @@ public class FDOrderHistory extends ErpOrderHistory {
 	}
 
 	/** @return Collection of FDOrderInfoI */
-	public Collection<FDOrderInfoAdapter> getFDOrderInfos() {
+	public Collection<FDOrderInfoI> getFDOrderInfos() {
 		return fdOrderInfos;
 	}
 
+	public Collection<FDOrderInfoI> getFDOrderInfos(EnumSaleType saleType,EnumEStoreId eStore) {
+		
+		if(eStore==null)
+			return getFDOrderInfos(saleType);
+
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
+		for (Iterator<FDOrderInfoI> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = i.next();
+			if(saleType.equals(o.getSaleType())&& eStore.equals(o.getEStoreId())) {
+				l.add(o);
+			}
+		}
+		return l;
+	}
+	
 	public Collection<FDOrderInfoI> getFDOrderInfos(EnumSaleType saleType) {
 
 		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
-		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+		for (Iterator<FDOrderInfoI> i = this.fdOrderInfos.iterator(); i.hasNext();) {
 			FDOrderInfoI o = i.next();
 			if(saleType.equals(o.getSaleType())) {
 				l.add(o);
@@ -47,7 +63,7 @@ public class FDOrderHistory extends ErpOrderHistory {
 	public FDOrderInfoI getFDOrderInfo(String orderId) {
 
 		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
-		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+		for (Iterator<FDOrderInfoI> i = this.fdOrderInfos.iterator(); i.hasNext();) {
 			FDOrderInfoI o = i.next();
 			if(orderId.equals(o.getErpSalesId())) {
 				return o;
@@ -61,7 +77,7 @@ public class FDOrderHistory extends ErpOrderHistory {
 	 */
 	public Collection<FDOrderInfoI> getMakeGoodReferenceInfos() {
 		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
-		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+		for (Iterator<FDOrderInfoI> i = this.fdOrderInfos.iterator(); i.hasNext();) {
 			FDOrderInfoI o = i.next();
 			EnumSaleStatus s = o.getOrderStatus();
 			if (EnumSaleStatus.NEW.equals(s)
@@ -81,7 +97,7 @@ public class FDOrderHistory extends ErpOrderHistory {
 	 */
 	public Collection<FDOrderInfoI> getDlvPassOrderInfos(String dlvPassId) {
 		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
-		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+		for (Iterator<FDOrderInfoI> i = this.fdOrderInfos.iterator(); i.hasNext();) {
 			FDOrderInfoI o = i.next();
 			if (o.getDlvPassId() != null && o.getDlvPassId().equals(dlvPassId)) {
 				//This Order used the delivery pass. So add it to the list.
@@ -99,9 +115,9 @@ public class FDOrderHistory extends ErpOrderHistory {
 		
 		Calendar now=Calendar.getInstance();
 		
-		List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>();
+		List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>(fdOrderInfos.size());
 		
-		for(FDOrderInfoAdapter order : this.fdOrderInfos) {
+		for(FDOrderInfoI order : this.fdOrderInfos) {
 			
 			Calendar rDate = Calendar.getInstance();
 			rDate.setTime(order.getRequestedDate());
@@ -115,4 +131,19 @@ public class FDOrderHistory extends ErpOrderHistory {
 		return result;
 	}
 		
+	
+	public Collection<FDOrderInfoI> getFDOrderInfos(EnumEStoreId eStore) {
+		
+		if(eStore==null)
+			return this.fdOrderInfos;
+
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>(fdOrderInfos.size());
+		for(FDOrderInfoI order : this.fdOrderInfos) {
+			
+			if(eStore.equals(order.getEStoreId())) {
+				l.add(order);
+			}
+		}
+		return l;
+	}
 }

@@ -44,8 +44,8 @@ if(template.getTotalRows() > increment && template.getStartRecord() == 0 && temp
 %>
 
 
-<div id="pagenums"><br/>
-	<div id="pagenums" style="" class="yui-pg-container"><style='padding:10px;'>Page: <span id="yui-pg0-0-pages72" class="yui-pg-pages">
+<div id="pagenums_cont">
+	<div id="pagenums" style="padding: 5px;" class="yui-pg-container whiteBg">Page: <span id="yui-pg0-0-pages72" class="yui-pg-pages">
 	
 <% int pages = template.getTotalRows()/increment + (template.getTotalRows() % increment > 0?1:0); 
 							for(int i=0; i < pages; i++ ) {

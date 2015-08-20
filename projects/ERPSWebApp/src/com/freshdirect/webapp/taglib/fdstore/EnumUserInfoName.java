@@ -127,6 +127,11 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName TEXT_OPTION = new EnumUserInfoName("text_option", "Text Messaging Preferences");
 	public final static EnumUserInfoName DISPLAY_NAME = new EnumUserInfoName("displayName", "Display Name");
 
+	public final static EnumUserInfoName					ORDER_NOTICE_EXISTING					= new EnumUserInfoName( "order_notice_existing", "order notice existing" );
+	public final static EnumUserInfoName					ORDER_EXCEPTION_EXISTING				= new EnumUserInfoName( "order_exception_existing", "order exception existing" );
+	public final static EnumUserInfoName					OFFER_EXISTING   				        = new EnumUserInfoName( "offer_existing", "offer existing" );
+	public final static EnumUserInfoName					PARTNER_EXISTING   				        = new EnumUserInfoName( "partner_existing", "partner existing" );
+
 	// Gift Card Donation
 	public final static EnumUserInfoName GC_DONOR_ORGANIZATION_NAME = new EnumUserInfoName("gcDonorOrganizationName", "Donor Organization Name");
 

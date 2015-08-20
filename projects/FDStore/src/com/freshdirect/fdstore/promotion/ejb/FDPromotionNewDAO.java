@@ -26,7 +26,7 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -78,7 +78,6 @@ import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewDAO;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -188,9 +187,6 @@ public class FDPromotionNewDAO {
 			}
 
 			promo.addStrategy(new DateRangeStrategy(rs.getTimestamp("START_DATE"), rs.getTimestamp("EXPIRATION_DATE")));
-			/*if (custStrategies.get(promo.getPK()) != null) {
-				promo.addStrategy((AssignedCustomerStrategy) custStrategies.get(promo.getPK()));
-			}*/
 
 			String redemptionCode = rs.getString("REDEMPTION_CODE");
 			if (!rs.wasNull()) {
@@ -261,31 +257,6 @@ public class FDPromotionNewDAO {
 			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
 			DCPDLineItemStrategy dcpdStrategy = dcpdData.get(pk);
 			loadApplicator(rs, conn, promo, dlvZoneStrategyI, dcpdStrategy,(CartStrategy)cartStrategyI);
-			/*
-			//Set the zone strategy if applicable.
-			if(null != applicator && null != dlvZoneStrategyI){
-				DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
-				if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
-					applicator.setZoneStrategy(dlvZoneStrategy);
-				}
-			}
-			*/
-			/*
-			if(null != applicator && applicator instanceof LineItemDiscountApplicator){*/
-				/*
-				 * If the promotion is a Line item Discount Promotion, add the corresponding 
-				 * DCPD line item strategy if present.
-				 */
-			/*
-				DCPDLineItemStrategy strategy = dcpdData.get(pk);
-				if(strategy != null) {
-					((LineItemDiscountApplicator) applicator).addLineItemStrategy(strategy);
-				}
-			} 
-
-			if (applicator != null) {
-				promo.setApplicator(applicator);
-			}*/
 
 			promos.add(promo);
 		}
@@ -476,9 +447,6 @@ public class FDPromotionNewDAO {
 		}
 
 		promo.addStrategy(new DateRangeStrategy(rs.getTimestamp("START_DATE"), rs.getTimestamp("EXPIRATION_DATE")));
-		/*if (custStrategies.get(promo.getPK()) != null) {
-			promo.addStrategy((AssignedCustomerStrategy) custStrategies.get(promo.getPK()));
-		}*/
 
 		String redemptionCode = rs.getString("REDEMPTION_CODE");
 		if (!rs.wasNull()) {
@@ -544,29 +512,6 @@ public class FDPromotionNewDAO {
 		PromotionStrategyI dlvZoneStrategyI = loadDlvZoneStrategy(conn, promoId);
 		DCPDLineItemStrategy strategy = loadDCPDData(conn, promoId);
 		loadApplicator(rs, conn, promo, dlvZoneStrategyI, strategy, (CartStrategy)cartStrategyI);
-		/*
-		if(applicator != null && null != dlvZoneStrategyI){
-			DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
-			if(dlvZoneStrategy.getDlvDayType()!=null || (null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
-				applicator.setZoneStrategy(dlvZoneStrategy);
-			}
-		}		
-				
-		if(applicator != null && applicator instanceof LineItemDiscountApplicator){
-			/*
-			 * If the promotion is a Line item Discount Promotion, add the corresponding 
-			 * DCPD line item strategy if present.
-			 */
-		/*
-			DCPDLineItemStrategy strategy = loadDCPDData(conn, promoId);
-			if(strategy != null) {
-				((LineItemDiscountApplicator) applicator).addLineItemStrategy(strategy);
-			}
-		} 
-		if (applicator != null) {
-			promo.setApplicator(applicator);
-		}
-		*/
 
 		return promo;
 	}
@@ -781,11 +726,11 @@ public class FDPromotionNewDAO {
 		wasNull |= rs.wasNull();
 		if(!wasNull){
 			if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
-				promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
+				promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}else
 			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
 				loadMinSubtotalStrategy(rs, promo);
-				promo.addApplicator(new ProductSampleApplicator(new ProductReference(categoryName, productName), minSubtotal));
+				promo.addApplicator(new ProductSampleApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}
 		}
 		
@@ -1057,27 +1002,7 @@ public class FDPromotionNewDAO {
 			if( strategy == null){
 				strategy = new DCPDLineItemStrategy();
 			}
-			String contentType =  rs.getString("CONTENT_TYPE");
-			String contentId = rs.getString("CONTENT_ID");
-			if(contentType.equalsIgnoreCase("Sku")){
-				if(strategy.getSkus().isEmpty()) {
-					//First time exclude is set.
-					strategy.setExcludeSkus("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
-				}
-				strategy.addSku(contentId);
-			}
-			else if(contentType.equalsIgnoreCase("Brand")){
-				if(strategy.getBrands().isEmpty()) {
-					//First time exclude is set.
-					strategy.setExcludeBrands("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
-				}
-				strategy.addBrand(contentId);
-			} else {
-				//Content Type is department,category or recipe.
-				strategy.addContent(contentType, contentId);
-			}
-			strategy.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("CHILD_LOOP")));
-			strategy.setRecCategory("Y".equalsIgnoreCase(rs.getString("RECOMMENDED")));
+			populateDCPDStrategy(rs,strategy);
 			dcpdDataMap.put(promoPK, strategy);				
 		}
 		rs.close();
@@ -1097,27 +1022,7 @@ public class FDPromotionNewDAO {
 			if( strategy == null){
 				strategy = new DCPDLineItemStrategy();
 			}
-			String contentType =  rs.getString("CONTENT_TYPE");
-			String contentId = rs.getString("CONTENT_ID");
-			if(contentType.equalsIgnoreCase("Sku")){
-				if(strategy.getSkus().isEmpty()) {
-					//First time exclude is set.
-					strategy.setExcludeSkus("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
-				}
-				strategy.addSku(contentId);
-			}
-			else if(contentType.equalsIgnoreCase("Brand")){
-				if(strategy.getBrands().isEmpty()) {
-					//First time exclude is set.
-					strategy.setExcludeBrands("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
-				}
-				strategy.addBrand(contentId);
-			} else {
-				//Content Type is department,category or recipe.
-				strategy.addContent(contentType, contentId);
-			}
-			strategy.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("CHILD_LOOP")));
-			strategy.setRecCategory("Y".equalsIgnoreCase(rs.getString("RECOMMENDED")));
+			populateDCPDStrategy(rs,strategy);
 		}
 		rs.close();
 		ps.close();
@@ -1125,6 +1030,31 @@ public class FDPromotionNewDAO {
 		return strategy;
 	}
 
+	private static void populateDCPDStrategy(ResultSet rs, DCPDLineItemStrategy strategy) throws SQLException {
+		String contentType =  rs.getString("CONTENT_TYPE");
+		String contentId = rs.getString("CONTENT_ID");
+		if(contentType.equalsIgnoreCase("Sku")){
+			if(strategy.getSkus().isEmpty()) {
+				//First time exclude is set.
+				strategy.setExcludeSkus("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
+			}
+			strategy.addSku(contentId);
+		}
+		else if(contentType.equalsIgnoreCase("Brand")){
+			if(strategy.getBrands().isEmpty()) {
+				//First time exclude is set.
+				strategy.setExcludeBrands("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
+			}
+			strategy.addBrand(contentId);
+		} else {
+			//Content Type is department,category or recipe.
+			strategy.addContent(contentType, contentId);
+		}
+		strategy.setLoopEnabled("Y".equalsIgnoreCase(rs.getString("CHILD_LOOP")));
+		strategy.setRecCategory("Y".equalsIgnoreCase(rs.getString("RECOMMENDED")));
+	}
+
+	
 	/** @return Map of promotionPK -> ProfileAttributeStrategy */
 	private final static String GET_PROMO_PROFILE_ATTR = "select pa.promotion_id, pa.promo_attr_name, pa.attr_value, p.profile_operator from cust.promo_attr_new pa, " +
 									"(SELECT ID, PROFILE_OPERATOR FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
@@ -1211,13 +1141,13 @@ public class FDPromotionNewDAO {
 	
 	/** @return Map of promotionPK -> CustomerStrategy */
 	private final static String GET_CUST_PROMO_STRATEGY = "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
+														   "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
 														   "from cust.promo_cust_strategy cs, " +
 														   "(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 														   "or expiration_date is null) and redemption_code is null) p where p.ID = cs.PROMOTION_ID";
 
 	private final static String GET_MODIFIED_CUST_PROMO_STRATEGY  =  "select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
+																	 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
 																	 "from cust.promo_cust_strategy cs, " +
 																	 "(SELECT ID FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = cs.PROMOTION_ID";
 	
@@ -1237,52 +1167,7 @@ public class FDPromotionNewDAO {
 			CustomerStrategy strategy = new CustomerStrategy();
 			String promoId = rs.getString("PROMOTION_ID");				
 			PrimaryKey promoPK = new PrimaryKey(promoId);
-			String cohorts = rs.getString("COHORT");
-			if(cohorts != null && cohorts.length() > 0){
-				strategy.setCohorts(cohorts);
-			}
-			String dpTypes = rs.getString("DP_TYPES");
-			if(dpTypes != null && dpTypes.length() > 0){
-				strategy.setDpTypes(dpTypes);
-			}
-			String status = rs.getString("dp_status");
-			if(status != null){
-				strategy.setDPStatus(EnumDlvPassStatus.getEnum(status));
-				Date dpStartDate = rs.getTimestamp("dp_exp_start");
-				if(dpStartDate != null){
-					strategy.setDPStartDate(dpStartDate);
-				}
-				Date dpEndDate = rs.getTimestamp("dp_exp_end");
-				
-				if(dpEndDate != null){
-					strategy.setDPEndDate(dpEndDate);
-				}
-			}
-			int orderStartRange = rs.getInt("order_range_start");
-			strategy.setOrderStartRange(orderStartRange);
-			int orderEndRange = rs.getInt("order_range_end");
-			strategy.setOrderEndRange(orderEndRange);
-			
-			String paymentTypes = rs.getString("payment_type");
-			if(paymentTypes != null && paymentTypes.length() > 0)
-				strategy.setPaymentTypes(paymentTypes);
-			int priorEcheckUse = rs.getInt("prior_echeck_use");
-			strategy.setPriorEcheckUse(priorEcheckUse);
-			Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
-			
-			strategy.setECheckMatchType(EnumComparisionType.getEnum(rs.getString("echeck_match_type")));
-
-			if ("X".equals(NVL.apply(rs.getString("ORDERTYPE_HOME"),""))) {
-				orderTypes.add(EnumOrderType.HOME);
-			}
-			if ("X".equals(NVL.apply(rs.getString("ORDERTYPE_PICKUP"),""))) {
-				orderTypes.add(EnumOrderType.PICKUP);
-			}
-
-			if ("X".equals(NVL.apply(rs.getString("ORDERTYPE_CORPORATE"),""))) {
-				orderTypes.add(EnumOrderType.CORPORATE);
-			}			
-			strategy.setAllowedOrderTypes(orderTypes);
+			populateCustomerStrategy(rs, strategy);
 			strategies.put(promoPK, strategy);
 		}
 
@@ -1295,62 +1180,14 @@ public class FDPromotionNewDAO {
 	protected static PromotionStrategyI loadCustomerStrategy(Connection conn, String promoId) throws SQLException {
 		CustomerStrategy strategy = null;
 		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate " +
+													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
 													 "from cust.promo_cust_strategy cs, cust.promotion_new p " +
 													 "where p.ID = cs.PROMOTION_ID and cs.promotion_id = ?");
 		ps.setString(1, promoId);
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			strategy = new CustomerStrategy();
-			String cohorts = rs.getString("COHORT");
-			if(cohorts != null && cohorts.length() > 0){
-				strategy.setCohorts(cohorts);
-			}
-			String dpTypes = rs.getString("DP_TYPES");
-			if(dpTypes != null && dpTypes.length() > 0){
-				strategy.setDpTypes(dpTypes);
-			}
-			String status = rs.getString("dp_status");
-			if(status != null){
-				strategy.setDPStatus(EnumDlvPassStatus.getEnum(status));
-				Date dpStartDate = rs.getTimestamp("dp_exp_start");
-				if(dpStartDate != null){
-					strategy.setDPStartDate(dpStartDate);
-				}
-				Date dpEndDate = rs.getTimestamp("dp_exp_end");
-				
-				if(dpEndDate != null){
-					strategy.setDPEndDate(dpEndDate);
-				}
-			}
-			int orderStartRange = rs.getInt("order_range_start");
-			strategy.setOrderStartRange(orderStartRange);
-			int orderEndRange = rs.getInt("order_range_end");
-			strategy.setOrderEndRange(orderEndRange);
-			
-			String paymentTypes = rs.getString("payment_type");
-			if(paymentTypes != null && paymentTypes.length() > 0)
-				strategy.setPaymentTypes(paymentTypes);
-			
-			int priorEcheckUse = rs.getInt("prior_echeck_use");
-			strategy.setPriorEcheckUse(priorEcheckUse);
-			Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
-			
-			strategy.setECheckMatchType(EnumComparisionType.getEnum(rs.getString("echeck_match_type")));
-
-			if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
-				orderTypes.add(EnumOrderType.HOME);
-			}
-			
-			if ("X".equals(rs.getString("ORDERTYPE_PICKUP"))) {
-				orderTypes.add(EnumOrderType.PICKUP);
-			}
-
-			if ("X".equals(rs.getString("ORDERTYPE_CORPORATE"))) {
-				orderTypes.add(EnumOrderType.CORPORATE);
-			}			
-			
-			strategy.setAllowedOrderTypes(orderTypes);			
+			populateCustomerStrategy(rs, strategy);
 		}
 
 		rs.close();
@@ -1358,6 +1195,63 @@ public class FDPromotionNewDAO {
 
 		return strategy;
 	}
+	
+	private static void populateCustomerStrategy(ResultSet rs, CustomerStrategy strategy) throws SQLException {
+		String cohorts = rs.getString("COHORT");
+		if(cohorts != null && cohorts.length() > 0){
+			strategy.setCohorts(cohorts);
+		}
+		String dpTypes = rs.getString("DP_TYPES");
+		if(dpTypes != null && dpTypes.length() > 0){
+			strategy.setDpTypes(dpTypes);
+		}
+		String status = rs.getString("dp_status");
+		if(status != null){
+			strategy.setDPStatus(EnumDlvPassStatus.getEnum(status));
+			Date dpStartDate = rs.getTimestamp("dp_exp_start");
+			if(dpStartDate != null){
+				strategy.setDPStartDate(dpStartDate);
+			}
+			Date dpEndDate = rs.getTimestamp("dp_exp_end");
+			
+			if(dpEndDate != null){
+				strategy.setDPEndDate(dpEndDate);
+			}
+		}
+		int orderStartRange = rs.getInt("order_range_start");
+		strategy.setOrderStartRange(orderStartRange);
+		int orderEndRange = rs.getInt("order_range_end");
+		strategy.setOrderEndRange(orderEndRange);
+		
+		String paymentTypes = rs.getString("payment_type");
+		if(paymentTypes != null && paymentTypes.length() > 0)
+			strategy.setPaymentTypes(paymentTypes);
+		
+		int priorEcheckUse = rs.getInt("prior_echeck_use");
+		strategy.setPriorEcheckUse(priorEcheckUse);
+		Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
+		
+		strategy.setECheckMatchType(EnumComparisionType.getEnum(rs.getString("echeck_match_type")));
+
+		if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
+			orderTypes.add(EnumOrderType.HOME);
+		}
+		
+		if ("X".equals(rs.getString("ORDERTYPE_PICKUP"))) {
+			orderTypes.add(EnumOrderType.PICKUP);
+		}
+
+		if ("X".equals(rs.getString("ORDERTYPE_CORPORATE"))) {
+			orderTypes.add(EnumOrderType.CORPORATE);
+		}		
+
+		if ("X".equals(rs.getString("ORDERTYPE_FDX"))) {
+			orderTypes.add(EnumOrderType.FDX);
+		}			
+		
+		strategy.setAllowedOrderTypes(orderTypes);					
+	}
+	
 	
 	
 	/**
@@ -1420,10 +1314,12 @@ public class FDPromotionNewDAO {
 		return audiencePromoDtls;
 	}
 	
+	@Deprecated
 	private final static String GET_ALL_ACTIVE_PROMO_VARIANTS = "select vp.VARIANT_ID, vp.PROMO_CODE, vp.PROMO_PRIORITY, v.FEATURE, vp.VARIANT_PRIORITY from cust.PROMO_VARIANTS vp, " +
 			"cust.SS_VARIANTS v, cust.PROMOTION_NEW p where p.CODE = vp.PROMO_CODE and v.ID = vp.VARIANT_ID and p.status STATUSES and (p.expiration_date > (sysdate-7) " +
 			"or p.expiration_date is null) and p.FAVORITES_ONLY='X' and v.archived = 'N'";
 	
+	@Deprecated
 	public static List<PromoVariantModel> loadAllActivePromoVariants(Connection conn, List<EnumSiteFeature> smartSavingFeatures) throws SQLException {
 		StringBuffer preparedStmtQry = new StringBuffer( GET_ALL_ACTIVE_PROMO_VARIANTS.replace("STATUSES", getStatusReplacementString()) ); 
 		StringBuffer buffer = new StringBuffer();
@@ -1451,7 +1347,8 @@ public class FDPromotionNewDAO {
 		ps.close();
 		return promoVariants;
 	}
-	
+
+	@Deprecated
 	private static List<PromoVariantModel> constructPromoVariants(ResultSet rs) throws SQLException {
 		List<PromoVariantModel> promoVariants = new ArrayList<PromoVariantModel>();
 		while(rs.next()){
@@ -1595,30 +1492,17 @@ public class FDPromotionNewDAO {
 		dlvZoneStrategy.setDlvDates(dlvDates);
 	}
 
+
 	private static CartStrategy loadCartStrategy(Connection conn, String promoPK) throws SQLException{
 		CartStrategy cartStrategy = new CartStrategy();
 		PreparedStatement ps = conn.prepareStatement("select id, promotion_id, content_type, content_id from cust.promo_cart_strategy pcs where pcs.promotion_id = ? ");
 		ps.setString(1, promoPK);
 		ResultSet rs = ps.executeQuery();
-	    Set<String> set = null;//List list =new ArrayList<FDPromoContentModel>();
+
 	    Map<EnumDCPDContentType, Set<String>> dcpdData = new HashMap<EnumDCPDContentType, Set<String>>();
 		
 		while (rs.next()) {
-			EnumDCPDContentType contentType = EnumDCPDContentType.getEnum(rs.getString("content_type"));
-			set = dcpdData.get(EnumDCPDContentType.getEnum(rs.getString("content_type")));
-			if(null == set){
-				set = new HashSet<String>();
-			}
-			/*FDPromoContentModel contentModel = new FDPromoContentModel();
-			contentModel.setId(rs.getString("id"));
-			contentModel.setContentType(EnumDCPDContentType.getEnum(rs.getString("content_type")));			
-			contentModel.setContentId(rs.getString("content_id"));
-			contentModel.setPromotionId(promoPK);*/
-			if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)){
-				cartStrategy.addContent(contentType.getName(), rs.getString("content_id"));
-			}
-			set.add(rs.getString("content_id"));
-			dcpdData.put(EnumDCPDContentType.getEnum(rs.getString("content_type")),set);
+			populateCartStrategy(rs, cartStrategy);
 		}
 		cartStrategy.setDcpdData(dcpdData);		
 		
@@ -1632,8 +1516,8 @@ public class FDPromotionNewDAO {
 	private final static String GET_MODIFIED_ONLY_CART_STRATEGY_DATA = "select pcs.id, pcs.promotion_id, pcs.content_type, pcs.content_id from cust.PROMO_CART_STRATEGY pcs, " +
 	"(SELECT ID  FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = pcs.PROMOTION_ID";
 	
+
 	private static Map<PrimaryKey, CartStrategy> loadCartStrategies(Connection conn, Date lastModified) throws SQLException{
-//		CartStrategy cartStrategy = new CartStrategy();
 		
 		PreparedStatement ps = null;
 		if(lastModified != null){
@@ -1644,37 +1528,40 @@ public class FDPromotionNewDAO {
 			ps = conn.prepareStatement(query);	
 		}
 		ResultSet rs = ps.executeQuery();
-	    Set<String> set = null;//List list =new ArrayList<FDPromoContentModel>();
+
 	    Map<PrimaryKey, CartStrategy> cartStrategyDataMap = new HashMap<PrimaryKey, CartStrategy>();
 		
 		while (rs.next()) {
 			String promoId = rs.getString("PROMOTION_ID");
 			PrimaryKey promoPK = new PrimaryKey(promoId);
-			EnumDCPDContentType contentType =EnumDCPDContentType.getEnum(rs.getString("content_type"));
+
 			CartStrategy strategy = cartStrategyDataMap.get(promoPK);
 			if( strategy == null){
 				strategy = new CartStrategy();
 			}
-			set = strategy.getDcpdData().get(EnumDCPDContentType.getEnum(rs.getString("content_type")));
-			if(null == set){
-				set = new HashSet<String>();
-			}
-			/*FDPromoContentModel contentModel = new FDPromoContentModel();
-			contentModel.setId(rs.getString("id"));
-			contentModel.setContentType(EnumDCPDContentType.getEnum(rs.getString("content_type")));			
-			contentModel.setContentId(rs.getString("content_id"));
-			contentModel.setPromotionId(promoPK);*/
-			if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)) {
-				strategy.addContent(contentType.getName(), rs.getString("content_id"));
-			}
-			set.add(rs.getString("content_id"));
-			strategy.getDcpdData().put(EnumDCPDContentType.getEnum(rs.getString("content_type")),set);
+			populateCartStrategy(rs, strategy);
 			cartStrategyDataMap.put(promoPK, strategy);
 		}	
 		
 		return cartStrategyDataMap;
 	}
 
+
+	private static void populateCartStrategy(ResultSet rs, CartStrategy strategy) throws SQLException {
+		String rawContentType = rs.getString("content_type");
+		final EnumDCPDContentType contentType =EnumDCPDContentType.getEnum(rawContentType);
+		Set<String> set = strategy.getDcpdData().get(EnumDCPDContentType.getEnum(rawContentType));
+		if(null == set){
+			set = new HashSet<String>();
+		}
+
+		if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)) {
+			strategy.addContent(contentType.getName(), rs.getString("content_id"));
+		}
+		set.add(rs.getString("content_id"));
+		strategy.getDcpdData().put(EnumDCPDContentType.getEnum(rawContentType),set);
+	}
+	
 	
 	public static final String GET_REF_PROMO =  "SELECT p.* " +  
 				"FROM CUST.PROMOTION_NEW p, " +

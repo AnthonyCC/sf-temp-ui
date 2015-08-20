@@ -426,7 +426,7 @@ public class QuickShopHelper {
 
 				try {
 					FDProductInfo prodInfo = FDCachedFactory.getProductInfo(product.getSkuCode());
-					FDProductSelection productSelection = new FDProductSelection(prodInfo, product, product.getConfiguration(), user.getPricingZoneId());
+					FDProductSelection productSelection = new FDProductSelection(prodInfo, product, product.getConfiguration(), user.getUserContext());
 					productSelection.refreshConfiguration();
 					OrderLineUtil.describe(productSelection);
 
@@ -655,10 +655,10 @@ public class QuickShopHelper {
 
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 
-		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
+		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity(), user.getUserContext().getStoreContext());
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - START
 		if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
-			items = FDListManager.getQsSpecificEveryItemEverOrderedListTopItems(user.getIdentity());
+			items = FDListManager.getQsSpecificEveryItemEverOrderedListTopItems(user.getIdentity(),user.getUserContext().getStoreContext());
 		}
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - END
 		if (items == null || items.isEmpty()) {

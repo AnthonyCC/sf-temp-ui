@@ -59,7 +59,7 @@ if (featuredCat != null) {
 	ProductImpression pi = null;
 	ProductModelPromotionAdapter productModelAdapter = null;
 	if ( contentNode instanceof ProductModel ) {
-		ProductModel pricedProdModel = new ProductModelPricingAdapter( (ProductModel)contentNode, user.getPricingContext() );
+		ProductModel pricedProdModel = new ProductModelPricingAdapter( (ProductModel)contentNode );
 		pi = confStrat.configure(pricedProdModel, confContext);
 		// TODO: "013" is the 'new' ribbon, hardcoded here
 		productModelAdapter = new ProductModelPromotionAdapter (pi.getProductModel(), true, "013", pi.getSku().getSkuCode());			

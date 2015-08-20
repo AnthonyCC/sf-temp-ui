@@ -2,14 +2,12 @@ package com.freshdirect.webapp.taglib.callcenter;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -52,18 +50,17 @@ import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.FormatterUtil;
+import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.CardInUseException;
-import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
-import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
@@ -71,17 +68,18 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
-import com.freshdirect.webapp.taglib.fdstore.AddSavedRecipientControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.taglib.giftcard.GiftCardFormFields;
 import com.freshdirect.webapp.util.JspMethods;
 
 public class GiftCardControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName{
+	private static final long serialVersionUID = -8417107634078016471L;
 
-	private static Category LOGGER = LoggerFactory.getInstance(AddSavedRecipientControllerTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(GiftCardControllerTag.class);
 	FDUser user = null;
 	
 	// Var's declared in the TLD for this tag
@@ -89,18 +87,6 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     String successPage = null;
     String resultName = null;
     
-    String fldAmount = null;
-    String fldAltAmount = null;
-    String fldYourName = null;
-    String fldYourEmail = null;
-    String fldRecipientName = null;
-    String fldRecipientEmail = null;
-    String fldDeliveryMethod = null;
-    String fldMessage = null;
-    String gcTemplateId = null;
-    String fldQuantity=null;
-    
-   
     
     public String getSuccessPage() {
         return this.successPage;
@@ -146,7 +132,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
         		String recEmail=request.getParameter("recEmail");
         		
         		List list=null;
-        		GenericSearchCriteria criteria=new GenericSearchCriteria(com.freshdirect.framework.util.EnumSearchType.GIFTCARD_SEARCH);
+        		GenericSearchCriteria criteria=new GenericSearchCriteria(EnumSearchType.GIFTCARD_SEARCH);
         		try
         		{
         			
@@ -184,7 +170,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 	        	 {
 	        		try
 	        		{
-	        			FDOrderI order = FDCustomerManager.getOrder(saleId);
+	        			FDOrderI order = FDCustomerManager.getOrderForCRM(saleId);
 	        			if(order.getOrderStatus().equals(EnumSaleStatus.CANCELED)){
 	        				result.addError(new ActionError("generate_error", "Please try again later."));
 	        			}
@@ -208,6 +194,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 				   
         	   }  
         	}		
+        	// FIXME: this action has been moved to fd:GiftCardControllerTag, soon to be removed
         	else if("deleteBulkSavedRecipient".equalsIgnoreCase(actionName)) {
         		user = fs_user.getUser();   
             	String repId = request.getParameter("deleteId");
@@ -217,12 +204,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
         			int repIndex = -1;
             		try {
             			repIndex = user.getBulkRecipentList().getRecipientIndex(Integer.parseInt(repId));
-            			FDBulkRecipientModel m=user.getBulkRecipentList().getRecipientById(repId);
-            		/*	List recList=m.getRecipientsIdList();
-            			for(int i=0;i<recList.size();i++){
-            				SavedRecipientModel sm=(SavedRecipientModel)recList.get(i);
-            				user.getRecipentList().removeOrderLineById(sm.getRandomId());
-            			}  */
+
             			user.getBulkRecipentList().removeOrderLineById(repIndex);
             			user.getBulkRecipentList().constructFDRecipientsList();
             		} catch (NumberFormatException nfe) {
@@ -235,8 +217,6 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             			user.getBulkRecipentList().removeRecipient(repIndex);
             		}
         		}
-
-            	//FDCustomerManager.deleteSavedRecipient(request.getParameter("deleteId"));
             }
 
         	
@@ -266,37 +246,15 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                 	if(toGivexNum==null || toGivexNum.length() < 1) {
                         result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), "Invalid or missing givex number"));
                     }
-                /*	
-                	if(amountStr==null || amountStr.length() < 1) {
-                		System.out.println("validateGiftCard() amountStr = " + amountStr);
-                        result.addError(new ActionError(EnumUserInfoName.GC_AMOUNT.getCode(), "Invalid or missing Amount"));
-                    }else{
-                    	try{
-                    		amount=Double.parseDouble(amountStr);
-                    	}catch(NumberFormatException e){
-                    		result.addError(new ActionError(EnumUserInfoName.GC_AMOUNT.getCode(), "Invalid Amount"));
-                    	}
-                    }
-                    */
                 	
                    if(result.getErrors().isEmpty()) {                        
-                        //FDCustomerManager.storeSavedRecipient(user, srm);
                     	try
     	        		{	        			
-//    	        			 GiftCardManagerHome home= getGiftCardManagerHome();        		        		        	
-//    		        		 GiftCardManagerSB remote=home.create();
-                    		 
                     	     ErpGiftCardModel fromModel=FDCustomerManager.validateAndGetGiftCardBalance(fromGivexNum);                    	    
                     	     EnumGiftCardStatus status= fromModel.getStatus();
                     	     if(EnumGiftCardStatus.INACTIVE==status){
                                 result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_FROM.getCode(), "Some issue with Gift certificate either card on hold or cancelled"));
                     	     }
-                    	    /* 
-                    	     if(fromModel.getBalance()<amount)
-                    	     {
-                    	    		System.out.println("validateGiftCard() fldYourName = " + fromGivexNum);
-                                    result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_FROM.getCode(), "Amount entered is more than the balance available"));
-                    	     } */
                     	     
                     	     try{
 	                    	     ErpGiftCardModel toModel=FDCustomerManager.validateAndGetGiftCardBalance(toGivexNum);                    	    
@@ -331,8 +289,6 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             	
             	if ("generateGiftCard".equalsIgnoreCase(actionName) ) {
             		
-            		//HttpSession session = pageContext.getSession();
-                    //FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);        
                     user = fs_user.getUser();        	
             		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
             		if(agent == null){            			
@@ -359,9 +315,9 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                     	
                     	FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.CUSTOMER_REP, user.getIdentity(), "GenerateNewGiftCard", "",IConstants.AGENT, user.getPrimaryKey());
                     	CustomerRatingI rating = new CustomerRatingAdaptor(new ProfileModel(), false, 10);                    	            			                    	
-                    	Collection ccards = FDCustomerManager.getPaymentMethods(user.getIdentity());
-            			Iterator iterator= ccards.iterator();
-            			boolean working=false;            			
+                    	Collection<ErpPaymentMethodI> ccards = FDCustomerManager.getPaymentMethods(user.getIdentity());
+
+
             			user.getGiftCart().setPaymentMethod((ErpPaymentMethodI) ((ccards.toArray())[0]));
             			//Set the default web service type
             			user.getGiftCart().getDeliveryAddress().setWebServiceType(EnumWebServiceType.GIFT_CARD_PERSONAL);
@@ -369,12 +325,12 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             			FDReservation reservation= UserUtil.getFDReservation(user.getIdentity().getErpCustomerPK(),null);
             			user.getGiftCart().setDeliveryReservation(reservation);
             			
-            			List repList = convertSavedToErpRecipienntModel(user.getRecipientList().getRecipients(user.getGiftCardType()),user.getIdentity().getErpCustomerPK());	
+            			List<ErpRecipentModel> repList = convertSavedToErpRecipientModel(user.getRecipientList().getRecipients(user.getGiftCardType()),user.getIdentity().getErpCustomerPK());	
             			
             		    try {
     						String saleId;
 							
-								saleId = FDCustomerManager.placeGiftCardOrder(actionInfo, user.getGiftCart(), Collections.EMPTY_SET, false, rating, EnumDlvPassStatus.NONE, repList,false);
+								saleId = FDCustomerManager.placeGiftCardOrder(actionInfo, user.getGiftCart(), Collections.<String> emptySet(), false, rating, EnumDlvPassStatus.NONE, repList,false);
 							
     						
     						try{
@@ -417,41 +373,26 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
                      result.addError(new ActionError("technical_difficulty", "Could not update profile due to technical difficulty."));
                   }
             	   user.setRecipientList(new FDRecipientList());	
-            	    //validateGCBalanceTransfer(request, result);            		                           		                    
                 }
 
+            	// FIXME: this action has been moved to fd:GiftCardControllerTag, soon to be removed
             	if ("addBulkSavedRecipient".equalsIgnoreCase(actionName) ) {
-            		getBulkFormData(request, result);
-                    validateBulkGiftCard(request, result);
+            		GiftCardFormFields fld = new GiftCardFormFields(request);
+                    fld.validateBulkGiftCard(user, result);
                     if(result.getErrors().isEmpty()) {
-                    	FDBulkRecipientModel srm = populateBulkSavedRecipient();
+                    	FDBulkRecipientModel srm = fld.populateBulkSavedRecipient(user);
                                             	
-                    /*	for(int i=0;i<Integer.parseInt(fldQuantity);i++)
-            	    	{
-                    		SavedRecipientModel sm = populateSavedRecipient();
-            	    		srm.addRecipientList(sm);
-            	    		user.getRecipentList().addRecipient(sm);
-            	    	}
-                    */	
                         user.getBulkRecipentList().addRecipient(srm);  
                         
                     } 
             	}            	
+            	// FIXME: this action has been moved to fd:GiftCardControllerTag, soon to be removed
             	else if ("editBulkSavedRecipient".equalsIgnoreCase(actionName)) {            		
-            		getBulkFormData(request, result);
-                    validateBulkGiftCard(request, result);
+            		GiftCardFormFields fld = new GiftCardFormFields(request);
+                    fld.validateBulkGiftCard(user, result);
                     if(result.getErrors().isEmpty()) {
-                    	FDBulkRecipientModel srm = populateBulkSavedRecipient();
+                    	FDBulkRecipientModel srm = fld.populateBulkSavedRecipient(user);
                     	
-                    /*	
-                    	for(int i=0;i<Integer.parseInt(fldQuantity);i++)
-            	    	{
-                    		SavedRecipientModel sm = populateSavedRecipient();
-            	    		srm.addRecipientList(sm);
-            	    		user.getRecipentList().addRecipient(sm);
-            	    	}
-                    */	
-                    	//srm.setId(request.getParameter("recipId"));
                     	String repId = request.getParameter("recipId");
                 		if (repId == null) {
                 			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
@@ -459,12 +400,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 	                		int repIndex = -1;
 	                		try {
 	                			repIndex = user.getBulkRecipentList().getRecipientIndex(Integer.parseInt(repId));
-	                			FDBulkRecipientModel m=user.getBulkRecipentList().getRecipientById(repId);
-	                		/*	List recList=m.getRecipientsIdList();
-	                			for(int i=0;i<recList.size();i++){
-	                				SavedRecipientModel sm=(SavedRecipientModel)recList.get(i);
-	                				user.getRecipentList().removeOrderLineById(sm.getRandomId());
-	                			}  */
+	                			
 	                			
 	                		} catch (NumberFormatException nfe) {
 	                			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
@@ -476,7 +412,6 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 	                			user.getBulkRecipentList().setRecipient(repIndex, srm);
 	                		}
                 		}
-                    	//FDCustomerManager.updateSavedRecipient(user, srm);
                     }
                 }
                	
@@ -510,12 +445,12 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     }
     
     
-    private List convertSavedToErpRecipienntModel(List savedList,String customerId)
+    private List<ErpRecipentModel> convertSavedToErpRecipientModel(List<RecipientModel> savedList,String customerId)
 	{
-	 	ListIterator i = savedList.listIterator();
-	 	List recList=new ArrayList();
+	 	Iterator<RecipientModel> i = savedList.listIterator();
+	 	List<ErpRecipentModel> recList=new ArrayList<ErpRecipentModel>();
     	while(i.hasNext()) {    		
-    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
+    		RecipientModel srm = (RecipientModel)i.next();
     		ErpRecipentModel rm=new ErpRecipentModel();
     		rm.setCustomerId(customerId);
     		rm.toModel(srm);
@@ -543,251 +478,9 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
 		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
 				customerID, addressID, false,null,-1,null,false,null);
 		return reservation;
-
-	}
-    
-    
-    /**
-     * Retrieves form field data for processing by the tag.
-     * @param HttpServletRequest contains the form fields to be retrieved
-     */
-    private void getFormData(HttpServletRequest request, ActionResult result){
-    	
-    	fldAmount = request.getParameter("fldAmount");
-    	fldAltAmount =  request.getParameter("fldAltAmount");
-    	fldYourName =  request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode());
-    	fldRecipientName =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_NAME.getCode());
-    	fldYourEmail =  request.getParameter(EnumUserInfoName.GC_BUYER_EMAIL.getCode());
-    	fldRecipientEmail =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode());
-    	fldDeliveryMethod =  request.getParameter(EnumUserInfoName.DLV_METHOD.getCode());
-    	fldMessage =  request.getParameter("fldMessage");
-    	gcTemplateId = request.getParameter("gcTemplateId");
-    	fldQuantity = request.getParameter(EnumUserInfoName.GC_QUANTITY.getCode());
     }
     
-    
-    /**
-     * Retrieves form field data for processing by the tag.
-     * @param HttpServletRequest contains the form fields to be retrieved
-     */
-    private void getBulkFormData(HttpServletRequest request, ActionResult result){
     	
-    	fldAmount = request.getParameter("fldAmount");
-    	fldAltAmount =  request.getParameter("fldAltAmount");
-    	fldYourName =  request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode());
-    	fldRecipientName =  request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode());
-    	fldYourEmail =  request.getParameter(EnumUserInfoName.GC_BUYER_EMAIL.getCode());
-    	fldRecipientEmail =  request.getParameter(EnumUserInfoName.GC_BUYER_EMAIL.getCode());
-    	fldDeliveryMethod =  request.getParameter(EnumUserInfoName.DLV_METHOD.getCode());
-    	fldMessage =  request.getParameter("fldMessage");
-    	gcTemplateId = request.getParameter("gcTemplateId");
-    	fldQuantity = request.getParameter(EnumUserInfoName.GC_QUANTITY.getCode());
-    }
-    
-    
-    
-    
-    /**
-     * Checks for gift card data validity.
-     * @param HttpServletRequest request
-     * @param ActionResult result
-     */
-    private void validateandGCBalanceTransfer(HttpServletRequest request, ActionResult result) throws FDResourceException {
-    	
-    	
-    	String fromGC=request.getParameter("fromGiftcard");
-		String toGC=request.getParameter("toGiftCard");
-		String amountStr=request.getParameter("amount");
-    	
-    	if(fromGC==null || fromGC.length() < 1) {
-            result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_FROM.getCode(), "Invalid or missing From Account Number"));
-        }
-
-    	if(toGC==null || toGC.length() < 1) {
-            result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), "Invalid or missing To Account Number"));
-        }
-		
-    	if(amountStr==null || amountStr.length() < 1) {
-            result.addError(new ActionError(EnumUserInfoName.GC_AMOUNT.getCode(), "Invalid or missing Amount"));
-        }
-    	double amount=0;
-    	try{
-    		 amount=Double.parseDouble(amountStr);
-    	}catch(NumberFormatException e){
-    		result.addError(new ActionError(EnumUserInfoName.GC_AMOUNT.getCode(), "Invalid or missing Amount"));
-    	}
-    	
-    	 GiftCardManagerHome home= getGiftCardManagerHome();
-    	 GiftCardManagerSB remote=null;
-    	 try {
-			   remote= home.create();			   			   
-			try{
-				ErpGiftCardModel model=remote.validate(fromGC);
-				if(amount>model.getBalance())
-				{
-					result.addError(new ActionError(EnumUserInfoName.GC_AMOUNT.getCode(), "From Aaccount balance is less than transfer amount entered "));
-				}
-				
-			} catch (InvalidCardException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_FROM.getCode(), e.getMessage()));
-				return;
-			} catch (CardInUseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), e.getMessage()));
-				return;
-			}catch(CardOnHoldException e){
-				//user.incrementGCRetryCount();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), e.getMessage()));
-			}
-			
-			
-			try{
-				ErpGiftCardModel model=remote.validate(toGC);
-				
-			} catch (InvalidCardException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), e.getMessage()));
-				return;
-			} catch (CardInUseException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), e.getMessage()));
-				return;
-			}catch(CardOnHoldException e){
-				//user.incrementGCRetryCount();
-				result.addError(new ActionError(EnumUserInfoName.GC_ACCOUNT_TO.getCode(), e.getMessage()));
-			}						
-			
-									
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-    
-    
-    
-
-    
-    
-    /**
-     * Checks for gift card data validity.
-     * @param HttpServletRequest request
-     * @param ActionResult result
-     */
-    private void validateBulkGiftCard(HttpServletRequest request, ActionResult result) throws FDResourceException {
-    	if(fldYourName==null || fldYourName.length() < 1) {
-            result.addError(new ActionError(EnumUserInfoName.GC_BUYER_NAME.getCode(), "Invalid or missing name"));
-        }
-    	
-    	if(fldYourEmail==null || fldYourEmail.length() < 1) {
-            result.addError(new ActionError(EnumUserInfoName.GC_BUYER_EMAIL.getCode(), "Invalid or missing email"));
-        }else if(!EmailUtil.isValidEmailAddress(fldYourEmail)){
-    		result.addError(new ActionError(EnumUserInfoName.GC_BUYER_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT));
-    	}
-    	
-    	/*if(("OTHER".equals(fldAmount) ||fldAmount==null || fldAmount.length() < 1) && ( fldAltAmount==null || fldAltAmount.length() < 1)) {
-            result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
-        }*/  
-
-    	if((fldQuantity==null || fldQuantity.length() < 1)) {
-            result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
-        }else{
-        	try {
-				Integer qty = Integer.parseInt(fldQuantity);
-				if(qty<1){
-					result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
-				}
-			} catch (NumberFormatException e) {
-				result.addError(new ActionError(EnumUserInfoName.GC_QUANTITY.getCode(), "Invalid or missing quantity"));
-			}
-        }
-    	if(("OTHER".equals(fldAmount) ||fldAmount==null || "".equals(fldAmount)) && ( fldAltAmount==null || "".equals(fldAltAmount))) {
-            result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
-        }else {
-        	if(fldAltAmount != null && fldAltAmount.length() > 0) {
-        		try {
-					double amount = Double.parseDouble(fldAltAmount);
-					if(amount <=0){
-						result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
-					}else{
-						if(amount < FDStoreProperties.getGiftCardMinAmount()){
-							result.addError(new ActionError("gc_amount_minimum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MIN_AMOUNT, FDStoreProperties.getGiftCardMinAmount())));
-						}
-						if(amount > FDStoreProperties.getGiftCardMaxAmount()){
-							result.addError(new ActionError("gc_amount_maximum", formatGCMinMaxMsg(SystemMessageList.MSG_GC_MAX_AMOUNT, FDStoreProperties.getGiftCardMaxAmount())));
-						}
-					}
-				}catch (NumberFormatException e) {
-					  result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
-				}
-
-        	}
-        }
-    	
-    }
-    
-	private String formatGCMinMaxMsg(String pattern, double amount) {
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		String formattedAmt = FormatterUtil.formatToGrouping(amount);
-		return MessageFormat.format(
-			pattern,
-			new Object[] {formattedAmt, UserUtil.getCustomerServiceContact(request)});
-	}
-    
-    
-    
-    /**
-     * Adds new recipient to SavedRecipientModel
-     */
-    private SavedRecipientModel populateSavedRecipient() throws FDResourceException {
-    	SavedRecipientModel srm = new SavedRecipientModel();
-    	srm.setRecipientEmail(fldRecipientEmail);
-    	srm.setSenderEmail(fldYourEmail);
-    	srm.setDeliveryMode(EnumGCDeliveryMode.getEnum(fldDeliveryMethod));
-    	srm.setPersonalMessage(fldMessage);
-    	srm.setFdUserId(user.getPrimaryKey());
-    	srm.setSenderName(fldYourName);
-    	srm.setRecipientName(fldRecipientName);
-    	srm.setTemplateId(gcTemplateId);
-    	if(fldAmount != null && fldAmount.length() > 1 && !fldAmount.equalsIgnoreCase("other")) {
-    		srm.setAmount(Double.parseDouble(fldAmount));
-    	} else if(fldAltAmount != null && fldAltAmount.length() > 1) {
-    		srm.setAmount(Double.parseDouble(fldAltAmount));
-    	}
-    	return srm;
-    }
-    
-    /**
-     * Adds new recipient to SavedRecipientModel
-     */
-    private FDBulkRecipientModel populateBulkSavedRecipient() throws FDResourceException {
-    		FDBulkRecipientModel srm=new FDBulkRecipientModel(); 
-    	    srm.setRecipientEmail(fldRecipientEmail);
-	    	srm.setSenderEmail(fldYourEmail);
-	    	srm.setDeliveryMode(EnumGCDeliveryMode.PDF);
-	    	srm.setPersonalMessage(fldMessage);
-	    	srm.setFdUserId(user.getPrimaryKey());
-	    	srm.setSenderName(fldYourName);
-	    	srm.setRecipientName(fldRecipientName);
-	    	srm.setQuantity(fldQuantity);
-	    	srm.setTemplateId(gcTemplateId);
-	    	if(fldAmount != null && fldAmount.length() > 1 && !fldAmount.equalsIgnoreCase("other")) {
-	    		srm.setAmount(Double.parseDouble(fldAmount));
-	    	} else if(fldAltAmount != null && fldAltAmount.length() > 1) {
-	    		srm.setAmount(Double.parseDouble(fldAltAmount));
-	    	}
-	    	return srm;		    	    
-    }
-    
-    
 	private static GiftCardManagerHome getGiftCardManagerHome() {
 		try {
 			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager");

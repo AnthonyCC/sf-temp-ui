@@ -41,11 +41,11 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryModel = new ErpInventoryModel("SAP12345", now, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		Date[] availDates = new Date[0];
-		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
+		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
 		productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", now, materials, inventoryCache);
 
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");//::FDX::
 
 		assertFalse(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());
@@ -77,11 +77,11 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryModel   = new ErpInventoryModel("SAP12345", today, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		Date[] availDates = new Date[0];
-		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
+		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
                 productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache);
 
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");
 
 		assertFalse(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());
@@ -118,11 +118,11 @@ public class SkuModelAvailabilityTest extends TestCase {
 		inventoryModel   = new ErpInventoryModel("SAP12345", today, erpEntries);
 		inventoryCache.addInventory(materials[0], inventoryModel);
 		Date[] availDates = new Date[0];
-		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1, availDates);
+		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 		
                 productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache, EnumAvailabilityStatus.DISCONTINUED);
 		
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");
 
 		assertTrue(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());

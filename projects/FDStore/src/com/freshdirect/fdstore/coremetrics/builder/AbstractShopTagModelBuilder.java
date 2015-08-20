@@ -9,6 +9,7 @@ import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineDealHelper;
 import com.freshdirect.fdstore.customer.FDCartLineDealHelper.DealType;
@@ -30,6 +31,7 @@ public abstract class AbstractShopTagModelBuilder {
 	}
 	
 	public static ShopTagModel createTagModel(FDCartLineI cartLine, ProductReference productRef, boolean isStandingOrder) throws SkipTagException {
+		CmContext context = CmContext.getContext();
 		
 		ShopTagModel tagModel = new ShopTagModel();
 		ProductModel product = productRef.lookupProductModel();
@@ -146,8 +148,12 @@ public abstract class AbstractShopTagModelBuilder {
 		attributesMap.put(12, cartLine.getCoremetricsPageId());
 		attributesMap.put(13, cartLine.getCoremetricsVirtualCategory());
 
+		// prefix categoryId
+		tagModel.setCategoryId( context.prefixedCategoryId( tagModel.getCategoryId() ) );
+		
 		return tagModel;
 	}
+
 	
 	public void setCart(FDCartModel cart) {
 		this.cart = cart;

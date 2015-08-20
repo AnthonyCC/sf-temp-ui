@@ -29,7 +29,7 @@
     
     /* REPLACE THIS FINDER LOGIC ONCE THE KANA COMMUNICATION IS HOOKED UP */
 
-	FDOrderI order = FDCustomerManager.getOrder(orderId);    
+	FDOrderI order = FDCustomerManager.getOrderForCRM(orderId);    
 
 	//  Need to do this here now because this page can be called from pending_credit_list.jsp
 	if (inPopup) {

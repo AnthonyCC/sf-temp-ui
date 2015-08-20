@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class Timeslot implements DateFormat {
         this.cutoffDate = slot.getCutoffDateTime();
         this.isChefsTable = slot.isChefsTable();
         this.full = slot.isFull();
+        
         this.steeringDiscount = slot.getSteeringDiscount();
         this.ecoFriendly = slot.isEcoFriendly();
         this.isDepot = slot.isDepot();

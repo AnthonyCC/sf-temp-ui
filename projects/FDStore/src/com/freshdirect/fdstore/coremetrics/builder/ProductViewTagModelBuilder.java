@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ProductViewTagModel;
 
 
@@ -24,6 +25,7 @@ public class ProductViewTagModelBuilder {
 	}
 
 	public ProductViewTagModel buildTagModel()  throws SkipTagException {
+		CmContext context = CmContext.getContext();
 		
 		if (productModel == null) {
 			throw new SkipTagException("productModel is null");
@@ -31,22 +33,13 @@ public class ProductViewTagModelBuilder {
 			
 			model.setProductId(productModel.getContentKey().getId());
 			model.setProductName(productModel.getFullName());
-			model.setCategoryId(productModel.getCategory().getContentKey().getId());
+			model.setCategoryId( context.prefixedCategoryId( productModel.getCategory().getContentKey().getId() ) );
 			
 			model.getAttributesMaps().put(1, productModel.getDefaultSkuCode());
 			if(productModel.getAutoconfiguration()!=null && productModel.getAutoconfiguration().getOptions()!=null && productModel.getAutoconfiguration().getOptions().size()>0){
 				model.getAttributesMaps().put(2, productModel.getAutoconfiguration().getOptions().toString());				
 			}
 			model.getAttributesMaps().put(3, quickbuy ? "quick_buy" : "normal");
-			
-//			//Additional Coremetrics attributes [APPDEV-3073]
-//			int currentAttributeIndex = 4;
-//			//Up to 4 items maximum
-//			for (ContentNodeModel contentNode : TagModelUtil.getPageLocationSubset(productModel)) {
-//				model.getAttributesMaps().put(currentAttributeIndex++, contentNode.getContentName());
-//			}
-//			
-//			model.getAttributesMaps().put(8,TagModelUtil.getPageIdFromProductModel(productModel));
 			
 			return model;
 		}

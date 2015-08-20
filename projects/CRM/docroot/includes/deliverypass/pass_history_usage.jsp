@@ -289,9 +289,9 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 								String reason = null;
 								if(activity.getActivityType() == EnumAccountActivityType.CREDIT_DLV_PASS ||
 									activity.getActivityType() == EnumAccountActivityType.EXTEND_DLV_PASS) {
-									reason = EnumDlvPassExtendReason.getEnum(activity.getReason()).getDisplayName();
+									reason = (EnumDlvPassExtendReason.getEnum(activity.getReason()) != null) ? EnumDlvPassExtendReason.getEnum(activity.getReason()).getDisplayName() : null;
 								} else if(activity.getActivityType() == EnumAccountActivityType.CANCEL_DLV_PASS) {
-									reason = EnumDlvPassCancelReason.getEnum(activity.getReason()).getDisplayName();
+									reason = (EnumDlvPassCancelReason.getEnum(activity.getReason()) != null) ? EnumDlvPassCancelReason.getEnum(activity.getReason()).getDisplayName() : null;;
 								}
 							%>	
 							<%= reason %>

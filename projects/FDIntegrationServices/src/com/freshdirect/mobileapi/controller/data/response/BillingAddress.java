@@ -12,6 +12,7 @@ public class BillingAddress extends Address {
         this.apartment = paymentMethod.getApartment();
         this.city = paymentMethod.getCity();
         this.state = paymentMethod.getState();
+        this.country = paymentMethod.getCountry();
         this.postalCode = paymentMethod.getZipCode();
     }
 

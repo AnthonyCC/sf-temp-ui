@@ -14,7 +14,26 @@
 		last="true">/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to>
 		</rule>
 	-->
-
+	
+		<!-- Social Login  -->
+	<rule>
+		<from>^/v/([0-9]+)/social/login/</from>
+		<to last="true">/sociallogin.do?action=login&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/social/linkaccount/</from>
+		<to last="true">/sociallogin.do?action=linkaccount&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/social/unlinkaccount/</from>
+		<to last="true">/sociallogin.do?action=unlinkaccount&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/social/socialConnect/</from>
+		<to last="true">/sociallogin.do?action=socialConnect&amp;ver=$1</to>
+	</rule>
+	
+	
 	<!-- Search Autocomplete -->
 	<rule>
 		<from>^/v/([0-9]+)/search/autocomplete/(.*)</from>
@@ -38,6 +57,23 @@
 		<from>^/v/([0-9]+)/search/$</from>
 		<to last="true">/search.do?ver=$1</to>
 	</rule>
+	<!-- Search -->
+	<rule>
+		<from>^/v/([0-9]+)/searchEX/query/(.*)</from>
+		<to last="true">/search.do?action=searchEX&amp;searchTerm=$2&amp;ver=$1</to>
+	</rule>
+
+	<!-- UPC Search -->
+	<rule>
+		<from>^/v/([0-9]+)/searchEX/upc/(.*)</from>
+		<to last="true">/search.do?action=searchEX&amp;upc=$2&amp;ver=$1</to>
+	</rule>
+
+	<!-- Search with payload -->
+	<rule>
+		<from>^/v/([0-9]+)/searchEX/$</from>
+		<to last="true">/search.do?action=searchEX&amp;ver=$1</to>
+	</rule>
 
 	<!-- View Product -->
 	<rule>
@@ -59,6 +95,12 @@
 	<rule>
 		<from>^/v/([0-9]+)/product/getrelatedproducts/catid/(.*)/id/(.*)</from>
 		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=getrelatedproducts&amp;ver=$1</to>
+	</rule>
+	
+	<!-- View Recommended Product -->
+	<rule>
+		<from>^/v/([0-9]+)/product/Recommended/catid/(.*)/id/(.*)</from>
+		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=recommended&amp;ver=$1</to>
 	</rule>
 	
 	<!-- User -->
@@ -93,7 +135,19 @@
 		<from>^/v/([0-9]+)/(.*)/login/$</from>
 		<to last="true">/login.do?action=login&amp;ver=$1</to>
 	</rule>
-
+	
+	<!-- Session -->
+    <rule>
+        <from>^/v/([0-9]+)/(.*)/session/check/</from>
+        <to last="true">/login.do?action=checksession&amp;ver=$1</to>
+    </rule>	
+       
+    
+    <rule>
+        <from>^/v/([0-9]+)/(.*)/session/addanonymousaddress/</from>
+        <to last="true">/login.do?action=addanonymousaddress&amp;ver=$1</to>
+    </rule>
+     	
 	<!--  Zip Check  -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/zipcheck/checkbyzip/</from>
@@ -103,16 +157,41 @@
 		<from>^/v/([0-9]+)/(.*)/zipcheck/checkbyaddress/</from>
 		<to last="true">/zipcheck.do?action=checkbyaddress&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/zipcheck/checkbyaddressEX/</from>
+		<to last="true">/zipcheck.do?action=checkbyaddressEX&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/globalalerts/</from>
+		<to last="true">/zipcheck.do?action=globalalerts&amp;ver=$1</to>
+	</rule>
 	<!--  Sign Up -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/register/</from>
 		<to last="true">/register.do?action=register&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/registerfdx/</from>
+		<to last="true">/register.do?action=registerfdx&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/registersocial/</from>
+		<to last="true">/register.do?action=registersocial&amp;ver=$1</to>
 	</rule>
 		
 	<!-- Cart : Apply Promo -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/cart/promo/apply/(.*)$</from>
 		<to last="true">/cart.do?action=applypromo&amp;promoId=$3&amp;ver=$1</to>
+	</rule>
+	
+	<!-- Cart : Apply Promo/GiftCard -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/cart/code/apply/(.*)$</from>
+		<to last="true">/cart.do?action=applycode&amp;promoId=$3&amp;ver=$1</to>
 	</rule>
 
 	<!-- Cart : Remove Promo -->
@@ -168,6 +247,12 @@
 		<to last="true">/cart.do?action=clipcoupon&amp;couponId=$3&amp;ver=$1</to>
 	</rule>
 	
+	<!-- Cart : Set Tip -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/cart/tip/set/(.*)$</from>
+		<to last="true">/cart.do?action=settip&amp;tipAmount=$3&amp;ver=$1</to>
+	</rule>
+	
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Init Checkout -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -212,6 +297,10 @@
 		<to last="true">/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddress/set/$</from>
+		<to last="true">/checkout.do?action=setdeliveryaddressex&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/dpacceptterms/</from>
 		<to last="true">/checkout.do?action=acceptDeliveryPassTermsAndConditions&amp;ver=$1</to>
 	</rule>	
@@ -219,6 +308,18 @@
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/add/</from>
 		<to last="true">/register.do?action=adddeliveryaddress&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/deliveryaddress/save/</from>
+		<to last="true">/register.do?action=savedeliveryaddress&amp;ver=$1</to>
+	</rule>
+	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/setmobilepreferences/</from>
+        <to last="true">/register.do?action=setmobilepreferences&amp;ver=$1</to>
+    </rule>
+	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/setemailpreferences/</from>
+        <to last="true">/register.do?action=setemailpreferences&amp;ver=$1</to>
+    </rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
 		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>
@@ -256,6 +357,10 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/deliverytimeslot/reserve/(.*)/$</from>
 		<to last="true">/checkout.do?action=reservetimeslot&amp;slotId=$3&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliverytimeslot/reserveex/(.*)/$</from>
+		<to last="true">/checkout.do?action=reservetimeslotex&amp;slotId=$3&amp;ver=$1</to>
+	</rule>
 
 	<!-- Deprecated -->
 	<rule>
@@ -290,6 +395,10 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/set/</from>
 		<to last="true">/checkout.do?action=setpaymentmethod&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/setex/</from>
+		<to last="true">/checkout.do?action=setPaymentMethodEx&amp;ver=$1</to>
+	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Add/Edit/Delete Payment Method -->
@@ -308,6 +417,10 @@
 		<to last="true">/checkout.do?action=editpaymentmethod&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/save/</from>
+		<to last="true">/checkout.do?action=savepaymentmethod&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/delete/</from>
 		<to last="true">/checkout.do?action=deletepaymentmethod&amp;ver=$1</to>
 	</rule>
@@ -315,6 +428,11 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/ordersubmit/</from>
 		<to last="true">/checkout.do?action=submitorder&amp;ver=$1</to>
+	</rule>
+	<!-- Submit Order FDX -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/submitorderex/</from>
+		<to last="true">/checkout.do?action=submitOrderEx&amp;ver=$1</to>
 	</rule>
 
 	<!-- Order Detail -->
@@ -390,6 +508,11 @@
 		<from>^/v/([0-9]+)/(.*)/order/(.*)/detail$</from>
 		<to last="true">/order.do?action=getorderdetail&amp;orderId=$3&amp;ver=$1</to>
 	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/order/details/</from>
+		<to last="true">/order.do?action=getExistingOrders&amp;ver=$1</to>
+	</rule>
 
 	<!-- Cancel pending order -->
 	<rule>
@@ -419,6 +542,12 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/(.*)/modify$</from>
 		<to last="true">/order.do?action=modifyorder&amp;orderId=$3&amp;ver=$1</to>
+	</rule>
+	
+	<!-- Modify Check -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/order/checkmodify</from>
+		<to last="true">/order.do?action=checkmodify&amp;ver=$1</to>
 	</rule>
 
 	<!-- Modify Check -->
@@ -474,6 +603,12 @@
 		<from>^/v/([0-9]+)/(.*)/quickshop/geteveryitemeverordered/</from>
 		<to last="true">/order.do?action=geteveryitemeverordered&amp;ver=$1</to>
 	</rule>
+
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/quickshop/geteveryitemeverorderedEX/</from>
+		<to last="true">/order.do?action=geteveryitemeverorderedEX&amp;ver=$1</to>
+	</rule>
+
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/quickshop/dept/id/(.*)/filterdays/(.*)/sortby/(.*)/geteveryitemfordept/</from>
 		<to last="true">/order.do?orderId=every&amp;qsDeptId=$3&amp;qsNoOfFilterDays=$4&amp;qsSortBy=$5&amp;action=geteveryitemfordept&amp;ver=$1</to>
@@ -616,6 +751,10 @@
 		<from>^/v/([0-9]+)/(.*)/account/timeslots/reserve$</from>
 		<to last="true">/account.do?action=reservetimeslot&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/timeslots/reserveex$</from>
+		<to last="true">/account.do?action=reservetimeslotex&amp;ver=$1</to>
+	</rule>
 	<!-- Delivery Info : Get Timeslots -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/timeslots/(.*)$</from>
@@ -653,7 +792,7 @@
 	</rule>
 	
 	<!-- Help -->
-		
+	
 	<!-- Browse -->
 	<rule>
 		<from>^/v/([0-9]+)/browse/departments/(.*)</from>
@@ -662,6 +801,10 @@
 	<rule>
 		<from>^/v/([0-9]+)/browse/categories/(.*)</from>
 		<to last="true">/browse.do?action=getCategories&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/sortoptionsforcategory/(.*)</from>
+		<to last="true">/browse.do?action=getSortOptionsForCategory&amp;&amp;ver=$1</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/browse2/(.*)</from>
@@ -687,8 +830,22 @@
 		<from>^/v/([0-9]+)/browse/getproducts/(.*)</from>
 		<to last="true">/browse.do?action=getAllProducts&amp;ver=$1</to>
 	</rule>
-	
-
+	<rule>
+		<from>^/v/([0-9]+)/browse/getproducts/(.*)</from>
+		<to last="true">/browse.do?action=getAllProducts&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/getproductsEX/(.*)</from>
+		<to last="true">/browse.do?action=getAllProductsEX&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/getCatalogForAddress/(.*)</from>
+		<to last="true">/browse.do?action=getCatalogForAddress&amp;ver=$1</to>
+	</rule>
+<rule>
+		<from>^/v/([0-9]+)/browse/getCatalogIdForAddress/(.*)</from>
+		<to last="true">/browse.do?action=getCatalogIdForAddress&amp;ver=$1</to>
+	</rule>
 	<!-- Ideas -->
 	<rule>
 		<from>^/v/([0-9]+)/ideas/home/(.*)</from>
@@ -766,6 +923,11 @@
 	<rule>
 		<from>^/v/([0-9]+)/ext/t003(.*)</from>
 		<to last="true">/fdinterface.do?action=smsMessageRelay&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/ext/t004(.*)</from>
+		<to last="true">/fdinterface.do?action=fdxsmsMessageRelay&amp;ver=$1</to>
 	</rule>
 	
 	<!-- Lookup -->

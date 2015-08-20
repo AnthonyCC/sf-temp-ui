@@ -4,6 +4,7 @@ package com.freshdirect.webapp.util;
 import java.util.Iterator;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
@@ -120,7 +121,7 @@ public class ProductImpression {
 	 */
 	public String[] getScaledPrices() {
             FDProduct fdProduct = getFDProduct();
-            return fdProduct != null ? fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScaleDisplay() : new String[0];
+            return fdProduct != null ? fdProduct.getPricing().getZonePrice(getPricingZone()).getScaleDisplay() : new String[0];
 	}
 
 
@@ -132,7 +133,7 @@ public class ProductImpression {
         public int[] getScaledPercentages(double basePrice) {
             FDProduct fdProduct = getFDProduct();
             if (fdProduct != null) {
-                int[] scalePercentage = fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScalePercentage(basePrice);
+                int[] scalePercentage = fdProduct.getPricing().getZonePrice(getPricingZone()).getScalePercentage(basePrice);
                 for (int i = 0; i < scalePercentage.length; i++)
                     if (DealsHelper.isDealOutOfBounds(scalePercentage[i]))
                         scalePercentage[i] = 0;
@@ -192,18 +193,23 @@ public class ProductImpression {
 		return isValid;
 	}
 	
-	public String getPricingZoneId(){
+	public ZoneInfo getPricingZone(){
+		
 		PricingContext pCtx = this.calculator.getPricingContext();
-		return pCtx.getZoneId();
+		return pCtx.getZoneInfo();
 	}
 	
 	public boolean isGroupExists(String skuCode) {
 		boolean groupExists = false;
 		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
+		String salesOrg=this.calculator.getPricingContext().getZoneInfo().getSalesOrg();
+		String distributionChannel=this.calculator.getPricingContext().getZoneInfo().getDistributionChanel();
 		while(it.hasNext()){
 			SkuModel sku = it.next();
 			try{
-				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().isGroupExists() && sku.getSkuCode().equals(skuCode)) {
+	            
+
+				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().isGroupExists(salesOrg,distributionChannel) && sku.getSkuCode().equals(skuCode)) {
 					//if atleast one sku participates in a group.
 					groupExists = true;
 					break;
@@ -224,12 +230,14 @@ public class ProductImpression {
 	public FDGroup getFDGroup() {
 		FDGroup group = null;
 		Iterator<SkuModel> it = this.getProductModel().getSkus().iterator();
+		String salesOrg=this.calculator.getPricingContext().getZoneInfo().getSalesOrg();
+		String distributionChannel=this.calculator.getPricingContext().getZoneInfo().getDistributionChanel();
 		while(it.hasNext()){
 			SkuModel sku = it.next();
 			try{
 				if(sku != null && !sku.isUnavailable()) {
 					//if atleast one sku participates in a group.
-					group = sku.getProductInfo().getGroup() ;
+					group = sku.getProductInfo().getGroup(salesOrg,distributionChannel) ;
 					if(group != null)
 						break;
 				}

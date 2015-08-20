@@ -11,6 +11,7 @@ public class ATPFailureInfo implements Serializable {
 	private final String salesUnit;
 	private final double availableQuantity;
 	private final String erpCustomerId;
+	private final String plantId;
 
 	public ATPFailureInfo(
 		Date requestedDate,
@@ -18,7 +19,8 @@ public class ATPFailureInfo implements Serializable {
 		double requestedQuantity,
 		String salesUnit,
 		double availableQuantity, 
-		String erpCustomerId) {
+		String erpCustomerId,
+		String plantId) {
 
 		this.requestedDate = requestedDate;
 		this.materialNumber = materialNumber;
@@ -26,6 +28,7 @@ public class ATPFailureInfo implements Serializable {
 		this.salesUnit = salesUnit;
 		this.availableQuantity = availableQuantity;
 		this.erpCustomerId = erpCustomerId;
+		this.plantId = plantId;
 	}
 
 	public Date getRequestedDate() {
@@ -52,19 +55,22 @@ public class ATPFailureInfo implements Serializable {
 		return erpCustomerId;
 	}
 
+	
+	public String getPlantId() {
+		return plantId;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
-		return "[ATPFailureInfo: RequestedDate: "
-			+ this.requestedDate
-			+ " materialNumber: "
-			+ this.materialNumber
-			+ " requestedQuantity: "
-			+ this.requestedQuantity
-			+ " salesUnit: "
-			+ this.salesUnit
-			+ " availableQuantity: "
-			+ this.availableQuantity
-			+ " erpCustomer ID is "
-			+ this.erpCustomerId;
+		return "ATPFailureInfo [requestedDate=" + requestedDate
+				+ ", materialNumber=" + materialNumber + ", requestedQuantity="
+				+ requestedQuantity + ", salesUnit=" + salesUnit
+				+ ", availableQuantity=" + availableQuantity
+				+ ", erpCustomerId=" + erpCustomerId + ", plantId=" + plantId
+				+ "]";
 	}
 
 }

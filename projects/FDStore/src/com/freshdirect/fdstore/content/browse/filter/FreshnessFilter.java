@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilterCacheStrategy;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductFilterModel;
@@ -21,17 +22,17 @@ public class FreshnessFilter extends AbstractRangeFilter {
 		if (ctx == null || ctx.getProductModel() == null) {
 			return false;
 		}
-
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		// Perishable product - freshness warranty
 		FDProductInfo productInfo = ctx.getFdProductInfo();
-		if (productInfo.getFreshness() != null) {
+		if (productInfo.getFreshness(plantID) != null) {
 			// method above returns either a positive integer encoded in string
 			// or null
 			try {
-				final double value = Integer.parseInt(productInfo.getFreshness());
+				final double value = Integer.parseInt(productInfo.getFreshness(plantID));
 				return invertChecker(isWithinRange(value));
 			} catch (NumberFormatException exc) {
-				LOGGER.error("Failed to parse freshness value " + productInfo.getFreshness(), exc);
+				LOGGER.error("Failed to parse freshness value " + productInfo.getFreshness(plantID), exc);
 				return false;
 			}
 		}

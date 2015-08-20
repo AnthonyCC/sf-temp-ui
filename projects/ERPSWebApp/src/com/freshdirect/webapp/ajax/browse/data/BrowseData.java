@@ -289,6 +289,8 @@ public class BrowseData implements Serializable {
 
 		private static final long serialVersionUID = 7747507856218538577L;
 		private String searchParams;
+		private String listSearchParams;
+		private List<String> listSearchParamsList;
 		private String searchTerm;
 		private List<String> suggestions;
 		private List<Tab> tabs = null;
@@ -390,6 +392,22 @@ public class BrowseData implements Serializable {
 
 		public void setNumberOfNewProducts(Integer numberOfNewProducts) {
 			this.numberOfNewProducts = numberOfNewProducts;
+		}
+
+		public String getListSearchParams() {
+			return listSearchParams;
+		}
+
+		public void setListSearchParams(String listSearchParams) {
+			this.listSearchParams = listSearchParams;
+		}
+
+		public List<String> getListSearchParamsList() {
+			return listSearchParamsList;
+		}
+
+		public void setListSearchParamsList(List<String> listSearchParamsList) {
+			this.listSearchParamsList = listSearchParamsList;
 		}
 	}
 	

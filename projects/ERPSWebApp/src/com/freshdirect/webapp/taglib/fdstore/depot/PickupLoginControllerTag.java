@@ -7,6 +7,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -18,6 +19,7 @@ import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class PickupLoginControllerTag extends AbstractControllerTag {
 
@@ -27,8 +29,8 @@ public class PickupLoginControllerTag extends AbstractControllerTag {
 		HttpSession session = (HttpSession) pageContext.getSession();
 		FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 		if (user == null) try {
-
-			user = new FDSessionUser(FDCustomerManager.createNewUser((String)null, EnumServiceType.PICKUP), session);
+			StoreContext storeContext = StoreContextUtil.getStoreContext(session);
+			user = new FDSessionUser(FDCustomerManager.createNewUser((String)null, EnumServiceType.PICKUP, storeContext.getEStoreId()), session);
 
 			session.setAttribute(SessionName.USER, user);
 		

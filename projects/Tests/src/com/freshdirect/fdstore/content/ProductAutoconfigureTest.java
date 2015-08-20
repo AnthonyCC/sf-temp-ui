@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.content;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,8 @@ import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDMaterial;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDPlantMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -38,10 +41,12 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
+import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
  * Test case for the availability of ConfiguredProducts.
@@ -219,15 +224,29 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 			inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 
 			Date[] availDates = new Date[0];
-			productInfo    = new FDProductInfo(sku,
+			Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
+				{
+					put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+				}
+			};
+			
+			Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
+				{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+				};
+			};
+/*			productInfo    = new FDProductInfo(sku,
 					                           1,
 					                           materials,
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,null, null, availDates,null);
+					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,null, null, null,plantInfo,mAvail);
 
-			return productInfo;
+			return productInfo;*/
+			
+			
+			
+			return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
 		}
 	}
 	

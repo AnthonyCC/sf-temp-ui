@@ -74,5 +74,12 @@ public interface SessionName {
 	public static final String CART_PAYMENT_SELECTION_DISABLED = "cartPaymentSelectionDisabled";
     public static final String PAYMENT_BILLING_REFERENCE = "paymentBillingReference";
 
+	public static final String STORE_CONTEXT= "STORE_CONTEXT";
+	public static final String SOCIAL_USER = "socialUser";
+	public static final String LAST_PAGE = "lastpage";
 	
+	public static final String PENDING_SOCIAL_ACTIVATION = "pendingSocialActivation";
+	public static final String TICK_TIE_CUSTOMER = "TICK_TIE_CUSTOMER";
+	public static final String LITECONTACTINFO ="LITECONTACTINFO";
+	public static final String LITEACCOUNTINFO ="LITEACCOUNTINFO";
 }

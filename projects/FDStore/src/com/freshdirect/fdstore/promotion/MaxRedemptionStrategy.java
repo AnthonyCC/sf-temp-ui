@@ -9,11 +9,12 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 		this.maxRedemptions = maxRedemptions;
 	}
 
+	@Override
 	public int getPrecedence() {
-		// TODO Auto-generated method stub
 		return 30;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		if(context.isAlreadyRedeemedPromotion(promotionCode) || context.getUser().getAllAppliedPromos().contains(promotionCode)){
 			//allow if modifying that order OR Promotion already applied beginning of the session. Give it to the customer. 
@@ -42,5 +43,10 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 	
 	public int getMaxRedemptions() {
 		return this.maxRedemptions;
+	}
+
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }

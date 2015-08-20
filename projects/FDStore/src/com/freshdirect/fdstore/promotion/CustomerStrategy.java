@@ -47,6 +47,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		
 	}
 	
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		
 		//Evaluate Cohorts
@@ -168,6 +169,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return false;
 	}
 	
+	@Override
 	public int getPrecedence() {
 		return 2000;
 	}
@@ -181,7 +183,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return convertToCohortNames(this.cohorts);
 	}
 
-	public Set getCohorts() {
+	public Set<String> getCohorts() {
 		return this.cohorts;
 	}
 	
@@ -366,14 +368,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 						||(EnumComparisionType.LESS_OR_EQUAL.equals(eCheckMatchType) && validEcheckOrderCount  > priorEcheckUse)){
 					isEligible = false;
 				}
-//				if(validEcheckOrderCount  < priorEcheckUse) return DENY;
 			}
-			/*if(priorEcheckUse > 0 && cardType.equals(EnumCardType.ECP)){
-				int validEcheckOrderCount = context.getSettledECheckOrderCount();
-				if(validEcheckOrderCount  < priorEcheckUse){
-					isEligible = false;
-				}
-			}*/
 		}
 		return isEligible;
 	}
@@ -400,4 +395,9 @@ public class CustomerStrategy implements PromotionStrategyI {
 		eCheckMatchType = checkMatchType;
 	}
 
+	
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

@@ -15,10 +15,12 @@ public class RecommendationServiceType extends Enum {
 	private static final long serialVersionUID = -14506744566071264L;
 
 	/** DYF: frequently bought. */
+	@Deprecated
 	public final static RecommendationServiceType FREQUENTLY_BOUGHT_DYF = 
 			new RecommendationServiceType("freqbought_dyf");
 	
 	/** DYF: random selection. */	
+	@Deprecated
 	public final static RecommendationServiceType RANDOM_DYF =
 			new RecommendationServiceType("random_dyf");
 	

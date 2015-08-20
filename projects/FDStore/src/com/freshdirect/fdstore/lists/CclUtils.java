@@ -3,8 +3,6 @@ package com.freshdirect.fdstore.lists;
 import java.util.List;
 
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.fdstore.util.SiteFeatureHelper;
 
 public class CclUtils {
 	
@@ -34,10 +32,9 @@ public class CclUtils {
 	/**
 	 * @param user
 	 * @return
-	 * @deprecated use {@link SiteFeatureHelper.isEnabled(EnumSiteFeature feature, FDUserI user)} instead
 	 */
 	@Deprecated
 	public static boolean isCCLEnabled(FDUserI user) {
-		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, user);
+		return true;
 	}
 }

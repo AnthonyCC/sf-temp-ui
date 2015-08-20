@@ -17,6 +17,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 /**
  * @author jng
  */
+@Deprecated
 public class GetPromoCustomerInfoListTag extends AbstractGetterTag {
 
 	private String promotionId;

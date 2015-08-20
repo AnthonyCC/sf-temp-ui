@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.lists.ejb;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -91,9 +92,9 @@ public class FDListManagerTestCase extends FDCustomerManagerTestSupport {
 
 	
 	private FDCustomerCreatedList getCCLByName(FDIdentity identity, String name) throws Exception {
-		List l = dao.getCustomerCreatedLists(conn, identity);
-		for (Iterator it = l.iterator(); it.hasNext();) {
-			FDCustomerCreatedList list = (FDCustomerCreatedList) it.next();
+		List<FDCustomerCreatedList> l = dao.getCustomerCreatedLists(conn, identity, StoreContext.createDefault());
+		for (Iterator<FDCustomerCreatedList> it = l.iterator(); it.hasNext();) {
+			FDCustomerCreatedList list = it.next();
 			if (list.getName().equals(name)) {
 				return list;
 			}
@@ -101,12 +102,12 @@ public class FDListManagerTestCase extends FDCustomerManagerTestSupport {
 		return null;
 	}
 
-	private List getCCLs(FDIdentity identity) throws Exception {
-		return dao.getCustomerCreatedLists(conn, identity);
+	private List<FDCustomerCreatedList> getCCLs(FDIdentity identity) throws Exception {
+		return dao.getCustomerCreatedLists(conn, identity, StoreContext.createDefault());
 	}
 
 	
 	private void createCCLByName(FDIdentity identity, String listName) throws Exception {
-		dao.createCustomerCreatedList(conn, identity, listName);
+		dao.createCustomerCreatedList(conn, identity, listName, storeContext);
 	}
 }

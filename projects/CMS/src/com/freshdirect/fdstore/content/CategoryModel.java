@@ -23,6 +23,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.ejb.FDProductPromotionManager;
@@ -57,16 +58,16 @@ public class CategoryModel extends ProductContainer {
 	private final List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
-	    String zoneId;
+		ZoneInfo pricingZone;
 
-        private RecommendedProductsRef(Executor executor, String zoneId) {
+        private RecommendedProductsRef(Executor executor, ZoneInfo pricingZone) {
             super(FIVE_MINUTES, executor);
-            this.zoneId = zoneId;
+            this.pricingZone = pricingZone;
             // synchronous load
             try {
                 set(load());
             } catch (RuntimeException e) {
-                LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
+                LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and pricingZone " + pricingZone
                         + " synchronously");
             }
         }
@@ -77,7 +78,7 @@ public class CategoryModel extends ProductContainer {
 			ContentKey categoryId = CategoryModel.this.getContentKey();
 			final Recommender recommender = CategoryModel.this.getRecommender();
             ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
-			LOGGER.debug("loader started for category " + categoryId + ", zone " + zoneId + ", recommender: " + recommenderId);
+			LOGGER.debug("loader started for category " + categoryId + ", pricingZone " + pricingZone + ", recommender: " + recommenderId);
 			
 			if ( recommenderService == null || recommenderId == null ) {
 				LOGGER.warn("recommender service ("
@@ -88,14 +89,14 @@ public class CategoryModel extends ProductContainer {
 				throw new RuntimeException();
 			}
 			
-			List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
+			List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, pricingZone);
 			List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
 			for ( String productId : prodIds ) {
 				ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
 				if ( product instanceof ProductModel && !products.contains( product ) )
 					products.add( (ProductModel)product );
 			}
-			LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
+			LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + pricingZone);
 			return products;
 		}
 		
@@ -110,8 +111,8 @@ public class CategoryModel extends ProductContainer {
 		}
 		
 		@SuppressWarnings( "unused" )
-		public String getZoneId() {
-			return zoneId;
+		public ZoneInfo getZoneInfo() {
+			return pricingZone;
 		}
 	}
 
@@ -123,11 +124,11 @@ public class CategoryModel extends ProductContainer {
 	private final class ProductPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
 
 		private String productPromotitonType; 
-		private String zoneId;
+		private ZoneInfo pricingZone;
 		
-		public ProductPromotionDataRef(Executor executor, String zoneId, String productPromotitonType) {
+		public ProductPromotionDataRef(Executor executor, ZoneInfo pricingZone, String productPromotitonType) {
 			super(FIVE_MINUTES, executor);
-			this.zoneId = zoneId;
+			this.pricingZone = pricingZone;
 			this.productPromotitonType = productPromotitonType;
 			
 			// synchronous load
@@ -151,7 +152,7 @@ public class CategoryModel extends ProductContainer {
 		public void loadProductPromotionData(
 				ProductPromotionData productPromotionData) {
 			try {
-				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap ;
+				Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap ;
 				String ppType =productPromotitonType;
 				if(null !=ppType){
 					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
@@ -165,7 +166,7 @@ public class CategoryModel extends ProductContainer {
 					synchronized (FDProductPromotionManager.getInstance()) {					
 						productPromoInfoMap = FDProductPromotionManager.getProductPromotion(ppType);				
 					}
-					populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
+					populateProductPromotionData(productPromotionData,productPromoInfoMap,pricingZone,false);
 				}else{										
 					Map<String, Set<FDCouponUPCInfo>> fdUpcCouponMap =FDCouponFactory.getInstance().getFdUpcCouponMap();
 					populateProductPromotionData(productPromotionData,fdUpcCouponMap);					
@@ -225,15 +226,15 @@ public class CategoryModel extends ProductContainer {
 	
 	public ProductPromotionData populateProductPromotionData(
 			ProductPromotionData productPromotionData,
-			Map<String, List<FDProductPromotionInfo>> productPromoInfoMap,String zoneId,boolean isPreview)
+			Map<ZoneInfo, List<FDProductPromotionInfo>> productPromoInfoMap,ZoneInfo pricingZone,boolean isPreview)
 			throws FDResourceException {
 		Map<String, ProductModel> skuProductMap = new HashMap<String, ProductModel>();
 		List<ProductModel> productModels = new ArrayList<ProductModel>();
 		if(null !=productPromoInfoMap){
-			List<FDProductPromotionInfo> fDProductPromotionSkus = productPromoInfoMap.get(zoneId);				
+			List<FDProductPromotionInfo> fDProductPromotionSkus = productPromoInfoMap.get(pricingZone);				
 			if(null ==fDProductPromotionSkus){
-				fDProductPromotionSkus = productPromoInfoMap.get(ProductPromotionData.DEFAULT_ZONE);
-				productPromoInfoMap.put(zoneId,fDProductPromotionSkus);
+				fDProductPromotionSkus = productPromoInfoMap.get(new ZoneInfo("0000100000","0001","01"));//ProductPromotionData.DEFAULT_ZONE);
+				productPromoInfoMap.put(pricingZone,fDProductPromotionSkus);
 			}
 			if(null != fDProductPromotionSkus)
 			for (FDProductPromotionInfo fDProductPromotionSku : fDProductPromotionSkus){
@@ -280,12 +281,12 @@ public class CategoryModel extends ProductContainer {
 	private final class ProductAssortmentPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
 
 		private String productPromotitonType; 
-		private String zoneId;
+		private ZoneInfo pricingZone;
 		private String promotionId;
 		
-		public ProductAssortmentPromotionDataRef(Executor executor, String zoneId, String promotionId, String productPromotitonType) {
+		public ProductAssortmentPromotionDataRef(Executor executor, ZoneInfo pricingZone, String promotionId, String productPromotitonType) {
 			super(FIVE_MINUTES, executor);
-			this.zoneId = zoneId;
+			this.pricingZone = pricingZone;
 			this.productPromotitonType = productPromotitonType;
 			this.promotionId = promotionId;
 			
@@ -312,7 +313,7 @@ public class CategoryModel extends ProductContainer {
 		public void loadProductPromotionData(
 				ProductPromotionData productPromotionData) {
 			try {
-				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap ;
+				Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap ;
 				String ppType =productPromotionData.getProductPromotitonType();
 				String promotionId =productPromotionData.getPromotionId();
 				if(null !=ppType){					
@@ -323,10 +324,10 @@ public class CategoryModel extends ProductContainer {
 				synchronized (FDProductAssortmentPromotionFactory.getInstance()) {					
 						productPromoInfoMap = FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(ppType,promotionId);				
 				}
-				populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
+				populateProductPromotionData(productPromotionData,productPromoInfoMap,pricingZone,false);
 				
 
-			} catch (FDResourceException e) {
+				} catch (FDResourceException e) {
 				LOGGER.error("failed to load promo products for category " + CategoryModel.this.getContentName(), e);
 				throw new RuntimeException(e);
 			}
@@ -334,11 +335,11 @@ public class CategoryModel extends ProductContainer {
 		
 	}
 	
-	private Map<String, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<String, RecommendedProductsRef>();
+	private Map<ZoneInfo, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<ZoneInfo, RecommendedProductsRef>();
 	
-	private Map<String, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<String, ProductPromotionDataRef>();
+	private Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
-	private Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
+	private Map<ZoneInfo, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductAssortmentPromotionDataRef>();
 	
 	private String promotionPageType;
 	
@@ -583,7 +584,7 @@ public class CategoryModel extends ProductContainer {
     public List<ProductModel> getProducts() {
     	
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
-    	String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+    	ZoneInfo pricingZone = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
     	String currentProductPromotionType = getProductPromotionType();
     	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
     		prodList =getStaticProducts();
@@ -612,20 +613,20 @@ public class CategoryModel extends ProductContainer {
 	            }
 	            
 	            synchronized (recommendedProductsSync) {
-	                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
-	                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
+	                if ( recommenderChanged || recommendedProductsRefMap.get(pricingZone) == null )
+	                    recommendedProductsRefMap.put(pricingZone, new RecommendedProductsRef(threadPool, pricingZone));
 	            }
 	
 	            try {
 	//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
-	                addDynamicProducts(recommendedProductsRefMap.get(zoneId).get(), prodList,true);
+	                addDynamicProducts(recommendedProductsRefMap.get(pricingZone).get(), prodList,true);
 	            } catch (Exception e) {
 	                LOGGER.warn("exception during smart category recommendation", e);
 	            }
 	        }
     	}else{
 //	        String currentProductPromotionType = getProductPromotionType();
-	        prodList = getPromotionPageProducts(prodList, zoneId,currentProductPromotionType);
+	        prodList = getPromotionPageProducts(prodList, pricingZone,currentProductPromotionType);
     	}
 
 
@@ -650,17 +651,17 @@ public class CategoryModel extends ProductContainer {
     }
 
 	private List<ProductModel> getPromotionPageProducts(
-			List<ProductModel> prodList, String zoneId,
+			List<ProductModel> prodList,ZoneInfo pricingZone,
 			String currentProductPromotionType) {
 		if (currentProductPromotionType != null) {
-			loadProductPromotion(zoneId, currentProductPromotionType);
+			loadProductPromotion(pricingZone, currentProductPromotionType);
 			try {
-				if(null !=productPromotionDataRefMap.get(zoneId).get()) {
+				if(null !=productPromotionDataRefMap.get(pricingZone).get()) {
 					prodList = new ArrayList<ProductModel>();
 					if("E_COUPONS".equals(currentProductPromotionType)){
-						addDynamicProducts(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList,false);
+						addDynamicProducts(productPromotionDataRefMap.get(pricingZone).get().getProductModels(), prodList,false);
 					}else{
-						addDynamicProductsForPromotion(productPromotionDataRefMap.get(zoneId).get().getProductModels(), prodList);
+						addDynamicProductsForPromotion(productPromotionDataRefMap.get(pricingZone).get().getProductModels(), prodList);
 					}
 				}
 		    } catch (Exception e) {
@@ -1090,7 +1091,7 @@ public class CategoryModel extends ProductContainer {
 		}
 	}
 	
-	private synchronized boolean loadProductPromotion(String zoneId, String promotionPageType){
+	private synchronized boolean loadProductPromotion(ZoneInfo pricingZone, String promotionPageType){
 		String currentProductPromotionType = getProductPromotionType();
 		
 		if (currentProductPromotionType == null ){
@@ -1098,9 +1099,9 @@ public class CategoryModel extends ProductContainer {
 			return false;
 			
 		} else {			
-			if (productPromotionDataRefMap.get(zoneId) == null || !currentProductPromotionType.equals(promotionPageType)){
+			if (productPromotionDataRefMap.get(pricingZone) == null || !currentProductPromotionType.equals(promotionPageType)){
 				promotionPageType = currentProductPromotionType;
-				productPromotionDataRefMap.put(zoneId, new ProductPromotionDataRef(threadPool,  zoneId,promotionPageType));
+				productPromotionDataRefMap.put(pricingZone, new ProductPromotionDataRef(threadPool,  pricingZone,promotionPageType));
 			}
 			return true;
         }
@@ -1108,18 +1109,18 @@ public class CategoryModel extends ProductContainer {
 		
 	public List<ProductModel> getPromotionPageProductsForPreview(String ppPreviewId) {	
 		if(getProductPromotionType()!=null){
-			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+			ZoneInfo pricingZone = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
 			List<ProductModel> productModelList = null;
 			try {				
 //				if(!SapProperties.isBlackhole()){
 					ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo = ProductPromotionInfoManager.getProductPromotionPreviewInfo(ppPreviewId);
-					Map<String, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
+					//::FDX::Map<String, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
 					ProductPromotionData ppData = new ProductPromotionData();
-					ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, zoneId,true);
+					//::FDX::ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, pricingZone,true);
 					productModelList = ppData.getProductModels();
 //				}
 				if(null == productModelList || productModelList.isEmpty()){
-					productModelList =  this.getPromotionPageProducts(productModelList,zoneId,getProductPromotionType());//get products from cache.
+					productModelList =  this.getPromotionPageProducts(productModelList,pricingZone,getProductPromotionType());//get products from cache.
 				}
 				return productModelList;
 //				return ppData.getProductModels();
@@ -1219,7 +1220,7 @@ public class CategoryModel extends ProductContainer {
 	
 	public List<ProductModel> getAssortmentPromotionPageProducts(String promotionId) {
 		List<ProductModel> prodList =new ArrayList<ProductModel>();
-		String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+		String zoneId = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getPricingZoneId();
 		if (EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName().equalsIgnoreCase(getProductPromotionType())) {
 			loadProductAssortmentPromotion(zoneId, promotionId);
 			try {
@@ -1235,7 +1236,7 @@ public class CategoryModel extends ProductContainer {
 	}
 	
 	private synchronized boolean loadProductAssortmentPromotion(String zoneId, String promotionId){
-		String currentProductPromotionType = getProductPromotionType();		
+		/*::FDX::String currentProductPromotionType = getProductPromotionType();		
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
@@ -1243,7 +1244,8 @@ public class CategoryModel extends ProductContainer {
 				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneId, promotionId, currentProductPromotionType));
 			}
 			return true;
-        }
+        }//::FDX::*/
+		return true;
 	}
 	
 	public Image getGlobalNavPostNameImage() {

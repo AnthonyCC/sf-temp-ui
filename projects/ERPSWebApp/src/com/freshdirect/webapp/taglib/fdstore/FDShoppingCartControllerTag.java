@@ -26,8 +26,11 @@ import org.json.JSONObject;
 import weblogic.servlet.jsp.PageContextImpl;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumChargeType;
@@ -42,6 +45,7 @@ import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -561,27 +565,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
 
 				if ("true".equals(request.getParameter("makegood"))) {
-					this.getFormData(request, result);
-					for (int i = 0; i < orderLineId.length; i++) {
-						if (orderLineId[i] == null || "".equals(orderLineId[i].trim())) {
-							result.addError(new ActionError(
-								"system",
-								"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
-						}
-					}
-					for (int i = 0; i < orderLineReason.length; i++) {
-						if (orderLineReason[i] == null || "".equals(orderLineReason[i].trim())) {
-							result.addError(new ActionError("system", "Make good reason is missing"));
-						}
-					}
-
-					try {
-						buildComplaint(result, complaintModel);
-					} catch (FDResourceException ex) {
-						LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
-						throw new JspException(ex.getMessage());
-					}
-					session.setAttribute(SessionName.MAKEGOOD_COMPLAINT, complaintModel);
+					handleMakeGood(request, result, complaintModel);
 					session.setAttribute("makeGoodOrder", request.getParameter("makeGoodOrder"));
 					session.setAttribute("referencedOrder", request.getParameter("referencedOrder"));
 				}
@@ -676,6 +660,11 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				session.setAttribute("SkusAdded", frmSkuIds);
 			}
 	
+			
+			if ("/checkout/step_1_choose.jsp".equals(successPage) && user.getMasqueradeContext()!=null && user.getMasqueradeContext().getMakeGoodFromOrderId()!=null){
+				handleMakeGood(request, result, complaintModel);
+			}
+			
 			//
 			// redirect to success page if an action was successfully performed
 			// and a success page was defined
@@ -731,6 +720,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	}
 
 	public static void handleDeliveryPass(FDUserI user, FDCartModel cart) throws JspException {
+		if(EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId()))
+				return;
 		cart.handleDeliveryPass();
 		if (user.getSelectedServiceType() == EnumServiceType.HOME) {
 			/*
@@ -800,6 +791,11 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	protected static List<Integer> doCartCleanup(FDCartModel cart) throws FDResourceException {
 		List<Integer> result = new ArrayList<Integer>();
+		/*HttpSession session = this.pageContext.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(USER);*/
+		UserContext userContext = ContentFactory.getInstance().getCurrentUserContext();
+		String salesOrg=userContext.getPricingContext().getZoneInfo().getSalesOrg();
+		String distrChannel=userContext.getPricingContext().getZoneInfo().getDistributionChanel();
 		for (int i = 0; i < cart.numberOfOrderLines(); i++) {
 			FDCartLineI cartLine = cart.getOrderLine(i);
 			if (cartLine instanceof FDModifyCartLineI) {
@@ -810,7 +806,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			boolean isAvail = false;
 			try {
 				FDProductInfo pi = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
-				isAvail = pi.isAvailable();
+				isAvail = pi.isAvailable(salesOrg,distrChannel);
 			} catch (FDSkuNotFoundException ex) {
 				// isAvail is false, that's fine
 			}
@@ -940,6 +936,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			//
 			FDCartLineI originalLine = cart.getOrderLine(cartIndex);
 			FDCartLineI newCartLine = this.processCartLine(originalLine);
+			//TODO: Update originalLine with new values;
 			if (newCartLine != null) {
 				if (originalLine.getClientCodes().size() > 0) {
 					newCartLine.getClientCodes().clear();
@@ -965,12 +962,27 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 						}
 					}
 				}
-				cart.setOrderLine(cartIndex, newCartLine);
+				
 				newCartLine.setSource(getEventSource());
 				newCartLine.setExternalAgency(originalLine.getExternalAgency());
 				newCartLine.setExternalSource(originalLine.getExternalSource());
 				newCartLine.setExternalGroup(originalLine.getExternalGroup());
 				FDEventUtil.logEditCartEvent(newCartLine, request);
+				try{
+					
+					if(((FDCartLineModel)newCartLine).copyInto(originalLine)){
+						originalLine.setSource(getEventSource());
+						cart.setOrderLine(cartIndex, originalLine);
+					} else {
+						//Cannot Copy into, not 
+						cart.setOrderLine(cartIndex, newCartLine);
+					}
+					
+				} catch( ClassCastException e){
+					//Cannot Copy into, not 
+					cart.setOrderLine(cartIndex, newCartLine);					
+				}
+				
 				return true;
 			}
 			return false;
@@ -1198,6 +1210,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		final String paramWineCatId = "wineCatId" + suffix;
 
 		String skuCode = request.getParameter(paramSkuCode);
+		String originalOrderLineId = request.getParameter("originalOrderLineId" + suffix);
 
 		if (!strictCheck && "".equals(skuCode)) {
 			return null;
@@ -1276,6 +1289,15 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			result.addError(new ActionError(paramQuantity, errorMessage));
 		}
 
+		MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+		if (masqueradeContext!=null){
+			errorMessage = masqueradeContext.validateAddToCart(originalOrderLineId);
+			if (errorMessage != null) {
+				result.addError(new ActionError(paramProductId, errorMessage));
+				return null;
+			}
+		}
+
 		FDProduct product;
 		try {
 			product = FDCachedFactory.getProduct(FDCachedFactory .getProductInfo(skuCode));
@@ -1329,13 +1351,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		 * while now which was identified when fixing IPHONE-57 bug.
 		 */
 		PricingContext origPricingCtx = null; 
-		if (originalLine != null)
-			origPricingCtx = originalLine.getPricingContext();
-		String pricingZoneId;
+		UserContext userContext = null;
+		if (originalLine != null) {
+			origPricingCtx = originalLine.getUserContext().getPricingContext();
+			userContext = originalLine.getUserContext();
+		}
+		ZoneInfo pricingZoneId;
 		if(origPricingCtx != null) {
-			pricingZoneId = origPricingCtx.getZoneId();
+			pricingZoneId = origPricingCtx.getZoneInfo();
 		} else {
-			pricingZoneId = user.getPricingZoneId();
+			pricingZoneId = user.getUserContext().getPricingContext().getZoneInfo();
+			userContext = user.getUserContext();
 		}
 		
 		FDGroup originalGrp = null;
@@ -1347,8 +1373,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				originalGrp.setSkipProductPriceValidation(false);
 		}
 		
-				
-		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
+
+		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, userContext ,originalGrp);
 
 		if (theCartLine != null) {
 			theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
@@ -1387,7 +1413,6 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : ""; 
 			String ymalSetId = request.getParameter("ymalSetId"+sfx);
 			String originatingProductId = request.getParameter("originatingProductId"+sfx);
-			String originalOrderLineId = request.getParameter("originalOrderLineId" + suffix);
 
 			theCartLine.setYmalCategoryId(catId);
 			theCartLine.setYmalSetId(ymalSetId);
@@ -1410,6 +1435,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 
 			theCartLine.setDiscountFlag(discountApplied);
+			//theCartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+			//theCartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 			
 			String cartonNumber = request.getParameter("cartonNumber");
 			if(cartonNumber!=null)	{ 
@@ -1421,7 +1448,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
 	private FDCartLineI processSimple(String suffix, ProductModel prodNode,
 			FDProduct product, double quantity, FDSalesUnit salesUnit,
-			String origCartLineId, String variantId, String pZoneId, FDGroup group) {
+			String origCartLineId, String variantId, UserContext userCtx, FDGroup group) {
 
 		//
 		// walk through the variations to see what's been set and try to build a
@@ -1494,7 +1521,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					variantId, pZoneId);
+					variantId, userCtx);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -1503,7 +1530,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			List<ErpClientCode> clientCodes = Collections.emptyList();
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
-					origCartLineId, null, false, variantId, pZoneId, clientCodes);
+					origCartLineId, null, false, variantId, userCtx, clientCodes);
 			//Any group info from original cartline is moved to new cartline on modify.
 			cartLine.setFDGroup(group);
 		}
@@ -1779,7 +1806,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 									if (deltaQty > 0) {
 
 										FDCartLineI newLine = orderLine.createCopy();
-										newLine.setPricingContext(new PricingContext(user.getPricingZoneId()));
+										newLine.setUserContext(user.getUserContext());
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {
@@ -2005,12 +2032,19 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	}
 
 	private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) {
-		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+		HttpSession session = pageContext.getSession();
+
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+		
 		if (agent != null) {
 			complaintModel.setCreatedBy(agent.getUserId());
-		} else {
-			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);
+		} else if (ccUser!=null){
 			complaintModel.setCreatedBy(ccUser.getId());
+		} else if (masqueradeContext!=null){
+			complaintModel.setCreatedBy(masqueradeContext.getAgentId());
 		}
 
 		complaintModel.setDescription(this.description);
@@ -2031,6 +2065,31 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			result.addError(new ActionError("general_error_msg", GENERAL_ERR_MSG));
 	}
 
+	
+	private void handleMakeGood(HttpServletRequest request, ActionResult result, ErpComplaintModel complaintModel) throws JspException{
+		this.getFormData(request, result);
+		for (int i = 0; i < orderLineId.length; i++) {
+			if (orderLineId[i] == null || "".equals(orderLineId[i].trim())) {
+				result.addError(new ActionError(
+					"system",
+					"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
+			}
+		}
+		for (int i = 0; i < orderLineReason.length; i++) {
+			if (orderLineReason[i] == null || "".equals(orderLineReason[i].trim())) {
+				result.addError(new ActionError("system", "Make good reason is missing"));
+			}
+		}
+
+		try {
+			buildComplaint(result, complaintModel);
+		} catch (FDResourceException ex) {
+			LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
+			throw new JspException(ex.getMessage());
+		}
+		request.getSession().setAttribute(SessionName.MAKEGOOD_COMPLAINT, complaintModel);
+	}
+	
 	/**
 	 * Gathers registration-specific data (i.e., customer data)
 	 * 

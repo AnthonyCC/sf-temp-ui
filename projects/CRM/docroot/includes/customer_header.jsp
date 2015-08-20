@@ -112,12 +112,13 @@
 		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"coupon_history.jsp")){ %>                
         <a href="<%= response.encodeURL("/main/coupon_history.jsp") %>" class="<%= pageURI.indexOf("coupon_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Ecoupons</a>
         <% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"place_order_build.jsp")){ %>
-		<a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="<%= newOrder ? "cust_nav_tab_on" : "cust_nav_tab" %>">New Order</a>
-		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"delivery_available_slots.jsp")){ %>
-		<a href="<%= response.encodeURL("/main/delivery_available_slots.jsp") %>" class="<%= pageURI.indexOf("available_slots.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Timeslots</a>
-		<% } %>
+        
+		<%-- if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"place_order_build.jsp")){ --%>
+		<%-- <a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="<%= newOrder ? "cust_nav_tab_on" : "cust_nav_tab" %>">New Order</a> --%>
+		<%-- } --%>
+		<%-- <% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"delivery_available_slots.jsp")){ --%>
+		<%-- <a href="<%= response.encodeURL("/main/delivery_available_slots.jsp") %>" class="<%= pageURI.indexOf("available_slots.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Timeslots</a> --%>
+		<%-- <% } --%>
 		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"activity_log.jsp")){ %>
         <a href="<%= response.encodeURL("/main/activity_log.jsp") %>" class="<%= pageURI.indexOf("activity_log") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Activity Log</a>
 		<% } %>

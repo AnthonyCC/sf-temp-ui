@@ -3,17 +3,20 @@ package com.freshdirect.smartstore.ejb;
 import java.io.Serializable;
 
 
-public class DynamicSiteFeature implements Comparable, Serializable {
+public class DynamicSiteFeature implements Comparable<DynamicSiteFeature>, Serializable {
 	private static final long serialVersionUID = 4834283257586887527L;
 
 	private String name;
 	
 	private String title;
 	
+	@Deprecated
 	private String prez_title;
 	
+	@Deprecated
 	private String prez_desc;
 	
+	@Deprecated
 	boolean smartSaving;
 
 	protected DynamicSiteFeature(String name, String title, String prez_title, String prez_desc, boolean smartSaving) {
@@ -53,27 +56,30 @@ public class DynamicSiteFeature implements Comparable, Serializable {
 		return true;
 	}
 	
-	public int compareTo(Object o) {
-		DynamicSiteFeature sf = (DynamicSiteFeature) o;
-		return name.compareTo(sf.name);
+	public int compareTo(DynamicSiteFeature o) {
+		return name.compareTo(o.name);
 	}
 
 	public String toString() {
 		return "DynamicSiteFeature[" + name + "]";
 	}
 
+	@Deprecated
 	public String getPresentationTitle() {
 		return prez_title;
 	}
 
+	@Deprecated
 	public String getPresentationDescription() {
 		return prez_desc;
 	}
 
+	@Deprecated
 	public boolean isSmartSaving() {
 		return smartSaving;
 	}
 
+	@Deprecated
 	public void setSmartSaving(boolean smartSaving) {
 		this.smartSaving = smartSaving;
 	}

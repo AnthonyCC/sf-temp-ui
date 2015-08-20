@@ -12,18 +12,14 @@ public interface PromotionI extends Serializable {
 
 	public boolean evaluate(PromotionContextI context);
 	
-	//public boolean evaluateLineItemPromo(PromotionContextI context);
-
 	public boolean apply(PromotionContextI context);
-	
-	//public boolean applyLineItem(PromotionContextI context);
 	
 	public String getDescription();
 
 	public Date getExpirationDate();
 
 	/** @return List of HeaderDiscountRule */
-	public List<HeaderDiscountRule> getHeaderDiscountRules();
+	public List<? extends HeaderDiscountRule> getHeaderDiscountRules();
 
 	/** @return total amount of header discount rules */
 	public double getHeaderDiscountTotal();

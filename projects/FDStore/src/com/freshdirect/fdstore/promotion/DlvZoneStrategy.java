@@ -285,7 +285,6 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	}
 	
 	private boolean checkDayMaxRedemtions(FDTimeslot ts, String promotionCode) {
-		// TODO Auto-generated method stub
 		if(null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
 			PromotionDlvDay dlvDay = dlvDayRedemtions.get(ts.getDayOfWeek());
 			if(dlvDay != null) {
@@ -338,30 +337,14 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		}
 		return isOK;		
 	}
-	
-	private class TimeSlotComparator implements Comparator<FDTimeslot> {
 
 		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
 			return ts1.getAdditionalDistance() - ts2.getAdditionalDistance();
 
 		}
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
-	
-	/*public int evaluateByZoneCode(String zoneCode){
-		if(null != zoneCode && !"".equals(zoneCode.trim())){
-			if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){
-				return ALLOW;
-			}
-		}
-		return DENY;
-	}*/
-	
-	/*public int evaluateByTimeslot(FDTimeslot ts){
-		if(null != ts){
-			
-		}
-		return DENY;
-	}*/
-
 }
  

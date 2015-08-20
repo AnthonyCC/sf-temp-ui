@@ -117,7 +117,7 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				orderId = (String) request.getParameter("orderId");
 			}*/
 			try {
-				this.order = FDCustomerManager.getOrder(orderId);
+				this.order = FDCustomerManager.getOrderForCRM(orderId);
 			} catch (FDResourceException fdre) {
 				LOGGER.error("Couldn't get order to issue credit on", fdre);
 				throw new JspException(fdre.getMessage());

@@ -22,6 +22,7 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  * @author segabor
  * 
  */
+@Deprecated
 public abstract class DYFService extends BaseContentKeyRecommendationService {
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 

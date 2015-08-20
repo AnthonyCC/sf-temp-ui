@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -60,8 +61,21 @@ public class Oas247Service implements OasService {
         if ((server != null) && (!server.toLowerCase().startsWith("http"))) {
             server = MobileApiProperties.getOasCommunicationProtocol() + "://" + server;
         }
-
+        
+        try{
+        	if("".equals(this.queryString)){
+        		 QueryStringBuilder builder = new QueryStringBuilder();
+            	 builder.addParam("eStoreId", ContentFactory.getInstance().getStoreKey().getId());
+        		 String queryString = builder.toString();
+                 LOG.debug("QueryString: " + queryString);
+                 this.queryString = "?" + queryString;
+        	}
+        }catch(Exception e){
+        	
+        }
+        
         String fullpath = server + path + queryString;
+        
         HttpMethod method = new GetMethod(fullpath);
         String cacheKey = fullpath;
         Map<String, Object> messages = null;
@@ -123,7 +137,8 @@ public class Oas247Service implements OasService {
                 builder.addParam("ct", chefTable);
                 builder.addParam("cti", chefTableInductionDay);
                 builder.addParam("cts", chefTableSegment);
-
+                builder.addParam("eStoreId", user.getFDSessionUser().getUserContext()
+                		.getStoreContext().getEStoreId().getContentId());
                 String queryString = builder.toString();
                 LOG.debug("QueryString: " + queryString);
                 this.queryString = "?" + queryString;

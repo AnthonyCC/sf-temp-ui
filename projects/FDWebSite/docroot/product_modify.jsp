@@ -17,6 +17,7 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 <fd:CheckLoginStatus />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 	int cartLine = Integer.parseInt(request.getParameter("cartLine"));
 	String snowFlakeImage = "/media_stat/images/template/snwflk_icon.gif";
 	FDCartLineI templateLine = null;

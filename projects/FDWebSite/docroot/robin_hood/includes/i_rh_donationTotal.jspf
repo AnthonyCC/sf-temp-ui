@@ -3,6 +3,7 @@
 <%@ page import='java.util.List'%>
 <%@ page import='java.util.ListIterator'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 
 <% //expanded page dimensions
 final int W_RH_DONATION_TOTAL_TOTAL = 970;
@@ -12,7 +13,7 @@ final int W_RH_DONATION_TOTAL_TOTAL = 970;
 	FDProductInfo productInfo = FDCachedFactory
 			.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 	Integer totalQuantity = user.getDonationTotalQuantity();
-	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice();
+	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice();
 %>
 <table width="<%=W_RH_DONATION_TOTAL_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>

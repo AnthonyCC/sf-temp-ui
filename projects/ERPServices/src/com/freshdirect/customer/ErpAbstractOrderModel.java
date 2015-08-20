@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
@@ -70,6 +71,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	private int currentDlvPassExtendDays;
 	
 	private ErpCouponTransactionModel couponTransModel;
+	
+	private EnumEStoreId eStoreId;
 	
     public List<ErpRecipentModel> getRecipientsList() {
 		return recipientsList;
@@ -508,5 +511,24 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			
 		}
 		return set;
+	}
+
+	/**
+	 * @return the eStoreId
+	 */
+	public EnumEStoreId geteStoreId() {
+		return eStoreId;
+	}
+
+	/**
+	 * @param eStoreId the eStoreId to set
+	 */
+	public void seteStoreId(EnumEStoreId eStoreId) {
+		this.eStoreId = eStoreId;
+	}
+	
+	public double getTip() {
+		ErpChargeLineModel charge = getCharge(EnumChargeType.TIP);
+		return charge==null ? 0.0 : charge.getTotalAmount();
 	}
 }

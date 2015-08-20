@@ -17,6 +17,7 @@ public class CountyCondition implements ConditionI {
 		this.county = county;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		if(this.county == null || "".equals(this.county)){
 			return false;
@@ -26,6 +27,7 @@ public class CountyCondition implements ConditionI {
 		return this.county.equalsIgnoreCase(dlvCtx.getCounty());
 	}
 
+	@Override
 	public boolean validate() {
 		return this.county != null && !"".equals(this.county);
 	}

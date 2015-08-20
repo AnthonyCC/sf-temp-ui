@@ -1,3 +1,6 @@
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.HashMap"%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
@@ -59,9 +62,8 @@
 			ContentNodeI contentNode = manager.getContentNode(contentKey);
 			
 			if(null != contentNode){
-				Set subNodes = contentNode.getChildKeys();
-				for (Object object : subNodes) {
-					ContentKey subContentKey = (ContentKey) object;
+				Set<ContentKey> subNodes = contentNode.getChildKeys();
+				for (ContentKey subContentKey : subNodes) {
 					if(null != subContentKey){
 						ContentType contentType = subContentKey.getType(); 
 						if(FDContentTypes.DONATION_ORGANIZATION.equals(contentType)){

@@ -71,6 +71,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			String residential = NVL.apply(request.getParameter("residential"),"").trim();
 			String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
 			String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
+			String isFdx = NVL.apply(request.getParameter("isFdx"),"").trim();
 			String exSameDayDlv = NVL.apply(request.getParameter("exSameDayDlv"),"").trim();
 			String deliveryDayType = NVL.apply(request.getParameter("deliveryDayType"),"").trim();
 			EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
@@ -230,6 +231,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				custModel.setOrderTypeHome(!"".equals(residential));
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
+				custModel.setOrderTypeFDX(!"".equals(isFdx));
 				custModel.setExcludeSameDayDlv(!"".equals(exSameDayDlv));
 				custModel.setDeliveryDayType(deliveryOption);
 				custStrategies.add(custModel);
@@ -239,6 +241,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				custModel.setOrderTypeHome(!"".equals(residential));
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
+				custModel.setOrderTypeFDX(!"".equals(isFdx));
 				custModel.setExcludeSameDayDlv(!"".equals(exSameDayDlv));
 				custModel.setDeliveryDayType(deliveryOption);
 				custModel.setPromotionId(promotion.getId());
@@ -286,7 +289,8 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 		String residential = NVL.apply(request.getParameter("residential"),"").trim();
 		String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
 		String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
-		if("".equals(residential)&& "".equals(commerical) && "".equals(pickup)){
+		String isFdx = NVL.apply(request.getParameter("isFdx"),"").trim();
+		if("".equals(residential)&& "".equals(commerical) && "".equals(pickup) && "".equals(isFdx)){
 			actionResult.addError(true, "addressTypeEmpty", " Atleast one address type is required.");			
 		}
 		if("ZIP".equalsIgnoreCase(promotion.getGeoRestrictionType())){

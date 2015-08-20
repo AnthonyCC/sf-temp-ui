@@ -24,6 +24,7 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  * @author istvan
  * 
  */
+@Deprecated
 public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	private static final Category LOGGER = LoggerFactory.getInstance(MostFrequentlyBoughtDyfVariant.class);
 

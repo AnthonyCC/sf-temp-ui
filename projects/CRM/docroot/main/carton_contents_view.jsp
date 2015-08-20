@@ -6,6 +6,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 
 <%	String orderId = request.getParameter("orderId"); %>
 <%	List cartonInfo = null; %>
@@ -17,7 +18,7 @@
 		bShowForm=true;
 %>
 
-<tmpl:insert template='/template/large_pop.jsp'>
+<tmpl:insert template='/shared/template/large_pop.jsp'>
 	<tmpl:put name='title' direct='true'>Carton Contents View</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
@@ -63,16 +64,37 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr valign="top">
   <% if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
+  <% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
 	  <th align="left" width="150px">Quantity</th>
 	  <th align="left">Product</th>
 	  <th align="left" width="90px">Final Weight</th>
 	  <th align="left" width="75px">Unit Price</th>
+	  <% } else {%>
+	  <th align="center" width="150px">Package Contents View</th>
+	  <% } %>
+	  </tr>
 	<tr>
 		<td colspan="4">
+		
 			<logic:iterate id="carton" collection="<%= cartonInfo %>" type="com.freshdirect.fdstore.customer.FDCartonInfo" indexId="counter"> 
 			<% if(bShowForm) { %>
 				<FORM ACTION="<%= successPage %>&cartonNumber=<%=carton.getCartonInfo().getCartonNumber()%>" METHOD="POST" NAME="carton_<%= counter %>">
 			<% } //bShowForm%>
+			<% if(_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+				<table width="100%" class="order" cellspacing="0" cellpadding="0">
+				
+					<tr valign="top" class="list_odd_row">
+						<td align="center">
+							<b>Bag:</b> <%= carton.getCartonInfo().getCartonNumber() %>
+						</td>
+						
+					</tr>
+					<tr>
+						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+					</tr>
+					</table>
+			
+			<%} else { %>
 				<table width="100%" class="order" cellspacing="0" cellpadding="0">
 					<tr valign="top" class="list_odd_row">
 						<td>
@@ -128,7 +150,7 @@
 						} // cartonDetail.getCartLine() != null %>
 					</logic:iterate>
 				</table>
-
+				<% } %>
 				<% if(bShowForm) { %>
 					</FORM>
 				<% } //bShowForm%>

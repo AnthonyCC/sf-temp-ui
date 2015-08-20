@@ -32,7 +32,8 @@ public class AvailabilityFactory {
 
 	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product) {
 		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
-
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		
 		if (product.isAlcohol()) {
 			s.add(EnumDlvRestrictionReason.ALCOHOL);
 			if (product.isBeer()) {
@@ -42,11 +43,11 @@ public class AvailabilityFactory {
 			}
 		}
 
-		if (product.isKosherProduction()) {
+		if (product.isKosherProduction(plantID)) {
 			s.add(EnumDlvRestrictionReason.KOSHER);
 		}
 
-		if (product.isPlatter()) {
+		if (product.isPlatter(plantID)) {
 			s.add(EnumDlvRestrictionReason.PLATTER);
 		}
 
@@ -65,22 +66,21 @@ public class AvailabilityFactory {
 				}
 			}
 		}
-		
-		s.addAll(product.getMaterial().getBlockedDays().translate(DAY_REASONS));
+		s.addAll(product.getMaterial().getBlockedDays(plantID).translate(DAY_REASONS));
 
 		return s;
 	}
 
-	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo) {
+	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo,String plantID) {
 
 		FDAvailabilityI av = NullAvailability.AVAILABLE;
 
-		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule())) {
+		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule(plantID))) {
 			return av;
 		}
 
-		ErpInventoryModel inventory = fdProductInfo.getInventory();
-		Date[] availableDates = fdProductInfo.getAvailabilityDates();
+		ErpInventoryModel inventory = fdProductInfo.getInventory(plantID);
+		
 		if (inventory != null) {
 			ProductModel productModel = skuModel.getProductModel();
 			if (productModel != null) {
@@ -88,7 +88,7 @@ public class AvailabilityFactory {
 			            inventory,
 			            productModel.getQuantityMinimum(),
 			            productModel.getQuantityMinimum(),
-			            productModel.getQuantityIncrement(),availableDates);
+			            productModel.getQuantityIncrement());
 			} else {
 			    LOG.error("Product model for " + skuModel.getSkuCode() + " not found, however product info is available :" + fdProductInfo);
 			}

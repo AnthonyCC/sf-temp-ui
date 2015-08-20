@@ -51,6 +51,7 @@ final int W_CART_CONFIRM_TOTAL = 590;
 Recipe recipe = null;
 
 FDUserI cConfirm_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 %>
 
 <fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
@@ -124,9 +125,9 @@ FDUserI cConfirm_user = (FDUserI) pageContext.getSession().getAttribute(SessionN
     String earliestAvailability = prdNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
     FDProduct defaultProduct = prdNode.getDefaultSku().getProduct();
-	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();
+	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
 	
-    boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneId()).getMaterialPrices()[0]).getPricingUnit()));
+    boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneInfo()).getMaterialPrices()[0]).getPricingUnit()));
     boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));
     ContentFactory contentFactory = ContentFactory.getInstance();
     Image confirmImage = prdNode.getConfirmImage();
@@ -158,35 +159,7 @@ FDUserI cConfirm_user = (FDUserI) pageContext.getSession().getAttribute(SessionN
 <%
     boolean displayLimitedAvailability = false;
     SkuModel a_sku = prdNode.getSku(orderLine.getSkuCode());
-    if(displayShortTermUnavailability) {
-        List<FDLimitedAvailabilityInfo> limitedAvailibility = a_sku.getLimitedAvailability();
-        if(limitedAvailibility != null && limitedAvailibility.size() > 0){
-%>
-		<tr><td colspan="2">
-		<font class="text11">Limited Delivery Availability:&nbsp;</font>
-<%        
-            Calendar cal = Calendar.getInstance();
-            displayLimitedAvailability = true;
-            for(FDLimitedAvailabilityInfo l: limitedAvailibility) {
-                cal.setTime(l.getRequestedDate());
-                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                double quantity = l.getQuantity();
-                if(quantity > 0) {
-            %>
-                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>.gif" width="13" height="13" border="0" vspace="1" alt="Item Available">
-            <%
-                } else {
-            %>
-                <img src="/media_stat/images/limited_avail/<%= dayOfWeek %>_x.gif" width="13" height="13" border="0" vspace="1" alt="Item Unavailable">
-            <%                
-                }
-                
-            }
-%>
-		</td></tr>
-<%            
-        }
-    }
+
     if(!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null) {%>
         <tr><td colspan="2"><br><font class="text11rbold">Reminder: Earliest Delivery <%=earliestAvailability%><br></font></td></tr>
 <%  }

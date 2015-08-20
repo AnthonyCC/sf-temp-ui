@@ -26,6 +26,7 @@ public class DateRangeStrategy implements PromotionStrategyI {
 		return startDate;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		Date now = new Date();
 		if (now.before(startDate) || (expirationDate != null && now.after(expirationDate))) {
@@ -35,6 +36,7 @@ public class DateRangeStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 20;
 	}
@@ -43,4 +45,8 @@ public class DateRangeStrategy implements PromotionStrategyI {
 		return "DateRangeStrategy[from " + this.startDate + (this.expirationDate == null ? "" : " to " + this.expirationDate) + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

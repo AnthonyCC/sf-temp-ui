@@ -12,18 +12,6 @@ public class Configuration implements Serializable {
 	private String adServerUrl;
 	private String tipRange;
 	
-	public boolean isVerifyPaymentMethod() {
-		return verifyPaymentMethod;
-	}
-	public boolean isEcouponEnabled() {
-		return ecouponEnabled;
-	}
-	public String getAdServerUrl() {
-		return adServerUrl;
-	}
-	public String getTipRange() {
-		return tipRange;
-	}
 
 	public boolean isAkamaiImageConvertorEnabled() {
 		return isAkamaiImageConvertorEnabled;
@@ -43,18 +31,28 @@ public class Configuration implements Serializable {
 	public void setStoreVersion(String storeVersion) {
 		this.storeVersion = storeVersion;
 	}
+	public boolean isVerifyPaymentMethod() {
+		return verifyPaymentMethod;
+	}
 	public void setVerifyPaymentMethod(boolean verifyPaymentMethod) {
 		this.verifyPaymentMethod = verifyPaymentMethod;
+	}
+	public boolean isEcouponEnabled() {
+		return ecouponEnabled;
 	}
 	public void setEcouponEnabled(boolean ecouponEnabled) {
 		this.ecouponEnabled = ecouponEnabled;
 	}
+	public String getAdServerUrl() {
+		return adServerUrl;
+	}
 	public void setAdServerUrl(String adServerUrl) {
 		this.adServerUrl = adServerUrl;
 	}
+	public String getTipRange() {
+		return tipRange;
+	}
 	public void setTipRange(String tipRange) {
 		this.tipRange = tipRange;
-	}
-	
-	
+	}	
 }

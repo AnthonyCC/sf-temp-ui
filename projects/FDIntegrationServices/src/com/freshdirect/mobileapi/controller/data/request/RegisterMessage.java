@@ -15,8 +15,24 @@ public class RegisterMessage extends ZipCheck {
 	private String password;
 	private String confirmPassword;
 	private String securityQuestion;
+	private String workPhone;
+	private String dlvhomephone;
 	//private boolean partialDelivery;
 	
+	
+	
+	public String getDlvhomephone() {
+		return dlvhomephone;
+	}
+	public void setDlvhomephone(String dlvhomephone) {
+		this.dlvhomephone = dlvhomephone;
+	}
+	public String getWorkPhone() {
+		return workPhone;
+	}
+	public void setWorkPhone(String workPhone) {
+		this.workPhone = workPhone;
+	}
 	public String getFirstName() {
 		return firstName;
 	}

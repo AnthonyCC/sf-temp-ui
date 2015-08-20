@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -26,7 +27,7 @@ public class ProductLabeling {
     private final static Logger LOG = LoggerFactory.getInstance(ProductLabeling.class);
     
 	private FDUserI customer;
-	private String pricingZoneId;
+	private ZoneInfo pricingZone;
 	private ProductModel product;
 	private PriceCalculator calculator; 
 	Set<EnumBurstType> hideBursts;
@@ -104,7 +105,7 @@ public class ProductLabeling {
      */
     private void setCustomer(FDUserI customer) {
         this.customer = customer;
-        this.pricingZoneId = customer != null ? customer.getPricingZoneId() : ZonePriceListing.MASTER_DEFAULT_ZONE; 
+        this.pricingZone = customer != null ? customer.getUserContext().getPricingContext().getZoneInfo() : ZonePriceListing.DEFAULT_ZONE_INFO; 
     }
 	
 	
@@ -128,8 +129,9 @@ public class ProductLabeling {
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= calculator.getProductInfo();			
-				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getPricingZoneId():pricingZoneId);
-				showBurstImage=model.isShowBurstImage();			
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getUserContext().getPricingContext().getZoneInfo():pricingZone);
+				if(model!=null)
+					showBurstImage=model.isShowBurstImage();			
 			}
 		} catch (FDResourceException e) {
 		    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);

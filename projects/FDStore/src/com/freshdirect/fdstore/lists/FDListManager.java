@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -66,11 +67,11 @@ public class FDListManager {
 		}
 	}
 	
-	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException {
+	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.getQsSpecificEveryItemEverOrderedList(identity);
+			return sb.getQsSpecificEveryItemEverOrderedList(identity, storeContext);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -81,11 +82,11 @@ public class FDListManager {
 	}
 	
 	//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
-	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity) throws FDResourceException {
+	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity);
+			return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity,storeContext);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -166,7 +167,7 @@ public class FDListManager {
 		try {
 
 			FDListManagerSB sb = managerHome.create();
-			return sb.createCustomerCreatedList(user.getIdentity(), listName);
+			return sb.createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -186,7 +187,7 @@ public class FDListManager {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			sb.deleteCustomerCreatedList(user.getIdentity(), listName);
+			sb.deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -217,7 +218,7 @@ public class FDListManager {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerCreatedLists(user.getIdentity());
+			return sb.getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -234,7 +235,7 @@ public class FDListManager {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerCreatedListInfos(user.getIdentity());
+			return sb.getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

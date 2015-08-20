@@ -16,6 +16,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -37,7 +38,10 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -48,6 +52,7 @@ import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
@@ -132,13 +137,7 @@ public class Cart {
      * @return
      */
     public Date getModificationCutoffTime() {
-        Date modificationCutoffTime = null;
-
-        if (cart.getDeliveryReservation() != null) {
-            modificationCutoffTime = cart.getDeliveryReservation().getCutoffTime();
-        }
-
-        return modificationCutoffTime;
+       return ((FDCartModel) cart).getModificationCutoffTime();
     }
 
     //    public void addItemToCart(CartLineItem lineItem) {
@@ -363,6 +362,15 @@ public class Cart {
         user.updateShoppingCart(this);
         return result;
     }
+    
+    public ResultBundle applycode(String id, SessionUser user) throws FDException {
+        RedemptionCodeControllerTagWrapper wrapper = new RedemptionCodeControllerTagWrapper(user);
+        ResultBundle result = wrapper.applyCode(id);
+
+        //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
+        user.updateShoppingCart(this);
+        return result;
+    }
 
     public ResultBundle removeMultipleItemsFromCart(MultipleRequest removeItemRequest, RequestData requestData, SessionUser user)
             throws FDException {
@@ -400,6 +408,13 @@ public class Cart {
 
     public FDReservation getDeliveryReservation() {
         return ((FDCartModel) cart).getDeliveryReservation();
+    }
+    
+    public FDReservation getOriginalReservation() {
+    	if(cart instanceof FDModifyCartModel){
+    		return ((FDModifyCartModel) cart).getOriginalOrder().getDeliveryReservation();
+    	}
+    	return null;
     }
     
 	public FDAvailabilityI getAvailability() {
@@ -670,8 +685,7 @@ public class Cart {
                 if ((cart instanceof FDModifyCartModel)) {
                     productLineItem.setNewItem(!(cartLine instanceof FDModifyCartLineI));
                 }
-
-                ProductConfiguration productConfiguration = new ProductConfiguration();
+            	ProductConfiguration productConfiguration = new ProductConfiguration();
                 productConfiguration.setFromProductSelection(ProductSelection.wrap(cartLine));
 
                 try {
@@ -724,10 +738,10 @@ public class Cart {
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-                boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays().isEmpty();
+                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
                 productLineItem.setPlatter(productNode.isPlatter());
-
-                productLineItem.setKosherProduction(fdProduct.getKosherInfo().isKosherProduction());
+                productLineItem.setKosherProduction(fdProduct.getKosherInfo(plantID).isKosherProduction());
                 productLineItem.setModifiedLineItem((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI));
                 productLineItem.setHasPlatterRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER));
                 productLineItem
@@ -765,6 +779,7 @@ public class Cart {
         cartDetail.setSubtotal(cart.getSubTotal());
 
         cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTaxValue(), false, false, false, "Total Tax"));
+        cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTip(), false, false, false, "Tip"));
         //cartDetail.setTax(cart.getTaxValue());
 
         if (cart.getDepositValue() > 0) {
@@ -1027,6 +1042,51 @@ public class Cart {
         // Unavailability Data
         Unavailability unavailability = Unavailability.collectData(user);
     	cartDetail.setUnavailability(unavailability);
+    	
+    	if(cart instanceof FDCartModel){
+        	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getTotalDiscountValue());
+        }
+        
+        if(cart instanceof FDCartModel){
+        	cartDetail.setTip(((FDCartModel)cart).getTip());
+        }
+        
+        if(cart.getDeliveryAddress() == null) {
+        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
+        	cartDetail.setDeliveryAddressId(new Checkout(user).getPreselectedDeliveryAddressId());
+        }
+        
+        if(cart.getPaymentMethod() == null) {
+        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
+        	cartDetail.setPaymentMethodId(new Checkout(user).getPreselectedPaymethodMethodId());
+        }
+        
+        if(cart.getDeliveryAddress() != null && cart.getDeliveryAddress().getPK() == null 
+        		&& cart.getDeliveryReservation() != null) {
+    		cartDetail.setDeliveryAddressId(cart.getDeliveryReservation().getAddressId());
+    	}
+        
+    	if(cart.getDeliveryAddress() != null && cart.getDeliveryAddress().getPK() != null) {
+    		cartDetail.setDeliveryAddressId(cart.getDeliveryAddress().getId());
+    	}
+    	if(cart.getPaymentMethod() != null && cart.getPaymentMethod().getPK() != null) {
+    		cartDetail.setPaymentMethodId(cart.getPaymentMethod().getPK().getId());
+    	}
+    	if(cart.getDeliveryReservation() != null) {
+    		cartDetail.setReservationId(cart.getDeliveryReservation().getId());
+    		cartDetail.setTimeslotId(cart.getDeliveryReservation().getTimeslotId());
+    	}
+    	
+    	
+			FDIdentity identity  = user.getFDSessionUser().getIdentity();
+			if(identity!=null){
+				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+				if(cm != null) {
+					cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
+				}
+			}
+		    	  	
+    	
         return cartDetail;
     }
 
@@ -1078,5 +1138,25 @@ public class Cart {
     
     public String getExpCouponDeliveryDate() {
 		return ((FDCartModel) this.cart).getExpCouponDeliveryDate();
+	}
+    
+    public void setTip(double tip) {
+    	this.cart.setTip(tip);
+    }
+
+	public boolean isValidPromoId(String id, SessionUser user) throws FDResourceException {
+		String promoId = FDPromotionNewManager.getRedemptionPromotionId(id);	
+        if(promoId==null){
+        	return false;
+        }
+        return true;
+    }
+
+	public void applycredit(SessionUser user) throws FDResourceException {
+		if(user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && user.getFDSessionUser().getIdentity()!=null){
+		FDCustomerCreditUtil.applyCustomerCredit(user.getFDSessionUser().getShoppingCart(), user.getFDSessionUser().getIdentity());
+		}
+        //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
+        user.updateShoppingCart(this);       
 	}
 }

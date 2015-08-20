@@ -44,6 +44,8 @@ public class AddressFinder {
 							if(user.getShoppingCart()!=null) {
 								address=user.getShoppingCart().getDeliveryAddress();
 								user.getShoppingCart().setDeliveryAddress(null);
+								user.getShoppingCart().setDeliveryPlantInfo(null);
+								
 							}					
 						}
 						if(address==null) {

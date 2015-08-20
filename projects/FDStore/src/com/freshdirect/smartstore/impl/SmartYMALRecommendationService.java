@@ -98,7 +98,7 @@ public class SmartYMALRecommendationService extends	AbstractRecommendationServic
 			List<Recommender> recommenders = ymalSet.getRecommenders();
 
 			SessionInput smartInput = new SessionInput(input.getCustomerId(),
-					input.getCustomerServiceType(), input.getPricingContext());
+					input.getCustomerServiceType(), input.getPricingContext(), input.getFulfillmentContext());
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
 			smartInput.setCartContents(addContentKeys(new HashSet<ContentKey>(input.getCartContents()), prodList));

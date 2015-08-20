@@ -72,7 +72,7 @@
 
 <% if(show.equals("details")){%>
 
-<fd:GetOrder id='cart' saleId='<%= orderId %>'>
+<fd:GetOrder id='cart' saleId='<%= orderId %>' crm="<%= true %>">
 <%
     if (cart != null) {
         // !!! REFACTOR: duplicates code from checkout pages

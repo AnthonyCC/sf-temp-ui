@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.promotion;
 
 public class SignupStrategy implements PromotionStrategyI {
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 
 		if (EnumOrderType.PICKUP.equals(context.getOrderType())) {
@@ -22,6 +23,7 @@ public class SignupStrategy implements PromotionStrategyI {
 		return promotionCode.equals(subPromo) ? FORCE : DENY;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 50;
 	}
@@ -30,4 +32,8 @@ public class SignupStrategy implements PromotionStrategyI {
 		return "SignupStrategy[]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

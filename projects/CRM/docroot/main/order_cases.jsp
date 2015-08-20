@@ -38,7 +38,7 @@ session.setAttribute(SessionName.USER,null); %>
 		
 		CrmSession.getSessionStatus(session).setSaleId(orderId);
 
-		FDOrderI order = FDCustomerManager.getOrder(orderId);
+		FDOrderI order = FDCustomerManager.getOrderForCRM(orderId);
 		
 		// !!! DEBUG
 		JspLogger.CC_GENERIC.debug("###### FINISHED RETREIVING ORDER FROM FDCUSTOMERMANAGER " + new java.util.Date() + " ######");

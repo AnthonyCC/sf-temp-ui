@@ -18,11 +18,15 @@ import java.util.Set;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 
@@ -45,7 +49,7 @@ public class FDModifyCartModel extends FDCartModel {
 	public FDModifyCartModel(FDOrderAdapter originalOrder) {
 		this.setCharges(originalOrder.getCharges());
 		this.originalOrder = originalOrder;
-
+		
 		// populate orderlines from orig.order
 		for (FDCartLineI origLine : originalOrder.getOrderLines()) {
 			addOriginalOrderLine(origLine);
@@ -53,21 +57,39 @@ public class FDModifyCartModel extends FDCartModel {
 
 		// initialize from original order
 		this.setDeliveryAddress(originalOrder.getCorrectedDeliveryAddress());
+		this.setDeliveryPlantInfo(originalOrder.getDeliveryPlantInfo());
 		this.setPaymentMethod(originalOrder.getPaymentMethod());
 
 		this.setDeliveryReservation(originalOrder.getDeliveryReservation());
+		this.setModificationCutoffTime(originalOrder.getDeliveryInfo().getDeliveryCutoffTime());
 
 		// !!! partially reconstruct the original zoneInfo (we don't need the full state, as it will be set later)
 		FDDeliveryZoneInfo zoneInfo = new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, null, 
 				EnumZipCheckResponses.DELIVER, originalOrder.getDeliveryReservation().getRegionSvcType());
-		this.setZoneInfo(zoneInfo);
+		
+		this.setZoneInfo(getZoneInfo());
 
 		this.setCustomerServiceMessage(originalOrder.getCustomerServiceMessage());
 		this.setMarketingMessage(originalOrder.getMarketingMessage());
+		this.setEStoreId(originalOrder.getEStoreId());
 
 	}
 
+	public FDDeliveryZoneInfo getZoneInfo(){
+		try{
+			return FDDeliveryManager.getInstance().getZoneInfo(originalOrder.getCorrectedDeliveryAddress(), originalOrder.getRequestedDate(),
+				null, originalOrder.getDeliveryReservation().getRegionSvcType());
+		}catch(FDInvalidAddressException e){
+			System.out.println(e.getMessage());
+		}catch(FDResourceException e){
+			System.out.println(e.getMessage());
+		}
+		return new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, null, 
+				EnumZipCheckResponses.DELIVER, originalOrder.getDeliveryReservation().getRegionSvcType());
+		
+	}
 	public void addOriginalOrderLine(FDCartLineI origLine){
+		
 		FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
 		Discount d = origLine.getDiscount();
 		if( d != null && !(d.getDiscountType().isSample())) {
@@ -88,6 +110,7 @@ public class FDModifyCartModel extends FDCartModel {
 		cartLine.setExternalAgency(origLine.getExternalAgency());
 		cartLine.setExternalSource(origLine.getExternalSource());
 		cartLine.setExternalGroup(origLine.getExternalGroup());
+		
 		this.addOrderLine(cartLine);
 	}
 	
@@ -110,7 +133,7 @@ public class FDModifyCartModel extends FDCartModel {
 	}
 	
 	@Override
-	protected void checkNewLinesForUpgradedGroup(String pZoneId,
+	protected void checkNewLinesForUpgradedGroup(ZoneInfo pricingZone,
 			Map<FDGroup, Double> groupMap,
 			Map<FDGroup, Double> qualifiedGroupMap,
 			Map<String, FDGroup> qualifiedGrpIdMap) throws FDResourceException {
@@ -127,8 +150,8 @@ public class FDModifyCartModel extends FDCartModel {
 					//This is a different version of same group. Check if the old version and new version
 					//has same price and same scale qty. 
 					FDGroup qGroup = qualifiedGrpIdMap.get(grpId);
-					MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(qGroup, pZoneId);
-					MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pZoneId);
+					MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(qGroup, pricingZone);
+					MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pricingZone);
 					//Check if the old version and new version has same price and same scale qty. 
 					//If yes add the old qty to new qty and set it both old group and new group.
 					if(qMatPrice!= null && newMatPrice != null && qMatPrice.getPrice() == newMatPrice.getPrice() &&
@@ -148,8 +171,8 @@ public class FDModifyCartModel extends FDCartModel {
 						//This is a different version of same group. Check if the old version and new version
 						//has same price and same scale qty. 
 						FDGroup nqGroup = nonQualifiedGrpIdMap.get(grpId);
-						MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(nqGroup, pZoneId);
-						MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pZoneId);
+						MaterialPrice qMatPrice = GroupScaleUtil.getGroupScalePrice(nqGroup, pricingZone);
+						MaterialPrice newMatPrice = GroupScaleUtil.getGroupScalePrice(newGroup, pricingZone);
 						//Check if the old version and new version has same price and same scale qty. 
 						//If yes add the old qty to new qty and set it both old group and new group.
 						if(qMatPrice!= null && newMatPrice != null && qMatPrice.getPrice() == newMatPrice.getPrice() &&
@@ -199,5 +222,29 @@ public class FDModifyCartModel extends FDCartModel {
 
 	public Set<String> getOriginalOrderCoupons() {
 		return originalOrderCoupons;
+	}
+	
+	public  void calculateScaleQuantity() {
+		//String key=null;
+		Map<FDSku,Double> scaleQuantityMap=new HashMap<FDSku, Double>();
+		Double scale=null;
+		for ( FDCartLineI cartLine : orderLines ) {
+			//key=populateScaleKey(cartLine);
+			if(!(cartLine instanceof FDModifyCartLineI)){
+				scale=scaleQuantityMap.get(cartLine.getSku());
+				if(scale==null){
+					scale=new Double(0.0);
+				}
+				scale=scale+cartLine.getQuantity();
+				scaleQuantityMap.put(cartLine.getSku(), scale);
+			}
+		}
+		
+		for(FDCartLineI cartLine : orderLines){
+			//key=populateScaleKey(cartLine);
+			if(!(cartLine instanceof FDModifyCartLineI)){
+				cartLine.setScaleQuantity(scaleQuantityMap.get(cartLine.getSku()));
+			}
+		}
 	}
 }

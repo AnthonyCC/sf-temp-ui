@@ -26,15 +26,12 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class CrmTopFaqControllerTag extends AbstractControllerTag {
-	
-	private String customerId;
+	private static final long serialVersionUID = -1347735183710170167L;
+
 	private String id;
 	
 	public void setId(String id){
 		this.id = id;
-	}
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
 	}
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
@@ -74,24 +71,21 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 				
 				String faqSections = FDStoreProperties.getFaqSections();
 				StringTokenizer st = new StringTokenizer(faqSections,",");
-				List faqSubFolders = new ArrayList();
-				Map subNodesMap = new LinkedHashMap();
+				List<Map<ContentNodeI,List<ContentNodeI>>> faqSubFolders = new ArrayList<Map<ContentNodeI,List<ContentNodeI>>>();
+				Map<ContentNodeI,List<ContentNodeI>> subNodesMap = new LinkedHashMap<ContentNodeI,List<ContentNodeI>>();
 				while(st.hasMoreTokens()){
 					String nextToken=st.nextToken().trim();
 					ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER,nextToken);
 					ContentNodeI contentNode = manager.getContentNode(contentKey);
 					if(null !=contentNode){
-						Set subNodes = contentNode.getChildKeys();	
-						List faqList = new ArrayList();
-						for (Object object : subNodes) {
-							ContentKey subContentKey= (ContentKey)object;
-							if(null!=subContentKey){
-								ContentType contentType=subContentKey.getType(); 
-								ContentNodeI subContentNode = manager.getContentNode(subContentKey);
-								if(FDContentTypes.FAQ.equals(contentType)){
-										faqList.add(subContentNode);																			
-								}						
-							}					
+						Set<ContentKey> subNodes = contentNode.getChildKeys();	
+						List<ContentNodeI> faqList = new ArrayList<ContentNodeI>();
+						for (ContentKey subContentKey : subNodes) {
+							ContentType contentType=subContentKey.getType(); 
+							ContentNodeI subContentNode = manager.getContentNode(subContentKey);
+							if(FDContentTypes.FAQ.equals(contentType)){
+									faqList.add(subContentNode);																			
+							}						
 						}
 						subNodesMap.put(contentNode, faqList);
 					}
@@ -99,40 +93,6 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 				}
 				faqSubFolders.add(subNodesMap);
 				
-				/*ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
-				ContentNodeI contentNode = manager.getContentNode(key);
-				List faqSubFolders = null;
-				if(null != contentNode){
-					faqSubFolders = new ArrayList();
-					Set subNodes = contentNode.getChildKeys();
-					Map subNodesMap = new LinkedHashMap();
-					for (Object object : subNodes) {
-						ContentKey subContentKey= (ContentKey)object;
-						if(null!=subContentKey){
-							ContentType contentType=subContentKey.getType(); 
-							ContentNodeI subContentNode = manager.getContentNode(subContentKey);
-							if(!FDContentTypes.FAQ.equals(contentType)){
-//								ContentNodeI subContentNode = manager.getContentNode(subContentKey);
-								if(null != subContentNode){
-									Set children = subContentNode.getChildKeys();
-									List faqList = new ArrayList();
-									for (Object object1 : children) {
-										ContentKey childContentKey= (ContentKey)object1;
-										if(null!=childContentKey && FDContentTypes.FAQ.equals(childContentKey.getType())){
-											ContentNodeI childContentNode = manager.getContentNode(childContentKey);
-											faqList.add(childContentNode);
-										}
-									}
-									subNodesMap.put(subContentNode, faqList);									
-								}
-							}else{
-								faqSubFolders.add(subContentNode);
-							}						
-						}					
-					}
-					faqSubFolders.add(subNodesMap);
-					
-				}	*/			
 				pageContext.setAttribute(this.id, faqSubFolders != null ? faqSubFolders : Collections.EMPTY_LIST);
 				pageContext.setAttribute("savedFaqs", getTopFaqs(actionResult));
 			
@@ -140,12 +100,12 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 		return true;
 	}
 
-	private List getTopFaqs(ActionResult actionResult){
+	private List<String> getTopFaqs(ActionResult actionResult){
 		try {
 			return CallCenterServices.getTopFaqs();
 		} catch (FDResourceException e) {
 			actionResult.addError(true, "getSavedFaqError", " Failed to get the saved FAQs.");
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 	}
 	
@@ -155,13 +115,14 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 		   public VariableInfo[] getVariableInfo(TagData data) {
 		        return new VariableInfo[] {
 		            new VariableInfo(data.getAttributeString("id"),
-		                            "java.util.List",
-		                            true,
-		                            VariableInfo.NESTED),
-						            new VariableInfo(data.getAttributeString("result"),
-			                            "com.freshdirect.framework.webapp.ActionResult",
-			                            true,
-			                            VariableInfo.NESTED)             
+//                        "java.util.List<java.util.Map<com.freshdirect.cms.ContentNodeI,java.util.List<com.freshdirect.cms.ContentNodeI>>>",
+                        "java.util.List",
+                        true,
+                        VariableInfo.NESTED),
+			            new VariableInfo(data.getAttributeString("result"),
+                            "com.freshdirect.framework.webapp.ActionResult",
+                            true,
+                            VariableInfo.NESTED)             
 		        };
 
 		    }

@@ -33,4 +33,11 @@ public class BasicSaleInfo implements Serializable {
 	public String getErpCustomerId(){
 		return this.erpCustomerId;
 	}
+
+	@Override
+	public String toString() {
+		return "BasicSaleInfo [saleId=" + saleId + ", status=" + status
+				+ ", erpCustomerId=" + erpCustomerId + "]";
+	}
+	
 }

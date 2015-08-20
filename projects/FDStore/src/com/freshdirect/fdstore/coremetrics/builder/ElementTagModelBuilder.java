@@ -8,6 +8,7 @@ import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -70,6 +71,8 @@ public class ElementTagModelBuilder {
 	
 	private String browseSortId;
 	
+	private CmContext context = CmContext.getContext();
+	
 	public ElementTagModel buildTagModel()  throws SkipTagException {
 
 		setDefaultModelAttributes();
@@ -101,10 +104,14 @@ public class ElementTagModelBuilder {
 		} else if (CAT_BROWSE_SORT.equals(elementCategory)) {
 			processLeftNavSortEvent();			
 		}
-			
+		
+		// prefix element category
+		model.setElementCategory( context.prefixedCategoryId( model.getElementCategory() ) );
+		
 		return model;
 	}
 
+	
 	private void setDefaultModelAttributes(){
 		model.setElementId(elementId);
 		model.setElementCategory(elementCategory);

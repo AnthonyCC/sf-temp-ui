@@ -19,7 +19,8 @@ public class DeliveryAddressRequest extends Message{
 	private  String alternatePhone;
 	private  String alternatePhoneExt;
 	private  boolean doorman;
-
+	private  boolean neighbor;
+	
 	private  String alternateFirstName;
 	private  String alternateLastName;
 	private  String alternateApartment;
@@ -37,7 +38,13 @@ public class DeliveryAddressRequest extends Message{
 	public void setDoorman(boolean doorman) {
 		this.doorman = doorman;
 	}
-	
+	public boolean isNeighbor() {
+		return neighbor;
+	}
+	public void setNeighbor(boolean neighbor) {
+		this.neighbor = neighbor;
+	}
+		
 	public String getDlvServiceType() {
 		return dlvServiceType;
 	}

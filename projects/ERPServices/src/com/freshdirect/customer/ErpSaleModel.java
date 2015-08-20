@@ -13,6 +13,7 @@ import java.util.Set;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
@@ -55,6 +56,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private boolean hasSignature;
 	private String standingOrderId;
 	private Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
+	private EnumEStoreId eStoreId;
 	
 	/**
 	 * @return Returns the deliveryPassId.
@@ -89,7 +91,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.type=type;
 		this.subTotal = order.getSubTotal();
 		this.createDate = new Date();
-		this.deliveryType = EnumDeliveryType.getDeliveryType("");
+		this.deliveryType = order.getDeliveryInfo().getDeliveryType();
+		this.eStoreId = order.geteStoreId(); //::FDX::order.geteStoreId();
 
 	}
 	/**
@@ -107,7 +110,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param standingOrderId ID of StandingOrder that created this sale
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List<ErpTransactionModel> transactions, List<ErpComplaintModel> complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature) {
+		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -121,6 +124,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.deliveryType = EnumDeliveryType.getDeliveryType("");
 		this.standingOrderId = standingOrderId;
 		this.hasSignature = hasSignature;
+		this.eStoreId = eStoreId;
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -1668,7 +1672,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		boolean usq = false;
 		boolean fdw = false;
 		
-		final ErpAffiliate fdAff = ErpAffiliate.getPrimaryAffiliate();
+		final ErpAffiliate fdAff = ErpAffiliate.getPrimaryAffiliate(eStoreId);
 		final ErpAffiliate bcAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		final ErpAffiliate usqAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 		final ErpAffiliate fdwAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
@@ -1782,6 +1786,20 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	public void setCartonMetrics(Map<String, Integer> cartonMetrics) {
 		this.cartonMetrics = cartonMetrics;
+	}
+
+	/**
+	 * @return the eStoreId
+	 */
+	public EnumEStoreId geteStoreId() {
+		return eStoreId;
+	}
+
+	/**
+	 * @param eStoreId the eStoreId to set
+	 */
+	public void seteStoreId(EnumEStoreId eStoreId) {
+		this.eStoreId = eStoreId;
 	}
 	
 	

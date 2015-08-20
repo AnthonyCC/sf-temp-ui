@@ -205,6 +205,25 @@ public class ShipToAddress extends DeliveryAddress {
         return address.getAltPhone();
     }
 
+    public Set getAvailableServiceTypes() {    		
+    	FDDeliveryServiceSelectionResult serviceResult = null;  	
+    	AddressModel addressModel = new AddressModel();
+		addressModel.setAddress1(this.address.getAddress1());
+		addressModel.setCity(this.address.getCity());
+		addressModel.setState(this.address.getState());
+		addressModel.setZipCode(this.address.getZipCode());			
+		try {
+			 serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(addressModel);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDInvalidAddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return serviceResult.getAvailableServices();		
+	}
+
     public String getAltDeliveryApt() {
         return address.getAltApartment();
     }

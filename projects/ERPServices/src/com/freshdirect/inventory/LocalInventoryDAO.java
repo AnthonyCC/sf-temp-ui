@@ -19,13 +19,13 @@ import com.freshdirect.sap.SapOrderI;
 import com.freshdirect.sap.SapOrderLineI;
 
 public class LocalInventoryDAO {
-	private static final String FETCH_INVENTORY_BY_MATERIAL = "SELECT * FROM ERPS.INVENTORY_ENTRY I WHERE I.MATERIAL_SAP_ID ";
+	private static final String FETCH_INVENTORY_BY_MATERIAL_PLANT = "SELECT * FROM ERPS.INVENTORY_ENTRY I WHERE I.PLANT_ID=? AND I.MATERIAL_SAP_ID ";
 	
 	private static final String DELETE_SALE_INVENTORY_BY_MATERIAL_DATE = "DELETE FROM CUST.SALE_MATERIAL WHERE SALE_ID = ?";
 	
-	private static final String COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE = "INSERT INTO CUST.SALE_MATERIAL(SALE_ID, MATERIAL_SAP_ID, INSERT_TIMESTAMP, REQUESTED_DATE, QUANTITY) VALUES (?,?,?,?,?)";
+	private static final String COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE_AND_PLANT = "INSERT INTO CUST.SALE_MATERIAL(SALE_ID, MATERIAL_SAP_ID, INSERT_TIMESTAMP, REQUESTED_DATE, QUANTITY,PLANT_ID) VALUES (?,?,?,?,?,?)";
 	
-	private static final String COUNT_SALE_INVENTORY_BY_MATERIAL_REQ_DATE = "SELECT SUM(QUANTITY) INVCOUNT, MATERIAL_SAP_ID FROM CUST.SALE_MATERIAL WHERE REQUESTED_DATE <= ? AND MATERIAL_SAP_ID ";
+	private static final String COUNT_SALE_INVENTORY_BY_MATERIAL_REQ_DATE_AND_PLANT = "SELECT SUM(QUANTITY) INVCOUNT, MATERIAL_SAP_ID FROM CUST.SALE_MATERIAL WHERE REQUESTED_DATE <= ? AND PLANT_ID=? AND MATERIAL_SAP_ID ";
 	
 	public SapOrderI checkLocalAvailability(Connection conn, SapOrderI sapOrder) throws SQLException{
 		PreparedStatement ps = null;
@@ -33,15 +33,15 @@ public class LocalInventoryDAO {
 		try {
 		Date requestedDate = sapOrder.getRequestedDate();
 		List<String> materialList = new ArrayList<String>();
-		StringBuffer strBuf = new StringBuffer(FETCH_INVENTORY_BY_MATERIAL);
+		StringBuffer strBuf = new StringBuffer(FETCH_INVENTORY_BY_MATERIAL_PLANT);
 		for (int i = 0; i < sapOrder.numberOfOrderLines(); i++) {
 			SapOrderLineI orderLine = sapOrder.getOrderLine(i);
 			materialList.add(orderLine.getMaterialNumber());
 		}
-		
 		strBuf.append(StringUtil.formQueryString(materialList));
 		strBuf.append(" ORDER BY START_DATE ASC");
 		ps = conn.prepareStatement(strBuf.toString());
+		ps.setString(1, sapOrder.getPlant());
 		rs = ps.executeQuery();
 		String materialNumber = null;
 		Map<String, List<ErpInventoryEntryModel>> materialMap = new HashMap<String, List<ErpInventoryEntryModel>>();
@@ -53,11 +53,13 @@ public class LocalInventoryDAO {
 			materialMap.get(materialNumber).add(new ErpInventoryEntryModel(rs.getDate("START_DATE"), rs.getDouble("QUANTITY")));
 		}
 			
-		strBuf = new StringBuffer(COUNT_SALE_INVENTORY_BY_MATERIAL_REQ_DATE);
+		strBuf = new StringBuffer(COUNT_SALE_INVENTORY_BY_MATERIAL_REQ_DATE_AND_PLANT);
 		strBuf.append(StringUtil.formQueryString(materialList));
 		strBuf.append(" GROUP BY MATERIAL_SAP_ID");
 		ps = conn.prepareStatement(strBuf.toString());
 		ps.setDate(1, new java.sql.Date(requestedDate.getTime()));
+		ps.setString(2, sapOrder.getPlant());
+
 		rs = ps.executeQuery();
 		
 		Map<String, Integer> materialCountMap = new HashMap<String, Integer>();
@@ -142,7 +144,7 @@ public class LocalInventoryDAO {
 
 		releaseLocalInventory(conn, sapOrder.getWebOrderNumber());
 		
-		ps = conn.prepareStatement(COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE);
+		ps = conn.prepareStatement(COMMIT_SALE_INVENTORY_BY_MATERIAL_DATE_AND_PLANT);
 		for(String matNumber : matMap.keySet()){
 			ps.setString(1, sapOrder.getWebOrderNumber());
 			ps.setString(2, matNumber);
@@ -150,6 +152,8 @@ public class LocalInventoryDAO {
 			ps.setTimestamp(3, new java.sql.Timestamp(cal.getTimeInMillis()));
 			ps.setDate(4, new java.sql.Date(sapOrder.getRequestedDate().getTime()));
 			ps.setDouble(5, matMap.get(matNumber));
+			ps.setString(6, sapOrder.getPlant());
+
 			ps.addBatch();
 		}
 		ps.executeBatch();

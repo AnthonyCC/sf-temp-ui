@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore;
 
+import org.apache.commons.lang.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+
+
 
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
@@ -48,6 +51,7 @@ public class FDStoreProperties {
     private final static String PROP_COMPLAINTMGR_HOME = "fdstore.complaintManager.home";
     private final static String PROP_CALLCENTERMGR_HOME = "fdstore.callCenterManager.home";
     private final static String PROP_FDCUSTMGR_HOME = "fdstore.fdCustomerManager.home";
+    private final static String PROP_FDSOCIALMGR_HOME = "freshdirect.fdstore.SocialManager";
     private final static String PROP_FDPROMOTIONMGR_HOME = "fdstore.fdPromotionManager.home";
     private final static String PROP_FDPROMOTIONMGR_NEW_HOME = "fdstore.fdPromotionManagerNew.home";
     private final static String PROP_DLVMANAGER_HOME = "fdstore.deliveryManager.home";
@@ -137,6 +141,7 @@ public class FDStoreProperties {
     private final static String SS_SHORT_TERM_POPULARITY_SCORING = "fdstore.scoring.shortTermPopularity";
 
     // DYF Site Feature
+    @Deprecated
     private final static String DYF_ENABLED = "fdstore.dyf.enabled";
 
     // DYF FREQBOUGHT PARAMETERS
@@ -189,6 +194,7 @@ public class FDStoreProperties {
     private final static String PROP_CRM_ORDER_PRC_LIMIT = "fdstore.orderProcessingLimit";
 
     //Customer Created List settings
+    @Deprecated
     private final static String CCL_ENABLED = "fdstore.ccl.enabled";
     private final static String CCL_AJAX_DEBUG_CLIENT = "fdstore.ccl.ajax.debug.client";
     private final static String CCL_AJAX_DEBUG_JSONRPC = "fdstore.ccl.ajax.debug.jsonrpc";
@@ -314,6 +320,7 @@ public class FDStoreProperties {
     private static final String PROP_GC_MIN_AMOUNT = "fdstore.giftcard.minimum.amount";
     private static final String PROP_GC_MAX_AMOUNT = "fdstore.giftcard.maximum.amount";
     private final static String PROP_GIFT_CARD_RECIPIENT_MAX = "giftcard.recipient.max";
+    @Deprecated
     private static final String PROP_GC_ENABLED = "fdstore.isGiftCardEnabled";
     private static final String PROP_GC_LANDING_URL = "fdstore.giftCardLandingUrl";
     private static final String PROP_GC_DEPTID = "fdstore.giftCardDeptId";
@@ -355,6 +362,7 @@ public class FDStoreProperties {
 
     //Zone Pricing
     private final static String PROP_ZONE_PRICING_AD_ENABLED = "fdstore.zone.pricing.ad.enabled";
+    @Deprecated
     private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
 
     //Standing Orders
@@ -628,6 +636,7 @@ public class FDStoreProperties {
 	private final static String PROP_ALCOHOLFILTERING_ENABLED = "fdstore.alcoholfiltering.enabled";
 	private final static String CHECK_LOCAL_INVENTORY_ENABLED = "fdstore.check.localinventory.enabled";
 	
+	@Deprecated
 	private final static String PROP_PAYMENTECH_GATEWAY_ENABLED = "fdstore.paymentech.enabled";
 	
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
@@ -705,15 +714,12 @@ public class FDStoreProperties {
 		
     // [APPDEV-3438] Unit Price Display
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
-
+	
+	
 	//Recaptcha
     private final static String PROP_RECAPTCHA_PUBLIC_KEY = "fdstore.recaptcha.publickey";
     private final static String PROP_RECAPTCHA_PRIVATE_KEY = "fdstore.recaptcha.privatekey";
     
-	private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
-	private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
-	private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
-
 	private static final String PROP_LOGISTICS_CONNECTION_TIMEOUT = "fdstore.logistics.conn.timeout";
 	private static final String PROP_LOGISTICS_CONN_READ_TIMEOUT = "fdstore.logistics.conn.read.timeout";
 	private static final String PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT = "fdstore.logistics.conn.request.timeout";
@@ -731,8 +737,11 @@ public class FDStoreProperties {
     private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "fdstore.orderhistory.from.months";
     
     private static final String PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT = "fdstore.quickshop.past_orders.menuitem.count";
-	private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
-	
+    
+    private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
+	private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
+	private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
+	private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
 	private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
 
 	// APPDEV - 4159 - Creating of variables for maximum size of columns in promo table
@@ -1383,6 +1392,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.searchredesign2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
@@ -1604,6 +1614,12 @@ public class FDStoreProperties {
     public static String getFDCustomerManagerHome() {
         return get(PROP_FDCUSTMGR_HOME);
     }
+    
+    public static String getFDSocialLoginManagerHome() {
+    	return get(PROP_FDSOCIALMGR_HOME);
+    }
+    
+    
 
     public static String getFDPromotionManagerHome() {
         return get(PROP_FDPROMOTIONMGR_HOME);
@@ -1982,13 +1998,17 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_NUTRITION_REFRESH_PERIOD));
     }
 
+    @Deprecated
     public static boolean isCclEnabled() {
-        return Boolean.valueOf(get(CCL_ENABLED)).booleanValue();
+        // return Boolean.valueOf(get(CCL_ENABLED)).booleanValue();
+    	return true;
     }
 
     // Is SmartStore DYF feature enabled?
+    @Deprecated
     public static boolean isDYFEnabled() {
-        return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
+        // return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
+    	return true;
     }
 
     public static float getDYFFreqboughtTopPercent() {
@@ -2076,8 +2096,10 @@ public class FDStoreProperties {
         return get(DLV_PASS_AUTORENEWAL_DEFAULT);
     }
 
+    @Deprecated
     public static boolean IsProduceRatingEnabled() {
-        return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
+        // return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
+    	return true;
     }
 
     //	ratings
@@ -2130,8 +2152,10 @@ public class FDStoreProperties {
     }
 
     // Gift Card
+    @Deprecated
     public static boolean isGiftCardEnabled() {
-        return Boolean.valueOf(get(PROP_GC_ENABLED)).booleanValue();
+        // return Boolean.valueOf(get(PROP_GC_ENABLED)).booleanValue();
+    	return true;
     }
 
     public static String getGiftCardLandingUrl() {
@@ -2241,8 +2265,10 @@ public class FDStoreProperties {
      *
      * @deprecated Property is no longer used
      */
+    @Deprecated
     public static boolean isSmartSearchEnabled() {
-    	return (Boolean.valueOf(get(SMART_SEARCH_ENABLED))).booleanValue();
+    	// return (Boolean.valueOf(get(SMART_SEARCH_ENABLED))).booleanValue();
+    	return true;
     }
 
     public static int getSmartstoreNewproductsDays() {
@@ -2528,8 +2554,10 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_GC_NSM_FREQ_SECS));
     }
 
+    @Deprecated
     public static boolean isZonePricingEnabled() {
-        return Boolean.valueOf(get(PROP_ZONE_PRICING_ENABLED)).booleanValue();
+        // return Boolean.valueOf(get(PROP_ZONE_PRICING_ENABLED)).booleanValue();
+    	return true;
     }
 
     public static boolean isZonePricingAdEnabled() {
@@ -3266,39 +3294,48 @@ public class FDStoreProperties {
 	public static int getCoremetricsFtpSftpPort() {
 		 return Integer.parseInt(get(PROP_COREMETRICS_FTP_SFTP_PORT));
 	}
-	
-		public static String getBazaarvoiceFtpUsername() {
+
+	@Deprecated
+	public static String getBazaarvoiceFtpUsername() {
 	   	return get(PROP_BAZAARVOICE_FTP_USERNAME);
 	}
 	
+	@Deprecated
 	public static String getBazaarvoiceFtpUrl() {
 	   	return get(PROP_BAZAARVOICE_FTP_URL);
 	}
 	
+	@Deprecated
 	public static String getBazaarvoiceFtpPassword() {
 	   	return get(PROP_BAZAARVOICE_FTP_PASSWORD);
 	}
 	
+	@Deprecated
 	public static String getBazaarvoiceBvapiUrl() {
 		return get(PROP_BAZAARVOICE_BVAPI_URL);
 	}
 	
+	@Deprecated
 	public static boolean isBazaarvoiceEnabled() {
 		return (Boolean.valueOf(get(PROP_BAZAARVOICE_ENABLED))).booleanValue();
 	}
 
+	@Deprecated
 	public static String getBazaarvoiceDownloadFeedSourcePath() {
 		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH);
 	}
 	
+	@Deprecated
 	public static String getBazaarvoiceDownloadFeedFile() {
 		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE);
 	}
 
+	@Deprecated
 	public static String getBazaarvoiceDownloadFeedTargetPath() {
 		return get(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH);
 	}
 	
+	@Deprecated
 	public static List<String> getBazaarvoiceExcludedDepts(){
 		String[] source = get(PROP_BAZAARVOICE_EXCLUDED_DEPTS).split(",");
 		
@@ -3425,8 +3462,10 @@ public class FDStoreProperties {
 		return ( Boolean.valueOf( get( PROP_QS_ENABLED ) ) ).booleanValue();
 	}
 	
+	@Deprecated
 	public static boolean isPaymentechGatewayEnabled() {
-	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
+	        // return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
+	        return true;
 	}
 
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page

@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
@@ -39,6 +41,8 @@ public class SearchController extends BaseController {
     private static final String JSON_RENDERED = "json-rendered";
 
     private static final String AUTOCOMPLETE_ACTION = "autocomplete";
+    
+    private static final String ACTION_SEARCH_EX = "searchEX";
 
     protected boolean validateUser() {
         return false;
@@ -59,6 +63,8 @@ public class SearchController extends BaseController {
 
         if (AUTOCOMPLETE_ACTION.equalsIgnoreCase(action)) {
             autocomplete(request, response, user, model);
+        } else if (ACTION_SEARCH_EX.equalsIgnoreCase(action)){
+        	searchEX(request, response, model, user);
         } else { // default go to search
             search(request, response, model, user);
         }
@@ -163,7 +169,119 @@ public class SearchController extends BaseController {
         data.setCategories(categoryList);
         data.setDepartments(departmentList);
         data.setDidYouMean(productService.getSpellingSuggestion());
+        data.setDefaultSortOptions();
+        //Use below at later time.
+        //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
         setResponseMessage(model, data, user);
+        
+
+        return model;
+    }
+    
+    private ModelAndView searchEX(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user)
+            throws FDException, ServiceException, NoSessionException, JsonException {
+        // Default values retrieved from GET request
+        String searchTerm = request.getParameter("searchTerm");
+        String upc = request.getParameter("upc");
+        int page = (StringUtils.isNumeric(request.getParameter("page")) ? Integer.parseInt(request.getParameter("page")) : 1);
+        int resultMax = (StringUtils.isNumeric(request.getParameter("max")) ? Integer.parseInt(request.getParameter("max")) : 25);
+        SortType sortType = SortType.RELEVANCY; //Default sort type
+        String brandToFilter = null;
+        String categoryToFilter = null;
+        String departmentToFilter = null;
+
+        // Retrieving any possible payload
+        String postData = getPostData(request, response);
+
+        LOG.debug("PostData received: [" + postData + "]");
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            searchTerm = requestMessage.getQuery();
+            upc = requestMessage.getUpc();
+            page = requestMessage.getPage();
+            resultMax = requestMessage.getMax();
+            sortType = SortType.valueFromString(requestMessage.getSortBy());
+            brandToFilter = requestMessage.getBrand();
+            categoryToFilter = requestMessage.getCategory();
+            departmentToFilter = requestMessage.getDepartment();
+        }
+
+        // If there is no searchTerm, default is blank string (will retrieve everything)
+        if (searchTerm == null) {
+            searchTerm = "";
+        }
+        
+        // brand search
+        if (isBlank(searchTerm) && isNotBlank(brandToFilter)) {
+        	searchTerm = brandToFilter;
+        }
+        
+        if (null != searchTerm) {
+            searchTerm = searchTerm.trim();
+        }
+
+        ProductServiceImpl productService = new ProductServiceImpl();
+        FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
+
+        List<String> products = productService.searchProductIds(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
+                getUserFromSession(request, response));
+        		 
+        // Data required for filtering: Brands
+        Set<Brand> brands = productService.getBrands();
+        List<FilterOption> brandList = new ArrayList<FilterOption>();
+        Iterator<Brand> bit = brands.iterator();
+        while (bit.hasNext()) {
+            Brand brand = bit.next();
+            FilterOption option = new FilterOption();
+            option.setId(brand.getId());
+            option.setLabel(brand.getName());
+            brandList.add(option);
+        }
+        
+        Collections.sort(brandList,filterComparator);
+
+        // Data required for filtering: Categories
+        Set<Category> categories = productService.getCategories();
+        List<FilterOption> categoryList = new ArrayList<FilterOption>();
+        Iterator<Category> cit = categories.iterator();
+        while (cit.hasNext()) {
+            Category category = cit.next();
+            FilterOption option = new FilterOption();
+            option.setId(category.getId());
+            option.setLabel(category.getName());
+            categoryList.add(option);
+        }
+
+        Collections.sort(categoryList,filterComparator);
+
+        // Data required for filtering: Departments
+        Set<Department> departments = productService.getDepartments();
+        List<FilterOption> departmentList = new ArrayList<FilterOption>();
+        Iterator<Department> dit = departments.iterator();
+        while (dit.hasNext()) {
+            Department department = dit.next();
+            FilterOption option = new FilterOption();
+            option.setId(department.getId());
+            option.setLabel(department.getName());
+            departmentList.add(option);
+        }
+
+        Collections.sort(departmentList, filterComparator);
+
+        SearchResult data = new SearchResult();
+        data.setTotalResultCount(productService.getRecentSearchTotalCount());
+        data.setQuery(searchTerm);
+//        data.setProductsFromModel(products);
+        data.setProductIds(products);
+        data.setBrands(brandList);
+        data.setCategories(categoryList);
+        data.setDepartments(departmentList);
+        data.setDidYouMean(productService.getSpellingSuggestion());
+        data.setDefaultSortOptions();
+        //Use below at later time.
+        //LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());
+        setResponseMessage(model, data, user);
+        
 
         return model;
     }

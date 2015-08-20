@@ -8,6 +8,8 @@ import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 
 public class QuickShop extends Message {
 	
+	private List<String> productIds;
+	
     List<ProductConfiguration> products;
     
     private List<FilterOption> departments = new ArrayList<FilterOption>();
@@ -20,6 +22,14 @@ public class QuickShop extends Message {
 
     public void setProducts(List<ProductConfiguration> products) {
         this.products = products;
+    }
+    
+    public List<String> getProductIds(){
+    	return this.productIds;
+    }
+    
+    public void setProductIds(List<String> productIds){
+    	this.productIds = productIds;
     }
 
 	public List<FilterOption> getDepartments() {

@@ -44,7 +44,7 @@ public class MultiStoreProperties {
 	 * @return
 	 */
 	public static String getCmsStoreId() {
-		return properties.getProperty(PROP_STORE_ID, EnumEStoreId.FD.getContentKey());
+		return properties.getProperty(PROP_STORE_ID, EnumEStoreId.FD.getContentId());
 	}
 
 	/**

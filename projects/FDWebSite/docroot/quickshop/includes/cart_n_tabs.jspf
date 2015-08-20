@@ -45,5 +45,5 @@ Includes everything required.
 <!-- ===================================== -->
 
 <% String smartStoreFacility = "quickshop"; %>
-<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
+
 </fd:FDShoppingCart>

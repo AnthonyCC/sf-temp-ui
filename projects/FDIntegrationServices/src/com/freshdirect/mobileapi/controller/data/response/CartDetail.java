@@ -770,4 +770,69 @@ public class CartDetail {
 	public void setUnavailability(Unavailability unavailability) {
 		this.unavailability = unavailability;
 	}
+	
+	private String deliveryAddressId;
+	private String paymentMethodId;
+	private String timeslotId;
+	private String reservationId;
+	private double totalSavedAmount;
+	private double tip;
+	public double getTip() {
+		return tip;
+	}
+
+	public void setTip(double tip) {
+		this.tip = tip;
+	}
+
+	private String mobileNumber;
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public double getTotalSavedAmount() {
+		return totalSavedAmount;
+	}
+
+	public void setTotalSavedAmount(double totalSavedAmount) {
+		this.totalSavedAmount = totalSavedAmount;
+	}
+
+	public String getDeliveryAddressId() {
+		return deliveryAddressId;
+	}
+
+	public void setDeliveryAddressId(String deliveryAddressId) {
+		this.deliveryAddressId = deliveryAddressId;
+	}
+
+	public String getPaymentMethodId() {
+		return paymentMethodId;
+	}
+
+	public void setPaymentMethodId(String paymentMethodId) {
+		this.paymentMethodId = paymentMethodId;
+	}
+
+	public String getTimeslotId() {
+		return timeslotId;
+	}
+
+	public void setTimeslotId(String timeslotId) {
+		this.timeslotId = timeslotId;
+	}
+
+	public String getReservationId() {
+		return reservationId;
+	}
+
+	public void setReservationId(String reservationId) {
+		this.reservationId = reservationId;
+	}
+	
 }

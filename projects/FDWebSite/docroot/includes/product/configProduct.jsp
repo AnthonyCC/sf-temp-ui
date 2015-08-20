@@ -21,6 +21,7 @@
 //*** get needed vars from request attributes, they must exist or else we throw jsp error ***/
 
 FDUserI user = 		  (FDUserI) request.getAttribute("user");
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 ConfiguredProduct productNode= (ConfiguredProduct)request.getAttribute("productNode");
 String cartMode = 	  (String) request.getAttribute("cartMode");
 FDCartLineI templateLine =(FDCartLineI) request.getAttribute("templateLine");

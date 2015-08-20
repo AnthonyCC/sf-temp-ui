@@ -31,6 +31,7 @@
  * @param? searchTerm
  * @param? suggestions
  * @param? tabs
+ * @param? listSearchParams
  */
 {template .searchSuggestions autoescape="false"}
     {if $tabs and length($tabs) > 0}
@@ -50,7 +51,11 @@
     {if $suggestions and length($suggestions) > 0}
   <div class="left-marg">
     Did you mean {foreach $term in $suggestions}
-      <a href="/srch.jsp?searchParams={$term}">{$term}</a>
+      {if $listSearchParams}
+      	<a href="/srch.jsp?searchParams={$term}&listSearchParams={$listSearchParams}">{$term}</a>
+      {else}
+      	<a href="/srch.jsp?searchParams={$term}">{$term}</a>
+      {/if}
       {if index($term) < length($suggestions) - 2}, {/if}
       {if index($term) == length($suggestions) - 2} or {/if}
     {/foreach}?
@@ -115,6 +120,27 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
       </script>
     </div>
   {/if}
+{/template}
+
+/**
+* @param? searchParams
+* @param? listSearchParams
+* @param? listSearchParamsList
+*/
+{template .listSearch autoescape="false"}
+
+{if $listSearchParams and $listSearchParamsList}
+   {foreach $listSearchParamsHit in $listSearchParamsList}
+     <div class="listSearchHit"> 
+      {if $listSearchParamsHit == $searchParams}
+      	<b>{$listSearchParamsHit}</b>
+      {else}
+      	<a href="/srch.jsp?searchParams={$listSearchParamsHit}&listSearchParams={$listSearchParams}">{$listSearchParamsHit}</a>
+      {/if}
+     </div>
+   {/foreach}
+   </h2>
+{/if}
 {/template}
 
 /**

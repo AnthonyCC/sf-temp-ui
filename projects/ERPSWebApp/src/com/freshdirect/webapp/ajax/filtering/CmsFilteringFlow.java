@@ -9,12 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -274,10 +274,21 @@ public class CmsFilteringFlow {
 
 	public BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		NavigationModel navigationModel = new NavigationModel();
-		SearchResults searchResults = ContentSearch.getInstance().searchProducts(nav.getSearchParams() == null ? "" : nav.getSearchParams()); //TODO this shouldn't be done when not on search page
-
-		switch (nav.getPageType()) { //TODO warning
+		SearchResults searchResults = null;
+		
+		switch (nav.getPageType()) {
 			case SEARCH:
+				String searchParams = nav.getSearchParams() == null ? "" : nav.getSearchParams();
+				
+				if (user.getMasqueradeContext()!=null){
+					List<String> listSearchParamsList = getSearchList(searchParams); //see if search term contains multiple terms
+					if (listSearchParamsList.size()>1){
+						nav.setListSearchParams(searchParams);
+						searchParams = listSearchParamsList.get(0);
+						nav.setSearchParams(searchParams);
+					}
+				}
+				searchResults = ContentSearch.getInstance().searchProducts(searchParams);
 				collectSearchRelevancyScores(searchResults);
 				break;
 			case NEWPRODUCTS:
@@ -289,6 +300,9 @@ public class CmsFilteringFlow {
 			case PRES_PICKS:
 				searchResults = SearchResultsUtil.getPresidentsPicksProducts(nav);
 				break;
+			default:
+				LOG.error("Invalid page type: "+ nav.getPageType());
+				throw new InvalidFilteringArgumentException("Invalid page type: "+ nav.getPageType(), InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, FALLBACK_URL);
 		}
 		
 		SearchPageType searchPageType = SearchPageType.PRODUCT; //default behavior
@@ -362,7 +376,9 @@ public class CmsFilteringFlow {
 				break;
 			case PRES_PICKS:
 				descriptiveContent.setPageTitle("FreshDirect - President's Picks");
-				descriptiveContent.setOasSitePage(ContentFactory.getInstance().getContentNode(nav.getId()).getPath());
+				ContentNodeModel node=ContentFactory.getInstance().getContentNode(nav.getId());
+				if(node!=null) 
+					descriptiveContent.setOasSitePage(node.getPath());
 				Html presidentPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getPresidentPicksPageTopMediaBanner();
 				if (presidentPicksPageTopMediaBanner != null) {
 					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(presidentPicksPageTopMediaBanner, user));
@@ -378,8 +394,14 @@ public class CmsFilteringFlow {
 					descriptiveContent.setMediaLocation("TOP");
 				}
 				break;
+			default:
+				LOG.error("Invalid page type: "+ nav.getPageType());
+				throw new InvalidFilteringArgumentException("Invalid page type: "+ nav.getPageType(), InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, FALLBACK_URL);
 		}
 		browseDataContext.getSearchParams().setSearchParams(nav.getSearchParams());
+		browseDataContext.getSearchParams().setListSearchParams(nav.getListSearchParams());
+		browseDataContext.getSearchParams().setListSearchParamsList(getSearchList(nav.getListSearchParams()));
+		
 		browseDataContext.getSearchParams().setSuggestions((List<String>)searchResults.getSpellingSuggestions());
 		browseDataContext.getSearchParams().setSearchTerm(searchResults.getSuggestedTerm());
 		buildTabs(browseDataContext, searchResults, nav);
@@ -418,6 +440,21 @@ public class CmsFilteringFlow {
 		return browseDataContext;
 	}
 
+	/** based on com.freshdirect.webapp.taglib.fdstore.FDParseSearchTermsTag.getSearchList(String) **/
+    private List<String> getSearchList(String params) {
+		List<String> list = new ArrayList<String>();
+		if (params != null && !"".equals(params.trim())) {
+			StringTokenizer tokenizer = new StringTokenizer(params, ",\r\n\f\"\'");
+			while (tokenizer.hasMoreTokens()) {
+				String currentToken = tokenizer.nextToken().trim();
+				if ( !"".equals(currentToken) ) {
+					list.add(currentToken);
+				}
+			}
+		}
+		return list;
+	}
+	
 	private void reOrderAllMenuItemsByHitCount(NavigationModel navigationModel, BrowseDataContext browseDataContext) {
 		List<MenuBoxData> leftNav = navigationModel.getLeftNav();
 		List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);

@@ -8,15 +8,20 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-
-
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.social.ejb.FDSocialManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -48,7 +53,8 @@ public class LoginControllerTag extends AbstractControllerTag {
 			isCaptchaSuccess = CaptchaUtil.validateCaptcha(request);
 			LOGGER.debug("Captcha enabled");
 		}
-		
+		String test = EnumUserInfoName.USER_ID.getCode();
+		String test1 = request.getParameter(test);
 		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
 		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -58,20 +64,71 @@ public class LoginControllerTag extends AbstractControllerTag {
 		} else {
 			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA)); 
 		}
-		if (updatedSuccessPage != null) {
-			this.setSuccessPage(updatedSuccessPage);			
-				
-				if(actionResult.getErrors() != null && actionResult.getErrors().size() <= 0  && isCaptchaSuccess){		
-					fdLoginAttempt = 0;
-				} else {
-					fdLoginAttempt++;
-				}
+		
+		
+		/* code for merging social account */
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        if ( user != null && !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
+	    	HashMap<String, String> userLinkAccPendingProp = null;
+	        Object objLinkAccPendingProp = session.getAttribute(userId);
+		    
+		    if(objLinkAccPendingProp != null)
+		    {
+		    	userLinkAccPendingProp = (HashMap<String, String>)objLinkAccPendingProp;
+		    	
+		    	if(userLinkAccPendingProp != null)
+		    	{
+		    		// add this pending account entry to database.
+		    		try {
 	
-		} else {
+						FDSocialManager.mergeSocialAccountWithUser(
+								userLinkAccPendingProp.get("email"),
+								userLinkAccPendingProp.get("userToken"),
+								userLinkAccPendingProp.get("identityToken"),
+								userLinkAccPendingProp.get("provider"),
+								userLinkAccPendingProp.get("displayName"),
+								userLinkAccPendingProp.get("preferredUsername"),
+								userLinkAccPendingProp.get("email"), 
+								userLinkAccPendingProp.get("emailVerified")
+								);
+						
+						LOGGER.info("Account: "+userLinkAccPendingProp.get("email")+" provider: "+ userLinkAccPendingProp.get("provider")+" merged");
+						session.removeAttribute(userLinkAccPendingProp.get("email")); // remove pending link social account.
+						
+						
+					} catch (FDResourceException e1) {
+						LOGGER.error("error in merging account:" + e1.getMessage());
+					}
+		    		
+		    		
+		    	}
+		    }
+        }
+	    
+	    /* merging social account code ends here */
+        
+	    if(updatedSuccessPage != null && updatedSuccessPage.length() > 0) {
+	    	if ( user != null && !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
+	    		this.setSuccessPage("/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()));
+	    	} else {
+	    		this.setSuccessPage(updatedSuccessPage);
+	    	}
+			
+			if(actionResult.getErrors() != null && actionResult.getErrors().size() <= 0  && isCaptchaSuccess){		
+				fdLoginAttempt = 0;
+			} else {
+				fdLoginAttempt++;
+			}
+			
+
+	    	
+        } else {
 			fdLoginAttempt++;
 		}
 		session.setAttribute("fdLoginAttempt", fdLoginAttempt);
+		
 		return true;
+		
 	}
 	
 	public static class TagEI extends AbstractControllerTag.TagEI {

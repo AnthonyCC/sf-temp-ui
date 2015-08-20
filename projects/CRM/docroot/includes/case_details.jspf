@@ -59,7 +59,9 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE)};
+	CrmAgentRole.getEnum(CrmAgentRole.TRNSP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.FDX_CODE)
+	};
 
 
 %>
@@ -418,6 +420,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 				<crm:GetAllAgents id="agentList">
 				<option class="title" value="<%= !thisCase.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
 				<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
+					<% if (role != null) { // FIXME: FDX agent role actually does not exist !!! %>
 					<option class="header"><b><%= role.getName() %></b></option>
 					<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
 					<% if (agent.isActive()) { %>
@@ -427,6 +430,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					<% } %>
 					</logic:iterate>
 					<option></option>
+					<% } %>
 				</logic:iterate>
 				</crm:GetAllAgents>
 			</select>
@@ -614,15 +618,24 @@ if (order != null) {
 	if (cartons.size() > 0) {
 %>
 					<div id="cartons" style="float-left; padding: 0 1em;">
+						<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
 						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info<span class="casedisp_Err_invis" id="cartonsErr">*</span></div>
+						<% } else { %>
+						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Bag Info<span class="casedisp_Err_invis" id="cartonsErr">*</span></div>
+						<% } %>
 						<% if (result.getError("carton") != null) { %><div style="text-align: center; padding-bottom: 0.5em;">
 							<fd:ErrorHandler result='<%= result %>' name='carton' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						<% } %></div>
 						<table style="width: 100%" cellspacing="0" cellpadding="0">
 							<tr>
 								<th>&nbsp;</th>
-								<th style="text-align: left; border-bottom: 1px solid black;">Carton Number</th>
-								<th style="text-align: left; border-bottom: 1px solid black;">Type</th>
+								<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+									<th style="text-align: left; border-bottom: 1px solid black;">Carton Number</th>
+									<th style="text-align: left; border-bottom: 1px solid black;">Type</th>
+								<% } else { %>
+									<th style="text-align: left; border-bottom: 1px solid black;">Bag Id</th>
+								<% } %>
+								
 							</tr>								
 <%
 		for (Iterator it=cartons.iterator(); it.hasNext(); ) {
@@ -631,7 +644,9 @@ if (order != null) {
 							<tr>
 								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %> <%= autoCaseComplaintId != null ? "disabled=\"1\"" : "" %>></td>
 								<td style="font-weight: bold;"><a style="text-decoration: none;" href="#" onclick="showCartonInfo('<%= ci.getCartonInfo().getCartonNumber() %>');return false;"><%= ci.getCartonInfo().getCartonNumber() %></a></td>
+								<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
 								<td style="font-weight: bold;"><%= ci.getCartonInfo().getCartonType() %></td>
+								<% } %>
 							</tr>
 <%
 		}

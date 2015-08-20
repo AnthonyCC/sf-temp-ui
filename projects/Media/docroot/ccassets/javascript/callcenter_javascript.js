@@ -1,4 +1,4 @@
-<!--    //--------- Common CallCenter JavaScript functions  ------------------
+/* --------- Common CallCenter JavaScript functions  ------------------*/
 var lastZipEntry = "";  //used to track the zipcode entry.
 var isIE;
 if(document.all){isIE=true}
@@ -205,5 +205,29 @@ function pop(URL,h,w) {
 	newWin.focus();
 }
 
+/* crm fd/fdx functions */
+var storeFacilityMap = {};
+if (window['$jq']) {
+	function switchGlobalContext() {
+		var storeFacility = $jq('#globalContext-Store').val() + ':' + $jq('#globalContext-Facility').val();
+		return changeUriParam('storeFacility', encodeURI(storeFacility));
+	}
 	
-//  End of Common CallCenter JavaScript Functions       -------->
+	//events
+	$jq(document).ready(function () {
+		$jq('#globalContext-Store, #globalContext-Facility').on('change', function(event) {
+			switchGlobalContext();
+		});
+	});
+}
+
+/* crm fd/fdx functions */
+
+
+if (window['$jq']) {
+	$jq(document).ready(function () {
+		$jq('.hasTooltip').tooltip();
+	});
+}
+	
+//  End of Common CallCenter JavaScript Functions

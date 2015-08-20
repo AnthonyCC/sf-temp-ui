@@ -1663,3 +1663,30 @@ if ($jq) {
 		})(window.location.search.substr(1).split('&'))
 	})($jq);
 }
+
+/* change uri param value (or update if existing), then go to new uri */
+function changeUriParam(paramKey, paramVal) {
+	if (paramKey) {
+		
+		function escapeRegExp(regexStr) {
+		    return regexStr.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+		}
+		
+		var loc = document.location.toString();
+		var regex = new RegExp(escapeRegExp(paramKey)+'=[^&]*', 'g');
+		var keyVal = paramKey+'='+paramVal;
+		
+		if (loc.indexOf(paramKey+'=') != -1) {
+			loc = loc.replace(regex, keyVal);
+		} else {
+			if (loc.indexOf('&') != -1 || loc.indexOf('?') != -1) {
+				loc = loc + '&'+keyVal;
+			} else {
+				loc = loc + '?'+keyVal;
+			}
+		}
+		document.location = loc;
+	}
+	
+	return false;
+}

@@ -584,8 +584,8 @@ public class SessionUser {
         return sessionUser.getMinCorpOrderAmount();
     }
 
-    public void setUserPricingContext() {
-        ContentFactory.getInstance().setCurrentPricingContext(sessionUser.getPricingContext());
+    public void setUserContext() {
+        ContentFactory.getInstance().setCurrentUserContext(sessionUser.getUserContext());
     }
     
     public void setEligibleForDDPP() {
@@ -674,5 +674,9 @@ public class SessionUser {
 		} catch (FDResourceException e) {
 			return "";
 		}
+	}
+	
+	public void setAddress(AddressModel a) {
+		sessionUser.setAddress(a);
 	}
 }

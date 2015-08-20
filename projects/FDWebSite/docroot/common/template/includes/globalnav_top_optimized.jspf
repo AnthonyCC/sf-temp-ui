@@ -25,18 +25,18 @@ final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 //FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 if(user != null) {
-    //  Defaults to Guest User;
-    String yourImageButton = "/media_stat/images/navigation/global_nav/nav_button_sign_up.gif";
-    String validURLForButton = "/registration/signup.jsp";
-    String depotName = "";
-    if(user.isDepotUser()){
-        depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
-    }
-    
-    
-    request.setAttribute("listPos", "SystemMessage");
-    %><% 
-    if (FDStoreProperties.isAdServerEnabled()) { 
+	//	Defaults to Guest User;
+	String yourImageButton = "/media_stat/images/navigation/global_nav/nav_button_sign_up.gif";
+	String validURLForButton = "/registration/signup.jsp";
+	String depotName = "";
+	if(user.isDepotUser()){
+		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
+	}
+	
+	
+	request.setAttribute("listPos", "SystemMessage");
+	%><% 
+	if (FDStoreProperties.isAdServerEnabled()) { 
   %><div id="OAS_SystemMessage">
   <script type="text/javascript">OAS_AD('SystemMessage');</script>
   </div><% 

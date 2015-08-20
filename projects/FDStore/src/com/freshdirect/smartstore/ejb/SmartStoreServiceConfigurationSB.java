@@ -35,5 +35,5 @@ public interface SmartStoreServiceConfigurationSB extends EJBObject {
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Collection<DynamicSiteFeature> getSiteFeatures() throws RemoteException, SQLException;
+	public Collection<DynamicSiteFeature> getSiteFeatures(final String eStoreId) throws RemoteException, SQLException;
 }

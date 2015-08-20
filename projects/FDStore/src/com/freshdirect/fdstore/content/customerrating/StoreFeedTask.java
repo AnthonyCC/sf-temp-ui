@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
+@Deprecated
 public class StoreFeedTask {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(StoreFeedTask.class);

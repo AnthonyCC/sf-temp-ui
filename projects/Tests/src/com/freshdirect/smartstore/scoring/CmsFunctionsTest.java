@@ -50,7 +50,7 @@ public class CmsFunctionsTest extends TestCase {
         
         comp = new DataGeneratorCompiler(ScoreProvider.ZONE_DEPENDENT_FACTORS_ARRAY);
         {   
-            s = new SessionInput("ses1", null, null);
+            s = new SessionInput("ses1", null, null, null);
             s.setCurrentNode(ContentFactory.getInstance().getContentNode("cfncndy_ash_mcrrd"));
             
             List explicitList = new ArrayList(2);

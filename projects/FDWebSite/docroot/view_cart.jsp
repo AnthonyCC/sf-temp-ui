@@ -34,6 +34,7 @@ final int W_VIEWCART_LP = 215;
 <features:redirect featureName="checkout2_0" />
 <potato:pendingExternalAtcItem/>
 <%
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
 request.setAttribute("listPos", "SystemMessage");
@@ -131,7 +132,13 @@ StringBuffer buffer = new StringBuffer(
 
 %>
 
-<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
+<%if(user.getMasqueradeContext()!=null) {%>
+	<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
+		<%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>
+<%} %>
+
+<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
 	<div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>

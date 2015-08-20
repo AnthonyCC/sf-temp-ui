@@ -36,4 +36,9 @@ public class SingleVariantSelector extends VariantSelector {
     public Variant selectOverridden(FDUserI user) {
     	return null;
     }
+
+    @Override
+    public Variant getVariant(String cohortName) {
+        return variant;
+    }
 }

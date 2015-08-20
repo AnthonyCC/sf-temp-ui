@@ -298,7 +298,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 						tag.setDeptId( deptId );
 						tag.setUseMinCount( false );
 						
-						Collection<Object> skus = tag.getPeakProduce( department, maxItems );						
+						Collection<Object> skus = tag.getPeakProduce( department, maxItems,user.getUserContext() );						
 						return convertToQuickshopItems( user, maxItems, skus );
 						
 					} else if ( 

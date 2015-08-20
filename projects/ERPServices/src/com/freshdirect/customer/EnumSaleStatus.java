@@ -103,10 +103,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 		return this.equals(ENROUTE) || this.equals(CAPTURE_PENDING) || this.equals(PENDING) || this.equals(REDELIVERY);
 	}
 	
-	@Override
-	public String toString() {
-		return this.name;
-	}
+	
 
 	@Override
 	public boolean equals(Object o) {
@@ -114,6 +111,20 @@ public class EnumSaleStatus implements java.io.Serializable {
 			return this.id == ((EnumSaleStatus)o).id;
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((displayName == null) ? 0 : displayName.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (pending ? 1231 : 1237);
+		result = prime * result
+				+ ((statusCode == null) ? 0 : statusCode.hashCode());
+		return result;
 	}
 
 	public boolean isCanceled() {
@@ -126,4 +137,12 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public boolean isNewOrder() {
 		return this.equals(NEW);
 	}
+
+	@Override
+	public String toString() {
+		return statusCode;
+	}
+	
+	
+	
 }

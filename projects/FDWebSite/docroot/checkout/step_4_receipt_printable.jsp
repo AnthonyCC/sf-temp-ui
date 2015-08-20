@@ -14,6 +14,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<%!
+// final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+%>
+
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 %>

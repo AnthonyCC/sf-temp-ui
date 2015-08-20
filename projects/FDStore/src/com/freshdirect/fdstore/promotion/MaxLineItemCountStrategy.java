@@ -23,6 +23,7 @@ public class MaxLineItemCountStrategy implements LineItemStrategyI {
 		this.maxItemCount=maxItemCount;
 	}
 	
+	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
 		// TODO Auto-generated method stub
 		int discountCount = context.getShoppingCart().getLineItemDiscountCount(promotionCode);
@@ -31,6 +32,11 @@ public class MaxLineItemCountStrategy implements LineItemStrategyI {
 		}
 		
 		return DENY;
+	}
+	
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }
 

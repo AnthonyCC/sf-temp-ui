@@ -13,7 +13,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDPromotionVisitorTest extends TestCase {
@@ -27,11 +27,11 @@ public class FDPromotionVisitorTest extends TestCase {
 		Promotion p;
 		Date d  = new Date();
 		p = new Promotion(new PrimaryKey("s1"), EnumPromotionType.SAMPLE, "s1", "s1", "s1",new Timestamp(d.getTime()));
-		p.addApplicator(new SampleLineApplicator(new ProductReference("cat", "prod1"), 40));
+		p.addApplicator(new SampleLineApplicator(new ProductReferenceImpl("cat", "prod1"), 40));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("s2"), EnumPromotionType.SAMPLE, "s2", "s2", "s2",new Timestamp(d.getTime()));
-		p.addApplicator(new SampleLineApplicator(new ProductReference("cat", "prod2"), 40));
+		p.addApplicator(new SampleLineApplicator(new ProductReferenceImpl("cat", "prod2"), 40));
 		promotions.put(p.getPromotionCode(), p);
 
 		p = new Promotion(new PrimaryKey("gc1"), EnumPromotionType.GIFT_CARD, "gc1", "gc1", "gc1",new Timestamp(d.getTime()));

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ProductModel;
 
@@ -34,7 +35,7 @@ public class QuickCart implements FDProductCollectionI, Serializable {
 	private Date deliveryDate = null;
 	private String productType="";
 	private String name = null;
-	private String userZoneId=null;
+	private UserContext userCtx=null;
 	
 	public static final String PRODUCT_TYPE_CCL="CCL";
 	public static final String PRODUCT_TYPE_PRD="PRODUCT";
@@ -74,7 +75,7 @@ public class QuickCart implements FDProductCollectionI, Serializable {
 	}
 
 	public void addProduct(FDProductSelectionI orderLine) {
-		if(getUserZoneId()!=null) orderLine.setPricingContext(new PricingContext(getUserZoneId()));
+		if(getUserContext()!=null) orderLine.setUserContext(userCtx);
 		
 		this.orderLines.add(orderLine);
 		//this.reSort();
@@ -103,8 +104,8 @@ public class QuickCart implements FDProductCollectionI, Serializable {
 	public void setProducts(List<? extends FDProductSelectionI> lines) {
 		this.orderLines.clear();
 		for ( FDProductSelectionI product : lines ) {
-			if ( getUserZoneId() != null )
-				product.setPricingContext( new PricingContext( getUserZoneId() ) );
+			if ( getUserContext() != null )
+				product.setUserContext(getUserContext());
 			this.orderLines.add( product );
 		}
 		this.sort( PRODUCT_COMPARATOR );
@@ -207,12 +208,12 @@ public class QuickCart implements FDProductCollectionI, Serializable {
 		return sb.toString();
 	}
 
-	public String getUserZoneId() {
-		return userZoneId;
+	public UserContext getUserContext() {
+		return userCtx;
 	}
 
-	public void setUserZoneId(String userZoneId) {
-		this.userZoneId = userZoneId;
+	public void setUserContext(UserContext userCtx) {
+		this.userCtx = userCtx;
 	}
 
 }

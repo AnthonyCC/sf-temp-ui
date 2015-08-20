@@ -335,6 +335,8 @@ public class ErpFactory {
 			charValuePrice.setPrice(0.0);
 			charValuePrice.setPricingUnit("");
 			charValuePrice.setSapId("");
+			charValuePrice.setSalesOrg("");
+			charValuePrice.setDistChannel("");
 			return charValuePrice;
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe);

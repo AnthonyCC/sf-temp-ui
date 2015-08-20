@@ -85,8 +85,19 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_PRODUCT_ID, productConfiguration.getProductId());
         addRequestValue(REQ_PARAM_WINE_CATEGORY_ID, productConfiguration.getCategoryId());
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
+        if(productConfiguration.getSalesUnit() != null){
+        	addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
+        } else {
+        	addRequestValue(REQ_PARAM_SALES_UNIT, null);
+        }
+
+        /*
+        addRequestValue(REQ_PARAM_CATEGORY_ID, productConfiguration.getCategoryId());
+        addRequestValue(REQ_PARAM_PRODUCT_ID, productConfiguration.getProductId());
+        addRequestValue(REQ_PARAM_WINE_CATEGORY_ID, productConfiguration.getCategoryId());
+        addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
-        
+        */
       //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
         if(productConfiguration.getCmPageId()!=null && !productConfiguration.getCmPageId().isEmpty()){
         	addRequestValue(REQ_PARAM_CM_PAGEID, productConfiguration.getCmPageId());

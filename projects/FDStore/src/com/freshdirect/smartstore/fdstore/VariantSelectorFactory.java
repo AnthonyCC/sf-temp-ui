@@ -43,6 +43,19 @@ public class VariantSelectorFactory {
 
         VariantSelector selector = selectors.get(siteFeature);
         if (selector == null || selector.isNeedUpdate()) {
+
+
+        	if (EnumSiteFeature.NIL.equals(siteFeature)) {
+        		VariantSelector sel = selectors.get(EnumSiteFeature.NIL);
+        		if (sel == null) {
+        			final Variant v = VariantRegistry.getInstance().getService( Variant.NIL_ID );
+        			sel = new SingleVariantSelector( v );
+        			selectors.put(EnumSiteFeature.NIL, sel);
+        		}
+        		return sel;
+        	}
+
+
             try {
 				VariantSelector tmpSelector = new VariantSelector(siteFeature);
 				Map<String, Variant> id2vrnt = VariantRegistry.getInstance().getServices(siteFeature);

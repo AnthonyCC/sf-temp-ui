@@ -1076,7 +1076,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		HttpSession session = request.getSession();
 		Date snapShotCreateTime = (Date) session.getAttribute("SnapShotCreateTime");
 			try {
-				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
+				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrderForCRM(orderId );
 				if(snapShotCreateTime != null && originalOrder.getLastModifiedDate().after(snapShotCreateTime)) {
 					//Customer modified the order after snapshot was created. Do not attempt to modify the order.
 					try {
@@ -1113,8 +1113,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
 								break;
 							}
-
-							if(pInfo.isDiscontinued() || pInfo.isTempUnavailable() || pInfo.isOutOfSeason()){
+							String salesOrg=oldCartLine.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+							String distrChannel=oldCartLine.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+							if(pInfo.isDiscontinued(salesOrg,distrChannel) || pInfo.isTempUnavailable(salesOrg,distrChannel) || pInfo.isOutOfSeason(salesOrg,distrChannel)){
 								//SKu is Unavailable. Log it as a failure.
 								failureMessage = skuCode+" : "+"SKU is Unavailable to process. Please check with SAP.";
 								break;
@@ -1128,7 +1129,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 							FDConfigurableI newConfig = new FDConfiguration(oldCartLine.getQuantity(), oldCartLine.getSalesUnit(), newOptions);
 							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(), newConfig
 									, oldCartLine.getVariantId(), 
-									oldCartLine.getPricingContext().getZoneId());
+									oldCartLine.getUserContext());
 							//Apply Line Item discount if Applicable.
 							Discount d = oldCartLine.getDiscount();
 							if( d != null && !(d.getDiscountType().isSample())) {

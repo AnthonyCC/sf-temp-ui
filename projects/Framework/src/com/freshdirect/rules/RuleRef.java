@@ -12,6 +12,7 @@ public class RuleRef implements ConditionI {
 		this.id = id;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		Rule r = ctx.getRule(id);
 		if (r == null) {
@@ -29,8 +30,8 @@ public class RuleRef implements ConditionI {
 		this.id = id;
 	}
 
+	@Override
 	public boolean validate() {
-		//TODO implement
 		return true;
 	}
 

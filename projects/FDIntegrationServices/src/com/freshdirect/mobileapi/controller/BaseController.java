@@ -60,6 +60,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+
 public abstract class BaseController extends AbstractController implements MessageCodes {
 
     private static final String JSON = "JSON";
@@ -242,7 +243,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
                 try {
                     user = getUserFromSession(request, response);
-                    user.setUserPricingContext();
+                    user.setUserContext();
                     user.setEligibleForDDPP();
                 } catch (NoSessionException e) {
                     if (validateUser()) {

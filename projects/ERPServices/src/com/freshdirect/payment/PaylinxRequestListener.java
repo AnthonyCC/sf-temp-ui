@@ -11,14 +11,16 @@ package com.freshdirect.payment;
  * @author  knadeem
  * @version 
  */
-import javax.jms.*;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
-import com.freshdirect.framework.service.jms.*;
+import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
-public class PaylinxRequestListener implements MessageDrivenI {
+public class PaylinxRequestListener implements MessageListener {
 
 	private static Category LOGGER = LoggerFactory.getInstance( PaylinxRequestListener.class );
 
@@ -26,14 +28,14 @@ public class PaylinxRequestListener implements MessageDrivenI {
     public PaylinxRequestListener() {
     }
 
-    public void onMessage(Message message) {
-	try{
-	    ObjectMessage objectMessage = (ObjectMessage)message;
-	    Object s = objectMessage.getObject();
-	    LOGGER.debug(s);
-	}catch(JMSException jmse){
-	    LOGGER.warn("error occured", jmse);
+    @Override
+	public void onMessage(Message message) {
+		try {
+			ObjectMessage objectMessage = (ObjectMessage) message;
+			Object s = objectMessage.getObject();
+			LOGGER.debug(s);
+		} catch (JMSException jmse) {
+			LOGGER.warn("error occured", jmse);
+		}
 	}
-    }
-    
 }

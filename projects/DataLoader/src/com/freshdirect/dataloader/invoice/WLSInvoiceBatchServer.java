@@ -30,8 +30,8 @@ public class WLSInvoiceBatchServer extends ApplicationLifecycleListener {
 				throw new IllegalArgumentException("gwServ not specified");
 
 			final String serverName = "WLSInvoiceBatchServer";
-			final String functionName = "ZERPS_INVOICE";
-			final String progId = "INVOICELOADER01";
+			final String functionName = "ZSD_INVOICE_EXPORT";//"ZERPS_INVOICE";
+			final String progId = "INVOICE_EXP";//"INVOICELOADER01";
 
 			new FDInvoiceBatchJcoServer(serverName, functionName, progId).startServer();
 

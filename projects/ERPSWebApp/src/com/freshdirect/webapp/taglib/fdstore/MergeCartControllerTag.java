@@ -21,6 +21,8 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -61,8 +63,8 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		if (cartCurrent == null) {
 			cartCurrent = new FDCartModel();
 		}
-		
-		cartCurrent.setPricingContextToOrderLines(user.getPricingContext());
+		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
+		cartCurrent.setUserContextToOrderLines(user.getUserContext());
 
 		FDCartModel cartMerged = new FDCartModel( cartCurrent );
 		cartMerged.mergeCart( cartSaved );
@@ -88,7 +90,7 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
                     session.setAttribute(USER, user);
 				}
 				
-				user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());	
+				user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());	
 				
 				//evaluate the coupons, after the merge cart.
 				FDCustomerCouponUtil.evaluateCartAndCoupons(session);

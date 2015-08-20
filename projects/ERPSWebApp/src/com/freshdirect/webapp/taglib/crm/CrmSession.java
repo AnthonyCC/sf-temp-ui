@@ -15,6 +15,7 @@ import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmManager;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -25,6 +26,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public class CrmSession {
 
@@ -44,6 +46,9 @@ public class CrmSession {
 	private final static String CRM_CURRENT_ORDER = "fd.crm.current.order";
 	private final static String CRM_CURRENT_CUST_HEADER = "fd.crm.current.customer.header";
 	
+	private final static String CRM_GLOBALCONTEXT_STORE = "fd.crm.globalcontext.store";
+	private final static String CRM_GLOBALCONTEXT_FACILITY = "fd.crm.globalcontext.facility";
+	
 	public static CrmAgentModel getCurrentAgent(HttpSession session) {
 		return (CrmAgentModel) session.getAttribute(CRM_AGENT);
 	}
@@ -57,7 +62,7 @@ public class CrmSession {
 		if(!refresh && order != null && order.getErpSalesId() != null && order.getErpSalesId().equals(orderId)){
 			return order;
 		}
-		order = FDCustomerManager.getOrder(orderId);
+		order = FDCustomerManager.getOrderForCRM(orderId);
 		session.setAttribute(CRM_CURRENT_ORDER, order);
 		
 		return order;
@@ -183,6 +188,41 @@ public class CrmSession {
 			session.setAttribute(CRM_CURRENT_CUST_HEADER, info);
 		}
 		return info;
+	}
+
+	public static String getGlobalcontextStore(HttpSession session) {
+		String curStore = (String) session.getAttribute(CRM_GLOBALCONTEXT_STORE);
+		
+		if (curStore == null || "".equals(curStore)) {
+			CrmAgentModel curAgent = (CrmAgentModel) session.getAttribute(CRM_AGENT);
+			if (curAgent.isFDX()) {
+				curStore =  EnumEStoreId.valueOfContentId(EnumEStoreId.FDX.getContentId()).toString();
+			} else {
+				curStore = EnumEStoreId.valueOfContentId(EnumEStoreId.FD.getContentId()).toString();
+			}
+			setGlobalcontextStore(session, curStore);
+		}
+		
+		return curStore;
+	}
+
+	public static void setGlobalcontextStore(HttpSession session, String store) {
+		session.setAttribute(CRM_GLOBALCONTEXT_STORE, store);
+	}
+
+	public static String getGlobalcontextFacility(HttpSession session) {
+		String curFacility = (String) session.getAttribute(CRM_GLOBALCONTEXT_FACILITY);
+		
+		if (curFacility == null || "".equals(curFacility)) { 
+			curFacility = "All";
+			setGlobalcontextFacility(session, curFacility);
+		}
+		
+		return curFacility;
+	}
+
+	public static void setGlobalcontextFacility(HttpSession session, String facility) {
+		session.setAttribute(CRM_GLOBALCONTEXT_FACILITY, facility);
 	}
 
 	private static class LockedCaseWrapper implements Serializable, HttpSessionBindingListener {

@@ -79,7 +79,7 @@ public class RecommendationEventLogger {
 	 * @param eventClazz subclass of {@link FDRecommendationEvent}
 	 * @param events Collection<{@link RecommendationEventsAggregate}>
 	 */
-	public void log(Class eventClazz, Collection events) {
+	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) {
 		RecommendationEventLoggerSB bean;
 		try {
 			bean = this.getImpressionLoggerHome().create();

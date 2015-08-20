@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 
@@ -44,6 +45,16 @@ public class DeliveryTimeslots {
     public ResultBundle reserveSlot(String deliveryTimeslotId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(user);
         ResultBundle result = tagWrapper.reserveDeliveryTimeslot(deliveryTimeslotId);
+        tagWrapper.setParams(result);
+        return result;
+    }
+
+    public ResultBundle reserveSlotEx(String deliveryTimeslotId) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(user);
+        ResultBundle result = tagWrapper.reserveDeliveryTimeslot(deliveryTimeslotId);
+        if(tagWrapper.getWrapTarget().getSuccessPage() != null && tagWrapper.getWrapTarget().getSuccessPage().contains("step_2_verify_age")){
+        	result.setActionResult(new ActionResult());
+        }
         tagWrapper.setParams(result);
         return result;
     }

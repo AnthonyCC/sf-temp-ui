@@ -1,32 +1,52 @@
 package com.freshdirect.fdstore.util;
 
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.content.*;
-import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CartLineFactory {
 
+	
 	private static Category LOGGER = LoggerFactory.getInstance( CartLineFactory.class );
 
-    public List<FDCartLineI> createOrderLines(Collection<ProductModel> products) throws FDResourceException {
+    public List<FDCartLineI> createOrderLines(Collection<ProductModel> products,UserContext userCtx) throws FDResourceException {
         List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
         for ( ProductModel prdModel : products ) {
             for ( SkuModel sku : prdModel.getSkus() ) {
-				this.createLines(lines, sku);
+				this.createLines(lines, sku,userCtx);
             }
         }        
         return lines;
@@ -53,7 +73,7 @@ public class CartLineFactory {
 					LOGGER.info("No content node for material "+mat+" - skipping.");
 					continue;	
 				}
-				this.createLines(lines, sku);				
+				//this.createLines(lines, sku); //::FDX:: 				
 			}
 			return lines;
 		} catch (NamingException ex) {
@@ -81,11 +101,12 @@ public class CartLineFactory {
 		return null;		
 	}
 
-	protected void createLines(List<FDCartLineI> lines, SkuModel sku) throws FDResourceException {
+	protected void createLines(List<FDCartLineI> lines, SkuModel sku,UserContext userCtx) throws FDResourceException {
 		FDProduct product;
 		try {
             FDProductInfo productInfo = sku.getProductInfo();
-            if (productInfo.isDiscontinued() || productInfo.isOutOfSeason() || productInfo.isTempUnavailable()) {
+            ZoneInfo zone=userCtx.getPricingContext().getZoneInfo();
+            if (productInfo.isDiscontinued(zone.getSalesOrg(),zone.getDistributionChanel()) || productInfo.isOutOfSeason(zone.getSalesOrg(),zone.getDistributionChanel()) || productInfo.isTempUnavailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
                 //
                 // only do skus that might actually be available for sale
                 //
@@ -128,7 +149,7 @@ public class CartLineFactory {
 
 			FDConfiguration conf = new FDConfiguration(this.getQuantity(product.getSkuCode()), salesUnit.getName(), optionMap);
 
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prdModel, conf, null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prdModel, conf, null, userCtx);
 			
 			try {
 				cartLine.refreshConfiguration();

@@ -1,12 +1,47 @@
 package com.freshdirect.dataloader.invoice;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpInvoiceLineModel;
+import com.freshdirect.customer.ErpInvoiceModel;
+import com.freshdirect.customer.ErpInvoicedCreditModel;
+import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.LoaderException;
-import com.freshdirect.dataloader.payment.InvoiceBatchListenerI;
-import com.freshdirect.dataloader.payment.InvoiceLoadListener;
+import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome;
+import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB;
+import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
+import com.freshdirect.dataloader.sap.jco.server.param.InvoiceEntryParameter;
+import com.freshdirect.dataloader.sap.jco.server.param.InvoiceHeaderParameter;
+import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -14,24 +49,27 @@ import com.sap.conn.jco.JCoFunctionTemplate;
 import com.sap.conn.jco.JCoListMetaData;
 import com.sap.conn.jco.JCoMetaData;
 import com.sap.conn.jco.JCoParameterList;
+import com.sap.conn.jco.JCoRecordMetaData;
 import com.sap.conn.jco.JCoRepository;
+import com.sap.conn.jco.JCoTable;
 import com.sap.conn.jco.server.JCoServerContext;
 import com.sap.conn.jco.server.JCoServerFunctionHandler;
 
-
 /**
- * This class will be used for populating the invoice for orders via Jco-server (3.0) registered to the ERP system
- *
+ * This class will be used for populating the invoice for orders via Jco-server
+ * (3.0) registered to the ERP system
+ * 
  * @author kkanuganti
  */
-public class FDInvoiceBatchJcoServer extends FdSapServer
-{
+public class FDInvoiceBatchJcoServer extends FdSapServer {
 	private static final Logger LOG = Logger.getLogger(FDInvoiceBatchJcoServer.class.getName());
 
 	private String serverName;
 
 	private String functionName;
-	
+
+	private InvoiceLoaderHome invoiceLoaderHome = null;
+
 	/**
 	 * @param serverName
 	 * @param functionName
@@ -45,105 +83,507 @@ public class FDInvoiceBatchJcoServer extends FdSapServer
 	}
 
 	@Override
-	protected JCoRepository createRepository()
-	{
+	protected JCoRepository createRepository() {
 		final JCoCustomRepository repository = JCo.createCustomRepository("FDInvoiceBatchRepository");
-		
+
+		final JCoRecordMetaData metaInvoiceHeaderList = JCo.createRecordMetaData("INVOICE_HEADER_LIST");
+		createInvoiceHeaderMetadata(repository, metaInvoiceHeaderList);
+
+		final JCoRecordMetaData metaInvoiceItemList = JCo.createRecordMetaData("INVOICE_LINE_LIST");
+		createInvoiceLineMetadata(repository, metaInvoiceItemList);
+
+		/*final JCoListMetaData fmetaImport = JCo.createListMetaData("INVOICE_IMPORTS");
+		fmetaImport.add("T_INVOICE_HEADER", JCoMetaData.TYPE_TABLE, metaInvoiceHeaderList,
+				JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.add("T_INVOICE_ITEM", JCoMetaData.TYPE_TABLE, metaInvoiceItemList, JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.lock();*/
+
+		final JCoRecordMetaData metaInvoiceReturnRecord = JCo.createRecordMetaData("INVOICE_RETURN_LIST");
+		tableMetaDataList = new ArrayList<TableMetaData>();
+
+		tableMetaDataList.add(new TableMetaData("DEL_DATE", JCoMetaData.TYPE_CHAR, 10, "Delivery Date"));
+		tableMetaDataList.add(new TableMetaData("INV_NO", JCoMetaData.TYPE_CHAR, 10, "Invoice No."));
+		tableMetaDataList.add(new TableMetaData("WEB_ORD", JCoMetaData.TYPE_CHAR, 20, "Weborder No."));
+		tableMetaDataList.add(new TableMetaData("ERROR", JCoMetaData.TYPE_CHAR, 220, "Error Message"));
+
+		createTableRecord(metaInvoiceReturnRecord, tableMetaDataList);
+		metaInvoiceReturnRecord.lock();
+		repository.addRecordMetaDataToCache(metaInvoiceReturnRecord);
+
 		final JCoListMetaData fmetaImport = JCo.createListMetaData("INVOICE_IMPORTS");
-		fmetaImport.add("FOLDER", JCoMetaData.TYPE_CHAR, 128, 0, 0, null, null, JCoListMetaData.IMPORT_PARAMETER, null, null);
-		fmetaImport.add("FILENAME", JCoMetaData.TYPE_CHAR, 128, 0, 0, null, null, JCoListMetaData.IMPORT_PARAMETER, null, null);
+		fmetaImport.add("T_INVOICE_HEADER", JCoMetaData.TYPE_TABLE, metaInvoiceHeaderList,
+				JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.add("T_INVOICE_ITEM", JCoMetaData.TYPE_TABLE, metaInvoiceItemList, JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.add("T_INVOICE_ERR", JCoMetaData.TYPE_TABLE, metaInvoiceReturnRecord,JCoListMetaData.EXPORT_PARAMETER);
 		fmetaImport.lock();
 
+		
 		final JCoListMetaData fmetaExport = JCo.createListMetaData("INVOICE_EXPORTS");
-		fmetaExport.add("RETURN", JCoMetaData.TYPE_CHAR, 5000, 0, 0, null, null, JCoListMetaData.EXPORT_PARAMETER, null, null);
+		fmetaExport.add("T_INVOICE_ERR", JCoMetaData.TYPE_TABLE, metaInvoiceReturnRecord,JCoListMetaData.EXPORT_PARAMETER);
+//		fmetaExport.add("RETURN", JCoMetaData.TYPE_CHAR, 1, 0, 0, null, null, JCoListMetaData.EXPORT_PARAMETER, null,null);
+//		fmetaExport.add("MESSAGE", JCoMetaData.TYPE_CHAR, 255, 0, 0, null, null, JCoListMetaData.EXPORT_PARAMETER,null, null);
 		fmetaExport.lock();
 
-		final JCoFunctionTemplate fT = JCo.createFunctionTemplate(functionName, fmetaImport, fmetaExport, null, null, null);
+		final JCoFunctionTemplate fT = JCo.createFunctionTemplate(functionName, fmetaImport, fmetaExport, null,
+				fmetaImport, null);
 		repository.addFunctionTemplateToCache(fT);
 
 		return repository;
 	}
 
+	/**
+	 * @param repository
+	 * @param metaInvoiceHeaderList
+	 */
+	private void createInvoiceHeaderMetadata(final JCoCustomRepository repository,
+			final JCoRecordMetaData metaInvoiceHeaderList) {
+		tableMetaDataList = new ArrayList<TableMetaData>();
+
+		tableMetaDataList.add(new TableMetaData("DEL_DATE", JCoMetaData.TYPE_CHAR, 10, "Delivery Date"));
+		tableMetaDataList.add(new TableMetaData("INV_NUM", JCoMetaData.TYPE_CHAR, 10, "Billing Document"));
+		tableMetaDataList.add(new TableMetaData("ORDER_NO", JCoMetaData.TYPE_CHAR, 10, "SAP Sales Order No."));
+		tableMetaDataList.add(new TableMetaData("BILLING_TYPE", JCoMetaData.TYPE_CHAR, 4, "Billing Type"));
+		tableMetaDataList.add(new TableMetaData("WEB_ORD", JCoMetaData.TYPE_CHAR, 20,"Customer purchase order number/Web Order "));
+		tableMetaDataList.add(new TableMetaData("ORDER_STATUS", JCoMetaData.TYPE_CHAR, 1, "Order Status"));
+		tableMetaDataList.add(new TableMetaData("ZZTRKNO", JCoMetaData.TYPE_CHAR, 6, "Truck Number"));
+		tableMetaDataList.add(new TableMetaData("INV_TOTAL", JCoMetaData.TYPE_CHAR, 15,"Invoice total before applying credit"));
+		tableMetaDataList.add(new TableMetaData("INV_TAX", JCoMetaData.TYPE_CHAR, 15, "Invoice Tax amount"));
+		tableMetaDataList.add(new TableMetaData("INV_BOT_DEP", JCoMetaData.TYPE_CHAR, 15, "Bottle Deposit"));
+		tableMetaDataList.add(new TableMetaData("INV_SUB_TOTAL", JCoMetaData.TYPE_CHAR, 15, "Invoice Subtotal"));
+		tableMetaDataList.add(new TableMetaData("CREDIT_AMOUNT", JCoMetaData.TYPE_CHAR, 15, "Credit Amount"));
+		tableMetaDataList.add(new TableMetaData("INV_GROSS", JCoMetaData.TYPE_CHAR, 15,"Gross amount after applying credit"));
+		tableMetaDataList.add(new TableMetaData("ZZSTOPSEQ", JCoMetaData.TYPE_CHAR, 5, "Stop Sequence"));
+		tableMetaDataList.add(new TableMetaData("REG_CRTN", JCoMetaData.TYPE_CHAR, 3, "Regular cartons"));
+		tableMetaDataList.add(new TableMetaData("FRZ_CRTN", JCoMetaData.TYPE_CHAR, 3, "Freezer cartons"));
+		tableMetaDataList.add(new TableMetaData("ALC_CRTN", JCoMetaData.TYPE_CHAR, 3, "Alcohol cartons"));
+		tableMetaDataList.add(new TableMetaData("HDR_DISCOUNT", JCoMetaData.TYPE_CHAR, 15,"Actual discount at header level"));
+		tableMetaDataList.add(new TableMetaData("ZZBMREF", JCoMetaData.TYPE_CHAR, 20, "Credit Memo Web Reference No."));
+		tableMetaDataList.add(new TableMetaData("CREDIT_MEMO_NO", JCoMetaData.TYPE_CHAR, 10, "Credit memo No."));
+		tableMetaDataList.add(new TableMetaData("CREDIT_MEMO_AMOUNT", JCoMetaData.TYPE_CHAR, 15, "Credit amount"));
+		tableMetaDataList.add(new TableMetaData("CREDIT_MEMO_ORDER_NO", JCoMetaData.TYPE_CHAR, 10,"Credit memo Sales order No."));	
+		tableMetaDataList.add(new TableMetaData("CREDIT_TYPE", JCoMetaData.TYPE_CHAR, 1,"Single-Character Indicator"));
+		
+		createTableRecord(metaInvoiceHeaderList, tableMetaDataList);
+		metaInvoiceHeaderList.lock();
+		repository.addRecordMetaDataToCache(metaInvoiceHeaderList);
+	}
+
+	/**
+	 * @param repository
+	 * @param metaInvoiceItemList
+	 */
+	private void createInvoiceLineMetadata(final JCoCustomRepository repository,
+			final JCoRecordMetaData metaInvoiceItemList) {
+		tableMetaDataList = new ArrayList<TableMetaData>();
+
+		tableMetaDataList.add(new TableMetaData("INV_NO", JCoMetaData.TYPE_CHAR, 10, "Invoice No."));
+		tableMetaDataList.add(new TableMetaData("INV_LINE_NO", JCoMetaData.TYPE_CHAR, 6, "Invoice line item"));
+		tableMetaDataList.add(new TableMetaData("MATERIAL_NO", JCoMetaData.TYPE_CHAR, 18, "Material No."));
+		tableMetaDataList.add(new TableMetaData("INV_LINE_AMT", JCoMetaData.TYPE_CHAR, 15, "Invoice line item amount"));
+		tableMetaDataList.add(new TableMetaData("INV_LINE_TAX", JCoMetaData.TYPE_CHAR, 15, "Invoice line tax"));
+		tableMetaDataList.add(new TableMetaData("INV_LINE_BOT_DEP", JCoMetaData.TYPE_CHAR, 15, "Line Bottle Deposit"));
+		tableMetaDataList.add(new TableMetaData("UNIT_PRICE", JCoMetaData.TYPE_CHAR, 15, "Unit Price"));
+		tableMetaDataList.add(new TableMetaData("CUST_PRICE", JCoMetaData.TYPE_CHAR, 15, "Customization Price"));
+		tableMetaDataList.add(new TableMetaData("SALES_UOM", JCoMetaData.TYPE_CHAR, 3, "Sales Unit of Measure"));
+		tableMetaDataList.add(new TableMetaData("ORDER_QTY", JCoMetaData.TYPE_CHAR, 18, "Order Quantity"));
+		tableMetaDataList.add(new TableMetaData("SHIPPED_QTY", JCoMetaData.TYPE_CHAR, 18, "Actual Shipped Qty"));
+		tableMetaDataList.add(new TableMetaData("GROSS_WEIGHT", JCoMetaData.TYPE_CHAR, 13, "Gross Weight"));
+		tableMetaDataList.add(new TableMetaData("WEIGHT_UNIT", JCoMetaData.TYPE_CHAR, 3, "Weight Unit"));
+		tableMetaDataList.add(new TableMetaData("ORDER_LINE_STATUS", JCoMetaData.TYPE_CHAR, 1,"Processing Status of Order line"));
+		tableMetaDataList.add(new TableMetaData("ORDER_NO", JCoMetaData.TYPE_CHAR, 10, "SAP Sales Order No."));
+		tableMetaDataList
+				.add(new TableMetaData("ACTUAL_COST", JCoMetaData.TYPE_CHAR, 15, "Actual Cost of the product"));
+		tableMetaDataList.add(new TableMetaData("LINE_DISCOUNT", JCoMetaData.TYPE_CHAR, 15, "Order entry discount"));
+		tableMetaDataList.add(new TableMetaData("ECOUP_DISCOUNT", JCoMetaData.TYPE_CHAR, 15, "E-Coupon discount"));
+
+		createTableRecord(metaInvoiceItemList, tableMetaDataList);
+		metaInvoiceItemList.lock();
+		repository.addRecordMetaDataToCache(metaInvoiceItemList);
+	}
+
 	@Override
-	protected FDSapFunctionHandler getHandler()
-	{
+	protected FDSapFunctionHandler getHandler() {
 		return new FDConnectionHandler();
 	}
 
-	protected class FDConnectionHandler extends FDSapFunctionHandler implements JCoServerFunctionHandler
-	{
+	protected class FDConnectionHandler extends FDSapFunctionHandler implements JCoServerFunctionHandler {
+		private JCoTable invoiceErrorTable;
+
 		@Override
-		public String getFunctionName()
-		{
+		public String getFunctionName() {
 			return functionName;
 		}
 
-		public void handleRequest(final JCoServerContext serverCtx, final JCoFunction function)
-		{
+		public void handleRequest(final JCoServerContext serverCtx, final JCoFunction function) {
 			final JCoParameterList exportParamList = function.getExportParameterList();
-			final JCoParameterList importParamList = function.getImportParameterList();
-			try
-			{
-				String folder = importParamList.getString("FOLDER");
-				String fileName = importParamList.getString("FILENAME");
-				
-				if(LOG.isInfoEnabled())
-				{
-					LOG.info(String.format("Importing invoice files, fileName [%s] from folder [%s]", folder, fileName));
+			final FDJcoServerResult result = new FDJcoServerResult();
+			try {
+				final JCoTable invoiceHeaderTable = function.getTableParameterList().getTable("T_INVOICE_HEADER");
+				final JCoTable invoiceLineTable = function.getTableParameterList().getTable("T_INVOICE_ITEM");
+
+				invoiceErrorTable = function.getTableParameterList().getTable("T_INVOICE_ERR");
+
+				final int successCnt = 0;
+
+				// Invoice No. -> Invoice Header
+				final Map<String, InvoiceHeaderParameter> invoiceMap = new HashMap<String, InvoiceHeaderParameter>();
+				if (invoiceHeaderTable != null && invoiceLineTable != null) {
+					// invoice header
+					for (int i = 0; i < invoiceHeaderTable.getNumRows(); i++) {
+						invoiceHeaderTable.setRow(i);
+
+						final InvoiceHeaderParameter invoiceHeaderParam = populateInvoiceHeaderRecord(invoiceHeaderTable);
+						if (invoiceMap.containsKey(invoiceHeaderParam.getInvoiceNo())) {
+							LOG.error("Invoice batch contains duplicate invoice header(s) with invoice No. { "
+									+ invoiceHeaderParam.getInvoiceNo() + " }, " + "order No. { "
+									+ invoiceHeaderParam.getWebOrderNo() + " }");
+
+							populateResponseRecord(result, invoiceHeaderParam,
+									"Duplicate invoice for the order in the batch");
+						} else {
+							invoiceMap.put(invoiceHeaderParam.getInvoiceNo(), invoiceHeaderParam);
+						}
+
+						invoiceHeaderTable.nextRow();
+					}
+
+					// invoice line item
+					for (int i = 0; i < invoiceLineTable.getNumRows(); i++) {
+						invoiceLineTable.setRow(i);
+
+						final InvoiceEntryParameter invoiceEntryParam = populateInvoiceLineRecord(invoiceLineTable);
+						if (invoiceMap.containsKey(invoiceEntryParam.getInvoiceNo())) {
+							if (invoiceMap.get(invoiceEntryParam.getInvoiceNo()).getEntries() == null) {
+								invoiceMap.get(invoiceEntryParam.getInvoiceNo()).setEntries(
+										new ArrayList<InvoiceEntryParameter>());
+							}
+							invoiceMap.get(invoiceEntryParam.getInvoiceNo()).getEntries().add(invoiceEntryParam);
+						} else {
+							LOG.warn("Invoice batch contains invoice line(s) with no invoice header for invoice No. { "
+									+ invoiceEntryParam.getInvoiceNo() + " }, " + "SAP Order No. { "
+									+ invoiceEntryParam.getSalesOrderNo() + " }");
+						}
+						invoiceLineTable.nextRow();
+					}
+
+					processInvoiceForOrders(result, invoiceMap, successCnt);
+
+//					exportParamList.setValue("RETURN",(FDJcoServerResult.OK_STATUS.equals(result.getStatus()) && invoiceHeaderTable
+//											.getNumRows() == successCnt) ? "S" : "W");
+//					exportParamList.setValue("MESSAGE",	String.format("%s Invoice(s) imported successfully!, [ %s ]", successCnt, new Date()));
+					exportParamList.setValue("T_INVOICE_ERR", invoiceErrorTable);
 				}
-				
-				InvoiceBatchListenerI listener = new InvoiceLoadListener();
-				listener.processInvoiceBatch(folder, fileName);				
-
-				exportParamList.setValue("RETURN", "S");
+			} catch (final Exception e) {
+				LOG.error("Error importing invoice details: ", e);
+				/*exportParamList.setValue("RETURN", "E");
+				exportParamList.setValue("MESSAGE", e.toString().substring(0, Math.min(255, e.toString().length())));*/
 			}
-			catch (final LoaderException le)
-			{
-				LOG.warn("Error occured processing batch", le);
-			
-				String errorMsg = ( le.getNestedException()==null ? le : le.getNestedException() ).toString();
-				errorMsg = errorMsg.substring(0, Math.min(5000, errorMsg.length()));
-				
-				exportParamList.setValue("RETURN", errorMsg);
+		}
+
+		/**
+		 * @param invoiceMap
+		 * @param result
+		 * @throws LoaderException
+		 */
+		@SuppressWarnings("unchecked")
+		private void processInvoiceForOrders(final FDJcoServerResult result,
+				final Map<String, InvoiceHeaderParameter> invoiceMap, int successCnt) throws LoaderException {
+			InvoiceLoaderSB sb;
+			try {
+				if (invoiceLoaderHome == null) {
+					lookupInvoiceLoaderHome();
+				}
+				sb = invoiceLoaderHome.create();
+			} catch (CreateException ce) {
+				throw new LoaderException(ce);
+			} catch (RemoteException re) {
+				throw new LoaderException(re);
 			}
 
+			if (invoiceMap != null) {
+				// Invoice No. -> Invoice
+				for (final Map.Entry<String, InvoiceHeaderParameter> invoiceMapEntry : invoiceMap.entrySet()) {
+					final InvoiceHeaderParameter param = invoiceMapEntry.getValue();
+					try {
+						LOG.info("Processing invoice for the order { " + param.getWebOrderNo() + " }");
+
+						FDOrderI order = FDCustomerManager.getOrder(param.getWebOrderNo());
+
+						if (order == null) {
+							LOG.warn("No order found with the order {" + param.getWebOrderNo() + "} to add invoice {"
+									+ param.getInvoiceNo() + "} ");
+							populateResponseRecord(result, param, "No order found for the web order");
+							continue;
+						}
+
+						if (!EnumSaleStatus.INPROCESS.equals(order.getOrderStatus())) {
+							populateResponseRecord(result, param, "Order not in correct status [PRC] to add invoice");
+							continue;
+						}
+
+						ErpShippingInfo shippingInfo = new ErpShippingInfo(param.getTruckNumber(),
+								param.getStopSequence(), param.getRegularCartonCnt(), param.getFreezerCartonCnt(),
+								param.getAlcoholCartonCnt());
+
+						ErpInvoiceModel invoice = new ErpInvoiceModel();
+
+						// 1. set HEADER info
+						invoice.setAmount(param.getInvoiceTotal());
+						invoice.setInvoiceNumber(param.getInvoiceNo());
+						invoice.setSubTotal(param.getInvoiceSubTotal());
+						invoice.setTax(param.getInvoiceTax());
+						invoice.setTransactionDate(new Date(System.currentTimeMillis()));
+						invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
+
+						// 2. set Applied credits
+						if (param.getCreditMemoNo() != null && param.getCreditAmount() > 0) {
+							ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
+
+							credit.setAmount(param.getCreditAmount());
+							credit.setOriginalCreditId(param.getCreditWebReferenceNo());
+
+							if (invoice.getAmount() > 0 && StringUtils.isEmpty(param.getCreditMemoNo())) {
+								LOG.warn("Credit memo number required for non-zero invoices: order {"
+										+ param.getWebOrderNo() + "}, invoice {" + param.getInvoiceNo() + "} ");
+
+								populateResponseRecord(result, param,
+										"Credit memo number required for non-zero invoices");
+								continue;
+							}
+							credit.setSapNumber(param.getCreditMemoNo());
+							invoice.addAppliedCredit(credit);
+						}
+
+						List<ErpInvoiceLineModel> invoiceLines = new ArrayList<ErpInvoiceLineModel>();
+						invoice.setInvoiceLines(invoiceLines);
+
+						// 3. add charges
+						addCharges(order, invoice);
+
+						// 4. set Invoice lines
+						for (final InvoiceEntryParameter entry : param.getEntries()) {
+							// 1. CHARGE lines are ignored sent by SAP. Will use
+							// the one's on the order
+							boolean isChargeEntry = false;
+							if (entry.getMaterialNumber() != null) {
+								for (Iterator<EnumChargeType> i = EnumChargeType.getEnumList().iterator(); i.hasNext();) {
+									EnumChargeType chargeType = i.next();
+									if (entry.getMaterialNumber().equalsIgnoreCase(chargeType.getMaterialNumber())) {
+										isChargeEntry = true;
+										break;
+									}
+								}
+
+								if (isChargeEntry) {
+									continue;
+								}
+
+								// 2. DISCOUNT lines at header level. SAP deals
+								// promotion(s) as line items. To get sub-total
+								// correct, adding back promotion value to order
+								// sub-total
+								if (FDSapHelperUtils.PROMOTION_MATERIAL_NO.equals(entry.getMaterialNumber())) {
+									Discount discount = new Discount("UNKNOWN", EnumDiscountType.DOLLAR_OFF,
+											Math.abs(entry.getAmount()));
+									invoice.addDiscount(new ErpDiscountLineModel(discount));
+									invoice.setSubTotal(invoice.getSubTotal() + (Math.abs(entry.getAmount())));
+								} else {
+									ErpInvoiceLineModel invoiceLine = new ErpInvoiceLineModel();
+
+									invoiceLine.setPrice(entry.getAmount() + entry.getCustomizationPrice());
+									invoiceLine.setCustomizationPrice(entry.getCustomizationPrice());
+									invoiceLine.setTaxValue(entry.getTaxAmt());
+									invoiceLine.setDepositValue(entry.getBottleDepositAmount());
+									invoiceLine.setQuantity(entry.getShippedQuantity());
+									invoiceLine.setMaterialNumber(entry.getMaterialNumber());
+									invoiceLine.setOrderLineNumber(entry.getInvoiceLineNo());
+									if (entry.getGrossWeight() > 0.0) {
+										invoiceLine.setWeight(entry.getGrossWeight());
+									}
+									if (entry.getActualCost() != null) {
+										invoiceLine.setActualCost(Double.parseDouble(entry.getActualCost()));
+									}
+									invoiceLine.setActualDiscountAmount(entry.getDiscount());
+									invoiceLine.setCouponDiscountAmount(entry.getCouponDiscount());
+
+									invoiceLines.add(invoiceLine);
+								}
+							}
+						}
+
+						sb.addAndReconcileInvoice(param.getWebOrderNo(), invoice, shippingInfo);
+
+						successCnt = successCnt + 1;
+
+						LOG.info(String.format(
+								"%s Invoice entry(s) added for the sales order [" + param.getWebOrderNo() + "]", param
+										.getEntries().size()));
+
+					} catch (ErpTransactionException e) {
+						LOG.error("Adding invoice details for the order [" + param.getWebOrderNo()
+								+ "] failed. Exception is ", e);
+						populateResponseRecord(result, param, e.getMessage());
+					} catch (RemoteException e) {
+						LOG.error("Adding invoice details for the order [" + param.getWebOrderNo()
+								+ "] failed. Exception is ", e);
+						populateResponseRecord(result, param, e.getMessage());
+					} catch (final Exception e) {
+						LOG.error("Adding invoice details for the order [" + param.getWebOrderNo()
+								+ "] failed. Exception is ", e);
+						populateResponseRecord(result, param, e.getMessage());
+					}
+				}
+			}
+		}
+
+		/**
+		 * Method to log the failure records back to ERP system
+		 * 
+		 * @param param
+		 * @param invoiceErrorTable
+		 * @param errorMessage
+		 */
+		private void populateResponseRecord(final FDJcoServerResult result, final InvoiceHeaderParameter param,
+				final String errorMessage) {
+			if (param != null && invoiceErrorTable != null) {
+				invoiceErrorTable.appendRow();
+				invoiceErrorTable.setValue("DEL_DATE", param.getDeliveryDate());
+				invoiceErrorTable.setValue("INV_NO", param.getInvoiceNo());
+				invoiceErrorTable.setValue("WEB_ORD", param.getWebOrderNo());
+				invoiceErrorTable.setValue("ERROR", errorMessage);
+			}
+
+			if (result != null) {
+				result.addError(param.getWebOrderNo(), errorMessage);
+			}
 		}
 	}
 
 	/**
-	 * @param serverName
-	 *           the serverName to set
+	 * @param invoiceHeaderTable
+	 * @return the invoice header
 	 */
-	public void setServerName(final String serverName)
-	{
-		this.serverName = serverName;
+	private InvoiceHeaderParameter populateInvoiceHeaderRecord(final JCoTable invoiceHeaderTable) {
+		final InvoiceHeaderParameter param = new InvoiceHeaderParameter();
+
+		param.setDeliveryDate(FDSapHelperUtils.getString(invoiceHeaderTable.getString("DEL_DATE")));
+		param.setWebOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("WEB_ORD")));
+		param.setInvoiceNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("INV_NUM")));
+		param.setInvoiceSubTotal(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("INV_SUB_TOTAL")));
+		param.setInvoiceTotal(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("INV_GROSS")));
+		param.setInvoiceTax(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("INV_TAX")));
+		param.setBottleDepositAmount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("INV_BOT_DEP")));
+
+		param.setBillingType(FDSapHelperUtils.getString(invoiceHeaderTable.getString("BILLING_TYPE")));
+
+		param.setSalesOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ORDER_NO")));
+
+		param.setTruckNumber(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZTRKNO")));
+		param.setStopSequence(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZSTOPSEQ")));
+
+		param.setRegularCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("REG_CRTN")));
+		param.setFreezerCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("FRZ_CRTN")));
+		param.setAlcoholCartonCnt(FDSapHelperUtils.getInt(invoiceHeaderTable.getString("ALC_CRTN")));
+
+		param.setHeaderDiscount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("HDR_DISCOUNT")));
+
+		param.setCreditWebReferenceNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZBMREF")));
+		param.setCreditMemoNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("CREDIT_MEMO_NO")));
+		param.setCreditAmount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("CREDIT_MEMO_AMOUNT")));
+		param.setCreditMemoSalesOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("CREDIT_MEMO_ORDER_NO")));
+
+		return param;
+	}
+
+	/**
+	 * @param invoiceLineTable
+	 * @return the invoice line item record
+	 */
+	private InvoiceEntryParameter populateInvoiceLineRecord(final JCoTable invoiceLineTable) {
+		final InvoiceEntryParameter param = new InvoiceEntryParameter();
+
+		param.setInvoiceNo(FDSapHelperUtils.getString(invoiceLineTable.getString("INV_NO")));
+		param.setInvoiceLineNo(FDSapHelperUtils.getString(invoiceLineTable.getString("INV_LINE_NO")));
+		param.setMaterialNumber(FDSapHelperUtils.getString(invoiceLineTable.getString("MATERIAL_NO")));
+		String invoiceAmt = invoiceLineTable.getString("INV_LINE_AMT");
+		if(null != invoiceAmt){
+			invoiceAmt = invoiceAmt.replace("-", "");
+		}
+		param.setAmount(FDSapHelperUtils.getDouble(invoiceAmt));
+		param.setTaxAmt(FDSapHelperUtils.getDouble(invoiceLineTable.getString("INV_LINE_TAX")));
+		param.setBottleDepositAmount(FDSapHelperUtils.getDouble(invoiceLineTable.getString("INV_LINE_BOT_DEP")));
+
+		param.setUnitPrice(FDSapHelperUtils.getDouble(invoiceLineTable.getString("UNIT_PRICE")));
+		param.setCustomizationPrice(FDSapHelperUtils.getDouble(invoiceLineTable.getString("CUST_PRICE")));
+
+		param.setSalesUOMCode(FDSapHelperUtils.getString(invoiceLineTable.getString("SALES_UOM")));
+
+		param.setOrderQuantity(FDSapHelperUtils.getInt(invoiceLineTable.getString("ORDER_QTY")));
+		param.setShippedQuantity(FDSapHelperUtils.getDouble(invoiceLineTable.getString("SHIPPED_QTY")));
+		param.setWeightUnitCode(FDSapHelperUtils.getString(invoiceLineTable.getString("WEIGHT_UNIT")));
+		param.setGrossWeight(FDSapHelperUtils.getDouble(invoiceLineTable.getString("GROSS_WEIGHT")));
+
+		param.setStatus(FDSapHelperUtils.getString(invoiceLineTable.getString("ORDER_LINE_STATUS")));
+		param.setSalesOrderNo(FDSapHelperUtils.getString(invoiceLineTable.getString("ORDER_NO")));
+
+		param.setActualCost(FDSapHelperUtils.getString(invoiceLineTable.getString("ACTUAL_COST")));
+		param.setDiscount(FDSapHelperUtils.getDouble(invoiceLineTable.getString("LINE_DISCOUNT")));
+		param.setCouponDiscount(FDSapHelperUtils.getDouble(invoiceLineTable.getString("ECOUP_DISCOUNT")));
+
+		return param;
+	}
+
+	/**
+	 * @param order
+	 * @param invoice
+	 */
+	private void addCharges(FDOrderI order, ErpInvoiceModel invoice) {
+		List<ErpChargeLineModel> charges = new ArrayList<ErpChargeLineModel>();
+
+		double chargeAmount = 0;
+
+		for (Iterator<ErpChargeLineModel> i = order.getCharges().iterator(); i.hasNext();) {
+			ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel) i.next());
+			if (invoice.getTax() == 0) {
+				charge.setTaxRate(0);
+			}
+			chargeAmount += charge.getTotalAmount();
+			charges.add(charge);
+		}
+		invoice.setSubTotal(invoice.getSubTotal() - chargeAmount);
+		invoice.setCharges(charges);
 	}
 
 	/**
 	 * @return the serverName
 	 */
 	@Override
-	public String getServerName()
-	{
+	public String getServerName() {
 		return serverName;
 	}
 
-	/**
-	 * @return the functionName
-	 */
-	public String getFunctionName()
-	{
-		return functionName;
-	}
+	private void lookupInvoiceLoaderHome() throws EJBException {
+		Context ctx = null;
+		try {
+			Hashtable<String, String> h = new Hashtable<String, String>();
+			h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+			h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
+			ctx = new InitialContext(h);
 
-	/**
-	 * @param functionName the functionName to set
-	 */
-	public void setFunctionName(String functionName)
-	{
-		this.functionName = functionName;
+			this.invoiceLoaderHome = (InvoiceLoaderHome) ctx.lookup("freshdirect.dataloader.InvoiceLoader");
+		} catch (NamingException ex) {
+			LOG.debug(ex);
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException ne) {
+				LOG.debug(ne);
+			}
+		}
 	}
-	
-	
 
 }

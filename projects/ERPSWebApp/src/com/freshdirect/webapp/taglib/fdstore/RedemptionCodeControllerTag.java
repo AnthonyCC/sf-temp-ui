@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -24,10 +25,19 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.CardInUseException;
+import com.freshdirect.giftcard.CardOnHoldException;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class RedemptionCodeControllerTag extends AbstractControllerTag {
+	
+	private final int GC_RETRY_COUNT = 4;
+	private final int GC_RETRY_WARNING_COUNT = 3;
 
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String action = request.getParameter("action");
@@ -132,16 +142,20 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		/*APPDEV-2024*/		
 		HttpSession session = (HttpSession) pageContext.getSession();
+		FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 		String apcpromo = null;
 		if(session.getAttribute(SessionName.APC_PROMO) != null) {			
 			apcpromo = (String) session.getAttribute(SessionName.APC_PROMO);
 		}
-
+		
+		String redemptionCode = NVL.apply(request.getParameter("redemptionCode"), "").trim();
+		Object[] params = new Object[] { redemptionCode };
+				
 		if ("redeemCode".equals(this.getActionName()) || apcpromo != null) {
 			try{				
 				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				request.setAttribute("isEligible", false);
-				String redemptionCode = NVL.apply(request.getParameter("redemptionCode"), "").trim();
+				
 				if ("".equals(redemptionCode)) {
 					if(apcpromo != null) {
 						return applyApcPromo(request, actionResult, apcpromo);
@@ -158,14 +172,14 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				//Get the Promotion Id for the given redemption code before getting it from the cache.
 				String promoId = FDPromotionNewManager.getRedemptionPromotionId(redemptionCode);	
 				if (promoId == null) {
-					Object[] params = new Object[] { redemptionCode };
+					//Object[] params = new Object[] { redemptionCode };
 					actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
 					return true;
 				}
 				//Get the redemption Promotion from the cache.	
 				Promotion promotion = (Promotion)PromotionFactory.getInstance().getRedemptionPromotion(promoId);
 				if (promotion == null) {//This check is required for incomplete promotions in DB.
-					Object[] params = new Object[] { redemptionCode };
+					//Object[] params = new Object[] { redemptionCode };
 					actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
 					return true;
 				}
@@ -179,7 +193,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				boolean isApplied = user.getPromotionEligibility().isApplied(promoCode);
 				int errorCode = user.getPromoErrorCode(promoCode);
 //				request.setAttribute("isEligible", eligible);
-				Object[] params = new Object[] { redemptionCode };
+				//Object[] params = new Object[] { redemptionCode };
 				if (!eligible) {
 					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){						
 						actionResult.addError(true,"signup_warning",MessageFormat.format(
@@ -257,8 +271,65 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					
 				}
 				session.setAttribute(SessionName.USER, user);
-			}catch(FDResourceException fre){
+				
+				}catch(FDResourceException fre){
 				throw new JspException(fre);
+			}
+		} else if("applyCode".equals(this.getActionName())){
+			try {
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+				if (!user.getFDCustomer().getProfile().allowApplyGC()) {
+					actionResult.addError(true, "account_locked", SystemMessageList.ACCOUNT_LOCKED_FOR_GC);
+					return true;
+				}
+				String givexNum = NVL.apply(request.getParameter("redemptionCode"), "").trim();
+				if (givexNum != null && givexNum.trim().length() > 0) {
+					try {
+						ErpGiftCardModel gcModel = FDCustomerManager.applyGiftCard(user.getIdentity(), givexNum.trim(), info);
+						if (gcModel.getBalance() == 0) {
+							actionResult.addError(true, "card_zero_balance", SystemMessageList.APPLY_GC_WITH_ZERO_BALANCE);
+						}
+						user.getGiftCardList().addGiftCard(new FDGiftCardModel(gcModel));
+						user.resetGCRetryCount();
+					} catch (ServiceUnavailableException se) {
+						actionResult.addError(true, "service_unavailable", SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE);
+					} catch (InvalidCardException e) {
+						user.incrementGCRetryCount();
+						if (user.getGCRetryCount() >= GC_RETRY_COUNT) {
+							user.getFDCustomer().getProfile().setAttribute("allow_apply_gc", "false");
+							FDCustomerManager.setProfileAttribute(user.getIdentity(), "allow_apply_gc", "false", info);
+							actionResult.addError(true, "account_locked", SystemMessageList.ACCOUNT_LOCKED_FOR_GC);
+							return true;
+						}
+						if (user.getGCRetryCount() >= GC_RETRY_WARNING_COUNT) {
+							actionResult.addError(true, "apply_gc_warning", SystemMessageList.APPLY_GC_WARNING);
+						}
+						actionResult.addError(new ActionError("redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE_OR_GIFTCARD, params)));
+					} catch (CardOnHoldException e) {
+						actionResult.addError(true, "card_on_hold", SystemMessageList.MSG_GC_ON_HOLD);
+					} catch (CardInUseException ce) {
+						if (ce.getCardOwner().equals(user.getUserId())) {
+							actionResult.addError(true, "card_in_use",  SystemMessageList.MSG_GC_ALREADY_ADDED);
+							request.setAttribute("giftCardError", "true");
+						} else {
+							actionResult.addError(true, "card_in_use", SystemMessageList.MSG_GC_IN_USE);
+							request.setAttribute("giftCardError", "true");
+						}
+					}
+				} else {
+					actionResult.addError(new ActionError("redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE_OR_GIFTCARD,params)));
+					request.setAttribute("giftCardError", "true");
+				}
+				if (actionResult.isSuccess()) {
+					request.setAttribute("giftCardError", "false");
+				}
+			}catch(FDResourceException fre){
+				if(fre.getNestedException()!=null && fre.getNestedException().getMessage()!=null && fre.getNestedException().getMessage().contains("com.freshdirect.payment.GivexException")){
+					actionResult.addError(true, "service_unavailable", SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE);
+				} else {
+				throw new JspException(fre);
+				}
 			}
 		}
 		return true;

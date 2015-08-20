@@ -123,5 +123,11 @@ public interface SapOrderI extends Serializable {
 	public List getDiscounts();
 
 	public double getGcAmount();
+	
+	public String getPlant();
+	
+	public String getSalesOrg();
+	
+	public String getDistributionChannel();
 }
 

@@ -13,7 +13,8 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
 
-<%@page import="com.freshdirect.delivery.restriction.AlcoholRestriction"%><link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<%@page import="com.freshdirect.delivery.restriction.AlcoholRestriction"%>
+
 <style type="text/css">
 </style>
 <script>

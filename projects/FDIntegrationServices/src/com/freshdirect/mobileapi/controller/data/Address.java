@@ -13,8 +13,18 @@ public class Address {
     protected String city;
 
     protected String state;
+    
+    protected String country;
 
-    protected String postalCode;
+    public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	protected String postalCode;
 
     public String getName() {
         return name;

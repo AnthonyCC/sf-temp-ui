@@ -29,13 +29,17 @@ final static CrmAgentRole[] ISSUING_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.NCS_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE)};
+	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.FDX_CODE)
+	};
 	
 final static CrmAgentRole[] APPROVAL_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),	
 	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.FDX_CODE)
+	};
 %>
 
 <%

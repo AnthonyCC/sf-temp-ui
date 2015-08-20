@@ -18,6 +18,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
@@ -53,14 +54,14 @@ public class ZonePricingTest extends TestCase {
         fa.addAvailableSku("PAS0040040", 50, 30);
         fa.addAvailableSku("PAS0059136", 40, 25);
         
-        fa.addZonePriceInfo("PAS0059136", create(30, "cheap-zone"));
-        fa.addZonePriceInfo("PAS0059136", create(60, "expensive-zone"));
+        fa.addZonePriceInfo("PAS0059136", create(30, new ZoneInfo("cheap-zone","A","X")));
+        fa.addZonePriceInfo("PAS0059136", create(60, new ZoneInfo("expensive-zone","A","X")));
         
         fa.addAvailableSku("PAS0062422", 200, 190);
         fa.addAvailableSku("PAS0062425", 120, 110);
         
-        fa.addZonePriceInfo("PAS0062425", create(80, 60, "cheap-zone", 10, 20));
-        fa.addZonePriceInfo("PAS0062425", create(140, 120, "expensive-zone", 30, 15));
+        fa.addZonePriceInfo("PAS0062425", create(80, 60, new ZoneInfo("cheap-zone","A","X"), 10, 20));
+        fa.addZonePriceInfo("PAS0062425", create(140, 120, new ZoneInfo("expensive-zone","A","X"), 30, 15));
         
         aspectSystem.add(fa);
         
@@ -80,8 +81,8 @@ public class ZonePricingTest extends TestCase {
         fpr.addProduct(new FDProduct("PAS0062425", 1, new Date(), null, null, salesUnits,
                 new Pricing(
                         new ZonePriceListing()
-                            .addZonePrice(new ZonePriceModel(ZonePriceListing.MASTER_DEFAULT_ZONE, new MaterialPrice[]{ new MaterialPrice(20, "db", 0.0)} ))
-                            .addZonePrice(new ZonePriceModel("cheap-zone", new MaterialPrice[] { new MaterialPrice(15, "db", 0.0)})),
+                            .addZonePrice(new ZonePriceModel(ZonePriceListing.DEFAULT_ZONE_INFO, new MaterialPrice[]{ new MaterialPrice(20, "db", 0.0)} ))
+                            .addZonePrice(new ZonePriceModel(new ZoneInfo("cheap-zone","A","X"), new MaterialPrice[] { new MaterialPrice(15, "db", 0.0)})),
                         new CharacteristicValuePrice[0],
                         new SalesUnitRatio[0]
                 ) 
@@ -116,8 +117,9 @@ public class ZonePricingTest extends TestCase {
         }
         
         {
-            PricingContext ctx = new PricingContext("cheap-zone");
-            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product, ctx);
+            PricingContext ctx = new PricingContext(new ZoneInfo("cheap-zone","A","X"));
+            ContentFactory.getInstance().getCurrentUserContext().setPricingContext(ctx);
+            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product);
                         
             SkuModel defaultSkuInTheCheapZone = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheCheapZone);
@@ -133,8 +135,9 @@ public class ZonePricingTest extends TestCase {
         }
 
         {
-            PricingContext ctx = new PricingContext("expensive-zone");
-            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product, ctx);
+            PricingContext ctx = new PricingContext(new ZoneInfo("expensive-zone","A","X"));
+            ContentFactory.getInstance().getCurrentUserContext().setPricingContext(ctx);
+            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product);
             
             SkuModel defaultSkuInTheExpensiveZone = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheExpensiveZone);
@@ -182,8 +185,9 @@ public class ZonePricingTest extends TestCase {
         }
 
         {
-            PricingContext ctx = new PricingContext("cheap-zone");
-            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product, ctx);
+            PricingContext ctx = new PricingContext(new ZoneInfo("cheap-zone","A","X"));
+            ContentFactory.getInstance().getCurrentUserContext().setPricingContext(ctx);
+            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product);
             
             SkuModel defaultSkuInTheCheapZone = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheCheapZone);
@@ -218,9 +222,9 @@ public class ZonePricingTest extends TestCase {
         
         ProductModel product = (ProductModel) node;
         {
-            PricingContext ctx = new PricingContext("cheap-zone");
-            
-            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product, ctx);
+            PricingContext ctx = new PricingContext(new ZoneInfo("cheap-zone","A","X"));
+            ContentFactory.getInstance().getCurrentUserContext().setPricingContext(ctx);
+            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product);
             SkuModel defaultSkuInTheMain = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheMain.getContentName());
@@ -245,9 +249,9 @@ public class ZonePricingTest extends TestCase {
         }
         
         {
-            PricingContext ctx = new PricingContext("expensive-zone");
-            
-            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product, ctx);
+            PricingContext ctx = new PricingContext(new ZoneInfo("expensive-zone","A","X"));
+            ContentFactory.getInstance().getCurrentUserContext().setPricingContext(ctx);
+            ProductModelPricingAdapter adapter = new ProductModelPricingAdapter(product);
             SkuModel defaultSkuInTheMain = adapter.getDefaultSku();
             assertNotNull("default sku", defaultSkuInTheMain);
             assertEquals("default sku is PAS0062425", "PAS0062425", defaultSkuInTheMain.getContentName());
@@ -262,16 +266,16 @@ public class ZonePricingTest extends TestCase {
     }
     
     
-    static ZonePriceInfoModel create(double sellingPrice, String sapZoneId) {
-        return new ZonePriceInfoModel(sellingPrice, sellingPrice, "ea", null, false, 0, 0, sapZoneId);        
+    static ZonePriceInfoModel create(double sellingPrice, ZoneInfo zone) {
+        return new ZonePriceInfoModel(sellingPrice, sellingPrice, "ea", null, false, 0, 0, zone);        
     }
     
-    static ZonePriceInfoModel create(double sellingPrice, double promoPrice, String sapZoneId) {
-        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, 0, 0, sapZoneId);        
+    static ZonePriceInfoModel create(double sellingPrice, double promoPrice, ZoneInfo zone) {
+        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, 0, 0, zone);        
     }
 
-    static ZonePriceInfoModel create(double sellingPrice, double promoPrice, String sapZoneId, int dealPercentage, int tieredDealPercentage) {
-        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, dealPercentage, tieredDealPercentage, sapZoneId);        
+    static ZonePriceInfoModel create(double sellingPrice, double promoPrice, ZoneInfo zone, int dealPercentage, int tieredDealPercentage) {
+        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, dealPercentage, tieredDealPercentage, zone);        
     }
 
 }

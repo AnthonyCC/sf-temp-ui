@@ -48,7 +48,7 @@ public class OrderLineQuantityTag extends BodyTagSupport {
 					.getProduct();
 			final boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct
 					.getPricing().getZonePrice(
-							customer.getPricingContext().getZoneId())
+							customer.getPricingContext().getZoneInfo())
 					.getMaterialPrices()[0]).getPricingUnit()));
 			final boolean isSoldByLB = isPricedByLB
 					&& ("LB"

@@ -26,7 +26,7 @@ public class TimeslotCondition implements ConditionI {
 		this.day = day;
 	}
 
-
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		
 		FDRuleContextI context = (FDRuleContextI) target;
@@ -43,6 +43,7 @@ public class TimeslotCondition implements ConditionI {
 		
 	}
 
+	@Override
 	public boolean validate() {
 
 		if(day == null || "".equals(day))

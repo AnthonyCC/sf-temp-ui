@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -49,6 +50,8 @@ public class ExternalInterfaceController extends BaseController {
     private static final String ACTION_GET_IVR_CALLLOG = "getIVRCallLog";
     
     private static final String ACTION_GET_SMS_MESSAGE_RELAY="smsMessageRelay";
+    
+    private static final String ACTION_GET_SMS_FDX_MESSAGE_RELAY="fdxsmsMessageRelay";
  
         
     protected boolean validateUser() {
@@ -135,7 +138,7 @@ public class ExternalInterfaceController extends BaseController {
     				String receivedDate=request.getParameter("received");
     				String message = request.getParameter("text");
     				SMSAlertManager smsAlertManager = SMSAlertManager.getInstance();
-    				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message);
+    				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FD);
     				responseMessage = Message.createSuccessMessage("T003 Successfull.");
     			} catch(Exception e) {
 	        		e.printStackTrace();
@@ -148,6 +151,32 @@ public class ExternalInterfaceController extends BaseController {
 	     	    }  
     		}
     		
+    		//Start::Added by Sathishkumar Merugu for FDX SMS Alert
+    		
+    		else if(ACTION_GET_SMS_FDX_MESSAGE_RELAY.equals(action)){
+    			
+    			try{
+    				// Call SmsAlertsManager with the parameters of the request.
+    				String mobileNumber=request.getParameter("sender");
+    				String shortCode= request.getParameter("code");
+    				String carrierName=request.getParameter("carrier");
+    				String receivedDate=request.getParameter("received");
+    				String message = request.getParameter("text");
+    				SMSAlertManager smsAlertManager = SMSAlertManager.getInstance();
+    				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FDX);
+    				responseMessage = Message.createSuccessMessage("T004 Successfull.");
+    			} catch(Exception e) {
+	        		e.printStackTrace();
+	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received ");
+	        	}
+    			if(responseMessage == null) {
+	  	        	LOGGER.info("T004: Failed FDX SMS Message Relay ");
+	  	        	responseMessage = new Message();
+	  	        	responseMessage.addErrorMessage("T004 Failed.");
+	     	    }  
+    		}
+    		
+    		//End::Added by Sathishkumar Merugu for FDX SMS Alert
 	        setResponseMessage(model, responseMessage, user);
     	}
         return model;

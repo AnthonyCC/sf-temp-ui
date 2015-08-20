@@ -4,7 +4,9 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +20,7 @@ import javax.transaction.UserTransaction;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
+import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -47,8 +50,25 @@ public class ErpInventoryManagerSessionBean extends SessionBeanSupport {
 				try {
 
 					ErpInventoryEB eb = inventoryHome.findByPrimaryKey(new PrimaryKey(inv.getSapId()));
+					ErpInventoryModel inventoryModel =(ErpInventoryModel) eb.getModel();
+					List<ErpInventoryEntryModel> currInvEntries = inventoryModel.getEntries();
+					List<ErpInventoryEntryModel> newInvEntries = new ArrayList<ErpInventoryEntryModel>();
+					Set<String> newInvPlants = new HashSet<String>();
+					newInvEntries.addAll(inv.getEntries());
+					for (Iterator iterator = newInvEntries.iterator(); iterator.hasNext();) {
+						ErpInventoryEntryModel newInvEntryModel = (ErpInventoryEntryModel) iterator.next();
+						newInvPlants.add(newInvEntryModel.getPlantId());
+					}
+					if(null !=currInvEntries){
+						for (ErpInventoryEntryModel currInvEntryModel : currInvEntries) {
+							if( !newInvPlants.contains(currInvEntryModel.getPlantId())/* && !newInvEntries.contains(currInvEntryModel)*/){
+								newInvEntries.add(currInvEntryModel);							
+							}
+						}
+					}
+					
 					// update the inventory cache in the persistent store					
-					eb.setEntries(new Date(), inv.getEntries());
+					eb.setEntries(new Date(), newInvEntries);
 
 				} catch (ObjectNotFoundException ex) {
 					// not found, create inventory

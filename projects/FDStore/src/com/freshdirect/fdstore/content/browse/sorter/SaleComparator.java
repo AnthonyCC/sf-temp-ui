@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -19,18 +20,18 @@ public class SaleComparator implements Comparator<FilteringProductItem> {
     	
 		int p1 = 0;
 		int p2 = 0;
-        String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();            
+        ZoneInfo zoneInfo = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();            
 
 		try {            
             FDProductInfo i1 = o1.getFdProductInfo();
-            p1 = i1.getZonePriceInfo(zoneId).getHighestDealPercentage();
+            p1 = i1.getZonePriceInfo(zoneInfo).getHighestDealPercentage();
         } catch (FDException e) {
         	LOGGER.error(e);
         }
     	
     	try {
             FDProductInfo i2 = o2.getFdProductInfo();
-            p2 = i2.getZonePriceInfo(zoneId).getHighestDealPercentage();
+            p2 = i2.getZonePriceInfo(zoneInfo).getHighestDealPercentage();
         } catch (FDException e) {
         	LOGGER.error(e);
         }

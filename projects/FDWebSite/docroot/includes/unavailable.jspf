@@ -3,6 +3,7 @@
 <%@page import="com.freshdirect.webapp.util.DisplayObject"%>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
+<%@ page import='com.freshdirect.common.pricing.ZoneInfo'%>
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
@@ -48,7 +49,12 @@ if (unAvailableList.size() > 0) {
     	displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute);
 %>
 		<tr><td>&nbsp;&nbsp;&nbsp;<a href="<%=displayObj.getItemURL()%>" style="color:#999999;"><%=displayObj.getItemName()%></a>
-		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason()? "(out of season)" : "")%></font><br></td></tr>
+		<% if(null !=user && null != user.getUserContext()){
+			ZoneInfo zoneInfo = user.getUserContext().getPricingContext().getZoneInfo(); %>
+		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason(zoneInfo.getSalesOrg(),zoneInfo.getDistributionChanel())? "(out of season)" : "")%></font><br></td></tr>
+		<% } else { %>
+		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason(null,null)? "(out of season)" : "")%></font><br></td></tr>
+		<%} %>
     	</fd:FDProductInfo>
 	</logic:iterate>
 </table>

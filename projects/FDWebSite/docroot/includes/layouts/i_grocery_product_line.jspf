@@ -184,8 +184,8 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
   } else{%>
         
     <%  if (!skuAvailable) {  %>
-    <td colspan="1" width="85" align="right"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
-    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) {    %>
+    <td colspan="1" width="85" align="right"><font color="#999999"><%=(productInfo.isOutOfSeason(user.getPricingContext().getZoneInfo().getSalesOrg(),user.getPricingContext().getZoneInfo().getDistributionChanel())?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
+    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale()) {    %>
     <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font  class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>&nbsp;</font>
     
     </TD>

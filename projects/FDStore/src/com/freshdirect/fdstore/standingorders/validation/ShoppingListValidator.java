@@ -93,7 +93,7 @@ public class ShoppingListValidator {
 
 				FDProductInfo prodInfo = FDCachedFactory.getProductInfo(item.getSkuCode());
 
-				FDCartLineModel cartLine = new FDCartLineModel(prodInfo, product, item.getConfiguration(), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+				FDCartLineModel cartLine = new FDCartLineModel(prodInfo, product, item.getConfiguration(), null, user.getUserContext());
 				try {
 					cartLine.refreshConfiguration();
 

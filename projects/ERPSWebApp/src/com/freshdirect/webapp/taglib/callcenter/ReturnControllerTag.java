@@ -64,7 +64,7 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 			throw new JspException("No customer was found for the requested action.");
 		}
 		try{
-			order = FDCustomerManager.getOrder(orderNumber);
+			order = FDCustomerManager.getOrderForCRM(orderNumber);
 		}catch(FDResourceException e){
 			actionResult.addError(new ActionError("technical_difficulty", "Cannot lookup the order for validation"));
 		}
@@ -200,6 +200,10 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 				}
 				if(EnumChargeType.MISCELLANEOUS.equals(charge.getType()) && miscCharge != null) {
 					charge.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
+					continue;
+				}
+				if(EnumChargeType.TIP.equals(charge.getType()) ) {
+					charge.setDiscount(new Discount("TIP", EnumDiscountType.PERCENT_OFF, 1.0));
 					continue;
 				}
 			}

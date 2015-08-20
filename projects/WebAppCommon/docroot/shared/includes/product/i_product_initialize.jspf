@@ -22,6 +22,7 @@
 <%@page import="com.freshdirect.framework.util.DateUtil"%>
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
 <%@page import="com.freshdirect.fdstore.FDVariation"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 <%--
 	Required variables:
 
@@ -135,9 +136,9 @@
 		/* add seafood sustainability (ocean-friendly brand) */
 		%><fd:SeafoodSustainCheck>
 			<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>">
-			<%
-				if ( productInfo.getSustainabilityRating() != null) {
-					EnumSustainabilityRating enumRating=productInfo.getSustainabilityRating();
+			<%  
+				if ( productInfo.getSustainabilityRating(plantID) != null) {
+					EnumSustainabilityRating enumRating=productInfo.getSustainabilityRating(plantID);
 					//rating id is +1, only display here for rating of 4,5,6 (or id 5,6,7)
 					/* this only affects ratings with ids > 4, so APPDEV-1979 doesn't touch it. */
 					/* this changes to only ratings of 3 or 4 ONLY with APPDEV-2328 */

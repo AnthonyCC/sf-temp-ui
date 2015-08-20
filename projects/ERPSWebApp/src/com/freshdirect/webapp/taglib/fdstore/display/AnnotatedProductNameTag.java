@@ -8,6 +8,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -133,7 +134,7 @@ public class AnnotatedProductNameTag extends BodyTagSupport {
 			buf.append("  var annotation = '<b>SKUs</b><br>';\n");
 			buf.append("  var detailAnnotation = annotation;\n");
 
-
+			ZoneInfo zone=product.getUserContext().getPricingContext().getZoneInfo();
 			for (SkuModel skuModel : product.getSkus()) {
 		    	String variation = "";
 
@@ -194,7 +195,7 @@ public class AnnotatedProductNameTag extends BodyTagSupport {
 				
 				if (fdProdInfo != null) {
 					buf.append("  detailAnnotation += '");
-					buf.append(fdProdInfo.getAvailabilityStatus().getShortDescription());
+					buf.append(fdProdInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()).getShortDescription());
 					buf.append("';\n");
 				} else {
 					buf.append("  detailAnnotation += 'NO PRODINFO';\n");

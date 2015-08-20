@@ -13,11 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.erp.PricingFactory;
-import com.freshdirect.erp.model.EnumPriceType;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -52,6 +49,13 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 
 	/** Price Type */
 	private double promoPrice;
+	
+	/** Sales Organisation */
+	private String salesOrg;
+	
+	/** Distribution Channel */
+	private String distChannel;
+	
 	/**
 	 * Copy constructor, from model.
 	 *
@@ -80,7 +84,9 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		double scaleQuantity,
 		String scaleUnit,
 		String sapZoneId,
-		double promoPrice) {
+		double promoPrice,
+		String salesOrg,
+		String distChannel) {
 		super(pk);
 		this.sapId = sapId;
 		this.price = price;
@@ -89,6 +95,8 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		this.scaleUnit = scaleUnit;
 		this.sapZoneId = sapZoneId;
 		this.promoPrice = promoPrice;
+		this.salesOrg = salesOrg;
+		this.distChannel = distChannel;
 	}
 
 	/**
@@ -98,7 +106,7 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public ModelI getModel() {
 		ErpMaterialPriceModel model =
-			new ErpMaterialPriceModel(this.sapId, this.price, this.pricingUnit, this.scaleQuantity, this.scaleUnit, this.sapZoneId, this.promoPrice);
+			new ErpMaterialPriceModel(this.sapId, this.price, this.pricingUnit, this.scaleQuantity, this.scaleUnit, this.sapZoneId, this.promoPrice,this.salesOrg,this.distChannel);
 		super.decorateModel(model);
 		return model;
 	}
@@ -115,6 +123,8 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		this.scaleUnit = m.getScaleUnit();
 		this.sapZoneId = m.getSapZoneId();
 		this.promoPrice = m.getPromoPrice();
+		this.salesOrg = m.getSalesOrg();
+		this.distChannel = m.getDistChannel();
 	}
 
 	/**
@@ -129,7 +139,7 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public static List findByParent(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("select id,sap_id,price,pricing_unit,scale_quantity,scale_unit,sap_zone_id,promo_price from erps.materialprice where mat_id = ?");
+		PreparedStatement ps = conn.prepareStatement("select id,sap_id,price,pricing_unit,scale_quantity,scale_unit,sap_zone_id,promo_price,sales_org,distribution_channel from erps.materialprice where mat_id = ?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 
@@ -143,7 +153,9 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 					rs.getDouble(5),
 					rs.getString(6),
 					rs.getString(7),
-					rs.getDouble(8));
+					rs.getDouble(8),
+					rs.getString(9),
+					rs.getString(10));
 			bean.setParentPK(parentPK);
 			lst.add(bean);
 		}
@@ -155,7 +167,7 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "ERPS");
 		int version = ((VersionedPrimaryKey) this.getParentPK()).getVersion();
-		PreparedStatement ps = conn.prepareStatement("insert into erps.materialprice (id, mat_id, version, sap_id, price, pricing_unit, scale_quantity, scale_unit, sap_zone_id, promo_price) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+		PreparedStatement ps = conn.prepareStatement("insert into erps.materialprice (id, mat_id, version, sap_id, price, pricing_unit, scale_quantity, scale_unit, sap_zone_id, promo_price, sales_org,distribution_channel) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setInt(3, version);
@@ -165,10 +177,17 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		ps.setString(6, this.pricingUnit);
 		//ps.setDouble(7, this.scaleQuantity);
 		ps.setBigDecimal(7, new BigDecimal(String.valueOf(this.scaleQuantity)));
-		ps.setString(8, this.scaleUnit);
+		if(null == this.scaleUnit ||"".equals(this.scaleUnit.trim())){
+			ps.setString(8, " ");
+		}else{
+			ps.setString(8, this.scaleUnit);
+		}
+		
 		ps.setString(9, this.sapZoneId);
 		//ps.setDouble(10, this.promoPrice);
 		ps.setBigDecimal(10, new BigDecimal(String.valueOf(this.promoPrice)));
+		ps.setString(11,this.salesOrg);
+		ps.setString(12, this.distChannel);
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("No database rows created!");
 		}
@@ -179,4 +198,5 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		return this.getPK();
 	}
 
+	
 }

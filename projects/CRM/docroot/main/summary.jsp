@@ -46,6 +46,7 @@
 <%@ page import="com.freshdirect.security.ticket.Ticket"%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ page import='com.freshdirect.fdstore.CallCenterServices' %>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 <%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
@@ -118,414 +119,344 @@ if(null != orderId){
 <%--
   ===== FIRST ROW =====
 --%>
-<table id="contain-er" style="x-width: 100%">
-	<tr>
-		<td style="width: 300px">
-			<%-- NAME AND CONTACT INFO --%>
-			<% ErpCustomerInfoModel custInfo = util.getCustomerInfo(); %>
-			<h2>Name &amp; Contact Info</h2>
-			<table class="cust_module_content_text">
-				<tr>
-					<td align="right" width="40%" class="cust_module_content_note">Name:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getTitle()%> <%=custInfo.getFirstName()%>&nbsp;<%=custInfo.getMiddleName()%>&nbsp;<%=custInfo.getLastName()%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Home #:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getHomePhone()!=null?custInfo.getHomePhone().getPhone():""%><%=custInfo.getHomePhone()!=null && custInfo.getHomePhone().getExtension()!=null && !"".equals(custInfo.getHomePhone().getExtension()) ?" <span class=\"cust_module_content_note\">x</span>"+custInfo.getHomePhone().getExtension():""%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Work #:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getBusinessPhone()!=null?custInfo.getBusinessPhone().getPhone():""%><%=custInfo.getBusinessPhone()!=null && custInfo.getBusinessPhone().getExtension()!=null && !"".equals(custInfo.getBusinessPhone().getExtension()) ?" <span class=\"cust_module_content_note\">x</span>"+custInfo.getBusinessPhone().getExtension():""%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Cell #:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getCellPhone()!=null?custInfo.getCellPhone().getPhone():""%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Alt. Email:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getAlternateEmail()%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Dept/Division:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getWorkDepartment()%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Employee Id:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getEmployeeId()%></td>
-				</tr>
-				<tr>
-					<td align="right" class="cust_module_content_note">Industry:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getIndustry()%></td>
-				</tr>
-				
-				<tr>
-					<td align="right" width="40%" class="cust_module_content_note"># of Employees:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getNumOfEmployees()%></td>
-				</tr>
-				
-				<tr>
-					<td align="right" width="50%" class="cust_module_content_note">2nd Email Address:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getSecondEmailAddress()%></td>
-				</tr>
-				
-				<%if(custInfo.getDisplayName()!=null && !"".equals(custInfo.getDisplayName())){ %>
-				<tr>
-					<td align="right" class="cust_module_content_note">Display Name:&nbsp;&nbsp;</td>
-					<td><%=custInfo.getDisplayName()%></td>
-				</tr>
-				<%} %>
-			</table>
-		</td>
-
-		<!-- LATE DELIVERY INFO -->
-		<td style="vertical-align: top;">
-<%
-
-FDOrderI ldlv = util.getLastDeliveredOrder();
-if (ldlv != null) {
-	CrmLateIssueModel recentLateIssue = null;
-%>
-			<h2>Last Delivery Info</h2>
-			<div style="font-size: 120%; padding-bottom: 1em;">Last Delivery: <%= CCFormatter.formatDate(ldlv.getRequestedDate()) %> ORDER # <a href="/main/order_details.jsp?orderId=<%= ldlv.getErpSalesId() %>"><%= ldlv.getErpSalesId() %></a></div>
-<%
-	//recentLateIssue = util.getLateIssueForOrder( ldlv );
-	//if (recentLateIssue != null) {
-	String vsMessage = CallCenterServices.getVSMsgForOrderPage(ldlv.getErpSalesId()); 
-	if(vsMessage != null) {
-%>			<div style="font-size: 120%; padding-bottom: 1em; color: red; font-weight: bold;"><%=vsMessage%></div>
-<%
+<div class="section-borderTB whiteBG">
+	<table id="contain-er" style="width: 100%" class="whiteBg">
+		<tr>
+			<td style="width: 400px">
+				<%-- NAME AND CONTACT INFO --%>
+				<% ErpCustomerInfoModel custInfo = util.getCustomerInfo(); %>
+				<h2>Name &amp; Contact Info</h2>
+				<table class="cust_module_content_text"" style="width: 100%">
+					<tr>
+						<td align="right" width="100" class="cust_module_content_note">Name:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getTitle()%> <%=custInfo.getFirstName()%>&nbsp;<%=custInfo.getMiddleName()%>&nbsp;<%=custInfo.getLastName()%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Home #:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getHomePhone()!=null?custInfo.getHomePhone().getPhone():""%><%=custInfo.getHomePhone()!=null && custInfo.getHomePhone().getExtension()!=null && !"".equals(custInfo.getHomePhone().getExtension()) ?" <span class=\"cust_module_content_note\">x</span>"+custInfo.getHomePhone().getExtension():""%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Work #:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getBusinessPhone()!=null?custInfo.getBusinessPhone().getPhone():""%><%=custInfo.getBusinessPhone()!=null && custInfo.getBusinessPhone().getExtension()!=null && !"".equals(custInfo.getBusinessPhone().getExtension()) ?" <span class=\"cust_module_content_note\">x</span>"+custInfo.getBusinessPhone().getExtension():""%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Cell #:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getCellPhone()!=null?custInfo.getCellPhone().getPhone():""%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Alt. Email:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getAlternateEmail()%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Dept/Division:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getWorkDepartment()%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Employee Id:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getEmployeeId()%></td>
+					</tr>
+					<tr>
+						<td align="right" class="cust_module_content_note">Industry:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getIndustry()%></td>
+					</tr>
+					
+					<tr>
+						<td align="right" class="cust_module_content_note"># of Employees:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getNumOfEmployees()%></td>
+					</tr>
+					
+					<tr>
+						<td align="right" class="cust_module_content_note">2nd Email Address:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getSecondEmailAddress()%></td>
+					</tr>
+					
+					<%if(custInfo.getDisplayName()!=null && !"".equals(custInfo.getDisplayName())){ %>
+					<tr>
+						<td align="right" class="cust_module_content_note">Display Name:&nbsp;&nbsp;</td>
+						<td><%=custInfo.getDisplayName()%></td>
+					</tr>
+					<%} %>
+				</table>
+			</td>
+	
+			<!-- LATE DELIVERY INFO -->
+			<td style="vertical-align: top;">
+	<%
+	
+	FDOrderI ldlv = util.getLastDeliveredOrder();
+	if (ldlv != null) {
+		CrmLateIssueModel recentLateIssue = null;
+	%>
+				<h2>Last Delivery Info</h2>
+				<div style="font-size: 120%; padding-bottom: 1em;">Last Delivery: <%= CCFormatter.formatDate(ldlv.getRequestedDate()) %> ORDER # <a href="/main/order_details.jsp?orderId=<%= ldlv.getErpSalesId() %>"><%= ldlv.getErpSalesId() %></a></div>
+	<%
+		//recentLateIssue = util.getLateIssueForOrder( ldlv );
+		//if (recentLateIssue != null) {
+		String vsMessage = CallCenterServices.getVSMsgForOrderPage(ldlv.getErpSalesId()); 
+		if(vsMessage != null) {
+	%>			<div style="font-size: 120%; padding-bottom: 1em; color: red; font-weight: bold;"><%=vsMessage%></div>
+	<%
+		}
+		
+		ErpComplaintModel comp = util.getTheMostImportantComplaint(ldlv);
+		if (comp != null) {
+	%>			<div>
+	<%
+			for (ErpComplaintReason r : util.getSortedReasons(comp)) {
+				%><span style="color: green; padding-right: 1em;"><%= r.getReason() %></span><%
+			}
+	%>			</div>
+	<%
+		}
 	}
 	
-	ErpComplaintModel comp = util.getTheMostImportantComplaint(ldlv);
-	if (comp != null) {
-%>			<div>
-<%
-		for (ErpComplaintReason r : util.getSortedReasons(comp)) {
-			%><span style="color: green; padding-right: 1em;"><%= r.getReason() %></span><%
-		}
-%>			</div>
-<%
-	}
-}
-
-
-%>
-		</td>
-	</tr>
-</table>
-
+	
+	%>
+			</td>
+		</tr>
+	</table>
+</div>
 <%-- === Masquerade! === --%>
 <crm:GetCurrentAgent id="agent">
+<%
+	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+%>
 <% if (CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"masquerade.jsp")) { %>
-	<hr/>
-		<a href="masquerade.jsp" target="_blank">Masquerade <%= user.getUserId() %></a><br/>
-	<hr/>
+	<div class="section-borderTB whiteBg">
+		<span class="section-title">Masquerade</span>
+			<% if (hasCustomerCase) { %>
+				<div style="white-space: nowrap; margin-left: 10px;">				
+					Store:&nbsp;
+					<select id="globalContext-Store-Masquerade">
+						<option <%= ((globalContextStore).equals("FD"))?"selected":"" %> value="FD">FD</option>
+						<option <%= ((globalContextStore).equals("FDX"))?"selected":"" %> value="FDX">FDX</option>
+					</select>
+					<a href="masquerade.jsp" target="_blank" class="summary_masqLink">Checkout</a>
+					<a href="masquerade.jsp?destination=timeslots" target="_blank" class="summary_masqLink">View Time Slots</a>
+					<script type="text/javascript">
+						/* open these in new window, automatically add estore val,
+						 * take everything else from the anchor tag
+						 */
+						$jq('.summary_masqLink').click(function(e) {
+							e.preventDefault();
+							window.open(e.target.href+(((e.target.href).indexOf('?')==-1) ? '?' : '&')+'estore='+$jq('#globalContext-Store-Masquerade').val(), e.target.target);
+						});
+					</script>
+				</div>
+			<% } else { %>
+				<div class="cust_module_content_edit" style="margin-left: 10px;">-Case required to use Masquerade-</div>
+			<% } %>
+	</div>
 <% } %>
 </crm:GetCurrentAgent>
 
 <%--
   ===== SECOND ROW =====
 --%>
-<style type="text/css">
-.cases-header td {
-	padding: 2px 2px;
-	font-weight: bold;
-	text-align: center;
-	color: white;
-	background: blue;
-	font-size: 90%;
-}
-
-.cases-row td {
-	padding: 2px 2px;
-	border-top: 1px solid lightgray;
-	border-bottom: 1px solid darkgray;
-	border-right: 1px dotted darkgray;
-	background: #eee;
-	font-size: 90%;
-}
-
-.cases-row-mover td {
-	padding: 2px 2px;
-	border-top: 1px solid lightgray;
-	border-bottom: 1px solid darkgray;
-	border-right: 1px dotted darkgray;
-	background-color: #7aa;
-	color: yellow;
-	font-size: 90%;
-	x-font-weight: bold;
-}
-
-.cases-row-sel td {
-	padding: 2px 2px;
-	border-top: 1px solid lightgray;
-	border-bottom: 1px solid darkgray;
-	border-right: 1px dotted darkgray;
-	background-color: #006666;
-	color: yellow;
-	font-size: 90%;
-	x-font-weight: bold;
-}
-
-.case-row-hdr td {
-	color: yellow;
-	background-color: #006666;
-	font-size: 9pt;
-	font-weight: bold;
-	padding-top: 1px;
-	padding-bottom: 2px; 
-}
-
-.case-row td {
-	vertical-align: top;
-	font-size: 9pt;
-	border-bottom: 1px dotted gray;
-	border-right: 1px dotted gray;
-	padding: 2px 2px;
-	background: white;
-}
-
-.case-edit-button {
-	font-size: 8pt;
-	background-color: yellow;
-	border: 1px solid black;
-}
-
-</style>
-<h2>RECENT CASES</h2>
-<table cellspacing="0" cellpadding="0">
-	<tr>
-		<td style="vertical-align: top;">
-			<table style="width: 600px;" cellspacing="0" cellpadding="0">
-				<tr class="cases-header">
-					<td>Created</td>
-					<td>Origin</td>
-					<td>Queue</td>
-					<td>Subject</td>
-					<td>Summary</td>
-				</tr>
-				
-<%
-// List cases
-int k=0;
-for (CrmCaseModel aCase : util.getRecentCases(5)) {
-%>				<tr id="c-tr-<%= aCase.getId() %>" class="cases-row" caseId="<%= aCase.getId() %>">
-					<td><%= CCFormatter.formatDateTime(aCase.getCreateDate()) %></td>
-					<td><%= aCase.getOrigin().getName() %></td>
-					<td><%= aCase.getSubject().getQueue() %></td>
-					<td><%= aCase.getSubjectName() %></td>
-					<td><%= aCase.getSummary() %></td>
-				</tr>
-<%
-	k++;
-}
-
-%>			</table>	
-		</td>
-		<td style="width: 20px;">&nbsp;</td>
-		<td id="td-selcase" style="vertical-align: top; display: none">
-		</td>
-	</tr>
-</table>
-<script type="text/javascript">
-var selCase = null;
-<%
-for (CrmCaseModel aCase : util.getRecentCases(5)) {
-%>
-$E.on($('c-tr-<%= aCase.getId() %>'), 'mouseover', function(e) {
-	this.className = 'cases-row-mover';
-});
-$E.on($('c-tr-<%= aCase.getId() %>'), 'mouseout', function(e) {
-	this.className = this.getAttribute('id') == selCase ? 'cases-row-sel' : 'cases-row';
-});
-$E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
-	// ajax
-	if (selCase != null) {
-		$(selCase).className = 'cases-row';
+<div class="section-borderTB whiteBG">
+	<h2>RECENT CASES</h2>
+	<table cellspacing="0" cellpadding="0">
+		<tr>
+			<td style="vertical-align: top;">
+				<table style="width: 600px;" cellspacing="0" cellpadding="0">
+					<tr class="cases-header">
+						<td>Created</td>
+						<td>Origin</td>
+						<td>Queue</td>
+						<td>Subject</td>
+						<td>Summary</td>
+					</tr>
+					
+	<%
+	// List cases
+	int k=0;
+	for (CrmCaseModel aCase : util.getRecentCases(5)) {
+	%>				<tr id="c-tr-<%= aCase.getId() %>" class="cases-row" caseId="<%= aCase.getId() %>">
+						<td><%= CCFormatter.formatDateTime(aCase.getCreateDate()) %></td>
+						<td><%= aCase.getOrigin().getName() %></td>
+						<td><%= aCase.getSubject().getQueue() %></td>
+						<td><%= aCase.getSubjectName() %></td>
+						<td><%= aCase.getSummary() %></td>
+					</tr>
+	<%
+		k++;
 	}
-	selCase = this.getAttribute('id');
 	
-	this.className = 'cases-row-sel';
-	
-	// async
-	var uri = '/main/summary_case_actions.jsp?case='+this.getAttribute("caseId");
-	$C.asyncRequest('GET', uri, {
-		success: function(resp) {
-			$('td-selcase').innerHTML = resp.responseText;
-			$('td-selcase').style.display = '';
-		}
+	%>			</table>	
+			</td>
+			<td style="width: 20px;">&nbsp;</td>
+			<td id="td-selcase" style="vertical-align: top; display: none">
+			</td>
+		</tr>
+	</table>
+</div>
+	<script type="text/javascript">
+	var selCase = null;
+	<%
+	for (CrmCaseModel aCase : util.getRecentCases(5)) {
+	%>
+	$E.on($('c-tr-<%= aCase.getId() %>'), 'mouseover', function(e) {
+		this.className = 'cases-row-mover';
 	});
-});
-<%
-}
-%>
-</script>
+	$E.on($('c-tr-<%= aCase.getId() %>'), 'mouseout', function(e) {
+		this.className = this.getAttribute('id') == selCase ? 'cases-row-sel' : 'cases-row';
+	});
+	$E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
+		// ajax
+		if (selCase != null) {
+			$(selCase).className = 'cases-row';
+		}
+		selCase = this.getAttribute('id');
+		
+		this.className = 'cases-row-sel';
+		
+		// async
+		var uri = '/main/summary_case_actions.jsp?case='+this.getAttribute("caseId");
+		$C.asyncRequest('GET', uri, {
+			success: function(resp) {
+				$('td-selcase').innerHTML = resp.responseText;
+				$('td-selcase').style.display = '';
+			}
+		});
+	});
+	<%
+	}
+	%>
+	</script>
 
 <%--
   ===== THIRD ROW / ORDERS =====
 --%>
-<style type="text/css">
-.orders-header td {
-	font-weight: bold;
-	text-align: center;
-	color: white;
-	background: blue;
-	font-size: 90%;
-}
-
-.orders-row td {
-	padding-left: 3px;
-	padding-right: 3px;
-	border-top: 1px solid lightgray;
-	border-bottom: 1px solid darkgray;
-	border-right: 1px dotted darkgray;
-	background: #eee;
-	font-size: 90%;
-}
-.order-row td {
-	padding-left: 3px;
-	padding-right: 3px;
-	border-top: 1px solid lightgray;
-	border-bottom: 1px solid darkgray;
-	border-right: 1px dotted darkgray;
-	background: #FFFF66;
-	font-size: 90%;
-}
-
-.orders-row-tickbox {
-	text-align: center;
-	font-weight: bold;
-	color: red;
-}
-
-</style>
-<h2>RECENT ORDERS</h2>
-<script type="text/javascript">
-var sopanels = [];
-</script>
-<%
-// List cases
-for (FDOrderInfoI orderInfo : recentOrders) {
-	if (orderInfo.getStandingOrderId() != null) {
-		String oid = orderInfo.getStandingOrderId();		
-		FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(oid));
-		ContactAddressModel addr = FDCustomerManager.getAddress(user.getIdentity(), so.getAddressId());
-		ErpPaymentMethodI pm = FDCustomerManager.getPaymentMethod(user.getIdentity(), so.getPaymentMethodId());	
-%>
-	<div id="soDetailPanel-<%= oid %>"> 
-	    <div class="hd"></div> 
-	    <div class="bd">
-	    	<table cellspacing="0" cellpadding="0" border="0">
-	    		<tr>
-	    			<td>Standing Order :</td>
-	    			<td><%= so == null ? "-null-" : so.getCustomerListName() %></td>
-	    		</tr>
-	    		<tr>
-	    			<td>Address:</td>
-	    			<td><%= addr == null ? "-null-" : addr.getScrubbedStreet()+", "+addr.getApartment() %></td>
-	    		</tr>
-	    		<tr>
-	    			<td>Payment Method:</td>
-	    			<td><%= pm == null ? "-null-" : pm.getMaskedAccountNumber() %></td>
-	    		</tr>
-	    	</table>
-	    </div> 
-	    <div class="ft"></div> 
-	</div> 
+<div class="section-borderTB whiteBG">
+	<h2>RECENT ORDERS</h2>
 	<script type="text/javascript">
-		//The second argument passed to the
-		//constructor is a configuration object:
-		sopanels['<%= oid %>'] = new YAHOO.widget.Panel("soDetailPanel-<%= oid %>", {
-			width:"400px", 
-			fixedcenter: true, 
-			constraintoviewport: true, 
-			underlay:"shadow", 
-			close:true, 
-			visible:false, 
-			draggable:true} );
-		//If we haven't built our panel using existing markup,
-		//we can set its content via script:
-		sopanels['<%= oid %>'].setHeader("The Panel Control");
-		// sopanels['<%= oid %>'].setBody("The Panel is a powerful UI control that enables you to create floating windows without using browser popups.  Effects like drag and drop and constrain-to-viewport are easy to configure.");
-		//Although we configured many properties in the
-		//constructor, we can configure more properties or 
-		//change existing ones after our Panel has been
-		//instantiated:
-		sopanels['<%= oid %>'].cfg.setProperty("underlay","matte");
-	
-		sopanels['<%= oid %>'].render(document.body);
+	var sopanels = [];
 	</script>
-<%		}
-	}
-%>
-<table style="width: 100%;" cellspacing="0" cellpadding="0">
-	<tr class="orders-header">
-		<td>Order #</td>
-		<td>Delivery</td>
-		<td>Route</td>
-		<td>Stop</td>
-		<td>Window</td>
-		<td>Delivery Address</td>
-		<td>Status</td>
-		<td>Amount</td>
-		<td>Method</td>
-		<td>Created</td>
-		<td>by</td>
-<%
-	for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
-%>		<td><%= obj.getName() %></td>
-<%
-	}
-%>		<td>Credits<br>Appr./Pend.</td>
-	</tr>
-<%
-// List cases
-for (FDOrderInfoI orderInfo : recentOrders) {
-	// load order
-	FDOrderI order = FDCustomerManager.getOrder(orderInfo.getErpSalesId());
-	if(orderInfo.getErpSalesId().equals(orderId)){
-%>
-		<tr class="order-row">
+	<%
+	// List cases
+	for (FDOrderInfoI orderInfo : recentOrders) {
+		if (orderInfo.getStandingOrderId() != null) {
+			String oid = orderInfo.getStandingOrderId();		
+			FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(oid));
+			ContactAddressModel addr = FDCustomerManager.getAddress(user.getIdentity(), so.getAddressId());
+			ErpPaymentMethodI pm = FDCustomerManager.getPaymentMethod(user.getIdentity(), so.getPaymentMethodId());	
+	%>
+		<div id="soDetailPanel-<%= oid %>"> 
+		    <div class="hd"></div> 
+		    <div class="bd">
+		    	<table cellspacing="0" cellpadding="0" border="0">
+		    		<tr>
+		    			<td>Standing Order :</td>
+		    			<td><%= so == null ? "-null-" : so.getCustomerListName() %></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Address:</td>
+		    			<td><%= addr == null ? "-null-" : addr.getScrubbedStreet()+", "+addr.getApartment() %></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Payment Method:</td>
+		    			<td><%= pm == null ? "-null-" : pm.getMaskedAccountNumber() %></td>
+		    		</tr>
+		    	</table>
+		    </div> 
+		    <div class="ft"></div> 
+		</div> 
+		<script type="text/javascript">
+			//The second argument passed to the
+			//constructor is a configuration object:
+			sopanels['<%= oid %>'] = new YAHOO.widget.Panel("soDetailPanel-<%= oid %>", {
+				width:"400px", 
+				fixedcenter: true, 
+				constraintoviewport: true, 
+				underlay:"shadow", 
+				close:true, 
+				visible:false, 
+				draggable:true} );
+			//If we haven't built our panel using existing markup,
+			//we can set its content via script:
+			sopanels['<%= oid %>'].setHeader("The Panel Control");
+			// sopanels['<%= oid %>'].setBody("The Panel is a powerful UI control that enables you to create floating windows without using browser popups.  Effects like drag and drop and constrain-to-viewport are easy to configure.");
+			//Although we configured many properties in the
+			//constructor, we can configure more properties or 
+			//change existing ones after our Panel has been
+			//instantiated:
+			sopanels['<%= oid %>'].cfg.setProperty("underlay","matte");
+		
+			sopanels['<%= oid %>'].render(document.body);
+			<%-- thanks for the YUI promotion, in user-visible comments. --%>
+		</script>
+	<%		}
+		}
+	%>
+	<table style="width: 100%;" cellspacing="0" cellpadding="0">
+		<tr class="orders-header">
+			<td>Order #</td>
+			<td>Delivery</td>
+			<td>Route</td>
+			<td>Stop</td>
+			<td>Window</td>
+			<td>Delivery Address</td>
+			<td>Status</td>
+			<td>Amount</td>
+			<td>Method</td>
+			<td>Created</td>
+			<td>by</td>
+	<%
+		for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
+	%>		<td><%= obj.getName() %></td>
+	<%
+		}
+	%>		<td>Credits<br>Appr./Pend.</td>
+		</tr>
+	<%
+	// List cases
+	for (FDOrderInfoI orderInfo : recentOrders) {
+		// load order
+		FDOrderI order = FDCustomerManager.getOrderForCRM(orderInfo.getErpSalesId());
+		if(orderInfo.getErpSalesId().equals(orderId)){
+	%>
+			<tr class="order-row">
+		<% } else { %>
+			<tr class="orders-row">
+		<% } %>
+			<td style="font-weight: bold;"><a href="/main/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
+			<td><% if(EnumSaleType.REGULAR.equals(orderInfo.getSaleType())){%><%= CCFormatter.formatDate(orderInfo.getRequestedDate()) %><%} else {%>&nbsp;<%}%></td>
+	<% if (orderInfo.getTruckNumber() == null) { %>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 	<% } else { %>
-		<tr class="orders-row">
+			<td><%= orderInfo.getTruckNumber() %></td>
+			<td><%= orderInfo.getStopSequence() %></td>
 	<% } %>
-		<td style="font-weight: bold;"><a href="/main/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
-		<td><% if(EnumSaleType.REGULAR.equals(orderInfo.getSaleType())){%><%= CCFormatter.formatDate(orderInfo.getRequestedDate()) %><%} else {%>&nbsp;<%}%></td>
-<% if (orderInfo.getTruckNumber() == null) { %>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-<% } else { %>
-		<td><%= orderInfo.getTruckNumber() %></td>
-		<td><%= orderInfo.getStopSequence() %></td>
-<% } %>
-		<td style="text-align: center"><%= DeliveryTimeWindowFormatter.formatTime(order.getDeliveryReservation().getStartTime(), order.getDeliveryReservation().getEndTime()) %></td>
-		<td style="text-align: left"><%= order.getDeliveryAddress().getAddress1() %></td>
-		<td style="text-align: center; font-weight: bold;"><%= orderInfo.getSaleStatus() %></td>
-		<td style="text-align: right;  font-weight: bold;"><%= JspMethods.formatPrice(orderInfo.getTotal()) %></td>
-		<td style="font-weight: bold;"><%= orderInfo.getPaymentMethodType() %></td>
-		<td><%= CCFormatter.formatDateTime(orderInfo.getCreateDate()) %></td>
-<%
-	if (orderInfo.getStandingOrderId() != null) {
-%>		<td id="hs-<%= orderInfo.getStandingOrderId() %>" style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
-<%
-	} else {
-%>		<td style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
-<%
+			<td style="text-align: center"><%= DeliveryTimeWindowFormatter.formatTime(order.getDeliveryReservation().getStartTime(), order.getDeliveryReservation().getEndTime()) %></td>
+			<td style="text-align: left"><%= order.getDeliveryAddress().getAddress1() %></td>
+			<td style="text-align: center; font-weight: bold;"><%= orderInfo.getSaleStatus() %></td>
+			<td style="text-align: right;  font-weight: bold;"><%= JspMethods.formatPrice(orderInfo.getTotal()) %></td>
+			<td style="font-weight: bold;"><%= orderInfo.getPaymentMethodType() %></td>
+			<td><%= CCFormatter.formatDateTime(orderInfo.getCreateDate()) %></td>
+	<%
+		if (orderInfo.getStandingOrderId() != null) {
+	%>		<td id="hs-<%= orderInfo.getStandingOrderId() %>" style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
+	<%
+		} else {
+	%>		<td style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
+	<%
+		}
+	
+		Set types = (Set) orderDlvIssueTypes.get(order.getErpSalesId());
+	
+		for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
+	%>		<td class="orders-row-tickbox"><%= types != null && types.contains(obj) ? "x" : "&nbsp;" %></td>
+	<%
+		}
+	%>		<td style="text-align: center;"><%= JspMethods.formatPrice(orderInfo.getApprovedCreditAmount()) %><%= orderInfo.getPendingCreditAmount() > 0 ? " / "+JspMethods.formatPrice(orderInfo.getPendingCreditAmount()) : "" %></td>
+		</tr>
+	<%
 	}
-
-	Set types = (Set) orderDlvIssueTypes.get(order.getErpSalesId());
-
-	for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
-%>		<td class="orders-row-tickbox"><%= types != null && types.contains(obj) ? "x" : "&nbsp;" %></td>
-<%
-	}
-%>		<td style="text-align: center;"><%= JspMethods.formatPrice(orderInfo.getApprovedCreditAmount()) %><%= orderInfo.getPendingCreditAmount() > 0 ? " / "+JspMethods.formatPrice(orderInfo.getPendingCreditAmount()) : "" %></td>
-	</tr>
-<%
-}
-
-%>
-</table>
+	
+	%>
+	</table>
+</div>
 <script type="text/javascript">
 <%
 // List cases

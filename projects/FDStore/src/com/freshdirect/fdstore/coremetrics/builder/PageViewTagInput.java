@@ -31,6 +31,9 @@ public class PageViewTagInput implements Serializable {
 	public String id; // Page ID (Content Node)
 	public String page; //help page 'page' param or search like page 'pageType' param
 
+	
+	public String ppParentType = null;
+	public String ppParentId = null;
 
 	/**
 	 * Populate context from request
@@ -48,8 +51,39 @@ public class PageViewTagInput implements Serializable {
 		obj.id = request.getParameter("id");
 		obj.page = NVL.apply(request.getParameter("page"), request.getParameter("pageType"));
 
+		if ("pres_picks".equalsIgnoreCase(obj.page)) {
+			processPreqPicks((Map<String, Object>) request.getParameterMap(), obj);
+		}
+
 		return obj;
 	}
+
+	private static void processPreqPicks(Map<String, Object> paramMap, PageViewTagInput obj) {
+		// parse data for pres_picks
+		String param;
+		
+		// category level
+		param = (String) paramMap.get("categoryFilterGroup");
+		if (param != null && param.length() > 0 && !"clearall".equals(param)) {
+			obj.ppParentType = "Category";
+			obj.ppParentType = param;
+			return;
+		}
+		
+		// dept level
+		param = (String) paramMap.get("departmentFilterGroup");
+		if (param != null && param.length() > 0 && !"clearall".equals(param)) {
+			obj.ppParentType = "Department";
+			obj.ppParentType = param;
+			return;
+		}
+		
+		// global level
+		obj.ppParentId = "pres_picks";
+		obj.ppParentType = null /*"Store"*/;
+	}
+
+	
 	
 	public static PageViewTagInput populateFromJSONInput(final String uri, final Map<String,Object> valueMap) {
 		PageViewTagInput obj = new PageViewTagInput();
@@ -63,6 +97,10 @@ public class PageViewTagInput implements Serializable {
 		}
 		if (valueMap.containsKey("page") || valueMap.containsKey("pageType")) {
 			obj.page = NVL.apply((String) valueMap.get("page"), (String) valueMap.get("pageType"));
+		}
+
+		if ("pres_picks".equalsIgnoreCase(obj.page)) {
+			processPreqPicks(valueMap, obj);
 		}
 
 		return obj;

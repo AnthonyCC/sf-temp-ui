@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
@@ -125,7 +126,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 			for( FilteringMenuItem i : f.values() ) {
 				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {
 					ElementTagModel eTagModel = new ElementTagModel();
-					eTagModel.setElementCategory( categoryName );
+					eTagModel.setElementCategory( CmContext.getContext().prefixedCategoryId( categoryName ) );
 					eTagModel.setElementId( i.getName() );
 					responseData.addCoremetrics( eTagModel.toStringList() );
 				}

@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -30,6 +31,7 @@ final int W_PARTY_PLATTER_TOTAL = 601;
 <%
 //*** get needed vars from request attributes, they must exist or else we throw jsp error ***/
 FDUserI user = (FDUserI) request.getAttribute("user");
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 ProductModel productNode=(ProductModel)request.getAttribute("productNode");
 String cartMode = (String) request.getAttribute("cartMode");
 FDCartLineI templateLine = (FDCartLineI) request.getAttribute("templateLine");
@@ -110,7 +112,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getPricingContext().getZoneId());
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getUserContext());
 }
 //* check to see if any of the mandatory variations are all unavailable.  (rule: platter unavailable if all comp of a var is unavail)
 //* while we're at it, save skucode and productModel for future use.

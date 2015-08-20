@@ -10,14 +10,16 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class CrmGetFDUserTag extends AbstractGetterTag {
-	
+public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
+	private static final long serialVersionUID = -8121263158947764285L;
+
 	private String erpCustId;
 	private String fdCustId;
 	private boolean useId;
@@ -34,7 +36,8 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		this.useId = useId;
 	}
 
-	protected Object getResult() throws Exception {
+	@Override
+	protected FDUserI getResult() throws Exception {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		HttpSession session = pageContext.getSession();
 		
@@ -52,11 +55,12 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		if(!"".equals(erpCustId)) {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			if(user == null || user.getIdentity() == null || !user.getIdentity().getErpCustomerPK().equals(erpCustId)){
-				user = new FDSessionUser(FDCustomerManager.recognize(new FDIdentity(erpCustId), EnumTransactionSource.CUSTOMER_REP), session);
+				user = new FDSessionUser(FDCustomerManager.recognizeForCRM(new FDIdentity(erpCustId), EnumTransactionSource.CUSTOMER_REP, null), session);
 				session.removeAttribute(SessionName.LIST_SEARCH_RAW);
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
+			// FIXME ksriram please fix this
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}else {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -65,7 +69,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		if(user == null){
 			throw new JspException("Required Object user not found");
 		}
-		
+
 		session.setAttribute(SessionName.USER, user);
 //		FDCustomerCouponUtil.initCustomerCoupons(session);
 		CrmSessionStatus sessionStatus =CrmSession.getSessionStatus(session);

@@ -106,7 +106,7 @@ public class RedeliveryControllerTag extends AbstractControllerTag implements Se
 		
 		public ErpRedeliveryModel getRedeliveryModel() throws FDResourceException {
 			
-			FDOrderI order = FDCustomerManager.getOrder(saleId);
+			FDOrderI order = FDCustomerManager.getOrderForCRM(saleId);
 			FDReservation reservation = order.getDeliveryReservation();
 			FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(this.timeslotId, null, reservation.isPremium());
 			

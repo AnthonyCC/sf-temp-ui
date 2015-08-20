@@ -31,6 +31,7 @@
 <%@page import="com.freshdirect.cms.ContentNodeI"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -397,7 +398,7 @@ p.fi{margin:20px 0px;}
 					<%
 						fiProdPrice = JspMethods.formatDefaultPrice(productInfo, user.getPricingContext());
 						
-									fiHasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
+									fiHasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).isItemOnSale();
 									if (fiHasWas) {
 										fiProdBasePrice = JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
 									}

@@ -9,12 +9,10 @@ import java.util.List;
 
 public class GeographyStrategy implements PromotionStrategyI {
 
-	private final List geographies = new ArrayList();
+	private final List<PromotionGeography> geographies = new ArrayList<PromotionGeography>();
 
-	private final static Comparator GEO_DATE_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			PromotionGeography g1 = (PromotionGeography) o1;
-			PromotionGeography g2 = (PromotionGeography) o2;
+	private final static Comparator<PromotionGeography> GEO_DATE_COMPARATOR = new Comparator<PromotionGeography>() {
+		public int compare(PromotionGeography g1, PromotionGeography g2) {
 			return g1.getStartDate().compareTo(g2.getStartDate());
 		}
 	};
@@ -24,14 +22,13 @@ public class GeographyStrategy implements PromotionStrategyI {
 		Collections.sort(this.geographies, GEO_DATE_COMPARATOR);
 	}
 
-	public List getGeographies() {
+	public List<PromotionGeography> getGeographies() {
 		return Collections.unmodifiableList(this.geographies);
 	}
 
 	protected PromotionGeography getGeography(Date date) {
 		PromotionGeography match = null;
-		for (Iterator i = this.geographies.iterator(); i.hasNext();) {
-			PromotionGeography g = (PromotionGeography) i.next();
+		for (PromotionGeography g : this.geographies) {
 			if (date.before(g.getStartDate())) {
 				break;
 			}
@@ -40,6 +37,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 		return match;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 
 		PromotionGeography g = this.getGeography(new Date());
@@ -89,6 +87,8 @@ public class GeographyStrategy implements PromotionStrategyI {
 		// not deliverable
 		return false;
 	}
+	
+	@Override
 	public int getPrecedence() {
 		return 3000;
 	}
@@ -97,4 +97,8 @@ public class GeographyStrategy implements PromotionStrategyI {
 		return "GeographyStrategy[" + this.geographies + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

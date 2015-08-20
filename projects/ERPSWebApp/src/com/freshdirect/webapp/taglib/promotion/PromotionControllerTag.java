@@ -43,6 +43,7 @@ import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
+@Deprecated
 public class PromotionControllerTag extends AbstractControllerTag {
 	private FDPromotionModel promotion;
 	private TreeMap zipRestrictionMap;

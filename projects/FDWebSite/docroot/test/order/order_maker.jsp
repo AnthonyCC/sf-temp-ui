@@ -4,17 +4,20 @@
 <%@page import="com.freshdirect.fdstore.content.*"%>
 <%@page import="com.freshdirect.fdstore.customer.*"%>
 <%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 
 <%
     if (request.getMethod().equalsIgnoreCase("POST")) {
         String orderSkus = request.getParameter("orderSkus");
         boolean mult = request.getParameter("orderStyle").equalsIgnoreCase("multiple");
-        FDCartModel cart = ((FDUserI) request.getSession(false).getAttribute("freshdirect.user")).getShoppingCart();
+        FDUserI user=((FDUserI) request.getSession(false).getAttribute("freshdirect.user"));
+        FDCartModel cart = user.getShoppingCart();
         ArrayList skus = new ArrayList();
         for (StringTokenizer stoke = new StringTokenizer(orderSkus, "\n"); stoke.hasMoreTokens();) {
             String skuCode = stoke.nextToken().trim().toUpperCase();
             if ((skuCode != null) && (!"".equals(skuCode))) {
-                cart.addOrderLines(makeOrderLines(skuCode, mult));
+                cart.addOrderLines(makeOrderLines(skuCode, mult,user));
             }
         }
         response.sendRedirect("/view_cart.jsp");
@@ -43,7 +46,7 @@
 
 <%!
 
-    private List makeOrderLines(String skuCode, boolean multiple) throws FDResourceException, FDSkuNotFoundException {
+    private List makeOrderLines(String skuCode, boolean multiple,FDUserI user) throws FDResourceException, FDSkuNotFoundException {
 
         ArrayList lines = new ArrayList();
         ContentFactory contentFactory = ContentFactory.getInstance();
@@ -137,7 +140,7 @@
             
 			FDConfiguration conf = new FDConfiguration(quantity, salesUnit.getName(), optionMap);
 
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel, conf, null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel, conf, null, user.getUserContext());
 
             lines.add(cartLine);
         }

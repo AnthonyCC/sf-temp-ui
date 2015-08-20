@@ -96,6 +96,7 @@ import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -127,6 +128,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.LateIssueOrder;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -198,11 +200,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ "complaint_dept_code_id in (select id from cust.complaint_dept_code where comp_code=?))";
 
 	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status,s.type, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
-		+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount "
-		+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci "
+		+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount, NVL(S.E_STORE,'FreshDirect') as Store, NVL(DI.PLANT_ID,'1000') as Facility "
+		+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci, CUST.DELIVERYINFO di "
 		+ "where sa.sale_id in ( ? ) and sa.action_type in ('CRO', 'MOD') "
 		+ "and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = sa.sale_id and action_type in ('CRO', 'MOD')) "
-		+ "and s.id = sa.sale_id and s.customer_id = ci.customer_id ";
+		+ "and s.id = sa.sale_id and s.customer_id = ci.customer_id and sa.id=di.salesaction_id ";
 
 	private String substitute(String original, char marker, String replaceWith) {
 		StringBuffer sb = new StringBuffer(original);
@@ -273,6 +275,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setFirstName(rs.getString("FIRST_NAME"));
 				info.setLastName(rs.getString("LAST_NAME"));
 				info.setOrderType(rs.getString("TYPE"));
+				
+				EnumEStoreId eStoreId = EnumEStoreId.valueOfContentId(rs.getString("STORE"));
+				if (eStoreId != null) {
+					info.seteStore(eStoreId.toString());
+				}
+				info.setFacility(rs.getString("FACILITY"));
 			}
 
 			rs.close();
@@ -482,6 +490,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 				info.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
 				info.setOrderType(rs.getString("TYPE"));
+
+				//TODO FDX - add these columns to query
+				info.seteStore("TODO");
+				info.setFacility("TODO");
+				
 				l.add(info);
 			}
 
@@ -755,6 +768,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setFirstName(rs.getString("FIRST_NAME"));
 				info.setLastName(rs.getString("LAST_NAME"));
 				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
+
+				//TODO FDX - add these columns to query
+				info.seteStore("TODO");
+				info.setFacility("TODO");
+				
 				lst.add(info);
 			}
 			rs.close();
@@ -828,6 +846,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			coi.setAltPhone(rs.getString("CELL_PHONE"));
 			if (coi.getAltPhone() == null || "".equals(coi.getAltPhone()))
 				coi.setAltPhone(rs.getString("BUSINESS_PHONE"));
+			
+			//TODO FDX - add these columns to query
+			coi.seteStore("TODO");
+			coi.setFacility("TODO");
+			
 			orders.add(coi);
 		}
 	}
@@ -1105,11 +1128,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.CUTOFFTIME " +
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.handofftime " +
 			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
 			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
 			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
-			"and di.starttime < ? group by s.status, di.CUTOFFTIME order by di.CUTOFFTIME, s.status";
+			"and di.starttime < ? group by s.status, di.handofftime order by di.handofftime, s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;
@@ -1128,7 +1151,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				EnumSaleStatus s = EnumSaleStatus.getSaleStatus(rs.getString("STATUS"));
-				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("CUTOFFTIME"), rs.getInt("ORDER_COUNT")));
+				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("handofftime"), rs.getInt("ORDER_COUNT")));
 			}
 			ps.close();
 			rs.close();
@@ -1432,10 +1455,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setObject(i + 1, par[i]);
 			}
 			rs = ps.executeQuery();
+			
+			//TODO FDX - add these columns to query
+			String eStore = "TODO";
+			String facility = "TODO";
 
 			List lst = new ArrayList();
 			while (rs.next()) {
-				CrmOrderStatusReportLine rl = new CrmOrderStatusReportLine(rs.getString("ID"), EnumSaleStatus.getSaleStatus(rs.getString("STATUS")), rs.getString("SAP_NUMBER"));
+				CrmOrderStatusReportLine rl = new CrmOrderStatusReportLine(rs.getString("ID"), EnumSaleStatus.getSaleStatus(rs.getString("STATUS")), rs.getString("SAP_NUMBER"), eStore, facility);
 				lst.add(rl);
 			}
 
@@ -2311,6 +2338,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					ps2.setString(3, saleId);
 					ps2.execute();
 				}
+				
+				
 			}
 		} catch (Exception e) {
 			LOGGER.error("LateIssue row not created for: Route:"+model.getRoute(),e);
@@ -2373,7 +2402,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		storePhoneNumbers(id, model);
 		//Create LASTISSUE 
 		createLateIssue(model, id);
-		
+			
 		return call_id;
 	}	
 	

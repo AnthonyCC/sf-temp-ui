@@ -16,7 +16,7 @@
 	<tmpl:put name='title' direct='true'>Carton Detail View</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
-		<fd:GetOrder id='order' saleId='<%= orderId %>'>
+		<fd:GetOrder id='order' saleId='<%= orderId %>' crm="<%= true %>">
 
 <%
 	List cartonInfo = FDCustomerManager.getCartonDetails((FDOrderI) order);	

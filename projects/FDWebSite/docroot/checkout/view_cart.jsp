@@ -26,6 +26,7 @@ final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
 <fd:CheckLoginStatus id="user" />
 <features:redirect featureName="checkout2_0" />
 <%
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
 request.setAttribute("listPos", "SystemMessage");
@@ -144,7 +145,11 @@ StringBuffer buffer = new StringBuffer(
 	int incNextButtonCount = 0;
 %>
 
-
+<%if(user.getMasqueradeContext()!=null) {%>
+	<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
+		<%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>
+<%} %>
 
 <form name="viewcart" id="viewcart" method="post" style="margin:0px ! important" fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
 	<div class="groupScaleBox" style="display:none"><!--  -->

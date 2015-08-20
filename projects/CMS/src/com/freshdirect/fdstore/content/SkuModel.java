@@ -73,12 +73,15 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	}
 	
 	public boolean isUnavailable() {
-		long now = System.currentTimeMillis();
+		/**
+		 * Availability cannot be cached, as plant might have switched.
+		 * long now = System.currentTimeMillis();
 		if(now - lastRefresh > AVAILABILITY_REFRESH) {
 			this.unavailable = this.getAvailability().isUnavailable();
 			lastRefresh = now;
 		}
-		return this.unavailable;
+		return this.unavailable;*/
+		return this.getAvailability().isUnavailable();
 	}
 		
 	
@@ -90,9 +93,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		return this.getAvailability().getEarliestAvailability();
 	}
 	
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
-		return this.getAvailability().getLimitedAvailability();
-	}
+	
 	/** @return null if sku is available */
 	public String getEarliestAvailabilityMessage() {
 		DateRange dr = OncePerRequestDateCache.getAvailabilityHorizon();
@@ -140,10 +141,11 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		try {
 
 			FDProductInfo fdpi = this.getProductInfo();
-			
-			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi);
-			
-			return new AvailabilityAdapter(fdpi, av);
+			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
+			String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+			String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel);
 
 		} catch (FDSkuNotFoundException fdsnfe) {
 			return UNAVAILABLE;
@@ -202,22 +204,26 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		
 		private final FDProductInfo productInfo;
 		private final FDAvailabilityI availability;
+		private final String salesArea;
+		private final String distrChannel;
 		
-		public AvailabilityAdapter(FDProductInfo fdpi, FDAvailabilityI availability) {
+		public AvailabilityAdapter(FDProductInfo fdpi, FDAvailabilityI availability,String salesArea, String distrChannel ) {
 			this.productInfo = fdpi;
 			this.availability = availability;
+			this.salesArea=salesArea;
+			this.distrChannel=distrChannel;
 		}
 		
 		public boolean isDiscontinued() {
-			return this.productInfo.isDiscontinued();
+			return this.productInfo.isDiscontinued(salesArea,distrChannel);
 		}
 
 		public boolean isTempUnavailable() {
-			return this.productInfo.isTempUnavailable();
+			return this.productInfo.isTempUnavailable(salesArea,distrChannel);
 		}
 
 		public boolean isOutOfSeason() {
-			return this.productInfo.isOutOfSeason();
+			return this.productInfo.isOutOfSeason(salesArea,distrChannel);
 		}
 
 		public boolean isUnavailable() {
@@ -258,12 +264,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability, days) != null;
 		}
 		
-		public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
-			if (this.isDiscontinued() || this.isTempUnavailable() || this.isOutOfSeason()) {
-				return null;
-			}
-			return FDAvailabilityHelper.getLimitedAvailabilityInfo(this.availability);
-		}
+		
 	}
 
 	public PricingContext getPricingContext() {

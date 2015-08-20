@@ -9,9 +9,6 @@
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
-<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
-<style type="text/css">
-</style>
 <script>
 function openURL(inLocationURL) {
 
@@ -66,19 +63,15 @@ function sortRestriction(colName) {
 <input type="hidden" name="sortColumn" id="sortColumn"  value="<%=sortColumn%>" />
 <input type="hidden" name="ascending" id="ascending"  value="asc" />
 	<tr>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('reason')"> Reason # </a></b></span></td>	
-	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('scrubbed_address')"> Street Address </a> </b></span></td>	
-	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('apartment')">  Apartment </a></b></span></td>	
-	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('zipCode')"> Zip Code</a></b></span></td>	
-	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modification Date </a></b></span></td>	
-	<td class="border_bold">&nbsp;</td>	
-    <td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modified by</b></span></td>	
-	<td class="border_bold">&nbsp;</td>	
-    <td class="border_bold">&nbsp;</td>	
+		<td class="border_bold" width="10"></td>
+		<td valign="bottom" class="border_bold" width="100"><span class="detail_text"><b><a href="javascript:sortRestriction('reason')"> Reason # </a></b></span></td>
+		<td valign="bottom" class="border_bold" width="300"><span class="detail_text"><b> <a href="javascript:sortRestriction('scrubbed_address')"> Street Address </a> </b></span></td>
+		<td valign="bottom" class="border_bold" width="100"><span class="detail_text"><b><a href="javascript:sortRestriction('apartment')">  Apartment </a></b></span></td>
+		<td valign="bottom" class="border_bold" width="100"><span class="detail_text"><b><a href="javascript:sortRestriction('zipCode')"> Zip Code</a></b></span></td>
+		<td valign="bottom" class="border_bold" width="200"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modification Date </a></b></span></td>
+	    <td valign="bottom" class="border_bold" width="200"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modified by</b></span></td>	
+		<td class="border_bold" width="150">&nbsp;</td>
+		<td class="border_bold"></td>
 	</tr>
 	
     
@@ -98,22 +91,18 @@ function sortRestriction(colName) {
 		<input type="hidden" name="delete_address1" id="delete_address1" value="" />
         <input type="hidden" name="delete_apartment" id="delete_apartment" value="" />
         <input type="hidden" name="delete_zipCode" id="delete_zipCode" value="" />        
-        <tr>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getReason().getCode() %></span></td>	
-        <td class="border_bottom">&nbsp;</td>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getAddress1() %></span></td>	
-        <td class="border_bottom">&nbsp;</td>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getApartment() %></span></td>	
-        <td class="border_bottom">&nbsp;</td>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getZipCode() %></span></td>
-        <td class="border_bottom">&nbsp;</td>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getLastModified() %></span></td>
-        <td class="border_bottom">&nbsp;</td>
-        <td class="border_bottom"><span class="detail_text"><%= restriction.getModifiedBy() %></span></td>        
-        <td class="border_bottom"></td>
-        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/addrRestrictionForm.jsp?addr1=<%= restriction.getAddress1() %>&apart=<%= restriction.getApartment() %>&zip=<%= restriction.getZipCode() %>&actionType=editAddrRestriction','editAddrRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
-        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= restriction.getAddress1() %>','<%= restriction.getApartment() %>','<%= restriction.getZipCode() %>')">&nbsp;Delete<a/></td>
-        
+        <tr <%= cnt.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
+			<td class="border_bottom" width="10"></td>
+	        <td class="border_bottom" width="100"><span class="detail_text"><%= restriction.getReason().getCode() %></span></td>
+	        <td class="border_bottom" width="300"><span class="detail_text"><%= restriction.getAddress1() %></span></td>
+	        <td class="border_bottom" width="100"><span class="detail_text"><%= restriction.getApartment() %></span></td>
+	        <td class="border_bottom" width="100"><span class="detail_text"><%= restriction.getZipCode() %></span></td>
+	        <td class="border_bottom" width="200"><span class="detail_text"><%= restriction.getLastModified() %></span></td>
+	        <td class="border_bottom" width="200"><span class="detail_text"><%= restriction.getModifiedBy() %></span></td> 
+	        <td class="border_bottom" width="150">
+	        	<a href="javascript:void(0)" onclick="window.open('/admintools/addrRestrictionForm.jsp?addr1=<%= restriction.getAddress1() %>&apart=<%= restriction.getApartment() %>&zip=<%= restriction.getZipCode() %>&actionType=editAddrRestriction','editAddrRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|<a href="javascript:deleteRestriction('<%= restriction.getAddress1() %>','<%= restriction.getApartment() %>','<%= restriction.getZipCode() %>')">&nbsp;Delete<a/>
+	        </td>
+			<td class="border_bottom"></td>
         </tr>
         	</logic:iterate>
 	<%

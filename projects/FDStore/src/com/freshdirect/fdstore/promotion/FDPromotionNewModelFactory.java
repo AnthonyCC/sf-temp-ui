@@ -25,7 +25,7 @@ public class FDPromotionNewModelFactory {
 	
 	private static FDPromotionNewModelFactory INSTANCE = null;
 	
-	private static final Category LOGGER = LoggerFactory.getInstance(FDPromotionModelFactory.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(FDPromotionNewModelFactory.class);
 	private Date maxLastModified;
 	
 	private Map<String, FDPromotionNewModel> fdPromotionModelMap = new LinkedHashMap<String, FDPromotionNewModel>();

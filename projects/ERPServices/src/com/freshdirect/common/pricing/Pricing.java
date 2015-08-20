@@ -9,15 +9,17 @@
 package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * Aggregates all relevant information for performing pricing.
@@ -48,8 +50,17 @@ public class Pricing implements Serializable {
 	 *
 	 * @return array of CharacteristicValuePrice objects
 	 */
-	public CharacteristicValuePrice[] getCharacteristicValuePrices() {
-		return this.cvPrices;
+	public CharacteristicValuePrice[] getCharacteristicValuePrices(PricingContext pCtx) {
+		if(this.cvPrices.length==0) return this.cvPrices;
+		List<CharacteristicValuePrice> cvp=new ArrayList<CharacteristicValuePrice>(cvPrices.length);
+		
+		for(int i=0;i<cvPrices.length;i++) {
+			if(pCtx!=null && pCtx.getZoneInfo()!=null && !StringUtil.isEmpty(pCtx.getZoneInfo().getSalesOrg()) && pCtx.getZoneInfo().getSalesOrg().equals(cvPrices[i].getSalesOrg()) && 
+					!StringUtil.isEmpty(pCtx.getZoneInfo().getDistributionChanel()) && pCtx.getZoneInfo().getDistributionChanel().equals(cvPrices[i].getDistChannel()) )
+						 cvp.add(cvPrices[i]);
+		}
+		CharacteristicValuePrice[] list2 = new CharacteristicValuePrice[cvp.size()];
+		return cvp.toArray(list2);
 	}
 
 	/**
@@ -81,6 +92,23 @@ public class Pricing implements Serializable {
 	 * 
 	 * @return null if not found
 	 */
+	public CharacteristicValuePrice findCharacteristicValuePrice(String characteristic, String charValue, PricingContext pCtx) {
+		if (characteristic==null || charValue==null) {
+			throw new IllegalArgumentException("Null characteristic or charValue: "+characteristic+"/"+charValue);
+		}
+		CharacteristicValuePrice cvp;
+		for (int i=0; i<this.cvPrices.length; i++) {
+			cvp=this.cvPrices[i];
+			if ( characteristic.equals(cvp.getCharacteristicName()) && charValue.equals(cvp.getCharValueName()) ) {
+				
+				if(pCtx!=null && pCtx.getZoneInfo()!=null && !StringUtil.isEmpty(pCtx.getZoneInfo().getSalesOrg()) && pCtx.getZoneInfo().getSalesOrg().equals(cvp.getSalesOrg()) && 
+					!StringUtil.isEmpty(pCtx.getZoneInfo().getDistributionChanel()) && pCtx.getZoneInfo().getDistributionChanel().equals(cvp.getDistChannel()) )
+						return cvp;
+			}
+		}
+		return null;
+	}
+	
 	public CharacteristicValuePrice findCharacteristicValuePrice(String characteristic, String charValue) {
 		if (characteristic==null || charValue==null) {
 			throw new IllegalArgumentException("Null characteristic or charValue: "+characteristic+"/"+charValue);
@@ -89,12 +117,13 @@ public class Pricing implements Serializable {
 		for (int i=0; i<this.cvPrices.length; i++) {
 			cvp=this.cvPrices[i];
 			if ( characteristic.equals(cvp.getCharacteristicName()) && charValue.equals(cvp.getCharValueName()) ) {
-				return cvp;
+				
+				
+						return cvp;
 			}
 		}
 		return null;
 	}
-	
 	
 
 	public String toString() {
@@ -105,7 +134,7 @@ public class Pricing implements Serializable {
 		Iterator<ZonePriceModel> it = zonePriceList.getZonePrices().iterator();
 		while(it.hasNext()){
 			ZonePriceModel zpModel = (ZonePriceModel) it.next();
-			buf.append("\n\t").append("Zone ID:").append(zpModel.getSapZoneId());;
+			buf.append("\n\t").append("ZoneInfo:").append(zpModel.getPricingZone());;
 			MaterialPrice[] materialPrices = zpModel.getMaterialPrices();
 			for (int i=0; i<materialPrices.length; i++) {
 				buf.append("\n\t").append(materialPrices[i].toString());
@@ -119,14 +148,20 @@ public class Pricing implements Serializable {
 	}
 
 
-	
-	public ZonePriceModel getZonePrice(String pZoneId) {
+	/**
+	 * The new cascading logic goes here.
+	 * @param zoneInfo
+	 * @return
+	 */
+	private ZonePriceModel _getZonePrice(ZoneInfo pricingZoneInfo) {
 		try {
-			ZonePriceModel zpModel = this.zonePriceList.getZonePrice(pZoneId);
+		
+			ZonePriceModel zpModel = this.zonePriceList.getZonePrice(pricingZoneInfo.hasParentZone()?new ZoneInfo(pricingZoneInfo.getPricingZoneId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()):pricingZoneInfo);
 			if(zpModel == null) {
-				//do a item cascading to its parent until we find a price info.
-				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pZoneId);
-				zpModel = getZonePrice(zoneInfo.getParentZone().getSapId());
+				//::FDX:do a item cascading to its parent until we find a price info.
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pricingZoneInfo.getPricingZoneId());
+				if(zoneInfo.getParentZone()!=null)
+					zpModel = _getZonePrice(new ZoneInfo(zoneInfo.getParentZone().getSapId(),pricingZoneInfo.getSalesOrg(),pricingZoneInfo.getDistributionChanel()));
 			}
 			return zpModel;
 		}
@@ -138,4 +173,17 @@ public class Pricing implements Serializable {
 	public ZonePriceListing getZonePriceList(){
 		return this.zonePriceList;
 	}
+	
+	
+	public ZonePriceModel getZonePrice(ZoneInfo pricingZoneInfo) {
+		ZoneInfo zone=pricingZoneInfo;
+		ZonePriceModel zpModel=_getZonePrice(zone);
+		while(zpModel==null && zone.hasParentZone()) {
+			zone=zone.getParentZone();
+			zpModel=_getZonePrice(zone);
+		}
+		return zpModel;
+	}
+
 }
+

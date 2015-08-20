@@ -1,5 +1,8 @@
 package com.freshdirect.fdstore;
 
+import java.util.List;
+import java.util.Map;
+
 import com.freshdirect.content.attributes.AttributesI;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
@@ -16,17 +19,16 @@ public class FDMaterial extends FDAttributeProxy {
 	private static final long	serialVersionUID	= -3900022254504839075L;
 	
 	private final String materialNumber;
-	private final EnumATPRule atpRule;
 	private final String salesUnitCharacteristic;
 	private final String quantityCharacteristic;
 	private final EnumAlcoholicContent alcoholicContent;
 	private final boolean taxable;
-	private final boolean kosherProduction;
-	private final boolean platter;
-	private final DayOfWeekSet blockedDays;
-	private final int leadTime;
+	private final String skuCode;
+	private Map<String, FDPlantMaterial> materialPlants;
+	private Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreas;
+	
 
-	public FDMaterial(
+	/*public FDMaterial(
 		AttributesI attributes,
 		String materialNumber,
 		EnumATPRule atpRule,
@@ -49,14 +51,27 @@ public class FDMaterial extends FDAttributeProxy {
 		this.platter = platter;
 		this.blockedDays = blockedDays;
 		this.leadTime = leadTime;
-	}
+	}*/
+	
+	public FDMaterial(
+			AttributesI attributes,
+			String materialNumber,
+			String salesUnitCharacteristic,
+			String quantityCharacteristic,
+			EnumAlcoholicContent alcoholicContent,
+			boolean taxable,String skuCode) {
+			super(attributes);
+			this.materialNumber = materialNumber;
+			this.salesUnitCharacteristic = salesUnitCharacteristic;
+			this.quantityCharacteristic = quantityCharacteristic;
+			this.alcoholicContent = alcoholicContent;
+			this.taxable = taxable;
+			this.skuCode = skuCode;
+			
+		}
 
 	public String getMaterialNumber() {
 		return this.materialNumber;
-	}
-
-	public EnumATPRule getAtpRule() {
-		return this.atpRule;
 	}
 
 	/**
@@ -85,30 +100,92 @@ public class FDMaterial extends FDAttributeProxy {
 		return this.taxable;
 	}
 
-	public boolean isKosherProduction() {
-		return this.kosherProduction;
+	
+	
+	/**
+	 * @return the skuCode
+	 */
+	public String getSkuCode() {
+		return skuCode;
 	}
 
-	public boolean isPlatter() {
-		return this.platter;
-	}
-
-	public DayOfWeekSet getBlockedDays() {
-		return this.blockedDays == null ? DayOfWeekSet.EMPTY : this.blockedDays;
-	}
-	
-	public int getLeadTime() {
-		return leadTime;
-	}
-	
-	
 	@Override
 	public String toString() {
-	    return "FDMaterial[materialNumber:'" + materialNumber + "' atpRule:'" + atpRule 
-	        + "' salesUnitCharacteristic:'" + salesUnitCharacteristic
+	    return "FDMaterial[materialNumber:'" + materialNumber + "' salesUnitCharacteristic:'" + salesUnitCharacteristic
                 + "' quantityCharacteristic:'" + quantityCharacteristic 
                 + "' alcoholicContent:'" + alcoholicContent 
-                + "' taxable:'" + taxable + "' kosherProduction:'" + kosherProduction 
-                + "' platter:'" + platter + "' blockedDays:'" + blockedDays;
+                + "' taxable:'" + taxable ;
+	}
+
+	
+	
+	/**
+	 * @return the materialPlants
+	 */
+	public Map<String, FDPlantMaterial> getMaterialPlants() {
+		return materialPlants;
+	}
+
+	/**
+	 * @param materialPlants the materialPlants to set
+	 */
+	public void setMaterialPlants(Map<String, FDPlantMaterial> materialPlants) {
+		this.materialPlants = materialPlants;
+	}
+
+	/**
+	 * @return the materialSalesAreas
+	 */
+	public Map<SalesAreaInfo, FDMaterialSalesArea> getMaterialSalesAreas() {
+		return materialSalesAreas;
+	}
+
+	/**
+	 * @param materialSalesAreas the materialSalesAreas to set
+	 */
+	public void setMaterialSalesAreas(
+			Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreas) {
+		this.materialSalesAreas = materialSalesAreas;
+	}
+
+	//TODO: Refactor these methods later, after doing all the required changes wrt plantId in the context.
+	public int getLeadTime(){
+		return getLeadTime(null);
+	}
+	
+	public int getLeadTime(String plantId){
+		return null !=materialPlants.get(plantId)?materialPlants.get(plantId).getLeadTime():0;
+	}
+	
+	/*public DayOfWeekSet getBlockedDays(){
+		return getBlockedDays(null);//::FDX::
+	}*/
+	
+	public DayOfWeekSet getBlockedDays(String plantId){
+		return null!=materialPlants.get(plantId)?materialPlants.get(plantId).getBlockedDays():DayOfWeekSet.EMPTY;
+	}
+	
+	/*public boolean isKosherProduction(){
+		return isKosherProduction(null);
+	}*/
+	
+	public boolean isKosherProduction(String plantId){
+		return null!=materialPlants.get(plantId)?materialPlants.get(plantId).isKosherProduction():false;
+	}
+	
+	/*public boolean isPlatter(){
+		return isPlatter(null);
+	}*/
+	
+	public boolean isPlatter(String plantId){
+		return null!=materialPlants.get(plantId)?materialPlants.get(plantId).isPlatter():false;
+	}
+	
+	public EnumATPRule getAtpRule(){
+		return getAtpRule(null);
+	}
+	
+	public EnumATPRule getAtpRule(String plantId){
+		return null!=materialPlants.get(plantId)?materialPlants.get(plantId).getAtpRule():null;
 	}
 }

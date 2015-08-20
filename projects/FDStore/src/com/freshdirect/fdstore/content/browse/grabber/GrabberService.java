@@ -156,7 +156,7 @@ public class GrabberService implements GrabberServiceI {
 			case ERPS:
 				return new CacheEntryIdentifier(EhCacheUtil.BR_ERPS_PRODUCT_GRABBER_CACHE_NAME, grabberKey);
 			case ERPS_PRICING_ZONE:
-				String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId(); //thread local for user
+				String zoneId = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().toString(); //thread local for user
 				return new CacheEntryIdentifier(EhCacheUtil.BR_ERPS_ZONE_PRODUCT_GRABBER_CACHE_NAME, grabberKey + PRICING_ZONE_ID_DELIMETER + zoneId);
 			default: //NO_CACHING:
 				return null;

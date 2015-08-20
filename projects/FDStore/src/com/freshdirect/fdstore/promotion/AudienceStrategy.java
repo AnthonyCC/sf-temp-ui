@@ -17,6 +17,7 @@ public class AudienceStrategy implements PromotionStrategyI {
 	public boolean isMaxUsagePerCustomer() { return this.maxUsagePerCust; } 
 	public int getRollingExpirationDays() { return this.rollingExpirationDays; } 
 	
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		AssignedCustomerParam param = context.getAssignedCustomerParam(promotionCode);
 		if (param != null && isValidUsageCount(promotionCode, context, param) && isBeforeExpirationDate(promotionCode, context, param)) {
@@ -37,6 +38,7 @@ public class AudienceStrategy implements PromotionStrategyI {
 		return (this.rollingExpirationDays == 0 || (expirationDate != null && !today.after(DateUtil.truncate(expirationDate))));					
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 800;
 	}
@@ -44,5 +46,9 @@ public class AudienceStrategy implements PromotionStrategyI {
 	public String toString() {
 		return "AudienceCustomerStrategy [ UsageCount = "+ maxUsagePerCust+", ExpirationDate "+rollingExpirationDays+"]";
 	}
-	
+
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

@@ -1,11 +1,6 @@
 package com.freshdirect.fdstore.promotion;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -13,15 +8,11 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.customer.FDCartLineModel;
-import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
 
 public class DCPDLineItemStrategy implements LineItemStrategyI {
-	protected Set<ContentKey> contentKeys = new HashSet<ContentKey>();
+	protected Set<ContentKey> rawContentKeys = new HashSet<ContentKey>();
 	private Set<String> skus = new HashSet<String>();
 	private Set<String> brands = new HashSet<String>();
 	private Boolean excludeSkus = Boolean.FALSE;
@@ -29,6 +20,9 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	private Boolean loopEnabled = Boolean.FALSE;
 	private boolean recCategory = false;
 	
+	private Set<ContentKey> __contentKeys = null;
+	
+	@Override
 	public int getPrecedence() {
 		return 200;
 	}
@@ -38,19 +32,41 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	}
 	
 	public void addContent(String type, String id){
-		ContentKey refKey = ContentNodeModelUtil.getAliasCategoryRef(type, id);
-		if(FDStoreProperties.isDCPDAliasHandlingEnabled() && refKey != null){
-			/*
-			 * refKey is not null when content id is pointing to a ALIAS category.
-			 * So instead of adding the alias category id add the referencing category
-			 * id which is refKey.
-			 */
-			contentKeys.add(refKey);
-		} else {
-			//Regular category or department or recipe id or virtual group.
-			contentKeys.add(ContentNodeModelUtil.getContentKey(type, id));	
-		}
+		rawContentKeys.add(ContentNodeModelUtil.getContentKey(type, id));
 	}
+
+	/**
+	 * Returns set of content keys after resolving category aliases.
+	 * 
+	 * @return
+	 */
+	public Set<ContentKey> getContentKeys() {
+		if (__contentKeys == null) {
+			__contentKeys = new HashSet<ContentKey>(rawContentKeys.size());
+			
+			final boolean aliasEnabled = FDStoreProperties.isDCPDAliasHandlingEnabled();
+			
+			for (final ContentKey _key : rawContentKeys) {
+				ContentKey refKey = ContentNodeModelUtil.getAliasCategoryRef(_key.getType().toString(), _key.getId());
+				if(aliasEnabled && refKey != null){
+					/*
+					 * refKey is not null when content id is pointing to a ALIAS category.
+					 * So instead of adding the alias category id add the referencing category
+					 * id which is refKey.
+					 */
+					__contentKeys.add(refKey);
+				} else {
+					//Regular category or department or recipe id or virtual group.
+					__contentKeys.add(_key);	
+				}
+				
+			}
+			
+		}
+		
+		return __contentKeys;
+	}
+	
 	
 	public void addSku(String skuCode){
 			skus.add(skuCode);
@@ -60,7 +76,10 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 			brands.add(brandId);
 	}
 	
+	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode, PromotionContextI context) {
+		Set<ContentKey> contentKeys = getContentKeys();
+		
 		boolean eligible = contentKeys.isEmpty();
 		String recipeSourceId = lineItem.getRecipeSourceId();
 		if(recipeSourceId != null && recipeSourceId.length() > 0){
@@ -147,18 +166,19 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	public void setRecCategory(boolean recCategory) {
 		this.recCategory = recCategory;
 	}
-	public Set<ContentKey> getContentKeys() {
-		return contentKeys;
-	}
-
+	
 	@Override
 	public String toString() {
 		return "DCPDLineItemStrategy [brands=" + brands + ", contentKeys="
-				+ contentKeys + ", excludeBrands=" + excludeBrands
+				+ rawContentKeys + ", excludeBrands=" + excludeBrands
 				+ ", excludeSkus=" + excludeSkus + ", loopEnebled="
 				+ loopEnabled + ", skus=" + skus + "]";
 	}
 	
+	@Override
+	public boolean isStoreRequired() {
+		return true;
+	}
 }
 
 

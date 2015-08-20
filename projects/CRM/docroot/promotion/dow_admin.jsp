@@ -25,7 +25,6 @@
 	<crm:WSPromoController result="result">		
 	<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
 
-	<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 	<script language="JavaScript" type="text/javascript">
 	function numbersonly(e, decimal) {
 		var key;

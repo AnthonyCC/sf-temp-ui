@@ -45,7 +45,9 @@ public class DataGeneratorCompiler extends CompilerBase {
     static final String FN_PERSONALIZED_ITEMS_PREFIX = "PersonalizedItems_";
     static final String FN_RELATED_ITEMS_PREFIX = "RelatedItems_";
     static final String FN_TO_LIST = "toList";
+	@Deprecated
     private static final String FN_PRODUCT_RECOMMENDATION = "ProductRecommendation";
+	@Deprecated
     private static final String FN_USER_RECOMMENDATION = "PersonalRecommendation";
     // [APPDEV-3776]
     private static final String FN_SMART_CATEGORY = "SmartCategory";
@@ -698,7 +700,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         StringBuffer b = new StringBuffer("public String getKey(SessionInput input) {\n");
         b.append("   return \""+toStringValue.replace('"', '\'')+"\"");
         if (containsZoneDependentFactor(vc.getVariables())) {
-            b.append("+ \"%zone=\" + input.getPricingContext().getZoneId()");
+            b.append("+ \"%zone=\" + input.getPricingContext().getZoneInfo().getPricingZoneId()");
         }
         if (keys.contains(CURRENT_PRODUCT)) {
             b.append("+ '$' + HelperFunctions.getCurrentNodeCacheKey(input)");

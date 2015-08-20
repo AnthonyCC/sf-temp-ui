@@ -7,6 +7,7 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
 
+@Deprecated
 public interface BazaarvoiceUfServiceSB extends EJBObject{
 	
 	public BazaarvoiceFeedProcessResult processFile() throws RemoteException;

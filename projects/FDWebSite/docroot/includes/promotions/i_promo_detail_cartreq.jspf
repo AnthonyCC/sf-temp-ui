@@ -82,11 +82,10 @@
 									<% 
 										for (int n = 0; n < dpcdDeptsCart.size(); n++) {
 											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDeptsCart.get(n);
-											ContentNodeModel deptRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 									%>
 											<tr>
 												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-												<td class="bordLgrayDash padL8R16"><%= (deptRef!=null)?deptRef.getFullName():"" %></td>
+												<td class="bordLgrayDash padL8R16"></td>
 											</tr>
 									<% } %>
 									</table>
@@ -101,11 +100,10 @@
 									<% 
 										for (int n = 0; n < dpcdCatsCart.size(); n++) {
 											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdCatsCart.get(n);
-											ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 									%>
 											<tr>
 												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-												<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+												<td class="bordLgrayDash padL8R16"></td>
 											</tr>
 									<% } %>
 									</table>
@@ -120,11 +118,10 @@
 									<% 
 										for (int n = 0; n < dpcdRecipesCart.size(); n++) {
 											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRecipesCart.get(n);
-											ContentNodeModel recipeRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 									%>
 											<tr>
 												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-												<td class="bordLgrayDash padL8R16"><%= (recipeRef!=null)?recipeRef.getFullName():"" %></td>
+												<td class="bordLgrayDash padL8R16"></td>
 											</tr>
 									<% } %>
 									</table>
@@ -140,11 +137,10 @@
 									<%
 										for (int n = 0; n < dpcdSkusCart.size(); n++) {
 											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkusCart.get(n);
-											ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 										%>
 											<tr>
 												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-												<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+												<td class="bordLgrayDash padL8R16"></td>
 											</tr>
 									<%
 										}
@@ -161,11 +157,10 @@
 										<%
 											for (int n = 0; n < dpcdBrandsCart.size(); n++) {
 												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrandsCart.get(n);
-												ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
 											%>
 												<tr>
 													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-													<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+													<td class="bordLgrayDash padL8R16"></td>
 												</tr>
 										<%
 											}

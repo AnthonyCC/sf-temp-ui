@@ -2,13 +2,14 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.common.pricing.ZoneInfo;
 
+//Refactor this. This class is not needed.
 public class ZonePriceModel implements Serializable {
 	private static final long serialVersionUID = 3299833903663122981L;
 
@@ -17,15 +18,17 @@ public class ZonePriceModel implements Serializable {
 		this.materialPrices = materialPrices;
 	}
 
-	private String sapZoneId;
+	//private String sapZoneId;
+	private ZoneInfo zoneInfo;
 	/**
 	 * Get all material pricing conditions.
 	 *
 	 * @return array of MaterialPrice objects
 	 */
 	
-	public ZonePriceModel(String sapZoneId, MaterialPrice[] matPrices) {
-		this.sapZoneId = sapZoneId != null ? sapZoneId.intern() : null;
+	public ZonePriceModel(ZoneInfo zoneInfo, MaterialPrice[] matPrices) {
+		//this.sapZoneId = sapZoneId != null ? sapZoneId.intern() : null;
+		this.zoneInfo=zoneInfo;
 		this.materialPrices = matPrices;
 	}
 	
@@ -33,8 +36,11 @@ public class ZonePriceModel implements Serializable {
 		return this.materialPrices;
 	}
 
-	public String getSapZoneId() {
+	/*public String getSapZoneId() {
 		return this.sapZoneId;
+	}*/
+	public ZoneInfo getPricingZone() {
+		return zoneInfo;
 	}
 	/**
 	 * Get matching pricing condition for pricing unit.

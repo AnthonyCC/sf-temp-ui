@@ -9,6 +9,7 @@
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.net.URLEncoder' %>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,7 +34,7 @@
 <body>
 <%
 	FDSessionUser currentUser= (FDSessionUser)session.getAttribute( SessionName.USER );
-	String zoneId=currentUser.getPricingZoneId();
+	ZoneInfo zone=currentUser.getPricingContext().getZoneInfo();
 	EnumServiceType serviceType=currentUser.getZPServiceType();
 	String zipCode=currentUser.getZipCode(); 
 	String skuCode=request.getParameter("sku");
@@ -48,7 +49,7 @@
 		<tr>
 			<th align="center" style="font-size: 14px;" width="150">ZONE PRICING (SKU)</th>
 			<td>
-			<% if (zoneId!=null && !"".equals(zoneId)) { %>
+			<% if (zone!=null ) { %>
 				<table border="0" cellpadding="3" cellspacing="0" width="100%">
 				<tr>
 					<td align="right">SERVICE TYPE :</td>
@@ -60,7 +61,7 @@
 				</tr>
 				<tr>
 					<td align="right">ZONE ID :</td>
-					<td><%=zoneId%></td>
+					<td><%=zone.getPricingZoneId()%></td>
 				</tr>
 				</table>
 			<% } %>
@@ -78,7 +79,7 @@
 						<td align="right">SKU :</td><td><%=skuCode%></td>
 					</tr>
 					<tr>
-						<td align="right">ZONE ID :</td><td><%=model.getSapZoneId()%></td>
+						<td align="right">ZONE INFO :</td><td><%=model.getZoneInfo()%></td>
 					</tr>
 					<tr>
 						<td align="right">PRICE :</td><td><%=model.getDefaultPrice()%></td>
@@ -115,7 +116,7 @@
 			<tr>
 				<th align="center" style="font-size: 14px;" width="150">GROUP PRICING</th>
 				<td>
-				<% if (zoneId!=null && !"".equals(zoneId)) { %>
+				<% if (zone!=null ) { %>
 					<table border="0" cellpadding="3" cellspacing="0" width="100%">
 					<tr>
 						<td align="right">SERVICE TYPE :</td>
@@ -126,8 +127,8 @@
 						<td><%=zipCode%></td>
 					</tr>
 					<tr>
-						<td align="right">ZONE ID :</td>
-						<td><%=zoneId%></td>
+						<td align="right">ZONE INFO :</td>
+						<td><%=zone%></td>
 					</tr>
 					</table>
 				<% } %>
@@ -168,8 +169,8 @@
 							GrpZonePriceModel gpModel=(GrpZonePriceModel)gpmI.next();
 							%>
 							<tr>
-								<td align="right">ZONE ID :</td>
-								<td><%=gpModel.getSapZoneId()%></td>
+								<td align="right">ZONE INFO :</td>
+								<td><%=gpModel.getSapZone()%></td>
 							</tr>
 							<%
 								MaterialPrice[] matPrices = gpModel.getMaterialPrices();
@@ -264,7 +265,7 @@
 			<tr>
 				<th align="center" style="font-size: 14px;" width="150">GROUPS ATTACHED TO MATERIAL</th>
 				<td>
-				<% if (zoneId!=null && !"".equals(zoneId)) { %>
+				<% if (zone!=null ) { %>
 					<table border="0" cellpadding="3" cellspacing="0" width="100%">
 					<tr>
 						<td align="right">SERVICE TYPE :</td>
@@ -275,8 +276,8 @@
 						<td><%=zipCode%></td>
 					</tr>
 					<tr>
-						<td align="right">ZONE ID :</td>
-						<td><%=zoneId%></td>
+						<td align="right">ZONE INFO :</td>
+						<td><%=zone.toString()%></td>
 					</tr>					
 					</table>
 				<% } %>
@@ -345,8 +346,8 @@
 								GrpZonePriceModel gpModel=(GrpZonePriceModel)gpmI.next();
 								%>
 									<tr>
-										<td align="right">ZONE ID :</td>
-											<td><%=gpModel.getSapZoneId()%></td>
+										<td align="right">ZONE INFO :</td>
+											<td><%=gpModel.getSapZone()%></td>
 									</tr>
 									<%
 										MaterialPrice[] matPrices = gpModel.getMaterialPrices();

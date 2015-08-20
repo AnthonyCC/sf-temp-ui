@@ -17,6 +17,7 @@ import com.freshdirect.erp.EnumAlcoholicContent;
  * @author kkanuganti
  *
  */
+@SuppressWarnings("javadoc")
 public final class FDSapHelperUtils
 {
 
@@ -38,12 +39,12 @@ public final class FDSapHelperUtils
 	public static final String DEFAULT_BILLING_STATE = "NY";
 	public static final String DEFAULT_BILLING_COUNTRY = "US";
 
+	public static final String PROMO_PRICE_ROW_INDICATOR = "Promo"; //PBBS
+	
 	public static final Date CURRENT_DATE = new Date();
-	public static final java.util.Date FUTURE_DATE = new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1)
-			.getTime();
+	public static final java.util.Date FUTURE_DATE = new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime();
 
 	// Pre-defined material numbers provided by SAP for different charges / promotions
-
 	public static final String PROMOTION_MATERIAL_NO = "000000000000009999";
 	public static final String DELIVERY_CHARGE_MATERIAL_NO = "000000000000008888";
 	public static final String CC_DECLINED_MATERIAL_NO = "000000000000002222";
@@ -51,12 +52,17 @@ public final class FDSapHelperUtils
 	public static final String FUELSURCHARGE_MATERIAL_NO = "000000000000004444";
 	public static final String PREMIUMDELIVERY_CHARGE_MATERIAL_NO = "000000000000008888";
 
-	public static final String[] chargeTypeMaterials =
-	{ DELIVERY_CHARGE_MATERIAL_NO, CC_DECLINED_MATERIAL_NO, PHONE_MATERIAL_NO, FUELSURCHARGE_MATERIAL_NO,
-			PREMIUMDELIVERY_CHARGE_MATERIAL_NO };
-
 	public static final String DEFAULT_VENDOR_AFFILIATE = "FD";
+
 	private final static Map<EnumAlcoholicContent, String> alcoholTypeToVendorAffiliate = new HashMap<EnumAlcoholicContent, String>();
+
+	public static final String MATERIAL_NUMBER = "MATERIAL_NUMBER";
+
+	public static final String CLASS = "CLASS";
+
+	public static final String CHARACTERISTIC_NAME = "CHARACTERISTIC_NAME";
+
+	public static final String CHARACTERISTIC_VALUE = "CHARACTERISTIC_VALUE";
 
 	static
 	{
@@ -122,7 +128,7 @@ public final class FDSapHelperUtils
 		{
 			return str.trim();
 		}
-		return null;
+		return str;
 	}
 
 	public static int getInt(final String fieldName)

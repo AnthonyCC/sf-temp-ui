@@ -46,7 +46,9 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	private String passwordHash;
 	private String sapId;
 	private boolean active;
+	private boolean socialLoginOnly;
 
+	
 	public String getUserId() {
 		return this.userId;
 	}
@@ -68,6 +70,13 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 
 	public void setSapId(String sapId) {
 		this.sapId = sapId;
+	}
+	
+	public boolean isSocialLoginOnly() {
+		return socialLoginOnly;
+	}
+	public void setSocialLoginOnly(boolean socialLoginOnly) {
+		this.socialLoginOnly = socialLoginOnly;
 	}
 
 	/**

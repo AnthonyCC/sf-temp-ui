@@ -39,7 +39,7 @@ public interface AvailabilityI {
      * @return  */    
     public Date getEarliestAvailability();
     
-    public List<FDLimitedAvailabilityInfo> getLimitedAvailability();
+   
     
     
 }

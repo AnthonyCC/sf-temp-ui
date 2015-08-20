@@ -11,6 +11,7 @@ import javax.ejb.EJBException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class ErpCOOLManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	public Map<String, ErpCOOLInfo> load(Date lastModified) {
+	public Map<ErpCOOLKey, ErpCOOLInfo> load(Date lastModified) {
 		Connection conn = null;
 		try {
 			conn = getConnection();

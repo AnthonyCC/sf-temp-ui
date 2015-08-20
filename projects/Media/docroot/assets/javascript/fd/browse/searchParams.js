@@ -106,10 +106,23 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  var listSearchParams = Object.create(WIDGET,{
+	    signal:{
+	      value:'searchParams'
+	    },
+	    template:{
+	      value:srch.listSearch
+	    },
+	    placeholder:{
+	      value:'#listsearch'
+	    }
+	  });
+
   searchParams.listen();
   searchTabs.listen();
   searchSuggestions.listen();
   ddppList.listen();
+  listSearchParams.listen();
 
   $(document).on('click',searchParams.placeholder+' button.searchbutton',searchParams.handleClick.bind(searchParams));
   $(document).on('click',searchTabs.placeholder+' li',searchTabs.handleClick.bind(searchTabs));

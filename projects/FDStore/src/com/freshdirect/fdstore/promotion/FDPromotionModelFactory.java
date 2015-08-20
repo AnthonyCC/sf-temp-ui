@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromotionManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 import com.freshdirect.framework.util.ExpiringReference;
 
+@Deprecated
 public class FDPromotionModelFactory {
 
 	private final static FDPromotionModelFactory INSTANCE = new FDPromotionModelFactory();

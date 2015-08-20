@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
@@ -29,7 +30,7 @@ import com.freshdirect.webapp.template.TemplateContext;
  * @author ksriram
  *
  */
-public class PPExportEmailProductsTag extends AbstractGetterTag{
+public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 
 	private static final long serialVersionUID = -779157820243159440L;
 	private static final Logger LOGGER = LoggerFactory.getInstance(PPExportEmailProductsTag.class);
@@ -46,12 +47,12 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 	private static final String ATTR_SAVE = "save";
 	private static final String ATTR_SS_RATING = "ssrate";
 	@Override
-	protected Object getResult() throws Exception {
+	protected String getResult() throws Exception {
 		String ppId= request.getParameter("pp_id");
 		boolean isExport = request.getRequestURI().indexOf("ppicks_export_email_products.jsp")>-1;//Parameter("exportEmail");
 		LOGGER.info("Generating promotion products for export.");
 		String ppType="PRESIDENTS_PICKS";
-		Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(ppType);
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(ppType);
 		request.setAttribute("promoInfo",productPromoInfoMap);
 		StringBuffer buffer = new StringBuffer();
 		if(isExport){
@@ -71,9 +72,9 @@ public class PPExportEmailProductsTag extends AbstractGetterTag{
 				ErpZoneMasterInfo zoneInfo = (ErpZoneMasterInfo) iterator.next();
 				String zoneId = zoneInfo.getSapId();
 				
-				List<FDProductPromotionInfo> skusList = productPromoInfoMap.get(zoneId);
+				List<FDProductPromotionInfo> skusList = productPromoInfoMap.get(new ZoneInfo(zoneId,"0001","01"));//Default SalesOrg info for FD.
 				if(null == skusList){
-					skusList = productPromoInfoMap.get(ErpProductPromotionUtil.DEFAULT_ZONE);
+					skusList = productPromoInfoMap.get(ErpProductPromotionUtil.DEFAULT_ZONE_INFO);
 				}
 				int i=1;
 				zoneId = zoneId.replaceFirst("0000", "");//[APPDEV-2981]-Removing the '0's from the zone id, to be consistent with what is stored in the data warehouse.

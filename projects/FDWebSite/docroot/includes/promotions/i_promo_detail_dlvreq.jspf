@@ -36,19 +36,21 @@
 	//construct the ordType string
 	String ordType = "";
 	String dlvDayType ="";
-		if (csm != null) {
-			ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
-			ordType += (csm.isOrderTypeCorporate())
-							? (csm.isOrderTypeHome()) ? ", Corporate" : "Corporate"
-							: "";
-			ordType += (csm.isOrderTypePickup())
-							? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
-							: "";
-			if(null !=csm.getDeliveryDayType()){
-				dlvDayType=csm.getDeliveryDayType().getName();
-			}
-			}
-	
+	if (csm != null) {
+		ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
+		ordType += (csm.isOrderTypeCorporate())
+			? (csm.isOrderTypeHome()) ? ", Corporate" : "Corporate"
+			: "";
+		ordType += (csm.isOrderTypePickup())
+			? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
+			: "";
+		ordType += (csm.isOrderTypeFDX())
+				? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate() || csm.isOrderTypePickup()) ? ", FDX" : "FDX"
+				: "";
+		if (null !=csm.getDeliveryDayType()) {
+			dlvDayType=csm.getDeliveryDayType().getName();
+		}
+	}
 %>
 
 <%

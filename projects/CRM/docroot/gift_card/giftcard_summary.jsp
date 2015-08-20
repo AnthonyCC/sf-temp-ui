@@ -22,34 +22,34 @@
 	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
 %>
 
-<script type="text/javascript">
-if(typeof String.prototype.trim !== 'function') {
-	  String.prototype.trim = function() {
-	    return this.replace(/^\s+|\s+$/g, ''); 
-	  }
-	}
-
-function recEmailSubmit(){
-	
-	
-	if(document.forms["giftcard_search"].recEmail.value.trim() ==""){
-		return false;
-	}
-	document.forms["giftcard_search"].submit();
-}
-function gcNumberSubmit(){
-	
-	if(document.forms["giftcard_search1"].gcNumber.value.trim() ==""){
-		return false;
-	}
-	document.forms["giftcard_search1"].submit();
-}
-</script>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 	<tmpl:put name='title' direct='true'>Gift Card : Summary</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 
+		<script type="text/javascript">
+		if(typeof String.prototype.trim !== 'function') {
+			  String.prototype.trim = function() {
+			    return this.replace(/^\s+|\s+$/g, ''); 
+			  }
+			}
+		
+		function recEmailSubmit(){
+			
+			
+			if(document.forms["giftcard_search"].recEmail.value.trim() ==""){
+				return false;
+			}
+			document.forms["giftcard_search"].submit();
+		}
+		function gcNumberSubmit(){
+			
+			if(document.forms["giftcard_search1"].gcNumber.value.trim() ==""){
+				return false;
+			}
+			document.forms["giftcard_search1"].submit();
+		}
+		</script>
 		<jsp:include page="/includes/giftcard_nav.jsp"/>
 
 		<fd:RedemptionCodeController actionName="noaction" result="redemptionResult">

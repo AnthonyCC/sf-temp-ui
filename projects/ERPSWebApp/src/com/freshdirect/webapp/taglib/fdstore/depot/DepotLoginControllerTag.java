@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -27,6 +28,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class DepotLoginControllerTag extends AbstractControllerTag implements SessionName {
 
@@ -89,7 +91,8 @@ public class DepotLoginControllerTag extends AbstractControllerTag implements Se
 			if (user != null) {
 				oldCart = user.getShoppingCart();
 			}
-			user = new FDSessionUser(FDCustomerManager.createNewDepotUser(depotCode, EnumServiceType.DEPOT), session);
+			StoreContext storeContext =StoreContextUtil.getStoreContext(session);
+			user = new FDSessionUser(FDCustomerManager.createNewDepotUser(depotCode, EnumServiceType.DEPOT,storeContext.getEStoreId()), session);
 			if (oldCart != null) {
 				user.setShoppingCart(oldCart);
 			}

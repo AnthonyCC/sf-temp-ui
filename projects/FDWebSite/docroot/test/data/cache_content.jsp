@@ -11,6 +11,7 @@
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@page import="com.freshdirect.fdstore.FDSku"%>
 <%@page import="com.freshdirect.fdstore.FDCachedFactory"%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%!String format(Object x) {
         if (x == null) {
@@ -40,7 +41,9 @@
         version = productInfo.getVersion();
     }
     FDSku sku = skuCode != null && version != null ? new FDSku(skuCode, version) : null;
-
+    String plantID="";
+    String salesOrg="";
+    String distrChannel="";
     if (sku != null) {
         try {
             product = FDCachedFactory.getProduct(sku);
@@ -61,15 +64,19 @@
         if (tmp != null && tmp.trim().length() > 0) {
             r = EnumOrderLineRating.valueOf(tmp);
         }
-        productInfo = FDCachedFactory.addNewAvailabilityInformation(skuCode, e, r, newFreshness);
+        //productInfo = FDCachedFactory.addNewAvailabilityInformation(skuCode, e, r, newFreshness);//::FDX::
+        plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();	
+        salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+        distrChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+
         message.append("<ol>New sku version injected into the system for <i>" + skuCode + "</i>, which <li>status: "
-                + productInfo.getAvailabilityStatus() + "</li><li>freshness:" + productInfo.getFreshness() + "</li>" + "</li><li>rating:"
-                + productInfo.getRating() + "</li></ol>");
+                + productInfo.getAvailabilityStatus(salesOrg,distrChannel) + "</li><li>freshness:" + productInfo.getFreshness(plantID) + "</li>" + "</li><li>rating:"
+                + productInfo.getRating(plantID) + "</li></ol>");
         version = productInfo.getVersion();
     }
-    EnumAvailabilityStatus oldStatus = productInfo != null ? productInfo.getAvailabilityStatus() : null;
-    EnumOrderLineRating oldRating = productInfo != null ? productInfo.getRating() : null;
-    String oldFreshness = productInfo != null ? productInfo.getFreshness() : null;
+    EnumAvailabilityStatus oldStatus = productInfo != null ? productInfo.getAvailabilityStatus(salesOrg,distrChannel) : null;
+    EnumOrderLineRating oldRating = productInfo != null ? productInfo.getRating(plantID) : null;
+    String oldFreshness = productInfo != null ? productInfo.getFreshness(plantID) : null;
 %>    
 <html>
 <head>

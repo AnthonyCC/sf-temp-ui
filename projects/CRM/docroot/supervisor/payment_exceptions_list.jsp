@@ -21,7 +21,7 @@
 <span class="sub_nav_title">Payment Exceptions ( <span class="result"><%= sales.size() %></span> )</span> A = Automatic Order   M = Manual Order
 </div>
 
-<div class="content" style="height: 80%;">
+<div class="" style="height: 80%;">
 	<div class="list_header">
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
 	<tr>

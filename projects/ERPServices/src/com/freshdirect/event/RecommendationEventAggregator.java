@@ -1,11 +1,11 @@
 package com.freshdirect.event;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -52,9 +52,9 @@ public abstract class RecommendationEventAggregator {
 		return RecommendationEventLogger.getInstance();
 	}
 	
-	protected abstract FDRecommendationEvent createInstance(String variantId, String contentId, Date date);
+	protected abstract FDRecommendationEvent createInstance(String variantId, String contentId, Date date, String eStoreId);
 	
-	protected abstract Class getEventClass();
+	protected abstract Class<? extends FDRecommendationEvent> getEventClass();
 	
 	/**
 	 * Represents a variant and a count (frequency).
@@ -85,6 +85,7 @@ public abstract class RecommendationEventAggregator {
 		/**
 		 * Compares {@link VariantCount}s and {@link String}s.
 		 */
+		@SuppressWarnings("rawtypes")
 		protected static Comparator stringComparator = new Comparator() {
 
 			private String getString(Object o) {
@@ -163,18 +164,21 @@ public abstract class RecommendationEventAggregator {
 	protected static class ContentRecommendations {
 		private Day day;
 		private VariantCount[] variants;
+		private String eStoreId;
 		
 		/**
 		 * Constructor.
 		 * @param variantIds the different {@link FDRecommendationEvent#getVariantId() variant ids} seen so far
 		 */
-		public ContentRecommendations(Set variantIds) {
+		public ContentRecommendations(Set<String> variantIds, String eStoreId) {
 			variants = new VariantCount[variantIds.size()];
 			int k = 0;
-			for(Iterator i = variantIds.iterator(); i.hasNext();) {
+			for(Iterator<String> i = variantIds.iterator(); i.hasNext();) {
 				variants[k++] = new VariantCount(i.next().toString(),0);
 			}
 			day = new Day(Calendar.getInstance());
+
+			this.eStoreId = eStoreId;
 		}
 		
 		/**
@@ -190,7 +194,7 @@ public abstract class RecommendationEventAggregator {
 				variants, 
 				variantId, 
 				VariantCount.stringComparator);
-			
+
 			if (p < 0) {
 				p = -p - 1;
 				VariantCount[] newVariants = new VariantCount[variants.length+1];
@@ -207,7 +211,7 @@ public abstract class RecommendationEventAggregator {
 	}
 	
 	// variant seen so far
-	private Set variantIds = new TreeSet();
+	private Set<String> variantIds = new TreeSet<String>();
 	
 
 	/**
@@ -215,7 +219,7 @@ public abstract class RecommendationEventAggregator {
 	 * @author istvan
 	 *
 	 */
-	protected class LRU extends LinkedHashMap {
+	protected class LRU<K,V> extends LinkedHashMap<K,V> {
 
 		private static final long serialVersionUID = 5337416969287588782L;
 
@@ -236,7 +240,7 @@ public abstract class RecommendationEventAggregator {
 		 * @param e least recently accessed entry
 		 * @return whether the argument is to be removed
 		 */
-		protected boolean removeEldestEntry(Map.Entry e) {
+		protected boolean removeEldestEntry(Map.Entry<K,V> e) {
 			if (size() > maxEntries) {
 				flushEntry(e.getKey().toString(),(ContentRecommendations)e.getValue());
 				return true;
@@ -245,8 +249,6 @@ public abstract class RecommendationEventAggregator {
 			}
 		}
 	}
-
-	private static final long serialVersionUID = -1233481545626516984L;
 
 	/**
 	 * Constructor.
@@ -297,18 +299,18 @@ public abstract class RecommendationEventAggregator {
 	 * @param min minimum frequency required to flush the event
 	 */
 	public void flush(int min) {
-		Collection events = new ArrayList(total);
+		Collection<RecommendationEventsAggregate> events = new ArrayList<RecommendationEventsAggregate>(total);
 		synchronized(this) {
-			for (Iterator i = cache.entrySet().iterator(); i.hasNext();) {
-				Map.Entry entry = (Map.Entry)i.next();
+			for (Iterator<Map.Entry<String,ContentRecommendations>> i = cache.entrySet().iterator(); i.hasNext();) {
+				Map.Entry<String,ContentRecommendations> entry = (Map.Entry<String,ContentRecommendations>)i.next();
 				String contentId = entry.getKey().toString();
-				ContentRecommendations recommendations = (ContentRecommendations)entry.getValue();
+				ContentRecommendations recommendations = entry.getValue();
 				for(int j = 0; j< recommendations.variants.length; ++j) {
 					VariantCount variantCount = recommendations.variants[j];
 					if (variantCount.count == 0) continue;
 					events.add(
 						new RecommendationEventsAggregate(
-								contentId,variantCount.variantId,recommendations.day.asDate(),variantCount.count));
+								contentId,variantCount.variantId,recommendations.day.asDate(),variantCount.count, recommendations.eStoreId));
 					total -= variantCount.count;
 					variantCount.count = 0;
 				}
@@ -331,7 +333,7 @@ public abstract class RecommendationEventAggregator {
 		for(int j = 0; j< recommendations.variants.length; ++j) {
 			VariantCount variantCount = recommendations.variants[j];
 			if (variantCount.count == 0) continue;
-			FDRecommendationEvent event = createInstance(variantCount.variantId,contentId,recommendations.day.asDate());
+			FDRecommendationEvent event = createInstance(variantCount.variantId,contentId,recommendations.day.asDate(), recommendations.eStoreId);
 			logger.log(event, variantCount.count);
 			total -= variantCount.count;
 			variantCount.count = 0;
@@ -340,7 +342,7 @@ public abstract class RecommendationEventAggregator {
 	}
 
 	// the cache
-	private LRU cache = new LRU();
+	private LRU<String,ContentRecommendations> cache = new LRU<String,ContentRecommendations>();
 	
 	/**
 	 * Register a recommendation event.
@@ -352,11 +354,11 @@ public abstract class RecommendationEventAggregator {
 		
 		ContentRecommendations recommendations = (ContentRecommendations)cache.get(event.getContentId());
 		if (recommendations == null) {
-			recommendations = new ContentRecommendations(variantIds);
+			recommendations = new ContentRecommendations(variantIds, event.getEStoreId());
 			cache.put(event.getContentId(), recommendations);
 		}
 		
-		if (!recommendations.day.isSameDay(event.getTimeStamp())) {
+		if (!recommendations.day.isSameDay(event.getTimeStamp()) || !recommendations.eStoreId.equals(event.getEStoreId())) {
 			flushEntry(event.getContentId(),recommendations);
 		}
 		

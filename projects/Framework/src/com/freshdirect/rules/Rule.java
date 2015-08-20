@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.framework.util.DateRange;
@@ -51,6 +50,7 @@ public class Rule implements ConditionI {
 		this.outcome = outcome;
 	}
 
+	@Override
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
 		//Check that the rule has not expired
 		DateRange range = new DateRange(this.startDate, this.endDate);
@@ -140,10 +140,10 @@ public class Rule implements ConditionI {
 		this.subsystem = subsystem;
 	}
 
+	@Override
 	public boolean validate() {
 		boolean valid = true;
-		for (Iterator<ConditionI> i = this.conditions.iterator(); i.hasNext();) {
-			ConditionI c = (ConditionI) i.next();
+		for (ConditionI c : this.conditions) {
 			valid &= c.validate();
 		}
 		return valid;

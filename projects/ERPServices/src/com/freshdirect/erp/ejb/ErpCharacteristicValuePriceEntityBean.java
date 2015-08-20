@@ -65,6 +65,18 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
     /** Condition type */
     private String conditionType;
     
+    /** Sales Organisation */
+	private String salesOrg;
+	
+	/** Distribution Channel */
+	private String distChannel;
+	
+	private String characteristicValueName;
+	
+	private String characteristicName;
+	
+	private String className;
+    
     /**
      * Template method that returns the cache key to use for caching resources.
      *
@@ -86,7 +98,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         this.sapId,
         this.price,
         this.pricingUnit,
-        this.conditionType );
+        this.conditionType, this.salesOrg,this.distChannel,this.characteristicValueName, this.characteristicName,
+        this.className );
         super.decorateModel(model);
         return model;
     }
@@ -103,6 +116,11 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         this.price = m.getPrice();
         this.pricingUnit = m.getPricingUnit();
         this.conditionType = m.getConditionType();
+        this.salesOrg = m.getSalesOrg();
+        this.distChannel = m.getDistChannel();
+        this.characteristicValueName = m.getCharacteristicValueName();
+        this.characteristicName = m.getCharacteristicName();
+        this.className = m.getClassName();
     }
     
     /**
@@ -111,7 +129,7 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
     public VersionedPrimaryKey create(Connection conn, int version) throws SQLException {
     	String id = this.getNextId(conn, "ERPS");
 		
-        PreparedStatement ps = conn.prepareStatement("insert into erps.charvalueprice (id, version, mat_id, cv_id, sap_id, price, pricing_unit, condition_type) values (?, ?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement ps = conn.prepareStatement("insert into erps.charvalueprice (id, version, mat_id, cv_id, sap_id, price, pricing_unit, condition_type,SALES_ORG,DISTRIBUTION_CHANNEL) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         ps.setString(1, id);
         ps.setInt(2, version);
         ps.setString(3, this.materialId);
@@ -121,6 +139,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         ps.setBigDecimal(6, new java.math.BigDecimal(this.price));
         ps.setString(7, this.pricingUnit);
         ps.setString(8, this.conditionType);
+        ps.setString(9, this.salesOrg);
+        ps.setString(10, this.distChannel);
         
         if (ps.executeUpdate() != 1) {
             throw new SQLException("Row not created");
@@ -146,6 +166,11 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         this.price = p.price;
         this.pricingUnit = p.pricingUnit;
         this.conditionType = p.conditionType;
+        this.salesOrg = p.salesOrg;
+        this.distChannel = p.distChannel;
+        this.characteristicValueName = p.characteristicValueName;    	
+    	this.characteristicName = p.characteristicName;
+    	this.className= p.className; 
     }
     
     /**
@@ -160,7 +185,7 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
      */
     public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
         
-        PreparedStatement ps = conn.prepareStatement("select mat_id, cv_id, sap_id, price, pricing_unit, condition_type from erps.charvalueprice where id = ?");
+        PreparedStatement ps = conn.prepareStatement("select mat_id, cv_id, sap_id, price, pricing_unit, condition_type,SALES_ORG, DISTRIBUTION_CHANNEL from erps.charvalueprice where id = ?");
         ps.setString(1, pk.getId());
 
         ResultSet rs = ps.executeQuery();
@@ -176,6 +201,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         p.price = rs.getDouble(4);
         p.pricingUnit = rs.getString(5);
         p.conditionType = rs.getString(6);
+        p.salesOrg = rs.getString(7);
+        p.distChannel = rs.getString(8);
         
         rs.close();
         ps.close();
@@ -190,7 +217,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         try {
             conn = this.getConnection();
             
-            ps = conn.prepareStatement("select id,version,mat_id,cv_id,sap_id,price,pricing_unit,condition_type from erps.charvalueprice where mat_id = ?");
+            ps = conn.prepareStatement("select cvp.id as CVP_ID,cvp.version,cvp.mat_id,cv_id,CVP.sap_id,price,pricing_unit,condition_type,SALES_ORG, DISTRIBUTION_CHANNEL,cv.name,CH.NAME,C.SAP_ID as C_SAP_ID from erps.charvalueprice cvp, erps.charvalue cv,ERPS.CHARACTERISTIC ch,erps.class c where cvp.mat_id = ?" +
+            		" and CVP.CV_ID=cv.id and CH.ID=CV.CHAR_ID and CH.CLASS_ID=c.id");
             ps.setString(1, materialPK.getId());
             
             rs = ps.executeQuery();
@@ -213,6 +241,11 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
                 p.price = rs.getDouble(6);
                 p.pricingUnit = rs.getString(7);
                 p.conditionType = rs.getString(8);
+                p.salesOrg = rs.getString(9);
+                p.distChannel = rs.getString(10);
+                p.characteristicValueName = rs.getString(11);
+                p.characteristicName = rs.getString(12);
+                p.className = rs.getString(13);
                 
                 lst.add( new VersionedPrimaryKey(id, version, p) );
             }
@@ -246,7 +279,7 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         try {
             conn = this.getConnection();
             
-            ps = conn.prepareStatement("select id,version,mat_id,cv_id,sap_id,price,pricing_unit,condition_type from erps.charvalueprice where mat_id = ? and cv_id = ?");
+            ps = conn.prepareStatement("select id,version,mat_id,cv_id,sap_id,price,pricing_unit,condition_type,SALES_ORG, DISTRIBUTION_CHANNEL from erps.charvalueprice where mat_id = ? and cv_id = ?");
             ps.setString(1, materialPK.getId());
             ps.setString(2, charValPK.getId());
             
@@ -263,6 +296,8 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
                 p.price = rs.getDouble(6);
                 p.pricingUnit = rs.getString(7);
                 p.conditionType = rs.getString(8);
+                p.salesOrg = rs.getString(9);
+                p.distChannel = rs.getString(10);
                 
                 return new VersionedPrimaryKey(id, version, p);
             } else {
@@ -301,6 +336,11 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         this.conditionType = null;
         this.pricingUnit = null;
         this.price = 0.0;
+        this.salesOrg = null;
+        this.distChannel = null;
+        this.characteristicValueName = null;    	
+    	this.characteristicName = null;    	
+    	this.className= null; 
     }
     
     /**
@@ -313,6 +353,11 @@ public class ErpCharacteristicValuePriceEntityBean extends VersionedEntityBeanSu
         double price;
         String pricingUnit;
         String conditionType;
+        String salesOrg;
+        String distChannel;
+        String characteristicValueName;    	
+    	String characteristicName;    	
+    	String className;
     }
-    
+   
 }

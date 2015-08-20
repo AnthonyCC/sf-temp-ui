@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -87,6 +88,8 @@ public class SessionInput implements Cloneable {
 	//Added for Zone Pricing.
 	private PricingContext pricingCtx;
 	
+	private FulfillmentContext fulfillmentContext = new FulfillmentContext(); //to avoid nulls
+	
 	/**
 	 * Size of the prioritized list. Used by ScriptedRecommender & BrandUniquenessSorter. 
 	 */
@@ -118,10 +121,11 @@ public class SessionInput implements Cloneable {
 	 * 
 	 *            the customer's service type (Home, Corporate, etc.)
 	 */
-	public SessionInput(String customerId, EnumServiceType customerServiceType, PricingContext pricingCtx) {
+	public SessionInput(String customerId, EnumServiceType customerServiceType, PricingContext pricingCtx, FulfillmentContext fulfillmentContext) {
 		this.customerId = customerId;
 		this.customerServiceType = customerServiceType;
 		this.pricingCtx = pricingCtx;
+		this.fulfillmentContext = fulfillmentContext;
 	}
 
 	/**
@@ -139,7 +143,8 @@ public class SessionInput implements Cloneable {
 				this.customerId = user.getIdentity().getErpCustomerPK();
 			initCartContents(user);
 			initRecentItems(user);
-			this.pricingCtx = user.getPricingContext();
+			this.pricingCtx = user.getUserContext().getPricingContext();
+			this.fulfillmentContext = user.getUserContext().getFulfillmentContext(); 
 		}
 	}
 
@@ -459,8 +464,8 @@ public class SessionInput implements Cloneable {
 
     	//Modified to Include Alcohol Restricted from User Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
 		return excludeAlcoholicContent || (this.getPricingContext() != null 
-												&& this.getPricingContext().getUserContext() != null
-													&& this.getPricingContext().getUserContext().isAlcoholRestricted());
+												&& this.getFulfillmentContext() != null
+													&& this.getFulfillmentContext().isAlcoholRestricted());
 	}
 
 
@@ -487,7 +492,7 @@ public class SessionInput implements Cloneable {
 	@Deprecated
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		SessionInput cloned = new SessionInput(this.customerId, this.customerServiceType, this.pricingCtx);
+		SessionInput cloned = new SessionInput(this.customerId, this.customerServiceType, this.pricingCtx, this.fulfillmentContext);
 		
 		cloned.setCartContents(this.cartContents);
 		// customerId <-- already set by constructor
@@ -518,6 +523,18 @@ public class SessionInput implements Cloneable {
 
 
 
+	public FulfillmentContext getFulfillmentContext() {
+		return fulfillmentContext;
+	}
+
+	public void setFulfillmentContext(FulfillmentContext fulfillmentContext) {
+		this.fulfillmentContext = fulfillmentContext;
+	}
+
+
+
+
+
 	public static class Builder {
 		private int maxRecommendations = Integer.MAX_VALUE;
 		private int windowSize = 0;
@@ -528,6 +545,7 @@ public class SessionInput implements Cloneable {
 		private EnumServiceType customerServiceType;
 		
 		private PricingContext pricingContext;
+		private FulfillmentContext fulfillmentContext;
 		
 		private ContentNodeModel currentNode;
 		
@@ -574,6 +592,9 @@ public class SessionInput implements Cloneable {
 			this.pricingContext = pricingContext; return this;
 		}
 		
+		public Builder setFulfillmentContext(FulfillmentContext fulfillmentContext) {
+			this.fulfillmentContext = fulfillmentContext; return this;
+		}
 		
 		public Builder setCurrentNode(ContentNodeModel currentNode) {
 			this.currentNode = currentNode; return this;
@@ -631,7 +652,7 @@ public class SessionInput implements Cloneable {
 			if (user != null) {
 				si = new SessionInput(user);
 			} else if (customerId != null) {
-				si = new SessionInput(customerId, customerServiceType, pricingContext);
+				si = new SessionInput(customerId, customerServiceType, pricingContext, fulfillmentContext);
 			} else {
 				si = new SessionInput();
 			}

@@ -80,18 +80,35 @@ function loadStuff() {
   if(loaddata == "Signup") {  	
   	$("#url").val("/saptest12@freshdirect.com/register/");
   	$("#payload").val('{ "firstName": "Sairam", "lastName":"Krishnasamy", "email":"iphonetest@freshdirect.com", "confirmEmail":"iphonetest@freshdirect.com", "password":"test", "securityQuestion":"newyork"}');
-  	
+  }else if(loaddata == "SignupFDX") {  	
+  	$("#url").val("/saptest12@freshdirect.com/registerfdx/");
+  	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test", "securityQuestion" : "new york", "firstName" : "Sairam", "lastName" : "Krishnasamy", "serviceType" : "HOME", "companyName" : "ABC Inc.", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "jersey city", "state" : "NJ", "zipCode" : "07306" , "mobile_number": "2035594465", "workPhone" : "2013345534" , "recieveSMSAlerts" : "true"}');	
   }else if(loaddata == "CheckByZip") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyzip/");
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME" }');
+  }else if(loaddata == "globalalerts") {  	
+  	$("#url").val("/saptest12@freshdirect.com/globalalerts/");
+  	$("#payload").val('{"page" : "1"}');
   }else if(loaddata == "CheckByAddress") {  	
   	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyaddress/");
   	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME", "address1" : "", "apartment" : "", "city" : "", "state" : ""}');
+  }else if(loaddata == "CheckByAddressEX") {  	
+  	$("#url").val("/saptest12@freshdirect.com/zipcheck/checkbyaddressEX/");
+  	$("#payload").val('{ "zipCode" : "07306", "serviceType" : "HOME", "address1" : "64 Bevan Street", "apartment" : "64", "city" : "Jersey City", "state" : "Nj"}');
   } else if(loaddata == "Login") {  	
   	$("#url").val("/saptest12@freshdirect.com/login/");
   	$("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
+  } else if (loaddata == "Session") {
+    $("#url").val("/saptest12@freshdirect.com/session/check/");
+    $("#payload").val('{"source" : "IFX"}');
+  } else if(loaddata == "AddAnonymousAddress") {  	
+  	$("#url").val("/saptest12@freshdirect.com/session/addanonymousaddress/");
+  	$("#payload").val('{ "zipCode" : "11101", "serviceType" : "HOME", "address1" : "", "apartment" : "", "city" : "", "state" : ""}');
   } else if (loaddata == "AddPromo") {
   	$("#url").val("/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
+  	$("#payload").val('');
+  }  else if (loaddata == "AddCode") {
+  	$("#url").val("/saptest12@freshdirect.com/cart/code/apply/TEST_P0002");
   	$("#payload").val('');
   } else if (loaddata == "ClipCoupon") {
   	$("#url").val("/saptest12@freshdirect.com/cart/coupon/clip/53421");
@@ -170,7 +187,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/cart/getdetail/");
   	$("#payload").val("");
   	
-  } else if (loaddata == "InitCheckout") {
+  } else if (loaddata == "SetTip") {
+  	$("#url").val("/saptest12@freshdirect.com/cart/tip/set/1.5");
+  	$("#payload").val('');
+  	
+  }  else if (loaddata == "InitCheckout") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/init/");
     $("#payload").val('');
   	
@@ -184,8 +205,11 @@ function loadStuff() {
   	
   } else if (loaddata == "SetDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/set/");
+  	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL"  }');  	
+  } else if (loaddata == "SetDeliveryAddressEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddress/set/");
   	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL"  }');
-  	
+  	SetDeliveryAddressEx
   } else if (loaddata == "AcceptDeliveryPassTermsAndConditionsReturnTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/dpacceptterms/");
   	$("#payload").val("");
@@ -194,7 +218,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserve/2150625068/");
   	$("#payload").val('');
   	
-  } else if (loaddata == "ATPErrorDetails") {
+  } else if (loaddata == "ReserveDeliverySlotEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserveex/2150625068/");
+  	$("#payload").val('');
+  	
+  }else if (loaddata == "ATPErrorDetails") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/atp/error/");
   	$("#payload").val('');
   	
@@ -218,6 +246,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/set/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
   	
+  } else if (loaddata == "SetPaymentMethodsEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
+  	
   } else if (loaddata == "AddPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
@@ -230,12 +262,20 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/edit/");
   	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
   	
+  } else if (loaddata == "SavePaymentMethod") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/save/");
+  	$("#payload").val('{"paymentMethodId" : "", "cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
+  	  
   } else if (loaddata == "DeletePaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/delete/");
   	$("#payload").val('{ "paymentMethodId" : ""}');
   	
   } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
+  	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
+  	
+  } else if (loaddata == "SaveDeliveryAddress") {
+  	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/save/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
   	
   } else if (loaddata == "AddAndSetDeliveryAddress") {
@@ -274,7 +314,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/ordersubmit/");
   	$("#payload").val('');
   	
-  }  else if (loaddata == "GetSelectedDeliveryAddress") {
+  } else if (loaddata == "SubmitOrderEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/submitorderex/");
+  	$("#payload").val('');
+  	
+  } else if (loaddata == "GetSelectedDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/getselectedeliverydaddress/");
   	$("#payload").val('');
   	
@@ -299,8 +343,18 @@ function loadStuff() {
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
   	
+  } else if (loaddata == "SearchEX") {
+  	$("#url").val("/searchEX/");
+	var postdata = '{"query": "coffee", "page" : "1"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "SearchUPC") {
   	$("#url").val("/search/");
+	var postdata = '{"upc": "689544080602", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	
+  } else if (loaddata == "SearchUPCEX") {
+  	$("#url").val("/searchEX/");
 	var postdata = '{"upc": "689544080602", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	
@@ -309,13 +363,27 @@ function loadStuff() {
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
   	$("#payload").val(postdata);
   	
+  }  else if (loaddata == "SearchSortEX") {
+  	$("#url").val("/searchEX/");
+	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "SearchFilter") {
   	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
   	
+  } else if (loaddata == "SearchFilterEX") {
+  	$("#url").val("/searchEX/");
+	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "ProductDetail") {
   	$("#url").val("/product/catid/grns/id/grns_grnkale");
+  	$("#payload").val("");
+  	
+  } else if (loaddata == "ProductRecommended") {
+  	$("#url").val("/product/Recommended/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
   	
   } else if (loaddata == "ProductDetailMoreInfo") {
@@ -325,6 +393,10 @@ function loadStuff() {
   } else if (loaddata == "GetExistingOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/detail");
   	$("#payload").val('');
+  	
+  } else if (loaddata == "GetExistingOrders") {
+  	$("#url").val("/saptest12@freshdirect.com/order/details/");
+  	$("#payload").val('{"orders":["10270258529","10270259198","10270258535","10270258520","10270258541"]}');
   	
   } else if (loaddata == "CancelExistingOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153087389/cancel");
@@ -338,11 +410,20 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
   	$("#payload").val("");
   	
+  } else if(loaddata == "SetMobilePreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
+  	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
   } else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#payload").val('');
   	
-  } else if (loaddata == "CancelOrderModify") {
+  }  else if (loaddata == "CheckModify") {
+  	$("#url").val("/saptest12@freshdirect.com/order/checkmodify");
+  	$("#payload").val('{"orders":["10270258529","10270259198","10270258535","10270258520","10270258541"]}');
+  	
+  } 
+  
+  else if (loaddata == "CancelOrderModify") {
   	$("#url").val("/saptest12@freshdirect.com/order/cancelmodify/");
   	$("#payload").val("");
   	
@@ -425,6 +506,10 @@ function loadStuff() {
   	
   } else if (loaddata == "QuickShopEveryItemEverOrdered") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
+  	$("#payload").val('{"page" : "1"}');
+  	
+  } else if (loaddata == "QuickShopEveryItemEverOrderedEX") {
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverorderedEX/");
   	$("#payload").val('{"page" : "1"}');
   	
   } else if (loaddata == "RemoveMultipleItems") {
@@ -583,6 +668,22 @@ function loadStuff() {
   	$("#url").val("/help/termsOfUse");
   	$("#payload").val("");
   	
+  }  else if (loaddata == "smstermsofuse") {
+  	$("#url").val("/help/smstermsofuse");
+  	$("#payload").val("");
+  	
+  }  else if (loaddata == "AlcoholRestrictions") {
+  	$("#url").val("/help/alcoholrestrictions");
+  	$("#payload").val("");
+  	
+  }  else if (loaddata == "AlcoholAgeVerification") {
+  	$("#url").val("/help/alcoholageverification");
+  	$("#payload").val("");
+  	
+  }  else if (loaddata == "BackupDeliveryAuthorization") {
+  	$("#url").val("/help/backupdeliveryauthorization");
+  	$("#payload").val("");   	
+  
   } else if (loaddata == "DeliveryPassTermsAndConditions") {
   	$("#url").val("/help/deliveryPassTermsAndConditions");
   	$("#payload").val("");
@@ -620,7 +721,26 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
-  }else if (loaddata == "BrowseCategoryContent") {
+  } else if (  loaddata == "getAllProductsForCategoryEX") {
+  	$("#url").val("/browse/getproductsEX/"); 
+  	var postdata = '{"id": "fdx_test", "sortBy" : "PRICE"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+  } else if (  loaddata == "getCatalog") {
+  	$("#url").val("/browse/getCatalogForAddress/"); 
+  	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY", "productCount":"10"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+ }
+ else if (  loaddata == "getCatalogId") {
+  	$("#url").val("/browse/getCatalogIdForAddress/"); 
+  	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+ }else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
@@ -658,7 +778,13 @@ function loadStuff() {
   }else if (  loaddata == "GetNewProducts") {
   	$("#url").val("/product/getnewproducts/"); 
   	$("#payload").val("");
-  }else if (loaddata == "IvrEmail") {
+  } else if (  loaddata == "getSortOptionsForCat") {
+  	$("#url").val("/browse/sortoptionsforcategory/"); 
+  	var postdata = '{"id": "fdx_test"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+  } else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	
@@ -669,6 +795,11 @@ function loadStuff() {
   	
   }else if (loaddata == "smsMessageRelay") {
   	$("#url").val("/ext/t003/");
+	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
+  	$("#payload").val(postdata);
+  	
+  }else if (loaddata == "fdxsmsMessageRelay") {
+  	$("#url").val("/ext/t004/");
 	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
   	$("#payload").val(postdata);
   	
@@ -724,6 +855,26 @@ function loadStuff() {
   	$("#url").val("/home/getPage/");
   	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
+  }  else if (  loaddata == "sociallogin") {
+  	$("#url").val("/social/login/"); 
+  	$("#payload").val('{"userToken":"12345","provider":"google"}'); 	
+  	
+  } else if (  loaddata == "linkaccount") {
+  	$("#url").val("/social/linkaccount/"); 
+  	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test","existingToken":"123","newToken":"456","provider":"google"}'); 	
+  	
+  } else if (  loaddata == "registersocial") {
+  	$("#url").val("/saptest12@freshdirect.com/registersocial/"); 
+  	$("#payload").val('{"email" : "test978@gmail.com","securityQuestion" : "test", "firstName" : "Door3", "lastName" : "Dev", "serviceType" : "HOME", "address1" : "500 W 43 st", "apartment" : "8c", "city" : "New York", "state" : "NY", "zipCode" : "10036" , "mobile_number": "2035594466", "recieveSMSAlerts" : "true","userToken" : "123", "provider" : "test"}'); 	
+  	
+  }  else if (  loaddata == "unlinkaccount") {
+  	$("#url").val("/social/unlinkaccount/"); 
+  	$("#payload").val('{"email" : "test@yahoo.com", "userToken":"123"}'); 	
+  	
+  }  else if (  loaddata == "socialConnect") {
+  	$("#url").val("/social/socialConnect/"); 
+  	$("#payload").val('{"userToken" : "12345", "provider":"google"}'); 	
+  	
   }
   $("#result").JSONView({});  	
   $("#payload").focus();
@@ -792,6 +943,23 @@ function doStuff() {
 		if(temp.length > 4) {
   	 		postData = postData + "&text=" + $.URLEncode(temp[4]);
   	 	}
+  	 } 
+  	}else if($("#loaddata").val() == "fdxsmsMessageRelay"){
+  		var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "sender=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&code=" + $.URLEncode(temp[1]);
+  	 	}
+		if(temp.length > 2) {
+  	 		postData = postData + "&carrier=" + $.URLEncode(temp[2]);
+  	 	}
+		if(temp.length > 3) {
+  	 		postData = postData + "&received=" + $.URLEncode(temp[3]);
+  	 	}
+		if(temp.length > 4) {
+  	 		postData = postData + "&text=" + $.URLEncode(temp[4]);
+  	 	}
   	 }
 		
   }   else {
@@ -816,18 +984,24 @@ function doStuff() {
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
   <option value="">========== ZIP CHECK ==========</option>
   <option value="CheckByZip">CheckByZip</option>
+  <option value="globalalerts">OAS Alerts</option>
   <option value="CheckByAddress">CheckByAddress</option>
+  <option value="CheckByAddressEX">CheckByAddressEX</option>
   <option value="">========== SIGN UP ==========</option>
-  <option value="Signup">Signup</option>  
+  <option value="Signup">Signup</option> 
+  <option value="SignupFDX">Signup EX</option>  
   <option value="">========== LOGIN ==========</option>
   <option value="Login">Login</option>
   <option value="Logout">Logout</option>
   <option value="Ping">Ping</option>
+  <option value="Session">Session</option>  
+  <option value="AddAnonymousAddress">Add Anonymous Address</option>  
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
   <option value="TransactionSource">Transaction Source</option>
   <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
+  <option value="AddCode">CART - Apply Code</option>
   <option value="RemovePromo">CART - Remove Promo</option>
   <option value="AddItem-SimpleBeef">CART - Add - Simple Beef</option>
   <option value="AddItem-SimpleWine">CART - Add - Simple Wine</option>
@@ -839,29 +1013,35 @@ function doStuff() {
   <option value="ViewItems">CART - View Items</option>
   <option value="ViewItem">CART - View Cartline</option>
   <option value="ClipCoupon">CART - Clip Coupon</option>
+  <option value="SetTip">CART - Set Tip</option>
   <option value=""> ========== CHECKOUT ========== </option>
   <option value="InitCheckout">CHECKOUT - Init</option>
   <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
-  <option value="GetDeliveryAddresses">CHECKOUT - Get Delivery Addresses</option>
+  <option value="GetDeliveryAddresses">CHECKOUT - Get Delivery Addresses</option>  
   <option value="SetDeliveryAddress">CHECKOUT - Set Delivery Address</option>
+  <option value="SetDeliveryAddressEx">CHECKOUT - Set Delivery Address Ex</option>
   <option value="AddAndSetDeliveryAddress">CHECKOUT - Add and Set Delivery Address</option>
   <option value="CheckoutEditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
   <option value="CheckoutDeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>
   <option value="RemoveAlcohol">CHECKOUT - Remove All Alcohol</option>
   <option value="ReserveDeliverySlot">CHECKOUT - Set Delivery Slot</option>
+  <option value="ReserveDeliverySlotEx">CHECKOUT - Set Delivery Slot EX</option>
   <option value="ATPErrorDetails">CHECKOUT - Get ATP Error Details</option>
   <option value="ATPRemove">CHECKOUT - Remove all unavailable items</option>
    <option value="SpecialRestrictionErrorDetails">CHECKOUT - Get Special Restriction Error Details[EBT]</option>
   <option value="SpecialRestrictionRemoveItem">CHECKOUT - Remove all Special Restriction items[EBT]</option>
   <option value="GetPaymentMethods">CHECKOUT - Get Payment Methods</option>
   <option value="SetPaymentMethods">CHECKOUT - Set Payment Methods</option>
+  <option value="SetPaymentMethodsEx">CHECKOUT - Set Payment Methods EX</option>
   <option value="AddAndSetPaymentMethod">CHECKOUT - Add and Set Payment Method</option>
   <option value="EditPaymentMethod">CHECKOUT - Edit Payment Method</option>
+  <option value="SavePaymentMethod">CHECKOUT - Save Payment Method</option>
   <option value="DeletePaymentMethod">CHECKOUT - Delete Payment Method</option>
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
   <option value="ReviewOrderDetail">CHECKOUT - Review Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
+  <option value="SubmitOrderEx">CHECKOUT - Submit Order FDX</option>
   <option value="GetSelectedDeliveryAddress">CHECKOUT - Get Selected Delivery Address</option>
   <option value="GetPaymentMethodVerifyStatus">CHECKOUT - Get Payment Method Verificaton Status(CVV)</option>
   <option value="AcceptDeliveryPassTermsAndConditionsReturnTimeslots">CHECKOUT - Accept DeliveryPass TermsAndConditions</option>
@@ -870,6 +1050,10 @@ function doStuff() {
   <option value="SearchUPC">SEARCH - UPC barcode</option>
   <option value="SearchSort">SEARCH - Sort</option>
   <option value="SearchFilter">SEARCH - Filter</option>
+  <option value="SearchEX">SEARCHEX - Basic</option>
+  <option value="SearchUPCEX">SEARCHEX - UPC barcode</option>
+  <option value="SearchSortEX">SEARCHEX - Sort</option>
+  <option value="SearchFilterEX">SEARCHEX - Filter</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>
   <option value=""> ========== BROWSE ========== </option>
   <option value="BrowseDepartment">BROWSE - DEPARTMENT</option>
@@ -878,7 +1062,11 @@ function doStuff() {
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
   <option value="getAllProductsForCategory">BROWSE - ALL PRODUCTS FOR CATEGORY</option>
+  <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH SORT </option>
+  <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>
+  <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
   <option value="globalNav">BROWSE - NAVIGATION</option>
+  <option value="getSortOptionsForCat">BROWSE - GET SORT OPTIONS FOR CATEOGRY</option>
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
@@ -890,14 +1078,18 @@ function doStuff() {
   
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
+  <option value="ProductRecommended">PRODUCT - Product Recommended</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>
   <option value="ProductGetPrice">PRODUCT - Pricing API</option>
   <option value="AcknowledgeHealthWarning">PRODUCT - Ack Health Warning</option>
   <option value=""> ========== ORDERS ========== </option>
   <option value="GetOrderHistory">ORDERS - Order History</option>
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>
+  <option value="GetExistingOrders">ORDERS - List Of Existing Orders Detail</option>
   <option value="CancelExistingOrder">ORDERS - Cancel Existing Order</option>
   <option value="ModifyOrder">ORDERS - Modify Order</option>
+  <option value="CheckModify">ORDERS - Check Modify</option>
+  
   <option value="CancelOrderModify">ORDERS - Cancel Order Modify</option>
   <option value=""> ========== QUICKSHOP LISTS/ORDERS ========== </option>
   <option value="OrderHistoryQuickshop">QUICKSHOP - Previous Orders</option>
@@ -909,6 +1101,7 @@ function doStuff() {
   <option value="QuickShopGetDeptsForEveryItemOrdered">QUICKSHOP - Get Department for Everything You've Ever Ordered!</option>
   <option value="QuickShopEveryItemOrderedByDept">QUICKSHOP - Everything You've Ever Ordered By Dept !</option>
   <option value="QuickShopEveryItemEverOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
+  <option value="QuickShopEveryItemEverOrderedEX">QUICKSHOP - Everything You've Ever Ordered! EX</option>	
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>
   <option value="WGDCategoryProducts">WHATS GOOD - Category Products</option>
@@ -929,17 +1122,20 @@ function doStuff() {
   <option value=""> ========== ACCOUNT ========== </option>
   <option value="updateUserAccount">ACCOUNT - Update User Account-email and/or password</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get Addresses</option>
+  <option value="AccountDeliveryInfo">ACCOUNT - Get AddressesEX</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>
   <option value="AccountDeliveryTimeslots">ACCOUNT - Get Delivery Timeslots</option>
   <option value="AccountCancelTimeslotsReservation">ACCOUNT - Cancel Timeslot Reservation</option>
   <option value="AccountReservedTimeslots">ACCOUNT - Reserve Delivery Timeslots</option>
   <option value="AddDeliveryAddress">ACCOUNT - Add Delivery Address</option>
   <option value="EditDeliveryAddress">ACCOUNT - Edit Delivery Address</option>
+  <option value="SaveDeliveryAddress">ACCOUNT - Save Delivery Address</option>
   <option value="DeleteDeliveryAddress">ACCOUNT - Delete Delivery Address</option>  
   <option value="AddPaymentMethod">ACCOUNT - Add Payment Method</option>
   <option value="EditPaymentMethod">ACCOUNT - Edit Payment Method</option>
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
+  <option value="SetMobilePreferences">ACCOUNT - Set Mobile Preferences</option>
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>
@@ -948,11 +1144,17 @@ function doStuff() {
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
   <option value="CustomerAgreement">Help - Customer Agreement</option>
+  <option value="smstermsofuse">Help - SMS Terms of Use</option>
+  <option value="AlcoholRestrictions">Help - Learn More About Alcohol Restrictions</option>
+  <option value="AlcoholAgeVerification">Help - Alcohol Age Verification</option>    
+  <option value="BackupDeliveryAuthorization">Help - Backup Delivery Authorization</option>
   <option value="DeliveryPassTermsAndConditions">Help - DeliveryPass TermsAndConditions</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   <option value="smsMessageRelay">Send - sms Alert</option>
+  <option value="fdxsmsMessageRelay">Send - fdx sms Alert</option>
+  
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>
   <option value="GetRegions">Lookup - Get Regions</option>
@@ -970,6 +1172,11 @@ function doStuff() {
   <option value="socialrecognize"> Social - Recognize</option>
   <option value="socialmerge"> Social - Merge </option>
   <option value="socialregister"> Social - Register </option>
+  <option value="sociallogin"> Social - Login</option>
+  <option value="linkaccount"> Social - Link Account </option>
+  <option value="registersocial"> Social - Register </option>
+  <option value="unlinkaccount"> Social - Unlink Account </option>
+  <option value="socialConnect"> Social - Connect </option>
  
   </select>
   

@@ -53,6 +53,11 @@ public class BapiInfo implements Serializable {
 		this.logMsgNo = logMsgNo;
 		this.message = message;
 	}
+	
+	public BapiInfo(String orderId, String date, String message) {
+		this.message = "OrderID " + orderId +" Delivery Date " + date + " "+message;
+	}
+
 
 	public int getLevel() {
 		return this.level;

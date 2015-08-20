@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -40,7 +41,7 @@ public class BrandUniquenessSorterTest extends TestCase {
 
     
     private SessionInput prepareSessionInput(int cnt) {
-		SessionInput inp = new SessionInput("123", EnumServiceType.DEPOT, PricingContext.DEFAULT);
+		SessionInput inp = new SessionInput("123", EnumServiceType.DEPOT, PricingContext.DEFAULT, new FulfillmentContext());
 		inp.setPrioritizedCount(cnt);
 		
 		return inp;

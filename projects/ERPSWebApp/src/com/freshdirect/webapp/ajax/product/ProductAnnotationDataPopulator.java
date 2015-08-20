@@ -65,6 +65,8 @@ public class ProductAnnotationDataPopulator {
 		}
 		
 		final String skuCode = defaultSku.getSkuCode();
+		final String salesOrg=user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+		final String distrChannel=user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
 		FDProductInfo productInfo	= FDCachedFactory.getProductInfo(skuCode);
 		FDProduct fdprd				= null;
 		
@@ -92,7 +94,14 @@ public class ProductAnnotationDataPopulator {
 				vdata.put("productId", productId);
 			}
 		}
-		vdata.put("availability", productInfo.getAvailabilityStatus().getShortDescription());
+		
+		try {
+			vdata.put("availability", productInfo.getAvailabilityStatus(salesOrg,distrChannel).getShortDescription());
+		} catch (Exception exc) {
+			LOG.error("Failed to populate availability info of " + productInfo.getSkuCode(), exc);
+
+			vdata.put("availability", "(UNKNOWN)");
+		}
 		
 		List<DomainValue> varMtx = defaultSku.getVariationMatrix();
 		if (varMtx != null && varMtx.size() > 0) {

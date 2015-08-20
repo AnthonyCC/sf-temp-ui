@@ -401,6 +401,11 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>crm</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -2969,6 +2974,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<!--  @deprecated -->
 	<tag>
 		<name>PromotionController</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.PromotionControllerTag</tagclass>
@@ -3001,6 +3007,7 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	<!-- @deprecated -->
 	<tag>
 		<name>GetPromotion</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromotionTag</tagclass>
@@ -3018,6 +3025,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<!-- @deprecated -->
 	<tag>
 		<name>GetAllPromotions</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag</tagclass>
@@ -3104,6 +3112,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<!-- @deprecated -->
 	<tag>
 		<name>PromoCustomerController</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.PromoCustomerControllerTag</tagclass>
@@ -3131,6 +3140,7 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	<!-- @deprecated -->
 	<tag>
 		<name>GetPromoCustomerInfoList</name>
 		<tagclass>com.freshdirect.webapp.taglib.promotion.GetPromoCustomerInfoListTag</tagclass>
@@ -5666,6 +5676,41 @@
 		<name>Sitemap</name>
 		<tagclass>com.freshdirect.webapp.taglib.sitemap.SitemapTag</tagclass>
 	</tag>
+	<tag>
+		<name>SocialLoginController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.SocialLoginControllerTag</tagclass>
+	</tag>
+	
+	
+	<tag>
+		<name>GetConnectedProvidersTag</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetConnectedProvidersTag</tagclass>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!-- CRM functions moved here -->
+	<tag>
+        <name>CrmTopFaqController</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmTopFaqControllerTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmTopFaqControllerTag$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>

@@ -23,6 +23,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
@@ -32,12 +33,15 @@ import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
+import com.freshdirect.erp.ejb.ErpMaterialEB;
+import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductFamilyHome;
 import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.ejb.ErpProductHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
+import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDGroup;
@@ -63,7 +67,11 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	private transient ErpProductHome productHome = null;
 	private transient ErpZoneInfoHome zoneHome = null;
 	private transient ErpGrpInfoHome grpHome = null;
+
+	private transient ErpMaterialHome materialHome = null;
+
 	private transient ErpProductFamilyHome familyHome = null;
+
 	
 	
 	private FDProductHelper productHelper = new FDProductHelper();
@@ -94,7 +102,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			}
 			
 			// create FDProductInfo
-			return this.productHelper.getFDProductInfo(productInfo);
+			return this.productHelper.getFDProductInfoNew(productInfo);//::FDX::
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -144,7 +152,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			}
 			
 			// create FDProductInfo
-			return this.productHelper.getFDProductInfo(productInfo);
+			return this.productHelper.getFDProductInfoNew(productInfo);//::FDX::
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -169,7 +177,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			for (Iterator i=erpInfos.iterator(); i.hasNext(); ) {
 				ErpProductInfoModel productInfo = (ErpProductInfoModel)i.next();
 				// create FDProductInfo
-				productInfos.add( this.productHelper.getFDProductInfo(productInfo));
+				productInfos.add( this.productHelper.getFDProductInfoNew(productInfo));//::FDX::
 
 			}
 			return productInfos;
@@ -189,7 +197,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	 *
 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
-	public FDProduct getProduct(final String sku, final int version) throws FDSkuNotFoundException, FDResourceException {
+	/*public FDProduct getProduct(final String sku, final int version) throws FDSkuNotFoundException, FDResourceException {
 		if (this.productHome==null) {
 			this.lookupProductHome();
 		}
@@ -203,6 +211,29 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			}
 
 			return this.productHelper.getFDProduct( (ErpProductModel)productEB.getModel() );
+
+		} catch (FinderException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }*/
+	
+	public FDProduct getProduct(final String sku, final int version) throws FDSkuNotFoundException, FDResourceException {
+		if (this.materialHome==null) {
+			this.lookupMaterialHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+			ErpMaterialEB materialEB;
+			try {
+				materialEB = materialHome.findBySkuCodeAndVersion(sku, version);
+			} catch (ObjectNotFoundException fe) {
+				throw new FDSkuNotFoundException(fe, "SKU "+sku+" not found");
+			}
+
+			return this.productHelper.getFDProduct( (ErpMaterialModel)materialEB.getModel() );
 
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe);
@@ -484,6 +515,22 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 	
+
+    private void lookupMaterialHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.materialHome = (ErpMaterialHome) ctx.lookup(ErpServicesProperties.getMaterialHome());
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+    
+
     private  void lookupFamilyInfoHome() throws FDResourceException {
 		if (familyHome != null) {
 			return;
@@ -504,6 +551,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+
 	public void ejbCreate() throws CreateException {
 		// nothing required
 	}
@@ -620,6 +668,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	
 	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
 		// create FDProductInfo
-		return this.productHelper.getFDProductInfo(erpProdInfo);
+		return this.productHelper.getFDProductInfoNew(erpProdInfo);//::FDX::
 	}
 }

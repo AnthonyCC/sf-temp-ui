@@ -39,6 +39,7 @@ public class MaterialPrice implements Serializable {
 	/** Scale upper bound (exclusive - qty < scaleUpperBound). Double.POSITIVE_INFINITY if no scales apply. */
 	private double scaleUpperBound;
 
+	
 	public void setScaleUpperBound(double scaleUpperBound) {
 		this.scaleUpperBound = scaleUpperBound;
 	}
@@ -71,7 +72,8 @@ public class MaterialPrice implements Serializable {
 		this.scaleUnit=scaleUnit != null? scaleUnit.intern() : null;
 		this.promoPrice = promoPrice;
 	}
-
+	
+	
 	public double getPrice() {
 		if(DealsHelper.isItemOnSale(this.price, this.promoPrice))
 			return this.promoPrice;

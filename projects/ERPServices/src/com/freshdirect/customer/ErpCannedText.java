@@ -1,6 +1,10 @@
 package com.freshdirect.customer;
 
-public class ErpCannedText {
+import java.io.Serializable;
+
+public class ErpCannedText implements Serializable {
+	private static final long serialVersionUID = 4955123268540553262L;
+
 	private String id;
 	private String name;
 	private EnumCannedTextCategory category;

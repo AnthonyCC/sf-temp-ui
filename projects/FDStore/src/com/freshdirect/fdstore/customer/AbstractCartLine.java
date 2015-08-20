@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.content.attributes.EnumAttributeName;
@@ -13,6 +14,7 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -39,8 +41,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	private EnumCouponStatus couponStatus;
 	@Deprecated private boolean couponApplied;
 
-	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
-		super(sku, productRef, configuration, variantId, pZoneId);
+	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext userCtx) {
+		super(sku, productRef, configuration, variantId, userCtx);
 
 		this.firstInvoiceLine = null;
 		this.lastInvoiceLine = null;
@@ -50,11 +52,20 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public AbstractCartLine(
+			ErpOrderLineModel orderLine,
+			ErpInvoiceLineI firstInvoiceLine,
+			ErpInvoiceLineI lastInvoiceLine,
+			ErpReturnLineModel returnLine) {
+		this(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine, false);
+	}
+
+	public AbstractCartLine(
 		ErpOrderLineModel orderLine,
 		ErpInvoiceLineI firstInvoiceLine,
 		ErpInvoiceLineI lastInvoiceLine,
-		ErpReturnLineModel returnLine) {
-		super(orderLine);
+		ErpReturnLineModel returnLine,
+		boolean lazy) {
+		super(orderLine, lazy);
 
 		this.firstInvoiceLine = firstInvoiceLine;
 		this.lastInvoiceLine = lastInvoiceLine;
@@ -369,4 +380,26 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.orderLine.setCoremetricsVirtualCategory(coremetricsVirtualCategory);
 	}
 
+	@Override
+	public void setEStoreId(EnumEStoreId eStore) {
+		this.orderLine.setEStoreId(eStore);
+		
+	}
+
+	@Override
+	public EnumEStoreId getEStoreId() {
+		return this.orderLine.getEStoreId();
+	}
+
+	@Override
+	public void setPlantId(String plantId) {
+		
+		 this.orderLine.setPlantID(plantId);
+	}
+
+	@Override
+	public String getPlantId() {
+		
+		return this.orderLine.getPlantID();
+	}
 }

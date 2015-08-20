@@ -74,7 +74,7 @@
 					<%
 						// Home delivery form
 					%>
-					<div class="content" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 1px;">
+					<div class="" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 1px;">
 						<div class="register_header" style="width: auto;">&nbsp;&nbsp;For Home Delivery</div>
 						<table width="100%" cellpadding="2" cellspacing="0" border="0" class="register">
 						<form name="zipCheck" method="post" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.HOME.getName()%>">
@@ -97,7 +97,7 @@
 					<%
 						// Corporate delivery form
 					%>
-					<div class="content" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 0px;">
+					<div class="" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 0px;">
 						<div class="register_header" style="width: auto;">&nbsp;&nbsp;For Corp Delivery</div>
 						<table width="100%" cellpadding="2" cellspacing="0" border="0" class="register">
 						<form name="zipCheck" method="POST" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.CORPORATE.getName()%>">
@@ -120,7 +120,7 @@
 					<%
 						// Depot delivery form
 					%>
-					<div class="content" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 0px;">
+					<div class="" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 0px;">
 						<div class="register_header" style="width: auto;">&nbsp;&nbsp;For Depot Customers</div>
 						<table width="100%" cellpadding="2" cellspacing="0" border="0" class="register">
 						<form name="depotCheck" method="POST" action="nw_cst_check_zone.jsp">
@@ -156,7 +156,7 @@
 					<%
 						// WEB delivery form
 					%>
-					<div class="content" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 1px;">
+					<div class="" style="height: 200px; padding: 0px; float: left; width: 33%; border-style: solid; border-width: 0px 1px 1px 1px;">
 						<div class="register_header" style="width: auto;">&nbsp;&nbsp;For WEB Orders</div>
 						<table width="100%" cellpadding="2" cellspacing="0" border="0" class="register">
 						<form name="zipCheck" method="POST" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.WEB.getName()%>">

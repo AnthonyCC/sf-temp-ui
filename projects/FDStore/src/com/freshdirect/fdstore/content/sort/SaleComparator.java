@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content.sort;
 
 import java.util.Comparator;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -51,13 +52,13 @@ public class SaleComparator implements Comparator<ContentNodeModel> {
     	
     	try {            
             FDProductInfo i1 = prod1.getDefaultSku().getProductInfo();
-            String zoneId1 = ContentFactory.getInstance().getCurrentPricingContext()!=null ? ContentFactory.getInstance().getCurrentPricingContext().getZoneId() : prod1.getPricingContext().getZoneId();            
+            ZoneInfo zoneId1 = ContentFactory.getInstance().getCurrentUserContext()!=null ? ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo() : prod1.getUserContext().getPricingContext().getZoneInfo();            
             p1 = i1.getZonePriceInfo(zoneId1).getHighestDealPercentage();
         } catch (FDException e) {}
     	
     	try {
             FDProductInfo i2 = prod2.getDefaultSku().getProductInfo();
-            String zoneId2 = ContentFactory.getInstance().getCurrentPricingContext()!=null ? ContentFactory.getInstance().getCurrentPricingContext().getZoneId() : prod2.getPricingContext().getZoneId();
+            ZoneInfo zoneId2 = ContentFactory.getInstance().getCurrentUserContext()!=null ? ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo() : prod2.getUserContext().getPricingContext().getZoneInfo();
             p2 = i2.getZonePriceInfo(zoneId2).getHighestDealPercentage();
         } catch (FDException e) {}
     	

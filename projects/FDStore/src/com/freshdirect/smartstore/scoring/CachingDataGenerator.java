@@ -37,7 +37,7 @@ public class CachingDataGenerator extends DataGenerator {
     public final List<? extends ContentNodeModel> generate(SessionInput sessionInput, final DataAccess input) {
         if (cacheEnabled) {
             String key = getKey(sessionInput);
-            final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
+            final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext(), sessionInput.getFulfillmentContext());
             inp.setCurrentNode(sessionInput.getCurrentNode());
             inp.setExplicitList(sessionInput.getExplicitList());
             if (cache.get(key) == null) {

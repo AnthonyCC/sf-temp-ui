@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelReference;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.smartstore.SessionInput;
@@ -76,7 +77,7 @@ public class Recommendations implements Serializable {
 			//Convert to ProductModelPricingAdapter for Zone Pricing
 		    ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter((ProductModel)m,pricingCtx);
 		    this.products.add(p);
-		    this.productReferences.add(new ProductReference(p));
+		    this.productReferences.add(new ProductReferenceImpl(p));
 		}
 
 		this.wsize = wsize;
@@ -106,7 +107,7 @@ public class Recommendations implements Serializable {
 	}
 
 	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes) {
-		this(variant, contentNodes, true, false, MAX_PRODS, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
+		this(variant, contentNodes, true, false, MAX_PRODS, new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO));
 	}
 	
 	/**
@@ -121,7 +122,7 @@ public class Recommendations implements Serializable {
 	public Recommendations(Variant variant, List<ContentNodeModel> products, SessionInput sessionInput,
 			boolean isRefreshable, boolean isSmartSavings) {
 		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null ? sessionInput.getWindowSize(MAX_PRODS) : MAX_PRODS,
-				sessionInput != null && sessionInput.getPricingContext() != null ? sessionInput.getPricingContext() : new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
+				sessionInput != null && sessionInput.getPricingContext() != null ? sessionInput.getPricingContext() : new PricingContext(ZonePriceListing.DEFAULT_ZONE_INFO));
 		if (sessionInput != null) {
 		    this.previousRecommendations = sessionInput.getPreviousRecommendations();
 		    this.category = new ContentNodeModelReference<CategoryModel> (sessionInput.getCategory());

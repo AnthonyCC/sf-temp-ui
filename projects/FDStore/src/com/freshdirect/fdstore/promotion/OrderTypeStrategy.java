@@ -13,10 +13,12 @@ public class OrderTypeStrategy implements PromotionStrategyI {
 		this.allowedOrderTypes = allowedOrderTypes;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		return allowedOrderTypes.contains(context.getOrderType()) ? ALLOW : DENY;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 200;
 	}
@@ -25,4 +27,8 @@ public class OrderTypeStrategy implements PromotionStrategyI {
 		return "OrderTypeStrategy[" + allowedOrderTypes + "]";
 	}
 
+	@Override
+	public boolean isStoreRequired() {
+		return false;
+	}
 }

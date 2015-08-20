@@ -40,6 +40,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.RuntimeServiceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+@Deprecated
 public class UploadFeedProcessTask {
 	
 

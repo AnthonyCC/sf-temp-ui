@@ -1,8 +1,6 @@
 package com.freshdirect.webapp.taglib.giftcard;
 
 import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -10,16 +8,10 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.crm.CrmAuthorizationException;
-import com.freshdirect.customer.ActivityLog;
-import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDBulkRecipientModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -30,8 +22,6 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.callcenter.ComplaintCreatorTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -39,11 +29,13 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class GiftCardControllerTag extends AbstractControllerTag{
-	
+	private static final long serialVersionUID = -1544805052660494678L;
+
 	private final int GC_RETRY_COUNT = 4;
 	
 	private final int GC_RETRY_WARNING_COUNT = 3;
 	
+	@SuppressWarnings("unused")
 	private static Category LOGGER 	= LoggerFactory.getInstance( GiftCardControllerTag.class );
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
@@ -55,7 +47,8 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 		FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 		FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 		try{
-        	if ("setAllowGCUsage".equalsIgnoreCase(this.getActionName())) {
+        	String actionName = this.getActionName();
+			if ("setAllowGCUsage".equalsIgnoreCase(actionName)) {
         		//System.out.println("setAllowGCUsage()=================");
         		/*
         		 * Toggle profile value for allow_apply_gc
@@ -75,22 +68,11 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 	        		}
         		}
         	}
-			if ("applyGiftCard".equalsIgnoreCase(this.getActionName())) {
+			if ("applyGiftCard".equalsIgnoreCase(actionName)) {
 				if(!user.getFDCustomer().getProfile().allowApplyGC()) {
 					actionResult.addError(new ActionError("account_locked",formatMessage(SystemMessageList.ACCOUNT_LOCKED_FOR_GC)));
 					return true;
 				}
-				/*if(user.getGCRetryCount() >= GC_RETRY_COUNT){
-					//Lock the customer account from applying gift card.
-					user.getFDCustomer().getProfile().setAttribute("allow_apply_gc", "false");
-					FDCustomerManager.setProfileAttribute(user.getIdentity(),"allow_apply_gc", "false",info);
-					actionResult.addError(new ActionError("account_locked",formatMessage(SystemMessageList.ACCOUNT_LOCKED_FOR_GC)));
-					return true;
-				}
-				if(user.getGCRetryCount() >= GC_RETRY_WARNING_COUNT){
-					//Display warning message
-					actionResult.addError(new ActionError("apply_gc_warning",formatMessage(SystemMessageList.APPLY_GC_WARNING)));
-				}*/
 				String givexNum = request.getParameter("givexNum");
 				if(givexNum!=null && givexNum.trim().length()>0){
 				try {
@@ -136,6 +118,79 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 					this.redirectTo("/gift_card/giftcard_summary.jsp");
 				}
 			}
+			
+			
+			//
+			// ---
+			//
+			final String method = request.getMethod();
+			if ("GET".equalsIgnoreCase( method )) {
+	        	if("deleteBulkSavedRecipient".equalsIgnoreCase(actionName)) {
+	        		// user = fs_user.getUser();   
+	            	String repId = request.getParameter("deleteId");
+	        		if (repId == null) {
+	        			actionResult.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+	        		} else {
+	        			int repIndex = -1;
+	            		try {
+	            			repIndex = user.getBulkRecipentList().getRecipientIndex(Integer.parseInt(repId));
+
+	            			user.getBulkRecipentList().removeOrderLineById(repIndex);
+	            			user.getBulkRecipentList().constructFDRecipientsList();
+	            		} catch (NumberFormatException nfe) {
+	            			actionResult.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+	            		}
+	            		if (repIndex == -1) {
+	            			actionResult.addError(new ActionError("system",SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+	            		} else {
+	            			//remove recipient
+	            			user.getBulkRecipentList().removeRecipient(repIndex);
+	            		}
+	        		}
+	            }
+				
+			} else if ("POST".equalsIgnoreCase(method)) {
+            	if ("addBulkSavedRecipient".equalsIgnoreCase(actionName) ) {
+            		GiftCardFormFields fld = new GiftCardFormFields(request);
+                    fld.validateBulkGiftCard(user, actionResult);
+                    if(actionResult.getErrors().isEmpty()) {
+                    	FDBulkRecipientModel srm = fld.populateBulkSavedRecipient(user);
+                                            	
+                        user.getBulkRecipentList().addRecipient(srm);  
+                        
+                    } 
+            	}            	
+            	else if ("editBulkSavedRecipient".equalsIgnoreCase(actionName)) {            		
+            		GiftCardFormFields fld = new GiftCardFormFields(request);
+                    fld.validateBulkGiftCard(user, actionResult);
+                    if(actionResult.getErrors().isEmpty()) {
+                    	FDBulkRecipientModel srm = fld.populateBulkSavedRecipient(user);
+                    	
+                    	String repId = request.getParameter("recipId");
+                		if (repId == null) {
+                			actionResult.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+                		} else {
+	                		int repIndex = -1;
+	                		try {
+	                			repIndex = user.getBulkRecipentList().getRecipientIndex(Integer.parseInt(repId));
+
+	                			
+	                		} catch (NumberFormatException nfe) {
+	                			actionResult.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+	                		}
+	                		if (repIndex == -1) {
+	                			actionResult.addError(new ActionError("system",SystemMessageList.MSG_IDENTIFY_RECIPIENT));
+	                		} else {
+	                			//update recipient
+	                			user.getBulkRecipentList().setRecipient(repIndex, srm);
+	                		}
+                		}
+                    }
+                }
+				
+			}
+			
+			
 		}catch (FDResourceException e) {
 			actionResult.addError(new ActionError("technical_difficulty", "Unable to process your request due to technical difficulty."));
 			//throw new JspException(e);

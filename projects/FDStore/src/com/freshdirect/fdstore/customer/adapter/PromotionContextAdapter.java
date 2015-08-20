@@ -11,16 +11,17 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -221,6 +222,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public EnumOrderType getOrderType() {
 		ErpAddressModel address = this.user.getShoppingCart().getDeliveryAddress();
+        return getOrderType(address);
+
+		/*ErpAddressModel address = this.user.getShoppingCart().getDeliveryAddress();
 		if (address != null) {
 			if (address instanceof ErpDepotAddressModel) {
 				if (((ErpDepotAddressModel) address).isPickup()) {
@@ -248,11 +252,15 @@ public class PromotionContextAdapter implements PromotionContextI {
 			return EnumOrderType.DEPOT;
 		}
 
-		return EnumOrderType.HOME;
+		return EnumOrderType.HOME;*/
 	}
 	
 	public EnumOrderType getOrderType(AddressModel address) {
-		
+		EnumEStoreId eStoreId = this.user.getUserContext().getStoreContext().getEStoreId();
+        if(EnumEStoreId.FDX.equals(eStoreId)){
+               return EnumOrderType.FDX;
+        }
+	
 		if (address != null) {
 			if (address instanceof ErpDepotAddressModel) {
 				if (((ErpDepotAddressModel) address).isPickup()) {
@@ -524,8 +532,8 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return cart.getLineItemDiscountCodes();	
 	}
 	
-	public PricingContext getPricingContext() {
-		return this.getUser().getPricingContext();
+	public UserContext getUserContext() {
+		return this.getUser().getUserContext();
 	}
 	
 	public int getSettledECheckOrderCount() {

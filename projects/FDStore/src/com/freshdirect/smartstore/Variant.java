@@ -19,6 +19,8 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 public class Variant implements Comparable<Variant>, Serializable {
 	private static final long serialVersionUID = -1534257161948385156L;
 
+	public static final String NIL_ID = "nilv";
+	
 	// site feature
 	private EnumSiteFeature siteFeature;
 	

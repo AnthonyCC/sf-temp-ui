@@ -13,7 +13,7 @@ final int W_RH_ORDER_INFO_TOTAL = 970;
 	FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 	ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 	Integer totalQuantity = user.getDonationTotalQuantity();
-	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice();
+	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice();
 %>
 <table width="<%=W_RH_ORDER_INFO_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>

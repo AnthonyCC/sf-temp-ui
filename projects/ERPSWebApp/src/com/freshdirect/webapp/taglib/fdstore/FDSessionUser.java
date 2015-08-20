@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.MasqueradeContext;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ActivityLog;
@@ -244,6 +246,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         if(!this.isRobot()){
 	        this.saveCart(true);
 	        this.saveImpressions();
+	        this.releaseModificationLock();
 	        if(FDStoreProperties.isSessionLoggingEnabled())
 			{
 	        	try
@@ -274,16 +277,31 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 			}
 	     
 	        // clear masquerade agent, and log this event
-	        String masqueradeAgent = getMasqueradeAgent();
-	        
-	        if ( masqueradeAgent != null ) {
-	        	logMasqueradeLogout( masqueradeAgent );
+	        MasqueradeContext masqueradeContext = getMasqueradeContext();
+	        if (masqueradeContext!=null){
+
+	        	String masqueradeAgent = masqueradeContext.getAgentId();
+		        if (masqueradeAgent != null ) {
+		        	logMasqueradeLogout( masqueradeAgent );
+		        }
 	        }
         }
         sessionId = null;
     }
     
-    private void logMasqueradeLogout( String masqueradeAgent ) {
+    private void releaseModificationLock() {
+    	try {
+    		if(this.user.getShoppingCart() instanceof FDModifyCartModel){
+    			String orderId = ((FDModifyCartModel)this.user.getShoppingCart()).getOriginalOrder().getSale().getId();
+    			FDCustomerManager.releaseModificationLock(orderId);
+    		}
+      
+        } catch (FDResourceException ex) {
+            LOGGER.warn("Unable to release modification lock", ex);
+        }	
+    }
+
+	private void logMasqueradeLogout( String masqueradeAgent ) {
         LOGGER.debug( "logMasqueradeLogout()" );
     	try {
     		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT, this.getPrimaryKey());
@@ -307,7 +325,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             Date endDate = new Date(lastRequestDate);
             for (int i = 0; i < logEntries.size(); i++) {
                 logEntries.get(i).setStartEndTime(startDate, endDate);
-                logEntries.get(i).setZoneId(user.getPricingZoneId());
+                logEntries.get(i).setZoneId(user.getUserContext().getPricingContext().getZoneInfo().toString());
                 System.out.println("SessionImpressionLogEntry:sessionId:"+logEntries.get(i).getSessionId());
             }
             
@@ -1217,23 +1235,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.checkoutMode = mode;
 	}
 	
-    public String getPricingZoneId(){
-    	return this.user.getPricingZoneId();
+	/** use getUserContext().getPricingContext().getZoneId() instead */
+	@Deprecated
+	public String getPricingZoneId(){
+    	return "";
     }
 
+	/** use getUserContext().getPricingContext() instead */
+	@Deprecated
 	public PricingContext getPricingContext() {
 		return this.user.getPricingContext();
 	}
 
-	/*
-	public void setPricingContext(PricingContext pricingContext){
-		this.user.setPricingContext(pricingContext);
-	}
-	*/
+	/** use getUserContext().resetPricingContext() instead */
+	@Deprecated
 	public void resetPricingContext() {
 		this.user.resetPricingContext();
 	}
 
+	public UserContext getUserContext(){
+		return user.getUserContext();
+	}
+	
 	@Override
 	public SortedSet<IgnoreCaseString> getClientCodesHistory() {
 		return user.getClientCodesHistory();
@@ -1258,14 +1281,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.clearPromoErrorCodes();
 	}
 
-	public String getMasqueradeAgent() {
-		return user.getMasqueradeAgent();
+	public MasqueradeContext getMasqueradeContext() {
+		return user.getMasqueradeContext();
 	}
 
-	public void setMasqueradeAgent(String agent) {
-		user.setMasqueradeAgent(agent);
+	public void setMasqueradeContext(MasqueradeContext ctx) {
+		user.setMasqueradeContext(ctx);
 	}
 
+	@Deprecated
 	public EnumWinePrice getPreferredWinePrice() {
 		return user.getPreferredWinePrice();
 	}
@@ -1745,8 +1769,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 			throws FDResourceException {
 		return this.user.getScheduledOrdersForDelivery(sorted);
 	}
-	
 
+	@Override
+	public void resetUserContext() {
+		this.user.resetUserContext();
+		
+	}
+
+	@Override
+	public boolean isCrmMode() {
+		return user.isCrmMode();
+	}
+	
+	@Override
+	public void setCrmMode(boolean flag) {
+		user.setCrmMode(flag);
+	}
 	public List<ProductReference> getProductSamples() {
 		return this.user.getProductSamples();
 	}

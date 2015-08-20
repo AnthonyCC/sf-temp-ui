@@ -12,6 +12,7 @@
 <%@ page import="com.freshdirect.webapp.util.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType"%>
+<%@ page import="com.freshdirect.webapp.taglib.promotion.PromoFilterCriteria"%>
 <%
 	PromoFilterCriteria  promoFilter =  (PromoFilterCriteria)request.getSession().getAttribute("filter");
 	String offerType = "";
@@ -20,6 +21,7 @@
 	String createdBy = "";
 	String modifiedBy = "";
 	String keyword = "";
+	String serviceType = "";
 	if(null !=request.getParameter("promo_filter_submit")){
 		offerType =request.getParameter("offerType");
 		customerType =request.getParameter("customerType");
@@ -27,14 +29,16 @@
 		createdBy =request.getParameter("createdBy");
 		modifiedBy =request.getParameter("modifiedBy");
 		keyword =request.getParameter("keyword");
-		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+		serviceType =request.getParameter("serviceType");
+		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword,serviceType);
 	}else if(null != promoFilter && !promoFilter.isEmpty()){
 		offerType = promoFilter.getOfferType();
 		customerType = promoFilter.getCustomerType();
 		promoStatus = promoFilter.getPromoStatus();
 		createdBy = promoFilter.getCreatedBy();
 		modifiedBy = promoFilter.getModifiedBy();
-		keyword = promoFilter.getKeyword();		
+		keyword = promoFilter.getKeyword();
+		serviceType =request.getParameter("serviceType");
 	}
 	List<String> createdUsers = FDPromotionNewModelFactory.getInstance().getPromotionsCreatedUsers();//(List)request.getAttribute("createdUsers");
 	List<String> modifiedUsers = FDPromotionNewModelFactory.getInstance().getPromotionsModifiedUsers();//(List)request.getAttribute("modifiedUsers");
@@ -146,9 +150,6 @@
 	EnumPromotionStatus pStatus = p.getStatus();
 %>
 <% 
-	String linkURL = "#";
-	
-	linkURL = "/main/view_promotion.jsp?promoId="+p.getCode();
 
 		  	String rCode = p.getRedemptionCode();
 			Date expire = p.getExpire();

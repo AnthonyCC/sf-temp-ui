@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -188,7 +189,7 @@ public class ProductPromotionUtil {
 			return ret;
 		}
 	};
-	public static Map<String, List<FDProductPromotionInfo>> formatProductPromotionPreviewInfo(
+	public static Map<ZoneInfo, List<FDProductPromotionInfo>> formatProductPromotionPreviewInfo(
 			ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo)
 			throws FDResourceException {
 		Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap = erpProductPromotionPreviewInfo.getProductPromotionInfoMap();
@@ -223,8 +224,8 @@ public class ProductPromotionUtil {
 								FDProductInfo fdCachedProductInfo =FDCachedFactory.getProductInfo(skuCode);
 								FDProduct fdCachedProduct = FDCachedFactory.getProduct(fdCachedProductInfo);
 								productPromotionPreviewInfo.setFdProduct(fdCachedProduct);
-								if(null ==zonePriceListing.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE)){	
-									zonePriceListing.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE,fdCachedProductInfo.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).clone());									
+								if(null ==zonePriceListing.getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO)){	
+									zonePriceListing.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO,fdCachedProductInfo.getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).clone());									
 								}
 								
 							}
@@ -238,7 +239,8 @@ public class ProductPromotionUtil {
 				}
 			}
 		}
-		return productPromotionPreviewInfoMap;
+		//::FDX::return productPromotionPreviewInfoMap;
+		return null;
 	}
 	
 	//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area

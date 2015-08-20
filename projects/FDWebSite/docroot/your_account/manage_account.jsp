@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
 
 <%@ page import='java.text.*' %>
 
@@ -141,7 +142,7 @@ your account information, this is the place to do it.<br></td>
 			Reserve your delivery timeslot before you place your order.
 			<br><br>
 		<%}%>
-		<%if(user.isEligibleForDeliveryPass()){%>
+		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())){%>
 			<font class="text13bold">
 						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect DeliveryPass</a>
 			</font><br>

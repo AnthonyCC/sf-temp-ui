@@ -35,4 +35,5 @@ set JUNCTION=util\bin\windows\junction.exe
 %JUNCTION% projects\CRM\docroot\assets                     projects\Media\docroot\assets
 %JUNCTION% projects\CRM\docroot\ccassets                   projects\Media\docroot\ccassets
 %JUNCTION% projects\CRM\docroot\media_stat                 projects\Media\docroot\media_stat
+%JUNCTION% projects\FDWebSite\docroot\media                projects\Media\docroot\media
 

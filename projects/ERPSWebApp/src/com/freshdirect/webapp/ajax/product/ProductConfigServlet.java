@@ -210,9 +210,9 @@ public class ProductConfigServlet extends BaseJsonServlet {
 			}	        		
 		}
 		
-		ProductDetailPopulator.populateSkuVariations(skuItem, ProductDetailPopulator.getVariations( fdProd, currentConfig ) );
+		ProductDetailPopulator.populateSkuVariations(skuItem, ProductDetailPopulator.getVariations( fdProd, currentConfig,user.getUserContext().getPricingContext() ) );
 		skuItem.setLabel( ProductDetailPopulator.getLabel( sku ) );
-		skuItem.setPrice( fdProdInf.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() );
+		skuItem.setPrice( fdProdInf.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice() );
 		
 		QuickShopLineItem qsSku = QuickShopHelper.createItemFromProduct( product, sku, user, true );
 		

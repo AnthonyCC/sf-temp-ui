@@ -14,9 +14,11 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -29,13 +31,13 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP"
-			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE"
+			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
 		"SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.FDCARTLINE_CLIENTCODE WHERE FDUSER_ID = ? ORDER BY CARTLINE_ID, ORDINAL";
 
-	public static List<ErpOrderLineModel> loadCartLines(Connection conn, PrimaryKey fdUserPk) throws SQLException {
+	public static List<ErpOrderLineModel> loadCartLines(Connection conn, PrimaryKey fdUserPk, EnumEStoreId eStoreId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_CARTLINE_CLIENTCODES);
 		ps.setString(1, fdUserPk.getId());
 		ResultSet rs = ps.executeQuery();
@@ -55,6 +57,7 @@ public class FDCartLineDAO {
 		List<ErpOrderLineModel> lst = new LinkedList<ErpOrderLineModel>();
 		ps = conn.prepareStatement(QUERY_CARTLINES);
 		ps.setString(1, fdUserPk.getId());
+		ps.setString(2, eStoreId.getContentId());
 		rs = ps.executeQuery();
 		while (rs.next()) {
 
@@ -83,6 +86,7 @@ public class FDCartLineDAO {
 			line.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
 			line.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
 			line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
+			line.setEStoreId(EnumEStoreId.valueOfContentId(rs.getString("E_STORE")));
 			lst.add(line);
 		}
 		rs.close();
@@ -95,7 +99,7 @@ public class FDCartLineDAO {
 
 	}
 
-	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List<ErpOrderLineModel> erpOrderlines) throws SQLException {
+	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List<ErpOrderLineModel> erpOrderlines,StoreContext storeContext) throws SQLException {
 		Map<String,List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
 		for (ErpOrderLineModel item : erpOrderlines) {
 			// basic error resolution
@@ -114,14 +118,17 @@ public class FDCartLineDAO {
 		ps.executeUpdate();
 		ps.close();
 
-		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?");
+		ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?");
 		ps.setString(1, fdUserPk.getId());
-		ps.executeUpdate();
+		ps.setString(2, storeContext.getEStoreId().getContentId());
+		int c=ps.executeUpdate();
 		ps.close();
 
+		if(erpOrderlines.size()==0)
+			return;
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -144,6 +151,7 @@ public class FDCartLineDAO {
 			ps.setString(18, StringUtil.crop(line.getExternalAgency(), 30));
 			ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
 			ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
+			ps.setString(21, line.getEStoreId().getContentId());
 			
 			ps.addBatch();
 		}

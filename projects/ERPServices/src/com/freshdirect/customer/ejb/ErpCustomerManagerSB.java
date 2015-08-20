@@ -52,6 +52,7 @@ import com.freshdirect.customer.RedeliverySaleInfo;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -293,4 +294,5 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public String getSapCustomerId(String erpCustomerPk) throws RemoteException;
 
     public List<ErpSaleInfo> getNSMOrdersForGC()  throws RemoteException;
+    public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) throws RemoteException;
 }

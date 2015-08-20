@@ -3,6 +3,7 @@
 
 <%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%!
@@ -85,7 +86,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 	String customerEmail = user != null ? user.getUserId() : ""; 
 	String primaryKey = user != null ? user.getPrimaryKey() : unknown;
 	String cohortId = user != null ? CohortSelector.getInstance().getCohortName(primaryKey) : unknown;
-	String zoneId = user != null && user.getPricingContext() != null ? user.getPricingContext().getZoneId() : unknown;
+	String zoneId = user != null && user.getPricingContext() != null ? user.getPricingContext().getZoneInfo().getPricingZoneId() : unknown;
 	String serviceType = user != null && user.getSelectedServiceType() != null ? user.getSelectedServiceType().name() : unknown;
 	
 	String selectors = request.getParameter("selectors");
@@ -161,7 +162,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 	Collections.sort(zoneIds);
 	List<PricingContext> zones = new ArrayList<PricingContext>(zoneIds.size());
 	for (String z : zoneIds) {
-		zones.add(new PricingContext(z));
+		zones.add(new PricingContext(new ZoneInfo(z,"SO","DC")));//::FDX::
 	}
 	
 	String order = request.getParameter("order");
@@ -185,14 +186,14 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 						if ("price".equals(orderSplit[0]) || "deal".equals(orderSplit[0]) ||
 								"tiered".equals(orderSplit[0]) || "highest".equals(orderSplit[0])) {
 							orderBy = orderSplit[0];
-							orderZone = new PricingContext(tOrderZoneId);
+							orderZone = new PricingContext(new ZoneInfo(tOrderZoneId,"SO","DC"));//::FDX::
 							orderAscending = tOrderAscending;
 						} 
 					}
 				}
 			}
 		} 
-		order = orderBy + ("product".equals(orderBy) ? "" : "$" + orderZone.getZoneId()) + "_" + (orderAscending ? "asc" : "desc");
+		order = orderBy + ("product".equals(orderBy) ? "" : "$" + orderZone.getZoneInfo()) + "_" + (orderAscending ? "asc" : "desc");
 		sorted = sort(orderBy, orderZone, orderAscending, nodes);
 	}
 	
@@ -472,11 +473,11 @@ function orderLink(orderBy, orderZone, orderAscending, nextOrderBy) {
 				<% } %>
 				<%
 					for (PricingContext zone : zones) {
-						boolean isUserZone = zone.getZoneId().equals(zoneId);
-						ErpZoneMasterInfo zoneInfo = FDZoneInfoManager.findZoneInfoMaster(zone.getZoneId());
+						boolean isUserZone = zone.getZoneInfo().getPricingZoneId().equals(zoneId);
+						ErpZoneMasterInfo zoneInfo = FDZoneInfoManager.findZoneInfoMaster(zone.getZoneInfo().getPricingZoneId());
 				%>
 				<th class="text12 b-top b-right<%=isUserZone ? " user-zone" : ""%>" colspan="<%=showDefaultSku ? " 5" : "4" %>">
-					<span title="<%=zoneInfo.getParentZone() != null ? "Parent: " + zoneInfo.getParentZone().getSapId(): "No parent"%>">Zone <%=zone.getZoneId()%></span>
+					<span title="<%=zoneInfo.getParentZone() != null ? "Parent: " + zoneInfo.getParentZone().getSapId(): "No parent"%>">Zone <%=zone.getZoneInfo().getPricingZoneId()%></span>
 				</th>
 				<%
 					}
@@ -485,25 +486,25 @@ function orderLink(orderBy, orderZone, orderAscending, nextOrderBy) {
 			<tr>
 				<%
 					for (PricingContext zone : zones) {
-						boolean isUserZone = zone.getZoneId().equals(zoneId);
+						boolean isUserZone = zone.getZoneInfo().getPricingZoneId().equals(zoneId);
 				%>
 				<th class="text12 center b-bottom<%=isUserZone ? " user-zone" : ""%>">
-					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneId()%>',<%=orderAscending%>,'price');">
+					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneInfo().getPricingZoneId()%>',<%=orderAscending%>,'price');">
 						Price<%=orderSign(orderBy, orderZone, orderAscending, "price", zone)%>
 					</a>
 				</th>
 				<th class="text12 center b-bottom<%=isUserZone ? " user-zone" : ""%>">
-					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneId()%>',<%=orderAscending%>,'deal');">
+					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneInfo().getPricingZoneId()%>',<%=orderAscending%>,'deal');">
 						Deal (%)<%=orderSign(orderBy, orderZone, orderAscending, "deal", zone)%>
 					</a>
 				</th>
 				<th class="text12 center b-bottom<%=isUserZone ? " user-zone" : ""%>">
-					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneId()%>',<%=orderAscending%>,'tiered');">
+					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneInfo().getPricingZoneId()%>',<%=orderAscending%>,'tiered');">
 						Tiered (%)<%=orderSign(orderBy, orderZone, orderAscending, "tiered", zone)%>
 					</a>
 				</th>
 				<th class="text12 center<%=!showDefaultSku ? " b-right" : "" %> b-bottom<%=isUserZone ? " user-zone" : ""%>">
-					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneId()%>',<%=orderAscending%>,'highest');">
+					<a href="#" onclick="return orderLink('<%=orderBy%>','<%=zone.getZoneInfo().getPricingZoneId()%>',<%=orderAscending%>,'highest');">
 						Highest (%)<%=orderSign(orderBy, orderZone, orderAscending, "highest", zone)%>
 					</a>
 				</th>
@@ -530,7 +531,7 @@ function orderLink(orderBy, orderZone, orderAscending, nextOrderBy) {
 				<% } %>
 				<%
 					for (PricingContext zone : zones) {
-						boolean isUserZone = zone.getZoneId().equals(zoneId);
+						boolean isUserZone = zone.getZoneInfo().getPricingZoneId().equals(zoneId);
 						ProductModel pa = ProductPricingFactory.getInstance().getPricingAdapter(product, zone);
 				%>
 				<td class="text12 right b-bottom<%=isUserZone ? " user-zone" : ""%>"><%=pa.isUnavailable() ? n_a : pa.getPriceFormatted(0.)%></td>

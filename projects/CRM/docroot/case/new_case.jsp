@@ -7,6 +7,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 <tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
 	<tmpl:put name='title' direct='true'>New Case</tmpl:put>

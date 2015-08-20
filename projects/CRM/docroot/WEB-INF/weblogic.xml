@@ -82,6 +82,10 @@
     <role-name>CRM_HR</role-name>
     <externally-defined />
   </security-role-assignment>
+  <security-role-assignment>
+    <role-name>CRM_FDX</role-name>
+    <externally-defined />
+  </security-role-assignment>
   <session-descriptor>
     <persistent-store-type>replicated_if_clustered</persistent-store-type>
   </session-descriptor>

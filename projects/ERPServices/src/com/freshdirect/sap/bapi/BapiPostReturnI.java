@@ -37,5 +37,6 @@ public interface BapiPostReturnI extends BapiFunctionI {
 	
 	public void setDeliveryCharge(double dlvCharge);
 	public void setPhoneCharge(double phoneCharge);
+	public void setTipAmount(double amount);
 
 }

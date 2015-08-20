@@ -57,6 +57,7 @@
 	final String sPage = buf.toString();
 	
 	final boolean __isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
+	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%

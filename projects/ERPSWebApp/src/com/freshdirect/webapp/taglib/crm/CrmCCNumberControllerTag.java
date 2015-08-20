@@ -95,7 +95,7 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 		try {
 //			CrmManager.getInstance().loginAgent(agent.getUserId(), password);
 			Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
-			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
+			FDOrderI order = FDCustomerManager.getOrderForCRM(this.orderId);
 			List ccList = new ArrayList();
 			ErpPaymentMethodI pm=order.getPaymentMethod();
 			if(StringUtils.isEmpty(pm.getProfileID())) {

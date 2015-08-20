@@ -20,7 +20,7 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>Supervisor Resources > Del. Reservations</tmpl:put>
+<tmpl:put name='title' direct='true'>Admin Tools > Delete Reservations</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 

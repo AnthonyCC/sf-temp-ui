@@ -27,14 +27,14 @@
                 <tr><td class="field_title">SAP Description</td><td class="field"><%= material.getDescription() %></td></tr>
                 <tr><td class="field_title">Label Name</td><td><%= material.getAttribute(EnumAttributeName.LABEL_NAME) %></td></tr>
                 <tr><td class="field_title">Base Unit</td><td class="field"><%= material.getBaseUnit() %></td></tr>
-                <tr><td class="field_title">ATP Rule</td><td class="field"><%= material.getATPRule().getDisplayName() %></td></tr>
+                <tr><td class="field_title">ATP Rule</td><td class="field"><%--= material.getATPRule().getDisplayName() --%></td></tr><!-- TODO: Display this info for each plant -->
             </table>
             <br>
             
             <!-- taxable, promotional and kosher production status -->
             <table cellspacing=2 cellpadding=2>
                 <tr><td class="field_title">Taxable:</td><td><%= material.isTaxable()%></td><tr>
-                <tr><td class="field_title">Kosher Production:</td><td><%= material.isKosherProduction() %></td><tr>
+                <tr><td class="field_title">Kosher Production:</td><td><%--= material.isKosherProduction() --%></td><tr><!-- TODO: Display this info for each plant -->
                 <tr><td class="field_title">Eligible for Perishable Only Promotion:</td><td> <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"YES":"NO" %></td><tr>
             </table>
 

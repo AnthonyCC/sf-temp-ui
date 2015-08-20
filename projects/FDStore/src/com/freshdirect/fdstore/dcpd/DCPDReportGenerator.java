@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDResourceException;
@@ -121,7 +122,7 @@ public class DCPDReportGenerator {
 	        } else if (rootNode instanceof CategoryModel) {
 	        	renderCategoryNode( (CategoryModel) rootNode, 1);
 	        } else if (rootNode instanceof Recipe) {
-	            renderRecipeNode( (Recipe) rootNode, 1);
+	            renderRecipeNode(UserContext.createDefault(), (Recipe) rootNode, 1);
 	        } else {
 	            System.out.println("Nothing to do with " + rootNode.getClass() + "/" + rootNode);
 	        }
@@ -227,7 +228,7 @@ public class DCPDReportGenerator {
 		Iterator pit = catNode.getPrivateProducts().iterator();
 		while(pit.hasNext()) {
 			ProductModel prodNode = (ProductModel) pit.next();
-			renderSKUs(prodNode.getSkus(), prodNode.getContentName(), level, null);
+			renderSKUs( UserContext.createDefault(),prodNode.getSkus(), prodNode.getContentName(), level, null);
 		}
 		
 
@@ -273,7 +274,7 @@ public class DCPDReportGenerator {
 
 
 
-	public void renderSKUs(List skuNodes, String parentCName, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+	public void renderSKUs(UserContext userCtx,List skuNodes, String parentCName, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
 	    Iterator sit = skuNodes.iterator();
 	    while(sit.hasNext()) {
 	        SkuModel skuNode = (SkuModel) sit.next();
@@ -315,12 +316,12 @@ public class DCPDReportGenerator {
 	        try {
 	        	
 	            if (skuNode.getProductInfo() != null) {
-	            	rating = skuNode.getProductInfo().getRating();
-	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating();
-	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice());
-		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice()!=0) {
-		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice());
-		        		isDeal=String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).isItemOnSale());
+	            	rating = skuNode.getProductInfo().getRating(userCtx.getFulfillmentContext().getPlantId());
+	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(userCtx.getFulfillmentContext().getPlantId());
+	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getDefaultPrice());
+		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice()!=0) {
+		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice());
+		        		isDeal=String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).isItemOnSale());
 		        	}	            	
 	            } else {
 	            	rating = null;
@@ -390,7 +391,7 @@ public class DCPDReportGenerator {
 
 
 
-	public void renderRecipeNode(Recipe recipeNode, int level) throws IOException, FDResourceException, FDSkuNotFoundException {
+	public void renderRecipeNode(UserContext userCtx,Recipe recipeNode, int level) throws IOException, FDResourceException, FDSkuNotFoundException {
 	    // I. RENDER RECIPE
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
@@ -418,13 +419,13 @@ public class DCPDReportGenerator {
 	    Iterator cit = recipeNode.getVariants().iterator();
 	    while(cit.hasNext()) {
 	    	RecipeVariant vNode = (RecipeVariant) cit.next();
-	        renderVariantNode(vNode, level, recipeNode.getContentName());
+	        renderVariantNode(userCtx,vNode, level, recipeNode.getContentName());
 	    }
 	}
 
 
 
-	public void renderVariantNode(RecipeVariant vNode, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+	public void renderVariantNode(UserContext userCtx,RecipeVariant vNode, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
 	    // I. RENDER VARIANT
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
@@ -452,13 +453,13 @@ public class DCPDReportGenerator {
 	    Iterator cit = vNode.getSections().iterator();
 	    while(cit.hasNext()) {
 	    	RecipeSection sNode = (RecipeSection) cit.next();
-	        renderSectionNode(sNode, level, recipeSourceId);
+	        renderSectionNode(userCtx,sNode, level, recipeSourceId);
 	    }
 	}
 
 
 
-	public void renderSectionNode(RecipeSection rNode, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+	public void renderSectionNode(UserContext userCtx,RecipeSection rNode, int level, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
 	    // I. RENDER SECTION
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
@@ -491,7 +492,7 @@ public class DCPDReportGenerator {
 	        	    renderUnavailableProduct(cpNode.getContentName(), level);
 	        	}
 	        } else {
-	            renderSKUs(cpNode.getSkus(), cpNode.getContentName(), level, recipeSourceId);
+	            renderSKUs(userCtx,cpNode.getSkus(), cpNode.getContentName(), level, recipeSourceId);
 	        }
 	    }
 	}

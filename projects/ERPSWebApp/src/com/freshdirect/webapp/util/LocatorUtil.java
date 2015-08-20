@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -31,92 +32,92 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class LocatorUtil {
-                
-                private static String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
-                private static Category LOGGER = LoggerFactory.getInstance(LocatorUtil.class);
-                
-                public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address) {
-                FDSessionUser user = null;
-                
-                if (FDStoreProperties.isIpLocatorEnabled()) {
-                                RequestClassifier requestClassifier = new RequestClassifier(request);
-                                int rolloutPercent = FDStoreProperties.getIpLocatorRolloutPercent(); 
-                                
-                                if (requestClassifier.isInHashRange(rolloutPercent)){ //check if rolled out to user
-                                                try {
-                                                                //used mocked ip address parameter (for testing) if exists
-                                                                String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
-                                                                IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
-                                                                
-                                                                IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
-                                                                ipLocatorEventDTO.setIp(ip);
-                                                                ipLocatorEventDTO.setIpLocZipCode(ipLocatorData.getZipCode());
-                                                                ipLocatorEventDTO.setIpLocCountry(ipLocatorData.getCountryCode());
-                                                                ipLocatorEventDTO.setIpLocRegion(ipLocatorData.getRegion());
-                                                                ipLocatorEventDTO.setIpLocCity(ipLocatorData.getCity());
-                                                                ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
-                                                                ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
-                                                                ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
-                                                                
-                                                                user = createUser(session, request, response, address, ipLocatorData, ipLocatorEventDTO);
-                
-                                                } catch (Exception e) {
-                                                                                LOGGER.error("IP Locator failed: ", e);
-                                                                }
+	
+	private static String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
+	private static Category LOGGER = LoggerFactory.getInstance(LocatorUtil.class);
+	
+	public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address) {
+    	FDSessionUser user = null;
+    	
+    	if (FDStoreProperties.isIpLocatorEnabled()) {
+    		RequestClassifier requestClassifier = new RequestClassifier(request);
+    		int rolloutPercent = FDStoreProperties.getIpLocatorRolloutPercent(); 
+    		
+    		if (requestClassifier.isInHashRange(rolloutPercent)){ //check if rolled out to user
+		    	try {
+	    			//used mocked ip address parameter (for testing) if exists
+			    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
+		    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
+		    		
+		    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
+		    		ipLocatorEventDTO.setIp(ip);
+		    		ipLocatorEventDTO.setIpLocZipCode(ipLocatorData.getZipCode());
+		    		ipLocatorEventDTO.setIpLocCountry(ipLocatorData.getCountryCode());
+		    		ipLocatorEventDTO.setIpLocRegion(ipLocatorData.getRegion());
+		    		ipLocatorEventDTO.setIpLocCity(ipLocatorData.getCity());
+		    		ipLocatorEventDTO.setUserAgent(requestClassifier.getUserAgent());
+		    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
+		    		ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
+		    		
+		    		user = createUser(session, request, response, address, ipLocatorData, ipLocatorEventDTO);
+	
+		    	} catch (Exception e) {
+					LOGGER.error("IP Locator failed: ", e);
+				}
 
-                                }              
-                } 
-                
-                                return user;
+    		}    	
+    	} 
+    	
+   		return user;
     }
     
     /** based on SiteAccessControllerTag.doStartTag()*/
     private static FDSessionUser createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address
-                                                                                                                                                                                                , IpLocatorData ipLocatorData, IpLocatorEventDTO ipLocatorEventDTO) throws IpLocatorException{
-                FDSessionUser user = null;
-                
-                try {
-                                boolean useIpLocatorData = IpLocatorUtil.validate(ipLocatorData);
-                                String zipCode = useIpLocatorData ? ipLocatorData.getZipCode() : FDStoreProperties.getDefaultPickupZoneId();
-                                
-                                newSession(session, request, response);
-                                address = new AddressModel(); // was this. from CheckLoginStatusTag
-                                address.setZipCode(zipCode);
-                                Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode).getAvailableServices();
-                                
-                                //FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
-                                //City and State information will be appended to user.address.
-                                user = createUser(ServiceTypeUtil.getPreferedServiceType(availableServices), availableServices, session, response, address);
-                                
-                                ipLocatorEventDTO.setFdUserId(user.getPrimaryKey());
-                                AddressModel _address = user.getAddress();
-                                if (_address != null){
-                                                ipLocatorEventDTO.setFdZipCode(_address.getZipCode());
-                                                ipLocatorEventDTO.setFdState(_address.getState());
-                                                ipLocatorEventDTO.setFdCity(_address.getCity());
-                               }
-                                
-                                if (FDStoreProperties.isIpLocatorEventLogEnabled()){
-                                                try {
-                                                                //log IpLocatorEvent before appending data to user from IpLocatorData
-                                                                FDCustomerManager.logIpLocatorEvent(ipLocatorEventDTO);
-                                                } catch (Exception e){
-                                                                LOGGER.error("logIpLocatorEvent failed", e);
-                                                }
-                                    }
-                                LOGGER.debug("ipLocatorEventDTO: " + ipLocatorEventDTO);
-                                
-                                //If no data city/state is appended by createUser(), city and state fields will be taken from ipLocatorData
-                               if (useIpLocatorData){
-                                                IpLocatorUtil.appendMissingFieldsToUserAddress(ipLocatorData, user.getUser());
-                                }
-                                
-                } catch (Exception e) {
-                                                LOGGER.error(e);
-                                                throw new IpLocatorException(e);
-                                }
-                
-                return user;
+    												, IpLocatorData ipLocatorData, IpLocatorEventDTO ipLocatorEventDTO) throws IpLocatorException{
+    	FDSessionUser user = null;
+    	
+    	try {
+    		boolean useIpLocatorData = IpLocatorUtil.validate(ipLocatorData);
+	    	String zipCode = useIpLocatorData ? ipLocatorData.getZipCode() : FDStoreProperties.getDefaultPickupZoneId();
+	    	
+	    	newSession(session, request, response);
+	    	address = new AddressModel(); // was this. from CheckLoginStatusTag
+	    	address.setZipCode(zipCode);
+	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode).getAvailableServices();
+	    	
+	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
+	    	//City and State information will be appended to user.address.
+	    	user = createUser(ServiceTypeUtil.getPreferedServiceType(availableServices), availableServices, session, response, address);
+	    	
+	    	ipLocatorEventDTO.setFdUserId(user.getPrimaryKey());
+	    	AddressModel _address = user.getAddress();
+	    	if (_address != null){
+		    	ipLocatorEventDTO.setFdZipCode(_address.getZipCode());
+		    	ipLocatorEventDTO.setFdState(_address.getState());
+		    	ipLocatorEventDTO.setFdCity(_address.getCity());
+	    	}
+	    	
+	    	if (FDStoreProperties.isIpLocatorEventLogEnabled()){
+		    	try {
+		    		//log IpLocatorEvent before appending data to user from IpLocatorData
+		    		FDCustomerManager.logIpLocatorEvent(ipLocatorEventDTO);
+		    	} catch (Exception e){
+		    		LOGGER.error("logIpLocatorEvent failed", e);
+		    	}
+		    }
+	    	LOGGER.debug("ipLocatorEventDTO: " + ipLocatorEventDTO);
+	    	
+	    	//If no data city/state is appended by createUser(), city and state fields will be taken from ipLocatorData
+    		if (useIpLocatorData){
+    			IpLocatorUtil.appendMissingFieldsToUserAddress(ipLocatorData, user.getUser());
+    		}
+	    	
+    	} catch (Exception e) {
+			LOGGER.error(e);
+			throw new IpLocatorException(e);
+		}
+    	
+    	return user;
     }
     
     public static FDSessionUser createUser(EnumServiceType serviceType,
@@ -137,8 +138,8 @@ public class LocatorUtil {
                 if (user != null) {
                     oldCart = user.getShoppingCart();
                 }
-
-                user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType), session);
+                StoreContext storeContext =StoreContextUtil.getStoreContext(session);
+                user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
                 user.setUserCreatedInThisSession(true);
                 user.setSelectedServiceType(serviceType);
                 //Added the following line for zone pricing to keep user service type up-to-date.
@@ -170,9 +171,9 @@ public class LocatorUtil {
             }
 
             //To fetch and set customer's coupons.
-                                if(user != null){
-                                                FDCustomerCouponUtil.initCustomerCoupons(session);
-                                }
+    		if(user != null){
+    			FDCustomerCouponUtil.initCustomerCoupons(session);
+    		}
             
             //The previous recommendations of the current session need to be removed.
             session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);

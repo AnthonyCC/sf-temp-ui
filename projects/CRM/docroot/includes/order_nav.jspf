@@ -192,7 +192,13 @@ boolean hasCase = false;
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!authorized) {%><a href="javascript:setAction(document.order_details, 'authorize')" class="cust_sub_nav_text"><%}%>Authorize Order<% if (!authorized) {%></a><%}%></div>
 				<% } %>
 				<% if (!o_modify && orderPermissions.allowModifyOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"order_modify.jsp")) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/order/order_modify.jsp?orderId=<%=nav_orderId%>" class="cust_sub_nav_text"><%}%>Modify Order<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
+					<div class="cust_sub_nav" style="width: 120px;">
+						<% if (hasCustomerCase && isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %>
+							<a href="masquerade.jsp?modifyOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+						<% } %>
+						Modify Order
+						<%if(hasCustomerCase && isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %></a><%}%>
+					</div>
 				<% } %>
 				<% if (!o_cancel && orderPermissions.allowCancelOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"cancel_order.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase ){%></a><%}%></div>
@@ -205,7 +211,7 @@ boolean hasCase = false;
 				%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
 				<% } else if(CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")&& !isEBTPayment) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Issue Credit</a></div>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
 				<% } %>
 				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 && CrmSecurityManager.hasAccessToPage(agentRole1,"approve_credit.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(CrmSecurityManager.hasAccessToPage(agentRole1,"approveCredit")) ? "Approve Credit" : CrmSecurityManager.hasAccessToPage(agentRole1,"rejectCredit") ? "Deny Credit" : ""%></a></div>
@@ -214,10 +220,24 @@ boolean hasCase = false;
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/order/payment_exception.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text"><%}%>Payment Exception<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
 				<%if(isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"shop_from_order.jsp")){%>
-				    <div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Reorder</a></div>
+				    <div class="cust_sub_nav" style="width: 120px;">
+				    	<% if (hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %>
+				    		<a href="masquerade.jsp?shopFromOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+				    	<% } %>
+				    	Reorder
+				    	<% if (hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %></a><% } %>
+				    </div>
 				<% } %>
 				<%if(o_details && isRegularOrder && orderPermissions.allowComplaint()){%>
-				    <div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/quickshop/makegood_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>MakeGood Order<%if(hasCustomerCase){%></a><%}%></div>
+				    <div class="cust_sub_nav" style="width: 120px;">
+				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
+				    		<a href="masquerade.jsp?makeGoodFromOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+				    	<%}%>
+				    		MakeGood
+				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
+				    		</a>
+				    	<%}%>
+				    </div>
 				<% } %>
 				<%if(!o_delivery_center && o_details && isRegularOrder && displayDeliveryCenterLink && FDStoreProperties.isDeliveryCenterEnabled()){%>
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/main/delivery_center_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Delivery Center</a></div>

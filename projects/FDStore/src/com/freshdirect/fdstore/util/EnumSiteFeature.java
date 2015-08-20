@@ -11,9 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.Latch;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 
@@ -22,6 +26,9 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 	
 	private static final long serialVersionUID = -2545205419352991876L;
 
+	private static final Logger LOGGER = LoggerFactory.getInstance(EnumSiteFeature.class);
+	
+	
 	private final static String PROFILE_PREFIX = "siteFeature.";
 
     private final static Map<String, EnumSiteFeature> staticEnum = Collections.synchronizedMap(new HashMap<String, EnumSiteFeature>());
@@ -32,13 +39,15 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     private final static Latch mocked = new Latch(false);
     
-    /**
-     * @deprecated
-     */
+	public final static EnumSiteFeature NIL = new EnumSiteFeature("NIL");
+    
+	@Deprecated
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true, "Your Favorites");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL", true, "You Might Also Like");
+	
+	@Deprecated
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
@@ -46,8 +55,10 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     public final static EnumSiteFeature SMART_CATEGORY = new EnumSiteFeature("SMART_CATEGORY", true, "Smart Category (virtual)");
     
     //gift cards
+    @Deprecated
     public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
     //Zone Pricing
+    @Deprecated
     public final static EnumSiteFeature ZONE_PRICING = new EnumSiteFeature("zonePricing");
     
     //Product Group Popular
@@ -58,6 +69,7 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     //Brand Name Deals
     public final static EnumSiteFeature BRAND_NAME_DEALS = new EnumSiteFeature("BRAND_NAME_DEALS",true,"Brand Name Deals");
     
+    @Deprecated
     public final static EnumSiteFeature PAYMENTECH_GATEWAY=new EnumSiteFeature("Paymentech");
     
     public final static EnumSiteFeature PEAK_PRODUCE = new EnumSiteFeature("PEAK_PRODUCE", true, "Peak Produce");
@@ -76,6 +88,7 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     /**
      * Is Smart Savings feature?
      */
+    @Deprecated
     boolean isSmartSavings;
     
     String title;
@@ -142,12 +155,13 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return "EnumSiteFeature[" + name + "]";
 	}
 	
-	@SuppressWarnings( "unused" )
 	protected static void loadDynamicSiteFeatures() {
 		synchronized (loaded) {
 			if (loaded.isReset()) {
 				if (mocked.isReset()) {
-					Iterator<DynamicSiteFeature> it = SmartStoreServiceConfiguration.getInstance().loadDynamicSiteFeatures().iterator();
+					final String eStoreId = CmsManager.getInstance().getEStoreId();
+					
+					Iterator<DynamicSiteFeature> it = SmartStoreServiceConfiguration.getInstance().loadDynamicSiteFeatures(eStoreId).iterator();
 					while (it.hasNext()) {
 						// creating an instance for side effects
 						new EnumSiteFeature( it.next() );
@@ -168,10 +182,22 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 
 	public static EnumSiteFeature getEnum(String name) {
 		loadDynamicSiteFeatures();
-		EnumSiteFeature dynamic = dynamicEnum.get(name);
-		if (dynamic != null)
-			return dynamic;
-		return staticEnum.get(name);
+		
+		// look up in dynamic list
+		EnumSiteFeature feature = dynamicEnum.get(name);
+		if (feature != null)
+			return feature;
+		
+		// then look up in static list
+		feature = staticEnum.get(name);
+		
+		if (feature == null) {
+			LOGGER.error("Failed to find site feature with name '" + name + "', store: " + CmsManager.getInstance().getSingleStoreKey());
+
+			return EnumSiteFeature.NIL;
+		} else {
+			return feature;
+		}
 	}
 
 	public static Map<String, EnumSiteFeature> getEnumMap() {
@@ -220,10 +246,12 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return name;
 	}
 
+	@Deprecated
 	public String getPresentationTitle() {
 		return prez_title;
 	}
 
+	@Deprecated
 	public String getPresentationDescription() {
 		return prez_desc;
 	}
@@ -232,6 +260,7 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return isSmartStore;
 	}
 	
+	@Deprecated
 	public boolean isSmartSavings() {
 		return isSmartSavings;
 	}
@@ -254,17 +283,9 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
         return list;
     }
 
+    @Deprecated
 	public static List<EnumSiteFeature> getSmartSavingsFeatureList() {
-		List<EnumSiteFeature> list = new ArrayList<EnumSiteFeature>();
-		
-		Iterator<EnumSiteFeature> it = iterator();
-		while (it.hasNext()) {
-			EnumSiteFeature sf = it.next();
-			if (sf.isSmartSavings)
-				list.add(sf);
-		}
-		
-		return list;
+		return Collections.<EnumSiteFeature>emptyList();
 	}
 
 	public static void mock() {

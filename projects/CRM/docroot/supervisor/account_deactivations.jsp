@@ -158,7 +158,7 @@ while(iterator.hasNext()){
 	</table>
 	</div>
 	
-	<div class="content" style="height: 80%;">
+	<div class="" style="height: 80%;">
 		<div class="list_header" style="padding-top: 4px; padding-bottom: 4px;">
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER">
 			<tr>

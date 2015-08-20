@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
  * 
@@ -95,8 +97,8 @@ public class OrderHistory extends Message {
             this.pendingDeliveryOrder = orderInfo.isPendingDeliveryOrder();
             this.refused = orderInfo.isRefused();
             this.shoppable = orderInfo.isShoppable();
-            this.modifiable = orderInfo.isModifiable();			
-        }
+            this.modifiable = orderInfo.isModifiable();
+            }
 
         /**
          * @param orderInfos

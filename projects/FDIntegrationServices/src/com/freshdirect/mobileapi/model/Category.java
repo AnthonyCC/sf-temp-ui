@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.mobileapi.controller.data.Image;
+import com.freshdirect.mobileapi.controller.data.ImageBanner;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
@@ -33,6 +34,8 @@ public class Category extends ProductContainer {
     private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
     
     List<Category> categories = new ArrayList<Category>();
+    
+    private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
 
     public static Category wrap(CategoryModel model) {
         return wrapCategory(model, 0);
@@ -88,7 +91,41 @@ public class Category extends ProductContainer {
         final boolean hasAlcohol = model.isHavingBeer();
         result.setHealthWarning(hasAlcohol);
         
+        List<com.freshdirect.fdstore.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
+        List<ImageBanner> heroCarouselImgBannerList = new ArrayList<ImageBanner>();
        
+        for(com.freshdirect.fdstore.content.ImageBanner heroCarousel: heroCarouselList){
+     	   
+ 		if (heroCarousel != null) {
+ 			
+ 			ImageBanner heroCarouselImgBanner = new ImageBanner();
+ 			
+ 			heroCarouselImgBanner.setFlagColor(heroCarousel.getFlagColor());
+ 			heroCarouselImgBanner.setFlagText(heroCarousel.getFlagText());
+ 			if (heroCarousel.getImageBannerImage() != null) {
+ 				heroCarouselImgBanner.setImage(new Image(heroCarousel
+ 						.getImageBannerImage()).getSource());
+ 			}
+ 			heroCarouselImgBanner.setPrice(heroCarousel.getPrice());
+ 			if (heroCarousel.getTarget() != null
+ 					&& heroCarousel.getTarget().getContentKey() != null) {
+ 				heroCarouselImgBanner.setTargetTypeId(heroCarousel
+ 						.getTarget().getContentKey().getEncoded());
+ 			}
+ 			heroCarouselImgBanner.setText(heroCarousel.getName());
+
+ 			if (heroCarouselImgBanner != null) {
+ 				heroCarouselImgBannerList.add(heroCarouselImgBanner);
+ 			}
+
+ 		}
+ 		
+ 		if(heroCarouselImgBannerList!=null && heroCarouselImgBannerList.size()!= 0) {
+ 		result.setHeroCarousel(heroCarouselImgBannerList);
+ 		}
+ 		
+        }
+
 
         return result;
     }
@@ -159,6 +196,14 @@ public class Category extends ProductContainer {
 	
 	public void addCategories(Category cat){
 		this.categories.add(cat);
+	}
+
+	public List<ImageBanner> getHeroCarousel() {
+		return heroCarousel;
+	}
+
+	public void setHeroCarousel(List<ImageBanner> heroCarousel) {
+		this.heroCarousel = heroCarousel;
 	}
     
     

@@ -151,7 +151,9 @@ public class FDCartonDetailJcoServer extends FdSapServer
 						if (!currentCartonNo.equals(param.getCartonNumber()))
 						{
 							cartonModel = new ErpCartonInfo(currentOrderNo, param.getSapOrderNo(), param.getCartonNumber(), param.getCartonType());
-							
+							if(null ==orderTocartonMapping.get(param.getOrderNo())){
+								orderTocartonMapping.put(param.getOrderNo(),new ArrayList<ErpCartonInfo>());
+							}
 							orderTocartonMapping.get(param.getOrderNo()).add(cartonModel);
 							currentCartonNo = param.getCartonNumber();
 						}

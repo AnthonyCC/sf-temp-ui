@@ -142,9 +142,6 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
     <tmpl:put name='title' direct='true'>Account Details</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
-    <fd:CmInit/>
-	<fd:CmPageView wrapIntoScriptTag="true" forceTagEffect="true"/>
-	<fd:CmRegistration wrapIntoScriptTag="true" force="true"/>
     
     <% if (forPrint) { %>
         <div class="sub_nav">Customer: <b><%= custInfo.getFirstName() %> <%= custInfo.getMiddleName() %> <%= custInfo.getLastName() %></b> &middot; ID: <b><%= user.getIdentity().getErpCustomerPK() %></b> &middot; Email: <%= custInfo.getEmail() %><br><span class="cust_header_field">Order<%= user.getAdjustedValidOrderCount() > 1 ? "s" : "" %>:</span> <b><%= user.getAdjustedValidOrderCount() %></b>
@@ -191,8 +188,8 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                     <div class="cust_sub_nav" style="width: 150x;"><a href="javascript:document.resubmitCustomer.submit()"><b>Resubmit Customer</b></a></div>
                 </form>
             <% } %>
-            <%if (!forPrint){%><div class="cust_sub_nav"><a href="javascript:popResize('/main/account_details.jsp?for=print','600','680')"><b>Print Version</b></a></div>
-            <div class="cust_sub_nav"><a href="http://www.usps.com/zip4/" target="usps" class="home_search_module_field" title="USPS ZIP check" style="color:#003399; text-decoration:none;"><span style="color:#CC0000;">&raquo;</span> USPS</a></div><%}%>
+            <% if (!agent.isFDX()) { %><%if (!forPrint){ %><div class="cust_sub_nav"><a href="javascript:popResize('/main/account_details.jsp?for=print','600','680')"><b>Print Version</b></a></div><% } %>
+            <div class="cust_sub_nav"><a href="http://www.usps.com/zip4/" target="usps" class="" title="USPS ZIP check" style="color:#003399; text-decoration:none;"><span style="color:#CC0000;">&raquo;</span> USPS</a></div><%}%>
             <% 
             	String referrerName = FDReferralManager.loadReferrerNameFromReferralCustomerId(user.getIdentity().getErpCustomerPK());
             	if (referrerName != null) {

@@ -35,6 +35,8 @@ import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.mockejb.jndi.MockContextFactory;
 
+import com.freshdirect.common.context.StoreContext;
+
 public abstract class DbTestCaseSupport extends TestCase {
 
 	
@@ -54,6 +56,8 @@ public abstract class DbTestCaseSupport extends TestCase {
 	private IDataSet metaData;
 	private IDatabaseConnection dbConnection;
 
+	protected StoreContext storeContext = StoreContext.createDefault();
+	
 	public DbTestCaseSupport(String name) {
 		super(name);
 	}

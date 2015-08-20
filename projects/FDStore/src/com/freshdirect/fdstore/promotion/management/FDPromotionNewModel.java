@@ -876,6 +876,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		}
 		return isMatched;
 	}
+	
 
 	public boolean isForCOSNew() {
 		boolean isMatched = false;
@@ -897,6 +898,45 @@ public class FDPromotionNewModel extends ModelSupport {
 		return isMatched;
 	}
 
+	public boolean isForFDX() {
+		boolean retBool = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if (null != custStrategies) {
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
+				retBool = promoCustStrategyModel.isOrderTypeFDX();
+				break;
+			}
+		}
+		return retBool;
+	}
+	
+	public boolean isForHOME() {
+		boolean retBool = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if (null != custStrategies) {
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
+				retBool = promoCustStrategyModel.isOrderTypeHome();
+				break;
+			}
+		}
+		return retBool;
+	}
+
+	public boolean isForPICKUP() {
+		boolean retBool = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if (null != custStrategies) {
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
+				retBool = promoCustStrategyModel.isOrderTypePickup();
+				break;
+			}
+		}
+		return retBool;
+	}
+
 	public boolean isForNew() {
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this
@@ -915,7 +955,7 @@ public class FDPromotionNewModel extends ModelSupport {
 		}
 		return isMatched;
 	}
-
+	
 	public boolean isForDPActiveOrRTU() {
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this

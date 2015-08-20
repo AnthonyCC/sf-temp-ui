@@ -57,29 +57,29 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 				String profileValue="";
 				if (EnumDlvPassProfileType.AMAZON_PRIME.equals(profileType)) {
 					profileValue=FDStoreProperties.getUnlimitedAmazonPrimeProfile();
-					productDiscontinued=isProductDiscontinued(profileType,profileValue);
+					productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 					if(productDiscontinued) {
 						profileType=EnumDlvPassProfileType.UNLIMITED;
 						profileValue=FDStoreProperties.getUnlimitedProfilePosfix();
-						productDiscontinued=isProductDiscontinued(profileType,profileValue);
+						productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 					}
 				}
 				else if (EnumDlvPassProfileType.PROMOTIONAL_UNLIMITED.equals(profileType)) {
 					profileValue=FDStoreProperties.getUnlimitedPromotionalProfile();
-					productDiscontinued=isProductDiscontinued(profileType,profileValue);
+					productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 					if(productDiscontinued) {
 						profileType=EnumDlvPassProfileType.UNLIMITED;
 						profileValue=FDStoreProperties.getUnlimitedProfilePosfix();
-						productDiscontinued=isProductDiscontinued(profileType,profileValue);
+						productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 					}
 				}
 				else if(EnumDlvPassProfileType.UNLIMITED.equals(profileType)){
 					profileValue=FDStoreProperties.getUnlimitedProfilePosfix();
-					productDiscontinued=isProductDiscontinued(profileType,profileValue);
+					productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 				}
 				else if(EnumDlvPassProfileType.BSGS.equals(profileType)){
 					profileValue=FDStoreProperties.getBSGSProfilePosfix();
-					productDiscontinued=isProductDiscontinued(profileType,profileValue);
+					productDiscontinued=isProductDiscontinued(user,profileType,profileValue);
 				}
 				
 				/*else if(EnumDlvPassProfileType.UNLIMITED.equals(profileType)){
@@ -186,7 +186,7 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 	}
 	
 	
-	private boolean isProductDiscontinued(EnumDlvPassProfileType profileType, String profileValue) throws FDResourceException, FDSkuNotFoundException {
+	private boolean isProductDiscontinued(FDUserI user,EnumDlvPassProfileType profileType, String profileValue) throws FDResourceException, FDSkuNotFoundException {
 		
 		List dlvPassTypes=getDeliveryPassTypes(profileType, profileValue);
 		if(dlvPassTypes==null||(dlvPassTypes!=null &&dlvPassTypes.size()==0))
@@ -195,10 +195,12 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 		DeliveryPassType dpType=null;
 		FDProductInfo productInfo=null;
 		boolean productDiscontinued=false;
+		final String salesOrg=user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+		final String distrChannel=user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
 		for(int i=0;i<dlvPassTypes.size();i++) {
 			dpType=(DeliveryPassType)dlvPassTypes.get(i);
 			productInfo=FDCachedFactory.getProductInfo(dpType.getCode());
-			if(!productInfo.isDiscontinued()){
+			if(!productInfo.isDiscontinued(salesOrg,distrChannel)){
 				productDiscontinued = false;
 				break;
 			}else{

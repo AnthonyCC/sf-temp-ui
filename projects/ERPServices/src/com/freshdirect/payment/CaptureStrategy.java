@@ -30,7 +30,7 @@ public class CaptureStrategy extends PaymentStrategy {
 	public CaptureStrategy (ErpSaleModel sale) {
 		super(sale);
 		double perishableBuffer=getPerishableBuffer(sale);
-		ErpAffiliate fd = ErpAffiliate.getPrimaryAffiliate();
+		ErpAffiliate fd = ErpAffiliate.getPrimaryAffiliate(sale.geteStoreId());
 		this.fdInfo = new CapInfo(sale.getPK().getId(), fd, sale.getCaptures(fd),perishableBuffer);
 		ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		this.bcInfo = new CapInfo(sale.getPK().getId(), bc, sale.getCaptures(bc),perishableBuffer);

@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.fdstore.social.ejb.FDSocialManagerHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -154,6 +155,16 @@ public class FDServiceLocator extends ERPServiceLocator {
             throw new EJBException(e);
         }
     }
+    
+    public FDSocialManagerHome getFDSocialLoginManagerHome() {
+        try {
+            //return (FDSocialLoginManagerHome) getRemoteHome(FDStoreProperties.getFDSocialLoginManagerHome());
+        	return (FDSocialManagerHome) getRemoteHome("freshdirect.fdstore.SocialManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+ 
     
 
     public ErpSaleHome getErpSaleHome() {

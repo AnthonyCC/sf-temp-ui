@@ -11,6 +11,7 @@ package com.freshdirect.fdstore.customer;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.core.ModelSupport;
 
 
@@ -28,17 +29,19 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     private Date lastLogin;
     private String defaultShipToAddressPK;
     private String defaultPaymentMethodPK;
-    private String defaultDepotLocationPK;
-    private ProfileModel profile;
+    private String defaultDepotLocationPK;   
+	private ProfileModel profile;
     private String passwordHint;
     private String depotCode;
     private java.util.Date passwordRequestExpiration;
+    private FDCustomerEStoreModel customerEStoreModel;
     
     /**
      * Default constructor.
      */
     public FDCustomerModel() {
         super();
+        customerEStoreModel = new FDCustomerEStoreModel();
     }
     
     public String getErpCustomerPK() {
@@ -185,5 +188,19 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		}
 		return false;
 	}
-    
+ 
+	 /**
+	 * @return the customerEStoreModel
+	 */
+	public FDCustomerEStoreModel getCustomerEStoreModel() {
+		return customerEStoreModel;
+	}
+
+	/**
+	 * @param customerEStoreModel the customerEStoreModel to set
+	 */
+	public void setCustomerEStoreModel(FDCustomerEStoreModel customerEStoreModel) {
+		this.customerEStoreModel = customerEStoreModel;
+	}
+
 }

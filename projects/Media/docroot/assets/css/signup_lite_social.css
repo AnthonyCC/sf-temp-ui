@@ -1,0 +1,109 @@
+@CHARSET "ISO-8859-1";
+
+a:hover{text-decoration:none;}
+	
+.signup-style{
+		
+		width:500px; 
+		height:auto; 
+		}
+		
+.padding-input-box{
+		 
+		padding:9px;
+		border-radius:2px;
+		}
+		
+		
+.form-side{
+     	
+     	width:170px;
+     	float:left;
+     	margin-right:80px;
+     	}
+
+.social-login-header{
+	width:240;
+	float:right;
+
+}
+.social-login{
+		
+     	width:210px;
+     	float:right;
+     	}
+     	
+.bottom-links{
+     	
+     	font-size: 11px; 
+     	font-family: Verdana, Arial, sans-serif;
+     	}
+
+     	
+.clear{clear:both;}
+     	
+input[type="submit"]{
+     	 width:200px;
+     	 padding:10px;
+     	 margin-top:0px;
+         background-color:#00B800;
+         color:#ffffff;
+         text-align:center;	 
+     	 border-radius:5px;}
+     	 
+     	 
+.bottom-contents{
+     	 width:500px;
+     	 margin-top:10px;
+     	 text-align:center;
+     	 margin-bottom:0px;
+     	 
+     	 }
+
+input[disabled="disabled"]{
+     	
+     	background-color:#D6D6C2;
+     	}
+
+ .error{
+ text-align:left;
+ font-size:12px;
+ font-family:"Verdana", Georgia, Serif;
+ }	
+input.error{
+		
+     	width:177px;
+     	padding:9px;
+		border-radius:2px;
+  		background-color:#FFFFE6;
+        color: black;
+     	}
+span.error_img
+{
+/*background:url( "/media_stat/images/common/red_arrow.PNG") no-repeat;*/
+display:block;
+width:17px;
+height:17px;
+}
+
+.password-class{
+ position:relative;
+ }
+ 
+ span.show_bg_arrow
+{
+background:url( "/media_stat/images/common/black_arrow.PNG") no-repeat;
+}
+
+
+ .show-password{
+ position:absolute;
+ top:336px;
+ fron-size:10px;
+ right:825px;
+ background:#eaeaea;
+ color:#000;
+ padding:5px 10px;
+ cursor:pointer;
+ border-radius:3px;
+ }

@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -30,7 +32,9 @@ public class GetDealsSKUTag extends AbstractGetterTag<List<SkuModel>> {
 
 		List<SkuModel> products = null;
 		String upperLimit = DealsHelper.getDealsUpperLimit() + ".99";
-
+        
+        final String salesOrg=getPricingZone().getSalesOrg();
+		final String distrChannel=getPricingZone().getDistributionChanel();
 		Collection<?> _products = FDCachedFactory.findSKUsByDeal( DealsHelper.getDealsLowerLimit(), Double.parseDouble( upperLimit ), getSKUPrefixes() );
 		if ( _products != null && _products.size() != 0 ) {
 			products = new ArrayList<SkuModel>( _products.size() );
@@ -40,7 +44,7 @@ public class GetDealsSKUTag extends AbstractGetterTag<List<SkuModel>> {
 				sku = i.next().toString();
 				try {
 					productInfo = FDCachedFactory.getProductInfo( sku );
-					if ( productInfo.isAvailable() && productInfo.getZonePriceInfo( getPricingZoneId() ).isItemOnSale() ) {
+					if ( productInfo.isAvailable(salesOrg,distrChannel) && productInfo.getZonePriceInfo( getPricingZone() ).isItemOnSale() ) {
 
 						try {
 							SkuModel sm = ContentFactory.getInstance().getProduct( sku ).getSku( sku );
@@ -100,11 +104,11 @@ public class GetDealsSKUTag extends AbstractGetterTag<List<SkuModel>> {
 		}
 	}
 
-	private String getPricingZoneId() {
+	private ZoneInfo getPricingZone() {
 		FDUserI user = FDSessionUser.getFDSessionUser( pageContext.getSession() );
 		if ( user == null ) {
 			throw new FDRuntimeException( "User object is Null" );
 		}
-		return user.getPricingZoneId();
+		return user.getUserContext().getPricingContext().getZoneInfo();
 	}
 }

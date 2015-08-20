@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -1974,7 +1975,7 @@ public class MockProductModel extends MockContentNodeModel implements
 		if(sku != null){
 			try {
 				FDProductInfo pInfo = sku.getProductInfo();
-				return pInfo.getGroup();
+				return pInfo.getGroup(getPricingContext().getZoneInfo().getSalesOrg(),getPricingContext().getZoneInfo().getDistributionChanel());
 			} catch (FDSkuNotFoundException e) {				
 			}			
 		}
@@ -1987,11 +1988,7 @@ public class MockProductModel extends MockContentNodeModel implements
 		return false;
 	}
 
-	@Override
-	public List<FDLimitedAvailabilityInfo> getLimitedAvailability() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public boolean isRetainOriginalSkuOrder() {
@@ -2090,7 +2087,10 @@ public class MockProductModel extends MockContentNodeModel implements
 	public List<ProductModel> getCompleteTheMeal() {
 		return null;
 	}
-
+	@Override
+	public UserContext getUserContext() {
+		return UserContext.createDefault();
+	}
 	@Override
 	public String getPageTitle() {
 		return null;

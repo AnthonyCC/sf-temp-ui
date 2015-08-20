@@ -14,11 +14,11 @@ public class AsyncEventSink implements EventSinkI {
 	private static Category LOGGER = LoggerFactory.getInstance(AsyncEventSink.class);
 
 	private final EventSinkI sink;
-	private final LinkedBlockingQueue buffer;
+	private final LinkedBlockingQueue<FDWebEvent> buffer;
 
 	public AsyncEventSink(EventSinkI sink, int bufferSize) {
 		this.sink = sink;
-		this.buffer = new LinkedBlockingQueue(bufferSize);
+		this.buffer = new LinkedBlockingQueue<FDWebEvent>(bufferSize);
 		//start the 
 		Runnable r = new Poller();
 		Thread t = new Thread(r);

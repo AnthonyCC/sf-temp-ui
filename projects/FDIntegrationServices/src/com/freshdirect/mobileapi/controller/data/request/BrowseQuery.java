@@ -24,6 +24,68 @@ public class BrowseQuery extends Message {
 	
 	private String groupVersion;
 	
+	private String zipCode;
+	
+	private String serviceType;
+	
+	private String address1;
+	
+	private String apartment;
+	
+	private String city;
+	
+	private String state;
+	
+	private String productCount;
+	
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getAddress1() {
+		return address1;
+	}
+
+	public void setAddress1(String address1) {
+		this.address1 = address1;
+	}
+
+	public String getApartment() {
+		return apartment;
+	}
+
+	public void setApartment(String apartment) {
+		this.apartment = apartment;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public String getNutritionName() {
 		return nutritionName;
 	}
@@ -96,6 +158,13 @@ public class BrowseQuery extends Message {
 		this.id = id;
 	}
 	
+	public String getProductCount() {
+		return productCount;
+	}
+
+	public void setProductCount(String productCount) {
+		this.productCount = productCount;
+	}
 	
 
 }

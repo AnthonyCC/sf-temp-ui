@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.action.fdstore.ChooseTimeslotAction;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class TimeslotManipulator extends CheckoutManipulator {
@@ -31,8 +32,9 @@ public class TimeslotManipulator extends CheckoutManipulator {
 
 	public void setPhoneCharge() throws FDResourceException {
 		HttpSession session = request.getSession();
+		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER); 
 		String app = (String)session.getAttribute( SessionName.APPLICATION );
-		if ( !"CALLCENTER".equalsIgnoreCase( app ) ) {
+		if ( !"CALLCENTER".equalsIgnoreCase( app ) && (user != null && user.getMasqueradeContext()==null) ) {
 			return;
 		}
 		

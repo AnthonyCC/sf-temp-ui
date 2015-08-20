@@ -28,7 +28,7 @@ public class SAPProductPromotionLoaderDAO {
 	
 	private static final String INSERT_INTO_ERPS_PRODUCT_PROMOTION_HISTORY = "INSERT INTO ERPS.PRODUCT_PROMOTION_HISTORY (VERSION, DATE_CREATED,STATUS) VALUES (?,?,?)";
 	private static final String UPDATE_ERPS_PRODUCT_PROMOTION_HISTORY = "UPDATE ERPS.PRODUCT_PROMOTION_HISTORY SET STATUS=? WHERE VERSION =?";
-	private static final String INSERT_INTO_ERPS_PRODUCT_PROMOTION_GROUP = "INSERT INTO ERPS.PRODUCT_PROMOTION_GROUP(ID,ZONE_ID,VERSION,TYPE,MAT_NUM,SKU_CODE,PRIORITY,ERP_DEPT,FEATURED,FEATURED_HEADER,ERP_CATEGORY,ERP_CAT_POSITION,ERP_PP_ID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT_INTO_ERPS_PRODUCT_PROMOTION_GROUP = "INSERT INTO ERPS.PRODUCT_PROMOTION_GROUP(ID,ZONE_ID,VERSION,TYPE,MAT_NUM,SKU_CODE,PRIORITY,ERP_DEPT,FEATURED,FEATURED_HEADER,ERP_CATEGORY,ERP_CAT_POSITION,ERP_PP_ID,SALES_ORG,DISTRIBUTION_CHANNEL) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String INSERT_INTO_ERPS_PRODUCT_PROMOTION = "INSERT INTO ERPS.PRODUCT_PROMOTION(ID,VERSION,ERP_PP_ID,START_DATE,END_DATE,TYPE) VALUES(?,?,?,?,?,?)";
 
 	public static void loadProductPromotions(Connection conn,List<ErpProductPromotion> ppList,List<ErpProductPromotionInfo> ppInfoList,int batchVersion) throws SQLException{
@@ -90,6 +90,8 @@ public class SAPProductPromotionLoaderDAO {
 					ps.setString(11,erpProductPromotionInfo.getErpCategory());
 					ps.setString(12,""+erpProductPromotionInfo.getErpCatPosition());
 					ps.setString(13,erpProductPromotionInfo.getErpPromtoionId());
+					ps.setString(14,erpProductPromotionInfo.getSalesOrg());
+					ps.setString(15,erpProductPromotionInfo.getDistChannel());
 					ps.addBatch();				
 				}
 				ps.executeBatch();

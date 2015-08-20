@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.fdstore.FDProductPromotionInfo' %>
 <%@ page import='com.freshdirect.cms.ContentType' %>
 <%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -54,11 +55,19 @@ if(null !=refresh && null !=EnumProductPromotionType.getEnum(typeSelected)){
 <% if(null !=zoneSelected && null !=getProducts){ 
 	List<ProductModel> productModelList = null;
 	ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY,"picks_love");
+	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+	String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+	String distrChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+
 	if(null != contentNode && contentNode instanceof CategoryModel){
 		CategoryModel categoryModel = (CategoryModel)contentNode;	
 		productModelList =categoryModel.getProducts();
 	}
-	Map<String,List<FDProductPromotionInfo>> productPromoInfoMap =FDProductPromotionManager.getProductPromotion(typeSelected);
+	// !!! FIXME !!!
+	// !!! FIXME !!! this is broken since changeset #34926 on FDLogisticsIntegration branch
+	// !!! FIXME !!!
+	// Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap =FDProductPromotionManager.getProductPromotion(typeSelected);
+	Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = null;
 	if(null != productPromoInfoMap){
 		List<FDProductPromotionInfo> list = productPromoInfoMap.get(zoneSelected);
 		if(null ==list || list.isEmpty()){%>
@@ -80,7 +89,7 @@ if(null !=refresh && null !=EnumProductPromotionType.getEnum(typeSelected)){
 				<td><%= info.isFeatured()?"Featured":"Non-Featured" %></td>
 				<% EnumFeaturedHeaderType fhType =EnumFeaturedHeaderType.getEnum(info.getFeaturedHeader()); %>
 				<td><%= null!=fhType?fhType.getName():info.getFeaturedHeader() %></td>
-				<td>&nbsp;<%= null !=fdInfo && fdInfo.isAvailable()?"Available":"Unavailable" %></td></tr>
+				<td>&nbsp;<%= null !=fdInfo && fdInfo.isAvailable(salesOrg,distrChannel)?"Available":"Unavailable" %></td></tr>
 			<%}%></table>
 		<%} else {	%>	
 		No products found for the selected zone.

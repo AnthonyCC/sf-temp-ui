@@ -84,7 +84,7 @@ public class CrmResubmitOrderControllerTag extends AbstractControllerTag {
 		//
 		try {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
+			FDOrderI order = FDCustomerManager.getOrderForCRM(this.orderId);
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(), user.isCorporateUser(), user
 				.getAdjustedValidOrderCount());
 			CallCenterServices.resubmitOrder(this.orderId, cra,order.getOrderType());
@@ -108,7 +108,7 @@ public class CrmResubmitOrderControllerTag extends AbstractControllerTag {
 		try {
 			//FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		
-			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
+			FDOrderI order = FDCustomerManager.getOrderForCRM(this.orderId);
 			Date now=DateUtil.getCurrentTime();
 			if( ( EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(order.getOrderStatus()) &&
 				  now.after(order.getDeliveryReservation().getStartTime())

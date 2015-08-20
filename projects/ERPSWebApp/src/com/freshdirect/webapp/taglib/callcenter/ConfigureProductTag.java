@@ -8,16 +8,34 @@
  */
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import javax.servlet.jsp.JspException;
 
-import org.apache.log4j.*;
-import com.freshdirect.framework.util.log.LoggerFactory;
+import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.content.*;
-import com.freshdirect.fdstore.customer.*;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.common.context.UserContext;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -81,7 +99,7 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			// FIXME: variant ID is null here (last param). Is it correct?
 			String configDescValue = this.buildConfiguration(fdProd);
 			this.configProductValue = new FDCartLineModel(new FDSku(fdProd),
-					this.product, this.configuration, null, getPricingZoneId());
+					this.product, this.configuration, null, getUserContext());
 
 			//
 			// Set variables in PageContext
@@ -171,12 +189,12 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 
 	}
 
-    private String getPricingZoneId() {
+    private UserContext getUserContext() {
         FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
         if (user == null) {
             throw new FDRuntimeException("User object is Null");
         }
-        return user.getPricingZoneId();
+        return user.getUserContext();
     }
 
 

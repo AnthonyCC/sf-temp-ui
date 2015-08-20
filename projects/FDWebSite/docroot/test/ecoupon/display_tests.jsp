@@ -74,6 +74,9 @@
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
+<%
+String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+%>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 <%
 	FDCustomerCoupon custCoupon_dispTest = displayTestsUser.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());

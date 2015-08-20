@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 
 public class SampleStrategy implements PromotionStrategyI {
 
+	// FIXME: FD only content IDs
 	private final static String[] DRY_GOODS = { "gro", "spe" };
 
 	private Integer orderCount = null;
@@ -18,8 +19,8 @@ public class SampleStrategy implements PromotionStrategyI {
 	private String[] needItemsFrom = null;
 	private String excludeSkuPrefix = null;
 
-	private Set needBrands = null;
-	private Set excludeBrands = null;
+	private Set<String> needBrands = null;
+	private Set<String> excludeBrands = null;
 
 	public String getExcludeSkuPrefix() {
 		return excludeSkuPrefix;
@@ -46,14 +47,14 @@ public class SampleStrategy implements PromotionStrategyI {
 	}
 
 	public void setNeedBrands(String[] brands) {
-		this.needBrands = new HashSet();
+		this.needBrands = new HashSet<String>();
 		for (int i = 0; i < brands.length; i++) {
 			this.needBrands.add(brands[i]);
 		}
 	}
 
 	public void setExcludeBrands(String[] brands) {
-		this.excludeBrands = new HashSet();
+		this.excludeBrands = new HashSet<String>();
 		for (int i = 0; i < brands.length; i++) {
 			this.excludeBrands.add(brands[i]);
 		}
@@ -67,6 +68,7 @@ public class SampleStrategy implements PromotionStrategyI {
 		needDryGoods = b;
 	}
 
+	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 
 		if (orderCount != null && context.getAdjustedValidOrderCount() != orderCount.intValue()) {
@@ -104,8 +106,7 @@ public class SampleStrategy implements PromotionStrategyI {
 	}
 
 	private boolean cartHasSku(FDCartModel cart, String skuPrefix) {
-		for (Iterator i = cart.getOrderLines().iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (FDCartLineI line : cart.getOrderLines()) {
 			if (line.getSkuCode().startsWith(skuPrefix)) {
 				return true;
 			}
@@ -113,11 +114,17 @@ public class SampleStrategy implements PromotionStrategyI {
 		return false;
 	}
 
+	@Override
 	public int getPrecedence() {
 		return 1000;
 	}
 
 	public String toString() {
 		return "SampleStrategy[...]";
+	}
+	
+	@Override
+	public boolean isStoreRequired() {
+		return false;
 	}
 }
