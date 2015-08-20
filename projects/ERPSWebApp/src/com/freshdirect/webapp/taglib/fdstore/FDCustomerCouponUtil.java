@@ -16,7 +16,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.FDCouponProperties;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -24,7 +25,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -430,9 +431,17 @@ public class FDCustomerCouponUtil implements Serializable {
 			boolean filterMobile) {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
-		ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode( FDCouponProperties.getCouponCMSCategory() );
+		ContentKey key = null;
+		try {
+			key = ContentKeyFactory.getIntance().getECouponsCategoryKey();
+		} catch (InvalidContentKeyException e1) {
+			LOGGER.error("Failed to acquire key for e_coupons category", e1);
+			return Collections.emptyList();
+		}
+
+		CategoryModel currentFolder = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( key );
 		if(null !=currentFolder){
-			List<ProductModel> couponProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
+			List<ProductModel> couponProducts = currentFolder.getProducts();
 			FDCustomerCoupon coupon = null;
 			if(null !=couponProducts){
 				for (ProductModel product : couponProducts) {

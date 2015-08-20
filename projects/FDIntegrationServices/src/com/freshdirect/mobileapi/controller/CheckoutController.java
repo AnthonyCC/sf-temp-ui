@@ -1,10 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,10 +39,8 @@ import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DynamicAvailabilityError;
-import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.controller.data.response.PaymentResponse;
-import com.freshdirect.mobileapi.controller.data.response.Visitor;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.Checkout;
@@ -62,10 +58,8 @@ import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
-import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
-import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -1052,8 +1046,11 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException{
     	Checkout checkout = new Checkout(user);
-    	SubmitOrderExResult message = new SubmitOrderExResult();
     	
+    	SubmitOrderExResult message = new SubmitOrderExResult();
+    	if(user.getFDSessionUser().getShoppingCart().getPaymentMethod() ==null) {
+    		checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), ""); 
+    	}
     	if(user!=null && user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && 
     			user.getFDSessionUser().getShoppingCart().getPaymentMethod() !=null){
     		//Reservation Validity

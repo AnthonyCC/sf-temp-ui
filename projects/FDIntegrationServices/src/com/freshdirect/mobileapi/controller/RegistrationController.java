@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.EmailPreferencesResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
@@ -65,6 +66,7 @@ public class RegistrationController extends BaseController {
     
     private final static String ACTION_SET_EMAIL_PREFERENCES = "setemailpreferences";
 
+    private final static String ACTION_GET_EMAIL_PREFERENCES = "getemailpreferences";
 
 	protected boolean validateUser() {
 		return false;
@@ -110,9 +112,11 @@ public class RegistrationController extends BaseController {
         } else if (ACTION_SET_MOBILE_PREFERENCES.equals(action)) {
         	MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
             model = setMobilePreferences(model, user, requestMessage, request);
-        }  else if (ACTION_SET_EMAIL_PREFERENCES.equals(action)){
+        } else if (ACTION_SET_EMAIL_PREFERENCES.equals(action)){
         	EmailPreferenceRequest requestMessage = parseRequestObject(request, response, EmailPreferenceRequest.class);
         	model = setEmailPreference(model, user, requestMessage, request);
+        } else if (ACTION_GET_EMAIL_PREFERENCES.equals(action)){
+        	model = getEmailPreference(model, user, request);
         }
 		 
 		return model;
@@ -196,7 +200,7 @@ public class RegistrationController extends BaseController {
 				}
 			}
 			//------------------------------		
-			DeliveryAddressRequest dliveryAddressRequest = new DeliveryAddressRequest();		
+			/*DeliveryAddressRequest dliveryAddressRequest = new DeliveryAddressRequest();		
 			dliveryAddressRequest.setDlvfirstname(requestMessage.getFirstName());
 			dliveryAddressRequest.setDlvlastname(requestMessage.getLastName());
 			dliveryAddressRequest.setAddress1(requestMessage.getAddress1());
@@ -208,7 +212,7 @@ public class RegistrationController extends BaseController {
 			dliveryAddressRequest.setDlvcompanyname(requestMessage.getCompanyName());
 			dliveryAddressRequest.setDeliveryInstructions("");
 			dliveryAddressRequest.setDlvhomephone(requestMessage.getMobile_number());		
-			ResultBundle resultBundleAdd = tagWrapper.addDeliveryAddress(dliveryAddressRequest);		
+			ResultBundle resultBundleAdd = tagWrapper.addDeliveryAddress(dliveryAddressRequest);		*/
 			//------------------------------
 		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
@@ -231,13 +235,13 @@ public class RegistrationController extends BaseController {
 		
 		ActionResult result = resultBundle.getActionResult();
 		ActionResult result1 = resultBundle1.getActionResult();
-			ActionResult result2 = resultBundleAdd.getActionResult();
+			//ActionResult result2 = resultBundleAdd.getActionResult();
 		
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		propogateSetSessionValues(request.getSession(), resultBundle1);
-			propogateSetSessionValues(request.getSession(), resultBundleAdd);			
-			if (result.isSuccess() && result1.isSuccess() && result2.isSuccess()) {
-			//if (result.isSuccess() && result1.isSuccess()) {
+		//	propogateSetSessionValues(request.getSession(), resultBundleAdd);			
+		//if (result.isSuccess() && result1.isSuccess() && result2.isSuccess()) {
+			if (result.isSuccess() && result1.isSuccess()) {
 			request.getSession().setAttribute(SessionName.APPLICATION,
 					EnumTransactionSource.FDX_IPHONE.getCode());
 			user = getUserFromSession(request, response);
@@ -526,6 +530,24 @@ public class RegistrationController extends BaseController {
 		}
 		
 		responseMessage.addWarningMessages(result.getWarnings());
+    	setResponseMessage(model, responseMessage, user);
+    	
+    	return model;
+    }
+    
+    private ModelAndView getEmailPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    	
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
+		FDIdentity identity  = fduser.getIdentity();
+		
+		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+		EmailPreferencesResult responseMessage = new EmailPreferencesResult();
+		if("2".equals(cm.getEmailPreferenceLevel())){
+			responseMessage.setEmail_subscribed("Y");
+		} else {
+			responseMessage.setEmail_subscribed("N");
+		}
+		
     	setResponseMessage(model, responseMessage, user);
     	
     	return model;

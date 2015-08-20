@@ -46,7 +46,7 @@ boolean voidcapture_orders=snav_pageURI.indexOf("voidcapture_orders") > -1;
 	<a href="/admintools/settlement_batch.jsp?method=GET" class="sup_nav_link <%=settlement_batch?"sup_nav_on":"sup_nav"%>">Settlement<br />Batch</a>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"top_faqs.jsp")){ %>
-	<a href="/main/masquerade.jsp?destination=top_faqs" class="sup_nav_link <%=top_faqs?"sup_nav_on":"sup_nav"%>">Top 5<br />FAQ</a>
+	<a href="/main/masquerade.jsp?destination=top_faqs" target="_blank" class="sup_nav_link <%=top_faqs?"sup_nav_on":"sup_nav"%>">Top 5<br />FAQ</a>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"click_to_call.jsp")){ %>
 	<a href="/admintools/click_to_call.jsp" class="sup_nav_link <%=click_to_call?"sup_nav_on":"sup_nav"%>">Click to Call<br />Campaign</a>

@@ -2,7 +2,7 @@
 <%
 String pageURI = request.getRequestURI();
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
 <head>
     <title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>

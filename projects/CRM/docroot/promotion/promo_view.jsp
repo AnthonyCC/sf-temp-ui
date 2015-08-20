@@ -9,7 +9,6 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.webapp.util.*" %>
-<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 <tmpl:insert template='/template/top_nav.jsp'>
 <%
 	PromoFilterCriteria promoFilter = (PromoFilterCriteria)request.getSession().getAttribute("filter");
@@ -49,6 +48,7 @@
 	<tmpl:put name='title' direct='true'>View Promotions</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
+<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 	<crm:GetCurrentAgent id='currentAgent'>
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 		<%-- Top-Row, page specific nav --%>

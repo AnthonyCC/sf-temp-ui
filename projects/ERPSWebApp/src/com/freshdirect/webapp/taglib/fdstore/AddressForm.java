@@ -72,10 +72,10 @@ public class AddressForm implements WebFormI { //, AddressName
         lastName = getParam(request, EnumUserInfoName.DLV_LAST_NAME.getCode());
         firstName = getParam(request, EnumUserInfoName.DLV_FIRST_NAME.getCode());
         
-        homePhone = request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
+      /*  homePhone = request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
         if (homePhone == null) {
             homePhone = request.getParameter("homephone");
-        }
+        }*/
         homePhoneExt = request.getParameter(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode());
         
         altContactPhone = this.getParam(request, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode());
@@ -108,9 +108,9 @@ public class AddressForm implements WebFormI { //, AddressName
         if ( "".equals(lastName) ) {
             lastName = getParam(request, "last_name");
         }
-        if ( homePhone == null || homePhone.trim().equals("") ) {
+       /* if ( homePhone == null || homePhone.trim().equals("") ) {
             homePhone = request.getParameter("homephone");
-        }
+        }*/
         
         
         if ("true".equals(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode()))) {
@@ -213,10 +213,10 @@ public class AddressForm implements WebFormI { //, AddressName
 		result.addError("".equals(lastName), EnumUserInfoName.DLV_LAST_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
 		result.addError("".equals(firstName), EnumUserInfoName.DLV_FIRST_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
 
-        result.addError(
+       /* result.addError(
 	        homePhone==null || homePhone.length() < 10,
 	        EnumUserInfoName.DLV_HOME_PHONE.getCode(), SystemMessageList.MSG_REQUIRED
-        );
+        );*/
 
 		result.addError("".equals(street1), EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED);
         result.addError("".equals(city), EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED);

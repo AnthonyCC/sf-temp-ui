@@ -413,6 +413,12 @@ function loadStuff() {
   } else if(loaddata == "SetMobilePreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilepreferences/");
   	$("#payload").val('{"mobile_number" : "2035594465", "order_notices" : "Y","order_exceptions" : "Y", "offers" : "Y"}');
+  } else if(loaddata == "SetEmailPreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/setemailpreferences/");
+  	$("#payload").val('{ "email_subscribed" : "Y" }');
+  } else if(loaddata == "GetEmailPreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/getemailpreferences/");
+  	$("#payload").val('');
   } else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#payload").val('');
@@ -1136,6 +1142,8 @@ function doStuff() {
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
   <option value="SetMobilePreferences">ACCOUNT - Set Mobile Preferences</option>
+  <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
+  <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>

@@ -7,6 +7,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
+
+<tmpl:put name='title' direct='true'>Supervisor Resources > Geocode Exceptions</tmpl:put>
+
+<tmpl:put name='content' direct='true'>
+
 <style>
 	#exceptions_table td{
 		padding-left:10px;
@@ -55,12 +61,6 @@
         }                
     }
 </script>
-<tmpl:insert template='/template/supervisor_resources.jsp'>
-
-<tmpl:put name='title' direct='true'>Supervisor Resources > Geocode Exceptions</tmpl:put>
-
-<tmpl:put name='content' direct='true'>
-
 
 <div style="background-color: #FFFFFF;">
     <div style="float:left;width:30%; background-color: #FFFFFF;">
@@ -140,7 +140,7 @@
     <div style="float:left;padding-left:10px; margin-left:10px;border-left: 1px solid; background-color: #FFFFFF;">
         <div class="sub_nav"><span class="sub_nav_title">View existing exceptions</span></div><br>
             <form name="addressSearch" method="post">
-                Street Address: <input type="text" name="srchAddress" value='<%=request.getParameter("srchAddress")%>'>&nbsp;&nbsp;&nbsp;&nbsp;Zip:&nbsp;<input type="text" name="srchZip" value='<%=request.getParameter("srchZip")%>'>&nbsp;&nbsp;&nbsp;<input type="submit" value="Search"/>
+                Street Address: <input type="text" name="srchAddress" value='<%=request.getParameter("srchAddress")%>'>&nbsp;&nbsp;&nbsp;&nbsp;Zip:&nbsp;<input type="text" name="srchZip" value='<%=request.getParameter("srchZip")%>'>&nbsp;&nbsp;&nbsp;<input type="submit" value="SEARCH" class="submit" />
                 <input type="hidden" name="action" value="searchGeocodeExceptions"/>
                 <input type="hidden" name="addressId" value="" >
                 <input type="hidden" name="zip" value="" >

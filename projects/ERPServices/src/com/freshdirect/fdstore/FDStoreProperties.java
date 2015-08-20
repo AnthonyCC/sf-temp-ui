@@ -375,6 +375,7 @@ public class FDStoreProperties {
     //new products revamp
     private static final String PROP_NEWPRODUCTS_DEPTID = "fdstore.newProducts.DeptId";
     private static final String PROP_NEWPRODUCTS_CATID = "fdstore.newProducts.CatId";
+    private static final String PROP_NEWPRODUCTS_CATID_FDX = "fdstore.newProducts.CatId_fdx";
     private static final String PROP_NEWPRODUCTS_GROUPS = "fdstore.newproducts.groups";
 
     //Contact us FAQs
@@ -1107,6 +1108,7 @@ public class FDStoreProperties {
         //new products revamp
         defaults.put(PROP_NEWPRODUCTS_DEPTID, "newproduct");
         defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
+        defaults.put(PROP_NEWPRODUCTS_CATID_FDX, "newproduct_cat_fdx");
         defaults.put(PROP_NEWPRODUCTS_GROUPS, "<W2,W2-W4,M1-M2,M2-M3,>M3");
 
         //comma separated list of faq section ids from CMS.
@@ -2597,6 +2599,10 @@ public class FDStoreProperties {
 
     public static String getNewProductsCatId() {
         return get(PROP_NEWPRODUCTS_CATID);
+    }
+
+    public static String getNewProductsCatFDX() {
+        return get(PROP_NEWPRODUCTS_CATID_FDX);
     }
 
     public static String getNewProductsGrouping() {

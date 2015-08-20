@@ -10,6 +10,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
+<tmpl:insert template='/template/top_nav.jsp'>
+	<tmpl:put name='title' direct='true'>Standing Order Alternative Delivery Dates</tmpl:put>
+	<tmpl:put name='content' direct='true'>
 <style type="text/css">
 div.pq-grid-toolbar-search
 {
@@ -71,9 +74,6 @@ margin-top: 20px;
 </style>
     
     
-<tmpl:insert template='/template/top_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Standing Order Alternative Delivery Dates</tmpl:put>
-	<tmpl:put name='content' direct='true'>
 		<crm:GetCurrentAgent id="currentAgent">
 			<jsp:include page="/includes/crm_standing_orders_nav.jsp" />
 				<table width="100%"><tr><td colspan="3"><div class="promo_page_header_text">Manage Alternative Delivery Dates</div></td></tr>

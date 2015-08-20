@@ -94,6 +94,16 @@ public class CmsManager implements ContentServiceI {
 			throw new CmsRuntimeException(ex);
 		}
 
+		// debug
+		/** StackTraceElement[] list = Thread.currentThread().getStackTrace();
+		if (list != null) {
+			System.err.println(" ---------->");
+			for (StackTraceElement e : list) {
+				System.err.println(e.toString());
+			}
+			System.err.println("<---------- ");
+		} **/
+		
 		return instance;
 	}
 
@@ -342,8 +352,16 @@ public class CmsManager implements ContentServiceI {
 	public String getEStoreId() {
 		return eStoreId;
 	}
-	
-	
+
+
+	/**
+	 * Convenience method to acquire exact EStoreId
+	 * 
+	 * @return {@link EnumEStoreId} instance or null
+	 */
+	public EnumEStoreId getEStoreEnum() {
+		return EnumEStoreId.valueOfContentId(eStoreId);
+	}
 
 	
 	

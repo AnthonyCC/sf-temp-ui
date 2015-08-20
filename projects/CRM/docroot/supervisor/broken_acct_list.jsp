@@ -12,7 +12,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
-<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<tmpl:insert template='/template/supervisor_resources.jsp'>
+
+<tmpl:put name='title' direct='true'>Supervisor Resources > Broken Accounts</tmpl:put>
+
+<tmpl:put name='content' direct='true'>
+
 <style type="text/css">
 body {
 	background-color: #FFFFFF;
@@ -31,12 +36,6 @@ body {
     }
 
 </script>
-<tmpl:insert template='/template/supervisor_resources.jsp'>
-
-<tmpl:put name='title' direct='true'>Supervisor Resources > Broken Accounts</tmpl:put>
-
-<tmpl:put name='content' direct='true'>
-
 <crm:GenericLocator id="searchResults" searchParam='BROKEN_ACCOUNT_SEARCH' result="result">
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   

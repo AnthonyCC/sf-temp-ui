@@ -100,7 +100,7 @@ public class Department extends ProductContainer {
 				heroCarouselImgBanner.setTargetTypeId(heroCarousel
 						.getTarget().getContentKey().getEncoded());
 			}
-			heroCarouselImgBanner.setText(heroCarousel.getName());
+			heroCarouselImgBanner.setText(heroCarousel.getDescription());
 
 			if (heroCarouselImgBanner != null) {
 				heroCarouselImgBannerList.add(heroCarouselImgBanner);

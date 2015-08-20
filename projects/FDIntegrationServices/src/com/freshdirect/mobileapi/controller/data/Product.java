@@ -243,6 +243,11 @@ public class Product extends Message {
     private String utPrice;
 	private String utSalesUnit;
    
+	
+	//FDX-903 update
+	public String heatingInstructions;
+	public String nutrition;
+
 	public Product() {
 
     }
@@ -481,6 +486,12 @@ public class Product extends Message {
 				}
 			}	        
         }
+        
+        //improvement as asked for in FDX-903
+        this.setNutrition(product.getNutrition());
+        
+        this.setHeatingInstructions(product.getHeatingInstructions());
+        
     }
 
     public String getId() {
@@ -921,5 +932,21 @@ public class Product extends Message {
 
 	public void setUtSalesUnit(String utSalesUnit) {
 		this.utSalesUnit = utSalesUnit;
-	}     
+	}   
+	
+	public String getHeatingInstructions() {
+		return heatingInstructions;
+	}
+
+	public void setHeatingInstructions(String heatingInstructions) {
+		this.heatingInstructions = heatingInstructions;
+	}
+
+	public String getNutrition() {
+		return nutrition;
+	}
+
+	public void setNutrition(String nutritionInformation) {
+		this.nutrition = nutritionInformation;
+	}
 }

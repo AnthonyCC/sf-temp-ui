@@ -6,17 +6,10 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='content' direct='true'>
-	
-
-		<!--jQuery dependencies-->
- 
+<!--jQuery dependencies-->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-    
 <!--ParamQuery Grid files-->
-
-
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/hot-sneaks/jquery-ui.css" />
 <link rel="stylesheet" href="/assets/javascript/paramquery-2.0.3/pqgrid.min.css" />
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/humanity/jquery-ui.css" />
@@ -123,9 +116,7 @@
 		$("#grid_array").pqGrid(obj);
 		$("#grid_array").pqGrid("refreshDataAndView");
 	};
-</script>
-
-<script type="text/javascript">
+	
 	function sendData() {
 		var existingSKU = $('#existingSKU').val();
 		var replacementSKU = $('#replacementSKU').val();
@@ -202,10 +193,7 @@
 		});
 		
 	}
-</script>
-
-
-<script type="text/javascript">
+	
 	$(document).ready(function() {
 		
 		 $("input").focus(function(){
@@ -220,87 +208,78 @@
 			sendData();		   			
 		});
 	});
+	
+	function myFunction() {
+		$("#validation_message").hide();
+		$("#grid_array").pqGrid("destroy");
+		$('#existingSKU').attr("disabled", false);
+		$('#replacementSKU').attr("disabled", false);
+		$('#buttonId').val('Check');
+		$('#swapId').show();
+	}
+	
+	function mySwapFunction() {
+		
+		var existingSKU1 = $('#existingSKU').val();
+		var replacementSKU1 = $('#replacementSKU').val();
+		
+		$('#replacementSKU').val(existingSKU1);
+		$('#existingSKU').val(replacementSKU1);
+	
+	}
 </script>
-
-<script> 
-function myFunction()
-{
-$("#validation_message").hide();
-$("#grid_array").pqGrid("destroy");
-$('#existingSKU').attr("disabled", false);
-$('#replacementSKU').attr("disabled", false);
-$('#buttonId').val('Check');
-$('#swapId').show();
-}
-</script>
-
-<script> 
-function mySwapFunction()
-{
-
-var existingSKU1 = $('#existingSKU').val();
-var replacementSKU1 = $('#replacementSKU').val();
-
-$('#replacementSKU').val(existingSKU1);
-$('#existingSKU').val(replacementSKU1);
-
-}
-</script>
-
-</head>
-<body>
 
 <crm:GetCurrentAgent id="currentAgent">
 	<jsp:include page="/includes/crm_standing_orders_nav.jsp" />
-			<table width="100%">
-				<tr>
-					<td colspan="3"><div class="promo_page_header_text">Manage Standing Order SKU Replacement
-							</div></td>
-				</tr>
-			</table>
+	<table width="100%">
+		<tr>
+			<td colspan="3"><div class="promo_page_header_text">Manage Standing Order SKU Replacement
+					</div></td>
+		</tr>
+	</table>
 			
-			<form id="configform">
-				<table>
-					<tr>
-						<td>
-							<h4 ><div id="validation_message"></div></h4>
-									
-						</td>
-					</tr>
-					
-					<tr>
-						<td>Existing SKU: <input type="text" id="existingSKU" name="existingSKU">  
-												
-    					<img src="/media_stat/crm/images/swap_icon.gif" id = 'swapId' title="Swap Input fields" onclick="mySwapFunction();"/>					
-											
-						Replacement SKU: <input type="text" id="replacementSKU" name="replacementSKU">
+	<form id="configform">
+		<table>
+			<tr>
+				<td>
+					<h4 ><div id="validation_message"></div></h4>
 							
-						<input type="button" id="buttonId" value="Check">
-						
-						<input type = 'reset' id = 'resetform' value = 'Clear' onclick="myFunction()" title= "Clear Input Fields"/>
-						
-						
-						</td>
-					</tr>
-					</br>
-					</br>
-					<tr>
-					</tr>
-					<tr>
-						<td>
-							<div id="grid_array"/>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>Existing SKU: <input type="text" id="existingSKU" name="existingSKU">  
 										
-						</td>
-					</tr>
-						
-					<tr>
-						<td>
-							<div align="right" id='loadingmessage' style='display:none'>
-       						<img align="center" src="/media_stat/crm/images/ajax-loader.gif"/></div>									
-						</td>
-					</tr>
-				</table>
-			</form>		
+  					<img src="/media_stat/crm/images/swap_icon.gif" id = 'swapId' title="Swap Input fields" onclick="mySwapFunction();"/>					
+									
+				Replacement SKU: <input type="text" id="replacementSKU" name="replacementSKU">
+					
+				<input type="button" id="buttonId" value="Check">
+				
+				<input type = 'reset' id = 'resetform' value = 'Clear' onclick="myFunction()" title= "Clear Input Fields"/>
+				
+				
+				</td>
+			</tr>
+			</br>
+			</br>
+			<tr>
+			</tr>
+			<tr>
+				<td>
+					<div id="grid_array"/>
+								
+				</td>
+			</tr>
+				
+			<tr>
+				<td>
+					<div align="right" id='loadingmessage' style='display:none'>
+     						<img align="center" src="/media_stat/crm/images/ajax-loader.gif"/></div>									
+				</td>
+			</tr>
+		</table>
+	</form>		
 </crm:GetCurrentAgent>
 </tmpl:put>
 </tmpl:insert>

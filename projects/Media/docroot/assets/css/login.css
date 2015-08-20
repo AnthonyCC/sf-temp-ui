@@ -28,7 +28,7 @@ a:hover {
 	
 }
 
-.padding-input-box {
+.sulCont .padding-input-box {
 	padding: 8px;
 	border-radius: 2px;
 }
@@ -41,7 +41,7 @@ a:hover {
 
 */
 
-.form-side {
+.sulCont .form-side {
 	width: 240px;
 	float: left;
 	margin-right: 10px;
@@ -59,16 +59,16 @@ a:hover {
 	font-family: Verdana, Arial, sans-serif;
 }
 
-.tos {
+.sulCont .tos {
 	/*margin-left:70px;*/
 	
 }
 
-.clear {
+.sulCont .clear {
 	clear: both;
 }
 
-input[type="submit"] {
+.sulCont input[type="submit"] {
 	width: 220px;
 	padding: 10px;
 	margin-top: 0px;
@@ -78,27 +78,27 @@ input[type="submit"] {
 	border-radius: 5px;
 }
 
-.bottom-contents {
+.sulCont .bottom-contents {
 	width: 500px;
 	margin-top: 10px;
 	text-align: center;
 	margin-bottom: 30px;
 }
 
-.icon-warning-active {
+.sulCont .icon-warning-active {
 	background-position: -750px -1250px;
 	height: 16px;
 	width: 16px
 }
 
-.sprite {
+.sulCont .sprite {
 	background: url('/test/login_test/images/red-arrow.png') 0 0 no-repeat;
 	display: inline-block;
 	vertical-align: middle;
 }
 
 /* .form_margin{margin-left:50px;}*/
-input[disabled="disabled"] {
+.sulCont input[disabled="disabled"] {
 	background-color: #D6D6C2;
 }
 

@@ -48,6 +48,7 @@ public class FDCouponProperties {
 	private final static String PROP_COUPONS_CACHE_DAYS_LIMIT="fdstore.coupons.cache.days.limit";
 	public final static String PROP_COUPONS_ENABLED="fdstore.ecoupons.enabled";
 	private final static String PROP_COUPONS_CMS_CATEGORY="fdstore.ecoupons.cms.category";
+	private final static String PROP_COUPONS_CMS_CATEGORY_FDX="fdstore.ecoupons.cms.fdx_category";
 	private final static String PROP_COUPONS_CACHE_REFRESH_PERIOD = "fdstore.ecoupons.cache.refresh.period";
 	private final static String PROP_CUSTOMER_COUPONS_USAGE_HISTORY_DAYS_LIMIT="fdstore.customer.coupons.history.days.limit";
 	private final static String PROP_COUPONS_EXPIRE_GRACE_PERIOD = "fdstore.coupons.expire.grace.period";
@@ -76,6 +77,7 @@ public class FDCouponProperties {
 		defaults.put(PROP_COUPONS_CACHE_DAYS_LIMIT, "30");
 		defaults.put(PROP_COUPONS_ENABLED, "true");
 		defaults.put(PROP_COUPONS_CMS_CATEGORY, "ecoupons");
+		defaults.put(PROP_COUPONS_CMS_CATEGORY_FDX, "ecoupons_fdx");
 		defaults.put(PROP_COUPONS_CACHE_REFRESH_PERIOD, "5");//mins
 		defaults.put(PROP_YT_CONNECTION_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_YT_READ_TIMEOUT_PERIOD, "10");//secs
@@ -209,6 +211,10 @@ public class FDCouponProperties {
 		return get(PROP_COUPONS_CMS_CATEGORY);
 	}
 	
+	public static String getCouponCMSCategoryFDX() {
+		return get(PROP_COUPONS_CMS_CATEGORY_FDX);
+	}
+
 	public static Integer getCouponCacheRefreshPeriod() {
 		try {
 			return Integer.parseInt(get(PROP_COUPONS_CACHE_REFRESH_PERIOD));

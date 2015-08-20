@@ -320,6 +320,11 @@
         <from>^/v/([0-9]+)/(.*)/account/setemailpreferences/</from>
         <to last="true">/register.do?action=setemailpreferences&amp;ver=$1</to>
     </rule>
+    	<rule>
+        <from>^/v/([0-9]+)/(.*)/account/getemailpreferences/</from>
+        <to last="true">/register.do?action=getemailpreferences&amp;ver=$1</to>
+    </rule>
+    
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/addandset/$</from>
 		<to last="true">/checkout.do?action=addandsetdeliveryaddress&amp;ver=$1</to>

@@ -11,32 +11,30 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
-
-<style>
-	.yui-skin-sam .yui-pg-container {
-		text-align: right;
-		padding-right: 30px;
-	}
-
-	.yui-skin-sam .yui-pg-page {
-		border: 0px !important;
-		padding: 2px !important;		
-	}
-	
-	
-	
-	
-	.yui-skin-sam .yui-pg-first, .yui-skin-sam .yui-pg-previous, .yui-skin-sam .yui-pg-next, .yui-skin-sam .yui-pg-last, .yui-skin-sam .yui-pg-current, .yui-skin-sam .yui-pg-pages, .yui-skin-sam .yui-pg-page {
-		font-family: Verdana,Arial,sans-serif !important;
-		font-size: 9px;
-		font-weight: bold;
-	}
-}
-</style>
-
 <tmpl:insert template='/template/top_nav.jsp'>
     <tmpl:put name='title' direct='true'>Case History</tmpl:put>
         <tmpl:put name='content' direct='true'>
+		<style>
+			.yui-skin-sam .yui-pg-container {
+				text-align: right;
+				padding-right: 30px;
+			}
+		
+			.yui-skin-sam .yui-pg-page {
+				border: 0px !important;
+				padding: 2px !important;		
+			}
+			
+			
+			
+			
+			.yui-skin-sam .yui-pg-first, .yui-skin-sam .yui-pg-previous, .yui-skin-sam .yui-pg-next, .yui-skin-sam .yui-pg-last, .yui-skin-sam .yui-pg-current, .yui-skin-sam .yui-pg-pages, .yui-skin-sam .yui-pg-page {
+				font-family: Verdana,Arial,sans-serif !important;
+				font-size: 9px;
+				font-weight: bold;
+			}
+		}
+		</style>
         <%
             CrmCaseTemplate template = new CrmCaseTemplate();
             FDUserI user = (FDSessionUser) session.getAttribute(SessionName.USER);

@@ -19,6 +19,11 @@
 
 <% boolean isGuest = false;
 %>
+    
+<tmpl:insert template='/template/supervisor_resources.jsp'>
+
+	<tmpl:put name='title' direct='true'>Supervisor Resources > Authorizations view</tmpl:put>
+	<tmpl:put name='content' direct='true'>
 <style type="text/css">
 .case_content_red_field {
 color: #CC0000;
@@ -42,11 +47,6 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 </script>
-    
-<tmpl:insert template='/template/supervisor_resources.jsp'>
-
-	<tmpl:put name='title' direct='true'>Supervisor Resources > Authorizations view</tmpl:put>
-	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id="currentAgent">
 	<%
 		CrmAuthSearchCriteria  authFilter =  (CrmAuthSearchCriteria)request.getSession().getAttribute("authSearchCriteria"); 

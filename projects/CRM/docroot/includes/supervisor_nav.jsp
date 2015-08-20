@@ -78,7 +78,7 @@ boolean paymentGateway = snav_pageURI.indexOf("paymentGateway") > -1;
 	<a href="/supervisor/auto_late_dlv_credits.jsp" class="sup_nav_link <%=auto_late_dlv_credits_view?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Auto Late<br />Dlv. Credits</a>
 <% } %>
 <% if(CrmSecurityManager.hasAccessToPage(lAgentRole,"paymentGateway.jsp")){ %>
-	<a href="/supervisor/paymentGateway.jsp" class="sup_nav_link <%=paymentGateway?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Payment<br />Gateway</a>
+	<a href="/supervisor/paymentGateway.jsp" target="_blank" class="sup_nav_link <%=paymentGateway?"sup_nav_on_supervisor":"sup_nav_supervisor"%>">Payment<br />Gateway</a>
 <% } %>
 </div>
 </crm:GetCurrentAgent>

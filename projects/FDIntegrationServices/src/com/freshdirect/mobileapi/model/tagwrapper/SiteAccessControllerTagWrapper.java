@@ -19,6 +19,9 @@ public class SiteAccessControllerTagWrapper extends NonStandardControllerTagWrap
     public static final String ACTION_CHECK_BY_ZIP = "checkByZipCode";
 
     public static final String ACTION_CHECK_BY_ADDRESS = "checkByAddress";
+    
+    public static final String ACTION_CHECK_BY_ADDRESS_EX = "checkByAddressEX";
+    
     public static final String ACTION_REGISTRATION = "signupLite";
 
 	public static final String REQUESTED_SERVICE_TYPE_DLV_STATUS = "requestedServiceTypeDlvStatus";
@@ -73,7 +76,17 @@ public class SiteAccessControllerTagWrapper extends NonStandardControllerTagWrap
         return resultBundle;
         
     }
+    
+    
     public ResultBundle checkByAddress(ZipCheck zipcheck) throws FDException {
+    	return checkByAddress(zipcheck, ACTION_CHECK_BY_ADDRESS);
+    }
+    
+    public ResultBundle checkByAddressEX(ZipCheck zipcheck) throws FDException {
+    	return checkByAddress(zipcheck, ACTION_CHECK_BY_ADDRESS_EX);
+    }
+    
+    public ResultBundle checkByAddress(ZipCheck zipcheck, String action) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
         		SESSION_PARAM_SS_PREV_RECOMMENDATIONS, SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,
         		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_SITEACCESS_MOREPAGE, STORE_CONTEXT}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
@@ -98,7 +111,8 @@ public class SiteAccessControllerTagWrapper extends NonStandardControllerTagWrap
         addRequestValue(EnumUserInfoName.DLV_CITY.getCode(), zipcheck.getCity());
         addRequestValue(EnumUserInfoName.DLV_STATE.getCode(), zipcheck.getState());
         
-        ((SiteAccessControllerTag) getWrapTarget()).setAction(ACTION_CHECK_BY_ADDRESS);
+        
+        ((SiteAccessControllerTag) getWrapTarget()).setAction(action);
         setMethodMode(true);
         ResultBundle resultBundle = new ResultBundle(executeTagLogic(), this);
         resultBundle.addExtraData(REQUESTED_SERVICE_TYPE_DLV_STATUS,  

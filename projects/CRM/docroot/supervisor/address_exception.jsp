@@ -7,6 +7,14 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% String action = request.getParameter("action");%>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
+
+<tmpl:put name='title' direct='true'>Supervisor Resources > Address Exceptions</tmpl:put>
+
+<tmpl:put name='content' direct='true'>
+
 <style>
 	#exceptions_table td{
 		padding-left:10px;
@@ -21,15 +29,6 @@
         return true;
     }
 </script>
-
-<% String action = request.getParameter("action");%>
-<tmpl:insert template='/template/supervisor_resources.jsp'>
-
-<tmpl:put name='title' direct='true'>Supervisor Resources > Address Exceptions</tmpl:put>
-
-<tmpl:put name='content' direct='true'>
-
-
 
 <div class="content_fixed" style="padding-left: 1%;">
 

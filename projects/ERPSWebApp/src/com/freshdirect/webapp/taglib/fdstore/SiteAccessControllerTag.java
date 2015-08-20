@@ -294,6 +294,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByAddress".equalsIgnoreCase(action)) {
 					checkByAddress(request, result);
+				} else if ("checkByAddressEX".equalsIgnoreCase(action)) {
+					checkByAddress(request, result, false);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
 					doPrereg(request, result);
 				} else if ("signupLite".equalsIgnoreCase(action)) { 
@@ -559,8 +561,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());				
 	}
 
-	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
 	private void validate(ActionResult result, boolean validateAddress) throws FDResourceException {
+		validate(result, validateAddress, true);
+	}
+	
+	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
+	private void validate(ActionResult result, boolean validateAddress, boolean useApt) throws FDResourceException {
 		String zipCode = this.address.getZipCode();
 		if ("".equals(zipCode)) {
 			result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
@@ -593,7 +599,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			
 			try{			
 				if (result.isSuccess()) {
-					this.address = AddressUtil.scrubAddress(this.address, true, result);
+					this.address = AddressUtil.scrubAddress(this.address, useApt, result);
 				}
 			} catch(Exception ee){
 				//result.addError(new ActionError(EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS));
@@ -602,10 +608,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		
 	}
 
-	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
 	private int checkByAddress(HttpServletRequest request, ActionResult result) throws FDResourceException, JspException {
+		return checkByAddress(request, result, true); // originally always used adress, now does not.
+	}
+	
+	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
+	private int checkByAddress(HttpServletRequest request, ActionResult result, boolean useApt) throws FDResourceException, JspException {
 		this.populate(request);
-		this.validate(result, true);
+		this.validate(result, true, useApt);
 		
 		if("true".equals(request.getParameter("LITESIGNUP")) && this.serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
 			String company = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();

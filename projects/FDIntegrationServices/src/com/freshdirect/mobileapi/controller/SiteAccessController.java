@@ -30,7 +30,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class SiteAccessController extends BaseController {
+public class SiteAccessController extends BaseController implements SessionName {
 
     private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
@@ -61,7 +61,7 @@ public class SiteAccessController extends BaseController {
             model = checkByAddress(model, requestMessage, request, response);
         }else if (ACTION_CHECK_BY_ADDRESS_EX.equals(action)) {
         	ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class);
-            model = checkByAddressEX(model, requestMessage, request, response);
+            model = checkByAddressEX(model, requestMessage, request, response, user);
         }else if (ACTION_CHECK_OAS_ALERT.equals(action)) {        	
             model = checkoasalert(model, request, response);
         }
@@ -139,16 +139,15 @@ public class SiteAccessController extends BaseController {
 		return model;
     }
     
-    private ModelAndView checkByAddressEX(ModelAndView model, ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response) 
+    private ModelAndView checkByAddressEX(ModelAndView model, ZipCheck requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) 
 			throws FDException, NoSessionException, JsonException  {
-		SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(null);
-		ResultBundle resultBundle = tagWrapper.checkByAddress(requestMessage);
+		SiteAccessControllerTagWrapper tagWrapper = new SiteAccessControllerTagWrapper(user.getFDSessionUser());
+		ResultBundle resultBundle = tagWrapper.checkByAddress(requestMessage, ACTION_CHECK_BY_ADDRESS_EX);
 		ActionResult result = resultBundle.getActionResult();
 		
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		
 		Message responseMessage = null;
-		SessionUser user = null;
 		if (result.isSuccess()) {
 			request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.FDX_IPHONE.getCode());
 		user = getUserFromSession(request, response);

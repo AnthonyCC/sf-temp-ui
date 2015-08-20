@@ -20,6 +20,12 @@
 
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<tmpl:insert template='/template/top_nav.jsp'>
+
+<tmpl:put name='title' direct='true'>Admin Tools > Remove Skus from Order</tmpl:put>
+
+<tmpl:put name='content' direct='true'>
+
 <script language="javascript">
 	function doAction(actionName) {
 		if(actionName == 'modifyOrders'){
@@ -37,12 +43,6 @@
 	}
 
 </script>
-<tmpl:insert template='/template/top_nav.jsp'>
-
-<tmpl:put name='title' direct='true'>Admin Tools > Remove Skus from Order</tmpl:put>
-
-<tmpl:put name='content' direct='true'>
-
 
 <jsp:include page="/includes/admintools_nav.jsp" />
 <div class="home_search_module_content" style="height:100%;">

@@ -2,65 +2,65 @@
 
 a:hover{text-decoration:none;}
 
-.signup-style{
+.sulCont .signup-style{
 		
 		width:500px; 
 		height:auto; 
 		overflow:hidden;
 		}
 		
-.padding-input-box{
+.sulCont .padding-input-box{
 		 
 		padding:9px;
 		/*border-radius:2px;*/
 		width:196px;
 		}
 		
-.alignment{
+.sulCont .alignment{
 	width:350px;
 	float:left;
 	margin-left:10px;
 	margin-bottom:10px;
 }		
 		
-.form-side{
+.sulCont .form-side{
      	
      	width:180px;
      	float:left;
      	margin-right:40px;
      	}
 
-.social-login-header{
+.sulCont .social-login-header{
 	width:240;
 	float:right;
 
 }
-.social-login-headerscr{
+.sulCont .social-login-headerscr{
 	width:225px;
 	float:right;
 
 }
-.social-login{
+.sulCont .social-login{
 		
      	width:210px;
      	float:right;
      	}
-.social-loginscr{
+.sulCont .social-loginscr{
 		
      	width:200px;
      	float:right;
      	}
      	
-.bottom-links{
+.sulCont .bottom-links{
      	
      	font-size: 11px; 
      	font-family: Verdana, Arial, sans-serif;
      	}
 
      	
-.clear{clear:both;}
+.sulCont .clear{clear:both;}
      	
-input[type="submit"]{
+.sulCont input[type="submit"]{
      	 width:200px;
      	 padding:10px;
      	 margin-top:0px;
@@ -69,10 +69,10 @@ input[type="submit"]{
          text-align:center;	 
      	 border-radius:5px;}
  
-input[type="submit"]:hover{
+.sulCont input[type="submit"]:hover{
 	color:#000;}
      	 
-.bottom-contents{
+.sulCont .bottom-contents{
      	 width:500px;
      	 margin-top:10px;
      	 text-align:center;
@@ -80,18 +80,18 @@ input[type="submit"]:hover{
      	 
      	 }
 
-input[disabled="disabled"]{
+.sulCont input[disabled="disabled"]{
      	
      	background-color:#D6D6C2;
 }
 
- .error{
+ .sulCont .error{
  text-align:left;
  font-size:12px;
  font-family:"Verdana", Georgia, Serif;
  color:red;
  }	
-input.error{
+.sulCont input.error{
 		
      	width:200px;
      	padding:9px;
@@ -99,7 +99,7 @@ input.error{
      	border-color:#FF6C47;
      	background-color:#FFE0E0;     	
      	}
-span.error_img
+.sulCont span.error_img
 {
 /*background:url( "/media_stat/images/common/red_arrow.PNG") no-repeat;*/
 display:block;
@@ -107,17 +107,17 @@ width:17px;
 height:12px;
 }
 
-.password-class{
+.sulCont .password-class{
  position:relative;
  }
  
- span.show_bg_arrow
+ .sulCont span.show_bg_arrow
 {
 background:url( "/media_stat/images/common/red_arrow.PNG") no-repeat;
 }
 
 
- .show-password{
+ .sulCont .show-password{
  position:fixed;
  top:317px;
  fron-size:10px;

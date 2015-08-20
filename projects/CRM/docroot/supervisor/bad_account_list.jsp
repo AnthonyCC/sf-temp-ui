@@ -13,7 +13,6 @@
 <tmpl:put name='content' direct='true'>
 
 <div class="sub_nav">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
 <%!
 
 private static Comparator COMP_BANK_ACCOUNT_TYPE = new Comparator () {
@@ -162,21 +161,27 @@ JspTableSorter sort = new JspTableSorter(request);
     }    
 
 </script>
+<style>
+	.sub_nav_text th {
+		padding-bottom: 10px;
+	}
+</style>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
     <tr>
-        <td width="10%" align="left">Routing #:</td>
-        <td width="10%" align="left">Account #:</td>
-        <td width="10%" align="left">Account Type:</td>
-        <td width="10%" align="left">First Name:</td>
-        <td width="10%" align="left">Last Name:</td>
-        <td width="20%" align="left">Created:</td>
-        <td width="10%" align="left">Reason:</td>
-        <td width="5%" align="left"></td>
-        <td width="15%" align="left"></td>
+        <th width="10%" align="left">Routing #:</td>
+        <th width="10%" align="left">Account #:</td>
+        <th width="10%" align="left">Account Type:</td>
+        <th width="10%" align="left">First Name:</td>
+        <th width="10%" align="left">Last Name:</td>
+        <th width="20%" align="left">Created:</td>
+        <th width="10%" align="left">Reason:</td>
+        <th width="5%" align="left"></td>
+        <th width="15%" align="left"></td>
     </tr>
     <tr>
-        <td width="10%" align="left"><input type="text" name="aba_route_number" size="9" maxlength="9" class="text" value="<%=request.getParameter("aba_route_number")%>">&nbsp;</td>
-        <td width="10%" align="left"><input type="text" name="account_number" size="15" maxlength="15" class="text" value="<%=request.getParameter("account_number")%>">&nbsp;</td>
-		<td width="10%" align="left">
+        <td width="10%" align="left" valign="top"><input type="text" name="aba_route_number" size="9" maxlength="9" class="text" value="<%=request.getParameter("aba_route_number")%>">&nbsp;</td>
+        <td width="10%" align="left" valign="top"><input type="text" name="account_number" size="15" maxlength="15" class="text" value="<%=request.getParameter("account_number")%>">&nbsp;</td>
+		<td width="10%" align="left" valign="top">
             <select name="bank_account_type" required="true" class="pulldown">
                 <option value=""></option>
                             <%
@@ -189,9 +194,9 @@ JspTableSorter sort = new JspTableSorter(request);
                             <%  } %>
           </select>&nbsp;
         </td>        
-        <td width="10%" align="left"><input type="text" name="first_name" size="20" maxlength="35" class="text" value="<%=request.getParameter("first_name")%>">&nbsp;</td>
-        <td width="10%" align="left"><input type="text" name="last_name" size="20" maxlength="35" class="text" value="<%=request.getParameter("last_name")%>">&nbsp;</td>
-        <td width="20%" align="left">
+        <td width="10%" align="left" valign="top"><input type="text" name="first_name" size="20" maxlength="35" class="text" value="<%=request.getParameter("first_name")%>">&nbsp;</td>
+        <td width="10%" align="left" valign="top"><input type="text" name="last_name" size="20" maxlength="35" class="text" value="<%=request.getParameter("last_name")%>">&nbsp;</td>
+        <td width="20%" align="left" valign="top">
         	<select name="create_month" required="true" class="pulldown">
                 <option value="">Month</option>
                             <%
@@ -221,7 +226,7 @@ JspTableSorter sort = new JspTableSorter(request);
                             <%  } %>
             </select>&nbsp;&nbsp;
 		</td>
-        <td width="10%" align="left">
+        <td width="10%" align="left" valign="top">
             <select name="reason_code" required="true" class="pulldown">
                 <option value=""></option>
                             <%
@@ -234,15 +239,15 @@ JspTableSorter sort = new JspTableSorter(request);
                             <%  } %>
             </select>&nbsp;        
         </td>
-        <td width="5%" align="left"><input type="submit" class="submit" onClick="javascript:checkForm(bad_account_list); return false;" value="GO">&nbsp;</td>
-        <td width="15%" align="right"><a href="javascript:pop('/supervisor/add_bad_account.jsp', 375, 780);">Add Account</a>&nbsp;</td>
+        <td width="5%" align="left" valign="top"><input type="submit" class="submit" onClick="javascript:checkForm(bad_account_list); return false;" value="GO">&nbsp;</td>
+        <td width="15%" align="right" valign="top"><a href="javascript:pop('/supervisor/add_bad_account.jsp', 375, 780);">Add Account</a>&nbsp;</td>
+    </tr>
+</table>
 	    <input type="hidden" name="status" value="<%= EnumRestrictedPaymentMethodStatus.BAD.getName() %>">
 	    <input type="hidden" name="display_results" value="true">
-    </tr>
 	    <input type="hidden" name="sortBy" value="<%=request.getParameter("sortBy")%>">
 	    <input type="hidden" name="sortOrder" value="<%=request.getParameter("sortOrder")%>">
     </form>
-</table>
 </div>
 <%
 if (restrictedPaymentMethodList.size() > 0) {    

@@ -60,7 +60,7 @@
 				%><a href="/gift_card/giftcard_landing.jsp" class="<%= (pageURI.indexOf("/main/information.jsp") > -1 || pageURI.indexOf("/gift_card/giftcard_landing.jsp") > -1) ?"main_nav_on":"main_nav_link"%>">Gift<br />Cards</a><%
 			}
 			if (linksList.contains("crm_standing_orders.jsp")) { 
-				%><a href="/main/crm_standing_orders.jsp" class="<%=pageURI.indexOf("/main/crm_standing_orders.jsp") > -1?"main_nav_on":"main_nav_link"%>">Standing<br />Orders</a><% 
+				%><a href="/main/crm_standing_orders.jsp" class="<%=(pageURI.indexOf("/main/crm_standing_orders.jsp") > -1 || pageURI.indexOf("crm_standing_orders_alt_dates.jsp") != -1  || pageURI.indexOf("crm_standing_orders_sku_replacement.jsp") != -1 )?"main_nav_on":"main_nav_link"%>">Standing<br />Orders</a><% 
 			}
 			if (linksList.contains("ppicks_email_products.jsp")) { 
 				%><a href="/main/masquerade.jsp?destination=product_promos" target="_blank" class="<%=pageURI.indexOf("/main/ppicks_email_products.jsp") > -1?"main_nav_on":"main_nav_link"%>">Product<br />Promos</a><%
@@ -68,7 +68,7 @@
 			if (linksList.contains("coupon_savings_history.jsp")) {
 				%><a href="/main/masquerade.jsp?destination=coupon_savings_history" target="_blank" class="<%=pageURI.indexOf("/main/coupon_savings_history.jsp") > -1?"main_nav_on":"main_nav_link"%>">Coupon&nbsp;Savings<br />History</a><% 
 			}
-			%><a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" title="Help" class="<%=pageURI.indexOf("/main/help.jsp")	> -1?"main_nav_on":"main_nav_link"%> ui-icon-cc ui-icon-cc-help"><span>Help</span></a>
+			%><a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" title="Help" class="<%=pageURI.indexOf("/main/help.jsp") > -1?"main_nav_on":"main_nav_link"%> ui-icon-cc ui-icon-cc-help"><span>Help</span></a>
 		</td>
 		<td align="right" width="350">
 			<div style="white-space: nowrap;">			

@@ -25,6 +25,10 @@
 //com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceCmd.main(new String[]{"orders=2201247313","sendEmail=false"});
 //com.freshdirect.dataloader.giftcard.GCRegisterCronRunner.main(new String[]{});
 %>
+    
+<tmpl:insert template='/template/top_nav.jsp'>
+	<tmpl:put name='title' direct='true'>Standing Orders</tmpl:put>
+	<tmpl:put name='content' direct='true'>
 <style type="text/css">
 .case_content_red_field {
 color: #CC0000;
@@ -71,10 +75,6 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 }
 
 </script>
-    
-<tmpl:insert template='/template/top_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Standing Orders</tmpl:put>
-	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id="currentAgent">
 	<%	FDStandingOrderFilterCriteria  soFilter =  (FDStandingOrderFilterCriteria)request.getSession().getAttribute("sofilter"); 
 		String soId = null;
