@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * ErpProductInfo model class.
@@ -52,8 +53,11 @@ public class ErpProductInfoModel extends ModelSupport {
 			this.sapZoneId = sapZoneId;
 //			this.salesOrg = salesOrg;
 //			this.distChannel = distChannel;
-			this.salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;
-			this.distChannel = "1000".equals(salesOrg)?"01":distChannel;
+//			this.salesOrg = "1000".equals(salesOrg)?"0001":salesOrg;
+//			this.distChannel = "1000".equals(salesOrg)?"01":distChannel;
+
+			this.salesOrg =StringUtil.isEmpty(salesOrg)?"0001":("1000".equals(salesOrg)?"0001":salesOrg);
+			this.distChannel = StringUtil.isEmpty(distChannel)?"01":("1000".equals(distChannel)?"01":distChannel);
 		}
 		
 		public double getPrice() {

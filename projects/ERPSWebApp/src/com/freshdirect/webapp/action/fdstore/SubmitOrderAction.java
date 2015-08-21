@@ -48,6 +48,7 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -251,6 +252,8 @@ public class SubmitOrderAction extends WebActionSupport {
         	addModel.setWebServiceType(EnumWebServiceType.GIFT_CARD_PERSONAL);
         }
         cart.setDeliveryAddress(addModel);
+        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+        cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
 		FDCustomerManager.setDefaultPaymentMethod(
@@ -1023,6 +1026,8 @@ public class SubmitOrderAction extends WebActionSupport {
         	addModel.setWebServiceType(EnumWebServiceType.DONATION_INDIVIDUAL);
         }
         cart.setDeliveryAddress(addModel);
+        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+        cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
 		FDCustomerManager.setDefaultPaymentMethod(
