@@ -111,7 +111,7 @@ public class AvailabilityService {
             warningType = DELIVERY_PASS_ONLY;
         } else if (user.getDlvPassInfo() != null && user.getDlvPassInfo().isUnlimited() && user.isDlvPassCancelled() && cart.isDlvPassAlreadyApplied()) {
             warningType = DELIVERY_PASS_CANCELLED;
-        } else if (!user.isOrderMinimumMet() && deliveryAddress != null) {
+        } else if (!user.isOrderMinimumMet() && deliveryAddress != null && user.getMasqueradeContext() == null) {
             warningType = GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY;
         }
         return warningType;

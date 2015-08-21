@@ -5,13 +5,13 @@ import java.text.MessageFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class UserValidationUtil {
@@ -60,7 +60,8 @@ public class UserValidationUtil {
 		
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
-		if (ccUser!=null ||agent!=null) {
+		MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+		if (ccUser!=null ||agent!=null || (masqueradeContext!=null && masqueradeContext.getAgentId() != null && !"".equals(masqueradeContext.getAgentId())) ) {
 			// callcenter users/CRM agents users are allowed to place orders less than $40
 			return true;
 		}
