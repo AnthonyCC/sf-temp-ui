@@ -260,7 +260,7 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				List<FDPromoCustStrategyModel> custStrategies = lPromotion.getCustStrategies();
 				if(null!= custStrategies && !custStrategies.isEmpty()){
 					FDPromoCustStrategyModel custModel = (FDPromoCustStrategyModel)custStrategies.get(0);
-					if(!custModel.isOrderTypeHome() && !custModel.isOrderTypeCorporate() && !custModel.isOrderTypePickup()){
+					if(!custModel.isOrderTypeHome() && !custModel.isOrderTypeCorporate() && !custModel.isOrderTypePickup() && !custModel.isOrderTypeFDX()){
 						result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
 						valid = false;
 					}
