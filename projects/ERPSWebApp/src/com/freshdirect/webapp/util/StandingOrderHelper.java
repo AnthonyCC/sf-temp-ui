@@ -332,8 +332,12 @@ public class StandingOrderHelper {
 					LOGGER.info( "Found matched timeslot: " + ts.toString() );
 					_tmpTimeslot = ts;
 					__so_timeslotId = ts.getId();
-					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
-					break;
+					if(ts.isTimeslotRestricted()){ 
+						ts.setTimeslotRestricted(false);
+						ts.setSoldOut(false);
+						break;
+					}
+					
 				}
 			}
 			
@@ -346,8 +350,12 @@ public class StandingOrderHelper {
 					// starting bound falls within time slot
 					LOGGER.debug(" ===> " + ts + " (overlap)");
 					__so_timeslotId = ts.getId();
-					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
-					break;
+					if(ts.isTimeslotRestricted()){
+						ts.setTimeslotRestricted(false);
+						ts.setSoldOut(false);
+						break;
+					}
+					
 				}
 			}
 		}
