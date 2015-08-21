@@ -35,7 +35,7 @@
 	   CmRegistrationTag.setRegistrationLocation(session,"crm");%>
 	
 	<fd:RegistrationController actionName="register" successPage='/main/account_details.jsp' result='result' fraudPage='/registration/proceed_w_caution.jsp'>
-	<%=serviceType%>
+	
 		<form name="registration" method="POST" action="nw_cst_enter_details.jsp">
 			<input type="hidden" name="terms" value="true" />
 			<%@ include file="/registration/includes/i_header.jspf" %>
