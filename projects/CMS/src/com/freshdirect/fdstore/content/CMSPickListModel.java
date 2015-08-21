@@ -9,6 +9,7 @@ public class CMSPickListModel extends CMSPickListItemModel{
 	private List<CMSScheduleModel> schedules;
 	private List<CMSPickListItemModel> items;
 	private List<String> products;
+	private List<String> categories;
 	
 	public boolean isDisplayName() {
 		return displayName;
@@ -45,5 +46,11 @@ public class CMSPickListModel extends CMSPickListItemModel{
 	}
 	public void setProducts(List<String> products) {
 		this.products = products;
+	}
+	public List<String> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
 	}
 }

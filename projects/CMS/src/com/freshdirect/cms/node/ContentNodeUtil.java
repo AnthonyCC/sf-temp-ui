@@ -50,6 +50,7 @@ public class ContentNodeUtil {
 		new TileLabelProvider(),
 		new HolidayGreetingLabelProvider(),
 		new MenuItemLabelProvider(),
+		new AttributeLabelProvider("PAGE_TITLE"),
 		new AttributeLabelProvider("FULL_NAME"),
 		new AttributeLabelProvider("NAV_NAME"),
 		new AttributeLabelProvider("GLANCE_NAME"),

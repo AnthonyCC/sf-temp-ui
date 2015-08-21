@@ -49,6 +49,7 @@ public class StructureValidator implements ContentValidatorI {
 		IGNORABLE_TYPES.add(FDContentTypes.ANCHOR);
 		IGNORABLE_TYPES.add(FDContentTypes.SECTION);
 		IGNORABLE_TYPES.add(FDContentTypes.WEBPAGE);
+		IGNORABLE_TYPES.add(FDContentTypes.PICK_LIST);
 	}
 
 	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode ) {
