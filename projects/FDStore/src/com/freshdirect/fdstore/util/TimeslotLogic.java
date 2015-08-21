@@ -129,9 +129,6 @@ public class TimeslotLogic {
 						_ts.setStoreFrontAvailable("R");
 						if(_ts.isPremiumSlot()) deliveryModel.setShowPremiumSlots(false);
 						continue;
-					} else {
-						// ... available for store front
-						_ts.setStoreFrontAvailable("A");
 					}
 
 					boolean _remove = false;
