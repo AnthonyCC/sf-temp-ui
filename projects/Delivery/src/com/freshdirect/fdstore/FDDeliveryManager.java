@@ -2,7 +2,6 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
@@ -498,33 +496,6 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryServices response = logisticsService.getDeliveryServices(LogisticsDataEncoder.encodeAddress(address));
 			FDDeliveryServiceSelectionResult result = LogisticsDataDecoder.decodeDeliveryServices(response);
-			return result;
-		}catch (FDLogisticsServiceException e) {
-			throw new FDResourceException(e);
-		} 
-
-	}
-	
-	/*public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize) throws FDResourceException {
-		
-		return getTimeslotsForDateRangeAndZone(dateranges, event, address, orderSize, false, false);
-	}*/
-
-	/*public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo) throws FDResourceException{
-		return getTimeslotsForDateRangeAndZone(dateranges, event,
-			 address, orderSize, null, forceOrder, deliveryInfo);
-	}
-
-	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo) throws FDResourceException {
-		try {			
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryTimeslots response = logisticsService.getTimeslots(LogisticsDataEncoder.encodeTimeslotRequest(dateranges, event,
-					 address, orderSize, forceOrder, deliveryInfo));
-			FDDeliveryTimeslots result = LogisticsDataDecoder.decodeDeliveryTimeslots(response);
-			return result;
 			
 			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome().create();
 			result.setRestrictionReason(sb.checkAddressForRestrictions(address));
@@ -533,10 +504,10 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
-		} catch (FDLogisticsServiceException e) {
+		}catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		} 
-	}*/
+	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
 			Customer customer, OrderContext context) throws FDResourceException {
@@ -568,7 +539,6 @@ public class FDDeliveryManager {
 		} 
 	}
 	
-
 
 	public FDTimeslot getTimeslotsById(String timeslotId,String buildingId, boolean checkPremium) throws FDResourceException {
 		
@@ -1221,7 +1191,6 @@ public class FDDeliveryManager {
 	public void processAddress(AddressI address) throws FDResourceException {
 	
 
-		
 		try {
 			LOGGER.debug("Sending Address For Routing System# " + address.getAddress1()+" : "+address.getZipCode());		
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();

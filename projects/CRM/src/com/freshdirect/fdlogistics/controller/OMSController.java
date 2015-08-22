@@ -67,6 +67,7 @@ import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.ActionError;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
@@ -134,14 +135,14 @@ public class OMSController extends BaseController  {
 		OrdersSummaryDTO orders = new OrdersSummaryDTO();
 		
 		try{
-			
-			orders = orderService.getActiveOrderByArea(criteria.getDeliveryDate(), criteria.isStandingOrder());
+		
+		orders = orderService.getActiveOrderByArea(criteria.getDeliveryDate(), criteria.isStandingOrder());
 		orders.setSuccessMessage("orders retrieved successfully");
 		}catch (FDLogisticsServiceException e) {
 			orders.setStatus(Result.STATUS_FAILED);
 			orders.addErrorMessages(new ActionError("technical_difficulty",
 					SystemMessageList.MSG_TECHNICAL_ERROR));
-		} 
+		} 	
 		return orders;
 	}
 
@@ -210,9 +211,9 @@ public class OMSController extends BaseController  {
 			orders = orderService.getStandingOrderByCriteria(criteria);
 			orders.setSuccessMessage("orders retrieved successfully");
 		}catch (FDLogisticsServiceException e) {
-			orders.setStatus(Result.STATUS_FAILED);
-			orders.addErrorMessages(new ActionError("technical_difficulty",
-					SystemMessageList.MSG_TECHNICAL_ERROR));
+		orders.setStatus(Result.STATUS_FAILED);
+		orders.addErrorMessages(new ActionError("technical_difficulty",
+			SystemMessageList.MSG_TECHNICAL_ERROR));
 	} 
 		return orders;
 	}
@@ -229,15 +230,15 @@ public class OMSController extends BaseController  {
 		}
 		
 		try {
-		FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
-		orderInfo.setSaleId(orderId);
-		// Assume everything is fine...
-		success = this.cancelOrder(orderInfo, "SYSTEM", sendEmail);
+			FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
+			orderInfo.setSaleId(orderId);		
+			// Assume everything is fine...
+			success = this.cancelOrder(orderInfo, "SYSTEM", sendEmail);
 			if(!success){
 				 return Result.createFailureMessage("failed to cancel order.");
 			}else{
-		return Result.createSuccessMessage("order cancelled successfully");
-	}
+				return Result.createSuccessMessage("order cancelled successfully");
+			}
 		} catch (Exception e) {
 			return Result.createFailureMessage("failed to cancel order.");
 		}
@@ -258,9 +259,9 @@ public class OMSController extends BaseController  {
 				request.getStartTime(), request.getEndTime(), request.getInitiator());
 		
 		if(result != null){
-			return Result.createSuccessMessage("standing order instance created successfully");
+			return Result.createFailureMessage(result.getErrorHeader());
 		}
-		return Result.createFailureMessage("standing order instance created failed");
+		return Result.createSuccessMessage("Standing order instance created successfully");
 	}
 	
 	@RequestMapping(value = "/delivery/confirm/", method = RequestMethod.POST)
@@ -452,7 +453,7 @@ public class OMSController extends BaseController  {
 			sendTechnicalMail("Empty standingOrderId passed.");
 			return null;
 		}
-		TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), false, 0.00, false, false, null, "fd");		
+		TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), false, 0.00, false, false, null, EnumCompanyCode.fd.name());		
 		
 			
 		LOGGER.info( "Processing " + standingOrderId + " standing orders." );
@@ -616,8 +617,8 @@ private static MailerGatewayHome mailerHome	= null;
 	public @ResponseBody ListOfObjects<CallLogModel> getOrderCallLog( @PathVariable("orderId") String orderId) {
 		ListOfObjects<CallLogModel> result = new ListOfObjects<CallLogModel>();
 		try {
-		List<CallLogModel> data = orderService.getOrderCallLog(orderId);
-		result.setData(data);
+			List<CallLogModel> data = orderService.getOrderCallLog(orderId);
+			result.setData(data);
 			result.setSuccessMessage("records retrieved successfully");
 		} catch (FDLogisticsServiceException e) {
 			result.setStatus(Result.STATUS_FAILED);
@@ -631,9 +632,9 @@ private static MailerGatewayHome mailerHome	= null;
 	public @ResponseBody DeliveryExceptions getIVRCallLog(@RequestBody DeliveryExceptions exceptions){
 		DeliveryExceptions result = new DeliveryExceptions();
 		try {
-		Map<String ,DeliveryException> data = orderService.getIVRCallLog(exceptions.getData(), 
-				exceptions.getFromTime(), exceptions.getToTime());
-		result.setData(data);
+			Map<String ,DeliveryException> data = orderService.getIVRCallLog(exceptions.getData(), 
+					exceptions.getFromTime(), exceptions.getToTime());
+			result.setData(data);
 			result.setSuccessMessage("records retrieved successfully");
 		} catch (FDLogisticsServiceException e) {
 			result.setStatus(Result.STATUS_FAILED);
@@ -647,8 +648,8 @@ private static MailerGatewayHome mailerHome	= null;
 	public @ResponseBody ListOfObjects<String> getCartonList( @PathVariable("orderId") String orderId) {
 		ListOfObjects<String> result = new ListOfObjects<String>();
 		try {
-		List<String> cartonList =  orderService.getCartonList(orderId);
-		result.setData(cartonList);
+			List<String> cartonList =  orderService.getCartonList(orderId);
+			result.setData(cartonList);
 			result.setSuccessMessage("records retrieved successfully");
 		} catch (FDLogisticsServiceException e) {
 			result.setStatus(Result.STATUS_FAILED);
@@ -684,9 +685,10 @@ private static MailerGatewayHome mailerHome	= null;
 			result.setStatus(Result.STATUS_FAILED);
 			result.addErrorMessages(new ActionError("technical_difficulty",
 				SystemMessageList.MSG_TECHNICAL_ERROR));
-	}
+		} 
 		return result;
 	}
+		
 	
 	@RequestMapping(value = "/delivery/req/{orderId}",  method = {RequestMethod.POST, RequestMethod.GET})
 	public @ResponseBody ListOfObjects<CallLogModel> getDeliveryReq( @PathVariable("orderId") String orderId) {

@@ -67,7 +67,7 @@ public class FDModifyCartModel extends FDCartModel {
 		FDDeliveryZoneInfo zoneInfo = new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, null, 
 				EnumZipCheckResponses.DELIVER, originalOrder.getDeliveryReservation().getRegionSvcType());
 		
-		this.setZoneInfo(getZoneInfo());
+		this.setZoneInfo(zoneInfo);
 
 		this.setCustomerServiceMessage(originalOrder.getCustomerServiceMessage());
 		this.setMarketingMessage(originalOrder.getMarketingMessage());
@@ -75,7 +75,7 @@ public class FDModifyCartModel extends FDCartModel {
 
 	}
 
-	public FDDeliveryZoneInfo getZoneInfo(){
+/*	public FDDeliveryZoneInfo getZoneInfo(){
 		try{
 			return FDDeliveryManager.getInstance().getZoneInfo(originalOrder.getCorrectedDeliveryAddress(), originalOrder.getRequestedDate(),
 				null, originalOrder.getDeliveryReservation().getRegionSvcType());
@@ -87,7 +87,7 @@ public class FDModifyCartModel extends FDCartModel {
 		return new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, null, 
 				EnumZipCheckResponses.DELIVER, originalOrder.getDeliveryReservation().getRegionSvcType());
 		
-	}
+	}*/
 	public void addOriginalOrderLine(FDCartLineI origLine){
 		
 		FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
