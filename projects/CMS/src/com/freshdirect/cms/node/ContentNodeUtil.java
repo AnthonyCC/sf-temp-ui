@@ -50,15 +50,15 @@ public class ContentNodeUtil {
 		new TileLabelProvider(),
 		new HolidayGreetingLabelProvider(),
 		new MenuItemLabelProvider(),
-		new AttributeLabelProvider("PAGE_TITLE"),
+		//new AttributeLabelProvider("PAGE_TITLE"),
 		new AttributeLabelProvider("FULL_NAME"),
 		new AttributeLabelProvider("NAV_NAME"),
 		new AttributeLabelProvider("GLANCE_NAME"),
 		new AttributeLabelProvider("name"),
 		new AttributeLabelProvider("title"),
 		new AttributeLabelProvider("attribute"),
-		new AttributeLabelProvider("PAGE_TITLE"),
-		new AttributeLabelProvider("Name")});
+		new AttributeLabelProvider("Name"),
+		new AttributeLabelProvider("PAGE_TITLE")});
 
 	/**
 	 * Get a human-readable label for a content node.
