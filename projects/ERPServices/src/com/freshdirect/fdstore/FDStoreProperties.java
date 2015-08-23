@@ -1473,7 +1473,7 @@ public class FDStoreProperties {
 		
 		 //Product Family 
         defaults.put(PROP_PRODUCTFAMILY, "true");
-        defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev2api.freshdirect.com/");
+        defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1api.freshdirect.com/");
         defaults.put(PROP_OMS_API_URL, "http://crmdev5.freshdirect.com/");
         
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
