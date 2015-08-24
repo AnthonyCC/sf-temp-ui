@@ -70,6 +70,8 @@ public interface SessionParamName {
      public static final String SESSION_PARAM_AUTH_FAIL_MESSAGE = "authFailMessage"; 
 
      public static final String SESSION_PARAM_MODIFY_CART_PRESELECTION_COMPLETED = SessionName.MODIFY_CART_PRESELECTION_COMPLETED;
+     
+     public static final String SESSION_PARAM_MODIFY_PAYMENT_BILLING_REFERENCE = SessionName.PAYMENT_BILLING_REFERENCE;
 
      public static final String SMART_STORE_PREV_RECOMMENDATIONS = SessionName.SMART_STORE_PREV_RECOMMENDATIONS;
 
