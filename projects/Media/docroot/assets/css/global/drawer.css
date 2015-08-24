@@ -21,7 +21,8 @@
 
 [data-component="drawer"] .drawer-header button {
   float: right;
-  margin-top: 5px;
+  font-size: 14px;
+  margin-top: 3px;
 }
 
 [data-drawer-content],
