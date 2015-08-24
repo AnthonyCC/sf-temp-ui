@@ -49,6 +49,7 @@
 <%@ include file="/includes/admintools/i_search.jspf"%>
 <%
 	int prcLimit = FDStoreProperties.getOrderProcessingLimit();
+	int displayedLines = 0; //this is used in this jsp and the orders_for_cancellation.jspf include
 %>
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
 	<tr>
@@ -57,8 +58,6 @@
 			<input type="submit" value="SEARCH ORDERS" class="submit">&nbsp;&nbsp;
 			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearAll();">
 		</td>
-		
-
 	</tr>
 	<tr colspan="2">
 	<td>
@@ -78,7 +77,7 @@
 	<logic:present name="cancelOrders">	
 		<tr>
 			<td>
-				<span class="info_text"><b>Total Number of Orders remaining to be Cancelled: </b><%= cancelOrders.size() %></span>
+				<span class="info_text"><b>Total Number of Orders remaining to be Cancelled: </b><%= displayedLines %></span>
 			</td>
 		</tr>	
 	</logic:present>
@@ -86,7 +85,7 @@
 		<td align="center">
 			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 	<%
-		if(cancelOrders ==  null || cancelOrders.size() == 0) {
+		if(cancelOrders ==  null || cancelOrders.size() == 0 || displayedLines == 0) {
 	%>
 		<input name="cancelorders" id="cancelordersButton" type="submit" value="CANCEL ORDERS" class="submit" disabled>
 		<input name="exportButton" id="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>

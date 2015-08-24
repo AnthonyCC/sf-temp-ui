@@ -56,9 +56,6 @@ function openURL(inLocationURL) {
 	<%
 		} else {
 	%>	
-		<%
-			int displayedLines = 0;
-		%>
 	<logic:iterate id="order" collection="<%= cancelOrders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="cnt">
 	<%
 		if(cnt.intValue() < prcLimit) {

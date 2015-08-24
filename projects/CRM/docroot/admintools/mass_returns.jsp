@@ -205,6 +205,9 @@
 	</tr>
 	<tr><td colspan="2">
 	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:420;">
+		<%
+			int displayedLines = 0; //this is used in this jsp and the orders_for_returns.jspf include
+		%>
 		<%@ include file="/includes/admintools/orders_for_returns.jspf"%>
 	</div>		
 	</td></tr>
@@ -218,7 +221,7 @@
 	<logic:present name="returnOrders">	
 		<tr>
 			<td>
-				<span class="info_text"><b>Total Number of Orders remaining to be Returned: </b><%= returnOrders.size() %></span>
+				<span class="info_text"><b>Total Number of Orders remaining to be Returned: </b><%= displayedLines %></span>
 			</td>
 		</tr>	
 	</logic:present>	
@@ -226,7 +229,7 @@
 		<td align="center">
 			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 	<%
-		if(returnOrders ==  null || returnOrders.size() == 0) {
+		if(returnOrders ==  null || returnOrders.size() == 0 || displayedLines == 0) {
 	%>
 		<input type="submit" value="RETURN ORDERS" class="submit" disabled>
 		<input name="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>
