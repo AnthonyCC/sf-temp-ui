@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -63,6 +64,8 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -136,11 +139,11 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 
-	public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress) {
+	public static String placeOrder(FDActionInfo actionInfo, CustomerRatingAdaptor cra, String arSKU, ErpPaymentMethodI pymtMethod, ErpAddressModel dlvAddress, UserContext userCtx) {
 		String orderID = null;
 		FDCartModel cart=null;
 		try {
-			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK());
+			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
 			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, false, cra, null);
 		}  catch (FDResourceException e) {
 			LOGGER.warn(e);
@@ -217,7 +220,7 @@ public class DeliveryPassRenewalCron {
 						user=FDCustomerManager.getFDUser(identity);
 						actionInfo=getFDActionInfo(identity);
 						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress());
+						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress(),user.getUserContext());
 
 					}
 					catch(FDResourceException fe) {
@@ -245,7 +248,7 @@ public class DeliveryPassRenewalCron {
 
 
 
-	public static FDCartModel getCart(String skuCode,ErpPaymentMethodI paymentMethod,ErpAddressModel deliveryAddress, String erpCustomerID) {
+	public static FDCartModel getCart(String skuCode,ErpPaymentMethodI paymentMethod,ErpAddressModel deliveryAddress, String erpCustomerID,UserContext userCtx) {
 
 		FDCartModel cart=null;
 		try {
@@ -258,6 +261,9 @@ public class DeliveryPassRenewalCron {
 			FDReservation reservation=getFDReservation(erpCustomerID,deliveryAddress.getId());
 			cart.setDeliveryReservation(reservation);
 			cart.setZoneInfo(getZoneInfo(cart.getDeliveryAddress()));
+
+	        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(userCtx));
+	        cart.setEStoreId(userCtx.getStoreContext().getEStoreId());
 		} catch (FDSkuNotFoundException e) {
 			LOGGER.warn("Unable to create shopping cart for customer :"+erpCustomerID);
 			LOGGER.warn(e);

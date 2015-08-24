@@ -159,7 +159,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
 					if (arSKU != null){
 						//this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, address);
-						FDCartModel cart=DeliveryPassRenewalCron.getCart(arSKU, paymentMethod, address, user.getIdentity().getErpCustomerPK());
+						FDCartModel cart=DeliveryPassRenewalCron.getCart(arSKU, paymentMethod, address, user.getIdentity().getErpCustomerPK(),user.getUserContext());
 						session.setAttribute("SUBSCRIPTION_CART", cart);
 						
 					}else{
