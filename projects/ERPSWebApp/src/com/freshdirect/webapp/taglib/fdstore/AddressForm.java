@@ -74,7 +74,7 @@ public class AddressForm implements WebFormI { //, AddressName
         
         homePhone = request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
         if (homePhone == null) {
-            homePhone = request.getParameter("dlvhomephone");
+            homePhone = request.getParameter("homephone");
         }
         homePhoneExt = request.getParameter(EnumUserInfoName.DLV_HOME_PHONE_EXT.getCode());
         
