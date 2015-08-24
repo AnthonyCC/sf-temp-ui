@@ -405,6 +405,9 @@
     {param amount:$inCartAmount /}
     {param atcItemId:$atcItemId /}
   {/call}
+  {if $originalLineId}
+    <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
+  {/if}
   {if not $freeSamplePromoProduct}
   <div class="portrait-item-atl">
     <span class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</span>
@@ -412,7 +415,6 @@
     <span class="deletefromlist cssbutton white transparent icon-remove-before" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</span>
     <span class="editinlist cssbutton purple transparent" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</span>
     <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}" />
-    <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
     {/if}
   </div>
   {/if}
