@@ -224,6 +224,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 	public boolean apply(PromotionContextI context) {
+		if(context.getUser().isCrmMode()) return false;
 		boolean applied = false;
 		 for (PromotionApplicatorI _applicator : this.applicators) {
 			applied = _applicator.apply(this.promotionCode, context);
