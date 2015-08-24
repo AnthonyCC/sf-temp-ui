@@ -60,7 +60,7 @@ public class CmsManager implements ContentServiceI {
 	/**
 	 * E-STORE id of the actual store node
 	 */
-	private String eStoreId;
+	private EnumEStoreId eStoreEnum;
 
 	private boolean readOnlyContent = true; //false if CMS is in DB mode, true if XML mode
 
@@ -148,6 +148,22 @@ public class CmsManager implements ContentServiceI {
 		ContextService.setInstance( new ContextService(this) );
 
 		this.singleStoreKey = calculateSingleStoreId();
+
+		// guess corresponding eStore ID
+		if (this.singleStoreKey != null) {
+			final EnumEStoreId eStore = EnumEStoreId.valueOfContentId(singleStoreKey.getId());
+
+			if (eStore != null) {
+				this.eStoreEnum = eStore;
+			} else {
+				LOGGER.warn("Failed to find eStore Id, falling back to " + EnumEStoreId.FD);
+				this.eStoreEnum = EnumEStoreId.FD;
+			}       
+		} else {
+			LOGGER.warn("No E-STORE ID is guessed in multi-store mode!");
+		}
+
+		
 		
 		if (this.readOnlyContent && this.singleStoreKey != null) {
 			initPrimaryHomeCache(this.singleStoreKey);
@@ -323,7 +339,7 @@ public class CmsManager implements ContentServiceI {
 	 * @return ID or null in case of multi-store environment
 	 */
 	public String getEStoreId() {
-		return eStoreId;
+		return eStoreEnum != null ? eStoreEnum.getContentId() : null;
 	}
 
 
@@ -333,7 +349,7 @@ public class CmsManager implements ContentServiceI {
 	 * @return {@link EnumEStoreId} instance or null
 	 */
 	public EnumEStoreId getEStoreEnum() {
-		return EnumEStoreId.valueOfContentId(eStoreId);
+		return eStoreEnum;
 	}
 
 	
