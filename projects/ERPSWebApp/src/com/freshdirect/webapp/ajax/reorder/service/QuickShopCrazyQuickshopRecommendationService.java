@@ -15,12 +15,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -251,29 +253,15 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			}
 		}
 
-		// default siteFeature is : SideCart Featured Items (SCR_FEAT_ITEMS) +
-		// whole store as currentNode
-
-		// FIXME : using the whole store as currentNode does not work in some
-		// environments!
-		// The recursive traversing of the whole store is most probably hitting
-		// the memory limits
-		// Do not use until it is investigated!
-		// ContentNodeModel rootNode = ContentFactory.getInstance().getStore();
-		// EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
-		// return doRecommend( user, session, siteFeature, maxItems,
-		// listContent, rootNode );
-
-		// Using something else instead as the root node ... "President's Picks"
-		// should be full of great stuff
-		CategoryModel rootNode = (CategoryModel) ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, "picks_love");
-
-		// FIXME FDX
-		if (rootNode == null) {
-			LOG.error("Missing root node picks_love");
+		CategoryModel rootNode = null; 
+		
+		try {
+			rootNode = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.getIntance().getPresidentsPicksCategoryKey() );
+		} catch (InvalidContentKeyException e) {
+			LOG.error("Missing root node picks_love", e);
 			return Collections.EMPTY_LIST;
 		}
-		
+
 		@SuppressWarnings({ "rawtypes" })
 		List<ContentNodeModel> prespicks = (List) rootNode.getProducts(); // DDPP
 		// content!

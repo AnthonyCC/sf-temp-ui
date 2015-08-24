@@ -14,9 +14,11 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.GlobalNavigationModel;
@@ -73,7 +75,14 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					}
 				}
 
-				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList("picks_love", "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
+				String ppicksId;
+				try {
+					ppicksId = ContentKeyFactory.getIntance().getPresidentsPicksCategoryKey().getId();
+				} catch (InvalidContentKeyException exc) {
+					ppicksId = "picks_love";
+				}
+
+				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList(ppicksId, "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
 	
 				if (browseId != null) {
 					ContentNodeModel thisObj = findContentNode(browseId);

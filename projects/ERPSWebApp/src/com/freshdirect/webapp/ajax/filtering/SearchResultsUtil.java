@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentKeyFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentUtil;
 import com.freshdirect.fdstore.content.EnumSortingValue;
@@ -89,7 +90,11 @@ public class SearchResultsUtil {
 			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
 		}
 		
-		CategoryModel featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", FDStoreProperties.getNewProductsCatId());
+		CategoryModel featuredCategory = null;
+		try {
+			// lookup category for featured new products and brands
+			featuredCategory = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.getIntance().getNewProductsCategoryKey() );
+		} catch (InvalidContentKeyException exc) {}
 		List<String> categoryFilters = nav.getRequestFilterParams().get("categoryFilterGroup");
 		if (categoryFilters != null && !categoryFilters.contains("clearall")) {
 			if (categoryFilters.size() > 0) { //coming from original...
