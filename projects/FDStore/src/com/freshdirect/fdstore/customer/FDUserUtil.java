@@ -16,10 +16,15 @@ public class FDUserUtil {
 	public static ErpDeliveryPlantInfoModel getDeliveryPlantInfo(FDUserI user) {
 		
 		UserContext ctx=user.getUserContext();
+		ErpDeliveryPlantInfoModel delPlantInfo=getDeliveryPlantInfo(ctx);
+		return delPlantInfo;
+	}
+	
+	public static ErpDeliveryPlantInfoModel getDeliveryPlantInfo(UserContext userContext) {
 		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
-		delPlantInfo.setPlantId(ctx.getFulfillmentContext().getPlantId());
-		delPlantInfo.setSalesOrg(ctx.getPricingContext().getZoneInfo().getSalesOrg());
-		delPlantInfo.setDistChannel(ctx.getPricingContext().getZoneInfo().getDistributionChanel());
+		delPlantInfo.setPlantId(userContext.getFulfillmentContext().getPlantId());
+		delPlantInfo.setSalesOrg(userContext.getPricingContext().getZoneInfo().getSalesOrg());
+		delPlantInfo.setDistChannel(userContext.getPricingContext().getZoneInfo().getDistributionChanel());
 		return delPlantInfo;
 	}
 

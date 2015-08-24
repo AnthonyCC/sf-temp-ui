@@ -508,7 +508,7 @@ class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessio
 			FDReservation reservation, ProcessActionResult vr)
 			throws FDResourceException {
 		return StandingOrderUtil.buildCart(soList, paymentMethod, deliveryAddressModel, timeslots,
-				zoneInfo, reservation, vr);
+				zoneInfo, reservation, vr,null);
 	}
 }
 

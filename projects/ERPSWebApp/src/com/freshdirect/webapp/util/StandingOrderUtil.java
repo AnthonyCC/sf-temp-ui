@@ -21,6 +21,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -51,6 +52,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CJVFContextHolder;
@@ -71,6 +73,7 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
@@ -508,7 +511,7 @@ public class StandingOrderUtil {
 		// ==========================
 		
 		ProcessActionResult vr = new ProcessActionResult();
-		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);		
+		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr, customerUser.getUserContext());		
 		// boolean hasInvalidItems = vr.isFail();
 		
 		final List<FDCartLineI> originalCartItems = new ArrayList<FDCartLineI>(cart.getOrderLines());
@@ -761,7 +764,7 @@ public class StandingOrderUtil {
 	}
 
 
-	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, ProcessActionResult vr) throws FDResourceException {
+	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, ProcessActionResult vr, UserContext userContext) throws FDResourceException {
 		FDCartModel cart = new FDTransientCartModel();
 		
 		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
@@ -785,7 +788,11 @@ public class StandingOrderUtil {
 		cart.setDeliveryAddress( erpDeliveryAddress );		
 		cart.setDeliveryReservation( reservation );
         cart.setZoneInfo( zoneInfo );
-        
+        if(null ==userContext){
+        	userContext = ContentFactory.getInstance().getCurrentUserContext();
+        }
+        cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(userContext));
+        cart.setEStoreId(userContext.getStoreContext().getEStoreId());
         // fill the cart with items
 		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( soList.getLineItems() );
 		
