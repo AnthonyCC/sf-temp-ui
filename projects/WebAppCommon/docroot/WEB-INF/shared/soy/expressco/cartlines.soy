@@ -246,7 +246,13 @@
   </div>
   <div class='cartline-quantity cartline-box'>
     {if $freeSamplePromoProduct}
-      {if $qu}<span class="free-sample-quantity">{$qu.quantity}</span>{/if}
+      {if $su}
+        {foreach $option in $su}
+          {if $option.selected}<span class="free-sample-quantity">{$option.name}</span>{/if}
+        {/foreach}
+      {elseif $qu}
+        <span class="free-sample-quantity">{$qu.quantity}</span>
+      {/if}
     {else}
       {if $qu}{call common.quantitybox}{param quantity:$qu /}{/call}{/if}
       {if $su}{call common.salesunit}{param options:$su /}{/call}{/if}
