@@ -17,6 +17,7 @@ public class FDMaterialSalesArea implements Serializable {
 	private String unavailabilityStatus;
 	private Date unavailabilityDate;
 	private String unavailabilityReason;
+	private boolean isLimitedQuantity;
 	/**
 	 * 
 	 */
@@ -94,7 +95,15 @@ public class FDMaterialSalesArea implements Serializable {
 		return "FDMaterialSalesArea [salesAreaInfo=" + salesAreaInfo
 				+ ", unavailabilityStatus=" + unavailabilityStatus
 				+ ", unavailabilityDate=" + unavailabilityDate
+				+ ", isLimitedQuantity=" + isLimitedQuantity
 				+ ", unavailabilityReason=" + unavailabilityReason + "]";
 	}
 
+	public boolean isLimitedQuantity() {
+		return isLimitedQuantity;
+	}
+
+	public void setLimitedQuantity(boolean isLimitedQuantity) {
+		this.isLimitedQuantity = isLimitedQuantity;
+	}
 }

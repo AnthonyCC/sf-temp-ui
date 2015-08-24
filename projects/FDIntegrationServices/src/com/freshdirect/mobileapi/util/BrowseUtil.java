@@ -1068,7 +1068,7 @@ public class BrowseUtil {
 	    						               .skuInfo(getSkuInfo(p,plantId,pc ));
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
-	    				productList.add(product);
+    					productList.add(product);
 					} 
 					cat.addProduct(p.getContentName());
 	    		}
@@ -1162,6 +1162,7 @@ public class BrowseUtil {
 						
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
+					skuInfo.setLimitedQuantity(productInfo.isLimitedQuantity(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()));
 					return skuInfo;
 				} catch (FDResourceException e) {
 					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());

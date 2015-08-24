@@ -21,8 +21,7 @@ public class SkuInfo {
 	
 	private List<ScalePrice> scalePrice;
 	
-	
-	
+		
 	public List<ScalePrice> getScalePrice() {
 		return scalePrice;
 	}
@@ -98,6 +97,15 @@ public class SkuInfo {
 	private boolean isTaxable;
 	private AlcoholType alcoholType;
 	private String sustainabilityRating;
+	
+	private boolean isLimitedQuantity;
+	
+	public void setLimitedQuantity(boolean isLimitedQuantity) {
+		this.isLimitedQuantity = isLimitedQuantity;
+	}
+	public boolean isLimitedQuantity() {
+		return this.isLimitedQuantity;
+	}
 	
 
 }

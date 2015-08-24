@@ -478,4 +478,15 @@ public class FDProductInfo extends FDSku  {
 	public Map<String, FDMaterialSalesArea> getAvailability() {
 		return materialAvailability;
 	}
+	
+	public boolean isLimitedQuantity(String salesOrg, String distributionChannel) {
+		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		if(sa!=null) {
+			if(this.getSkuCode().startsWith("VI"))
+				return true;
+			return sa.isLimitedQuantity();
+		}
+		return false;
+		
+	}
 }
