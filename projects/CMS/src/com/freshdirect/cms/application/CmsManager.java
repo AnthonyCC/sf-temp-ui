@@ -143,31 +143,6 @@ public class CmsManager implements ContentServiceI {
 	private void initializeInternal(ContentServiceI pipeline, ContentSearchServiceI searchService, final boolean isReadOnly) {
 		this.pipeline = pipeline;
 		this.searchService = searchService;
-
-		this.readOnlyContent = isReadOnly;
-
-		ContextService.setInstance( new ContextService(this) );
-
-		this.singleStoreKey = calculateSingleStoreId();
-
-		// guess corresponding eStore ID
-		if (this.singleStoreKey != null) {
-			final EnumEStoreId eStore = EnumEStoreId.valueOfContentId(singleStoreKey.getId());
-			
-			if (eStore != null) {
-				this.eStoreId = eStore.getContentId();
-			} else {
-				LOGGER.warn("Failed to find eStore Id, falling back to " + EnumEStoreId.FD);
-				this.eStoreId = EnumEStoreId.FD.getContentId();
-			}    	
-		} else {
-			LOGGER.warn("No E-STORE ID is guessed in multi-store mode!");
-		}
-
-		if (this.readOnlyContent && this.singleStoreKey != null) {
-			initPrimaryHomeCache(this.singleStoreKey);
-		}
-
 		this.readOnlyContent = isReadOnly;
 
 		ContextService.setInstance( new ContextService(this) );
@@ -175,9 +150,8 @@ public class CmsManager implements ContentServiceI {
 		this.singleStoreKey = calculateSingleStoreId();
 		
 		if (this.readOnlyContent && this.singleStoreKey != null) {
-			initPrimaryHomeCache(this.singleStoreKey.getId());
+			initPrimaryHomeCache(this.singleStoreKey);
 		}
-
 	}
 
 
@@ -334,7 +308,6 @@ public class CmsManager implements ContentServiceI {
 
 
 	/**
-
 	 * The key of store root node for Store front or CMS preview nodes
 	 *  
 	 * @return CMS {@link ContentKey}
@@ -366,7 +339,6 @@ public class CmsManager implements ContentServiceI {
 	
 	
 	/**
-
 	 * Convenience method to check if CMS Service is configured for XML use.
 	 * 
 	 * @return
@@ -390,7 +362,13 @@ public class CmsManager implements ContentServiceI {
 		}
 	}
 	
-	
+	public ContentKey getPrimaryHomeKey(ContentKey aKey) {
+		if (readOnlyContent && primaryHomeMap != null) {
+			return primaryHomeMap.get(aKey);
+		} else {
+			return PrimaryHomeUtil.pickPrimaryHomeForStore(aKey, singleStoreKey, this);
+		}
+	}
 
 
 
@@ -498,76 +476,4 @@ public class CmsManager implements ContentServiceI {
 	        }
 		}
 	}
-
-
-	 
-
-	public void initPrimaryHomeCache(final String storeId) {
-		primaryHomeMap = new HashMap<ContentKey,ContentKey>();
-		
-		Set<ContentKey> keys = this.getContentKeysByType(FDContentTypes.PRODUCT);
-		
-		// final String storeId = MultiStoreProperties.getCmsStoreId();
-
-		// System.err.println("Init cache started, evaluating " + keys.size() + " products");
-		
-		for (ContentKey key : keys) {
-			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(key), this, storeId);
-			if (p != null ) {
-				primaryHomeMap.put(key, p.getKey());
-			}
-		}
-		// System.err.println("Cache init finished, size: " + primaryHomeMap.size());
-	}
-	
-	public ContentKey getPrimaryHomeKey(ContentKey aKey) {
-		if (readOnlyContent && primaryHomeMap != null) {
-			return primaryHomeMap.get(aKey);
-		} else {
-			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(aKey), this, MultiStoreProperties.getCmsStoreId());
-			return p != null ? p.getKey() : null;
-		}
-	}
-	
-    /*private static void propagateCmsChangeEvent(Collection<ContentNodeI> nodes) {
-    	Map<String, Set<String>> contentKeys = collectContentKeysByStore(nodes);
-    	for (String previewHost : contentKeys.keySet()) {
-    		Set<String> previewNodeContentKeys = contentKeys.get(previewHost);
-    		Map<String, Object> map = new HashMap<String, Object>();
-    		map.put("contentKeys", previewNodeContentKeys);
-    		Writer writer = new StringWriter();
-    		try {
-    			new ObjectMapper().writeValue(writer, map);
-    			String data = writer.toString();
-    			String uri = "http://" + previewHost + "/api/contentcache";
-    			LOGGER.info("[PCE]Propagate change event to: " + uri + " with: " + data);
-    			HttpService.defaultService().postData(uri, data);
-    		} catch (IOException exception) {
-    			LOGGER.error("CMS change event propagataion failed to preview node!");
-    		}
-    	}
-    }*/
-
-
-	private static Map<String, Set<String>> collectContentKeysByStore(Collection<ContentNodeI> nodes) {
-		Map<String, Set<String>> contentKeys = new HashMap<String, Set<String>>();
-		Set<String> contentKeysEncoded = new HashSet<String>();
-		Set<String> hosts = new HashSet<String>();
-    	for (ContentNodeI node : nodes) {
-    		String key = node.getKey().getEncoded();
-    		contentKeysEncoded.add(key);
-    		Set<ContentKey> storeKeys = PrimaryHomeUtil.getStoreKeys(node.getKey(), CmsManager.getInstance());
-    		for (ContentKey storeKey : storeKeys) {
-    			String previewHost = (String) storeKey.getContentNode().getAttributeValue("PREVIEW_HOST_NAME");
-    			if (previewHost != null) {
-    				hosts.add(previewHost);
-    			}
-    		}
-    	}
-    	for (String host : hosts) {
-    		contentKeys.put(host, contentKeysEncoded);
-    	}
-		return contentKeys;
-	}
-
 }

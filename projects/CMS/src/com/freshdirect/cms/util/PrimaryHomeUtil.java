@@ -25,45 +25,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class PrimaryHomeUtil {
 	private static final Category LOGGER = LoggerFactory.getInstance(PrimaryHomeUtil.class);
 
-	@Deprecated
-	public static ContentNodeI findParent(ContentNodeI prd, ContentServiceI svc, String storeId) {
-		if (prd == null || svc == null || storeId == null) {
-			return null;
-		} else if (!FDContentTypes.PRODUCT.equals( prd.getKey().getType())) {
-			return null;
-		}
-		
-		Set<ContentKey> parentKeys = svc.getParentKeys(prd.getKey());
-		
-		for (ContentKey parentKey : parentKeys) {
-			final ContentNodeI parentNode = svc.getContentNode(parentKey);
-			if (findParentRecursively(parentNode, svc, storeId)) {
-				return parentNode;
-			}
-		}
-		
-		
-		return null;
-	}
-	
-	@Deprecated
-	private static boolean findParentRecursively(ContentNodeI node, ContentServiceI svc, String storeId) {
-		while (node != null) {
-			if (FDContentTypes.STORE.equals(node.getKey().getType()) && storeId.equals(node.getKey().getId() ) ) {
-				return true;
-			}
-
-			Set<ContentKey> parentKeys = svc.getParentKeys(node.getKey());
-			if (parentKeys == null || parentKeys.size() == 0) {
-				node = null;
-			} else {
-				// pick first parent node (set should always contain exactly one node)
-				node = svc.getContentNode(parentKeys.iterator().next());
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Setup a map of store key -> parent cats for a product
 	 * 
