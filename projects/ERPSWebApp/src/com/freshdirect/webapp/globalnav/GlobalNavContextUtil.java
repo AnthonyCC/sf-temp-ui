@@ -2,33 +2,32 @@ package com.freshdirect.webapp.globalnav;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 
 public class GlobalNavContextUtil {
-	
-	public static GlobalNavigationModel getGlobalNavigationModel(FDUserI user) {
 
-		String globalNavId = "";
-		final String storeId = ContentFactory.getInstance().getStoreKey().getId();
+    public static GlobalNavigationModel getGlobalNavigationModel(FDUserI user) throws FDResourceException {
 
-		// Plain and ugly store ID check. Good until we have e-store IDs
-		if (EnumEStoreId.FDX.toString().equals( storeId )) {
-			globalNavId = "GlobalNavFdx"; //simple logic, export this into CMS if necessary
-		} else {
-			final boolean isFreeToHaveBeers = user == null
-					|| user.getUserContext() == null
-					|| !user.getUserContext().getFulfillmentContext().isAlcoholRestricted();
+        String globalNavId = "";
+        final String storeId = ContentFactory.getInstance().getStoreKey().getId();
 
-			if (isFreeToHaveBeers) {
-				globalNavId = "GlobalNavWithWine"; //with wine
-			} else {
-				globalNavId = "GlobalNavWithoutWine"; //w/o wine
-			}
-		}
-		return (GlobalNavigationModel) ContentFactory.getInstance()
-				.getContentNode( FDContentTypes.GLOBAL_NAVIGATION, globalNavId );
-	}
+        // Plain and ugly store ID check. Good until we have e-store IDs
+        if (EnumEStoreId.FDX.toString().equals(storeId)) {
+            globalNavId = "GlobalNavFdx"; // simple logic, export this into CMS if necessary
+        } else {
+            final boolean isFreeToHaveBeers = user != null && user.getZipCode() != null && !FDUserUtil.isAlcoholRestricted(user.getZipCode());
+            if (isFreeToHaveBeers && FDStoreProperties.isCoreNonCoreGlobalNavSwitchEnabled()) {
+                globalNavId = "GlobalNavWithWine"; // with wine
+            } else {
+                globalNavId = "GlobalNavWithoutWine"; // w/o wine
+            }
+        }
+        return (GlobalNavigationModel) ContentFactory.getInstance().getContentNode(FDContentTypes.GLOBAL_NAVIGATION, globalNavId);
+    }
 
 }

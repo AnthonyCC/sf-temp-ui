@@ -19,35 +19,35 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class GlobalNavTag extends SimpleTagSupport {
-	private static Logger LOGGER = LoggerFactory.getInstance(GlobalNavTag.class.getSimpleName());
-	
-	private String name = "globalnav";
-	
-	@Override
-	public void doTag() throws JspException, IOException {
 
-		PageContext ctx = (PageContext) getJspContext();
-		FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
-		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
-	
-			//Current global nav decision logic... Might be changed in the future.
-			GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
-			
-			try {
-				ctx.setAttribute(name, DataPotatoField.digGlobalNav(CMSModelToSoyDataConverter.createGlobalNavData(globalNavigationModel, user)));
-			} catch (FDResourceException e) {
-				if (globalNavigationModel != null) {
-					LOGGER.error("Failed to load global navigation model " + globalNavigationModel.toString() , e);
-				} else {
-					LOGGER.error("Missing global navigation model " , e);
-				}
+    private static Logger LOGGER = LoggerFactory.getInstance(GlobalNavTag.class.getSimpleName());
 
-				throw new JspException(e);
-			}
-		}
-	}
+    private String name = "globalnav";
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Override
+    public void doTag() throws JspException, IOException {
+
+        PageContext ctx = (PageContext) getJspContext();
+        FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
+            GlobalNavigationModel globalNavigationModel = null;
+            try {
+                // Current global nav decision logic... Might be changed in the future.
+                globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
+                ctx.setAttribute(name, DataPotatoField.digGlobalNav(CMSModelToSoyDataConverter.createGlobalNavData(globalNavigationModel, user)));
+            } catch (FDResourceException e) {
+                if (globalNavigationModel != null) {
+                    LOGGER.error("Failed to load global navigation model " + globalNavigationModel.toString(), e);
+                } else {
+                    LOGGER.error("Missing global navigation model ", e);
+                }
+
+                throw new JspException(e);
+            }
+        }
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

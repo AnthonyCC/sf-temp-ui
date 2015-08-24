@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore;
 
-import org.apache.commons.lang.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,8 +21,6 @@ import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
-
-
 
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
@@ -277,6 +274,7 @@ public class FDStoreProperties {
     /**
      * @deprecated
      */
+    @Deprecated
     private static final String SMART_SEARCH_ENABLED = "fdstore.newSearch.enabled";
     private static final String DID_YOU_MEAN_RATIO = "fdstore.search.didYouMean.ratio";
     private static final String DID_YOU_MEAN_THRESHOLD = "fdstore.search.didYouMean.threshold";
@@ -758,6 +756,7 @@ public class FDStoreProperties {
 	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
 	private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
 	private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
+    private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1498,6 +1497,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
+        defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
 		refresh();
     }
 
@@ -2022,7 +2022,7 @@ public class FDStoreProperties {
     }
 
     public static String getSampleDistributionsPath() {
-        return (String) get(DISTRIBUTION_SAMPLES_DIR);
+        return get(DISTRIBUTION_SAMPLES_DIR);
     }
 
     public static int getPromotionRTRefreshPeriod() {
@@ -3781,4 +3781,7 @@ public class FDStoreProperties {
 		return get(CTCAPACITY_ELIGIBLE_PROFILES);
 	}
 	
+    public static boolean isCoreNonCoreGlobalNavSwitchEnabled() {
+        return Boolean.parseBoolean(get(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED));
+    }
 }

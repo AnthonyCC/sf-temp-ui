@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.external.certona.CertonaUserContextHolder;
 import com.freshdirect.smartstore.external.certona.CertonaUtil;
-import com.freshdirect.smartstore.external.certona.ResonanceJSObjectTag;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
@@ -31,9 +29,7 @@ import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
-import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.TxSingleProductPricingSupportTag;
 
 public class CmsFilteringServlet extends BaseJsonServlet {
 
@@ -60,7 +56,9 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 			writeResponseData(response, result);
 		} catch (InvalidFilteringArgumentException e) {
 			returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request
-		}
+        } catch (FDResourceException e) {
+            returnHttpError(500, "Unable to load Global Navigation", e);
+        }
 	
 	}
 

@@ -75,7 +75,7 @@ public class CmsFilteringFlow {
 	private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 	
 	@SuppressWarnings("deprecation")
-	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
+    public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
 		BrowseData browseData = null;
 		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
 		if (nav.getPageType() == FilteringFlowType.BROWSE) {
@@ -596,7 +596,7 @@ public class CmsFilteringFlow {
 		}
 	}
 	
-	public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
+    public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
 		
 		BrowseDataContext browseDataContext = null;
 		

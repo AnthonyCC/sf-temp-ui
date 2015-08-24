@@ -1,10 +1,8 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -55,7 +54,8 @@ public class NavigationUtil {
 	public static final String CATEGORY_FILTER_GROUP_ID = "categoryFilterGroup";
 	public static final String SUBCATEGORY_FILTER_GROUP_ID = "subCategoryFilterGroup";
 	
-	public static NavigationModel createNavigationModel(ContentNodeModel node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException{
+    public static NavigationModel createNavigationModel(ContentNodeModel node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException,
+            FDResourceException {
 		
 		NavigationModel model = new NavigationModel();
 		
@@ -69,14 +69,14 @@ public class NavigationUtil {
 		// get parents and breadcrumb
 		ContentNodeModel tempNode = node;
 		while (true){
-			contentNodeModelPath.push((ContentNodeModel)tempNode);
+			contentNodeModelPath.push(tempNode);
 			if (tempNode instanceof SuperDepartmentModel){
 				break;
 			}
 			if (tempNode instanceof DepartmentModel){
 				break;
 			}
-			tempNode=(ContentNodeModel)tempNode.getParentNode();
+			tempNode=tempNode.getParentNode();
 			if (tempNode==null){
 				break;
 			}
@@ -474,7 +474,7 @@ public class NavigationUtil {
 		}
 	}
 	
-	public static SuperDepartmentModel getSuperDepartment(FDUserI user, String departmentId){
+    public static SuperDepartmentModel getSuperDepartment(FDUserI user, String departmentId) throws FDResourceException {
 				
 		GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
 
