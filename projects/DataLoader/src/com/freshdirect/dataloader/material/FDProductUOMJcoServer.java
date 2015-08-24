@@ -24,6 +24,7 @@ import com.freshdirect.dataloader.sap.jco.server.param.MaterialUOMParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -150,6 +151,11 @@ public class FDProductUOMJcoServer extends FdSapServer {
 				final FDJcoServerResult result = new FDJcoServerResult();
 				final int successCnt = 0;
 
+				if(SapProperties.isMaterialUOMExportLogEnabled()){
+					LOG.info("******************* Material UOM Data ************");
+					LOG.info(materialUOMTable);
+				}
+				
 				final Map<String, HashSet<ErpSalesUnitModel>> uomRecordMap = new HashMap<String, HashSet<ErpSalesUnitModel>>();
 				final Map<String, ErpSalesUnitModel> unitPricingRecordMap = new HashMap<String, ErpSalesUnitModel>();
 

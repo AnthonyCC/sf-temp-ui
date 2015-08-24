@@ -29,6 +29,7 @@ import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -173,6 +174,12 @@ public class FDProductPriceJcoServer extends FdSapServer {
 			try {
 				final JCoTable materialPriceTable = function.getTableParameterList().getTable("T_PRICE");
 				final JCoTable materialPriceErrorTable = function.getTableParameterList().getTable("T_ERROR");
+				
+				if(SapProperties.isMaterialPriceExportLogEnabled()){
+					LOG.info("******************* Material Price Data ************");
+					LOG.info(materialPriceTable);
+				}
+				
 				final FDJcoServerResult result = new FDJcoServerResult();
 				final int successCnt = 0;
 

@@ -36,6 +36,7 @@ import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -236,6 +237,15 @@ public class FDProductBaseJcoServer extends FdSapServer {
 				final JCoTable materialTable = function.getTableParameterList().getTable("T_MATERIAL_GLOBAL");
 				final JCoTable variantConfigTable = function.getTableParameterList().getTable("T_MAT_VARCONFIG");
 				final JCoTable variantPriceTable = function.getTableParameterList().getTable("T_MAT_VARPRICE");
+				
+				if(SapProperties.isMaterialGlobalExportLogEnabled()){
+					LOG.info("******************* Material Global Data ************");
+					LOG.info(materialTable.toString());
+					LOG.info("******************* Material Variant Config ************");
+					LOG.info(variantConfigTable);
+					LOG.info("******************* Material Variant Pricing ************");
+					LOG.info(variantPriceTable);
+				}
 
 				materialErrorTable = function.getTableParameterList().getTable("T_MAT_GLOBAL_ERR");// function.getTableParameterList().getTable("T_MAT_GLOBAL_ERR");
 

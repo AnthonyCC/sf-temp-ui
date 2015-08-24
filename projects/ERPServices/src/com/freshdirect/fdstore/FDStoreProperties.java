@@ -1489,7 +1489,7 @@ public class FDStoreProperties {
 
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 		
 		
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());

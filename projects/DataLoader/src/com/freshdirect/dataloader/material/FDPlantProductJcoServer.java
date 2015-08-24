@@ -34,6 +34,7 @@ import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -198,6 +199,12 @@ public class FDPlantProductJcoServer extends FdSapServer {
 				Map<String, List<ErpPlantMaterialModel>> materialPlantsMap = new HashMap<String, List<ErpPlantMaterialModel>>();
 				Map<String, List<ErpMaterialSalesAreaModel>> materialSalesAreasMap = new HashMap<String, List<ErpMaterialSalesAreaModel>>();
 
+				if(SapProperties.isMaterialPlantExportLogEnabled()){
+					LOG.info("******************* Material Plant Data ************");
+					LOG.info(materialPlantTable);
+					LOG.info("******************* Material Sales Area Data ************");
+					LOG.info(materialSalesAreaTable);
+				}
 				// populate plant info
 				for (int i = 0; i < materialPlantTable.getNumRows(); i++) {
 					materialPlantTable.setRow(i);

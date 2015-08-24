@@ -34,6 +34,17 @@ public class SapProperties {
 	private final static String PROP_REFCUSTOMER_COS = "sap.bapi.refCustomer.cos";
 	private final static String PROP_BLACKHOLE = "sap.blackhole";
 	private final static String PROP_FUNCTION_CARTONINFO = "sap.function.cartoninfo";
+	
+	//Multi plant interface logging properties
+	private final static String PROP_MATERIAL_GLOBAL_EXPORT_LOG = "sap.material.global.export.log";
+	private final static String PROP_MATERIAL_PLANT_EXPORT_LOG = "sap.material.plant.export.log";
+	private final static String PROP_MATERIAL_UOM_EXPORT_LOG = "sap.material.uom.export.log";
+	private final static String PROP_MATERIAL_PRICE_EXPORT_LOG = "sap.material.price.export.log";
+	private final static String PROP_INVOICE_EXPORT_LOG = "sap.invoice.export.log";
+	private final static String PROP_INVENTORY_EXPORT_LOG = "sap.inventory.export.log";
+	private final static String PROP_COOL_INFO_EXPORT_LOG = "sap.cool.info.export.log";
+	private final static String PROP_GROUP_SCALE_EXPORT_LOG = "sap.group.scale.export.log";
+	
 	private static Properties config;
 
 	private static long lastRefresh = 0;
@@ -51,6 +62,14 @@ public class SapProperties {
 		defaults.put(PROP_REFCUSTOMER_COS, "0001000001");
 		defaults.put(PROP_BLACKHOLE, "false");
 		defaults.put(PROP_FUNCTION_CARTONINFO, "ZWM_CARTONCOUNT_BYORDERS");
+		defaults.put(PROP_MATERIAL_GLOBAL_EXPORT_LOG, "false");
+		defaults.put(PROP_MATERIAL_PLANT_EXPORT_LOG, "false");
+		defaults.put(PROP_MATERIAL_UOM_EXPORT_LOG, "false");
+		defaults.put(PROP_MATERIAL_PRICE_EXPORT_LOG, "false");
+		defaults.put(PROP_INVOICE_EXPORT_LOG, "false");
+		defaults.put(PROP_INVENTORY_EXPORT_LOG, "false");
+		defaults.put(PROP_COOL_INFO_EXPORT_LOG, "false");
+		defaults.put(PROP_GROUP_SCALE_EXPORT_LOG, "false");
 		
 		refresh();
 	}
@@ -106,5 +125,38 @@ public class SapProperties {
 	
 	public static String getCartonInfoFunctionName() {
 		return config.getProperty(PROP_FUNCTION_CARTONINFO);
+	}
+	
+	
+	public static boolean isMaterialGlobalExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_MATERIAL_GLOBAL_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isMaterialPlantExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_MATERIAL_PLANT_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isMaterialPriceExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_MATERIAL_PRICE_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isMaterialUOMExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_MATERIAL_UOM_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isInventoryExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_INVENTORY_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isInvoiceExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_INVOICE_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isCoolInfoExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_COOL_INFO_EXPORT_LOG)).booleanValue();
+	}
+	
+	public static boolean isGroupScaleExportLogEnabled() {
+		return Boolean.valueOf(get(PROP_GROUP_SCALE_EXPORT_LOG)).booleanValue();
 	}
 }

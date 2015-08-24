@@ -383,7 +383,7 @@
   				    		if(FDStoreProperties.isZonePricingAdEnabled()){
   				    			queryString.addParam("zonelevel","true");
   				    			if(null !=user){
-  				    			String zoneId = user.getPricingZoneId();//FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
+  				    			String zoneId = user.getPricingContext().getZoneInfo().getPricingZoneId();//FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
   				    			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
   				    				queryString.addParam("mzid",zoneId);
   				    				
