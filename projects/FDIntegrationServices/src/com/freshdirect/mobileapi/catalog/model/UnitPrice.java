@@ -9,6 +9,13 @@ private int unitPriceNumerator;
 	private String unitPriceUOM;
 	
 	private String unitPriceDescription;
+
+	private String priceText;
+	
+	/**
+	 * Concatenated version of price text and UOM
+	 */
+	private String unitPriceText;
 	
 	public String getPriceText() {
 		return priceText;
@@ -17,8 +24,6 @@ private int unitPriceNumerator;
 	public void setPriceText(String priceText) {
 		this.priceText = priceText;
 	}
-
-	private String priceText;
 
 	public int getUnitPriceNumerator() {
 		return unitPriceNumerator;
@@ -51,6 +56,19 @@ private int unitPriceNumerator;
 	public void setUnitPriceDescription(String unitPriceDescription) {
 		this.unitPriceDescription = unitPriceDescription;
 	}
+	//Hopefully this will never be used
+	public void setUnitPriceText(String unitPriceText){
+		this.unitPriceText = unitPriceText;
+	}
 	
+	public String getUnitPriceText(){
+		if(unitPriceText == null || unitPriceText.isEmpty()){
+			updateUnitPriceText();
+		}
+		return this.unitPriceText;
+	}
+	private void updateUnitPriceText() {
+		this.unitPriceText = priceText + "/" + unitPriceUOM;
+	}
 
 }
