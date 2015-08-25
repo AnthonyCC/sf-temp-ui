@@ -122,9 +122,15 @@ public class Product {
         		this.brandTags=EMPTY;
         	
         	this.brandTags=new ArrayList<String>(brands.size());
+        	if(this.tags == null){
+        		this.tags = new ArrayList<String>(brands.size());
+        	}
+        	
         	for(BrandModel brand:brands) {
         		brandTags.add(brand.getFullName());
+        		tags.add(brand.getFullName());
         	}
+        	
             return this;
         }
         
@@ -143,6 +149,19 @@ public class Product {
         
         public ProductBuilder tags( Set<TagModel> tags) {
         	
+        	//This now returns all tags instead of just current ones
+        	if(this.tags == null)
+        		this.tags = new ArrayList<String>(tags.size());
+        	
+        	if(isEmpty(tags)){
+        		return this;
+        	}
+
+        	for(TagModel tag:tags) {
+        		this.tags.add(tag.getName());
+        	}
+        	
+        	/*
             if(isEmpty(tags))
         		this.tags=EMPTY;
         	
@@ -150,6 +169,7 @@ public class Product {
         	for(TagModel tag:tags) {
         		this.tags.add(tag.getKeywords());
         	}
+        	*/
         	/*FDProduct fdProduct = productModel.get
 			if (fdProduct != null) 
 			{
@@ -159,8 +179,7 @@ public class Product {
 				}			
 			}*/
             return this;
-        }
-        
+        }        
         public ProductBuilder minQty(float val) {
              minQty = val;
              return this;
