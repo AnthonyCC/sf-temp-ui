@@ -170,7 +170,6 @@ public class LogisticsDataEncoder {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		for(com.freshdirect.framework.util.DateRange daterange: dateranges){
 			DateRange range = new DateRange(daterange.getStartDate(), daterange.getEndDate());
-			ranges = new ArrayList<DateRange>();
 			ranges.add(range);
 		}
 		

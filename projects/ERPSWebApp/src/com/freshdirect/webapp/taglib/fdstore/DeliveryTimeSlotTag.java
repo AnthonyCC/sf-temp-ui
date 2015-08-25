@@ -202,47 +202,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			event.setLogged(true);
 		}
 		
-		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
-				.getHolidayLookaheadDays());
-
-		LOGGER.debug("specialHoliday :"+specialHoliday);
-			
-		final boolean containsSpecialHoliday = cart.getApplicableRestrictions().contains(specialHoliday);
-		final boolean containsAdvanceOrderItem = cart.hasAdvanceOrderItem();
-
-		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
-		
-		List<DateRange> dateRanges = new ArrayList<DateRange>();
-		
-		dateRanges = getDateRanges(baseRange,
-				(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
-		
-		Collections.sort(dateRanges, new DateRangeComparator());
-		
-		/*Holiday & specialItems restrictions*/
-		getHolidayRestrictions(restrictions, dateRanges, deliveryModel);
-		
 		DlvTimeslotStats stats = new DlvTimeslotStats();
 		
-		// saving the reservation in the timeslot event 
-		
-		try{
-			if (deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
-				event.setReservationId(deliveryModel.getRsv().getId());
-			
-			if (cart instanceof FDModifyCartModel
-					&& deliveryModel.getRsv() != null
-					&& (address.getPK() != null
-							&& address.getPK().getId() != null && address
-							.getPK().getId()
-							.equals(deliveryModel.getRsv().getAddressId())))
-				event.setReservationId(deliveryModel.getRsv().getId());
-		}catch(Exception e){
-			//eat it
-			LOGGER.info("reservation capture in timeslot event failed");
-		}
-
-		
+		List<DateRange> dateRanges = new ArrayList<DateRange>();
+		dateRanges.add(baseRange);
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, address, user, deliveryModel, event, stats);
 		
@@ -253,7 +216,34 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList);
 				
 		deliveryModel.setShowPremiumSlots(showPremiumSlots);
-				
+		
+		baseRange = new DateRange(timeslotList.get(0).getStartDate(),DateUtil.addDays(timeslotList.get(0).getEndDate(),1));
+		
+		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
+				.getHolidayLookaheadDays());
+
+		LOGGER.debug("specialHoliday :"+specialHoliday);
+			
+		final boolean containsSpecialHoliday = cart.getApplicableRestrictions().contains(specialHoliday);
+		final boolean containsAdvanceOrderItem = cart.hasAdvanceOrderItem();
+
+		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
+		
+		dateRanges = getDateRanges(baseRange,
+				(containsSpecialHoliday && !deliveryInfo), restrictions,specialHoliday, containsAdvanceOrderItem);
+		
+		Collections.sort(dateRanges, new DateRangeComparator());
+		
+		/*Holiday & specialItems restrictions*/
+		getHolidayRestrictions(restrictions, dateRanges, deliveryModel);
+		
+		dateRanges.remove(0);
+		// saving the reservation in the timeslot event 
+		
+		timeslotList.addAll(getFDTimeslotListForDateRange(restrictions, dateRanges,
+				result, address, user, deliveryModel, event, stats));
+		
+	
 		// list of timeslots that must be shown regardless of capacity
 		Set<String> retainTimeslotIds = new HashSet<String>();
 		if (user.getReservation() != null) {
@@ -280,7 +270,19 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				forceOrder, address, generic, stats);
 
 		// TimeSlot event specific block
-		{
+		try{
+			if (deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
+				event.setReservationId(deliveryModel.getRsv().getId());
+			
+			if (cart instanceof FDModifyCartModel
+					&& deliveryModel.getRsv() != null
+					&& (address.getPK() != null
+							&& address.getPK().getId() != null && address
+							.getPK().getId()
+							.equals(deliveryModel.getRsv().getAddressId())))
+				event.setReservationId(deliveryModel.getRsv().getId());
+			
+
 			event.setSameDay(deliveryModel.isShowPremiumSlots()?"X":"");
 			// build session event
 			if (FDStoreProperties.isSessionLoggingEnabled() && result.isSuccess() &&
@@ -292,10 +294,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				TimeslotLogic.logTimeslotSessionInfo(user, address, deliveryInfo, timeslotList, event);
 			}
 			
+		
+		}catch(Exception e){
+			//eat it
+			LOGGER.info("reservation capture in timeslot event failed");
 		}
 
-
-		
 		// Post-op: remove unnecessary timeslots
 		TimeslotLogic.purge(timeslotList);
 		

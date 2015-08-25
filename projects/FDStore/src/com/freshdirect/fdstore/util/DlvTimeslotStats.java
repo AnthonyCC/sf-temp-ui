@@ -130,15 +130,19 @@ public class DlvTimeslotStats {
 	}
 
 	public void apply(FDDeliveryTimeslots t) {
-		this.setZonesMap(t.getZones());
-		this.setMessages(t.getGeoRestrictionmessages());
+		if(t.getZones()!=null && !t.getZones().isEmpty()){
+			this.getZonesMap().putAll(t.getZones());
+		}
+		if(t.getGeoRestrictionmessages()!=null && !t.getGeoRestrictionmessages().isEmpty()){
+			this.setMessages(t.getGeoRestrictionmessages());
+		}
 		this.setSameDayCutoff(t.getSameDayCutoff());
-		this.setCtActive(t.isCtActive());
-		this.setCtSlots(t.getCtSlots());
-		this.setEcoFriendlySlots(t.getEcoFriendlySlots());
-		this.setNeighbourhoodSlots(t.getNeighbourhoodSlots());
-		this.setTotalSlots(t.getTotalSlots());
-		this.setHasCapacity(t.isHasCapacity());
+		this.setCtActive(this.isCtActive() || t.isCtActive());
+		this.setCtSlots(this.getCtSlots() + t.getCtSlots());
+		this.setEcoFriendlySlots(this.getEcoFriendlySlots() + t.getEcoFriendlySlots());
+		this.setNeighbourhoodSlots(this.getNeighbourhoodSlots() + t.getNeighbourhoodSlots());
+		this.setTotalSlots(this.getTotalSlots() + t.getTotalSlots());
+		this.setHasCapacity(this.hasCapacity || t.isHasCapacity());
 	}
 
 	public void setMessages(List<String> messages) {

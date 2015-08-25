@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDDeliveryTimeslots;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -296,7 +298,10 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	}
 	
 	public void apply(FDDeliveryTimeslots t) {
-		this.setComments(t.getComments());
-		this.setPreReserveSlotId(t.getPreselectedTimeslotId());
+		if(t.getComments()!=null && !t.getComments().isEmpty())
+			this.getComments().addAll(t.getComments());
+		if(StringUtils.isNotBlank(t.getPreselectedTimeslotId())){
+			this.setPreReserveSlotId(t.getPreselectedTimeslotId());
+		}
 	}
 }
