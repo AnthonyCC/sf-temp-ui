@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TagModel;
 
@@ -25,7 +32,7 @@ public class Product {
 	private final String primaryHome;
 	private final SkuInfo skuInfo;
 	private final WineAttributes wineAttributes;
-	
+	private final List<String> keywords;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -41,6 +48,7 @@ public class Product {
 		quantityText=builder.quantityText;
 		skuInfo=builder.skuInfo;
 		wineAttributes = builder.wineAttributes;
+		keywords = builder.keywords;
 	}
 	
 	public String getId() {
@@ -93,6 +101,10 @@ public class Product {
 	
 	public WineAttributes getWineAttributes() {
 		return wineAttributes;
+	}
+	
+	public List<String> getKeywords(){
+		return this.keywords;
 	}
 
 	public static final class WineAttributes {
@@ -221,13 +233,9 @@ public class Product {
         		this.brandTags=EMPTY;
         	
         	this.brandTags=new ArrayList<String>(brands.size());
-        	if(this.tags == null){
-        		this.tags = new ArrayList<String>(brands.size());
-        	}
         	
         	for(BrandModel brand:brands) {
         		brandTags.add(brand.getFullName());
-        		tags.add(brand.getFullName());
         	}
         	
             return this;
@@ -246,7 +254,7 @@ public class Product {
             return this;
         }
         
-        public ProductBuilder tags( Set<TagModel> tags) {
+        public ProductBuilder tags( List<TagModel> tags) {
         	
         	//This now returns all tags instead of just current ones
         	if(this.tags == null)
@@ -278,7 +286,59 @@ public class Product {
 				}			
 			}*/
             return this;
-        }        
+        }
+        
+        public ProductBuilder generateAdditionTagsFromProduct(ProductModel pm){
+        	
+        	if(pm == null)
+        		return this;
+        	
+        	SortedSet<String> additionTags = new TreeSet<String>();
+            try {
+    			PriceCalculator pricing = pm.getPriceCalculator();
+    			if (pricing.getKosherPriority() != 999 && pricing.getKosherPriority() != 0) {
+    				additionTags.add("Kosher");
+    			}
+    			if (pricing.getProduct()!=null && pricing.getProduct().getClaims() != null) {
+    				for (EnumClaimValue claim : pricing.getProduct().getClaims()) {
+    					if ("FR_GLUT".equals(claim.getCode())) {
+    						additionTags.add("Gluten Free");
+    						break;
+    					}
+    				}
+    			}
+    			if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
+    				additionTags.add("Sale");
+    			}
+    			
+    			if (pm.isFullyAvailable()) {
+    				if (pm.isBackInStock() || pm.isNew()) {
+    					additionTags.add("New/Back in stock");
+    				}
+    			}
+    			
+    			FDProduct fdProduct = pricing.getProduct();
+    			if (fdProduct != null) 
+    			{
+    				boolean organicClaim = fdProduct.hasOANClaim();
+    				if(organicClaim) {
+    					additionTags.add("Organic");
+    				}
+    			}
+    			
+    			String fullName = pm.getFullName();
+    			if(fullName != null && fullName.toLowerCase().contains("organic")){
+    				additionTags.add("Organic");			
+    			}
+            }  catch (FDResourceException e) {
+    		} catch (FDSkuNotFoundException e) {
+    		}
+        	
+            tags.addAll(additionTags);
+            
+        	return this;
+        }
+        
         public ProductBuilder minQty(float val) {
              minQty = val;
              return this;
@@ -311,6 +371,23 @@ public class Product {
         }
         public ProductBuilder skuInfo(SkuInfo skuInfo) {
         	this.skuInfo=skuInfo;
+        	return this;
+        }
+        
+        public ProductBuilder addKeyWords(String keywords){
+//        	this.keywords = keywords;
+        	if(keywords == null || keywords.isEmpty())
+        		return this;
+        	
+        	String[] splitKeyWords = keywords.split(",");
+        	if(splitKeyWords.length <= 0)
+        		return this;
+        	
+        	List<String> tmp = new ArrayList<String>(splitKeyWords.length);
+        	for(String s : splitKeyWords){
+        		tmp.add(s.trim());
+        	}
+        	this.keywords = tmp;
         	return this;
         }
         
@@ -375,7 +452,7 @@ public class Product {
         			String splitGrapes[] = grapes.split(",");
         			tmp = new ArrayList<String>();
         			for(String grape : splitGrapes){
-        				tmp.add(grape);
+        				tmp.add(grape.trim());
         			}
         			if(tmp.size() > 0){
         				wineAttributes.setWineGrapes(tmp);

@@ -1053,21 +1053,24 @@ public class BrowseUtil {
 	    	//display(category);
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	for(ProductModel p:pm) {
-	    		SkuModel sku=p.getDefaultSku();
+	    		//SkuModel sku=p.getDefaultSku();
 	    		if(p.isFullyAvailable()) {
 					//display(p);
 					if(!productSet.contains(p.getContentName())) {
 						
 	    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
-	    				prodBuilder=prodBuilder.brandTags(p.getBrands())
-	    						               .minQty(p.getQuantityMinimum())
-	    						               .maxQty(p.getQuantityMaximum())
-	    						               .incrementQty(p.getQuantityIncrement())
-	    						               .quantityText(p.getQuantityText())
-	    						               .images(getImages(p))
-	    						               .tags(p.getAllTags())
-	    						               .skuInfo(getSkuInfo(p,plantId,pc ))
-	    						               .generateWineAttributes(p);
+	    				prodBuilder.brandTags(p.getBrands())
+				            .minQty(p.getQuantityMinimum())
+				            .maxQty(p.getQuantityMaximum())
+				            .incrementQty(p.getQuantityIncrement())
+				            .quantityText(p.getQuantityText())
+				            .images(getImages(p))
+				            .tags(p.getTags())
+				            .skuInfo(getSkuInfo(p,plantId,pc ))
+				            .generateWineAttributes(p)
+	    					.addKeyWords(p.getKeywords())
+	    					.generateAdditionTagsFromProduct(p);
+	    					
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
     					productList.add(product);
