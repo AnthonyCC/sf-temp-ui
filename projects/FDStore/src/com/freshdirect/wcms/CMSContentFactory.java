@@ -219,7 +219,7 @@ public class CMSContentFactory {
 						section.setType((String)sectionNode.getAttributeValue("Type"));
 						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
 						section.setBodyText((String)sectionNode.getAttributeValue("bodyText"));
-						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
+						section.setLinkTarget(getEncodedContentKey(sectionNode,"linkTarget"));
 						section.setDisplayType((String)sectionNode.getAttributeValue("displayType"));
 						section.setDrawer((Boolean)sectionNode.getAttributeValue("drawer"));
 						section.setGreeting((Boolean)sectionNode.getAttributeValue("greeting"));

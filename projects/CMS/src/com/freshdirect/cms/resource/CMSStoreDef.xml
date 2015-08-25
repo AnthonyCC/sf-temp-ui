@@ -2543,6 +2543,12 @@
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="TextComponent"/>
 			</RelationshipDef>
+			<RelationshipDef cardinality="One" name="linkTarget" label="Link Target">
+				<DestinationDef contentType="Product"/>
+				<DestinationDef contentType="PickList"/>
+				<DestinationDef contentType="Category"/>
+				<DestinationDef contentType="Department"/>
+			</RelationshipDef>
 			<RelationshipDef cardinality="Many" name="SectionSchedule" label="Schedule">
 				<DestinationDef contentType="Schedule"/>
 			</RelationshipDef>

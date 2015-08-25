@@ -14,6 +14,7 @@ public class CMSSectionModel {
 	private String linkText;
 	private String linkURL;
 	private String linkType;
+	private String linkTarget;
 	private String displayType;
 	private Boolean drawer;
 	private CMSImageBannerModel imageBanner;
@@ -156,6 +157,14 @@ public class CMSSectionModel {
 
 	public void setCategoryList(List<String> categoryList) {
 		this.categoryList = categoryList;
+	}
+
+	public String getLinkTarget() {
+		return linkTarget;
+	}
+
+	public void setLinkTarget(String linkTarget) {
+		this.linkTarget = linkTarget;
 	}
 	
 	
