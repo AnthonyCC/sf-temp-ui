@@ -1066,7 +1066,8 @@ public class BrowseUtil {
 	    						               .quantityText(p.getQuantityText())
 	    						               .images(getImages(p))
 	    						               .tags(p.getAllTags())
-	    						               .skuInfo(getSkuInfo(p,plantId,pc ));
+	    						               .skuInfo(getSkuInfo(p,plantId,pc ))
+	    						               .generateWineAttributes(p);
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
     					productList.add(product);

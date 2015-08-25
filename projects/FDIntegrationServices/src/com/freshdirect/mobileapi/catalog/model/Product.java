@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TagModel;
 
 public class Product {
@@ -22,8 +24,7 @@ public class Product {
 	private final String primaryBrand;
 	private final String primaryHome;
 	private final SkuInfo skuInfo;
-	
-	
+	private final WineAttributes wineAttributes;
 	
 
 	private Product(ProductBuilder builder) {
@@ -39,6 +40,7 @@ public class Product {
 		primaryHome=builder.primaryHome;
 		quantityText=builder.quantityText;
 		skuInfo=builder.skuInfo;
+		wineAttributes = builder.wineAttributes;
 	}
 	
 	public String getId() {
@@ -88,13 +90,108 @@ public class Product {
 	public SkuInfo getSkuInfo() {
 		return skuInfo;
 	}
+	
+	public WineAttributes getWineAttributes() {
+		return wineAttributes;
+	}
+
+	public static final class WineAttributes {
+		
+		private String country;
+		private List<String> regions;
+		private String city;
+		private List<String> type;
+		private List<String> variety; // called Varietal in CMS for some reason
+		private List<String> vintage;
+		
+		//Ratings not being transfered for nwo
+		//TODO: add ratings and reviews??
+		
+		private String classificationText;
+		private String importer;
+		private String alchoholContent;
+		private String againgNotes;
+		private List<String> wineGrapes;
+		
+		//Bottom 2 are not used at all for now
+		
+		public String getCountry() {
+			return country;
+		}
+		public void setCountry(String country) {
+			this.country = country;
+		}
+		public List<String> getRegions() {
+			return regions;
+		}
+		public void setRegions(List<String> regions) {
+			this.regions = regions;
+		}
+		public String getCity() {
+			return city;
+		}
+		public void setCity(String city) {
+			this.city = city;
+		}
+		public List<String> getType() {
+			return type;
+		}
+		public void setType(List<String> type) {
+			this.type = type;
+		}
+		public List<String> getVariety() {
+			return variety;
+		}
+		public void setVariety(List<String> variety) {
+			this.variety = variety;
+		}
+		public List<String> getVintage() {
+			return vintage;
+		}
+		public void setVintage(List<String> vintage) {
+			this.vintage = vintage;
+		}
+		public String getClassificationText() {
+			return classificationText;
+		}
+		public void setClassificationText(String classificationText) {
+			this.classificationText = classificationText;
+		}
+		public String getImporter() {
+			return importer;
+		}
+		public void setImporter(String importer) {
+			this.importer = importer;
+		}
+		public String getAlchoholContent() {
+			return alchoholContent;
+		}
+		public void setAlchoholContent(String alchoholContent) {
+			this.alchoholContent = alchoholContent;
+		}
+		public String getAgaingNotes() {
+			return againgNotes;
+		}
+		public void setAgaingNotes(String againgNotes) {
+			this.againgNotes = againgNotes;
+		}
+		public List<String> getWineGrapes() {
+			return wineGrapes;
+		}
+		public void setWineGrapes(List<String> wineGrapes) {
+			this.wineGrapes = wineGrapes;
+		}
+		
+	}
+	
 	public static class ProductBuilder {
 		
 		private final String id;
 		private final String fullName;
-		private  List<String> brandTags;
-		private  List<com.freshdirect.mobileapi.catalog.model.Image> images;
-		private  List<String> tags;
+		private List<String> brandTags;
+		private List<com.freshdirect.mobileapi.catalog.model.Image> images;
+		private List<String> tags;
+		private List<String> keywords;
 		private float minQty=0;
 		private float maxQty=0;
 		private float incrementQty=0;
@@ -102,6 +199,8 @@ public class Product {
 		private String primaryBrand;
 		private String primaryHome;
 		private SkuInfo skuInfo;
+		private WineAttributes wineAttributes;
+		
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
 		private static final List<com.freshdirect.mobileapi.catalog.model.Image> EMPTY_IMAGE=Collections.<com.freshdirect.mobileapi.catalog.model.Image>emptyList();
@@ -214,9 +313,83 @@ public class Product {
         	this.skuInfo=skuInfo;
         	return this;
         }
+        
+        public ProductBuilder generateWineAttributes(ProductModel pm){
+        	if(pm != null){
+        		wineAttributes = new WineAttributes();
+        		
+        		if(pm.getWineCity() != null && !pm.getWineCity().isEmpty())
+        			wineAttributes.setCity(pm.getWineCity());
+        		try {
+        			//I think this does what I want
+        			wineAttributes.setCountry(pm.getWineCountry() == null ? null : pm.getWineCountry().getLabel());
+        		} catch (Exception ignored){}
+        		
+        		//Generating and Setting wine regions. there might be multiple later
+        		List<String> tmp = new ArrayList<String>();
+        		for(DomainValue dm : pm.getNewWineRegion()){
+        			tmp.add(dm.getLabel());
+        		}
+        		if(tmp.size() > 0){
+        			wineAttributes.setRegions(tmp);
+        		}
+        		
+        		//Possibly will need to string split? need to check;
+        		tmp = new ArrayList<String>();
+        		for(DomainValue dm : pm.getNewWineType()){
+            		tmp.add(dm.getLabel());        			
+        		}
+        		if(tmp.size() >0){
+        			wineAttributes.setType(tmp);
+        		}
+        		tmp = new ArrayList<String>();
+        		for(DomainValue dm : pm.getWineVarietal()){
+        			tmp.add(dm.getLabel());
+        		}
+        		if(tmp.size() > 0)
+        			wineAttributes.setVariety(tmp);
+        		tmp = new ArrayList<String>();
+        		for(DomainValue dm : pm.getWineVintage()){
+        			tmp.add(dm.getLabel());
+        		}
+        		
+        		if(tmp.size() > 0){
+        			wineAttributes.setVintage(tmp);
+        		}
+        		
+        		
+        		if(pm.getWineClassification() != null && !pm.getWineClassification().isEmpty())
+                	wineAttributes.setClassificationText(pm.getWineClassification());
+        		
+        		if(pm.getWineImporter() != null && !pm.getWineImporter().isEmpty())
+            		wineAttributes.setImporter(pm.getWineImporter());
+        		
+        		if(pm.getWineAlchoholContent() != null && !pm.getWineAlchoholContent().isEmpty())
+        			wineAttributes.setAlchoholContent(pm.getWineAlchoholContent());
+        		
+        		if(pm.getWineAging() != null && !pm.getWineAging().isEmpty())
+        			wineAttributes.setAgaingNotes(pm.getWineAging());
+        		
+        		String grapes = pm.getWineType();
+        		if(grapes != null && !grapes.isEmpty()){
+        			String splitGrapes[] = grapes.split(",");
+        			tmp = new ArrayList<String>();
+        			for(String grape : splitGrapes){
+        				tmp.add(grape);
+        			}
+        			if(tmp.size() > 0){
+        				wineAttributes.setWineGrapes(tmp);
+        			}
+        		}
+        		
+        	}
+        	return this;
+        }
+        
         public Product build() {
             return new Product(this);
         }
+        
         
         /*Images: categoryImage,confirmImage,alternateImage,alternateProductImage,descriptiveImage,detailImage,extraImage,featureImage,itemImage,jumboImage,thumbnailImage */
     }
