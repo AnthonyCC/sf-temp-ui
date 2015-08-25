@@ -2228,6 +2228,7 @@
 							<CmsField><attribute>Name</attribute></CmsField>
 							<CmsField><attribute>Description</attribute></CmsField>
 							<CmsField><attribute>ImageBannerImage</attribute></CmsField>
+							<CmsField><attribute>Target</attribute></CmsField>
 							<CmsField><attribute>linkOneText</attribute></CmsField>
 							<CmsField><attribute>linkOneTarget</attribute></CmsField>
 							<CmsField><attribute>linkOneURL</attribute></CmsField>
@@ -2239,16 +2240,9 @@
 							<CmsField><attribute>ImageBannerLink</attribute></CmsField>
 							<CmsField><attribute>Type</attribute></CmsField>				
 							<CmsField><attribute>ImageBannerBurst</attribute></CmsField>
-							
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>Hero Carousel</title>
-						<fields>						
 							<CmsField><attribute>FlagText</attribute></CmsField>
 							<CmsField><attribute>FlagColor</attribute></CmsField>
 							<CmsField><attribute>Price</attribute></CmsField>
-							<CmsField><attribute>Target</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
