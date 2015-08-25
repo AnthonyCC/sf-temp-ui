@@ -45,8 +45,20 @@ public class CatalogInfo {
 		this.key=key;
 	}
 	
+	private boolean showKey = true;
+	
+	public void setShowKey(boolean showKey){
+		this.showKey = showKey;
+	}
+	
+	public boolean showKey(){
+		return this.showKey;
+	}
+	
 	public CatalogId getKey() {
-		return key;
+		if(showKey)
+			return key;
+		return null;
 	}
 	
 	public void addCategory(Category category) {

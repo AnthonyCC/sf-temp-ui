@@ -71,6 +71,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_NAVIGATION ="navigation";
     
     private static final String ACTION_GET_CATALOG_FOR_ADDRESS="getCatalogForAddress";
+
+    private static final String ACTION_GET_CATALOG_FOR_CATALOG_KEY = "getCatalogForKey";
     
     private static final String ACTION_GET_CATALOG_ID_FOR_ADDRESS="getCatalogIdForAddress";
 
@@ -206,7 +208,19 @@ public class BrowseController extends BaseController {
 	        	long endTime=System.currentTimeMillis();
 	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
 	            return model;
+	        
+	        } else if (ACTION_GET_CATALOG_FOR_CATALOG_KEY.equals(action)){
 	        	
+	        	CatalogInfoResult res = new CatalogInfoResult();
+	        	//get the list of products (this will be done recursively) 
+	        	CatalogInfo catalogInfo =  BrowseUtil.__getAllProducts(requestMessage, user, request);
+	        	//populate the response with the products...
+	        	res.setCatalogInfo(catalogInfo);
+	        	//set the response and return the json.
+	        	setResponseMessage(model, res, user);
+//	        	long endTime=System.currentTimeMillis();
+//	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
+	            return model;
 	        	
 	        } else if(ACTION_GET_CATALOG_ID_FOR_ADDRESS.equals(action)){
 	        	

@@ -847,9 +847,13 @@
 		<from>^/v/([0-9]+)/browse/getCatalogForAddress/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogForAddress&amp;ver=$1</to>
 	</rule>
-<rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/getCatalogIdForAddress/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogIdForAddress&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/getCatalogForKey/(.*)</from>
+		<to last="true">/browse.do?action=getCatalogForKey&amp;ver=$1</to>
 	</rule>
 	<!-- Ideas -->
 	<rule>

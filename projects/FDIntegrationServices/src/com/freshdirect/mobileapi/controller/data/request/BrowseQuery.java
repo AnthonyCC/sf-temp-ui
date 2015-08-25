@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
+import com.freshdirect.mobileapi.catalog.model.CatalogKey;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class BrowseQuery extends Message {
@@ -38,6 +39,9 @@ public class BrowseQuery extends Message {
 	
 	private String productCount;
 	
+	private String key;
+	
+
 	public String getZipCode() {
 		return zipCode;
 	}
@@ -166,5 +170,24 @@ public class BrowseQuery extends Message {
 		this.productCount = productCount;
 	}
 	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+	
+	private CatalogKey _catalogKey;
+	
+	public CatalogKey getCatalogKey()
+	{
+		if(key == null || key.isEmpty())
+			return null;
+		
+		if(_catalogKey == null)
+			_catalogKey = CatalogKey.parse(key);
+		return _catalogKey;
+	}
 
 }

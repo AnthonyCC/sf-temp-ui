@@ -739,8 +739,13 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
- }
- else if (  loaddata == "getCatalogId") {
+ } else if (  loaddata == "getCatalogForKey") {
+  	$("#url").val("/browse/getCatalogForKey/"); 
+  	var postdata='{ "key": "FDX-1000-0001-01-0000200501", "productCount":"10"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+ } else if (  loaddata == "getCatalogId") {
   	$("#url").val("/browse/getCatalogIdForAddress/"); 
   	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY"}';
   	$("#payload").val(postdata);
@@ -1071,7 +1076,8 @@ function doStuff() {
   <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH SORT </option>
   <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>
   <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
-  <option value="globalNav">BROWSE - NAVIGATION</option>
+  <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
+    <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET SORT OPTIONS FOR CATEOGRY</option>
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>

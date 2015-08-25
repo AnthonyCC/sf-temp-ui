@@ -62,6 +62,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
+import com.freshdirect.mobileapi.catalog.model.CatalogKey;
 import com.freshdirect.mobileapi.catalog.model.GroupInfo;
 import com.freshdirect.mobileapi.catalog.model.ScalePrice;
 import com.freshdirect.mobileapi.catalog.model.SkuInfo;
@@ -1084,12 +1085,26 @@ public class BrowseUtil {
 	    		catalog.addCategory(cat);
 	    	return productList;
 	    }
+	    
 	    public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
 	    	
 	    	int productCount=0;
-	    	CatalogInfo catalogInfo=getCatalogInfo(requestMessage,user,request);
-	    	String plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-	    	PricingContext pc=user.getFDSessionUser().getUserContext().getPricingContext();
+	    	CatalogInfo catalogInfo;
+	    	String plantId;
+	    	PricingContext pc;
+	    	
+	    	if(requestMessage.getCatalogKey() != null){
+	    		catalogInfo = getCatalogInfo(requestMessage.getCatalogKey());
+	    		plantId = catalogInfo.getKey().getPlantId();
+	    		pc = new PricingContext(catalogInfo.getKey().getPricingZone());
+		    	catalogInfo.setShowKey(false);
+	    	} else {
+		    	catalogInfo=getCatalogInfo(requestMessage,user,request);
+		    	plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
+		    	pc=user.getFDSessionUser().getUserContext().getPricingContext();	    		
+	    	}
+
+
 	    	StoreModel sm=ContentFactory.getInstance().getStore();
 	    	List<DepartmentModel> depts=sm.getDepartments();
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
@@ -1118,6 +1133,11 @@ public class BrowseUtil {
 	    		catalogInfo.addProducts(productList);
 	    	}
 	    	return catalogInfo;
+	    }
+	    
+	    public static CatalogInfo getCatalogInfo(CatalogKey key){
+	    	CatalogId catid = new CatalogInfo.CatalogId(key.geteStore(), Long.toString(key.getPlantId()), key.getPricingZone());
+	    	return new CatalogInfo(catid);
 	    }
 	    
 	    public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request) {
