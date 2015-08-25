@@ -32,6 +32,7 @@ import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.controller.data.AllProductsResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.CatalogInfoResult;
+import com.freshdirect.mobileapi.controller.data.CatalogKeyResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.SortOptionResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
@@ -75,6 +76,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_FOR_CATALOG_KEY = "getCatalogForKey";
     
     private static final String ACTION_GET_CATALOG_ID_FOR_ADDRESS="getCatalogIdForAddress";
+
+    private static final String ACTION_GET_CATALOG_KEY_FOR_ADDRESS="getCatalogKeyForAddress";
 
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     
@@ -231,6 +234,19 @@ public class BrowseController extends BaseController {
 	        	setResponseMessage(model, res, user);
 	            return model;
 	            
+	        } else if(ACTION_GET_CATALOG_KEY_FOR_ADDRESS.equals(action)){
+
+	        	CatalogKeyResult res = new CatalogKeyResult();
+	        	res.setKey(BrowseUtil.getCatalogInfo(requestMessage, user, request).getKey().toString());
+	        	setResponseMessage(model, res, user);
+	        	return model;
+	        	/*
+	        	CatalogInfoResult res = new CatalogInfoResult();
+	        	CatalogInfo catalogInfo =  BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	res.setCatalogInfo(catalogInfo);
+	        	setResponseMessage(model, res, user);
+	            return model;
+	            */
 	        } else if(ACTION_GET_SORT_OPTIONS_FOR_CATEGORY.equals(action)){
 	        	//List<SortType> optionList = BrowseUtil.getSortOptionsForCategory(requestMessage, user, request);
 	        	//SortOptionResult res = new SortOptionResult();

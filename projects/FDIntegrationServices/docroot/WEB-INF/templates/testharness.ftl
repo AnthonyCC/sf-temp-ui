@@ -751,6 +751,12 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
+ } else if (  loaddata == "getCatalogKey") {
+  	$("#url").val("/browse/getCatalogKeyForAddress/"); 
+  	var postdata='{ "zipCode" : "10036", "serviceType" : "HOME", "address1" : "44 W 44TH ST", "apartment" : "", "city" : "New York", "state" : "NY"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
  }else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
@@ -1076,6 +1082,7 @@ function doStuff() {
   <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH SORT </option>
   <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>
   <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
+  <option value="getCatalogKey">BROWSE - GET CATALOG KEY FOR ADDRESS EX</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
     <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET SORT OPTIONS FOR CATEOGRY</option>

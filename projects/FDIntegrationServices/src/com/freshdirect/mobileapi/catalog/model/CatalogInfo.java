@@ -13,7 +13,7 @@ public class CatalogInfo {
 	private List<Product> products=new ArrayList<Product>();
 	
 	public static class CatalogId {
-		
+		private static final String DELIMITER = "-";
 		private String eStore;
 		
 		private String plantId;
@@ -36,6 +36,12 @@ public class CatalogInfo {
 
 		public String geteStore() {
 			return eStore;
+		}
+		
+		@Override
+		public String toString(){
+			return eStore+DELIMITER+plantId +DELIMITER+ pricingZone.getSalesOrg()
+					+DELIMITER+pricingZone.getDistributionChanel()+DELIMITER+pricingZone.getPricingZoneId();
 		}
 	}
 	

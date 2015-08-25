@@ -29,8 +29,8 @@ public class CatalogKey {
 	@Override
 	public String toString()
 	{
-		return eStore+DELIMITER+plantId+DELIMITER+pricingZone.getPricingZoneId() 
-				+DELIMITER+ pricingZone.getSalesOrg()+DELIMITER+pricingZone.getDistributionChanel();
+		return eStore+DELIMITER+plantId +DELIMITER+ pricingZone.getSalesOrg()
+				+DELIMITER+pricingZone.getDistributionChanel()+DELIMITER+pricingZone.getPricingZoneId();
 	}
 	
 	public static CatalogKey parse(String stringRep){
