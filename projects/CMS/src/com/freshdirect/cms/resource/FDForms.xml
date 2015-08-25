@@ -2119,7 +2119,7 @@
 				<CmsSection>
 						<title>NAME</title>
 						<fields>
-							<CmsField><attribute>Name</attribute></CmsField>												
+							<CmsField><attribute>name</attribute></CmsField>												
 						</fields>
 					</CmsSection>
 					<CmsSection>
