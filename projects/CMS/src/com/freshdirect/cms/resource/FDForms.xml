@@ -2134,7 +2134,6 @@
 							<CmsField><attribute>captionText</attribute></CmsField>
 							<CmsField><attribute>headlineText</attribute></CmsField>		
 							<CmsField><attribute>bodyText</attribute></CmsField>		
-							<CmsField><attribute>greeting</attribute></CmsField>
 							<CmsField><attribute>linkText</attribute></CmsField>
 							<CmsField><attribute>linkTarget</attribute></CmsField>		
 							<CmsField><attribute>linkURL</attribute></CmsField>		

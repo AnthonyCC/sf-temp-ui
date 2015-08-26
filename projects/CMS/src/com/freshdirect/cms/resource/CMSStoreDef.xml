@@ -2517,7 +2517,6 @@
 			<AttributeDef name="captionText" type="S" label="Caption Text" required="false"/>
 			<AttributeDef name="headlineText" type="S" label="Headline Text" required="false"/>
 			<AttributeDef name="bodyText" type="S" label="Body Text" required="false"/>
-			<AttributeDef name="greeting" type="B" label="Greeting?" required="false"/>
 			<AttributeDef name="linkText" type="S" label="Link Text" required="false"/>
 			<AttributeDef name="linkURL" type="S" label="Link URL" required="false"/>
 			<AttributeDef name="linkType" type="S" label="Link Type" required="false"/>

@@ -10,7 +10,6 @@ public class CMSSectionModel {
 	private String captionText;
 	private String headlineText;
 	private String bodyText;
-	private Boolean greeting;
 	private String linkText;
 	private String linkURL;
 	private String linkType;
@@ -77,14 +76,6 @@ public class CMSSectionModel {
 
 	public void setBodyText(String bodyText) {
 		this.bodyText = bodyText;
-	}
-
-	public Boolean getGreeting() {
-		return greeting;
-	}
-
-	public void setGreeting(Boolean greeting) {
-		this.greeting = greeting;
 	}
 
 	public String getLinkText() {
