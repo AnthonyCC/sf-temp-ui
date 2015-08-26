@@ -453,6 +453,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			
 			List<FDTimeslot> timeslots = timeslotList.getTimeslots();
 			responseTime = timeslotList.getResponseTime();
+			
+			for(DateRange range : dateRanges){
+				if(timeslotList.getRange().overlaps(range)){
+					timeslotList.setAdvanced(range.isAdvanced());
+				}
+			}
 				
 			tsuList.add(new FDTimeslotUtil(timeslots, timeslotList.getRange().getStartDate(),
 					timeslotList.getRange().getEndDate(), restrictions, responseTime, 
