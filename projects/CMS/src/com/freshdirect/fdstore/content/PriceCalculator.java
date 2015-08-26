@@ -631,7 +631,12 @@ public class PriceCalculator {
 	
 	public double getWasPrice() {
 		try {
-			return getProductInfo().getZonePriceInfo(ctx.getZoneInfo()).getSellingPrice();
+			ZonePriceInfoModel zpm = getProductInfo().getZonePriceInfo(ctx.getZoneInfo());
+			if(zpm == null){
+				throw new FDRuntimeException("ZonePriceModel is null");
+			} else {
+				return zpm.getSellingPrice();
+			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		} catch (FDSkuNotFoundException e) {

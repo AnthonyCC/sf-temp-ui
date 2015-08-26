@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceModel;
@@ -1057,7 +1058,6 @@ public class BrowseUtil {
 	    		if(p.isFullyAvailable()) {
 					//display(p);
 					if(!productSet.contains(p.getContentName())) {
-						
 	    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
 	    				prodBuilder.brandTags(p.getBrands())
 				            .minQty(p.getQuantityMinimum())
@@ -1066,11 +1066,10 @@ public class BrowseUtil {
 				            .quantityText(p.getQuantityText())
 				            .images(getImages(p))
 				            .tags(p.getTags())
-				            .skuInfo(getSkuInfo(p,plantId,pc ))
 				            .generateWineAttributes(p)
 	    					.addKeyWords(p.getKeywords())
-	    					.generateAdditionTagsFromProduct(p);
-	    					
+	    					.generateAdditionTagsFromProduct(p)
+	    					.skuInfo(getSkuInfo(p,plantId,pc ));
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
     					productList.add(product);
@@ -1194,6 +1193,8 @@ public class BrowseUtil {
 					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
 				} catch (FDException e) {
 					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
+				} catch (FDRuntimeException e){
+					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" " + e.toString());
 				}
 	    	 }
 	    	 return null;
