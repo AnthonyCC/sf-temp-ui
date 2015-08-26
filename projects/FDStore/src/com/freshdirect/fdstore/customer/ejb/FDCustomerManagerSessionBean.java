@@ -2144,13 +2144,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
 			}
 			throw re;
-		/*} catch (ErpAuthorizationException re) {
+		} catch (ErpAuthorizationException re) {
 			try{
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
 			}
-			throw re;*/
+			throw re;
 		} catch (RemoteException re) {
 			try{
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
@@ -2837,7 +2837,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
 			}
 			throw re;
-		/*} catch (ErpAuthorizationException re) {
+		} catch (ErpAuthorizationException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
 					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
@@ -2846,7 +2846,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + order.getDeliveryInfo().getDeliveryReservationId());
 			}
-			throw re;*/
+			throw re;
 		}  catch (RemoteException re) {
 			try{
 				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
