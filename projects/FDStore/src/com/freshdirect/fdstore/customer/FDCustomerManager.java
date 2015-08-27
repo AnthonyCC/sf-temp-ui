@@ -1686,7 +1686,7 @@ public class FDCustomerManager {
 			// add the complaint to the sale
 			//
 			sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK(),autoApproveAuthorized, limit);
-
+			LOGGER.info("Complaint Id:"+complaint.getPK());
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

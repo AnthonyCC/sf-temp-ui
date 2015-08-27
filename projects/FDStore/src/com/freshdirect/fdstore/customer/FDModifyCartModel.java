@@ -224,7 +224,7 @@ public class FDModifyCartModel extends FDCartModel {
 		return originalOrderCoupons;
 	}
 	
-	public  void calculateScaleQuantity() {
+	/*public  void calculateScaleQuantity() {
 		//String key=null;
 		Map<FDSku,Double> scaleQuantityMap=new HashMap<FDSku, Double>();
 		Double scale=null;
@@ -246,5 +246,5 @@ public class FDModifyCartModel extends FDCartModel {
 				cartLine.setScaleQuantity(scaleQuantityMap.get(cartLine.getSku()));
 			}
 		}
-	}
+	}*/
 }

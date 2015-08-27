@@ -229,8 +229,13 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 							// store case
 							PrimaryKey autoCasePK = CrmManager.getInstance().createCase(autoCase);
 							
-							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
-
+							try {
+								addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							LOGGER.info("Complaint Id:"+complaintModel.getPK());
 							FDCustomerManager.assignAutoCaseToComplaint(complaintModel, autoCasePK);
 
 

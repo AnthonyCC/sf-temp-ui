@@ -240,7 +240,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 				
 				if(SapProperties.isMaterialGlobalExportLogEnabled()){
 					LOG.info("******************* Material Global Data ************");
-					LOG.info(materialTable.toString());
+					LOG.info(materialTable);
 					LOG.info("******************* Material Variant Config ************");
 					LOG.info(variantConfigTable);
 					LOG.info("******************* Material Variant Pricing ************");

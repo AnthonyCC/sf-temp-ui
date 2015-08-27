@@ -2852,6 +2852,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET AUTO_CASE_ID=? WHERE ID=?");
 			ps.setString(1, autoCasePK.getId());
+			LOGGER.info("Complaint Id:"+complaint.getPK());
 			ps.setString(2, complaint.getPK().getId());
 			
 			try {
