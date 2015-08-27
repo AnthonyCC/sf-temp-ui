@@ -68,6 +68,8 @@ var FreshDirect = FreshDirect || {};
         });
 
         ajax.onValue(function(ajaxData){
+          var note;
+
           $(timeslot.contentHolder()).html(timeslot.contentTemplate());
           $(timeslot.contentHolder() + ' [data-component="timeselectorcontent"]').html(ajaxData);
 
@@ -78,6 +80,12 @@ var FreshDirect = FreshDirect || {};
           }
 
           timeslot.expandDefaultColumn(window.fdTSDisplay);
+
+          note = $(timeslot.contentHolder()).find('.timeslot-note');
+
+          if (note.size()) {
+            note.insertBefore($('#ec-drawer'));
+          }
         });
       }
     },

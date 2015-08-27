@@ -999,6 +999,38 @@ td.noTopBorder {
 	position: absolute;
 }
 
+[data-component="timeselectorcontent"] .timeslot-note {
+  display: none;
+}
+
+.timeslot-note {
+  position: relative;
+  margin: 10px 0;
+  border: 1px solid #e7e5e4;
+}
+
+.timeslot-note .note-message {
+  width: 20%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  font-size: 18px;
+  font-weight: bold;
+  color: #f90;
+  text-transform: capitalize;
+  height: 1.5em;
+  text-align: center;
+}
+
+.timeslot-note .note-content {
+  box-sizing: border-box;
+  width: 80%;
+  margin-left: 20%;
+  background-color: #efefec;
+  padding: 10px;
+}
 
 #messages .cutoff {
 	height:auto;

@@ -20,6 +20,12 @@
 	%>
 	<%@ include file="/expressco/includes/i_delivery_timeslots.jspf"%>
 	<c:if test="${advancedTimeslotMediaEnabled}">
-		<fd:IncludeMedia name='/media/editorial/holiday/advance_order/delivbar_adv_msg.html' />
+    <div class="timeslot-note">
+      <div class="note-message">
+        Please note
+      </div>
+      <div class="note-content">
+        <fd:IncludeMedia name='/media/editorial/holiday/advance_order/delivbar_adv_msg.html' />
+      </div></div>
 	</c:if>
 </form>
