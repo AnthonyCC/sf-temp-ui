@@ -1,10 +1,19 @@
 <%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil" %>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder" %>
+<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.freshdirect.framework.util.DateRange" %>
+<%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDTimeslot" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
 <%
 final boolean abstractTimeslots = EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode();
@@ -43,6 +52,16 @@ if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREAT
 			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 		
+		// Setup Advanced Timeslot Media flag for timeslots.jsp
+        DateRange advOrdRange = FDStoreProperties.getAdvanceOrderRange();
+		Calendar tomorrow = Calendar.getInstance();
+		tomorrow.add(Calendar.DATE, 1);
+		tomorrow = DateUtil.truncate(tomorrow);
+		DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
+		boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
+		FDCartModel cart = user.getShoppingCart();
+		boolean advancedTimeslotMediaEnabled = cart.hasAdvanceOrderItem() && advOrdRangeOK && (!deliveryModel.isEasterMealRestriction() && !deliveryModel.isThxgivingRestriction());
+		pageContext.setAttribute("advancedTimeslotMediaEnabled", advancedTimeslotMediaEnabled, PageContext.REQUEST_SCOPE);
 	%>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
