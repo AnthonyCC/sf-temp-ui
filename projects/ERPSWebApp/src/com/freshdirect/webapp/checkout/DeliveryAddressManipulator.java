@@ -890,16 +890,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else {
+		}
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
-		}
-		
-		cart.setZoneInfo( zoneInfo );
-		cart.setDeliveryAddress( address );
-
-		//user.getUserContext().getFulfillmentContext().setPlantId("1000");
-		//user.getUserContext().setPricingContext(new PricingContext(new ZoneInfo(user.getUserContext().getPricingContext().getZoneInfo().getPricingZoneId(),"1000","1000")));
 		
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 

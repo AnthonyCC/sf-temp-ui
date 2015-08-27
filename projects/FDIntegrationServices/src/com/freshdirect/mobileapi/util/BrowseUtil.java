@@ -1104,7 +1104,9 @@ public class BrowseUtil {
 	    	} else {
 		    	catalogInfo=getCatalogInfo(requestMessage,user,request);
 		    	plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
-		    	pc=user.getFDSessionUser().getUserContext().getPricingContext();	    		
+		    	pc=user.getFDSessionUser().getUserContext().getPricingContext();
+		    	user.setUserContext();
+		    	
 	    	}
 
 
@@ -1118,6 +1120,7 @@ public class BrowseUtil {
 	    		for(CategoryModel c:cm) {
 	    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
 	    		}
+	    		
 	    	}
 	    	String val=requestMessage.getProductCount();
 	    	
@@ -1148,6 +1151,7 @@ public class BrowseUtil {
 	    	user.setAddress(getAddress(requestMessage));
 	    	String plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
 	    	PricingContext pc=user.getFDSessionUser().getUserContext().getPricingContext();
+	    	user.setUserContext();
 	    	CatalogId catalogId=new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(),plantId, pc.getZoneInfo());
 	    	return new CatalogInfo(catalogId);
 	    }

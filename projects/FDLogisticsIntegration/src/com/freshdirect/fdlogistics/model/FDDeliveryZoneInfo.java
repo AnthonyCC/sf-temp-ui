@@ -2,6 +2,7 @@ package com.freshdirect.fdlogistics.model;
 
 import java.io.Serializable;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
@@ -25,7 +26,7 @@ public class FDDeliveryZoneInfo implements Serializable  {
     public FDDeliveryZoneInfo(String zoneCode, String zoneId, String regionId, EnumZipCheckResponses response, boolean unattended, boolean cosEnabled, 
     		boolean ctActive, EnumRegionServiceType serviceType, FulfillmentInfo fulfillmentInfo) {
 
-    	this.zoneCode = zoneCode;
+    	this.zoneCode = StringUtil.isEmpty(zoneCode)?"":zoneCode;
     	this.zoneId = zoneId;
     	this.regionId = regionId;
     	this.response = response;
