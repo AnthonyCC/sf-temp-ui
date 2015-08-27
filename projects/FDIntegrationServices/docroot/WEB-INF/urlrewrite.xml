@@ -856,6 +856,10 @@
 		<to last="true">/browse.do?action=getCatalogKeyForAddress&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/getAllCatalogKeys/(.*)</from>
+		<to last="true">/browse.do?action=getAllCatalogKeys&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/getCatalogForKey/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogForKey&amp;ver=$1</to>
 	</rule>

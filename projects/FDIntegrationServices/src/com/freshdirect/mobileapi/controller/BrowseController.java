@@ -71,6 +71,8 @@ public class BrowseController extends BaseController {
 
     private static final String ACTION_NAVIGATION ="navigation";
     
+    private static final String ACTION_GET_ALL_CATALOG_KEYS = "getAllCatalogKeys";
+    
     private static final String ACTION_GET_CATALOG_FOR_ADDRESS="getCatalogForAddress";
 
     private static final String ACTION_GET_CATALOG_FOR_CATALOG_KEY = "getCatalogForKey";
@@ -269,6 +271,14 @@ public class BrowseController extends BaseController {
 	        	LOG.debug(((endTime-startTime)/1000)+" seconds");
 	            return model;
 	        }
+        } else {
+        	if (ACTION_GET_ALL_CATALOG_KEYS.equals(action)){
+	        	//TODO: actually generate list of CatalogKeys;
+	        	CatalogKeyResult res = new CatalogKeyResult();
+	        	res.setKeyList(BrowseUtil.getAllFDXCatalogKeys());
+	        	setResponseMessage(model, res, user);
+	        	return model;
+	        } 
         }
 
         setResponseMessage(model, result, user);

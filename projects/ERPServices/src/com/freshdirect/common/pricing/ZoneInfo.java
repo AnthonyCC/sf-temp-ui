@@ -1,5 +1,7 @@
 package com.freshdirect.common.pricing;
 
+import java.util.Arrays;
+
 public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo> {
 	/**
 	 * 
@@ -83,6 +85,31 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 		return true;
 	}
 	
+	public String stringWithDelimter(String delimter){
+		
+		return salesOrg + delimter + distributionChanel + delimter+ zoneId + 
+				(parent == null ? "" : (delimter + parent.stringWithDelimter(delimter)));
+	}
+	
+	/**
+	 * Recursively builds zonInfo object with infinite parents from passed string array
+	 * @param toDistribute
+	 * @return
+	 */
+	public static ZoneInfo distributeIntoObject(String[] toDistribute){
+		ZoneInfo zi = null;
+		if(toDistribute.length > 0){
+			
+			
+			zi = new ZoneInfo(toDistribute[2], toDistribute[0], toDistribute[1], 
+					toDistribute.length > 3 ? 
+							ZoneInfo.distributeIntoObject(
+									Arrays.copyOfRange(toDistribute, 3, toDistribute.length)) 
+									: null);
+		}
+		
+		return zi;
+	}
 	
 	@Override
 	public String toString() {

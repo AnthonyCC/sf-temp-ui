@@ -739,6 +739,12 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
+ } else if (  loaddata == "getAllCatalogKeys") {
+  	$("#url").val("/browse/getAllCatalogKeys/"); 
+  	var postdata='';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
  } else if (  loaddata == "getCatalogForKey") {
   	$("#url").val("/browse/getCatalogForKey/"); 
   	var postdata='{ "key": "FDX-1000-0001-01-0000200501", "productCount":"10"}';
@@ -1081,6 +1087,7 @@ function doStuff() {
   <option value="getAllProductsForCategory">BROWSE - ALL PRODUCTS FOR CATEGORY</option>
   <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH SORT </option>
   <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>
+  <option value="getAllCatalogKeys">BROWSE - GET ALL CATALOG KEYS</option>
   <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
   <option value="getCatalogKey">BROWSE - GET CATALOG KEY FOR ADDRESS EX</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>

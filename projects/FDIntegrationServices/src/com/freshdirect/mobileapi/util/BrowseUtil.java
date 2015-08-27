@@ -28,10 +28,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
@@ -58,6 +60,7 @@ import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
+import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -1154,6 +1157,51 @@ public class BrowseUtil {
 	    	user.setUserContext();
 	    	CatalogId catalogId=new CatalogInfo.CatalogId(ContentFactory.getInstance().getStoreKey().getId(),plantId, pc.getZoneInfo());
 	    	return new CatalogInfo(catalogId);
+	    }
+	    
+	    public static List<String> getAllFDXCatalogKeys(){
+	    	
+	    	String eStore = ContentFactory.getInstance().getStoreKey().getId();
+			List<CatalogKey> keyList = null;
+	    	
+	    	try {
+				List<String> zoneIds = new ArrayList<String>(FDZoneInfoManager.loadAllZoneInfoMaster());
+				ZoneInfo plant1k;
+				ZoneInfo plant1300;
+				CatalogKey tmp;
+				keyList = new ArrayList<CatalogKey>(zoneIds.size() * 2);
+				for(String zoneId : zoneIds){
+					//TODO: replace stubs with something else
+					//Currently using stubs for sales and distribution
+					plant1k = new ZoneInfo(zoneId, "0001", "01");
+					tmp = new CatalogKey();
+					tmp.seteStore(eStore);
+					tmp.setPlantId(1000);
+					tmp.setPricingZone(plant1k);
+					keyList.add(tmp);
+					//Currently using stubs for sales and distribution
+					plant1300 = new ZoneInfo(zoneId, "1300", "01", plant1k);
+					tmp = new CatalogKey();
+					tmp.seteStore(eStore);
+					tmp.setPlantId(1300);
+					tmp.setPricingZone(plant1300);
+					keyList.add(tmp);
+					
+				}
+				
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			}
+	    	
+	    	if(keyList != null && keyList.size() > 0){
+	    		List<String> stringyfiedKeyList = new ArrayList<String>(keyList.size());
+	    		for(CatalogKey key : keyList){
+	    			stringyfiedKeyList.add(key.toString());
+	    		}
+	    		return stringyfiedKeyList;
+	    	}
+	    	
+	    	return null;
 	    }
 	    
 	    private static SkuInfo getSkuInfo(ProductModel prodModel,String plantID,PricingContext context) {
