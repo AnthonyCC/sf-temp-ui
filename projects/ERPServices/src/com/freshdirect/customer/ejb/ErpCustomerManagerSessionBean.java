@@ -1496,8 +1496,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			// and get back the new sale model with the complaint
 			//
+			eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel saleModel = (ErpSaleModel) eb.getModel();
 			Collection<ErpComplaintModel> complaints = saleModel.getComplaints();
+			LOGGER.info("No.of Complaints:"+ (null != complaints? complaints.size():complaints));
 			ErpComplaintModel lastComplaint = this.getLastComplaint(complaints);
 			PrimaryKey complaintPk = lastComplaint.getPK();
 			
@@ -1507,6 +1509,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if (autoApprove && 0 != Math.round(complaint.getAmount() * 100.0)) {
 				this.approveComplaint(lastComplaint.getPK().getId(), true, "AUTO_APPROVED",null);
 			}
+			LOGGER.info("Complaint Id:"+complaintPk);
 			return complaintPk;
 			
 		} catch (SQLException sqle) {

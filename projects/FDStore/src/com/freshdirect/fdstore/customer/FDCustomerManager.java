@@ -1678,15 +1678,16 @@ public class FDCustomerManager {
 	 * @param String the PK of the sale to which the complaint is to be added
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	public static void addComplaint(ErpComplaintModel complaint, String saleId,FDIdentity identity, boolean autoApproveAuthorized, Double limit ) throws FDResourceException, ErpComplaintException {
+	public static PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,FDIdentity identity, boolean autoApproveAuthorized, Double limit ) throws FDResourceException, ErpComplaintException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			//
 			// add the complaint to the sale
 			//
-			sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK(),autoApproveAuthorized, limit);
-			LOGGER.info("Complaint Id:"+complaint.getPK());
+			PrimaryKey complaintPk = sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK(),autoApproveAuthorized, limit);
+			LOGGER.info("Complaint Id:"+complaintPk);
+			return complaintPk;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

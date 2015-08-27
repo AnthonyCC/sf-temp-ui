@@ -369,14 +369,14 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 	 * @return String the PK of the ErpComplaintModel just created
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	private void addComplaint(ActionResult result, ErpComplaintModel complaintModel,boolean autoApproveAuthorized, Double limit)
+	private PrimaryKey addComplaint(ActionResult result, ErpComplaintModel complaintModel,boolean autoApproveAuthorized, Double limit)
 		throws FDResourceException, ErpComplaintException {
 
 		LOGGER.debug(complaintModel.describe() );
 		
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = ((FDUserI)session.getAttribute(SessionName.USER)).getIdentity();
-		FDCustomerManager.addComplaint(complaintModel, orderId,identity,autoApproveAuthorized,limit);
+		return FDCustomerManager.addComplaint(complaintModel, orderId,identity,autoApproveAuthorized,limit);
 	}
 
 	private void doApproval(HttpServletRequest request, ActionResult result, boolean isApproved, Double limit)
