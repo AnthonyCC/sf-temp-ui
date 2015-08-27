@@ -55,7 +55,7 @@ public class CMSContentFactory {
 	
 	private static final String FEED_CACHE = "cmsPageCache";
 	private static CMSContentFactory instance = null;
-	
+	Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
 	private static final Category LOG = LoggerFactory.getInstance(CMSContentFactory.class);
 	
 	public static CMSContentFactory getInstance(){
@@ -147,11 +147,12 @@ public class CMSContentFactory {
 		} else {
 			String data = getFeedContent();
 			if(StringUtils.isNotBlank(data)){
-				contentNodes = loadNodesFromXMLString(data);
+				contentNodesMap = loadNodesFromXMLString(data);
+				//this.contentNodesMap = contentNodes;
 			} 
 		}
-		if(contentNodes != null && !contentNodes.isEmpty()){
-			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
+		if(contentNodesMap != null && !contentNodesMap.isEmpty()){
+			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
 				ContentNodeI contentNode = contentNodeEntry.getValue();
 				CMSWebPageModel page = getCMSPage(contentNode, pageRequest);
 				if(page != null){
@@ -206,15 +207,17 @@ public class CMSContentFactory {
 	
 	public final List<CMSSectionModel> getPageSections(ContentNodeI pageNode, CMSPageRequest request){
 		List<CMSSectionModel> sections = new ArrayList<CMSSectionModel>();
-		if(pageNode != null){
+		List<CMSScheduleModel> schedules = null;
+		if(pageNode != null){			
 			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");		
 			if(CollectionUtils.isNotEmpty(sectionKeys)){
 				for(ContentKey sectionKey: sectionKeys){
 					ContentNodeI sectionNode = getContentNodeByKey(sectionKey);
 					CMSSectionModel section = new CMSSectionModel();
-					
-					List<CMSScheduleModel> schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"));
-					if(isSchedulesMatches(schedules, request)){
+					if(sectionNode!=null){
+					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"));
+					}
+					if(isSchedulesMatches(schedules, request) && sectionNode!=null){
 						section.setName((String)sectionNode.getAttributeValue("name"));
 						section.setType((String)sectionNode.getAttributeValue("Type"));
 						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
@@ -351,7 +354,6 @@ public class CMSContentFactory {
 			banner.setType((String)componentNode.getAttributeValue("Type"));
 			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
 			banner.setTarget(getEncodedContentKey(componentNode,"Target"));
-			banner.setAnchors(createAnchor(getContentKeysList(componentNode,"ImageBannerLink")));
 			banner.setLinkOneTarget(getEncodedContentKey(componentNode,"linkOneTarget"));
 			banner.setLinkOneText((String)componentNode.getAttributeValue("linkOneText"));
 			banner.setLinkOneType((String)componentNode.getAttributeValue("linkOneType"));
@@ -477,7 +479,14 @@ public class CMSContentFactory {
 	public ContentNodeI getContentNodeByKey(ContentKey key){
 		ContentNodeI contentNodeI = null;
 		try{
-			contentNodeI =  getContentService().getContentNode(key);
+			//contentNodeI =  getContentService().getContentNode(key);
+			if(contentNodesMap != null && !contentNodesMap.isEmpty()){
+				for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
+					if(contentNodeEntry.getKey().equals(key)){
+						contentNodeI = contentNodeEntry.getValue();
+					}
+				}
+			}
 		} catch(Exception e){
 			LOG.error("Error in getting node "+key,e);
 		}
