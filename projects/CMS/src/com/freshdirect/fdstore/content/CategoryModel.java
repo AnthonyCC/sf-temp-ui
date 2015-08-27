@@ -1114,9 +1114,9 @@ public class CategoryModel extends ProductContainer {
 			try {				
 //				if(!SapProperties.isBlackhole()){
 					ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo = ProductPromotionInfoManager.getProductPromotionPreviewInfo(ppPreviewId);
-					//::FDX::Map<String, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
+					Map<ZoneInfo, List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = ProductPromotionUtil.formatProductPromotionPreviewInfo(erpProductPromotionPreviewInfo);
 					ProductPromotionData ppData = new ProductPromotionData();
-					//::FDX::ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, pricingZone,true);
+					ppData = populateProductPromotionData(ppData, productPromotionPreviewInfoMap, pricingZone,true);
 					productModelList = ppData.getProductModels();
 //				}
 				if(null == productModelList || productModelList.isEmpty()){

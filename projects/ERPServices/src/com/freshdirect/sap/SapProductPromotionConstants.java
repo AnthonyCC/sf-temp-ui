@@ -30,6 +30,8 @@ public interface SapProductPromotionConstants {
 	public static final String FIELD_ZPRICE_RATE = "ZPRICE_RATE";
 	public static final String FIELD_ZPRICE_UOM = "ZPRICE_UOM";
 	public static final String FIELD_REQUESTID = "REQUESTID";
+	public static final String FIELD_VKORG="VKORG";
+	public static final String FIELD_VTWEG="VTWEG";
 	
 	public static final String FIELD_CATEGORY="ZCATEGORY";
 	public static final String FIELD_CATEGORY_POSITION="CATPOS";

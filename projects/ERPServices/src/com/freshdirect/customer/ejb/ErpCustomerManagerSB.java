@@ -281,7 +281,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 
-	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException;
+	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException;
 
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException;
     

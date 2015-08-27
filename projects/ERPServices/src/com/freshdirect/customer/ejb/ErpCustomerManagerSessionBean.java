@@ -2848,15 +2848,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
         
             }
 		
-	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) {
+	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
 
 			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET AUTO_CASE_ID=? WHERE ID=?");
 			ps.setString(1, autoCasePK.getId());
-			LOGGER.info("Complaint Id:"+complaint.getPK());
-			ps.setString(2, complaint.getPK().getId());
+			LOGGER.info("Complaint Id:"+complaintPk);
+			ps.setString(2, complaintPk.getId());
 			
 			try {
 				if (ps.executeUpdate() != 1) {

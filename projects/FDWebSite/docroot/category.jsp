@@ -31,7 +31,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			 StringBuffer redirBuf = new StringBuffer();
              //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
              
-             redirBuf.append("/site_access/site_access.jsp?successPage=" +
+             redirBuf.append("/about/index.jsp?siteAccessPage=aboutus&successPage=" +
                  request.getRequestURI());
 
              String requestQryString = request.getQueryString();

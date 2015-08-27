@@ -192,17 +192,17 @@ public class ProductPromotionUtil {
 	public static Map<ZoneInfo, List<FDProductPromotionInfo>> formatProductPromotionPreviewInfo(
 			ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo)
 			throws FDResourceException {
-		Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap = erpProductPromotionPreviewInfo.getProductPromotionInfoMap();
-		Map<String,List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = new HashMap<String,List<FDProductPromotionInfo>>();
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromotionInfoMap = erpProductPromotionPreviewInfo.getProductPromotionInfoMap();
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = new HashMap<ZoneInfo,List<FDProductPromotionInfo>>();
 		Map<String,ErpProductInfoModel> erpProductInfoMap =  erpProductPromotionPreviewInfo.getErpProductInfoMap();
 		if(null !=productPromotionInfoMap){
 			for(Iterator itr = productPromotionInfoMap.keySet().iterator();itr.hasNext();){
-				String zoneCode =(String)itr.next();
-				List<FDProductPromotionInfo> productPromotionInfoList =(List<FDProductPromotionInfo>)productPromotionInfoMap.get(zoneCode);
-				List<FDProductPromotionInfo> productPromotionPreviewInfoList = (List<FDProductPromotionInfo>)productPromotionPreviewInfoMap.get(zoneCode);
+				ZoneInfo zoneInfo =(ZoneInfo)itr.next();
+				List<FDProductPromotionInfo> productPromotionInfoList =(List<FDProductPromotionInfo>)productPromotionInfoMap.get(zoneInfo);
+				List<FDProductPromotionInfo> productPromotionPreviewInfoList = (List<FDProductPromotionInfo>)productPromotionPreviewInfoMap.get(zoneInfo);
 				if(null ==productPromotionPreviewInfoList){
 					productPromotionPreviewInfoList = new ArrayList<FDProductPromotionInfo>();
-					productPromotionPreviewInfoMap.put(zoneCode, productPromotionPreviewInfoList);
+					productPromotionPreviewInfoMap.put(zoneInfo, productPromotionPreviewInfoList);
 				}
 				if(null !=productPromotionInfoList){
 					for (Iterator iterator = productPromotionInfoList.iterator(); iterator.hasNext();) {
@@ -239,8 +239,7 @@ public class ProductPromotionUtil {
 				}
 			}
 		}
-		//::FDX::return productPromotionPreviewInfoMap;
-		return null;
+		return productPromotionPreviewInfoMap;
 	}
 	
 	//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ErpProductPromotion;
@@ -17,6 +18,7 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.SapProductPromotionConstants;
@@ -31,7 +33,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	
 	private List<ErpProductInfoModel> erpProductInfoList = new ArrayList<ErpProductInfoModel>();
 	private Map<String, ErpProductInfoModel> erpProductInfoMap = new HashMap<String,ErpProductInfoModel>();
-	private Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap;
+	private Map<ZoneInfo,List<FDProductPromotionInfo>> productPromotionInfoMap;
 	
 	private String functionName = null;
 	
@@ -43,12 +45,12 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 		this.erpProductInfoList = erpProductInfoList;
 	}
 	
-	public Map<String, List<FDProductPromotionInfo>> getProductPromotionInfoMap() {
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getProductPromotionInfoMap() {
 		return productPromotionInfoMap;
 	}
 
 	public void setProductPromotionInfoMap(
-			Map<String, List<FDProductPromotionInfo>> productPromotionInfoMap) {
+			Map<ZoneInfo, List<FDProductPromotionInfo>> productPromotionInfoMap) {
 		this.productPromotionInfoMap = productPromotionInfoMap;
 	}
 
@@ -153,11 +155,11 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	}
 	
 	
-	private Map<String,List<FDProductPromotionInfo>> getProductPromotionInfo(
+	private Map<ZoneInfo,List<FDProductPromotionInfo>> getProductPromotionInfo(
 			JCoTable ppInfoTable) {
 		
 //		List<FDProductPromotionInfo> ppInfoList = new ArrayList<FDProductPromotionInfo>();
-		Map<String,List<FDProductPromotionInfo>> zonePromoProdMap= new HashMap<String,List<FDProductPromotionInfo>>();
+		Map<ZoneInfo,List<FDProductPromotionInfo>> zonePromoProdMap= new HashMap<ZoneInfo,List<FDProductPromotionInfo>>();
 		Map<String,List<FDProductPromotionInfo>> promotionProductsMap = null; 
 		List<FDProductPromotionInfo> promotionProducts =null;
 		ppInfoTable.firstRow();
@@ -175,11 +177,15 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 						zoneId=MASTER_DEFAULT_ZONE;
 					}
 					zoneId ="0000"+zoneId;
+					String salesOrg = ppInfoTable.getString(FIELD_VKORG);
+					String distChannel = ppInfoTable.getString(FIELD_VTWEG);
+					ZoneInfo zoneInfo = new ZoneInfo(zoneId, salesOrg, distChannel);
+					
 					Integer priority = ppInfoTable.getInt(FIELD_PRIORY);
 					String featured = ppInfoTable.getString(FIELD_FEATR);
 					boolean isFeatured = "X".equalsIgnoreCase(featured)?true:false;
 					String featuredHeader = ppInfoTable.getString(FIELD_FEATRH);
-					promotionProducts = zonePromoProdMap.get(zoneId);
+					promotionProducts = zonePromoProdMap.get(zoneInfo);
 	            	/*if(null == promotionProductsMap){
 	            		promotionProductsMap = new HashMap<String,List<FDProductPromotionInfo>>();
 	            		zonePromoProdMap.put(zoneId, promotionProductsMap);
@@ -192,7 +198,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	            	if(null == promotionProducts){
 	            		promotionProducts = new ArrayList<FDProductPromotionInfo>();
 //	            		promotionProductsMap.put(isFeatured?FEATURED:NON_FEATURED, promotionProducts);
-	            		zonePromoProdMap.put(zoneId, promotionProducts);
+	            		zonePromoProdMap.put(zoneInfo, promotionProducts);
 	            	}
 	            	String erpCategory = ppInfoTable.getString(FIELD_CATEGORY);
 					Integer erpCatPosition = ppInfoTable.getInt(FIELD_CATEGORY_POSITION);
@@ -208,6 +214,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					ppInfo.setFeatured(isFeatured);
 					ppInfo.setErpCategory(erpCategory);
 					ppInfo.setErpCatPosition(erpCatPosition);
+					ppInfo.setSalesArea(new SalesAreaInfo(salesOrg, distChannel));
 					promotionProducts.add(ppInfo);
 					Collections.sort(promotionProducts, new FDProductPromotionInfoComparator());
 					if(null==erpProductInfoMap.get(skuCode)){
@@ -244,6 +251,8 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 				String matNum = ppPriceTable.getString(FIELD_MATNR).trim();
 				String zoneId = ppPriceTable.getString(FIELD_ZONEID).trim();
 				zoneId ="0000"+zoneId;
+				String salesOrg = ppPriceTable.getString(FIELD_VKORG);
+				String distChannel = ppPriceTable.getString(FIELD_VTWEG);
 				String priceType = ppPriceTable.getString(FIELD_ZPRICE_TYPE).trim();
 				String strQty = ppPriceTable.getString(FIELD_ZPRICE_QTY).trim();
 				double qty=0.0;
@@ -269,7 +278,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					}
 					ErpMaterialPrice materialPrice = null;
 					if("R".equalsIgnoreCase(priceType)){
-						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,"",0.0,zoneId, null, null);//::FDX::
+						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,"",0.0,zoneId, salesOrg, distChannel);
 						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
 							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
 							if(erpMaterialPrice.getPromoPrice()>0 && erpMaterialPrice.getSapZoneId().equals(zoneId)){
@@ -278,7 +287,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 							}							
 						}
 					}else if("S".equalsIgnoreCase(priceType)){
-						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,priceUOM,qty,zoneId, null, null);//::FDX::
+						materialPrice = new ErpMaterialPrice(price,priceUOM,0.0,priceUOM,qty,zoneId, salesOrg, distChannel);
 					}else if("P".equalsIgnoreCase(priceType)){
 						for (Iterator iterator = matPrices.iterator(); iterator.hasNext();) {
 							ErpMaterialPrice erpMaterialPrice = (ErpMaterialPrice) iterator.next();
@@ -287,7 +296,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 							}							
 						}
 						if(null==materialPrice){
-							materialPrice = new ErpMaterialPrice(0,priceUOM,price,"",0.0,zoneId,null,null);//::FDX::
+							materialPrice = new ErpMaterialPrice(0,priceUOM,price,"",0.0,zoneId,salesOrg,distChannel);
 						}
 					}else{
 						LOGGER.warn("ZPRICE_TYPE:"+priceType+", is invalid or empty for Sku:"+skuCode+", Material:"+matNum+" and Zone:"+zoneId);

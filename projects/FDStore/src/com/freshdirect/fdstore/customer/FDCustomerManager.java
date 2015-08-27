@@ -1732,16 +1732,16 @@ public class FDCustomerManager {
 	 * 
 	 * @throws FDResourceException
 	 */
-	public static void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws FDResourceException {
+	public static void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			
 			// set set case PK
-			complaint.setAutoCaseId(autoCasePK.getId());
+//			complaint.setAutoCaseId(autoCasePK.getId());
 			
 			// update complaint in DB
-			sb.assignAutoCaseToComplaint(complaint, autoCasePK);
+			sb.assignAutoCaseToComplaint(complaintPk, autoCasePK);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -676,7 +676,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException, RemoteException;
 
 
-	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;
+	public void assignAutoCaseToComplaint(PrimaryKey complaintPk, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;
     
     //For Gift Cards
     public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws ServiceUnavailableException, InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException, RemoteException;
