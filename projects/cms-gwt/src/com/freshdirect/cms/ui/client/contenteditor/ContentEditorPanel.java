@@ -1,8 +1,6 @@
 package com.freshdirect.cms.ui.client.contenteditor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -10,8 +8,6 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.Container;
@@ -20,17 +16,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.layout.AnchorData;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.freshdirect.cms.ui.client.ActionBar;
 import com.freshdirect.cms.ui.client.Anchor;
@@ -43,7 +32,6 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.GwtContentNode;
-import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.google.gwt.user.client.Window;
 
@@ -60,179 +48,6 @@ public class ContentEditorPanel extends DetailPanel {
 	private PreviewAnchor previewAnchor;
 	
 	private ContextToolBar contextToolBar;
-	private class ContextToolBar extends LayoutContainer {
-		
-		public ContextToolBar() {
-			setLayout(new HBoxLayout());
-	        GwtNodeContext ctx = contentNode.getContexts();
-	        
-	        final List<String> contextPathsList = new ArrayList<String>(ctx.size());
-	        final List<String> contextLabelsList = new ArrayList<String>(ctx.size());
-	        Listener<BaseEvent> synchronizeButtonClick = null;
-
-	        for (String path : ctx.getPaths()) {
-	            contextPathsList.add(path);
-	            contextLabelsList.add(ctx.getLabel(path));
-	        }
-	        
-	        ToolButton synchronizeButton = new ToolButton("synchronize-button");
-	        synchronizeButton.setHeight(16);
-	        synchronizeButton.setWidth(16);
-	        HBoxLayoutData buttonMargin = null;
-	        
-	        if( ctx.size() > 1 ) {
-	        	
-	            final SimpleComboBox<String> contextDropdown = new SimpleComboBox<String>();
-	            
-	            contextDropdown.setEmptyText("Select active context");
-	            contextDropdown.setWidth(500);            
-	            contextDropdown.setEditable(false);
-	            contextDropdown.setForceSelection(true);
-	        	contextDropdown.setTriggerAction(TriggerAction.ALL);
-	            
-	            contextDropdown.add( contextLabelsList );
-	                        
-	            contextDropdown.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
-	                @Override
-	                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
-	                    int selectedIndex = contextDropdown.getSelectedIndex();
-	                    if (selectedIndex == -1) {
-	                        return;
-	                    }
-	                    String path = contextPathsList.get(selectedIndex);
-	                    
-	                    // -- FDX extension --
-	                    
-	                    // Extract store key (Store:FreshDirect) and store in a central place
-	    	            String _storeKey = GwtNodeContext.extractRootKey(path);
-	    	            if (!_storeKey.startsWith("Store:")) {
-	    	            	_storeKey = null;
-	    	            }
-	    	            ManageStoreView.getInstance().setStoreKey(_storeKey);
-	    	            contentNode.changeContext(path, _storeKey);
-	    	            
-	    	            ManageStoreView.getInstance().updatePreviewLink();
-	                }
-	            });
-	            
-	            add( contextDropdown );
-	            
-	            synchronizeButtonClick = new Listener<BaseEvent>() {
-	                @Override
-	                public void handleEvent(BaseEvent be) {
-	                    int index = contextDropdown.getSelectedIndex();
-	                    if (index == -1) {
-	                        MessageBox.alert("Info", "First select a context, then push the synchronize button to navigate in the tree.", null);
-	                    } else {
-	                        String path = contextPathsList.get(index);
-	                        treePanel.synchronize(path);
-	                    }
-	                };
-	            };
-
-	            // context ...
-	            int index = -1;
-	            String contextPath = treePanel.getSelectedPath();
-
-	            if (contextPath != null)
-	                index = contextPathsList.indexOf(contextPath);
-
-	            if (index == -1) {
-	                contextPath = contentNode.getDefaultContextPath();
-	            }
-
-	            if (contextPath != null) {
-	                index = contextPathsList.indexOf(contextPath);
-	            }
-	            if (index != -1) {
-	                contextDropdown.setValue(contextDropdown.getStore().getAt(index));
-	            }
-	        	
-	            buttonMargin = new HBoxLayoutData(3, 0, 0, 2);
-	            
-	        } else if ( ctx.size() > 0 ) {
-	        	
-	        	final LabelField contextField = new LabelField(); 
-	        	
-	        	contextField.setValue(contextLabelsList.get(0));
-	        	contextField.setHeight(22);
-	        	contextField.setReadOnly(true);
-	        	
-	        	
-	            synchronizeButtonClick = new Listener<BaseEvent>() {
-	                @Override
-	                public void handleEvent(BaseEvent be) {
-	                    String path = contextPathsList.get(0);
-	                    treePanel.synchronize(path);
-	                };
-	            };
-	            
-	            add(contextField);
-	            buttonMargin = new HBoxLayoutData(2, 0, 0, 2);
-	        
-
-	            // FDX 
-	            final String _cpath = contextPathsList.get(0);
-	            final String _rootKey = GwtNodeContext.extractRootKey( _cpath );
-	            if (_rootKey != null && _rootKey.startsWith("Store:")) {
-	            	ManageStoreView.getInstance().setStoreKey(_rootKey);
-    	            ManageStoreView.getInstance().updatePreviewLink();
-	            } else {
-	            	ManageStoreView.getInstance().setStoreKey( null );
-    	            ManageStoreView.getInstance().updatePreviewLink();
-	            }
-
-
-	            // FDX 
-	            
-	            final String _storeKey = GwtNodeContext.extractRootKey( contextPathsList.get(0) );
-	            if (_storeKey != null && _storeKey.startsWith("Store:")) {
-	            	ManageStoreView.getInstance().setStoreKey(_storeKey);
-    	            ManageStoreView.getInstance().updatePreviewLink();
-	            } else {
-	            	ManageStoreView.getInstance().setStoreKey( null );
-	            	CmsGwt.debug("Could not extract store key from path " + contextPathsList.get(0));
-	            }
-
-
-	    	} else {	    	
-		    	// TODO what to do if there are no contexts at all ??
-	    		
-	            final String contextPath = treePanel.getSelectedPath();
-
-	            if ( contextPath != null ) {
-	            	
-		            final String contextLabel = contextPath.replace( TreeContentNodeModel.pathSeparator, " > " );
-	            	final LabelField contextField = new LabelField(); 
-	            	
-	            	contextField.setValue( contextLabel );
-					contextField.setHeight( 22 );
-					contextField.setReadOnly( true );            	
-	            	
-	                synchronizeButtonClick = new Listener<BaseEvent>() {
-	                    @Override
-	                    public void handleEvent(BaseEvent be) {
-	                        treePanel.synchronize( contextPath );
-	                    };
-	                };
-	                
-	                add(contextField);
-	                buttonMargin = new HBoxLayoutData(2, 0, 0, 2);            	            	
-	            }
-	            
-		    }
-	        
-	        // if all above options failed - we have nothing to display
-	        if ( synchronizeButtonClick == null  ) {
-	        	return;
-	        }
-	        
-	        synchronizeButton.setToolTip( new ToolTipConfig("Synchronize", "Synchronize the node tree with the selected path.") );  
-	        synchronizeButton.addListener(Events.OnClick, synchronizeButtonClick );
-
-	        add(synchronizeButton, buttonMargin);			
-		}
-	}
 	
 	public ContentEditorPanel() {
 		setBorders(false);
@@ -245,7 +60,7 @@ public class ContentEditorPanel extends DetailPanel {
 
         // setup context toolbar
 		HtmlContainer htmlTitle = new HtmlContainer(getHeaderMarkup());		
-//        contextToolBar = new ContextToolBar(contentNode, treePanel);
+        contextToolBar = new ContextToolBar(contentNode, treePanel);
 		htmlTitle.add(contextToolBar, "#main-toolbar");
         
         actionBar = new ActionBar();
@@ -301,7 +116,8 @@ public class ContentEditorPanel extends DetailPanel {
         compareButton = new Anchor("Compare to ...", null );
 
         compareButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
+			@Override
+            public void handleEvent(BaseEvent be) {
 				
 	            /* Restrict node selector to type of the current node */
         		Set<String> s = new HashSet<String>(1);
@@ -310,7 +126,8 @@ public class ContentEditorPanel extends DetailPanel {
 				final ContentTreePopUp popup = ContentTreePopUp.getInstance( s, false );		
 				popup.setHeading("Select a node for comparison");
 				popup.addListener(Events.Select, new Listener<BaseEvent>() {
-					public void handleEvent(BaseEvent be) {
+					@Override
+                    public void handleEvent(BaseEvent be) {
 						TreeContentNodeModel selectedNode = popup.getSelectedItem();
 						if (contentNode.getNode().getKey().equals( selectedNode.getKey() ) ) {
 							MessageBox.alert("Compare failed", "Comparing to itself does not make much sense ..." , null);
@@ -381,8 +198,8 @@ public class ContentEditorPanel extends DetailPanel {
     protected void saveAction() {
         CmsGwt.getContentService().save( WorkingSet.getWorkingSet(), new SaveNodeAction());
         
-        /*// save context
-        contextToolBar.saveContext();*/
+        // save context
+        contextToolBar.saveContext();
     }  
     
 	public GwtNodeData getContentNode() {
