@@ -254,12 +254,15 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						LOGGER.error( "Add 0 credit complaint failed for make good order:" + makeGoodOrderId, e );
 						// create case here
 					}
-					session.removeAttribute( "makeGoodOrder" );
-					session.removeAttribute( "referencedOrder" );
-					session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
 					
-					if (masqueradeContext!=null){
-						masqueradeContext.clearMakeGoodContext();
+					if ( !outcome.equals( Action.ERROR ) ) { //only clear these if there's no error on submit
+						session.removeAttribute( "makeGoodOrder" );
+						session.removeAttribute( "referencedOrder" );
+						session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
+						
+						if (masqueradeContext!=null){
+							masqueradeContext.clearMakeGoodContext();
+						}
 					}
 				}
 				currentUser.setSuspendShowPendingOrderOverlay(false);

@@ -43,6 +43,8 @@ public enum EnumEventSource {
 	// Site Redesign - Cart Confirm
 	cc_tabbedRecommender("CC-bottom-recommender"),
 	CC_YMAL("CCYMAL"),
+	
+	view_cart("view_cart"),
 
 	ExternalPage("ExternalPage"), //External Page
 	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
