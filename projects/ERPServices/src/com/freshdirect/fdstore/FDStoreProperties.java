@@ -635,7 +635,7 @@ public class FDStoreProperties {
 	private final static String PROP_ALCOHOLFILTERING_ENABLED = "fdstore.alcoholfiltering.enabled";
 	private final static String CHECK_LOCAL_INVENTORY_ENABLED = "fdstore.check.localinventory.enabled";
 	
-	@Deprecated
+
 	private final static String PROP_PAYMENTECH_GATEWAY_ENABLED = "fdstore.paymentech.enabled";
 	
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
@@ -3468,10 +3468,8 @@ public class FDStoreProperties {
 		return ( Boolean.valueOf( get( PROP_QS_ENABLED ) ) ).booleanValue();
 	}
 	
-	@Deprecated
 	public static boolean isPaymentechGatewayEnabled() {
-	        // return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
-	        return true;
+		return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
 	}
 
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
