@@ -84,6 +84,7 @@ var FreshDirect = FreshDirect || {};
           note = $(timeslot.contentHolder()).find('.timeslot-note');
 
           if (note.size()) {
+            $('.timeslot-note').remove();
             note.insertBefore($('#ec-drawer'));
           }
         });
