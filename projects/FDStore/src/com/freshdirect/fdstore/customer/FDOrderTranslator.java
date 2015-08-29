@@ -127,8 +127,6 @@ public class FDOrderTranslator {
 				order.setRequestedDate(startTime.getTime());
 				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
 			}
-			deliveryInfo.setDeliveryZone(cart.getZoneInfo().getZoneCode());
-			deliveryInfo.setDeliveryRegionId(cart.getZoneInfo().getRegionId());
 			
 			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
 				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
