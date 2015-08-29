@@ -355,10 +355,12 @@ public class ErpSaleInfoDAO {
 	}
 
 	private static final String dlvSaleInfoQuery =
-		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.id = sa.sale_id and sa.action_type in ('CRO', 'MOD') "
-			+ "and sa.action_date = (select max(action_date) from cust.salesaction sa1 where sa1.action_type in ('CRO', 'MOD') and sa1.sale_id = s.id) "
-			+ "and sa.id = di.salesaction_id and s.id = ? and s.type='REG'";
+		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name, " +
+		"(SELECT 'X' FROM cust.paymentinfo pi, dlv.sale_signature sig where pi.salesaction_id = sa.id and sa.sale_id = sig.sale_id and pi.card_type = 'EBT') IS_EBT " +
+		"from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
+		"where s.id = sa.sale_id and sa.action_type in ('CRO', 'MOD') " +
+		"and sa.action_date = (select max(action_date) from cust.salesaction sa1 where sa1.action_type in ('CRO', 'MOD') and sa1.sale_id = s.id) " +
+		"and sa.id = di.salesaction_id and s.id = ? and s.type='REG'";
 
 	public static DlvSaleInfo getDlvSaleInfo(Connection conn, String saleId) throws SQLException {
 
@@ -374,7 +376,8 @@ public class ErpSaleInfoDAO {
 					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
 					rs.getString("STOP_SEQUENCE"),
 					rs.getString("FIRST_NAME"),
-					rs.getString("LAST_NAME"));
+					rs.getString("LAST_NAME"),
+					"X".equalsIgnoreCase(rs.getString("IS_EBT")));
 		}
 		rs.close();
 		ps.close();

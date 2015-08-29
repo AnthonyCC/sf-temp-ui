@@ -273,14 +273,19 @@ public class OMSController extends BaseController  {
 			order.setOrderNumber(dcorder.getOrderId());
 			try {
 			DlvSaleInfo saleInfo = DlvPaymentManager.getInstance().getSaleInfo(dcorder.getOrderId());
-			if (EnumSaleStatus.ENROUTE.equals(saleInfo.getStatus()) 
-					|| EnumSaleStatus.REDELIVERY.equals(saleInfo.getStatus()) 
-					|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())) { 
-				DlvPaymentManager.getInstance().deliveryConfirm(dcorder.getOrderId());
+
+			if(saleInfo.isEBT()){
 				order.setException("");
 			}else{
-				order.setException("Order is not in correct status to confirm");
-				partialCount++;
+				if (EnumSaleStatus.ENROUTE.equals(saleInfo.getStatus()) 
+						|| EnumSaleStatus.REDELIVERY.equals(saleInfo.getStatus()) 
+						|| EnumSaleStatus.PENDING.equals(saleInfo.getStatus())) { 
+					DlvPaymentManager.getInstance().deliveryConfirm(dcorder.getOrderId());
+					order.setException("");
+				}else{
+					order.setException("Order is not in correct status to confirm");
+					partialCount++;
+				}
 			}
 			
 			} catch (FDResourceException e) {

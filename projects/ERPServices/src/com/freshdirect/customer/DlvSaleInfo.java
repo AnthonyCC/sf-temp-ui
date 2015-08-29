@@ -18,12 +18,21 @@ public class DlvSaleInfo extends BasicSaleInfo{
 	private String address;
 	private String apartment;
 	private String zipcode;
+	private boolean isEBT;
 	
 	public DlvSaleInfo (String saleId, String erpCustomerId, EnumSaleStatus status, String stopSequence, String firstName, String lastName){
 		super(saleId,erpCustomerId, status);
 		this.stopSequence = stopSequence;
 		this.firstName = firstName;
 		this.lastName = lastName;
+	} 
+	
+	public DlvSaleInfo (String saleId, String erpCustomerId, EnumSaleStatus status, String stopSequence, String firstName, String lastName, boolean isEBT){
+		super(saleId,erpCustomerId, status);
+		this.stopSequence = stopSequence;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.isEBT = isEBT;
 	} 
 	
 	public String getStopSequence(){
@@ -60,5 +69,13 @@ public class DlvSaleInfo extends BasicSaleInfo{
 	
 	public void setApartment(String apartment){
 		this.apartment = apartment;
+	}
+
+	public boolean isEBT() {
+		return isEBT;
+	}
+
+	public void setEBT(boolean isEBT) {
+		this.isEBT = isEBT;
 	}
 }
