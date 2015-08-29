@@ -117,7 +117,7 @@ public class ClickToCallUtil {
 					address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
 				}
 				if(null != address){
-					FDDeliveryZoneInfo dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, user.getHistoricOrderSize(), null);
+					FDDeliveryZoneInfo dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, user.getHistoricOrderSize(), user.getRegionSvcType(address.getId()));
 					if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
 						List dlvZonesList =Arrays.asList(dlvZones);
 						if(dlvZonesList.contains(dlvZoneInfo.getZoneCode())){
@@ -201,7 +201,7 @@ public class ClickToCallUtil {
 				FDDeliveryZoneInfo zoneInfo = null;
 				try{
 					zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, begCal.getTime(), 
-						user.getHistoricOrderSize(), null);
+						user.getHistoricOrderSize(), user.getRegionSvcType(address.getId()));
 				}catch(FDInvalidAddressException ie){
 					throw new FDResourceException(ie);
 				}

@@ -356,7 +356,7 @@ public class FDCustomerManager {
 		if(address != null) {
 			Date day = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
 			try {
-					user.getShoppingCart().setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, day,user.getHistoricOrderSize(), null));
+					user.getShoppingCart().setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, day,user.getHistoricOrderSize(), user.getRegionSvcType(address.getId())));
 			} catch (FDInvalidAddressException e) {
 					LOGGER.info("Encountered InvalidAddressException while getting zoneInfo for address: "
 						+ address.getAddress1() 

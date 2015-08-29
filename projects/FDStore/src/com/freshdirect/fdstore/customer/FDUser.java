@@ -1997,12 +1997,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 				else if(this.getAddress()!=null) 
 					address=new ErpAddressModel(this.getAddress());
 				
-				EnumRegionServiceType serviceType=getRegionServiceType(storeContext.getEStoreId());
 				FulfillmentContext fulfillmentContext = new FulfillmentContext();
 				ZoneInfo zoneInfo=null;
 				String pricingZoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
 				if(address!=null) {
-					FulfillmentInfo fulfillmentInfo=getFulfillmentInfo(address,today(),getHistoricOrderSize(), serviceType);
+					FulfillmentInfo fulfillmentInfo = getFulfillmentInfo(address,today(), getHistoricOrderSize());
 					fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);
 					fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
 					zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
@@ -3005,19 +3004,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return d;
 	}
-	private EnumRegionServiceType getRegionServiceType(EnumEStoreId eStore) {
-		
-		EnumRegionServiceType serviceType=EnumRegionServiceType.HYBRID;
-		if(EnumEStoreId.FDX.equals(eStore))
-			serviceType=EnumRegionServiceType.FDX;
-		return serviceType;
-	}
-	private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address,	Date today, CustomerAvgOrderSize historicOrderSize, EnumRegionServiceType serviceType) {
+	
+	private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address,	Date today, CustomerAvgOrderSize historicOrderSize) {
 		
 		FulfillmentInfo fulfillmentInfo=null;
 		
 		try {
-			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), null);
+			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()));
 			if(deliveryZoneInfo!=null)
 				fulfillmentInfo=deliveryZoneInfo.getFulfillmentInfo();
 			
