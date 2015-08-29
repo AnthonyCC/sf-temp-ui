@@ -563,12 +563,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
 		+ " and m.sap_id like ? order by m.description";*/
 			
-			"select m.skucode, m.version, m.sap_id, p.unavailability_status,"
-			+ " p.unavailability_date, p.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
-	        	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, "
-			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days  "
-			+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
-			+ " where p.mat_id = m.id and mp.mat_id = m.id"
+			"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
+			+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
+	        	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,"
+			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days, p.plant_id"
+			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
+			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id"
 			+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
 			+ " and m.sap_id like ? order by m.sap_id";
 
@@ -606,8 +606,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
 	+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, " 
-	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel "
-	+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms "
+	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION,p.platter,p.blocked_days, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, p.plant_id  "
+	+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.id=ms.mat_id "
 	+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
 	+ " and m.description like ?"
@@ -657,6 +657,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
             	matPrices = new ArrayList<ErpMaterialPrice>(5);
             	matPlants = new HashSet<ErpPlantMaterialInfo>(5);
             	matSalesAreas = new HashSet<ErpMaterialSalesAreaInfo>(5);
+        	} else {
+        		System.out.println("continue... "+rs.getString("sap_id"));
+        		continue;
         	}
 
         	String skuCode = rs.getString("skucode");
@@ -674,15 +677,22 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id"), rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")));
         	
         	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,  rs.getString("plant_id")));
-        	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
+        	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
         	
         	if(newSapId){
-        	products.add(new ErpProductInfoModel(
-                	skuCode,version,
-                	matNos.toArray(new String[0]),
-                	descr,
-                	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
-                	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0])));
+        		products.add(
+        				new ErpProductInfoModel(
+		                	skuCode,
+		                	version,
+		                	matNos.toArray(new String[0]),
+		                	descr,
+		                	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
+		                	upc,
+		                	matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),
+		                	matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0])
+		                )
+        		);
+        		newSapId = false;
         	}
         }
 
@@ -734,12 +744,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				" and (m.upc = ? or '0' || M.UPC = ?)"
 	    + " and m.version = (select max(version) from erps.material where upc = ? or '0' || upc = ?)";*/
 			
-			"select m.skucode, m.version, m.sap_id, p.unavailability_status, p.unavailability_date, "
-			+ " p.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
+			"select m.skucode, m.version, m.sap_id, ms.unavailability_status, ms.unavailability_date, "
+			+ " ms.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
-			+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc  "
-			+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
-			+ " where p.mat_id = m.id and mp.mat_id = m.id " +
+			+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
+	        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id   "
+			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms "
+			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id" +
 					" and (m.upc = ? or '0' || M.UPC = ?)"
 		    + " and m.version = (select max(version) from erps.material where upc = ? or '0' || upc = ?)";
 
