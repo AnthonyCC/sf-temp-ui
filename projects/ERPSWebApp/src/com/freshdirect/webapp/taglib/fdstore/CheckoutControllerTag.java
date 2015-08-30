@@ -255,7 +255,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 						// create case here
 					}
 					
-					if ( !outcome.equals( Action.ERROR ) ) { //only clear these if there's no error on submit
+					if ( !outcome.equalsIgnoreCase( Action.ERROR ) ) { //only clear these if there's no error on submit
 						session.removeAttribute( "makeGoodOrder" );
 						session.removeAttribute( "referencedOrder" );
 						session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
