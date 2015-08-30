@@ -5,7 +5,7 @@
 <%@ attribute name="section" type="com.freshdirect.fdstore.content.CMSSectionModel" required="false" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <div class="moduleGreeting">
-<c:forEach var="component" items="${section.components}">
+<%-- <c:forEach var="component" items="${section.components}">
 	<div>
 	<c:if test="${component.componentType eq 'TEXT'}">
 		${component.text}	
@@ -14,5 +14,16 @@
 		<a href="${component.url}">${component.text}</a>
 	</c:if>
 	</div>	
-</c:forEach>
+</c:forEach> --%>
+<div>
+	
+		${section.captionText}	
+		<br>
+		${section.headlineText}
+		<br>
+		${section.bodyText}	
+		<br>
+		<a href="${section.linkURL}">${section.linkText}</a>
+	
+	</div>	
 </div>
