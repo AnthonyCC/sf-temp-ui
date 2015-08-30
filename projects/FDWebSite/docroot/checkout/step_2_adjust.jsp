@@ -8,7 +8,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 if (user.getShoppingCart().containsDlvPassOnly()) {
 	redir = "/checkout/view_cart.jsp";
 }
-else if (!user.isOrderMinimumMet()) {
+else if (!user.isOrderMinimumMet() && user.getMasqueradeContext() == null) {
 	redir = "/checkout/view_cart.jsp";
 	String isEBT = request.getParameter("ebt");
 	if("true".equals(isEBT)){

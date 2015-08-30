@@ -57,7 +57,7 @@ public class AvailabilityService {
         }
         if (cart.containsDlvPassOnly()) {
             errorMessage = "Your cart contains only delivery pass item(s).";
-        } else if (!user.isOrderMinimumMet()) {
+        } else if (!user.isOrderMinimumMet() && user.getMasqueradeContext() == null) {
             if (!isEbt) {
                 errorMessage = "Because some items were unavailable for delivery at the time you selected, they've been removed from your cart."
                         + " Unfortunately this means that your order total has been adjusted and falls below our $" + (int) user.getMinimumOrderAmount()
