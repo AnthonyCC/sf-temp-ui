@@ -143,12 +143,11 @@ public class CMSContentFactory {
 		//if preview load from cms db, else read from erps feed table.
 		if(pageRequest.isPreview()){
 			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"));
-			contentNodes = getContentService().getContentNodes(keys);
+			contentNodesMap = getContentService().getContentNodes(keys);
 		} else {
 			String data = getFeedContent();
 			if(StringUtils.isNotBlank(data)){
-				contentNodesMap = loadNodesFromXMLString(data);
-				//this.contentNodesMap = contentNodes;
+				contentNodesMap = loadNodesFromXMLString(data);				
 			} 
 		}
 		if(contentNodesMap != null && !contentNodesMap.isEmpty()){
@@ -185,7 +184,7 @@ public class CMSContentFactory {
 			webPage.setTitle((String)contentNode.getAttributeValue("PAGE_TITLE"));
 			webPage.setSeoMetaDescription((String)contentNode.getAttributeValue("SEO_META_DESCRIPTION"));
 			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
-			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule");
+			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule", request);
 			
 			boolean matchingSchedule = isSchedulesMatches(schedules, request);
 			if(!matchingSchedule){
@@ -212,10 +211,10 @@ public class CMSContentFactory {
 			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");		
 			if(CollectionUtils.isNotEmpty(sectionKeys)){
 				for(ContentKey sectionKey: sectionKeys){
-					ContentNodeI sectionNode = getContentNodeByKey(sectionKey);
+					ContentNodeI sectionNode = getContentNodeByKey(sectionKey, request);
 					CMSSectionModel section = new CMSSectionModel();
 					if(sectionNode!=null){
-					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"));
+					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
 					}
 					if(isSchedulesMatches(schedules, request) && sectionNode!=null){
 						section.setName((String)sectionNode.getAttributeValue("name"));
@@ -230,7 +229,7 @@ public class CMSContentFactory {
 						section.setLinkType((String)sectionNode.getAttributeValue("linkType"));
 						section.setLinkURL((String)sectionNode.getAttributeValue("linkURL"));
 						if(sectionNode.getAttributeValue("imageBanner")!=null)
-						section.setImageBanner(createImageBanner((ContentNodeI)getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"))));						
+						section.setImageBanner(createImageBanner((ContentNodeI)getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));						
 						List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");
 						List<ContentKey> categoryKeys = getContentKeysList(sectionNode, "category");
 						List<ContentKey> pickListKeys = getContentKeysList(sectionNode, "pickList");
@@ -253,7 +252,7 @@ public class CMSContentFactory {
 						}	
 						if(pickListKeys != null){
 							for(ContentKey key:pickListKeys){
-								pickListList.add((CMSPickListModel) createPickList((ContentNodeI)getContentNodeByKey(key), request));
+								pickListList.add((CMSPickListModel) createPickList((ContentNodeI)getContentNodeByKey(key, request), request));
 							}
 							if(pickListList!=null && pickListList.size()>0)
 							section.setPickList(pickListList);
@@ -282,7 +281,7 @@ public class CMSContentFactory {
 			List<ContentKey> componentKeys = getContentKeysList(sectionNode,"SectionComponent");
 			if(CollectionUtils.isNotEmpty(componentKeys)){
 				for(ContentKey componentKey: componentKeys){
-					ContentNodeI componentNode = getContentNodeByKey(componentKey);
+					ContentNodeI componentNode = getContentNodeByKey(componentKey, request);
 					if("Anchor".equals(componentKey.getType().getName())){
 						addComponentsToSection(components,createAnchor(componentNode));
 					} else if("TextComponent".equals(componentKey.getType().getName())){
@@ -295,7 +294,7 @@ public class CMSContentFactory {
 						CMSPickListModel pickList = (CMSPickListModel) createPickList(componentNode, request);
 						addComponentsToSection(components,pickList);
 					} else if("ImageBanner".equals(componentKey.getType().getName())){
-						addComponentsToSection(components,createImageBanner(componentNode));
+						addComponentsToSection(components,createImageBanner(componentNode, request));
 					} else {
 						//Send as raw component with id.
 						addComponentsToSection(components,createGenericComponent(componentKey));
@@ -320,7 +319,7 @@ public class CMSContentFactory {
 		}
 	}
 			
-	public List<CMSAnchorModel> createAnchor(List<ContentKey> keys){
+	/*public List<CMSAnchorModel> createAnchor(List<ContentKey> keys){
 		List<CMSAnchorModel> anchors = null;
 		if(keys != null){
 			anchors = new ArrayList<CMSAnchorModel>();
@@ -329,7 +328,7 @@ public class CMSContentFactory {
 			}
 		}
 		return anchors;
-	}
+	}*/
 	
 	public CMSAnchorModel createAnchor(ContentNodeI componentNode){
 		CMSAnchorModel anchor = new CMSAnchorModel();
@@ -344,7 +343,7 @@ public class CMSContentFactory {
 		return anchor;
 	}
 	
-	private CMSImageBannerModel createImageBanner(ContentNodeI componentNode) {
+	private CMSImageBannerModel createImageBanner(ContentNodeI componentNode, CMSPageRequest request) {
 		CMSImageBannerModel banner = null;
 		if(componentNode != null){
 			banner = new CMSImageBannerModel();
@@ -352,7 +351,7 @@ public class CMSContentFactory {
 			banner.setName((String)componentNode.getAttributeValue("Name"));
 			banner.setDescription((String)componentNode.getAttributeValue("Description"));
 			banner.setType((String)componentNode.getAttributeValue("Type"));
-			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
+			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage"), request));
 			banner.setTarget(getEncodedContentKey(componentNode,"Target"));
 			banner.setLinkOneTarget(getEncodedContentKey(componentNode,"linkOneTarget"));
 			banner.setLinkOneText((String)componentNode.getAttributeValue("linkOneText"));
@@ -368,13 +367,13 @@ public class CMSContentFactory {
 
 	public CMSPickListItemModel createPickList(String pickListName, CMSPageRequest request){
 		ContentKey contentKey = new ContentKey(ContentType.get("CMSPickList"), pickListName);
-		return createPickList(getContentNodeByKey(contentKey), request);
+		return createPickList(getContentNodeByKey(contentKey, request), request);
 	}
 	
-	public CMSImageModel createImage(ContentKey key){
+	public CMSImageModel createImage(ContentKey key, CMSPageRequest request){
 		CMSImageModel image = new CMSImageModel();
 		if(key!=null){
-		ContentNodeI contentNode = getContentNodeByKey(key);
+		ContentNodeI contentNode = getContentNodeByKey(key, request);
 		if(contentNode != null){
 			image.setPath(getMediaPath((String)contentNode.getAttributeValue("path")));
 			image.setHeight((Integer)contentNode.getAttributeValue("height"));
@@ -388,7 +387,7 @@ public class CMSContentFactory {
 		if(contentNode != null){
 			if("PickList".equals(contentNode.getKey().getType().getName())){
 				CMSPickListModel pickList = null;
-				List<CMSScheduleModel> schedule = createSchedule(getContentKeysList(contentNode,"PickListSchedule"));
+				List<CMSScheduleModel> schedule = createSchedule(getContentKeysList(contentNode,"PickListSchedule"), request);
 				if(isSchedulesMatches(schedule, request)){
 					pickList = new CMSPickListModel();
 					pickList.setComponentType(CMSComponentType.PICKLIST);
@@ -415,7 +414,7 @@ public class CMSContentFactory {
 						pickList.setCategories(categoryList);
 					}
 					if(pickListMedia != null){
-						pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia)));
+						pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia, request), request));
 					}
 					pickList.setItems(createPickList(getContentKeysList(contentNode,"PickListPickListItem"), request));
 				} 
@@ -436,30 +435,30 @@ public class CMSContentFactory {
 		if(CollectionUtils.isNotEmpty(keys)){
 			pickListItems = new ArrayList<CMSPickListItemModel>();
 			for(ContentKey key:keys){
-				ContentNodeI contentNode = getContentNodeByKey(key);
+				ContentNodeI contentNode = getContentNodeByKey(key, request);
 				pickListItems.add(createPickList(contentNode,request));
 			}
 		}
 		return pickListItems;
 	}
 
-	public List<CMSScheduleModel> createSchedule(ContentNodeI contentNode, String scheduleAttributeName) {
+	public List<CMSScheduleModel> createSchedule(ContentNodeI contentNode, String scheduleAttributeName, CMSPageRequest request) {
 		List<CMSScheduleModel> schedules = null;
 		if(contentNode != null ){
 			List<ContentKey> contentKeys =  getContentKeysList(contentNode, scheduleAttributeName);
-			schedules = createSchedule(contentKeys);
+			schedules = createSchedule(contentKeys, request);
 		}
 		return schedules;
 	}
 	
-	private List<CMSScheduleModel> createSchedule(List<ContentKey> contentKeys) {
+	private List<CMSScheduleModel> createSchedule(List<ContentKey> contentKeys, CMSPageRequest request) {
 		List<CMSScheduleModel> schedules = null;
 		if(CollectionUtils.isNotEmpty(contentKeys)){
 			schedules = new ArrayList<CMSScheduleModel>();
 			for(ContentKey contentKey: contentKeys){
 				try{
 					if(contentKey.getType().equals(ContentType.get("Schedule"))){
-						ContentNodeI scheduleNode = getContentNodeByKey(contentKey);
+						ContentNodeI scheduleNode = getContentNodeByKey(contentKey, request);
 						CMSScheduleModel schedule = new CMSScheduleModel();
 						schedule.setDay((String)scheduleNode.getAttributeValue("Day"));
 						schedule.setStartDate((Date)scheduleNode.getAttributeValue("StartDate"));
@@ -476,14 +475,18 @@ public class CMSContentFactory {
 		return schedules;
 	}
 	
-	public ContentNodeI getContentNodeByKey(ContentKey key){
+	public ContentNodeI getContentNodeByKey(ContentKey key, CMSPageRequest request){
 		ContentNodeI contentNodeI = null;
-		try{
-			//contentNodeI =  getContentService().getContentNode(key);
-			if(contentNodesMap != null && !contentNodesMap.isEmpty()){
-				for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
-					if(contentNodeEntry.getKey().equals(key)){
-						contentNodeI = contentNodeEntry.getValue();
+		try {
+			if (request.isPreview()) {
+				contentNodeI = getContentService().getContentNode(key);
+			} else {
+				if (contentNodesMap != null && !contentNodesMap.isEmpty()) {
+					for (Entry<ContentKey, ContentNodeI> contentNodeEntry : contentNodesMap
+							.entrySet()) {
+						if (contentNodeEntry.getKey().equals(key)) {
+							contentNodeI = contentNodeEntry.getValue();
+						}
 					}
 				}
 			}

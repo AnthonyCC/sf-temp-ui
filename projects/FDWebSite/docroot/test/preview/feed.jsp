@@ -11,13 +11,14 @@
 	<body>
 		
 		<%
-			CMSContentFactory factory = CMSContentFactory.getInstance();
+			//CMSContentFactory factory = CMSContentFactory.getIn7stance();
+			CMSContentFactory factory = new CMSContentFactory();
 			CMSPageRequest pageRequest = new CMSPageRequest();
 			String pageName = request.getParameter("pageName") != null ? request.getParameter("pageName") : "Feed";
 			String date = request.getParameter("dateTime");
 			pageRequest.setRequestedDate(new Date());
 			pageRequest.setPageType(pageName);
-			pageRequest.setPreview(request.getParameter("preview") != null);
+			pageRequest.setPreview(true);
 			pageRequest.setIgnoreSchedule(request.getParameter("ignoreSchedule") != null);
 			List<CMSWebPageModel> pages = factory.getCMSPageByParameters(pageRequest);
 		%>
@@ -27,31 +28,28 @@
 			<form action="">
 				Name: <input name="pageName" type="text" value="Feed"/>
 				Date: <input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
-				Preview: <input name="preview" type="checkbox"/>
-				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
+<!-- 				Preview: <input name="preview" type="checkbox" value="true"/>
+ -->				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
 				<input type="submit"/>			
 			</form>
 		</div>
 		<div id="moduleContainer" style="width:30%">
 		<c:forEach var="page" items="${pages}">
 		<c:forEach var="section" items="${page.sections}">
-			<c:if test="${section.type eq 'PeakAhead'}">
-				<fd:PeekAheadPreviewTag section="${section}"/>
-			</c:if>
-			<c:if test="${section.type eq 'Essentials'}">
-				<fd:EssentialsPreviewTag section="${section}"/>
-			</c:if>
-			<c:if test="${section.type eq 'Greeting'}">
+			<c:if test="${section.displayType eq 'Greeting'}">
 				<fd:GreetingPreviewTag section="${section}"/>
 			</c:if>
-			<c:if test="${section.type eq 'Trending'}">
-				<fd:TrendingPreviewTag section="${section}"/>
-			</c:if>
-			<c:if test="${section.type eq 'FeaturedCategoryLevel'}">
+			<c:if test="${section.displayType eq 'HorizontalPickList'}">
+				<fd:EssentialsPreviewTag section="${section}"/>
+			</c:if> 
+			<c:if test="${section.displayType eq 'VerticalPickList'}">
 				<fd:FeaturedCategoryPreviewTag section="${section}"/>
 			</c:if>
-			<c:if test="${section.type eq 'FeaturedProductLevel'}">
+			<c:if test="${section.displayType eq 'FeaturedProduct'}">
 				<fd:FeaturedProductPreviewTag section="${section}"/>
+			</c:if> 
+			<c:if test="${section.displayType eq 'ShortBanner'}">
+				<fd:TrendingPreviewTag section="${section}"/>
 			</c:if>
 		</c:forEach>
 		<div style="height:2px;"><br/></div>
