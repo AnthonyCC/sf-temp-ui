@@ -478,7 +478,7 @@ public class CMSContentFactory {
 	public ContentNodeI getContentNodeByKey(ContentKey key, CMSPageRequest request){
 		ContentNodeI contentNodeI = null;
 		try {
-			if (request.isPreview()) {
+			if (request.isPreview() || key.getType().toString().equals("Image")) {
 				contentNodeI = getContentService().getContentNode(key);
 			} else {
 				if (contentNodesMap != null && !contentNodesMap.isEmpty()) {
