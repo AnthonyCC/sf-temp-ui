@@ -28,6 +28,8 @@ import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
+import com.freshdirect.mobileapi.catalog.model.CatalogKey;
 import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.controller.data.AllProductsResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
@@ -239,7 +241,14 @@ public class BrowseController extends BaseController {
 	        } else if(ACTION_GET_CATALOG_KEY_FOR_ADDRESS.equals(action)){
 
 	        	CatalogKeyResult res = new CatalogKeyResult();
-	        	res.setKey(BrowseUtil.getCatalogInfo(requestMessage, user, request).getKey().toString());
+	        	
+	        	CatalogInfo ci = BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	CatalogId cid = ci.getKey();
+	        	CatalogKey ck = new CatalogKey();
+	        	ck.seteStore(cid.geteStore());
+	        	ck.setPlantId(Long.parseLong(cid.getPlantId()));
+	        	ck.setPricingZone(cid.getPricingZone());
+	        	res.setKey(ck.toString());
 	        	setResponseMessage(model, res, user);
 	        	return model;
 	        	/*
