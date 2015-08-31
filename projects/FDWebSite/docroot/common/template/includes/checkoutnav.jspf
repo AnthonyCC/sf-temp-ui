@@ -177,7 +177,7 @@ String step2link = response.encodeURL("/checkout/step_2_select.jsp");
 String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
 %>
 
-<%if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), (FDUserI)session.getAttribute(SessionName.USER)) && !modOrder && !standingOrder){%>
+<%if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), (FDUserI)session.getAttribute(SessionName.USER)) && !modOrder && !standingOrder && user.getMasqueradeContext() == null){%>
 	<div class="globalNavigation">
 		<div class="menu only-text-skin green-skin">
 			New user? Sign Up required.
