@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -63,9 +64,16 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		if (cartCurrent == null) {
 			cartCurrent = new FDCartModel();
 		}
+		cartCurrent.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
+		delPlantInfo.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
+		delPlantInfo.setSalesOrg(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
+		delPlantInfo.setDistChannel(user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+		cartCurrent.setDeliveryPlantInfo(delPlantInfo);
+		
 		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
 		cartCurrent.setUserContextToOrderLines(user.getUserContext());
-
+		cartCurrent.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
 		FDCartModel cartMerged = new FDCartModel( cartCurrent );
 		cartMerged.mergeCart( cartSaved );
 		cartMerged.sortOrderLines();

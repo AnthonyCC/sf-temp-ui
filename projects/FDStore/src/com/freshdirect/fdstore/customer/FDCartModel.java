@@ -345,6 +345,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		setDeliveryAddress(cart.deliveryAddress);
 		setDeliveryPlantInfo(cart.deliveryPlantInfo);
 		setPaymentMethod(cart.paymentMethod);
+		setEStoreId(cart.getEStoreId());
 	}
 
 	

@@ -905,56 +905,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		//return user;
 	}
 
-	/**
-	 * @param address
-	 * @param zoneInfo
-	 * @return
-	 */
-	private FDUserI setDeliveryAddressInternal(ErpAddressModel address,
-			FDDeliveryZoneInfo zoneInfo, boolean setServiceType) throws FDResourceException{
-		final FDCartModel cart = getCart();
-		final FDUserI user = this.getUser();
-		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
-		if(address!=null && !address.equals(cart.getDeliveryAddress()) && _zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()) ) {
-			cart.setZoneInfo( zoneInfo );
-			cart.setDeliveryAddress( address );
-			user.resetUserContext();
-			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-			
-			if (!cart.isEmpty()) {
-				for (FDCartLineI cartLine : cart.getOrderLines()) {
-					cartLine.setUserContext(user.getUserContext());
-					
-				}
-			}
-			try {
-				cart.refreshAll(true);
-			} catch (FDInvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			cart.setZoneInfo( zoneInfo );
-			cart.setDeliveryAddress( address );
-		}
-		
-		cart.setZoneInfo( zoneInfo );
-		cart.setDeliveryAddress( address );
-
-		//user.getUserContext().getFulfillmentContext().setPlantId("1000");
-		//user.getUserContext().setPricingContext(new PricingContext(new ZoneInfo(user.getUserContext().getPricingContext().getZoneInfo().getPricingZoneId(),"1000","1000")));
-		
-		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
-
-		// store service type except for depot locations
-		if (setServiceType)
-			user.setSelectedServiceType( address.getServiceType() );
-		user.setShoppingCart( cart );
-		//cart.doCleanup();
-		session.setAttribute( SessionName.USER, user );
-		return user;
-	}
-
 	private static void setSODeliveryAddress(FDUserI user, HttpSession session, ErpAddressModel address, FDDeliveryZoneInfo zoneInfo, String pk) throws FDResourceException {
 		setDeliveryAddressInternal(user, session, user.getShoppingCart(), address, zoneInfo, true);
 		FDStandingOrder so = user.getCurrentStandingOrder();
