@@ -62,7 +62,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 					if(null != orderLines && !orderLines.isEmpty()){
 						
 						for (final FDCartLineI cartLine : orderLines) {
-							if(contentKeys.size() > 0)
+							if(contentKeys.size() > 0 || null !=dcpdData.get(EnumDCPDContentType.BRAND))
 								allowORdeny = evaluate(cartLine, promotionCode, context);
 							if(PromotionStrategyI.ALLOW != allowORdeny){
 								Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
