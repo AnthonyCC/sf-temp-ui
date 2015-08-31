@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -37,7 +38,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     
     public static final String ACTION_SET_EMAIL_PREFERENCE = "changeEmailPreferenceLevel";
 
-
+    public static final String KEY_RETURNED_SAVED_ADDRESS = "KEY_SAVED_ADDRESS";
+    
     public RegistrationControllerTagWrapper(FDUserI user) {
         super(new RegistrationControllerTag(), user);
     }
@@ -208,7 +210,12 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
 
         getWrapTarget().setActionName(ACTION_ADD_DELIVERY_ADDRESS);
         setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
+        
+        ResultBundle rb = new ResultBundle(executeTagLogic(), this);
+        ErpAddressModel eam = ((RegistrationControllerTag) getWrapTarget()).getLastSavedAddressModel();
+        rb.addExtraData(KEY_RETURNED_SAVED_ADDRESS, eam);
+        return rb;
+//        return new ResultBundle(executeTagLogic(), this);
     }
 
     public ResultBundle editDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {

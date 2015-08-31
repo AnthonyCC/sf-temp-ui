@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -34,10 +36,12 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -437,7 +441,19 @@ public class RegistrationController extends BaseController {
 	
 	        Message responseMessage = null;
 	        if (result.isSuccess()) {
-	            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+	        	ErpAddressModel eam = (ErpAddressModel)resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
+		        
+		        List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
+		        ShipToAddress newelyAdded = null;
+		        for(ErpAddressModel toCheck : addresses){
+		        	if(DeliveryAddressManipulator.matchAddress(toCheck, eam)){
+		        		newelyAdded = ShipToAddress.wrap(toCheck);
+		        		break;
+		        	}
+		        }
+		        responseMessage = new AddAddressResponse();
+		        ((AddAddressResponse)responseMessage).setAddedAddress(newelyAdded);
+		        
 	        } else {
 	            responseMessage = getErrorMessage(result, request);
 	        }

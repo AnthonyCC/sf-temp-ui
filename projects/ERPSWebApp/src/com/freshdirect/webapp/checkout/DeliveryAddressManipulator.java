@@ -130,7 +130,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		session.setAttribute( SessionName.USER, user );
 	}
 
-	public void performAddDeliveryAddress() throws FDResourceException {
+	public ErpAddressModel performAddDeliveryAddress() throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
 		FDCartModel cart =  user.getShoppingCart();
 		String actionName = getActionName();
@@ -144,21 +144,21 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			addressForm.validateForm(result);
 		
 		if (!result.isSuccess()){
-			return;
+			return null;
 		}
 		
 		ErpAddressModel erpAddress = addressForm.getErpAddress();
 		AddressModel deliveryAddressModel = addressForm.getDeliveryAddress();
 		deliveryAddressModel.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 		
-		performAddDeliveryAddress(user, session, result, cart, actionName, erpAddress, deliveryAddressModel);
+		return performAddDeliveryAddress(user, session, result, cart, actionName, erpAddress, deliveryAddressModel);
 	}
 	
-	public static void performAddDeliveryAddress(FDSessionUser user, HttpSession session, ActionResult result,FDCartModel cart,String actionName,ErpAddressModel erpAddressModel, AddressModel deliveryAddressModel) throws FDResourceException {
+	public static ErpAddressModel performAddDeliveryAddress(FDSessionUser user, HttpSession session, ActionResult result,FDCartModel cart,String actionName,ErpAddressModel erpAddressModel, AddressModel deliveryAddressModel) throws FDResourceException {
 		// call common delivery address check
 		ErpAddressModel erpAddress = checkDeliveryAddressInForm(user, result, session, cart, actionName, erpAddressModel,deliveryAddressModel);
 		if (erpAddress == null) {
-			return;
+			return null;
 		}
 
 		try {
@@ -174,11 +174,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			 * user.setSelectedServiceType(erpAddress.getServiceType()); }
 			*/
 			user.invalidateAllAddressesCaches();
-			
 		} catch (ErpDuplicateAddressException ex) {
 			LOGGER.warn("AddressUtil:addShipToAddress(): ErpDuplicateAddressException caught while trying to add a shipping address to the customer info:", ex);
 			result.addError(new ActionError("duplicate_user_address", "The information entered for this address matches an existing address in your account."));
 		}
+		return erpAddress;
 	}
 	
 	public void performAddAndSetDeliveryAddress() throws FDResourceException {
@@ -274,7 +274,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 
-	private static boolean matchAddress(ErpAddressModel addr1, ErpAddressModel addr2) {
+	public static boolean matchAddress(ErpAddressModel addr1, ErpAddressModel addr2) {
 		if (addr1 == null || addr2 == null)
 			return false;
 		if (addr1.getAddress1() != null && addr1.getAddress1().equalsIgnoreCase(addr2.getAddress1())

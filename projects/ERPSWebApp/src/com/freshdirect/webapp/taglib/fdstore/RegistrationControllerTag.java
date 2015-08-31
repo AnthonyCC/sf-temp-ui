@@ -74,6 +74,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	private boolean signupFromCheckout;
 	private int registrationType;
 
+	private ErpAddressModel lastSavedAddressModel;
+	
 	public void setFraudPage(String s) {
 		this.fraudPage = s;
 	}
@@ -88,6 +90,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 	public void setRegistrationType(int registrationType) {
 		this.registrationType = registrationType;
+	}
+	
+	public ErpAddressModel getLastSavedAddressModel(){
+		return lastSavedAddressModel;
 	}
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) {
@@ -194,11 +200,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 			} else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
-				m.performAddDeliveryAddress();
+				lastSavedAddressModel = m.performAddDeliveryAddress();
 
 			} else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
-				m.performAddDeliveryAddress();
+				lastSavedAddressModel = m.performAddDeliveryAddress();
 				FDIdentity identity = getIdentity();
 				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
 				// Made changed for address checking
