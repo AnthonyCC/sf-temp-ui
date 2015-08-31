@@ -157,7 +157,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         PreparedStatement ps =null;
         try {
             conn = getConnection();
-            ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
+//            ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
+            ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, m.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ?) and h.version=m.version");
             ps.setString(1, sku);
             ps.setString(2, sku);
             rs= ps.executeQuery();
@@ -196,6 +197,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.days_fresh=rs.getString(9);
 		p.days_in_house=rs.getString(10);
 		p.sustainabilityRating=rs.getString(11);
+		p.materialId=id;
 		this.loadChildren(conn, p, id);
 
 		VersionedPrimaryKey vpk = new VersionedPrimaryKey(id, version, p);
@@ -204,7 +206,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 	}
 
 	private void loadChildren(Connection conn, ErpProductPayload p, String id) throws SQLException {
-		PreparedStatement ps2 = conn.prepareStatement("select id, mat_id from erps.materialproxy where product_id = ?");
+		/*PreparedStatement ps2 = conn.prepareStatement("select id, mat_id from erps.materialproxy where product_id = ?");
 		ps2.setString(1, id);
 		ResultSet rs2 = ps2.executeQuery();
 		
@@ -218,11 +220,13 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.materialId = rs2.getString(2);
 		
 		rs2.close();
-		ps2.close();
+		ps2.close();*/
 		
-		p.hiddenSalesUnitRefs = new SalesUnitReferences(mpxId);
+//		p.hiddenSalesUnitRefs = new SalesUnitReferences(mpxId);
+		p.hiddenSalesUnitRefs = new SalesUnitReferences(id);
 		p.hiddenSalesUnitRefs.load(conn);
-		p.hiddenCharValueRefs = new CharValueReferences(mpxId);
+//		p.hiddenCharValueRefs = new CharValueReferences(mpxId);
+		p.hiddenCharValueRefs = new CharValueReferences(id);
 		p.hiddenCharValueRefs.load(conn);
 	}
 
@@ -230,7 +234,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         Connection conn = null;
         try {
             conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
+//            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
+            PreparedStatement ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, m.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ? and m.version=?) and h.version=m.version");
 
             ps.setString(1, sku);
             ps.setInt(2, version);
@@ -491,7 +496,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 
 	private static class SalesUnitReferences extends PersistentReferences {
 		public SalesUnitReferences() {
-			super("ERPS.MATERIALPROXY_SALESUNIT", "MATPROXY_ID", "SALESUNIT_ID");
+//			super("ERPS.MATERIALPROXY_SALESUNIT", "MATPROXY_ID", "SALESUNIT_ID");
+			super("ERPS.SALESUNIT", "MAT_ID", "ID");
 		}
 
 		public SalesUnitReferences(String parentId) {
@@ -502,7 +508,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 
 	private static class CharValueReferences extends PersistentReferences {
 		public CharValueReferences() {
-			super("ERPS.MATERIALPROXY_CHARVALUE", "MATPROXY_ID", "CV_ID");
+//			super("ERPS.MATERIALPROXY_CHARVALUE", "MATPROXY_ID", "CV_ID");
+			super("ERPS.CHARVALUE CV, ERPS.CHARACTERISTIC CH, ERPS.CLASS C, ERPS.MATERIAL_CLASS MC", "CV.CHAR_ID=CH.ID AND CH.CLASS_ID=C.ID AND C.ID=MC.CLASS_ID AND MC.MAT_ID", "CV.ID");
 		}
 
 		public CharValueReferences(String parentId) {
