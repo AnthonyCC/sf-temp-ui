@@ -872,7 +872,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			throws FDResourceException {
 		
 		FDDeliveryZoneInfo _zoneInfo=cart.getZoneInfo();
-		if(address!=null && !address.equals(cart.getDeliveryAddress()) && _zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()) ) {
+		if(address!=null && !address.equals(cart.getDeliveryAddress()) &&
+				((_zoneInfo!=null && zoneInfo!=null && !_zoneInfo.getZoneCode().equals(zoneInfo.getZoneCode()))||(_zoneInfo==null && zoneInfo!=null)) ) {
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
 			user.resetUserContext();
