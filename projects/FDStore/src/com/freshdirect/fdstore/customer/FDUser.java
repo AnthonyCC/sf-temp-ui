@@ -149,7 +149,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private AddressModel address;
     private FDReservation reservation;
-    private FDCartModel shoppingCart = new FDCartModel();
+    private FDCartModel shoppingCart = initializeCart();
     
     //Creating a dummy cart for gift card processing.
     private FDCartModel dummyCart = new FDCartModel();
@@ -292,6 +292,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
 	}
+
+	private FDCartModel initializeCart() {
+		if(this.shoppingCart == null){
+			this.shoppingCart =  new FDCartModel();
+			this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
+		}
+		return this.shoppingCart;
+	}
+    		
 
 	public void setTsaPromoCode(String tsaPromoCode) {
 		this.tsaPromoCode = tsaPromoCode;

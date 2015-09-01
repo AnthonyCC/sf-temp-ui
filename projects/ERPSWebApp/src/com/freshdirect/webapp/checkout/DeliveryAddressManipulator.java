@@ -877,7 +877,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			cart.setDeliveryAddress( address );
 			user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-			
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
@@ -893,7 +892,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
-		
+		if(cart.getEStoreId() == null)
+			cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
+			
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 
 		// store service type except for depot locations

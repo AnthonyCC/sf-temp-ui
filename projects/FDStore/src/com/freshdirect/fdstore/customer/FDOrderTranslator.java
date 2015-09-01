@@ -136,30 +136,40 @@ public class FDOrderTranslator {
 				}else{
 					deliveryInfo.setDeliveryType(EnumDeliveryType.DEPOT);
 				}
-			} else {
-				ErpAddressModel address = cart.getDeliveryAddress();
-				if(EnumServiceType.WEB.equals(address.getServiceType())){
-					EnumWebServiceType webServiceType = address.getWebServiceType();
-					deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
-					} else { 
-						
-						if(EnumEStoreId.FDX.equals(cart.getEStoreId())) {
-							deliveryInfo.setDeliveryType(EnumDeliveryType.FDX);
-						}
-						else if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-					deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
+		} else {
+			ErpAddressModel address = cart.getDeliveryAddress();
+			if (address != null) {
+				if (EnumServiceType.WEB.equals(address.getServiceType())) {
+					EnumWebServiceType webServiceType = address
+							.getWebServiceType();
+					deliveryInfo.setDeliveryType(EnumDeliveryType
+							.getDeliveryType(webServiceType.getName()));
 				} else {
-					if (EnumServiceType.WEB.equals(address.getServiceType())){
-						EnumWebServiceType webServiceType = address.getWebServiceType();
-						deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
-					} else if (EnumServiceType.CORPORATE.equals(address.getServiceType())){
-						deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
+
+					if (EnumEStoreId.FDX.equals(cart.getEStoreId())) {
+						deliveryInfo.setDeliveryType(EnumDeliveryType.FDX);
+					} else if (EnumServiceType.CORPORATE.equals(address
+							.getServiceType())) {
+						deliveryInfo
+								.setDeliveryType(EnumDeliveryType.CORPORATE);
 					} else {
-						deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
+						if (EnumServiceType.WEB
+								.equals(address.getServiceType())) {
+							EnumWebServiceType webServiceType = address
+									.getWebServiceType();
+							deliveryInfo.setDeliveryType(EnumDeliveryType
+									.getDeliveryType(webServiceType.getName()));
+						} else if (EnumServiceType.CORPORATE.equals(address
+								.getServiceType())) {
+							deliveryInfo
+									.setDeliveryType(EnumDeliveryType.CORPORATE);
+						} else {
+							deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
+						}
 					}
 				}
 			}
-			}
+		}
 			FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 			if (zoneInfo != null) { //this may be null in express checkout flow
 				deliveryInfo.setDeliveryZone(zoneInfo.getZoneCode());
