@@ -778,6 +778,8 @@ public class Cart {
         cartDetail.setEstimatedTotal(cart.getTotal());
         cartDetail.setSubtotal(cart.getSubTotal());
 
+        double tip1 = cart.getTip();
+        
         cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTaxValue(), false, false, false, "Total Tax"));
         cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTip(), false, false, false, "Tip"));
         //cartDetail.setTax(cart.getTaxValue());
@@ -1046,10 +1048,12 @@ public class Cart {
     	if(cart instanceof FDCartModel){
         	cartDetail.setTotalSavedAmount(((FDCartModel)cart).getTotalDiscountValue());
         }
+//        if(cart instanceof FDCartModel){
+//        	cartDetail.setTip(((FDCartModel)cart).getTip());
+//        } 
         
-        if(cart instanceof FDCartModel){
-        	cartDetail.setTip(((FDCartModel)cart).getTip());
-        }
+    	cartDetail.setTip(cart.getTip());
+        
         
         if(cart.getDeliveryAddress() == null) {
         	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
