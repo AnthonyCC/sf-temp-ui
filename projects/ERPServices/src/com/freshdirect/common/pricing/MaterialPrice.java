@@ -81,6 +81,10 @@ public class MaterialPrice implements Serializable {
 			return this.price;
 	}
 	
+	public double getOriginalPrice() {
+		return this.price;
+	}
+	
 	public String getPricingUnit() {
 		return this.pricingUnit;
 	}

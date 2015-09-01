@@ -1290,7 +1290,7 @@ public class BrowseUtil {
 	    	
 	    	for(int i=0;i<mp.length;i++) {
 	    		//double price, String pricingUnit, double scaleLowerBound, double scaleUpperBound, String scaleUnit, double promoPrice
-	    		ScalePrice sp=new ScalePrice(mp[i].getPrice(),mp[i].getPricingUnit(),mp[i].getScaleLowerBound(),mp[i].getScaleUpperBound(),mp[i].getScaleUnit(),mp[i].getPromoPrice());
+	    		ScalePrice sp=new ScalePrice(mp[i].getOriginalPrice(),mp[i].getPricingUnit(),mp[i].getScaleLowerBound(),mp[i].getScaleUpperBound(),mp[i].getScaleUnit(),mp[i].getPromoPrice());
 	    		scalePrices.add(sp);
 	    	}
 	    	return scalePrices;
