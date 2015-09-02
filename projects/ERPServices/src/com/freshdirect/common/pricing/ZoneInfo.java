@@ -86,6 +86,8 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	}
 	
 	public String stringWithDelimter(String delimter){
+		if(salesOrg == null || distributionChanel == null || zoneId == null)
+			return "";
 		
 		return salesOrg + delimter + distributionChanel + delimter+ zoneId + 
 				(parent == null ? "" : (delimter + parent.stringWithDelimter(delimter)));
