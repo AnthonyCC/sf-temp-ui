@@ -94,7 +94,7 @@ public class TemplateContext extends BaseTemplateContext{
 			if(null != zones && !zones.isEmpty()){
 				for (Iterator iterator = zones.iterator(); iterator.hasNext();) {
 					String zone = (String) iterator.next();
-					PricingContext context = new PricingContext(null);//::FDX::
+					PricingContext context = new PricingContext(new ZoneInfo(zone, "0001", "01"));//Default SalesOrg info for FD.
 					pricingContexts.add(context);
 				}
 			}
@@ -999,14 +999,14 @@ public class TemplateContext extends BaseTemplateContext{
 		return rating;
 	}
 	
-	public static String getScaleDisplay(ProductModel productNode,String zoneId){
+	public static String getScaleDisplay(ProductModel productNode,ZoneInfo zoneInfo){
 		String scaleDisplay = "";
 		ProductImpression impression = new ProductImpression(productNode);
 		FDGroup group = impression.getFDGroup(); //Returns if group is associated with any sku linked to this product.
 		MaterialPrice matPrice = null;
 		if(null !=group){
 			try {
-				matPrice = GroupScaleUtil.getGroupScalePrice(group, null);//::FDX::
+				matPrice = GroupScaleUtil.getGroupScalePrice(group, zoneInfo);
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

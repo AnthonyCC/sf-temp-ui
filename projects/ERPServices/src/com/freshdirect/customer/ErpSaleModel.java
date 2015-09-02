@@ -92,7 +92,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.subTotal = order.getSubTotal();
 		this.createDate = new Date();
 		this.deliveryType = order.getDeliveryInfo().getDeliveryType();
-		this.eStoreId = order.geteStoreId(); //::FDX::order.geteStoreId();
+		this.eStoreId = order.geteStoreId(); 
 
 	}
 	/**

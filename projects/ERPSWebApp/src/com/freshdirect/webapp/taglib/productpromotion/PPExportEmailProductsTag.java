@@ -69,8 +69,9 @@ public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 		if(null !=productPromoInfoMap){			
 			List<ErpZoneMasterInfo> zoneInfoList=ErpProductPromotionUtil.getAvailablePricingZones();			
 			for (Iterator iterator = zoneInfoList.iterator(); iterator.hasNext();) {
-				ErpZoneMasterInfo zoneInfo = (ErpZoneMasterInfo) iterator.next();
-				String zoneId = zoneInfo.getSapId();
+				ErpZoneMasterInfo erpZoneInfo = (ErpZoneMasterInfo) iterator.next();
+				String zoneId = erpZoneInfo.getSapId();
+				ZoneInfo zoneInfo = new ZoneInfo(zoneId,"0001","01");
 				
 				List<FDProductPromotionInfo> skusList = productPromoInfoMap.get(new ZoneInfo(zoneId,"0001","01"));//Default SalesOrg info for FD.
 				if(null == skusList){
@@ -79,7 +80,7 @@ public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 				int i=1;
 				zoneId = zoneId.replaceFirst("0000", "");//[APPDEV-2981]-Removing the '0's from the zone id, to be consistent with what is stored in the data warehouse.
 				if(null != skusList){				
-					populateBuffer(buffer, i, zoneId, skusList,isExport);					
+					populateBuffer(buffer, i, zoneId, skusList,isExport, zoneInfo);					
 				}
 			}
 		}
@@ -93,7 +94,7 @@ public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 
 
 	private int populateBuffer(StringBuffer buffer, int i, String zoneId,
-			List<FDProductPromotionInfo> skusList,boolean isExport) throws FDResourceException {
+			List<FDProductPromotionInfo> skusList,boolean isExport, ZoneInfo zoneInfo) throws FDResourceException {
 		int featuredCount=0;
 		if(null != skusList){
 			for (Iterator iterator3 = skusList.iterator(); iterator3.hasNext();) {
@@ -145,7 +146,7 @@ public class PPExportEmailProductsTag extends AbstractGetterTag<String>{
 						ratingUrl ="<img src=\"http://www.freshdirect.com/media_stat/images/ratings/"+rating+".gif\" width=\"59\" height=\"11\" border=\"0\">";
 					}
 					appendData(isExport,buffer,D_P+i+ATTR_RATING);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,ratingUrl);appendNewLine(isExport,buffer);
-					String scaleDisplay=TemplateContext.getScaleDisplay(productModel,zoneId);
+					String scaleDisplay=TemplateContext.getScaleDisplay(productModel,zoneInfo);
 					appendData(isExport,buffer,D_P+i+ATTR_SAVE);appendData(isExport,buffer,zoneId);appendData(isExport,buffer,(null!=scaleDisplay&&!"".equals(scaleDisplay))?"SAVE! "+scaleDisplay:((productModel.getPriceCalculator().getHighestDealPercentage() > 0)?"SAVE "+(productModel.getPriceCalculator(promotionSkuModel.getSkuCode()).getHighestDealPercentage()+ "%"):""));appendNewLine(isExport,buffer);
 					StringBuilder bufSS = new StringBuilder();
 					String ratingSS = productModel.getSustainabilityRating(promotionSkuModel.getSkuCode());
