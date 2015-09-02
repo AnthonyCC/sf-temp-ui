@@ -375,7 +375,13 @@ public class CMSContentFactory {
 		if(key!=null){
 		ContentNodeI contentNode = getContentNodeByKey(key, request);
 		if(contentNode != null){
-			image.setPath(getMediaPath((String)contentNode.getAttributeValue("path")));
+				if (request.isPreview()) {
+					image.setPath(getMediaPath((String) contentNode
+							.getAttributeValue("path")));
+				} else {
+					image.setPath((String) contentNode
+							.getAttributeValue("path"));
+				}
 			image.setHeight((Integer)contentNode.getAttributeValue("height"));
 			image.setWidth((Integer)contentNode.getAttributeValue("width"));
 		}

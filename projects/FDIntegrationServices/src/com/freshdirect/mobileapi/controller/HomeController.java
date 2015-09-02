@@ -18,6 +18,9 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSPickListItemModel;
+import com.freshdirect.fdstore.content.CMSPickListModel;
+import com.freshdirect.fdstore.content.CMSSectionModel;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -34,6 +37,7 @@ import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.FeaturedCategory;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.BrowseUtil;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class HomeController extends BaseController {
 
@@ -202,7 +206,44 @@ public class HomeController extends BaseController {
 				}
 			}
 		}
+		
+		setMediaPath(pageResponse);
 		setResponseMessage(model,pageResponse,user);
 		return model;
 	}	
+	
+	private void setMediaPath(WebPageResponse pageResponse) {
+		String mediaPath = MobileApiProperties.getMediaPath();
+		if (pageResponse != null && pageResponse.getPage() != null
+				&& pageResponse.getPage().getSections() != null) {
+			for (CMSSectionModel section : pageResponse.getPage().getSections()) {
+				if (section.getImageBanner() != null
+						&& section.getImageBanner().getImage() != null
+						&& section.getImageBanner().getImage().getPath() != null) {
+					section.getImageBanner()
+							.getImage()
+							.setPath(
+									mediaPath
+											+ section.getImageBanner()
+													.getImage().getPath());
+				}
+				if (section != null && section.getPickList() != null) {
+					for (CMSPickListModel picklist : section.getPickList()) {
+						if (picklist != null
+								&& picklist.getImage() != null
+								&& picklist.getImage().getImage() != null
+								&& picklist.getImage().getImage().getPath() != null) {
+							picklist.getImage()
+									.getImage()
+									.setPath(
+											mediaPath
+													+ picklist.getImage()
+															.getImage()
+															.getPath());
+						}
+					}
+				}
+			}
+		}
+	}
 }
