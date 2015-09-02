@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
@@ -65,12 +64,14 @@ import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class CheckoutControllerTag extends AbstractControllerTag {
 
-	private static final long	serialVersionUID	= 8993233587790486175L;
+    public static final String AUTHORIZATION_CUTOFF_PAGE = "/checkout/account_problem.jsp";
+
+    private static final long serialVersionUID = 8993233587790486175L;
 
 	private static Category		LOGGER				= LoggerFactory.getInstance( CheckoutControllerTag.class );
 
 	private String				ccdProblemPage		= "/checkout/step_3_choose.jsp";
-	private String				authCutoffPage		= "/checkout/account_problem.jsp";
+    private String authCutoffPage = AUTHORIZATION_CUTOFF_PAGE;
 	private final String		ageVerificationPage	= "/checkout/step_2_verify_age.jsp";
 	private final String		backToViewCart		= "/checkout/view_cart.jsp";
 	private final String		ccdAddCardPage		= "/checkout/step_3_card_add.jsp";
@@ -467,7 +468,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				
 				int offsetStart = 1;
 				try {
-					FDOrderHistory history = (FDOrderHistory) FDCustomerManager.getOrderHistoryInfo(currentUser.getIdentity());
+					FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(currentUser.getIdentity());
 					offsetStart = StandingOrderHelper.getFirstAvailableWeekOffset( history.getStandingOrderInstances(so.getId()) );
 				} catch (FDResourceException exc ) {
 					LOGGER.error("Failed to retrieve scheduled orders for standing order " + so.getId(), exc);

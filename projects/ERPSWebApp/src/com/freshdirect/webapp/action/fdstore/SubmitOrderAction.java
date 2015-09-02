@@ -57,6 +57,7 @@ import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -67,6 +68,7 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.action.WebActionSupport;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -112,7 +114,8 @@ public class SubmitOrderAction extends WebActionSupport {
 	}
 
 
-	public String execute() throws Exception {
+	@Override
+    public String execute() throws Exception {
 		HttpSession session = getWebActionContext().getSession();
 		if (session.getAttribute("ProcessingOrder")!=null) {	
 
@@ -763,12 +766,16 @@ public class SubmitOrderAction extends WebActionSupport {
 			try {
 				HttpServletResponse response = this.getWebActionContext().getResponse();
 				if(user.getFailedAuthorizations() >= 8){
-					response.sendRedirect(this.authCutoffPage);
+                    if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                        getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_CUTOFF_FAILURE_REDIRECT_URL, authCutoffPage);
+                    } else {
+                        response.sendRedirect(this.authCutoffPage);
+                    }
 				}else{
-					getWebActionContext().getSession().setAttribute("authFailMessage", PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage()));
-					response.sendRedirect(this.ccdProblemPage+"?duplicateCheck=skip");
-					
-					
+                    getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_FAILURE_MESSAGE, PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage()));
+                    if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                        response.sendRedirect(this.ccdProblemPage + "?duplicateCheck=skip");
+                    }
 				}
 				
 				return NONE;

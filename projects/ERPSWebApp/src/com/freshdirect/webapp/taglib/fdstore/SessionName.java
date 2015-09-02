@@ -82,4 +82,6 @@ public interface SessionName {
 	public static final String TICK_TIE_CUSTOMER = "TICK_TIE_CUSTOMER";
 	public static final String LITECONTACTINFO ="LITECONTACTINFO";
 	public static final String LITEACCOUNTINFO ="LITEACCOUNTINFO";
+    public static final String ORDER_AUTHORIZATION_FAILURE_MESSAGE = "authFailMessage";
+    public static final String ORDER_AUTHORIZATION_CUTOFF_FAILURE_REDIRECT_URL = "authCutoffFailRedirectUrl";
 }

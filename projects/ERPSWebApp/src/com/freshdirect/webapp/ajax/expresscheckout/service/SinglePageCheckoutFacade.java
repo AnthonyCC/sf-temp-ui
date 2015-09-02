@@ -58,7 +58,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class SinglePageCheckoutFacade {
 
     private static final String SUB_TOTAL_BOX_JSON_KEY = "subTotalBox";
-    private static final String REDIRECT_URL_JSON_KEY = "redirectUrl";
+    public static final String REDIRECT_URL_JSON_KEY = "redirectUrl";
     private static final String ATP_FAILURE_JSON_KEY = "atpFailure";
     private static final String TIMESLOT_JSON_KEY = "timeslot";
     private static final String PAYMENT_JSON_KEY = "payment";

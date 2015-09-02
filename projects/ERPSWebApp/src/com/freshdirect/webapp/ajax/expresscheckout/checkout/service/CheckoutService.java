@@ -112,7 +112,8 @@ public class CheckoutService {
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
 				String outcome = null;
 				if (cart.isAvailabilityChecked()) {
-					outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, null, null, null, null);
+                    outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
+                            null, null, null);
 					user.setSuspendShowPendingOrderOverlay(false);
 					user.setShowPendingOrderOverlay(true);
 					// prepare and store model for Coremetrics report
@@ -122,7 +123,7 @@ public class CheckoutService {
 				}
 				if (Action.SUCCESS.equalsIgnoreCase(outcome)) {
 					String orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
-					responseData.getSubmitForm().getResult().put("redirectUrl", "/expressco/success.jsp?orderId=" + orderId);
+                    responseData.getSubmitForm().getResult().put(SinglePageCheckoutFacade.REDIRECT_URL_JSON_KEY, "/expressco/success.jsp?orderId=" + orderId);
 					responseData.getSubmitForm().setSuccess(true);
 					session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
                     session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
@@ -143,6 +144,14 @@ public class CheckoutService {
 			}
 			responseData.getSubmitForm().setResult(SoyTemplateEngine.convertToMap(checkoutData));
 			responseData.getSubmitForm().setSuccess(false);
+            String paymentAuthorizationFailMessage = (String) session.getAttribute(SessionName.ORDER_AUTHORIZATION_FAILURE_MESSAGE);
+            if (paymentAuthorizationFailMessage != null) {
+                responseData.getValidationResult().getErrors().add(new ValidationError("orderSubmit", paymentAuthorizationFailMessage));
+            }
+            String orderAuthorizationCutoffFailRedirectUrl = (String) session.getAttribute(SessionName.ORDER_AUTHORIZATION_CUTOFF_FAILURE_REDIRECT_URL);
+            if (orderAuthorizationCutoffFailRedirectUrl != null) {
+                responseData.getSubmitForm().getResult().put(SinglePageCheckoutFacade.REDIRECT_URL_JSON_KEY, orderAuthorizationCutoffFailRedirectUrl);
+            }
 			for (ActionError error : actionResult.getErrors()) {
 				responseData.getValidationResult().getErrors().add(new ValidationError("orderSubmit", error.getDescription()));
 			}
