@@ -472,7 +472,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		main_index.jsp,supervisor_index.jsp,admintools_index.jsp,case_mgmt_index.jsp,reports_index.jsp,worklist.jsp,promo_home.jsp,promo_ws_view.jsp
 		</links>
 		<links name="admintools">delivery_restrictions.jsp,platterRestrictionForm.jsp,platter_restrictions.jsp,platterForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,address_restrictions.jsp,addrRestrictionForm.jsp,reverseauth_orders.jsp,voidcapture_orders.jsp</links>
-		<links name="supervisor">address_exception.jsp,geocode_exception.jsp</links>
+		<links name="supervisor">address_exception.jsp,geocode_exception.jsp,alcohol_restrictions.jsp,manage_alcohol_restrictions.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_create.jsp,promo_details.jsp,promo_ws_create.jsp,export_promo_list.jsp,export_ws_promo_list.jsp,dow_admin.jsp</links>
 		<links name="reports">late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,
 		</links>		
