@@ -68,7 +68,9 @@ public class CartSubTotalBoxService {
         data.setId(SUBTOTAL_ID);
         data.setText(SUBTOTAL_NAME);
         data.setValue(JspMethods.formatPrice(subTotalValue));
-        data.getOther().put(MARK_KEY, ESTIMATED_PRICE_MARK);
+        if (cart.isEstimatedPrice()) {
+            data.getOther().put(MARK_KEY, ESTIMATED_PRICE_MARK);
+        }
         subTotalBox.add(data);
     }
 
