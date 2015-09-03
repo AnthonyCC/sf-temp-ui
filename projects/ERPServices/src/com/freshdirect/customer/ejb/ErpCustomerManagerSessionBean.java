@@ -2197,13 +2197,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	private SapPostReturnCommand createSapReturnCommand(ErpAbstractOrderModel order, ErpInvoiceModel invoice, boolean cancelCoupons) {
 
 		Map<Object,ReturnAccumulator> accs = new HashMap<Object,ReturnAccumulator>();
-		for (Iterator i = ErpAffiliate.getEnumList().iterator(); i.hasNext();) {
-			accs.put(i.next(), new ReturnAccumulator());
+		for (Iterator<ErpAffiliate> i = ErpAffiliate.getEnumList().iterator(); i.hasNext();) {
+			ErpAffiliate affiliate = i.next();
+			accs.put(affiliate, new ReturnAccumulator());
 		}
+		
+		accs.remove(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDX));
+		
 
 		for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
 			ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
-			ReturnAccumulator acc = accs.get(orderLine.getAffiliate());
+			ReturnAccumulator acc = accs.get(ErpAffiliate.CODE_FDX.equals(orderLine.getAffiliate())? ErpAffiliate.CODE_FD:orderLine.getAffiliate());
 			acc.process(invoiceLine);
 		}
 
