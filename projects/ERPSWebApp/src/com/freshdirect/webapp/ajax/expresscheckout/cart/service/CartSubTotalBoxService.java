@@ -22,6 +22,10 @@ import com.freshdirect.webapp.util.JspMethods;
 
 public class CartSubTotalBoxService {
 
+    private static final String REMOVE_TEXT = "Remove";
+
+    private static final String REMOVE_CODE_KEY = "removeCode";
+
     private static final CartSubTotalBoxService INSTANCE = new CartSubTotalBoxService();
 
     private static final String YOU_SAVED = "youSaved";
@@ -152,6 +156,7 @@ public class CartSubTotalBoxService {
         String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
         boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
         boolean removeLinkDisplayed = false;
+        cartData.setPromotionApplied(isRedemptionApplied);
 
         List<ErpDiscountLineModel> discounts = cart.getDiscounts();
         for (Iterator<ErpDiscountLineModel> iter = discounts.iterator(); iter.hasNext();) {
@@ -171,7 +176,8 @@ public class CartSubTotalBoxService {
                 redemptionPromoData.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
                 Map<String, Object> other = redemptionPromoData.getOther();
                 other.put(PROMO_CODE_KEY, promoCode);
-                other.put("removeCode", "Remove");
+                other.put(REMOVE_CODE_KEY, REMOVE_TEXT);
+                redemptionPromoData.setOther(other);
                 subTotalBox.add(redemptionPromoData);
                 cartData.setPromotionApplied(true);
             } else { // Its a automatic header discount
@@ -180,6 +186,7 @@ public class CartSubTotalBoxService {
                 automaticHeaderDiscount.setId("automaticheaderdiscount");
                 Map<String, Object> other = automaticHeaderDiscount.getOther();
                 other.put(PROMO_CODE_KEY, promotion.getPromotionCode());
+                automaticHeaderDiscount.setOther(other);
                 automaticHeaderDiscount.setText(promotion.getDescription());
                 automaticHeaderDiscount.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
                 subTotalBox.add(automaticHeaderDiscount);
@@ -189,35 +196,48 @@ public class CartSubTotalBoxService {
         if (isRedemptionApplied) {
             if (redemptionPromo.isSampleItem()) {
                 CartSubTotalFieldData sampleRedemptionPromo = new CartSubTotalFieldData();
-                sampleRedemptionPromo.setId("sampleredemptionpromo");
+                sampleRedemptionPromo.setId(REDEMPTION_PROMO_ID);
                 sampleRedemptionPromo.setText(redemptionPromo.getDescription());
                 Map<String, Object> other = sampleRedemptionPromo.getOther();
                 other.put(PROMO_CODE_KEY, promoCode);
                 sampleRedemptionPromo.setValue("FREE!");
-                other.put("removeCode", "Remove");
+                other.put(REMOVE_CODE_KEY, REMOVE_TEXT);
+                sampleRedemptionPromo.setOther(other);
                 subTotalBox.add(sampleRedemptionPromo);
-                cartData.setPromotionApplied(true);
             } else if (redemptionPromo.isWaiveCharge() && !removeLinkDisplayed) {
                 CartSubTotalFieldData waivedRedemptionPromo = new CartSubTotalFieldData();
-                waivedRedemptionPromo.setId("waivedRedemptionPromo");
+                waivedRedemptionPromo.setId(REDEMPTION_PROMO_ID);
                 waivedRedemptionPromo.setText(redemptionPromo.getDescription());
                 Map<String, Object> other = waivedRedemptionPromo.getOther();
                 other.put(PROMO_CODE_KEY, promoCode);
                 waivedRedemptionPromo.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
-                other.put("removeCode", "Remove");
+                other.put(REMOVE_CODE_KEY, REMOVE_TEXT);
+                waivedRedemptionPromo.setOther(other);
                 subTotalBox.add(waivedRedemptionPromo);
-                cartData.setPromotionApplied(true);
             } else if (redemptionPromo.isExtendDeliveryPass()) {
                 CartSubTotalFieldData extendedDeliveryPassRedemptionPromo = new CartSubTotalFieldData();
-                extendedDeliveryPassRedemptionPromo.setId("extendedDeliveryPassRedemptionPromo");
+                extendedDeliveryPassRedemptionPromo.setId(REDEMPTION_PROMO_ID);
                 extendedDeliveryPassRedemptionPromo.setText(redemptionPromo.getDescription());
                 Map<String, Object> other = extendedDeliveryPassRedemptionPromo.getOther();
                 other.put(PROMO_CODE_KEY, promoCode);
                 extendedDeliveryPassRedemptionPromo.setValue("Pass extension");
-                other.put("removeCode", "Remove");
+                other.put(REMOVE_CODE_KEY, REMOVE_TEXT);
+                extendedDeliveryPassRedemptionPromo.setOther(other);
                 subTotalBox.add(extendedDeliveryPassRedemptionPromo);
-                cartData.setPromotionApplied(true);
             }
+        }
+
+        if (redemptionPromo != null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+            CartSubTotalFieldData lineItemRedemptionPromo = new CartSubTotalFieldData();
+            lineItemRedemptionPromo.setId(REDEMPTION_PROMO_ID);
+            lineItemRedemptionPromo.setText(redemptionPromo.getDescription());
+            Map<String, Object> other = lineItemRedemptionPromo.getOther();
+            other.put(PROMO_CODE_KEY, promoCode);
+            lineItemRedemptionPromo.setValue(JspMethods.formatPriceWithNegativeSign(cart.getLineItemDiscountAmount(redemptionPromo.getPromotionCode())));
+            other.put(REMOVE_CODE_KEY, REMOVE_TEXT);
+            lineItemRedemptionPromo.setOther(other);
+            subTotalBox.add(lineItemRedemptionPromo);
+            cartData.setPromotionApplied(true);
         }
     }
 
