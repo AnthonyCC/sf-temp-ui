@@ -2165,13 +2165,6 @@
 						    </CmsMultiColumnField>							
 						</fields>
 					</CmsSection>
-					<CmsSection>
-						<title>CORE</title>
-						<fields>
-							<CmsField><attribute>SectionComponent</attribute></CmsField>
-							<CmsField><attribute>Type</attribute></CmsField>						
-						</fields>
-					</CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -2215,7 +2208,7 @@
 		</pages>
 	</CmsEditor>
 	
-	<CmsEditor id="imageBanner">
+	<CmsEditor id="ImageBanner">
 		<contentType>ImageBanner</contentType>
 		<pages>
 			<CmsPage>

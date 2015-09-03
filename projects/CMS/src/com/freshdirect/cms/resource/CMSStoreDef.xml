@@ -2512,7 +2512,6 @@
 	
 	<ContentTypeDef name="Section" generateId="false">
 		<AttributeDefs>
-			<AttributeDef name="Type" type="S" label="Type" required="false"/>
 			<AttributeDef name="name" type="S" label="Full Name" required="false"/>
 			<AttributeDef name="captionText" type="S" label="Caption Text" required="false"/>
 			<AttributeDef name="headlineText" type="S" label="Headline Text" required="false"/>
@@ -2535,12 +2534,6 @@
 			</RelationshipDef>
 			<RelationshipDef cardinality="Many" name="category" label="Category">
 				<DestinationDef contentType="Category"/>
-			</RelationshipDef>
-			<RelationshipDef cardinality="Many" name="SectionComponent" label="Components">
-				<DestinationDef contentType="Anchor"/>
-				<DestinationDef contentType="ImageBanner"/>
-				<DestinationDef contentType="PickList"/>
-				<DestinationDef contentType="TextComponent"/>
 			</RelationshipDef>
 			<RelationshipDef cardinality="One" name="linkTarget" label="Link Target">
 				<DestinationDef contentType="Product"/>
