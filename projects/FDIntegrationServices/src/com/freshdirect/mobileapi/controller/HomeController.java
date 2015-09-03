@@ -220,12 +220,15 @@ public class HomeController extends BaseController {
 				if (section.getImageBanner() != null
 						&& section.getImageBanner().getImage() != null
 						&& section.getImageBanner().getImage().getPath() != null) {
+					if(!section.getImageBanner()
+							.getImage().getPath().contains(mediaPath)) {
 					section.getImageBanner()
 							.getImage()
 							.setPath(
 									mediaPath
 											+ section.getImageBanner()
 													.getImage().getPath());
+					}
 				}
 				if (section != null && section.getPickList() != null) {
 					for (CMSPickListModel picklist : section.getPickList()) {
@@ -233,6 +236,8 @@ public class HomeController extends BaseController {
 								&& picklist.getImage() != null
 								&& picklist.getImage().getImage() != null
 								&& picklist.getImage().getImage().getPath() != null) {
+							if(!picklist.getImage()
+									.getImage().getPath().contains(mediaPath)) {
 							picklist.getImage()
 									.getImage()
 									.setPath(
@@ -240,6 +245,7 @@ public class HomeController extends BaseController {
 													+ picklist.getImage()
 															.getImage()
 															.getPath());
+							}
 						}
 					}
 				}
