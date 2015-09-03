@@ -89,8 +89,18 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 		if(salesOrg == null || distributionChanel == null || zoneId == null)
 			return "";
 		
-		return salesOrg + delimter + distributionChanel + delimter+ zoneId + 
-				(parent == null ? "" : (delimter + parent.stringWithDelimter(delimter)));
+		StringBuilder sb = new StringBuilder();
+		sb.append(salesOrg).append(delimter)
+		.append(distributionChanel).append(delimter)
+		.append(zoneId);
+		if(parent == null)
+			return sb.toString();
+		
+		String parentStringified = parent.stringWithDelimter(delimter);
+		if(parentStringified != null && !parentStringified.isEmpty()){
+			sb.append(delimter).append(parentStringified);
+		}
+		return sb.toString();
 	}
 	
 	/**
