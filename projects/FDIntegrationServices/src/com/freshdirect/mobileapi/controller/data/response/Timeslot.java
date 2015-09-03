@@ -38,6 +38,8 @@ public class Timeslot implements DateFormat {
     private String minOrderMsg;
     private double minOrderAmt;
     private boolean minOrderMet;
+    private double deliveryFee;
+    private double promoDeliveryFee;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
@@ -75,6 +77,9 @@ public class Timeslot implements DateFormat {
         this.minOrderMet = slot.isMinOrderMet();
         
         this.isEarlyAM = slot.isEarlyAM();
+        
+        this.deliveryFee = slot.getDeliveryFee();
+        this.promoDeliveryFee = slot.getPromoDeliveryFee();
     
     }
 
@@ -205,4 +210,22 @@ public class Timeslot implements DateFormat {
 	public void setIsEarlyAM(Boolean isEarlyAM) {
 		this.isEarlyAM = isEarlyAM;
 	}
+
+	public double getDeliveryFee() {
+		return deliveryFee;
+	}
+
+	public void setDeliveryFee(double deliveryFee) {
+		this.deliveryFee = deliveryFee;
+	}
+
+	public double getPromoDeliveryFee() {
+		return promoDeliveryFee;
+	}
+
+	public void setPromoDeliveryFee(double promoDeliveryFee) {
+		this.promoDeliveryFee = promoDeliveryFee;
+	}
+
+	
 }

@@ -183,6 +183,9 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private double minDurationForModification;
 	private EnumRegionServiceType regionSvcType;
 	
+	private double deliveryFee;
+	private double promoDeliveryFee;
+	
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -648,4 +651,22 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public void setCutoffDateTime(Date cutoffDateTime) {
 		this.cutoffDateTime = cutoffDateTime;
 	}
+
+	public double getDeliveryFee() {
+		return deliveryFee;
+	}
+
+	public void setDeliveryFee(double deliveryFee) {
+		this.deliveryFee = deliveryFee;
+	}
+
+	public double getPromoDeliveryFee() {
+		return promoDeliveryFee;
+	}
+
+	public void setPromoDeliveryFee(double promoDeliveryFee) {
+		this.promoDeliveryFee = promoDeliveryFee;
+	}
+	
+	
 }

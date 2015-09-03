@@ -130,4 +130,13 @@ public class Timeslot {
 	public boolean isMinOrderMet() {
 		return slot.isMinOrderMet();
 	}
+	
+	public double getDeliveryFee() {
+		return slot.getDeliveryFee();
+	}
+
+	public double getPromoDeliveryFee() {
+		return slot.getPromoDeliveryFee();
+	}
+	
 }

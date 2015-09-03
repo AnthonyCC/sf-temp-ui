@@ -765,6 +765,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.incrementFailedAuthorizations();
 			try {
 				HttpServletResponse response = this.getWebActionContext().getResponse();
+				cart.setDeliveryReservation(null);
 				if(user.getFailedAuthorizations() >= 8){
                     if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
                         getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_CUTOFF_FAILURE_REDIRECT_URL, authCutoffPage);

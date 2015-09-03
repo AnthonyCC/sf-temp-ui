@@ -26,7 +26,6 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -40,6 +39,7 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -197,6 +197,16 @@ public class TimeslotLogic {
 					}
 
 					minOrderReqd = applyOrderMinimum(user, _ts) || minOrderReqd;
+					
+					//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
+					TimeOfDay currentTime = new TimeOfDay(DateUtil.getCurrentTime());
+					if(TimeOfDay.getDurationAsHours(_ts.getDlvStartTime(), _ts.getDlvEndTime()) <=1 
+							&& TimeOfDay.getDurationAsHours(currentTime, _ts.getDlvStartTime()) <=1){
+						_ts.setDeliveryFee(6.99); _ts.setPromoDeliveryFee(4.99);
+					}else{
+						_ts.setDeliveryFee(4.99); _ts.setPromoDeliveryFee(2.99);
+					}
+					
 				}
 			}
 		
