@@ -79,6 +79,9 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 						}
 						if(nonQualifiedSku == orderLines.size() || qualifiedSku < minSkuQuantity)
 							allowORdeny = PromotionStrategyI.DENY; 
+					}else{
+						//if the cart is empty, deny the promotion
+						allowORdeny = PromotionStrategyI.DENY;
 					}
 				}
 			} catch (FDResourceException e) {
