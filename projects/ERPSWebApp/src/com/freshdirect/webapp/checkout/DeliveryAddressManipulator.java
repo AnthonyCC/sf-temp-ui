@@ -13,6 +13,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import weblogic.uddi.client.structures.datatypes.Phone;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
@@ -130,7 +131,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		session.setAttribute( SessionName.USER, user );
 	}
 
-	public ErpAddressModel performAddDeliveryAddress() throws FDResourceException {
+	public void performSetOrderMobileNumber() throws FDResourceException, JspException, RedirectToPage {
+		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
+		PhoneNumber phoneNumber=new PhoneNumber(PhoneNumber.format(request.getParameter( "orderMobileNumber" ))); 
+		FDCartModel cart = user.getShoppingCart();
+		cart.setOrderMobileNumber(phoneNumber);
+	}
+
+	public void performAddDeliveryAddress() throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
 		FDCartModel cart =  user.getShoppingCart();
 		String actionName = getActionName();
@@ -891,11 +899,11 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				e.printStackTrace();
 			}
 		}
-			cart.setZoneInfo( zoneInfo );
-			cart.setDeliveryAddress( address );
+		cart.setZoneInfo( zoneInfo );
+		cart.setDeliveryAddress( address );
 		if(cart.getEStoreId() == null)
 			cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
-			
+
 		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
 
 		// store service type except for depot locations

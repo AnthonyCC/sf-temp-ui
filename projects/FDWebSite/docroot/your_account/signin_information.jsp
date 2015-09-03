@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -143,6 +144,8 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 
+FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
 lastName = cm.getLastName();
 firstName = cm.getFirstName();
 email = cm.getEmail();
@@ -259,28 +262,118 @@ if (request.getParameter("employeeId") != null) {
 		noContactPhone = "checked";
 	} else noContactPhone = "";
 
-	String mobile_number = cm.getMobileNumber()==null?"":cm.getMobileNumber().getPhone();
-	boolean text_offers = cm.isOffersNotification();
+	//String mobile_number="(609) 647 8354";
+/* 	boolean text_offers = cm.isOffersNotification();
 	if(request.getParameter("text_offers") != null)
 		text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
 	boolean text_delivery = cm.isDeliveryNotification();
 	if(request.getParameter("text_delivery") != null)
-		text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+		text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false; */
+	String mobile_number=null;
+	boolean order_notices=false;
+	boolean order_exceptions=false;
+	boolean offers=false;
+	boolean partner_messages=false;
+	boolean text_offers=false;
+	boolean text_delivery=false;
 	
-	boolean order_notices=cm.getOrderNotices().equals(EnumSMSAlertStatus.NONE)?false:true;
-	if(request.getParameter("order_notices") != null)
-		order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
-	boolean order_exceptions=cm.getOrderExceptions().equals(EnumSMSAlertStatus.NONE)?false:true;
-	if(request.getParameter("order_exceptions") != null)
-		order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
-	boolean offers=cm.getOffers().equals(EnumSMSAlertStatus.NONE)?false:true;
-	if(request.getParameter("offers") != null)
-		offers = "Y".equals(request.getParameter("offers"))?true:false;
-	boolean partner_messages=cm.getPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
-	if(request.getParameter("partner_messages") != null)
-		partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
-	if(request.getParameter("mobile_number") != null)
-		mobile_number = request.getParameter("mobile_number");
+	if("FDX".equalsIgnoreCase(eStoreId)){
+		
+	if(request.getParameter("text_offers") != null)
+		 text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
+	
+			if(fdCustomer.getCustomerEStoreModel().getFdxOffersNotification()!=null)		
+ 			text_offers = fdCustomer.getCustomerEStoreModel().getFdxOffersNotification(); 
+			
+		if(request.getParameter("text_delivery") != null)
+				text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+
+		if(fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification()!=null)		
+ 			text_delivery = fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification();
+		
+			if(request.getParameter("mobile_number") != null)
+			mobile_number = request.getParameter("mobile_number");
+		else	
+			mobile_number = fdCustomer.getCustomerEStoreModel().getFdxMobileNumber()==null ?"":fdCustomer.getCustomerEStoreModel().getFdxMobileNumber().getPhone();
+		
+		if(request.getParameter("order_notices") != null)
+			order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
+		else
+			{
+			   if(fdCustomer.getCustomerEStoreModel().getFdxOrderNotices()!=null)
+				order_notices=fdCustomer.getCustomerEStoreModel().getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+			}
+		
+		if(request.getParameter("order_exceptions") != null)
+			order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
+		else
+		{
+		  	if(fdCustomer.getCustomerEStoreModel().getOrderExceptions()!=null)
+			order_exceptions=fdCustomer.getCustomerEStoreModel().getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		}
+		
+		if(request.getParameter("offers") != null)
+			offers = "Y".equals(request.getParameter("offers"))?true:false;
+		else
+		{
+		  if(fdCustomer.getCustomerEStoreModel().getOffers()!=null)
+			offers=fdCustomer.getCustomerEStoreModel().getFdxOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		}
+		if(request.getParameter("partner_messages") != null)
+			partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
+		
+		else
+		{
+		  if(fdCustomer.getCustomerEStoreModel().getPartnerMessages()!=null)
+			partner_messages=fdCustomer.getCustomerEStoreModel().getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
+		}
+	}
+	else{
+		if(request.getParameter("text_offers") != null)
+		 text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
+		
+			if(fdCustomer.getCustomerEStoreModel().getOffersNotification()!=null)		
+ 			text_offers = fdCustomer.getCustomerEStoreModel().getOffersNotification();
+			
+		if(request.getParameter("text_delivery") != null)
+				text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+
+		if(fdCustomer.getCustomerEStoreModel().getDeliveryNotification()!=null)		
+ 			text_delivery = fdCustomer.getCustomerEStoreModel().getDeliveryNotification();
+
+		if(request.getParameter("mobile_number") != null)
+			mobile_number = request.getParameter("mobile_number");
+		else
+			mobile_number = fdCustomer.getCustomerEStoreModel().getMobileNumber()!=null ? fdCustomer.getCustomerEStoreModel().getMobileNumber().getPhone():"";
+		
+		 if(request.getParameter("order_notices") != null)
+				order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
+		 else{ 
+				if(fdCustomer.getCustomerEStoreModel().getOrderNotices()!=null)
+				 order_notices=fdCustomer.getCustomerEStoreModel().getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		 	}
+		
+		 if(request.getParameter("order_exceptions") != null)
+				order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
+		 else {
+				if(fdCustomer.getCustomerEStoreModel().getOrderExceptions()!=null)
+				 order_exceptions=fdCustomer.getCustomerEStoreModel().getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		  }	
+		 if(request.getParameter("offers") != null)
+				offers = "Y".equals(request.getParameter("offers"))?true:false;
+		 else{
+			if(fdCustomer.getCustomerEStoreModel().getOffers()!=null)
+		  	offers=fdCustomer.getCustomerEStoreModel().getOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		 }
+		
+		 if(request.getParameter("partner_messages") != null)
+				partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
+		 else{
+			if(fdCustomer.getCustomerEStoreModel().getPartnerMessages()!=null)
+			 partner_messages=fdCustomer.getCustomerEStoreModel().getPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
+		 }
+}
+	
 	boolean go_green = cm.isGoGreen();
 	if(request.getParameter("go_green") != null)
 		go_green = "Y".equals(request.getParameter("go_green"))?true:false;
@@ -709,6 +802,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br /><br /><br /></td>
 		<td></td>
 	</tr>--%>
+<%if("FD".equals(eStoreId))
+	{%>	
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
 		<td colspan="5" class="text12bold">FreshDirect Order Notices</td>
@@ -781,6 +876,89 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</table>
 		</td>
 	</tr>
+	<%} 
+else{  %>
+	<!--start: Added by Sathishkumar Merugu for SMS FDX alert. -->
+
+	
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">Delivery Updates </td>
+	</tr> 
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top">
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_notices" />
+							<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12" id="article" align="left">
+								<strong>Out for Delivery:</strong> 
+								<br /><br />
+								<strong>You are Nex: </strong> deferred until delivery personnel are equipped with handhelds.  
+								<br /><br /><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
+							<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
+		<td colspan="5" class="text12bold">Order Status </td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_exceptions"> 
+							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12"   id="article1" align="left">
+								<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
+								<br /><br />
+								<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
+								<br /><br />
+								<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
+								<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
+		<td colspan="5" class="text12bold"> Offers</td>
+	</tr>
+	<tr valign="top">
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="offers"> 
+							<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><pre class="text12bold">Description</pre></label>
+							<div class="text12" id="article2" align="left">
+								Get the inside scoop on exciting new features, exclusive promotions, and more!
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<% }%>
+	
+	<!--End: Added by Sathishkumar Merugu for SMS FDX alert. -->
+	
 	 <%-- <tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="partner_messages" value="Y" <%=partner_messages ? "checked":""%>></td>
 		<td colspan="4" class="text12bold">FreshDirect Partner Messages</td>

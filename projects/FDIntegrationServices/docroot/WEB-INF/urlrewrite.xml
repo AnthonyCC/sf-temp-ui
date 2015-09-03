@@ -316,6 +316,10 @@
         <from>^/v/([0-9]+)/(.*)/account/setmobilepreferences/</from>
         <to last="true">/register.do?action=setmobilepreferences&amp;ver=$1</to>
     </rule>
+    <rule>
+        <from>^/v/([0-9]+)/(.*)/account/getmobilepreferences/</from>
+        <to last="true">/register.do?action=getmobilepreferences&amp;ver=$1</to>
+    </rule>
 	<rule>
         <from>^/v/([0-9]+)/(.*)/account/setemailpreferences/</from>
         <to last="true">/register.do?action=setemailpreferences&amp;ver=$1</to>
@@ -372,7 +376,10 @@
 		<from>^/v/([0-9]+)/(.*)/deliverytimeslot/reserve/(.*)$</from>
 		<to last="true">/checkout.do?action=reservetimeslot&amp;slotId=$3&amp;ver=$1</to>
 	</rule>
-
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/order/set/</from>
+		<to last="true">/checkout.do?action=setordermobilenumberfdx&amp;ver=$1</to>
+	</rule>
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Get Payment Methods -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->

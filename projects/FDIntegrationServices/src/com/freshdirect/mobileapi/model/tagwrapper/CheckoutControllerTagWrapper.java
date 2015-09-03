@@ -56,7 +56,9 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public static final String ACTION_DELETE_PAYMENT_METHOD = "deletePaymentMethod";
 
     public static final String ACTION_SET_DELIVERY_ADDRESS_AND_PAYMENT = "setDeliveryAddressAndPayment"; //Not supported
-
+    
+    public static final String ACTION_SET_ORDER_MOBILE_NUMBER = "setOrderMobileNumber"; 
+    
     protected CheckoutControllerTagWrapper(CheckoutControllerTag wrapTarget, SessionUser user) {
         this(wrapTarget, user.getFDSessionUser());
     }
@@ -421,6 +423,21 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         LOGGER.debug("setCheckoutDeliveryAddress[END] :"+ selectAddressId + ","+type);
         return new ResultBundle(actionResult, this);
     }
+    
+    public ResultBundle setCheckoutOrderMobileNumber(SessionUser user, String orderMobileNumber) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_MOBILE_NUMBER}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_MOBILE_NUMBER, orderMobileNumber);
+        addRequestValue("orderMobileNumber", orderMobileNumber);
+       
+        getWrapTarget().setActionName(ACTION_SET_ORDER_MOBILE_NUMBER);
+        setMethodMode(true);
+        ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("setorderMobileNumber[executeTagLogic] :"+ actionResult);
+        return new ResultBundle(actionResult, this);
+    }
+    
     
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },

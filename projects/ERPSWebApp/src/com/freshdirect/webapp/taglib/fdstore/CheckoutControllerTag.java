@@ -393,6 +393,22 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			}
+			if ( "setOrderMobileNumber".equalsIgnoreCase( action ) ) {
+				try {
+					
+					LOGGER.debug("setOrderMobileNumber[START] :");
+					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
+					m.performSetOrderMobileNumber();
+				} catch (RedirectToPage e) {
+					LOGGER.debug("setOrderMobileNumber[RedirectToPage] :"+ e);
+					this.redirectTo(e.getPage());
+				}
+				if ( result.isSuccess() ) {
+					UserValidationUtil.validateOrderMinimum( session, result );
+				}
+				
+				LOGGER.debug("setOrderMobileNumber[END] :");
+			} 
 
 			// list of the ultimate checkout actions
 			final boolean terminalAction = action != null && (

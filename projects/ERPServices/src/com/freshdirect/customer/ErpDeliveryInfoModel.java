@@ -4,6 +4,7 @@ package com.freshdirect.customer;
 
 import java.util.Date;
 
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -23,9 +24,18 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     private Date deliveryHandoffTime;
     private double minDurationForModStart;
     private double minDurationForModification;
+    private PhoneNumber orderMobileNumber;
+    
     
    
-    public String getDeliveryReservationId() { return deliveryReservationId; }
+  
+	public PhoneNumber getOrderMobileNumber() {
+		return orderMobileNumber;
+	}
+	public void setOrderMobileNumber(PhoneNumber orderMobileNumber) {
+		this.orderMobileNumber = orderMobileNumber;
+	}
+	public String getDeliveryReservationId() { return deliveryReservationId; }
     public void setDeliveryReservationId(String deliveryReservationId) { this.deliveryReservationId = deliveryReservationId; }
     
     public Date getDeliveryStartTime(){ return deliveryStartTime; }

@@ -62,7 +62,23 @@ function blinkIt() {
 <crm:GetFdCustomer id="fdCustomer" user="<%=user%>">
 <fd:AccountActivity activities='activities'>
 <crm:GetCurrentAgent id="agent">
-<% ErpCustomerInfoModel custInfo = customer.getCustomerInfo();%> 
+
+<% ErpCustomerInfoModel custInfo = customer.getCustomerInfo();
+
+String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
+
+if("FDX".equalsIgnoreCase(eStoreId)){
+	custInfo.setMobileNumber(fdCustomer.getCustomerEStoreModel().getFdxMobileNumber());
+	custInfo.setOffersNotification(fdCustomer.getCustomerEStoreModel().getFdxOffersNotification());
+	custInfo.setDeliveryNotification(fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification());
+}
+else{	
+	custInfo.setMobileNumber(fdCustomer.getCustomerEStoreModel().getMobileNumber());
+	custInfo.setOffersNotification(fdCustomer.getCustomerEStoreModel().getOffersNotification());
+	custInfo.setDeliveryNotification(fdCustomer.getCustomerEStoreModel().getDeliveryNotification());
+	}%> 
+
+
 
 <%!
 private final static Map ACTIVITY_COMPARATORS = new HashMap();

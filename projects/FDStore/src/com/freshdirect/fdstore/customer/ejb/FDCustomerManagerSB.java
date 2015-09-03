@@ -794,15 +794,15 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException, RemoteException;
+	public void storeMobilePreferences(String fdcustomerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
 	public boolean loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
-	public void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
+	public void storeSmsPreferencesNoThanks(String customerId, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
-	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
+	public void storeAllMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser,EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
 	public void authorizeSale(String salesId, boolean force) throws FDResourceException, RemoteException;
 	
@@ -837,7 +837,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
 	
-	public void storeSmsPrefereceFlag(String CustomerId, String flag) throws FDResourceException, RemoteException;
+	public void storeSmsPrefereceFlag(String CustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	//4125 coremetrics
     public String getCustomersProfileValue(String CustomerId) throws FDResourceException, RemoteException;
 	public String getCustomersCounty(String CustomerID) throws FDResourceException, RemoteException;
@@ -853,6 +853,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void updateOrderInProcess(String orderNum) throws FDResourceException, RemoteException;
 
 	public void releaseModificationLock(String orderId)	throws FDResourceException, RemoteException;
-	
+
+	public void setFdxSmsPreferences(FDCustomerEStoreModel fdCustomerEStoreModel2, String ErpCustomerPK)throws FDResourceException, RemoteException;
 }
 

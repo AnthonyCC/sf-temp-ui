@@ -3,13 +3,24 @@
 package com.freshdirect.customer.ejb;
 
 import java.math.BigDecimal;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
-import com.freshdirect.framework.core.*;
-import com.freshdirect.framework.util.*;
-import com.freshdirect.customer.*;
-import com.freshdirect.common.address.*;
+import com.freshdirect.common.address.AddressInfo;
+import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.NVL;
 
 /**
  * ErpDeliveryInfo persistent bean.
@@ -91,11 +102,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
 
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER) " +
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?)";	
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);		
 		PreparedStatement ps = conn.prepareStatement(STORE_DELIVERY_INFO);
@@ -183,6 +194,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(42, this.model.getDeliveryRegionId());
 		ps.setDouble(43, this.model.getMinDurationForModStart());  
 		ps.setDouble(44, this.model.getMinDurationForModification());
+		ps.setString(45, this.model.getOrderMobileNumber()!=null?this.model.getOrderMobileNumber().getPhone():"");
         
 		
 		try {
@@ -207,7 +219,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) as PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, " +
 		"'('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE, ALT_PHONE_EXT, " +
-		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
@@ -290,6 +302,8 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setDeliveryHandoffTime(rs.getTimestamp("HANDOFFTIME"));
 		this.model.setMinDurationForModStart(rs.getDouble("MOD_START_X"));
 		this.model.setMinDurationForModification(rs.getDouble("MOD_CUTOFF_Y"));
+		if(null!=rs.getString("MOBILE_NUMBER"))
+			this.model.setOrderMobileNumber(new PhoneNumber(rs.getString("MOBILE_NUMBER")));
 		
 		// load children here
 		this.unsetModified();

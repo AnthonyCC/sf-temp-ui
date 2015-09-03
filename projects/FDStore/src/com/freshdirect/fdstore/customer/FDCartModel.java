@@ -19,6 +19,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -277,6 +278,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private EnumEStoreId eStore;
 	private ErpDeliveryPlantInfoModel deliveryPlantInfo;
 	
+	private PhoneNumber orderMobileNumber;
+
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
 		if(null== count){
@@ -2024,5 +2027,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public boolean hasInvalidLines() {
 		
 		return invalidLines.size()>0?true:false;
+	}
+	
+	public PhoneNumber getOrderMobileNumber() {
+		return orderMobileNumber;
+	}
+
+	public void setOrderMobileNumber(PhoneNumber orderMobileNumber) {
+		this.orderMobileNumber = orderMobileNumber;
 	}
 }

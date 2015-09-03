@@ -102,6 +102,7 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
@@ -114,7 +115,6 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -1828,6 +1828,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
+	
+	public void setFdxSmsPreferences(FDCustomerEStoreModel eStoreModel, String ErpCustomerPK) throws FDResourceException {
+		try {
+			
+			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
+					.findByErpCustomerId(ErpCustomerPK);
+			FDCustomerModel model = (FDCustomerModel) fdCustomerEB.getModel();
+			model.setCustomerEStoreModel(eStoreModel);
+			fdCustomerEB.setFromModel(model);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (FinderException ce) {
+			throw new FDResourceException(ce);
+		}
+	}
+	
+	
 
 	/**
 	 * remove a ship to address for the customer
@@ -1877,9 +1894,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		PrimaryKey pk = null;
 		FDIdentity identity = info.getIdentity();
 		String zoneId = null;
+		String orderMobileNumber=null;
+		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		boolean isSent=false;
 		try
 		{
 			zoneId = createOrder.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
+			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+							fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+				
+			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+				orderMobileNumber=createOrder.getDeliveryInfo().getOrderMobileNumber().getPhone();
+				else if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null){
+						orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+				}
+				
 		}
 		catch(Exception e)
 		{
@@ -2051,7 +2080,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			//if its fdx estore then make a call to logistics to store fdx order.
 			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name())){
 				FDDeliveryManager.getInstance().submitOrder(pk.getId(), null,
-					createOrder.getTip(), reservationId);
+					createOrder.getTip(), reservationId, orderMobileNumber);
 			}
 			
 			LOGGER.info("After commiting the reservation "+reservationId);
@@ -2110,7 +2139,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				fdInfo.setUserGiftCardsBalance(calculateGiftCardsBalance(this.getGiftCards(identity)));
 
 				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
-			}
+		  	}
+			
+			//Start:: Add FDX SMS Order confirmation 
+				try {
+					FDOrderI order = getOrder(pk.getId());
+					if("S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices()))
+					 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId());
+					
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					LOGGER.warn("Error Sending FDXSMS for Order Confirmantion: ", e);
+				}
+			
 
 			try {
 				if(null!=createOrder.getCouponTransModel()){
@@ -2309,6 +2350,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDReservation cancelOrder(FDActionInfo info, String saleId,
 			boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
+		String orderMobileNumber=null;
+		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		boolean isSent=false;
 		try {
 			TimeslotEvent event = new TimeslotEvent((info.getSource()!=null)?info.getSource().getCode():"", 
 					false,0.00, false, false, info.getFdUserId(), EnumCompanyCode.fd.name());
@@ -2320,6 +2364,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			String reservationId = sb.cancelOrder(saleId, info.getSource(),
 					initiator);
 			FDOrderI order = getOrder(saleId);
+			
+			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(info.getIdentity());
+			 fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+				fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+	
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+							orderMobileNumber= order.getDeliveryInfo().getOrderMobileNumber().getPhone();
+				
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+							orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+			
 			String appliedPass_ID = order.getDeliveryPassId();
 			// Begin Handle Delivery Pass.
 			// Cancel any delivery pass linked with the order.
@@ -2399,6 +2454,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								order.getDeliveryReservation().getStartTime(),
 								order.getDeliveryReservation().getEndTime()));
 			}
+			//Start:: Add FDX SMS for order Cancelled
+			
+			try {
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
+					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
+			}
+			
+			//End:: Add FDX SMSfor order Cancelled
 			return isRestored ? order.getDeliveryReservation() : null;
 
 		} catch (CreateException ex) {
@@ -2488,9 +2554,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			InvalidCardException, ErpAddressVerificationException {
 
 		String zoneId = null;
+		String orderMobileNumber=null;
+		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		boolean isSent=false;
 		try
 		{
+			
 			zoneId = order.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
+			
+			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(info.getIdentity());
+			 fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+	
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+							orderMobileNumber= order.getDeliveryInfo().getOrderMobileNumber().getPhone();
+				
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+							orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+			
 		}
 		catch(Exception e)
 		{
@@ -2785,6 +2865,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				this.doEmail(FDEmailFactory.getInstance()
 						.createModifyOrderEmail(fdInfo, fdOrder));
+				
+				//if its fdx estore then make a call to logistics to store fdx order.
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
+					FDDeliveryManager.getInstance().modifyOrder(saleId, null,
+							order.getTip(), newReservationId, orderMobileNumber);
+				}
+				
+				//Start:: Add FDX SMS for order Modification
 			}
 
 			try {
@@ -2799,9 +2887,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			//if its fdx estore then make a call to logistics to store fdx order.
 			if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
 				FDDeliveryManager.getInstance().modifyOrder(saleId, null,
-						order.getTip(), newReservationId);
+						order.getTip(), newReservationId, orderMobileNumber);
 			}
 			
+			try {
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())&&"S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices()))
+					 isSent = SMSAlertManager.getInstance().smsOrderModification(info.getFdUserId() ,orderMobileNumber, saleId);
+			} catch (FDResourceException e) {
+				LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
+			}
+			
+			//End:: Add FDX SMSfor order Modification
 			
 			//Moving the commit reservation section to the end of modify order flow as reservation can be committed to logistics and still modify order fails because of the auth.
 			// Deal with Reservation in DLV
@@ -7027,12 +7123,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}	
 	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery,
-			String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException {
+	public void storeMobilePreferences(String fdCustomerId, String mobileNumber, String textOffers, String textDelivery,
+			String orderNotices, String orderExceptions, String offers, String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery,orderNotices, orderExceptions, offers, partnerMessages);
+			FDUserDAO.storeMobilePreferences(conn, fdCustomerId, mobileNumber, textOffers, textDelivery,orderNotices, orderExceptions, offers, partnerMessages, eStoreId );
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -7076,11 +7172,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException{
+	public void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeSmsPreferences(conn, customerId,SmsPrefereceFlag.NO_THANKS.getName());
+			FDUserDAO.storeSmsPreferences(conn, fdCustomerId, SmsPrefereceFlag.NO_THANKS.getName(), eStoreId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -7088,11 +7184,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException {
+	public void storeAllMobilePreferences(String customerId, String fdCustomerId,  String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser, EnumEStoreId eStoreId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeAllMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
+			FDUserDAO.storeAllMobilePreferences(conn, customerId, fdCustomerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser, eStoreId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -7704,11 +7800,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	}
 	
-	public void storeSmsPrefereceFlag(String CustomerId, String flag)throws FDResourceException{
+	public void storeSmsPrefereceFlag(String CustomerId, String flag, EnumEStoreId eStoreId)throws FDResourceException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeSmsPreferences(conn,CustomerId,flag);
+			FDUserDAO.storeSmsPreferences(conn,CustomerId,flag, eStoreId );
 		}catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

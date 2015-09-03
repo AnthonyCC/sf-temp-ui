@@ -141,7 +141,6 @@ public class ExternalInterfaceController extends BaseController {
     				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FD);
     				responseMessage = Message.createSuccessMessage("T003 Successfull.");
     			} catch(Exception e) {
-	        		e.printStackTrace();
 	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received ");
 	        	}
     			if(responseMessage == null) {
@@ -166,10 +165,10 @@ public class ExternalInterfaceController extends BaseController {
     				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message, EnumEStoreId.FDX);
     				responseMessage = Message.createSuccessMessage("T004 Successfull.");
     			} catch(Exception e) {
-	        		e.printStackTrace();
+	        		responseMessage=Message.createFailureMessage("T004 Failed.");
 	        		LOGGER.info("T004_EXP: Unable to save FDX SMS Message Relay received ");
-	        	}
-    			if(responseMessage == null) {
+	  	        }  
+			if(responseMessage == null) {
 	  	        	LOGGER.info("T004: Failed FDX SMS Message Relay ");
 	  	        	responseMessage = new Message();
 	  	        	responseMessage.addErrorMessage("T004 Failed.");

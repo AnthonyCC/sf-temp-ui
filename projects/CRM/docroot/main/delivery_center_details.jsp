@@ -38,6 +38,8 @@
 		
 		ErpShippingInfo shippingInfo = order.getShippingInfo();
 		String source = order.getOrderSource().getName();
+		String estore=order.getEStoreId().getContentId();
+		
 
 		boolean sendAirclicMsg = false;
 		FDOrderAdapter orderAdapter = (FDOrderAdapter) order;
@@ -244,7 +246,7 @@
 					<tbody>
 							
 							<tr>
-								<th style="text-align:center;">SMS MESSAGES</th>
+								<th style="text-align:center;"><%=estore%> SMS MESSAGES</th>
 							</tr>
 							<tr>
 								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>

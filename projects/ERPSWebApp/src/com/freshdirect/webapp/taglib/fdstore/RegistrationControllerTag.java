@@ -39,8 +39,10 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -334,7 +336,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			//save it to DB			
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);				
 			try {
-				FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser());
+				FDCustomerManager.storeAllMobilePreferences(user.getIdentity().getErpCustomerPK(), user.getIdentity().getFDCustomerPK(), mobile_number, text_offers, text_delivery, go_green, busphone, ext, user.isCorporateUser(), user.getUserContext().getStoreContext().getEStoreId());
 			} catch (FDResourceException e) {
 				LOGGER.error("Error from mobile preferences", e);
 			}				
@@ -434,7 +436,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					isSent=true;
 				} else{
 					
-					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId() );
 				}
 			} else{
 				optOut=true;
@@ -449,12 +451,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			try {
 				
 				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery,
-						order_notices, order_exceptions, offers, partner_messages,cm);
+				FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+				
+				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery,
+						order_notices, order_exceptions, offers, partner_messages, fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());					
 				if(subscribedNow) {
-					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId());
 				} else {
-					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null);
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null, user.getUserContext().getStoreContext().getEStoreId());
 				}
 			} catch (Exception e) {
 				LOGGER.error("Error from mobile preferences", e);
@@ -914,6 +918,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		ErpCustomerInfoModel cim = null;
 		cim = FDCustomerFactory.getErpCustomerInfo(identity);
 
+		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(getIdentity());
+		FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(getIdentity());
+		FDCustomerEStoreModel fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+				
 		cim.setEmailPreferenceLevel(receive_emailLevel);
 
 		LOGGER.debug("Updating customer email level preference");
@@ -967,7 +975,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			
 			boolean isSent=false;
 				try {
-					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 				} catch (FDResourceException e) {
 					LOGGER.error("Error from mobile preferences", e);
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
@@ -977,9 +985,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							
 					try {
 						ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, "N", "N",
-								"Y", "Y", "Y", "Y",cm);
-						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
+						FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(),identity.getFDCustomerPK(), mobile_number, "N", "N",
+								"Y", "Y", "Y", "Y", fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());
+						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId() );
 						session.setAttribute("SMSAlert" + orderNumber, "done");
 					} catch (FDResourceException e) {
 						LOGGER.error("Error from mobile preferences", e);
@@ -992,7 +1001,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		} else {
 			//no thanks
 			try {
-				FDCustomerManager.storeSmsPreferenceFlag(user.getIdentity().getErpCustomerPK(),"N");
+				FDCustomerManager.storeSmsPreferenceFlag(user.getIdentity().getErpCustomerPK(),"N", user.getUserContext().getStoreContext().getEStoreId());
 			} catch (FDResourceException e) {
 				LOGGER.error("Error from mobile preferences", e);
 			}

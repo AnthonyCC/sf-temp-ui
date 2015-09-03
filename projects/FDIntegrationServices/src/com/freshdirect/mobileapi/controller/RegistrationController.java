@@ -16,11 +16,14 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EmailPreferencesResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.MobilePreferencesResult;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
@@ -42,6 +45,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
+import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -69,8 +73,11 @@ public class RegistrationController extends BaseController {
     private final static String ACTION_SET_MOBILE_PREFERENCES = "setmobilepreferences";
     
     private final static String ACTION_SET_EMAIL_PREFERENCES = "setemailpreferences";
-
+    
     private final static String ACTION_GET_EMAIL_PREFERENCES = "getemailpreferences";
+  
+    private final static String ACTION_GET_MOBILE_PREFERENCES = "getmobilepreferences";
+
 
 	protected boolean validateUser() {
 		return false;
@@ -115,17 +122,18 @@ public class RegistrationController extends BaseController {
           
         } else if (ACTION_SET_MOBILE_PREFERENCES.equals(action)) {
         	MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
-            model = setMobilePreferences(model, user, requestMessage, request);
+            model = setMobilePreferences(model, user, requestMessage, request );
         } else if (ACTION_SET_EMAIL_PREFERENCES.equals(action)){
         	EmailPreferenceRequest requestMessage = parseRequestObject(request, response, EmailPreferenceRequest.class);
         	model = setEmailPreference(model, user, requestMessage, request);
         } else if (ACTION_GET_EMAIL_PREFERENCES.equals(action)){
         	model = getEmailPreference(model, user, request);
-        }
-		 
+        }	
+		else if (ACTION_GET_MOBILE_PREFERENCES.equals(action)) {
+	            model = getMobilePreferences(model, user, request );
+		}
 		return model;
 	}
-
 	/**
 	 * @param model
 	 * @param user
@@ -202,7 +210,7 @@ public class RegistrationController extends BaseController {
 					setResponseMessage(model, responseMessage, user);
 					return model;
 				}
-			}
+			}	
 			//------------------------------		
 			/*DeliveryAddressRequest dliveryAddressRequest = new DeliveryAddressRequest();		
 			dliveryAddressRequest.setDlvfirstname(requestMessage.getFirstName());
@@ -221,8 +229,6 @@ public class RegistrationController extends BaseController {
 		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
-		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);				
 		MobilePreferenceRequest mobilePreferenceRequest = new MobilePreferenceRequest();
 		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());		
     	if(requestMessage.isRecieveSMSAlerts()){	    	
@@ -234,18 +240,18 @@ public class RegistrationController extends BaseController {
 			mobilePreferenceRequest.setOrder_exceptions("N");
 			mobilePreferenceRequest.setOffers("N");		
     	}
-				
-		ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest, cm);
-		
+    	FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+		ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest,  FDCustomerModel.getCustomerEStoreModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+					
 		ActionResult result = resultBundle.getActionResult();
 		ActionResult result1 = resultBundle1.getActionResult();
-			//ActionResult result2 = resultBundleAdd.getActionResult();
+		//	ActionResult result2 = resultBundleAdd.getActionResult();
 		
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		propogateSetSessionValues(request.getSession(), resultBundle1);
 		//	propogateSetSessionValues(request.getSession(), resultBundleAdd);			
-		//if (result.isSuccess() && result1.isSuccess() && result2.isSuccess()) {
-			if (result.isSuccess() && result1.isSuccess()) {
+		//	if (result.isSuccess() && result1.isSuccess() && result2.isSuccess()) {
+			 if (result.isSuccess() && result1.isSuccess()) {
 			request.getSession().setAttribute(SessionName.APPLICATION,
 					EnumTransactionSource.FDX_IPHONE.getCode());
 			user = getUserFromSession(request, response);
@@ -336,7 +342,6 @@ public class RegistrationController extends BaseController {
 		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);				
 				
 		MobilePreferenceRequest mobilePreferenceRequest = new MobilePreferenceRequest();
 		mobilePreferenceRequest.setMobile_number(requestMessage.getMobile_number());		
@@ -351,8 +356,10 @@ public class RegistrationController extends BaseController {
     	}
 				
     	propogateSetSessionValues(request.getSession(), resultBundle);
+    //	ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest, cm);
+    	FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
     	
-    	ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest, cm);
+    	ResultBundle resultBundle1 = tagWrapper.setMobilePreferences(mobilePreferenceRequest,  FDCustomerModel.getCustomerEStoreModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
 		
 		ActionResult result = resultBundle.getActionResult();
 		ActionResult result1 = resultBundle1.getActionResult();
@@ -502,9 +509,8 @@ public class RegistrationController extends BaseController {
         FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-									       
-        ResultBundle resultBundle = tagWrapper.setMobilePreferences(reqestMessage, cm);
+		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+        ResultBundle resultBundle = tagWrapper.setMobilePreferences(reqestMessage, fdCustomerModel.getCustomerEStoreModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         if (result.isSuccess()) {
@@ -517,8 +523,7 @@ public class RegistrationController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-	
-    private ModelAndView setEmailPreference(ModelAndView model, SessionUser user, EmailPreferenceRequest reqestMessage,
+   private ModelAndView setEmailPreference(ModelAndView model, SessionUser user, EmailPreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
 
     	Message responseMessage = null;
@@ -567,5 +572,33 @@ public class RegistrationController extends BaseController {
     	setResponseMessage(model, responseMessage, user);
     	
     	return model;
+    }
+    
+    private ModelAndView getMobilePreferences(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+       
+    	FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
+		FDIdentity identity  = fduser.getIdentity();
+		
+		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+		FDCustomerEStoreModel fdCustomerEStoreModel =fdCustomerModel.getCustomerEStoreModel();
+		MobilePreferencesResult mobileresponseMessage = new MobilePreferencesResult();
+		
+		if("FDX".equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
+			{
+				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices())? false:true);
+	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions())? false:true);
+				  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOffers())? false:true);
+				  mobileresponseMessage.setMobile_number(fdCustomerEStoreModel.getMobileNumber()!=null?fdCustomerEStoreModel.getMobileNumber().getPhone():"");
+			}else{
+				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getOrderNotices())? false:true);
+	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getOrderExceptions())? false:true);
+				  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getOffers())? false:true);
+				  mobileresponseMessage.setMobile_number(fdCustomerEStoreModel.getMobileNumber()!=null?fdCustomerEStoreModel.getMobileNumber().getPhone():"");
+	    	     }
+			
+    	setResponseMessage(model, mobileresponseMessage, user);
+    	
+    	return model;
+    
     }
 }

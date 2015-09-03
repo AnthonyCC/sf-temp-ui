@@ -88,6 +88,8 @@ public class FDOrderTranslator {
 			if(cart.getDeliveryAddress()!=null)
 				deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
 			
+		 	   deliveryInfo.setOrderMobileNumber(cart.getOrderMobileNumber());
+			
 			if(deliveryReservation!=null && deliveryReservation.getTimeslot()!=null) {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());

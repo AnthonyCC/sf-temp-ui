@@ -272,7 +272,7 @@ public class LogisticsDataEncoder {
 	public static SubscriptionRequest encodeAddSubscriptionRequest(
 			String customerId, String mobileNumber, String textOffers,
 			String textDelivery, String orderNotices, String orderExceptions,
-			String offers, String partnerMessages, Date receivedDate) {
+			String offers, String partnerMessages, Date receivedDate, String companyCode) {
 		SubscriptionRequest request = new SubscriptionRequest();
 		
 		Subscription subscription = new Subscription();
@@ -283,14 +283,15 @@ public class LogisticsDataEncoder {
 		subscription.setPartnerMessageNotification(partnerMessages);
 		subscription.setSmsOffersAlert(textOffers);
 		subscription.setSmsOptinDate(receivedDate);
+		subscription.setCompanyCode(companyCode);
 		
 		request.setSubscription(subscription);
 		return request;
 	}
 
 	public static CreateOrderRequest encodeUpdateOrderRequest(String orderId,
-			String parentOrderId, double tip, String reservationId) {
-		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId);
+			String parentOrderId, double tip, String reservationId, String orderMobileNumber) {
+		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId,  orderMobileNumber);
 		return request;
 	}
 	

@@ -5,6 +5,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
@@ -29,15 +30,22 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			customer.getCustomerInfo().isReceiveNewsletter(),
 			customer.getCustomerInfo().isEmailPlaintext(),
 			customer.getCustomerInfo().isReceiveOptinNewsletter(),
-			customer.getCustomerInfo().getMobileNumber(),
-			customer.getCustomerInfo().isDeliveryNotification(),
-			customer.getCustomerInfo().isOffersNotification(),
-			customer.getCustomerInfo().getOrderNotices().value(),
-			customer.getCustomerInfo().getOrderExceptions().value(),
-			customer.getCustomerInfo().getOffers().value(),
-			customer.getCustomerInfo().getPartnerMessages().value(),
+			fdCustomer.getCustomerEStoreModel().getMobileNumber(),
+			fdCustomer.getCustomerEStoreModel().getDeliveryNotification(),
+			fdCustomer.getCustomerEStoreModel().getOffersNotification(),
+			fdCustomer.getCustomerEStoreModel().getOrderNotices(),
+			fdCustomer.getCustomerEStoreModel().getOrderExceptions(),
+			fdCustomer.getCustomerEStoreModel().getOffers(),
+			fdCustomer.getCustomerEStoreModel().getPartnerMessages(),
 			customer.getCustomerInfo().isGoGreen(),
-			customer.getCustomerInfo().getMobilePreference());
+			customer.getCustomerInfo().getMobilePreference(),
+			fdCustomer.getCustomerEStoreModel().getFdxMobileNumber(),
+			fdCustomer.getCustomerEStoreModel().getFdxOrderNotices(),
+			fdCustomer.getCustomerEStoreModel().getFdxOrderExceptions(),
+			fdCustomer.getCustomerEStoreModel().getFdxOffers(),
+			fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification(),
+			fdCustomer.getCustomerEStoreModel().getFdxOffersNotification(),
+			fdCustomer.getCustomerEStoreModel());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
@@ -61,17 +69,89 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 		private String orderExceptions;
 		private String offers;
 		private String partnerMessages;
+		private PhoneNumber fdxMobileNumber;
+		private String fdxOrderExceptions;
+		private String fdxOffers;
+		private String FdxPartnerMessages;
+		private boolean fdxDeliveryNotification;
+		private boolean fdxOffersNotification;
 		
+		
+		public boolean isFdxDeliveryNotification() {
+			return fdxDeliveryNotification;
+		}
+
+		public void setFdxDeliveryNotification(boolean fdxDeliveryNotification) {
+			this.fdxDeliveryNotification = fdxDeliveryNotification;
+		}
+
+		public boolean isFdxOffersNotification() {
+			return fdxOffersNotification;
+		}
+
+		public void setFdxOffersNotification(boolean fdxOffersNotification) {
+			this.fdxOffersNotification = fdxOffersNotification;
+		}
+
+		public String getFdxPartnerMessages() {
+			return FdxPartnerMessages;
+		}
+
+		public void setFdxPartnerMessages(String fdxPartnerMessages) {
+			FdxPartnerMessages = fdxPartnerMessages;
+		}
+
 		private boolean goGreen;
 		private String mobilePrefs;
-		
-		
+		private FDCustomerEStoreModel fdCustomerEStoreModel;
 
+		//FDX SMS Alerts
+		private String fdxOrderNotices;
+		public String getFdxOrderNotices() {
+			return fdxOrderNotices;
+		}
+
+		public void setFdxOrderNotices(String fdxOrderNotices) {
+			this.fdxOrderNotices = fdxOrderNotices;
+		}
+
+		public String getFdxOrderExceptions() {
+			return this.fdxOrderExceptions = fdxOrderExceptions;
+		}
+
+		public void setFdxOrderExceptions(String fdxOrderExceptions) {
+			this.fdxOrderExceptions = fdxOrderExceptions;;
+		}
+
+		public String getFdxOffers() {
+			return this.fdxOffers=fdxOffers;
+		}
+
+		public void setFdxOffers(String fdxOffers) {
+			this.fdxOffers = fdxOffers;
+		}
+
+		public PhoneNumber getFdxMobileNumber() {
+			return this.fdxMobileNumber;
+		}
+
+		public void setFdxMobileNumber(PhoneNumber fdxMobileNumber) {
+			this.fdxMobileNumber = fdxMobileNumber;
+		}
 		
+		public FDCustomerEStoreModel getFdCustomerEStoreModel() {
+			return fdCustomerEStoreModel;
+		}
+
+		public void setFdCustomerEStoreModel(FDCustomerEStoreModel fdCustomerEStoreModel) {
+			this.fdCustomerEStoreModel = fdCustomerEStoreModel;
+		}
 
 		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter,
 					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, String orderNotices, String orderExceptions,
-					String offers, String partnerMessages, boolean goGreen, String mobilePrefs ) {
+					String offers, String partnerMessages, boolean goGreen, String mobilePrefs,PhoneNumber fdxMobileNumber,
+					String fdxOrderNotices, String fdxOrderExceptions, String fdxOffers, boolean fdxDeliveryNotification,
+					boolean fdxOffersNotification, FDCustomerEStoreModel fdCustomerEStoreModel) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
@@ -80,17 +160,25 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			this.mobileNumber = mobileNumber;
 			this.delNotification = delNotification;
 			this.offNotification = offNotification;
+			this.fdxDeliveryNotification=fdxDeliveryNotification;
+			this.fdxOffersNotification=fdxOffersNotification;
  			//sms Alerts
 			this.orderNotices = orderNotices;
 			this.orderExceptions = orderExceptions;
 			this.offers = offers;
 			this.partnerMessages = partnerMessages;
-
+			this.fdxOrderNotices = fdxOrderNotices;
+			this.fdxOrderExceptions = orderExceptions;
+			this.fdxMobileNumber = fdxMobileNumber;
+			this.fdxOffers = fdxOffers;
+			this.fdxOrderExceptions=fdxOrderExceptions;
 			this.goGreen = goGreen;
 			this.mobilePrefs = mobilePrefs;
+			this.fdCustomerEStoreModel=fdCustomerEStoreModel;
 		}
 
 		public String getOrderNotices() {
+		
 			return orderNotices;
 		}
 		public void setOrderNotices(String orderNotices) {

@@ -250,7 +250,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
   	
-  } else if (loaddata == "AddPaymentMethod") {
+  } else if (loaddata == "CheckoutSetOrderLevelMobileNumberEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/order/set/");
+  	    $("#payload").val('{"mobile_number" : "2019361486"}');
+   }  else if (loaddata == "AddPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
   	
@@ -419,7 +422,10 @@ function loadStuff() {
   } else if(loaddata == "GetEmailPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/getemailpreferences/");
   	$("#payload").val('');
-  } else if (loaddata == "ModifyOrder") {
+  }  else if(loaddata == "GetMobilePreferences") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/getmobilepreferences/");
+  	$("#payload").val('');
+  }   else if (loaddata == "ModifyOrder") {
   	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#payload").val('');
   	
@@ -1046,6 +1052,7 @@ function doStuff() {
   <option value="AddAndSetDeliveryAddress">CHECKOUT - Add and Set Delivery Address</option>
   <option value="CheckoutEditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
   <option value="CheckoutDeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
+  <option value="CheckoutSetOrderLevelMobileNumberEx">CHECKOUT- Set Order Level Mobile Number Ex</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>
   <option value="RemoveAlcohol">CHECKOUT - Remove All Alcohol</option>
   <option value="ReserveDeliverySlot">CHECKOUT - Set Delivery Slot</option>
@@ -1162,6 +1169,7 @@ function doStuff() {
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
   <option value="SetMobilePreferences">ACCOUNT - Set Mobile Preferences</option>
+  <option value="GetMobilePreferences">ACCOUNT - Get Mobile Preferences</option>
   <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
   <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
   <option value=""> ========== MISC ========== </option>

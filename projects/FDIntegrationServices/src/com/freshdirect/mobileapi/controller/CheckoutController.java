@@ -28,11 +28,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
 import com.freshdirect.mobileapi.controller.data.request.Login;
+import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
@@ -126,6 +128,8 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_SPECIAL_RESTRICTED_DETAIL = "getsplrestricteditemdetail";
     
     private final static String ACTION_SUBMIT_ORDER_FDX ="submitOrderEx";
+    
+    private final static String ACTION_SET_ORDER_MOBILE_NUMBER_FDX ="setordermobilenumberfdx";
     
     private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
 
@@ -226,6 +230,9 @@ public class CheckoutController extends BaseController {
             model = getSpecialRestrictedItemDetail(model, user, request);
         } else if(ACTION_SUBMIT_ORDER_FDX.equals(action)){
         	model = submitOrderFDX(model,user,request);
+        } else if(ACTION_SET_ORDER_MOBILE_NUMBER_FDX.equals(action)){
+        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
+            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
         }
         return model;
     }
@@ -532,6 +539,22 @@ public class CheckoutController extends BaseController {
         
         return model;
     }
+    
+    private ModelAndView setOrderMobileNumberEx(ModelAndView model, SessionUser user, HttpServletRequest request, String orderlMobileNumber) throws FDException, JsonException {
+    	Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.setCheckoutOrderMobileNumberEx(orderlMobileNumber);
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        Message responseMessage = new DynamicAvailabilityError();
+        if (result.isSuccess()) {       	
+            responseMessage.setSuccessMessage("Mobile Number Added at on Order level Successfully.");            
+        }else {  
+        		responseMessage = getErrorMessage(result, request);
+        }
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
 
     /**
      * @param model

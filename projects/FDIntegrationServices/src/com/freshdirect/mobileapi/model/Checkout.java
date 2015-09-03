@@ -402,6 +402,14 @@ public class Checkout {
          } 
          return result;
     }
+    
+    public ResultBundle setCheckoutOrderMobileNumberEx(String orderMobileNumber)throws FDException{
+   	 CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = null;
+        if ((result == null) || (result.getActionResult().isSuccess())) 
+       	 result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
+         return result;
+   }
 
     private SessionUser sessionUser;
 

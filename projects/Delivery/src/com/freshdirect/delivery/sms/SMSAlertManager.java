@@ -56,7 +56,7 @@ public class SMSAlertManager {
 	 * @param alerts
 	 * @throws FDResourceException 
 	 */
-	public boolean smsOptIn(String customerId,String mobileNumber) throws FDResourceException{
+	public boolean smsOptIn(String customerId,String mobileNumber, String eStoreId) throws FDResourceException{
 		boolean isSent=false;
 		// we need to format the mobile number to fit the request
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
@@ -68,7 +68,7 @@ public class SMSAlertManager {
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
 			LOGGER.debug("calling smsAlertSB.smsOptIn()");
-			isSent = smsAlertSB.smsOptIn(customerId,mobileNumber);
+			isSent = smsAlertSB.smsOptIn(customerId,mobileNumber, eStoreId);
 		}catch (NamingException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {
@@ -80,6 +80,66 @@ public class SMSAlertManager {
 		
 		return isSent;
 	}
+	
+	
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+		boolean isSent=false;
+		PhoneNumber phone = new PhoneNumber(mobileNumber);
+		try{
+			lookupSmsAlertsHome();
+			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+			LOGGER.debug("calling smsAlertSB.smsOrderConfirmation()");
+			isSent = smsAlertSB.smsOrderConfirmation(customerId, mobileNumber, orderId);
+		}catch (NamingException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		return isSent;
+	}
+	
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+		boolean isSent=false;
+		PhoneNumber phone = new PhoneNumber(mobileNumber);
+		try{
+			lookupSmsAlertsHome();
+			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+			LOGGER.debug("calling smsAlertSB.smsOrderModification()");
+			isSent = smsAlertSB.smsOrderModification(customerId, mobileNumber, orderId);
+		}catch (NamingException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		return isSent;
+	}
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+		boolean isSent=false;
+		PhoneNumber phone = new PhoneNumber(mobileNumber);
+		try{
+			lookupSmsAlertsHome();
+			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+			LOGGER.debug("calling smsAlertSB.smsOrderCancel()");
+			isSent = smsAlertSB.smsOrderCancel(customerId, mobileNumber, orderId);
+		}catch (NamingException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		return isSent;
+	}
+	
+	
+	
+	
+	
 	
 	public void captureMessageRelayed(String mobileNumber, String shortCode, String carrierName, String receivedDate, String message, EnumEStoreId eStoreId) throws FDResourceException{
 		

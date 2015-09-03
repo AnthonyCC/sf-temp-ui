@@ -1,12 +1,12 @@
-<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*,com.freshdirect.delivery.sms.*,com.freshdirect.sms.*' %>
+<%@page import="monfox.toolkit.snmp.agent.modules.SnmpV2Mib.SysOREntry"%>
+<%@page import="monfox.toolkit.snmp.agent.modules.SnmpV2Mib.SysOREntry"%>
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*,com.freshdirect.delivery.sms.*,com.freshdirect.sms.*, com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
 <tmpl:insert template='/template/top_nav_pwdstrng.jsp'>
 
     <tmpl:put name='title' direct='true'>Account Details > Edit Username & Password & Options</tmpl:put>
-    
     <tmpl:put name='content' direct='true'>
 	<crm:GetFDUser id="user">
 	<crm:GetCustomerInfo id="customerInfo" user="<%=user%>">
@@ -110,27 +110,27 @@
                         <td colspan="2"><input type="checkbox" name="receiveOptinNewsletter" <%=customerInfo.isReceiveOptinNewsletter() ? "checked" : "" %>> Please include me on the President's Picks newsletter</td>
                     </tr>
 					<tr>
-                        <td colspan="2"><br><b>Mobile Options:</b><hr class="black1px"></td>
+                        <td colspan="2" align="center"><br><b>Mobile Options:</b><hr class="black1px"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" align="center" width="25"><br>FD</b><hr class="black1px"><td colspan="1" align="center"><br>FDX</b><hr class="black1px"></td>
                     </tr>
 					<tr>
-                        <td align="right">Mobile number:&nbsp;&nbsp;</td>
-                        <td><input type="text" class="input_text" style="width: 200px;" name="mobile_number" value="<%= customerInfo.getMobileNumber() != null?customerInfo.getMobileNumber().getPhone():"" %>"><fd:ErrorHandler result="<%=result%>" name="mobile_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+                   <tr><td align="left">Mobile number:&nbsp;<input type="text" class="input_text" style="width: 200px;" name="mobile_number" value="<%= customerInfo.getMobileNumber() != null?customerInfo.getMobileNumber().getPhone():"" %>"><fd:ErrorHandler result="<%=result%>" name="mobile_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+                 	<td align="left">Mobile number:&nbsp;<input type="text" class="input_text" style="width: 200px;" name="fdx_mobile_number" value="<%= customerInfo.getFdxMobileNumber() != null?customerInfo.getFdxMobileNumber().getPhone():"" %>"><fd:ErrorHandler result="<%=result%>" name="fdx_mobile_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
                     </tr>
-					<%-- <tr>
-                        <td colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=customerInfo.isDelNotification() ? "checked":""%>> Yes please notify me via text message with important information about my delivery.</td>
-                    </tr>
-					<tr valign="top">
-						<td colspan="2"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=customerInfo.isOffNotification() ? "checked":""%>/>Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
-					</tr> --%>
-					<tr>
-                        <td colspan="2"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Order Notices</td>
-                    </tr>
-					<tr valign="top">
-						<td colspan="2"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Order Exceptions</td>
-					</tr>
-					<tr valign="top">
-						<td colspan="2"><input class="radio" type="checkbox" name="offers" value="Y" <%=customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Offers</td>
-					</tr>
+						<tr>
+	                        <td colspan="1"><input class="radio" type="checkbox" name="order_notices" value="Y" <%= EnumSMSAlertStatus.NONE.value().equals(customerInfo.getOrderNotices())?"":"checked"%>/>&nbsp;Order Notices</td>
+	                        <td colspan="1" align="left"><input class="radio" type="checkbox" name="fdx_order_notices" value="Y" <%= EnumSMSAlertStatus.NONE.value().equals(customerInfo.getFdxOrderNotices())?"":"checked"%>/>&nbsp;Delivery Update</td>
+	                    </tr>
+						<tr valign="top">
+							<td colspan="1"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=EnumSMSAlertStatus.NONE.value().equals(customerInfo.getOrderExceptions())? "":"checked"%>/>&nbsp;Order Exceptions</td>
+							<td colspan="1" align="left"><input class="radio" type="checkbox" name="fdx_order_exceptions" value="Y" <%= EnumSMSAlertStatus.NONE.value().equals(customerInfo.getFdxOrderExceptions())?"":"checked"%>/>&nbsp;Order Status</td>
+						</tr>
+						<tr valign="top">
+							<td colspan="1"><input class="radio" type="checkbox" name="offers" value="Y" <%= EnumSMSAlertStatus.NONE.value().equals(customerInfo.getOffers())?"":"checked"%>/>&nbsp;Offers</td>
+							<td colspan="1" align="left"><input class="radio" type="checkbox" name="fdx_offers" value="Y" <%= EnumSMSAlertStatus.NONE.value().equals(customerInfo.getFdxOffers())?"":"checked"%>/>&nbsp;FDX Offers</td>
+						</tr>
 					<%-- <tr valign="top">
 						<td colspan="2"><input class="radio" type="checkbox" name="partner_nessages" value="Y" <%=customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Partner Messages</td>
 					</tr> --%>

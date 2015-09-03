@@ -1099,7 +1099,7 @@ public class FDDeliveryManager {
 	public void addSubscriptions(String customerId, String mobileNumber,
 			String textOffers, String textDelivery, String orderNotices,
 			String orderExceptions, String offers, String partnerMessages,
-			Date receivedDate)
+			Date receivedDate, String companyCode)
 			throws FDResourceException {
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator
@@ -1109,7 +1109,7 @@ public class FDDeliveryManager {
 							.encodeAddSubscriptionRequest(customerId,
 									mobileNumber, textOffers, textDelivery,
 									orderNotices, orderExceptions, offers,
-									partnerMessages, receivedDate));
+									partnerMessages, receivedDate, companyCode.toLowerCase()));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
@@ -1160,12 +1160,12 @@ public class FDDeliveryManager {
 		}
 	}
 	public void submitOrder(String orderId, String parentOrderId, double tip,
-			String reservationId) throws FDResourceException {
+			String reservationId, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.submitOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
@@ -1175,12 +1175,12 @@ public class FDDeliveryManager {
 	}
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
-			String reservationId) throws FDResourceException {
+			String reservationId,  String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.modifyOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);

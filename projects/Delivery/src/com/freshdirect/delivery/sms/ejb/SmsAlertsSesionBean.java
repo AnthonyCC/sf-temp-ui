@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.sms.ejb;
 
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +35,6 @@ import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.sms.FDSmsGateway;
 import com.freshdirect.sms.model.st.STSmsResponse;
 import com.freshdirect.sms.service.SmsServiceException;
-
 public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 	private static final long serialVersionUID = 644348982911326540L;
@@ -55,7 +55,20 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String OPTOUT_SUCCESS_MESSAG = "FreshDirect: You are unsubscribed and will not receive additional messages from FreshDirect. Reply HELP for help.";
 	private static final String HELP_MESSAGE = "FreshDirect: For more Help call 866-283-7374 or visit www.freshdirect.com/help. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
 	private static final String WRONG_RESPONSE_MESSAGE = "FreshDirect: Sorry, we didn't understand your response. Reply HELP for help, STOP to cancel.";
-
+	
+	private static final String FDX_OPT_IN_MESSAGE = "Reply YES to get automated FreshDirect marketing msgs. Consent not required 2 purchase. Up to 5msgs/order.Msg&Data rates apply. Reply HELP 4 help, STOP 2 cancel";
+	private static final String FDX_OPTIN_CONFIRMATION_SUCCESS_MESSAGE = "Thanks! You are now enrolled and consent to receive FreshDirect msgs. Up to 5msgs/order & more. Msg&Data rates may apply. Reply HELP for help, STOP to cancel.";
+	private static final String FDX_OPTOUT_SUCCESS_MESSAG = "FreshDirect: You are unsubscribed and will not receive additional messages from FreshDirect. Reply HELP for help.";
+	private static final String FDX_HELP_MESSAGE = "FreshDirect: For more Help call 866-283-7374 or visit www.freshdirect.com/help. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
+	private static final String FDX_WRONG_RESPONSE_MESSAGE = "FreshDirect: Sorry, we didn't understand your response. Reply HELP for help, STOP to cancel.";
+	private static final String FDX_ORDER_COFIRMATION = "FreshDirect Express:Thanks! Yours order has been confirmed!";
+	private static final String FDX_ORDER_CANCEL = "FreshDirect Express:Thanks! Your order has been cancelled";
+	private static final String FDX_ORDER_MODIFIED = "FreshDirect Express:Thanks! Your order has been modified";
+	private static final String FDX_ORDER_COFIRMATION_ALERT_TYPE = "ORDER_CONFIRMED";
+	private static final String FDX_ORDER_CANCEL_ALERT_TYPE = "ORDER_CANCEL";
+	private static final String FDX_ORDER_MODIFIED_ALERT_TYPE = "ORDER_MODIFIED";
+		
+	
 
 	/**
 	 * This method sends the optin sms message to customer when he enrolls
@@ -63,14 +76,18 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param mobileNumber
 	 * @return
 	 */
-	public boolean smsOptIn(String customerId, String mobileNumber) {
+	
+	public boolean smsOptIn(String customerId, String mobileNumber, String eStoreId) {
 		boolean isSent = false;
 
 		LOGGER.debug("Starting the optin session Bean");
-		
-		try {		
-			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPT_IN_MESSAGE);
-	
+		try {	
+			STSmsResponse smsResponseModel;
+			if(eStoreId.equalsIgnoreCase(EnumEStoreId.FD.name()))
+				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPT_IN_MESSAGE);
+			else
+				 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPT_IN_MESSAGE);	
+			
 			if (smsResponseModel != null) {
 				Connection con = null;
 				smsResponseModel.setDate(new Date());
@@ -103,6 +120,126 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		return isSent;
 	}
 
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId) {
+		boolean isSent = false;
+
+		LOGGER.debug("Starting the optin session Bean");
+		
+		try {		
+			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_COFIRMATION);
+	
+			if (smsResponseModel != null) {
+				Connection con = null;
+				smsResponseModel.setDate(new Date());
+				try {
+					con = this.getConnection();
+					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_COFIRMATION_ALERT_TYPE, customerId);
+	
+				} catch (Exception e) {
+					LOGGER.warn(e);
+	
+					throw new EJBException(e);
+				} finally {
+					try {
+						if (con != null) {
+							con.close();
+							con = null;
+						}
+					} catch (SQLException se) {
+						LOGGER.warn("Exception while trying to cleanup", se);
+					}
+				}
+				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+					isSent = true;
+				}
+			}
+		} catch (SmsServiceException e){
+			LOGGER.info("Confirmed sms failed with exception: " + e);
+		}
+
+		return isSent;
+	}
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId) {
+		boolean isSent = false;
+
+		LOGGER.debug("Starting the optin session Bean");
+		
+		try {		
+			
+			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_MODIFIED);
+	
+			if (smsResponseModel != null) {
+				Connection con = null;
+				smsResponseModel.setDate(new Date());
+				try {
+					con = this.getConnection();
+					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_CANCEL_ALERT_TYPE, customerId);
+	
+				} catch (Exception e) {
+					LOGGER.warn(e);
+	
+					throw new EJBException(e);
+				} finally {
+					try {
+						if (con != null) {
+							con.close();
+							con = null;
+						}
+					} catch (SQLException se) {
+						LOGGER.warn("Exception while trying to cleanup", se);
+					}
+				}
+				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+					isSent = true;
+				}
+			}
+		} catch (SmsServiceException e){
+			LOGGER.info(" OrderMofifiedsms failed with exception: " + e);
+		}
+
+		return isSent;
+	}
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) {
+		boolean isSent = false;
+
+		LOGGER.debug("Starting the optin session Bean");
+		
+		try {		
+			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_CANCEL);
+	
+			if (smsResponseModel != null) {
+				Connection con = null;
+				smsResponseModel.setDate(new Date());
+				try {
+					con = this.getConnection();
+					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_MODIFIED_ALERT_TYPE, customerId);
+	
+				} catch (Exception e) {
+					LOGGER.warn(e);
+	
+					throw new EJBException(e);
+				} finally {
+					try {
+						if (con != null) {
+							con.close();
+							con = null;
+						}
+					} catch (SQLException se) {
+						LOGGER.warn("Exception while trying to cleanup", se);
+					}
+				}
+				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+					isSent = true;
+				}
+			}
+		} catch (SmsServiceException e){
+			LOGGER.info("OrderCancelledsms failed with exception: " + e);
+		}
+
+		return isSent;
+	}
+	
 	/**
 	 * This method checks the customerInfo for pending sms Alerts which are
 	 * expired ( based on configured time) and expires them.
@@ -110,18 +247,17 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 */
 	public void expireOptin() {
 		Connection con = null;
-		
 		PreparedStatement ps=null;
 		PreparedStatement ps1=null;
 		ResultSet rs=null;
 		try {
-			con = this.getConnection();
-			String getExpiredOptin = "select customer_id, mobile_number, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION "
-					+ " from cust.customerinfo where (ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P') and  1440*(SYSDATE-SMS_OPTIN_DATE) >?";
+			con = getConnection();
+			String getExpiredOptin = "SELECT fdcustomer_id, mobile_number, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION "
+					+ " from cust.fdcustomer_estore where (ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P') and  1440*(SYSDATE-SMS_OPTIN_DATE) >?";
 			ps = con.prepareStatement(getExpiredOptin);
 			ps.setInt(1, getExpiryTime());
 			rs = ps.executeQuery();
-			String updateCustomerInfo = "update cust.customerinfo set MOBILE_NUMBER=null, SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where customer_id=?";
+			String updateCustomerInfo = "UPDATE cust.fdcustomer_estore set MOBILE_NUMBER=null, SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where fdcustomer_id=?";
 			ps1 = con.prepareStatement(updateCustomerInfo);
 			int batchCount = 0;
 			while (rs.next()) {
@@ -153,7 +289,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				} else {
 					ps1.setString(4, rs.getString("PARTNERMESSAGE_NOTIFICATION"));
 				}
-				ps1.setString(5, rs.getString("customer_id"));
+				ps1.setString(5, rs.getString("fdcustomer_id"));
 				ps1.addBatch();
 				batchCount++;
 
@@ -203,25 +339,31 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * @param message
 	 */
 	public void updateSmsReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) {
+			String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException  {
 		Connection con = null;
 		try {
 			con = this.getConnection();
 			
 			PhoneNumber phone = new PhoneNumber(mobileNumber);
 			String confirmed = isConfirmed(message);
-			List<SmsCustInfo> customerInfoList = getCustomerInfoList(con, phone.getPhone());
+			List<SmsCustInfo> customerInfoList = getCustomerInfoList(con, phone.getPhone(), eStoreId);
 			for (SmsCustInfo customerInfo : customerInfoList) {
 				updateSmsMessagesReceived(phone.getPhone(), shortCode, carrierName, receivedDate, message, customerInfo, con, confirmed, eStoreId);
 				if(!confirmed.equals("YES") && !confirmed.equals("STOP")){
 					break;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (RemoteException e) {
 			LOGGER.warn(e);
-
-			throw new EJBException(e);
-		} finally {
+			throw new RemoteException(e.getMessage());
+		}
+		catch (Exception e) {
+			LOGGER.warn(e);
+					throw new EJBException(e);
+		} 
+		
+		finally {
 			try {
 				if (con != null) {
 					con.close();
@@ -240,8 +382,10 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					throws SQLException, SmsServiceException, FDResourceException {
 		
 		PreparedStatement ps=null, ps1 = null;
+		STSmsResponse smsResponseModel;
 		try{
 		String customerId = customerInfo.getCustomerId();
+		String fdCustomerId = customerInfo.getFdCustomerId();
 		String updateSmsReceived = "insert into MIS.SMS_RECEIVED (SMS_ID, CUSTOMER_ID, MOBILE_NUMBER, SHORT_CODE, CARRIER_NAME, RECEIVED_DATE, MESSAGE)"
 				+ " VALUES(?, ?, ?, ?, ?, ?, ?)";
 		ps = con.prepareStatement(updateSmsReceived);
@@ -265,14 +409,17 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		
 		
 		if (confirmed.equalsIgnoreCase("YES")) {
-			String updateConfirmed = "update cust.customerinfo set ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=? ";
+			
+				String updateConfirmed ="UPDATE CUST.FDCUSTOMER_ESTORE SET ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?," +
+						" PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where FDCUSTOMER_ID=?  AND E_STORE=?";
 			ps1 = con.prepareStatement(updateConfirmed);
 			ps1.setString(1, notice.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : notice);
 			ps1.setString(2, exceptions.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value(): exceptions);
 			ps1.setString(3, offer.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : offer);
 			ps1.setString(4, pMessage.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : pMessage);
 			ps1.setTimestamp(5, new java.sql.Timestamp(receivedDate.getTime()));
-			ps1.setString(6, customerId);
+			ps1.setString(6, fdCustomerId);
+			ps1.setString(7, eStoreId.getContentId());
 			ps1.executeUpdate();
 			
 			FDDeliveryManager.getInstance().addSubscriptions(customerId,
@@ -280,21 +427,28 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					null, notice.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : notice,
 					exceptions.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value(): exceptions, 
 					null, pMessage.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : pMessage,
-							receivedDate);
+							receivedDate, eStoreId.getContentId());
 			
-			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE);
+			 if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.name()))
+					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE);
+				else
+					 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTIN_CONFIRMATION_SUCCESS_MESSAGE);	
+			
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTIN_ALERT_TYPE, customerId);
 
 		}  else if (confirmed.equalsIgnoreCase("STOP")) {
-			String updateStop = "update cust.customerinfo set mobile_number=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?";
-			ps1 = con.prepareStatement(updateStop);
+			
+			String updateStop = "update cust.fdcustomer_estore set mobile_number=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? WHERE FDCUSTOMER_ID=? AND E_STORE=?";
+			
+			ps1 = con.prepareStatement(updateStop.toString());
 			ps1.setString(1, EnumSMSAlertStatus.NONE.value());
 			ps1.setString(2, EnumSMSAlertStatus.NONE.value());
 			ps1.setString(3, EnumSMSAlertStatus.NONE.value());
 			ps1.setString(4, EnumSMSAlertStatus.NONE.value());
 			ps1.setTimestamp(5, new java.sql.Timestamp(receivedDate.getTime()));
-			ps1.setString(6, customerId);
+			ps1.setString(6, fdCustomerId);
+			ps1.setString(7, eStoreId.getContentId());
 			ps1.executeUpdate();
 			
 			FDDeliveryManager.getInstance().addSubscriptions(customerId,
@@ -302,17 +456,25 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					null, EnumSMSAlertStatus.NONE.value(),
 					EnumSMSAlertStatus.NONE.value(), 
 					null, EnumSMSAlertStatus.NONE.value(),
-					receivedDate);
-			
-			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTOUT_SUCCESS_MESSAG);
+					receivedDate,eStoreId.getContentId());
+			 if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.name()))
+					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTOUT_SUCCESS_MESSAG);
+				else
+					 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTOUT_SUCCESS_MESSAG);	
+			 
+			 
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTOUT_ALERT_TYPE, customerId);
 		} else if (confirmed.equalsIgnoreCase("HELP")) {
-			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, HELP_MESSAGE);
+			 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, HELP_MESSAGE);
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, HELP_ALERT_TYPE, customerId);
 		} else {
-			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE);
+			if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.name()))
+				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, WRONG_RESPONSE_MESSAGE);
+			else
+				 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_WRONG_RESPONSE_MESSAGE);	
+			
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
 		}
@@ -324,8 +486,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				ps.close();
 			}
 		}
-
-		
 		
 	}
 
@@ -384,27 +544,37 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 	}
 
-	private List<SmsCustInfo> getCustomerInfoList(Connection con, String mobileNumber)
-			throws SQLException {
+	private List<SmsCustInfo> getCustomerInfoList(Connection con, String mobileNumber,  EnumEStoreId eStoreId) 
+			throws SQLException, RemoteException {
 		List<SmsCustInfo> customerInfoList = new ArrayList<SmsCustInfo>();
 		PreparedStatement ps = null;
 		ResultSet rs=null;
+		PreparedStatement ps1 =null;
+		ResultSet rs1=null;
+		int count=0;
 		try{
-		ps = con
-				.prepareStatement("select customer_id, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION from cust.customerinfo where mobile_number = ? ");
-		ps.setString(1, mobileNumber);
 		
-		rs = ps.executeQuery();
-		while (rs.next()) {
+			ps = con.prepareStatement("SELECT FC.ERP_CUSTOMER_ID,E.FDCUSTOMER_ID, E.ORDER_NOTIFICATION, E.ORDEREXCEPTION_NOTIFICATION, E.SMS_OFFERS_ALERT, E.PARTNERMESSAGE_NOTIFICATION " +
+					" FROM CUST.FDCUSTOMER_ESTORE E, CUST.FDCUSTOMER FC WHERE E.FDCUSTOMER_ID=FC.ID AND  MOBILE_NUMBER = ? AND E.E_STORE = ?"); 
+			ps.setString(1, mobileNumber);
+			ps.setString(2, eStoreId.getContentId());
+			rs = ps.executeQuery();
+					
+		if (rs.next()) {
 			SmsCustInfo smsCustInfo = new SmsCustInfo();
-			smsCustInfo.setCustomerId(rs.getString("customer_id"));
+			smsCustInfo.setCustomerId(rs.getString("ERP_CUSTOMER_ID"));
+			smsCustInfo.setFdCustomerId(rs.getString("FDCUSTOMER_ID"));
 			smsCustInfo.setSmsOrderNotice(rs.getString("ORDER_NOTIFICATION"));
 			smsCustInfo.setSmsOrderException(rs.getString("ORDEREXCEPTION_NOTIFICATION"));
 			smsCustInfo.setSmsOffers(rs.getString("SMS_OFFERS_ALERT"));
 			smsCustInfo.setSmsPartnerMessage(rs.getString("PARTNERMESSAGE_NOTIFICATION"));
 			customerInfoList.add(smsCustInfo);
+		}else{
+			throw new FDResourceException("THIS MOBILE NUMBER IS NOT OPTIN");
 		}
-		}finally{
+	}
+		finally{
+			
 			close(rs,ps);
 		}
 
