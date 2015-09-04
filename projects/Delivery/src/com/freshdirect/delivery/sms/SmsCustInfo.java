@@ -6,7 +6,14 @@ public class SmsCustInfo {
 	private String smsOrderException;
 	private String smsOffers;
 	private String smsPartnerMessage;
+	private String fdCustomerId;
 	
+	public String getFdCustomerId() {
+		return fdCustomerId;
+	}
+	public void setFdCustomerId(String fdCustomerId) {
+		this.fdCustomerId = fdCustomerId;
+	}
 	public String getCustomerId() {
 		return customerId;
 	}

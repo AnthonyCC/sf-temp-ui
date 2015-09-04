@@ -13,9 +13,11 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -47,16 +49,17 @@ public class TextMessageAlertService {
 			ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
 			Map<String, String> formData = FormDataService.defaultService().getSimpleMap(alertRequest);
 			String mobileNumber = formData.get(AlertValidationConstraints.MOBILE);
-
-			isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(), mobileNumber);
+			
+			FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+			isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(), mobileNumber, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 
 			if (isSent) {
-				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobileNumber, convertBooleanValueToString(customerInfoModel.isOffersNotification()),
-						convertBooleanValueToString(customerInfoModel.isDeliveryNotification()), isOptionEnabled(formData, AlertValidationConstraints.NOTICES),
+				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobileNumber, convertBooleanValueToString(fdCustomer.getCustomerEStoreModel().getOffersNotification()),
+						convertBooleanValueToString(fdCustomer.getCustomerEStoreModel().getDeliveryNotification()), isOptionEnabled(formData, AlertValidationConstraints.NOTICES),
 						isOptionEnabled(formData, AlertValidationConstraints.ALERTS), isOptionEnabled(formData, AlertValidationConstraints.PERKS),
-						isAlertStatusEnabled(customerInfoModel.getPartnerMessages()), customerInfoModel);
+						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerEStoreModel().getPartnerMessages())), fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());
 
-				FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "Y");
+				FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
 			}
 		} catch (FDResourceException e) {
 			LOGGER.error("Error while store text message alert preferences.", e);
@@ -69,7 +72,7 @@ public class TextMessageAlertService {
 
 		try {
 			FDIdentity identity = user.getIdentity();
-			FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "N");
+			FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "N", user.getUserContext().getStoreContext().getEStoreId());
 			isCancel = true;
 		} catch (FDResourceException e) {
 			LOGGER.error("Error while cancel text message alert preferences.", e);
@@ -81,9 +84,11 @@ public class TextMessageAlertService {
 	public boolean showTextMessageAlertPopup(final FDUserI user) throws FDResourceException {
 		boolean showTextMessageAlertPopup = false;
 		FDIdentity identity = user.getIdentity();
-		ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
+		//ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
+		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+		FDCustomerEStoreModel fdCustomerEStoreModel=fdCustomer.getCustomerEStoreModel();
 
-		if (isTextMessageAlertPopupEnabled(user, customerInfoModel)) {
+		if (isTextMessageAlertPopupEnabled(user, fdCustomerEStoreModel )) {
 			showTextMessageAlertPopup = true;
 		}
 		return showTextMessageAlertPopup;
@@ -101,8 +106,8 @@ public class TextMessageAlertService {
 		return result;
 	}
 
-	private boolean isTextMessageAlertPopupEnabled(final FDUserI user, final ErpCustomerInfoModel customerInfoModel) {
-		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(customerInfoModel);
+	private boolean isTextMessageAlertPopupEnabled(final FDUserI user, final FDCustomerEStoreModel fdCustomerEStoreModel) {
+		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerEStoreModel);
 	}
 
 	private boolean isModeModifyOrder(final FDUserI user) {
@@ -110,8 +115,8 @@ public class TextMessageAlertService {
 		return (shoppingCart instanceof FDModifyCartModel);
 	}
 
-	private boolean isAlertFlagNotSet(final ErpCustomerInfoModel customerInfoModel) {
-		return customerInfoModel.getSmsPreferenceflag() == null;
+	private boolean isAlertFlagNotSet(final FDCustomerEStoreModel fdCustomerEStoreModel) {
+		return fdCustomerEStoreModel.getSmsPreferenceflag() == null;
 	}
 
 	private String isOptionEnabled(final Map<String, String> formdata, final String key) {
