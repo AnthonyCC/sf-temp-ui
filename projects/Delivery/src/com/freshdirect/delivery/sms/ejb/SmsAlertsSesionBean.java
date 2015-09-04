@@ -550,8 +550,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		ResultSet rs=null;
 		PreparedStatement ps1 =null;
-		ResultSet rs1=null;
-		int count=0;
 		try{
 		
 			ps = con.prepareStatement("SELECT FC.ERP_CUSTOMER_ID,E.FDCUSTOMER_ID, E.ORDER_NOTIFICATION, E.ORDEREXCEPTION_NOTIFICATION, E.SMS_OFFERS_ALERT, E.PARTNERMESSAGE_NOTIFICATION " +
@@ -569,8 +567,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			smsCustInfo.setSmsOffers(rs.getString("SMS_OFFERS_ALERT"));
 			smsCustInfo.setSmsPartnerMessage(rs.getString("PARTNERMESSAGE_NOTIFICATION"));
 			customerInfoList.add(smsCustInfo);
-		}else{
-			throw new FDResourceException("THIS MOBILE NUMBER IS NOT OPTIN");
 		}
 	}
 		finally{
