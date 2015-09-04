@@ -48,5 +48,30 @@ public interface CrmCustomerInfoI {
 
 	public String getMobilePreference();
 	public void setMobilePreference(String mobilePrefs);
+	
+	public PhoneNumber getFdxMobileNumber();
+	public void setFdxMobileNumber(PhoneNumber fdxMobileNumber);
 
+	public String getFdxOrderNotices();
+	public void setFdxOrderNotices(String fdxOrderNotices);
+	
+	public String getFdxOrderExceptions();
+	public void setFdxOrderExceptions(String fdxOrderExceptions);
+	
+	public String getFdxOffers();
+	public void setFdxOffers(String fdxOffers);
+	
+	public String getFdxPartnerMessages();
+	
+	public void setFdxPartnerMessages(String FdxPartnerMessages);
+	
+	public boolean isFdxDeliveryNotification();
+
+	public void setFdxDeliveryNotification(boolean fdxDeliveryNotification);
+
+	public boolean isFdxOffersNotification() ;
+
+	public void setFdxOffersNotification(boolean fdxOffersNotification);
+	
+	
 }
