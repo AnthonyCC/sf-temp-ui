@@ -138,7 +138,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		cart.setOrderMobileNumber(phoneNumber);
 	}
 
-	public void performAddDeliveryAddress() throws FDResourceException {
+	public ErpAddressModel performAddDeliveryAddress() throws FDResourceException {
 		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
 		FDCartModel cart =  user.getShoppingCart();
 		String actionName = getActionName();
