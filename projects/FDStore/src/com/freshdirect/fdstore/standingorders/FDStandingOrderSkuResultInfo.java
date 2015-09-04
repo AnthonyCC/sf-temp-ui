@@ -1,8 +1,9 @@
 package com.freshdirect.fdstore.standingorders;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FDStandingOrderSkuResultInfo {
+public class FDStandingOrderSkuResultInfo implements Serializable {
 	
 	String errorMessage;
 	List<FDStandingOrderProductSku>  productSkuList;
