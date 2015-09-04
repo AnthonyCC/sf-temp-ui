@@ -574,7 +574,7 @@ public class CartDataService {
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         cartData.getSubTotalBox().put("subTotalBox", subTotalBox);
-        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart.getSubTotal());
+        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);

@@ -63,7 +63,8 @@ public class CartSubTotalBoxService {
         return INSTANCE;
     }
 
-    public void populateSubTotalToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, double subTotalValue) {
+    public void populateSubTotalToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
+        double subTotalValue = cart.getSubTotal();
         CartSubTotalFieldData data = new CartSubTotalFieldData();
         data.setId(SUBTOTAL_ID);
         data.setText(SUBTOTAL_NAME);
