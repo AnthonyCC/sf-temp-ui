@@ -7,6 +7,7 @@ import org.jmock.Expectations;
 import com.freshdirect.Fixture;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 
 public class TimeslotServiceTest extends Fixture {
@@ -50,8 +51,8 @@ public class TimeslotServiceTest extends Fixture {
 				will(returnValue(endTime));
 			}
 		});
-
-		FormTimeslotData timeslot = service.loadCartTimeslot(cart);
+        FDUser user = new FDUser();
+        FormTimeslotData timeslot = service.loadCartTimeslot(user, cart);
 		
 		assertEquals(timeslotId,timeslot.getId());
 		assertEquals(year,timeslot.getYear());

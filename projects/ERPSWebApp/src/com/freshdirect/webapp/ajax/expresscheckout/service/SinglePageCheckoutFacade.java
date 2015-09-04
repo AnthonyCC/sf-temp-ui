@@ -103,7 +103,7 @@ public class SinglePageCheckoutFacade {
         result.setAddress(loadAddress(user, request.getSession()));
         result.setPayment(loadUserPaymentMethods(user, request));
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setTimeslot(TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
+        result.setTimeslot(TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart()));
         result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
         result.setRedirectUrl(
                 RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
@@ -122,7 +122,7 @@ public class SinglePageCheckoutFacade {
                 //$FALL-THROUGH$
             case DELETE_DELIVERY_ADDRESS_METHOD:
                 result.put(ADDRESS_JSON_KEY, loadAddress(user, session));
-                result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
+                result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart()));
                 result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                         availabilityService.selectWarningType(user)));
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
@@ -130,7 +130,7 @@ public class SinglePageCheckoutFacade {
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session));
-                    result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
+                    result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart()));
                     Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
                         result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
@@ -150,7 +150,7 @@ public class SinglePageCheckoutFacade {
                 result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                 break;
             case SELECT_DELIVERY_TIMESLOT:
-                result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
+                result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart()));
                 result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
                 break;
             case REMOVE_ALCOHOL_FROM_CART:
@@ -216,7 +216,7 @@ public class SinglePageCheckoutFacade {
         result.setDrawer(DrawerService.defaultService().loadDrawer());
         result.setAddress(loadCartAddress(order, user));
         result.setPayment(loadCartPayment(order, user));
-        result.setTimeslot(timeslotService.loadCartTimeslot(order));
+        result.setTimeslot(timeslotService.loadCartTimeslot(user, order));
         result.setSuccessPageData(loadSuccessPageData(order, requestURI, user));
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         return result;

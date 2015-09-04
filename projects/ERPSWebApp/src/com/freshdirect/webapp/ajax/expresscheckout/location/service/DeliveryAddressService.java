@@ -273,6 +273,8 @@ public class DeliveryAddressService {
 
 		}
 
+        TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(session);
+
 		return addresses;
 	}
 

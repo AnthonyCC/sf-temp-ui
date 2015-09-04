@@ -1,12 +1,15 @@
 package com.freshdirect.webapp.ajax.expresscheckout.timeslot.service;
 
 import java.text.DateFormatSymbols;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
@@ -21,15 +24,18 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.framework.util.LoggerFactory;
 import com.freshdirect.webapp.action.fdstore.ChooseTimeslotAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class TimeslotService {
 
     private static final TimeslotService INSTANCE = new TimeslotService();
+    private static final Logger LOG = LoggerFactory.getInstance(TimeslotService.class);
 
     private TimeslotService() {
     }
@@ -38,7 +44,7 @@ public class TimeslotService {
         return INSTANCE;
     }
 
-    public FormTimeslotData loadCartTimeslot(final FDCartI cart) {
+    public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart) {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
         if (reservation != null) {
@@ -56,18 +62,40 @@ public class TimeslotService {
     }
 
     public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, HttpSession session) throws FDResourceException {
+        String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
         try {
-            List<ValidationError> validationErrors = new ArrayList<ValidationError>();
-            String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
-            ActionResult actionResult = new ActionResult();
-            ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
-            for (ActionError error : actionResult.getErrors()) {
-                validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
-            }
-            return validationErrors;
+            return reserveDeliveryTimeslot(deliveryTimeSlotId, session);
         } catch (ReservationException e) {
+            LOG.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", deliveryTimeSlotId), e);
             throw new FDResourceException(e);
         }
+    }
+
+    public void applyPreReservedDeliveryTimeslot(HttpSession session) throws FDResourceException {
+        FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+        FDCartModel cart = user.getShoppingCart();
+        if (cart.getDeliveryReservation() == null) {
+            FDReservation reservation = user.getReservation();
+            if (reservation != null && cart.getDeliveryAddress() != null && cart.getDeliveryAddress().getId().equals(reservation.getAddressId())) {
+                String timeslotId = reservation.getTimeslotId();
+                try {
+                    reserveDeliveryTimeslot(timeslotId, session);
+                } catch (ReservationException e) {
+                    LOG.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", timeslotId), e);
+                    throw new FDResourceException(e);
+                }
+            }
+        }
+    }
+
+    private List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session) throws FDResourceException, ReservationException {
+        List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+        ActionResult actionResult = new ActionResult();
+        ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
+        for (ActionError error : actionResult.getErrors()) {
+            validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
+        }
+        return validationErrors;
     }
 
     public void releaseTimeslot(FDUserI user) throws FDResourceException {
