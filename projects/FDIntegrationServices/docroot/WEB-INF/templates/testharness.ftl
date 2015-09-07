@@ -902,7 +902,7 @@ function loadStuff() {
   	
   }  else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
-  	$("#payload").val('{"userToken" : "12345", "provider":"google"}'); 	
+  	$("#payload").val('{"accessToken" : "12345", "provider":"google"}'); 	
   	
   }
   $("#result").JSONView({});  	

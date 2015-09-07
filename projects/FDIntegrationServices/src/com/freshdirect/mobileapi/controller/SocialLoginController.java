@@ -64,13 +64,9 @@ public class SocialLoginController extends BaseController{
 		//recognize Account will merge the existing accounts as well as login the user.
 		
 		if(ACTION_RECOGNIZE_ACCOUNT.equals(action)){
-			final long startTime = System.nanoTime();
-			LOGGER.debug("Social Login start time============================= "+startTime);
 			SocialLogin requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLogin.class);
 			model = recognizeAccountAndLogin(model, user, requestMessage, request);
-			final long duration = System.nanoTime() - startTime;
-			LOGGER.debug("Social Login duration============================= "+duration);
 		} else if (ACTION_LINK_ACCOUNT.equals(action)){
 			SocialLinkAccountRequest requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLinkAccountRequest.class);
@@ -79,16 +75,11 @@ public class SocialLoginController extends BaseController{
 			SocialLogin requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLogin.class);
 			model = unlinkExistingAccounts(model, user, requestMessage, request);
-		} else if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){
-			final long startTime = System.nanoTime();
-			LOGGER.debug("Social Login start time============================= "+startTime);
+		} else if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){			
 			SocialLogin requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLogin.class);
-			model = socialConnectAccount(model, user, requestMessage, request);
-			LOGGER.debug("Social Login start time============================= "+startTime);
+			model = socialConnectAccount(model, user, requestMessage, request);		
 		}
-		 
-		
 		return model;
 	}
 	
@@ -168,21 +159,29 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			HttpServletRequest request) throws FDException, JsonException {
 		SocialLoginControllerTagWrapper wrapper = new SocialLoginControllerTagWrapper(
 				user);
+		HashMap<String, String> socialUser = null;
+		String userToken = null;
+		String accessToken = requestMessage.getAccessToken();
+		String providerName = requestMessage.getProvider();
+		
+		SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
+		socialUser = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
+		userToken = socialUser.get("userToken");
+		
+		requestMessage.setUserToken(userToken);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
 		propogateSetSessionValues(request.getSession(), resultBundle);
+		
 		Message responseMessage = null;
-		HashMap socialUser = null;
 		HttpServletResponse response = null;
-		String userToken = requestMessage.getUserToken();
-		String providerName = requestMessage.getProvider();
+
 		String userIdFromDB = FDSocialManager.getUserIdForUserToken(userToken);
-		SocialProvider socialProvider = SocialGateway
-				.getSocialProvider("ONE_ALL");
+		
 		if (result.isSuccess()) {
 			if (userToken != null)
-				socialUser = socialProvider.getSocialUserProfileByUserToken(
-						userToken, providerName);
+				/*socialUser = socialProvider.getSocialUserProfileByUserToken(
+						userToken, providerName);*/
 			responseMessage = setCurrentCartToTheUser(user, request, response);
 			((LoggedIn) responseMessage).setNewUser("false");
 			responseMessage
@@ -192,9 +191,9 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			if (responseMessage.getErrors().get("ERR_MERGE_PAGE_REDIRECT") != null) {
 				// user social account linking will be done here
 				if (userToken != null)
-					socialUser = socialProvider
+					/*socialUser = socialProvider
 							.getSocialUserProfileByUserToken(userToken,
-									providerName);
+									providerName);*/
 				if (socialUser != null) {
 					String email = (String) socialUser.get("email");
 					String provider = (String) socialUser.get("provider");
@@ -230,9 +229,9 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 					"ERR_SOCIAL_USER_UNRECOGNIZED") != null) {
 				// registration and login goes here
 				if (userToken != null)
-					socialUser = socialProvider
+				/*	socialUser = socialProvider
 							.getSocialUserProfileByUserToken(userToken,
-									providerName);
+									providerName);*/
 				if (socialUser != null) {
 					String email = (String) socialUser.get("email");
 					String displayName = (String) socialUser.get("displayName");

@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -326,6 +327,157 @@ public class SocialProviderOneAll implements SocialProvider {
 		
 		
 		return socialUser;
+	}
+	
+	public HashMap<String, String> getSocialUserProfileByAccessToken(
+			String accessToken, String providerName) {
+
+		if(accessToken == null || accessToken.length() ==0)
+			throw new IllegalArgumentException("Invalid User Token");
+		
+		if(providerName == null || providerName.length() ==0)
+			throw new IllegalArgumentException("Invalid Provider Name");
+
+		String resource_uri = "http://" + site_domain + "/users.json"; 
+
+		String resultJson = apiCallUsingAccessToken(resource_uri, accessToken, providerName);
+		
+		if(resultJson != null  && resultJson.length() > 0)
+			
+			return getSocialUserPropertiesForAccessToken(resultJson,providerName);
+			
+		return null;
+	
+	}
+
+	private HashMap<String, String> getSocialUserPropertiesForAccessToken(
+			String resultJson, String providerName) {
+		if (resultJson.toString() == null
+				|| resultJson.toString().length() == 0)
+			throw null;
+
+		HashMap<String, String> socialUser = new HashMap<String, String>();
+
+		// read json String to bytes
+		byte[] jsonData = resultJson.toString().getBytes();
+
+		// create ObjectMapper instance
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		// read JSON like DOM Parser
+		JsonNode rootNode, responseNode, resultNode, dataNode, userNode, emailsNode, identityNode;
+		String userToken = "", identityToken = "", provider = "", displayName = "", preferredUsername = "", domain = "", userid = "", email = "", emailVerified = "N";
+		try {
+			rootNode = objectMapper.readTree(jsonData);
+
+			responseNode = rootNode.isNull() ? null : (JsonNode) rootNode
+					.path("response");
+
+			resultNode = responseNode.isNull() ? null : (JsonNode) responseNode
+					.get("result");
+
+			dataNode = resultNode.isNull() ? null : (JsonNode) resultNode
+					.get("data");
+
+			userNode = dataNode.isNull() ? null : (JsonNode) dataNode
+					.get("user");
+
+			if (userNode != null) {
+				userToken = (String) userNode.path("user_token").asText();
+				identityNode = (JsonNode) userNode.path("identity");
+
+				if (identityNode != null) {
+					provider = identityNode.path("provider").asText();
+					if (provider.equalsIgnoreCase(providerName)) {
+						displayName = identityNode.path("displayName").asText();
+						provider = identityNode.path("provider").asText();
+						identityToken = identityNode.path("identity_token")
+								.isNull() ? "" : (String) identityNode.path(
+								"identity_token").asText();
+						emailsNode = identityNode.path("emails");
+						if (emailsNode != null) {
+							Iterator<JsonNode> emailElements = emailsNode
+									.elements();
+							int j = 0;
+							while (emailElements.hasNext()) {
+								if (j > 0)
+									break;
+								JsonNode emailNode = emailElements.next();
+								email = emailNode.path("value").asText();
+								emailVerified = emailNode.path("is_verified")
+										.isNull() ? "" : emailNode.path(
+										"is_verified").asText();
+								emailVerified = emailVerified
+										.equalsIgnoreCase("true") ? "Y" : "N";
+								j++;
+							}
+
+						}
+
+						socialUser.put("userToken", userToken);
+						socialUser.put("identityToken", identityToken);
+						socialUser.put("provider", provider);
+						socialUser.put("displayName", displayName);
+						socialUser.put("preferredUsername", preferredUsername);
+						socialUser.put("domain", domain);
+						socialUser.put("userid", userid);
+						socialUser.put("email", email);
+						socialUser.put("emailVerified", emailVerified);
+					}
+				}
+			}
+		} catch (JsonProcessingException e) {
+			LOGGER.error(e.getMessage());
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return socialUser;
+	}
+
+	private String apiCallUsingAccessToken(String resource_uri,
+			String accessToken, String providerName) {
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		String result_json = "";
+
+		try {
+			URL url = new URL(resource_uri);
+			String payload = "{\"request\":{\"user\":{\"action\":\"import_from_access_token\",\"identity\":{\"source\":{\"key\":\""
+					+ providerName
+					+ "\",\"access_token\":{\"key\":\""
+					+ accessToken + "\"}}}}}}";
+			byte[] data = payload.getBytes("UTF-8");
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setRequestProperty(
+					"Authorization",
+					"Basic "
+							+ new String(Base64
+									.encodeBase64(site_authentication
+											.getBytes())).replaceAll("[\n\r]",
+									""));
+			connection.setRequestProperty("Content-Type",
+					"application/json; charset=UTF-8");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setRequestMethod("PUT");
+
+			OutputStream osw = connection.getOutputStream();
+			osw.write(data);
+			osw.flush();
+			osw.close();
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+			while ((line = rd.readLine()) != null) {
+				sb.append(line);
+			}
+			result_json = sb.toString();
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return result_json;
 	}
 	
 	public static void main(String args[])

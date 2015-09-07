@@ -5,6 +5,7 @@ public class SocialLogin {
 	private String userToken;
 	private String email;
 	private String provider;
+	private String accessToken;
 	
 	public String getProvider() {
 		return provider;
@@ -29,4 +30,14 @@ public class SocialLogin {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+	
+	
 }

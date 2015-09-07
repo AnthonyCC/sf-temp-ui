@@ -235,4 +235,12 @@ public class SocialProviderJanRain implements SocialProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override
+	public HashMap<String, String> getSocialUserProfileByAccessToken(
+			String accessToken, String providerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
