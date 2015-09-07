@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.cms.search.BackgroundStatus"%>
 <%@page import="com.freshdirect.cms.search.IBackgroundProcessor"%>
 <%
-	IBackgroundProcessor tool = (IBackgroundProcessor) FDRegistry.getInstance().getService(IBackgroundProcessor.class);
+	IBackgroundProcessor tool = (IBackgroundProcessor) FDRegistry.getInstance().getService("com.freshdirect.cms.backgroundProcessor", IBackgroundProcessor.class);
 	BackgroundStatus status = tool.getStatus();
 
 	DateFormat fmt = new SimpleDateFormat();

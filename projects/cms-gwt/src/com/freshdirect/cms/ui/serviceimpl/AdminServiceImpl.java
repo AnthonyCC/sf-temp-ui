@@ -89,7 +89,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
      * @return
      */
     IBackgroundProcessor getAdminSearch() {
-        return (IBackgroundProcessor) FDRegistry.getInstance().getService(IBackgroundProcessor.class);
+        return (IBackgroundProcessor) FDRegistry.getInstance().getService("com.freshdirect.cms.backgroundProcessor", IBackgroundProcessor.class);
     }
     
 
@@ -131,6 +131,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
      */
     private static class CmsFormValidator implements ContentValidatorI {
 
+        @Override
         public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request, ContentNodeI oldNode) {
             ContentType type = ContentType.get(node.getAttributeValue("contentType").toString());
             ContentTypeDefI def = service.getTypeService().getContentTypeDefinition(type);

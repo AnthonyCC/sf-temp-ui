@@ -30,7 +30,6 @@ import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.search.spell.SpellingHit;
-
 import com.freshdirect.cms.util.MultiStoreProperties;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -261,39 +260,48 @@ public class CmsManager implements ContentServiceI {
 		return searchService.reconstructSpelling(term, threshold, maxHits);
 	}
 	
-	public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
+	@Override
+    public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
 		return pipeline.createPrototypeContentNode(cKey);
 	}
 
-	public ContentNodeI getContentNode(ContentKey cKey) {
+	@Override
+    public ContentNodeI getContentNode(ContentKey cKey) {
 		return pipeline.getContentNode(cKey);
 	}
 
-	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+	@Override
+    public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		return pipeline.getContentNodes(keys);
 	}
 
-	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
+	@Override
+    public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
 		return pipeline.queryContentNodes(type, criteria);
 	}
 
-	public Set<ContentKey> getContentKeys() {
+	@Override
+    public Set<ContentKey> getContentKeys() {
 		return pipeline.getContentKeys();
 	}
 
-	public Set<ContentKey> getContentKeysByType(ContentType type) {
+	@Override
+    public Set<ContentKey> getContentKeysByType(ContentType type) {
 		return pipeline.getContentKeysByType(type);
 	}
 
-	public Set<ContentKey> getParentKeys(ContentKey key) {
+	@Override
+    public Set<ContentKey> getParentKeys(ContentKey key) {
 		return pipeline.getParentKeys(key);
 	}
 
-	public ContentTypeServiceI getTypeService() {
+	@Override
+    public ContentTypeServiceI getTypeService() {
 		return pipeline.getTypeService();
 	}
 
-	public CmsResponseI handle(CmsRequestI request) {
+	@Override
+    public CmsResponseI handle(CmsRequestI request) {
 		if (request.getUser().isAllowedToWrite()) {
 			CmsResponseI response = pipeline.handle(request);
 			propagateCmsChangeEvent(request.getNodes());
@@ -310,7 +318,8 @@ public class CmsManager implements ContentServiceI {
 		}
 	}
 
-	public String getName() {
+	@Override
+    public String getName() {
 		return "CmsManager";
 	}
 
@@ -318,7 +327,8 @@ public class CmsManager implements ContentServiceI {
 		return this;
 	}
 
-	public ContentNodeI getRealContentNode(ContentKey key) {
+	@Override
+    public ContentNodeI getRealContentNode(ContentKey key) {
 		return pipeline.getRealContentNode(key);
 	}
 
@@ -457,7 +467,7 @@ public class CmsManager implements ContentServiceI {
 	 * @param contentNodes
 	 */
 	public void rebuildIndices(Collection<ContentNodeI> contentNodes) {
-		IBackgroundProcessor adminTool = (IBackgroundProcessor) FDRegistry.getInstance().getService(IBackgroundProcessor.class);
+        IBackgroundProcessor adminTool = (IBackgroundProcessor) FDRegistry.getInstance().getService("com.freshdirect.cms.backgroundProcessor", IBackgroundProcessor.class);
 
 		LOGGER.debug("rebuildIndices was invoked");
 		
