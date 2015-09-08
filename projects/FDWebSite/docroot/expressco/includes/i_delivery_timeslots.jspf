@@ -86,6 +86,7 @@ if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREAT
 			isForAdvOrdSlots = true;
 		}
 		if(timeslotList.size()==3 && idx.intValue()==2){
+			isForAdvOrdSlots = false;
 			isForNewAdvOrdSlots = true;
 		}
 
