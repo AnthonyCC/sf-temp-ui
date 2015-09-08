@@ -139,6 +139,7 @@ import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
@@ -2129,6 +2130,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
+				Collections.sort(order.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 				if(FDStoreProperties.isPromoLineItemEmailDisplay()){
 					setPromotionDescriptionForEmail(order);
 				}
