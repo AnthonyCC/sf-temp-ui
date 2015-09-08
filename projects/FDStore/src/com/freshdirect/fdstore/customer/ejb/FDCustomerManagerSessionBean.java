@@ -2146,7 +2146,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			//Start:: Add FDX SMS Order confirmation 
 				try {
 					FDOrderI order = getOrder(pk.getId());
-					if("S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices()))
+					if("S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
 					 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId());
 					
 				} catch (FDResourceException e) {
@@ -2893,7 +2893,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 			try {
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())&&"S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices()))
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())&&"S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
 					 isSent = SMSAlertManager.getInstance().smsOrderModification(info.getFdUserId() ,orderMobileNumber, saleId);
 			} catch (FDResourceException e) {
 				LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
