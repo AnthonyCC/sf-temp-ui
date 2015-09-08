@@ -178,17 +178,29 @@
 				</td>
   				<xsl:choose>
 					<xsl:when test="discount != ''">
+					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
                         <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
                         <td width="10" style="font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
                         <td colspan="3" width="70" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></td>                    
+                   </xsl:if>
+                   <xsl:if test="starts-with(departmentDesc, 'FREE')">
+                    <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:text>  </xsl:text></td>                
+                    <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:text> FREE </xsl:text></td>
+                   </xsl:if>
                     </xsl:when>	
 		   	
 					<xsl:otherwise>
+					<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
                         <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">(<xsl:value-of select="unitPrice"/>)</td>                
                         <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></td>
                         <td width="10" style="font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
                         <td colspan="3" width="70" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;"><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true' or number(groupQuantity) &gt; 0">&nbsp;S</xsl:if><xsl:if test="depositValue = 'true'">&nbsp;D</xsl:if></td>                    
+                   </xsl:if>
+                   <xsl:if test="starts-with(departmentDesc, 'FREE')">
+                     <td width="70" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:text>  </xsl:text></td>                
+                    <td width="60" align="right" style="font-weight:bold;font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;"><xsl:text> FREE </xsl:text></td>
+                   </xsl:if>
                     </xsl:otherwise>
 				</xsl:choose>
 			</tr>
@@ -199,7 +211,9 @@
 				<td width="16"></td>
 				<td width="22"></td>
 				<td colspan="2" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:red;">
+				<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<xsl:value-of select="discount/promotionDescription"/>&nbsp;(You Saved <xsl:value-of select="format-number(discountAmount, '$###,##0.00', 'USD')"/>)
+				</xsl:if>
 				</td>
 				<td width="70" align="right"></td>
 				<td width="60" align="right"></td>
@@ -213,7 +227,9 @@
 				<td width="16"></td>
 				<td width="22"></td>
 				<td colspan="2" style="font-family: Verdana, Arial, sans-serif;font-size:12px;">
+				<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				Group Discount&nbsp;<span style="color:red">(You Saved <xsl:value-of select="format-number(groupScaleSavings, '$###,##0.00', 'USD')"/>)</span>
+				</xsl:if>
 				</td>
 				<td width="70" align="right"></td>
 				<td width="60" align="right"></td>
@@ -227,7 +243,9 @@
 				<td width="16"></td>
 				<td width="22"></td>
 				<td colspan="2" style="font-family: Verdana, Arial, sans-serif;font-size:12px;color:purple;">
+				<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				Saved&nbsp;<xsl:value-of select="format-number(couponDiscount/discountAmt, '$###,##0.00', 'USD')"/> with coupon
+				</xsl:if>
 				</td>
 				<td width="70" align="right"></td>
 				<td width="60" align="right"></td>
