@@ -230,7 +230,7 @@ public class CmContext implements Serializable {
 		private boolean testAcc = true;
 		// by default, compound client id consists of FD ID and FDW client ID (test)
 		// calculated
-		private String compoundId = ENTERPRISE_ID + "|60391309";
+        private String compoundId = ENTERPRISE_ID + "|" + FDStoreProperties.getCoremetricsClientId();
 		
 		
 		// --- group #1 setters ---
