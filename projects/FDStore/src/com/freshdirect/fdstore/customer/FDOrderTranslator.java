@@ -85,8 +85,10 @@ public class FDOrderTranslator {
 			}
 			if(deliveryReservation!=null)
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
-			if(cart.getDeliveryAddress()!=null)
+			if(cart.getDeliveryAddress()!=null) {
 				deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
+				order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
+			}
 			
 		 	   deliveryInfo.setOrderMobileNumber(cart.getOrderMobileNumber());
 			
@@ -141,6 +143,7 @@ public class FDOrderTranslator {
 		} else {
 			ErpAddressModel address = cart.getDeliveryAddress();
 			if (address != null) {
+				
 				if (EnumServiceType.WEB.equals(address.getServiceType())) {
 					EnumWebServiceType webServiceType = address
 							.getWebServiceType();
