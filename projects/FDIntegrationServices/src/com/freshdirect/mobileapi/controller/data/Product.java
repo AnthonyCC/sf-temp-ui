@@ -146,6 +146,8 @@ public class Product extends Message {
     private List<AlsoSoldAs> alsoSoldAs = new ArrayList<AlsoSoldAs>();
 
     private List<Domain> domains = new ArrayList<Domain>();
+    
+    private List<String> greatAdditions = new ArrayList<String>();
 
     private List<KosherRestriction> kosherRestrictions;
 
@@ -279,11 +281,9 @@ public class Product extends Message {
         
         if ("perishable".equals(product.getLayout())) {
             setLayoutType(LayoutType.PERISHABLE);
-        }
-        if ("wine".equals(product.getLayout())) {
+        } else if ("wine".equals(product.getLayout())) {
             setLayoutType(LayoutType.WINE);
-        }
-        if ("componentGroupMeal".equals(product.getLayout())) {
+        } else if ("componentGroupMeal".equals(product.getLayout())) {
             setLayoutType(LayoutType.COMPONENT_GROUP_MEAL);
         }
         setQuantityText(product.getQuantitText());
@@ -386,7 +386,13 @@ public class Product extends Message {
         if (LayoutType.COMPONENT_GROUP_MEAL.equals(getLayoutType())) {
             List<ComponentGroup> componentGroups = product.getComponentGroups();
             for (ComponentGroup cgp : componentGroups) {
-                for (com.freshdirect.mobileapi.model.Variation var : cgp.getVariations()) {
+                if(cgp.getDescription() != null && cgp.getDescription().contains("Great Additions")){
+                	for(com.freshdirect.mobileapi.model.Product p : cgp.getProductList()){
+                		greatAdditions.add(p.getProductId());
+                	}
+                }
+            	
+            	for (com.freshdirect.mobileapi.model.Variation var : cgp.getVariations()) {
                     this.variations.add(new Variation(var));
                 }
             }
@@ -949,4 +955,13 @@ public class Product extends Message {
 	public void setNutrition(String nutritionInformation) {
 		this.nutrition = nutritionInformation;
 	}
+
+	public List<String> getGreatAdditions() {
+		return greatAdditions;
+	}
+
+	public void setGreatAdditions(List<String> greatAdditions) {
+		this.greatAdditions = greatAdditions;
+	}
+	
 }

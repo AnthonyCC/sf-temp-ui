@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariationOption;
@@ -41,9 +40,8 @@ public class ComponentGroup {
         this.description = cgm.getFullName();
 
         List<String> matCharNames = cgm.getCharacteristicNames();
-
         for (String matCharName : matCharNames) {
-            FDVariationOption[] varOpts = (FDVariationOption[]) cgm.getVariationOptions().get(matCharName);
+        	FDVariationOption[] varOpts = (FDVariationOption[]) cgm.getVariationOptions().get(matCharName);
             if (varOpts != null) {
                 for (FDVariationOption varOpt : varOpts) {
                     String optSkuCode = varOpt.getSkuCode();
@@ -67,6 +65,16 @@ public class ComponentGroup {
                     }
                 }
             }
+        }
+        
+        
+        
+        //This is specific for Great Additions
+        if(this.getDescription() != null && this.getDescription().contains("Great Additions") && cgm.getOptionalProducts() != null){
+        	for(Object p : cgm.getOptionalProducts()){
+        		ProductModel pm = (ProductModel)p;
+        		productList.add(Product.wrap(pm, user, cartLine, ctx));
+        	}
         }
     }
 
