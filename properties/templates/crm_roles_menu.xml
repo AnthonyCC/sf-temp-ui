@@ -264,7 +264,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="transportation">crmLateIssues.jsp,VSStatusLog.jsp,campaigns.jsp,add_campaign.jsp,delete_campaign.jsp,update_campaign.jsp,vsDetails.jsp,vsRedial.jsp,route_stop_report.jsp</links>
 		<links name="reports">late_delivery_report.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_details.jsp,order_not_submitted.jsp,carton_contents_view.jsp,carton_detail_view.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
+		<links name="customer">order_details.jsp,order_not_submitted.jsp,carton_contents_view.jsp,carton_detail_view.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">lateLog</links>
 		
 	</role>
@@ -293,7 +293,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="customer">order_details.jsp,order_search_results.jsp,customer_search_results.jsp,company_search_results.jsp,order_cases.jsp,order_transaction_details.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,place_order_build.jsp,coupon_history.jsp</links>
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">account_details.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,add_delivery_address.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">account_details.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,add_delivery_address.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp,username_password_option.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,lateRoute,buyDeliveryPass,editAddress</links>
 
 		<limit name="autoApprove">25</limit>
@@ -372,7 +372,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp,export_ws_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
-		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
 		<limit name="autoApprove">20</limit>
@@ -401,7 +401,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp,export_ws_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
 		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
-		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp</links>
+		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
 		<limit name="autoApprove">25</limit>
@@ -493,7 +493,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		</links>
 		<links name="returns">issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="customer">order_search_results.jsp,account_details.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,place_order_build.jsp,activity_log.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,delivery_pass.jsp,promotion_popup.jsp</links>
-		<links name="customeraccount">order_cases.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp</links>		
+		<links name="customeraccount">order_cases.jsp,order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>		
 		<links name="actions">lateLog,lateRoute,forceorder</links>		
 	</role>	
 	
