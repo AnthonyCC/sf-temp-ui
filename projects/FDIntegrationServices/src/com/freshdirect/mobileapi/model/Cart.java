@@ -17,6 +17,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -26,6 +27,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
@@ -41,11 +43,13 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
@@ -1081,11 +1085,36 @@ public class Cart {
     		cartDetail.setTimeslotId(cart.getDeliveryReservation().getTimeslotId());
     	}
     	
-    	
 			FDIdentity identity  = user.getFDSessionUser().getIdentity();
 			if(identity!=null){
 				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-				if(cm != null) {
+				FDCustomerModel fdcm = FDCustomerFactory.getFDCustomer(identity);
+				FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerEStoreModel() : null;
+				String esid = user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId().getContentId();
+				if(fdcm != null){
+					
+					if(cm != null && esid == null){
+						//Default
+						cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
+					} else {
+						String mobileNumber = null;
+						
+						//TODO: add order level mobile number
+						if("FDX".equals(esid)){
+							if(esm.getFdxMobileNumber() != null){
+								mobileNumber = esm.getFdxMobileNumber().getPhone();
+							} else if(esm.getMobileNumber() != null){
+								mobileNumber = esm.getMobileNumber().getPhone();
+							}							
+						} else {
+							mobileNumber = cm.getMobileNumber().getPhone();
+						}
+						cartDetail.setMobileNumber(mobileNumber);
+					}
+					
+					
+				} else if( cm != null) {
+					//Default
 					cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
 				}
 			}
