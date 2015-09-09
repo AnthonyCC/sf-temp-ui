@@ -647,6 +647,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
+				info.setSource(transactionSource);
 				
 				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status );
 			}
