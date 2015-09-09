@@ -20,8 +20,10 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -79,6 +81,8 @@ public class LoginController extends BaseController {
 	
 	private static final String FAKE_MERGE_PAGE="fake_merge_page";
 	private static final String FAKE_SUCCESS_PAGE="fake_success_page";
+	
+    private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
 	
 	private static Category LOGGER = LoggerFactory.getInstance(LoginController.class);
 
@@ -174,6 +178,27 @@ public class LoginController extends BaseController {
 				        user.getFDSessionUser().resetUserContext();
 				        
 				} else {
+					
+
+		        	
+		        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
+		        	
+		        	if(invalidLines.size()>0) {
+		        		
+		        		 Cart cart = user.getShoppingCart();
+					        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+					        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+					        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
+					        _responseMessage.setCartDetail(cartDetail);
+					        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+					        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+					        }*/
+					        setResponseMessage(model, _responseMessage, user);
+					        return model;
+		        		
+		        	} 
+		        
+					
 				
 				Message responseMessage = Message.createSuccessMessage("Anonymous Address added successfully.");
 				setResponseMessage(model, responseMessage, user);
