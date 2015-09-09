@@ -71,7 +71,7 @@ public class ComponentGroup {
         
         //This is specific for Great Additions
         if(this.getDescription() != null && this.getDescription().contains("Great Additions") && cgm.getOptionalProducts() != null){
-        	for(Object p : cgm.getOptionalProducts()){
+        	for(Object p : cgm.getAvailableOptionalProducts()){
         		ProductModel pm = (ProductModel)p;
         		productList.add(Product.wrap(pm, user, cartLine, ctx));
         	}
