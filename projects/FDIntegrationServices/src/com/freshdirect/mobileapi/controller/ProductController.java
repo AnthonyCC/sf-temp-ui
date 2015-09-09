@@ -310,6 +310,12 @@ public class ProductController extends BaseController {
         com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
         Message responseMessage;
+        if(product == null){
+        	responseMessage = Message.createFailureMessage("Could not find product");
+            setResponseMessage(model, responseMessage, user);
+            return model;
+        }
+        
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             
