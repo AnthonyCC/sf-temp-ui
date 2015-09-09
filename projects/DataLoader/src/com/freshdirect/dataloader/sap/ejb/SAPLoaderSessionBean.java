@@ -681,6 +681,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			priceRowModel.setScaleUnit(priceRow.getScaleUnit());
 			priceRowModel.setSapId(priceRow.getSapId());
 			priceRowModel.setSapZoneId(priceRow.getSapZoneId().length()<=6?"0000"+priceRow.getSapZoneId():priceRow.getSapZoneId());
+			priceRowModel.setPromoPrice(priceRow.getPromoPrice());
 
 			return priceRowModel;
 		}
