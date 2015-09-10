@@ -289,6 +289,12 @@ function loadStuff() {
   	$("#url").val("/user/account/update/");
   	$("#payload").val('{"oldUserName" : "bogus@freshdirect.com","newUserName" : "bogus1@freshdirect.com","oldPassword" : "test","newPassword" : "test1"}');
   	
+  } else if(loaddata == "AccountSetUserNames") {
+  	$("#url").val("/user/name/set/");
+  	$("#payload").val('{"firstName" : "ChangeMeFirstName","lastName" : "changeMeLastName"}');
+  }else if(loaddata == "AccountGetUserNames") {
+  	$("#url").val("/user/name/");
+  	$("#payload").val('');
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
   	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
@@ -1162,6 +1168,8 @@ function doStuff() {
   <option value="ContactUsSubmit">CONTACT US - Submit</option>
   <option value=""> ========== ACCOUNT ========== </option>
   <option value="updateUserAccount">ACCOUNT - Update User Account-email and/or password</option>
+  <option value="AccountSetUserNames">ACCOUNT - Set User Names (F&L)</option>
+  <option value="AccountGetUserNames">ACCOUNT - Get User Names (F&L)</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get Addresses</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get AddressesEX</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>
