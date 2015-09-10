@@ -84,7 +84,7 @@ public class CoremetricsCdfServiceCmd {
 					: null;
 
 			final boolean isMultiStoreEnv = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE).size() > 1;
-			final boolean isDBMode = CmsManager.getInstance().isReadOnlyContent(); 
+			final boolean isDBMode = !CmsManager.getInstance().isReadOnlyContent(); 
 					
 			// detect global mode by param
 			final boolean globalParam = ("-g".equals(param) || "--global".equals(param));
