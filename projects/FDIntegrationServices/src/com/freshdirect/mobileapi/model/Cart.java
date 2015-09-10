@@ -1092,22 +1092,27 @@ public class Cart {
 				FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerEStoreModel() : null;
 				String esid = user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId().getContentId();
 				if(fdcm != null){
-					
 					if(cm != null && esid == null){
 						//Default
 						cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
 					} else {
 						String mobileNumber = null;
 						
-						//TODO: add order level mobile number
-						if("FDX".equals(esid)){
-							if(esm.getFdxMobileNumber() != null){
-								mobileNumber = esm.getFdxMobileNumber().getPhone();
-							} else if(esm.getMobileNumber() != null){
-								mobileNumber = esm.getMobileNumber().getPhone();
-							}							
-						} else {
-							mobileNumber = cm.getMobileNumber().getPhone();
+						if(cart instanceof FDCartModel){
+							FDCartModel tmp = (FDCartModel)cart;
+							mobileNumber = tmp.getOrderMobileNumber() != null ? tmp.getOrderMobileNumber().getPhone() : null;
+						}
+
+						if(mobileNumber == null){
+							if("FDX".equals(esid)){
+								if(esm.getFdxMobileNumber() != null){
+									mobileNumber = esm.getFdxMobileNumber().getPhone();
+								} else if(esm.getMobileNumber() != null){
+									mobileNumber = esm.getMobileNumber().getPhone();
+								}							
+							} else {
+								mobileNumber = cm.getMobileNumber().getPhone();
+							}
 						}
 						cartDetail.setMobileNumber(mobileNumber);
 					}
