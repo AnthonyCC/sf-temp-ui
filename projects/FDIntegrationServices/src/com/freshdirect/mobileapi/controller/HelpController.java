@@ -13,10 +13,14 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.SafetyDetails;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.data.HelpTopic;
+import com.freshdirect.mobileapi.model.data.HelpTopics;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 
@@ -34,6 +38,8 @@ public class HelpController extends BaseController {
     public static final String LEARN_MORE_PROMO_ACTION = "learnMorePromo";
     public static final String TERMS_OF_USE_ACTION = "termsOfUse";
     public static final String DP_TERMS_AND_CONDITIONS_ACTION = "deliveryPassTermsAndConditions";
+    public static final String FOOD_SAFETY_ACTION = "foodSafety";
+    public static final String ABOUTUS_ACTION = "aboutUsFdx";
     
     private String helpPath = "/media/mobile/iphone/help/help";
     private String costumerServicePath = "/media/mobile/iphone/contact_us/customer_service_hours.json";
@@ -52,12 +58,17 @@ public class HelpController extends BaseController {
     private String alcoholAgeVerification = "/media/mobile/iphone/alcohol_restrictions/alcoholAgeVerification.json";
     private String backupdeliveryauthorization = "/media/mobile/iphone/backup_delivery_authorization/backupDeliveryAuthorization.json";
           
+    private String productRecallsPath = "/media/editorial/food_safety/food_safety_product_recalls.html";
+    private String foodSafetyPath = "/media/editorial/food_safety_fdx/food_safety_handling_food_safely.html";
+    private String cookingStoragePath = "/media/editorial/food_safety_fdx/food_safety_meat_dairy_seafood_cooking_storage.html";
+    private String aboutUsPath = "/media/editorial/about/overview_fdx/about_us_fdx.html";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
         String data = "";
         URL remoteUrl = null;
+        Html html = null;
         String mediaPath = FDStoreProperties.getMediaPath();
         
         String storeKey = ContentFactory.getInstance().getCurrentUserContext() != null 
@@ -134,6 +145,53 @@ public class HelpController extends BaseController {
                 LOGGER.warn("Unable to rerieve data from " + remoteUrl.toString());
                 data = "";
             }
+        }else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
+            try {
+            	HelpTopics helpTopics = new HelpTopics();
+            	HelpTopic foodSafety = new HelpTopic();
+            	SafetyDetails sfd = null;
+            	 foodSafety.setTitle("Food Safety");
+                 foodSafety.setPath("foodSafety");
+             	
+                 sfd = renderHTMLContent( new Html (mediaPath + productRecallsPath), "prodRecall");
+                 if(sfd!=null)
+                 foodSafety.setEntries(sfd);
+                 
+                 sfd = renderHTMLContent( new Html (mediaPath + cookingStoragePath), "storage");
+                 if(sfd!=null)
+                 foodSafety.setEntries(sfd);
+                 
+                 sfd = renderHTMLContent( new Html (mediaPath + foodSafetyPath), "foodSafety");
+                 if(sfd!=null)
+                 foodSafety.setEntries(sfd);
+                 
+                 helpTopics.setHelpTopics(foodSafety);
+                 data =getJsonString(helpTopics);
+                 
+            } catch (Exception e) {
+                LOGGER.warn("Unable to rerieve data from ");
+                data = "";
+            }
+        }else if (ABOUTUS_ACTION.equalsIgnoreCase(action)) {
+            try {
+            	HelpTopics helpTopics = new HelpTopics();
+            	HelpTopic aboutUs = new HelpTopic();
+            	
+            	
+             	html = new Html (mediaPath + aboutUsPath);
+                String  htmlData =  ProductUtil.readHtml(html);
+                
+                aboutUs.setTitle("About Us");
+            	aboutUs.setPath("aboutUs");
+                aboutUs.setEntries(htmlData);
+
+                 helpTopics.setHelpTopics(aboutUs);
+                 data =getJsonString(helpTopics);
+                 
+            } catch (Exception e) {
+                LOGGER.warn("Unable to rerieve data from " + html.toString());
+                data = "";
+            }
         } else {
             try {
             	if(storeKey != null) {
@@ -151,4 +209,38 @@ public class HelpController extends BaseController {
 
         return model;
     }
+
+    private SafetyDetails renderHTMLContent(Html html, String saftyType){
+    	SafetyDetails safetyDetails = null;
+    	try {
+    	String  data =  ProductUtil.readHtml(html);
+    	
+    	if(saftyType.equalsIgnoreCase("prodRecall")){
+	        StringBuilder sb=new StringBuilder(data);
+	        data = sb.substring(sb.indexOf("<table")-1, sb.indexOf("</table"));
+	        data = data+"</table>";
+	        safetyDetails = new SafetyDetails();
+	        safetyDetails.setTitle("Product Recalls");
+	        safetyDetails.setPath("prodRecall");
+	        safetyDetails.setDetail(data);
+	    	}
+    	else if(saftyType.equalsIgnoreCase("storage")){
+	        safetyDetails = new SafetyDetails();
+	        safetyDetails.setTitle("Cooking & Storage");
+	        safetyDetails.setPath("cookStorage");
+	        safetyDetails.setDetail(data);
+	    	}
+    	else if(saftyType.equalsIgnoreCase("foodSafety")){
+	        safetyDetails = new SafetyDetails();
+	        safetyDetails.setTitle("Handling Food Safety");
+	        safetyDetails.setPath("foodSafety");
+	        safetyDetails.setDetail(data);
+	    	}
+    	 } catch (Exception e) {
+             LOGGER.warn("Unable to rerieve data from " + html.toString());
+             
+         }
+    	return safetyDetails;
+    }
+    
 }
