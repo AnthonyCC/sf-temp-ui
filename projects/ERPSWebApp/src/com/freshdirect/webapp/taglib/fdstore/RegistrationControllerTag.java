@@ -256,6 +256,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			} else if ("changeContactInfo".equalsIgnoreCase(actionName)) {
 				this.performChangeContactInfo(request, actionResult);
 				
+			} else if("changeContactNames".equals(actionName)){
+				this.changeContactInfoName(request, actionResult);
 			} else if ("changeEmailPreference".equalsIgnoreCase(actionName)) {
 				this.performChangeEmailPreference(request, actionResult);
 			
@@ -478,6 +480,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			LOGGER.error("Error from mobile preferences", e);
 		}
 	}
+	
+	
 
 	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEvent event) throws FDResourceException {
 		String shipToAddressId = request.getParameter("deleteShipToAddressId");
@@ -720,7 +724,19 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			} 
 	}
 	
-	
+	private void changeContactInfoName(HttpServletRequest request, ActionResult actionResult) throws FDResourceException{
+		String lastName = request.getParameter("last_name");
+		String firstName = request.getParameter("first_name");
+		
+		FDIdentity identity = getIdentity();
+		ErpCustomerInfoModel cim = null;
+		cim = FDCustomerFactory.getErpCustomerInfo(identity);
+		cim.setFirstName(firstName);
+		cim.setLastName(lastName);
+		
+		boolean fraudFound = FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+		
+	}
 	
 	protected void performChangeContactInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		String lastName = request.getParameter("last_name");

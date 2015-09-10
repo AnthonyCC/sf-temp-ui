@@ -530,7 +530,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.updateUserState();
     }
 
-
+    public void resetCachedCustomerInfo() throws FDResourceException{
+    	this.user.resetCustomerInfoModel();
+    }
 
     public String getFirstName() throws FDResourceException {
         return this.user.getFirstName();

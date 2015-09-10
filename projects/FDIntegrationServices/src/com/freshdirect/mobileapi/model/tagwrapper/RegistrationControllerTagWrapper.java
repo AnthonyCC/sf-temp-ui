@@ -6,6 +6,7 @@ import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -39,6 +40,10 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     
     public static final String ACTION_SET_EMAIL_PREFERENCE = "changeEmailPreferenceLevel";
 
+    public static final String ACTION_CHANGE_CONTACT_INFO = "changeContactInfo";
+    
+    public static final String ACTION_CHANGE_CONTACT_NAMES = "changeContactNames";
+    
     public static final String KEY_RETURNED_SAVED_ADDRESS = "KEY_SAVED_ADDRESS";
     
     public RegistrationControllerTagWrapper(FDUserI user) {
@@ -315,6 +320,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(REQ_PARAM_OFFER_EXISTING, currentOffers);
         addRequestValue(REQ_PARAM_PARTNER_EXISTING, currentPartnerMessages);
         addRequestValue(REQ_PARAM_MOBILE_EXISTING, currentMobileNo);
+        
         getWrapTarget().setActionName(ACTION_SET_MOBILE_PREFERENCES);
         
         setMethodMode(true);
@@ -334,5 +340,20 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
+    
+    public ResultBundle updateUserContactNames(String firstName, String lastName) throws FDException{
+    	addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] {  REQ_PARAM_USER_LAST_NAME, REQ_PARAM_USER_FIRST_NAME }, new String[] {});//gets,sets
+        
+        addRequestValue(REQ_PARAM_USER_LAST_NAME, lastName);
+        addRequestValue(REQ_PARAM_USER_FIRST_NAME, firstName);
+        
+        getWrapTarget().setActionName(ACTION_CHANGE_CONTACT_NAMES);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+	  	
+    }
+    
 
 }

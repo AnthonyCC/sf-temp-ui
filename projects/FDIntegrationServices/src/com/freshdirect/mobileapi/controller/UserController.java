@@ -25,12 +25,16 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.UserAccountUpdateRequest;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse;
 import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse.ResultCode;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -45,8 +49,8 @@ public class UserController extends BaseController {
 	public static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
 	public static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
 	public static final String ACTION_USER_RESERVE_DELIVERY_SLOT = "reserveDeliveryTimeSlot";
-
-	
+	public static final String ACTION_USER_GET_NAME = "getUserName";
+	public static final String ACTION_USER_SET_NAME = "setUserName";
 
 	protected boolean validateUser() {
 		return false;
@@ -64,6 +68,9 @@ public class UserController extends BaseController {
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws FDException, ServiceException,
 			NoSessionException, JsonException {
+		
+		LOGGER.debug("Action to use: " + action);
+		
 		if (ACTION_UPDATE_USER.equals(action)) {
 //			RegisterMessage requestMessage = parseRequestObject(request,
 //					response, RegisterMessage.class);
@@ -150,7 +157,37 @@ public class UserController extends BaseController {
     	  UpdateUserDeliveryTimeSlotrequest uur = parseRequestObject( request, response, UpdateUserDeliveryTimeSlotrequest.class );
     	performUserReserveDeliveryTimeSlot(uur);
 		
-    }
+      } else if (ACTION_USER_GET_NAME.equals(action)){
+    	  UserGetNameResponse ugnr = new UserGetNameResponse();
+    	  if(user == null){
+    		  //TODO: user is not logged in return;
+    		  return model;
+    	  }
+    	  ugnr.setFirstName(user.getFirstName());
+    	  ugnr.setLastName(user.getLastName());
+    	  
+    	  setResponseMessage(model, ugnr, user);
+    	  
+      } else if (ACTION_USER_SET_NAME.equals(action)){
+    	  LOGGER.debug("Action set called" );
+    	  if(user == null){
+    		  return model;
+    	  }
+    	  UserSetNameRequest usnr = parseRequestObject(request, response, UserSetNameRequest.class);
+    	  FDIdentity identity = user.getFDSessionUser().getIdentity();
+    	  if(identity != null){    		  
+    		  RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());
+    		  ResultBundle resultBundle = tagWrapper.updateUserContactNames(usnr.getFirstName(), usnr.getLastName());
+    		  ActionResult actionResult = resultBundle.getActionResult();
+    		  user.getFDSessionUser().updateUserState();
+    		  if(actionResult.isFailure()){
+    			  setResponseMessage(model, Message.createFailureMessage("Failed updateing names"), user);
+    		  } else {
+    			  user.getFDSessionUser().resetCachedCustomerInfo();
+    			  setResponseMessage(model, Message.createSuccessMessage(""), user);
+    		  }
+    	  }
+      }
 		return model;
 	}
 
@@ -231,7 +268,7 @@ public class UserController extends BaseController {
     {
     	
     }
-	
+	    
     private class UpdateUserAddressRequest
     {
     	
@@ -245,6 +282,43 @@ public class UserController extends BaseController {
     private class UpdateUserDeliveryTimeSlotrequest
     {
     	
+    }
+    
+    public static class UserGetNameResponse extends Message {
+    	private String firstName;
+    	private String lastName;
+    	
+		public String getFirstName() {
+			return firstName;
+		}
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+		public String getLastName() {
+			return lastName;
+		}
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+    	
+    }
+    
+    public static class UserSetNameRequest{
+    	private String firstName;
+    	private String lastName;
+    	
+		public String getFirstName() {
+			return firstName;
+		}
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+		public String getLastName() {
+			return lastName;
+		}
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
     }
     
     private class UserUpdater extends LocationHandlerTag

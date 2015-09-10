@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
+import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -30,7 +31,20 @@ public interface RequestParamName {
     
     public static final String REQ_PARAM_EMAIL_PREFERENCE_LEVEL = "receive_emailLevel";
 
-    public static final String REQ_PARAM_CHEF_TABLE = "chefstable";
+    public static final String REQ_PARAM_USER_LAST_NAME = "last_name";
+	public static final String REQ_PARAM_USER_FIRST_NAME = "first_name";
+	public static final String REQ_PARAM_USER_TITLE = "title";
+	public static final String REQ_PARAM_USER_ALT_EMAIL = EnumUserInfoName.ALT_EMAIL.getCode(); 
+	public static final String REQ_PARAM_USER_OTHER_PHONE = "other_phone";
+	public static final String REQ_PARAM_USER_HOME_PHONE = "homephone";
+	public static final String REQ_PARAM_USER_EXT="ext";
+	public static final String REQ_PARAM_USER_OTHER_EXT = "other_ext";
+	public static final String REQ_PARAM_USER_BUS_PHONE = "busphone";
+	public static final String REQ_PARAM_USER_BUS_PHONEE_EXT = "busphoneext";
+	public static final String REQ_PARAM_USER_CELL = "cellphone";
+	public static final String REQ_PARAM_USER_CELL_EXT = "cellphoneext";
+
+	public static final String REQ_PARAM_CHEF_TABLE = "chefstable";
 
     public static final String REQ_PARAM_GIFT_CARD = "gift_card";
 

@@ -508,7 +508,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			throw new FDRuntimeException(e.getMessage());
 		}
     }
-
+    
     public void applyOrderMinimum() {
     	if(this.getReservation()!=null)
     		TimeslotLogic.applyOrderMinimum(this, this.getReservation().getTimeslot());
@@ -1458,6 +1458,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return customerInfoModel;
 		}
 	}
+	
+    public void resetCustomerInfoModel() throws FDResourceException{
+    	customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
+    }
+
+	
 	public String getLastRefProgInvtId()
 	{
 		return this.lastRefProgInvtId;
