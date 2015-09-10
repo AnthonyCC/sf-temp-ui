@@ -2128,20 +2128,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rec.setChangeOrderId(pk.getId());
 			this.logActivity(rec);
 			
-			if (sendEmail) {
-				FDOrderI order = getOrder(pk.getId());
-				Collections.sort(order.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
-				if(FDStoreProperties.isPromoLineItemEmailDisplay()){
-					setPromotionDescriptionForEmail(order);
+			try {
+				if (sendEmail) {
+					LOGGER.info("sending the email to customer "+pk.getId());
+					FDOrderI order = getOrder(pk.getId());
+					Collections.sort(order.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
+					if(FDStoreProperties.isPromoLineItemEmailDisplay()){
+						setPromotionDescriptionForEmail(order);
+					}
+					FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
+
+					int orderCount = getValidOrderCount(identity);
+					fdInfo.setNumberOfOrders(orderCount);
+					fdInfo.setUserGiftCardsBalance(calculateGiftCardsBalance(this.getGiftCards(identity)));
+
+					this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 				}
-				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
-
-				int orderCount = getValidOrderCount(identity);
-				fdInfo.setNumberOfOrders(orderCount);
-				fdInfo.setUserGiftCardsBalance(calculateGiftCardsBalance(this.getGiftCards(identity)));
-
-				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
-		  	}
+			} catch (Exception e) {
+				LOGGER.warn("Error Sending email for Order Confirmantion: "+ pk.getId(), e);
+			}
 			
 			//Start:: Add FDX SMS Order confirmation 
 				try {
