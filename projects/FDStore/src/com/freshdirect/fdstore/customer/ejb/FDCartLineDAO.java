@@ -151,7 +151,8 @@ public class FDCartLineDAO {
 			ps.setString(18, StringUtil.crop(line.getExternalAgency(), 30));
 			ps.setString(19, StringUtil.crop(line.getExternalSource(), 30));
 			ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
-			ps.setString(21, line.getEStoreId().getContentId());
+			ps.setString(21, null !=line.getEStoreId()? line.getEStoreId().getContentId():
+				(null!=storeContext && null !=storeContext.getEStoreId() ? storeContext.getEStoreId().getContentId():EnumEStoreId.FD.getContentId()));
 			
 			ps.addBatch();
 		}
