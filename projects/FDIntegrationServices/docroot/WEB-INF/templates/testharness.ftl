@@ -664,24 +664,32 @@ function loadStuff() {
   	$("#url").val("/configvalue/param1");
   	$("#payload").val("");
   	
-  }  else if (loaddata == "Help") {
+  } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#payload").val("");
   	
-  }  else if (loaddata == "HelpContactUs") {
+  } else if (loaddata == "HelpContactUs") {
   	$("#url").val("/help/contactUs");
   	$("#payload").val("");
   	
-  }  else if (loaddata == "HelpLearnMorePromo") {
+  } else if (loaddata == "HelpLearnMorePromo") {
   	$("#url").val("/help/learnMorePromo");
   	$("#payload").val("");
   	
-  }  else if (loaddata == "CustomerAgreement") {
+  } else if (loaddata == "CustomerAgreement") {
   	$("#url").val("/help/termsOfUse");
   	$("#payload").val("");
   	
-  }  else if (loaddata == "smstermsofuse") {
+  } else if (loaddata == "smstermsofuse") {
   	$("#url").val("/help/smstermsofuse");
+  	$("#payload").val("");
+  	
+  }else if (loaddata == "foodSafety") {
+  	$("#url").val("/help/foodSafety");
+  	$("#payload").val("");
+  	
+  }else if (loaddata == "aboutUsFdx") {
+  	$("#url").val("/help/aboutUsFdx");
   	$("#payload").val("");
   	
   }  else if (loaddata == "AlcoholRestrictions") {
@@ -1185,6 +1193,8 @@ function doStuff() {
   <option value="AlcoholAgeVerification">Help - Alcohol Age Verification</option>    
   <option value="BackupDeliveryAuthorization">Help - Backup Delivery Authorization</option>
   <option value="DeliveryPassTermsAndConditions">Help - DeliveryPass TermsAndConditions</option>
+  <option value="foodSafety">Help - Food Safety</option>
+  <option value="aboutUsFdx">Help - About Us</option>
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
