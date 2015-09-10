@@ -588,7 +588,7 @@ public class RegistrationController extends BaseController {
 				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderNotices())? false:true);
 	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions())? false:true);
 				  mobileresponseMessage.setOffers(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getFdxOffers())? false:true);
-				  mobileresponseMessage.setMobile_number(fdCustomerEStoreModel.getMobileNumber()!=null?fdCustomerEStoreModel.getMobileNumber().getPhone():"");
+				  mobileresponseMessage.setMobile_number(fdCustomerEStoreModel.getFdxMobileNumber()!=null?fdCustomerEStoreModel.getFdxMobileNumber().getPhone():"");
 			}else{
 				  mobileresponseMessage.setOrder_notices(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getOrderNotices())? false:true);
 	    		  mobileresponseMessage.setOrder_exceptions(EnumSMSAlertStatus.NONE.value().equalsIgnoreCase(fdCustomerEStoreModel.getOrderExceptions())? false:true);
