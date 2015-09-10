@@ -325,7 +325,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             Date endDate = new Date(lastRequestDate);
             for (int i = 0; i < logEntries.size(); i++) {
                 logEntries.get(i).setStartEndTime(startDate, endDate);
-                logEntries.get(i).setZoneId(user.getUserContext().getPricingContext().getZoneInfo().toString());
+                if(user.getUserContext().getPricingContext().getZoneInfo()!=null)
+                	logEntries.get(i).setZoneId(user.getUserContext().getPricingContext().getZoneInfo().getPricingZoneId());
                 System.out.println("SessionImpressionLogEntry:sessionId:"+logEntries.get(i).getSessionId());
             }
             
