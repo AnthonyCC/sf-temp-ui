@@ -598,9 +598,22 @@ public class RegistrationAction extends WebActionSupport {
 	public String validateLiteSignup() {
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 		ActionResult actionResult = this.getResult();
+		HttpSession session = this.getWebActionContext().getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		ContactInfo cInfo = new ContactInfo(request);
 		AccountInfo aInfo = new AccountInfo(request);
+		if("true".equals(request.getParameter("LITESIGNUP"))) {
+			if(session.getAttribute("LITECONTACTINFO") != null && session.getAttribute("LITEACCOUNTINFO") != null) {		
+				cInfo = (ContactInfo) session.getAttribute("LITECONTACTINFO");
+				aInfo = (AccountInfo) session.getAttribute("LITEACCOUNTINFO");				
+			} 
+			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {
+				cInfo.workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
+				cInfo.workPhoneExt = NVL.apply(request.getParameter("busphoneext"), "").trim();
+			}
+			
+		}
 
 		aInfo.validateExSLite(actionResult);
 		cInfo.validateEx(actionResult);
@@ -617,7 +630,6 @@ public class RegistrationAction extends WebActionSupport {
 		}
 		
 		//store contactInfo and AccountInfo in session
-		HttpSession session = this.getWebActionContext().getSession();
 		session.setAttribute("LITECONTACTINFO", cInfo);
 		session.setAttribute("LITEACCOUNTINFO", aInfo);
 		
