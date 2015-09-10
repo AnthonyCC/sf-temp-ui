@@ -704,10 +704,10 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			salesUnit.setBaseUnit(salesUnitModel.getBaseUnit());
 			salesUnit.setDisplayInd(salesUnitModel.isDisplayInd());
 
-			salesUnit.setUnitPriceNumerator(salesUnitModel.getNumerator());
-			salesUnit.setUnitPriceDenominator(salesUnitModel.getDenominator());
-			salesUnit.setUnitPriceUOM(salesUnitModel.getAlternativeUnit());
-			salesUnit.setUnitPriceDescription(salesUnitModel.getDescription());
+			salesUnit.setUnitPriceNumerator(salesUnitModel.getUnitPriceNumerator());
+			salesUnit.setUnitPriceDenominator(salesUnitModel.getUnitPriceDenominator());
+			salesUnit.setUnitPriceUOM(salesUnitModel.getUnitPriceUOM());
+			salesUnit.setUnitPriceDescription(salesUnitModel.getUnitPriceDescription());
 
 			return salesUnit;
 		}
