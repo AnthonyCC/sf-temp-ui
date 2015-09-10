@@ -259,17 +259,17 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(13, this.convertExtension(this.phone));
 		ps.setString(14, this.convertType(this.phone));
 		ps.setString(15, this.instructions);
-		ps.setString(16, this.addressInfo.getScrubbedStreet());
+		ps.setString(16, this.addressInfo!=null ? this.addressInfo.getScrubbedStreet() : this.address1);
 		ps.setString(17, this.altDeliverySetting.getDeliveryCode());
 		ps.setString(18, this.altFirstName);
 		ps.setString(19, this.altLastName);				
 		ps.setString(20, this.altApartment);
 		ps.setString(21, this.convertPhone(this.altPhone));
 		ps.setString(22, this.convertExtension(this.altPhone));
-		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
-		ps.setBigDecimal(25, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(26, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setBigDecimal(23, this.addressInfo!=null ? new BigDecimal(String.valueOf(this.addressInfo.getLongitude())) : null);
+		ps.setBigDecimal(24, this.addressInfo!=null ? new BigDecimal(String.valueOf(this.addressInfo.getLatitude())) : null);
+		ps.setBigDecimal(25, this.addressInfo!=null ? new BigDecimal(String.valueOf(this.addressInfo.getLongitude())) : null);
+		ps.setBigDecimal(26, this.addressInfo!=null ? new BigDecimal(String.valueOf(this.addressInfo.getLatitude())) : null);
 		if(this.serviceType == null){
 			ps.setNull(27, Types.VARCHAR);
 		} else {
@@ -327,13 +327,16 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.country = rs.getString("COUNTRY");
 			this.phone = this.convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT"), rs.getString("PHONE_TYPE") );
 			this.instructions = rs.getString("DELIVERY_INSTRUCTIONS");
+			if(this.addressInfo!=null)
 			this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 			this.altDeliverySetting = EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST"));
 			this.altFirstName = rs.getString("ALT_FIRST_NAME");
 			this.altLastName = rs.getString("ALT_LAST_NAME");
 			this.altApartment = rs.getString("ALT_APARTMENT");
 			this.altPhone = this.convertPhoneNumber( rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT") );
+			if(this.addressInfo!=null)
 			this.addressInfo.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
+			if(this.addressInfo!=null)
 			this.addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
 			this.serviceType = EnumServiceType.getEnum(rs.getString("SERVICE_TYPE"));
 			this.companyName = rs.getString("COMPANY_NAME");
