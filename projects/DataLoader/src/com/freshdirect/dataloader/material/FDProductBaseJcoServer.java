@@ -475,11 +475,15 @@ public class FDProductBaseJcoServer extends FdSapServer {
 
 						ErpCharacteristicModel charModel = new ErpCharacteristicModel();
 						charModel.setName(variantParam.getCharacteristicName());
-						charModel.setSalesUnit("S1".equalsIgnoreCase(variantParam.getUnitOfDimension()));
 
 						// add the characteristic to the class
 						if (!materialClass.hasCharacteristic(charModel)) {
 							materialClass.addCharacteristic(charModel);
+						}
+						
+						charModel = materialClass.getCharacteristic(variantParam.getCharacteristicName());
+						if(null !=charModel && !charModel.isSalesUnit()){
+							charModel.setSalesUnit("S1".equalsIgnoreCase(variantParam.getUnitOfDimension()));
 						}
 
 						List<ErpCharacteristicModel> characteristics = new ArrayList<ErpCharacteristicModel>(
