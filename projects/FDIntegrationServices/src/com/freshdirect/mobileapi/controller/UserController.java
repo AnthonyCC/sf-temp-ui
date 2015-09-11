@@ -160,7 +160,7 @@ public class UserController extends BaseController {
       } else if (ACTION_USER_GET_NAME.equals(action)){
     	  UserGetNameResponse ugnr = new UserGetNameResponse();
     	  if(user == null){
-    		  //TODO: user is not logged in return;
+    		  setResponseMessage(model, Message.createFailureMessage("User not logged in"), user);
     		  return model;
     	  }
     	  ugnr.setFirstName(user.getFirstName());
@@ -169,8 +169,8 @@ public class UserController extends BaseController {
     	  setResponseMessage(model, ugnr, user);
     	  
       } else if (ACTION_USER_SET_NAME.equals(action)){
-    	  LOGGER.debug("Action set called" );
     	  if(user == null){
+    		  setResponseMessage(model, Message.createFailureMessage("User not logged in"), user);
     		  return model;
     	  }
     	  UserSetNameRequest usnr = parseRequestObject(request, response, UserSetNameRequest.class);
@@ -181,7 +181,7 @@ public class UserController extends BaseController {
     		  ActionResult actionResult = resultBundle.getActionResult();
     		  user.getFDSessionUser().updateUserState();
     		  if(actionResult.isFailure()){
-    			  setResponseMessage(model, Message.createFailureMessage("Failed updateing names"), user);
+    			  setResponseMessage(model, Message.createFailureMessage("Failed updating names"), user);
     		  } else {
     			  user.getFDSessionUser().resetCachedCustomerInfo();
     			  setResponseMessage(model, Message.createSuccessMessage(""), user);
