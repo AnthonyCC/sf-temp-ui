@@ -181,6 +181,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("ATNAM", JCoMetaData.TYPE_CHAR, 30, "Characteristic Name"));
 		tableMetaDataList.add(new TableMetaData("ATWRT", JCoMetaData.TYPE_CHAR, 30, "Characteristic Value"));
 		tableMetaDataList.add(new TableMetaData("ATSTD", JCoMetaData.TYPE_CHAR, 1, "Default value"));
+		tableMetaDataList.add(new TableMetaData("MEABM", JCoMetaData.TYPE_CHAR, 3, "Unit of Dimension"));
 
 		createTableRecord(metaMaterialVariantList, tableMetaDataList);
 		metaMaterialVariantList.lock();
@@ -441,6 +442,10 @@ public class FDProductBaseJcoServer extends FdSapServer {
 						continue;
 					}
 
+					ErpMaterialModel material = materialMap.get(variantParam.getMaterialID());
+					if (material != null && "S1".equalsIgnoreCase(variantParam.getUnitOfDimension())) {
+						material.setSalesUnitCharacteristic(variantParam.getCharacteristicName());
+					}
 					if (StringUtils.isEmpty(variantParam.getClassName())) {
 						LOG.error("No class name was supplied for the characteristic ["
 								+ variantParam.getCharacteristicName() + "], material No. { "
@@ -470,6 +475,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 
 						ErpCharacteristicModel charModel = new ErpCharacteristicModel();
 						charModel.setName(variantParam.getCharacteristicName());
+						charModel.setSalesUnit("S1".equalsIgnoreCase(variantParam.getUnitOfDimension()));
 
 						// add the characteristic to the class
 						if (!materialClass.hasCharacteristic(charModel)) {
@@ -494,7 +500,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 								materialClass.setCharacteristics(characteristics);
 								
 								// set material quantityCharacteristic property
-								ErpMaterialModel material = materialMap.get(variantParam.getMaterialID());
+								material = materialMap.get(variantParam.getMaterialID());
 								if (material != null) {
 									material.setQuantityCharacteristic(erpCharacteristic.getName());
 								}
@@ -714,6 +720,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 
 			param.setCharacteristicName(FDSapHelperUtils.getString(variantConfigTable.getString("ATNAM")));
 			param.setCharacteristicValueName(FDSapHelperUtils.getString(variantConfigTable.getString("ATWRT")));
+			param.setUnitOfDimension(FDSapHelperUtils.getString(variantConfigTable.getString("MEABM")));
 
 			return param;
 		}
@@ -738,6 +745,9 @@ public class FDProductBaseJcoServer extends FdSapServer {
 			param.setCharacteristicValueDescription(FDSapHelperUtils.getString(materialVariantPriceTable
 					.getString("ATWTB")));
 			String price = materialVariantPriceTable.getString("KBETR");
+			if(null ==price || "".equals(price)){
+				price="0";
+			}
 			param.setPrice(Double.parseDouble(price));
 			param.setPricingUnitCode(FDSapHelperUtils.getString(materialVariantPriceTable.getString("KMEIN")));
 

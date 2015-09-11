@@ -14,6 +14,8 @@ public class MaterialVariantParameter extends AbstractMaterialParameter implemen
 	private String characteristicName;
 	private String characteristicValueName;
 	private String deafaultValue;
+	private String unitOfDimension;
+	
 	/**
 	 * @return the configProfileName
 	 */
@@ -83,5 +85,11 @@ public class MaterialVariantParameter extends AbstractMaterialParameter implemen
 	public void setDeafaultValue(String deafaultValue)
 	{
 		this.deafaultValue = deafaultValue;
+	}
+	public String getUnitOfDimension() {
+		return unitOfDimension;
+	}
+	public void setUnitOfDimension(String unitOfDimension) {
+		this.unitOfDimension = unitOfDimension;
 	}
 }

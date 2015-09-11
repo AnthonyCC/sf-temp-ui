@@ -742,7 +742,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 					// as part of a discontinued material.
 					// don't insert this characteristic value price.
 
-					if (createdMaterial != null) {
+					if (createdMaterial != null && erpCvpModel.getPrice() > 0) {
 						erpCvpModel.setMaterialId(createdMaterial.getPK().getId());
 
 						// find the characteristic value for this characteristic
@@ -764,7 +764,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 
 						
 						// create the new characteristic value price
-						LOG.info("Creating new Characteristic Value Price " + erpCvpModel.getSapId() + "");
+						LOG.info("Creating new Characteristic Value Price " + erpCvpModel.getSapId() + " -CharacteristicValue: "+charValueName);
 						if(erpCvpModel.getPrice() > 0){
 							ErpCharacteristicValuePriceEB erpCvpEB = cvpHome.create(batchNumber, erpCvpModel);
 	
@@ -1717,6 +1717,17 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 		ListIterator<ErpCharacteristicModel> charListIter = charList.listIterator();
 		while (charListIter.hasNext()) {
 			ErpCharacteristicModel erpCharac = charListIter.next();
+			if(erpCharac.isSalesUnit()){
+				charListIter.remove();
+			}
+		}
+		erpClass.setCharacteristics(charList);
+	}
+	/*private void populateMaterialSalesUnitChar(ErpClassModel erpClass, ErpMaterialModel erpMaterial) throws LoaderException {
+		List<ErpCharacteristicModel> charList = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics());
+		ListIterator<ErpCharacteristicModel> charListIter = charList.listIterator();
+		while (charListIter.hasNext()) {
+			ErpCharacteristicModel erpCharac = charListIter.next();
 
 			boolean isSalesUnit = false;
 			boolean matchError = false;
@@ -1779,7 +1790,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			// partial matches were found
 			// remove the characteristic from the class
 			//
-			/*if (isSalesUnit && !matchError) {
+			if (isSalesUnit && !matchError) {
 				//
 				// get the list of characteristic from the class
 				//
@@ -1795,7 +1806,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 						clIter.remove();
 						break;
 					}
-				}*/
+				}
 				//
 				// set the list of characteristics back on the class
 				//
@@ -1803,5 +1814,5 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 //			}
 
 		}
-	}
+	}*/
 }

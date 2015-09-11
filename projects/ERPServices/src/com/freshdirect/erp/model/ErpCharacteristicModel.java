@@ -30,6 +30,7 @@ public class ErpCharacteristicModel extends ErpModelSupport implements DurableMo
 
 	/** Characteristic name */
 	private String name;
+	private boolean isSalesUnit = false;
 
 	/**
 	 * Characteristic value collection
@@ -193,6 +194,14 @@ public class ErpCharacteristicModel extends ErpModelSupport implements DurableMo
         for (Iterator i = this.characteristicValues.iterator(); i.hasNext(); ) {
             ((ErpCharacteristicValueModel) i.next()).accept( visitor );
 		}
+	}
+
+	public boolean isSalesUnit() {
+		return isSalesUnit;
+	}
+
+	public void setSalesUnit(boolean isSalesUnit) {
+		this.isSalesUnit = isSalesUnit;
 	}
 	
 
