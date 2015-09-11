@@ -35,16 +35,16 @@
 <%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 
-String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
-String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
-title = title.replaceAll("<[^>]*>", ""); 
-
 // Handle no-product case
 if (productNode==null) {
     throw new JspException("Product not found in Content Management System");
 } else if (productNode.isDiscontinued()) {
     throw new JspException("Product Discontinued :"+request.getParameter("productId"));
 }
+
+String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
+String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
+title = title.replaceAll("<[^>]*>", ""); 
 
 boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 

@@ -182,7 +182,7 @@
             <%}%>
         <%}%></FONT>
 		
-		<% if (!isSOTMPL) { %><span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span><% } %>
+		<% if (!isSOTMPL && cart.getDeliveryReservation()!=null) { %><span class="text12"><b>Please note:</b> any modifications to this order must be completed by <%=cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span><% } %>
 		<br><br></TD>
         </TR>
         </TABLE>

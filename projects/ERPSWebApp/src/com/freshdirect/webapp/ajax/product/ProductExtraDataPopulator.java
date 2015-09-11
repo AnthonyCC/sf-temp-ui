@@ -798,25 +798,30 @@ public class ProductExtraDataPopulator {
 									skuList = gsp.getSkuList();
 						}
 					}
-							
-					/* iterate over list of skus to get productModels */
-					Iterator<String> skuListIt = skuList.iterator();
-					while(skuListIt.hasNext()){
-						String curSku = skuListIt.next();
+					
+					if(skuList == null){
+						LOG.info("skuList is empty for groupId" +grpId+" "+grpVersion);
+					}
+					
+					if (skuList!=null) {
+						/* iterate over list of skus to get productModels */
+						Iterator<String> skuListIt = skuList.iterator();
+						while (skuListIt.hasNext()) {
+							String curSku = skuListIt.next();
 						if(prioritySku != null && prioritySku.equals(curSku))
 							//as it is already processed
-							continue;
-						try{
+								continue;
+							try {
 							ProductModel pm = ContentFactory.getInstance().getProduct(curSku);
-							if (pm != null) {
-								productModelList.add(pm);
+								if (pm != null) {
+									productModelList.add(pm);
+								}
+							} catch (FDSkuNotFoundException se) {
+								//Ignore this sku. move to next
 							}
-						}catch(FDSkuNotFoundException se){
-							//Ignore this sku. move to next
+
 						}
-									
 					}
-							
 					/* now iterate over productModels to get ProductDatas */Iterator<String> it = skuList.iterator();
 					Iterator<ProductModel> productModelListIt = productModelList.iterator();
 					while(productModelListIt.hasNext()){
