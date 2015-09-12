@@ -250,7 +250,8 @@ public class FDProductInfo extends FDSku  {
     public boolean isDiscontinued(String salesOrg, String distributionChannel) {
     	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null)
-			return EnumAvailabilityStatus.DISCONTINUED.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()));
+			return EnumAvailabilityStatus.DISCONTINUED.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()))
+					|| "TEST".equalsIgnoreCase(sa.getUnavailabilityStatus());
 		return false;//::FDX::-> Handle this in a better way.
     }
 
