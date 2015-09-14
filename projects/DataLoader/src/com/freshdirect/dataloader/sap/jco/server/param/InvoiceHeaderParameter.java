@@ -27,6 +27,7 @@ public class InvoiceHeaderParameter implements Serializable
 	private double invoiceSubTotal;
 	private double creditAmount;
 	private List<InvoiceEntryParameter> entries;
+	private List<InvoiceCreditParameter> creditEntries;
 	private String deliveryDate;
 	private String billingType;
 	private String truckNumber;
@@ -313,5 +314,11 @@ public class InvoiceHeaderParameter implements Serializable
 	public void setCreditMemoNo(String creditMemoNo)
 	{
 		this.creditMemoNo = creditMemoNo;
+	}
+	public List<InvoiceCreditParameter> getCreditEntries() {
+		return creditEntries;
+	}
+	public void setCreditEntries(List<InvoiceCreditParameter> creditEntries) {
+		this.creditEntries = creditEntries;
 	}
 }

@@ -37,6 +37,7 @@ import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
+import com.freshdirect.dataloader.sap.jco.server.param.InvoiceCreditParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceEntryParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceHeaderParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
@@ -92,6 +93,9 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 
 		final JCoRecordMetaData metaInvoiceItemList = JCo.createRecordMetaData("INVOICE_LINE_LIST");
 		createInvoiceLineMetadata(repository, metaInvoiceItemList);
+		
+		final JCoRecordMetaData metaInvoiceCreditList = JCo.createRecordMetaData("INVOICE_CREDIT_LIST");
+		createInvoiceCreditMetadata(repository, metaInvoiceCreditList);
 
 		/*final JCoListMetaData fmetaImport = JCo.createListMetaData("INVOICE_IMPORTS");
 		fmetaImport.add("T_INVOICE_HEADER", JCoMetaData.TYPE_TABLE, metaInvoiceHeaderList,
@@ -112,9 +116,9 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 		repository.addRecordMetaDataToCache(metaInvoiceReturnRecord);
 
 		final JCoListMetaData fmetaImport = JCo.createListMetaData("INVOICE_IMPORTS");
-		fmetaImport.add("T_INVOICE_HEADER", JCoMetaData.TYPE_TABLE, metaInvoiceHeaderList,
-				JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.add("T_INVOICE_HEADER", JCoMetaData.TYPE_TABLE, metaInvoiceHeaderList,JCoListMetaData.IMPORT_PARAMETER);
 		fmetaImport.add("T_INVOICE_ITEM", JCoMetaData.TYPE_TABLE, metaInvoiceItemList, JCoListMetaData.IMPORT_PARAMETER);
+		fmetaImport.add("T_INVOICE_CREDIT", JCoMetaData.TYPE_TABLE, metaInvoiceCreditList, JCoListMetaData.IMPORT_PARAMETER);
 		fmetaImport.add("T_INVOICE_ERR", JCoMetaData.TYPE_TABLE, metaInvoiceReturnRecord,JCoListMetaData.EXPORT_PARAMETER);
 		fmetaImport.lock();
 
@@ -202,6 +206,27 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 		repository.addRecordMetaDataToCache(metaInvoiceItemList);
 	}
 
+	/**
+	 * @param repository
+	 * @param metaInvoiceHeaderList
+	 */
+	private void createInvoiceCreditMetadata(final JCoCustomRepository repository,
+			final JCoRecordMetaData metaInvoiceCreditList) {
+		tableMetaDataList = new ArrayList<TableMetaData>();
+
+		tableMetaDataList.add(new TableMetaData("TYPE", JCoMetaData.TYPE_CHAR, 1,"Single-Character Indicator"));
+		tableMetaDataList.add(new TableMetaData("INV_NUM", JCoMetaData.TYPE_CHAR, 10, "Billing Document"));
+		tableMetaDataList.add(new TableMetaData("WEB_ORDER", JCoMetaData.TYPE_CHAR, 35,"Customer purchase order number/Web Order "));
+		tableMetaDataList.add(new TableMetaData("ZZBMREF", JCoMetaData.TYPE_CHAR, 20, "Blue Martini Ref no."));
+		tableMetaDataList.add(new TableMetaData("CREDIT_MEMO_NO", JCoMetaData.TYPE_CHAR, 10,"Credit memo Sales order No."));
+		tableMetaDataList.add(new TableMetaData("CREDIT_AMOUNT", JCoMetaData.TYPE_CHAR, 15, "Credit amount"));
+		tableMetaDataList.add(new TableMetaData("ORDER_NO", JCoMetaData.TYPE_CHAR, 10, "SAP Sales Order No."));
+		
+		createTableRecord(metaInvoiceCreditList, tableMetaDataList);
+		metaInvoiceCreditList.lock();
+		repository.addRecordMetaDataToCache(metaInvoiceCreditList);
+	}
+	
 	@Override
 	protected FDSapFunctionHandler getHandler() {
 		return new FDConnectionHandler();
@@ -221,6 +246,7 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 			try {
 				final JCoTable invoiceHeaderTable = function.getTableParameterList().getTable("T_INVOICE_HEADER");
 				final JCoTable invoiceLineTable = function.getTableParameterList().getTable("T_INVOICE_ITEM");
+				final JCoTable invoiceCreditTable = function.getTableParameterList().getTable("T_INVOICE_CREDIT");
 
 				invoiceErrorTable = function.getTableParameterList().getTable("T_INVOICE_ERR");
 				
@@ -229,12 +255,16 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 					LOG.info(invoiceHeaderTable);
 					LOG.info("******************* Invoice Export - Line Items************");
 					LOG.info(invoiceLineTable);
+					LOG.info("******************* Invoice Export - Credits************");
+					LOG.info(invoiceCreditTable);
 				}
 
 				final int successCnt = 0;
 
 				// Invoice No. -> Invoice Header
 				final Map<String, InvoiceHeaderParameter> invoiceMap = new HashMap<String, InvoiceHeaderParameter>();
+				
+							
 				if (invoiceHeaderTable != null && invoiceLineTable != null) {
 					// invoice header
 					for (int i = 0; i < invoiceHeaderTable.getNumRows(); i++) {
@@ -272,6 +302,24 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 									+ invoiceEntryParam.getSalesOrderNo() + " }");
 						}
 						invoiceLineTable.nextRow();
+					}
+					
+					// invoice credit lines
+					for (int i = 0; i < invoiceCreditTable.getNumRows(); i++) {
+						invoiceCreditTable.setRow(i);
+
+						final InvoiceCreditParameter invoiceCreditParam = populateInvoiceCreditRecord(invoiceCreditTable);
+						if (invoiceMap.containsKey(invoiceCreditParam.getInvoiceNo())) {
+							if (invoiceMap.get(invoiceCreditParam.getInvoiceNo()).getCreditEntries() == null) {
+								invoiceMap.get(invoiceCreditParam.getInvoiceNo()).setCreditEntries(new ArrayList<InvoiceCreditParameter>());
+							}
+							invoiceMap.get(invoiceCreditParam.getInvoiceNo()).getCreditEntries().add(invoiceCreditParam);
+						} else {
+							LOG.warn("Invoice batch contains invoice credit(s) with no invoice header for invoice No. { "
+									+ invoiceCreditParam.getInvoiceNo() + " }, " + "SAP Order No. { "
+									+ invoiceCreditParam.getSalesOrderNo() + " }");
+						}
+						invoiceCreditTable.nextRow();
 					}
 
 					processInvoiceForOrders(result, invoiceMap, successCnt);
@@ -315,7 +363,12 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 					try {
 						LOG.info("Processing invoice for the order { " + param.getWebOrderNo() + " }");
 
-						FDOrderI order = FDCustomerManager.getOrder(param.getWebOrderNo());
+						FDOrderI order =null;
+						try {
+							order = FDCustomerManager.getOrder(param.getWebOrderNo());
+						} catch (Exception e) {
+							LOG.warn("Exception while fetching the order: { " + param.getWebOrderNo() + " }"+e);
+						}
 
 						if (order == null) {
 							LOG.warn("No order found with the order {" + param.getWebOrderNo() + "} to add invoice {"
@@ -344,7 +397,24 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 						invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
 
 						// 2. set Applied credits
-						if (param.getCreditMemoNo() != null && param.getCreditAmount() > 0) {
+						for(final InvoiceCreditParameter creditEnty: param.getCreditEntries()){
+							ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
+
+							credit.setAmount(creditEnty.getCreditAmount());
+							credit.setOriginalCreditId(creditEnty.getCreditWebReferenceNo());
+
+							if (invoice.getAmount() > 0 && StringUtils.isEmpty(creditEnty.getCreditMemoNo())) {
+								LOG.warn("Credit memo number required for non-zero invoices: order {"
+										+ creditEnty.getWebOrderNo() + "}, invoice {" + creditEnty.getInvoiceNo() + "} ");
+
+								populateResponseRecord(result, param,
+										"Credit memo number required for non-zero invoices");
+								continue;
+							}
+							credit.setSapNumber(creditEnty.getCreditMemoNo());
+							invoice.addAppliedCredit(credit);
+						}
+						/*if (param.getCreditMemoNo() != null && param.getCreditAmount() > 0) {
 							ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
 
 							credit.setAmount(param.getCreditAmount());
@@ -360,7 +430,7 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 							}
 							credit.setSapNumber(param.getCreditMemoNo());
 							invoice.addAppliedCredit(credit);
-						}
+						}*/
 
 						List<ErpInvoiceLineModel> invoiceLines = new ArrayList<ErpInvoiceLineModel>();
 						invoice.setInvoiceLines(invoiceLines);
@@ -495,10 +565,10 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 
 		param.setHeaderDiscount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("HDR_DISCOUNT")));
 
-		param.setCreditWebReferenceNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZBMREF")));
+		/*param.setCreditWebReferenceNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("ZZBMREF")));
 		param.setCreditMemoNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("CREDIT_MEMO_NO")));
 		param.setCreditAmount(FDSapHelperUtils.getDouble(invoiceHeaderTable.getString("CREDIT_MEMO_AMOUNT")));
-		param.setCreditMemoSalesOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("CREDIT_MEMO_ORDER_NO")));
+		param.setCreditMemoSalesOrderNo(FDSapHelperUtils.getString(invoiceHeaderTable.getString("CREDIT_MEMO_ORDER_NO")));*/
 
 		return param;
 	}
@@ -538,6 +608,24 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 		param.setDiscount(FDSapHelperUtils.getDouble(invoiceLineTable.getString("LINE_DISCOUNT")));
 		param.setCouponDiscount(FDSapHelperUtils.getDouble(invoiceLineTable.getString("ECOUP_DISCOUNT")));
 
+		return param;
+	}
+	
+	/**
+	 * @param invoiceCreditTable
+	 * @return the invoice credit item record
+	 */
+	private InvoiceCreditParameter populateInvoiceCreditRecord(final JCoTable invoiceCreditTable) {
+		final InvoiceCreditParameter param = new InvoiceCreditParameter();
+
+		param.setTypeIndicator(FDSapHelperUtils.getString(invoiceCreditTable.getString("TYPE")));
+		param.setInvoiceNo(FDSapHelperUtils.getString(invoiceCreditTable.getString("INV_NUM")));
+		param.setWebOrderNo(FDSapHelperUtils.getString(invoiceCreditTable.getString("WEB_ORDER")));
+		param.setSalesOrderNo(FDSapHelperUtils.getString(invoiceCreditTable.getString("ORDER_NO")));
+		param.setCreditWebReferenceNo(FDSapHelperUtils.getString(invoiceCreditTable.getString("ZZBMREF")));
+		param.setCreditMemoNo(FDSapHelperUtils.getString(invoiceCreditTable.getString("CREDIT_MEMO_NO")));
+		param.setCreditAmount(FDSapHelperUtils.getDouble(invoiceCreditTable.getString("CREDIT_AMOUNT")));
+		
 		return param;
 	}
 
