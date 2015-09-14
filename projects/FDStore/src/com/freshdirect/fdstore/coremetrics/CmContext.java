@@ -445,7 +445,7 @@ public class CmContext implements Serializable {
 				ctx.setClientId( clientId );
 			}
 
-			if (clientId != null) {i
+			if (clientId != null) {
 				// TODO: Consider null compoundId for global contexts
 				ctx.setCompoundId(
 					ENTERPRISE_ID + "|" + this.clientId
