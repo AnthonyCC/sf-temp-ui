@@ -73,29 +73,31 @@ public class CoremetricsCdfServiceCmd {
 	public static void main( String[] args ) {	
 		if (FDStoreProperties.isCoremetricsEnabled()){
 			
+			final String param = args.length > 0
+					? args[args.length-1]
+					: null;
+
+			/*** 
 			try {
 				Context ctx = FDStoreProperties.getInitialContext();
 			} catch (NamingException exc) {
 				LOGGER.error(exc);
 			}
-			
-			final String param = args.length > 0
-					? args[args.length-1]
-					: null;
 
 			final boolean isMultiStoreEnv = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE).size() > 1;
 			final boolean isDBMode = !CmsManager.getInstance().isReadOnlyContent(); 
-					
+			***/
+
 			// detect global mode by param
 			final boolean globalParam = ("-g".equals(param) || "--global".equals(param));
 
 			// write out environment
 			LOGGER.debug(">> CMD 'global' param set: " + globalParam);
-			LOGGER.debug(">> multi-store mode detected: " + isMultiStoreEnv);
-			LOGGER.debug(">> CMS DB mode detected: " + isDBMode );
+			// LOGGER.debug(">> multi-store mode detected: " + isMultiStoreEnv);
+			// LOGGER.debug(">> CMS DB mode detected: " + isDBMode );
 
 
-			final boolean globalMode = globalParam || isDBMode || isMultiStoreEnv;
+			final boolean globalMode = globalParam /* || isDBMode || isMultiStoreEnv */;
 			
 			if (globalMode) {
 				LOGGER.info("*** Run task in global mode ***");
