@@ -2392,6 +2392,7 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="CoremetricsService.jar"/>
 				<include name="FDWebSite.war"/>
 				<include name="cms-gwt.war"/>
 				<include name="FDIntegrationServices.war"/>
