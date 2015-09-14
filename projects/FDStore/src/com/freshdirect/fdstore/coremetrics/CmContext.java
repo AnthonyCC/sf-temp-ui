@@ -6,12 +6,43 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.logistics.framework.util.LoggerFactory;
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 
 /**
- * CoreMetrics context
+ * CoreMetrics Context
+ * 
+ * Context class designed for CoreMetrics clients.
+ * There are several ways to obtain context objects
+ * 
+ * Get current CM context: <code>CmContext#getContext()</code>
+ * Create context for particular store: <code>CmContext#createContextFor(EnumEStoreId, CmFacade, boolean)</code>
+ * Create Global context: <code>CmContext#createGlobalContext()</code>
+ * 
+ * Also builder is provided to setup custom contexts.
+ * 
+ * Constants
+ * 
+ * {@link CmContext#ENTERPRISE_ID} CoreMetrics Enterprise ID assigned to FreshDirect.
+ * 
+ * 
+ * Context Properties
+ * 
+ * {@link CmContext#compoundId}: provides compound client ID (eg. enterprise ID and CM client ID) required for reporting.
+ * {@link CmContext#clientId}: provides CM Client ID required for CDF generation task
+ * {@link CmContext#testAccount}: indicated that CM client runs with 'test' ID. False value means production mode.
+ * {@link CmContext#instance}: value of {@link CmInstance} describes the context in which the client lives.
+ * {@link CmContext#isEnabled}: <code>true</code> value enables reporting to CoreMetrics site. 
+ * 
+ * Helper Methods
+ * 
+ * {@link CmContext#prefixedCategoryId(String)} This utility method prefixes Category ID with CM Instance name.
  * 
  * @author segabor
+ * 
+ * @see FDStoreProperties#getCoremetricsClientId()
+ * 
+ * @ticket APPDEV-4337
  *
  */
 public class CmContext implements Serializable {
@@ -53,6 +84,14 @@ public class CmContext implements Serializable {
 	 * Context running with test account
 	 */
 	private boolean testAccount;
+
+	/**
+	 * CoreMetrics client ID
+	 * 
+	 * @see FDStoreProperties#getCoremetricsClientId()
+	 */
+	private String clientId = null;
+	
 	
 	protected void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
@@ -70,6 +109,10 @@ public class CmContext implements Serializable {
 		return instance;
 	}
 	
+	/**
+	 * 
+	 * @param compoundId
+	 */
 	protected void setCompoundId(String compoundId) {
 		this.compoundId = compoundId;
 	}
@@ -88,20 +131,22 @@ public class CmContext implements Serializable {
 
 
 	/**
+	 * Set client and compound IDs
+	 * 
+	 * @param clientId
+	 */
+	protected void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	/**
 	 * Return CM Client ID
 	 * @return
 	 */
 	public String getClientId() {
-		if (CmInstance.GLOBAL == instance) {
-			return ENTERPRISE_ID;
-		}
-
-		return instance != null && CmInstance.UNKNOWN != instance
-				? instance.getClientId(testAccount)
-				: null
-		;
+		return clientId;
 	}
-
+	
 	
 	/**
 	 * Default context getter
@@ -112,9 +157,13 @@ public class CmContext implements Serializable {
 			synchronized(CmContext.class) {
 				if (sharedInstance == null) {
 					sharedInstance = new Builder()
+					// group #1 setters
 						.setDefaultClientId()
+					// computed values
 						.setCmInstance()
+						/* .setCompoundId() */
 						.setEnabled()
+					// bake context
 						.build();
 					
 					LOGGER.info("CmContext " + sharedInstance + " is created");
@@ -128,7 +177,7 @@ public class CmContext implements Serializable {
 
 
 	/**
-	 * Build specific context based on parameters
+	 * Build context based on parameters
 	 * 
 	 * @param eStore
 	 * @param facade
@@ -137,10 +186,15 @@ public class CmContext implements Serializable {
 	 */
 	public static CmContext createContextFor(EnumEStoreId eStore, CmFacade facade, boolean test) {
 		CmContext ctx = new Builder()
+			// group #2 setters
 			.setEStoreId(eStore)
 			.setFacade(facade)
 			.setTestAcc(test)
+			// computed values
 			.setCmInstance()
+			/* .setCompoundId() */
+			.setEnabled()
+			// bake context
 			.build();
 		
 		LOGGER.info("CmContext " + ctx + " is created");
@@ -152,7 +206,13 @@ public class CmContext implements Serializable {
 	
 	public static CmContext createGlobalContext() {
 		CmContext ctx = new Builder()
+			// group #1 setters
+			.setDefaultClientId()
 			.setGlobal()
+			// computed values
+			.setCmInstance()
+			/* .setCompoundId() */
+			// bake context
 			.build();
 	
 		LOGGER.info("CmContext " + ctx + " is created");
@@ -171,13 +231,14 @@ public class CmContext implements Serializable {
 
 	/**
 	 * Return category ID prefixed with CM instance name
+	 * Note, that categories are not prefixed when context is global
 	 * 
 	 * @param categoryId
 	 * @return
 	 */
 	public String prefixedCategoryId(String categoryId) {
 		return categoryId != null
-				? instance != null
+				? (instance != null && CmInstance.GLOBAL != instance)
 					? instance.name() + "_" + categoryId
 					: categoryId
 				: null
@@ -192,14 +253,27 @@ public class CmContext implements Serializable {
 		} else {
 			StringBuilder s = new StringBuilder();
 
-			
-			s.append("{")
-				.append(instance.name())
-				.append(",store:" + instance.getEStoreId())
-				.append(",facade:"+ instance.getFacade())
-				.append(",test:"+ testAccount)
-				.append("}")
-			;
+			if (CmInstance.GLOBAL == instance) {
+				s.append("{")
+					.append(instance.name())
+					.append(", store: '<multi>'")
+					.append(", facade: 'N/A'")
+					.append(", test: '"+ testAccount + "'")
+					.append(", clientId: '"+ clientId + "'")
+					.append("}")
+				;
+
+			} else {
+				s.append("{")
+					.append(instance.name())
+					.append(", store: '" + instance.getEStoreId() + "'")
+					.append(", facade: '"+ instance.getFacade() + "'")
+					.append(", test: '"+ testAccount + "'")
+					.append(", clientId: '"+ clientId + "'")
+					.append("}")
+				;
+
+			}
 			
 			return s.toString();
 		}
@@ -230,19 +304,38 @@ public class CmContext implements Serializable {
 		private boolean testAcc = true;
 		// by default, compound client id consists of FD ID and FDW client ID (test)
 		// calculated
-        private String compoundId = ENTERPRISE_ID + "|" + FDStoreProperties.getCoremetricsClientId();
+		@Deprecated
+		private String compoundId = ENTERPRISE_ID + "|" + FDStoreProperties.getCoremetricsClientId();
 		
 		
 		// --- group #1 setters ---
-		
+
+        /**
+         * Read out client ID from fdstore.properties file (required)
+         * 
+         * @see {@link FDStoreProperties#getCoremetricsClientId()}
+         * 
+         * @return
+         */
 		public Builder setDefaultClientId() {
 			this.clientId = FDStoreProperties.getCoremetricsClientId(); return this;
 		}
+
 		
+		/**
+		 * Set client ID explicitly (required, alternative to {@link #setDefaultClientId()})
+		 * 
+		 * @param clientId
+		 * @return
+		 */
 		public Builder setClientId(String clientId) {
 			this.clientId = clientId; return this;
 		}
 
+		/**
+		 * Set Global context mode (optional)
+		 * @return
+		 */
 		public Builder setGlobal() {
 			this.global = true; return this;
 		}
@@ -265,19 +358,16 @@ public class CmContext implements Serializable {
 		// --- configurators ---
 		
 		/**
-		 * Determine CoreMetrics instance from CM Client ID
+		 * Determine CoreMetrics instance from
+		 * values set via group #1 or group #2 setters.
 		 * 
 		 * @return
 		 */
 		public Builder setCmInstance() {
-			if (global) {
-				// Not necessary to call this explicitly as builder will take care of
-				// setting proper instance when global flag is turned on
-				this.instance = CmInstance.GLOBAL;
-				return this;
-			}
-
 			if (clientId != null) {
+				// Try to determine instance from client ID
+				//
+
 				CmInstance result = CmInstance.lookupByClientId(clientId);
 				if (result != null) {
 					this.instance = result; this.testAcc = false;
@@ -292,6 +382,9 @@ public class CmContext implements Serializable {
 					}
 				}
 			} else if ( eStoreId != null && facade != null ) {
+				// Guess instance from given store and facade
+				//
+
 				for (CmInstance i : CmInstance.values()) {
 					if (CmInstance.UNKNOWN == i)
 						continue;
@@ -304,12 +397,19 @@ public class CmContext implements Serializable {
 			} else {
 				throw new IllegalStateException("Error configuring instance!");
 			}
+			
+			// adjust global mode if found instance is global
+			if (CmInstance.GLOBAL == this.instance) {
+				global = true;
+			}
+
 			return this;
 		}
 
 
 		/**
-		 * Determines whether CM reporting is enabled for an instance
+		 * Determines whether CM reporting is enabled for an instance (optional)
+		 * Defaults to off
 		 * 
 		 * May not be called before {@link CmContext.Builder#setCmInstance()
 		 */
@@ -318,9 +418,14 @@ public class CmContext implements Serializable {
 			this.isEnabled = !( CmInstance.SDSW == instance ); return this;
 		}
 
+		/**
+		 * Make up compound ID from enterprise and client ID.
+		 * 
+		 * @return
+		 */
+		@Deprecated
 		public Builder setCompoundId() {
-			// compose client id from central ID and client ID
-			this.compoundId = ENTERPRISE_ID + "|" + instance.getClientId(this.testAcc); return this;
+			this.compoundId = ENTERPRISE_ID + "|" + this.clientId; return this;
 		}
 
 
@@ -331,15 +436,21 @@ public class CmContext implements Serializable {
 				// Do not send events as global ctx is abstract
 				ctx.setEnabled(false);
 				ctx.setInstance(CmInstance.GLOBAL);
-				// TO BE CONFIRMED
-				ctx.setCompoundId(ENTERPRISE_ID);
+				ctx.setTestAccount(testAcc);
+				ctx.setClientId( clientId );
 			} else {
 				ctx.setEnabled(isEnabled);
 				ctx.setInstance(instance);
 				ctx.setTestAccount(testAcc);
-				ctx.setCompoundId(compoundId);
+				ctx.setClientId( clientId );
 			}
-			
+
+			if (clientId != null) {i
+				// TODO: Consider null compoundId for global contexts
+				ctx.setCompoundId(
+					ENTERPRISE_ID + "|" + this.clientId
+				);
+			}
 
 			return ctx;
 		}

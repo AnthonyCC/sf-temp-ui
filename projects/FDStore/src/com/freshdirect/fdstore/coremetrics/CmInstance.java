@@ -6,9 +6,22 @@ import java.util.Map;
 import com.freshdirect.fdstore.EnumEStoreId;
 
 /**
- * CoreMetrics instance identifiers
+ * CoreMetrics Instance
+ * 
+ * CM Instances determines the particular "channel"
+ * in which CoreMetrics client lives.
+ * 
+ * Instances consist of the following properties
+ * 
+ * # Store (FD, FDX, ...)
+ * # Facade (Web, Phone, Tablet)
+ * 
+ * "UNKNOWN" case means instance cannot be determined
+ * "GLOBAL" case is retained for Global CDF generation 
  * 
  * @author segabor
+ * 
+ * @ticket APPDEV-4337
  *
  */
 public enum CmInstance {
@@ -25,7 +38,7 @@ public enum CmInstance {
 	SDSP(EnumEStoreId.FDX, CmFacade.PHONE),
 	/** FDX Tablet App */
 	SDST(EnumEStoreId.FDX, CmFacade.TABLET),
-	/** Global Context : no storeno facade */
+	/** Global Context : no store, no facade */
 	GLOBAL(null, null)
 	;
 
@@ -68,6 +81,8 @@ public enum CmInstance {
 		client2inst.put("51640004", SDSP);
 		client2inst.put("51640005", SDST);
 
+		client2inst.put("51640000", GLOBAL);
+
 		// test client IDs
 		client2inst_tst.put("60391309", FDW);
 		client2inst_tst.put("81640004", FDP);
@@ -75,11 +90,13 @@ public enum CmInstance {
 		client2inst_tst.put("81640006", SDSW);
 		client2inst_tst.put("81640002", SDSP);
 		client2inst_tst.put("81640007", SDST);
+
+		client2inst_tst.put("81640000", GLOBAL);
 	}
 
 
 	/**
-	 * Determine CoreMetrics instance by client ID
+	 * Determine CoreMetrics instance by CM Client ID
 	 * 
 	 * @param clientId CoreMetrics client ID
 	 * @return
@@ -89,7 +106,7 @@ public enum CmInstance {
 	}
 
 	/**
-	 * Determine CoreMetrics instance by test client ID
+	 * Determine CoreMetrics instance by CM test Client ID
 	 * 
 	 * @param clientId CoreMetrics test client ID
 	 * @return
