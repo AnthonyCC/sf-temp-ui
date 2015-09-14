@@ -42,6 +42,7 @@ import com.freshdirect.dataloader.sap.jco.server.param.InvoiceHeaderParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -222,6 +223,13 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 				final JCoTable invoiceLineTable = function.getTableParameterList().getTable("T_INVOICE_ITEM");
 
 				invoiceErrorTable = function.getTableParameterList().getTable("T_INVOICE_ERR");
+				
+				if(SapProperties.isInvoiceExportLogEnabled()){
+					LOG.info("******************* Invoice Export - Header ************");
+					LOG.info(invoiceHeaderTable);
+					LOG.info("******************* Invoice Export - Line Items************");
+					LOG.info(invoiceLineTable);
+				}
 
 				final int successCnt = 0;
 

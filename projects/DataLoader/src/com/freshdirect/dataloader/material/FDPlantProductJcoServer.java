@@ -317,7 +317,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		if ("33".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())
 				|| "30".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
 			salesAreaModel.setUnavailabilityReason("Discontinued by SAP");//salesAreaModel.getUnavailabilityReason());
-			salesAreaModel.setUnavailabilityStatus("Disc");
+			salesAreaModel.setUnavailabilityStatus("DISC");
 			salesAreaModel.setUnavailabilityDate(new java.util.Date());
 		} else if ("31".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
 			salesAreaModel.setUnavailabilityReason("Temporarily Unavailable");//salesAreaModel.getUnavailabilityReason());
