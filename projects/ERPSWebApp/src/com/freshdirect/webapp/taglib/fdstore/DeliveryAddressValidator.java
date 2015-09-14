@@ -36,7 +36,7 @@ public class DeliveryAddressValidator {
 	// scrubbed address
 	private AddressModel scrubbedAddress;
 	private FDDeliveryServiceSelectionResult serviceResult;
-
+	private boolean useApartment = true;
 
 	public DeliveryAddressValidator(AddressModel address) {
 		this(address, true);
@@ -45,6 +45,10 @@ public class DeliveryAddressValidator {
 	public DeliveryAddressValidator(AddressModel address, boolean strictCheck) {
 		this.address = address;
 		this.strictCheck = strictCheck;
+	}
+	
+	public void setUseApartmentFlag(boolean useApartment){
+		this.useApartment = useApartment;
 	}
 
 	/**
@@ -58,7 +62,7 @@ public class DeliveryAddressValidator {
 	public boolean validateAddress(ActionResult actionResult) throws FDResourceException {
 		
 		// [1] normalize (scrub) address
-		scrubbedAddress = doScrubAddress(address, actionResult);
+		scrubbedAddress = doScrubAddress(address, actionResult, useApartment);
 		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
 
 		if (actionResult.isFailure()){
@@ -158,6 +162,10 @@ public class DeliveryAddressValidator {
 	
 	protected AddressModel doScrubAddress(AddressModel addr, ActionResult result) throws FDResourceException {
 		return AddressUtil.scrubAddress(addr, result);
+	}
+	
+	protected AddressModel doScrubAddress(AddressModel addr, ActionResult result, boolean useAppt)  throws FDResourceException {
+		return AddressUtil.scrubAddress(addr, useAppt, result);
 	}
 
 	protected FDDeliveryServiceSelectionResult doCheckAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {

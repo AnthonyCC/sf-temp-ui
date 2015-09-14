@@ -70,9 +70,15 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 public class DeliveryAddressManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( DeliveryAddressManipulator.class );
 	private boolean locationHandlerMode;
-
+	private boolean useApartment;
+	
 	public DeliveryAddressManipulator(PageContext context, ActionResult result, String actionName) {
+		this(context, result, actionName, true);
+	}
+	
+	public DeliveryAddressManipulator(PageContext context, ActionResult result, String actionName, boolean useApartment){
 		super(context, result, actionName);
+		this.useApartment = useApartment;
 	}
 
 	public static void performSetDeliveryAddress(HttpSession session, FDUserI user, String addressId, String contactNumber, String corpDlvInstructions, String actionName, boolean locationHandlerMode,
@@ -164,7 +170,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	
 	public static ErpAddressModel performAddDeliveryAddress(FDSessionUser user, HttpSession session, ActionResult result,FDCartModel cart,String actionName,ErpAddressModel erpAddressModel, AddressModel deliveryAddressModel) throws FDResourceException {
 		// call common delivery address check
-		ErpAddressModel erpAddress = checkDeliveryAddressInForm(user, result, session, cart, actionName, erpAddressModel,deliveryAddressModel);
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(user, result, session, cart, actionName, erpAddressModel,deliveryAddressModel, false);
 		if (erpAddress == null) {
 			return null;
 		}
@@ -317,7 +323,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		performEditDeliveryAddress(event, user, result, session, cart, actionName, erpAddress, deliveryAddressModel,shipToAddressId);
 		}
 		
-	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
+	public static void performEditDeliveryAddress(TimeslotEvent event,FDSessionUser	 user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, String updatedDeliveryAddressId) throws FDResourceException {
 		ErpAddressModel erpAddressModel = checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress, deliveryAddressModel);
 		if (erpAddressModel == null) {
 			return;
@@ -370,10 +376,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		
 		return checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress,deliveryAddressModel);
 	}
-	
-	public static ErpAddressModel checkDeliveryAddressInForm(FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel) throws FDResourceException {
-		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddressModel);
 
+	public static ErpAddressModel checkDeliveryAddressInForm(FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel) throws FDResourceException {
+		return checkDeliveryAddressInForm(user, actionResult, session, cart, actionName, erpAddress, deliveryAddressModel, true);
+	}
+	
+	public static ErpAddressModel checkDeliveryAddressInForm(FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel, boolean useApartment) throws FDResourceException {
+		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddressModel, useApartment);
+		validator.setUseApartmentFlag(useApartment);
 		if (!validator.validateAddress(actionResult)) {
 			return  null;
 		}
