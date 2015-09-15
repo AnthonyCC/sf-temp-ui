@@ -397,22 +397,25 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 						invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
 
 						// 2. set Applied credits
+						if(null !=param.getCreditEntries())
 						for(final InvoiceCreditParameter creditEnty: param.getCreditEntries()){
-							ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
-
-							credit.setAmount(creditEnty.getCreditAmount());
-							credit.setOriginalCreditId(creditEnty.getCreditWebReferenceNo());
-
-							if (invoice.getAmount() > 0 && StringUtils.isEmpty(creditEnty.getCreditMemoNo())) {
-								LOG.warn("Credit memo number required for non-zero invoices: order {"
-										+ creditEnty.getWebOrderNo() + "}, invoice {" + creditEnty.getInvoiceNo() + "} ");
-
-								populateResponseRecord(result, param,
-										"Credit memo number required for non-zero invoices");
-								continue;
+							if(null != creditEnty){
+								ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
+	
+								credit.setAmount(creditEnty.getCreditAmount());
+								credit.setOriginalCreditId(creditEnty.getCreditWebReferenceNo());
+	
+								if (invoice.getAmount() > 0 && StringUtils.isEmpty(creditEnty.getCreditMemoNo())) {
+									LOG.warn("Credit memo number required for non-zero invoices: order {"
+											+ creditEnty.getWebOrderNo() + "}, invoice {" + creditEnty.getInvoiceNo() + "} ");
+	
+									populateResponseRecord(result, param,
+											"Credit memo number required for non-zero invoices");
+									continue;
+								}
+								credit.setSapNumber(creditEnty.getCreditMemoNo());
+								invoice.addAppliedCredit(credit);
 							}
-							credit.setSapNumber(creditEnty.getCreditMemoNo());
-							invoice.addAppliedCredit(credit);
 						}
 						/*if (param.getCreditMemoNo() != null && param.getCreditAmount() > 0) {
 							ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
