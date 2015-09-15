@@ -829,8 +829,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
     
 	public float getQuantityMaximum(ProductModel product) {
-		return product.enforceQuantityMax() || (!this.isCorporateUser())
-		      ? product.getQuantityMaximum()  : 200;
+		float pMax = 200;
+		
+		if (this.getMasqueradeContext() != null) {
+			return pMax;
+		} else {
+			return product.enforceQuantityMax() || (!this.isCorporateUser())
+				? product.getQuantityMaximum() : pMax;
+		}
+		
 	}
 
     public boolean isPickupUser() {
