@@ -110,8 +110,8 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		// JCoMetaData.TYPE_CHAR, 3, 0, "Number of Days Fresh"));
 		tableMetaDataList.add(new TableMetaData("RATING", JCoMetaData.TYPE_CHAR, 3, "SKU Rating"));
 		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 18, "Industry Standard Description"));
-		tableMetaDataList
-				.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
+		tableMetaDataList.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
+		//tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
 
 		createTableRecord(metaPlantMaterialList, tableMetaDataList);
 		metaPlantMaterialList.lock();
@@ -128,7 +128,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("VMSTB", JCoMetaData.TYPE_CHAR, 20, "Dist. Chain status Description"));
 		tableMetaDataList.add(new TableMetaData("VMSTD", JCoMetaData.TYPE_CHAR, 8,
 				"Date from availability Status valid"));
-
+		//tableMetaDataList.add(new TableMetaData("ZZDAYPART", JCoMetaData.TYPE_CHAR, 4,"Daypart Selling"));
 		createTableRecord(metaSalesAreaMaterialList, tableMetaDataList);
 		metaSalesAreaMaterialList.lock();
 		repository.addRecordMetaDataToCache(metaSalesAreaMaterialList);
@@ -277,7 +277,11 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		param.setKosherProduction("1".equals(StringUtils.lowerCase(materialPlantTable.getString("ZZDTYPE"))));
 		param.setPlatter("1".equalsIgnoreCase(StringUtils.lowerCase(materialPlantTable.getString("ZZIHIVI"))));
 
-		param.setBlockedDays(DayOfWeekSet.decode(StringUtils.lowerCase(materialPlantTable.getString("ZZAESZN"))));
+//		param.setBlockedDays(DayOfWeekSet.decode(StringUtils.lowerCase(materialPlantTable.getString("ZZAESZN"))));
+		DayOfWeekSet allowedDays = DayOfWeekSet.decode(StringUtils.lowerCase(materialPlantTable.getString("ZZAESZN")));
+		if (!allowedDays.isEmpty()) {
+			param.setBlockedDays(allowedDays.inverted());
+		}
 
 		param.setDays_in_house(materialPlantTable.getString("DZEIT"));
 
