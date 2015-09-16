@@ -808,7 +808,7 @@ public class RegistrationAction extends WebActionSupport {
 
 			AccountUtil.validatePassword(actionResult, password, repeatPassword);
 			*/
-
+			
 			actionResult
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
@@ -849,9 +849,9 @@ public class RegistrationAction extends WebActionSupport {
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
 			
-			
-			actionResult
-				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
+			// APPDEV-4409 : Removing the PAssword Hint Validation.
+			//actionResult
+			//	.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 			
 		}
 
