@@ -1,6 +1,8 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeTagModel;
 import com.freshdirect.mobileapi.controller.data.Image;
@@ -27,6 +30,7 @@ public class Idea {
 	private String destinationId;
 	private String bannerType;
 	private Map<String, Image> otherImages = new LinkedHashMap<String, Image>();
+	private boolean prodcutLevel;
 
 	public static Idea ideaFor(BannerModel model) {
 		Idea idea = new Idea();
@@ -58,6 +62,18 @@ public class Idea {
 		idea.setDestinationId(category.getId());
 		idea.setDestinationSection("category");
 		idea.setFeatureText(categoryModel.getFullName());
+		
+		//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
+		/**
+		 * Based on categoryModel need to get the product list and return the boolean value
+		 */
+		if(hasProduct(categoryModel)){
+			idea.setProductLevel(true);
+		}
+		else{
+			idea.setProductLevel(false);
+		}
+		// APPDEV- 4368:: Need Indicator for Empty Picks List End
 
 		Map<String, Image> otherImages = new LinkedHashMap<String, Image>();
 		// Grab all related images
@@ -95,7 +111,39 @@ public class Idea {
         
 		return idea;
 	}
-
+	//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
+	private static boolean hasProduct(CategoryModel categoryModel){
+		boolean hasProduct = false;
+		
+		if(!categoryModel.getSubcategories().isEmpty())
+		{
+			List<CategoryModel> subCategories = categoryModel.getSubcategories();
+			for (CategoryModel m1 : subCategories) {
+				boolean result = hasProduct(m1);
+				if(result){
+					return result; 
+				}
+			}
+		}
+		if(categoryModel.getProducts().size()>0)
+		{
+			return isProductAvailable(categoryModel.getProducts());
+		}else
+			return false;
+	}
+	
+	private static boolean isProductAvailable(List<ProductModel> prodList){
+		boolean result = false;
+		
+		for(ProductModel model:prodList){
+			if(!(model.isUnavailable() || model.isDiscontinued())){
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+	//APPDEV- 4368:: Need Indicator for Empty Picks List End
 	public static Idea ideaFor(RecipeTagModel recipeTagModel) {
 		Idea idea = new Idea();
 		idea.setDestinationId(recipeTagModel.getContentName());
@@ -180,4 +228,12 @@ public class Idea {
 	public void setOtherImages(Map<String, Image> otherImages) {
 		this.otherImages = otherImages;
 	}
+	
+	public void setProductLevel(boolean prodcutLevel) {
+		this.prodcutLevel = prodcutLevel;
+	}
+	
+	public boolean isProductLevel() {
+    	return prodcutLevel;
+    }
 }
