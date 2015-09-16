@@ -216,6 +216,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 									request, response);
 							((LoggedIn) responseMessage).setNewUser("false");
 						} else {
+							responseMessage = new SocialResponse();
 							responseMessage.setStatus(Message.STATUS_FAILED);
 							((SocialResponse) responseMessage)
 									.setLoggedInSuccess(false);
@@ -287,8 +288,6 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 							.getActionResult();
 					if (!resultSocialLink.isSuccess()) {
 						responseMessage.setStatus(Message.STATUS_FAILED);
-						((SocialResponse) responseMessage)
-								.setLoggedInSuccess(false);
 						responseMessage = getErrorMessage(result, request);
 					}
 									
