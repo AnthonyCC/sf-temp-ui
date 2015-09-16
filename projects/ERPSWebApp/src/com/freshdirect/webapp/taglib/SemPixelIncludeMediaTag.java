@@ -2,6 +2,8 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
@@ -13,6 +15,7 @@ import com.freshdirect.fdstore.sempixel.SemPixelModel;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -90,6 +93,10 @@ public class SemPixelIncludeMediaTag extends BodyTagSupport {
 		if ( curSemPixel.isEnabled() && !"".equals(curSemPixel.getMediaPath()) ) {
 			try {
 				FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+				
+				/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+				curSemPixel.setParam("user", (FDUserI)user);
+				curSemPixel.setParam("sessionUser", (FDSessionUser)user);
 				
 				//pixel enabled and has media, display
 				//Pass the pricing context to the template context

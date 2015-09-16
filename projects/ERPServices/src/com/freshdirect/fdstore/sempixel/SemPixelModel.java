@@ -18,7 +18,7 @@ public class SemPixelModel extends ModelSupport {
 	private List<String> validZipCodes;
 	private String mediaPath;
 	private Date lastModifiedDate;
-    private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, Object> params = new HashMap<String, Object>();
 	
 	public SemPixelModel() {
         super();
@@ -86,19 +86,19 @@ public class SemPixelModel extends ModelSupport {
 		return this.lastModifiedDate;
 	}
 
-	public void setParams(Map<String, String> params) {
+	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
 
-	public Map<String, String> getParams() {
+	public Map<String, Object> getParams() {
 		return params;
 	}
 	
-	public void setParam(String key, String value) {
+	public void setParam(String key, Object value) {
 		params.put(key, value);
 	}
 	
-	public String getParam(String key) {
+	public Object getParam(String key) {
 		return params.get(key);
 	}
 	
