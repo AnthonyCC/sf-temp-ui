@@ -7,14 +7,18 @@ import java.util.Map;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
@@ -276,6 +280,42 @@ public class CartSubTotalBoxService {
             data.setValue(JspMethods.formatPriceWithNegativeSign(user.getGiftcardBalance()));
             subTotalBox.add(data);
         }
+    }
+
+    public void populateGiftCardsTotalBalanceToBox(List<CartSubTotalFieldData> subTotalBox, FDUserI user, FDCartI cart) throws FDResourceException {
+        double perishableBufferAmount = 0;
+        double gcSelectedBalance = user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
+        double gcBufferAmount = 0;
+        if (cart instanceof FDCartModel) {
+            perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel) cart);
+        }
+        if (perishableBufferAmount > 0) {
+            if (cart.getTotalAppliedGCAmount() > 0) {
+                ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+                if (!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) {
+                    gcBufferAmount = gcSelectedBalance;
+                } else {
+                    gcBufferAmount = perishableBufferAmount;
+                }
+            }
+        }
+
+        CartSubTotalFieldData data = new CartSubTotalFieldData();
+        data.setId("giftcardbalance");
+        data.setText("Gift Card Balance");
+        double giftCardsBalance = 0;
+        if (cart.getTotalAppliedGCAmount() > 0) {
+            giftCardsBalance = user.getGiftcardsTotalBalance();
+            if (cart instanceof FDCartModel) {
+                giftCardsBalance = giftCardsBalance - cart.getTotalAppliedGCAmount() - gcBufferAmount;
+            }
+            data.setValue(JspMethods.formatPriceWithNegativeSign(user.getGiftcardBalance()));
+            subTotalBox.add(data);
+        } else {
+            giftCardsBalance = user.getGiftcardsTotalBalance();
+        }
+        data.setValue(JspMethods.formatPriceWithNegativeSign(giftCardsBalance));
+        subTotalBox.add(data);
     }
 
     public void populateSavingToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {

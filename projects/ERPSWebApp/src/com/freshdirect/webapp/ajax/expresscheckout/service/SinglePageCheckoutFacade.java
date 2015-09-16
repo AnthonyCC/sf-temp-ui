@@ -274,7 +274,9 @@ public class SinglePageCheckoutFacade {
 
     /** based on step_3_choose.jsp */
     private void processGiftCards(FDUserI user, FormPaymentData formPaymentData) {
-
+        if (user.getGiftCardList() != null) {
+            user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
+        }
         try {
             // [APPDEV-2149] SO template only checkout => no order, no dlv
             // timeslot, no giftcard magic

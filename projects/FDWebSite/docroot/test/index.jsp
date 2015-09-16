@@ -955,6 +955,12 @@
 	   <div class="link"><a href="/test/express_checkout/product_sample_carousel.jsp">/test/express_checkout/product_sample_carousel.jsp</a></div>
 	   <div class="pageDesc">Product Sampling Carousel Desing at XC/View Cart page</div>
 	</div>
+	
+    <div class="tag giftcard givexnum">
+       <div class="pageName"><span>Gift Card Givex Number encrypt and decrypt page</span></div>
+       <div class="link"><a href="/test/giftcards/givex.jsp">/test/giftcards/givex.jsp</a></div>
+       <div class="pageDesc">Gift Card Givex Number encrypt and decrypt page</div>
+    </div>
 
 	<hr />
 </div>
