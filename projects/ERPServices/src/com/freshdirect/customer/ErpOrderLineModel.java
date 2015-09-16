@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.event.EnumEventSource;
 
 /**
  * ErpOderLine interface
@@ -49,8 +50,9 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private boolean alcohol;
     private boolean wine;
     private boolean beer;
-    
-    private String recipeSourceId;
+    private EnumEventSource source;
+
+	private String recipeSourceId;
     private String cartLineId;
     private boolean requestNotification;
     private boolean deliveryPass;
@@ -96,6 +98,16 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
 	
 	private Double scaleQuantity;
+	
+    
+    public EnumEventSource getSource() {
+		return source;
+	}
+
+	public void setSource(EnumEventSource source) {
+		this.source = source;
+	}
+
 	
     public FDGroup getFDGroup() {
 		return group;

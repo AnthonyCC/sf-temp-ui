@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
@@ -226,6 +227,7 @@ public class ViewCartCarouselService {
                 }
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
                     productSamplesInCart.add(orderLine);
+                    orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
                 }
             }
         }
@@ -267,7 +269,8 @@ public class ViewCartCarouselService {
                         LOGGER.error("Failed to populate sku data", e);
                     }
                     ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
-                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+//                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+                    pd.getQuantity().setqMax(1);
                     populateCartAmountByProductSample(pd, orderLinesSkuCodeWithQuantity.get(skuCode));
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
@@ -285,8 +288,8 @@ public class ViewCartCarouselService {
     }
 
     private void populateCartAmountByProductSample(ProductData pd, Double quantity) {
-        if (pd.getInCartAmount() > FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
-            if (quantity <= FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
+        if (pd.getInCartAmount() > 1){//FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
+            if (quantity <= 1){//FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
                 pd.setInCartAmount(quantity);
             } else {
                 pd.setInCartAmount(0.0);

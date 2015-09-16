@@ -451,13 +451,13 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 //			this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
 			if(!NumberUtil.isDouble(subTotal)){
 				this.promotion.setMinSubtotal(subTotal);			
-				actionResult.addError(true, "subtotalNumber", " Subtotal value should be a number.");
+				actionResult.addError(true, "OrderSubtotalNumber", "Order Subtotal value should be a number.");
 			}else{
 				this.promotion.setMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(subTotal)));
 			}
-			if(!NumberUtil.isDouble(dcpdMinSubtotal)){
+			if(null!=dcpdMinSubtotal && !"".equals("") && !NumberUtil.isDouble(dcpdMinSubtotal)){
 				this.promotion.setDcpdMinSubtotal(dcpdMinSubtotal);			
-				actionResult.addError(true, "subtotalNumber", " Subtotal value should be a number.");
+				actionResult.addError(true, "dcpdSubtotalNumber", " Subtotal value should be a number.");
 			}else{
 				this.promotion.setDcpdMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(dcpdMinSubtotal)));
 			}

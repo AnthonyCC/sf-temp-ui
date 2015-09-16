@@ -39,7 +39,10 @@
 		<div class="promo_page_content-view_content noBorder">
 			<div class="padLR4">
 				<div class="errContainer">
-					<fd:ErrorHandler result="<%=result%>" name="subtotalNumber" id="errorMsg">
+					<fd:ErrorHandler result="<%=result%>" name="OrderSubtotalNumber" id="errorMsg">
+						<%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="dcpdSubtotalNumber" id="errorMsg">
 						<%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="invalidDepts" id="errorMsg">

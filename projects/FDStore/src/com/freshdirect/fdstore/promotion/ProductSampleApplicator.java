@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductSampleApplicator implements PromotionApplicatorI {
@@ -48,13 +49,14 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				FDCartModel cart= context.getShoppingCart();
 				List<FDCartLineI> orderLines=cart.getOrderLines();
 				if(null !=orderLines && !orderLines.isEmpty()){
-					int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+					int eligibleQuantity = 1;//FDStoreProperties.getProductSamplesMaxQuantityLimit();
 					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
 					if(!isMaxSampleReached(orderLines, eligibleProducts)){
                         int quantity = 0;
 						for (FDCartLineI orderLine : orderLines) {
                             if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) && quantity < eligibleQuantity
-                                    && orderLine.getQuantity() <= eligibleQuantity) {
+                                    && orderLine.getQuantity() <= eligibleQuantity && ((EnumEventSource.ps_caraousal.equals(orderLine.getErpOrderLineSource()) || EnumEventSource.ps_caraousal.equals(orderLine.getSource())))) {
+                            	orderLine.setSource(EnumEventSource.ps_caraousal);
                                 orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
 								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
                                 quantity += orderLine.getQuantity();

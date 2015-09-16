@@ -110,6 +110,7 @@ public class FDModifyCartModel extends FDCartModel {
 		cartLine.setExternalAgency(origLine.getExternalAgency());
 		cartLine.setExternalSource(origLine.getExternalSource());
 		cartLine.setExternalGroup(origLine.getExternalGroup());
+		cartLine.setErpOrderLineSource(origLine.getErpOrderLineSource());
 		
 		this.addOrderLine(cartLine);
 	}

@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -31,7 +32,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE"
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE"
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ? AND NVL(E_STORE,'FreshDirect')=?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
@@ -87,6 +88,8 @@ public class FDCartLineDAO {
 			line.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
 			line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
 			line.setEStoreId(EnumEStoreId.valueOfContentId(rs.getString("E_STORE")));
+			String source = rs.getString("SOURCE");
+			line.setSource((null!=source && !"".equals(source))?EnumEventSource.valueOf(source):null);
 			lst.add(line);
 		}
 		rs.close();
@@ -128,7 +131,7 @@ public class FDCartLineDAO {
 			return;
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP, E_STORE, SOURCE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -153,6 +156,7 @@ public class FDCartLineDAO {
 			ps.setString(20, StringUtil.crop(line.getExternalGroup(), 256));
 			ps.setString(21, null !=line.getEStoreId()? line.getEStoreId().getContentId():
 				(null!=storeContext && null !=storeContext.getEStoreId() ? storeContext.getEStoreId().getContentId():EnumEStoreId.FD.getContentId()));
+			ps.setString(22, (line.getSource()!=null? line.getSource().toString():null));
 			
 			ps.addBatch();
 		}

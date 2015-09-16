@@ -248,6 +248,14 @@ public class FDCartLineModel extends AbstractCartLine {
 		return source;
 	}
 
+	public void setErpOrderLineSource(EnumEventSource source){
+	this.orderLine.setSource(source);
+	}
+	
+	public EnumEventSource getErpOrderLineSource(){
+		return this.orderLine.getSource();
+	}
+	
 	public void setSavingsId(String savingsId){
 		this.orderLine.setSavingsId(savingsId);
 	}
