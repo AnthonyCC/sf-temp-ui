@@ -170,6 +170,9 @@ public class Product {
     protected boolean isSoldByLB;
 
     protected boolean displaySalesUnitsOnly;
+    
+    //APPDEV - 4361 : EstimatedQuantity not Returned for Some Products
+    protected boolean isSoldByLBforDisplayEstimate;
 
     protected boolean displayEstimatedQuantity;
 
@@ -348,12 +351,15 @@ public class Product {
                 // it will never happens, because only FDProduct construction can throw exception
             }
             this.isSoldByLB = this.isPricedByLB && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
+            
+            //APPDEV - 4361 : EstimatedQuantity not Returned for Some Products
+            this.isSoldByLBforDisplayEstimate = !this.hasSingleSalesUnit && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
             // display sales unit dropdown only (qty is always one)
             // null and "QUANTITY"
             this.displaySalesUnitsOnly = (sellBySalesUnit != null) || (!this.hasSingleSalesUnit && this.isSoldByLB && this.isPricedByLB);
             // display estimated qty if there's no salesUnitDropdown, it's priced by the pound and not sold by the pound
-            this.displayEstimatedQuantity = !this.displaySalesUnitsOnly && this.isPricedByLB && !this.isSoldByLB;
+            this.displayEstimatedQuantity = !this.displaySalesUnitsOnly && this.isPricedByLB && !this.isSoldByLBforDisplayEstimate;
             this.salesUnitFirst = (sellBySalesUnit == null) && !this.hasSingleSalesUnit && this.isPricedByLB && !this.isSoldByLB;
             this.hasVariationMatrix = this.defaultSku.hasVariationMatrix();
             String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
