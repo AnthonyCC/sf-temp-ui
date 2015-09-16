@@ -115,7 +115,7 @@
 		<links name="actions">approveCredit,rejectCredit,forceorder,edit_profile,autoApprove,lateLog,lateRoute,buyDeliveryPass,editAddress,editPayment</links>
 		<links name="others">charge_order.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp,credit_card_info.jsp</links>
 
-		<limit name="autoApprove">40</limit>
+		<limit name="autoApprove">100</limit>
 		<limit name="approveCredit">2000</limit>
 	</role>
 	
@@ -204,7 +204,7 @@
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp</links>
 		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment</links>
 
-		<limit name="autoApprove">30</limit>
+		<limit name="autoApprove">100</limit>
 		<limit name="approveCredit">200</limit>
 
 		
@@ -253,7 +253,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp</links>
 		<links name="actions">approveCredit,autoApprove,forceorder,lateLog,lateRoute,buyDeliveryPass,editAddress,editPayment,edit_profile</links>
 
-		<limit name="autoApprove">30</limit>
+		<limit name="autoApprove">100</limit>
 		<limit name="approveCredit">50</limit>
 	</role>
 	
@@ -296,7 +296,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="customeraccount">account_details.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,add_delivery_address.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,reserve_timeslot.jsp,username_password_option.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,lateRoute,buyDeliveryPass,editAddress</links>
 
-		<limit name="autoApprove">25</limit>
+		<limit name="autoApprove">100</limit>
 
 	</role>	
 	
@@ -328,7 +328,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="customeraccount">account_details.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp,order_search_results.jsp,depot_info.jsp,vip_info.jsp,smartstore_info.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,place_alert.jsp,customer_alert_list.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
 		<links name="actions">approveCredit,rejectCredit,forceorder,autoApprove,lateLog,lateRoute,buyDeliveryPass,editAddress</links>
 
-		<limit name="autoApprove">30</limit>
+		<limit name="autoApprove">100</limit>
 		<limit name="approveCredit">200</limit>
 	</role>
 	
@@ -375,7 +375,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
-		<limit name="autoApprove">20</limit>
+		<limit name="autoApprove">100</limit>
 	</role>
 	
 	<role name="CRM_Agent">
@@ -404,7 +404,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp,masquerade.jsp,d56b699830e77ba53855679cb1d252da.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
-		<limit name="autoApprove">25</limit>
+		<limit name="autoApprove">100</limit>
 	</role>
 
 	<role name="CRM_SeniorAgent">
@@ -434,7 +434,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp,corporateFailurePage.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment</links>
 
-		<limit name="autoApprove">30</limit>
+		<limit name="autoApprove">100</limit>
 	</role>
 	
 	<role name="CRM_Business">
