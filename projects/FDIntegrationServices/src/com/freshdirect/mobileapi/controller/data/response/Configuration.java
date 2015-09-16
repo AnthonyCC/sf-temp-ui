@@ -11,7 +11,7 @@ public class Configuration implements Serializable {
 	private boolean ecouponEnabled;
 	private String adServerUrl;
 	private String tipRange;
-	
+	private String middleTierUrl;
 
 	public boolean isAkamaiImageConvertorEnabled() {
 		return isAkamaiImageConvertorEnabled;
@@ -54,5 +54,11 @@ public class Configuration implements Serializable {
 	}
 	public void setTipRange(String tipRange) {
 		this.tipRange = tipRange;
+	}
+	public void setMiddleTierUrl(String url){
+		this.middleTierUrl = url;
+	}
+	public String getMiddleTierUrl(){
+		return this.middleTierUrl;
 	}	
 }

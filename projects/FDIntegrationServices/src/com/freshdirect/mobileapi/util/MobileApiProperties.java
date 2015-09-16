@@ -52,6 +52,8 @@ public class MobileApiProperties {
     
     private final static String PROP_SAMEDAY_DP_COMPATIBLE = "mobileapi.samedaydp.compatible";
 
+    private final static String PROP_MIDDLE_TIER_URL = "mobileapi.middletier.url";
+    
     public final static String UPGRADE = "UPGRADE";
 
     public final static String INCOMPATIBLE = "INCOMPATIBLE";
@@ -119,6 +121,10 @@ public class MobileApiProperties {
 
     public static String getCurrentApiVersion() {
         return get(PROP_CURRENT_VERSION);
+    }
+    
+    public static String getMiddleTierUrl() {
+    	return get(PROP_MIDDLE_TIER_URL);
     }
 
     public static String getDiscoveryServiceUrl() {
