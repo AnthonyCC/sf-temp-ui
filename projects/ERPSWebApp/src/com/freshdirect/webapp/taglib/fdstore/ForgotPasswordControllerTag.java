@@ -83,6 +83,9 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				if (this.isLinkExpired(email, link)) {
 					this.doRedirect(URI_LINK_EXPIRED);
 				}
+				// APPDEV-4409 : The below code is set to bypass the hint question page and direct to 
+				// password change page. 
+				pageContext.setAttribute(this.password, "true");
 			}
 
 		} else {
