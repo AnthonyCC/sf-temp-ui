@@ -170,7 +170,7 @@
 
   {if $info.subTotal}
     <div class='cartsection__totalwrapper'>
-      <p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal}</p>
+      <p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.subTotalText == 'Estimated Subtotal'}*{/if}</p>
       <p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
     </div>
   {/if}
