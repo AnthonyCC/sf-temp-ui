@@ -264,7 +264,7 @@
 					<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" id="password1"></td></tr>
 					<% if (result.hasError(EnumUserInfoName.REPEAT_PASSWORD.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
-					<tr><td class="bodyCopySUL"><span><label>Security Question </label><span class="star">*</span></span></td></tr>
+					<tr><td class="bodyCopySUL"><span><label>Security Question </label><span class="star"></span></span></td></tr>
 					<tr><td><span class="text9 bodyCopySULNote">What is your town of birth or mother's maiden name?</span></td>
 					</tr>
 					
