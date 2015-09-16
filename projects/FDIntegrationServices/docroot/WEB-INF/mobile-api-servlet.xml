@@ -95,6 +95,9 @@
 						
 	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.SocialLoginController"
 		parent="baseController" />
+		
+    	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
+		parent="baseController" />
 				
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -128,6 +131,7 @@
 				<prop key="**/fdinterface.do">externalInterfaceController</prop>
 				<prop key="**/newproduct.do">newProductController</prop>
 				<prop key="**/sociallogin.do">socialLoginController</prop>
+				<prop key="**/newbrowse.do">newBrowseController</prop>
 			</props>
 		</property>
 	</bean>

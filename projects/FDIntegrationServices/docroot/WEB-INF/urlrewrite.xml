@@ -878,6 +878,13 @@
 		<from>^/v/([0-9]+)/browse/getCatalogForKey/(.*)</from>
 		<to last="true">/browse.do?action=getCatalogForKey&amp;ver=$1</to>
 	</rule>
+	
+	<!--New Browse -->
+	<rule>
+		<from>^/v/([0-9]+)/newbrowse/categories/(.*)</from>
+		<to last="true">/newbrowse.do?action=getCategories&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Ideas -->
 	<rule>
 		<from>^/v/([0-9]+)/ideas/home/(.*)</from>

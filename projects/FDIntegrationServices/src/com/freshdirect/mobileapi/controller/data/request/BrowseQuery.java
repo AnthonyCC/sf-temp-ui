@@ -41,6 +41,10 @@ public class BrowseQuery extends Message {
 	
 	private String key;
 	
+	private Integer loadCategoriesCarousel;
+	
+	private Integer carouselProductCount;
+	
 
 	public String getZipCode() {
 		return zipCode;
@@ -189,5 +193,22 @@ public class BrowseQuery extends Message {
 			_catalogKey = CatalogKey.parse(key);
 		return _catalogKey;
 	}
+	
+		public Integer getLoadCategoriesCarousel() {
+		return loadCategoriesCarousel;
+	}
+
+	public void setLoadCategoriesCarousel(Integer loadCategoriesCarousel) {
+		this.loadCategoriesCarousel = loadCategoriesCarousel;
+	}
+
+	public Integer getCarouselProductCount() {
+		return carouselProductCount;
+	}
+
+	public void setCarouselProductCount(Integer carouselProductCount) {
+		this.carouselProductCount = carouselProductCount;
+	}
+
 
 }

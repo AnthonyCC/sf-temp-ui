@@ -918,6 +918,10 @@ function loadStuff() {
   	$("#url").val("/social/socialConnect/"); 
   	$("#payload").val('{"accessToken" : "12345", "provider":"google"}'); 	
   	
+  }else if ( loaddata == "NewBrowseCategory") {
+  	$("#url").val("/newbrowse/categories/");
+	var postdata = '{"department": "cof", "page" : "1", "max" : "25", "loadCategoriesCarousel" : "4", "carouselProductCount" : "6"}';
+  	$("#payload").val(postdata);
   }
   $("#result").JSONView({});  	
   $("#payload").focus();
@@ -1231,6 +1235,8 @@ function doStuff() {
   <option value="registersocial"> Social - Register </option>
   <option value="unlinkaccount"> Social - Unlink Account </option>
   <option value="socialConnect"> Social - Connect </option>
+  <option value=""> ========== NEW BROWSE ========== </option>
+  <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
  
   </select>
   
