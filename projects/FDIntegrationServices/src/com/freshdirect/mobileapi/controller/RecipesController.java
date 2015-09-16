@@ -191,11 +191,26 @@ public class RecipesController extends BaseController {
 				final Map<String, Object> rec = recs.get(0);				
 				final List<Map<String, Object>> ings = (List<Map<String, Object>>) rec.get("products");
 				List<List<Product>> ingredients = new ArrayList<List<Product>>(ings.size());
+				
+				//APPDEV-4238 -- Ingredients you may already have at hand
+				List<List<Product>> ingredientsYmah = new ArrayList<List<Product>>();
+				
+				
 				for (Map<String, Object> ing : ings) {
 				
 					final List<Map<String, Object>> prods = (List<Map<String, Object>>) ing.get("products");
 					List<Product> suggestions = new ArrayList<Product>(prods.size());
+					List<Product> youMayAlreadyHave = new ArrayList<Product>();
+					
 					for (Map<String, Object> prod : prods) {
+						
+						//APPDEV-4238 -- Ingredients you may already have at hand
+						//Check flag that is set for items you may have on hand
+						String isYmah = "";
+						if(prod.containsKey("isPantryItem")) {
+							Object object = prod.get("isPantryItem");
+							isYmah = object.toString();
+						}
 						
 						//Is FreshDirect storing a JSON object as their vendor ID? -- 
 						final String vendorJson = prod.get("vendorId").toString();
@@ -230,15 +245,23 @@ public class RecipesController extends BaseController {
 							product.setQuantity(pq);
 							//*************************************************************************
 							suggestions.add(product);
+							
+							//APPDEV-4238 -- Ingredients you may already have at hand
+							if(isYmah.equalsIgnoreCase("true")){
+								youMayAlreadyHave.add(product);
+							}
 						} catch (ModelException e) {
 							recipe.addWarningMessage("SKU: " + vendorJson + ": " + traceFor(e));
 						}
 						}
 					}
 					ingredients.add(suggestions);
-					
+					ingredientsYmah.add(youMayAlreadyHave);
+						
 				}
 				recipe.setIngredients(ingredients);
+				recipe.setIngredientsYmah(ingredientsYmah);
+				
 			}
 		} catch (HttpException e) {
 			throw new RuntimeException(e);

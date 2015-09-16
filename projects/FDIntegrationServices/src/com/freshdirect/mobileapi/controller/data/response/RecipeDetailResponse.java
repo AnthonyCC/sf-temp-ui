@@ -48,6 +48,9 @@ public class RecipeDetailResponse extends Message {
     private List<List<Product>> ingredients;
     private Map<String, String> ingredientLoadingErrors;
     private List<Ingredient> foodilyIngredients;
+    
+    //APPDEV-4238 -- Ingredients you may already have at hand
+    private List<List<Product>> ingredientsYmah;
 
 	public String getRecipeTitle() {
 		return recipeTitle;
@@ -102,5 +105,12 @@ public class RecipeDetailResponse extends Message {
 	}
 	public void setFoodilyIngredients(List<Ingredient> foodilyIngredients) {
 		this.foodilyIngredients = foodilyIngredients;
+	}
+
+	public List<List<Product>> getIngredientsYmah() {
+		return ingredientsYmah;
+	}
+	public void setIngredientsYmah(List<List<Product>> ingredientsYmah) {
+		this.ingredientsYmah = ingredientsYmah;
 	}
 }
