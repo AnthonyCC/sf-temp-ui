@@ -79,6 +79,8 @@ public class CheckoutController extends BaseController {
     
     private final static String ACTION_AUTH_CHECKOUT = "authenticate";
     
+    private final static String ACTION_GET_CONSOLIDATED_CART = "getConsolidatedCart";
+    
     private final static String ACTION_GET_DELIVERY_ADDRESSES = "getdeliveryaddresses";
 
     private final static String ACTION_ORDER_DETAIL = "orderdetail";
@@ -149,9 +151,12 @@ public class CheckoutController extends BaseController {
             }
             if (validateCheckoutRequirements(model, requestMessage, user, request)) {
                 model = getDeliveryAddresses(model, user);
-                model = applycredit(model, requestMessage, user, request);
+                //model = applycredit(model, requestMessage, user, request);
             }
-        } else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
+        } else if(ACTION_GET_CONSOLIDATED_CART.equals(action)) {       	
+                model = applycredit(model, user, request);           
+        }
+        else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
             model = getDeliveryAddresses(model, user);
         } else if (ACTION_SET_DELIVERY_ADDRESS.equals(action)) {
             DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
@@ -237,13 +242,22 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
-    private ModelAndView applycredit(ModelAndView model, Login requestMessage,
-			SessionUser user, HttpServletRequest request) throws FDResourceException {
-    	 Cart cart = user.getShoppingCart();
-    	 if(cart!=null) {
-         cart.applycredit(user);  
-    	 }
-		return model;
+    private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException {
+   	 	
+    	Message responseMessage = new Message();
+    	Cart cart = user.getShoppingCart();
+		if (cart != null) {
+			try{
+			cart.applycredit(user);
+			} catch(Exception e) {
+				responseMessage .setSuccessMessage("Exception when applying store credit");
+				return model;
+			}
+		} else {
+			responseMessage.addErrorMessage("CART IS EMPTY");
+		}
+		responseMessage .setSuccessMessage("Store Credit amount has been applied successfully.");
+        return model;
 	}
 
 	public boolean isCheckoutAuthenticated(HttpServletRequest request) {

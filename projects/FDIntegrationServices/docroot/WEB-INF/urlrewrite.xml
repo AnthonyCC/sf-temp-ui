@@ -276,6 +276,14 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/authenticate/$</from>
 		<to>/checkout.do?action=authenticate&amp;ver=$1</to>
 	</rule>
+	
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- getConsolidatedCart at Checkout -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/getConsolidatedCart/$</from>
+		<to>/checkout.do?action=getConsolidatedCart&amp;ver=$1</to>
+	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Get Delivery Addresses -->

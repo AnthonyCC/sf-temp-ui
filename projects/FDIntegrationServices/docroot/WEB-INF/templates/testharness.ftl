@@ -199,6 +199,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/authenticate/");
     $("#payload").val('{ "username" : "bogus@freshdirect.com", "password" : "test" }');
   	
+  } else if (loaddata == "CheckoutGetConsolidatedCart") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/getConsolidatedCart/");
+    $("#payload").val("");
+  	
   } else if (loaddata == "GetDeliveryAddresses") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
   	$("#payload").val("");
@@ -1064,6 +1068,7 @@ function doStuff() {
   <option value=""> ========== CHECKOUT ========== </option>
   <option value="InitCheckout">CHECKOUT - Init</option>
   <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
+  <option value="CheckoutGetConsolidatedCart">CHECKOUT - GetConsolidatedCart</option>
   <option value="GetDeliveryAddresses">CHECKOUT - Get Delivery Addresses</option>  
   <option value="SetDeliveryAddress">CHECKOUT - Set Delivery Address</option>
   <option value="SetDeliveryAddressEx">CHECKOUT - Set Delivery Address Ex</option>
