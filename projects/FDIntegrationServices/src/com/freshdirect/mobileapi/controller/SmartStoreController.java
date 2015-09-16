@@ -103,6 +103,8 @@ public class SmartStoreController extends BaseController {
 			if (currentFolder instanceof DepartmentModel) {
         		DepartmentModel department = (DepartmentModel) currentFolder;
         		try {
+        			boolean allowRestore = OverriddenVariantsHelper.AllowAnonymousUsers;
+        			OverriddenVariantsHelper.AllowAnonymousUsers = true;
         			List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(department
         																							, user.getFDSessionUser()
         																							, null
@@ -140,6 +142,14 @@ public class SmartStoreController extends BaseController {
         			}					
 	    			result.setSiteFeature(department.getFeaturedRecommenderSiteFeature());
 	    			result.setProducts(setProductsFromModel(recommendedProducts));
+	    			//APPDEV-4317 Streamline the departmentcarousel call - START
+	    			if(recommendedItems.size() == 0){
+	    				result = getProductsFromCarousal(deptId,model,user,request,response);
+		    		//APPDEV-4317 Streamline the departmentcarousel call - END
+	    			}
+	    			
+	    			OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
+	    			
 				} catch (FDResourceException e) {
 					e.printStackTrace();
 				}     		    			
@@ -210,7 +220,66 @@ public class SmartStoreController extends BaseController {
 		}
         return model;
     }
-    
+	//APPDEV-4317 Streamline the departmentcarousel call - START
+	private DepartmentCarouselResult getProductsFromCarousal(String deptId,ModelAndView model,SessionUser user,HttpServletRequest request,HttpServletResponse response) throws JsonException 
+	{
+		
+		String redirectDept = "";
+		if(deptId.equalsIgnoreCase(HMR_DEPT_CHECK))
+		{
+			ContentNodeModel currentFolderTemp = ContentFactory.getInstance().getContentNode(deptId);
+	    	String redirectURL = ((CategoryModel)currentFolderTemp).getRedirectUrl();
+	    	Map<String, String> redirectParams = getQueryMap(redirectURL);
+	    	redirectDept = redirectParams.get("deptId");
+		}
+		
+		if(deptId.equalsIgnoreCase(HMR_DEPT_CHECK) && redirectDept != null && !redirectDept.equals("")) {
+			deptId = redirectDept;
+		}
+	    
+		EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
+		String title = DepartmentCarouselUtil.getCarouselTitle(deptId);
+		
+		DepartmentCarouselResult result = new DepartmentCarouselResult();
+		List products = null;
+		
+		if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {
+			products = getPeakProduce(model, user, request, response);				
+		} else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {
+			products = getMeatBestDeals(model, user, request, response);
+		} /*else if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {
+			products = getCarouselRecommendations(siteFeature, model, user, request);
+		}*/ else {
+			// So called 'customer favorites department level' recommendations
+			// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
+			siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
+		
+
+			boolean allowRestore = OverriddenVariantsHelper.AllowAnonymousUsers;
+			OverriddenVariantsHelper.AllowAnonymousUsers = true;
+
+			products = getCarouselRecommendations(siteFeature, model, user,
+					request,redirectDept);
+
+			OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
+			
+			//products = getCarouselRecommendations(siteFeature,	model, user, request);
+		}
+		
+		result.setTitle(title);
+		result.setSiteFeature(siteFeature.getName());
+		result.setProducts(products);
+		if(products == null || (products != null && products.isEmpty())  ) {
+			result.setSuccessMessage("No recommendations found.");
+		} else {
+			result.setSuccessMessage(siteFeature.getTitle() + " have been retrieved successfully.");
+		}
+	setResponseMessage(model, result, user);
+	return result;
+	}
+	//APPDEV-4317 Streamline the departmentcarousel call - END
+
+	
 	//APPDEV-4237
 	private static Map<String, String> getQueryMap(String url) {
 		Map<String, String> map = new HashMap<String, String>();
