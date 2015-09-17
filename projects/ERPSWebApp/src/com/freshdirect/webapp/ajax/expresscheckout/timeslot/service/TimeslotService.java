@@ -48,6 +48,27 @@ public class TimeslotService {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
         if (reservation != null) {
+        	// Deal with case when timeslot zone does not match
+        	// the zone of selected address assigned to cart
+        	
+        	// pick timeslot address
+        	String timeslotAddressId = reservation.getAddressId();
+        	// pick delivery address
+        	String dlvAddressId = null;
+        	if (cart != null && cart.getDeliveryAddress() != null) {
+        		dlvAddressId = cart.getDeliveryAddress().getId();
+        	}
+
+        	// Make the comparison, abort load if mismatch detected
+        	if ( !(timeslotAddressId != null && dlvAddressId != null
+        			&& timeslotAddressId.equals(dlvAddressId))) {
+        		// timeslot has different address than the selected
+        		LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID="
+        				+ reservation.getTimeslotId() + ")");
+
+        		return null;
+        	}
+        	
             Date startTime = reservation.getStartTime();
             Calendar startTimeCalendar = DateUtil.toCalendar(startTime);
             String dayNames[] = new DateFormatSymbols().getWeekdays();
