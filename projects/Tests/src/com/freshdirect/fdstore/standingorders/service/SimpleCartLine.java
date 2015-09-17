@@ -11,7 +11,6 @@ import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
@@ -60,7 +59,6 @@ public class SimpleCartLine implements FDCartLineI {
 	private double price = 10.0;
 	
 	private String atcItemId;
-
 
 	@Override
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber)
@@ -815,25 +813,19 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public void setEStoreId(EnumEStoreId eStore) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumEStoreId getEStoreId() {
-		// TODO Auto-generated method stub
 		return EnumEStoreId.FD;
 	}
 
 	@Override
 	public void setPlantId(String plantId) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public String getPlantId() {
-		// TODO Auto-generated method stub
 		return "1000";
 	}
 
@@ -847,6 +839,18 @@ public class SimpleCartLine implements FDCartLineI {
 	public void setScaleQuantity(Double scaleQuantity) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setErpOrderLineSource(EnumEventSource source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EnumEventSource getErpOrderLineSource() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
