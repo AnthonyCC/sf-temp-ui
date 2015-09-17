@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
@@ -107,7 +108,8 @@ public class CartSubTotalBoxService {
     }
 
     public void populateDeliveryFeeToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, FDUserI user, CartData cartData) {
-        boolean isDlvPassApplied = false;
+    	final double epsilon = 0.0000001;
+    	boolean isDlvPassApplied = false;
         if (cart instanceof FDCartModel) {
             isDlvPassApplied = ((FDCartModel) cart).isDlvPassApplied();
         } else if (cart instanceof FDOrderAdapter) {
@@ -128,6 +130,19 @@ public class CartSubTotalBoxService {
         cartData.setDeliveryCharge(deliveryPassValue);
         data.setValue(deliveryPassValue);
         data.getOther().put("deliveryPassPopupNeeded", deliveryPassPopupNeeded);
+        
+        boolean isTaxableItemInCart = false;
+        for (FDCartLineI lineItem : cart.getOrderLines()) {
+        	if (lineItem.getTaxRate() > epsilon) {
+        		isTaxableItemInCart = true;
+        		break;
+        	}
+        }
+        
+        if (isTaxableItemInCart) {
+        	data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
+        }
+
         subTotalBox.add(data);
     }
 
