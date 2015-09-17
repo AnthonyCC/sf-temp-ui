@@ -25,12 +25,8 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.util.MultiStoreProperties;
-import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -184,11 +180,7 @@ public class ContentFactory {
 			@SuppressWarnings( "synthetic-access" )
 			@Override
 			protected UserContext initialValue() {
-				try {
-					throw new FDException("initializing current user context with default value");
-				} catch (FDException e) {
-					LOGGER.warn(e.getMessage(), e);
-				}
+				LOGGER.debug("initializing current user context with default value");
 				return UserContext.createDefault();
 			}
 		};
@@ -197,11 +189,7 @@ public class ContentFactory {
 			@SuppressWarnings( "synthetic-access" )
 			@Override
 			protected Boolean initialValue() {
-				try {
-					throw new FDException("initializing the eligibleForDDPP with default value");
-				} catch (FDException e) {
-					LOGGER.warn(e.getMessage(), e);
-				}
+				LOGGER.debug("initializing the eligibleForDDPP with default value");
 				return false;
 			}
 		};
