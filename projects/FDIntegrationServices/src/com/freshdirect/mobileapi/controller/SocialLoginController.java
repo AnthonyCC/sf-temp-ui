@@ -168,6 +168,13 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		socialUser = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
 		userToken = socialUser.get("userToken");
 		
+		if (socialUser != null) {
+			String email = (String) socialUser.get("email");
+			if((email==null || email.equalsIgnoreCase("")) && userToken!=null) {
+				socialUser = socialProvider.getSocialUserProfileByUserToken(userToken, providerName);	
+			}
+		}
+		
 		requestMessage.setUserToken(userToken);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
