@@ -523,6 +523,12 @@
           <a href="#" fdform-button="submit" class="note">{$box.other.removeCode}</a>
         </form>
         {/if}
+        {if $box.id == 'giftcardbalance'}
+        <form fdform="giftcardbalanceremove" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard">
+          <input type="hidden" name="action" value="removeGiftCard"/>
+          <a href="#" fdform-button="submit" class="note">Remove</a>
+        </form>
+        {/if}
         {if $box.other.deliveryPassPopupNeeded and $userRecognized}
           or <a href="#" class="free-link" data-component="deliverypasspopup">FREE</a>
         {/if}
