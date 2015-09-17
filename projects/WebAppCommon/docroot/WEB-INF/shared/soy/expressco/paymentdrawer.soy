@@ -14,6 +14,7 @@
     <div class="section__body">
       Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
       including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+      <form fdform="payment"><input type="hidden" name="id" value="fake"/></form>
     </div>
   </div>
 {else}
@@ -49,30 +50,34 @@
 {/template}
 
 /**
- * @param payments
+ * @param? payments
  * @param? metadata
  */
 {template .paymentmethodcontent autoescape="false"}
-<form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
-  <input type="hidden" name="action" value="selectPaymentMethod" />
-  <div class="drawer__header">
-    <button class="cssbutton orange" data-component="paymentchangebutton">Done</button>
-  </div>
-  <div fdform-error-container></div>
-  {foreach $payment in $payments}
-    {call .paymentmethod data="$payment"}{/call}
-  {/foreach}
-  <div class="drawer__item drawer__item-addaction">
-    <div class="addaction__center">
-      <button class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
-      {if $metadata and $metadata.paymentPromoOAS}
-      <p class="addaction__desc">
-        <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
-      </p>
-      {/if}
+{if $payments}
+  <form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
+    <input type="hidden" name="action" value="selectPaymentMethod" />
+    <div class="drawer__header">
+      <button class="cssbutton orange" data-component="paymentchangebutton">Done</button>
     </div>
-  </div>
-</form>
+    <div fdform-error-container></div>
+    {foreach $payment in $payments}
+      {call .paymentmethod data="$payment"}{/call}
+    {/foreach}
+    <div class="drawer__item drawer__item-addaction">
+      <div class="addaction__center">
+        <button class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
+        {if $metadata and $metadata.paymentPromoOAS}
+        <p class="addaction__desc">
+          <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
+        </p>
+        {/if}
+      </div>
+    </div>
+  </form>
+{else}
+<h1>No payments available.</h1>
+{/if}
 {/template}
 
 /**

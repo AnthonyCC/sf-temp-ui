@@ -188,6 +188,11 @@ public class SinglePageCheckoutFacade {
                 result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(cartData));
                 break;
             }
+            case APPLY_GIFT_CARD:
+                //$FALL-THROUGH$
+            case REMOVE_GIFT_CARD:
+                result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
+                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
             default:
                 break;
         }
