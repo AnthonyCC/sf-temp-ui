@@ -1315,11 +1315,10 @@ public class BrowseUtil {
 	    	
 	    }
 	    private static com.freshdirect.mobileapi.catalog.model.SalesUnit getSalesUnit(FDSalesUnit fdSalesUnit) {
-	    	
 	    	com.freshdirect.mobileapi.catalog.model.SalesUnit su=new com.freshdirect.mobileapi.catalog.model.SalesUnit();
 	    	su.setBaseUnit(fdSalesUnit.getBaseUnit());
 	    	su.setDenominator(fdSalesUnit.getDenominator());
-	    	su.setDescription(fdSalesUnit.getDescription());
+	    	su.setDescription("nm".equalsIgnoreCase(fdSalesUnit.getDescription()) ? null : fdSalesUnit.getDescription());
 	    	su.setName(fdSalesUnit.getName());
 	    	su.setNumerator(fdSalesUnit.getNumerator());
 	       	return su;

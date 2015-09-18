@@ -65,10 +65,14 @@ private int unitPriceNumerator;
 		if(unitPriceText == null || unitPriceText.isEmpty()){
 			updateUnitPriceText();
 		}
+
 		return this.unitPriceText;
 	}
 	private void updateUnitPriceText() {
-		this.unitPriceText = priceText + "/" + unitPriceUOM;
+		if(this.unitPriceText == null || this.unitPriceUOM == null)
+			this.unitPriceText = null;
+		else
+			this.unitPriceText = priceText + "/" + unitPriceUOM;
 	}
 
 }
