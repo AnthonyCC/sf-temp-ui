@@ -641,21 +641,21 @@ public class FDUserDAO {
 			
 			Date optinDate=new Date();
 			
-			   if(existingMobNum!=null && phone.getPhone()!=null && !phone.getPhone().isEmpty() && phone.getPhone().length()!=0 && !phone.getPhone().equals(existingMobNum)){
+			if(existingMobNum!=null && phone.getPhone()!=null && !phone.getPhone().isEmpty() && phone.getPhone().length()!=0 && !phone.getPhone().equals(existingMobNum)){
 				ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set mobile_number=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, " +
 						"SMS_OPTIN_DATE=?, DELIVERY_NOTIFICATION=? , OFFERS_NOTIFICATION=? WHERE FDCUSTOMER_ID=?  AND E_STORE=? ");
 				ps.setString(1, phone.getPhone());
-				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||notice.equals(EnumSMSAlertStatus.PENDING.value())){
+				if((notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||notice.equals(EnumSMSAlertStatus.PENDING.value())) && "y".equalsIgnoreCase(orderNotices)){
 					ps.setString(2,EnumSMSAlertStatus.PENDING.value());
 				} else {
 					ps.setString(2, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
-				if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||exceptions.equals(EnumSMSAlertStatus.PENDING.value())){
+				if((exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||exceptions.equals(EnumSMSAlertStatus.PENDING.value())) && "y".equalsIgnoreCase(orderExceptions)){
 					ps.setString(3, EnumSMSAlertStatus.PENDING.value());
 				} else{
 					ps.setString(3, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
-				if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||offer.equals(EnumSMSAlertStatus.PENDING.value())){
+				if((offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||offer.equals(EnumSMSAlertStatus.PENDING.value())) && "y".equalsIgnoreCase(offers)){
 					ps.setString(4, EnumSMSAlertStatus.PENDING.value());
 				} else {
 					ps.setString(4, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
@@ -682,9 +682,8 @@ public class FDUserDAO {
 				}
 				ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set MOBILE_NUMBER=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?," +
 						" SMS_OPTIN_DATE=?, DELIVERY_NOTIFICATION=?, OFFERS_NOTIFICATION=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
-						
 				
-					ps.setString(1, phone.getPhone());
+				ps.setString(1, phone.getPhone());
 				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
 					ps.setString(2, EnumSMSAlertStatus.SUBSCRIBED.value());
 				} else{
@@ -729,8 +728,7 @@ public class FDUserDAO {
 				ps.execute();
 			}
 		
-	}
-			catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
 		} finally {
 			try {
