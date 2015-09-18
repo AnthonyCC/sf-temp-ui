@@ -292,7 +292,7 @@
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-{let $badge: ($freeSamplePromoProduct and $cmEventSource=='view_cart')?'free':($badge=='free'?'':$badge) /}
+{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
 <li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
@@ -323,7 +323,7 @@
     </div>
     {/if}
   </div>
-  {if $freeSamplePromoProduct and $cmEventSource=='view_cart'}
+  {if $freeSamplePromoProduct and $cmEventSource=='ps_caraousal'}
     <div class="portrait-item-price product-sample-free">FREE</div>
   {else}
     <div class="portrait-item-price">
