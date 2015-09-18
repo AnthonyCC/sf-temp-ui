@@ -166,7 +166,9 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		
 		SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
 		socialUser = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
+		if(socialUser!=null){
 		userToken = socialUser.get("userToken");
+		}
 		
 		if (socialUser != null) {
 			String email = (String) socialUser.get("email");
