@@ -437,6 +437,7 @@ public class CartDataService {
             populateSubTotalBoxForNonAlcoholSections(cart, sections, getSubTotalTextForNonAlcoholicSections(cartHasEstimatedLines, cartHasWine));
             if (FDUserI.GUEST < user.getLevel()) {
                 cartData.setUserRecognized(true);
+                cartData.setUserCorporate(user.isCorporateUser());
                 cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
             }
             HttpSession session = request.getSession();

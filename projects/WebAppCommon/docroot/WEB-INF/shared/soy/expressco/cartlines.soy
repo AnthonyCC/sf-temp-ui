@@ -6,6 +6,7 @@
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
+ * @param? userCorporate
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? couponMessage subtotal
@@ -28,6 +29,7 @@
   {param additionalInfo: $additionalInfo /}
   {param goGreen: $goGreen /}
   {param userRecognized: $userRecognized /}
+  {param userCorporate: $userCorporate /}
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
   {param billingReferenceInfo: false /}
@@ -388,6 +390,7 @@
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
+ * @param? userCorporate
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
@@ -451,6 +454,7 @@
         {call .subTotalBox}
           {param subTotalBox: $subTotalBox.subTotalBox /}
           {param userRecognized: $userRecognized /}
+          {param userCorporate: $userCorporate /}
         {/call}
       {/if}
     </div>
@@ -490,6 +494,7 @@
 /**
 * @param? subTotalBox subTotalBox data
 * @param? userRecognized is the user recognised or not
+* @param? userCorporate COS service is available for customer
 */
 {template .subTotalBox}
 {if $subTotalBox}
@@ -529,8 +534,8 @@
           <a href="#" fdform-button="submit" class="note">Remove</a>
         </form>
         {/if}
-        {if $box.other.deliveryPassPopupNeeded and $userRecognized}
-          or <a href="#" class="free-link" data-component="deliverypasspopup">FREE</a>
+        {if $box.other.deliveryPassPopupNeeded and $userRecognized and $userCorporate == false}
+          &nbsp;or <a href="#" class="free-link" data-component="deliverypasspopup">FREE</a>
         {/if}
       </div>
       {/if}

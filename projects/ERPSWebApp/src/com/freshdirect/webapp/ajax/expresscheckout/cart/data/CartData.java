@@ -63,6 +63,11 @@ public class CartData extends AbstractCoremetricsResponse {
 
     private boolean userRecognized;
 
+    /**
+     * COS available for customer
+     */
+    private boolean userCorporate;
+    
     private boolean cartChangedByCleanUp;
 
     private boolean promotionApplied;
@@ -178,6 +183,14 @@ public class CartData extends AbstractCoremetricsResponse {
     public void setUserRecognized(boolean userRecognized) {
         this.userRecognized = userRecognized;
     }
+
+    public boolean isUserCorporate() {
+		return userCorporate;
+	}
+    
+    public void setUserCorporate(boolean userCorporate) {
+		this.userCorporate = userCorporate;
+	}
 
     public boolean isPromotionApplied() {
         return promotionApplied;
