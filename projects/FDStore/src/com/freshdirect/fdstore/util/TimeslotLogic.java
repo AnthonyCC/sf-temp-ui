@@ -65,6 +65,13 @@ public class TimeslotLogic {
 
 	/** chefstable page (CT cust only) */
 	public static final int PAGE_CHEFSTABLE = 1;
+	
+	private final static ThreadLocal <Calendar> calendar =
+			  new ThreadLocal<Calendar>() {
+			    protected Calendar initialValue() {
+			      return Calendar.getInstance();
+			    }
+			};
 
 	/**
 	 * Utility method to filter time slot lists according to various restriction sets.
@@ -205,6 +212,12 @@ public class TimeslotLogic {
 						_ts.setDeliveryFee(6.99); _ts.setPromoDeliveryFee(4.99);
 					}else{
 						_ts.setDeliveryFee(4.99); _ts.setPromoDeliveryFee(2.99);
+					}
+					
+					calendar.get().setTime(_ts.getStartDateTime());
+					if(calendar.get().get(Calendar.HOUR_OF_DAY)>=17 &&
+							calendar.get().get(Calendar.HOUR_OF_DAY) <=20){
+						_ts.setPromoDeliveryFee(0);
 					}
 					
 				}
