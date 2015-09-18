@@ -508,6 +508,17 @@ public class FDDeliveryManager {
 			throw new FDResourceException(e);
 		} 
 	}
+	public void cancelOrder(String orderId) throws FDResourceException {
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result result = logisticsService.cancelOrder(
+					LogisticsDataEncoder.encodeCancelFDXOrderRequest(orderId));
+			LogisticsDataDecoder.decodeResult(result);
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		}
+	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
 			Customer customer, OrderContext context) throws FDResourceException {

@@ -2078,11 +2078,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					identity.getErpCustomerPK(), 
 					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
-			//if its fdx estore then make a call to logistics to store fdx order.
-			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name())){
-				FDDeliveryManager.getInstance().submitOrder(pk.getId(), null,
-					createOrder.getTip(), reservationId, orderMobileNumber);
-			}
+			
 			
 			LOGGER.info("After commiting the reservation "+reservationId);
 			
@@ -2891,11 +2887,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
-			//if its fdx estore then make a call to logistics to store fdx order.
-			if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
-				FDDeliveryManager.getInstance().modifyOrder(saleId, null,
-						order.getTip(), newReservationId, orderMobileNumber);
-			}
+			
 			
 			try {
 				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())&&"S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))

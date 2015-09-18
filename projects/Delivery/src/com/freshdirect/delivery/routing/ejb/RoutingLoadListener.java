@@ -13,6 +13,9 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.ejb.OrderCancelCommand;
+import com.freshdirect.routing.ejb.OrderCreateCommand;
+import com.freshdirect.routing.ejb.OrderModifyCommand;
 import com.freshdirect.routing.ejb.ReservationUpdateCommand;
 /**
  *
@@ -47,6 +50,36 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 				process((ReservationUpdateCommand)ox);
 			}
 			
+			if ("FDX_CREATE".equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				if ((ox == null) || (!(ox instanceof OrderCreateCommand))) {
+					LOGGER.error("Message is not an CancelTimeslotCommand: " + msg);
+					// discard msg, no point in throwing it back to the queue
+					return;
+			}
+				process((OrderCreateCommand)ox);
+			}
+			
+			if ("FDX_CANCEL".equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				if ((ox == null) || (!(ox instanceof OrderCancelCommand))) {
+					LOGGER.error("Message is not an CancelTimeslotCommand: " + msg);
+					// discard msg, no point in throwing it back to the queue
+					return;
+			}
+				process((OrderCancelCommand)ox);
+			}
+			
+			if ("FDX_MODIFY".equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				if ((ox == null) || (!(ox instanceof OrderModifyCommand))) {
+					LOGGER.error("Message is not an CancelTimeslotCommand: " + msg);
+					// discard msg, no point in throwing it back to the queue
+					return;
+			}
+				process((OrderModifyCommand)ox);
+			}
+			
 
 		} catch (JMSException ex) {
 			ex.printStackTrace();
@@ -63,6 +96,21 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     private void process(ReservationUpdateCommand command) throws FDResourceException {
     	LOGGER.debug("receiving updateReservationStatus from queue..."+ command.getReservationId());
 		FDDeliveryManager.getInstance().updateReservationStatus(command.getReservationId(), command.getAddress(), command.getSapOrderNumber());
-	}		
+	}	
+    
+    private void process(OrderCreateCommand command) throws FDResourceException {
+    	LOGGER.debug("receiving createOrderStatus from queue..."+ command.getSaleId());
+		FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),command.getOrderMobileNumber());
+	}	
+    
+    private void process(OrderCancelCommand command) throws FDResourceException {
+    	LOGGER.debug("receiving cancelOrderStatus from queue..."+ command.getSaleId());
+		FDDeliveryManager.getInstance().cancelOrder(command.getSaleId());
+	}	
+    
+    private void process(OrderModifyCommand command) throws FDResourceException {
+    	LOGGER.debug("receiving modifyOrderStatus from queue..."+ command.getSaleId());
+		FDDeliveryManager.getInstance().modifyOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),command.getOrderMobileNumber());
+	}	
 }
 

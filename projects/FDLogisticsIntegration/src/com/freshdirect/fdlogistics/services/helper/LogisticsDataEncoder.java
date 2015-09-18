@@ -295,4 +295,9 @@ public class LogisticsDataEncoder {
 		return request;
 	}
 	
+	public static CreateOrderRequest encodeCancelFDXOrderRequest(String orderId) {
+		CreateOrderRequest request = new CreateOrderRequest();
+		request.setOrderId(orderId);
+		return request;
+	}
 }

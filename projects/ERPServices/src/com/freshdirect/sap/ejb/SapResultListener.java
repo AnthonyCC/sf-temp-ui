@@ -34,30 +34,25 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
-import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpInvoicedCreditModel;
 import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -231,16 +226,32 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																		, ((SapCreateSalesOrder) command).getSapOrderNumber());
+						 
+						if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
+							erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+									,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
+						}
+	
 					}
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
-
+					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
+						erpRoutingGateway.sendCancelOrderRequest(saleId);
+						
+					}
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																	, saleEB.getSapOrderNumber());
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
+						
+						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
+								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+								,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
+					}
 				}
 
 				/*else if (command instanceof SapCreateSubscriptionOrder) {

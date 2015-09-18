@@ -136,6 +136,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String CREATE_FDX_ORDER_API ="/order/create";
 	private static final String MODIFY_FDX_ORDER_API ="/order/modify";
+	private static final String CANCEL_FDX_ORDER_API ="/order/cancel";
 	
 	private static final String ACTUAL_ORDERSIZE_API ="/reservation/ordersize/update";
 
@@ -174,6 +175,13 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		return response;	
 	}
 
+	@Override
+	public Result cancelOrder(CreateOrderRequest request) throws FDLogisticsServiceException{
+		String inputJson = buildRequest(request);
+		Result response = getData(inputJson, getEndPoint(CANCEL_FDX_ORDER_API), Result.class);
+		return response;
+	}
+	
 	@Override
 	public AddressExceptionResponse searchAddressException(AddressExceptionRequest request) throws FDLogisticsServiceException {
 

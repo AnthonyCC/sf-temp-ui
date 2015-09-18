@@ -116,6 +116,8 @@ public interface ILogisticsService {
 	Result submitOrder(CreateOrderRequest request) throws FDLogisticsServiceException;
 
 	Result modifyOrder(CreateOrderRequest request)throws FDLogisticsServiceException;
+	
+	Result cancelOrder(CreateOrderRequest request)throws FDLogisticsServiceException;
 
 	Result addApartment(Address address)throws FDLogisticsServiceException;
 
