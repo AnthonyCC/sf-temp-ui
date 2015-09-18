@@ -142,6 +142,7 @@ public class Sku {
     
     public static Sku wrap(PriceCalculator priceCalc, SkuModel skuModel, FDCustomerCoupon coupon,String plantID) {
         try {
+        	
             return new Sku(priceCalc, skuModel, coupon,plantID);
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
@@ -305,7 +306,7 @@ public class Sku {
 
         if (this.hasSecondaryDomain()) {
             String optionalDomainLabel = "";
-            DomainValue secDomainValue = variationMatrix.get(1);
+            DomainValue secDomainValue =  hasVariationMatrix()?variationMatrix.get(1):null;
             DomainValue optDomainValue = null;
 
             if (this.hasVariationOptions() && (this.domain.getSkus().size() > 1) && !this.domain.isAllSameOption()) {

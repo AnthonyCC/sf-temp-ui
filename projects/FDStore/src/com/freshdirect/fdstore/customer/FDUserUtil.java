@@ -28,4 +28,12 @@ public class FDUserUtil {
 		return delPlantInfo;
 	}
 
+	public static ErpDeliveryPlantInfoModel getDefaultDeliveryPlantInfo() {
+		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
+		delPlantInfo.setPlantId("1000");
+		delPlantInfo.setSalesOrg("0001");
+		delPlantInfo.setDistChannel("01");
+		delPlantInfo.setDivision("01");
+		return delPlantInfo;
+	}
 }

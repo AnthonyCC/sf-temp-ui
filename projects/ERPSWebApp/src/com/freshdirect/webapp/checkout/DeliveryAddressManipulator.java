@@ -911,6 +911,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		cart.setZoneInfo( zoneInfo );
 		cart.setDeliveryAddress( address );
+			if(cart.getDeliveryPlantInfo()==null) {
+				LOGGER.warn("DeliveryPlantInfo is null.Setting it for user:"+user.getPrimaryKey());
+				cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			}
 		if(cart.getEStoreId() == null)
 			cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
 

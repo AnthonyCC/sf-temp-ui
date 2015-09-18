@@ -17,7 +17,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
@@ -52,12 +51,11 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpSubmitFailedModel;
 import com.freshdirect.customer.ErpTransactionI;
 import com.freshdirect.customer.ErpTransactionModel;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -75,6 +73,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
@@ -92,7 +91,6 @@ import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
-import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -242,6 +240,10 @@ public class FDOrderAdapter implements FDOrderI {
 		orderLines = new ArrayList<FDCartLineI>();
 		sampleLines = new ArrayList<FDCartLineI>();
 		ErpDeliveryPlantInfoModel dpi=erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
+		if(dpi==null) {
+			LOGGER.warn("DeliveryPlantInfo is null for " + sale.getPK()+". Defaulting it.");
+			dpi=FDUserUtil.getDefaultDeliveryPlantInfo();
+		}
 		List<ErpOrderLineModel> erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {
 			ErpOrderLineModel ol = erpLines.get(i);
@@ -326,6 +328,8 @@ public class FDOrderAdapter implements FDOrderI {
 		//set the carton metrics
 		cartonMetrics = sale.getCartonMetrics();
 	}
+
+	
 
 	private static boolean isMatching(ErpPaymentMethodI custPymt,ErpPaymentMethodI salePymt) {
 		

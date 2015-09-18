@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
@@ -25,6 +27,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Translates an FDOrder into an ErpOrder.
@@ -33,6 +36,7 @@ import com.freshdirect.fdstore.FDResourceException;
  * @author $Author:Mike Rose$
  */
 public class FDOrderTranslator {
+	private static Category LOGGER = LoggerFactory.getInstance(FDOrderTranslator.class);
 
 	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, EnumSaleType saleType) throws FDResourceException {
 		return getErpCreateOrderModel(cart,saleType, false, false);
@@ -81,6 +85,10 @@ public class FDOrderTranslator {
 				dpi.setSalesOrg(cart.getDeliveryPlantInfo().getSalesOrg());
 				dpi.setDistChannel(cart.getDeliveryPlantInfo().getDistChannel());
 				dpi.setDivision(cart.getDeliveryPlantInfo().getDivision());
+				deliveryInfo.setDeliveryPlantInfo(dpi);
+			} else {
+				LOGGER.warn("Defaulting DeliveryPlantInfo");
+				ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo();
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			}
 			if(deliveryReservation!=null)

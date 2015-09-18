@@ -234,7 +234,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 								erpCustomer.setSapBillToAddress(erpAddress);
 								customer = new CustomerAdapter(false, erpCustomer, null, erpAddress);
 							} else {
-								customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+									ErpAddressModel erpAddress=new ErpAddressModel();
+									erpAddress.setFirstName(erpCustomer.getCustomerInfo().getFirstName());
+									erpAddress.setLastName(erpCustomer.getCustomerInfo().getLastName());
+									erpAddress.setPhone(erpCustomer.getCustomerInfo().getHomePhone());
+									//Need to set dummy sap billing info for SAP processing.
+									erpAddress.setAddress1("23-30 borden ave");
+									erpAddress.setCity("Long Island City");
+									erpAddress.setState("NY");
+									erpAddress.setCountry("US");
+									erpAddress.setZipCode("11101");
+									
+									//erpAddress.setServiceType(serviceType);
+									erpCustomer.setSapBillToAddress(erpAddress);
+									customer = new CustomerAdapter(false, erpCustomer, null, erpAddress);
+								
 							}
 						} catch (SQLException e) {
 							e.printStackTrace();
