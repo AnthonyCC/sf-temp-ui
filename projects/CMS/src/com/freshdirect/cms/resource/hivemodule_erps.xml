@@ -111,12 +111,12 @@ FROM erps.product p) WHERE RANK=1"/>
 		-->
         <!-- Query updated for zone pricing -->
 		<Table contentType="Sku"
-			             query="select p.sku_code id, DECODE(MP.PROMO_PRICE, 0, MP.PRICE, MP.PROMO_PRICE) AS price, 
-				P.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS,
-				p.version  AS VERSION from erps.material m, erps.materialproxy mpx, erps.product P,erps.materialprice mp,
-                                       (select sku_code s, max(version) v from erps.product group  by sku_code) t
-                                       where t.s=p.sku_code and p.version=t.v and p.id=mpx.product_id and
-			        m.id=MPX.MAT_ID and m.id=MPX.MAT_ID and mp.sap_zone_id = '0000100000' AND mp.scale_quantity &lt; = 1 and m.id=MP.MAT_ID"/> 
+			             query="select m.skucode id, DECODE(MP.PROMO_PRICE, 0, MP.PRICE, MP.PROMO_PRICE) AS price, 
+                msa.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS,
+                m.version  AS VERSION from erps.material m, erps.material_sales_area msa, erps.materialprice mp,
+                                       (select skucode s, max(version) v from erps.material group  by skucode) t
+                                       where t.s=m.skucode and m.version=t.v and
+                    mp.sap_zone_id = '0000100000' AND mp.scale_quantity &lt; = 1 and m.id=MP.MAT_ID and msa.mat_id=m.id"/> 
         
 		<Relationship
 			name="materials"
@@ -124,15 +124,14 @@ FROM erps.product p) WHERE RANK=1"/>
 			sourceContentType="Sku"
 			destinationContentType="ErpMaterial"
 			navigable="true"
-			query="select p.sku_code as source_id, m.sap_id as destination_id
-from erps.product p, erps.materialproxy px, erps.material m
-where p.version=(select max(version) from erps.product where sku_code=p.sku_code)
-and p.id=px.product_id
-and px.mat_id=m.id"/>
+			query="select m.skucode as source_id, m.sap_id as destination_id
+from  erps.material m,(select sap_id s, max(version) v from erps.material group  by sap_id) t
+where t.s=M.SAP_ID and t.v=m.version"/>
 
 		<Table contentType="ErpMaterial"
-			query="select sap_id as ID, ltrim(sap_id, '0') as &quot;name&quot;, description, atp_rule, lead_time, upc, alcoholic_content, taxable, kosher_production, platter, blocked_days
-from erps.material m where m.version=(select max(version) from erps.material where sap_id=m.sap_id)"/>
+			query="select sap_id as ID, ltrim(sap_id, '0') as &quot;name&quot;, m.description, pm.atp_rule, pm.lead_time, upc, alcoholic_content, taxable, pm.kosher_production, pm.platter, pm.blocked_days
+from erps.material m, (select sap_id s, max(version) v from erps.material group  by sap_id) t,ERPS.PLANT_MATERIAL pm
+where pm.mat_id=m.id and PM.PLANT_ID='1000' and m.sap_id=T.s and m.version=T.v"/>
 
 		<Relationship
 			name="classes"
