@@ -124,6 +124,9 @@ public class MobileApiProperties {
     }
     
     public static String getMiddleTierUrl() {
+    	String middleTier = get(PROP_MIDDLE_TIER_URL);
+    	if(middleTier == null || middleTier.isEmpty())
+    		return "http://8.42.36.54/dl"; // DEFAULT: This is the development server URL. 
     	return get(PROP_MIDDLE_TIER_URL);
     }
 
