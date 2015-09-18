@@ -139,7 +139,7 @@ public class PricingEngine {
 	 */
 	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx, FDGroup group, double grpQuantity, Double scaleQuantity) throws PricingException {
 
-		if (DEBUG) LOGGER.debug("getConfiguredPrice got " + configuration);
+		if (DEBUG) LOGGER.debug("getConfiguredPrice got  " + configuration);
 
 		// calculate base price
 		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx, group, grpQuantity,scaleQuantity);
@@ -287,7 +287,8 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing - scaledQuantity "+scaledQuantity+" "+scaleUnit);
 
 		// find pricing condition for quantity (in scaleUnit)
-		MaterialPrice materialPrice = pricing.getZonePrice(pricingZone).findMaterialPrice(scaledQuantity);
+		ZonePriceModel zpm=pricing.getZonePrice(pricingZone);
+		MaterialPrice materialPrice = zpm.findMaterialPrice(scaledQuantity);
 	
 		double pricingQuantity;
 		if ( !salesUnit.equals(materialPrice.getPricingUnit()) ) {
@@ -304,7 +305,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing [" + pricingQuantity + " * " + materialPrice.getPrice() + "]");
 
 		double price = pricingQuantity * materialPrice.getPrice();
-		return new ConfiguredPrice(new Price(price), materialPrice,pricingZone);
+		return new ConfiguredPrice(new Price(price), materialPrice,zpm.getPricingZone());
 	}
 
 	/**
