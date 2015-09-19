@@ -111,12 +111,13 @@ FROM erps.product p) WHERE RANK=1"/>
 		-->
         <!-- Query updated for zone pricing -->
 		<Table contentType="Sku"
-			             query="select m.skucode id, DECODE(MP.PROMO_PRICE, 0, MP.PRICE, MP.PROMO_PRICE) AS price, 
-                msa.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS,
-                m.version  AS VERSION from erps.material m, erps.material_sales_area msa, erps.materialprice mp,
-                                       (select skucode s, max(version) v from erps.material group  by skucode) t
-                                       where t.s=m.skucode and m.version=t.v and
-                    mp.sap_zone_id = '0000100000' AND mp.scale_quantity &lt; = 1 and m.id=MP.MAT_ID and msa.mat_id=m.id"/> 
+			             query="select m.skucode id,
+ DECODE(MP.PROMO_PRICE, 0, MP.PRICE, MP.PROMO_PRICE) AS price,
+ msa.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS, 
+ m.version  AS VERSION from erps.material m, erps.material_sales_area msa,  erps.materialprice mp 
+ where m.version=mp.version and 
+ m.version=(Select max(version) from erps.material where skucode=m.skucode) and    
+ mp.sap_zone_id = '0000100000' AND mp.scale_quantity < = 1 and m.id=MP.MAT_ID and msa.mat_id=m.id"/> 
         
 		<Relationship
 			name="materials"
@@ -124,9 +125,7 @@ FROM erps.product p) WHERE RANK=1"/>
 			sourceContentType="Sku"
 			destinationContentType="ErpMaterial"
 			navigable="true"
-			query="select m.skucode as source_id, m.sap_id as destination_id
-from  erps.material m,(select sap_id s, max(version) v from erps.material group  by sap_id) t
-where t.s=M.SAP_ID and t.v=m.version"/>
+			query="select m.skucode as source_id, m.sap_id as destination_id from  erps.material m where m.version=(select max(version) from erps.material where skucode=m.skucode)"/>
 
 		<Table contentType="ErpMaterial"
 			query="select sap_id as ID, ltrim(sap_id, '0') as &quot;name&quot;, m.description, pm.atp_rule, pm.lead_time, upc, alcoholic_content, taxable, pm.kosher_production, pm.platter, pm.blocked_days
