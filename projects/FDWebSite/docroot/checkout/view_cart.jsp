@@ -210,7 +210,10 @@ StringBuffer buffer = new StringBuffer(
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 
 <potato:viewCart />
+<% if (user.getCurrentStandingOrder() == null) { %>
+<!-- product sampling carousel -->
 <soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
+<% } %>
 
 <%@ include file="/includes/i_viewcart.jspf" %> 
 
