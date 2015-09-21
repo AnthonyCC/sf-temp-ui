@@ -411,6 +411,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				// it is unlikely to happen but report it anyway
 				LOGGER.error(e);
 			}
+
+			session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
+			session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
 		}
 
 
