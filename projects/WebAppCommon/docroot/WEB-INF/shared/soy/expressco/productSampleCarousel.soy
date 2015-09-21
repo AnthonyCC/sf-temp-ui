@@ -16,7 +16,7 @@
         {foreach $item in $carouselData.products}
           {call common.transactionalGridItem data="$item"}
             {param extraClass: 'carouselTransactionalItem productSamplingItem item-count' + $len /}
-            {param cmEventSource:'view_cart' /}
+            {param cmEventSource:'ps_caraousal' /}
             {param item:$item /}
           {/call}
         {/foreach}

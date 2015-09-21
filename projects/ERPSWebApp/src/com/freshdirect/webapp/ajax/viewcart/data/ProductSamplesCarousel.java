@@ -20,7 +20,7 @@ public class ProductSamplesCarousel {
         this.parentImpressionId = parentImpressionId;
         this.impressionId = impressionId;
         this.parentVariantId = parentVariantId;
-        productSamplesMaxQuantityLimit = Integer.toString(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+        productSamplesMaxQuantityLimit = "1";
     }
 
     public String getTitle() {
