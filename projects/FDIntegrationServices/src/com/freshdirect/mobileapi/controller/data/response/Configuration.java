@@ -59,6 +59,10 @@ public class Configuration implements Serializable {
 		this.middleTierUrl = url;
 	}
 	public String getMiddleTierUrl(){
+		if(this.middleTierUrl == null || this.middleTierUrl.isEmpty()){
+			return "http://8.24.36.54/dl";
+		}
+		
 		return this.middleTierUrl;
 	}	
 }
