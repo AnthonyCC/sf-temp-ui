@@ -56,7 +56,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 						for (FDCartLineI orderLine : orderLines) {
                             if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) && quantity < eligibleQuantity
                                     && orderLine.getQuantity() <= eligibleQuantity && ((EnumEventSource.ps_caraousal.equals(orderLine.getErpOrderLineSource()) || EnumEventSource.ps_caraousal.equals(orderLine.getSource())))) {
-                            	orderLine.setSource(EnumEventSource.ps_caraousal);
+                            	orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
                                 orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
 								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
                                 quantity += orderLine.getQuantity();
