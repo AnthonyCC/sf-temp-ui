@@ -191,15 +191,23 @@ public class FDEmailFactory {
 
 	public XMLEmailI createConfirmSignupEmail(FDCustomerInfo customer) {
 		FDInfoEmail email = new FDInfoEmail(customer);
-		if (customer.isPickupOnly()) {
+		/*if (customer.isPickupOnly()) {
 			email.setXslPath("h_pickup_signup_confirm.xsl", "x_pickup_signup_confirm.xsl");
 		} else if (customer.isCorporateUser()) {
 			email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
 		} else {
 			email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
+		}*/
+		
+		if (customer.isCorporateUser()) {
+			email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
+			email.setSubject("Welcome to FreshDirect At The Office");
+		} else {
+			email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
+			email.setSubject("Welcome to FreshDirect");
 		}
+		
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setSubject("Welcome to FreshDirect!");
 
 		return email;
 	}
