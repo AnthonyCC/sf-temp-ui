@@ -1,0 +1,195 @@
+{
+	"Profiles":[
+			{
+				"moduleCode":"Profiles"
+				,"actionCode":"SearchForProfile"
+				,"stepName":"Launch the application"
+				,"occurrences":[]
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"EditProfile"
+				,"stepName":"Login with the created new user"
+				,"occurrences":[]
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"ViewProfileStats"
+				,"stepName":"Logout the user created"
+				,"occurrences":[]
+				
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"OptAddNotes"
+				,"stepName":"Temp1"
+				,"occurrences":[]
+				
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"OptEditNotes"
+				,"stepName":"Temp2"
+				,"occurrences":[]
+				
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"OptDeleteNotes"
+				,"stepName":"Temp2"
+				,"occurrences":[]
+				
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"OptDeleteProfile"
+				,"stepName":"Temp2"
+				,"occurrences":[]
+				
+			}
+			,{
+				"moduleCode":"Profiles"
+				,"actionCode":"OptMembership"
+				,"stepName":"Temp2"
+				,"occurrences":[]
+			}			
+			]
+	,"Blocks":[
+				{
+					"moduleCode":"Blocks"
+					,"actionCode":"ClickNewOnBlockSearch"
+					,"stepName":"Enter Information for new registration"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"Blocks"
+					,"actionCode":"CreateBusinessBlock"
+					,"stepName":"Enter and update info about existing user"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"Blocks"
+					,"actionCode":"ChangeBlockStatus"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"Blocks"
+					,"actionCode":"DefineRateGrid"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"Blocks"
+					,"actionCode":"CloseBlock"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"Blocks"
+					,"actionCode":"SearchSubBlock"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+					
+				}
+			]
+	,"General":[
+				{
+					"moduleCode":"General"
+					,"actionCode":"Launch"
+					,"stepName":"Enter Information for new General"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"Login"
+					,"stepName":"Enter and update info about existing General"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"LogOff"
+					,"stepName":"Change password of existing General"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"ClickPMS"
+					,"stepName":"Change password of existing General"
+					,"occurrences":[]
+					
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"SelectProperty"
+					,"stepName":"Change password of existing General"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"NavigateToProfiles"
+					,"stepName":"Change password of existing General"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"General"
+					,"actionCode":"ExitOpera"
+					,"stepName":"Change password of existing General"
+					,"occurrences":[]
+				}
+			]
+
+	,"Reservations":[
+				{
+					"moduleCode":"Reservations"
+					,"actionCode":"CreateNewReservation"
+					,"stepName":"Enter Information for new Reservations"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"MakeReservationPayment"
+					,"stepName":"Enter and update info about existing Reservations"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"CheckInReservation"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"RateQueryDetails"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"EditRateQuery"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"EditRouting"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+				}
+				,{
+					"moduleCode":"Reservations"
+					,"actionCode":"AddRouting"
+					,"stepName":"Change password of existing user"
+					,"occurrences":[]
+				}
+			]
+
+}

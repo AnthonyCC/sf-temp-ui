@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding=".svn/prop-base/|.svn/props/|.svn/text-base/|.svn/tmp/" kind="src" path="src"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/gson-2.2.2.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/jxl.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/org.apache.commons.httpclient.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/selenium-server-standalone-2.45.0.jar"/>
+	<classpathentry kind="lib" path="D:/Selenium/Jars/sikuli-script.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
