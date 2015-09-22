@@ -1246,6 +1246,20 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 		return sum;
 	}
+	
+	public Double getProductSampleQuantity(ProductModel productModel) {		
+		String productName = productModel.getContentName();
+		double sum = 0.0;
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
+			if (productName.equals(line.getProductName())) {
+			if(EnumDiscountType.FREE.equals(line.getDiscount()!=null?line.getDiscount().getDiscountType():null)){
+				sum += line.getQuantity();
+				}
+			}
+		}
+		return sum;
+	}
 
 	/**
 	 * Get the total quantity of all occurrences of a product in the cart.
@@ -2036,4 +2050,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setOrderMobileNumber(PhoneNumber orderMobileNumber) {
 		this.orderMobileNumber = orderMobileNumber;
 	}
+
+	
 }

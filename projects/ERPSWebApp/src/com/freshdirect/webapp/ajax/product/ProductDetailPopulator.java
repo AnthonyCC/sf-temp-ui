@@ -1010,8 +1010,9 @@ public class ProductDetailPopulator {
 		
 		// populate in cart amount    	
 		FDCartModel cart = user.getShoppingCart(); 
+		item.setProductSampleQuantity(cart.getProductSampleQuantity(productModel));	
 		item.setInCartAmount( cart.getTotalQuantity( productModel, false ) );
-				
+			
 	}
 
 	private static void populateScores( ProductData item, FDUserI user, ProductModel productModel ) {

@@ -78,6 +78,7 @@
   {param cvPrices:$item.cvPrices /}
   {param configuration:$item.configuration /}
   {param inCartAmount:$item.inCartAmount /}
+  {param productSampleQuantity:$item.productSampleQuantity /}
   {param customerRating:$item.customerRating /}
   {param customerRatingReviewCount:$item.customerRatingReviewCount /}
   {param expertRating:$item.expertRating /}
@@ -252,6 +253,7 @@
  * @param cvPrices
  * @param? configuration
  * @param inCartAmount
+ * @param productSampleQuantity
  * @param customerRating
  * @param customerRatingReviewCount
  * @param expertRating
@@ -295,7 +297,7 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
 {let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
-<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
