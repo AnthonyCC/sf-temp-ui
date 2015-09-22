@@ -44,6 +44,7 @@ import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpInvoicedCreditModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
@@ -226,19 +227,19 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																		, ((SapCreateSalesOrder) command).getSapOrderNumber());
-						 
-						if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
-							erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
-									,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
-						}
-	
+				
+						if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name()))
+								 {
+										 erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+												 ,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
+									
+								 }
 					}
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-					if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
-						erpRoutingGateway.sendCancelOrderRequest(saleId);
-						
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).getCurrentOrder().geteStoreId().name())){
+								 erpRoutingGateway.sendCancelOrderRequest(saleId);
 					}
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
@@ -246,7 +247,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																	, saleEB.getSapOrderNumber());
-					if(EnumEStoreId.FDX.name().equalsIgnoreCase(saleEB.getCurrentOrder().geteStoreId().name())){
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).getCurrentOrder().geteStoreId().name())){
 						
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
