@@ -69,8 +69,8 @@ private int unitPriceNumerator;
 		return this.unitPriceText;
 	}
 	private void updateUnitPriceText() {
-		if(this.unitPriceText == null || this.unitPriceUOM == null)
-			this.unitPriceText = null;
+		if(this.priceText == null || this.unitPriceUOM == null)
+			this.priceText = null;
 		else
 			this.unitPriceText = priceText + "/" + unitPriceUOM;
 	}
