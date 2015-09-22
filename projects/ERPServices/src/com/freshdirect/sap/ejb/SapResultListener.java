@@ -238,7 +238,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
-					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).getCurrentOrder().geteStoreId().name())){
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
 								 erpRoutingGateway.sendCancelOrderRequest(saleId);
 					}
 				} else if (command instanceof SapChangeSalesOrder) {
@@ -247,7 +247,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																	, saleEB.getSapOrderNumber());
-					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).getCurrentOrder().geteStoreId().name())){
+					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
 						
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
