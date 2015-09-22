@@ -654,7 +654,6 @@
 							<CmsField><attribute>SCARAB_YMAL_DEMOTE</attribute></CmsField>
 						</fields>
 					</CmsSection>
-					
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -775,6 +774,7 @@
 							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
 							<CmsField><attribute>PDP_XSELL</attribute></CmsField>
 							<CmsField><attribute>completeTheMeal</attribute></CmsField>
+							<CmsField><attribute>MEAL_INCLUDE_PRODUCTS</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

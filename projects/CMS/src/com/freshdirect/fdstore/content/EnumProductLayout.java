@@ -15,24 +15,20 @@ public enum EnumProductLayout implements Serializable {
 	COMPONENTGROUP_MEAL("Meal Layout using Component groups", 7, "/includes/product/componentGroupMeal.jsp", true),
 	NEW_WINE_PRODUCT("New Wine Product", 8, "/includes/product/new_wine_product.jsp", false),
 	@Deprecated
-	CONFIGURED_PRODUCT("Configured Product Layout", 9, "/includes/product/configProduct.jsp", false);
+	CONFIGURED_PRODUCT("Configured Product Layout", 9, "/includes/product/configProduct.jsp", false),
+    HOLIDAY_MEAL_BUNDLE_PRODUCT("Holiday Meal Bundle Product Layout", 10, "/hmb/product.jsp", true);
 
-
-
-	private int			id;
+    private int id;
 	private String	name;
 	private String	layoutPath;
 	private boolean	canAddMultipleToCart;
-    
 
-	
-	EnumProductLayout(String name, int i, String layoutPath, boolean addMultipleToCart) {
+    private EnumProductLayout(String name, int id, String layoutPath, boolean addMultipleToCart) {
 		this.name = name;
-		this.id = i;
+        this.id = id;
 		this.layoutPath = layoutPath;
 		this.canAddMultipleToCart = addMultipleToCart;
 	}
-
 
 	/**
 	 * Lookup category layout type by its ID
@@ -48,7 +44,6 @@ public enum EnumProductLayout implements Serializable {
 		
 		return null;
 	}
-
 
 	public int getId(){
 		return id;
@@ -66,9 +61,8 @@ public enum EnumProductLayout implements Serializable {
 		return this.canAddMultipleToCart;
 	}
 
-
-
-	public String toString() {
+	@Override
+    public String toString() {
 		return "EnumProductLayout:[ Name: "+ this.getName()+ " id: " + this.getId()+" Path:"+getLayoutPath();
 	}
 }

@@ -879,6 +879,7 @@
 				<EnumValue value="6" label="Multi Menu Layout"/>
 				<EnumValue value="7" label="Component Group Meal"/>
                 <EnumValue value="8" label="New Wine Product"/>
+                <EnumValue value="10" label="Holiday Meal Bundle"/>
 			</EnumDef>
 			<!-- LAYOUT needs to be on Product for inheritance, even though no prods override -->
 			<EnumDef type="I" name="LAYOUT"  label="Layout" inheritable="true">
@@ -1290,6 +1291,10 @@
 				<DestinationDef contentType="Product" />
 				<DestinationDef contentType="ConfiguredProduct"/>
 			</RelationshipDef>
+   
+            <RelationshipDef name="MEAL_INCLUDE_PRODUCTS" label="Meal Include Products" cardinality="Many">
+                <DestinationDef contentType="Product" />
+            </RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--

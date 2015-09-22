@@ -1962,6 +1962,7 @@ inner:
 		switch (specialLayout){
 			case COMPONENTGROUP_MEAL:
 			case MULTI_ITEM_MEAL:
+			case HOLIDAY_MEAL_BUNDLE_PRODUCT:
 				return specialLayout;
 			default:
 				return null;
