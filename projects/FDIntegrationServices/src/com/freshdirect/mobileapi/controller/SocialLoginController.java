@@ -42,6 +42,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class SocialLoginController extends BaseController{
 		} else if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){			
 			SocialLogin requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLogin.class);
-			model = socialConnectAccount(model, user, requestMessage, request);		
+			model = socialConnectAccount(model, user, requestMessage, request, response);		
 		}
 		return model;
 	}
@@ -156,7 +157,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 
 	private ModelAndView socialConnectAccount(ModelAndView model,
 			SessionUser user, SocialLogin requestMessage,
-			HttpServletRequest request) throws FDException, JsonException {
+			HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
 		SocialLoginControllerTagWrapper wrapper = new SocialLoginControllerTagWrapper(
 				user);
 		HashMap<String, String> socialUser = null;
@@ -183,7 +184,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		propogateSetSessionValues(request.getSession(), resultBundle);
 		
 		Message responseMessage = null;
-		HttpServletResponse response = null;
+		//HttpServletResponse response = null;
 
 		String userIdFromDB = FDSocialManager.getUserIdForUserToken(userToken);
 		
@@ -657,6 +658,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			throw new FDAuthenticationException();
 		}
 		user.getFDSessionUser().saveCart();
+		UserUtil.createSessionUser(request, response, user.getFDSessionUser());
 		Message responseMessage = formatLoginMessage(user);
 		resetMobileSessionData(request);
 		if (user != null) {

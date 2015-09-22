@@ -77,6 +77,16 @@ public class UserUtil {
 		FDCustomerCouponUtil.initCustomerCoupons(session);
 	}
 	
+	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDSessionUser sessionUser)
+			throws FDResourceException {
+			HttpSession session = request.getSession();
+			sessionUser.isLoggedIn(true);		
+			CookieMonster.storeCookie(sessionUser, response);
+			sessionUser.updateUserState();
+			session.setAttribute(SessionName.USER, sessionUser);
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+		}
+	
 	public static String getCustomerServiceContact(FDUserI user) {
 		if (user==null) {
 			return SystemMessageList.CUSTOMER_SERVICE_CONTACT;
