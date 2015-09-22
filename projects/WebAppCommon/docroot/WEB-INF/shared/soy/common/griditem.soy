@@ -61,6 +61,7 @@
   {param variantId:$item.variantId /}
   {param pageType:$item.pageType /}
   {param available:$item.available /}
+  {param discontinued:$item.discontinued /}
   {param productImage:($item.productDetailImage ? $item.productDetailImage : $item.productImage) /}
   {param badge:$item.badge /}
   {param deal:$item.deal /}
@@ -234,6 +235,7 @@
  * @param variantId
  * @param pageType
  * @param available
+ * @param? discontinued
  * @param productImage
  * @param badge
  * @param deal
@@ -293,7 +295,7 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
 {let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
-<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
@@ -302,9 +304,17 @@
   </div>
   <div class="portrait-item-header">
     {if $brandName and $productNameNoBrand}
-      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+      {if $discontinued}
+        <b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
+      {else}
+        <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+      {/if}
     {else}
-      <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+      {if $discontinued}
+        {$productName}
+      {else}
+        <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+      {/if}
     {/if}
     <div class="rating">
       {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
