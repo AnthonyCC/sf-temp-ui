@@ -1,6 +1,7 @@
 package com.freshdirect.dataloader.payment.ejb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -127,6 +129,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			// get salemodel w/ invoice	
 			saleModel = (ErpSaleModel)eb.getModel();
 			FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);
+			Collections.sort(fdOrder.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 			
 			PrimaryKey customerPK = eb.getCustomerPk();
 			

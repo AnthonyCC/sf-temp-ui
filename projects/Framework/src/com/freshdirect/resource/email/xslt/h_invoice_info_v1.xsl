@@ -330,13 +330,26 @@
 			</td>
                
 			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<xsl:if test="invoice/customizationPrice > 0">
 					$<xsl:value-of select='format-number(invoice/customizationPrice, "###,##0.00", "USD")' />
 				</xsl:if>
+			</xsl:if>
+			<xsl:if test="starts-with(departmentDesc, 'FREE')">
+			<xsl:if test="invoice/customizationPrice > 0">
+					$<xsl:text>  </xsl:text> />
+				</xsl:if>
+			</xsl:if>
 			</td>
                
+               
 			<td align="right">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<b>$<xsl:value-of select='format-number(invoiceLine/price, "###,##0.00", "USD")'/></b>
+			</xsl:if>
+			<xsl:if test="starts-with(departmentDesc, 'FREE')">
+			<b>$<xsl:text> FREE </xsl:text></b>
+			</xsl:if>
 			</td>
                
 			<td>
