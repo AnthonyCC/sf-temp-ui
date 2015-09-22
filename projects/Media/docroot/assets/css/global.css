@@ -3077,3 +3077,11 @@ div#i_viewcart td {
 .subtotal-inner{
 	font-weight: bold;
 }
+
+.promoMessage{
+	background-color: #F2F6E7;
+	font: icon;
+	color: black;
+	padding-top: 4px;
+	padding-left: 10px;
+}

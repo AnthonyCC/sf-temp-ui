@@ -679,7 +679,7 @@ asyncPixelWithTimeout();
 							%>
 							<tr>
 							<td colspan="3">&nbsp;</td>
-							<td colspan="7"><span class="text11rbold"><%= dcpdMinMessage%></span></td>				
+							<td colspan="7"><span class="promoMessage"><%= dcpdMinMessage%></span></td>				
 							<% 
 							usedDcpdDiscounts.add(promoKey);
 							break;
