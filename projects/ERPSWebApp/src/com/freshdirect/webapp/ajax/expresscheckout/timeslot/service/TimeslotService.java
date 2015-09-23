@@ -66,7 +66,7 @@ public class TimeslotService {
         		LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID="
         				+ reservation.getTimeslotId() + ")");
 
-        		return null;
+        		return timeslotData;
         	}
         	
             Date startTime = reservation.getStartTime();
