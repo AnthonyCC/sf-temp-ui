@@ -228,10 +228,12 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																		, ((SapCreateSalesOrder) command).getSapOrderNumber());
 				
-						if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name()))
+						if(((ErpSaleModel)saleEB.getModel()).geteStoreId() !=null &&
+								EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name()))
 								 {
-										 erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
-												 ,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
+										 erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), 
+												 saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+												 ,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone(): null);
 									
 								 }
 					}
@@ -247,11 +249,12 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																	, saleEB.getSapOrderNumber());
-					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
+					if(((ErpSaleModel)saleEB.getModel()).geteStoreId()!=null &&
+							EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
 						
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
-								,saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone());
+								,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)?saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone():null);
 					}
 				}
 
