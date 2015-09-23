@@ -44,31 +44,42 @@ public class TimeslotService {
         return INSTANCE;
     }
 
-    public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart) {
+    /**
+     * Load cart timeslot
+     * 
+     * @param user Customer object
+     * @param cart Cart content
+     * @param matchTimeslotAndDlvAddress enforce same-zone check of timeslot and delivery address
+     * 
+     * @return
+     */
+    public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart, boolean matchTimeslotAndDlvAddress) {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
         if (reservation != null) {
-        	// Deal with case when timeslot zone does not match
-        	// the zone of selected address assigned to cart
-        	
-        	// pick timeslot address
-        	String timeslotAddressId = reservation.getAddressId();
-        	// pick delivery address
-        	String dlvAddressId = null;
-        	if (cart != null && cart.getDeliveryAddress() != null) {
-        		dlvAddressId = cart.getDeliveryAddress().getId();
+        	if (matchTimeslotAndDlvAddress) {
+            	// Deal with case when timeslot zone does not match
+            	// the zone of selected address assigned to cart
+            	
+	        	// pick timeslot address
+	        	String timeslotAddressId = reservation.getAddressId();
+	        	// pick delivery address
+	        	String dlvAddressId = null;
+	        	if (cart != null && cart.getDeliveryAddress() != null) {
+	        		dlvAddressId = cart.getDeliveryAddress().getId();
+	        	}
+	
+	        	// Make the comparison, abort load if mismatch detected
+	        	if ( !(timeslotAddressId != null && dlvAddressId != null
+	        			&& timeslotAddressId.equals(dlvAddressId))) {
+	        		// timeslot has different address than the selected
+	        		LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID="
+	        				+ reservation.getTimeslotId() + ")");
+	
+	        		return timeslotData;
+	        	}
         	}
 
-        	// Make the comparison, abort load if mismatch detected
-        	if ( !(timeslotAddressId != null && dlvAddressId != null
-        			&& timeslotAddressId.equals(dlvAddressId))) {
-        		// timeslot has different address than the selected
-        		LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID="
-        				+ reservation.getTimeslotId() + ")");
-
-        		return timeslotData;
-        	}
-        	
             Date startTime = reservation.getStartTime();
             Calendar startTimeCalendar = DateUtil.toCalendar(startTime);
             String dayNames[] = new DateFormatSymbols().getWeekdays();
@@ -82,6 +93,18 @@ public class TimeslotService {
         return timeslotData;
     }
 
+
+    /**
+     * Convenience method 
+     * 
+     * @param user Customer object
+     * @return
+     */
+    public FormTimeslotData loadCartTimeslot(FDUserI user) {
+    	return user != null ? loadCartTimeslot(user, user.getShoppingCart(), true) : null;
+    }
+
+    
     public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, HttpSession session) throws FDResourceException {
         String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
         try {
