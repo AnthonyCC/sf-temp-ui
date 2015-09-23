@@ -63,7 +63,7 @@ public class PaymentService {
         if (validationErrors.isEmpty()) {
             ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(paymentRequestData, user);
             ActionResult actionResult = new ActionResult();
-            PaymentMethodManipulator.performAddPaymentMethod(paymentMethod, actionResult, request, user);
+            PaymentMethodManipulator.performAddPaymentMethodInternal(paymentMethod, actionResult, request);
             processErrors(validationErrors, actionResult);
         }
         return validationErrors;

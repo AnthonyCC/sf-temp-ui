@@ -297,6 +297,17 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 	}
 
+	/**
+	 * This method is called by the old code
+	 * performing some checks before adding valid payment method
+	 * 
+	 * @param paymentMethod
+	 * @param result
+	 * @param request
+	 * @param user
+	 * 
+	 * @throws FDResourceException
+	 */
     public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
         PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, true, EnumAccountActivityType.ADD_PAYMENT_METHOD);
         String terms = request.getParameter(PaymentMethodName.TERMS);
@@ -307,10 +318,27 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
             }
         }
         if (result.isSuccess()) {
-            PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
+        	performAddPaymentMethodInternal(paymentMethod, result, request);
         }
     }
 
+
+    /**
+     * Call this with valid payment method!
+     * 
+     * @see {@link #performAddPaymentMethod() }
+     * 
+     * @param paymentMethod
+     * @param result
+     * @param request
+     * 
+     * @throws FDResourceException
+     */
+    public static void performAddPaymentMethodInternal(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request) throws FDResourceException {
+        PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
+    }
+    
+    
     public void performEditPaymentMethod() throws FDResourceException {
         ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
         if(result.isSuccess()){
