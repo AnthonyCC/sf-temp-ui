@@ -52,7 +52,7 @@ public class TimeslotServiceTest extends Fixture {
 			}
 		});
         FDUser user = new FDUser();
-        FormTimeslotData timeslot = service.loadCartTimeslot(user, cart);
+        FormTimeslotData timeslot = service.loadCartTimeslot(user, cart, false);
 		
 		assertEquals(timeslotId,timeslot.getId());
 		assertEquals(year,timeslot.getYear());
