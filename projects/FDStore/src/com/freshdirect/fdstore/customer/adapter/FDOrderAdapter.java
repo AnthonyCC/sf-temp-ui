@@ -149,9 +149,11 @@ public class FDOrderAdapter implements FDOrderI {
 					if(isMatching(custPayment, erpOrder.getPaymentMethod())) {
 						EnumPaymentType origPaymentType = erpOrder.getPaymentMethod().getPaymentType();
 						String origMakeGoodRefOrder = erpOrder.getPaymentMethod().getReferencedOrder();
+						String origBillingRef = erpOrder.getPaymentMethod().getBillingRef();
 						erpOrder.setPaymentMethod(custPayment);
 						erpOrder.getPaymentMethod().setPaymentType(origPaymentType);
 						erpOrder.getPaymentMethod().setReferencedOrder(origMakeGoodRefOrder);
+						erpOrder.getPaymentMethod().setBillingRef(origBillingRef);
 						break a;
 					}
 				}
