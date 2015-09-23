@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
@@ -27,12 +26,10 @@ import com.freshdirect.webapp.util.JspMethods;
 
 public class CartSubTotalBoxService {
 
-    private static final String REMOVE_TEXT = "Remove";
-
-    private static final String REMOVE_CODE_KEY = "removeCode";
-
     private static final CartSubTotalBoxService INSTANCE = new CartSubTotalBoxService();
 
+    private static final String REMOVE_TEXT = "Remove";
+    private static final String REMOVE_CODE_KEY = "removeCode";
     private static final String YOU_SAVED = "youSaved";
     private static final String YOU_SAVED_TEXT = "You've Saved";
     private static final String REDEMPTION_PROMO_ID = "redemptionpromo";
@@ -126,22 +123,23 @@ public class CartSubTotalBoxService {
         } else {
             deliveryPassValue = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
             deliveryPassPopupNeeded = true;
+            
+            boolean isTaxableItemInCart = false;
+            for (FDCartLineI lineItem : cart.getOrderLines()) {
+                if (lineItem.getTaxRate() > epsilon) {
+                    isTaxableItemInCart = true;
+                    break;
+                }
+            }
+            
+            if (isTaxableItemInCart) {
+                data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
+            }
         }
+
         cartData.setDeliveryCharge(deliveryPassValue);
         data.setValue(deliveryPassValue);
         data.getOther().put("deliveryPassPopupNeeded", deliveryPassPopupNeeded);
-        
-        boolean isTaxableItemInCart = false;
-        for (FDCartLineI lineItem : cart.getOrderLines()) {
-        	if (lineItem.getTaxRate() > epsilon) {
-        		isTaxableItemInCart = true;
-        		break;
-        	}
-        }
-        
-        if (isTaxableItemInCart) {
-        	data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
-        }
 
         subTotalBox.add(data);
     }
