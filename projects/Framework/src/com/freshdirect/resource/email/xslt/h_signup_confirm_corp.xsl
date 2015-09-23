@@ -187,7 +187,7 @@ letter-spacing:0px;" align="right"><a style="color:#76973E; text-decoration:none
                     </a>
                 </td>
                 <td align="right" width="165">
-                    <a href="https://www.freshdirect.com/srch.jsp?pageType=newproducts"><img style="DISPLAY: block" alt="NEW PRODUCTS" src="http://www.freshdirect.com/media/images/email/confirm_signup/New_bottom-nav_10_np.jpg" height="34" border="0" width="165"/>
+                    <a href="https://www.freshdirect.com/newproducts.jsp"><img style="DISPLAY: block" alt="NEW PRODUCTS" src="http://www.freshdirect.com/media/images/email/confirm_signup/New_bottom-nav_10_np.jpg" height="34" border="0" width="165"/>
                     </a>
                 </td>
                 <td align="right" width="168">
