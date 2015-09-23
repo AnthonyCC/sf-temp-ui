@@ -416,6 +416,7 @@ public class CartDataService {
                 sectionInfo.setSectionTitle(sectionInfoKey);
                 sectionInfo.setExternalGroup(cartLine.getExternalGroup());
                 sectionInfo.setRecipe(sectionInfoKey.contains("Recipe"));
+                sectionInfo.setHasEstimatedPrice(sectionInfo.isHasEstimatedPrice() || cartLine.isEstimatedPrice());
                 List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);

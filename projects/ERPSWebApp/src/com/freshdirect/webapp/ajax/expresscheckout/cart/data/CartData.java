@@ -306,6 +306,7 @@ public class CartData extends AbstractCoremetricsResponse {
         private String subTotal;
         private String taxTotal;
         private String subTotalText;
+        private boolean hasEstimatedPrice;
 
         @Override
         public int hashCode() {
@@ -399,6 +400,15 @@ public class CartData extends AbstractCoremetricsResponse {
 
         public void setSubTotalText(String subTotalText) {
             this.subTotalText = subTotalText;
+        }
+
+        
+        public boolean isHasEstimatedPrice() {
+            return hasEstimatedPrice;
+        }
+
+        public void setHasEstimatedPrice(boolean hasEstimatedPrice) {
+            this.hasEstimatedPrice = hasEstimatedPrice;
         }
     }
 
