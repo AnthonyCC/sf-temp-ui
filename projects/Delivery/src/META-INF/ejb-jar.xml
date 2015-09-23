@@ -51,7 +51,8 @@
       <activation-config>
         <activation-config-property>
           <activation-config-property-name>messageSelector</activation-config-property-name>
-          <activation-config-property-value>(MessageType='ROUTINGADDRESS/process' OR MessageType='SAP_UPDATE')</activation-config-property-value>
+          <activation-config-property-value>(MessageType='ROUTINGADDRESS/process' OR MessageType='SAP_UPDATE' OR 
+          MessageType='FDX_CREATE' OR MessageType='FDX_MODIFY' OR MessageType='FDX_CANCEL')</activation-config-property-value>
         </activation-config-property>
         <activation-config-property>
           <activation-config-property-name>destinationType</activation-config-property-name>
