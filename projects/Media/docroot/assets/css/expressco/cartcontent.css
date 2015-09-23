@@ -725,7 +725,7 @@
 }
 
 #productsamplecarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
-  width: 280px; /* 124 + 156 */
+  width: 282px; /* 124 + 156 */
 }
 
 .productSamplingItem.portrait-item:after{
