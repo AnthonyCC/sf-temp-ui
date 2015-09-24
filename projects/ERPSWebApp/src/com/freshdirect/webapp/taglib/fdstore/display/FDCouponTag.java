@@ -11,8 +11,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -232,7 +230,7 @@ public class FDCouponTag extends BodyTagSupport {
 	    		try {
 	    			couponVal = Double.parseDouble(coupon.getValue());
 	    		} catch(NumberFormatException nfe) {
-	    			Logger.debug("Error in FDCouponTag, cannot parseInt on Coupon Value: "+coupon.getValue());
+	    			LOGGER.debug("Error in FDCouponTag, cannot parseInt on Coupon Value: "+coupon.getValue());
 	    		}
 
 				buf.append("Save");
@@ -263,7 +261,7 @@ public class FDCouponTag extends BodyTagSupport {
 		        		}
 		        	*/
 	    		} catch(NumberFormatException nfe) {
-	    			Logger.debug("Error in FDCouponTag, cannot parseInt on Coupon quantity value: "+coupon.getQuantity());
+	    			LOGGER.debug("Error in FDCouponTag, cannot parseInt on Coupon quantity value: "+coupon.getQuantity());
 	    		}
 	    		
 	    		//add "with coupon" when in past tense (like checkout)

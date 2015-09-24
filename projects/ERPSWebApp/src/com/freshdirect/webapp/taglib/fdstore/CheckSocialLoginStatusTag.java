@@ -1,21 +1,11 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.io.IOException;
-import java.util.Date;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.social.ejb.FDSocialManager;
 import com.freshdirect.framework.util.log.LoggerFactory;

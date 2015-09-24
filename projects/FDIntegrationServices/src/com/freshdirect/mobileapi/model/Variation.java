@@ -12,16 +12,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class Variation {
 

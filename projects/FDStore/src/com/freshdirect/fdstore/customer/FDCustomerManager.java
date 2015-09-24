@@ -23,8 +23,7 @@ import javax.naming.NamingException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
-
-import weblogic.auddi.util.Logger;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
@@ -98,7 +97,6 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerEStorePersistentBean;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -118,7 +116,6 @@ import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
-import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;

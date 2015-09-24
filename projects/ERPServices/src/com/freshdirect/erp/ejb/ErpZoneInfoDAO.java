@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,13 +11,10 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.customer.ErpZoneRegionZipInfo;
-import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -150,7 +146,7 @@ public class ErpZoneInfoDAO {
 				if(ps!=null)
 					ps.close();
 	       }
-	       Logger.info("zoneId is :"+zoneId);
+	       LOGGER.info("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     
@@ -175,7 +171,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("zoneId is :"+zoneId);
+	       LOGGER.info("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     
@@ -195,7 +191,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
- 	       Logger.info("All Zone Id List :"+zoneIdList.size());
+ 	       LOGGER.info("All Zone Id List :"+zoneIdList.size());
 		   return zoneIdList; 
 	}
 	
@@ -234,7 +230,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
- 	       Logger.info("getZoneInfoDetails ErpZoneMasterInfo :"+zoneInfo);
+ 	       LOGGER.info("getZoneInfoDetails ErpZoneMasterInfo :"+zoneInfo);
 		   return zoneInfo; 			
 	}
 	
@@ -269,7 +265,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
+	       LOGGER.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
 		   return zoneInfoList; 			
 	}
 	
@@ -291,7 +287,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       Logger.info("ErpZoneRegionInfo :"+zoneRegionInfo);
+	       LOGGER.info("ErpZoneRegionInfo :"+zoneRegionInfo);
 		   return zoneRegionInfo; 			
 	}
 
@@ -319,7 +315,7 @@ public class ErpZoneInfoDAO {
 	      	 throw e;
 	       }
 	       
-	       Logger.info("All Zone zip List :"+zoneZipInfoList.size());
+	       LOGGER.info("All Zone zip List :"+zoneZipInfoList.size());
 		   return zoneZipInfoList; 			
 	}
    

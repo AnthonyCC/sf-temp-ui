@@ -16,8 +16,6 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
@@ -54,7 +52,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
- 	       Logger.info("All Grp Id List :"+groups.size());
+ 	       LOGGER.info("All Grp Id List :"+groups.size());
 		   return groups; 
 	}
     
@@ -95,11 +93,11 @@ public class ErpGrpInfoDAO {
 	    	   if(ps != null) ps.close();
 	    }
  	    if(resultCount > 1){
- 	    	Logger.error("There are multiple active groups assciated with the same Material Number : "+matId);
+ 	    	LOGGER.error("There are multiple active groups assciated with the same Material Number : "+matId);
  	    	//Do not associate the group info with the material/product.
  	    	return null;
  	    }
-		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
+		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
 		return groups; 			
 	}
 	
@@ -134,7 +132,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	    }
-		Logger.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
+		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
 		return salesAreaGroups; 			
 	}
 	
@@ -173,7 +171,7 @@ public class ErpGrpInfoDAO {
 			    	   if(rs != null) rs.close();
 			    	   if(ps != null) ps.close();
 			    }
-				Logger.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
+				LOGGER.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
 				return groupInfo; 			
 		}
 	
@@ -216,7 +214,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("zoneList :"+zoneList.size());
+	       LOGGER.info("zoneList :"+zoneList.size());
 		   return zoneList; 	
 	}
 	
@@ -308,7 +306,7 @@ public class ErpGrpInfoDAO {
     	   if(rs != null) rs.close();
     	   if(ps != null) ps.close();
        }
-       Logger.info("sku size :"+skus.size());
+       LOGGER.info("sku size :"+skus.size());
 	   return skus;
 	   
    }
@@ -340,7 +338,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("matList :"+matList.size());
+	       LOGGER.info("matList :"+matList.size());
 		   return matList; 	
 	}
 	
@@ -382,7 +380,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("matList :"+skuList.size());
+	       LOGGER.info("matList :"+skuList.size());
 		   return skuList; 	
 	}
 	
@@ -407,7 +405,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("Latest Version of Group ID : "+grpId);
+	       LOGGER.info("Latest Version of Group ID : "+grpId);
 		   return version; 		 
 	 }
 	 

@@ -7,8 +7,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
@@ -52,12 +50,12 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 			HttpSession session = pageContext.getSession(); 
 		    FDSessionUser oldUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 		    if(null !=oldUser && null!=oldUser.getUser().getCookie()){
-		    	Logger.info("oldUser.getUser().getCookie():"+oldUser.getUser().getCookie());
+		    	LOGGER.info("oldUser.getUser().getCookie():"+oldUser.getUser().getCookie());
 		    }
 			createGCUser(request,response);
 			
 			FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
-			Logger.info("newUser.getUser().getCookie():"+user.getUser().getCookie());
+			LOGGER.info("newUser.getUser().getCookie():"+user.getUser().getCookie());
 			switchOldGCContent(oldUser,user);
 	   }
 				

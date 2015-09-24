@@ -5,30 +5,24 @@ import java.util.HashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.social.ejb.FDSocialManager;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.RegistrationController;
 import com.freshdirect.mobileapi.controller.data.request.SocialLinkAccountRequest;
 import com.freshdirect.mobileapi.controller.data.request.SocialLogin;
-import com.freshdirect.mobileapi.controller.data.response.SocialLoginResponse;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.SiteAccessControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialLoginControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
-import com.freshdirect.webapp.taglib.fdstore.SocialProviderOneAll;
 
 
 public class SocialLoginControllerTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName, SessionParamName, MessageCodes{
@@ -155,7 +149,7 @@ public class SocialLoginControllerTagWrapper extends NonStandardControllerTagWra
 			try{
 				userIdentity = FDCustomerManager.login(requestMessage.getEmail(),requestMessage.getPassword());
 			} catch(Exception ex){
-				Logger.error(ex.getMessage());
+				LOGGER.error(ex.getMessage());
 			}		
 			
 			if(userIdentity == null){

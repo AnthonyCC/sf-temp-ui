@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,10 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.customer.ErpProductFamilyModel;
-
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpProductFamilyDAO {
@@ -50,11 +46,11 @@ public class ErpProductFamilyDAO {
 	    	   if(ps != null) ps.close();
 	    }
  	    if(resultCount > 1){
- 	    	Logger.error("There are multiple active groups assciated with the same Material Number : "+matId);
+ 	    	LOGGER.error("There are multiple active groups assciated with the same Material Number : "+matId);
  	    	//Do not associate the family info with the material/product.
  	    	return null;
  	    }
-		Logger.debug("Family ID for loading matId:"+matId+" : and Family ID: "+flyId);
+		LOGGER.debug("Family ID for loading matId:"+matId+" : and Family ID: "+flyId);
 		return flyId; 			
 
     }
@@ -85,7 +81,7 @@ public class ErpProductFamilyDAO {
 		    	   if(rs != null) rs.close();
 		    	   if(ps != null) ps.close();
 		    }
-			Logger.debug("getfamilyInfo ProductFamilyModel :"+familyInfo);
+			LOGGER.debug("getfamilyInfo ProductFamilyModel :"+familyInfo);
 			return familyInfo; 	
 			}
 private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id, product_id from ERPS.PRODUCT_FAMILY_MASTER a where a.active <>'D' and a.GROUP_STAT <>'X' and a.version= (select MAX(version) from ERPS.PRODUCT_FAMILY_MASTER where PRODUCT_ID=?)";
@@ -115,7 +111,7 @@ private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id
 		    	   if(rs != null) rs.close();
 		    	   if(ps != null) ps.close();
 		    }
-			Logger.debug("getSkuFamilyInfo ProductFamilyModel :"+materialId);
+			LOGGER.debug("getSkuFamilyInfo ProductFamilyModel :"+materialId);
 			return familyInfo; 	
 			}
 	
@@ -161,7 +157,7 @@ private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("matList :"+skuList.size());
+	       LOGGER.info("matList :"+skuList.size());
 		   return skuList; 	
 	}
 	

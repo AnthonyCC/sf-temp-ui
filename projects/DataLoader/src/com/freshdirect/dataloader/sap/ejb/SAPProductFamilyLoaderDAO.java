@@ -1,12 +1,10 @@
 package com.freshdirect.dataloader.sap.ejb;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,11 +13,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
-import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
-import com.freshdirect.dataloader.sap.jco.server.param.ProductFamilyParameter;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -252,7 +246,7 @@ private static final String PRODUCT_FAMLY_MAT_SQL=" INSERT INTO  ERPS.MATERIAL_P
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("matList :"+skuList.size());
+	       LOGGER.info("matList :"+skuList.size());
 	       
 		   return skuList; 	
 	
@@ -301,7 +295,7 @@ private static final String PRODUCT_FAMLY_MAT_SQL=" INSERT INTO  ERPS.MATERIAL_P
 			if (ps != null)
 				ps.close();
 		}
-		Logger.info("matList :" + skuList.size());
+		LOGGER.info("matList :" + skuList.size());
 		return skuList;
 	}
 	

@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Category;
-
-import weblogic.auddi.util.Logger;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -148,7 +147,7 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       Logger.info("No.of PromotionProducts :"+promotionProducts.size());
+	       LOGGER.info("No.of PromotionProducts :"+promotionProducts.size());
 		return promotionProducts;
 	}
 	
