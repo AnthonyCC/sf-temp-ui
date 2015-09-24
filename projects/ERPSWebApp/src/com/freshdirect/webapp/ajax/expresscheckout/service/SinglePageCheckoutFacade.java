@@ -12,8 +12,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;

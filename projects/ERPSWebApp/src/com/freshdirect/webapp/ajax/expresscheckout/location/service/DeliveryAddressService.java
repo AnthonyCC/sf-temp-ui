@@ -126,7 +126,9 @@ public class DeliveryAddressService {
 				|| user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
 			ActionResult actionResult = new ActionResult();
 			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null, null, null);
-			TimeslotService.defaultService().releaseTimeslot(user);
+            if (actionResult.isSuccess()) {
+                TimeslotService.defaultService().releaseTimeslot(user);
+            }
 			processErrors(validationErrors, actionResult);
 		}
 		return validationErrors;
@@ -189,17 +191,28 @@ public class DeliveryAddressService {
 		if (EnumCheckoutMode.NORMAL.equals(user.getCheckoutMode())) {
 
 			String selectedDeliveryAddressId = null;
+            List<ValidationError> addressSelectionErrors = new ArrayList<ValidationError>();
 			if ((user.isDepotUser() || user.isPickupUser())) {
+                ErpAddressModel selectedAddressInCart = user.getShoppingCart().getDeliveryAddress();
+                ActionResult result = new ActionResult();
+                if (selectedAddressInCart != null) {
+                    DeliveryAddressManipulator.checkAddressRestriction(false, result, selectedAddressInCart);
+                }
+                if (result.isFailure()) {
+                    user.getShoppingCart().setDeliveryAddress(null);
+                }
 				if (user.getShoppingCart().getDeliveryAddress() == null) {
 					selectedDeliveryAddressId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
 					if (selectedDeliveryAddressId != null) {
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session, user);
+                        addressSelectionErrors.addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session,
+                                user));
 					}
 				} else {
 					ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 					if (deliveryAddress instanceof ErpDepotAddressModel) {
 						selectedDeliveryAddressId = user.getShoppingCart().getDeliveryAddress().getLocationId();
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session, user);
+                        addressSelectionErrors.addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session,
+                                user));
 					}
 				}
 			}
@@ -208,7 +221,7 @@ public class DeliveryAddressService {
 				if (user.getShoppingCart().getDeliveryAddress() == null) {
 					selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
 					if (selectedDeliveryAddressId != null) {
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
+                        addressSelectionErrors.addAll(selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user));
 					}
 				} else {
 					PrimaryKey deliveryAddressMethodPrimaryKey = user.getShoppingCart().getDeliveryAddress().getPK();
@@ -217,6 +230,10 @@ public class DeliveryAddressService {
 					}
 				}
 			}
+
+            if (!addressSelectionErrors.isEmpty()) {
+                selectedDeliveryAddressId = null;
+            }
 
 			if (user.isDepotUser()) {
 				for (Object deliveryLocationModel : FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getLocations()) {
@@ -251,8 +268,10 @@ public class DeliveryAddressService {
 			}
 
 			if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-				selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user);
-				addresses.get(0).setSelected(true);
+                addressSelectionErrors.addAll(selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user));
+                if (addressSelectionErrors.isEmpty()) {
+                    addresses.get(0).setSelected(true);
+                }
 			}
 
 			if (user.isPickupUser()) {

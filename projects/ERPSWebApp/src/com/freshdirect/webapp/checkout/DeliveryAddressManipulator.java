@@ -13,20 +13,15 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
-import weblogic.uddi.client.structures.datatypes.Phone;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
@@ -626,10 +621,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		 * "missingContactPhone", SystemMessageList.MSG_REQUIRED ); // this.redirectTo( this.noContactPhonePage + "?addressId=" + addressPK +
 		 * "&missingContactPhone=true" ); throw new RedirectToPage( noContactPhonePage + "?addressId=" + addressPK + "&missingContactPhone=true"); }
 		*/
-		EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( address );
-		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
-			result.addError( true, "undeliverableAddress", locationHandlerMode ? SystemMessageList.MSG_RESTRICTED_ADDRESS_LOCATION_BAR : SystemMessageList.MSG_RESTRICTED_ADDRESS);
-		}
+        checkAddressRestriction(locationHandlerMode, result, address);
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
 			return;
@@ -732,6 +724,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			setSODeliveryAddress(user, session, shippingAddress, dlvResponse, addressPK);
 		}
 	}
+
+    public static void checkAddressRestriction(boolean locationHandlerMode, ActionResult result, AddressModel address) throws FDResourceException {
+        EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( address );
+		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
+            result.addError(true, "undeliverableAddress", locationHandlerMode ? SystemMessageList.MSG_RESTRICTED_ADDRESS_LOCATION_BAR : SystemMessageList.MSG_RESTRICTED_ADDRESS);
+		}
+    }
 
 	private static void setDepotDeliveryLocation(HttpSession session, FDUserI user, String locationId, String contactNumber, String corpDlvInstructions, String actionName) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();

@@ -21,7 +21,6 @@ import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -175,7 +174,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		
 		if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)){
 			// if user made a successful EBT order, isEbtAccepted flag did not populate at new cart creation correctly -> so making sure this is populated freshly
-			DeliveryAddressManipulator.checkAndSetEbtAccepted(user.getShoppingCart().getDeliveryAddress().getZipCode(), user, user.getShoppingCart());
+            if (user.getShoppingCart().getDeliveryAddress() != null) {
+                DeliveryAddressManipulator.checkAndSetEbtAccepted(user.getShoppingCart().getDeliveryAddress().getZipCode(), user, user.getShoppingCart());
+            }
 		}
 		
 		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !user.isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){

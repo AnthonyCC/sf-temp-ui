@@ -37,6 +37,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
@@ -103,7 +104,8 @@ public class CheckoutService {
 		ActionResult actionResult = new ActionResult();
 		FDCartModel cart = user.getShoppingCart();
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
-        if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty()) {
+        DeliveryAddressManipulator.checkAddressRestriction(false, actionResult, cart.getDeliveryAddress());
+        if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty() && actionResult.isSuccess()) {
 			checkPlaceOrderResult = checkPlaceOrder(user);
 			if (checkPlaceOrderResult.isPassed()) {
                 if (user.isCorporateUser()) {
