@@ -36,6 +36,7 @@ public enum EnumLayoutType implements Serializable {
     TRANSAC_GROUPED_ITEMS	       ("Transactional Grouped Items", 18),    //( Transactional grouped Items)
     HOLIDAY_MENU	               ("Holiday Menu", 19),    //( menu layout)
     THANKSGIVING_CATEGORY              ("Thanksgiving layout", 20),    //( Composite transaction 1)
+    HOLIDAY_MEAL_BUNDLE_CATEGORY      ("Holiday meal bundle layout", 21),
     @Deprecated  // used by hidden categories
     GENERIC_WITH_PAGING                ("Generic with Paging",22),
     @Deprecated // used by hidden categories
