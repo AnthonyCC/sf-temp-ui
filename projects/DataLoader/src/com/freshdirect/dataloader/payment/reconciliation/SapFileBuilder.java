@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
@@ -287,7 +288,7 @@ public class SapFileBuilder implements SettlementBuilderI {
 		sb.append(info.hasSplitTransaction() ? SPLIT : NO_SPLIT);
 		
 		sb.append("\t");
-		sb.append(info.getAffiliate().getCode());
+		sb.append(get_SAP_AffiliateCode(info.getAffiliate().getCode()));
 		
 		sb.append("\t");
 		sb.append(info.getTransactionCount());
@@ -298,6 +299,10 @@ public class SapFileBuilder implements SettlementBuilderI {
 		sb.append("\n");
 	}
 
+	private String get_SAP_AffiliateCode(String affiliate) {
+		
+		return ErpAffiliate.CODE_FDX.equals(affiliate)?ErpAffiliate.CODE_FD:affiliate;
+	}
 	public void setBuildOldSapFileFormat(boolean buildOldSapFileFormat) {
 		this.buildOldSapFileFormat = buildOldSapFileFormat;
 	}
