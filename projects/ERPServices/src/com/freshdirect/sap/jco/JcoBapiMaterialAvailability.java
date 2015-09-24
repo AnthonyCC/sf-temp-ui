@@ -18,9 +18,8 @@ class JcoBapiMaterialAvailability extends JcoBapiFunction implements BapiMateria
 	private Date[] commitedDates;
 	private double[] commitedQtys;
 
-	public JcoBapiMaterialAvailability() throws JCoException
-	{
-		super("Z_BAPI_MATERIAL_AVAILABILITY");
+	public JcoBapiMaterialAvailability(boolean isMultiLevel) throws JCoException {
+		super(isMultiLevel?"ZFDX_MATERIAL_AVAILABILITY":"Z_BAPI_MATERIAL_AVAILABILITY");
 	}
 
 	public void setPlant(String plant) {

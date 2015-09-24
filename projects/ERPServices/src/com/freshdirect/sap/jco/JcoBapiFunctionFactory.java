@@ -61,11 +61,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		}
 	}
 
-	public BapiMaterialAvailability getMaterialAvailabilityBuilder() throws SapException
+	public BapiMaterialAvailability getMaterialAvailabilityBuilder(boolean isMultiLevel) throws SapException
 	{
 		try
 		{
-			return new JcoBapiMaterialAvailability();
+			return new JcoBapiMaterialAvailability(isMultiLevel);
 		} 
 		catch (JCoException e) {
 			throw new SapException(e);

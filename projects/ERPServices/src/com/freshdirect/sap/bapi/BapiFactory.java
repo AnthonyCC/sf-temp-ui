@@ -40,7 +40,7 @@ public abstract class BapiFactory {
 	 * @return BapiMaterialAvailability
 	 * @throws SapException
 	 */
-	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder()
+	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder(boolean isMultiLevel)
 			throws SapException;
 
 	

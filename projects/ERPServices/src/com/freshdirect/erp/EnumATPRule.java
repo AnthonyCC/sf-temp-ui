@@ -25,6 +25,7 @@ public class EnumATPRule extends ValuedEnum {
 	public final static EnumATPRule SIMULATE = new EnumATPRule("SIMULATE", 1, "Sales Order Simulate");
 	public final static EnumATPRule JIT = new EnumATPRule("JIT", 2, "Just-in-Time");
 	public final static EnumATPRule COMPONENT = new EnumATPRule("COMPONENT", 3, "Component Simulate");
+	public final static EnumATPRule MULTILEVEL_MATERIAL = new EnumATPRule("MULTILEVEL_MATERIAL", 4, "Multi-level Material Availability");
 
 	private final String displayName;
 
