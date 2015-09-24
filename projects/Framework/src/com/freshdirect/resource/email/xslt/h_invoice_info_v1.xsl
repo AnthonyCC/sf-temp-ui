@@ -318,15 +318,19 @@
 			</td>
                
 			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<xsl:if test="pricedByLb='true'">
 					<xsl:value-of select='concat(format-number(invoiceLine/weight, "###,##0.00"), " lb")' />
 				</xsl:if> 
+			</xsl:if>
 			</td>
                
 			<td align="center">
+			<xsl:if test="not(starts-with(departmentDesc, 'FREE'))">
 				<xsl:if test="unitPrice!=''">
 					(<xsl:value-of select="unitPrice"/>)
 				</xsl:if>
+			</xsl:if>
 			</td>
                
 			<td align="center">
