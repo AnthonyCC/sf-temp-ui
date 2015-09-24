@@ -18,11 +18,10 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.BINInfoManagerHome;
 import com.freshdirect.payment.ejb.BINInfoManagerSB;

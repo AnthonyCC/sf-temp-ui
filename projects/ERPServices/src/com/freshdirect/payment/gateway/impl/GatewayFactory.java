@@ -1,8 +1,7 @@
 package com.freshdirect.payment.gateway.impl;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.ejb.PaymentGatewayContext;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;

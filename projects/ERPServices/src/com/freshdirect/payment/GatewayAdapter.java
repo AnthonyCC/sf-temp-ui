@@ -6,8 +6,6 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumCVVResponse;
@@ -19,6 +17,7 @@ import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpReversalModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.gateway.BankAccountType;
 import com.freshdirect.payment.gateway.BillingInfo;

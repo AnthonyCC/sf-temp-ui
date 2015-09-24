@@ -21,8 +21,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
@@ -46,10 +44,10 @@ import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.PaylinxException;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;

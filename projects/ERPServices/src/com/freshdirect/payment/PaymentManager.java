@@ -5,8 +5,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import weblogic.wsee.util.StringUtil;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumPaymentResponse;
@@ -21,6 +19,7 @@ import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.ejb.PaymentGatewayContext;
