@@ -23,7 +23,6 @@ import javax.naming.NamingException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
@@ -3541,14 +3540,14 @@ public class FDCustomerManager {
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			// throw new FDResourceException(ce, "Error creating session bean");
-			Logger.warning("Error creating session bean:" + ce);
+			LOGGER.warn("Error creating session bean:" + ce);
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			// throw new FDResourceException(re,
 			// "Error talking to session bean");
-			Logger.warning("Error talking to session bean:" + re);
+			LOGGER.warn("Error talking to session bean:" + re);
 		} catch (FDResourceException fe) {
-			Logger.warning("Error looking up for manager:" + fe);
+			LOGGER.warn("Error looking up for manager:" + fe);
 		}
 	}
 
@@ -3579,7 +3578,7 @@ public class FDCustomerManager {
 					lastTime = System.currentTimeMillis();
 				}
 			} catch (InterruptedException e) {
-				Logger.warning("GiftCardNSMThread interrupted:" + e);
+				LOGGER.warn("GiftCardNSMThread interrupted:" + e);
 			}
 
 		}
