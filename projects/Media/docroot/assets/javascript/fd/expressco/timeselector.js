@@ -1,4 +1,4 @@
-/*global expressco*/
+/*global expressco, Bacon*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -6,7 +6,6 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var DRAWER_WIDGET = fd.modules.common.drawerWidget;
-  var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
 
   var timeslot = Object.create(DRAWER_WIDGET,{
@@ -57,8 +56,11 @@ var FreshDirect = FreshDirect || {};
       }
     },
     renderContent:{
-      value:function(data){
+      value:function(){
         var ajax = Bacon.fromPromise($.ajax(timeslot.createRequestConfig()));
+
+        // remove old content
+        $(timeslot.contentHolder()).html('');
 
         ajax.onError(function(){
           $(timeslot.contentHolder()).
@@ -76,7 +78,7 @@ var FreshDirect = FreshDirect || {};
           // init timeslot selector behaviour
 
           if(FreshDirect.fdTSDisplay){
-            window["fdTSDisplay"] = new FreshDirect.fdTSDisplay("fdTSDisplay");
+            window.fdTSDisplay = new FreshDirect.fdTSDisplay("fdTSDisplay");
           }
 
           timeslot.expandDefaultColumn(window.fdTSDisplay);
