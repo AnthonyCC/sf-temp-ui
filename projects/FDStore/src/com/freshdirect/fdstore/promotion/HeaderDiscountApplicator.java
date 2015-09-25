@@ -33,7 +33,9 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		if(e == PromotionStrategyI.DENY){
 			if(cartStrategy.getCartDcpdSubtotal()>0 && cartStrategy.getTotalDcpdSubtotal() > 0 && cartStrategy.getCartDcpdSubtotal() < cartStrategy.getTotalDcpdSubtotal()){
 				//Set the following details for messaging
-				double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
+				//[APPBUG-3605]- To display the correct amount from the promotion, rather than the relevant min amount.
+//				double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
+				double amount = this.discountRule.getMaxAmount();
 				if(null !=cartStrategy.getContentKeys() && cartStrategy.getContentKeys().size() > 0){
 					cartStrategy.getMinDcpdTotalPromoData().setContentKey((ContentKey)cartStrategy.getContentKeys().toArray()[0]);
 				}else{
