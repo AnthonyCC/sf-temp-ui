@@ -20,17 +20,29 @@
     {/if}
   {/foreach}
 {else}
-<div class='drawer__previewitem'>
-  <div class="drawer__previewitem__button__section">
-    <button class="cssbutton green" data-component="addaddressbutton">Add an Address</button>
-  </div>
   {if length($addresses)}
     {let $address: $addresses[0] /}
     {if $address.service_type == 'pickup'}
+      <div class='drawer__previewitem'>
+        <div class="drawer__previewitem__button__section">
+          <button class="cssbutton green" data-component="addaddressbutton">Add an Address</button>
+        </div>
+      </div>
       {call .address_pickup_preview data="$address" /}
+    {else}
+      <div class='drawer__previewitem'>
+        <div class="drawer__previewitem__button__section">
+          <button class="cssbutton green" data-drawer-activate="address">Pick an Address</button>
+        </div>
+      </div>
     {/if}
+  {else}
+    <div class='drawer__previewitem'>
+      <div class="drawer__previewitem__button__section">
+        <button class="cssbutton green" data-component="addaddressbutton">Add an Address</button>
+      </div>
+    </div>
   {/if}
-</div>
 {/if}
 {/template}
 
