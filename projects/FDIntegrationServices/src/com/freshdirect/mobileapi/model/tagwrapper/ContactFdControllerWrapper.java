@@ -25,6 +25,7 @@ public class ContactFdControllerWrapper extends ControllerTagWrapper implements 
         addRequestValue(REQ_PARAM_CONTACT_US_SUBJECT, subject);
 
         FDUserI user = (FDUserI) this.pageContext.getSession().getAttribute(SessionName.USER);
+        if(user != null && user.getIdentity()!=null) {
         addRequestValue(REQ_PARAM_CUSTOMER_PK, user.getIdentity().getErpCustomerPK());
 
         addRequestValue("salePK", orderId);
@@ -41,5 +42,10 @@ public class ContactFdControllerWrapper extends ControllerTagWrapper implements 
         ((ContactFdControllerTag)this.wrapTarget).setSuccessPage(null);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
         return result;
+        } else {
+        	ResultBundle result1 = new ResultBundle();
+        	result1.getActionResult().addError(true, "ERROR", "Session Expired");
+        	return result1;
+        }
     }
 }
