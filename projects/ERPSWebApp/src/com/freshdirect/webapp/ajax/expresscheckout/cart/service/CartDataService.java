@@ -376,6 +376,8 @@ public class CartDataService {
             Map<String, String> sectionHeaderImgMap = new HashMap<String, String>();
             ItemCount itemCount = new ItemCount();
             Map<String, SectionInfo> sectionInfos = new HashMap<String, SectionInfo>();
+            boolean isWineInCart = false;
+            boolean hasEstimatedPriceItemInCart = false;
             for (FDCartLineI cartLine : cartLines) {
                 ProductModel productNode = cartLine.lookupProduct();
                 if (productNode == null) {
@@ -389,9 +391,13 @@ public class CartDataService {
                 }
                 String sectionInfoKey;
                 if (cartLine.isWine()) {
+                    isWineInCart = true;
                     sectionInfoKey = "wineSectionKey";
                 } else {
                     sectionInfoKey = cartLine.getDepartmentDesc();
+                    if (cartLine.isEstimatedPrice()){
+                        hasEstimatedPriceItemInCart = true;
+                    }
                 }
                 SectionInfo sectionInfo = sectionInfos.get(sectionInfoKey);
                 if (sectionInfo == null) {
@@ -429,7 +435,7 @@ public class CartDataService {
             cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
             cartData.setEstimatedTotal(JspMethods.formatPrice(cart.getTotal()));
             populateSubTotalBox(cartData, cart, user);
-            populateSubTotalBoxForNonAlcoholSections(cart, sections);
+            populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
             if (FDUserI.GUEST < user.getLevel()) {
                 cartData.setUserRecognized(true);
                 cartData.setUserCorporate(user.isCorporateUser());
@@ -582,48 +588,42 @@ public class CartDataService {
         CartSubTotalBoxService.defaultService().populateSavingToBox(subTotalBox, cart);
     }
 
-    private String getSubTotalTextForNonAlcoholicSections(SectionInfo sectionInfo) {
+    private String getSubTotalTextForNonAlcoholicSections(boolean isWineInCart, boolean hasEstimatedPriceItemInCart) {
         StringBuilder subTotalText = new StringBuilder(32);
-        if (sectionInfo.isWine()) {
+        if (isWineInCart) {
             subTotalText.append("FreshDirect ");
         }
-        if (sectionInfo.isHasEstimatedPrice()) {
+        if (hasEstimatedPriceItemInCart) {
             subTotalText.append("Estimated ");
         }
         subTotalText.append("Subtotal");
         return subTotalText.toString();
     }
 
-    private void populateSubTotalBoxForNonAlcoholSections(FDCartI cart, List<CartData.Section> sections) {
+    private void populateSubTotalBoxForNonAlcoholSections(FDCartI cart, List<CartData.Section> sections, boolean hasEstimatedPriceItemInCart, String subTotalText) {
         int sectionSize = sections.size();
         if (sectionSize > 0) {
             Section lastSection = sections.get(sectionSize - 1);
             if (lastSection.getInfo().isWine()) {
                 if (sectionSize > 1) {
                     Section lastNonAlcoholicSection = sections.get(sectionSize - 2);
-                    decorateSubTotalWithoutWineAndSpirit(cart, sections, lastNonAlcoholicSection.getInfo());
+                    SectionInfo sectionInfo = lastNonAlcoholicSection.getInfo();
+                    decorateSubTotalWithoutWineAndSpirit(cart, sections, sectionInfo, hasEstimatedPriceItemInCart, subTotalText);
                 }
             } else {
-                decorateSubTotalWithoutWineAndSpirit(cart, sections, lastSection.getInfo());
+                SectionInfo sectionInfo = lastSection.getInfo();
+                decorateSubTotalWithoutWineAndSpirit(cart, sections, sectionInfo, hasEstimatedPriceItemInCart, subTotalText);
             }
         }
     }
 
-    private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo) {
+    private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo, boolean hasEstimatedPriceItemInCart, String subTotalText) {
         sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalWithoutWineAndSpirit(cart)));
         sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueWithoutWineAndSpirit(cart)));
-        sectionInfo.setSubTotalText(getSubTotalTextForNonAlcoholicSections(sectionInfo));
-        sectionInfo.setHasEstimatedPrice(populateNonAlcolholSectionHasEstimatedPrice(sections));
+        sectionInfo.setSubTotalText(subTotalText);
+        sectionInfo.setHasEstimatedPrice(hasEstimatedPriceItemInCart);
     }
     
-    private boolean populateNonAlcolholSectionHasEstimatedPrice(List<CartData.Section> sections) {
-        boolean hasEstimatedPrice = false;
-        for (Section section : sections) {
-            hasEstimatedPrice = hasEstimatedPrice || (section.getInfo().isHasEstimatedPrice() && !section.getInfo().isWine());
-        }
-        return hasEstimatedPrice;
-    }
-
     private String printDate(Date date) {
         return new SimpleDateFormat("'<b>'h:mm a'</b> on <b>'EEEEE, MM/dd/yyyy'</b>'").format(date);
     }
