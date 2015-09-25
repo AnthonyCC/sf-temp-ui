@@ -242,7 +242,7 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
-    private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException {
+    private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException, JsonException {
    	 	
     	Message responseMessage = new Message();
     	Cart cart = user.getShoppingCart();
@@ -256,7 +256,8 @@ public class CheckoutController extends BaseController {
 		} else {
 			responseMessage.addErrorMessage("CART IS EMPTY");
 		}
-		responseMessage .setSuccessMessage("Store Credit amount has been applied successfully.");
+		responseMessage.setSuccessMessage("Store Credit amount has been applied successfully.");
+		setResponseMessage(model, responseMessage, user);
         return model;
 	}
 
