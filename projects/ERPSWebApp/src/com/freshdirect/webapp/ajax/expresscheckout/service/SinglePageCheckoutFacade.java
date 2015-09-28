@@ -113,7 +113,16 @@ public class SinglePageCheckoutFacade {
     public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult)
             throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
+
+        final boolean hasValidationErrors = validationResult != null && !validationResult.getErrors().isEmpty();
+
+        // [APPDEV-4425] : prevent restriction check when invalid dlv address is selected
+        if  ( !( PageAction.SELECT_DELIVERY_ADDRESS_METHOD == pageAction && hasValidationErrors) ) {
+            result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
+        } else {
+        	LOGGER.debug("Skipped restriction check for fraud address");
+        }
+
         HttpSession session = request.getSession();
         switch (pageAction) {
             case ADD_DELIVERY_ADDRESS_METHOD:
