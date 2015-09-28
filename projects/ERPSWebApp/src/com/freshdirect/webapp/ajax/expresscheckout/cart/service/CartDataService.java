@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -524,6 +525,7 @@ public class CartDataService {
                 if (user.isCouponsSystemAvailable()) {
                     couponMessage = "One or more coupons have not been applied to your order. See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>";
                 } else {
+                	if(FDCouponProperties.isDisplayMessageCouponsNotAvailable())
                     couponMessage = SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE;
                 }
                 break;

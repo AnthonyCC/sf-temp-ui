@@ -641,6 +641,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			plantMaterialModel.setPlatter(model.isPlatter());
 			plantMaterialModel.setRating(model.getRating());
 			plantMaterialModel.setSustainabilityRating(model.getSustainabilityRating());
+			plantMaterialModel.setHideOutOfStock(model.isHideOutOfStock());
 
 		}
 		return plantMaterialModel;
@@ -661,6 +662,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			materialSalesAreaModel.setUnavailabilityDate(null != model.getUnavailabilityDate() ? model
 					.getUnavailabilityDate() : SAPConstants.THE_FUTURE);
 			materialSalesAreaModel.setSkuCode(model.getSkuCode());
+			materialSalesAreaModel.setDayPartSelling(model.getDayPartSelling());
 		}
 		return materialSalesAreaModel;
 	}

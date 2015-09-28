@@ -226,7 +226,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 			Date[] availDates = new Date[0];
 			Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
 				{
-					put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+					put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
 				}
 			};
 			

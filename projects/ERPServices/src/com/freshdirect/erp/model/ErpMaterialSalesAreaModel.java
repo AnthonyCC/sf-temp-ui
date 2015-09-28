@@ -37,10 +37,12 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
     /** sku code */
     private String skuCode;
     
+    private String dayPartSelling;
+    
     
 	public ErpMaterialSalesAreaModel(String salesOrg, String distChannel,
 			String unavailabilityStatus, Date unavailabilityDate,
-			String unavailabilityReason, String skuCode) {
+			String unavailabilityReason, String skuCode, String dayPartSelling) {
 		super();
 		this.salesOrg = salesOrg;
 		this.distChannel = distChannel;
@@ -51,6 +53,7 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
 		this.unavailabilityDate = unavailabilityDate;
 		this.unavailabilityReason = unavailabilityReason;
 		this.skuCode = skuCode;
+		this.dayPartSelling = dayPartSelling;
 	}
 
 	/**
@@ -157,14 +160,25 @@ public class ErpMaterialSalesAreaModel extends ErpModelSupport implements Durabl
 		this.skuCode = skuCode;
 	}
 
+	public String getDayPartSelling() {
+		return dayPartSelling;
+	}
+
+	public void setDayPartSelling(String dayPartSelling) {
+		this.dayPartSelling = dayPartSelling;
+	}
+
 	@Override
 	public String toString() {
 		return "ErpMaterialSalesAreaModel [salesOrg=" + salesOrg
 				+ ", distChannel=" + distChannel + ", unavailabilityStatus="
 				+ unavailabilityStatus + ", unavailabilityDate="
 				+ unavailabilityDate + ", unavailabilityReason="
-				+ unavailabilityReason + ", skuCode=" + skuCode + "]";
+				+ unavailabilityReason + ", skuCode=" + skuCode
+				+ ", dayPartSelling=" + dayPartSelling + "]";
 	}
+
+	
 
 	
 }

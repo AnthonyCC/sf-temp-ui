@@ -27,6 +27,7 @@ public class FDPlantMaterial implements Serializable {
 	private final DayOfWeekSet blockedDays;
 	private final int leadTime;
 	private final String plantId;
+	private final boolean isLimitedQuantity;//Hide If Out Of Stock.
 	
 	private  String freshness;
 	
@@ -35,7 +36,7 @@ public class FDPlantMaterial implements Serializable {
 	
 	public FDPlantMaterial(EnumATPRule atpRule, boolean kosherProduction,
 			boolean platter, DayOfWeekSet blockedDays, int leadTime,
-			String plantId) {
+			String plantId, boolean isLimitedQuantity) {
 		super();
 		this.atpRule = atpRule;
 		this.kosherProduction = kosherProduction;
@@ -43,6 +44,7 @@ public class FDPlantMaterial implements Serializable {
 		this.blockedDays = blockedDays;
 		this.leadTime = leadTime;
 		this.plantId = plantId;
+		this.isLimitedQuantity = isLimitedQuantity;
 	}
 	
 	
@@ -53,7 +55,7 @@ public class FDPlantMaterial implements Serializable {
 			boolean platter, DayOfWeekSet blockedDays, int leadTime,
 			String plantId, 
 			String freshness, EnumOrderLineRating rating,
-			EnumSustainabilityRating sustainabilityRating) {
+			EnumSustainabilityRating sustainabilityRating, boolean isLimitedQuantity) {
 		super();
 		this.atpRule = atpRule;
 		this.kosherProduction = kosherProduction;
@@ -65,6 +67,7 @@ public class FDPlantMaterial implements Serializable {
 		
 		this.rating = rating;
 		this.sustainabilityRating = sustainabilityRating;
+		this.isLimitedQuantity = isLimitedQuantity;
 	}
 
 
@@ -158,6 +161,11 @@ public class FDPlantMaterial implements Serializable {
 		return plantId;
 	}
 	
+	public boolean isLimitedQuantity() {
+		return isLimitedQuantity;
+	}
+
+
 	@Override
 	public String toString() {
 		return "FDPlantMaterial [atpRule=" + atpRule + ", kosherProduction="

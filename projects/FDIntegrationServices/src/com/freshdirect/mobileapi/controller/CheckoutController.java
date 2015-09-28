@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -381,7 +382,7 @@ public class CheckoutController extends BaseController {
         	user.setCouponEvaluationRequired(true);
         }
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
-        if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+        if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE
         										, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
         }/*else{

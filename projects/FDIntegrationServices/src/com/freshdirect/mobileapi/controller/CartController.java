@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -248,7 +249,7 @@ public class CartController extends BaseController {
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");
         responseMessage.setCartDetail(cartDetail);
-        if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+        if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
         }
         setResponseMessage(model, responseMessage, user);

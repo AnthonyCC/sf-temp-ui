@@ -147,7 +147,7 @@ asyncPixelWithTimeout();
 				%><a href="/test/cartexport.jsp">Export Cart</a><%
 			} %>
 			<%-- if ( !"true".equalsIgnoreCase(NVL.apply(request.getAttribute("inSo"), "false").toString()) ) { /* check for standing order flow */ --%>
-				<div id="fdCoupon_cartAlert" style="<%= (user.isCouponsSystemAvailable()) ? "display: none;" : "" %> white-space: normal; text-indent: -14px; padding-left: 14px;"><img src="/media/images/ecoupon/red_triangle.png" alt="" /> <%= (!user.isCouponsSystemAvailable()) ? SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE : "One or more coupons have not been applied to your order.<br />See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>" %></div>
+				<div id="fdCoupon_cartAlert" style="<%= (user.isCouponsSystemAvailable()) ? "display: none;" : "" %> white-space: normal; text-indent: -14px; padding-left: 14px;"><img src="/media/images/ecoupon/red_triangle.png" alt="" /> <%= (!user.isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) ? SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE : "One or more coupons have not been applied to your order.<br />See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>" %></div>
 			<%-- } --%>
 		</td>
 		<td class="title11" style="text-align: right; vertical-align: middle; white-space: nowrap; padding-right: 8px;">
