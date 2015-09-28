@@ -2,11 +2,9 @@ package com.freshdirect.sap.jco;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.logistics.framework.util.LoggerFactory;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.bapi.BapiException;
-import com.freshdirect.sap.bapi.BapiInfo;
 import com.sap.conn.jco.JCoException;
-import com.sap.conn.jco.JCoFunction;
 
 /**
  *

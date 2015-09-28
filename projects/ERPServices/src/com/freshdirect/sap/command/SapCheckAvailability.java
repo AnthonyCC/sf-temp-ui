@@ -17,8 +17,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import weblogic.auddi.util.Logger;
-
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.PosexUtil;
