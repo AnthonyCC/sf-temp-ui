@@ -32,6 +32,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
 <%@ page import="com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData" %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.FDCouponProperties"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Iterator"%>
