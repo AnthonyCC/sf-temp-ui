@@ -59,8 +59,8 @@ public class HelpController extends BaseController {
     private String backupdeliveryauthorization = "/media/mobile/iphone/backup_delivery_authorization/backupDeliveryAuthorization.json";
           
     private String productRecallsPath = "/media/editorial/food_safety/food_safety_product_recalls.html";
-    private String foodSafetyPath = "/media/editorial/food_safety_fdx/food_safety_handling_food_safely.html";
-    private String cookingStoragePath = "/media/editorial/food_safety_fdx/food_safety_meat_dairy_seafood_cooking_storage.html";
+    private String foodSafetyPath = "/media/editorial/food_safety_fdx/food_safety_cookstore_fdx.html";
+    private String cookingStoragePath = "/media/editorial/food_safety_fdx/food_safety_handling_fdx.html";
     private String aboutUsPath = "/media/editorial/about/overview_fdx/about_us_fdx.html";
 
     @Override
