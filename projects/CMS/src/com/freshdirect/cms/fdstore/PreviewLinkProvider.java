@@ -93,6 +93,14 @@ public class PreviewLinkProvider {
 			uri = "/test/migration/products_tagged.jsp?tag=" + id;
 		} else if (FDContentTypes.SUPER_DEPARTMENT.equals(type)) {
 			uri = "/browse.jsp?id=" + id;
+		} else if (FDContentTypes.WEBPAGE.equals(type)){
+			ContentNodeI node = key.getContentNode();
+			if(node.getAttributeValue("URL") != null){
+				uri = (String) node.getAttributeValue("URL");
+				if(uri != null && !uri.contains("?")){
+					uri += ("?");
+				}
+			}
 		}
 
 		if (uri != null) {
