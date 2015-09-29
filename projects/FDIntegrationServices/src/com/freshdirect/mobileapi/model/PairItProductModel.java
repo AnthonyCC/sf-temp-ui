@@ -9,6 +9,8 @@ import com.freshdirect.fdstore.content.ProductModel;
 public class PairItProductModel{
 	
 	private List<String> pairItProductIds = new ArrayList<String>();
+	private String heading = null;
+	private String text = null;
 
 	public void setCompleteMeal(ProductModel productModel) {
 		if (productModel != null) {
@@ -16,6 +18,8 @@ public class PairItProductModel{
 				if (prod.getContentKey() != null)
 					this.pairItProductIds.add(prod.getContentKey().getId());
 			}
+			this.heading = productModel.getPairItHeading();
+			this.text = productModel.getPairItText();
 		}
 	}
 
@@ -26,5 +30,24 @@ public class PairItProductModel{
 	public void setPairItProductIds(List<String> pairItProductIds) {
 		this.pairItProductIds = pairItProductIds;
 	}
+
+	public String getHeading() {
+		return heading;
+	}
+
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	
+	
 	
 }

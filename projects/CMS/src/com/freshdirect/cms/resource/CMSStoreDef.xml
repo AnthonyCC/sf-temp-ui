@@ -1022,6 +1022,9 @@
 			<!--  SEO Changes -->
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
+			
+			<AttributeDef type="S" name="PAIR_IT_HEADING" label="PAIR IT - HEADING"/>
+			<AttributeDef type="S" name="PAIR_IT_TEXT" label="PAIR IT - TEXT"/>
 		</AttributeDefs>
 		
 		

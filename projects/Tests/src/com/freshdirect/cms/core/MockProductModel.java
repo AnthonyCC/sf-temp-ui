@@ -2100,4 +2100,14 @@ public class MockProductModel extends MockContentNodeModel implements
 	public String getSEOMetaDescription() {
 		return null;
 	}
+
+	@Override
+	public String getPairItHeading() {
+		return null;
+	}
+
+	@Override
+	public String getPairItText() {
+		return null;
+	}
 }

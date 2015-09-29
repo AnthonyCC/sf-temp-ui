@@ -1523,4 +1523,14 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public String getSEOMetaDescription() {
 		return prodModel.getSEOMetaDescription();
 	}
+
+	@Override
+	public String getPairItHeading() {
+		return prodModel.getPairItHeading();
+	}
+
+	@Override
+	public String getPairItText() {
+		return prodModel.getPairItText();
+	}
 }

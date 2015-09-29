@@ -1459,4 +1459,14 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public String getSEOMetaDescription() {
 		return productModel.getSEOMetaDescription();
 	}
+
+	@Override
+	public String getPairItHeading() {
+		return productModel.getPairItHeading();
+	}
+
+	@Override
+	public String getPairItText() {
+		return productModel.getPairItText();
+	}
 }

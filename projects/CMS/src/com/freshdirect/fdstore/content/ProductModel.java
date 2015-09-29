@@ -1076,4 +1076,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public String getPageTitle();
 	
 	public String getSEOMetaDescription();
+	
+	public String getPairItHeading();
+	
+	public String getPairItText();
 }

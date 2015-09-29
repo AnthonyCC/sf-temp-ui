@@ -135,6 +135,8 @@ public class ProductController extends BaseController {
         	 com.freshdirect.mobileapi.model.PairItProductModel p = new PairItProductModel();
         	 p.setCompleteMeal(product);
         	 if(p.getPairItProductIds()!=null && p.getPairItProductIds().size() > 0) {
+        	 result.setHeading(p.getHeading());
+        	 result.setHeading(p.getText());
         	 result.setPairItProductIds(p.getPairItProductIds());
         	 } else {
         		 result.addDebugMessage("No pair it product is available for this product");

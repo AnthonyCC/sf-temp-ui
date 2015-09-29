@@ -1984,4 +1984,14 @@ inner:
 	public String getSEOMetaDescription() {
 		return getAttribute("SEO_META_DESC", "");
 	}
+	
+	@Override
+	public String getPairItHeading() {
+		return getAttribute("PAIR_IT_HEADING", "");
+	}
+
+	@Override
+	public String getPairItText() {
+		return getAttribute("PAIR_IT_TEXT", "");
+	}
 }

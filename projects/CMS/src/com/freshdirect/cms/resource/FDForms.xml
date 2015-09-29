@@ -773,6 +773,8 @@
 							<CmsField><attribute>PREFERRED_SKU</attribute></CmsField>
 							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
 							<CmsField><attribute>PDP_XSELL</attribute></CmsField>
+							<CmsField><attribute>PAIR_IT_HEADING</attribute></CmsField>
+							<CmsField><attribute>PAIR_IT_TEXT</attribute></CmsField>
 							<CmsField><attribute>completeTheMeal</attribute></CmsField>
 							<CmsField><attribute>MEAL_INCLUDE_PRODUCTS</attribute></CmsField>
 						</fields>
