@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.globalnav;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
@@ -14,10 +15,10 @@ public class GlobalNavContextUtil {
     public static GlobalNavigationModel getGlobalNavigationModel(FDUserI user) throws FDResourceException {
 
         String globalNavId = "";
-        final String storeId = ContentFactory.getInstance().getStoreKey().getId();
+        final EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
 
         // Plain and ugly store ID check. Good until we have e-store IDs
-        if (EnumEStoreId.FDX.toString().equals(storeId)) {
+        if (EnumEStoreId.FDX == eStore) {
             globalNavId = "GlobalNavFdx"; // simple logic, export this into CMS if necessary
         } else {
             final boolean isFreeToHaveBeers = user != null && user.getZipCode() != null && !FDUserUtil.isAlcoholRestricted(user.getZipCode());
