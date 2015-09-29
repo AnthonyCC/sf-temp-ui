@@ -785,6 +785,8 @@ public class Cart {
         double tip1 = cart.getTip();
         
         cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTaxValue(), false, false, false, "Total Tax"));
+     // APPDEV-4417 : Add tip details only if Cart has Tips added
+        if(cart.getTip()>0.0) 
         cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTip(), false, false, false, "Tip"));
         //cartDetail.setTax(cart.getTaxValue());
 
@@ -1055,7 +1057,8 @@ public class Cart {
 //        if(cart instanceof FDCartModel){
 //        	cartDetail.setTip(((FDCartModel)cart).getTip());
 //        } 
-        
+        //APPDEV-4417 
+    	if(cart.getTip()>0.0)
     	cartDetail.setTip(cart.getTip());
         
         
