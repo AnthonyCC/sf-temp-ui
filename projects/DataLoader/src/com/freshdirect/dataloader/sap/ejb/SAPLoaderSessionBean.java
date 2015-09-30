@@ -552,8 +552,9 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 			if (existingMaterialModel != null) {
 				// sales units
 				List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+				List<ErpSalesUnitModel> existingDisplaySalesUnits = existingMaterialModel.getDisplaySalesUnits();
 				if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
-					materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+					materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels, existingDisplaySalesUnits));
 				}
 
 				// prices
@@ -1016,8 +1017,9 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 
 							// sales units
 							List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+							List<ErpSalesUnitModel> existingDisplaySalesUnits = existingMaterialModel.getDisplaySalesUnits();
 							if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
-								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels,existingDisplaySalesUnits));
 							}
 
 							// prices
@@ -1417,8 +1419,9 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 
 							// sales units
 							List<ErpSalesUnitModel> existingSalesUnitModels = existingMaterialModel.getSalesUnits();
+							List<ErpSalesUnitModel> existingDisplaySalesUnits = existingMaterialModel.getDisplaySalesUnits();
 							if (null != existingSalesUnitModels && !existingSalesUnitModels.isEmpty()) {
-								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels));
+								materialModel.setSalesUnits(cloneSalesUnits(existingSalesUnitModels,existingDisplaySalesUnits));
 							}
 
 							// prices
@@ -1633,12 +1636,17 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 	 * @param existingSalesUnitModels
 	 * @return
 	 */
-	private List<ErpSalesUnitModel> cloneSalesUnits(List<ErpSalesUnitModel> existingSalesUnitModels) {
+	private List<ErpSalesUnitModel> cloneSalesUnits(List<ErpSalesUnitModel> existingSalesUnitModels, List<ErpSalesUnitModel> existingDisplaySalesUnits) {
 		List<ErpSalesUnitModel> clonedSalesUnits = null;
 		if (existingSalesUnitModels != null && existingSalesUnitModels.size() > 0) {
 			clonedSalesUnits = new ArrayList<ErpSalesUnitModel>();
 			for (ErpSalesUnitModel salesUnitModel : existingSalesUnitModels) {
 				clonedSalesUnits.add(cloneSalesUnitModel(salesUnitModel));
+			}
+			if(null !=existingDisplaySalesUnits && existingDisplaySalesUnits.size() >0 ){
+				for (ErpSalesUnitModel salesUnitModel : existingDisplaySalesUnits) {
+					clonedSalesUnits.add(cloneSalesUnitModel(salesUnitModel));
+				}
 			}
 			Collections.sort(clonedSalesUnits, salesUnitComparator);
 
