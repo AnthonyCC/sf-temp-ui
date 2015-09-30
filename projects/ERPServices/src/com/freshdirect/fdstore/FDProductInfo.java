@@ -102,8 +102,7 @@ public class FDProductInfo extends FDSku  {
 					                         mpInfo.getPlantId(),
 					                         freshness,
 					                         rating,
-					                         sustainabilityRating,
-					                         mpInfo.isLimitedQuantity()
+					                         sustainabilityRating
 					                         ));
 		}
 		_setPlantMaterialInfo(mpInfos);
@@ -139,8 +138,7 @@ public class FDProductInfo extends FDSku  {
  					                         mpInfo.getPlantId(),
  					                         mpInfo.getFreshness(),
  					                         mpInfo.getRating(),
- 					                         mpInfo.getSustainabilityRating(),
- 					                         mpInfo.isLimitedQuantity()
+ 					                         mpInfo.getSustainabilityRating()
  					                         ));
  		}
  		_setPlantMaterialInfo(mpInfos);
@@ -492,15 +490,4 @@ public class FDProductInfo extends FDSku  {
 		return false;
 		
 	}
-	
-	public boolean isLimitedQuantity(String plantID) {
-		if(!StringUtils.isEmpty(plantID)) {
-			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
-			if(pm!=null)
-				return pm.isLimitedQuantity();
-		}
-		return false;
-		
-	}
-//	String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 }

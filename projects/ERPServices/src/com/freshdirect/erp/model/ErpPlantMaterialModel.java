@@ -41,9 +41,6 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	/** the lead time in days to stock this product **/
 	private int leadTime;
 	
-	/** hide if its out of stock **/
-	private boolean hideOutOfStock;
-	
 	
 	@Override
 	public void visitChildren(ErpVisitorI visitor) {
@@ -185,14 +182,6 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	}
 	
 
-	public boolean isHideOutOfStock() {
-		return hideOutOfStock;
-	}
-
-	public void setHideOutOfStock(boolean hideOutOfStock) {
-		this.hideOutOfStock = hideOutOfStock;
-	}
-
 	/**
 	 * @param plantId
 	 * @param kosherProduction
@@ -210,7 +199,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	public ErpPlantMaterialModel(String plantId, boolean kosherProduction,
 			boolean platter, DayOfWeekSet blockedDays, EnumATPRule atpRule,
 			String rating, String days_in_house,
-			String sustainabilityRating,int leadTime, boolean hideOutOfStock) {
+			String sustainabilityRating,int leadTime) {
 		super();
 		this.plantId = plantId;
 		this.kosherProduction = kosherProduction;
@@ -221,7 +210,6 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 		this.days_in_house = days_in_house;
 		this.sustainabilityRating = sustainabilityRating;
 		this.leadTime = leadTime;
-		this.hideOutOfStock = hideOutOfStock;
 	}
 
 	/**
@@ -231,7 +219,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	{
 		super();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ErpPlantMaterialModel [plantId=" + plantId
@@ -239,8 +227,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 				+ platter + ", blockedDays=" + blockedDays + ", atpRule="
 				+ atpRule + ", rating=" + rating + ", days_in_house="
 				+ days_in_house + ", sustainabilityRating="
-				+ sustainabilityRating + ", leadTime=" + leadTime
-				+ ", hideOutOfStock=" + hideOutOfStock + "]";
+				+ sustainabilityRating + ", leadTime=" + leadTime + "]";
 	}
 
 }

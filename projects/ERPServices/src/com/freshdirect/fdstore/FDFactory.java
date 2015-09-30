@@ -486,7 +486,7 @@ public class FDFactory {
 	private static FDProductInfo getPreviewProductInfo(String skuCode) {
 		Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
 			{
-				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
+				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000"));
 			}
 		};
 		

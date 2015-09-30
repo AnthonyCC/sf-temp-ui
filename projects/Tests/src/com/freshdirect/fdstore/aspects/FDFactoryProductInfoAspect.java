@@ -134,7 +134,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
 
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
     			}
     		};
     		
@@ -157,7 +157,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
     			}
     		};
     		
@@ -177,7 +177,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);          
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
     			}
     		};
     		

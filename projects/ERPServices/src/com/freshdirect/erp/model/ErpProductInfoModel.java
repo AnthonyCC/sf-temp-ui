@@ -204,12 +204,10 @@ public class ErpProductInfoModel extends ModelSupport {
 		
 		private String plantId;
 		
-		private boolean isLimitedQuantity;
-		
 		public ErpPlantMaterialInfo(boolean kosherProduction,
 				boolean platter, DayOfWeekSet blockedDays, EnumATPRule atpRule,
 				String rating, String freshness,
-				String sustainabilityRating,String plantId, boolean isLimitedQuantity) {
+				String sustainabilityRating,String plantId) {
 			super();
 			this.kosherProduction = kosherProduction;
 			this.platter = platter;
@@ -219,7 +217,6 @@ public class ErpProductInfoModel extends ModelSupport {
 			this.freshness = freshness;
 			this.sustainabilityRating = sustainabilityRating;
 			this.plantId = plantId;
-			this.isLimitedQuantity = isLimitedQuantity;
 		}
 
 		
@@ -285,14 +282,6 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public String getPlantId() {
 			return plantId;
-		}
-		
-		/**
-		 * 
-		 * @return isLimitedQuantity
-		 */
-		public boolean isLimitedQuantity() {
-			return isLimitedQuantity;
 		}
 
 

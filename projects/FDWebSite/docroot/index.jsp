@@ -76,7 +76,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		showAltHome = true;
 
 	//Coupons disabled warning msg
-	if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+	if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged()) {
         sessionUser.setCouponWarningAcknowledged(true);
 %>
         <div style="display: none;" id="fdCoupon_indexAlert">

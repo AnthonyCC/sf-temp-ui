@@ -173,7 +173,7 @@ public class FDProductHelper {
 			ErpPlantMaterialModel plantMaterialModel = (ErpPlantMaterialModel) iterator.next();
 			plantMaterial =plantMaterialMap.get(plantMaterialModel.getPlantId());
 			if(null == plantMaterial){
-				plantMaterial = new FDPlantMaterial(plantMaterialModel.getAtpRule(), plantMaterialModel.isKosherProduction(), plantMaterialModel.isPlatter(), plantMaterialModel.getBlockedDays(), plantMaterialModel.getLeadTime(), plantMaterialModel.getPlantId(), plantMaterialModel.isHideOutOfStock());	
+				plantMaterial = new FDPlantMaterial(plantMaterialModel.getAtpRule(), plantMaterialModel.isKosherProduction(), plantMaterialModel.isPlatter(), plantMaterialModel.getBlockedDays(), plantMaterialModel.getLeadTime(), plantMaterialModel.getPlantId());	
 				plantMaterialMap.put(plantMaterialModel.getPlantId(),plantMaterial);			
 			}
 		}
@@ -334,7 +334,7 @@ public class FDProductHelper {
 		for (ErpPlantMaterialInfo erpPlantMaterialInfo : matPlants) {
 			EnumAvailabilityStatus status = null;
 			FDPlantMaterial plantMaterial = new FDPlantMaterial(erpPlantMaterialInfo.getAtpRule(), erpPlantMaterialInfo.isKosherProduction(), erpPlantMaterialInfo.isPlatter(), erpPlantMaterialInfo.getBlockedDays(), erpPlantMaterialInfo.getLeadTime(), erpPlantMaterialInfo.getPlantId()
-					,erpPlantMaterialInfo.getFreshness(),EnumOrderLineRating.getEnumByStatusCode(erpPlantMaterialInfo.getRating()),EnumSustainabilityRating.getEnumByStatusCode(erpPlantMaterialInfo.getSustainabilityRating()),erpPlantMaterialInfo.isLimitedQuantity());
+					,erpPlantMaterialInfo.getFreshness(),EnumOrderLineRating.getEnumByStatusCode(erpPlantMaterialInfo.getRating()),EnumSustainabilityRating.getEnumByStatusCode(erpPlantMaterialInfo.getSustainabilityRating()));
 			
 			fdPlantMaterials.add(plantMaterial);
 			

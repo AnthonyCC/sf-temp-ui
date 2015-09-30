@@ -3,7 +3,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
-<%@ page import='com.freshdirect.FDCouponProperties' %>
 <%
 	boolean onLandingPage = false;
 	//toggle off landing page
@@ -80,7 +79,7 @@
 	    	<div class="search-header container"></div>
 	    <% } %>
     
-	    	<% if (user.isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) { %>
+	    	<% if (user.isCouponsSystemAvailable()) { %>
 	    		<% if (!onLandingPage) { %>
 				    <div class="tab-header container <tmpl:get name="productsOnly" />">
 				    	<div class="span-24 last">

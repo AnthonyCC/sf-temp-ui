@@ -241,7 +241,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			 "SELECT m.version, m.sap_id, p.plant_id,ms.sales_org,ms.distribution_channel, ms.unavailability_status, ms.unavailability_date, "+
 			   "ms.unavailability_reason, m.description, p.atp_rule, p.rating, price, "+
 			   "pricing_unit, promo_price, scale_unit, scale_quantity, sap_zone_id, mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,  "+
-			   "m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS "+
+			   "m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days "+
 			   "FROM erps.materialprice mp, erps.material m,erps.plant_material p,erps.material_sales_area ms, "+
 			   "(SELECT MAX(m1.version) AS V FROM erps.material m1 WHERE m1.skucode =?) t "+
 			   "WHERE  m.id=p.mat_id AND m.id= mp.mat_id and m.id=ms.mat_id AND m.version=t.V AND m.skucode =?";	
@@ -288,7 +288,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.sap_id, ms.unavailability_status, ms.unavailability_date,"
 			+ " ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"         
-   			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS "
+   			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,ms.sales_org,ms.distribution_channel,p.KOSHER_PRODUCTION,p.platter,p.blocked_days "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.MATERIAL_SALES_AREA ms"
 			+ " where p.mat_id=m.id and mp.mat_id = m.id and ms.mat_id=m.id and m.skucode = ? and m.version = ?";
 	
@@ -324,7 +324,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					String days_in_house = rs.getString(15);
 					String sustainabilityRating=rs.getString(16);
 					String freshness = getFreshnessValue(days_fresh, days_in_house);
-					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+					matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id")));
 					matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
 					
 				}
@@ -426,7 +426,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         String sustainabilityRating=rs.getString("sustainability_rating");
         String days_in_house = rs.getString("days_in_house");
         String freshness = getFreshnessValue(days_fresh, days_in_house);                            
-        matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,rs.getString("plant_id")));
         matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
 	}
 
@@ -566,7 +566,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
 			+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
 	        	+ " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel,"
-			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days, p.plant_id,p.HIDE_OOS "
+			+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days, p.plant_id"
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
 			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id"
 			+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
@@ -606,7 +606,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, ms.unavailability_status,"
 	+ " ms.unavailability_date, ms.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, " 
-	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION,p.platter,p.blocked_days, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, p.plant_id,p.HIDE_OOS  "
+	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION,p.platter,p.blocked_days, ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel, p.plant_id  "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.id=ms.mat_id "
 	+ " and m.version = (select max(version) from erps.material m2 where m2.skucode = m.skucode)"
@@ -676,7 +676,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble("price"), rs.getString("pricing_unit"), rs.getDouble("promo_price"), rs.getString("scale_unit"), 
         	        rs.getDouble("scale_quantity"), rs.getString("sap_zone_id"), rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")));
         	
-        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,  rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating,  rs.getString("plant_id")));
         	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("mp_sales_org"),rs.getString("mp_distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
         	
         	if(newSapId){
@@ -712,7 +712,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 	+ " p.unavailability_reason, m.description, p.atp_rule, p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days,p.HIDE_OOS "
+	+ " m.daysfresh, p.days_in_house, p.sustainability_rating, m.upc,p.KOSHER_PRODUCTION,p.platter,p.blocked_days "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.skucode like ?"
 	+ " and m.version = (select max(version) from erps.material m1 where m1.skucode = m.skucode)";
@@ -748,7 +748,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " ms.unavailability_reason,m.description, p.atp_rule,p.rating, mp.price,"
 		        + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id, "
 			+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc, p.KOSHER_PRODUCTION, p.platter,p.blocked_days, "
-	        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id,p.HIDE_OOS   "
+	        + " ms.sales_org,ms.distribution_channel,mp.sales_org as mp_sales_org,mp.distribution_channel as mp_distribution_channel , p.plant_id   "
 			+ " from erps.plant_material p, erps.material m, erps.materialprice mp, erps.material_sales_area ms "
 			+ " where p.mat_id = m.id and mp.mat_id = m.id and ms.mat_id = m.id" +
 					" and (m.upc = ? or '0' || M.UPC = ?)"
@@ -824,7 +824,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	"select m.skucode, m.version, m.sap_id, p.unavailability_status, p.unavailability_date,"
 	+ " p.unavailability_reason, m.description, p.atp_rule,p.rating, mp.price,"
         + " mp.pricing_unit, mp.promo_price, mp.scale_unit, mp.scale_quantity, mp.sap_zone_id,"
-	+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc,p.HIDE_OOS  "
+	+ " m.daysfresh, p.days_in_house,p.sustainability_rating, m.upc  "
 	+ " from erps.plant_material p, erps.material m, erps.materialprice mp"
 	+ " where p.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 	+ " and m.version = (select max(version) from erps.material m1 where m1.skucode = m.skucode)";
@@ -884,7 +884,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
         	matNos.add(rs.getString(3));
         	matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(10), rs.getString(11), rs.getDouble(12), rs.getString(13), rs.getDouble(14), rs.getString(15), null, null));        	
-        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating, rs.getString("plant_id"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS"))));
+        	matPlants.add(new ErpPlantMaterialInfo("X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION")), "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS")), EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), freshness, sustainabilityRating, rs.getString("plant_id")));
         	matSalesAreas.add((new ErpMaterialSalesAreaInfo(new SalesAreaInfo(rs.getString("sales_org"),rs.getString("distribution_channel")), rs.getString("unavailability_status"), rs.getDate("unavailability_date"), rs.getString("unavailability_reason"))));
 
         	results.add(new ErpProductInfoModel(
