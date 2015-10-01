@@ -634,6 +634,7 @@ public class SubmitOrderAction extends WebActionSupport {
 					return ERROR;
 				}
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Modified");
+				info.setSource(transactionSource);
 				FDCustomerManager.modifyOrder(
 					info,
 					modCart,

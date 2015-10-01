@@ -21,7 +21,7 @@ public class AccountActivityUtil implements SessionName {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
-		if ((app != null && app.equalsIgnoreCase("CALLCENTER")) ||(user != null && user.getMasqueradeContext() != null)) {
+		if ((app != null && app.equalsIgnoreCase("CALLCENTER")) ) {
 			src = EnumTransactionSource.CUSTOMER_REP;
 			agent = CrmSession.getCurrentAgent(session);
 			if (agent != null) {
