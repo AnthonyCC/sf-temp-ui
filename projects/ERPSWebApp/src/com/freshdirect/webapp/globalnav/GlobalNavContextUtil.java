@@ -22,7 +22,7 @@ public class GlobalNavContextUtil {
             globalNavId = "GlobalNavFdx"; // simple logic, export this into CMS if necessary
         } else {
             final boolean isFreeToHaveBeers = user != null && user.getZipCode() != null && !FDUserUtil.isAlcoholRestricted(user.getZipCode());
-            if (isFreeToHaveBeers && !FDStoreProperties.isCoreNonCoreGlobalNavSwitchEnabled()) {
+            if (isFreeToHaveBeers || !FDStoreProperties.isCoreNonCoreGlobalNavSwitchEnabled()) {
                 globalNavId = "GlobalNavWithWine"; // with wine
             } else {
                 globalNavId = "GlobalNavWithoutWine"; // w/o wine
