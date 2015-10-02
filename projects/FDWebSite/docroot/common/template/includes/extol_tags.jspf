@@ -1,0 +1,64 @@
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
+<%
+FDUserI user_e = (FDUserI)session.getAttribute(SessionName.USER);
+
+//customer basics
+String custFirstName = user_e.getFirstName();
+String custLastName = user_e.getLastName();
+int user_getLevel = user_e.getLevel();
+
+//only empty strings so far, become full with data if user is actually logged in
+String custEmail = "";
+String custId = "";
+
+//existing signed up customers
+boolean isSignedCustomer = false;
+
+//brand new existing customers
+boolean justSignedUp = false;
+
+//how much have they actually paid for so far?
+int validOrderCount = 0;
+
+//if there is a promo going on and is this user eligible?  not currently used yet
+boolean mainPromo = false;
+
+//if this is someone actually on the CUSTOMER table, with valid email, etc.
+if( user_e.getLevel() != 0 ){
+	FDIdentity identity_e  = user_e.getIdentity();
+	ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+	custEmail = cm_e.getEmail();
+	
+	//numerical id
+	custId = identity_e.getErpCustomerPK();
+	
+	//definitely logged in
+	isSignedCustomer = true;
+	
+	//again, how much did they order?
+	validOrderCount = user_e.getAdjustedValidOrderCount();
+
+	//session object needed to determine whether this user had just signed up
+	FDSessionUser sessionUser_e = (FDSessionUser)session.getAttribute(SessionName.USER);
+	justSignedUp = sessionUser_e.hasJustSignedUp(false);
+	
+	mainPromo = user_e.getLevel() < FDUserI.RECOGNIZED && user_e.isEligibleForSignupPromotion();
+}
+%>
+
+<script>
+//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
+var globalExtoleVars = {
+	"custId": "<%=custId%>",
+	"custFirstName": "<%=custFirstName%>",
+	"custLastName": "<%=custLastName%>",
+	"custEmail": "<%=custEmail%>",
+	"isSignedCustomer": <%=isSignedCustomer%>,
+	"validOrderCount": <%=validOrderCount%>,
+	"justSignedUp": <%=justSignedUp%>,
+	"mainPromo": <%=mainPromo%>
+};
+</script>
+<script src="//tags.extole.com/553175139/core.js"></script>
+<script src="/assets/javascript/extole_tags_generator.js"></script>
