@@ -1114,7 +1114,9 @@ public class Cart {
 									mobileNumber = esm.getMobileNumber().getPhone();
 								}							
 							} else {
-								mobileNumber = cm.getMobileNumber().getPhone();
+								if(cm.getMobileNumber() != null){
+									mobileNumber = cm.getMobileNumber().getPhone();
+								}
 							}
 						}
 						cartDetail.setMobileNumber(mobileNumber);
