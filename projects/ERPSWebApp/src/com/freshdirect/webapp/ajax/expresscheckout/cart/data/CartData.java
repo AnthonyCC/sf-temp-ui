@@ -54,7 +54,7 @@ public class CartData extends AbstractCoremetricsResponse {
      */
     private Object header;
 
-    private Map<String, List<CartSubTotalFieldData>> subTotalBox = new HashMap<String, List<CartSubTotalFieldData>>();
+    private Map<String, Object> subTotalBox = new HashMap<String, Object>();
     private Map<Integer, String> populateDCPDPromoDiscount = new HashMap<Integer, String>();
 
     private List<CartSubTotalFieldData> additionalInfo = new ArrayList<CartSubTotalFieldData>();
@@ -144,11 +144,11 @@ public class CartData extends AbstractCoremetricsResponse {
         this.header = header;
     }
 
-    public Map<String, List<CartSubTotalFieldData>> getSubTotalBox() {
+    public Map<String, Object> getSubTotalBox() {
         return subTotalBox;
     }
 
-    public void setSubTotalBox(Map<String, List<CartSubTotalFieldData>> subTotalBox) {
+    public void setSubTotalBox(Map<String, Object> subTotalBox) {
         this.subTotalBox = subTotalBox;
     }
 

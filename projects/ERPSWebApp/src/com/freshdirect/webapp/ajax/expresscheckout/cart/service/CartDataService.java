@@ -77,18 +77,21 @@ import com.freshdirect.webapp.util.JspMethods;
 
 public class CartDataService {
 
+    private static final String USER_CORPORATE_JSON_KEY = "userCorporate";
+    private static final String USER_RECOGNIZED_JSON_KEY = "userRecognized";
+    private static final String SUB_TOTAL_BOX_JSON_KEY = "subTotalBox";
+    private static final String REDIRECT_URL_JSON_KEY = "redirectUrl";
     private static final String VIEW_CART_HEADER_MESSAGE_JSON_KEY = "viewCartHeaderMessage";
     private static final String WARNING_MESSAGE_JSON_KEY = "warningMessage";
+    private static final String RECIPE_PREFIX_PATTERN = "\\s*(R|r)ecipe\\s*:\\s*";
+    
+    private static final Logger LOG = LoggerFactory.getInstance(CartDataService.class);
 
+    private static final CartDataService INSTANCE = new CartDataService();
+    
     public static CartDataService defaultService() {
         return INSTANCE;
     }
-
-    private static final String RECIPE_PREFIX_PATTERN = "\\s*(R|r)ecipe\\s*:\\s*";
-
-    private static final CartDataService INSTANCE = new CartDataService();
-
-    private static final Logger LOG = LoggerFactory.getInstance(CartDataService.class);
 
     private CartDataService() {
     }
@@ -118,7 +121,7 @@ public class CartDataService {
         return cartData;
     }
 
-    public Map<String, List<CartSubTotalFieldData>> loadCartDataSubTotalBox(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
+    public Map<String, Object> loadCartDataSubTotalBox(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
         updateUserAndCart(request, user);
         FDCartModel cart = loadUserShoppingCart(user, userId);
@@ -162,7 +165,7 @@ public class CartDataService {
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
             result.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
         } else {
-            result.getSubmitForm().getResult().put("redirectUrl", "/expressco/checkout.jsp");
+            result.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
             result.getSubmitForm().setSuccess(true);
         }
         return result;
@@ -481,10 +484,6 @@ public class CartDataService {
 							sb.append(" Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
 							
 							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
-							/*for brand page*/
-//							if(id.equals("") && null!=dcpdPromoModel.getBrandNames() && dcpdPromoModel.getBrandNames().size()>0){
-//								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
-//							}
 							if(null==id || "".equals(id)){
 								sb.append(" promotional products");
 							}
@@ -575,7 +574,6 @@ public class CartDataService {
 
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
-        cartData.getSubTotalBox().put("subTotalBox", subTotalBox);
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
@@ -586,6 +584,9 @@ public class CartDataService {
         CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
         CartSubTotalBoxService.defaultService().populateOrderTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateSavingToBox(subTotalBox, cart);
+        cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
+        cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());
+        cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
     }
 
     private String getSubTotalTextForNonAlcoholicSections(boolean isWineInCart, boolean hasEstimatedPriceItemInCart) {
