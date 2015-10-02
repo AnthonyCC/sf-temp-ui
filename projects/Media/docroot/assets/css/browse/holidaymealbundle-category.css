@@ -1,0 +1,145 @@
+/* reset */
+ul, li{
+  list-style-type:none;
+  margin:0;
+}
+
+.hmb section.deptnav{
+  margin:0;
+}
+
+/* layout */
+.products-large{
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+
+  display: -ms-flexbox;
+  -ms-flex-direction:row;
+  -ms-flex-wrap:wrap;
+
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-flex-wrap:wrap;
+
+  flex-wrap:wrap;
+  max-width:970px;
+  padding:0;
+}
+
+.ie8 .products-large{
+  display:block;
+}
+
+.product-large{
+  padding:20px 15px 100px 15px;
+  width:278px;
+  position:relative;
+  margin-right:20px;
+  margin-bottom:20px;
+  border:1px solid #e1e1e1;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.product-large:nth-child(3n){
+  margin-right:0;
+}
+
+.ie8 .product-large{
+  display:inline-block;
+  vertical-align:top;
+  min-height:500px;
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.product-large-imagewrapper{
+  text-align:center;
+}
+
+.product-large-imagewrapper a,
+.product-large-imagewrapper a:hover,
+.product-large-imagewrapper a:active {
+  text-decoration: none;
+}
+
+.product-large-image{
+  max-width:280px;/* product-large width */
+}
+
+.product-large-head{
+  margin:20px 0 0 0;
+}
+
+.product-large-subhead{
+  margin:0 0 26px 0;
+}
+
+.product-large-includes{
+  margin:0;
+}
+
+.product-large-includestitle{
+  margin:10px 0;
+}
+
+.product-large-includes,
+.product-large-includes li{
+  list-style-type:disc;
+}
+
+.product-large-price{
+  position:absolute;
+  margin:0;
+  right:15px; /* right padding */
+  bottom:12px;
+}
+
+.product-large-action{
+  margin-left:20px;
+  vertical-align:top;
+  height:36px;
+  width:100px;
+}
+
+.section-head{
+  margin-top:46px;
+  border-bottom:1px dashed #333;
+  padding-bottom:14px;
+  margin-bottom:34px;
+}
+
+/* styles */
+.basic-style .products-large{
+   font-family:Verdana,Geneva,sans-serif;
+}
+
+.basic-style .product-large{
+  font-size:16px;
+  background:#fdf9f5;
+}
+
+.basic-style .product-large-head{
+  font-weight:bold;
+  color:#333;
+}
+
+.basic-style .product-large-price{
+  font-size:25px;
+  line-height:36px;
+  font-weight:500;
+  color:#333;
+}
+
+.basic-style .product-large-scale{
+  font-size:23px;
+  font-weight:400;
+  color:#bdc0c7;
+}
+
+.basic-style .section-head{
+  font-size:22px;
+  font-weight:bold;
+  color:#333;
+}

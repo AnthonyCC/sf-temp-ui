@@ -123,8 +123,8 @@ public class CategoryModel extends ProductContainer {
 	 */
 	private final class ProductPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
 
-		private String productPromotitonType; 
-		private ZoneInfo pricingZone;
+		private final String productPromotitonType; 
+		private final ZoneInfo pricingZone;
 		
 		public ProductPromotionDataRef(Executor executor, ZoneInfo pricingZone, String productPromotitonType) {
 			super(FIVE_MINUTES, executor);
@@ -195,7 +195,7 @@ public class CategoryModel extends ProductContainer {
 		if(null !=upcCouponMap && !upcCouponMap.isEmpty()){
 			Set<String> skuCodes = new HashSet<String>();
 			for (Iterator<String> iterator = upcCouponMap.keySet().iterator(); iterator.hasNext();) {
-				String couponUPC = (String) iterator.next();				
+				String couponUPC = iterator.next();				
 				FDProductInfo cachedProductInfo = FDCachedFactory.getProductInfoByUpc(couponUPC);
 				if(cachedProductInfo != null && cachedProductInfo.getSkuCode() != null && cachedProductInfo.getSkuCode().length() > 0) {
 //					LOGGER.info("Product Found in UPCCache:"+couponUPC+"->"+cachedProductInfo.getSkuCode());
@@ -280,9 +280,9 @@ public class CategoryModel extends ProductContainer {
 	
 	private final class ProductAssortmentPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
 
-		private String productPromotitonType; 
-		private ZoneInfo pricingZone;
-		private String promotionId;
+		private final String productPromotitonType; 
+		private final ZoneInfo pricingZone;
+		private final String promotionId;
 		
 		public ProductAssortmentPromotionDataRef(Executor executor, ZoneInfo pricingZone, String promotionId, String productPromotitonType) {
 			super(FIVE_MINUTES, executor);
@@ -335,52 +335,52 @@ public class CategoryModel extends ProductContainer {
 		
 	}
 	
-	private Map<ZoneInfo, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<ZoneInfo, RecommendedProductsRef>();
+	private final Map<ZoneInfo, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<ZoneInfo, RecommendedProductsRef>();
 	
-	private Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
+	private final Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
-	private Map<ZoneInfo, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductAssortmentPromotionDataRef>();
+	private final Map<ZoneInfo, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductAssortmentPromotionDataRef>();
 	
 	private String promotionPageType;
 	
-	private Object recommendedProductsSync = new Object();
+	private final Object recommendedProductsSync = new Object();
 	
 	private int smartCategoryVersion;
 	
 	private static int globalSmartCategoryVersion = 1;
 
-	private List<CategoryModel> subcategoriesModels = new ArrayList<CategoryModel>();
+	private final List<CategoryModel> subcategoriesModels = new ArrayList<CategoryModel>();
 
-	private List<ProductModel> productModels = new ArrayList<ProductModel>();
+	private final List<ProductModel> productModels = new ArrayList<ProductModel>();
 
-	private List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
+	private final List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 	
 	private final List<BrandModel> featuredBrandModels = new ArrayList<BrandModel>();
 	
-	private List<ContentNodeModel> featuredNewProdBrands = new ArrayList<ContentNodeModel>();
+	private final List<ContentNodeModel> featuredNewProdBrands = new ArrayList<ContentNodeModel>();
 
 	/**
 	 * List of ProductModels and CategoryModels.
 	 */
-	private List<ContentNodeModel> candidateList = new ArrayList<ContentNodeModel>();
+	private final List<ContentNodeModel> candidateList = new ArrayList<ContentNodeModel>();
 	
 	// New Wine Store 
 
-	private List wineSortCriteriaList = new ArrayList();
+	private final List wineSortCriteriaList = new ArrayList();
 	
-	private List wineFilterCriteriaList = new ArrayList();
+	private final List wineFilterCriteriaList = new ArrayList();
 	
-	private List wineSideNavSectionsList = new ArrayList();
+	private final List wineSideNavSectionsList = new ArrayList();
 	
-	private List wineSideNavFullsList = new ArrayList();
+	private final List wineSideNavFullsList = new ArrayList();
 	
-	private List<ProductModel> howToCookItProducts = new ArrayList<ProductModel> ();
+	private final List<ProductModel> howToCookItProducts = new ArrayList<ProductModel> ();
 	
     final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
 	
-	private List<ProductGrabberModel> productGrabbers = new ArrayList<ProductGrabberModel>();
+	private final List<ProductGrabberModel> productGrabbers = new ArrayList<ProductGrabberModel>();
     
-    private List<ProductModel> catMerchantRecommenderProducts = new ArrayList<ProductModel>();
+    private final List<ProductModel> catMerchantRecommenderProducts = new ArrayList<ProductModel>();
 
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -498,7 +498,8 @@ public class CategoryModel extends ProductContainer {
 	    return FDAttributeFactory.constructHtml(this, "SEPARATOR_MEDIA");
 	}
 
-	public List<CategoryModel> getSubcategories() {
+	@Override
+    public List<CategoryModel> getSubcategories() {
 		ContentNodeModelUtil.refreshModels(this, "subcategories", subcategoriesModels, true);
 		return new ArrayList<CategoryModel>(subcategoriesModels);
 	}
@@ -708,6 +709,7 @@ public class CategoryModel extends ProductContainer {
     /**
      * @return all, non smart products.
      */
+    @Override
     public List<ProductModel> getStaticProducts() {
         List<ProductModel> prodList = getPrivateProducts();
 
@@ -1157,10 +1159,16 @@ public class CategoryModel extends ProductContainer {
 		EnumLayoutType specialLayout = getLayout();
 		switch (specialLayout){
 			case HOW_TO_COOK_IT:
+                //$FALL-THROUGH$
 			case TRANSAC_MULTI_PAIRED_ITEMS:
+                //$FALL-THROUGH$
 			case TEMPLATE_LAYOUT:
+                //$FALL-THROUGH$
 			case PRESIDENTS_PICKS:
+                //$FALL-THROUGH$
 			case PRODUCTS_ASSORTMENTS:
+                //$FALL-THROUGH$
+            case HOLIDAY_MEAL_BUNDLE_CATEGORY:
 				return specialLayout;
 			default:
 				return null;
@@ -1273,7 +1281,8 @@ public class CategoryModel extends ProductContainer {
 		return 0;
 	}
 	
-	public boolean isTopLevelCategory(){
+	@Override
+    public boolean isTopLevelCategory(){
 		return getParentNode() instanceof DepartmentModel;
 	}
 	

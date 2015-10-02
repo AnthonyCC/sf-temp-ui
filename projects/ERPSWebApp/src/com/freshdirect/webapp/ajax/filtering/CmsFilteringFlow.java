@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
@@ -59,6 +60,7 @@ import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
+import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -71,6 +73,7 @@ public class CmsFilteringFlow {
 	private static String FALLBACK_URL = "/";
 	private static String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
 	private static String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
+    private static String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
 	private static String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
 	private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 	
@@ -96,7 +99,7 @@ public class CmsFilteringFlow {
 				
 			// -- REMOVE EMPTY SECTIONS --
 			
-			browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+            browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 			if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
 				BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
 			}
@@ -165,7 +168,6 @@ public class CmsFilteringFlow {
 				// -- CALCULATE SECTION MAX LEVEL --
 				BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
 			}
-
 		} else if (nav.getPageType().isSearchLike()) {
 			
 			if (browseDataContext == null) {
@@ -175,7 +177,7 @@ public class CmsFilteringFlow {
 			
 			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);			
 				
-			browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+            browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 			
 				
 			// -- PAGING --
@@ -649,6 +651,8 @@ public class CmsFilteringFlow {
 		boolean isWineDepartment = checkWineDepartment(navigationModel);
 		browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
 		
+        browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
+
 		return browseDataContext;
 	}
 
@@ -704,8 +708,13 @@ public class CmsFilteringFlow {
 		
 		// throw exception if we have special layout and we are not on the browse_special.jsp or pdp.jsp
 		if(!nav.isPdp() && !nav.isSpecialPage() && contentNodeModel instanceof CategoryModel && ((CategoryModel)contentNodeModel).getSpecialLayout()!=null){
+            if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+                throw new InvalidFilteringArgumentException("Node has holiday meal bundle layout: " + id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT,
+                        String.format(HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS, id));
+            } else {
 			throw new InvalidFilteringArgumentException("Node has special layout: "+id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT, String.format(SPECIAL_LAYOUT_URL_FS, id));
-		}
+            }
+        }
 		
 		// handle redirect url
 		if (!(contentNodeModel instanceof SuperDepartmentModel)) {

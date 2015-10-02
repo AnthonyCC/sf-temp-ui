@@ -68,6 +68,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
@@ -291,7 +292,11 @@ public class CartDataService {
             FDUserI user) {
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
         populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
+        item.setMealBundle(HolidayMealBundleService.defaultService().isNodeModelTypeHolidayMealBundle(productNode.getParentNode()));
         item.setImage(productNode.getProdImage().getPathWithPublishId());
+        item.setProductId(productNode.getContentKey().getId());
+        item.setCategoryId(productNode.getCategory().getContentKey().getId());
+
         if (cartLine.isSoldBySalesUnits()) {
             cartLineSoldBySaleUnit(cartLine, fdProduct, item);
             itemCount.setValue(itemCount.getValue() + 1);

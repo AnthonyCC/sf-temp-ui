@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -22,7 +23,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ComponentGroupModel extends ContentNodeModelImpl {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(ComponentGroupModel.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(ComponentGroupModel.class);
+
+    private static final String CHARACTERISTIC_PATH_ID_SEPARATOR = "/";
 
 	private List<String> characteristics;
 
@@ -83,6 +86,32 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 		}
 		return this.characteristics;
 	}
+	
+    @SuppressWarnings("unchecked")
+    public List<String> getCharacteristicSkuCodes() {
+        List<String> skuCodes = new ArrayList<String>();
+        List<ContentKey> characteristics = (List<ContentKey>) getCmsAttributeValue("CHARACTERISTICS");
+        if (characteristics != null) {
+            for (ContentKey characteristic : characteristics) {
+                skuCodes.addAll(getSkuCodesFromCharacteristicValue(characteristic));
+            }
+        }
+        return skuCodes;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getSkuCodesFromCharacteristicValue(ContentKey characteristic) {
+        List<String> skuCodes = new ArrayList<String>();
+        List<ContentKey> characteristicValues = (List<ContentKey>) characteristic.getContentNode().getAttributeValue("values");
+        if (characteristicValues != null) {
+            for (ContentKey characteristicValue : characteristicValues) {
+                String[] pathIds = characteristicValue.getId().split(CHARACTERISTIC_PATH_ID_SEPARATOR);
+                String skuCode = (String) FDAttributeCache.getInstance().getAttributeByPathId(pathIds).get("skucode");
+                skuCodes.add(skuCode);
+            }
+        }
+        return skuCodes;
+    }
 
 	public boolean isUnavailable() throws FDResourceException {
 		return isUnavailable(null);
@@ -196,7 +225,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	}
 
 	private String getErpCharacteristicName(String erpCharacteristic) {
-		int pos = erpCharacteristic.indexOf("/");
+        int pos = erpCharacteristic.indexOf(CHARACTERISTIC_PATH_ID_SEPARATOR);
 		return pos != -1 ? erpCharacteristic.substring(pos + 1) : erpCharacteristic;
 	}
 

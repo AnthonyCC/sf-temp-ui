@@ -29,6 +29,7 @@ public enum EnumEventSource {
 	pdp_main("pdp_main"),
 	EB("EB"), //PDP Even Better!
 	LTYLT("LTYLT"), //PDP Like That? You'll Love This.
+    tgrec("tgrec"), // PDP Thanksgiving recommender
 
 	SDFR("SDFR"), //GlobalNav - SuperDepartment Featured Products Recommender
 	SDMR("SDMR"), //GlobalNav - SuperDepartment Merchant Recommender
@@ -60,7 +61,8 @@ public enum EnumEventSource {
 		return name;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return this.getName();
 	}
 }

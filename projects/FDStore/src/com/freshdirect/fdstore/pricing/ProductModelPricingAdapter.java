@@ -19,7 +19,6 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -80,7 +79,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return false;
 	}
 
-	public int getPriority() {
+	@Override
+    public int getPriority() {
 		return ((PrioritizedI) prodModel).getPriority();
 	}
 
@@ -89,12 +89,14 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getValidSkuCode(ctx, skuCode);
 	}
 
-	public PriceCalculator getPriceCalculator() {
+	@Override
+    public PriceCalculator getPriceCalculator() {
 		return new PriceCalculator(userCtx.getPricingContext(), prodModel, prodModel
 				.getDefaultSku(userCtx.getPricingContext()));
 	}
 
-	public PriceCalculator getPriceCalculator(String skuCode) {
+	@Override
+    public PriceCalculator getPriceCalculator(String skuCode) {
 		return new PriceCalculator(userCtx.getPricingContext(), prodModel, prodModel
 				.getValidSkuCode(userCtx.getPricingContext(), skuCode));
 	}
@@ -104,12 +106,14 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	    return new PriceCalculator(userCtx.getPricingContext(), prodModel, sku);
 	}
 
-	public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
+	@Override
+    public PriceCalculator getPriceCalculator(PricingContext pricingContext) {
 		return new PriceCalculator(pricingContext, prodModel, prodModel
 				.getDefaultSku(pricingContext));
 	}
 
-	public PriceCalculator getPriceCalculator(String skuCode, PricingContext pricingContext) {
+	@Override
+    public PriceCalculator getPriceCalculator(String skuCode, PricingContext pricingContext) {
 		return new PriceCalculator(pricingContext, prodModel, prodModel
 				.getValidSkuCode(pricingContext, skuCode));
 	}
@@ -327,7 +331,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	 * @return the configuration describing the auto-configuration of the product,
 	 *         or null if the product can not be auto-configured.
 	 */
-	public FDConfigurableI getAutoconfiguration() {
+	@Override
+    public FDConfigurableI getAutoconfiguration() {
 		FDConfigurableI ret = null;
 		SkuModel sku = getDefaultSku();
 		if (sku != null) {
@@ -418,7 +423,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	 * @return the preferred SKU for the product, or the minimally priced SKU that
 	 *         is available. if no SKUs are available, returns null.
 	 */
-	public SkuModel getDefaultSku() {
+	@Override
+    public SkuModel getDefaultSku() {
 		SkuModel defaultSku = this.prodModel.getDefaultSku(userCtx.getPricingContext());
 		return defaultSku != null ? new SkuModelPricingAdapter(defaultSku,
 				userCtx.getPricingContext()) : null;
@@ -758,7 +764,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	@Override
 	public SkuModel getSku(int idx) {
-		return (SkuModel) getSkus().get(idx);
+		return getSkus().get(idx);
 	}
 
 	@Override
@@ -782,7 +788,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	 * 
 	 * @return Value of property skus.
 	 */
-	public List<SkuModel> getSkus() {
+	@Override
+    public List<SkuModel> getSkus() {
 		List<SkuModel> skuModels = prodModel.getSkus();
 		List<SkuModel> skuAdapters = new ArrayList<SkuModel>(skuModels.size());
 		for (Iterator<SkuModel> it = skuModels.iterator(); it.hasNext();) {
@@ -1246,18 +1253,21 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.getParentYmalSetSource();
 	}
 	
-	public Object clone() {
+	@Override
+    public Object clone() {
 		return prodModel.clone();
 	}
 
 	/**
 	 * Very conveniently returns contentName.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return this.getContentName();
 	}
 
-	public UserContext getUserContext() {
+	@Override
+    public UserContext getUserContext() {
 		return this.userCtx;
 	}
 
@@ -1417,7 +1427,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return this.prodModel.showDefaultSustainabilityRating();
 	}
 	
-	public boolean isExcludedForEBTPayment(){
+	@Override
+    public boolean isExcludedForEBTPayment(){
 		return this.prodModel.isExcludedForEBTPayment();
 	}
 
@@ -1513,6 +1524,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public List<ProductModel> getCompleteTheMeal() {
 		return prodModel.getCompleteTheMeal();
 	}
+
+    @Override
+    public List<ProductModel> getIncludeProducts() {
+        return prodModel.getIncludeProducts();
+    }
 
 	@Override
 	public String getPageTitle() {

@@ -24,7 +24,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -1844,11 +1843,13 @@ public class MockProductModel extends MockContentNodeModel implements
 		return null;
 	}
 
-	public String getPriceFormatted(double savingsPercentage) {
+	@Override
+    public String getPriceFormatted(double savingsPercentage) {
 		return null;
 	}
 
-	public String getProductRating(String skuCode) throws FDResourceException {
+	@Override
+    public String getProductRating(String skuCode) throws FDResourceException {
 		return null;
 	}
 
@@ -2087,6 +2088,12 @@ public class MockProductModel extends MockContentNodeModel implements
 	public List<ProductModel> getCompleteTheMeal() {
 		return null;
 	}
+
+    @Override
+    public List<ProductModel> getIncludeProducts() {
+        return null;
+    }
+
 	@Override
 	public UserContext getUserContext() {
 		return UserContext.createDefault();

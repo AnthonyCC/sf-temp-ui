@@ -903,8 +903,8 @@
 				<!-- EnumValue value="17" label="Multi_Cat_prod_Redirect"/ DEPRECATED -->
 				<EnumValue value="18" label="Transactional_Paired_Items"/>
 				<EnumValue value="19" label="Holiday Menu"/>
-				<EnumValue value="20" label="Composite Category 1"/>
-				<EnumValue value="21" label="ThanksGiving Category"/>
+				<EnumValue value="20" label="ThanksGiving Category"/>
+				<EnumValue value="21" label="Holiday Meal Bundle Category"/>
 				<!-- EnumValue value="22" label="Generic with Paging"/ DEPRECATED -->
 				<!-- EnumValue value="23" label="Valentines Category"/ DEPRECATED -->
 				<EnumValue value="24" label="Package Layout 1"/>

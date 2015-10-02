@@ -106,24 +106,11 @@
       {/if}
 
       {if $section.products}
-        {let $len: length($section.products) /}
-        {let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
-        {let $fProducts: $fromProducts ? $fromProducts : 0 /}
-        {let $l: $nProducts - $fProducts /}
-        {let $lines: ceiling($l / 5) /}
-        {for $line in range(0, $lines)}
-          <ul class="products{if $line == $lines - 1} lastLine{/if}">
-            {for $col in range(0, 5)}
-              {if $fProducts + $col + $line * 5 < $nProducts}
-                {let $product: $section.products[$fProducts + $col + $line * 5] /}
-                {call common.transactionalGridItem}
-                  {param item:$product /}
-                  {param extraClass:(($col != 4 and $fProducts + $col + $line * 5 != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
-                {/call}
-              {/if}
-            {/for}
-          </ul>
-        {/for}
+        {call common.productList}
+          {param fromProducts:$fromProducts /}
+          {param numProducts:$numProducts /}
+          {param productList:$section.products /}
+        {/call}
       {elseif $section.recipes}
         {let $len: length($section.recipes) /}
         {let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}

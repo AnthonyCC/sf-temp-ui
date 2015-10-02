@@ -10,10 +10,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
@@ -36,14 +35,10 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class OrderLineUtil {
 	
-	@SuppressWarnings("unused")
-	private final static Category LOGGER = LoggerFactory.getInstance(OrderLineUtil.class);
-
-	private OrderLineUtil() {
+    private OrderLineUtil() {
 	}
 	
 
@@ -287,38 +282,54 @@ public class OrderLineUtil {
 			}
 		}
 
-		//
-		// add variation options
-		//
-		FDVariation[] variations = product.getVariations();
-		for (int i = 0; i < variations.length; i++) {
-			FDVariation variation = variations[i];
+        //
+        // add variation options
+        //
+        for (FDVariation variation : product.getVariations()) {
+            String optionName = theProduct.getConfiguration().getOptions().get(variation.getName());
+            if (optionName == null)
+                continue;
 
-			String optionName = theProduct.getConfiguration().getOptions().get(variation.getName());
-			if (optionName == null)
-				continue;
+            for (FDVariationOption option : variation.getVariationOptions()) {
+                if (option.getName().equals(optionName)) {
+                    String optionSkuCode = option.getAttribute(EnumAttributeName.SKUCODE);
+                    List<String> sideBoxIncludeProductNames = populateSideBoxIncludeProductNames(optionSkuCode);
+                    if (sideBoxIncludeProductNames.isEmpty()) {
+                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, option.getDescription());
+                    } else {
+                        for (String sideBoxIncludeProductName : sideBoxIncludeProductNames) {
+                            appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
+                        }
+                    }
+                }
+            }
+        }
 
-			FDVariationOption[] options = variation.getVariationOptions();
-			for (int j = 0; j < options.length; j++) {
-				if (options[j].getName().equals(optionName)) {
-					String optDescr = options[j].getDescription();
-					if ((!"None".equalsIgnoreCase(optDescr))
-						&& (!"nm".equalsIgnoreCase(optDescr))
-						&& (!"".equalsIgnoreCase(optDescr))) {
-						if (confDescr.length() > 0)
-							confDescr.append(", ");
-						if (optDescr.indexOf("(") > -1) {
-							confDescr.append(optDescr.substring(0, optDescr.indexOf("(")).trim());
-						} else {
-							confDescr.append(optDescr.trim());
-						}
-					}
-				}
-			}
-		}
+        return confDescr.toString();
+    }
 
-		return confDescr.toString();
-	}
+    private static List<String> populateSideBoxIncludeProductNames(String sideBoxSkuCode) throws FDSkuNotFoundException {
+        List<String> includeProductNames = new ArrayList<String>();
+        if (sideBoxSkuCode != null && !sideBoxSkuCode.isEmpty()) {
+            ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(sideBoxSkuCode);
+            for (ProductModel productModel : sideBoxProductModel.getIncludeProducts()) {
+                includeProductNames.add(productModel.getFullName());
+            }
+        }
+        return includeProductNames;
+    }
+
+    private static void appendVariationOptionDescriptionToConfigurationDescription(StringBuffer configurationDescription, String optionDescription) {
+        if ((!"None".equalsIgnoreCase(optionDescription)) && (!"nm".equalsIgnoreCase(optionDescription)) && (!"".equalsIgnoreCase(optionDescription))) {
+            if (configurationDescription.length() > 0)
+                configurationDescription.append(", ");
+            if (optionDescription.indexOf("(") > -1) {
+                configurationDescription.append(optionDescription.substring(0, optionDescription.indexOf("(")).trim());
+            } else {
+                configurationDescription.append(optionDescription.trim());
+            }
+        }
+    }
 
 	public static boolean isSameConfiguration(FDProductSelectionI cartLine1, FDProductSelectionI cartLine2)
 		throws FDResourceException {

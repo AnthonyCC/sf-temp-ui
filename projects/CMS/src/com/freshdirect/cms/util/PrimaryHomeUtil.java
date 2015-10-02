@@ -248,7 +248,11 @@ public class PrimaryHomeUtil {
 				Set<ContentKey> candidates = new HashSet<ContentKey>(_s2p.get(storeKey));
 				candidates.retainAll(_priHomes);
 
-				ContentKey priHome = candidates.iterator().next();
+                Iterator<ContentKey> candidateIterator = candidates.iterator();
+                ContentKey priHome = null;
+                if (candidateIterator.hasNext()) {
+                    priHome = candidateIterator.next();
+                }
 				return priHome;
 			}
 		}

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +38,8 @@ public class FDAttributeCache extends FDAbstractCache {
 		return instance;
 	}
 	
-	protected Map loadData(Date since) {
+	@Override
+    protected Map loadData(Date since) {
 		try {
 			LOGGER.info("REFRESHING");
 			AttributeFacadeSB sb = this.lookupAttributeHome().create();
@@ -53,7 +55,8 @@ public class FDAttributeCache extends FDAbstractCache {
 		}
 	}
 	
-	protected Date getModifiedDate(Object item) {
+	@Override
+    protected Date getModifiedDate(Object item) {
 		if(!(item instanceof List)){
 			return null;
 		}
@@ -79,6 +82,10 @@ public class FDAttributeCache extends FDAbstractCache {
 		return new FlatAttributeCollection(attribs);
 	}
 	
+    public Map<String, Object> getAttributeByPathId(String[] pathIds) {
+        return getAttributes(Arrays.copyOf(pathIds, 1)).getAttributeMap(pathIds);
+    }
+
 	private AttributeFacadeHome lookupAttributeHome() {
 		try {
 			return (AttributeFacadeHome) serviceLocator.getRemoteHome("freshdirect.content.AttributeFacade");

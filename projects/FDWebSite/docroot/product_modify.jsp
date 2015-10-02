@@ -105,7 +105,8 @@ EnumProductLayout prodPageLayout = productNode.getProductLayout();
 if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
 
 // if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
-if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT)) prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
+if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT) || 
+        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
 
 String productPage = prodPageLayout.getLayoutPath();
 %>

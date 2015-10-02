@@ -32,11 +32,11 @@ public class BrowseDataContext extends BrowseData {
 	@JsonIgnore
 	private FilteringFlowType pageType;
 	
-	public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav){
+    public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav) {
 		
 		List<SectionData> sections = new ArrayList<SectionData>();
 		for(SectionContext context : sectionContexts){
-			sections.add(context.extractDataFromContext(user, nav));
+            sections.add(context.extractDataFromContext(user, nav));
 		}
 
 		this.getSections().setSections(sections);

@@ -89,6 +89,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.product.data.CartLineData;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.VarItem;
@@ -835,13 +836,14 @@ public class ProductDetailPopulator {
             }
 
 			data.setSalesUnitDescrPopup( popupUrl.toString() );
-			
 		}
 
-		return data;		
-	}
+        data.setHolidayMealBundleContainer(HolidayMealBundleService.defaultService().populateHolidayMealBundleData(product, user));
 
-	private static void populateRatings( ProductData item, FDUserI user, ProductModel product, String skuCode ) {
+        return data;
+    }
+
+    private static void populateRatings(ProductData item, FDUserI user, ProductModel product, String skuCode) {
 		
 		int wineRating = 0;
 		int expertRating = 0;

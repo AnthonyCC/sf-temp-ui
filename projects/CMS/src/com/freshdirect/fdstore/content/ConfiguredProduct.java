@@ -49,7 +49,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 		super(key);
 	}
 
-	public DepartmentModel getDepartment() {
+	@Override
+    public DepartmentModel getDepartment() {
 		ContentNodeModel start = this;
 		while (!(start instanceof DepartmentModel) && (start != null)) {
 			start = start.getParentNode();
@@ -66,7 +67,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 		return getAttribute("REQUIRED", false);
 	}
 
-	public String getFullName() {
+	@Override
+    public String getFullName() {
 		return getAttribute("FULL_NAME", "");
 	}
 	
@@ -74,23 +76,28 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 		return "";
 	}
 
-	public String getGlanceName() {
+	@Override
+    public String getGlanceName() {
 		return getAttribute("GLANCE_NAME", "");
 	}
 
-	public String getNavName() {
+	@Override
+    public String getNavName() {
 		return getAttribute("NAV_NAME", "");
 	}
 
-	public String getBlurb() {
+	@Override
+    public String getBlurb() {
 		return getAttribute("BLURB", "");
 	}
 
-	public String getAlsoSoldAsName() {
+	@Override
+    public String getAlsoSoldAsName() {
 		return getAttribute("ALSO_SOLD_AS_NAME", "");
 	}
 
-	public String getSubtitle() {
+	@Override
+    public String getSubtitle() {
 		return getAttribute("SUBTITLE", "");
 	}
 
@@ -98,7 +105,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 		return getAttribute("INVISIBLE", "");
 	}
 
-	public String getPackageDescription() {
+	@Override
+    public String getPackageDescription() {
 		return getAttribute("PACKAGE_DESCRIPTION", "");
 	}
 
@@ -127,51 +135,63 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	}
 	
 	// TODO check impact
-	public SkuModel getDefaultSku() {
+	@Override
+    public SkuModel getDefaultSku() {
 		return getSku();
 	}
 
-	public Html getProductDescription() {
+	@Override
+    public Html getProductDescription() {
 	    return FDAttributeFactory.constructHtml(this, "PROD_DESCR");
 	}
 
-	public Html getProductDescriptionNote() {
+	@Override
+    public Html getProductDescriptionNote() {
             return FDAttributeFactory.constructHtml(this, "PROD_DESCRIPTION_NOTE");
 	}
 
-	public Html getProductQualityNote() {
+	@Override
+    public Html getProductQualityNote() {
             return FDAttributeFactory.constructHtml(this, "PRODUCT_QUALITY_NOTE");
 	}
 
-	public Image getCategoryImage() {
+	@Override
+    public Image getCategoryImage() {
             return FDAttributeFactory.constructImage(this, "PROD_IMAGE", Image.BLANK_IMAGE);
 	}
 
-	public Image getConfirmImage() {
+	@Override
+    public Image getConfirmImage() {
             return FDAttributeFactory.constructImage(this, "PROD_IMAGE_CONFIRM", Image.BLANK_IMAGE);
 	}
 
-	public Image getDetailImage() {
+	@Override
+    public Image getDetailImage() {
             return FDAttributeFactory.constructImage(this, "PROD_IMAGE_DETAIL", Image.BLANK_IMAGE);
 	}
 
-	public Image getFeatureImage() {
+	@Override
+    public Image getFeatureImage() {
             return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE", Image.BLANK_IMAGE);
 	}
 
-	public Image getZoomImage() {
+	@Override
+    public Image getZoomImage() {
             return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ZOOM", Image.BLANK_IMAGE);
 	}
 
-	public Image getAlternateImage() {
+	@Override
+    public Image getAlternateImage() {
             return FDAttributeFactory.constructImage(this, "ALTERNATE_IMAGE");
 	}
 
-	public Image getDescriptiveImage() {
+	@Override
+    public Image getDescriptiveImage() {
 	    return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
-	public List<ProductModel> getAlsoSoldAs() {
+	@Override
+    public List<ProductModel> getAlsoSoldAs() {
 		ContentNodeModelUtil.refreshModels(this, "ALSO_SOLD_AS", alsoSoldAs, false);
 		return Collections.unmodifiableList(alsoSoldAs);
 	}
@@ -185,7 +205,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	/** Get the list of recommended alternatives.
 	 * @return list of recommended alternatives
 	 */
-	public List<ContentNodeModel> getRecommendedAlternatives() {
+	@Override
+    public List<ContentNodeModel> getRecommendedAlternatives() {
 		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}
@@ -197,7 +218,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	/**
 	 * @return the ProductModel associated with this configuration
 	 */
-	public ProductModel getProduct() {
+	@Override
+    public ProductModel getProduct() {
 		try {
 			ProductModel product = ContentFactory.getInstance().getProduct(getSkuCode());
 			return product;
@@ -210,7 +232,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 * Returns the original product this configuration wraps.
 	 * @return {@link #getProduct()}
 	 */
-	public ProductModel getSourceProduct() {
+	@Override
+    public ProductModel getSourceProduct() {
 		return getProduct();
 	}
 
@@ -278,11 +301,13 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	    return EnumProductLayout.CONFIGURED_PRODUCT;
 	}
 
-	public boolean isPreconfigured() {
+	@Override
+    public boolean isPreconfigured() {
 		return true;
 	}
 
-	public boolean isUnavailable() {
+	@Override
+    public boolean isUnavailable() {
 		return getEarliestAvailability() == null;
 	}
 
@@ -294,7 +319,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 *  @return true of the configured product, with its specific SKU is available
 	 *          within the specified number of days.
 	 */
-	public boolean isAvailableWithin(int days) {
+	@Override
+    public boolean isAvailableWithin(int days) {
 		Date earliest  = getEarliestAvailability();
 		Date targetDay = DateUtil.addDays(new Date(), days - 1);
 		
@@ -317,7 +343,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 *          If the product is not available within the horizon, this also
 	 *          return null.
 	 */
-	public Date getEarliestAvailability() {
+	@Override
+    public Date getEarliestAvailability() {
 		Date         earliestAvailability = null;
 		
 		FDProduct fdp = null;
@@ -389,7 +416,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 *  
 	 *  @return false.
 	 */
-	public boolean isAutoconfigurable() {
+	@Override
+    public boolean isAutoconfigurable() {
 		return false;
 	}
 
@@ -399,11 +427,13 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 *  
 	 *  @return always null.
 	 */
-	public FDConfigurableI getAutoconfiguration() {
+	@Override
+    public FDConfigurableI getAutoconfiguration() {
 		return null;
 	}
 
-	public int getExpertWeight() {
+	@Override
+    public int getExpertWeight() {
 		return getProduct().getExpertWeight();
 	}
 	
@@ -520,6 +550,11 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public List<ProductModel> getCompleteTheMeal() {
 		return getProduct().getCompleteTheMeal();
 	}
+
+    @Override
+    public List<ProductModel> getIncludeProducts() {
+        return getProduct().getIncludeProducts();
+    }
 
 	@Override
 	public String getPageTitle() {

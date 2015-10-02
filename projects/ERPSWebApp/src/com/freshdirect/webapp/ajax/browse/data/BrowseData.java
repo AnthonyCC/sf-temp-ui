@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.webapp.ajax.product.data.ProductData;
-
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 
 public class BrowseData implements Serializable {
 
@@ -138,22 +137,28 @@ public class BrowseData implements Serializable {
 		private boolean isWineDepartment;
 		private String metaDescription;
 		
-		public String getMedia() {
+		@Override
+        public String getMedia() {
 			return media;
 		}
-		public void setMedia(String media) {
+		@Override
+        public void setMedia(String media) {
 			this.media = media;
 		}
-		public String getMediaLocation() {
+		@Override
+        public String getMediaLocation() {
 			return mediaLocation;
 		}
-		public void setMediaLocation(String mediaLocation) {
+		@Override
+        public void setMediaLocation(String mediaLocation) {
 			this.mediaLocation = mediaLocation;
 		}
-		public String getMiddleMedia() {
+		@Override
+        public String getMiddleMedia() {
 			return middleMedia;
 		}
-		public void setMiddleMedia(String middleMedia) {
+		@Override
+        public void setMiddleMedia(String middleMedia) {
 			this.middleMedia = middleMedia;
 		}
 		public String getTitleBar() {
@@ -424,6 +429,7 @@ public class BrowseData implements Serializable {
 	private PagerData pager; //not a *DataContainer inner class which only encapsulates lists and primitives
 	private SearchParams searchParams = new SearchParams();
 	private DDPPProducts ddppProducts = new DDPPProducts();
+    private String topMedia;
 	
 	public PagerData getPager() {
 		return pager;
@@ -460,5 +466,14 @@ public class BrowseData implements Serializable {
 	}
 	public void setDDPPProducts(DDPPProducts ddppProducts) {
 		this.ddppProducts = ddppProducts;
-	}	
+    }
+
+    public String getTopMedia() {
+        return topMedia;
+    }
+
+    public void setTopMedia(String topMedia) {
+        this.topMedia = topMedia;
+    }
+
 }

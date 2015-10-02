@@ -46,12 +46,12 @@ public class SectionContext extends SectionData {
 		this.productItems = productItems;
 	}
 	
-	public SectionData extractDataFromContext(FDUserI user, CmsFilteringNavigator nav){
+    public SectionData extractDataFromContext(FDUserI user, CmsFilteringNavigator nav) {
 		
 		if(sectionContexts!=null){
 			List<SectionData> sections = new ArrayList<SectionData>();
 			for(SectionContext context : sectionContexts){
-				sections.add(context.extractDataFromContext(user, nav));
+                sections.add(context.extractDataFromContext(user, nav));
 			}
 			this.setSections(sections);			
 		}
@@ -71,6 +71,7 @@ public class SectionContext extends SectionData {
 					if (pageType!=null){
 						productData.setPageType(pageType.toString());
 					}
+
 					productDatas.add(productData);
 				} catch (Exception e){
 					LOGGER.error("Failed to create product data for " + product==null ? "null": product.getContentName()+ " (" + e.getMessage() + ")");

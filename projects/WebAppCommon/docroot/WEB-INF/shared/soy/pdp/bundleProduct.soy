@@ -1,0 +1,117 @@
+{namespace pdp}
+
+/**
+ * @param productName
+ * @param price
+ * @param? salesUnitDescrPDP
+ */
+{template .bundleProductTitle}
+<p class="thxgiving-bundle-title">{$productName}{if $salesUnitDescrPDP}{sp}{$salesUnitDescrPDP}{/if}</p><!--
+bundle-title-ends --><p class="thxgiving-bundle-price">
+  {call common.formatDecimalPrice}
+    {param price:$price /}
+  {/call}
+</p>
+{/template}
+
+/**
+ * @param images
+ */
+{template .bundleProductImage}
+  {if $images}
+    {if length($images) > 0 }
+      <img class="main-image" src="{$images[0].url}" />
+    {/if}
+    {if length($images) > 1}<!-- /main-image --><div class="vertical-image-wrapper">
+      {foreach $thumb in $images}
+        {if not isFirst($thumb)}
+         <img src="{$thumb.url}" />
+        {/if}
+      {/foreach}
+    </div>
+    {/if}
+  {/if}
+{/template}
+
+/**
+ * @param? holidayMealBundleContainer
+ * @param? catId
+ * @param? productId
+ */
+{template .bundleProductIncludes}
+{if $holidayMealBundleContainer.mealIncludeDatas and length($holidayMealBundleContainer.mealIncludeDatas)>0}
+  <p class="includes-title">This meal includes:</p>
+  {foreach $componentGroup in $holidayMealBundleContainer.mealIncludeDatas}
+    {if $componentGroup.includeMealProducts and length($componentGroup.includeMealProducts)>0}
+      {foreach $includeItem in $componentGroup.includeMealProducts}
+      <div class="include-item">
+        <p class="include-item-title">{$includeItem.label}</p>
+        <div class="include-item-description" fd-readmore fd-readmore-open="FreshDirect.components.ajaxPopup.openEl" data-ajaxpopup-template="pdp.mealDetailsPopup" href="/api/potato/product?categoryId={$catId}&productId={$productId}" data-meal-side-product="{$includeItem.productId}" data-meal-side-category="{$includeItem.categoryId}" data-ajaxpopup-after-render-callback="FreshDirect.pdp.selectBundlePopupContentAfterRender" data-ajaxpopup-type="bundleDetails">{$includeItem.description}</div>
+      </div>
+      {/foreach}
+    {/if}
+  {/foreach}
+{/if}
+{/template}
+
+/**
+ * @param? productAboutMediaPath
+ */
+{template .bundleProductActionsMedia}
+<a href="{if $productAboutMediaPath}javascript:popup('{$productAboutMediaPath}','large'){else}#{/if}"
+class="action-item heating-instructions icon-clock-before"><span class="action-item-content">Easy-to-follow<br/> heating instructions</span></a>
+{/template}
+
+/**
+ * @param? catId
+ * @param? productId
+ */
+{template .bundleProductActionsDetails}
+<a class="action-item meal-details icon-meal-details-before" data-component="ajaxpopup" data-ajaxpopup-template="pdp.mealDetailsPopup" href="/api/potato/product?categoryId={$catId}&amp;productId={$productId}" data-ajaxpopup-type="bundleDetails"><span class="action-item-content">Meal Details</span></a>
+{/template}
+
+/**
+* @param catId
+* @param productId
+* @param skuCode
+*param soldBySalesUnit
+* @param salesUnit
+* @param quantity
+*param availMatPrices
+* @param inCartAmount
+*/
+{template .bundleProductAddToCart}
+{call common.quantitybox data="all" /}
+{call pdp.subtotal data="all" /}
+<input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
+<div class="atc-button-wrapper">
+  <button class="cssbutton orange medium thxgiving-addtocart-button icon-cart-before" alt="" data-component="ATCButton">Add to Cart</button>
+  {call common.atcInCart}
+    {param atcItemId:'pdp_'+$catId+'_'+$productId+'_'+$skuCode /}
+    {param amount:$inCartAmount /}
+  {/call}
+</div>
+<button id="atc-addtolist" class="addtolist cssbutton green transparent medium icon-list-black-before" alt="" data-component="addToListButton">Save to a List</button>
+{/template}
+
+/**
+* @param customerServiceContact
+*/
+{template .bundleProductQuestions}
+<p><strong>Questions?</strong> Contact  our Customer Service at service@freshdirect.com{if $customerServiceContact}{sp}or call {$customerServiceContact}{else}{sp}or call 1-212-796-8002{/if}</p>
+{/template}
+
+/**
+* @param? optionalProducts
+*/
+{template .bundleProductRecommendation autoescape="false"}
+{if $optionalProducts and length($optionalProducts)>0}
+  {foreach $rec in $optionalProducts}
+    <p class="recommendation-title">{$rec.fullName}</p>
+    <div class="recommendation-editorial">{$rec.editorial}</div>
+    {call common.productList}
+      {param productList:$rec.optionalProducts /}
+    {/call}
+  {/foreach}
+{/if}
+{/template}

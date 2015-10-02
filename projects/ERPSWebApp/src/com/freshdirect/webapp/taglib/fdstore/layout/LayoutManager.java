@@ -59,7 +59,8 @@ public class LayoutManager extends BodyTagSupport {
 		this.layoutSettingsName = layoutSettingsName;
 	}
 
-	public int doStartTag() throws JspException {
+	@Override
+    public int doStartTag() throws JspException {
 		HttpSession session = pageContext.getSession();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		ActionResult result = new ActionResult();
@@ -574,7 +575,8 @@ public class LayoutManager extends BodyTagSupport {
 			return returnSkus;
 		}
 		
-		public String toString() {
+		@Override
+        public String toString() {
 			return (
 				" GrabberDepth ="
 					+ grabberDepth
@@ -648,7 +650,8 @@ public class LayoutManager extends BodyTagSupport {
 
 	
 	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
+		@Override
+        public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {
 				new VariableInfo(
 					data.getAttributeString("result"),

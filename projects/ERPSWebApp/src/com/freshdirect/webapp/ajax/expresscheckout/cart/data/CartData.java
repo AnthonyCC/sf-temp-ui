@@ -472,6 +472,9 @@ public class CartData extends AbstractCoremetricsResponse {
         private boolean couponClipped;
         private String couponStatusText;
         private boolean isFreeSamplePromoProduct;
+        private boolean isMealBundle;
+        private String productId;
+        private String categoryId;
 
         public int getId() {
             return id;
@@ -639,6 +642,30 @@ public class CartData extends AbstractCoremetricsResponse {
 
         public void setFreeSamplePromoProduct(boolean isFreeSamplePromoProduct) {
             this.isFreeSamplePromoProduct = isFreeSamplePromoProduct;
+        }
+
+        public boolean isMealBundle() {
+            return isMealBundle;
+        }
+
+        public void setMealBundle(boolean isMealBundle) {
+            this.isMealBundle = isMealBundle;
+        }
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public void setProductId(String productId) {
+            this.productId = productId;
+        }
+
+        public String getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(String categoryId) {
+            this.categoryId = categoryId;
         }
 
         public static class Discount implements Serializable {

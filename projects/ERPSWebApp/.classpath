@@ -7,7 +7,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.6-SNAPSHOT.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jawr-core-3.8.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/soy-latest.jar" sourcepath="/SOY_SRC"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>

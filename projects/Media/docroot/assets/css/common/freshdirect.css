@@ -279,6 +279,10 @@ section.main:before {
   left: 0;
 }
 
+section.main.full:before {
+  content: none;
+}
+
 section.main .leftnav {
   float: left;
   position: relative;

@@ -6,7 +6,7 @@ package com.freshdirect.webapp.ajax.filtering;
 public class InvalidFilteringArgumentException extends Exception {
 
 	public enum Type {
-		CANNOT_DISPLAY_NODE, NODE_IS_RECIPE_DEPARTMENT, SPECIAL_LAYOUT, NODE_HAS_REDIRECT_URL, TERMINATE, SUPER_DEPARTMENT_WITHOUT_GLOBALNAV
+        CANNOT_DISPLAY_NODE, NODE_IS_RECIPE_DEPARTMENT, SPECIAL_LAYOUT, NODE_HAS_REDIRECT_URL, TERMINATE, SUPER_DEPARTMENT_WITHOUT_GLOBALNAV
 	}
 	
 	private static final long serialVersionUID = -7020867935974185895L;

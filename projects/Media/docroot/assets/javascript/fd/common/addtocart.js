@@ -159,7 +159,7 @@ var FreshDirect = FreshDirect || {};
         $t = $(e.target);
 
     // if button is blocking and ATC in progress, then do nothing
-    if ($t.hasClass('ATCinProgress') && $t.attr('data-atc-blocking')) {
+    if ($t.hasClass('ATCinProgress') && $t.attr('data-atc-blocking') || $t.attr('data-atc-disable')) {
       return;
     }
 

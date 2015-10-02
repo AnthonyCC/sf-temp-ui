@@ -10,7 +10,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -25,6 +24,9 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleIncludeMealData;
+import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleIncludeMealProductData;
+import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.data.ProductImageData;
 import com.freshdirect.webapp.ajax.product.data.ProductImageData.ImageAtom;
 import com.freshdirect.webapp.util.MediaUtils;
@@ -60,7 +62,7 @@ public class ProductImageDataPopulator {
 
 
 
-	private static void populateData(ProductImageData data, FDUserI user, ProductModel productNode) throws FDSkuNotFoundException, FDResourceException {
+    private static void populateData(ProductImageData data, FDUserI user, ProductModel productNode) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
 
 		final DepartmentModel department = productNode.getDepartment();
 		final SkuModel defaultSku = PopulatorUtil.getDefSku( productNode );		
@@ -89,7 +91,7 @@ public class ProductImageDataPopulator {
 			
 			// PROD_IMAGE_PACKAGE
 			addImage( productNode.getPackageImage(), imageList );
-
+			
 		}
 		
 		
@@ -152,6 +154,15 @@ public class ProductImageDataPopulator {
 			}
 		}
 		
+        List<HolidayMealBundleIncludeMealData> mealIncludeDatas = HolidayMealBundleService.defaultService().populateHolidayMealBundleData(productNode, user).getMealIncludeDatas();
+        if (mealIncludeDatas != null) {
+            for (HolidayMealBundleIncludeMealData mealIncludeData : mealIncludeDatas) {
+                for (HolidayMealBundleIncludeMealProductData includeMealProduct : mealIncludeData.getIncludeMealProducts()) {
+                    addImage(includeMealProduct.getImagePath(), imageList);
+                }
+            }
+        }
+
 		data.setImages( imageList );
 	}
 

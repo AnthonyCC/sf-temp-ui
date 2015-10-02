@@ -116,6 +116,14 @@
 		<servlet-name>ProductConfigServlet</servlet-name>
 		<url-pattern>/api/productconfig/*</url-pattern>
 	</servlet-mapping>
+    <servlet>
+        <servlet-name>ProductPotatoServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.product.ProductPotatoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductPotatoServlet</servlet-name>
+        <url-pattern>/api/potato/product</url-pattern>
+     </servlet-mapping>
 
 	<servlet>
 		<servlet-name>ShoppingListServlet</servlet-name>

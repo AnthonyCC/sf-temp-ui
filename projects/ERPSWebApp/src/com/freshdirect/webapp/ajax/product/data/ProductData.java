@@ -8,6 +8,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleContainer;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.Variation;
 
 public class ProductData extends BasicProductData implements SkuData {
@@ -177,6 +178,8 @@ public class ProductData extends BasicProductData implements SkuData {
     protected boolean hasTerms;
 
     private boolean isFreeSamplePromoProduct;
+
+    private HolidayMealBundleContainer holidayMealBundleContainer;
 
     public boolean isFeatured() {
         return isFeatured;
@@ -753,4 +756,13 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setFreeSamplePromoProduct(boolean isFreeSamplePromoProduct) {
         this.isFreeSamplePromoProduct = isFreeSamplePromoProduct;
     }
+
+    public HolidayMealBundleContainer getHolidayMealBundleContainer() {
+        return holidayMealBundleContainer;
+    }
+
+    public void setHolidayMealBundleContainer(HolidayMealBundleContainer holidayMealBundleContainer) {
+        this.holidayMealBundleContainer = holidayMealBundleContainer;
+    }
+
 }

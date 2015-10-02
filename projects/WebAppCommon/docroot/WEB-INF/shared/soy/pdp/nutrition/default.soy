@@ -165,51 +165,59 @@
     <li class="pdp-accordion-nutrition-default pdp-accordion-nutrition pdp-accordion-item">
       /* nutrition accondion should open the panel immediately
        * <input type="checkbox" id="pdp-nutrition"> */
-	  <input type="checkbox" id="pdp-nutrition" />
+    <input type="checkbox" id="pdp-nutrition" />
       <label for="pdp-nutrition" class="nutropen">
         <span class="pdp-accordion-item-carrot"></span>
         Nutrition
       </label>
       <div>
-  		/* <a href="#" class="nutropen">Click to View!</a> */
-  		<div data-component="popupContent" style="display:none">
-	        <div id="drugpanel" class="display" >
-	            // panel content here
-	            {if $oldNutritionPanel}
-	              {$oldNutritionPanel |noAutoescape}
-	            {else}
-	                  <div class="widget drugpanel">
-	                    <div class="childBox ui-sortable"> // boundingBox
-	                        {foreach $section in $nutritionPanel.sections}  
-	                          <div class="widget drugsection"> // dummy drugsection widget
-	                            <div class="childBox type_{$section.type ?: ''}">
-	                              <span class="title importance_{$section.importance ?: ''}">{$section.title ?: ''}</span>
-	                              {if $section.items and length($section.items) > 0}
-	                                {foreach $item in $section.items}
-	                                  <span class="widget drugitem {$item.important ? 'important' : ''} {$item.bulleted ? 'bulleted' : ''} {$item.newline ? 'newline' : ''} {$item.separator ? 'separator' : ''}">
-	                                    {if $item.separator}
-	                                      <hr>
-	                                    {else}
-	                                      {switch $section.type}
-	                                        {case 'INGREDIENT'}
-	                                          {delcall drugitem.ingredient data="$item" variant="$nutritionPanel.type" /}
-	                                        {case 'TABLE'}
-	                                          {delcall drugitem.table data="$item" variant="$nutritionPanel.type" /}
-	                                        {default}
-	                                          {delcall drugitem.freetext data="$item" variant="$nutritionPanel.type" /}
-	                                      {/switch}
-	                                    {/if}
-	                                  </span>
-	                                {/foreach}
-	                              {/if}
-	                            </div>
-	                          </div>
-	                        {/foreach}
-	                 </div></div>
-	            {/if} // panel content ends
-	          </div>
+        /* <a href="#" class="nutropen">Click to View!</a> */
+        <div data-component="popupContent" style="display:none">
+          <div id="drugpanel" class="display" >
+            {call .panelContent data="all"}{/call}
           </div>
+        </div>
       </div>
     </li>
   {/if}
+{/template}
+
+/**
+* @param nutritionPanel
+* @param oldNutritionPanel
+*/
+{template .panelContent}
+// panel content here
+{if $oldNutritionPanel}
+  {$oldNutritionPanel |noAutoescape}
+{else}
+      <div class="widget drugpanel">
+        <div class="childBox ui-sortable"> // boundingBox
+            {foreach $section in $nutritionPanel.sections}  
+              <div class="widget drugsection"> // dummy drugsection widget
+                <div class="childBox type_{$section.type ?: ''}">
+                  <span class="title importance_{$section.importance ?: ''}">{$section.title ?: ''}</span>
+                  {if $section.items and length($section.items) > 0}
+                    {foreach $item in $section.items}
+                      <span class="widget drugitem {$item.important ? 'important' : ''} {$item.bulleted ? 'bulleted' : ''} {$item.newline ? 'newline' : ''} {$item.separator ? 'separator' : ''}">
+                        {if $item.separator}
+                          <hr>
+                        {else}
+                          {switch $section.type}
+                            {case 'INGREDIENT'}
+                              {delcall drugitem.ingredient data="$item" variant="$nutritionPanel.type" /}
+                            {case 'TABLE'}
+                              {delcall drugitem.table data="$item" variant="$nutritionPanel.type" /}
+                            {default}
+                              {delcall drugitem.freetext data="$item" variant="$nutritionPanel.type" /}
+                          {/switch}
+                        {/if}
+                      </span>
+                    {/foreach}
+                  {/if}
+                </div>
+              </div>
+            {/foreach}
+     </div></div>
+{/if} // panel content ends
 {/template}

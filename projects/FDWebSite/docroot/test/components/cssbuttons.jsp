@@ -78,6 +78,8 @@
       <li><button class="cssbutton blue icon-pencil-before">pencil - before</button><button class="cssbutton blue icon-pencil-after">pencil - after</button><button class="cssbutton blue icon-pencil-before notext">pencil - notext</button> - notext</li>
       <li><button class="cssbutton blue icon-maps-before">maps - before</button><button class="cssbutton blue icon-maps-after">maps - after</button><button class="cssbutton blue icon-maps-before notext">maps - notext</button> - notext</li>
       <li><button class="cssbutton blue icon-add-drawer-before">add drawer - before</button><button class="cssbutton blue icon-add-drawer-after">add drawer - after</button><button class="cssbutton blue icon-add-drawer-before notext">add drawer - notext</button> - notext</li>
+      <li><button class="cssbutton blue icon-clock-before">clock - before</button><button class="cssbutton blue icon-clock-after">clock - after</button><button class="cssbutton blue icon-clock-before notext">clock - notext</button> - notext</li>
+      <li><button class="cssbutton blue icon-meal-details-before">meal details - before</button><button class="cssbutton blue icon-meal-details-after">meal details - after</button><button class="cssbutton blue icon-meal-details-before notext">meal details - notext</button> - notext</li>
 		</ol>
 	</section>
 	</body>

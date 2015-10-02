@@ -1,4 +1,4 @@
-/*global jQuery,common*/
+/*global common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -35,37 +35,61 @@ var FreshDirect = FreshDirect || {};
         halign: 'left',
         placeholder: false,
         stayOnClick: false,
-        noCloseOnOverlay: true,
         overlay:true
+      }
+    },
+    openEl: {
+      value: function (el) {
+        ajaxPopup.open({
+          element: $(el)
+        });
       }
     },
     open: {
       value: function (config) {
         var target = config.element,
-            url = target.attr('href');
-        
-        $.get(url,function(data){
+            url = target.attr('href'),
+            type = target.attr('data-ajaxpopup-type') || "",
+            template = config.template ||
+              target.attr('data-ajaxpopup-template') &&
+              fd.modules.common.utils.discover(target.attr('data-ajaxpopup-template')),
+            afterRenderCallback = fd.modules.common.utils.discover(target.attr('data-ajaxpopup-after-render-callback'));
+
+        ajaxPopup.popup.$el.attr('data-ajaxpopup-type', type);
+        ajaxPopup.popup.$el.attr('data-component', this.popupConfig.noCloseOnOverlay ? null : 'ajaxpopup-popup');
+
+        $.get(url, function(data){
+          if (template) {
+            data = template(data);
+          }
           ajaxPopup.refreshBody({body:data});
-          ajaxPopup.popup.show($('body'),false);      
-          ajaxPopup.noscroll();
+
+          if(afterRenderCallback){
+            afterRenderCallback(ajaxPopup, target, data);
+          } else {
+            ajaxPopup.popup.show($('body'),false);
+            ajaxPopup.noscroll();
+          }
         });
-        
+      }
+    },
+    noScroll: {
+      value: function(){
+          POPUPWIDGET.noscroll.call(ajaxPopup);
       }
     }
   });
 
   ajaxPopup.render();
 
-  $(window).on("resize", function (e) {
+  $(window).on("resize", function () {
     ajaxPopup.noscroll();
   });
-  
+
   $(document).on('click','[data-component="ajaxpopup"]',function(event){
-    ajaxPopup.open({
-      element: $(event.currentTarget)
-    });
+    ajaxPopup.openEl(event.currentTarget);
     event.preventDefault();
   });
-  
+
   fd.modules.common.utils.register("components", "ajaxPopup", ajaxPopup, fd);
 }(FreshDirect));

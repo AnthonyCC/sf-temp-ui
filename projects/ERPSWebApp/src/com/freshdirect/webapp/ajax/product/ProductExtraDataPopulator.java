@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -31,8 +30,8 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDFactory;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDNutritionPanelCache;
@@ -74,7 +73,6 @@ import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -86,7 +84,6 @@ import com.freshdirect.webapp.ajax.product.data.ProductExtraData.RecipeData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.SourceData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.WineData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.WineRating;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
@@ -204,17 +201,30 @@ public class ProductExtraDataPopulator {
 			TitledMedia tm = (TitledMedia) productNode.getProductAbout();
 			try {
 				data.setProductAboutMedia( fetchMedia(tm.getPath(), user, false) );
+                data.setProductAboutMediaPath(tm.getPath());
 			} catch (IOException e) {
-				LOG.error("Failed to fetch donenessGuides media " + tm.getPath(), e);
+                LOG.error("Failed to fetch product about media " + tm.getPath(), e);
 			} catch (TemplateException e) {
-				LOG.error("Failed to fetch donenessGuides media " + tm.getPath(), e);
+                LOG.error("Failed to fetch product about media " + tm.getPath(), e);
 			}
 		}
+		
+        // product terms media
+        if ( productNode.getProductTerms() != null ) {
+            TitledMedia tm = (TitledMedia) productNode.getProductTerms();
+            try {
+                data.setProductTermsMedia(fetchMedia(tm.getPath(), user, false));
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product term media " + tm.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product term media " + tm.getPath(), e);
+            }
+        }
 
 		// organic claims
 		{
 			@SuppressWarnings("unchecked")
-			Set<EnumOrganicValue> commonOrgs = (Set<EnumOrganicValue>) productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
 			if (!commonOrgs.isEmpty()) {
 				List<String> aList = new ArrayList<String>(commonOrgs.size());
 				for (EnumOrganicValue claim : commonOrgs) {
@@ -1012,7 +1022,7 @@ public class ProductExtraDataPopulator {
 			data.setFamilyProducts(familyProducts);
 		}
 		
-		
+        data.setCustomerServiceContact(user.getCustomerServiceContact());
 	}
 
 
@@ -1067,8 +1077,8 @@ public class ProductExtraDataPopulator {
 		Map<String,Object> parameters = new HashMap<String,Object>();
 		
 		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
-		parameters.put("user", (FDUserI)user);
-		parameters.put("sessionUser", (FDSessionUser)user);
+		parameters.put("user", user);
+		parameters.put("sessionUser", user);
 		
 		StringWriter out = new StringWriter();
 				

@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -1248,11 +1247,13 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 		return productModel.hasActiveYmalSets();
 	}
 
-	public Object clone() {
+	@Override
+    public Object clone() {
 		return productModel.clone();
 	}
 	
-	public boolean isExcludedForEBTPayment(){
+	@Override
+    public boolean isExcludedForEBTPayment(){
 		return productModel.isExcludedForEBTPayment();
 	}
 
@@ -1355,6 +1356,11 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+    public List<ProductModel> getIncludeProducts() {
+        return productModel.getIncludeProducts();
+    }
+
+    @Override
 	public String getPageTitle() {
 		return productModel.getPageTitle();
 	}

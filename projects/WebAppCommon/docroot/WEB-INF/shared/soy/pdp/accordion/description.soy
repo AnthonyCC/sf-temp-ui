@@ -111,9 +111,23 @@
 	{/if}
 	{if $kosherType or $kosherSymbol}
 		<div class="pdp-accordion-description-kosher">
-			{if $kosherSymbol}<a href="javascript:pop('/shared/popup.jsp?attrib=KOSHER&spec=k&tmpl=small', 400, 585);"><img src="{$kosherIconPath}"/></a> {/if}{if $kosherType}{$kosherType}{/if}
+      {call .kosher data="all"}{/call}
 		</div>
 	{/if}
+{/template}
+
+/**
+ * @param? kosherType
+ * @param? kosherSymbol
+ * @param? kosherIconPath
+*/
+{template .kosher}
+{if $kosherSymbol and $kosherIconPath}
+  <a href="javascript:pop('/shared/popup.jsp?attrib=KOSHER&spec={$kosherSymbol}&tmpl=small', 400, 585);">
+    {if $kosherIconPath}<img src="{$kosherIconPath}"/>{/if}
+  </a>
+{/if}
+{if $kosherType}{sp}{$kosherType}{/if}
 {/template}
 
 /**

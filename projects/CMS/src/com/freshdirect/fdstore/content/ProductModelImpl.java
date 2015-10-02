@@ -51,7 +51,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	private static final Logger LOGGER = LoggerFactory.getInstance( ProductModelImpl.class ); 
 	
 	private static ThreadLocal<Map<String, YmalSet>> activeYmalSets = new ThreadLocal<Map<String, YmalSet>>() {
-		protected Map<String, YmalSet> initialValue() {
+		@Override
+        protected Map<String, YmalSet> initialValue() {
 			return new HashMap<String, YmalSet>();
 		}
 	};
@@ -134,12 +135,15 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	private List<ProductModel> crossSellProducts = new ArrayList<ProductModel>();
 
 	private List<ProductModel> completeTheMeal = new ArrayList<ProductModel>();
+
+    private List<ProductModel> includeProducts = new ArrayList<ProductModel>();
 		
 	public ProductModelImpl(ContentKey cKey) {
 		super(cKey);
 	}
 
-	public DepartmentModel getDepartment() {
+	@Override
+    public DepartmentModel getDepartment() {
 		ContentNodeModel start = this;
 
 		while (!(start instanceof DepartmentModel) && (start != null)) {
@@ -155,27 +159,33 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 
-	public String getAka() {
+	@Override
+    public String getAka() {
 		return getAttribute("AKA", "");
 	}
 
-	public float getQuantityMinimum() {
+	@Override
+    public float getQuantityMinimum() {
 		return (float) getAttribute("QUANTITY_MINIMUM", 1.0);
 	}
 
-	public float getQuantityMaximum() {
+	@Override
+    public float getQuantityMaximum() {
 		return (float) getAttribute("QUANTITY_MAXIMUM", 1.0);
 	}
 
-	public float getQuantityIncrement() {
+	@Override
+    public float getQuantityIncrement() {
 		return (float) getAttribute("QUANTITY_INCREMENT", 1.0);
 	}
 
-	public boolean enforceQuantityMax() {
+	@Override
+    public boolean enforceQuantityMax() {
 		return getAttribute("INCREMENT_MAX_ENFORCE", false);
 	}
 
-	public boolean isInvisible() {
+	@Override
+    public boolean isInvisible() {
 		return getAttribute("INVISIBLE", false);
 	}
 
@@ -183,11 +193,13 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @param index Index of the property.
 	 * @return Value of the property at <CODE>index</CODE>.
 	 */
-	public SkuModel getSku(int idx) {
+	@Override
+    public SkuModel getSku(int idx) {
 		return getSkus().get(idx);
 	}
 
-	public SkuModel getSku(String skuCode) {
+	@Override
+    public SkuModel getSku(String skuCode) {
 		List<SkuModel> skus = getSkus();
 		for ( SkuModel s : skus ) {
 			if (s.getSkuCode().equalsIgnoreCase(skuCode)) {
@@ -200,12 +212,14 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/** Getter for property skus.
 	 * @return Value of property skus.
 	 */
-	public List<SkuModel> getSkus() {
+	@Override
+    public List<SkuModel> getSkus() {
 		ContentNodeModelUtil.refreshModels(this, "skus", skuModels, true);
 		return new ArrayList<SkuModel>(skuModels);
 	}
 
-	public List<String> getSkuCodes() {
+	@Override
+    public List<String> getSkuCodes() {
 		List<SkuModel> skus = getPrimarySkus();
 		List<String> skuCodeList = new ArrayList<String>(skus.size());
 		for (SkuModel i : skus) {
@@ -214,7 +228,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return skuCodeList;
 	}
 
-	public Object clone() {
+	@Override
+    public Object clone() {
 		ProductModelImpl pm = (ProductModelImpl) super.clone();
 
 		// must cheat here by directly accessing protected/private variables.
@@ -234,7 +249,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * Returns itself.
 	 * @return itself
 	 */
-	public ProductModel getSourceProduct() {
+	@Override
+    public ProductModel getSourceProduct() {
 		return this;
 	}
 
@@ -248,7 +264,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  @return true if the product can be auto-configured,
 	 *          false otherwise.
 	 */
-	public boolean isAutoconfigurable() {
+	@Override
+    public boolean isAutoconfigurable() {
 		return getAutoconfiguration() != null;
 	}
 
@@ -259,7 +276,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *          product, or null if the product can not be auto-configured.
 	 *   this.getProductPricingAdapter(PricingContext pricingContext).getDefaultSku()        
 	 */
-	public FDConfigurableI getAutoconfiguration() {
+	@Override
+    public FDConfigurableI getAutoconfiguration() {
 		FDConfigurableI ret = null;
 		SkuModel sku = getDefaultSku();
 		if (sku != null) {
@@ -277,7 +295,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/** Getter for property brands.
 	 * @return List of BrandModels that are referenced by the  property brands.
 	 */
-	public List<BrandModel> getBrands() {
+	@Override
+    public List<BrandModel> getBrands() {
 		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, false);
 
 		List<BrandModel> newList = new ArrayList<BrandModel>();
@@ -291,23 +310,28 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return newList;
 	}
 
-	public boolean isPerishable() {
+	@Override
+    public boolean isPerishable() {
 		return getAttribute("PERISHABLE", false);
 	}
 
-	public boolean isFrozen() {
+	@Override
+    public boolean isFrozen() {
 		return getAttribute("FROZEN", false);
 	}
 
-	public boolean isGrocery() {
+	@Override
+    public boolean isGrocery() {
 		return getAttribute("GROCERY", false);
 	}
 	
-	public boolean isSoldBySalesUnits() {
+	@Override
+    public boolean isSoldBySalesUnits() {
 		return "SALES_UNIT".equals(getSellBySalesunit());
 	}
 
-	public boolean isQualifiedForPromotions() throws FDResourceException {
+	@Override
+    public boolean isQualifiedForPromotions() throws FDResourceException {
 		List<SkuModel> skus = getPrimarySkus();
 		for (Iterator<SkuModel> i = skus.iterator(); i.hasNext();) {
 			try {
@@ -326,7 +350,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * a product is discontinued only if all of its skus are discontinued
 	 * @return  */
-	public boolean isDiscontinued() {
+	@Override
+    public boolean isDiscontinued() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			if (!sku.isDiscontinued())
@@ -338,7 +363,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * a product is out of season only if all of its skus are out of season
 	 * @return  */
-	public boolean isOutOfSeason() {
+	@Override
+    public boolean isOutOfSeason() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			if (!sku.isOutOfSeason())
@@ -350,7 +376,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * a product is unavailable only if all of its skus are unavailable
 	 * @return  */
-	public boolean isUnavailable() {
+	@Override
+    public boolean isUnavailable() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			if (!sku.isUnavailable() && isCharacteristicsComponentsAvailable(null))
@@ -363,7 +390,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * a product is temp. unavailable only if all of its skus are temp. unavailable
 	 * @return  */
-	public boolean isTempUnavailable() {
+	@Override
+    public boolean isTempUnavailable() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			if (!sku.isTempUnavailable())
@@ -375,7 +403,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * @return true if any of its skus is a platter
 	 */
-	public boolean isPlatter() {
+	@Override
+    public boolean isPlatter() {
 		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
@@ -391,7 +420,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return false;
 	}
 
-	public DayOfWeekSet getBlockedDays() {
+	@Override
+    public DayOfWeekSet getBlockedDays() {
 		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		DayOfWeekSet allBlockedDays = DayOfWeekSet.EMPTY;
@@ -411,7 +441,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product is available with X days if any of its skus are available within X days
 	 * @param days
 	 * @return  */
-	public boolean isAvailableWithin(int days) {
+	@Override
+    public boolean isAvailableWithin(int days) {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			if (sku.isAvailableWithin(days))
@@ -423,7 +454,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * a product's earliest availability is the earliest of it's sku's earliest availability
 	 * @return  */
-	public Date getEarliestAvailability() {
+	@Override
+    public Date getEarliestAvailability() {
 		List<SkuModel> skus = getPrimarySkus();
 		Date ea = null;
 		for ( SkuModel sku  : skus ) {
@@ -449,14 +481,16 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  @return the preferred SKU for the product, or the minimally priced
 	 *          SKU that is available. if no SKUs are available, returns null.
 	 */
-	public SkuModel getDefaultSku() {
+	@Override
+    public SkuModel getDefaultSku() {
 	    return getDefaultSku(getUserContext().getPricingContext());
 	}
 
 	/**
 	 * Return a plain SkuModel, not just a wrapper around a SkuModel.
 	 */
-	public SkuModel getDefaultSku(PricingContext context) {
+	@Override
+    public SkuModel getDefaultSku(PricingContext context) {
 	    if (context == null) {
 	        context = PricingContext.DEFAULT;
 	    }
@@ -482,7 +516,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * Return a SkuModel which is available or temporary unavailable. Skus with nutrition info are preferred.
 	 * Used for show nutrition infos for temporary unavailable products, if available
 	 */
-	public SkuModel getDefaultTemporaryUnavSku() {
+	@Override
+    public SkuModel getDefaultTemporaryUnavSku() {
 		
 		PricingContext context = getUserContext().getPricingContext();
 		
@@ -528,7 +563,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @param type a multivalued ErpNutritionInfoType
 	 * @return common Set of nutrition information of all available SKUs 
 	 */
-	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
+	@Override
+    public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
 		List<SkuModel> skus = getPrimarySkus();
 		if (!type.isMultiValued()) {
 			throw new IllegalArgumentException(type + " is not multivalued");
@@ -563,7 +599,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * @return the brand that begins with the full name, empty string otherwise
 	 */
-	public String getPrimaryBrandName() {
+	@Override
+    public String getPrimaryBrandName() {
 		String fullName = super.getFullName();
 		return fullName != null ? getPrimaryBrandName(fullName) : "";
 	}
@@ -651,7 +688,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 * @return the brand that begins with the specified name, empty string otherwise
 	 */
-	public String getPrimaryBrandName(String productName) {
+	@Override
+    public String getPrimaryBrandName(String productName) {
 		// get the first brand name, if any.
 		List<BrandModel> myBrands = this.getBrands();
 
@@ -678,13 +716,15 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  (did not want to use the word primaryBrands since the notion of primary brand is a brand name 
 	 * that is part of the full name of the product )
 	 */
-	public List<BrandModel> getDisplayableBrands() {
+	@Override
+    public List<BrandModel> getDisplayableBrands() {
 		return this.getDisplayableBrands(1);
 	}
 	/**
 	 * @return list of brands that can be displayed on the product page
 	 */
-	public List<BrandModel> getDisplayableBrands(int numberOfBrands) {
+	@Override
+    public List<BrandModel> getDisplayableBrands(int numberOfBrands) {
 		List<BrandModel> prodBrands = this.getBrands();
 		List<BrandModel> displayableBrands = new ArrayList<BrandModel>();
 		
@@ -716,11 +756,13 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return displayableBrands;
 	}
 	
-	public boolean hasComponentGroups() {
+	@Override
+    public boolean hasComponentGroups() {
 		return !getComponentGroups().isEmpty();
 	}
 
-	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
+	@Override
+    public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
 		List<ComponentGroupModel> compositeGroups = getComponentGroups();
 		try {
 			for (ComponentGroupModel cgm : compositeGroups) {
@@ -734,124 +776,154 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		}
 	}
 
-	public boolean isPreconfigured() {
+	@Override
+    public boolean isPreconfigured() {
 		return false;
 	}
 
-	public EnumProductLayout getProductLayout() {
+	@Override
+    public EnumProductLayout getProductLayout() {
 		return getProductLayout(EnumProductLayout.PERISHABLE);
 	}
 	
-	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
+	@Override
+    public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
         return EnumProductLayout.getLayoutType(this.getAttribute("PRODUCT_LAYOUT", defValue.getId()));
 	}
 
-	public String getSubtitle() {
+	@Override
+    public String getSubtitle() {
 		return getAttribute("SUBTITLE", "");
 	}
 
-	public String getAltText() {
+	@Override
+    public String getAltText() {
 		return getAttribute("ALT_TEXT","");
 	}
 
-	public EnumLayoutType getLayout() {
+	@Override
+    public EnumLayoutType getLayout() {
 		return EnumLayoutType.getLayoutType(this.getAttribute("LAYOUT", EnumLayoutType.GENERIC.getId()));
 	}
 
-	public EnumTemplateType getTemplateType() {
+	@Override
+    public EnumTemplateType getTemplateType() {
 		return EnumTemplateType.getTemplateType(this.getAttribute("TEMPLATE_TYPE", EnumTemplateType.GENERIC.getId()));
 	}
 
-	public String getAlsoSoldAsName() {
+	@Override
+    public String getAlsoSoldAsName() {
 		return getAttribute("ALSO_SOLD_AS_NAME", "");
 	}
 
-	public String getRedirectUrl() {
+	@Override
+    public String getRedirectUrl() {
         return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
-	public String getSellBySalesunit() {
+	@Override
+    public String getSellBySalesunit() {
 		return getAttribute("SELL_BY_SALESUNIT", "");
 	}
 
-	public String getSalesUnitLabel() {
+	@Override
+    public String getSalesUnitLabel() {
 		return getAttribute("SALES_UNIT_LABEL", "");
 	}
 
-	public String getQuantityText() {
+	@Override
+    public String getQuantityText() {
 		return getAttribute("QUANTITY_TEXT", "");
 	}
 
-	public String getQuantityTextSecondary() {
+	@Override
+    public String getQuantityTextSecondary() {
 		return getAttribute("QUANTITY_TEXT_SECONDARY", (String) null);
 	}
 
-	public String getServingSuggestion() {
+	@Override
+    public String getServingSuggestion() {
 		return (String) getCmsAttributeValue("SERVING_SUGGESTION");
 	}
 
-	public String getPackageDescription() {
+	@Override
+    public String getPackageDescription() {
 		return getAttribute("PACKAGE_DESCRIPTION", "");
 	}
 
-	public String getSeasonText() {
+	@Override
+    public String getSeasonText() {
 		return (String) getCmsAttributeValue("SEASON_TEXT");
 	}
 
-	public String getWineFyi() {
+	@Override
+    public String getWineFyi() {
 	    return (String) getCmsAttributeValue("WINE_FYI");
 	}
 
-	public String getWineRegion() {
+	@Override
+    public String getWineRegion() {
 		return (String) getCmsAttributeValue("WINE_REGION");
 	}
 
-	public String getSeafoodOrigin() {
+	@Override
+    public String getSeafoodOrigin() {
 		return getAttribute("SEAFOOD_ORIGIN", "");
 	}
 
-	public boolean isShowSalesUnitImage() {
+	@Override
+    public boolean isShowSalesUnitImage() {
 		return getAttribute("SHOW_SALES_UNIT_IMAGE", false);
 	}
 
-	public boolean isNutritionMultiple() {
+	@Override
+    public boolean isNutritionMultiple() {
 		return getAttribute("NUTRITION_MULTIPLE", false);
 	}
 
-	public boolean isNotSearchable() {
+	@Override
+    public boolean isNotSearchable() {
 		return getAttribute("NOT_SEARCHABLE", false);
 	}
 
-	public Double getContainerWeightHalfPint() {
+	@Override
+    public Double getContainerWeightHalfPint() {
 		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_HALF_PINT");
 	}
 
-	public Double getContainerWeightPint() {
+	@Override
+    public Double getContainerWeightPint() {
 		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_PINT");
 	}
 
-	public Double getContainerWeightQuart() {
+	@Override
+    public Double getContainerWeightQuart() {
 		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_QUART");
 	}
 
-	public boolean isIncrementMaxEnforce() {
+	@Override
+    public boolean isIncrementMaxEnforce() {
 		return getAttribute("INCREMENT_MAX_ENFORCE", false);
 	}
 
-	public String getProdPageRatings() {
+	@Override
+    public String getProdPageRatings() {
 		return getAttribute("PROD_PAGE_RATINGS", "");
 	}
 
-	public String getProdPageTextRatings() {
+	@Override
+    public String getProdPageTextRatings() {
 		return getAttribute("PROD_PAGE_TEXT_RATINGS", "");
 	}
 
-	public String getRatingProdName() {
+	@Override
+    public String getRatingProdName() {
 		return getAttribute("RATING_PROD_NAME", "");
 	}
 
 	
-	public List<ProductModel> getRelatedProducts() {
+	@Override
+    public List<ProductModel> getRelatedProducts() {
 		return getYmals(FDContentTypes.PRODUCT);
 	}
 
@@ -862,7 +934,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  
 	 *  @return a list of content nodes that are YMALs to this product.
 	 */
-	public List<ContentNodeModel> getYmals() {
+	@Override
+    public List<ContentNodeModel> getYmals() {
 		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
 		return Collections.unmodifiableList(ymals);
 	}
@@ -897,7 +970,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  @return the active YmalSet, or null if there's no active Ymal Set.
 	 *  @see YmalSet
 	 */
-	public YmalSet getActiveYmalSet() {
+	@Override
+    public YmalSet getActiveYmalSet() {
 		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
 		if (current == null) {
 			YmalSet newSet = YmalSetSourceUtil.findActiveYmalSet(this);
@@ -909,7 +983,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return current;
 	}
 	
-	public void resetActiveYmalSetSession() {
+	@Override
+    public void resetActiveYmalSetSession() {
 		resetActiveYmalSets();
 	}
 
@@ -992,7 +1067,8 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYmalProducts(Set)
 	 */
-	public List<ProductModel> getYmalProducts() {
+	@Override
+    public List<ProductModel> getYmalProducts() {
 		return getYmalProducts(null);
 	}
 	
@@ -1001,7 +1077,8 @@ inner:
 	 * 
 	 * @return list of recommended alternatives
 	 */
-	public List<ContentNodeModel> getRecommendedAlternatives() {
+	@Override
+    public List<ContentNodeModel> getRecommendedAlternatives() {
 		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false, true);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}
@@ -1031,7 +1108,8 @@ inner:
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
 	 */
-	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
+	@Override
+    public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
 		List<ProductModel> l = getYmals( FDContentTypes.PRODUCT );
 		LinkedHashSet<ProductModel> ymals = new LinkedHashSet<ProductModel>( l );
 		YmalSet ymalSet = getActiveYmalSet();
@@ -1073,7 +1151,8 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<CategoryModel> getYmalCategories() {
+	@Override
+    public List<CategoryModel> getYmalCategories() {
 		List<CategoryModel> l = getYmals( FDContentTypes.CATEGORY );
 		LinkedHashSet<CategoryModel> ymals = new LinkedHashSet<CategoryModel>( l );
 		YmalSet        ymalSet = getActiveYmalSet();
@@ -1111,7 +1190,8 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<Recipe> getYmalRecipes() {
+	@Override
+    public List<Recipe> getYmalRecipes() {
 		List<Recipe> l = getYmals( FDContentTypes.RECIPE );
 		LinkedHashSet<Recipe> ymals = new LinkedHashSet<Recipe>( l );
 		YmalSet ymalSet = getActiveYmalSet();
@@ -1157,31 +1237,36 @@ inner:
 		return finalList;
 	}
 
-	public List<ProductModel> getWeRecommendText() {
+	@Override
+    public List<ProductModel> getWeRecommendText() {
 		ContentNodeModelUtil.refreshModels(this, "WE_RECOMMEND_TEXT", weRecommendText, false);
 
 		return new ArrayList<ProductModel>(weRecommendText);
 	}
 
-	public List<ProductModel> getWeRecommendImage() {
+	@Override
+    public List<ProductModel> getWeRecommendImage() {
 		ContentNodeModelUtil.refreshModels(this, "WE_RECOMMEND_IMAGE", weRecommendImage, false);
 
 		return new ArrayList<ProductModel>(weRecommendImage);
 	}
 
 
-	public List<Recipe> getRelatedRecipes() {
+	@Override
+    public List<Recipe> getRelatedRecipes() {
 		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false, true);
 		return Collections.unmodifiableList(relatedRecipes);
 	}
 
-	public List<ProductModel> getProductBundle() {
+	@Override
+    public List<ProductModel> getProductBundle() {
 		ContentNodeModelUtil.refreshModels(this, "PRODUCT_BUNDLE", productBundle, false);
 
 		return new ArrayList<ProductModel>(productBundle);
 	}
 
-	public List<CategoryModel> getHowtoCookitFolders() {
+	@Override
+    public List<CategoryModel> getHowtoCookitFolders() {
 		ContentNodeModelUtil.refreshModels(this, "HOWTOCOOKIT_FOLDERS", howtocookitFolders, false);
 
 		return new ArrayList<CategoryModel>(howtocookitFolders);
@@ -1189,7 +1274,8 @@ inner:
 
 	private CategoryModel primaryHome = null;
 
-	public CategoryModel getPrimaryHome() {
+	@Override
+    public CategoryModel getPrimaryHome() {
 		if (primaryHome == null) {
 			ContentKey phKey = CmsManager.getInstance().getPrimaryHomeKey(getContentKey());
 			
@@ -1202,25 +1288,29 @@ inner:
 		return primaryHome;
     }
 
-	public SkuModel getPreferredSku() {
+	@Override
+    public SkuModel getPreferredSku() {
 	    ContentKey key = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
 	    return key == null ? null : (SkuModel) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List<DomainValue> getRating() {
+	@Override
+    public List<DomainValue> getRating() {
 		ContentNodeModelUtil.refreshModels(this, "RATING", rating, false);
 
 		return new ArrayList<DomainValue>(rating);
 	}
 
-	public List<Domain> getUsageList() {
+	@Override
+    public List<Domain> getUsageList() {
 		ContentNodeModelUtil.refreshModels(this, "USAGE_LIST", usageList, false);
 
 		return new ArrayList<Domain>(usageList);
 	}
 
-	public DomainValue getUnitOfMeasure() {
+	@Override
+    public DomainValue getUnitOfMeasure() {
 		ContentKey key = (ContentKey) getCmsAttributeValue("UNIT_OF_MEASURE");
 		
 		return key == null
@@ -1228,72 +1318,87 @@ inner:
              : (DomainValue) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List<Domain> getVariationMatrix() {
+	@Override
+    public List<Domain> getVariationMatrix() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_MATRIX", variationMatrix, false);
 
 		return new ArrayList<Domain>(variationMatrix);
 	}
 
-	public List<Domain> getVariationOptions() {
+	@Override
+    public List<Domain> getVariationOptions() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_OPTIONS", variationOptions, false);
 
 		return new ArrayList<Domain>(variationOptions);
 	}
 
-	public DomainValue getWineCountry() {
+	@Override
+    public DomainValue getWineCountry() {
 	    ContentKey key = (ContentKey) getCmsAttributeValue("WINE_COUNTRY");
 	    return key != null ? ContentFactory.getInstance().getDomainValueById(key.getId()) : null;
 	}
 	
-	public ContentKey getWineCountryKey() {
+	@Override
+    public ContentKey getWineCountryKey() {
 	    return (ContentKey) getCmsAttributeValue("WINE_COUNTRY");
 	}
 			
 
-	public Image getProdImage() {
+	@Override
+    public Image getProdImage() {
         return FDAttributeFactory.constructImage(this, "PROD_IMAGE");
 	}
 
-	public Image getFeatureImage() {
+	@Override
+    public Image getFeatureImage() {
         return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE");
 	}
 
-	public Image getRatingRelatedImage() {
+	@Override
+    public Image getRatingRelatedImage() {
         return FDAttributeFactory.constructImage(this, "RATING_RELATED_IMAGE");
 	}
 
-	public Image getAlternateImage() {
+	@Override
+    public Image getAlternateImage() {
         return FDAttributeFactory.constructImage(this, "ALTERNATE_IMAGE");
 	}
 
-	public Image getDescriptiveImage() {
+	@Override
+    public Image getDescriptiveImage() {
         return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
-	public Image getRolloverImage() {
+	@Override
+    public Image getRolloverImage() {
 		return FDAttributeFactory.constructImage( this, "PROD_IMAGE_ROLLOVER" );
 	}
 
-	public Html getProductAbout() {
+	@Override
+    public Html getProductAbout() {
 		return FDAttributeFactory.constructHtml( this, "PRODUCT_ABOUT" );
 	}
 
-	public Html getRecommendTable() {
+	@Override
+    public Html getRecommendTable() {
 		return FDAttributeFactory.constructHtml( this, "RECOMMEND_TABLE" );
 	}
 
-	public Html getProductQualityNote() {
+	@Override
+    public Html getProductQualityNote() {
 		return FDAttributeFactory.constructHtml( this, "PRODUCT_QUALITY_NOTE" );
 	}
 
-	public Html getProductDescriptionNote() {
+	@Override
+    public Html getProductDescriptionNote() {
 		return FDAttributeFactory.constructHtml( this, "PROD_DESCRIPTION_NOTE" );
 	}
 
-	public Html getFreshTips() {
+	@Override
+    public Html getFreshTips() {
 		// FIXME temporary fix (expects scalar value although this is designed to be a to many relationship)
 	    @SuppressWarnings("unchecked")
-		List<Html> oneList = (List<Html>) FDAttributeFactory.constructWrapperList( this, "FRESH_TIPS" );
+		List<Html> oneList = FDAttributeFactory.constructWrapperList( this, "FRESH_TIPS" );
 
 	    if (oneList == null || oneList.isEmpty()) {
 	    	return null;
@@ -1303,75 +1408,92 @@ inner:
 		return oneList.get(0);
 	}
 
-	public List<Html> getDonenessGuide() {
+	@Override
+    public List<Html> getDonenessGuide() {
 		return FDAttributeFactory.constructWrapperList( this, "DONENESS_GUIDE" );
 	}
 
-	public Html getFddefFrenching() {
+	@Override
+    public Html getFddefFrenching() {
 		return FDAttributeFactory.constructHtml( this, "FDDEF_FRENCHING" );
 	}
 
-	public Html getFddefGrade() {
+	@Override
+    public Html getFddefGrade() {
 		return FDAttributeFactory.constructHtml( this, "FDDEF_GRADE" );
 	}
 
-	public Html getFddefSource() {
+	@Override
+    public Html getFddefSource() {
 		return FDAttributeFactory.constructHtml( this, "FDDEF_SOURCE" );
 	}
 
-	public Html getFddefRipeness() {
+	@Override
+    public Html getFddefRipeness() {
 		return FDAttributeFactory.constructHtml( this, "FDDEF_RIPENESS" );
 	}
 
-	public boolean isHasSalesUnitDescription() {
+	@Override
+    public boolean isHasSalesUnitDescription() {
 		return getCmsAttributeValue( "SALES_UNIT_DESCRIPTION" ) != null;
 	}
 
-	public Html getSalesUnitDescription() {
+	@Override
+    public Html getSalesUnitDescription() {
 		return FDAttributeFactory.constructHtml( this, "SALES_UNIT_DESCRIPTION" );
 	}
 
-	public boolean isHasPartiallyFrozen() {
+	@Override
+    public boolean isHasPartiallyFrozen() {
 		return getCmsAttributeValue( "PARTIALLY_FROZEN" ) != null;
 	}
 
-	public Html getPartallyFrozen() {
+	@Override
+    public Html getPartallyFrozen() {
 		return FDAttributeFactory.constructHtml( this, "PARTIALLY_FROZEN" );
 	}
 
-	public List<ComponentGroupModel> getComponentGroups() {
+	@Override
+    public List<ComponentGroupModel> getComponentGroups() {
 		ContentNodeModelUtil.refreshModels( this, "COMPONENT_GROUPS", componentGroups, false );
 		return new ArrayList<ComponentGroupModel>( componentGroups );
 	}
 
-	public Html getProductTermsMedia() {
+	@Override
+    public Html getProductTermsMedia() {
 		return FDAttributeFactory.constructHtml( this, "PRODUCT_TERMS_MEDIA" );
 	}
 
 	// new Wine store changes
 	
 	
-	public String getWineClassification() {
+	@Override
+    public String getWineClassification() {
 		return getAttribute("WINE_CLASSIFICATION", "");
 	}
 
-	public String getWineImporter() {
+	@Override
+    public String getWineImporter() {
 		return getAttribute("WINE_IMPORTER", "");
 	}
 
-	public String getWineAlchoholContent() {
+	@Override
+    public String getWineAlchoholContent() {
 		return getAttribute("WINE_ALCH_CONTENT", "");
 	}
 
-	public String getWineAging() {
+	@Override
+    public String getWineAging() {
 		return getAttribute("WINE_AGING", "");
 	}
 
-	public String getWineCity() {
+	@Override
+    public String getWineCity() {
 		return getAttribute("WINE_CITY", "");
 	}
 	
-	public String getWineType() {
+	@Override
+    public String getWineType() {
 		return (String)getCmsAttributeValue("WINE_TYPE");
 	}
 	
@@ -1383,42 +1505,50 @@ inner:
 	 * @param name
 	 * @return
 	 */
-	public MediaI getMedia(String name) {
+	@Override
+    public MediaI getMedia(String name) {
 	    return (MediaI) FDAttributeFactory.constructWrapperValue(this, name);
 	}
 
-	public List<DomainValue> getNewWineType() {
+	@Override
+    public List<DomainValue> getNewWineType() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_NEW_TYPE", wineNewTypes, false);
 		return new ArrayList<DomainValue>(wineNewTypes);		
 	}
 
-	public List<DomainValue> getWineVintage() {
+	@Override
+    public List<DomainValue> getWineVintage() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_VINTAGE", wineVintages, false);
 		return new ArrayList<DomainValue>(wineVintages);		
 	}
 	
 	
-	public List<DomainValue> getWineVarietal() {
+	@Override
+    public List<DomainValue> getWineVarietal() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_VARIETAL", wineVarietals, false);
 		return new ArrayList<DomainValue>(wineVarietals);		
 	}
 
-	public List<DomainValue> getNewWineRegion() {
+	@Override
+    public List<DomainValue> getNewWineRegion() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_NEW_REGION", wineRegions, false);
 		return new ArrayList<DomainValue>(wineRegions);		
 	}
 
-	public List<DomainValue> getWineRating1() {
+	@Override
+    public List<DomainValue> getWineRating1() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING1", wineRatings1, false);
 		return new ArrayList<DomainValue>(wineRatings1);	
 	}
 
-	public List<DomainValue> getWineRating2() {
+	@Override
+    public List<DomainValue> getWineRating2() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING2", wineRatings2, false);
 		return new ArrayList<DomainValue>(wineRatings2);	
 	}
 
-	public List<DomainValue> getWineRating3() {
+	@Override
+    public List<DomainValue> getWineRating3() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING3", wineRatings3, false);
 		return new ArrayList<DomainValue>(wineRatings3);		
 	}
@@ -1446,33 +1576,40 @@ inner:
 		return getWineRating1().size() > 0 || getWineRating2().size() > 0 || getWineRating3().size() > 0;
 	}
 
-	public Html getWineReview1() {
+	@Override
+    public Html getWineReview1() {
 		return FDAttributeFactory.constructHtml( this, "WINE_REVIEW1" );
 	}
 
-	public int getExpertWeight() {
+	@Override
+    public int getExpertWeight() {
 		Object value = FDAttributeFactory.constructWrapperValue( this, "SS_EXPERT_WEIGHTING" );
 		return value instanceof Number ? ( (Number)value ).intValue() : 0;
 	}
 
-	public Html getWineReview2() {
+	@Override
+    public Html getWineReview2() {
 		return FDAttributeFactory.constructHtml( this, "WINE_REVIEW2" );
 	}
 
-	public Html getWineReview3() {
+	@Override
+    public Html getWineReview3() {
 		return FDAttributeFactory.constructHtml( this, "WINE_REVIEW3" );
 	}
 
-	public Html getProductBottomMedia() {
+	@Override
+    public Html getProductBottomMedia() {
 		return FDAttributeFactory.constructHtml( this, "PRODUCT_BOTTOM_MEDIA" );
 	}
 
-	public CategoryModel getPerfectPair() {
+	@Override
+    public CategoryModel getPerfectPair() {
 		ContentKey key = (ContentKey)getCmsAttributeValue( "PERFECT_PAIR" );
 		return key == null ? null : (CategoryModel)ContentFactory.getInstance().getContentNodeByKey( key );
 	}
 
-	public List<DomainValue> getWineClassifications() {
+	@Override
+    public List<DomainValue> getWineClassifications() {
 		List<DomainValue> classifications = new ArrayList<DomainValue>();
 		//Add Country domain Value.
 		classifications.add(getWineCountry());
@@ -1485,10 +1622,12 @@ inner:
 		return classifications;
 	}
 	
-	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
+	@Override
+    public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return getProductRatingEnum(null);
 	}
 
+    @Override
     public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
         EnumOrderLineRating rating = EnumOrderLineRating.NO_RATING;
 
@@ -1581,10 +1720,12 @@ inner:
         return rating;
     }
     
+    @Override
     public String getProductRating() throws FDResourceException {
     	return getProductRating(null);
     }
     
+    @Override
     public String getProductRating(String skuCode) throws FDResourceException {
     	EnumOrderLineRating rating = getProductRatingEnum(skuCode);
     	if (rating == EnumOrderLineRating.NO_RATING) {
@@ -1593,6 +1734,7 @@ inner:
 	return rating.getStatusCodeInDisplayFormat();
     }
     
+    @Override
     public String getFreshnessGuaranteed() throws FDResourceException {
     	
     	String freshness = null;
@@ -1649,22 +1791,26 @@ inner:
         return null;
     }
 
-	public List getGiftcardType() {
+	@Override
+    public List getGiftcardType() {
 		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);
 		return new ArrayList(giftcardTypes);		
 	}
 
-	public UserContext getUserContext(){
+	@Override
+    public UserContext getUserContext(){
 		//return PricingContext.DEFAULT;::FDX::
 		return ContentFactory.getInstance().getCurrentUserContext();
 	}
 
-	public boolean isInPrimaryHome() {
+	@Override
+    public boolean isInPrimaryHome() {
 		CategoryModel phCat = getPrimaryHome();
 	    return phCat != null && phCat.equals(getParentNode());
 	}
 	
-	public ProductModel getPrimaryProductModel() {
+	@Override
+    public ProductModel getPrimaryProductModel() {
 		
 	    return isInPrimaryHome() ? this : (ProductModel) ContentFactory.getInstance().getContentNodeByKey(getContentKey());
 	}
@@ -1672,7 +1818,8 @@ inner:
 	/**
 	 * @return the list of sku models of the primary product. Primary product is the product which is in his primary home.
 	 */
-	public List<SkuModel> getPrimarySkus() {
+	@Override
+    public List<SkuModel> getPrimarySkus() {
 	    return getPrimaryProductModel().getSkus();
 	}
 	
@@ -1961,7 +2108,9 @@ inner:
 		EnumProductLayout specialLayout = getProductLayout();
 		switch (specialLayout){
 			case COMPONENTGROUP_MEAL:
+                //$FALL-THROUGH$
 			case MULTI_ITEM_MEAL:
+                //$FALL-THROUGH$
 			case HOLIDAY_MEAL_BUNDLE_PRODUCT:
 				return specialLayout;
 			default:
@@ -1976,6 +2125,12 @@ inner:
 	}
 
 	@Override
+    public List<ProductModel> getIncludeProducts() {
+        ContentNodeModelUtil.refreshModels(this, "MEAL_INCLUDE_PRODUCTS", includeProducts, false);
+        return new ArrayList<ProductModel>(includeProducts);
+    }
+
+    @Override
 	public String getPageTitle() {
 		return getAttribute("PAGE_TITLE", "");
 	}

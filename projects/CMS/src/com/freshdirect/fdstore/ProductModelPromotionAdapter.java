@@ -12,11 +12,9 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
@@ -41,15 +39,15 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		Cloneable, PrioritizedI {
 	
-	/**
-	 * 
-	 */
+    /**
+     * 
+     */
 	private static final long serialVersionUID = 8599871079838576468L;
 	private ProductModel productModel;
 	private boolean isFeatured;
 	private String featuredHeader;
 	private String ppSkuCode;
-	private ErpProductInfoModel erpProductInfoModel;
+    private ErpProductInfoModel erpProductInfoModel;
 	private boolean isPreview;
 	private FDProductInfo fdProdInfo;
 	private FDProduct fdProduct;
@@ -1320,7 +1318,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		this.fdProduct = fdProduct;
 	}
 
-	public Object clone() {		
+	@Override
+    public Object clone() {		
 		try {
 			ProductModelPromotionAdapter pm= (ProductModelPromotionAdapter)super.clone();
 			ProductModel prodModel = pm.getProductModel();
@@ -1337,7 +1336,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.toString();
 	}
 	
-	public boolean isExcludedForEBTPayment(){
+	@Override
+    public boolean isExcludedForEBTPayment(){
 		return productModel.isExcludedForEBTPayment();
 	}
 
@@ -1449,6 +1449,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public List<ProductModel> getCompleteTheMeal() {
 		return productModel.getCompleteTheMeal();
 	}
+
+    @Override
+    public List<ProductModel> getIncludeProducts() {
+        return productModel.getIncludeProducts();
+    }
 
 	@Override
 	public String getPageTitle() {

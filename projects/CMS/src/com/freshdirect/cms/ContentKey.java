@@ -15,12 +15,12 @@ public class ContentKey implements Serializable {
 
 	private static final long serialVersionUID = -5367719524667192683L;
 
-	private final static char SEPARATOR = ':';
+    private static final char SEPARATOR = ':';
+    private static final Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
 
 	private final ContentType type;
 	private final String id;
 
-	public final static Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
 	
 
 	/**
@@ -48,7 +48,8 @@ public class ContentKey implements Serializable {
 		return type;
 	}
 
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (o == this) {
 			return true;
 		}
@@ -76,11 +77,13 @@ public class ContentKey implements Serializable {
 		return CmsManager.getInstance().getContentNode(this);
 	}
 
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return type.hashCode() ^ id.hashCode();
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		return "ContentKey[" + getEncoded() + "]";
 	}
 

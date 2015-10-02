@@ -30,7 +30,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	/** Orders products by department & full name */
 	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(ProductModel p1, ProductModel p2) {
+		@Override
+        public int compare(ProductModel p1, ProductModel p2) {
 			String p1Dept = "";
 			String p2Dept = "";
 			
@@ -49,7 +50,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	};
 
 	public final static Comparator<ProductModel> FULL_NAME_PRODUCT_COMPARATOR = new Comparator<ProductModel>() {
-		public int compare(ProductModel p1, ProductModel p2) {
+		@Override
+        public int compare(ProductModel p1, ProductModel p2) {
 			String name1 = NVL.apply(p1.getFullName().toLowerCase(), "");
 			String name2 = NVL.apply(p2.getFullName().toLowerCase(), "");
 
@@ -63,7 +65,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public static abstract class SkuInfoComparator implements Comparator<SkuModel> {
 		
-		public int compare(SkuModel sku1, SkuModel sku2) {
+		@Override
+        public int compare(SkuModel sku1, SkuModel sku2) {
 			
 			if(sku1==null && sku2==null) return 0;
 			
@@ -147,7 +150,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public final static Comparator<ProductModel> AGE_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(ProductModel p1, ProductModel p2) {
+		@Override
+        public int compare(ProductModel p1, ProductModel p2) {
 			double age1;
 			double age2;
 			if(p1 != null)
@@ -172,6 +176,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	        this.inverse = inverse;
 	    }
 	    
+        @Override
         public int compare(ProductModel model1, ProductModel model2) {
         	
             if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
@@ -271,7 +276,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 		private int flips;
 
-		public int doCompare(SkuModel obj1, SkuModel obj2) {
+		@Override
+        public int doCompare(SkuModel obj1, SkuModel obj2) {
 			try {
 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
@@ -352,23 +358,30 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	// data model accessors
 	
-	public String getFullName();
+	@Override
+    public String getFullName();
 	
-	public String getGlanceName();
+	@Override
+    public String getGlanceName();
 	
-	public String getNavName();
+	@Override
+    public String getNavName();
 	
-	public String getAltText();
+	@Override
+    public String getAltText();
 	
-	public String getKeywords();
+	@Override
+    public String getKeywords();
 	
 	public String getAka();
 	
-	public String getBlurb();
+	@Override
+    public String getBlurb();
 	
 	public String getSubtitle();
 
-	public String getHideUrl();
+	@Override
+    public String getHideUrl();
 	
 	public EnumProductLayout getProductLayout();
 	
@@ -378,11 +391,13 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public EnumTemplateType getTemplateType();
 	
-	public int getTemplateType(int defaultValue);
+	@Override
+    public int getTemplateType(int defaultValue);
 	
 	public String getAlsoSoldAsName();
 	
-	public String getRedirectUrl();
+	@Override
+    public String getRedirectUrl();
 	
 	public String getSellBySalesunit();
 	
@@ -540,7 +555,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 *  @return the active YmalSet, or null if there's no active Ymal Set.
 	 *  @see YmalSet
 	 */
-	public YmalSet getActiveYmalSet();
+	@Override
+    public YmalSet getActiveYmalSet();
 
 	/**
 	 *  Return a list of products to display as cross-sell items.
@@ -557,7 +573,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<ProductModel> getYmalProducts();
+	@Override
+    public List<ProductModel> getYmalProducts();
 	
 	/**
 	 *  Return a list of YMAL products.
@@ -569,7 +586,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus);
+	@Override
+    public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus);
 	
 	/**
 	 *  Return a list of YMAL categories.
@@ -578,7 +596,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<CategoryModel> getYmalCategories();
+	@Override
+    public List<CategoryModel> getYmalCategories();
 	
 	/**
 	 *  Return a list of YMAL recipes.
@@ -587,7 +606,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List<Recipe> getYmalRecipes();
+	@Override
+    public List<Recipe> getYmalRecipes();
 	
 	/** 
 	 * Return a list of recommended alternatives.
@@ -1073,6 +1093,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	public List<ProductModel> getCompleteTheMeal();
 	
+    public List<ProductModel> getIncludeProducts();
+
 	public String getPageTitle();
 	
 	public String getSEOMetaDescription();
