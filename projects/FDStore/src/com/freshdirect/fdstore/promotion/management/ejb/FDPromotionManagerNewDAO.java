@@ -1347,8 +1347,8 @@ public class FDPromotionManagerNewDAO {
 	}
 
 	private static String INSERT_PROMO_CART_STRATEGY = "INSERT INTO cust.promo_cart_strategy"
-			+ " (id, promotion_id, content_type, content_id)"
-			+ " VALUES(?,?,?,?)";
+			+ " (id, promotion_id, content_type, content_id, CONTENT_SET_NUM)"
+			+ " VALUES(?,?,?,?,?)";
 
 	private static void storeCartStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1368,7 +1368,8 @@ public class FDPromotionManagerNewDAO {
 				ps.close();
 		}
 	}
-
+	
+	
 	private static void prepareCartStrategy(Connection conn, String promotionId,
 			PreparedStatement ps, List<FDPromoContentModel> cartReqList)
 			throws SQLException {
@@ -1381,11 +1382,14 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(index++, promotionId);
 				ps.setString(index++, object.getContentType().getName());
 				ps.setString(index++, object.getContentId());
+				ps.setInt(index++, object.getContent_set_num());
 				
 				ps.addBatch();
 			}			
 		}
 	}
+	
+	
 
 	protected static void removeCustomerStrategy(Connection conn,
 			String promotionId) throws SQLException {
@@ -1495,7 +1499,7 @@ public class FDPromotionManagerNewDAO {
 		
 	}
 	
-	private final static String LOAD_PROMO_CART_STRATEGY = "select id, promotion_id, content_type, content_id"
+	private final static String LOAD_PROMO_CART_STRATEGY = "select id, promotion_id, content_type, content_id, CONTENT_SET_NUM"
 		+ " from cust.promo_cart_strategy pcs "
 		+ "where pcs.promotion_id = ?";
 
@@ -1511,6 +1515,7 @@ public class FDPromotionManagerNewDAO {
 			contentModel.setId(rs.getString("id"));
 			contentModel.setContentType(EnumDCPDContentType.getEnum(rs.getString("content_type")));
 			contentModel.setContentId(rs.getString("content_id"));
+			contentModel.setContent_set_num(rs.getInt("CONTENT_SET_NUM"));
 			contentModel.setPromotionId(promotionId);
 			list.add(contentModel);
 		}
@@ -4340,8 +4345,8 @@ public class FDPromotionManagerNewDAO {
 	}
 	
 	private static String INSERT_PROMO_CART_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cart_strategy"
-		+ " (id, promotion_id, content_type, content_id)"
-		+ " select cust.SYSTEM_SEQ.nextval, ID, ?, ? from cust.promotion_new where batch_id = ?";
+		+ " (id, promotion_id, content_type, content_id, CONTENT_SET_NUM)"
+		+ " select cust.SYSTEM_SEQ.nextval, ID, ?, ?,? from cust.promotion_new where batch_id = ?";
 
 	private static void storeCartStrategyForBatch(Connection conn, String batchId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -4368,6 +4373,7 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(index++, object.getContentType().getName());
 				ps.setString(index++, object.getContentId());
 				ps.setString(index++, batchId);
+				ps.setInt(index++, object.getContent_set_num());
 				ps.addBatch();
 			}			
 		}

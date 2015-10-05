@@ -90,6 +90,12 @@
 						<div class="fleft"><textarea id="eligibleSku" name="eligibleSku" rows="3" cols="30" class="w600px"><%= elgSkusCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-separated SKUs</div>
 					</td>
 				</tr>
+					<tr>
+					<td class="promo_detail_label">AND</td>
+					<td class="alignL vTop padL8R16">
+						<div class="fleft"><textarea id="eligibleCombinedSku" name="eligibleCombinedSku" rows="3" cols="30" class="w600px"><%= elgCombinedSkusCart.toString() %></textarea></div>
+					</td>
+				</tr>
 				
 			</table>
 		</td>

@@ -333,6 +333,7 @@
 		List<FDPromoContentModel> dpcdBrandsCart = new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdBrandsExcludedCart = new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdSkusCart =  new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dcpdCombinedSkusCart =  new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdSkusExcludedCart = new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdRecipesCart = new ArrayList<FDPromoContentModel>();
 		List<FDPromoContentModel> dpcdExcludedFromSubtotal = new ArrayList<FDPromoContentModel>(); //used in cart requirement
@@ -342,6 +343,7 @@
 		StringBuffer elgBrndsCart = new StringBuffer();
 		StringBuffer inElgBrndsCart = new StringBuffer();
 		StringBuffer elgSkusCart = new StringBuffer();
+		StringBuffer elgCombinedSkusCart = new StringBuffer();
 		StringBuffer inElgSkusCart = new StringBuffer();
 		StringBuffer recpsCart = new StringBuffer();
 		StringBuffer excFromSubtotalCart = new StringBuffer();
@@ -371,9 +373,15 @@
 						}else if( EnumDCPDContentType.RECIPE.equals(tempDpcd.getContentType()) ) {
 							dpcdRecipesCart.add(tempDpcd);
 							recpsCart.append(tempDpcd.getContentId()).append(",");
-						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
-							dpcdSkusCart.add(tempDpcd);
-							elgSkusCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType())){ 
+								if(null==tempDpcd.getContent_set_num() || 0==tempDpcd.getContent_set_num() || 1==tempDpcd.getContent_set_num()) {
+									dpcdSkusCart.add(tempDpcd);
+									elgSkusCart.append(tempDpcd.getContentId()).append(",");
+								}
+								else if(2 == tempDpcd.getContent_set_num()){
+									dcpdCombinedSkusCart.add(tempDpcd);
+									elgCombinedSkusCart.append(tempDpcd.getContentId()).append(",");
+								}
 						}
 					}
 				}

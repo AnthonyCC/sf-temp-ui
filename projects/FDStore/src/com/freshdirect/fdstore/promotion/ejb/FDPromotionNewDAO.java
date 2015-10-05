@@ -1509,11 +1509,11 @@ public class FDPromotionNewDAO {
 		return cartStrategy;
 	}
 	
-	private final static String GET_CART_STRATEGY_DATA = "select pcs.id, pcs.promotion_id, pcs.content_type, pcs.content_id from cust.PROMO_CART_STRATEGY pcs, " +
+	private final static String GET_CART_STRATEGY_DATA = "select pcs.id, pcs.promotion_id, pcs.content_type, pcs.content_id, pcs.content_set_num from cust.PROMO_CART_STRATEGY pcs, " +
 	"(SELECT ID FROM CUST.PROMOTION_NEW where status STATUSES and (expiration_date > (sysdate-7) " +
 	"or expiration_date is null) and redemption_code is null) p where p.ID = pcs.PROMOTION_ID";
 
-	private final static String GET_MODIFIED_ONLY_CART_STRATEGY_DATA = "select pcs.id, pcs.promotion_id, pcs.content_type, pcs.content_id from cust.PROMO_CART_STRATEGY pcs, " +
+	private final static String GET_MODIFIED_ONLY_CART_STRATEGY_DATA = "select pcs.id, pcs.promotion_id, pcs.content_type, pcs.content_id, pcs.content_set_num from cust.PROMO_CART_STRATEGY pcs, " +
 	"(SELECT ID  FROM CUST.PROMOTION_NEW where modify_date > ? ) p where p.ID = pcs.PROMOTION_ID";
 	
 
@@ -1549,17 +1549,23 @@ public class FDPromotionNewDAO {
 
 	private static void populateCartStrategy(ResultSet rs, CartStrategy strategy) throws SQLException {
 		String rawContentType = rs.getString("content_type");
+		Integer contentSetNum = rs.getInt("content_set_num");
 		final EnumDCPDContentType contentType =EnumDCPDContentType.getEnum(rawContentType);
+
+		if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)) {
+			strategy.addContent(contentType.getName(), rs.getString("content_id"));
+		}
 		Set<String> set = strategy.getDcpdData().get(EnumDCPDContentType.getEnum(rawContentType));
 		if(null == set){
 			set = new HashSet<String>();
 		}
 
-		if(EnumDCPDContentType.DEPARTMENT.equals(contentType) || EnumDCPDContentType.CATEGORY.equals(contentType)) {
-			strategy.addContent(contentType.getName(), rs.getString("content_id"));
-		}
 		set.add(rs.getString("content_id"));
 		strategy.getDcpdData().put(EnumDCPDContentType.getEnum(rawContentType),set);
+		
+		if(2 == contentSetNum && EnumDCPDContentType.SKU.equals(contentType)){
+			strategy.getCombinationSku().add(rs.getString("content_id"));
+		}
 	}
 	
 	

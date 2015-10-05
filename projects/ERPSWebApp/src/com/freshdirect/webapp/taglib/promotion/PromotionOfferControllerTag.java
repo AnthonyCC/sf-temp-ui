@@ -581,7 +581,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				dcpdData.add(contentModel);
 			}
 		}
-		String eligibleSku = NVL.apply(request.getParameter("eligibleSku"), "").trim();
+		String eligibleSku = NVL.apply(request.getParameter("eligibleSku"), "").trim();		
 		if(!"".equals(eligibleSku)){
 			String[] eligibleSkuArr = eligibleSku.split(",");
 			for (int i = 0; i < eligibleSkuArr.length; i++) {
@@ -593,9 +593,28 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				else
 					contentModel.setExcluded(false);
 				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setContent_set_num(1);
 				dcpdData.add(contentModel);
 			}
 		}
+		
+		String eligibleCombinedSku = NVL.apply(request.getParameter("eligibleCombinedSku"), "").trim();
+		if(!"".equals(eligibleCombinedSku)){
+			String[] eligibleCombinedSkuArr = eligibleCombinedSku.split(",");
+			for (int i = 0; i < eligibleCombinedSkuArr.length; i++) {
+				FDPromoContentModel contentModel = new FDPromoContentModel();
+				contentModel.setContentType(EnumDCPDContentType.SKU);
+				contentModel.setContentId(eligibleCombinedSkuArr[i].trim());
+				if("on".equals(NVL.apply(request.getParameter("isInelgSkus"), "off")))
+						contentModel.setExcluded(true);		
+				else
+					contentModel.setExcluded(false);
+				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setContent_set_num(2);
+				dcpdData.add(contentModel);
+			}
+		}
+		
 		String eligibleBrand = NVL.apply(request.getParameter("eligibleBrand"), "").trim();
 		if(!"".equals(eligibleBrand)){
 			String[] eligibleBrandArr = eligibleBrand.split(",");

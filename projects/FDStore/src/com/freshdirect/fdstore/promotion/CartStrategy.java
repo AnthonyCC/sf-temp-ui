@@ -25,6 +25,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 	private int minSkuQuantity;
 	//Will contain only SKU and BRAND types.
 	private Map<EnumDCPDContentType, Set<String>> dcpdData = new HashMap<EnumDCPDContentType, Set<String>>();
+	private Set<String> combinationSku = new HashSet<String>();
 	private Double totalDcpdSubtotal;
 	private Double cartDcpdSubtotal = 0.0;
 	private FDMinDCPDTotalPromoData minDcpdTotalPromoData = new FDMinDCPDTotalPromoData();
@@ -49,6 +50,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		final Set<ContentKey> contentKeys = getContentKeys();
 		
 		int qualifiedSku=0;
+		int qualifiedCombinationSku = 0;
 		int allowORdeny = PromotionStrategyI.RESET;
 		FDCartModel cart = context.getShoppingCart();
 		int nonQualifiedSku = 0;
@@ -66,21 +68,36 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 								allowORdeny = evaluate(cartLine, promotionCode, context);
 							if(PromotionStrategyI.ALLOW != allowORdeny){
 								Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
+								if(null!=skuSet && combinationSku.size()>0)
+								skuSet.removeAll(combinationSku);
 								if(null != skuSet && skuSet.contains(cartLine.getSkuCode())){
 									qualifiedSku += cartLine.getQuantity();
+								}else if(null != combinationSku && combinationSku.contains(cartLine.getSkuCode())){
+									qualifiedCombinationSku += cartLine.getQuantity();
 								}else {
 									nonQualifiedSku++;
 								}
 							}
-							if(qualifiedSku >= minSkuQuantity) {
+							if(combinationSku.size() > 0){
+							if(qualifiedSku > 0 && qualifiedCombinationSku > 0 && (qualifiedSku + qualifiedCombinationSku) >= minSkuQuantity) {
 								allowORdeny = PromotionStrategyI.ALLOW;
 								break;
+								}
+							}
+							else{
+								if(qualifiedSku > 0 && qualifiedSku > minSkuQuantity){
+									allowORdeny = PromotionStrategyI.ALLOW;
+									break;
+								}
 							}
 						}
-						if(nonQualifiedSku == orderLines.size() || qualifiedSku < minSkuQuantity)
+						if(nonQualifiedSku == orderLines.size() || (qualifiedSku+qualifiedCombinationSku) < minSkuQuantity)
 							allowORdeny = PromotionStrategyI.DENY; 
 					}else{
 						//if the cart is empty, deny the promotion
+						allowORdeny = PromotionStrategyI.DENY;
+					}
+					if(combinationSku.size() > 0 && (qualifiedSku ==0 || qualifiedCombinationSku == 0)){
 						allowORdeny = PromotionStrategyI.DENY;
 					}
 				}
@@ -171,6 +188,15 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 
 	public void setCartDcpdSubtotal(Double cartDcpdSubtotal) {
 		this.cartDcpdSubtotal = cartDcpdSubtotal;
+	}
+
+		
+	public Set<String> getCombinationSku() {
+		return combinationSku;
+	}
+
+	public void setCombinedSku(Set<String> combinationSku) {
+		this.combinationSku = combinationSku;
 	}
 
 	public FDMinDCPDTotalPromoData getMinDcpdTotalPromoData() {
