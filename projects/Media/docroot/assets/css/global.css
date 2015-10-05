@@ -1347,13 +1347,13 @@ div.control, div.slotRow, div.time {
 		line-height: 1px;
 	}
 	.dotted_separator_h {
-		background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+		background: url("/media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
 		height: 1px;
 		padding: 0;
 		overflow: hidden;
 	}
 	.dotted_separator_v {
-		background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
+		background: url("/media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
 		width: 1px;
 		padding: 0;
 	}
@@ -1365,14 +1365,14 @@ div.control, div.slotRow, div.time {
 	}
 	
 .dotted_separator_h {
-	background: url("../../media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
+	background: url("/media_stat/images/layout/dot_grey_h.gif") repeat-x scroll left top transparent;
 	height: 1px;
 	padding: 0;
 	overflow: hidden;
 }
 
 .dotted_separator_v {
-	background: url("../../media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
+	background: url("/media_stat/images/layout/dot_grey_v.gif") repeat-y scroll left center transparent;
 	width: 1px;
 	padding: 0;
 }
@@ -1807,7 +1807,7 @@ div.control, div.slotRow, div.time {
 		background: none;
 	}
 	.ui-widget-overlay {
-		background: #fff url('../../../assets/css/common/jquery-ui_base/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x;
+		background: #fff url('../../../common/jquery-ui_base/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x;
 		filter:Alpha(Opacity=80); 
 		opacity: 0.8;
 	}
