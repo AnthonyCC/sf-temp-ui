@@ -471,26 +471,6 @@
       </script>
     </div>
 
-<%-- template
-
-    <div id="FD_" class="method">
-      <h3 class="method-title"></h3>
-      <p class="description">
-      </p>
-      <h4>Parameters</h4>
-      <dl>
-        <dt></dt>
-        <dd></dd>
-        <dt class="optional"></dt>
-        <dd></dd>
-      </dl>
-      <pre class="prettyprint example">
-      </pre>
-      <script>
-      </script>
-    </div>
---%>
-
   </div>
 
   <div id="FD_common" class="module">
@@ -577,6 +557,26 @@
       </script>
     </div>
   </div>
+
+<%-- template
+
+    <div id="FD_" class="method">
+      <h3 class="method-title"></h3>
+      <p class="description">
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt></dt>
+        <dd></dd>
+        <dt class="optional"></dt>
+        <dd></dd>
+      </dl>
+      <pre class="prettyprint example">
+      </pre>
+      <script>
+      </script>
+    </div>
+--%>
 
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </body>
