@@ -52,8 +52,16 @@
   </style>
 
   <jwr:script src="/fdlibs.js"  useRandomParam="false" />
+
 </head>
 <body>
+  <!-- in real use cases these should be at the bottom of BODY --!>
+  <soy:import packageName="common"/>
+
+  <jwr:script src="/fdmodules.js"  useRandomParam="false" />
+  <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+  <jwr:script src="/fdcommon.js"  useRandomParam="false" />
+
   <h1>JS widget test page</h1>
 
   <div id="FD_utils" class="module">
@@ -101,6 +109,7 @@
         console.log(FreshDirect.utils.discover('FreshDirect.testpage.widgets'));
       </script>
     </div>
+
     <div id="FD_utils_register" class="method">
       <h3 class="method-title">register()</h3>
       <p class="description">
@@ -243,57 +252,6 @@
         }, FreshDirect);
         FreshDirect.utils.initModule("testpage.widgets.moduleWInit", FreshDirect, "testpage", "1.0");
       </script>
-        <div id="FD_utils_mknamespace" class="method">
-          <h3 class="object-title">common.signalTarget</h3>
-          <p class="description">
-          This is a base class for the general widget 'class'. This class can listen to a Dispatcher signal and when it notices a signal it passes the provided data to a callback.
-          </p>
-          <p>Notice: Do NOT use this class as a base class for your widgets. Use FreshDirect.common.widget instead which is another abstraction on top of this. Example is only here for showcasing!</p>
-          <pre class="prettyprint example">
-              var widget = Object.create(fd.common.signalTarget, {
-                signal: {
-                  value: 'login' // listen for data under login key
-                },
-                callback:{
-                  value:function( value ) {
-                    console.log(value) // when a signal sent to 'login' the data arrives here
-                  }
-                }
-                ... more options here ...
-              };
-              widget.listen(); // needed to call this manually to actually start listening
-          </pre>
-          <script>
-          </script>
-        </div>
-        <div id="FD_utils_mknamespace" class="method">
-          <h3 class="object-title">common.widget</h3>
-          <p class="description">
-          This is a base class for your widgets. Inherit from this object to create your own widgets.
-          </p>
-          <pre class="prettyprint example">
-              var minimalWidget = Object.create(fd.modules.common.widget, {
-                signal : {
-                  value: 'login'
-                },
-                template: {
-                  value: soyTemplateHere
-                },
-                placeholder: {
-                  value: 'body'
-                },
-                render:{
-                  value:function(data){
-                    // overwrite this only if you need to control actual rendering
-                    // otherwise it happens automatically on signal
-                  }
-                },
-              }
-              minimalWidget.listen(); // needed to call this manually to actually start listening
-          </pre>
-          <script>
-          </script>
-        </div>
     </div>
 
     <div id="FD_getActiveFeaturesFromCookie" class="method">
@@ -535,11 +493,91 @@
 
   </div>
 
-  <soy:import packageName="common"/>
+  <div id="FD_common" class="module">
+    <h2 class="module-title">FreshDirect.common (fd/common/**.js)</h2>
 
-  <jwr:script src="/fdmodules.js"  useRandomParam="false" />
-  <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
-  <jwr:script src="/fdcommon.js"  useRandomParam="false" />
+    <div id="FD_common_dispatcher_signal" class="method">
+      <h3 class="method-title">dispatcher.signal(to, body)</h3>
+      <p class="description">
+      A "signal" is the base idea of our widget system. A signal is a simple string. Through the system we can
+      pass JSON data through these "signals" as keys. Widgets can listen to these signals to get the appropriate data.
+      </p>
+      <p class="description">
+      Good to know: Name your signals according to your JSON structure. For example, if a "login" widget would get its data
+      from the 'loginData' field from the JSON returned by /api/example/login, then it's good to name the signal as 'loginData'. This way an automation can easily separate the returned JSON by fields and automatically refresh your widget.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>to</dt>
+        <dd>Name of the signal</dd>
+        <dt class="optional">body</dt>
+        <dd>Regular JSON data (or null)</dd>
+      </dl>
+      <pre class="prettyprint example">
+        FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
+      </pre>
+      <script>
+        // FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
+        // FreshDirect.common.dispatcher.value.onValue(function(e){
+        //   console.log(e);
+        // });
+      </script>
+    </div>
+
+    <div id="FD_common_signalTarget" class="method">
+      <h3 class="object-title">common.signalTarget</h3>
+      <p class="description">
+      This is a base class for the general widget 'class'. This class can listen to a Dispatcher signal and when it notices a signal it passes the provided data to a callback.
+      </p>
+      <p>Notice: Do NOT use this class as a base class for your widgets. Use FreshDirect.common.widget instead which is another abstraction on top of this. Example is only here for showcasing!</p>
+      <pre class="prettyprint example">
+          var widget = Object.create(fd.common.signalTarget, {
+            signal: {
+              value: 'login' // listen for data under login key
+            },
+            callback:{
+              value:function( value ) {
+                console.log(value) // when a signal sent to 'login' the data arrives here
+              }
+            }
+            ... more options here ...
+          };
+          widget.listen(); // needed to call this manually to actually start listening
+      </pre>
+      <script>
+      </script>
+    </div>
+
+    <div id="FD_common_widget" class="method">
+      <h3 class="object-title">common.widget</h3>
+      <p class="description">
+      This is a base class for your widgets. Inherit from this object to create your own widgets.
+      </p>
+      <pre class="prettyprint example">
+          var minimalWidget = Object.create(fd.modules.common.widget, {
+            signal : {
+              value: 'login'
+            },
+            template: {
+              value: soyTemplateHere
+            },
+            placeholder: {
+              value: 'body'
+            },
+            render:{
+              value:function(data){
+                // overwrite this only if you need to control actual rendering
+                // otherwise it happens automatically on signal
+              }
+            },
+          }
+          minimalWidget.listen(); // needed to call this manually to actually start listening
+      </pre>
+      <script>
+      </script>
+    </div>
+  </div>
+
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </body>
 </html>
