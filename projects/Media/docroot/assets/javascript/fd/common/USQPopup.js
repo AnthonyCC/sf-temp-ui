@@ -113,8 +113,12 @@ var FreshDirect = FreshDirect || {};
 		}
   }
   
-  USQPopup.state=Bacon.mergeAll([$(document).asEventStream('click','#USQAcceptButton').map(true),
-                                 $(document).asEventStream('click','#USQCancelButton').map(false)]).toProperty(FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1'));
+  try {
+    USQPopup.state=Bacon.mergeAll([$(document).asEventStream('click','#USQAcceptButton').map(true),
+                                   $(document).asEventStream('click','#USQCancelButton').map(false)]).toProperty(FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1'));
+  } catch (e) {
+    USQPopup.state=$(document).asEventStream('click','#USQAcceptButton').map(true);
+  }
 
   USQPopup.state.onValue(function(accepted){
     if(accepted) {

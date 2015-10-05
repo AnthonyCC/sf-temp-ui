@@ -3,6 +3,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
 
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<treshold value="debug"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{DATE} %t %p] %c{3} - %m %n" />
 		</layout>
@@ -24,6 +25,18 @@
 		<priority value="info" />
 	</category>
 
+	<category name="com.freshdirect.erp.ejb.ErpGrpInfoDAO">
+		<priority value="OFF"/>
+	</category>
+
+	<category name="com.freshdirect.cms.classgenerator.ContentNodeGenerator">
+		<priority value="OFF"/>
+	</category>
+
+	<category name="com.freshdirect.webapp.soy.SoyTemplateEngine">
+		<priority value="OFF"/>
+	</category>
+
 	<category name="org">
 		<priority value="info" />
 	</category>
@@ -39,7 +52,7 @@
 		<priority value="error" />
 	</category>
 	<category name="com.scarabresearch">
-		<priority value="debug" />
+		<priority value="off" />
 	</category>
 	<category name="httpclient">
 		<priority value="info" />
@@ -65,3 +78,4 @@
 	</root>
 
 </log4j:configuration>
+

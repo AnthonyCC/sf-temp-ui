@@ -962,6 +962,12 @@
        <div class="pageDesc">Gift Card Givex Number encrypt and decrypt page</div>
     </div>
 
+	<div class="tag javascript widgets">
+		<div class="pageName"><span>JavaScript Widgets</span></div>
+		<div class="link"><a href="/test/jswidgets/index.jsp">/test/jswidgets/index.jsp</a></div>
+		<div class="pageDesc">Demo page for our JavaScript widgets.</div>
+	</div>
+	
 	<hr />
 </div>
 
