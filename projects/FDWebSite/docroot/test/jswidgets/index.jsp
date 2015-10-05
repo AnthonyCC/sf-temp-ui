@@ -8,6 +8,32 @@
   <jwr:style src="/grid.css" media="all" />
   <jwr:style src="/global.css" media="all" />
   <style>
+    .module{
+      margin:20px;
+    }
+
+    .module-title{
+      font-size:26px;
+      background-color:antiquewhite;
+    }
+
+    .module-title:before{
+      content: 'Module: ';
+    }
+
+    .method{
+      background-color:aliceblue;
+      margin:25px;
+    }
+
+    .method-title{
+      font-size:24px;
+    }
+
+    .method-title:before{
+      content:'Function: ';
+    }
+
     dt.optional {
       font-style: italic;
     }
@@ -23,11 +49,11 @@
   <h1>JS widget test page</h1>
 
   <div id="FD_utils" class="module">
-    <h2>FreshDirect.utils (fd/utils.js)</h2>
+    <h2 class="module-title">FreshDirect.utils (fd/utils.js)</h2>
     <p>aka. <code>FreshDirect.modules.common.utils</code></p>
 
     <div id="FD_utils_mknamespace" class="method">
-      <h3>mknamespace()</h3>
+      <h3 class="method-title">mknamespace()</h3>
       <p class="description">
       Create a namespace.
       </p>
@@ -38,7 +64,7 @@
         <dt class="optional">container</dt>
         <dd>The container to put the namespace into</dd>
       </dl>
-      <pre class="example">
+      <pre class="prettyprint example">
         FreshDirect.utils.mknamespace("testpage.widgets", FreshDirect);
         // FreshDirect.testpage.widgets = {};
       </pre>
@@ -49,7 +75,7 @@
     </div>
 
     <div id="FD_utils_register" class="method">
-      <h3>register()</h3>
+      <h3 class="method-title">register()</h3>
       <p class="description">
       Register an object under a given namespace.
       </p>
@@ -68,7 +94,7 @@
         <dt class="optional">version</dt>
         <dd>Version of the module for the given feature [partial rollout related]</dd>
       </dl>
-      <pre class="example">
+      <pre class="prettyprint example">
         FreshDirect.utils.register("testpage.widgets", "logSomething", {
           log1: function () {console.log("test1");},
           log2: function () {console.log("test2");}
@@ -89,7 +115,7 @@
     </div>
 
     <div id="FD_utils_registerModule" class="method">
-      <h3>registerModule()</h3>
+      <h3 class="method-title">registerModule()</h3>
       <p class="description">
       Register a module under a given namespace.<br/>
       Basically same as <a href="#FD_utils.register">register()</a>, but if the given object is a function,
@@ -98,7 +124,7 @@
       <code>fn(root, feature, version)</code><br/>
       This can be useful for partial rollout related features. The default module will determined by the feature framework (see later) or if the given featrue is not in the system yet then the first registered module will be the default.
       </p>
-      <pre class="example">
+      <pre class="prettyprint example">
         FreshDirect.utils.registerModule("testpage.widgets", "logModule", function (r, f, v) {
           return {
             log: function () {console.log('logger for '+f+' feature (version '+v+')');}
@@ -118,7 +144,7 @@
     </div>
 
     <div id="FD_utils_module" class="method">
-      <h3>module()</h3>
+      <h3 class="method-title">module()</h3>
       <p class="description">
       Gets the registered module with the given version.<br/>
       While the default version of the registered modules can be accessed easily, this method is used to access the
@@ -135,7 +161,7 @@
         <dt class="optional">version</dt>
         <dd>Feature version</dd>
       </dl>
-      <pre class="example">
+      <pre class="prettyprint example">
         FreshDirect.utils.registerModule("testpage.widgets", "logModule", function (r, f, v) {
           return {
             log: function () {console.log('enhanced logger for '+f+' feature (version '+v+')');}
@@ -163,7 +189,7 @@
 <%-- template
 
     <div id="FD_" class="method">
-      <h3></h3>
+      <h3 class="method-title"></h3>
       <p class="description">
       </p>
       <h4>Parameters</h4>
@@ -173,7 +199,7 @@
         <dt class="optional"></dt>
         <dd></dd>
       </dl>
-      <pre class="example">
+      <pre class="prettyprint example">
       </pre>
       <script>
       </script>
@@ -186,5 +212,6 @@
 
   <jwr:script src="/fdmodules.js"  useRandomParam="false" />
   <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </body>
 </html>
