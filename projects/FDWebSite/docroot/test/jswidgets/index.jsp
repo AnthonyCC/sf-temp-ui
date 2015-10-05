@@ -186,6 +186,41 @@
       </script>
     </div>
 
+    <div id="FD_common_dispatcher" class="module">
+        <h2 class="module-title">FreshDirect.common.dispatcher (fd/common/dispatcher.js)</h2>
+        <div id="FD_utils_mknamespace" class="method">
+          <h3 class="method-title">signal(to, body)</h3>
+          <p class="description">
+          A "signal" is the base idea of our widget system. A signal is a simple string. Through the system we can
+          pass JSON data through these "signals" as keys. Widgets can listen to these signals to get the appropriate data.
+          </p>
+          <p class="description">
+          Good to know: Name your signals according to your JSON structure. For example, if a "login" widget would get its data
+          from the 'loginData' field from the JSON returned by /api/example/login, then it's good to name the signal as 'loginData'. This way an automation can easily separate the returned JSON by fields and automatically refresh your widget.
+          </p>
+          <h4>Parameters</h4>
+          <dl>
+            <dt>to</dt>
+            <dd>Name of the signal</dd>
+            <dt class="optional">body</dt>
+            <dd>Regular JSON data (or null)</dd>
+          </dl>
+          <pre class="prettyprint example">
+            FreshDirect.common.dispatcher.value.onValue(function(e){
+              console.log(e); // Hello World
+            });
+            FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
+          </pre>
+          <script>
+            // FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
+            // FreshDirect.common.dispatcher.value.onValue(function(e){
+            //   console.log(e);
+            // });
+          </script>
+        </div>
+    </div>
+
+
 <%-- template
 
     <div id="FD_" class="method">
@@ -212,6 +247,7 @@
 
   <jwr:script src="/fdmodules.js"  useRandomParam="false" />
   <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+  <jwr:script src="/fdcommon.js"  useRandomParam="false" />
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </body>
 </html>
