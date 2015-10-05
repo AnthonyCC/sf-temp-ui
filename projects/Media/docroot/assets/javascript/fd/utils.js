@@ -1,6 +1,7 @@
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
+  "use strict";
 
   var utils = {};
 
@@ -112,7 +113,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   utils.getActiveFeatures = function () {
-    return (fd.features && fd.features.active) || utils.getActiveFeaturesFromCookie();
+    return fd.features && fd.features.active || utils.getActiveFeaturesFromCookie();
   };
 
   utils.getActive = function (feature) {
@@ -131,13 +132,13 @@ var FreshDirect = FreshDirect || {};
         i = 1,
         key, from;
 
-    if (obj === null || typeof(obj) !== 'object' || length === i) {
+    if (obj === null || typeof obj !== 'object' || length === i) {
       return obj;
     }
 
     for (; i < length; i++) {
       if ((from = arguments[i]) !== null) {
-        for (key in from) {
+        for (key in from) if (from.hasOwnProperty(key)) {
           obj[key] = from[key];
         }
       }
@@ -146,6 +147,7 @@ var FreshDirect = FreshDirect || {};
     return obj;
   };
 
+  // deprecated, use .bind()
   utils.proxy = function (fn, context) {
     var proxy = function () {
           return fn.apply(context, arguments);
@@ -168,20 +170,22 @@ var FreshDirect = FreshDirect || {};
       hash = h.split('=');
       vars[hash[0]] = window.decodeURIComponent(hash[1]);
     });
-    
+
     return vars;
   };
 
+  // deprecated use getParameters()[name] instead
   utils.getParameterByName = function (name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regexS = "[\\?&]" + name + "=([^&#]*)";
     var regex = new RegExp(regexS);
     var results = regex.exec(window.location.search);
+
     if (results === null) {
       return "";
-    } else {
-      return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
+
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
   };
 
 
@@ -190,7 +194,7 @@ var FreshDirect = FreshDirect || {};
 
     if (days) {
       date = new Date();
-      date.setTime(date.getTime()+(days*24*60*60*1000));
+      date.setTime(date.getTime() + days*24*60*60*1000);
       expires = "; expires="+date.toGMTString();
     }
     document.cookie = name+"="+value+expires+"; path=/";
@@ -241,7 +245,7 @@ var FreshDirect = FreshDirect || {};
         i, len;
 
     if (!ns) {
-      return;
+      return null;
     }
 
     for (i = 0, len = ns.length; i < len; i++) {
