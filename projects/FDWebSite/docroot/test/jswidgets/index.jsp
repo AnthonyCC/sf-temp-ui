@@ -34,6 +34,14 @@
       content:'Function: ';
     }
 
+    .object-title{
+      font-size:24px;
+    }
+
+    .object-title:before{
+      content:'Object: ';
+    }
+
     dt.optional {
       font-style: italic;
     }
@@ -187,9 +195,9 @@
     </div>
 
     <div id="FD_common_dispatcher" class="module">
-        <h2 class="module-title">FreshDirect.common.dispatcher (fd/common/dispatcher.js)</h2>
+        <h2 class="module-title">FreshDirect.common (fd/common/**.js)</h2>
         <div id="FD_utils_mknamespace" class="method">
-          <h3 class="method-title">signal(to, body)</h3>
+          <h3 class="method-title">dispatcher.signal(to, body)</h3>
           <p class="description">
           A "signal" is the base idea of our widget system. A signal is a simple string. Through the system we can
           pass JSON data through these "signals" as keys. Widgets can listen to these signals to get the appropriate data.
@@ -206,9 +214,6 @@
             <dd>Regular JSON data (or null)</dd>
           </dl>
           <pre class="prettyprint example">
-            FreshDirect.common.dispatcher.value.onValue(function(e){
-              console.log(e); // Hello World
-            });
             FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
           </pre>
           <script>
@@ -216,6 +221,57 @@
             // FreshDirect.common.dispatcher.value.onValue(function(e){
             //   console.log(e);
             // });
+          </script>
+        </div>
+        <div id="FD_utils_mknamespace" class="method">
+          <h3 class="object-title">common.signalTarget</h3>
+          <p class="description">
+          This is a base class for the general widget 'class'. This class can listen to a Dispatcher signal and when it notices a signal it passes the provided data to a callback.
+          </p>
+          <p>Notice: Do NOT use this class as a base class for your widgets. Use FreshDirect.common.widget instead which is another abstraction on top of this. Example is only here for showcasing!</p>
+          <pre class="prettyprint example">
+              var widget = Object.create(fd.common.signalTarget, {
+                signal: {
+                  value: 'login' // listen for data under login key
+                },
+                callback:{
+                  value:function( value ) {
+                    console.log(value) // when a signal sent to 'login' the data arrives here
+                  }
+                }
+                ... more options here ...
+              };
+              widget.listen(); // needed to call this manually to actually start listening
+          </pre>
+          <script>
+          </script>
+        </div>
+        <div id="FD_utils_mknamespace" class="method">
+          <h3 class="object-title">common.widget</h3>
+          <p class="description">
+          This is a base class for your widgets. Inherit from this object to create your own widgets.
+          </p>
+          <pre class="prettyprint example">
+              var minimalWidget = Object.create(fd.modules.common.widget, {
+                signal : {
+                  value: 'login'
+                },
+                template: {
+                  value: soyTemplateHere
+                },
+                placeholder: {
+                  value: 'body'
+                },
+                render:{
+                  value:function(data){
+                    // overwrite this only if you need to control actual rendering
+                    // otherwise it happens automatically on signal
+                  }
+                },
+              }
+              minimalWidget.listen(); // needed to call this manually to actually start listening
+          </pre>
+          <script>
           </script>
         </div>
     </div>
