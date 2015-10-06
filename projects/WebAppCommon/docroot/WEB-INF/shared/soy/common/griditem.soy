@@ -300,7 +300,7 @@
 <li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
+      <img src="{$productImage}" alt="" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
       {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
     </div>
   </div>

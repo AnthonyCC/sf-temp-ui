@@ -221,6 +221,10 @@
   cursor: pointer;
 }
 
+#transactionalPopup .discontinued .portrait-item-productimage {
+  cursor: default;
+}
+
 .unavailable .portrait-item-productimage {
   opacity: .5;
   filter: alpha(opacity=50);

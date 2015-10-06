@@ -338,7 +338,11 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '#'+transactionalPopup.popupId+' button.close', transactionalPopup.close.bind(transactionalPopup));
 
   $(document).on('click', '#'+transactionalPopup.popupId+' [data-product-url]', function (e) {
-    window.location.href = $(e.currentTarget).data('product-url');
+    var product = $(e.currentTarget).closest('[data-component="product"]');
+
+    if (!product.hasClass('discontinued')) {
+      window.location.href = $(e.currentTarget).data('product-url');
+    }
   });
 
 
