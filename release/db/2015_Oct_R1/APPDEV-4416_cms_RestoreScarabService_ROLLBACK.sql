@@ -195,3 +195,32 @@ insert into cust.ss_variant_assignment values ('C12', sysdate, 'brws_prd_list_ce
 insert into cust.ss_variant_assignment values ('C18', sysdate, 'brws_prd_list_certona');
 insert into cust.ss_variant_assignment values ('C19', sysdate, 'brws_prd_list_certona');
 insert into cust.ss_variant_assignment values ('C20', sysdate, 'brws_prd_list_certona');
+
+
+-------------------------------------------------------------------------------
+--
+-- Site Feature: SRCH_RLTD
+-- Use Config: APPDEV-4068 (was APPDEV-2067)
+--
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C1',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C3',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C4',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C5',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C7',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C8',  sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C13', sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C14', sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C15', sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C16', sysdate, 'srch_rltd');
+INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C17', sysdate, 'srch_rltd');
+
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'srch_certona_rltd');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'srch_certona_rltd');
+
