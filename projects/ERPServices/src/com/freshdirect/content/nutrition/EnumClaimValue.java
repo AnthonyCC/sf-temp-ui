@@ -33,6 +33,11 @@ public class EnumClaimValue implements NutritionValueEnum {
 	public final static EnumClaimValue NUTRITION_4MM_HIGHFIBER 		= new EnumClaimValue("4MM_HIGHFIBER", "High Fiber", 2);
 	public final static EnumClaimValue NUTRITION_4MM_SODIUM 		= new EnumClaimValue("4MM_SODIUM", "Sodium-Conscious", 2);
 
+	//[APPDEV-4411]-Add 4 new ERPSy claim options for FDX
+	public final static EnumClaimValue PASTURIZED = new EnumClaimValue("PASTURIZED", "Pasturized", 1);
+	public final static EnumClaimValue FRUCTOSE_CORNSYR = new EnumClaimValue("FRUCTOSE_CORNSYR", "No High Fructose Corn Syrup", 1);
+	public final static EnumClaimValue SULFATE_PARABEN = new EnumClaimValue("SULFATE_PARABEN", "Sulfate & Paraben Free", 1);
+	public final static EnumClaimValue BIO_DYNAMIC = new EnumClaimValue("BIO_DYNAMIC", "Biodynamic", 1);
 
 	private final String code;
     private final String name;
@@ -139,6 +144,12 @@ public class EnumClaimValue implements NutritionValueEnum {
 		types.add( NUTRITION_4MM_WHOLEGRAINS );
 		types.add( NUTRITION_4MM_HIGHFIBER );
 		types.add( NUTRITION_4MM_SODIUM );
+		
+		//[APPDEV-4411]-Add 4 new ERPSy claim options for FDX
+		types.add(PASTURIZED);
+		types.add(FRUCTOSE_CORNSYR);
+		types.add(SULFATE_PARABEN);
+		types.add(BIO_DYNAMIC);
     }
 
     public static List<EnumClaimValue> getValues() {
