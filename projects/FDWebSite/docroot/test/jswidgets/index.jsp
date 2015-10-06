@@ -496,6 +496,27 @@
 
     </div>
 
+    <div id="FD_common_Select" class="method">
+      <h3 class="method-title">Select()</h3>
+      <p class="description">
+      Replace a standard <code>select</code> element to a custom one.<br/>
+      Select elements w/ <code>customselect</code> CSS class will be replaced on page load, or by calling <code>FreshDirect.modules.common.Select.selectize()</code>.
+      </p>
+
+      <div>
+        Example: <br/>
+        <select class="customselect">
+          <option>Apple</option>
+          <option>Banana</option>
+          <option>Fish</option>
+        </select>
+        <script>
+        FreshDirect.modules.common.Select.selectize();
+        </script>
+      </div>
+
+    </div>
+
     <div id="FD_common_dispatcher_signal" class="method">
       <h3 class="method-title">dispatcher.signal(to, body)</h3>
       <p class="description">

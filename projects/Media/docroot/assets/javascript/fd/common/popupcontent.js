@@ -346,6 +346,9 @@ var FreshDirect = FreshDirect || {};
         }
       } else if (align[6] === 'p') {
         var viewContainer = $('.content').first();
+        if (viewContainer.size() === 0) {
+          viewContainer = $(document.body);
+        }
         if (position.left < $(window).scrollLeft()) {
           position.left = $(window).scrollLeft();
         } else if (position.left < viewContainer.offset().left) {
