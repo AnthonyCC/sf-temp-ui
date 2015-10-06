@@ -121,7 +121,7 @@
       Register an object under a given namespace.
       </p>
       <h4>Parameters</h4>
-      <dl
+      <dl>
         <dt>namespace</dt>
         <dd>The target namespace</dd>
         <dt>name</dt>
