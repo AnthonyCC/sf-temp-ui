@@ -541,27 +541,30 @@
     <div id="FD_common_widget" class="method">
       <h3 class="object-title">common.widget</h3>
       <p class="description">
-      This is a base class for your widgets. Inherit from this object to create your own widgets.
+      This is a base class for your widgets. Inherit from this object to create your own widgets. We're using  Soy Templates for rendering in widgets.
+      Below we show a minimal code for creating a new widget. See comments there.
       </p>
       <pre class="prettyprint example">
           var minimalWidget = Object.create(fd.modules.common.widget, {
             signal : {
-              value: 'login'
+              value: 'login' // listen to login signal
             },
             template: {
-              value: soyTemplateHere
+              value: soyTemplateHere // this is a (soy) template function.
             },
             placeholder: {
-              value: 'body'
+              value: 'body' // where to place the rendered template.
             },
             render:{
               value:function(data){
-                // overwrite this only if you need to control actual rendering
-                // otherwise it happens automatically on signal
+                // For every new data sent to 'login' signal,
+                // the widget will automatically render the soy template with the new data to the placeholder
+
+                // Only overwrite this function if you actually need to control rendering somehow
               }
             },
           }
-          minimalWidget.listen(); // needed to call this manually to actually start listening
+          minimalWidget.listen(); // needed to call this manually to actually start listening to signal
       </pre>
       <script>
       </script>
