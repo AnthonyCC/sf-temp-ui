@@ -7,66 +7,7 @@
   <title>JS Widget test page</title>
   <jwr:style src="/grid.css" media="all" />
   <jwr:style src="/global.css" media="all" />
-  <style>
-    .module{
-      margin:20px;
-    }
-
-    .module-title{
-      font-size:26px;
-      background-color:antiquewhite;
-    }
-
-    .module-title:before{
-      content: 'Module: ';
-    }
-
-    .method{
-      background-color:aliceblue;
-      margin:25px;
-    }
-
-    .method-title{
-      font-size:24px;
-    }
-
-    .method-title:before{
-      content:'Function: ';
-    }
-
-    .object-title{
-      font-size:24px;
-    }
-
-    .object-title:before{
-      content:'Object: ';
-    }
-
-    dt.optional {
-      font-style: italic;
-    }
-
-    dt.optional:after {
-      content: " (opt)";
-    }
-
-    .more-space{
-      margin: 10px 0;
-    }
-
-    [fd-toggle-state="disabled"] div{
-      display:none;
-    }
-
-    [fd-toggle-trigger]:after{
-      content: ' \2193'
-    }
-
-    [fd-toggle-state="disabled"] [fd-toggle-trigger]:after{
-      content: ' \2192'
-    }
-  </style>
-
+  <link rel="stylesheet" type="text/css" href="jswidgets.css">
   <jwr:script src="/fdlibs.js"  useRandomParam="false" />
 
 </head>
