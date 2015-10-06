@@ -49,6 +49,10 @@
     dt.optional:after {
       content: " (opt)";
     }
+
+    .more-space{
+      margin: 10px 0;
+    }
   </style>
 
   <jwr:script src="/fdlibs.js"  useRandomParam="false" />
@@ -57,6 +61,7 @@
 <body>
   <!-- in real use cases these should be at the bottom of BODY --!>
   <soy:import packageName="common"/>
+  <soy:import packageName="test"/>
 
   <jwr:script src="/fdmodules.js"  useRandomParam="false" />
   <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
@@ -568,8 +573,89 @@
       </pre>
       <script>
       </script>
+      <p class="description">Here is an <strong>interactive</strong> example for a widget which will set a colour and a text every time you push the button. This example shows how we used to introduce new widgets in the system. </p>
+      <p>This example could be in a separate file named to 'colorWidget.js'. Basically that's the usual overlay of a widget: widget code, event handling, module registration.</p>
+      <pre class="prettyprint example">
+          (function(fd){
+            var WIDGET = fd.modules.common.widget;
+            var $ = fd.libs.$;
+
+            var colorWidget = Object.create(WIDGET, {
+              signal : {
+                value: 'colorMe'
+              },
+              template: {
+                value: test.jsWidgetsColorMe
+              },
+              placeholder: {
+                value: '#colorWidget_example'
+              }
+              // notice: we have not defined 'render' method here, still it works
+            });
+            colorWidget.listen(); // needed to call this manually to actually start listening to signal
+
+            // attaching eventhandlers to document, filtering for the specified element
+            $(document).on('click', '#color-signal-send-button', function(e){
+              var randR = parseInt(Math.random()*255, 10),
+                  randG = parseInt(Math.random()*255, 10),
+                  randB = parseInt(Math.random()*255, 10);
+
+              FreshDirect.common.dispatcher.signal("colorMe", {
+                 r: randR,
+                 g: randG,
+                 b: randB,
+                 text: "Wonderful colours we have! It's rgb(" + randR + ", " + randG + ", " + randB + ")"
+              });
+            });
+
+            // this widget could be referenced through FreshDirect.testpage.widgets.colorWidget
+            fd.modules.common.utils.register("testpage.widgets", "colorWidget", colorWidget, fd);
+          })(FreshDirect);
+      </pre>
+      <button id="color-signal-send-button" class="more-space" type="button">Colorize!!</button>
+      <div id="colorWidget_example"></div>
+      <script>
+          // this could be a separate file named to 'colorWidget.js'
+          // basically that's the usual overlay of a widget: widget code, event handling, module registration
+          (function(fd){
+            var WIDGET = fd.modules.common.widget;
+            var $ = fd.libs.$;
+
+            var colorWidget = Object.create(WIDGET, {
+              signal : {
+                value: 'colorMe'
+              },
+              template: {
+                value: test.jsWidgetsColorMe
+              },
+              placeholder: {
+                value: '#colorWidget_example'
+              }
+              // notice: we have not defined 'render' method here, still it works
+            });
+            colorWidget.listen(); // needed to call this manually to actually start listening to signal
+
+            // attaching eventhandlers to document, filtering for the specified element
+            $(document).on('click', '#color-signal-send-button', function(e){
+              var randR = parseInt(Math.random()*255, 10),
+                  randG = parseInt(Math.random()*255, 10),
+                  randB = parseInt(Math.random()*255, 10);
+
+              FreshDirect.common.dispatcher.signal("colorMe", {
+                 r: randR,
+                 g: randG,
+                 b: randB,
+                 text: "Wonderful colours we have! It's rgb(" + randR + ", " + randG + ", " + randB + ")"
+              });
+            });
+
+            // this widget could be referenced through FreshDirect.testpage.widgets.colorWidget
+            fd.modules.common.utils.register("testpage.widgets", "colorWidget", colorWidget, fd);
+          })(FreshDirect);
+      </script>
+
     </div>
-  </div>
+  </div> <!-- /module -->
 
 <%-- template
 
