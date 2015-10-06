@@ -480,7 +480,7 @@
       <h3 class="method-title">dispatcher.signal(to, body)</h3>
       <p class="description">
       A "signal" is the base idea of our widget system. A signal is a simple string. Through the system we can
-      pass JSON data through these "signals" as keys. Widgets can listen to these signals to get the appropriate data.
+      pass JSON data through these "signals". Widgets can listen to these signals to get the appropriate data.
       </p>
       <p class="description">
       Good to know: Name your signals according to your JSON structure. For example, if a "login" widget would get its data
@@ -494,13 +494,23 @@
         <dd>Regular JSON data (or null)</dd>
       </dl>
       <pre class="prettyprint example">
-        FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
+         document.getElementById("signal-send-button").addEventListener('click', function(e){
+           FreshDirect.common.dispatcher.signal("test", { hello: "Hello World!" }); // send a signal everytime you click the button
+         });
+
+         FreshDirect.common.dispatcher.value.onValue(function(e){ // this will be called everytime when dispatcher gets a signal
+           console.log('dispatcher.signal(to, body) - Dispatcher body for test signal', e);
+         });
       </pre>
+      <div><button id="signal-send-button" type="button">Click Me!</button> Button for sending signal, see console for results</div>
       <script>
-        // FreshDirect.common.dispatcher.signal("test", { test: "Hello World!" });
-        // FreshDirect.common.dispatcher.value.onValue(function(e){
-        //   console.log(e);
-        // });
+         document.getElementById("signal-send-button").addEventListener('click', function(e){
+           FreshDirect.common.dispatcher.signal("test", { hello: "Hello World!" });
+         });
+
+         FreshDirect.common.dispatcher.value.onValue(function(e){
+           console.log('dispatcher.signal(to, body) - Dispatcher body for test signal', e);
+         });
       </script>
     </div>
 
