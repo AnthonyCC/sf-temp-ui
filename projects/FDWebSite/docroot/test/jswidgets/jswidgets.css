@@ -59,3 +59,16 @@ dt.optional:after {
 [fd-toggle-state="disabled"] [fd-toggle-trigger]:after{
   content: ' \2192'
 }
+
+.flex-container{
+  display:flex;
+  flex-direction:row;
+}
+
+#userDisplayWidget,
+#friendsWidget{
+  background:bisque;
+  margin:20px;
+  padding: 20px;
+  outline: 1px solid #000;
+}

@@ -691,6 +691,157 @@
       </script>
 
     </div>
+
+    <div id="FD_common_server" class="method">
+      <h3 class="object-title">common.server</h3>
+      <p class="description">
+      This is a meta-widget which provides server-communication. You can use it to send data to an url and then get back this data separately
+      divided by JSON keys. This means you can send a request and then you should not care about the rest. The response JSON will be splitted up and according to those keys - through the dispatcher - all widgets will be updated. Usually that's why we do not use jQuery.post() or another 3rd party utility to initiate a connection because we do not want widgets handle their own server connection. We don't want to get the data back in a callback. Instead we want to update our widgets according to the response.
+      </p>
+      <pre class="prettyprint example">
+      (function(fd){
+          var WIDGET = fd.modules.common.widget,
+              $ = fd.libs.$,
+              DISPATCHER = fd.common.dispatcher;
+
+          var userDisplay = Object.create(WIDGET, {
+            signal : {
+              value: 'userData'
+            },
+            template: {
+              value: test.jsWidgetsUserDisplay
+            },
+            placeholder: {
+              value: '#userDisplayWidget'
+            }
+          });
+          userDisplay.listen();
+
+          var friends = Object.create(WIDGET, {
+            signal : {
+              value: 'friends'
+            },
+            template: {
+              value: test.jsWidgetsFriends
+            },
+            placeholder: {
+              value: '#friendsWidget'
+            }
+          });
+          friends.listen();
+
+          $(document).on('click', '#user-get-data-button', function(e){
+
+            // sending a server signal to request JSON data
+            DISPATCHER.signal('server',{
+             url: 'sampleUserData.jsp', // REST url
+             type: 'GET'                // could be GET/PUT/POST/HEAD/...
+            });
+
+            // whenever the response comes back, userDisplay widget will be rerendered
+            // if the response contains a json key called 'userData'
+
+            // One plus to notice is that this one request also renders the 'friends' widget
+            // because this is watches for 'friends' signal and our response JSON contains this key
+
+            // NOTICE: there is no additional code for handling the response.
+            // Because we sent a signal to 'server' it is handled automatically.
+          });
+
+          $(document).on('click', '#user-mock-friend-data-button', function(e){
+            // here we send data only to friends widget
+            DISPATCHER.signal('friends',{
+              friendList: [ { "name" : "Joe1" }, { "name" : "Joe2" }, { "name" : "Joe3" } ]
+            });
+          });
+
+          $(document).on('click', '#user-clear-data-button', function(e){
+            // initial state
+            $('#userDisplayWidget').html("User Data Widget");
+            $('#friendsWidget').html("Friends Data Widget");
+          });
+
+          fd.modules.common.utils.register("testpage.widgets", "userDisplay", userDisplay, fd);
+          fd.modules.common.utils.register("testpage.widgets", "friends", friends, fd);
+        })(FreshDirect);
+      </pre>
+      <p>In this <strong>example</strong> we show how you may use common.server to update two widgets at the same time. Get User Data! sends the request to the server. After that watch our widget-system refreshing in action. In addition we added 'Mock Friends...' button to show that you can always update widgets separately as well. Try to play with the clicking order!</p>
+      <button id="user-get-data-button" class="more-space" type="button">Get User Data!</button>
+      <button id="user-mock-friend-data-button" class="more-space" type="button">Mock Friends w. Another Data!</button>
+      <button id="user-clear-data-button" class="more-space" type="button">Initial State!</button>
+      <div class="flex-container">
+        <div id="userDisplayWidget">User Data Widget</div>
+        <div id="friendsWidget">Friends Data Widget</div>
+      </div>
+      <script>
+        (function(fd){
+          var WIDGET = fd.modules.common.widget,
+              $ = fd.libs.$,
+              DISPATCHER = fd.common.dispatcher;
+
+          var userDisplay = Object.create(WIDGET, {
+            signal : {
+              value: 'userData'
+            },
+            template: {
+              value: test.jsWidgetsUserDisplay
+            },
+            placeholder: {
+              value: '#userDisplayWidget'
+            }
+          });
+          userDisplay.listen();
+
+          var friends = Object.create(WIDGET, {
+            signal : {
+              value: 'friends'
+            },
+            template: {
+              value: test.jsWidgetsFriends
+            },
+            placeholder: {
+              value: '#friendsWidget'
+            }
+          });
+          friends.listen();
+
+          $(document).on('click', '#user-get-data-button', function(e){
+
+            // sending a server signal to request JSON data
+            DISPATCHER.signal('server',{
+             url: 'sampleUserData.jsp', // REST url
+             type: 'GET'                // could be GET/PUT/POST/HEAD/...
+            });
+
+            // whenever the response comes back, userDisplay widget will be rerendered
+            // if the response contains a json key called 'userData'
+
+            // One plus to notice is that this one request also renders the 'friends' widget
+            // because this is watches for 'friends' signal and our response JSON contains this key
+
+            // NOTICE: there is no additional code for handling the response.
+            // Because we sent a signal to 'server' it is handled automatically.
+          });
+
+          $(document).on('click', '#user-mock-friend-data-button', function(e){
+            // here we send data only to friends widget
+            DISPATCHER.signal('friends',{
+              friendList: [ { "name" : "Joe1" }, { "name" : "Joe2" }, { "name" : "Joe3" } ]
+            });
+          });
+
+          $(document).on('click', '#user-clear-data-button', function(e){
+            // initial state
+            $('#userDisplayWidget').html("User Data Widget");
+            $('#friendsWidget').html("Friends Data Widget");
+          });
+
+          fd.modules.common.utils.register("testpage.widgets", "userDisplay", userDisplay, fd);
+          fd.modules.common.utils.register("testpage.widgets", "friends", friends, fd);
+        })(FreshDirect);
+      </script>
+    </div>
+
   </div> <!-- /module -->
 
 <%-- template
