@@ -38,7 +38,7 @@ var FreshDirect = FreshDirect || {};
     open: {
       value: function (config) {
 		var target = config.element,
-			align = target.data("tooltipAlign") || 'tc-bc',
+			align = target.data("tooltipalign") || 'tc-bc',
 			body = target.nextAll('[data-component="tooltipContent"]')[0];
 		
 		if(body){

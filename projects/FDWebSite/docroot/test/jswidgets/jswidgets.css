@@ -16,6 +16,10 @@
   margin:25px;
 }
 
+.method.deprecated {
+  opacity: .5;
+}
+
 .method-title{
   font-size:24px;
 }
