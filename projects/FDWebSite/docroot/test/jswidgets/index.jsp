@@ -53,6 +53,18 @@
     .more-space{
       margin: 10px 0;
     }
+
+    [fd-toggle-state="disabled"] div{
+      display:none;
+    }
+
+    [fd-toggle-trigger]:after{
+      content: ' \2193'
+    }
+
+    [fd-toggle-state="disabled"] [fd-toggle-trigger]:after{
+      content: ' \2192'
+    }
   </style>
 
   <jwr:script src="/fdlibs.js"  useRandomParam="false" />
@@ -68,9 +80,10 @@
   <jwr:script src="/fdcommon.js"  useRandomParam="false" />
 
   <h1>JS widget test page</h1>
+  <p>Click on module titles to expand them</p>
 
-  <div id="FD_utils" class="module">
-    <h2 class="module-title">FreshDirect.utils (fd/utils.js)</h2>
+  <div id="FD_utils" class="module" fd-toggle="toggleUtils" fd-toggle-state="disabled">
+    <h2 class="module-title" fd-toggle-trigger="toggleUtils">FreshDirect.utils (fd/utils.js)</h2>
     <p>aka. <code>FreshDirect.modules.common.utils</code></p>
 
     <div id="FD_utils_mknamespace" class="method">
@@ -478,8 +491,8 @@
 
   </div>
 
-  <div id="FD_common" class="module">
-    <h2 class="module-title">FreshDirect.common (fd/common/**.js)</h2>
+  <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="disabled">
+    <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect.common (fd/common/**.js)</h2>
 
     <div id="FD_common_dispatcher_signal" class="method">
       <h3 class="method-title">dispatcher.signal(to, body)</h3>
