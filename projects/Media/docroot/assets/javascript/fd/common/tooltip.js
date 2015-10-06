@@ -2,6 +2,8 @@
 var FreshDirect = FreshDirect || {};
 
 (function (fd, $) {
+  "use strict";
+
   /**
    * Tooltip for links and such with HTML content.
    *
@@ -24,7 +26,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   Tooltip.prototype.createNode = function () {
-    if (!!this.node) {
+    if (this.node) {
       return this.node;
     }
     this.node = $('<div>');
@@ -105,16 +107,22 @@ var FreshDirect = FreshDirect || {};
     cssClass: 'tooltip'
   };
 
+  Tooltip.init = function () {
+    var els = $('.hastooltip'),
+        ttip, i;
+
+    for (i = 0; i < els.length; i++) {
+      ttip = new FreshDirect.modules.common.Tooltip(els[i]);
+    }
+  };
+
   // register in fd namespace
   fd.modules.common.utils.register("modules.common", "Tooltip", Tooltip, fd);
 }(FreshDirect, jQuery));
 
 // module initialization
-(function ($) {
-  var els = $('.hastooltip'),
-      tooltip, i;
+(function () {
+  "use strict";
 
-  for (i = 0; i < els.length; i++) {
-    tooltip = new FreshDirect.modules.common.Tooltip(els[i]);
-  }
-}(jQuery));
+  FreshDirect.modules.common.Tooltip.init();
+}());

@@ -435,6 +435,40 @@
   <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="disabled">
     <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect.common (fd/common/**.js)</h2>
 
+    <div id="FD_common_tooltip" class="method">
+      <h3 class="method-title">Tooltip (old)</h3>
+      <p class="description">
+      Basic tooltip class.<br/>
+      New tooltips are created for every DOM element that has <code>tooltip</code> class, and exists before the load of the JS common bundle. (Please note that usually the bundle is loaded at the bottom of the page, but in this testpage it's at the top.)<br/>
+      [getContent()] The content of the tooltip can be passed via the <code>config</code> parameter, can be the next DOM element (if it has <code>tooltipcontent</code> CSS class), or can be the <code>title</code> attribute of the DOM element.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>el</dt>
+        <dd>DOM element</dd>
+        <dt class="optional">config</dt>
+        <dd>
+        Configuration object:
+          <ul>
+            <li><b>content</b>: HTML content of the tooltip [default: getContent()]</li>
+            <li><b>cssClass</b>: extra CSS class for the tooltip [default: 'tooltip']</li>
+            <li><b>orientation</b>: "top" or "bottom" [default: 'top']</li>
+            <li><b>offset</b>: gap between the object and the tooltip [default: 10]</li>
+          </ul>
+        </dd>
+      </dl>
+      <pre class="prettyprint example">
+      </pre>
+
+      <a href="#FD_common_tooltip" title="Example tooltip" class="hastooltip">Link w/ tooltip</a>
+      <span id="oldtooltipexample">Hover here.</span><span class="tooltipcontent"><b>HTML</b> tooltip example<br>Multiline</span>
+
+      <script>
+        FreshDirect.modules.common.Tooltip.init();
+        new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
+      </script>
+    </div>
+
     <div id="FD_common_dispatcher_signal" class="method">
       <h3 class="method-title">dispatcher.signal(to, body)</h3>
       <p class="description">
@@ -478,7 +512,7 @@
       <p class="description">
       This is a base class for the general widget 'class'. This class can listen to a Dispatcher signal and when it notices a signal it passes the provided data to a callback.
       </p>
-      <p>Notice: Do NOT use this class as a base class for your widgets. Use FreshDirect.common.widget instead which is another abstraction on top of this. Example is only here for showcasing!</p>
+      <p>NOTE: Do not use this class as a base class for your visible widgets. Use <code>FreshDirect.common.widget</code> instead which is another abstraction on top of this. SignalTarget shall be used for modules that doesn't render anything, like the <code>coremetrics</code> or the <code>server</code> module.</p>
       <pre class="prettyprint example">
           var widget = Object.create(fd.common.signalTarget, {
             signal: {
