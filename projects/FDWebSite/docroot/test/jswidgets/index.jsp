@@ -1061,8 +1061,145 @@
         fd.modules.common.utils.register("testpage.widgets", "alignPopup", alignPopup, fd);
       }(FreshDirect));
       </script>
+      <p>Another usual use-case for popups is to create a centered popup with or without an overlay.</p>
+      <pre class="prettyprint example">
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var centeredPopup = Object.create(fd.modules.common.popupWidget, {
+          template: {
+            value: common.fixedPopup // creating popup based on fixedpopup
+          },
+          bodyTemplate: {
+            value: ... // provide template function for rendering popup body
+          },
+          trigger: {
+            value: '[data-centered-popup]'
+          },
+          popupId: {
+            value: 'centeredPopup'
+          },
+          popupConfig: {
+            value: {
+              align:false // Important: disable automatic alignment!
+            }
+          },
+          hasClose: {
+              value: true // This will show a little X in the top right corner
+          }
+        });
+
+        centeredPopup.render();
+
+        $(document).on('click', centeredPopup.trigger, centeredPopup.open.bind(centeredPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "centeredPopup", centeredPopup, fd);
+      }(FreshDirect));
+      </pre>
+      <button class="cssbutton large green" data-centered-popup>Centered Popup</button>
+      <style type="text/css">
+        .my-white-popup-overlay{
+          background-color: #fff;
+          opacity: .7;
+        }
+      </style>
+      <script>
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var centeredPopup = Object.create(fd.modules.common.popupWidget, {
+          template: {
+            value: common.fixedPopup
+          },
+          bodyTemplate: {
+            value: function(){ return "<strong>Centering Popup</strong><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius nibh id ornare pellentesque. Nullam hendrerit tempus elit et interdum. Etiam leo velit, dapibus ac pharetra eu, lobortis ut augue. Aenean tincidunt ligula ligula, id fermentum enim tempus vel. Aliquam erat volutpat. Suspendisse sit amet arcu tincidunt, convallis ex non, feugiat velit. Sed a odio eget enim sollicitudin pretium quis ut eros. Maecenas ut velit pharetra, pellentesque ex in, laoreet erat. Vestibulum in eros felis. Morbi tempor lobortis est vel vestibulum. In id erat eu ex varius sollicitudin.</p>"; }
+          },
+          trigger: {
+            value: '[data-centered-popup]'
+          },
+          popupId: {
+            value: 'centeredPopup'
+          },
+          popupConfig: {
+            value: {
+              align:false
+            }
+          },
+          hasClose: {
+              value: true
+          }
+        });
+
+        centeredPopup.render();
+
+        $(document).on('click', centeredPopup.trigger, centeredPopup.open.bind(centeredPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "centeredPopup", centeredPopup, fd);
+      }(FreshDirect));
+      </script>
+      <p>If you want to create a modal-style popup which hides the content behind the popup you have to provide an extra CSS class with the colour of the overlay like:</p>
+      <pre class="prettyprint example lang-css">
+        .my-white-popup-overlay{
+          background-color: #fff;
+          opacity: .7;
+        }
+      </pre>
+      <p>To tell the popup framework to use this class as an extra class in your 'popupConfig'</p>
+      <pre class="prettyprint example">
+          var centeredPopup = Object.create(... ,{
+            ... ,
+            popupConfig:{
+              value:{
+                overlay:true, // this is the default value but it's encouraged to set it explicitly
+                overlayExtraClass:'my-white-popup-overlay' // name of your css class
+              }
+            }
+            ...
+          });
+      </pre>
+      <button class="cssbutton large green" data-centered-overlay-popup>Centered Overlay Popup</button>
+      <script>
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var centeredOverlayPopup = Object.create(fd.modules.common.popupWidget, {
+          template: {
+            value: common.fixedPopup
+          },
+          bodyTemplate: {
+            value: function(){ return "<strong>Centering Popup</strong><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius nibh id ornare pellentesque. Nullam hendrerit tempus elit et interdum. Etiam leo velit, dapibus ac pharetra eu, lobortis ut augue. Aenean tincidunt ligula ligula, id fermentum enim tempus vel. Aliquam erat volutpat. Suspendisse sit amet arcu tincidunt, convallis ex non, feugiat velit. Sed a odio eget enim sollicitudin pretium quis ut eros. Maecenas ut velit pharetra, pellentesque ex in, laoreet erat. Vestibulum in eros felis. Morbi tempor lobortis est vel vestibulum. In id erat eu ex varius sollicitudin.</p>"; }
+          },
+          trigger: {
+            value: '[data-centered-overlay-popup]'
+          },
+          popupId: {
+            value: 'centeredOverlayPopup'
+          },
+          popupConfig: {
+            value: {
+              align:false,
+              overlay:true,
+              overlayExtraClass:'my-white-popup-overlay'
+            }
+          },
+          hasClose: {
+              value: true
+          }
+        });
+
+        centeredOverlayPopup.render();
+
+        $(document).on('click', centeredOverlayPopup.trigger, centeredOverlayPopup.open.bind(centeredOverlayPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "centeredOverlayPopup", centeredOverlayPopup, fd);
+      }(FreshDirect));
+      </script>
       <!-- TODO: continue popups -->
     </div>
+
   </div> <!-- /module -->
 
 <%-- template
