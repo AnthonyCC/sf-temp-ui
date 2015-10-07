@@ -853,13 +853,129 @@
       <p class="description">
       This is a common base for creating popups in the system. Instead of describing every property from the code we'll show basic examples for common use. So the goal is to describe how to create a new popup based on this object and give an overview of the further capabilities.
       </p>
+      <p class="description">This <strong>example</strong> will create a basic popup with a simple string body template, showing the minimal code to initialize a popup based on popupWidget. By default the popup will align itself to the trigger element (the button) and will be rendered to the body html tag. After Open the popup will close when you click outside of it. Of course all these behaviours are configurable.</p>
       <pre class="prettyprint example">
-        // FreshDirect.utils.mknamespace("testpage.widgets", FreshDirect);
-        // FreshDirect.testpage.widgets = {};
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var POPUPWIDGET = fd.modules.common.popupWidget;
+
+        var basicPopup = Object.create(POPUPWIDGET,{
+          bodyTemplate: {
+            value: function(){ return "&lt;p&gt;Hello Popup World&lt;/p&gt;"; } // this should be a soy template
+          },
+          trigger: {
+            value: '[data-basic-popup]' // we will open the popup if the element we click on has this trigger attribute
+          },
+          popupId: {
+            value: 'basicPopup' // this popup will be placed into 'body' by default with this id
+          }
+        });
+
+        basicPopup.render();
+
+        // have to attach widget's open method to the trigger to show the popup upon click
+        $(document).on('click', basicPopup.trigger, basicPopup.open.bind(basicPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "basicPopup", basicPopup, fd);
+      }(FreshDirect));
       </pre>
+      <button class="cssbutton large green" data-basic-popup data-popup data-config-popupConfig-align="bc-bc">Open Popup</button>
       <script>
-        FreshDirect.utils.mknamespace("testpage.widgets", FreshDirect);
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var POPUPWIDGET = fd.modules.common.popupWidget;
+        var basicPopup = Object.create(POPUPWIDGET,{
+          bodyTemplate: {
+            value: function(){ return "<p>Hello Popup World</p>"; }
+          },
+          trigger: {
+            value: '[data-basic-popup]'
+          },
+          popupId: {
+            value: 'basicPopup'
+          },
+          open:{
+            value: function (e) {
+              var $t = e && $(e.currentTarget) || $(document.body);
+              var alignment = $t.attr('data-align');
+
+              this.refreshBody();
+              if(alignment){
+                this.popup.show($t, alignment === "false" ? false : alignment);
+              }
+              else{
+                this.popup.show($t);
+              }
+              this.popup.clicked = true;
+            }
+          }
+        });
+
+        basicPopup.render();
+
+        $(document).on('click', basicPopup.trigger, basicPopup.open.bind(basicPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "basicPopup", basicPopup, fd);
+      }(FreshDirect));
       </script>
+      <p class="description">You can change this alignment by controlling 'popupConfig' attribute.</p>
+      <pre class="prettyprint example">
+          var basicPopup = Object.create(POPUPWIDGET,{
+            ... ,
+            popupConfig:{
+              value:{
+                align: "tc-bc"
+              }
+            }
+            ...
+          });
+      </pre>
+      <p><strong>tc-bc</strong> means: trigger element's Top Center (tc) will be aligned with popup's Bottom Center (bc)</p>
+      <p>In "tc" first letter can vary according to vertical axis: Top (t), Center (c), Bottom (b), second letter is the horizontal axis: Left (l), Center (c), Right (r)</p>
+      <button class="cssbutton large green" data-align-popup data-align="tc-bc">Popup tc-bc</button>
+      <button class="cssbutton large green" data-align-popup data-align="cr-cl">Popup cr-cl</button>
+      <script>
+      (function (fd) {
+        "use strict";
+
+        var $=fd.libs.$;
+        var POPUPWIDGET = fd.modules.common.popupWidget;
+        var alignPopup = Object.create(POPUPWIDGET,{
+          bodyTemplate: {
+            value: function(){ return "<p>Hello Popup World</p>"; }
+          },
+          trigger: {
+            value: '[data-align-popup]'
+          },
+          popupId: {
+            value: 'alignPopup'
+          },
+          open:{
+            value: function (e) {
+              var $t = e && $(e.currentTarget) || $(document.body);
+              var alignment = $t.attr('data-align');
+
+              if(alignment){
+                this.refreshBody();
+                this.popup.show($t, alignment === "false" ? false : alignment);
+                this.popup.clicked = true;
+              }
+            }
+          }
+        });
+
+        alignPopup.render();
+
+        $(document).on('click', alignPopup.trigger, alignPopup.open.bind(alignPopup));
+
+        fd.modules.common.utils.register("testpage.widgets", "alignPopup", alignPopup, fd);
+      }(FreshDirect));
+      </script>
+      <!-- TODO: continue popups -->
     </div>
   </div> <!-- /module -->
 
