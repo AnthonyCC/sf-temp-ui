@@ -844,6 +844,92 @@
 
   </div> <!-- /module -->
 
+  <div id="FD_common_form" class="module" fd-toggle="toggleForm" fd-toggle-state="disabled">
+    <h2 class="module-title" fd-toggle-trigger="toggleForm">FreshDirect Forms</h2>
+
+    <div id="FD_common_forms" class="method">
+      <h3 class="method-title">modules.common.forms (common/form.js)</h3>
+      <p class="description">
+      General purpose form library for AJAX form handling and FE/AJAX validation.<br/>
+      The setup is mainly done by HTML attributes (starting w/ fdform).
+      </p>
+      <h4>HTML attributes for configuration</h4>
+      <dl>
+        <dt>fdform</dt>
+        <dd>Id of the form (string)</dd>
+        <dt class="optional">fdform-serialize</dt>
+        <dd>Custom serialization function for the form (dotted name)</dd>
+        <dt class="optional">fdform-endpoint-submit</dt>
+        <dd>Submit endpoint (url)</dd>
+        <dt class="optional">fdform-endpoint-validator</dt>
+        <dd>AJAX validation endpoint (url)</dd>
+        <dt class="optional">fdform-submit</dt>
+        <dd>Custom submit function (dotted name) - Note: AJAX submit has higher priority</dd>
+        <dt class="optional">fdform-disable-resubmit</dt>
+        <dd>Locks the form until the AJAX response received - disables submit buttons or elements defined by <code>fdform-disable-resubmit-selector</code></dd>
+        <dt class="optional">fdform-disable-resubmit-selector</dt>
+        <dd>Elements to disable on form submit (CSS selector)</dd>
+        <dt class="optional">fdform-disable-resubmit-release</dt>
+        <dd>If <i>'manual'</i> then the form won't be re-enabled automatically when the AJAX response arrives (it can be re-enabled in the success/failure handler)</dd>
+        <dt class="optional">fdform-reset</dt>
+        <dd>Custom reset function, called on clicking an </code>input/button type="reset"</code> (dotted name)</dd>
+        <dt class="optional">fdform-success</dt>
+        <dd>Callback function called if the AJAX form submit succeeded (dotted name)</dd>
+        <dt class="optional">fdform-failure</dt>
+        <dd>Callback function called if the AJAX form submit failed (dotted name)</dd>
+        <dt class="optional">fdform-action-<ins>actionname</ins></dt>
+        <dd>
+        Function to call for the given action. Such actions can be issued via <code>[fdform-button="actionname"]</code> buttons. (dotted name)<br/>
+        For example clicking on <code>[fdform-button="dosomething"]</code> will call the function set by <code>[fdform-action-dosomething]</code>.
+        </dd>
+        <dt class="optional">fdform-formatter</dt>
+        <dd>Formatter function to call if the given input field is changed/focused (dotted name)</dd>
+        <dt class="optional">fdform-button</dt>
+        <dd>The value of the <code>fdform-button</code> property will be an action issued on the form (see <code>fdform-acion</code> above). If the same element's (button's) <code>fdform-prevent</code> attribute is set to <i>"manual"</i>, then the click event's preventDefault() method won't be called automatically.</dd>
+        <dt class="optional">fdform-error-container</dt>
+        <dd>The validation errors that are not associated with a field (general errors for example) are displayed in the HTML element which <code>fdform-error-container</code> property is set to the given form's id.</dd>
+      </dl>
+      <h4>Form object properties</h4>
+      <p>
+      It is possible to create and setup forms via javascript (not using the attributes above), and register it via the <code>FreshDirect.modules.common.forms.register(formObject)</code>. The form object is a plain JS object that has at least an <code>'id'</code> property, and there should be a form HTML element somewhere in the DOM that has the same id set by the <code>fdform</code> attribute.<br/>
+      Custom methods (such us serialize or success) are easier to set this way.<br/>
+      The properties of the registered form object has priority over the HTML attributes.
+      </p>
+      <dl>
+        <dt>id</dt>
+        <dd>Form id [fdform]</dd>
+        <dt class="optional">serialize</dt>
+        <dd>Custom serialize method [fdform-serialize]</dd>
+        <dt class="optional">submitEndpoint</dt>
+        <dd>AJAX submit endpoint [fdform-endpoint-submit]</dd>
+        <dt class="optional">validatorEndpoint</dt>
+        <dd>AJAX validator endpoint [fdform-endpoint-validator]</dd>
+        <dt class="optional">submit</dt>
+        <dd>Custom submit function [fdform-submit]</dd>
+        <dt class="optional">reset</dt>
+        <dd>Custom reset function [fdform-reset]</dd>
+        <dt class="optional"><ins>*action*</ins> (any method)</dt>
+        <dd>Form action function, called on pressing <code>fdform-button="actionname"</code> [fdform-action]</dd>
+        <dt class="optional">success</dt>
+        <dd>Callback function called if the AJAX form submit succeeded [fdform-success]</dd>
+        <dt class="optional">failure</dt>
+        <dd>Callback function called if the AJAX form submit succeeded [fdform-failure]</dd>
+      </dl>
+
+      <h4>Validators</h4>
+
+      <h4>Formatters</h4>
+
+      <h4>Form library functions</h4>
+
+      <pre class="prettyprint example">
+      </pre>
+      <script>
+      </script>
+    </div>
+
+  </div> <!-- /module -->
+
   <div id="FD_common_popup" class="module" fd-toggle="togglePopup" fd-toggle-state="disabled">
     <h2 class="module-title" fd-toggle-trigger="togglePopup">FreshDirect Popups</h2>
     <p>incl. popups from <code>FreshDirect.modules.common.* and FreshDirect.components.*</code></p>
