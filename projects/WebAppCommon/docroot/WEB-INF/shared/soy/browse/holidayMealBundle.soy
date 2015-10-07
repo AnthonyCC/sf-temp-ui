@@ -37,7 +37,8 @@
 {/template}
 
 /**
- * @param? productZoomImage
+ *param? productZoomImage
+ * @param? productDetailImage
  * @param? description
  * @param? holidayMealBundleContainer
  * @param? wasPrice
@@ -52,7 +53,7 @@
 <li class="product-large">
   <div class="product-large-imagewrapper">
     <a href="/pdp.jsp?productId={$productId}&catId={$catId}">
-      {if $productZoomImage}<img src="{$productZoomImage}" alt="{if $description}{$description}{/if}" class="product-large-image" />{/if}
+      {if $productDetailImage}<img src="{$productDetailImage}" alt="{if $description}{$description}{/if}" class="product-large-image" />{/if}
     </a>
   </div>
   <p class="product-large-head">{if $description}{$description}{/if}</p>
