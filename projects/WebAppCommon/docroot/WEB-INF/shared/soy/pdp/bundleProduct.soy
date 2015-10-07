@@ -18,18 +18,8 @@ bundle-title-ends --><p class="thxgiving-bundle-price">
  * @param images
  */
 {template .bundleProductImage}
-  {if $images}
-    {if length($images) > 0 }
-      <img class="main-image" src="{$images[0].url}" />
-    {/if}
-    {if length($images) > 1}<!-- /main-image --><div class="vertical-image-wrapper">
-      {foreach $thumb in $images}
-        {if not isFirst($thumb)}
-         <img src="{$thumb.url}" />
-        {/if}
-      {/foreach}
-    </div>
-    {/if}
+  {if $images and length($images) > 0}
+    <img class="main-image" src="{$images[0].url}" />
   {/if}
 {/template}
 

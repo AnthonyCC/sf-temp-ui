@@ -52,28 +52,9 @@
   padding:12px;
 }
 
-.vertical-image-wrapper{
-  display:inline-block;
-  vertical-align: top;
-  width:175px;
-  max-width:175px;
-  margin:0;
-  padding:0;
-}
-
-.vertical-image-wrapper img{
-  display:block;
-  max-width: 175px;
-  max-height: 200px;
-  margin:0;
-  padding:0;
-}
-
 .thxgiving-images .main-image {
   display:inline-block;
-  max-width:600px;
-  max-height:600px;
-  width:600px;
+  width:775px;
   margin:0;
   padding:0;
   vertical-align: top;
