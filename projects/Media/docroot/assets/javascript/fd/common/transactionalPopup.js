@@ -172,6 +172,12 @@ var FreshDirect = FreshDirect || {};
           // set learn more url
           learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());
 
+          if ($('#'+popupId+' [data-component="product"]').hasClass('discontinued')) {
+            learnMoreLink.hide();
+          } else {
+            learnMoreLink.show();
+          }
+
           this.popup.showWithDelay(target, null, $.proxy(function () {
             var mctop, rctop,
                 relatedControls = relatedHolder.find('.portrait-item-controls-content'),
