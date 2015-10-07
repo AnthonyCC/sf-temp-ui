@@ -844,6 +844,25 @@
 
   </div> <!-- /module -->
 
+  <div id="FD_common_popup" class="module" fd-toggle="togglePopup" fd-toggle-state="disabled">
+    <h2 class="module-title" fd-toggle-trigger="togglePopup">FreshDirect Popups</h2>
+    <p>incl. popups from <code>FreshDirect.modules.common.* and FreshDirect.components.*</code></p>
+
+    <div id="FD_common_popupWidget" class="method">
+      <h3 class="object-title">modules.common.popupWidget (common/popup.js)</h3>
+      <p class="description">
+      This is a common base for creating popups in the system. Instead of describing every property from the code we'll show basic examples for common use. So the goal is to describe how to create a new popup based on this object and give an overview of the further capabilities.
+      </p>
+      <pre class="prettyprint example">
+        // FreshDirect.utils.mknamespace("testpage.widgets", FreshDirect);
+        // FreshDirect.testpage.widgets = {};
+      </pre>
+      <script>
+        FreshDirect.utils.mknamespace("testpage.widgets", FreshDirect);
+      </script>
+    </div>
+  </div> <!-- /module -->
+
 <%-- template
 
     <div id="FD_" class="method">
