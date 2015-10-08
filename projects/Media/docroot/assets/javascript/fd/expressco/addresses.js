@@ -33,12 +33,42 @@ var FreshDirect = FreshDirect || {};
         fd.expressco.drawer.reset();
       }
     },
+    validate: function () {
+      var errors = [],
+          data = fd.modules.common.forms.serialize(this.id);
+
+      if (data.id && data.id+"_phone" in data && !data[data.id+"_phone"]) {
+        errors.push({
+          name: data.id+"_phone",
+          error: 'Phone number is required!'
+        });
+      }
+
+      return errors;
+    },
     errorHandlers: {
       ebtAddressRestriction: function (form, name, error) {
         fd.expressco.restrictionpopup.open({}, 'ebt_address', null, {form: form, name: name, error: error});
 
         return true;
       }
+    }
+  });
+
+  fd.modules.common.forms.register({
+    id: "address_preview",
+    validate: function () {
+      var errors = [],
+          data = fd.modules.common.forms.serialize(this.id);
+
+      if (data.id && data.id+"_phone" in data && !data[data.id+"_phone"]) {
+        errors.push({
+          name: data.id+"_phone",
+          error: 'Phone number is required!'
+        });
+      }
+
+      return errors;
     }
   });
 
