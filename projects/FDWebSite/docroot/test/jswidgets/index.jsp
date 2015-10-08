@@ -1407,6 +1407,54 @@
       <!-- TODO: continue examples -->
     </div> <!-- /component -->
 
+    <div id="FD_components_ajaxPopup" class="method">
+      <h3 class="object-title">AJAX Popup</h3>
+      <p class="description">
+      Goal is to show a popup with some AJAX content in it. Configurable through data-attributes on a trigger DOM element.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>data-component="ajaxpopup"</dt>
+        <dd>Set precisely this on the trigger element to show an AJAX popup</dd>
+        <dt>href</dt>
+        <dd>URI for AJAX endpoint providing data through GET method</dd>
+        <dt class="optional">data-ajaxpopup-type</dt>
+        <dd>This attribute will be set on the popup element. Can be used for applying separate styles.</dd>
+        <dt>data-ajaxpopup-template</dt>
+        <dd>Soy template function or a discovarble fully-qualified path to a function providing a template</dd>
+        <dt class="optional">data-ajaxpopup-after-render-callback</dt>
+        <dd>Get control over content after rendering with this function</dd>
+      </dl>
+      <pre class="prettyprint example">
+        &lt;style type="text/css"&gt;
+          [data-ajaxpopup-type="show-user"] .fixedPopupContent{
+            background-color: floralwhite;
+            border: 5px dashed rebeccapurple;
+          }
+        &lt;/style&gt;
+        &lt;button class="cssbutton large green"
+          href="sampleUserData.jsp"  // grab the data from here
+          data-component="ajaxpopup"  // init an AJAX popup
+          data-ajaxpopup-template="test.jsWidgetsAjaxPopupExample1"
+          data-ajaxpopup-type="show-user"&gt;  // little CSS funky
+          Open AJAX Content
+        &lt;/button&gt;
+      </pre>
+      <style type="text/css">
+        [data-ajaxpopup-type="show-user"] .fixedPopupContent{
+          background-color: floralwhite;
+          border: 5px dashed rebeccapurple;
+        }
+      </style>
+      <button class="cssbutton large green"
+        href="sampleUserData.jsp"
+        data-component="ajaxpopup"
+        data-ajaxpopup-template="test.jsWidgetsAjaxPopupExample1"
+        data-ajaxpopup-type="show-user">
+        Open AJAX Content
+      </button>
+    </div>
+
   </div> <!-- /module -->
 
 <%-- template
