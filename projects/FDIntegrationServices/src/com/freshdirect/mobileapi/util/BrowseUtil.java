@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -55,6 +56,7 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
@@ -85,6 +87,7 @@ import com.freshdirect.mobileapi.model.Wine;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
+import com.freshdirect.webapp.taglib.fdstore.layout.ItemSorterTag;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 public class BrowseUtil {
@@ -804,6 +807,111 @@ public class BrowseUtil {
 	    	return products;
 	    }
 	    
+	    private static void sortCategories(ContentNodeModel contentNode, String sortBy, SessionUser user, HttpServletRequest request, List contents) throws FDException {
+	    	ContentNodeModel category = contentNode;
+    		
+            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(category);
+            
+            if (layoutManagerSetting != null) {
+            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
+            		layoutManagerSetting.setGrabberDepth(0);
+            	}
+
+            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
+                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
+                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, category);
+
+                // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
+                if(category instanceof CategoryModel 
+                			&& ((CategoryModel)category).getProductPromotionType() != null) {
+                	layoutManagerSetting.setFilterUnavailable(true);
+                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
+                	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
+                	layoutManagerSetting.setSortStrategy(list);
+                } else if (sortBy != null && !sortBy.isEmpty()){
+                	layoutManagerSetting.setFilterUnavailable(true);
+                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
+                	int element;
+                	SortType passedSortType = SortType.valueFromString(sortBy);
+                	switch (passedSortType) {                	
+//                	case RELEVANCY:
+//                		break;
+                	case NAME:
+                		element = SortStrategyElement.PRODUCTS_BY_NAME;
+                		break; 
+                	case PRICE:
+                		element = SortStrategyElement.PRODUCTS_BY_PRICE;
+                		break; 
+                	case POPULARITY:
+                		LOG.debug("sorting By by popularity");
+                		element = SortStrategyElement.PRODUCTS_BY_POPULARITY;
+                		LOG.debug("sorting By by popularity element " + element);
+                		break;
+                	case SALE:
+                		element = SortStrategyElement.PRODUCTS_BY_SALE;
+                		break;
+//                	case RECENCY:
+//                		element = SortStrategyElement.PROD
+//                		break;
+//                	case OURFAVES:
+//                		break;
+//                	case DEPARTMENT:
+//                		break;
+//                	case FREQUENCY:
+//                		break;
+                	case EXPERT_RATING:
+                		//Possibly?
+                		element = SortStrategyElement.PRODUCTS_BY_RATING;
+                		break;
+//                	case START_DATE:
+//                		break;
+//                	case EXPIRATION_DATE:
+//                		break;
+//                	case PERC_DISCOUNT:
+//                		break;
+//                	case DOLLAR_DISCOUNT:
+//                		break;
+                	case SUSTAINABILITY_RATING:
+                		element = SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY;
+                		break;
+					default:
+						element = SortStrategyElement.NO_SORT;								
+						break;
+					}
+					
+                	if(element == SortStrategyElement.NO_SORT){
+	                	ErpNutritionType.Type tmp = ErpNutritionType.getType(sortBy);
+	                	
+	                	if(tmp == null){
+		                	list.add(new SortStrategyElement(element));	 
+	                	} else {
+		                	list.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NUTRITION, sortBy, false));
+	                	}
+	                	
+                	} else {
+	                	list.add(new SortStrategyElement(element));
+                	}
+					
+                	layoutManagerSetting.setSortStrategy(list);
+                }
+                
+                ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+                sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+                
+            } else {
+                //Error happened. It's a internal error so don't expose to user. just log and return empty list
+                ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+                if (layoutResult.isFailure()) {
+                    Collection<ActionError> errors = layoutResult.getErrors();
+                    for (ActionError error : errors) {
+                        LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
+                                + error.getDescription());
+                    }
+                }
+            }
+	    }
+	    
 	    //TODO: Maybe add a depth int and cut off at 5 recursions deep on a category?
 	    private static void getAllProductsEX(ContentNodeModel contentNode, String sortBy, SessionUser user, HttpServletRequest request,List<String> productIds) throws FDException{
 	    	//Assuming only the id which comes in the request is at category level and not at department level...
@@ -817,110 +925,10 @@ public class BrowseUtil {
 	    		
 	    		if(contentNode == null)
 	    			return;
-	    		
-	    		CategoryModel category = (CategoryModel)contentNode;
 	    		List contents = new ArrayList();
+
+	    		sortCategories(contentNode, sortBy, user, request, contents);
 	    		
-	            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
-	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(category);
-	            
-	            if (layoutManagerSetting != null) {
-	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
-	            		layoutManagerSetting.setGrabberDepth(0);
-	            	}
-
-	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
-	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
-	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, category);
-
-	                // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
-	                if(category instanceof CategoryModel 
-	                			&& ((CategoryModel)category).getProductPromotionType() != null) {
-	                	layoutManagerSetting.setFilterUnavailable(true);
-	                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
-	                	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
-	                	layoutManagerSetting.setSortStrategy(list);
-	                } else if (sortBy != null && !sortBy.isEmpty()){
-	                	layoutManagerSetting.setFilterUnavailable(true);
-	                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
-	                	int element;
-	                	SortType passedSortType = SortType.valueFromString(sortBy);
-	                	switch (passedSortType) {                	
-//	                	case RELEVANCY:
-//	                		break;
-	                	case NAME:
-	                		element = SortStrategyElement.PRODUCTS_BY_NAME;
-	                		break; 
-	                	case PRICE:
-	                		element = SortStrategyElement.PRODUCTS_BY_PRICE;
-	                		break; 
-	                	case POPULARITY:
-	                		LOG.debug("sorting By by popularity");
-	                		element = SortStrategyElement.PRODUCTS_BY_POPULARITY;
-	                		LOG.debug("sorting By by popularity element " + element);
-	                		break;
-	                	case SALE:
-	                		element = SortStrategyElement.PRODUCTS_BY_SALE;
-	                		break;
-//	                	case RECENCY:
-//	                		element = SortStrategyElement.PROD
-//	                		break;
-//	                	case OURFAVES:
-//	                		break;
-//	                	case DEPARTMENT:
-//	                		break;
-//	                	case FREQUENCY:
-//	                		break;
-	                	case EXPERT_RATING:
-	                		//Possibly?
-	                		element = SortStrategyElement.PRODUCTS_BY_RATING;
-	                		break;
-//	                	case START_DATE:
-//	                		break;
-//	                	case EXPIRATION_DATE:
-//	                		break;
-//	                	case PERC_DISCOUNT:
-//	                		break;
-//	                	case DOLLAR_DISCOUNT:
-//	                		break;
-	                	case SUSTAINABILITY_RATING:
-	                		element = SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY;
-	                		break;
-						default:
-							element = SortStrategyElement.NO_SORT;								
-							break;
-						}
-						
-	                	if(element == SortStrategyElement.NO_SORT){
-		                	ErpNutritionType.Type tmp = ErpNutritionType.getType(sortBy);
-		                	
-		                	if(tmp == null){
-			                	list.add(new SortStrategyElement(element));	 
-		                	} else {
-			                	list.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NUTRITION, sortBy, false));
-		                	}
-		                	
-	                	} else {
-		                	list.add(new SortStrategyElement(element));
-	                	}
-						
-	                	layoutManagerSetting.setSortStrategy(list);
-	                }
-	                
-	                ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-	                sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
-	                
-	            } else {
-	                //Error happened. It's a internal error so don't expose to user. just log and return empty list
-	                ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
-	                if (layoutResult.isFailure()) {
-	                    Collection<ActionError> errors = layoutResult.getErrors();
-	                    for (ActionError error : errors) {
-	                        LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
-	                                + error.getDescription());
-	                    }
-	                }
-	            }
 	            for (Object content : contents) {
 //	            	LOG.debug("breakpoint check");
 	                if (content instanceof ProductModel) {
@@ -1047,12 +1055,87 @@ public class BrowseUtil {
 	    	
 	    }
 	    
+	    @SuppressWarnings({ "unchecked", "rawtypes" })
+		private static List getProductsForCategory(CatalogInfo catalog, CategoryModel category, String plantId, PricingContext pc, SessionUser user, Set<String> productSet, List<com.freshdirect.mobileapi.catalog.model.Product> parsedProductList){
+	    	if(category == null)
+	    		return new ArrayList();
+	    	
+	    	com.freshdirect.mobileapi.catalog.model.Category cat=new com.freshdirect.mobileapi.catalog.model.Category(category.getContentName(), category.getFullName());
+	    	catalog.addCategory(cat);
+	    	List pmList = new ArrayList();
+	    	
+	    	List<CategoryModel> subCats = category.getSubcategories();
+	    	if(subCats != null && subCats.size() > 0){
+	    		for(CategoryModel subCat : subCats){
+	    			cat.addCategory(subCat.getContentName());
+	    			pmList.addAll(getProductsForCategory(catalog, subCat, plantId, pc, user, productSet, parsedProductList));
+	    		}
+	    	}
+	    	
+	    	
+	    	pmList.addAll(category.getProducts());
+	    	
+	    	//Makes sure we don't double up products
+	    	Set tmp = new HashSet(pmList);
+	    	pmList = new ArrayList(tmp);
+	    	
+	    	if(pmList != null && pmList.size() > 0){
+	    		
+	    		SortProductByPopularity(pmList, user);
+	    		
+		    	for(Object pmo : pmList){
+		    		ProductModel p = (ProductModel) pmo;
+		    		if(p.isFullyAvailable()) {
+		    			
+						if(!productSet.contains(p.getContentName())) {
+		    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
+		    				prodBuilder.brandTags(p.getBrands())
+					            .minQty(p.getQuantityMinimum())
+					            .maxQty(p.getQuantityMaximum())
+					            .incrementQty(p.getQuantityIncrement())
+					            .quantityText(p.getQuantityText())
+					            .images(getImages(p))
+					            .tags(p.getTags())
+					            .generateWineAttributes(p)
+		    					.addKeyWords(p.getKeywords())
+		    					.generateAdditionTagsFromProduct(p)
+		    					.skuInfo(getSkuInfo(p,plantId,pc ));
+		    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
+		    				productSet.add(p.getContentName());
+		    				parsedProductList.add(product);
+		    				
+						} 
+						
+						cat.addProduct(p.getContentName());
+		    		}
+		    	}
+		    	
+	    	}
+	    	
+	    	return pmList;
+	    	
+	    }
+	    
+	    private static boolean SortProductByPopularity(List nodes, SessionUser user){
+	    	//First sort the list
+	    	ItemSorterTagWrapper wrapper = new ItemSorterTagWrapper(user);
+	    	List<SortStrategyElement> sstl = new ArrayList<SortStrategyElement>();
+	    	sstl.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_POPULARITY));
+	    	try {
+				wrapper.sort(nodes, sstl);
+			} catch (FDException ignored) {
+				return false;
+			}
+    	
+	    	return true;
+	    }
+	    
 	    private static List<com.freshdirect.mobileapi.catalog.model.Product> getProductsForCategory(CatalogInfo catalog,CategoryModel category,Set<String> productSet,String plantId,PricingContext pc) {
 	    	
 	    	if(category==null)
 	    		return null;
 	    	com.freshdirect.mobileapi.catalog.model.Category cat=new com.freshdirect.mobileapi.catalog.model.Category(category.getContentName(), category.getFullName());
-	    	
+	    		    	
 	    	List<ProductModel> pm=category.getProducts();
 	    	//display(category);
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
@@ -1084,7 +1167,12 @@ public class BrowseUtil {
 	    	List<CategoryModel> subCategories=category.getSubcategories();
 	    	for(CategoryModel _category:subCategories) {
 	    		cat.addCategory(_category.getContentName());
-	    		productList.addAll(getProductsForCategory(catalog,_category,productSet,plantId,pc));
+	    		
+	    		List<com.freshdirect.mobileapi.catalog.model.Product> subCatList = getProductsForCategory(catalog,_category,productSet,plantId,pc);
+	    		for(com.freshdirect.mobileapi.catalog.model.Product p : subCatList){
+	    			cat.addProduct(p.getId());
+	    		}
+	    		productList.addAll(subCatList);
 	    	}
 	    	
 	    	if(cat.getCategories().size()>0 || cat.getProducts().size()>0)
@@ -1092,7 +1180,8 @@ public class BrowseUtil {
 	    	return productList;
 	    }
 	    
-	    public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
+	    @SuppressWarnings({ "rawtypes", "unchecked" })
+		public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
 	    	
 	    	int productCount=0;
 	    	CatalogInfo catalogInfo;
@@ -1115,15 +1204,39 @@ public class BrowseUtil {
 
 	    	StoreModel sm=ContentFactory.getInstance().getStore();
 	    	List<DepartmentModel> depts=sm.getDepartments();
-	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
+	    	
+	    	
+	    	List<com.freshdirect.mobileapi.catalog.model.Product> parsedProductList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	Set<String> productSet=new HashSet<String>();
 	    	
 	    	for(DepartmentModel d:depts) {
+	    		
 	    		List<CategoryModel> cm=d.getCategories();
-	    		for(CategoryModel c:cm) {
-	    			productList.addAll(getProductsForCategory(catalogInfo,c,productSet,plantId,pc));
+	    		com.freshdirect.mobileapi.catalog.model.Category cat = new com.freshdirect.mobileapi.catalog.model.Category(d.getContentName(), d.getFullName());
+	    		catalogInfo.addCategory(cat);
+	    		List allProductsInDept = new ArrayList();
+	    		for(CategoryModel c : cm){
+	    			cat.addCategory(c.getContentName());
+	    			allProductsInDept.addAll(getProductsForCategory(catalogInfo, c, plantId, pc, user, productSet, parsedProductList));
+	    		}
+	    		SortProductByPopularity(allProductsInDept, user);
+	    		
+	    		for(Object pmo : allProductsInDept){
+	    			cat.addProduct(((ProductModel)pmo).getContentName());
 	    		}
 	    		
+	    		/*
+	    		List<CategoryModel> cm=d.getCategories();
+	    		com.freshdirect.mobileapi.catalog.model.Category cat = new com.freshdirect.mobileapi.catalog.model.Category(d.getContentName(), d.getFullName());
+	    		catalogInfo.addCategory(cat);
+	    		for(CategoryModel c:cm) {
+	    			List<com.freshdirect.mobileapi.catalog.model.Product> list = getProductsForCategory(catalogInfo,c,productSet,plantId,pc);
+	    			for(int i = 0; i < list.size(); i++){
+	    				cat.addProduct(list.get(i).getId());
+	    			}		
+	    			productList.addAll(list);
+	    		}
+	    		*/
 	    	}
 	    	String val=requestMessage.getProductCount();
 	    	
@@ -1137,9 +1250,9 @@ public class BrowseUtil {
 	    	
 	    	if(productCount!=0) {
 	    		
-	    		if(productCount!=-1 && productList.size()>productCount)  
-	    			productList=productList.subList(0, productCount);
-	    		catalogInfo.addProducts(productList);
+	    		if(productCount!=-1 && parsedProductList.size()>productCount)  
+	    			parsedProductList = parsedProductList.subList(0, productCount);
+	    		catalogInfo.addProducts(parsedProductList);
 	    	}
 	    	return catalogInfo;
 	    }
