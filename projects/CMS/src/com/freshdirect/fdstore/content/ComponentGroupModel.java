@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -29,7 +28,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 
 	private List<String> characteristics;
 
-	private List optionalProds = new ArrayList();
+	private List<ProductModel> optionalProds = new ArrayList<ProductModel>();
 	
 	private List<ProductModel> chefsPicks = new ArrayList<ProductModel>();
 
@@ -64,11 +63,10 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 				FDVariation[] fdvs = fdp.getVariations();
 
 				final List<ContentKey> attribErpChars = (List<ContentKey>) getCmsAttributeValue("CHARACTERISTICS");
-				final List<ContentKey> erpChars = attribErpChars != null ? attribErpChars : Collections.EMPTY_LIST;
+				final List<ContentKey> erpChars = attribErpChars != null ? attribErpChars : Collections.<ContentKey>emptyList();
 				characteristics = new ArrayList<String>();
-				for (Iterator itr = erpChars.iterator(); itr.hasNext();) {
-					String erpCharacteristic = ((ContentKey) itr.next()).getId();
-					String erpCharName = getErpCharacteristicName(erpCharacteristic);
+				for (ContentKey erpCharacteristic : erpChars) {
+					String erpCharName = getErpCharacteristicName(erpCharacteristic.getId());
 					// ensure it exists in FDVariations
 					for (int x = 0; x < fdvs.length; x++) {
 						if (fdvs[x].getName().equals(erpCharName)) {
@@ -87,32 +85,6 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 		return this.characteristics;
 	}
 	
-    @SuppressWarnings("unchecked")
-    public List<String> getCharacteristicSkuCodes() {
-        List<String> skuCodes = new ArrayList<String>();
-        List<ContentKey> characteristics = (List<ContentKey>) getCmsAttributeValue("CHARACTERISTICS");
-        if (characteristics != null) {
-            for (ContentKey characteristic : characteristics) {
-                skuCodes.addAll(getSkuCodesFromCharacteristicValue(characteristic));
-            }
-        }
-        return skuCodes;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> getSkuCodesFromCharacteristicValue(ContentKey characteristic) {
-        List<String> skuCodes = new ArrayList<String>();
-        List<ContentKey> characteristicValues = (List<ContentKey>) characteristic.getContentNode().getAttributeValue("values");
-        if (characteristicValues != null) {
-            for (ContentKey characteristicValue : characteristicValues) {
-                String[] pathIds = characteristicValue.getId().split(CHARACTERISTIC_PATH_ID_SEPARATOR);
-                String skuCode = (String) FDAttributeCache.getInstance().getAttributeByPathId(pathIds).get("skucode");
-                skuCodes.add(skuCode);
-            }
-        }
-        return skuCodes;
-    }
-
 	public boolean isUnavailable() throws FDResourceException {
 		return isUnavailable(null);
 	}
@@ -204,20 +176,19 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 		return rtnVariation;
 	}
 
-	public List getOptionalProducts() {
+	public List<ProductModel> getOptionalProducts() {
 		ContentNodeModelUtil.refreshModels(this, "OPTIONAL_PRODUCTS", optionalProds, false);
 		return optionalProds;
 	}
 
-	public List getAvailableOptionalProducts() {
-		List available = new ArrayList();
-		for (Iterator prodItr = getOptionalProducts().iterator(); prodItr.hasNext();) {
-			ProductModel prod = (ProductModel) prodItr.next();
-			if (!prod.isUnavailable()) {
-				available.add(prod);
+	public List<ProductModel> getAvailableOptionalProducts() {
+		List<ProductModel> availables = new ArrayList<ProductModel>();
+		for (ProductModel optionalPrdoduct : getOptionalProducts()) {
+			if (!optionalPrdoduct.isUnavailable()) {
+				availables.add(optionalPrdoduct);
 			}
 		}
-		return available;
+		return availables;
 	}
 
 	public boolean isShowOptions() {

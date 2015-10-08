@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -45,44 +47,51 @@ public class HolidayMealBundleService {
     public HolidayMealBundleContainer populateHolidayMealBundleData(ProductModel productModel, FDUserI user) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
         HolidayMealBundleContainer container = new HolidayMealBundleContainer();
         if (productModel != null && productModel.getParentNode() != null && isNodeModelTypeHolidayMealBundle(productModel.getParentNode())) {
-            container.setMealIncludeDatas(populateIncludeMealDatas(productModel.getComponentGroups()));
-            container.setOptionalProducts(populateAvailableOptionalProducts(productModel.getComponentGroups(), user));
+            container.setMealIncludeDatas(populateIncludeMealDatas(productModel));
+            container.setOptionalProducts(populateAvailableOptionalProducts(productModel, user));
         }
         return container;
     }
 
-    private List<HolidayMealBundleIncludeMealData> populateIncludeMealDatas(List<ComponentGroupModel> componentGroups) throws FDSkuNotFoundException {
+    private List<HolidayMealBundleIncludeMealData> populateIncludeMealDatas(ProductModel productModel) throws FDSkuNotFoundException, FDResourceException {
         List<HolidayMealBundleIncludeMealData> mealIncludes = new ArrayList<HolidayMealBundleIncludeMealData>();
+        FDVariation[] variations = productModel.getDefaultSku().getProduct().getVariations();
+        List<ComponentGroupModel> componentGroups = productModel.getComponentGroups();
         if (componentGroups != null) {
             for (ComponentGroupModel componentGroup : componentGroups) {
                 if (componentGroup.getOptionalProducts().isEmpty()) {
-                    mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup)));
+                    mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, variations)));
                 }
             }
         }
         return mealIncludes;
     }
 
-    private List<HolidayMealBundleIncludeMealProductData> populateIncludeMealProducts(ComponentGroupModel componentGroup) throws FDSkuNotFoundException {
+    private List<HolidayMealBundleIncludeMealProductData> populateIncludeMealProducts(ComponentGroupModel componentGroup, FDVariation[] variations) throws FDSkuNotFoundException {
         List<HolidayMealBundleIncludeMealProductData> includeMealProducts = new ArrayList<HolidayMealBundleIncludeMealProductData>();
-        for (String sideDishSkuCode : componentGroup.getCharacteristicSkuCodes()) {
-            ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(sideDishSkuCode);
-            List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
-            if (includeSideBoxProductModels.isEmpty()) {
-                includeMealProducts.add(createIncludeMealProductData(sideBoxProductModel));
-            } else {
-                for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
-                    includeMealProducts.add(createIncludeMealProductData(includeSideBoxProductModel));
+        List<String> characteristicNames = componentGroup.getCharacteristicNames();
+        for (FDVariation variation : variations) {
+            if (characteristicNames.contains(variation.getName())) {
+                for (FDVariationOption variationOption : variation.getVariationOptions()) {
+                    ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
+                    List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
+                    if (includeSideBoxProductModels.isEmpty()) {
+                        includeMealProducts.add(createIncludeMealProductData(sideBoxProductModel));
+                    } else {
+                        for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
+                            includeMealProducts.add(createIncludeMealProductData(includeSideBoxProductModel));
+                        }
+                    }
                 }
             }
         }
         return includeMealProducts;
     }
 
-    @SuppressWarnings("unchecked")
-    private List<HolidayMealBundleOptionalProductData> populateAvailableOptionalProducts(List<ComponentGroupModel> componentGroups, FDUserI user)
+    private List<HolidayMealBundleOptionalProductData> populateAvailableOptionalProducts(ProductModel productModel, FDUserI user)
             throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
         List<HolidayMealBundleOptionalProductData> includeMealOptionalProducts = new ArrayList<HolidayMealBundleOptionalProductData>();
+        List<ComponentGroupModel> componentGroups = productModel.getComponentGroups();
         if (componentGroups != null) {
             for (ComponentGroupModel componentGroup : componentGroups) {
                 List<ProductModel> availableOptionalProducts = componentGroup.getAvailableOptionalProducts();
