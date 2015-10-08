@@ -188,9 +188,9 @@ public class FDSocialDAO {
 			ps = con.prepareStatement(sql);
 			ps.setString(1,userId.trim());
 			ps.setString(2,userToken.trim());
-			ps.executeUpdate();
+			ps.executeQuery();
 			
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			LOGGER.error(ex.getMessage());
 		} finally {
 

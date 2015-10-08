@@ -6,6 +6,7 @@ public class SocialLogin {
 	private String email;
 	private String provider;
 	private String accessToken;
+	private String context;
 	
 	public String getProvider() {
 		return provider;
@@ -37,6 +38,14 @@ public class SocialLogin {
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
+	}
+
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
 	}
 	
 	

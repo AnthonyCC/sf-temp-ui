@@ -96,8 +96,8 @@ public class SocialLoginController extends BaseController{
 		Message responseMessage = new SocialResponse();
 		if (result.isSuccess()) {
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
-			responseMessage
-					.setSuccessMessage("User Social Account Unlinked Successfully.");
+			((SocialResponse)responseMessage).setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_UNLINKED);
+			((SocialResponse)responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_UNLINKED);
 		} else {
 			responseMessage.setStatus(Message.STATUS_FAILED);
 			responseMessage = getErrorMessage(result, request);
@@ -164,6 +164,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		String userToken = null;
 		String accessToken = requestMessage.getAccessToken();
 		String providerName = requestMessage.getProvider();
+		String context = requestMessage.getContext();
 		
 		SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
 		socialUser = socialProvider.getSocialUserProfileByAccessToken(accessToken, providerName);
@@ -189,21 +190,25 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		String userIdFromDB = FDSocialManager.getUserIdForUserToken(userToken);
 		
 		if (result.isSuccess()) {
-			if (userToken != null)
-				/*socialUser = socialProvider.getSocialUserProfileByUserToken(
-						userToken, providerName);*/
+			if (userToken != null && ((context.equalsIgnoreCase("CREATE")) || (context.equalsIgnoreCase("SIGNIN")))) {				
 			responseMessage = setCurrentCartToTheUser(user, request, response);
-			((LoggedIn) responseMessage).setNewUser("false");
-			responseMessage
-					.setSuccessMessage("User was recognized and successfully logged in");
-		} else if (userIdFromDB == null || userIdFromDB.length() == 0) {
+			if (context.equalsIgnoreCase("CREATE")) {
+				((LoggedIn) responseMessage)
+						.setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_ACCOUNT_EXIST_SIGNIN);
+			} else if (context.equalsIgnoreCase("SIGNIN")) {
+				((LoggedIn) responseMessage)
+				.setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_AUTO_SIGNIN);
+			}
+			((LoggedIn) responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_SIGNEDIN);
+			} else if (userToken != null && context.equalsIgnoreCase("UNLINK")) {
+				requestMessage.setEmail(socialUser.get("email"));
+				requestMessage.setUserToken(userToken);
+				return unlinkExistingAccounts(model, user, requestMessage, request);
+			}
+		} else if ((userIdFromDB == null || userIdFromDB.length() == 0 )) {
 			responseMessage = getErrorMessage(result, request);
-			if (responseMessage.getErrors().get("ERR_MERGE_PAGE_REDIRECT") != null) {
+			if (responseMessage.getErrors().get("ERR_MERGE_PAGE_REDIRECT") != null && ((context.equalsIgnoreCase("LINK") || context.equalsIgnoreCase("CREATE")) || (context.equalsIgnoreCase("SIGNIN")))) {
 				// user social account linking will be done here
-				if (userToken != null)
-					/*socialUser = socialProvider
-							.getSocialUserProfileByUserToken(userToken,
-									providerName);*/
 				if (socialUser != null) {
 					String email = (String) socialUser.get("email");
 					String provider = (String) socialUser.get("provider");
@@ -222,9 +227,16 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 								.getActionResult();
 						if (resultSocialLink.isSuccess()) {
 							responseMessage.setStatus(Message.STATUS_SUCCESS);
+							if(context.equalsIgnoreCase("CREATE") || context.equalsIgnoreCase("SIGNIN")) {
 							responseMessage = setCurrentCartToTheUser(user,
 									request, response);
-							((LoggedIn) responseMessage).setNewUser("false");
+							((LoggedIn) responseMessage).setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_EXISTING_LINK_SIGNIN);
+							((LoggedIn) responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_SIGNEDIN);
+							} else if(context.equalsIgnoreCase("LINK")) {
+								responseMessage = new SocialResponse();
+								((SocialResponse) responseMessage).setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_LINKED);
+								((SocialResponse) responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_LINKED);
+							}
 						} else {
 							responseMessage = new SocialResponse();
 							responseMessage.setStatus(Message.STATUS_FAILED);
@@ -238,11 +250,12 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 				}
 			} else if (responseMessage.getErrors().get(
 					"ERR_SOCIAL_USER_UNRECOGNIZED") != null) {
+				if(context.equalsIgnoreCase("SIGNIN")){
+					responseMessage = new SocialResponse();
+					((SocialResponse) responseMessage).setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_NO_ACCOUNT_CONNECTED);
+					((SocialResponse) responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_NOMATCH);
+				} else if (context.equalsIgnoreCase("CREATE")) {
 				// registration and login goes here
-				if (userToken != null)
-				/*	socialUser = socialProvider
-							.getSocialUserProfileByUserToken(userToken,
-									providerName);*/
 				if (socialUser != null) {
 					String email = (String) socialUser.get("email");
 					String displayName = (String) socialUser.get("displayName");
@@ -324,13 +337,15 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 								EnumTransactionSource.FDX_IPHONE.getCode());
 						responseMessage = setCurrentCartToTheUser(user,
 								request, response);
-						((LoggedIn) responseMessage).setNewUser("true");
+						((LoggedIn) responseMessage).setResultMessage(SocialResponse.MESSAGE_RESULT_MESSAGE_ACCOUNT_CREATED);
+						((LoggedIn) responseMessage).setResultAction(SocialResponse.MESSAGE_ACTION_SIGNEDIN);
 					} else {
 						responseMessage = getErrorMessage(resultOne, request);
 					}
 					responseMessage.addWarningMessages(resultOne.getWarnings());
 				}
 			}
+				}
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;

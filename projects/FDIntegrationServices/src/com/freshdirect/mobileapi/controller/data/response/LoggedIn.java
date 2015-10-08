@@ -45,6 +45,8 @@ public class LoggedIn extends Message {
     
     //DOOR3 FD-iPad FDIP-474
     private boolean onMailingList = false;
+    private String resultAction;
+    private String resultMessage;
     
     public String getFdUserId() {
 		return fdUserId;
@@ -187,5 +189,23 @@ public class LoggedIn extends Message {
 	public void setNewUser(String newUser) {
 		this.newUser = newUser;
 	}
+
+	public String getResultAction() {
+		return resultAction;
+	}
+
+	public void setResultAction(String resultAction) {
+		this.resultAction = resultAction;
+	}
+
+	public String getResultMessage() {
+		return resultMessage;
+	}
+
+	public void setResultMessage(String resultMessage) {
+		this.resultMessage = resultMessage;
+	}
+	
+	
 	
 }

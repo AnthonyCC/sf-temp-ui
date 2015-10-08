@@ -920,7 +920,7 @@ function loadStuff() {
   	
   }  else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
-  	$("#payload").val('{"accessToken" : "12345", "provider":"google"}'); 	
+  	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}'); 	
   	
   }else if ( loaddata == "NewBrowseCategory") {
   	$("#url").val("/newbrowse/categories/");
@@ -1232,13 +1232,13 @@ function doStuff() {
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
   <option value=""> ========== Social Login ========== </option>
-  <option value="socialrecognize"> Social - Recognize</option>
+  <!--<option value="socialrecognize"> Social - Recognize</option>
   <option value="socialmerge"> Social - Merge </option>
   <option value="socialregister"> Social - Register </option>
   <option value="sociallogin"> Social - Login</option>
   <option value="linkaccount"> Social - Link Account </option>
   <option value="registersocial"> Social - Register </option>
-  <option value="unlinkaccount"> Social - Unlink Account </option>
+  <option value="unlinkaccount"> Social - Unlink Account </option> -->
   <option value="socialConnect"> Social - Connect </option>
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
