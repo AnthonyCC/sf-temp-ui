@@ -1299,8 +1299,113 @@
         fd.modules.common.utils.register("testpage.widgets", "centeredOverlayPopup", centeredOverlayPopup, fd);
       }(FreshDirect));
       </script>
-      <!-- TODO: continue popups -->
     </div>
+
+    <div id="FD_components_ifrPopup" class="method">
+      <h3 class="object-title">Iframe (ifr) Popup</h3>
+      <p class="description">
+      With this widget you can easily open a popup which has iframe content. For example a link or a pdf page. It's <strong>discouraged to inherit</strong> from this object, rather use the predefined data-attributes on a DOM element shown below.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>data-ifrpopup</dt>
+        <dd>URL to the iframe content (jsp,pdf,etc.)</dd>
+        <dt class="optional">data-ifrpopup-width</dt>
+        <dd>Specify the width for the popup if required</dd>
+        <dt class="optional">data-ifrpopup-height</dt>
+        <dd>Specify the height for the popup if required</dd>
+      </dl>
+
+      <pre class="example prettyprint">
+      </pre>
+      <div class="example-container">
+        <button class="cssbutton large green" data-ifrpopup="/help/estimated_price.jsp" data-ifrpopup-width="500" data-ifrpopup-height="400">
+          Open Iframe Conent
+        </button>
+      </div>
+    </div>
+
+    <div id="FD_components_confirmpopup" class="method">
+      <h3 class="object-title">Confirm Popup</h3>
+      <p class="description">
+      This widget is used to get confirmation from a user for a specified action (e.g. delete/delete all action).
+      This is also a popup widget that is <strong>discouraged</strong> to inherit from but you can set your configuration through data attributes.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>data-confirm</dt>
+        <dd>Attribute to set on element to open a confirmation popup</dd>
+        <dt class="optional">data-confirm-message</dt>
+        <dd>Optionally set a simple string message you want to ask</dd>
+        <dt class="optional">data-confirm-header</dt>
+        <dd>Optionally set a bold title for the question</dd>
+        <dt class="optional">data-confirm-button-*</dt>
+        <dd>You can attach eventhandlers to buttons. Will be explained in further examples. Basic template buttons are 'yes' and 'no'.</dd>
+        <dt class="optional">data-confirm-template</dt>
+        <dd>Override basic template with your custom one</dd>
+        <dt class="optional">data-confirm-process</dt>
+        <dd>Preprocess data sent to the popup. Here you can add a fully-qualified string path for your process function</dd>
+        <dt class="optional">data-confirm-data</dt>
+        <dd>Override data sent to the popup</dd>
+      </dl>
+      <p class="description">
+      The most basic usage is to asking a question (maybe with a title) and attaching custom eventhandlers to the default 'yes' and 'no' buttons. If you want to use different buttons with specified color/name see next example.
+      </p>
+      <pre class="prettyprint">
+        (function (fd) {
+          "use strict";
+
+          var confirmAnswers = {
+            yesAnswer : function(){
+              alert("Meaning of life is 42");
+            },
+            noAnswer : function(){
+              alert("Oww I'm sorry to hear that!");
+            }
+          };
+
+          fd.modules.common.utils.register("testpage.widgets", "confirmAnswers", confirmAnswers, fd);
+        }(FreshDirect));
+
+        &lt;button class="cssbutton large green"
+          data-confirm="true" // init confirm popup
+          data-confirm-message="What's the meaning of life?"
+          data-confirm-header="This will be a tricky question! :)"
+          data-confirm-button-yes="FreshDirect.testpage.widgets.confirmAnswers.yesAnswer" // attach our functions registered before
+          data-confirm-button-no="FreshDirect.testpage.widgets.confirmAnswers.noAnswer" // aftere these ran there is an automatic 'close' event called
+          data-alignpopup="tr-bl"&gt; // set a custom alignment for this popup (top-right, bottom-left)
+          Open Confirmation
+        &lt;/button&gt;
+      </pre>
+      <div>
+        <button class="cssbutton large green"
+          data-confirm="true"
+          data-confirm-message="What's the meaning of life?"
+          data-confirm-header="This will be a tricky question! :)"
+          data-confirm-button-yes="FreshDirect.testpage.widgets.confirmAnswers.yesAnswer"
+          data-confirm-button-no="FreshDirect.testpage.widgets.confirmAnswers.noAnswer"
+          data-alignpopup="tr-bl">
+          Open Confirmation
+        </button>
+      </div>
+      <script>
+      (function (fd) {
+        "use strict";
+
+        var confirmAnswers = {
+          yesAnswer : function(){
+            alert("Meaning of life is 42");
+          },
+          noAnswer : function(){
+            alert("Oww I'm sorry to hear that!");
+          }
+        };
+
+        fd.modules.common.utils.register("testpage.widgets", "confirmAnswers", confirmAnswers, fd);
+      }(FreshDirect));
+      </script>
+      <!-- TODO: continue examples -->
+    </div> <!-- /component -->
 
   </div> <!-- /module -->
 
