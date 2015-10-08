@@ -1146,14 +1146,15 @@
           opacity: .7;
         }
       </pre>
-      <p>To tell the popup framework to use this class as an extra class in your 'popupConfig'</p>
+      <p>Tell the popup framework to use this class in your 'popupConfig'. Also you can tell that you want to close the popup when clicking anywhere outside of it.</p>
       <pre class="prettyprint example">
           var centeredPopup = Object.create(... ,{
             ... ,
             popupConfig:{
               value:{
                 overlay:true, // this is the default value but it's encouraged to set it explicitly
-                overlayExtraClass:'my-white-popup-overlay' // name of your css class
+                overlayExtraClass:'my-white-popup-overlay', // name of your css class
+                hideOnOverlayClick: true // when clicking out of the popup it will close
               }
             }
             ...
@@ -1182,7 +1183,8 @@
             value: {
               align:false,
               overlay:true,
-              overlayExtraClass:'my-white-popup-overlay'
+              overlayExtraClass:'my-white-popup-overlay',
+              hideOnOverlayClick:true
             }
           },
           hasClose: {

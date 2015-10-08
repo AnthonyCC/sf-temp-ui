@@ -105,6 +105,13 @@ var FreshDirect = FreshDirect || {};
                     );
 
                 cnt.on('click', '.qs-popup-close-icon', this.close.bind(this));
+
+                if(this.popupConfig.hideOnOverlayClick){
+                  var self = this;
+                  cnt.on('click', function(e){
+                    if(e.target === e.currentTarget){ self.popup.hide(); }
+                  });
+                }
             }
         },
         render:{
