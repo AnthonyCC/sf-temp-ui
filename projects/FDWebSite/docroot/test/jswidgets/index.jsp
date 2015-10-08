@@ -23,7 +23,7 @@
   <h1>JS widget test page</h1>
   <p>Click on module titles to expand them</p>
 
-  <div id="FD_utils" class="module" fd-toggle="toggleUtils" fd-toggle-state="disabled">
+  <div id="FD_utils" class="module" fd-toggle="toggleUtils" fd-toggle-state="enabled">
     <h2 class="module-title" fd-toggle-trigger="toggleUtils">FreshDirect.utils (fd/utils.js)</h2>
     <p>aka. <code>FreshDirect.modules.common.utils</code></p>
 
@@ -432,7 +432,7 @@
 
   </div>
 
-  <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="disabled">
+  <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="enabled">
     <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect.common (fd/common/**.js)</h2>
 
     <div id="FD_common_tooltip" class="method deprecated">
@@ -844,7 +844,7 @@
 
   </div> <!-- /module -->
 
-  <div id="FD_common_form" class="module" fd-toggle="toggleForm" fd-toggle-state="disabled">
+  <div id="FD_common_form" class="module" fd-toggle="toggleForm" fd-toggle-state="enabled">
     <h2 class="module-title" fd-toggle-trigger="toggleForm">FreshDirect Forms</h2>
 
     <div id="FD_common_forms" class="method">
@@ -976,7 +976,7 @@
 
   </div> <!-- /module -->
 
-  <div id="FD_common_popup" class="module" fd-toggle="togglePopup" fd-toggle-state="disabled">
+  <div id="FD_common_popup" class="module" fd-toggle="togglePopup" fd-toggle-state="enabled">
     <h2 class="module-title" fd-toggle-trigger="togglePopup">FreshDirect Popups</h2>
     <p>incl. popups from <code>FreshDirect.modules.common.* and FreshDirect.components.*</code></p>
 
@@ -1282,6 +1282,23 @@
           $el.text($next.html());
         }
       });
+
+      var goToHashAndCloseModules = function(){
+        if (window.location.hash) {
+          var elementId = window.location.hash.substr(1);
+          var moduleId = $("#" + elementId).closest('[fd-toggle]').attr('id');
+
+          if(moduleId){
+            $('[fd-toggle]').not('#' + moduleId).attr('fd-toggle-state', 'disabled');
+            return;
+          }
+        }
+
+        // close all modules
+        $('[fd-toggle]').attr('fd-toggle-state', 'disabled');
+      };
+
+      goToHashAndCloseModules();
     }(FreshDirect));
   </script>
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
