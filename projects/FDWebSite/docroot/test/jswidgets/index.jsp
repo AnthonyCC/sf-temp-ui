@@ -924,8 +924,8 @@
         <dd>Register form object</dd>
         <dt>forms.registerValidator(selector, validator)</dt>
         <dd>Register a validator function for the input fields that match the given CSS selector</dd>
-        <dt>forms.registerFormatter(selector, formatter)</dt>
-        <dd>Register a formatter function for the input fields that match the given CSS selector</dd>
+        <dt>forms.registerFormatter(name, formatter)</dt>
+        <dd>Register a formatter function with the given name. The formatter is applied to fields that has the <code>[fdform-formatter="name"]</code> property set to the name of the formatter.</dd>
         <dt>forms.get(id)</dt>
         <dd>Get the form object for the id</dd>
         <dt>forms.getEl(id)</dt>
@@ -942,6 +942,7 @@
       <p>
       A validator is a function that gets the field to validate as a parameter, and returns the <b>list</b> of errors.<br/>
       The list of errors should have the following format:
+      </p>
       <pre>
       [
         {
@@ -953,6 +954,8 @@
         { ... }
       ]
       </pre>
+      <p>
+      Some default validators are applied automatically, like <code>[required]</code>.
       </p>
 
       <h4>Formatters</h4>
@@ -962,14 +965,65 @@
 
       <h4>AJAX request/response format</h4>
 
+
+      <h4>Example</h4>
+      <b>Simple form w/ custom submit that logs the serialized form with validators and formatter</b>
       <pre class="prettyprint example">
       </pre>
-      <script class="example-container">
-      var alma = 2;
-      </script>
       <div class="example-container">
-        <b>alma</b>
-        <i>beka</i>
+        <form fdform="form-example-1">
+          <p>
+            <label>Simple field <input type="text" name="simplefield"/></label>
+          </p>
+          <p>
+            <label>Required field <input type="text" name="reqfield" fdform-v-required/></label>
+          </p>
+          <p>
+          Select at least one of the following options:
+          </p>
+          <p>
+            <label>Apple <input type="checkbox" name="fruit" value="Apple" fdform-v-onerequired="fruit"/></label>
+            <label>Banana <input type="checkbox" name="fruit" value="Banana" fdform-v-onerequired="fruit"/></label>
+          </p>
+          <p>
+            <label>Only '<b>A</b>' validator <input type="text" name="aaafield" /></label>
+          </p>
+          <p>
+            <label>Uppercase formatter <input type="text" fdform-formatter="uppercase" name="uppercasefield" /></label>
+          </p>
+          <button fdform-submit>Submit</button>
+        </form>
+        <script>
+        FreshDirect.modules.common.forms.register({
+          id: 'form-example-1',
+          submit: function (e) {
+            var data = FreshDirect.modules.common.forms.serialize(e.form.id);
+
+            console.log(data);
+          }
+        });
+        FreshDirect.modules.common.forms.registerValidator('[name="aaafield"]', function (field) {
+          var errors = [],
+              val = $(field).val();
+
+          if (!val.match(/^[aA]*$/)) {
+            errors.push({
+              field: field,
+              name: 'aaafield',
+              error: "Only A-s please."
+            });
+          }
+
+          return errors;
+        });
+        FreshDirect.modules.common.forms.registerFormatter('uppercase', function (field, focus) {
+          var $field = $(field);
+
+          if (!focus) {
+            $field.val($field.val().toUpperCase());
+          }
+        });
+        </script>
       </div>
 
     </div>
