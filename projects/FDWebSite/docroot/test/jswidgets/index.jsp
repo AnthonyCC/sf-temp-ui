@@ -914,18 +914,64 @@
         <dd>Callback function called if the AJAX form submit succeeded [fdform-success]</dd>
         <dt class="optional">failure</dt>
         <dd>Callback function called if the AJAX form submit succeeded [fdform-failure]</dd>
+        <dt class="optional">validate</dt>
+        <dd>Custom validation function</dd>
+      </dl>
+
+      <h4>Form library API functions</h4>
+      <dl>
+        <dt>forms.register(form)</dt>
+        <dd>Register form object</dd>
+        <dt>forms.registerValidator(selector, validator)</dt>
+        <dd>Register a validator function for the input fields that match the given CSS selector</dd>
+        <dt>forms.registerFormatter(selector, formatter)</dt>
+        <dd>Register a formatter function for the input fields that match the given CSS selector</dd>
+        <dt>forms.get(id)</dt>
+        <dd>Get the form object for the id</dd>
+        <dt>forms.getEl(id)</dt>
+        <dd>Get the form HTML element for the id (if exists)</dd>
+        <dt>forms.validate(form, silent)</dt>
+        <dd>Validate the given form. If silent is true then the errors won't be displayed, but only returned.</dd>
+        <dt>forms.clearErrors(form)</dt>
+        <dd>Clear displayed errors for the given form</dd>
+        <dt>forms.serialize(id)</dt>
+        <dd>Serialize the form with the given id</dd>
       </dl>
 
       <h4>Validators</h4>
+      <p>
+      A validator is a function that gets the field to validate as a parameter, and returns the <b>list</b> of errors.<br/>
+      The list of errors should have the following format:
+      <pre>
+      [
+        {
+          name: fieldName, // [name] property of the field
+          error: errorMessage,
+          field: HTMLField, // the field for the error, <i>optional</i>
+          errorid: errorId // id of the error, to be able to remove it separately, <i>optional</i>
+        },
+        { ... }
+      ]
+      </pre>
+      </p>
 
       <h4>Formatters</h4>
+      <p>
+      A formatter is a function that gets the input field, a boolean (if the field is focused or not), and the event object (if available).
+      </p>
 
-      <h4>Form library functions</h4>
+      <h4>AJAX request/response format</h4>
 
       <pre class="prettyprint example">
       </pre>
-      <script>
+      <script class="example-container">
+      var alma = 2;
       </script>
+      <div class="example-container">
+        <b>alma</b>
+        <i>beka</i>
+      </div>
+
     </div>
 
   </div> <!-- /module -->
@@ -1224,6 +1270,20 @@
     </div>
 --%>
 
+  <script>
+    (function (fd) {
+      var $ = fd.libs.$;
+
+      $('pre.example').each(function (i, el) {
+        var $el = $(el),
+            $next = $el.next('.example-container');
+
+        if ($next.size() > 0) {
+          $el.text($next.html());
+        }
+      });
+    }(FreshDirect));
+  </script>
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </body>
 </html>
