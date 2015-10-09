@@ -866,7 +866,9 @@ public class BrowseUtil {
 	    	}
 	    	Set tmp = new HashSet(contents);
 	    	contents = new ArrayList(tmp);
-	    	sortProductsBy(user, contents, sortBy);
+	    	if(sortBy != null && !sortBy.isEmpty()){
+	    		sortProductsBy(user, contents, sortBy);
+	    	}
 	    	return contents;
 	    }
 	    
