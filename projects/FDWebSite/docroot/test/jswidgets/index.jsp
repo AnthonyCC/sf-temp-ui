@@ -1387,6 +1387,16 @@
           data-alignpopup="tr-bl">
           Open Confirmation
         </button>
+        <button class="cssbutton large green"
+          data-confirm="true"
+          data-confirm-message="What's the meaning of life?"
+          data-confirm-header="This will be a tricky question! :)"
+          data-confirm-button-yes="FreshDirect.testpage.widgets.confirmAnswers.yesAnswer"
+          data-confirm-button-no="FreshDirect.testpage.widgets.confirmAnswers.noAnswer"
+          data-alignpopup="tc-bc">
+          Open Confirmation Bubble
+        </button>
+        <p>In the latter case you could see that an arrow appear between the button and the popup. That's called <code>.bubblepopup</code> in code. It's configured by the <code>data-alignpoup</code> attribute and it does not work for all combinations! For example for <code>tr-bl</code> it's not working but for <code>tc-bc</code> it is. See <strong>fixedpopup.css</strong> to find out which ways are supported.</p>
       </div>
       <script>
       (function (fd) {
@@ -1429,7 +1439,7 @@
         &lt;style type="text/css"&gt;
           [data-ajaxpopup-type="show-user"] .fixedPopupContent{
             background-color: floralwhite;
-            border: 5px dashed rebeccapurple;
+            border: 5px dashed cornflowerblue;
           }
         &lt;/style&gt;
         &lt;button class="cssbutton large green"
@@ -1443,7 +1453,7 @@
       <style type="text/css">
         [data-ajaxpopup-type="show-user"] .fixedPopupContent{
           background-color: floralwhite;
-          border: 5px dashed rebeccapurple;
+          border: 5px dashed cornflowerblue;
         }
       </style>
       <button class="cssbutton large green"
