@@ -859,6 +859,8 @@
         <dd>Id of the form (string)</dd>
         <dt class="optional">fdform-serialize</dt>
         <dd>Custom serialization function for the form (dotted name)</dd>
+        <dt class="optional">fdform-fill</dt>
+        <dd>Custom fill function for the form (dotted name)</dd>
         <dt class="optional">fdform-endpoint-submit</dt>
         <dd>Submit endpoint (url)</dd>
         <dt class="optional">fdform-endpoint-validator</dt>
@@ -900,6 +902,8 @@
         <dd>Form id [fdform]</dd>
         <dt class="optional">serialize</dt>
         <dd>Custom serialize method [fdform-serialize]</dd>
+        <dt class="optional">fill</dt>
+        <dd>Custom fill method [fdform-fill]</dd>
         <dt class="optional">submitEndpoint</dt>
         <dd>AJAX submit endpoint [fdform-endpoint-submit]</dd>
         <dt class="optional">validatorEndpoint</dt>
@@ -936,6 +940,8 @@
         <dd>Clear displayed errors for the given form</dd>
         <dt>forms.serialize(id)</dt>
         <dd>Serialize the form with the given id</dd>
+        <dt>forms.fill(id, data)</dt>
+        <dd>Fill the form with the provided data</dd>
       </dl>
 
       <h4>Validators</h4>
@@ -943,7 +949,7 @@
       A validator is a function that gets the field to validate as a parameter, and returns the <b>list</b> of errors.<br/>
       The list of errors should have the following format:
       </p>
-      <pre>
+      <pre id="FD_forms_error_format">
       [
         {
           name: fieldName, // [name] property of the field
@@ -964,7 +970,49 @@
       </p>
 
       <h4>AJAX request/response format</h4>
-
+      <p>
+      The request is POST-ed to the given endpoint for both submit and validation, the HTML request contains a data named property with an encoded JSON with the following fields:
+      </p>
+      <b>Validation JSON request data format</b>
+      <pre>
+        {
+          "fdform": "form id",
+          "formdata": { <i>serialized form data (result of <code>forms.serialize("form id")</code>)</i> },
+          "edited": "changed field name"
+        }
+      </pre>
+      <b>Submit JSON request data format</b>
+      <pre>
+        {
+          "fdform": "form id",
+          "formdata": { <i>serialized form data (result of <code>forms.serialize("form id")</code>)</i> }
+        }
+      </pre>
+      <p>
+      The response of the submit/validation process should be a standard JSON response that is processed by the dispatcher module. (See <a href="#FD_common_server">common/server</a>.)<br/>
+      The form framework is listening to the <code>'submitForm'</code> and <code>'validationResult'</code> signals. Obviously a response could contain both of them, or any other data for other widgets.<br/>
+      </p>
+      <b>Validation JSON response data format</b>
+      <pre>
+        {
+          "validationResult": {
+            "fdform": "form id, that has been submitted for validation",
+            "errors": [ ... errors in <a href="#FD_forms_error_format">standard error format</a> ]
+          }
+        }
+      </pre>
+      <b>Submit JSON response data format</b>
+      <pre>
+        {
+          "submitForm": {
+            "fdform": "form id, that has been submitted",
+            "success": true/false, // was the form submit successful?
+            "result": {
+              ... general JSON response, processed by dispatcher, or anything that is processed by the custom success function
+            }
+          }
+        }
+      </pre>
 
       <h4>Example</h4>
       <b>Simple form w/ custom submit that logs the serialized form with validators and formatter</b>
@@ -1023,6 +1071,25 @@
             $field.val($field.val().toUpperCase());
           }
         });
+        </script>
+      </div>
+
+      <p>
+      <b>Simple AJAX submit/validation</b>
+      </p>
+      <pre class="prettyprint example">
+      </pre>
+      <div class="example-container">
+        <form fdform="form-example-2" fdform-endpoint-submit="form_submit.jsp" fdform-endpoint-validator="form_validate.jsp">
+          <p>
+            <label>Simple field <input type="text" name="simplefield"/></label>
+          </p>
+          <p>
+            <label>AJAX invalid field (always invalid)<input type="text" name="invalidfield"/></label>
+          </p>
+          <button fdform-submit>AJAX Submit</button>
+        </form>
+        <script>
         </script>
       </div>
 

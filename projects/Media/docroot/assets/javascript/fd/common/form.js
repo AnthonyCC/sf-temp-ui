@@ -202,12 +202,33 @@ var FreshDirect = FreshDirect || {};
     return data;
   };
 
+  forms.fillForm = function (form, data) {
+    // TODO: select/checkbox/radiobutton support
+    var $form = $(form);
+
+    Object.keys(data).forEach(function (key) {
+      var value = data[key];
+
+      $form.find('input[name="'+key+'"]').val(value);
+    });
+
+    return data;
+  };
+
   forms.serialize = function (id) {
     var form = this.get(id),
         $form = this.getEl(id),
         customSerialize = (form && form.serialize) || utils.discover($form.attr(this.attrPrefix+'-serialize'));
 
     return customSerialize ? customSerialize($form) : forms.serializeForm($form);
+  };
+
+  forms.fill = function (id, data) {
+    var form = this.get(id),
+        $form = this.getEl(id),
+        customFill = (form && form.fill) || utils.discover($form.attr(this.attrPrefix+'-fill'));
+
+    return customFill ? customFill($form, data) : forms.fillForm($form, data);
   };
 
   forms.getAjaxEndpoint = function (id, type) {
@@ -445,6 +466,20 @@ var FreshDirect = FreshDirect || {};
 
   formSubmitListener.listen();
 
+  // listener for form fill signals
+  var formFillListener = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'fillForm'
+    },
+    callback: {
+      value: function (data) {
+        forms.fill(data.fdform, data.data);
+      }
+    }
+  });
+
+  formFillListener.listen();
+
   // basic success functions
   forms.successFns = {};
   forms.successFns.reset = function (id) {
@@ -633,8 +668,6 @@ var FreshDirect = FreshDirect || {};
     }
 
   });
-
-  // TODO fill form w/ data
 
   // register in fd namespace
   utils.register("modules.common", "forms", forms, fd);
