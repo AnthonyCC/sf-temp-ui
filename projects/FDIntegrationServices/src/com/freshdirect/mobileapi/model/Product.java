@@ -40,6 +40,8 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.content.attributes.AttributeCollection;
+import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -49,6 +51,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -57,6 +60,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -235,7 +239,7 @@ public class Product {
     @SuppressWarnings("unchecked")
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException {
         this.product = new ProductImpression(productModel);
-        this.pricingContext = user != null ? user.getPricingContext() : null;
+        this.pricingContext = user != null ? user.getUserContext().getPricingContext() : null;
         if (pricingContext == null) {
             pricingContext = PricingContext.DEFAULT;
         }
@@ -257,7 +261,7 @@ public class Product {
 
             this.hasSingleSku = this.skus.size() == 1;
 
-            this.defaultPriceCalculator = new PriceCalculator(user.getPricingContext(), productModel);
+            this.defaultPriceCalculator = new PriceCalculator(user.getUserContext().getPricingContext(), productModel);
 
             if (this.hasSingleSku) {
                 this.defaultSku = this.skus.get(0);
@@ -528,7 +532,9 @@ public class Product {
             }
         }
 
-        if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
+        final String layout = getLayout();
+		final EnumProductLayout productLayout = product.getProductModel().getProductLayout();
+		if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(layout)) {
             List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
             for (ComponentGroupModel componentGroup : componentGroups) {
                 ComponentGroup cgp;
@@ -538,6 +544,60 @@ public class Product {
                 } catch (FDException e) {
                     throw new ModelException("Unable to get ComponentGroup", e);
                 }
+            }
+
+            for (Variation variation : this.variations) {
+                variation.removeUnavailableOptions();
+            }
+        } else if ( EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT == productLayout ) {
+			List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
+
+			for (ComponentGroupModel componentGroup : componentGroups) {
+				if (!componentGroup.getOptionalProducts().isEmpty())
+					continue;
+
+				List<String> characteristicNames = componentGroup.getCharacteristicNames();
+				final FDProduct prd = product.getFDProduct();
+				for (FDVariation variation : prd.getVariations()) {
+					if (characteristicNames.contains(variation.getName())) {
+						for (FDVariationOption variationOption : variation.getVariationOptions()) {
+							ProductModel sideBoxProductModel;
+							try {
+								sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
+								List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
+								if (includeSideBoxProductModels.isEmpty()) {
+									// Normal case
+									variations.add( Variation.wrap(variation, this) );
+
+								} else {
+									// HMB case
+									for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
+										final SkuModel defSku = includeSideBoxProductModel.getDefaultSku();
+
+										FDProduct fdprd = defSku.getProduct();
+										FDMaterial mat = fdprd.getMaterial();
+
+										AttributeCollection acoll = new AttributeCollection();
+										acoll.setAttribute(EnumAttributeName.SKUCODE.getName(), defSku.getSkuCode());
+
+										FDVariationOption fdvop = new FDVariationOption(acoll,
+												mat.getMaterialNumber().substring(9),
+												includeSideBoxProductModel.getFullName());
+
+										FDVariation fdvar = new FDVariation(new AttributeCollection(), "", new FDVariationOption[] { fdvop });
+										Variation v = Variation.wrap(fdvar, this);
+
+										variations.add(v);
+									}
+								}
+							} catch (FDSkuNotFoundException e) {
+								throw new ModelException(e);
+							} catch (FDResourceException e) {
+								throw new ModelException(e);
+							}
+						}
+					}
+				}
             }
 
             for (Variation variation : this.variations) {
