@@ -967,6 +967,12 @@
 		<div class="link"><a href="/test/jswidgets/index.jsp">/test/jswidgets/index.jsp</a></div>
 		<div class="pageDesc">Demo page for our JavaScript widgets.</div>
 	</div>
+
+	<div class="tag CSS buttons">
+		<div class="pageName"><span>CSS Buttons</span></div>
+		<div class="link"><a href="/test/components/cssbuttons.jsp">/test/components/cssbuttons.jsp</a></div>
+		<div class="pageDesc">Demo page for FD CSS buttons</div>
+	</div>
 	
 	<hr />
 </div>

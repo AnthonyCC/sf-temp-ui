@@ -1467,6 +1467,11 @@
 
   </div> <!-- /module -->
 
+  <div id="FD_buttons" class="module">
+    <h2 class="module-title">FreshDirect CSS Buttons</h2>
+    <p>These button colors/sizes/icons recommended to use sitewide. Linking an <a href="/test/components/cssbuttons.jsp">already existing testpage to show these</a>.</p>
+  </div> <!-- /module -->
+
 <%-- template
 
     <div id="FD_" class="method">
