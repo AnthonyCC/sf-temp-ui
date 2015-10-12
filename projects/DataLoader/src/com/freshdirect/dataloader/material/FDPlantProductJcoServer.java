@@ -109,7 +109,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		// tableMetaDataList.add(new TableMetaData("WESCH",
 		// JCoMetaData.TYPE_CHAR, 3, 0, "Number of Days Fresh"));
 		tableMetaDataList.add(new TableMetaData("RATING", JCoMetaData.TYPE_CHAR, 3, "SKU Rating"));
-		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 18, "Industry Standard Description"));
+		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 3, "Industry Standard Description"));
 		tableMetaDataList.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
 		tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
 
@@ -283,7 +283,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 			param.setBlockedDays(allowedDays.inverted());
 		}
 
-		param.setDays_in_house(materialPlantTable.getString("DZEIT"));
+		param.setDays_in_house(FDSapHelperUtils.getString(materialPlantTable.getString("NORMT")));
 
 		param.setRating(FDSapHelperUtils.getString(materialPlantTable.getString("RATING")));
 		param.setSustainabilityRating(FDSapHelperUtils.getString(materialPlantTable.getString("SEARK")));
