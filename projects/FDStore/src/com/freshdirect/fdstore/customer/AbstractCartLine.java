@@ -17,6 +17,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.AvailabilityFactory;
@@ -170,7 +171,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 
 	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
 		FDProduct fdp = this.lookupFDProduct();
-		return AvailabilityFactory.getApplicableRestrictions(fdp);
+		FDProductInfo fdpi = this.lookupFDProductInfo();
+		return AvailabilityFactory.getApplicableRestrictions(fdp,fdpi);
 	}
 
 	public String getOrderLineId() {

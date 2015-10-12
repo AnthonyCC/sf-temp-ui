@@ -90,12 +90,12 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
         Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
 			{
-				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
 			}
 		};
 		
 		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
-			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),status.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),status.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
 			};
 		};
 		;

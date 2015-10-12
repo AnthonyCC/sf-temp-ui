@@ -486,12 +486,12 @@ public class FDFactory {
 	private static FDProductInfo getPreviewProductInfo(String skuCode) {
 		Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
 			{
-				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
 			}
 		};
 		
 		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
-			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.TEMP_UNAV.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.TEMP_UNAV.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
 			};
 		};
 		;

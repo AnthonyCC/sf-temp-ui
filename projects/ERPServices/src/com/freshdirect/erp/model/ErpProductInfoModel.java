@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.framework.core.ModelSupport;
@@ -204,10 +205,12 @@ public class ErpProductInfoModel extends ModelSupport {
 		
 		private String plantId;
 		
+		private boolean isLimitedQuantity;
+		
 		public ErpPlantMaterialInfo(boolean kosherProduction,
 				boolean platter, DayOfWeekSet blockedDays, EnumATPRule atpRule,
 				String rating, String freshness,
-				String sustainabilityRating,String plantId) {
+				String sustainabilityRating,String plantId, boolean isLimitedQuantity) {
 			super();
 			this.kosherProduction = kosherProduction;
 			this.platter = platter;
@@ -217,6 +220,7 @@ public class ErpProductInfoModel extends ModelSupport {
 			this.freshness = freshness;
 			this.sustainabilityRating = sustainabilityRating;
 			this.plantId = plantId;
+			this.isLimitedQuantity = isLimitedQuantity;
 		}
 
 		
@@ -282,6 +286,14 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public String getPlantId() {
 			return plantId;
+		}
+		
+		/**
+		 * 
+		 * @return isLimitedQuantity
+		 */
+		public boolean isLimitedQuantity() {
+			return isLimitedQuantity;
 		}
 
 
@@ -370,6 +382,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		private String unavailabilityStatus;
 		private Date unavailabilityDate;
 		private String unavailabilityReason;
+		private String dayPartType;
 		/**
 		 * @param salesAreaInfo
 		 * @param unavailabilityStatus
@@ -378,7 +391,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public ErpMaterialSalesAreaInfo(SalesAreaInfo salesAreaInfo,
 				String unavailabilityStatus, Date unavailabilityDate,
-				String unavailabilityReason) {
+				String unavailabilityReason, String dayPartType) {
 			super();
 			this.salesAreaInfo = salesAreaInfo;
 			if(unavailabilityStatus==null)
@@ -387,6 +400,7 @@ public class ErpProductInfoModel extends ModelSupport {
 				this.unavailabilityStatus=unavailabilityStatus;
 			this.unavailabilityDate = unavailabilityDate;
 			this.unavailabilityReason = unavailabilityReason;
+			this.dayPartType = dayPartType;
 		}
 		/**
 		 * @return the salesAreaInfo
@@ -435,6 +449,18 @@ public class ErpProductInfoModel extends ModelSupport {
 		 */
 		public void setUnavailabilityReason(String unavailabilityReason) {
 			this.unavailabilityReason = unavailabilityReason;
+		}
+		/**
+		 * @return the dayPartType
+		 */
+		public String getDayPartType() {
+			return dayPartType;
+		}
+		/**
+		 * @param dayPartType the dayPartType to set
+		 */
+		public void setDayPartType(String dayPartType) {
+			this.dayPartType = dayPartType;
 		}
 		
 		

@@ -102,7 +102,8 @@ public class FDProductInfo extends FDSku  {
 					                         mpInfo.getPlantId(),
 					                         freshness,
 					                         rating,
-					                         sustainabilityRating
+					                         sustainabilityRating,
+					                         mpInfo.isLimitedQuantity()
 					                         ));
 		}
 		_setPlantMaterialInfo(mpInfos);
@@ -138,7 +139,8 @@ public class FDProductInfo extends FDSku  {
  					                         mpInfo.getPlantId(),
  					                         mpInfo.getFreshness(),
  					                         mpInfo.getRating(),
- 					                         mpInfo.getSustainabilityRating()
+ 					                         mpInfo.getSustainabilityRating(),
+ 					                         mpInfo.isLimitedQuantity()
  					                         ));
  		}
  		_setPlantMaterialInfo(mpInfos);
@@ -480,14 +482,31 @@ public class FDProductInfo extends FDSku  {
 		return materialAvailability;
 	}
 	
+	//TODO: Remove this method.
 	public boolean isLimitedQuantity(String salesOrg, String distributionChannel) {
 		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null) {
 			if(this.getSkuCode().startsWith("VI"))
-				return true;
-			return sa.isLimitedQuantity();
+				return true;			
 		}
 		return false;
 		
+	}
+	
+	public boolean isLimitedQuantity(String plantID) {
+		if(!StringUtils.isEmpty(plantID)) {
+			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
+			if(pm!=null)
+				return pm.isLimitedQuantity();
+		}
+		return false;
+		
+	}
+	
+	public EnumDayPartValueType getDayPartValueType(String salesOrg, String distributionChannel) {
+		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		if(sa!=null)
+			return sa.getDayPartValueType();
+		return null;		
 	}
 }

@@ -1,15 +1,17 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -30,7 +32,7 @@ public class AvailabilityFactory {
 		EnumDlvRestrictionReason.BLOCK_FRIDAY,
 		EnumDlvRestrictionReason.BLOCK_SATURDAY};
 
-	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product) {
+	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product, FDProductInfo fdpi) {
 		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
 		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		
@@ -67,6 +69,23 @@ public class AvailabilityFactory {
 			}
 		}
 		s.addAll(product.getMaterial().getBlockedDays(plantID).translate(DAY_REASONS));
+		
+		ZoneInfo zoneInfo=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
+		if(null !=zoneInfo){
+			String salesOrg = zoneInfo.getSalesOrg();
+			String distChannel = zoneInfo.getDistributionChanel();
+			
+			EnumDayPartValueType dayPartValueType = fdpi.getDayPartValueType(salesOrg, distChannel);
+			if(null != dayPartValueType){
+				 List<EnumDlvRestrictionReason> dayPartDlvRestrictionTypes = EnumDlvRestrictionReason.getDayPartRestrictionsEumList();
+				 for (EnumDlvRestrictionReason dayPartDlvRestrictionType : dayPartDlvRestrictionTypes) {
+					if(dayPartValueType.getName().equals(dayPartDlvRestrictionType.getName())){
+						s.add(dayPartDlvRestrictionType);
+						break;
+					}
+				}
+			}
+		}
 
 		return s;
 	}

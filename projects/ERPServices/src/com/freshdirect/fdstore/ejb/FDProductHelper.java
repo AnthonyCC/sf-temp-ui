@@ -57,6 +57,7 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
@@ -173,7 +174,7 @@ public class FDProductHelper {
 			ErpPlantMaterialModel plantMaterialModel = (ErpPlantMaterialModel) iterator.next();
 			plantMaterial =plantMaterialMap.get(plantMaterialModel.getPlantId());
 			if(null == plantMaterial){
-				plantMaterial = new FDPlantMaterial(plantMaterialModel.getAtpRule(), plantMaterialModel.isKosherProduction(), plantMaterialModel.isPlatter(), plantMaterialModel.getBlockedDays(), plantMaterialModel.getLeadTime(), plantMaterialModel.getPlantId());	
+				plantMaterial = new FDPlantMaterial(plantMaterialModel.getAtpRule(), plantMaterialModel.isKosherProduction(), plantMaterialModel.isPlatter(), plantMaterialModel.getBlockedDays(), plantMaterialModel.getLeadTime(), plantMaterialModel.getPlantId(), plantMaterialModel.isHideOutOfStock());	
 				plantMaterialMap.put(plantMaterialModel.getPlantId(),plantMaterial);			
 			}
 		}
@@ -189,7 +190,7 @@ public class FDProductHelper {
 			SalesAreaInfo salesAreaInfo =new SalesAreaInfo(materialSalesAreaModel.getSalesOrg(), materialSalesAreaModel.getDistChannel());
 			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
 			if(null == materialSalesArea){
-				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason());
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartSelling()));
 				materialSalesAreaMap.put(salesAreaInfo,materialSalesArea);
 			}						
 		}
@@ -205,7 +206,7 @@ public class FDProductHelper {
 			SalesAreaInfo salesAreaInfo =materialSalesAreaModel.getSalesAreaInfo();
 			materialSalesArea =materialSalesAreaMap.get(salesAreaInfo);
 			if(null == materialSalesArea){
-				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason());
+				materialSalesArea = new FDMaterialSalesArea(salesAreaInfo,materialSalesAreaModel.getUnavailabilityStatus(),materialSalesAreaModel.getUnavailabilityDate(),materialSalesAreaModel.getUnavailabilityReason(),EnumDayPartValueType.getEnum(materialSalesAreaModel.getDayPartType()));
 				materialSalesAreaMap.put(new String(salesAreaInfo.getSalesOrg()+salesAreaInfo.getDistChannel()).intern(),materialSalesArea);
 			}						
 		}
@@ -334,7 +335,7 @@ public class FDProductHelper {
 		for (ErpPlantMaterialInfo erpPlantMaterialInfo : matPlants) {
 			EnumAvailabilityStatus status = null;
 			FDPlantMaterial plantMaterial = new FDPlantMaterial(erpPlantMaterialInfo.getAtpRule(), erpPlantMaterialInfo.isKosherProduction(), erpPlantMaterialInfo.isPlatter(), erpPlantMaterialInfo.getBlockedDays(), erpPlantMaterialInfo.getLeadTime(), erpPlantMaterialInfo.getPlantId()
-					,erpPlantMaterialInfo.getFreshness(),EnumOrderLineRating.getEnumByStatusCode(erpPlantMaterialInfo.getRating()),EnumSustainabilityRating.getEnumByStatusCode(erpPlantMaterialInfo.getSustainabilityRating()));
+					,erpPlantMaterialInfo.getFreshness(),EnumOrderLineRating.getEnumByStatusCode(erpPlantMaterialInfo.getRating()),EnumSustainabilityRating.getEnumByStatusCode(erpPlantMaterialInfo.getSustainabilityRating()),erpPlantMaterialInfo.isLimitedQuantity());
 			
 			fdPlantMaterials.add(plantMaterial);
 			

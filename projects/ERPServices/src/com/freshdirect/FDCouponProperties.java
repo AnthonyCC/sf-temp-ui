@@ -52,6 +52,7 @@ public class FDCouponProperties {
 	private final static String PROP_COUPONS_CACHE_REFRESH_PERIOD = "fdstore.ecoupons.cache.refresh.period";
 	private final static String PROP_CUSTOMER_COUPONS_USAGE_HISTORY_DAYS_LIMIT="fdstore.customer.coupons.history.days.limit";
 	private final static String PROP_COUPONS_EXPIRE_GRACE_PERIOD = "fdstore.coupons.expire.grace.period";
+	private final static String PROP_DISPLAY_COUPONS_NOT_AVAILABLE_MESSAGE = "fdstore.ecoupons.notavailable.display.message"; 
 
 	static {
 		defaults = new Properties();
@@ -83,6 +84,7 @@ public class FDCouponProperties {
 		defaults.put(PROP_YT_READ_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_CUSTOMER_COUPONS_USAGE_HISTORY_DAYS_LIMIT, "90");//days
 		defaults.put(PROP_COUPONS_EXPIRE_GRACE_PERIOD, "7");//days
+		defaults.put(PROP_DISPLAY_COUPONS_NOT_AVAILABLE_MESSAGE, "true");
 		refresh();
 	}
 
@@ -246,5 +248,9 @@ public class FDCouponProperties {
 	public static int getExpiredCouponsGracePeriod() { 
     	return (Integer.parseInt(get(PROP_COUPONS_EXPIRE_GRACE_PERIOD)));
     }
+	
+	public static boolean isDisplayMessageCouponsNotAvailable(){
+		return (new Boolean(get(PROP_DISPLAY_COUPONS_NOT_AVAILABLE_MESSAGE))).booleanValue();
+	}
 	
 }

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.freshdirect.FDCouponProperties;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -632,7 +634,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 					MessageCodes.NOTICE_DELIVERY_CUTOFF, cutoffMessage);
 		}
 
-		if (!user.getFDSessionUser().isCouponsSystemAvailable()) {
+		if (!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
 			responseMessage.addWarningMessage(
 					MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE,
 					SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);

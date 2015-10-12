@@ -134,12 +134,12 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
 
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
     			}
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
     			};
     		};
     		;
@@ -157,12 +157,12 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
     			}
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
     			};
     		};
             //productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null);
@@ -177,12 +177,12 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     		dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);          
     		plantInfo=new HashMap<String,FDPlantMaterial>() {
     			{
-    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000"));
+    				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
     			}
     		};
     		
     		mAvail=new HashMap<String, FDMaterialSalesArea>(){
-    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.DISCONTINUED.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ"));
+    			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.DISCONTINUED.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null));
     			};
     		};
             

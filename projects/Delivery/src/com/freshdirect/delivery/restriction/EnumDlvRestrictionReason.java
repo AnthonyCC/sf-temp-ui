@@ -38,6 +38,13 @@ public class EnumDlvRestrictionReason extends Enum {
 	
 	public static final EnumDlvRestrictionReason EBT_PAYMENT = new EnumDlvRestrictionReason("EBT_PMNT", "EBT Payment");
 	
+	//Day Part Selling 
+	public static final EnumDlvRestrictionReason DAY_PART_RESTRICTION_1 = new EnumDlvRestrictionReason("DPR1", "Day Part Selling Restriction Type 1");
+	public static final EnumDlvRestrictionReason DAY_PART_RESTRICTION_2 = new EnumDlvRestrictionReason("DPR2", "Day Part Selling Restriction Type 2");
+	public static final EnumDlvRestrictionReason DAY_PART_RESTRICTION_3 = new EnumDlvRestrictionReason("DPR3", "Day Part Selling Restriction Type 3");
+	public static final EnumDlvRestrictionReason DAY_PART_RESTRICTION_4 = new EnumDlvRestrictionReason("DPR4", "Day Part Selling Restriction Type 4");
+	public static final EnumDlvRestrictionReason DAY_PART_RESTRICTION_5 = new EnumDlvRestrictionReason("DPR5", "Day Part Selling Restriction Type 5");
+	
 	private final String description;
 	private final boolean specialHoliday;
 
@@ -98,10 +105,24 @@ public class EnumDlvRestrictionReason extends Enum {
 		aList.add(EnumDlvRestrictionReason.BLOCK_SATURDAY);
 		aList.add(EnumDlvRestrictionReason.THANKSGIVING_MEALS);
 		aList.add(EnumDlvRestrictionReason.EASTER_MEALS);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_1);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_2);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_3);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_4);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_5);
 		return aList;
 	}
 	public static Iterator iterator() {
 		return iterator(EnumDlvRestrictionReason.class);
 	}
 
+	public static List<EnumDlvRestrictionReason> getDayPartRestrictionsEumList() {
+		List<EnumDlvRestrictionReason> aList = new ArrayList<EnumDlvRestrictionReason>();
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_1);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_2);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_3);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_4);
+		aList.add(EnumDlvRestrictionReason.DAY_PART_RESTRICTION_5);
+		return aList;
+	}
 }

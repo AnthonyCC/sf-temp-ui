@@ -17,7 +17,7 @@ public class FDMaterialSalesArea implements Serializable {
 	private String unavailabilityStatus;
 	private Date unavailabilityDate;
 	private String unavailabilityReason;
-	private boolean isLimitedQuantity;
+	private EnumDayPartValueType dayPartValueType;
 	/**
 	 * 
 	 */
@@ -34,11 +34,12 @@ public class FDMaterialSalesArea implements Serializable {
 	 */
 	public FDMaterialSalesArea(SalesAreaInfo salesAreaInfo,
 			String unavailabilityStatus, Date unavailabilityDate,
-			String unavailabilityReason) {
+			String unavailabilityReason, EnumDayPartValueType dayPartValueType) {
 		this.salesAreaInfo = salesAreaInfo;
 		this.unavailabilityStatus = unavailabilityStatus;
 		this.unavailabilityDate = unavailabilityDate;
 		this.unavailabilityReason = unavailabilityReason;
+		this.dayPartValueType = dayPartValueType;
 	}
 
 	/**
@@ -89,21 +90,30 @@ public class FDMaterialSalesArea implements Serializable {
 	public void setUnavailabilityReason(String unavailabilityReason) {
 		this.unavailabilityReason = unavailabilityReason;
 	}
-	
+
+	/**
+	 * @return the dayPartSellingType
+	 */
+	public EnumDayPartValueType getDayPartValueType() {
+		return dayPartValueType;
+	}
+
+	/**
+	 * @param dayPartSellingType the dayPartSellingType to set
+	 */
+	public void setDayPartValueType(EnumDayPartValueType dayPartValueType) {
+		this.dayPartValueType = dayPartValueType;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "FDMaterialSalesArea [salesAreaInfo=" + salesAreaInfo
-				+ ", unavailabilityStatus=" + unavailabilityStatus
-				+ ", unavailabilityDate=" + unavailabilityDate
-				+ ", isLimitedQuantity=" + isLimitedQuantity
-				+ ", unavailabilityReason=" + unavailabilityReason + "]";
+		return "FDMaterialSalesArea [salesAreaInfo=" + salesAreaInfo + ", unavailabilityStatus=" + unavailabilityStatus
+				+ ", unavailabilityDate=" + unavailabilityDate + ", unavailabilityReason=" + unavailabilityReason
+				+ ", dayPartSellingType=" + dayPartValueType + "]";
 	}
-
-	public boolean isLimitedQuantity() {
-		return isLimitedQuantity;
-	}
-
-	public void setLimitedQuantity(boolean isLimitedQuantity) {
-		this.isLimitedQuantity = isLimitedQuantity;
-	}
+	
+	
 }

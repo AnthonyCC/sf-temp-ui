@@ -45,7 +45,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 
 		productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", now, materials, inventoryCache);
 
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");//::FDX::
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000","1000");//::FDX::
 
 		assertFalse(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());
@@ -81,7 +81,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 
                 productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache);
 
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000","1000");
 
 		assertFalse(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());
@@ -122,7 +122,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 		
                 productInfo = FDCustomerManagerTestSupport.createProductInfo("SKU123456", today, materials, inventoryCache, EnumAvailabilityStatus.DISCONTINUED);
 		
-		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000");
+		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability,"1000","1000","1000");
 
 		assertTrue(adapter.isDiscontinued());
 		assertFalse(adapter.isTempUnavailable());

@@ -27,6 +27,7 @@ import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
+import com.freshdirect.delivery.restriction.CompositeRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
@@ -36,6 +37,7 @@ import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.TimeOfDayRange;
@@ -779,65 +781,185 @@ public class DlvRestrictionDAO {
 
 	public static List<RestrictionI> getDlvRestrictions(Connection conn) throws SQLException {
 
-		PreparedStatement ps = conn
+/*		PreparedStatement ps = conn
 			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason, media_path from CUST.restricted_days " +
-					"where reason not in ('WIN','BER','ACL') order by type") ;
+					"where reason not in ('WIN','BER','ACL') order by type") ;*/
+		
+		PreparedStatement ps = conn
+				.prepareStatement("select  r.ID,d.id DETAIL_ID, r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
+		"r.DAY_OF_WEEK, D.DAY_OF_WEEK DETAIL_DAY_OF_WEEK, D.RES_START_TIME,D.RES_END_TIME "+ 
+		"from CUST.restricted_days r,CUST.RESTRICTION_DETAIL d "+
+		"where R.ID = D.RESTRICTION_ID(+) "+
+		"and R.REASON NOT IN ('ACL','WIN','BER') " +
+		" ORDER BY R.ID");
 		ResultSet rs = ps.executeQuery();
 		List<RestrictionI> restrictions = new ArrayList<RestrictionI>();
+		String restrictionId = "";
+		String name = null;
+		String msg = null;
+		String path =null;
+		EnumDlvRestrictionReason reason = null;
+		EnumDlvRestrictionCriterion criterion = null;
+		EnumDlvRestrictionType type = null;
+		java.util.Date startDate = null;
+		java.util.Date endDate = null;
+		Map<Integer, List<TimeOfDayRange>> timeRangeMap = new HashMap<Integer, List<TimeOfDayRange>>();
 		while (rs.next()) {
-
-			String id = rs.getString("ID");
-			String name = rs.getString("NAME");
-			String msg = rs.getString("MESSAGE");
-			String mediaPath = rs.getString("MEDIA_PATH");
-			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
-			if (criterion == null) {
-				// skip unknown criteria
-				continue;
-			}
-           
-			
-			EnumDlvRestrictionReason reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
-			if (reason == null) {
-				// skip unknown reasons
-				continue;
-			}
-
-			Date startDate = new Date(rs.getTimestamp("START_TIME").getTime());
-			Date endDate = new Date(rs.getTimestamp("END_TIME").getTime());
-			int dayOfWeek = rs.getInt("DAY_OF_WEEK");
-
-			String typeCode = rs.getString("TYPE");
-			EnumDlvRestrictionType type = EnumDlvRestrictionType.getEnum(typeCode);
-			if (type == null && "PTR".equals(typeCode)) {
-				type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
-			}
-
-			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
-
-				endDate = DateUtil.roundUp(endDate);
-
-				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
-				if (reason.isSpecialHoliday()) {
-					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
+			String restrictionDetailId=rs.getString("DETAIL_ID");
+			if(null==restrictionDetailId){
+				String id = rs.getString("ID");
+				String lName = rs.getString("NAME");
+				String lMessage = rs.getString("MESSAGE");
+				String lMediaPath = rs.getString("MEDIA_PATH");
+				EnumDlvRestrictionCriterion lCriterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (lCriterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+	           
+				
+				EnumDlvRestrictionReason lReason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (lReason == null) {
+					// skip unknown reasons
+					continue;
+				}
+	
+				java.util.Date lStartDate = new Date(rs.getTimestamp("START_TIME").getTime());
+				java.util.Date lEndDate = new Date(rs.getTimestamp("END_TIME").getTime());
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+	
+				String typeCode = rs.getString("TYPE");
+				EnumDlvRestrictionType lType = EnumDlvRestrictionType.getEnum(typeCode);
+				if (lType == null && "PTR".equals(typeCode)) {
+					lType = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+	
+				if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(lType)) {
+	
+					lEndDate = DateUtil.roundUp(lEndDate);
+	
+					// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
+					if (lReason.isSpecialHoliday()) {
+						restrictions.add(new OneTimeReverseRestriction(id,lCriterion, lReason, lName, lMessage, lStartDate, lEndDate,lMediaPath));
+					} else {
+						restrictions.add(new OneTimeRestriction(id,lCriterion, lReason, lName, lMessage, lStartDate, lEndDate,lMediaPath));
+					}
+	
+				} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(lType)) {
+	
+					TimeOfDay startTime = new TimeOfDay(lStartDate);
+					TimeOfDay endTime = new TimeOfDay(lEndDate);
+					// round up 11:59 to next midnight
+					if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
+						endTime = TimeOfDay.NEXT_MIDNIGHT;
+					}
+					restrictions.add(new RecurringRestriction(id,lCriterion, lReason, lName, lMessage, dayOfWeek, startTime, endTime, lMediaPath));
+	
 				} else {
-					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
+					// ignore	
 				}
+			}else{
+				
+				if(restrictionId.length() == 0 || restrictionId.equals(rs.getString("ID"))){
+					restrictionId = rs.getString("ID");
+					name = rs.getString("NAME");
+					msg = rs.getString("MESSAGE");
+					path = rs.getString("MEDIA_PATH");
+					criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+					if (criterion == null) {
+						// skip unknown criteria
+						continue;
+					}
+					reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+					if (reason == null) {
+						// skip unknown reasons
+						continue;
+					}
 
-			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
+					startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+					endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+					String typeCode = rs.getString("TYPE");
+					type = EnumDlvRestrictionType.getEnum(typeCode);
+					if (type == null && "PTR".equals(typeCode)) {
+						type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+					}
+					
+					String startTimeText = rs.getString("RES_START_TIME");
+					if(startTimeText == null || startTimeText.length() == 0){
+						//no timeslot defined.
+						continue;
+					}
+					TimeOfDay startTime = new TimeOfDay(startTimeText);
+					TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
 
-				TimeOfDay startTime = new TimeOfDay(startDate);
-				TimeOfDay endTime = new TimeOfDay(endDate);
-				// round up 11:59 to next midnight
-				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
-					endTime = TimeOfDay.NEXT_MIDNIGHT;
+					int dayOfWeek = rs.getInt("DETAIL_DAY_OF_WEEK");
+					Integer key = new Integer(dayOfWeek);
+					if(timeRangeMap.get(key) == null) {
+						List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+						timeRanges.add(new TimeOfDayRange(startTime, endTime));
+						timeRangeMap.put(key, timeRanges);
+					} else {
+						List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+						timeRanges.add(new TimeOfDayRange(startTime, endTime));
+						timeRangeMap.put(key, timeRanges);
+					}
+				} else {
+					CompositeRestriction restriction = new CompositeRestriction(restrictionId, criterion, reason, name, msg,new DateRange(startDate, endDate), type, path);
+					restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+					restrictions.add(restriction);
+					timeRangeMap.clear();
+					restrictionId = rs.getString("ID");
+					name = rs.getString("NAME");
+					msg = rs.getString("MESSAGE");
+					path = rs.getString("MEDIA_PATH");
+					criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+					if (criterion == null) {
+						// skip unknown criteria
+						continue;
+					}
+	
+					reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+					if (reason == null) {
+						// skip unknown reasons
+						continue;
+					}
+	
+					startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+					endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+	
+					String typeCode = rs.getString("TYPE");
+					type = EnumDlvRestrictionType.getEnum(typeCode);
+					if (type == null && "PTR".equals(typeCode)) {
+						type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+					}
+									
+					String startTimeText = rs.getString("RES_START_TIME");
+					if(startTimeText == null || startTimeText.length() == 0){
+						//no timeslot defined.
+						continue;
+					}
+					TimeOfDay startTime = new TimeOfDay(startTimeText);
+					TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
+	
+					int dayOfWeek = rs.getInt("DETAIL_DAY_OF_WEEK");
+					Integer key = new Integer(dayOfWeek);
+					if(timeRangeMap.get(key) == null) {
+						List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+						timeRanges.add(new TimeOfDayRange(startTime, endTime));
+						timeRangeMap.put(key, timeRanges);
+					} else {
+						List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+						timeRanges.add(new TimeOfDayRange(startTime, endTime));
+						timeRangeMap.put(key, timeRanges);
+					}
 				}
-				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime, mediaPath));
-
-			} else {
-				// ignore	
 			}
-
+		}
+		if(restrictionId.length() > 0) {
+			//Add the last one.
+			CompositeRestriction restriction = new CompositeRestriction(restrictionId, criterion, reason, name, msg, new DateRange(startDate, endDate),type,path);
+			restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+			restrictions.add(restriction);
 		}
 		rs.close();
 		ps.close();

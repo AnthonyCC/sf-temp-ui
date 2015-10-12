@@ -145,7 +145,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
 			String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
 			String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel);
+			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,plantID);
 
 		} catch (FDSkuNotFoundException fdsnfe) {
 			return UNAVAILABLE;
@@ -206,16 +206,18 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		private final FDAvailabilityI availability;
 		private final String salesArea;
 		private final String distrChannel;
+		private final String plantId;
 		
-		public AvailabilityAdapter(FDProductInfo fdpi, FDAvailabilityI availability,String salesArea, String distrChannel ) {
+		public AvailabilityAdapter(FDProductInfo fdpi, FDAvailabilityI availability,String salesArea, String distrChannel, String plantId ) {
 			this.productInfo = fdpi;
 			this.availability = availability;
 			this.salesArea=salesArea;
 			this.distrChannel=distrChannel;
+			this.plantId = plantId;
 		}
 		
 		public boolean isDiscontinued() {
-			return this.productInfo.isDiscontinued(salesArea,distrChannel);
+			return this.productInfo.isDiscontinued(salesArea,distrChannel) ||(this.productInfo.isLimitedQuantity(plantId) && isNotAvailableWithInHorizon()) ;//To treat limit quantity products as discontinued ones.
 		}
 
 		public boolean isTempUnavailable() {
@@ -231,6 +233,14 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 				return true;
 			}
 			
+			return isNotAvailableWithInHorizon();
+			
+		}
+
+		/**
+		 * @return
+		 */
+		private boolean isNotAvailableWithInHorizon() {
 			Date startDate = OncePerRequestDateCache.getToday();
 			if(startDate == null){
 				startDate = DateUtil.truncate(new Date());
@@ -245,7 +255,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			
 			Date firstAvDate = FDAvailabilityHelper.getFirstAvailableDate(this.availability);
 			return firstAvDate == null || !firstAvDate.before(endDate);
-			
 		}
     
 		public Date getEarliestAvailability() {

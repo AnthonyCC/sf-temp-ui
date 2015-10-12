@@ -111,7 +111,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("RATING", JCoMetaData.TYPE_CHAR, 3, "SKU Rating"));
 		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 18, "Industry Standard Description"));
 		tableMetaDataList.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
-		//tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
+		tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
 
 		createTableRecord(metaPlantMaterialList, tableMetaDataList);
 		metaPlantMaterialList.lock();
@@ -125,10 +125,10 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("MATNR", JCoMetaData.TYPE_CHAR, 18, "Material No."));
 		tableMetaDataList.add(new TableMetaData("VMSTA", JCoMetaData.TYPE_CHAR, 2,
 				"Dist. Chain status / Material Status"));
-		tableMetaDataList.add(new TableMetaData("VMSTB", JCoMetaData.TYPE_CHAR, 20, "Dist. Chain status Description"));
+		tableMetaDataList.add(new TableMetaData("VMSTB", JCoMetaData.TYPE_CHAR, 25, "Dist. Chain status Description"));
 		tableMetaDataList.add(new TableMetaData("VMSTD", JCoMetaData.TYPE_CHAR, 8,
 				"Date from availability Status valid"));
-		//tableMetaDataList.add(new TableMetaData("ZZDAYPART", JCoMetaData.TYPE_CHAR, 4,"Daypart Selling"));
+		tableMetaDataList.add(new TableMetaData("ZZDAYPART", JCoMetaData.TYPE_CHAR, 4,"Daypart Selling"));
 		createTableRecord(metaSalesAreaMaterialList, tableMetaDataList);
 		metaSalesAreaMaterialList.lock();
 		repository.addRecordMetaDataToCache(metaSalesAreaMaterialList);
@@ -199,7 +199,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 				Map<String, List<ErpPlantMaterialModel>> materialPlantsMap = new HashMap<String, List<ErpPlantMaterialModel>>();
 				Map<String, List<ErpMaterialSalesAreaModel>> materialSalesAreasMap = new HashMap<String, List<ErpMaterialSalesAreaModel>>();
 
-				if(SapProperties.isMaterialPlantExportLogEnabled()){
+				if(true/*SapProperties.isMaterialPlantExportLogEnabled()*/){
 					LOG.info("******************* Material Plant Data ************");
 					LOG.info(materialPlantTable);
 					LOG.info("******************* Material Sales Area Data ************");
@@ -287,12 +287,14 @@ public class FDPlantProductJcoServer extends FdSapServer {
 
 		param.setRating(FDSapHelperUtils.getString(materialPlantTable.getString("RATING")));
 		param.setSustainabilityRating(FDSapHelperUtils.getString(materialPlantTable.getString("SEARK")));
+		param.setHideOutOfStock("X".equalsIgnoreCase(materialPlantTable.getString("ZZHOO")));
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Got material plant record for Plant:" + param.getPlantId() + "\t Material No:" + materialNum
 					+ "\t MaterialGroup:" + param.getAtpRule() + "\t LeadTime:" + param.getLeadTime() + "\t Blocked:"
 					+ param.getBlockedDays() + "\t DaysInhouse:" + param.getDays_in_house() + "\t ExpertRating:"
-					+ param.getRating() + "\t SustainabilityRating:" + param.getSustainabilityRating());
+					+ param.getRating() + "\t SustainabilityRating:" + param.getSustainabilityRating()
+					+ "\t Hide Out of Stock:" + param.isHideOutOfStock());
 		}
 		return param;
 	}
@@ -320,6 +322,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		salesAreaModel.setUnavailabilityStatus(FDSapHelperUtils.getString(materialSalesAreaTable.getString("VMSTA")));
 		salesAreaModel.setUnavailabilityReason(FDSapHelperUtils.getString(materialSalesAreaTable.getString("VMSTB")));
 		// salesAreaModel.setUnavailabilityDate(materialSalesAreaTable.getDate("VMSTD"));
+		salesAreaModel.setDayPartSelling(FDSapHelperUtils.getString(materialSalesAreaTable.getString("ZZDAYPART")));
 
 		if ("33".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())
 				|| "30".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
