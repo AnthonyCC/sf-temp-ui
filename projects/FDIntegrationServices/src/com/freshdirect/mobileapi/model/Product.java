@@ -520,88 +520,86 @@ public class Product {
             }
         }
 
-        // VARIATIONS
-        if (isAvailable()) {
-
-            List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());
-                        
-            Collections.sort(variations, new VariationComparator());
-
-            for (FDVariation variation : variations) {
-                this.variations.add(Variation.wrap(variation, this));
-            }
-        }
-
-        final String layout = getLayout();
-		final EnumProductLayout productLayout = product.getProductModel().getProductLayout();
-		if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(layout)) {
+        if (EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT == product.getProductModel().getProductLayout()) {
             List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
+
             for (ComponentGroupModel componentGroup : componentGroups) {
-                ComponentGroup cgp;
-                try {
-                    cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
-                    this.componentGroups.add(cgp);
-                } catch (FDException e) {
-                    throw new ModelException("Unable to get ComponentGroup", e);
+                if (!componentGroup.getOptionalProducts().isEmpty())
+                    continue;
+
+                List<String> characteristicNames = componentGroup.getCharacteristicNames();
+                final FDProduct prd = product.getFDProduct();
+                for (FDVariation variation : prd.getVariations()) {
+                    if (characteristicNames.contains(variation.getName())) {
+                        for (FDVariationOption variationOption : variation.getVariationOptions()) {
+                            ProductModel sideBoxProductModel;
+                            try {
+                                sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
+                                List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
+                                if (includeSideBoxProductModels.isEmpty()) {
+                                    // Normal case
+                                    variations.add(Variation.wrap(variation, this));
+
+                                } else {
+                                    // HMB case
+                                    for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
+                                        final SkuModel defSku = includeSideBoxProductModel.getDefaultSku();
+
+                                        FDProduct fdprd = defSku.getProduct();
+                                        FDMaterial mat = fdprd.getMaterial();
+
+                                        AttributeCollection acoll = new AttributeCollection();
+                                        acoll.setAttribute(EnumAttributeName.SKUCODE.getName(), defSku.getSkuCode());
+
+                                        FDVariationOption fdvop = new FDVariationOption(acoll, mat.getMaterialNumber().substring(9), includeSideBoxProductModel.getFullName());
+
+                                        FDVariation fdvar = new FDVariation(new AttributeCollection(), "", new FDVariationOption[] { fdvop });
+                                        Variation v = Variation.wrap(fdvar, this);
+
+                                        variations.add(v);
+                                    }
+                                }
+                            } catch (FDSkuNotFoundException e) {
+                                throw new ModelException(e);
+                            } catch (FDResourceException e) {
+                                throw new ModelException(e);
+                            }
+                        }
+                    }
                 }
             }
 
             for (Variation variation : this.variations) {
                 variation.removeUnavailableOptions();
             }
-        } else if ( EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT == productLayout ) {
-			List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
+        } else {
+            // VARIATIONS
+            if (isAvailable()) {
 
-			for (ComponentGroupModel componentGroup : componentGroups) {
-				if (!componentGroup.getOptionalProducts().isEmpty())
-					continue;
+                List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());
 
-				List<String> characteristicNames = componentGroup.getCharacteristicNames();
-				final FDProduct prd = product.getFDProduct();
-				for (FDVariation variation : prd.getVariations()) {
-					if (characteristicNames.contains(variation.getName())) {
-						for (FDVariationOption variationOption : variation.getVariationOptions()) {
-							ProductModel sideBoxProductModel;
-							try {
-								sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
-								List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
-								if (includeSideBoxProductModels.isEmpty()) {
-									// Normal case
-									variations.add( Variation.wrap(variation, this) );
+                Collections.sort(variations, new VariationComparator());
 
-								} else {
-									// HMB case
-									for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
-										final SkuModel defSku = includeSideBoxProductModel.getDefaultSku();
-
-										FDProduct fdprd = defSku.getProduct();
-										FDMaterial mat = fdprd.getMaterial();
-
-										AttributeCollection acoll = new AttributeCollection();
-										acoll.setAttribute(EnumAttributeName.SKUCODE.getName(), defSku.getSkuCode());
-
-										FDVariationOption fdvop = new FDVariationOption(acoll,
-												mat.getMaterialNumber().substring(9),
-												includeSideBoxProductModel.getFullName());
-
-										FDVariation fdvar = new FDVariation(new AttributeCollection(), "", new FDVariationOption[] { fdvop });
-										Variation v = Variation.wrap(fdvar, this);
-
-										variations.add(v);
-									}
-								}
-							} catch (FDSkuNotFoundException e) {
-								throw new ModelException(e);
-							} catch (FDResourceException e) {
-								throw new ModelException(e);
-							}
-						}
-					}
-				}
+                for (FDVariation variation : variations) {
+                    this.variations.add(Variation.wrap(variation, this));
+                }
             }
 
-            for (Variation variation : this.variations) {
-                variation.removeUnavailableOptions();
+            if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
+                List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
+                for (ComponentGroupModel componentGroup : componentGroups) {
+                    ComponentGroup cgp;
+                    try {
+                        cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
+                        this.componentGroups.add(cgp);
+                    } catch (FDException e) {
+                        throw new ModelException("Unable to get ComponentGroup", e);
+                    }
+                }
+
+                for (Variation variation : this.variations) {
+                    variation.removeUnavailableOptions();
+                }
             }
         }
 
