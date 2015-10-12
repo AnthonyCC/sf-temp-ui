@@ -6,7 +6,7 @@
  * @param? salesUnitDescrPDP
  */
 {template .bundleProductTitle}
-<p class="thxgiving-bundle-title">{$productName}{if $salesUnitDescrPDP}{sp}{$salesUnitDescrPDP}{/if}</p><!--
+<p class="thxgiving-bundle-title">{$productName}{if $salesUnitDescrPDP}<br/>{$salesUnitDescrPDP}{/if}</p><!--
 bundle-title-ends --><p class="thxgiving-bundle-price">
   {call common.formatDecimalPrice}
     {param price:$price /}
