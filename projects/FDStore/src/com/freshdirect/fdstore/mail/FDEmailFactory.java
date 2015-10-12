@@ -27,6 +27,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -57,13 +58,19 @@ public class FDEmailFactory {
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
 	public static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
+
+	public static final String GENERAL_LABEL = "FreshDirect";
 	public static final String GENERAL_CS_EMAIL = FDStoreProperties.getCustomerServiceEmail();
 	public static final String PRODUCT_EMAIL = FDStoreProperties.getProductEmail();
 	public static final String FEEDBACK_EMAIL = FDStoreProperties.getFeedbackEmail();
 	public static final String CHEFSTABLE_EMAIL = FDStoreProperties.getChefsTableEmail();
-	public static final String GENERAL_LABEL = "FreshDirect";
 	public static final String VENDING_EMAIL = FDStoreProperties.getVendingEmail();
 	public static final String CRM_SECURITY_CC_EMAIL = FDStoreProperties.getCrmCCSecurityEmail();
+	
+	public static final String FDX_GENERAL_LABEL = "FoodKick";
+	public static final String FDX_ANNOUNCE_EMAIL = FDStoreProperties.getAnnounceEmailFDX();
+	public static final String FDX_ORDER_EMAIL = FDStoreProperties.getOrderEmailFDX();
+	public static final String FDX_ACTSERVICE_EMAIL = FDStoreProperties.getActServiceEmailFDX();
 
 
 	// default instance getter
@@ -76,49 +83,82 @@ public class FDEmailFactory {
 
 
 	public XMLEmailI createFinalAmountEmail(FDCustomerInfo customer, FDOrderAdapter order) {
-		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
-		email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
-		
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		
-		if(order.getShortedItems().size() > 0) {
-			if(order.getShortedItems().size() == 1)
-				email.setSubject("Service Alert: Your Order is Missing 1 Item");
-			else
-				email.setSubject("Service Alert: Your Order is Missing " + order.getShortedItems().size() + " Items");
-		} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
-			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
-		} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
-				&& order.getDeliveryReservation().getDeliveryETA().isEmailETAenabled() && order.getDeliveryReservation().getDeliveryETA().getStartTime() != null
-				&& order.getDeliveryReservation().getDeliveryETA().getEndTime() != null) {
-			email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
-					+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
+		boolean isFdxOrder = order.getEStoreId().equals(EnumEStoreId.FDX);
+		FDTransactionalEmail email = null;
+
+		if (isFdxOrder) {
+			email = new FDTransactionalEmail(customer, order, order.getEStoreId());
+			
+			email.setXslPath("h_final_amount_confirm_fdx.xsl", "h_final_amount_confirm_fdx.xsl"); //no text version
+			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
+			email.setSubject("Order Up! We're Coming At Ya");
 		} else {
-			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is on its way");
+			email = new FDTransactionalEmail(customer, order);
+			email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
+			
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			
+			if(order.getShortedItems().size() > 0) {
+				if(order.getShortedItems().size() == 1)
+					email.setSubject("Service Alert: Your Order is Missing 1 Item");
+				else
+					email.setSubject("Service Alert: Your Order is Missing " + order.getShortedItems().size() + " Items");
+			} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
+				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
+			} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
+					&& order.getDeliveryReservation().getDeliveryETA().isEmailETAenabled() && order.getDeliveryReservation().getDeliveryETA().getStartTime() != null
+					&& order.getDeliveryReservation().getDeliveryETA().getEndTime() != null) {
+				email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
+						+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
+			} else {
+				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is on its way");
+			}
 		}
 
 		return email;
 	}
 
 	public XMLEmailI createConfirmOrderEmail(FDCustomerInfo customer, FDOrderI order) {
+		boolean isFdxOrder = order.getEStoreId().equals(EnumEStoreId.FDX);
+		FDTransactionalEmail email = null;
+
+		if (isFdxOrder) {
+			email = new FDTransactionalEmail(customer, order, order.getEStoreId());
+	
+			email.setXslPath("h_order_confirm_fdx.xsl", "h_order_confirm_fdx.xsl"); //no text version
+			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
+			email.setSubject("We Got Your Order. Get Excited!");
+		} else {
+			email = new FDTransactionalEmail(customer, order);
+	
+			email.setXslPath("h_order_confirm_v1.xsl", "x_order_confirm_v1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("Your order for " + df.format(order.getRequestedDate()));
+		}
 		
-		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
-
-		email.setXslPath("h_order_confirm_v1.xsl", "x_order_confirm_v1.xsl");
-
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-
-		email.setSubject("Your order for " + df.format(order.getRequestedDate()));
-
 		return email;
 	}
 
 	public XMLEmailI createModifyOrderEmail(FDCustomerInfo customer, FDOrderI order) {
-		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
+		boolean isFdxOrder = order.getEStoreId().equals(EnumEStoreId.FDX);
+		FDTransactionalEmail email = null;
 
-		email.setXslPath("h_order_change_v1.xsl", "x_order_change_v1.xsl");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setSubject("Your order information has been updated");
+		if (isFdxOrder) {
+			email = new FDTransactionalEmail(customer, order, EnumEStoreId.FDX);
+			
+			email.setXslPath("h_order_change_fdx.xsl", "h_order_change_fdx.xsl"); //no text version
+			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
+			email.setSubject("We Got Your Changes");
+		} else {
+			email = new FDTransactionalEmail(customer, order);
+			
+			email.setXslPath("h_order_change_v1.xsl", "x_order_change_v1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("Your order information has been updated");
+		}
 
 		return email;
 	}
@@ -137,12 +177,24 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public XMLEmailI createCancelOrderEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime) {
-		FDCancelOrderConfirmEmail email = new FDCancelOrderConfirmEmail(customer, orderNumber, startTime, endTime);
+	public XMLEmailI createCancelOrderEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, EnumEStoreId eStoreId) {
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDCancelOrderConfirmEmail email = null;
+		
+		if (isFdxOrder) {
+			email = new FDCancelOrderConfirmEmail(customer, orderNumber, startTime, endTime);
+			
+			email.setXslPath("h_order_cancel_fdx.xsl", "h_order_cancel_fdx.xsl"); //no text version
+			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
+			email.setSubject("Order "+orderNumber+": Officially Canceled");
+		} else {
+			email = new FDCancelOrderConfirmEmail(customer, orderNumber, startTime, endTime);
 
-		email.setXslPath("h_order_cancel_v1.xsl", "x_order_cancel_v1.xsl");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setSubject("Cancellation receipt");
+			email.setXslPath("h_order_cancel_v1.xsl", "x_order_cancel_v1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("Cancellation receipt");
+		}
 		return email;
 	}
 	
@@ -175,40 +227,73 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public XMLEmailI createForgotPasswordEmail(FDCustomerInfo customer, String requestId, Date expiration, List ccList) {
+	public XMLEmailI createForgotPasswordEmail(FDCustomerInfo customer, String requestId, Date expiration, List ccList, EnumEStoreId eStoreId) {
+		LOGGER.debug("createForgotPasswordEmail() EStoreID:"+eStoreId);
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDForgotPasswordEmail email = null;
+
 		String passwordLink =
 			ErpServicesProperties.getForgotPasswordPage() + "?email=" + customer.getEmailAddress() + "&link=" + requestId;
+		
+		if (isFdxOrder) {
+			LOGGER.debug("createForgotPasswordEmail() EStoreID (in isFdxOrder):"+eStoreId);
+			passwordLink =
+				ErpServicesProperties.getForgotPasswordPageFDX() + "?email=" + customer.getEmailAddress() + "&link=" + requestId;
+			
+			email = new FDForgotPasswordEmail(customer, passwordLink, expiration);
 
-		FDForgotPasswordEmail email = new FDForgotPasswordEmail(customer, passwordLink, expiration);
+			email.setXslPath("h_password_link_fdx.xsl", "h_password_link_fdx.xsl"); //no text version
+			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
+			email.setCCList(ccList);
+			email.setSubject("Forgetting something?");
+			
+		} else {
+			email = new FDForgotPasswordEmail(customer, passwordLink, expiration);
 
-		email.setXslPath("h_password_link_v1.xsl", "x_password_link_v1.xsl");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setCCList(ccList);
-		email.setSubject("Important message from FreshDirect");
+			email.setXslPath("h_password_link_v1.xsl", "x_password_link_v1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setCCList(ccList);
+			email.setSubject("Important message from FreshDirect");
+		}
 
 		return email;
 	}
 
-	public XMLEmailI createConfirmSignupEmail(FDCustomerInfo customer) {
-		FDInfoEmail email = new FDInfoEmail(customer);
-		/*if (customer.isPickupOnly()) {
-			email.setXslPath("h_pickup_signup_confirm.xsl", "x_pickup_signup_confirm.xsl");
-		} else if (customer.isCorporateUser()) {
-			email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
-		} else {
-			email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
-		}*/
+	public XMLEmailI createConfirmSignupEmail(FDCustomerInfo customer, EnumEStoreId eStoreId) {
+		LOGGER.debug("createConfirmSignupEmail() EStoreID:"+eStoreId);
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDInfoEmail email = null;
 		
-		if (customer.isCorporateUser()) {
-			email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
-			email.setSubject("Welcome to FreshDirect At The Office");
+		if (isFdxOrder) {
+			LOGGER.debug("createConfirmSignupEmail() EStoreID (in isFdxOrder):"+eStoreId);
+			email = new FDInfoEmail(customer);
+			
+			email.setXslPath("h_signup_confirm_fdx.xsl", "h_signup_confirm_fdx.xsl"); //no text version
+			email.setSubject("Congrats! You're In!");
+			email.setFromEmail(FDX_ANNOUNCE_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ANNOUNCE_EMAIL));
 		} else {
-			email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
-			email.setSubject("Welcome to FreshDirect");
+			email = new FDInfoEmail(customer);
+			/*if (customer.isPickupOnly()) {
+				email.setXslPath("h_pickup_signup_confirm.xsl", "x_pickup_signup_confirm.xsl");
+			} else if (customer.isCorporateUser()) {
+				email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
+			} else {
+				email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
+			}*/
+			
+			if (customer.isCorporateUser()) {
+				email.setXslPath("h_signup_confirm_corp.xsl", "x_signup_confirm_corp.xsl");
+				email.setSubject("Welcome to FreshDirect At The Office");
+			} else {
+				email.setXslPath("h_signup_confirm_v2.xsl", "x_signup_confirm_v2.xsl");
+				email.setSubject("Welcome to FreshDirect");
+			}
+			
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		}
 		
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-
 		return email;
 	}
 	
@@ -1099,13 +1184,25 @@ public class FDEmailFactory {
 
 		return email;
 	}
-	public XMLEmailI createSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
-		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime,FDCSContactHoursUtil.getFDCSHours());
-		email.setXslPath("h_settlement_failure.xsl", "x_settlement_failure.xsl");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setSubject("e-Check Settlement Failure");
+	public XMLEmailI createSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime, EnumEStoreId eStoreId){
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDSettlementFailedEmail email = null;
 		
+		if (isFdxOrder) {
+			email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime, FDCSContactHoursUtil.getFDXCSHours());
 
+			email.setXslPath("h_settlement_failure_fdx.xsl", "h_settlement_failure_fdx.xsl"); //no text version
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
+			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
+			email.setSubject("We Were Unable to Process Your Payment");
+		} else {
+			email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime, FDCSContactHoursUtil.getFDCSHours());
+
+			email.setXslPath("h_settlement_failure.xsl", "x_settlement_failure.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("e-Check Settlement Failure");
+		}
+		
 		return email; 
 	}
 	
@@ -1138,7 +1235,7 @@ public class FDEmailFactory {
 			this.cutoffTime = cutoffTime;
 		}
 
-		public FDSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime,List<FDCSContactHours> contactHours) {
+		public FDSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime, List<FDCSContactHours> contactHours) {
 			super(customer);
 			this.orderNumber = orderNumber;
 			this.deliveryStartTime = startTime;

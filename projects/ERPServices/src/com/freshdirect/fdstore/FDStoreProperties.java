@@ -68,11 +68,17 @@ public class FDStoreProperties {
     private final static String PROP_ANNOTATION_ERPSY = "fdstore.annotation.erpsy";
     private final static String PROP_MEDIA_PATH = "fdstore.media.path";
     private final static String PROP_CALLCENTER_PW = "fdstore.callCenter.pw";
+    
     private final static String PROP_CUSTOMER_SERVICE_EMAIL = "fdstore.customerService.email";
     private final static String PROP_EMAIL_PRODUCT = "fdstore.email.product";
     private final static String PROP_EMAIL_FEEDBACK = "fdstore.email.feedback";
     private final static String PROP_EMAIL_CHEFSTABLE = "fdstore.email.chefstable";
     private final static String PROP_EMAIL_VENDING = "fdstore.email.vending";
+    //FDX
+    private final static String PROP_EMAIL_FDX_ANNOUNCE = "fdstore.email.fdx.announce";
+    private final static String PROP_EMAIL_FDX_ORDER = "fdstore.email.fdx.order";
+    private final static String PROP_EMAIL_FDX_ACTSERVICE = "fdstore.email.fdx.actservice";
+    
     private final static String PROP_HOLIDAY_LOOKAHEAD_DAYS = "fdstore.holidayLookaheadDays";
     private final static String PROP_DLV_PROMO_EXP_DATE = "fdstore.dlvPromo.expDate";
     private final static String PROP_EMAIL_PROMOTION = "fdstore.email.promotion";
@@ -521,6 +527,9 @@ public class FDStoreProperties {
     //APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS="fdstore.cust_serv_days";
     private static final String CUST_SERV_HOURS_HOURS="fdstore.cust_serv_hours";
+    
+    private static final String CUST_SERV_HOURS_DAYS_FDX = "fdstore.fdx.cust_serv_days";
+    private static final String CUST_SERV_HOURS_HOURS_FDX = "fdstore.fdx.cust_serv_hours";
 
     private static final  String PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP = "fdstore.availdays.past.lookup";
     
@@ -807,11 +816,18 @@ public class FDStoreProperties {
         defaults.put(PROP_ANNOTATION_ERPSY,
             "http://ems1.nyc1.freshdirect.com:8000/ERPSAdmin");
         defaults.put(PROP_CALLCENTER_PW, "");
+        
         defaults.put(PROP_CUSTOMER_SERVICE_EMAIL, "service@freshdirect.com");        
         defaults.put(PROP_EMAIL_PRODUCT, "products@freshdirect.com");
         defaults.put(PROP_EMAIL_FEEDBACK, "feedback@freshdirect.com");
         defaults.put(PROP_EMAIL_CHEFSTABLE, "chefstable@freshdirect.com");
         defaults.put(PROP_EMAIL_VENDING, "vendinginfo@freshdirect.com");
+        
+        //FDX emails
+        defaults.put(PROP_EMAIL_FDX_ANNOUNCE, "announcements@foodkick.com");
+        defaults.put(PROP_EMAIL_FDX_ORDER, "order@foodkick.com");
+        defaults.put(PROP_EMAIL_FDX_ACTSERVICE, "accountservices@foodkick.com");
+        
         defaults.put(PROP_CONTENTMANAGER_HOME,
             "freshdirect.content.ContentManager");
         defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
@@ -1269,6 +1285,8 @@ public class FDStoreProperties {
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
         defaults.put(CUST_SERV_HOURS_HOURS, "6:30 AM to 12 AM");
+        defaults.put(CUST_SERV_HOURS_DAYS_FDX, "Monday through Sunday");
+        defaults.put(CUST_SERV_HOURS_HOURS_FDX, "6:30 AM to 12 AM");
         
         //[APPDEV-1993] voiceshot
         defaults.put(PROP_VS_USERNAME, "mtrachtenberg");
@@ -3781,5 +3799,24 @@ public class FDStoreProperties {
 	
     public static boolean isCoreNonCoreGlobalNavSwitchEnabled() {
         return Boolean.parseBoolean(get(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED));
+    }
+
+    public static String getCSContactDaysFDX() {
+        return get(CUST_SERV_HOURS_DAYS_FDX);
+    }
+    public static String getCSContactHoursFDX() {
+        return get(CUST_SERV_HOURS_HOURS_FDX);
+    }
+    
+    public static String getAnnounceEmailFDX() {
+        return get(PROP_EMAIL_FDX_ANNOUNCE);
+    }
+    
+    public static String getOrderEmailFDX() {
+        return get(PROP_EMAIL_FDX_ORDER);
+    }
+    
+    public static String getActServiceEmailFDX() {
+        return get(PROP_EMAIL_FDX_ACTSERVICE);
     }
 }

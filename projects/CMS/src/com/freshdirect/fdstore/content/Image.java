@@ -74,7 +74,7 @@ public class Image extends MediaModel {
 		String publishId = PublishId.getInstance().getPublishId();
 
 		if (publishId != null) {
-			return getPath() + "?publishId=" + publishId;
+			return getPath() + ((getPath().contains("?"))?"&":"?") + "publishId=" + publishId; //this needs to check for & vs ?
 		} else {
 			return getPath();
 		}

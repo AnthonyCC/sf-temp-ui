@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.mail;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 	private String textXsl;
 	
 	private boolean htmlEmail = true;
+	private String fromEmail;
 	
 	public FDInfoEmail(FDCustomerInfo customer) {
 		super();
@@ -69,11 +71,23 @@ public class FDInfoEmail extends EmailSupport implements XMLEmailI {
 		FDXMLSerializer s = new FDXMLSerializer();
 		Map map = new HashMap();
 		this.decorateMap(map);
+		//String xmlString = s.serialize("fdemail", map); 
+		//System.out.print(xmlString);
 		return s.serialize("fdemail", map);
 	}
 
 	protected void decorateMap(Map map) {
 		map.put("customer", this.customer);
+		map.put("fromEmail", this.getFromEmail()); 
+		map.put("curYear", Calendar.getInstance().get(Calendar.YEAR)); //used in footer
+	}
+	
+	public String getFromEmail() {
+		return fromEmail;
+	}
+
+	public void setFromEmail(String fromEmail) {
+		this.fromEmail = fromEmail;
 	}
 
 }

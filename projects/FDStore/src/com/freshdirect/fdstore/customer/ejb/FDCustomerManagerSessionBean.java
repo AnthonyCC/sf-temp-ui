@@ -375,7 +375,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					LOGGER.error("Error in using Transaction Email :",e);					 
 				}					
 			}
-			if(isUseOtherEmailMode) this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo));
+			
+			EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+			if(isUseOtherEmailMode) this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo, estoreId));
 		
 
 			FDIdentity identity = new FDIdentity(fdCustomer.getErpCustomerPK(),
@@ -2455,7 +2457,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				this.doEmail(FDEmailFactory.getInstance()
 						.createCancelOrderEmail(fdInfo, saleId,
 								order.getDeliveryReservation().getStartTime(),
-								order.getDeliveryReservation().getEndTime()));
+								order.getDeliveryReservation().getEndTime(),
+								order.getEStoreId())
+				);
 			}
 			//Start:: Add FDX SMS for order Cancelled
 			
@@ -3876,10 +3880,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDCustomerInfo fdInfo = this.getCustomerInfo(new FDIdentity(
 					fdCustomer.getErpCustomerPK(), fdCustomer.getPK().getId()));
-
+			EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+			
 			this.doEmail(FDEmailFactory.getInstance()
-					.createForgotPasswordEmail(fdInfo, requestId, expiration,
-							ccList));
+					.createForgotPasswordEmail(fdInfo, requestId, expiration, ccList, estoreId));
 
 			return true;
 
@@ -6936,7 +6940,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.createSettlementFailedEmail(custInfo, saleID,
 							order.getDeliveryReservation().getStartTime(),
 							order.getDeliveryReservation().getEndTime(),
-							cal.getTime()));
+							cal.getTime(), order.getEStoreId())
+			);
 		} catch (FinderException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {

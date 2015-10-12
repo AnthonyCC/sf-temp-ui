@@ -12,6 +12,18 @@ public class FDCSContactHoursUtil implements Serializable{
 	public static List<FDCSContactHours> getFDCSHours(){
 		String days=FDStoreProperties.getCSContactDays();
 		String hours=FDStoreProperties.getCSContactHours();
+		
+		return parseValues(days, hours);
+	}
+	
+	public static List<FDCSContactHours> getFDXCSHours(){
+		String days=FDStoreProperties.getCSContactDaysFDX();
+		String hours=FDStoreProperties.getCSContactHoursFDX();
+		
+		return parseValues(days, hours);
+	}
+	
+	private static List<FDCSContactHours> parseValues(String days, String hours) {
 		List<FDCSContactHours> list = new ArrayList<FDCSContactHours>();
 		if(null != days & null != hours){
 			String[] daysArr =days.split(",");
@@ -23,5 +35,4 @@ public class FDCSContactHoursUtil implements Serializable{
 		}
 		return list;
 	}
-
 }

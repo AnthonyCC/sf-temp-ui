@@ -10,6 +10,7 @@
 final int W_FORGET_PASSWORD_TOTAL = 700;
 %>
 
+<fd:CheckLoginStatus guestAllowed='true' recognizedAllowed='true' />
 
 <fd:ForgotPasswordController results="result" successPage='/login/forget_password_confirmation.jsp' password="password">	
 <tmpl:insert template='/common/template/no_nav.jsp'>

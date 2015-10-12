@@ -57,6 +57,7 @@ public class ErpServicesProperties {
 	private final static String PROP_FRAUD_CHECK		= "fraud.check";
 	private final static String PROP_FRAUD_CHECK_PM		= "fraud.check.paymentMethod";
 	private final static String PROP_LOST_PASSWORD_PAGE	= "forgot.password.jsp";
+	private final static String PROP_LOST_PASSWORD_PAGE_FDX	= "forgot.password.jsp.fdx";
 	private final static String PROP_SEND_EMAIL			= "mailer.send.email";
 	private final static String PROP_MAILER_HOST 		= "mail.smtp.host";
 	private final static String PROP_MAILER_PROTOCOL		= "mail.transport.protocol";
@@ -247,6 +248,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_FRAUD_CHECK_PM, "true");
 
 		defaults.put(PROP_LOST_PASSWORD_PAGE, "http://www.freshdirect.com/login/retrieve_password.jsp");
+		defaults.put(PROP_LOST_PASSWORD_PAGE_FDX, "https://www.freshdirect.com/login/retrieve_password.jsp"); //this will be a different page
 
 		defaults.put(PROP_SEND_EMAIL, "true");
 		defaults.put(PROP_MAILER_HOST, "storesmtp.nyc2.freshdirect.com");
@@ -498,6 +500,10 @@ public class ErpServicesProperties {
 
 	public static String getForgotPasswordPage() {
 		return config.getProperty(PROP_LOST_PASSWORD_PAGE);
+	}
+	
+	public static String getForgotPasswordPageFDX() {
+		return config.getProperty(PROP_LOST_PASSWORD_PAGE_FDX);
 	}
 
 	public static String getSendEmail() {
