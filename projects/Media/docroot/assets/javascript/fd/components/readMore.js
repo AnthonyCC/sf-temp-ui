@@ -47,7 +47,7 @@ var FreshDirect = FreshDirect || {};
     truncate: function (text, length) {
       var result;
 
-      length = length || 200;
+      length = +length || 200;
       result = text;
 
       if (text.length > length) {

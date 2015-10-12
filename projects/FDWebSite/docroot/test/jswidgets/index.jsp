@@ -880,20 +880,45 @@
       </div>
     </div>
 
-    <div id="FD_" class="method">
-      <h3 class="method-title"></h3>
+    <div id="FD_components_readMore" class="method">
+      <h3 class="method-title">components.readMore</h3>
       <p class="description">
+      Truncate the content of the HTML element that has the <code>[fd-readmore]</code> property and shows a <i>read more</i> link to show all the content.<br/>
+      NOTE: the content of the element will be converted to plain text before truncating. The <i>read more</i> link will show the original HTML content.<br/>
+      Call <code>FreshDirect.components.readMore.initAll()</code> to initilaize this feature on elements that are rendered after page load.
       </p>
-      <h4>Parameters</h4>
+      <h4>Data Attributes</h4>
       <dl>
-        <dt></dt>
-        <dd></dd>
-        <dt class="optional"></dt>
-        <dd></dd>
+        <dt class="optional">fd-readmore-open</dt>
+        <dd>Callback function called when opening the truncated element.</dd>
+        <dt class="optional">fd-readmore-close</dt>
+        <dd>Callback function called when closing the truncated element.</dd>
+        <dt class="optional">fd-readmore-truncate</dt>
+        <dd>Maximum length of truncated text. [default: 200]</dd>
       </dl>
+      <h4>Example</h4>
       <pre class="prettyprint example">
       </pre>
       <div class="example-container">
+        <style scoped>
+        [fd-readmore] {
+          display: block;
+          opacity: .4;
+        }
+        [fd-readmore][fd-readmore-state] {
+          opacity: 1;
+        }
+        </style>
+        <div fd-readmore fd-readmore-truncate="100">
+        Lorem ipsum dolor sit amet, ut nec <i>doctus</i> aperiri, veniam laboramus est ea, quo ad meis facete fastidii. Est eu soleat eleifend eloquentiam, probo aliquid lobortis eam cu, <b>justo</b> integre inermis id usu. Nec solet accommodare an. Electram forensibus ullamcorper cu ius, novum sonet nam te. Cu civibus consequat per, et nam tota minimum deseruisse, legere dicunt verear ut vis. Eos at libris intellegat voluptaria.
+        </div>
+        <button id="initTruncate">Truncate it!</button>
+        <script>
+          document.getElementById('initTruncate').onclick = function () {
+            FreshDirect.components.readMore.initAll();
+            document.getElementById('initTruncate').remove();
+          };
+        </script>
       </div>
     </div>
 
