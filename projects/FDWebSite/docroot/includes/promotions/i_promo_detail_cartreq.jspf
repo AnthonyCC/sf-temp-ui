@@ -148,7 +148,29 @@
 									</table>
 								</td>
 							</tr>
-						<% } %>
+							<%if(dcpdCombinedSkusCart.size() > 0){%>
+							
+							
+							<tr>
+								<td class="promo_detail_label" style="color: black">AND</td>							
+								<td class="alignL">
+								<table style="border-collapse: collapse;">
+									<%
+										for (int n = 0; n < dcpdCombinedSkusCart.size(); n++) {
+											FDPromoContentModel tempCombinedDpcd = (FDPromoContentModel)dcpdCombinedSkusCart.get(n);
+										%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempCombinedDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"></td>
+											</tr>
+									<%
+										}
+									%>
+									</table>
+									</td>
+							</tr>
+							
+						<% }} %>
 						<% if (dpcdBrandsCart.size() > 0) { %>
 								<tr>
 									<td class="promo_detail_label">Has Brand<%=(dpcdBrandsCart.size() > 1)?"s":""%>:</td>
