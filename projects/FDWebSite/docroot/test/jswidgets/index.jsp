@@ -430,92 +430,10 @@
       </script>
     </div>
 
-  </div>
+  </div> <!-- /module -->
 
-  <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="enabled">
-    <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect.common (fd/common/**.js)</h2>
-
-    <div id="FD_common_tooltip" class="method deprecated">
-      <h3 class="method-title">Tooltip (old, deprecated)</h3>
-      <p class="description">
-      Basic tooltip class.<br/>
-      New tooltips are created for every DOM element that has <code>tooltip</code> class, and exists before the load of the JS common bundle. (Please note that usually the bundle is loaded at the bottom of the page, but in this testpage it's at the top.)<br/>
-      [getContent()] The content of the tooltip can be passed via the <code>config</code> parameter, can be the next DOM element (if it has <code>tooltipcontent</code> CSS class), or can be the <code>title</code> attribute of the DOM element.
-      </p>
-      <h4>Parameters</h4>
-      <dl>
-        <dt>el</dt>
-        <dd>DOM element</dd>
-        <dt class="optional">config</dt>
-        <dd>
-        Configuration object:
-          <ul>
-            <li><b>content</b>: HTML content of the tooltip [default: getContent()]</li>
-            <li><b>cssClass</b>: extra CSS class for the tooltip [default: 'tooltip']</li>
-            <li><b>orientation</b>: "top" or "bottom" [default: 'top']</li>
-            <li><b>offset</b>: gap between the object and the tooltip [default: 10]</li>
-          </ul>
-        </dd>
-      </dl>
-      <pre class="prettyprint example">
-        new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
-      </pre>
-
-      <a href="#FD_common_tooltip" title="Example tooltip" class="hastooltip">Link w/ tooltip</a>
-      <span style="display: inline-block;" id="oldtooltipexample">Hover here.</span><span class="tooltipcontent"><b>HTML</b> tooltip example<br>Multiline</span>
-
-      <script>
-        FreshDirect.modules.common.Tooltip.init();
-        new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
-      </script>
-    </div>
-
-    <div id="FD_common_tooltipPopup" class="method">
-      <h3 class="method-title">FreshDirect.components.tooltipPopup</h3>
-      <p class="description">
-      Basic tooltip popup.<br/>
-      Opens a popup for every DOM element that has <code>[data-component="tooltip"]</code> attribute.<br/>
-      The content of the popup will be the next element that has <code>[data-component="tooltipcontent"]</code> attribute.<br/>
-      </p>
-      <h4>Data attribute parameters</h4>
-      <dl>
-        <dt>data-component</dt>
-        <dd>tooltip</dd>
-        <dt class="optional">data-tooltipalign</dt>
-        <dd>
-        Alignment of the popup.<br>
-        Default: tc-bc; <code>popupcontent.js</code> related alignment, <b>t</b>op/<b>c</b>enter (reference DOM element) - <b>b</b>ottom/<b>c</b>enter (popup)
-        </dd>
-      </dl>
-
-      <div>
-      Example:<br/>
-      <button data-component="tooltip">Hover here</button><span data-component="tooltipContent" style="display: none;">Example <b>tooltip</b> content</span><br/>
-      <button data-component="tooltip" data-tooltipalign="cr-cl">Hover here - custom alignment</button><span data-component="tooltipContent" style="display: none;">Example <b>tooltip</b> content on the right</span><br/>
-      </div>
-
-    </div>
-
-    <div id="FD_common_Select" class="method">
-      <h3 class="method-title">Select()</h3>
-      <p class="description">
-      Replace a standard <code>select</code> element to a custom one.<br/>
-      Select elements w/ <code>customselect</code> CSS class will be replaced on page load, or by calling <code>FreshDirect.modules.common.Select.selectize()</code>.
-      </p>
-
-      <div>
-        Example: <br/>
-        <select class="customselect">
-          <option>Apple</option>
-          <option>Banana</option>
-          <option>Fish</option>
-        </select>
-        <script>
-        FreshDirect.modules.common.Select.selectize();
-        </script>
-      </div>
-
-    </div>
+  <div id="FD_common_widget_framework" class="module" fd-toggle="toggleWidgetFW" fd-toggle-state="enabled">
+    <h2 class="module-title" fd-toggle-trigger="toggleWidgetFW">FreshDirect Widget Framework</h2>
 
     <div id="FD_common_dispatcher_signal" class="method">
       <h3 class="method-title">dispatcher.signal(to, body)</h3>
@@ -840,6 +758,143 @@
           fd.modules.common.utils.register("testpage.widgets", "friends", friends, fd);
         })(FreshDirect);
       </script>
+    </div>
+  </div>
+
+  <div id="FD_common" class="module" fd-toggle="toggleCommon" fd-toggle-state="enabled">
+    <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect Basic Widgets</h2>
+
+    <div id="FD_common_tooltip" class="method deprecated">
+      <h3 class="method-title">Tooltip (old, deprecated)</h3>
+      <p class="description">
+      Basic tooltip class.<br/>
+      New tooltips are created for every DOM element that has <code>tooltip</code> class, and exists before the load of the JS common bundle. (Please note that usually the bundle is loaded at the bottom of the page, but in this testpage it's at the top.)<br/>
+      [getContent()] The content of the tooltip can be passed via the <code>config</code> parameter, can be the next DOM element (if it has <code>tooltipcontent</code> CSS class), or can be the <code>title</code> attribute of the DOM element.
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt>el</dt>
+        <dd>DOM element</dd>
+        <dt class="optional">config</dt>
+        <dd>
+        Configuration object:
+          <ul>
+            <li><b>content</b>: HTML content of the tooltip [default: getContent()]</li>
+            <li><b>cssClass</b>: extra CSS class for the tooltip [default: 'tooltip']</li>
+            <li><b>orientation</b>: "top" or "bottom" [default: 'top']</li>
+            <li><b>offset</b>: gap between the object and the tooltip [default: 10]</li>
+          </ul>
+        </dd>
+      </dl>
+      <pre class="prettyprint example">
+        new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
+      </pre>
+
+      <a href="#FD_common_tooltip" title="Example tooltip" class="hastooltip">Link w/ tooltip</a>
+      <span style="display: inline-block;" id="oldtooltipexample">Hover here.</span><span class="tooltipcontent"><b>HTML</b> tooltip example<br>Multiline</span>
+
+      <script>
+        FreshDirect.modules.common.Tooltip.init();
+        new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
+      </script>
+    </div>
+
+    <div id="FD_common_tooltipPopup" class="method">
+      <h3 class="method-title">FreshDirect.components.tooltipPopup</h3>
+      <p class="description">
+      Basic tooltip popup.<br/>
+      Opens a popup for every DOM element that has <code>[data-component="tooltip"]</code> attribute.<br/>
+      The content of the popup will be the next element that has <code>[data-component="tooltipcontent"]</code> attribute.<br/>
+      </p>
+      <h4>Data attribute parameters</h4>
+      <dl>
+        <dt>data-component</dt>
+        <dd>tooltip</dd>
+        <dt class="optional">data-tooltipalign</dt>
+        <dd>
+        Alignment of the popup.<br>
+        Default: tc-bc; <code>popupcontent.js</code> related alignment, <b>t</b>op/<b>c</b>enter (reference DOM element) - <b>b</b>ottom/<b>c</b>enter (popup)
+        </dd>
+      </dl>
+
+      <div>
+      Example:<br/>
+      <button data-component="tooltip">Hover here</button><span data-component="tooltipContent" style="display: none;">Example <b>tooltip</b> content</span><br/>
+      <button data-component="tooltip" data-tooltipalign="cr-cl">Hover here - custom alignment</button><span data-component="tooltipContent" style="display: none;">Example <b>tooltip</b> content on the right</span><br/>
+      </div>
+
+    </div>
+
+    <div id="FD_common_Select" class="method">
+      <h3 class="method-title">Select()</h3>
+      <p class="description">
+      Replace a standard <code>select</code> element to a custom one.<br/>
+      Select elements w/ <code>customselect</code> CSS class will be replaced on page load, or by calling <code>FreshDirect.modules.common.Select.selectize()</code>.
+      </p>
+
+      <div>
+        Example: <br/>
+        <select class="customselect">
+          <option>Apple</option>
+          <option>Banana</option>
+          <option>Fish</option>
+        </select>
+        <script>
+        FreshDirect.modules.common.Select.selectize();
+        </script>
+      </div>
+
+    </div>
+
+    <div id="FD_components_toggle" class="method">
+      <h3 class="method-title">components.toggle</h3>
+      <p class="description">
+      Clicking on an element with <code>[fd-toggle-trigger="<em>id</em>"]</code> will change the state (<code>[fd-toggle-state="<em>enabled</em> or <em>disabled</em>"]</code>) of the corresponding <code>[fd-toggle="<em>id</em>"]</code>.
+      </p>
+      <pre class="prettyprint example">
+      </pre>
+      <div class="example-container">
+        <style scoped>
+          button[fd-toggle-trigger]:after {
+            content: none;
+          }
+          span[fd-toggle="testtoggle"] {
+            display: inline-block;
+            background-color: yellow;
+          }
+          span[fd-toggle="testtoggle"][fd-toggle-state="enabled"] {
+            background-color: lightgreen;
+          }
+          span[fd-toggle="testtoggle"][fd-toggle-state="enabled"]:after {
+           content: ' [enabled]';
+          }
+          span[fd-toggle="testtoggle"][fd-toggle-state="disabled"] {
+            background-color: lightcyan;
+          }
+          span[fd-toggle="testtoggle"][fd-toggle-state="disabled"]:after {
+           content: ' [disabled]';
+          }
+        </style>
+        <button fd-toggle-trigger="testtoggle">Toggle!</button>
+        <span fd-toggle="testtoggle">Demo toggle</span>
+      </div>
+    </div>
+
+    <div id="FD_" class="method">
+      <h3 class="method-title"></h3>
+      <p class="description">
+      </p>
+      <h4>Parameters</h4>
+      <dl>
+        <dt></dt>
+        <dd></dd>
+        <dt class="optional"></dt>
+        <dd></dd>
+      </dl>
+      <pre class="prettyprint example">
+      </pre>
+      <div class="example-container">
+      </div>
     </div>
 
   </div> <!-- /module -->
@@ -1554,8 +1609,10 @@
       </dl>
       <pre class="prettyprint example">
       </pre>
-      <script>
-      </script>
+      <div class="example-container">
+        <script>
+        </script>
+      </div>
     </div>
 --%>
 
