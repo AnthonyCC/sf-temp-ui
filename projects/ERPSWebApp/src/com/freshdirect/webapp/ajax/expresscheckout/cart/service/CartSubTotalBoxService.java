@@ -28,6 +28,8 @@ public class CartSubTotalBoxService {
 
     private static final CartSubTotalBoxService INSTANCE = new CartSubTotalBoxService();
 
+    private static final String GIFT_CARD_BALANCE_NAME = "Gift Card Balance";
+    private static final String GIFT_CARD_BALANCE_ID = "giftcardbalance";
     private static final String REMOVE_TEXT = "Remove";
     private static final String REMOVE_CODE_KEY = "removeCode";
     private static final String YOU_SAVED = "youSaved";
@@ -288,8 +290,8 @@ public class CartSubTotalBoxService {
     public void populateGiftBalanceToBox(List<CartSubTotalFieldData> subTotalBox, FDUserI user) {
         if (user.getGiftcardBalance() > 0) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
-            data.setId("giftcardbalance");
-            data.setText("Gift Card Balance");
+            data.setId(GIFT_CARD_BALANCE_ID);
+            data.setText(GIFT_CARD_BALANCE_NAME);
             data.setValue(JspMethods.formatPriceWithNegativeSign(user.getGiftcardBalance()));
             subTotalBox.add(data);
         }
@@ -314,8 +316,8 @@ public class CartSubTotalBoxService {
         }
 
         CartSubTotalFieldData data = new CartSubTotalFieldData();
-        data.setId("giftcardbalance");
-        data.setText("Gift Card Balance");
+        data.setId(GIFT_CARD_BALANCE_ID);
+        data.setText(GIFT_CARD_BALANCE_NAME);
         double giftCardsBalance = 0;
         if (cart.getTotalAppliedGCAmount() > 0) {
             giftCardsBalance = user.getGiftcardsTotalBalance();

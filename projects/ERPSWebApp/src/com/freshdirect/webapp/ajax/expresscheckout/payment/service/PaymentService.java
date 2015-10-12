@@ -253,29 +253,31 @@ public class PaymentService {
         if (payment.getCardType() != null) {
             paymentData.setType(payment.getCardType().getDisplayName());
         }
-        paymentData.setNameOnCard(payment.getName());
-        String maskedAccountNumber = payment.getMaskedAccountNumber();
-        if (maskedAccountNumber != null) {
-            if (8 < maskedAccountNumber.length()) {
-                maskedAccountNumber = maskedAccountNumber.substring(maskedAccountNumber.length() - 8);
+        if (!EnumCardType.GCP.equals(payment.getCardType())) {
+            paymentData.setNameOnCard(payment.getName());
+            String maskedAccountNumber = payment.getMaskedAccountNumber();
+            if (maskedAccountNumber != null) {
+                if (8 < maskedAccountNumber.length()) {
+                    maskedAccountNumber = maskedAccountNumber.substring(maskedAccountNumber.length() - 8);
+                }
+                paymentData.setAccountNumber(maskedAccountNumber);
             }
-            paymentData.setAccountNumber(maskedAccountNumber);
+            paymentData.setBestNumber(payment.getBestNumberForBillingInquiries());
+            if (payment.getExpirationDate() != null) {
+                paymentData.setExpiration(DateUtil.getCreditCardExpiryDate(payment.getExpirationDate()));
+            }
+            paymentData.setAddress1(payment.getAddress1());
+            paymentData.setAddress2(payment.getAddress2());
+            paymentData.setApartment(payment.getApartment());
+            paymentData.setCity(payment.getCity());
+            paymentData.setZip(payment.getZipCode());
+            paymentData.setState(payment.getState());
+            paymentData.setAbaRouteNumber(payment.getAbaRouteNumber());
+            if (payment.getBankAccountType() != null) {
+                paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
+            }
+            paymentData.setBankName(payment.getBankName());
         }
-        paymentData.setBestNumber(payment.getBestNumberForBillingInquiries());
-        if (payment.getExpirationDate() != null) {
-            paymentData.setExpiration(DateUtil.getCreditCardExpiryDate(payment.getExpirationDate()));
-        }
-        paymentData.setAddress1(payment.getAddress1());
-        paymentData.setAddress2(payment.getAddress2());
-        paymentData.setApartment(payment.getApartment());
-        paymentData.setCity(payment.getCity());
-        paymentData.setZip(payment.getZipCode());
-        paymentData.setState(payment.getState());
-        paymentData.setAbaRouteNumber(payment.getAbaRouteNumber());
-        if (payment.getBankAccountType() != null) {
-            paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
-        }
-        paymentData.setBankName(payment.getBankName());
         return paymentData;
     }
 

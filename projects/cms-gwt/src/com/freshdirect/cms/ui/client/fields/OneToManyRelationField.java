@@ -18,6 +18,8 @@ import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
@@ -150,10 +152,27 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	protected Listener<BaseEvent> sortButtonListener = new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
 
+			final StoreSorter<OneToManyModel> caseInsensitiveLabelSorter = new StoreSorter<OneToManyModel>() {
+				@Override
+				public int compare(Store<OneToManyModel> store, OneToManyModel m1, OneToManyModel m2, String property) {
+					if ("label".equals(property)) {
+						String s1 = m1.get(property, "");
+						String s2 = m2.get(property, "");
+
+						return s1.compareToIgnoreCase(s2);
+					}
+					
+					return super.compare(store, m1, m2, property);
+				}
+			};
+			
+			// apply custom sort
+			store.setStoreSorter( caseInsensitiveLabelSorter);
 			store.sort("label", SortDir.ASC);
 			grid.getView().refresh(false);
-			store.setStoreSorter(null);
 
+			// now remove sorter allowing manual item realign
+			store.setStoreSorter( null );
 		}
 	};
 

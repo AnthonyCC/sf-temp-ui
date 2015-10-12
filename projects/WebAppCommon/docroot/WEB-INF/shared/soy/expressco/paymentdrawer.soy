@@ -51,6 +51,7 @@
 
 /**
  * @param? payments
+ * @param? coveredByGiftCard
  * @param? metadata
  */
 {template .paymentmethodcontent autoescape="false"}
@@ -76,7 +77,20 @@
     </div>
   </form>
 {else}
-<h1>No payments available.</h1>
+  {if $coveredByGiftCard}
+    <div class='drawer__content'>
+      <div class="drawer__header">
+        Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
+        including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+      </div>
+    </div>
+  {else}
+    <div class='drawer__content'>
+      <p class="drawer__header">
+        <h1>No payments available.</h1>
+      </p>
+    </div>
+  {/if}
 {/if}
 {/template}
 

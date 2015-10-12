@@ -36,7 +36,9 @@ public class ReceiptService {
 		receiptBoxService.populateDiscountsToBox(receiptLines, order);
 		receiptBoxService.populateRedeemedSampleDescriptionToBox(receiptLines, order);
 		receiptBoxService.populateExtendDeliveyPassDiscountToBox(receiptLines, order);
-		receiptBoxService.populateApplyMyGiftBalanceToBox(receiptLines, user, requestURI);
+        receiptBoxService.populateGiftCardAmountToBeAppliedToBox(receiptLines, order, requestURI);
+        receiptBoxService.populateRemainingGiftCardBalanceToBox(receiptLines, order, user);
+        receiptBoxService.populateAmountToBeChargedYourBalanceToBox(receiptLines, order);
 		receiptBoxService.populateCustomerCreditsToBox(receiptLines, order);
 		receiptData.setReceiptLines(receiptLines);
 

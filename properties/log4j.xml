@@ -63,6 +63,9 @@
 	<category name="com.freshdirect.framework.monitor">
 		<priority value="error" />
 	</category>
+	<category name="com.freshdirect.fdstore.content.ContentNodeModelUtil">
+		<priority value="error" />
+	</category>
 	
 	<category name="com.freshdirect.framework.monitor.RequestLogger" additivity="false">
 		<priority value="info" />

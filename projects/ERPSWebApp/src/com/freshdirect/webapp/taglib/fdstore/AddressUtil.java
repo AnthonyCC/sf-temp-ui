@@ -56,6 +56,7 @@ public class AddressUtil {
         try {
             
 			foundFraud = FDCustomerManager.updateShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), shpAddrToModify);
+            user.getShoppingCart().setDeliveryAddress(shpAddrToModify);
             
 //		      zero lat and long to clear cache and force geocode when order is placed (see dlvManagerDAO.getZoneCode())
 	        AddressInfo info = address.getAddressInfo();	        
@@ -65,12 +66,7 @@ public class AddressUtil {
 	        }
 
 			if (foundFraud) {
-//				HttpSession session = request.getSession();
 				user.updateUserState();
-				/*
-				 * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]
-				 * {user.getCustomerServiceContact()}));
-				 */
 			}
 			
         } catch (ErpDuplicateAddressException ex){
@@ -103,8 +99,6 @@ public class AddressUtil {
 		
 		response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
 				
-		//response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
-							
 		String apartment = address.getApartment();
 		
         LOGGER.debug("Scrubbing response: "+response.getVerifyResult());
@@ -143,7 +137,6 @@ public class AddressUtil {
         return response.getAddress();
        } catch (FDInvalidAddressException e) {
 		LOGGER.info("FDInvalidAddressException thrown during address scrub");
-			//throw new FDResourceException(e);//TODO ignore this exception for address scrub.
        }
 	
 		return address;
@@ -156,9 +149,6 @@ public class AddressUtil {
             //
             // need to look and see if delivery is available within the next seven days
             //
-            //Calendar today = new GregorianCalendar();
-            //today.add(Calendar.DATE, 7);
-            //Date todayPlusSeven = today.getTime();
         	FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date, iPackagingModel, serviceType);
         	LOGGER.debug("getZoneInfo[EnumZipCheckResponses] :"+EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse()));
 			result.addError((!EnumZipCheckResponses.DELIVER.equals(zoneInfo.getResponse())), EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);

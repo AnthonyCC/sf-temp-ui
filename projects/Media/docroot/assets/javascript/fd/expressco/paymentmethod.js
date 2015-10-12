@@ -8,8 +8,14 @@ var FreshDirect = FreshDirect || {};
   var DRAWER_WIDGET = fd.modules.common.drawerWidget;
 
   var paymentMethod = Object.create(DRAWER_WIDGET,{
-    signal:{
+    signal: {
       value:'payment'
+    },
+    callback: {
+      value: function (data) {
+        DRAWER_WIDGET.callback.call(this, data);
+        this.check();
+      }
     },
     contentTemplate: {
       value: expressco.paymentmethodcontent
@@ -17,14 +23,30 @@ var FreshDirect = FreshDirect || {};
     previewTemplate: {
       value: expressco.paymentmethodpreview
     },
+    check: {
+      value: function () {
+        var data = this.serialize(),
+            id = data.id;
+
+        if (id === 'fake') {
+          fd.expressco.drawer.lock('payment');
+        } else {
+          fd.expressco.drawer.unlock('payment');
+        }
+      }
+    },
     serialize:{
       value:function(){
-        return {};
+        return fd.modules.common.forms.serialize('payment');
       }
     }
   });
 
   paymentMethod.listen();
+
+  $(document).ready(function () {
+    paymentMethod.check();
+  });
 
   // $(document).on('click', paymentMethod.previewHolder(), paymentMethod.previewClick.bind(paymentMethod));
 

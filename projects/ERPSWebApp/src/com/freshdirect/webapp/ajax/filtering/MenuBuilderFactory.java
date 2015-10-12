@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -185,6 +186,69 @@ public class MenuBuilderFactory {
 	}
 	
 	public class CatPageMenuBuilder implements MenuBuilderI{
+		/**
+		 * Preview mode should handle extraordinary categories
+		 * 
+		 * @ticket APPDEV-4383
+		 * @param cat
+		 * @return
+		 */
+		private boolean requiresExtraMenuItem(NavigationModel navModel, CategoryModel cat) {
+			if (cat == null || navModel == null)
+				return false;
+
+			// preview mode required
+			if (!FDStoreProperties.getPreviewMode())
+				return false;
+
+			// only top categories are accepted
+			if (cat.getParentNode() instanceof CategoryModel)
+				return false;
+			
+			if (cat.isPreferenceCategory())
+				return false;
+			
+			// final boolean hasSubcats = cat.getSubcategories() != null && !cat.getSubcategories().isEmpty();
+			
+			DepartmentModel dept = cat.getDepartment();
+
+			final boolean hasSectionLayout = !dept.getCategorySections().isEmpty();
+
+			if (!hasSectionLayout)
+				return false;
+
+			boolean selCatInSection = false;
+			for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+				selCatInSection = categorySection.getSelectedCategories().contains(cat);
+				if (selCatInSection)
+					break;
+			}
+
+			return !selCatInSection;
+		}
+
+		/**
+		 * Create menu entry for hidden categories
+		 * 
+		 * @ticket APPDEV-4383
+		 * @param cat
+		 * @return
+		 */
+		private MenuItemData createItemForHiddenCategory(CategoryModel cat) {
+			MenuItemData menuItem = new MenuItemData();
+
+			menuItem.setActive(true);
+			menuItem.setId(cat.getContentName());
+			menuItem.setFilterId(cat.getContentName());
+			menuItem.setName(cat.getFullName() + " (hidden)");
+			menuItem.setUrlParameter(cat.getContentName());
+
+			menuItem.setSelected(true); // <-- select menu item automatically !!
+		
+			return menuItem;
+		}
+
+		
 		
 		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
@@ -198,8 +262,9 @@ public class MenuBuilderFactory {
 			boolean expandSecondLowestNavBox = ((CategoryModel)navModel.getSelectedContentNodeModel()).isExpandSecondLowestNavigationBox();
 			
 			// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
-			List<CategoryModel> subCategories = ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories();
-			String categoryId = getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY);
+			CategoryModel cat = (CategoryModel) thePath.get( NavDepth.CATEGORY );
+			List<CategoryModel> subCategories = cat.getSubcategories();
+			String categoryId = cat.getContentName();
 			if(!nav.isPdp() && (subCategories==null || subCategories.size()==0)){
 				
 				createTopLevelBoxes(menu, navModel);
@@ -207,7 +272,21 @@ public class MenuBuilderFactory {
 				for(MenuBoxData domain : menu){
 					checkSelected(domain, categoryId);				
 				}
-				
+
+				if (requiresExtraMenuItem(navModel, cat)) {
+					// not member? -> create a new menu item for it
+					// and mark with hidden tag
+					MenuItemData menuItem = createItemForHiddenCategory(cat);
+					
+					for (MenuBoxData domain : menu) {
+						if (MenuBoxType.CATEGORY == domain.getBoxType()) {
+							domain.getItems().add(0, menuItem);
+							break;
+						}
+					}
+					
+				}
+
 			} else {
 				
 				// create superdepartment box
@@ -233,7 +312,17 @@ public class MenuBuilderFactory {
 					
 					//create categories and preference categories box
 					if (!navModel.getCategorySections().isEmpty()) {
-						
+
+						if (requiresExtraMenuItem(navModel, cat)) {
+							// not member? -> create a new menu item for it
+							// and mark with hidden tag
+							MenuItemData menuItem = createItemForHiddenCategory(cat);
+
+							menuItems.add(menuItem);
+						}
+
+
+
 						CATEGORY_SECTION_LOOP: for (CategorySectionModel categorySection : navModel.getCategorySections()) {
 							
 							List<CategoryModel> selectedCategories = categorySection.getSelectedCategories();
@@ -249,7 +338,6 @@ public class MenuBuilderFactory {
 							menuItems.add(sectionTitle);
 							createCatMenuItems(selectedCategories, menuItems, navModel.getUser(), categoryId);
 						}
-						
 					}
 					
 					if(menuItems.isEmpty() && !navModel.getRegularCategories().isEmpty()){
@@ -284,7 +372,7 @@ public class MenuBuilderFactory {
 			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()!=null && 
 			   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()>0){
 				
-				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
+
 				
 				if (!NavigationUtil.isCategoryHiddenAndSelectedNotShowSelf(navModel.getUser(), categoryId, (CategoryModel) cat)) {
 					MenuBoxData domain = new MenuBoxData();
