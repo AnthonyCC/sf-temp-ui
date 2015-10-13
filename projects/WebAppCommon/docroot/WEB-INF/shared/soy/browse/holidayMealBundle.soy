@@ -22,15 +22,17 @@
 {template .specialSection autoescape="false"}
  {if $sections and length($sections)>0}
   {foreach $section in $sections}
-    {call .specialSection data="$section" /}
+   {call .specialSection data="$section" /}
   {/foreach}
  {else}
   {if $products and length($products)>0}
-  <div class="section-head">{$headerText}</div>
+   <div class="section-head">{$headerText}</div>
    <ul class="products-large">
-      {foreach $product in $products}
-        {call .specialProduct data="$product" /}
-      {/foreach}
+    {foreach $product in $products}
+     {if $product.available}
+      {call .specialProduct data="$product" /}
+     {/if}
+    {/foreach}
    </ul>
   {/if}
  {/if}

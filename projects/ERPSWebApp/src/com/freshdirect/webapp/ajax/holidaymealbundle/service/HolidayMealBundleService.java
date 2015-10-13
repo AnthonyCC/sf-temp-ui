@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
@@ -55,12 +56,14 @@ public class HolidayMealBundleService {
 
     private List<HolidayMealBundleIncludeMealData> populateIncludeMealDatas(ProductModel productModel) throws FDSkuNotFoundException, FDResourceException {
         List<HolidayMealBundleIncludeMealData> mealIncludes = new ArrayList<HolidayMealBundleIncludeMealData>();
-        FDVariation[] variations = productModel.getDefaultSku().getProduct().getVariations();
-        List<ComponentGroupModel> componentGroups = productModel.getComponentGroups();
-        if (componentGroups != null) {
-            for (ComponentGroupModel componentGroup : componentGroups) {
-                if (componentGroup.getOptionalProducts().isEmpty()) {
-                    mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, variations)));
+        SkuModel defaultSkuModel = productModel.getDefaultSku();
+        if (defaultSkuModel != null) {
+            List<ComponentGroupModel> componentGroups = productModel.getComponentGroups();
+            if (componentGroups != null) {
+                for (ComponentGroupModel componentGroup : componentGroups) {
+                    if (componentGroup.getOptionalProducts().isEmpty()) {
+                        mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, defaultSkuModel.getProduct().getVariations())));
+                    }
                 }
             }
         }
