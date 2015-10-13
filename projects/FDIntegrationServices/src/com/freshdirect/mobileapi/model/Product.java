@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -553,7 +554,7 @@ public class Product {
 
                                         FDVariationOption fdvop = new FDVariationOption(acoll, mat.getMaterialNumber().substring(9), includeSideBoxProductModel.getFullName());
 
-                                        FDVariation fdvar = new FDVariation(new AttributeCollection(), "", new FDVariationOption[] { fdvop });
+                                        FDVariation fdvar = new FDVariation(new AttributeCollection(), UUID.randomUUID().toString(), new FDVariationOption[] { fdvop });
                                         Variation v = Variation.wrap(fdvar, this);
 
                                         variations.add(v);
