@@ -99,7 +99,7 @@ asyncPixelWithTimeout();
 		document,'script','//connect.facebook.net/en_US/fbevents.js');
 		// Insert Your Facebook Pixel ID below. 
 		fbq('init', '1634670833479183');
-		fbq('trackCustom', 'add_to_cart', {'value':'0.00','currency':'USD'});
+		fbq('track', 'AddToCart', {'value':'0.00','currency':'USD'});
 	</script>
 
 <%-- Includes Bottom of Items added to Cart --%>
@@ -124,7 +124,19 @@ asyncPixelWithTimeout();
 	request.setAttribute("sitePage", context.getPath());
 	%>
 		<fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
-			<%@include file="/includes/i_cart_confirm_bottom.jspf"%>	
+			<%@include file="/includes/i_cart_confirm_bottom.jspf"%>
+			<!-- Facebook Conversion Code for Add_to_Cart -->
+			<script>
+				!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+				n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+				n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+				t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+				document,'script','//connect.facebook.net/en_US/fbevents.js');
+				// Insert Your Facebook Pixel ID below. 
+				fbq('init', '1634670833479183');
+				<%-- should match atcInfo itemId format: "atc_cat_pid_86_HMR0065413_mls_main_chicken" --%>
+				fbq('track', 'AddToCart', {'value':'0.00','currency':'USD','content_ids':'['+<%= "atc_"+orderLine.getCategoryName()+"_"+orderLine.getSkuCode()+"_"+orderLine.getProductName() %>+']','content_type':'product' }); 
+			</script>
 		</fd:ProductGroup>
 	
 	</fd:FDShoppingCart>

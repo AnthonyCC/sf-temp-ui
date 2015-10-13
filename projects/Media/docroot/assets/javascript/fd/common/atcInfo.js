@@ -100,7 +100,7 @@ var FreshDirect = FreshDirect || {};
 			document,'script','//connect.facebook.net/en_US/fbevents.js');
 			// Insert Your Facebook Pixel ID below. 
 			fbq('init', '1634670833479183');
-			fbq('trackCustom', 'add_to_cart', {'value':'0.00','currency':'USD'});      	  
+			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD'});      	  
           }
 
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
