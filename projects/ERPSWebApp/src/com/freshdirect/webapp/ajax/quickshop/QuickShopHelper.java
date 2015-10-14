@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -470,7 +471,9 @@ public class QuickShopHelper {
 
 		if ( orderLine.getConfiguration().getOptions() != null && !orderLine.getConfiguration().getOptions().isEmpty() ) {
 			item.setConfiguration( orderLine.getConfiguration().getOptions() );
-		}
+        } else if (item.getConfiguration() == null) {
+            item.setConfiguration(new HashMap<String, String>());
+        }
 
 		item.setConfigDescr( orderLine.getConfigurationDesc() );
 
