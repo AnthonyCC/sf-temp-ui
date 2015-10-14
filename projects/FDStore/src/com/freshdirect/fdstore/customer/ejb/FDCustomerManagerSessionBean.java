@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -1203,7 +1204,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				try {				
 					//first verify the payment method with orbital/paymentech. if success then add the profile.
 					gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-					ErpAuthorizationModel authModel = gateway.verify(paymentMethod);
+					ErpAuthorizationModel authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
 					
 					if(authModel.isApproved()) {
 						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
@@ -1407,7 +1408,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				Gateway g = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
 				
 				//first verify the payment method with orbital/paymentech. if success then add the profile.
-				ErpAuthorizationModel authModel = g.verify(paymentMethod);
+				ErpAuthorizationModel authModel = g.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
 				if(authModel.isApproved()) {
 					Request request = GatewayAdapter.getUpdateProfileRequest(paymentMethod);
 					Response response = g.updateProfile(request);
@@ -3534,6 +3535,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Map<String, FDAvailabilityI> fdInvMap, String erpCustomerId)
 			throws FDResourceException {
 		List<ATPFailureInfo> lst = new ArrayList<ATPFailureInfo>();
+		String plantId="1000";
+		if(createOrder.getDeliveryInfo()!=null && createOrder.getDeliveryInfo().getDeliveryPlantInfo()!=null) {
+			plantId=createOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId();
+		}
 
 		DateRange requestedRange = new DateRange(createOrder.getDeliveryInfo()
 				.getDeliveryStartTime(), createOrder.getDeliveryInfo()
@@ -3551,7 +3556,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId,null);
+						erpCustomerId,plantId);
 				lst.add(fi);
 			}
 		}
@@ -7012,7 +7017,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			sb = this.getPaymentManagerHome().create();
 			try {
-				auth= sb.verify(paymentMethod);
+				auth= sb.verify(ErpAffiliate.getPrimaryAffiliate(action.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
 				logCardVerificationActivity(action,paymentMethod,auth,"");
 			} catch( ErpTransactionException te) {
 				logCardVerificationActivity(action,paymentMethod,null, te.toString());

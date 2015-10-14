@@ -42,11 +42,11 @@ public class PaymentManager {
 			LOGGER.error("PaymentManager.serviceLocator initialization exception: " + e.getMessage());
 		}
 	}	
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+	public ErpAuthorizationModel verify(final String merchant,ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, GatewayType.PAYMENTECH);
 		
 		Gateway gateway = GatewayFactory.getGateway(context);
-		ErpAuthorizationModel auth = gateway.verify(paymentMethod);
+		ErpAuthorizationModel auth = gateway.verify(merchant,paymentMethod);
 		return auth;
 	}
 	

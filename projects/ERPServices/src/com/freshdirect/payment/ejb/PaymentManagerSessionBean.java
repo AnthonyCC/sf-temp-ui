@@ -670,10 +670,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+	public ErpAuthorizationModel verify(String merchant,ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		PaymentManager pm= new PaymentManager();
 		ErpAuthorizationModel auth=null;
-		auth=pm.verify(paymentMethod);
+		auth=pm.verify(merchant,paymentMethod);
 		return auth;
 	}
 }

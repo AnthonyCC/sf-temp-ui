@@ -11,8 +11,6 @@ import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.PaylinxResourceException;
-import com.freshdirect.payment.gateway.BillingInfo;
-import com.freshdirect.payment.gateway.CreditCard;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Merchant;
@@ -81,10 +79,11 @@ public class Paymentech implements Gateway {
 		
 	}
 	
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+	public ErpAuthorizationModel verify(String merchantId,ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		ErpAuthorizationModel authModel = null;
+		
 		try {
-		Request request=GatewayAdapter.getVerifyRequest(paymentMethod);
+		Request request=GatewayAdapter.getVerifyRequest(merchantId,paymentMethod);
 		Response response = verify(request);
 		authModel=GatewayAdapter.getVerifyResponse(response,paymentMethod.isBypassAVSCheck());
 		} catch(PaylinxResourceException pe){
@@ -303,18 +302,5 @@ public class Paymentech implements Gateway {
 	}
 	
 	
-	public static void main(String[] a) {
-		Paymentech g=new Paymentech();
-		Request _request=null;
-		Response _response=null;
-		
-			_request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
-			CreditCard cc=PaymentMethodFactory.getCreditCard();
-			cc.setBillingProfileID("1234");
-			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
-			_request.setBillingInfo(billinginfo);
-			_response=g.getProfile(_request);
-			System.out.println(_response.getRawResponse());
-	}
 	
 }

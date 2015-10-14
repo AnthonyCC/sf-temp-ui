@@ -46,14 +46,14 @@ PaymentMethod pm=null;
 			_request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
 			CreditCard cc=PaymentMethodFactory.getCreditCard();
 			cc.setBillingProfileID(pId);
-			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,cc);
 			_request.setBillingInfo(billinginfo);
 			_response=g.getProfile(_request);
 		} if("deleteProfile".equals(action)) {
 			_request=RequestFactory.getRequest(TransactionType.DELETE_PROFILE);
 			CreditCard cc=PaymentMethodFactory.getCreditCard();
 			cc.setBillingProfileID(pId);
-			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,cc);
 			_request.setBillingInfo(billinginfo);
 			_response=g.deleteProfile(_request);
 		} else  if("authorize".equals(action)) {
@@ -65,6 +65,8 @@ PaymentMethod pm=null;
                 BillingInfo billinginfo=null;
                 if(Merchant.USQ.name().equals(merchant))
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+                else if(Merchant.FDX.name().equals(merchant))
+                	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,cc);
                 else 
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
                 billinginfo.setTransactionID(orderID);
@@ -81,6 +83,8 @@ PaymentMethod pm=null;
 			BillingInfo billinginfo=null;
             if(Merchant.USQ.name().equals(merchant))
             	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,ec);
+            else if(Merchant.FDX.name().equals(merchant))
+            	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,ec);
             else 
             	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,ec);
           
@@ -98,6 +102,8 @@ PaymentMethod pm=null;
                 BillingInfo billinginfo=null;
                 if(Merchant.USQ.name().equals(merchant))
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+                else if(Merchant.FDX.name().equals(merchant))
+                	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,cc);
                 else 
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
                 billinginfo.setTransactionID(orderID);
@@ -131,7 +137,7 @@ PaymentMethod pm=null;
 			ec.setState(state);
 			ec.setZipCode(zip);
 			ec.setCountry("US");
-			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,ec);
+			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,ec);
 			_request.setBillingInfo(billinginfo);
 			if(!"".equals(profileID))
 				_response=g.updateProfile(_request);
@@ -182,7 +188,7 @@ PaymentMethod pm=null;
 			else  if("MASTER_CARD".equals(ccType))
 				cc.setCreditCardType(CreditCardType.MASTERCARD);	
 				
-			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
+			BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,cc);
 			_request.setBillingInfo(billinginfo);
 			if("verifyCC".equals(action)) {
 			        billinginfo.setTransactionID(orderId);
@@ -201,6 +207,8 @@ PaymentMethod pm=null;
                 BillingInfo billinginfo=null;
                 if(Merchant.USQ.name().equals(merchant))
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,PaymentMethodFactory.getCreditCard());
+                else if(Merchant.FDX.name().equals(merchant))
+                	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,PaymentMethodFactory.getCreditCard());
                 else 
                 	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,PaymentMethodFactory.getCreditCard());
                 billinginfo.setTransactionID(orderID);
@@ -219,6 +227,8 @@ PaymentMethod pm=null;
             BillingInfo billinginfo=null;
             if(Merchant.USQ.name().equals(merchant))
             	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,PaymentMethodFactory.getCreditCard());
+            else if(Merchant.FDX.name().equals(merchant))
+            	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FDX,PaymentMethodFactory.getCreditCard());
             else 
             	billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,PaymentMethodFactory.getCreditCard());
             billinginfo.setTransactionID(orderID);

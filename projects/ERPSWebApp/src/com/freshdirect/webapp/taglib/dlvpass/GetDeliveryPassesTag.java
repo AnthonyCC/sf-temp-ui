@@ -47,7 +47,7 @@ public class GetDeliveryPassesTag extends AbstractGetterTag {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 		String sessionId = (String)session.getAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
-		String identity = user.getIdentity().getErpCustomerPK();
+		String identity = user.getIdentity()!=null?user.getIdentity().getErpCustomerPK():"";
 		if(sessionId == null || !(sessionId.equals(identity))){
 			//Remove the previous user dlv pass info.
 			if(sessionId != null){

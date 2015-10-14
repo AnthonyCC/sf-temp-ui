@@ -222,6 +222,7 @@
 									<select name="userProfile.merchant" class="inputfield"><option value=""></option>
 									<option value="FRESHDIRECT">FreshDirect </option>
 									<option value="USQ">USQ</option>
+									<option value="FDX">FDX</option>
 									</select>	
                                                                     </td>									
 							

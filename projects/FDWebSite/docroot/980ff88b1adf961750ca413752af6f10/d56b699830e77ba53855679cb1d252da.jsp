@@ -142,7 +142,7 @@
 	LOGGER.info("customer ID: " + customerId);
 	
 	try {
-		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN, loginUser.getPrimaryKey());
+		FDActionInfo ai = new FDActionInfo( loginUser.getUserContext().getStoreContext().getEStoreId(), EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN, loginUser.getPrimaryKey());
 		ActivityLog.getInstance().logActivity( ai.createActivity() );
 	} catch ( FDResourceException ex ) {
 		LOGGER.error(ex);

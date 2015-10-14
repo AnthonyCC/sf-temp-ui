@@ -34,6 +34,7 @@ import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -304,7 +305,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private void logMasqueradeLogout( String masqueradeAgent ) {
         LOGGER.debug( "logMasqueradeLogout()" );
     	try {
-    		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT, this.getPrimaryKey());
+    		EnumEStoreId eStore=this.getUserContext().getStoreContext()!=null?this.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+    		FDActionInfo ai = new FDActionInfo(eStore, EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT, this.getPrimaryKey());
     		ActivityLog.getInstance().logActivity( ai.createActivity() );
     	} catch ( FDResourceException ex ) {
     		LOGGER.error( "Activity logging failed due to FDResourceException.", ex );

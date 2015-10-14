@@ -20,6 +20,7 @@ import com.freshdirect.dataloader.autoorder.create.util.Card;
 import com.freshdirect.dataloader.autoorder.create.util.CardUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -116,7 +117,8 @@ public class CustomerConsumer implements IConsumer  {
         try {
             
             FDUser user = FDCustomerManager.createNewUser(shipTo, EnumServiceType.getEnum(orderBean.getServiceType()),null);
-			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "AutoOrder", "",IConstants.AGENT, user.getPrimaryKey());
+            EnumEStoreId eStore=user.getUserContext().getStoreContext()!=null?user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+			FDActionInfo actionInfo = new FDActionInfo(eStore,EnumTransactionSource.SYSTEM, user.getIdentity(), "AutoOrder", "",IConstants.AGENT, user.getPrimaryKey());
             FDCustomerManager.register(actionInfo, erpCust, fdCust, user.getCookie(), false, true, null,EnumServiceType.getEnum(orderBean.getServiceType()));
             
         } catch (FDResourceException fdre) {

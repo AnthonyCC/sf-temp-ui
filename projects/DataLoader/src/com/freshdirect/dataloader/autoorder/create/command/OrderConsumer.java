@@ -30,6 +30,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -107,7 +108,7 @@ public class OrderConsumer implements IConsumer {
 		CustomerRatingI rating = new CustomerRatingAdaptor(new ProfileModel(), false, 10);
 
 		try {
-			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT, null);			
+			FDActionInfo actionInfo = new FDActionInfo(cart.getEStoreId()==null?EnumEStoreId.FD:cart.getEStoreId(),EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT, null);			
 			FDCustomerManager.placeOrder(actionInfo, cart,new HashSet<String>(), false, rating, EnumDlvPassStatus.NONE);
 			// Huhh... this is a bit strange ...
 		} catch (FDResourceException fdre) {

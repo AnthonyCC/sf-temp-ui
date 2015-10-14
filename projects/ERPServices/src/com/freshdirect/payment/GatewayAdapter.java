@@ -46,7 +46,7 @@ public class GatewayAdapter {
 	public static Request getDeleteProfileRequest(ErpPaymentMethodI paymentMethod) {
 		return getProfileRequest(TransactionType.DELETE_PROFILE,paymentMethod);
 	}
-	public static Request getVerifyRequest(ErpPaymentMethodI paymentMethod) {
+	public static Request getVerifyRequest(final String merchant,ErpPaymentMethodI paymentMethod) {
 		Random randomGenerator = new Random();
 		String saleId="";
 		if(null==paymentMethod.getCustomerId()) {
@@ -54,7 +54,8 @@ public class GatewayAdapter {
 		} else {
 			saleId=new StringBuilder(paymentMethod.getCustomerId()).append("X").append(randomGenerator.nextInt(10000)).toString();
 		}
-		Request request=getRequest(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())?TransactionType.ACH_VERIFY:TransactionType.CC_VERIFY,paymentMethod, 0,0, saleId, ErpAffiliate.getPrimaryAffiliate().getMerchant(paymentMethod.getCardType()));
+		Request request=getRequest(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())?TransactionType.ACH_VERIFY:TransactionType.CC_VERIFY,paymentMethod, 0,0, saleId,
+				StringUtils.isEmpty(merchant)?ErpAffiliate.getPrimaryAffiliate().getMerchant(paymentMethod.getCardType()):merchant);
 		return request;
 	}
 	

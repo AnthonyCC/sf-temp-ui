@@ -41,7 +41,7 @@ public class CyberSource implements Gateway{
 	}
 
 	@Override
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+	public ErpAuthorizationModel verify(String merchantId,ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		
 		try {
 			

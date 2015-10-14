@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -236,7 +237,8 @@ public class UserController extends BaseController {
 
 		//Adapted from AccountActivityUtil:
 		FDSessionUser currentUser = (FDSessionUser) Session.getAttribute(SessionName.USER);
-		FDActionInfo info = new FDActionInfo(EnumTransactionSource.IPHONE_WEBSITE, FDID, "CUSTOMER", "", null, (currentUser!=null)?currentUser.getPrimaryKey():null);
+		EnumEStoreId eStore=currentUser.getUserContext().getStoreContext()!=null?currentUser.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+		FDActionInfo info = new FDActionInfo(eStore,EnumTransactionSource.IPHONE_WEBSITE, FDID, "CUSTOMER", "", null, (currentUser!=null)?currentUser.getPrimaryKey():null);
 
 		
 		//Update the user's password

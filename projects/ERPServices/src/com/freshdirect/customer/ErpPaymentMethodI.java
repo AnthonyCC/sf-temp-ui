@@ -125,7 +125,7 @@ public interface ErpPaymentMethodI extends AddressI {
 	
 	public void setProfileID(String profileID);
 	
-	public String DEFAULT_ACCOUNT_NUMBER="1111111111111111";
+	public final String DEFAULT_ACCOUNT_NUMBER="1111111111111111";
 	
 	String getBestNumberForBillingInquiries();
 	

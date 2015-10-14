@@ -11,7 +11,7 @@ import com.freshdirect.customer.ErpVoidCaptureModel;
 public interface Gateway  extends java.io.Serializable{
 	
 	public GatewayType getType(); 
-	public ErpAuthorizationModel verify(ErpPaymentMethodI paymentMethod) throws ErpTransactionException;
+	public ErpAuthorizationModel verify(String merchantId,ErpPaymentMethodI paymentMethod) throws ErpTransactionException;
 	public ErpAuthorizationModel authorize(ErpPaymentMethodI paymentMethod, String orderNumber,
 			double authorizationAmount, double tax, String merchantId) throws ErpTransactionException;
 	public ErpCaptureModel capture(ErpAuthorizationModel authorization, ErpPaymentMethodI paymentMethod, 

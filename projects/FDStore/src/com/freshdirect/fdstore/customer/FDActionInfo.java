@@ -6,6 +6,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public class FDActionInfo implements Serializable {
 
@@ -20,13 +21,16 @@ public class FDActionInfo implements Serializable {
     private boolean isPR1;
     private String masqueradeAgent;
     private String fdUserId;
+    private EnumEStoreId eStore;
     
-    
-	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
-		this( source, identity, initiator, note, agent, null,fdUserId );
+    public FDActionInfo(  EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
+		this(EnumEStoreId.FD, source, identity, initiator, note, agent, null,fdUserId );
+	}
+	public FDActionInfo( EnumEStoreId eStore,EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
+		this(eStore, source, identity, initiator, note, agent, null,fdUserId );
 	}
 	
-	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type, String fdUserId) {
+	public FDActionInfo( EnumEStoreId eStore,EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type, String fdUserId) {
 		this.identity = identity;
 		this.source = source;
 		this.initiator = initiator;
@@ -35,6 +39,7 @@ public class FDActionInfo implements Serializable {
 		this.agent = agent;		
 		this.masqueradeAgent = masqueradeAgentTL.get();
 		this.fdUserId = fdUserId;
+		this.eStore=eStore;
 	}
 	
 	
@@ -148,5 +153,10 @@ public class FDActionInfo implements Serializable {
 	public void setFdUserId(String fdUserId) {
 		this.fdUserId = fdUserId;
 	}
+
+	public EnumEStoreId geteStore() {
+		return eStore;
+	}
+
 
 }

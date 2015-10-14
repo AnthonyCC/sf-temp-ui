@@ -1,11 +1,13 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpSession;
+
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
-import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class AccountActivityUtil implements SessionName {
@@ -53,8 +55,13 @@ public class AccountActivityUtil implements SessionName {
 		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		FDIdentity identity = currentUser == null ? null : currentUser.getIdentity();
+		EnumEStoreId eStore=EnumEStoreId.FD;
+		if(currentUser!=null && currentUser.getUserContext().getStoreContext()!=null) {
+			eStore=currentUser.getUserContext().getStoreContext().getEStoreId();
 		
-		FDActionInfo info = new FDActionInfo(src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
+		}
+
+		FDActionInfo info = new FDActionInfo(eStore,src, identity, initiator, note, agent, (currentUser!=null)?currentUser.getPrimaryKey():null);
 
 		return info;
 	}
