@@ -427,7 +427,7 @@ asyncPixelWithTimeout();
 			<div style="margin-left:16px; text-indent:-8px;">
             <% if (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) { %>
               <span class="text10bold">
-                <a class="product-link" href="pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
+                <a class="product-link" href="/pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
                   <%= cartLine.getDescription() %>
                 </a>
               </span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
