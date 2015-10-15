@@ -2861,6 +2861,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rec.setChangeOrderId(saleId);
 			rec.setStandingOrderId(fdOrder.getStandingOrderId());
 			this.logActivity(rec);
+			
+			//release the IN_MODIFY LOCK
+			releaseModificationLock(saleId);
+			
 			if (sendEmail) {
 
 				fdOrder = getOrder(saleId);

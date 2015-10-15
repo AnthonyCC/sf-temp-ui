@@ -434,13 +434,13 @@ public class RegistrationAction extends WebActionSupport {
 					 //Alternatively we can pass the actual city,state and zipcode to SAP.
 					 
 					//Lookup state and city by zipcode.
-					
+					/*
 					StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
 					erpAddress.setCity(scinfo.getCity());
 					erpAddress.setState(scinfo.getState());
 					erpAddress.setCountry("US");
 					erpAddress.setZipCode(addInfo.getZipCode());
-					
+					*/
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
 				}

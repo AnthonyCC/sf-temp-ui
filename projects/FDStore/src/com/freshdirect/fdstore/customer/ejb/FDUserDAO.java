@@ -830,13 +830,13 @@ public class FDUserDAO {
 			if(isCorpUser)
 			//	ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag=?  where customer_id=?");
 			{	ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag=?  where customer_id=?");
-				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where customer_id=? and e_store=?");
+				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where FDCUSTOMER_ID=? and e_store=?");
 			}
 			else
 			//ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag=? where customer_id=?");
 			{
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag=? where customer_id=?");
-				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where customer_id=? and e_store=?");
+				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where FDCUSTOMER_ID=? and e_store=?");
 			}
 				
 				
