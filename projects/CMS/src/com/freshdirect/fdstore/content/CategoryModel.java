@@ -982,7 +982,7 @@ public class CategoryModel extends ProductContainer {
 	}
 
 	public boolean isDisplayable() {
-		return getSpecialLayout()!=null || isActive(true);
+        return (!EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(getLayout()) && getSpecialLayout() != null) || isActive(true);
 	}
 	
 	/**
