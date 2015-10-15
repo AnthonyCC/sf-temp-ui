@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -39,7 +40,7 @@ public class HolidayMealBundleService {
 
     public String populateHolidayMealCategoryMedia(NavigationModel navigationModel) {
         String categoryMedia = null;
-        if (navigationModel != null && navigationModel.getSelectedContentNodeModel() != null && isNodeModelTypeHolidayMealBundle(navigationModel.getSelectedContentNodeModel())) {
+        if (navigationModel != null && navigationModel.getSelectedContentNodeModel() != null && isCategoryModelLayoutTypeHolidayMealBundle(navigationModel.getSelectedContentNodeModel())) {
             categoryMedia = MediaUtils.renderHtmlToString(navigationModel.getSelectedContentNodeModel().getEditorial(), null);
         }
         return categoryMedia;
@@ -47,7 +48,7 @@ public class HolidayMealBundleService {
 
     public HolidayMealBundleContainer populateHolidayMealBundleData(ProductModel productModel, FDUserI user) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
         HolidayMealBundleContainer container = new HolidayMealBundleContainer();
-        if (productModel != null && productModel.getParentNode() != null && isNodeModelTypeHolidayMealBundle(productModel.getParentNode())) {
+        if (productModel != null && productModel.getParentNode() != null && isProductModelLayoutTypeHolidayMealBundle(productModel)) {
             container.setMealIncludeDatas(populateIncludeMealDatas(productModel));
             container.setOptionalProducts(populateAvailableOptionalProducts(productModel, user));
         }
@@ -140,7 +141,11 @@ public class HolidayMealBundleService {
         return mealIncludeData;
     }
 
-    public boolean isNodeModelTypeHolidayMealBundle(ContentNodeModel contentNodeModel) {
+    private boolean isCategoryModelLayoutTypeHolidayMealBundle(ContentNodeModel contentNodeModel) {
         return contentNodeModel instanceof CategoryModel && EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout());
+    }
+
+    public boolean isProductModelLayoutTypeHolidayMealBundle(ContentNodeModel contentNodeModel) {
+        return contentNodeModel instanceof ProductModel && EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT.equals(((ProductModel) contentNodeModel).getSpecialLayout());
     }
 }

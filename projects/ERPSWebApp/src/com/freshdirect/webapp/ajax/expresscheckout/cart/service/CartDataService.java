@@ -293,7 +293,7 @@ public class CartDataService {
             FDUserI user) {
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
         populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
-        item.setMealBundle(HolidayMealBundleService.defaultService().isNodeModelTypeHolidayMealBundle(productNode.getParentNode()));
+        item.setMealBundle(HolidayMealBundleService.defaultService().isProductModelLayoutTypeHolidayMealBundle(productNode));
         item.setImage(productNode.getProdImage().getPathWithPublishId());
         item.setProductId(productNode.getContentKey().getId());
         item.setCategoryId(productNode.getCategory().getContentKey().getId());

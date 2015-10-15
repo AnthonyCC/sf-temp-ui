@@ -42,7 +42,8 @@ import com.freshdirect.webapp.util.JspMethods;
 
 public class DataPotatoField {
 	
-	private static final String	CARTLINE_MODIFY_URL	= "/product_modify.jsp";
+    private static final String CARTLINE_MODIFY_URL	= "/product_modify.jsp?cartLine=%s";
+    private static final String PDP_MODIFY_URL = "/pdp.jsp?productId=%s&catId=%s&modify=true";
 	
 	private static final Logger LOG = LoggerFactory.getInstance( DataPotatoField.class );
 
@@ -69,7 +70,7 @@ public class DataPotatoField {
 			confirmData.setSubTotal( JspMethods.formatPrice( cart.getSubTotal() ) );
 			confirmData.setLineTotal( JspMethods.formatPrice( cartLine.getPrice() ) );
 			confirmData.setBackUrl( FDURLUtil.getCategoryURI( getBackUrl(cartLine.getCategoryName()), "confcatlink" ) );
-			confirmData.setEditUrl( CARTLINE_MODIFY_URL+ "?cartLine=" + cartLineId );
+			confirmData.setEditUrl(populateEditUrl(cartLineId, productData));
 			
 			confirmData.setCartLine( SoyTemplateEngine.convertToMap( productData ) );
 			
@@ -106,6 +107,16 @@ public class DataPotatoField {
 		}
 		return null;
 	}
+	
+    private static String populateEditUrl(String cartLineId, ProductData productData) {
+        String editUrl;
+        if (productData.getHolidayMealBundleContainer().getMealIncludeDatas() == null) {
+            editUrl = String.format(CARTLINE_MODIFY_URL, cartLineId);
+        } else {
+            editUrl = String.format(PDP_MODIFY_URL, productData.getProductId(), productData.getCatId());
+        }
+        return editUrl;
+    }
 	
 	public static Map<String, ?> digProduct( FDUserI user, ProductModel product ) {
 		return digProduct(user, product, null);
