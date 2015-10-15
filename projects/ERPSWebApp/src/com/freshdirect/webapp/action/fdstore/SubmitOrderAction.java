@@ -353,6 +353,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
+            session.setAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL, true);
 		} catch (ErpFraudException ex) {
 			
 			LOGGER.info("Potential fraud detected, saving shopping cart");

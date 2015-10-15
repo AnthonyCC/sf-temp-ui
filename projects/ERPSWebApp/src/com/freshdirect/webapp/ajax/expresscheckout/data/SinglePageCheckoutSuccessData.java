@@ -7,6 +7,7 @@ import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.SuccessPageData;
+import com.freshdirect.webapp.ajax.expresscheckout.sempixels.data.SemPixelData;
 import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.data.TextMessageAlertData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 
@@ -19,6 +20,7 @@ public class SinglePageCheckoutSuccessData {
 	private FormLocationData address;
 	private FormPaymentData payment;
 	private FormTimeslotData timeslot;
+    private SemPixelData semPixelData;
 
 	public UnavailabilityData getAtpFailure() {
 		return atpFailure;
@@ -75,5 +77,13 @@ public class SinglePageCheckoutSuccessData {
 	public void setTimeslot(FormTimeslotData timeslot) {
 		this.timeslot = timeslot;
 	}
+
+    public SemPixelData getSemPixelData() {
+        return semPixelData;
+    }
+
+    public void setSemPixelData(SemPixelData semPixelData) {
+        this.semPixelData = semPixelData;
+    }
 
 }

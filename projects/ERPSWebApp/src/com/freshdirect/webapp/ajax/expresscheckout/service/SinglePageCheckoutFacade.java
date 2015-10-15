@@ -44,6 +44,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.SuccessPageData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.service.ReceiptService;
+import com.freshdirect.webapp.ajax.expresscheckout.sempixels.service.SemPixelService;
 import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.data.TextMessageAlertData;
 import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service.TextMessageAlertService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
@@ -225,7 +226,8 @@ public class SinglePageCheckoutFacade {
         return formLocation;
     }
 
-    public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId) throws FDResourceException, IOException, TemplateException {
+    public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId, HttpSession session) throws FDResourceException, IOException,
+            TemplateException {
         SinglePageCheckoutSuccessData result = new SinglePageCheckoutSuccessData();
         FDOrderI order = loadOrder(orderId, user);
         result.setDrawer(DrawerService.defaultService().loadDrawer());
@@ -234,6 +236,7 @@ public class SinglePageCheckoutFacade {
         result.setTimeslot(timeslotService.loadCartTimeslot(user, order, false));
         result.setSuccessPageData(loadSuccessPageData(order, requestURI, user));
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
+        result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
         return result;
     }
 

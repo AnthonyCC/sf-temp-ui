@@ -35,7 +35,7 @@ public class SinglePageCheckoutSuccessPotatoTag extends SimpleTagSupport {
 		Map<String, Object> potato = new HashMap<String, Object>();
 		if (orderId != null && !orderId.isEmpty()) {
 			try {
-				SinglePageCheckoutSuccessData result = SinglePageCheckoutFacade.defaultFacade().loadSuccess(requestURI, user, orderId);
+                SinglePageCheckoutSuccessData result = SinglePageCheckoutFacade.defaultFacade().loadSuccess(requestURI, user, orderId, session);
 				potato = SoyTemplateEngine.convertToMap(result);
 				context.setAttribute(name, potato);
 			} catch (FDResourceException e) {
