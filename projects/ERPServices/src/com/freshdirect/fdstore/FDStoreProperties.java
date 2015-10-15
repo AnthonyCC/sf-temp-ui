@@ -698,6 +698,11 @@ public class FDStoreProperties {
 	private final static String PROP_ST_PROVIDER_URL = "fdstore.ST.provider.url";
 	private final static String PROP_ST_USERNAME = "fdstore.ST.username";
 	private final static String PROP_ST_PASSWORD = "fdstore.ST.password";
+	private final static String PROP_ST_FDX_USERNAME = "fdstore.ST.Fdxusername";
+	private final static String PROP_ST_FDX_PASSWORD = "fdstore.ST.Fdxpassword";
+	
+	
+	
 	private final static String PROP_ST_CONNECTION_TIMEOUT_PERIOD = "fdstore.ST.connection.timeout.period";
 	private static final String PROP_ST_READ_TIMEOUT_PERIOD = "fdstore.ST.read.timeout.period";
 	private static final String PROP_SMS_OVERLAY_FLAG="fdstore.SMS.overlay.flag";
@@ -766,6 +771,7 @@ public class FDStoreProperties {
 	private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
 	private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
+    private static final String PROP_MIDDLETIER_PROVIDER_URL = "fdstore.middletier.providerURL";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1442,7 +1448,11 @@ public class FDStoreProperties {
         //SMS notification
         defaults.put(PROP_ST_PROVIDER_URL, "http://api.rtdl.us/API2/Messaging/SendSMS/submit");
         defaults.put(PROP_ST_USERNAME, "fresh_direct");
-        defaults.put(PROP_ST_PASSWORD, "6zDqxrz7Qa");        
+        defaults.put(PROP_ST_PASSWORD, "6zDqxrz7Qa");  
+        //SMS FDX Notification
+        defaults.put(PROP_ST_FDX_USERNAME, "fresh_direct2");
+        defaults.put(PROP_ST_FDX_PASSWORD, "Mc49s0Kq");  
+        
         defaults.put(PROP_ST_CONNECTION_TIMEOUT_PERIOD, "5");
         defaults.put(PROP_ST_READ_TIMEOUT_PERIOD, "5");
         defaults.put(PROP_SMS_OVERLAY_FLAG, "false");
@@ -1516,6 +1526,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
+        defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
 		refresh();
     }
 
@@ -3589,6 +3600,13 @@ public class FDStoreProperties {
     public static String getSTPassword() {
     	return get(PROP_ST_PASSWORD);
     }
+    public static String getSTFdxUsername() {
+    	return get(PROP_ST_FDX_USERNAME);
+    }
+    
+    public static String getSTFdxPassword() {
+    	return get(PROP_ST_FDX_PASSWORD);
+    }
     
     public static Integer getSTConnectionTimeoutPeriod() {
 		return Integer.parseInt(get(PROP_ST_CONNECTION_TIMEOUT_PERIOD));
@@ -3818,5 +3836,9 @@ public class FDStoreProperties {
     
     public static String getActServiceEmailFDX() {
         return get(PROP_EMAIL_FDX_ACTSERVICE);
+    }
+    
+    public static String getMiddleTierProviderURL() {
+        return get(PROP_MIDDLETIER_PROVIDER_URL);
     }
 }

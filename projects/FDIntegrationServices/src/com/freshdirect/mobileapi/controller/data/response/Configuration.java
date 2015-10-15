@@ -12,6 +12,9 @@ public class Configuration implements Serializable {
 	private String adServerUrl;
 	private String tipRange;
 	private String middleTierUrl;
+	private boolean socialLoginEnabled;
+	private boolean masterPassEnabled;
+	
 
 	public boolean isAkamaiImageConvertorEnabled() {
 		return isAkamaiImageConvertorEnabled;
@@ -58,11 +61,21 @@ public class Configuration implements Serializable {
 	public void setMiddleTierUrl(String url){
 		this.middleTierUrl = url;
 	}
-	public String getMiddleTierUrl(){
-		if(this.middleTierUrl == null || this.middleTierUrl.isEmpty()){
-			return "http://8.24.36.54/dl";
-		}
-		
+	public String getMiddleTierUrl(){	
 		return this.middleTierUrl;
+	}
+	public boolean isSocialLoginEnabled() {
+		return socialLoginEnabled;
+	}
+	public void setSocialLoginEnabled(boolean socialLoginEnabled) {
+		this.socialLoginEnabled = socialLoginEnabled;
+	}
+	public boolean isMasterPassEnabled() {
+		return masterPassEnabled;
+	}
+	public void setMasterPassEnabled(boolean masterPassEnabled) {
+		this.masterPassEnabled = masterPassEnabled;
 	}	
+	
+	
 }

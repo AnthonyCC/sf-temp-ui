@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -470,6 +471,13 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setAdServerUrl(FDStoreProperties.getAdServerUrl());
 
 		configuration.setTipRange(FDStoreProperties.getTipRangeConfig());
+		
+		configuration.setMiddleTierUrl(FDStoreProperties.getMiddleTierProviderURL());
+		configuration.setSocialLoginEnabled(FeatureRolloutArbiter
+				.isFeatureRolledOut(EnumRolloutFeature.sociallogin,
+						user.getFDSessionUser().getUser()));
+		configuration.setMasterPassEnabled(true);
+		
 		return configuration;
 	}
 

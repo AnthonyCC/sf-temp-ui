@@ -674,6 +674,10 @@ function loadStuff() {
   	$("#url").val("/configvalue/param1");
   	$("#payload").val("");
   	
+  } else if (loaddata == "Configuration") {
+  	$("#url").val("/configuration");
+  	$("#payload").val("");
+  	
   } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#payload").val("");
@@ -886,39 +890,11 @@ function loadStuff() {
   	$("#url").val("/home/all/"); 
   	$("#payload").val(""); 	
   	
-  }  else if (  loaddata == "socialrecognize") {
-  	$("#url").val("/social/recognize/"); 
-  	$("#payload").val(""); 	
-  	
-  } else if (  loaddata == "socialmerge") {
-  	$("#url").val("/social/merge/"); 
-  	$("#payload").val(""); 	
-  	
-  } else if (  loaddata == "socialregister") {
-  	$("#url").val("/social/register/"); 
-  	$("#payload").val(""); 	
-  	
   } else if ( loaddata == "getPage"){
   	$("#url").val("/home/getPage/");
   	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
-  }  else if (  loaddata == "sociallogin") {
-  	$("#url").val("/social/login/"); 
-  	$("#payload").val('{"userToken":"12345","provider":"google"}'); 	
-  	
-  } else if (  loaddata == "linkaccount") {
-  	$("#url").val("/social/linkaccount/"); 
-  	$("#payload").val('{"email" : "fd_1@yahoo.com", "password" : "test","existingToken":"123","newToken":"456","provider":"google"}'); 	
-  	
-  } else if (  loaddata == "registersocial") {
-  	$("#url").val("/saptest12@freshdirect.com/registersocial/"); 
-  	$("#payload").val('{"email" : "test978@gmail.com","securityQuestion" : "test", "firstName" : "Door3", "lastName" : "Dev", "serviceType" : "HOME", "address1" : "500 W 43 st", "apartment" : "8c", "city" : "New York", "state" : "NY", "zipCode" : "10036" , "mobile_number": "2035594466", "recieveSMSAlerts" : "true","userToken" : "123", "provider" : "test"}'); 	
-  	
-  }  else if (  loaddata == "unlinkaccount") {
-  	$("#url").val("/social/unlinkaccount/"); 
-  	$("#payload").val('{"email" : "test@yahoo.com", "userToken":"123"}'); 	
-  	
-  }  else if (  loaddata == "socialConnect") {
+  } else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
   	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}'); 	
   	
@@ -1200,6 +1176,7 @@ function doStuff() {
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>
+  <option value="Configuration">Configuration</option>
   <option value=""> ========== HELP ========== </option>
   <option value="Help">Help</option>
   <option value="HelpContactUs">Help - Contact Us</option>
@@ -1232,13 +1209,6 @@ function doStuff() {
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
   <option value=""> ========== Social Login ========== </option>
-  <!--<option value="socialrecognize"> Social - Recognize</option>
-  <option value="socialmerge"> Social - Merge </option>
-  <option value="socialregister"> Social - Register </option>
-  <option value="sociallogin"> Social - Login</option>
-  <option value="linkaccount"> Social - Link Account </option>
-  <option value="registersocial"> Social - Register </option>
-  <option value="unlinkaccount"> Social - Unlink Account </option> -->
   <option value="socialConnect"> Social - Connect </option>
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>
