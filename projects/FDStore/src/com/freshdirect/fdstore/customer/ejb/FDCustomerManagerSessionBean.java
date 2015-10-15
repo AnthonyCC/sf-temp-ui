@@ -377,7 +377,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}					
 			}
 			
-			EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 			if(isUseOtherEmailMode) this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo, estoreId));
 		
 
@@ -3889,7 +3889,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDCustomerInfo fdInfo = this.getCustomerInfo(new FDIdentity(
 					fdCustomer.getErpCustomerPK(), fdCustomer.getPK().getId()));
-			EnumEStoreId estoreId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+			EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 			
 			this.doEmail(FDEmailFactory.getInstance()
 					.createForgotPasswordEmail(fdInfo, requestId, expiration, ccList, estoreId));
