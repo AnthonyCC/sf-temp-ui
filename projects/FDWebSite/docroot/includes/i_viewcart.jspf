@@ -425,11 +425,19 @@ asyncPixelWithTimeout();
 		%>
 			<td colspan="2">
 			<div style="margin-left:16px; text-indent:-8px;">
-			<% if (!isFreeProd) { %>
-				<span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
-			<% } else { %>
-				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
-			<% }%>
+            <% if (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) { %>
+              <span class="text10bold">
+                <a class="product-link" href="pdp.jsp?productId=<%= productNode.getContentKey().getId() %>&catId=<%= productNode.getCategory().getContentKey().getId() %>&modify=true&trk=cart">
+                  <%= cartLine.getDescription() %>
+                </a>
+              </span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+            <% } else { %>
+    			<% if (!isFreeProd) { %>
+    				<span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+    			<% } else { %>
+    				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+    			<% } %>
+            <% } %>
 			<% if (!isFreeProd) { %>	
 				<%= fdProduct.getKosherInfo(plantID).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
