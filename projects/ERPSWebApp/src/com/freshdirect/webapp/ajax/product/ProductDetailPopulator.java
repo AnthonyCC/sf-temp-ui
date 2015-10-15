@@ -89,6 +89,8 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleIncludeMealData;
+import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleIncludeMealProductData;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.product.data.CartLineData;
@@ -607,21 +609,11 @@ public class ProductDetailPopulator {
 	 * @param useFavBurst
 	 */
 	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
-        item.setDiscontinued(productModel.isDiscontinued());
-		if (productModel.isUnavailable()) {
-			item.setAvailable( false );
-			// if unavailable add product replacements
-			if ( item instanceof QuickShopLineItem ) {
-				QuickShopHelper.populateReplacements( (QuickShopLineItem)item, productModel, user );
-			}
-		} else {
-			item.setAvailable( true );
-		}
-		
 		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
+		item.setDiscontinued(productModel.isDiscontinued());
 		
 		populateRatings( item, user, productModel, sku.getSkuCode() );
 		populateBursts( item, user, productModel, priceCalculator, useFavBurst );
@@ -630,6 +622,29 @@ public class ProductDetailPopulator {
 		populateLineData( item, orderLine, fdProduct, productModel, sku);
 		populateAvailabilityMessages(item, productModel, fdProduct, sku);
 	}
+
+    private static void populateAvailable(ProductData item, FDUserI user, ProductModel productModel) {
+        boolean available = true;
+        if (productModel.isUnavailable()) {
+            available = false;
+            // if unavailable add product replacements
+            if (item instanceof QuickShopLineItem) {
+                QuickShopHelper.populateReplacements((QuickShopLineItem) item, productModel, user);
+            }
+        } else {
+            if (item.getHolidayMealBundleContainer() != null && item.getHolidayMealBundleContainer().getMealIncludeDatas() != null) {
+                for (HolidayMealBundleIncludeMealData mealInclude : item.getHolidayMealBundleContainer().getMealIncludeDatas()) {
+                    for (HolidayMealBundleIncludeMealProductData mealIncludeProduct : mealInclude.getIncludeMealProducts()) {
+                        if (mealIncludeProduct.isUnavailable()){
+                            available = false;
+                            break;
+                        };
+                    }
+                }
+            }
+        }
+        item.setAvailable(available);
+    }
 
 
 	// ==============
@@ -839,6 +854,8 @@ public class ProductDetailPopulator {
 		}
 
         data.setHolidayMealBundleContainer(HolidayMealBundleService.defaultService().populateHolidayMealBundleData(product, user));
+
+        populateAvailable(data, user, product);
 
         return data;
     }

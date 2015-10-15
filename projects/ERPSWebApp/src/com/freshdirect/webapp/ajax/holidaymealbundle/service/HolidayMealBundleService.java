@@ -134,6 +134,7 @@ public class HolidayMealBundleService {
         mealIncludeData.setCategoryId(productModel.getCategory().getContentKey().getId());
         mealIncludeData.setLabel(productModel.getFullName());
         mealIncludeData.setDescription(MediaUtils.renderHtmlToString(productModel.getProductDescription(), null));
+        mealIncludeData.setUnavailable(productModel.isUnavailable());
         Image sideImage = productModel.getFeatureImage();
         if (sideImage != null) {
             mealIncludeData.setImagePath(sideImage.getPath());
