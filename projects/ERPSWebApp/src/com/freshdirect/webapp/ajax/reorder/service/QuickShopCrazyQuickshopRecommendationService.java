@@ -257,6 +257,8 @@ public class QuickShopCrazyQuickshopRecommendationService {
 		
 		try {
 			rootNode = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( ContentKeyFactory.getIntance().getPresidentsPicksCategoryKey() );
+			if(rootNode==null)
+				return Collections.EMPTY_LIST;
 		} catch (InvalidContentKeyException e) {
 			LOG.error("Missing root node picks_love", e);
 			return Collections.EMPTY_LIST;
