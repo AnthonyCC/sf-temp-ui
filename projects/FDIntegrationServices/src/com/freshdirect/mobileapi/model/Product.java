@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -41,8 +40,6 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
-import com.freshdirect.content.attributes.AttributeCollection;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -52,7 +49,6 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -61,7 +57,6 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -521,86 +516,31 @@ public class Product {
             }
         }
 
-        if (EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT == product.getProductModel().getProductLayout()) {
+        // VARIATIONS [Meal Bundle and Other Config Values]
+        if (isAvailable()) {
+
+            List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());                        
+            Collections.sort(variations, new VariationComparator());
+
+            for (FDVariation variation : variations) {
+                this.variations.add(Variation.wrap(variation, this));
+            }
+        }
+
+        if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
             List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
-
             for (ComponentGroupModel componentGroup : componentGroups) {
-                if (!componentGroup.getOptionalProducts().isEmpty())
-                    continue;
-
-                List<String> characteristicNames = componentGroup.getCharacteristicNames();
-                final FDProduct prd = product.getFDProduct();
-                for (FDVariation variation : prd.getVariations()) {
-                    if (characteristicNames.contains(variation.getName())) {
-                        for (FDVariationOption variationOption : variation.getVariationOptions()) {
-                            ProductModel sideBoxProductModel;
-                            try {
-                                sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
-                                List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
-                                if (includeSideBoxProductModels.isEmpty()) {
-                                    // Normal case
-                                    variations.add(Variation.wrap(variation, this));
-
-                                } else {
-                                    // HMB case
-                                    for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
-                                        final SkuModel defSku = includeSideBoxProductModel.getDefaultSku();
-
-                                        FDProduct fdprd = defSku.getProduct();
-                                        FDMaterial mat = fdprd.getMaterial();
-
-                                        AttributeCollection acoll = new AttributeCollection();
-                                        acoll.setAttribute(EnumAttributeName.SKUCODE.getName(), defSku.getSkuCode());
-
-                                        FDVariationOption fdvop = new FDVariationOption(acoll, mat.getMaterialNumber().substring(9), includeSideBoxProductModel.getFullName());
-
-                                        FDVariation fdvar = new FDVariation(new AttributeCollection(), UUID.randomUUID().toString(), new FDVariationOption[] { fdvop });
-                                        Variation v = Variation.wrap(fdvar, this);
-
-                                        variations.add(v);
-                                    }
-                                }
-                            } catch (FDSkuNotFoundException e) {
-                                throw new ModelException(e);
-                            } catch (FDResourceException e) {
-                                throw new ModelException(e);
-                            }
-                        }
-                    }
+                ComponentGroup cgp;
+                try {
+                    cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
+                    this.componentGroups.add(cgp);
+                } catch (FDException e) {
+                    throw new ModelException("Unable to get ComponentGroup", e);
                 }
             }
 
             for (Variation variation : this.variations) {
                 variation.removeUnavailableOptions();
-            }
-        } else {
-            // VARIATIONS
-            if (isAvailable()) {
-
-                List<FDVariation> variations = Arrays.asList(defaultProduct.getVariations());
-
-                Collections.sort(variations, new VariationComparator());
-
-                for (FDVariation variation : variations) {
-                    this.variations.add(Variation.wrap(variation, this));
-                }
-            }
-
-            if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
-                List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
-                for (ComponentGroupModel componentGroup : componentGroups) {
-                    ComponentGroup cgp;
-                    try {
-                        cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
-                        this.componentGroups.add(cgp);
-                    } catch (FDException e) {
-                        throw new ModelException("Unable to get ComponentGroup", e);
-                    }
-                }
-
-                for (Variation variation : this.variations) {
-                    variation.removeUnavailableOptions();
-                }
             }
         }
 
