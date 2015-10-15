@@ -612,7 +612,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></span>
+            <span class="addtocart cssbutton orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></span>
           {/if}
         {/if}
       </div>
