@@ -822,21 +822,24 @@ public class BrowseUtil {
 	    	} else {
 	    		if(contentNode == null)
 	    			return null;
-	    		CategoryModel category = (CategoryModel)contentNode;
-	    		LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
-	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(category);
-	            
-	            if(layoutManagerSetting != null){
-	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
-	            		layoutManagerSetting.setGrabberDepth(0);
-	            	}
+//	    		CategoryModel category = (CategoryModel)contentNode;
+//	    		LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+//	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(category);
+//	            
+//	            if(layoutManagerSetting != null){
+//	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
+//	            		layoutManagerSetting.setGrabberDepth(0);
+//	            	}
+//
+//	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
+//	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
+//	                unsortedNewStuff = itemGrabberTagWrapper.getProducts(layoutManagerSetting, category);
+//	                
+//	            }
 
-	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
-	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
-	                unsortedNewStuff = itemGrabberTagWrapper.getProducts(layoutManagerSetting, category);
-	                
-	            }
-	            
+	    		CategoryModel category = (CategoryModel)contentNode;
+	    		unsortedNewStuff = category.getProducts();
+	    		
 	            for (Object content : unsortedNewStuff) {
 //	            	LOG.debug("breakpoint check");
 	                if (content instanceof ProductModel) {
@@ -844,213 +847,44 @@ public class BrowseUtil {
 	    				try {
 	                    	//if(!productModel.isHideIphone()) {			//DOOR3 FD-iPad FDIP-662
 	                    		if (passesFilter(productModel, request)) {
-	    							if(!productModel.isUnavailable()) {
-	    								contents.add(content);
-//	    								if(!productIds.contains(productModel.getContentName()))
-//	    										productIds.add(productModel.getContentName());
-	                        		}
+    								contents.add(content);
 	                    		}
 	                    	//}	//DOOR3 FD-iPad FDIP-662
 	                    } catch (Exception e) {
 	                        //Don't let one rotten egg ruin it for the bunch
 	                        LOG.error("ModelException encountered. Product ID=" + productModel.getFullName(), e);
 	                    }
-	                } else if( content instanceof CategoryModel){
-	                	CategoryModel cat = (CategoryModel)content;
-	                	
-	                	for(CategoryModel tmp : cat.getSubcategories() )
-	                		contents.addAll(getAllProductsEX(tmp, sortBy, user, request));
 	                }
 	            }
 	            
+	         	for(CategoryModel tmp : category.getSubcategories() )
+	         		contents.addAll(getAllProductsEX(tmp, sortBy, user, request));         
+
 	    	}
+	    	
 	    	Set tmp = new HashSet(contents);
 	    	contents = new ArrayList(tmp);
 	    	if(sortBy != null && !sortBy.isEmpty()){
 	    		sortProductsBy(user, contents, sortBy);
 	    	}
-	    	return contents;
-	    }
-	    
-	    //TODO: Maybe add a depth int and cut off at 5 recursions deep on a category?
-	    private static void getAllProductsEX(ContentNodeModel contentNode, String sortBy, SessionUser user, HttpServletRequest request,List<String> productIds) throws FDException{
-	    	//Assuming only the id which comes in the request is at category level and not at department level...
 	    	
-	    	if(contentNode instanceof DepartmentModel){
-	    		DepartmentModel dept = (DepartmentModel)contentNode;
-	    		for(CategoryModel cat : dept.getCategories()){
-	    			getAllProductsEX(cat, sortBy, user, request, productIds);
+	    	List available = new ArrayList();
+	    	List unavailable = new ArrayList();
+	    	for(Object o : contents){
+	    		if(o instanceof ProductModel){
+	    			ProductModel pm = (ProductModel) o;
+	    			if(pm.isUnavailable())
+	    				unavailable.add(o);
+	    			else
+	    				available.add(o);
 	    		}
-	    	} else {
-	    		
-	    		if(contentNode == null)
-	    			return;
-	    		
-	    		CategoryModel category = (CategoryModel)contentNode;
-	    		List contents = new ArrayList();
-	    		
-	            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
-	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(category);
-	            
-	            if (layoutManagerSetting != null) {
-	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
-	            		layoutManagerSetting.setGrabberDepth(0);
-	            	}
-
-	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
-	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
-	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, category);
-
-	                // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
-	                if(category instanceof CategoryModel 
-	                			&& ((CategoryModel)category).getProductPromotionType() != null) {
-	                	layoutManagerSetting.setFilterUnavailable(true);
-	                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
-	                	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
-	                	layoutManagerSetting.setSortStrategy(list);
-	                } else if (sortBy != null && !sortBy.isEmpty()){
-	                	layoutManagerSetting.setFilterUnavailable(true);
-	                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
-	                	int element;
-	                	SortType passedSortType = SortType.valueFromString(sortBy);
-	                	switch (passedSortType) {                	
-//	                	case RELEVANCY:
-//	                		break;
-	                	case NAME:
-	                		element = SortStrategyElement.PRODUCTS_BY_NAME;
-	                		break; 
-	                	case PRICE:
-	                		element = SortStrategyElement.PRODUCTS_BY_PRICE;
-	                		break; 
-	                	case POPULARITY:
-	                		LOG.debug("sorting By by popularity");
-	                		element = SortStrategyElement.PRODUCTS_BY_POPULARITY;
-	                		LOG.debug("sorting By by popularity element " + element);
-	                		break;
-	                	case SALE:
-	                		element = SortStrategyElement.PRODUCTS_BY_SALE;
-	                		break;
-//	                	case RECENCY:
-//	                		element = SortStrategyElement.PROD
-//	                		break;
-//	                	case OURFAVES:
-//	                		break;
-//	                	case DEPARTMENT:
-//	                		break;
-//	                	case FREQUENCY:
-//	                		break;
-	                	case EXPERT_RATING:
-	                		//Possibly?
-	                		element = SortStrategyElement.PRODUCTS_BY_RATING;
-	                		break;
-//	                	case START_DATE:
-//	                		break;
-//	                	case EXPIRATION_DATE:
-//	                		break;
-//	                	case PERC_DISCOUNT:
-//	                		break;
-//	                	case DOLLAR_DISCOUNT:
-//	                		break;
-	                	case SUSTAINABILITY_RATING:
-	                		element = SortStrategyElement.PRODUCTS_BY_SEAFOOD_SUSTAINABILITY;
-	                		break;
-						default:
-							element = SortStrategyElement.NO_SORT;								
-							break;
-						}
-						
-	                	if(element == SortStrategyElement.NO_SORT){
-		                	ErpNutritionType.Type tmp = ErpNutritionType.getType(sortBy);
-		                	
-		                	if(tmp == null){
-			                	list.add(new SortStrategyElement(element));	 
-		                	} else {
-			                	list.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NUTRITION, sortBy, false));
-		                	}
-		                	
-	                	} else {
-		                	list.add(new SortStrategyElement(element));
-	                	}
-						
-	                	layoutManagerSetting.setSortStrategy(list);
-	                }
-	                
-	                ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-	                sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
-	                
-	            } else {
-	                //Error happened. It's a internal error so don't expose to user. just log and return empty list
-	                ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
-	                if (layoutResult.isFailure()) {
-	                    Collection<ActionError> errors = layoutResult.getErrors();
-	                    for (ActionError error : errors) {
-	                        LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
-	                                + error.getDescription());
-	                    }
-	                }
-	            }
-	            for (Object content : contents) {
-//	            	LOG.debug("breakpoint check");
-	                if (content instanceof ProductModel) {
-	                    ProductModel productModel = (ProductModel) content;
-	    				try {
-	                    	//if(!productModel.isHideIphone()) {			//DOOR3 FD-iPad FDIP-662
-	                    		if (passesFilter(productModel, request)) {
-	    							if(!productModel.isUnavailable()) { 
-	    								if(!productIds.contains(productModel.getContentName()))
-	    										productIds.add(productModel.getContentName());
-	                        		}
-	                    		}
-	                    	//}	//DOOR3 FD-iPad FDIP-662
-	                    } catch (Exception e) {
-	                        //Don't let one rotten egg ruin it for the bunch
-	                        LOG.error("ModelException encountered. Product ID=" + productModel.getFullName(), e);
-	                    }
-	                } else if( content instanceof CategoryModel){
-	                	CategoryModel cat = (CategoryModel)content;
-	                	for(CategoryModel tmp : cat.getSubcategories() )
-	                		getAllProductsEX(tmp, sortBy, user, request, productIds);
-	                }
-	            }
-	    		
 	    	}
 	    	
-
-	            
-	    		/*
-	    		//Loop through the content node to get all the products recursively
-	    		CategoryModel category = (CategoryModel)contentNode;
-	    		List<ProductModel> productModels = category.getProducts();
-	    		//Now we need to wrap the product Model and then do a recursive call.
-	    		if(productModels!=null && !productModels.isEmpty()){
-	    			//So we do have the products wrap them and add.
-	    			for(ProductModel productModel : productModels){
-	    				try {
-							if (passesFilter(productModel, request)) {
-								Product product = Product.wrap(productModel, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT);
-								products.add(product);
-							}
-						} catch (Exception e) {
-							//Don't let one rotten egg ruin it for the bunch
-		                    LOG.error("ModelException encountered. Product ID=" + productModel.getFullName(), e);
-						}
-	    				
-	    			}
-	    		}
-	    		List<CategoryModel> subCats = category.getSubcategories();
-				if(subCats!=null && !subCats.isEmpty()){
-					for(CategoryModel subCat : subCats){
-						getAllProducts(subCat, user, request, products);
-					}
-				} else {
-					return;
-				}
-				*/
+	    	available.addAll(unavailable);
 	    	
-	    	
-	    	
-	    	
+	    	return available;
 	    }
+	    
 	    public static SortOptionInfo getSortOptionsForCategory(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
 	    	String contentId = null;
 	    	 //products.clear();
@@ -1396,6 +1230,7 @@ public class BrowseUtil {
 				List<String> zoneIds = new ArrayList<String>(FDZoneInfoManager.loadAllZoneInfoMaster());
 				ZoneInfo plant1k;
 				ZoneInfo plant1300;
+				ZoneInfo plant1310;
 				CatalogKey tmp;
 				keyList = new ArrayList<CatalogKey>(zoneIds.size() * 2);
 				for(String zoneId : zoneIds){
@@ -1413,6 +1248,14 @@ public class BrowseUtil {
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1300);
 					tmp.setPricingZone(plant1300);
+					keyList.add(tmp);
+					
+					//Currently using stubs for sales and distribution
+					plant1310 = new ZoneInfo(zoneId, "1310", "01", plant1k);
+					tmp = new CatalogKey();
+					tmp.seteStore(eStore);
+					tmp.setPlantId(1310);
+					tmp.setPricingZone(plant1310);
 					keyList.add(tmp);
 					
 				}
@@ -1465,13 +1308,7 @@ public class BrowseUtil {
 						
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
-					boolean isLimitedQuantity = false;
-					isLimitedQuantity = productInfo.isLimitedQuantity(plantID);
-					//TODO: Fix it - This is only for test
-					if(!isLimitedQuantity){
-						isLimitedQuantity = productInfo.isLimitedQuantity(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel());
-					}
-					skuInfo.setLimitedQuantity(isLimitedQuantity);
+					skuInfo.setLimitedQuantity(productInfo.isLimitedQuantity(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()));
 					return skuInfo;
 				} catch (FDResourceException e) {
 					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
