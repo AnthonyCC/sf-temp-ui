@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
@@ -18,7 +20,8 @@ import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.util.TimeslotLogic;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -118,5 +121,15 @@ public class ShoppingCartUtil {
 		}catch(Exception e){
 			LOGGER.error("getSubTotal(FDCartModel cart):" + e);
 		}
+	}
+	
+	public static Date getCutoffByContext(Date cutoffTime, FDUserI user){
+		if(user.getUserContext()!=null 
+				&& user.getUserContext().getStoreContext()!=null 
+				&& user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)
+				&& (user.getShoppingCart() instanceof FDModifyCartModel)){
+			return user.getShoppingCart().getModificationCutoffTime();
+		}
+		return cutoffTime;
 	}
 }

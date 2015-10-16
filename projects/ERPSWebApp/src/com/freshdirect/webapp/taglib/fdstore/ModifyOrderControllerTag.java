@@ -78,6 +78,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -431,8 +432,13 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				cal.add(Calendar.MINUTE, (int)order.getDeliveryInfo().getMinDurationForModification());
 				if(cal.getTime().after(order.getDeliveryReservation().getCutoffTime())){
 					order.getDeliveryInfo().setDeliveryCutoffTime(cal.getTime());
+					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(cal.getTime());
+					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(cal.getTime()));
+					
 				}else{
 					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryReservation().getCutoffTime());
+					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(order.getDeliveryInfo().getDeliveryCutoffTime());
+					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(order.getDeliveryInfo().getDeliveryCutoffTime()));
 				}
 			}
 		}

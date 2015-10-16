@@ -34,6 +34,7 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -463,11 +464,16 @@ public class SubmitOrderAction extends WebActionSupport {
 			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
 			return ERROR;
 		}
-
-		boolean pastCutoff = new Date().after( reservation.getCutoffTime() );
+		Date cutoffTime = reservation.getCutoffTime();
+		
+		//update cutoff time based on context. fdx order will have different cutoff time from reservation cutoff
+		cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, user);
+		
+		boolean pastCutoff = new Date().after(cutoffTime);
+		
 		if (pastCutoff) {
 			this.addError( "invalid_reservation", MessageFormat.format(
-				SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { reservation.getCutoffTime() }
+				SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF, new Object[] { cutoffTime }
 			));
 			return ERROR;
 		}
@@ -628,6 +634,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				orderNumber = modCart.getOriginalOrder().getErpSalesId();
 				
 				Date origCutoff = modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
+				
+				origCutoff = ShoppingCartUtil.getCutoffByContext(origCutoff, user);
+				
 				if (!EnumTransactionSource.CUSTOMER_REP.equals(transactionSource) && new Date().after(origCutoff)) {
 					this.addError("invalid_reservation", MessageFormat.format(
 						SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF_MODIFY,

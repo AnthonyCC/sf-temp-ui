@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -76,6 +77,7 @@ import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.JspMethods;
+import com.freshdirect.webapp.util.ShoppingCartUtil;
 
 public class CartDataService {
 
@@ -231,7 +233,12 @@ public class CartDataService {
             cal.setTime(modifyCart.getOriginalOrder().getDatePlaced());
             cal.add(Calendar.DAY_OF_MONTH, 8);
             Date weekFromOrderDate = cal.getTime();
-            modifyCartData.setCutoffTime(printDate(modifyCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()));
+            
+            Date cutoffTime = modifyCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
+            
+            cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, mUser);
+            
+            modifyCartData.setCutoffTime(printDate(cutoffTime));
             modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
         }
         return modifyCartData;
