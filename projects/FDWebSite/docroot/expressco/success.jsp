@@ -4,6 +4,7 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <%  //--------OAS Page Variables-----------------------
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
@@ -116,82 +117,52 @@ asyncPixelWithTimeout();
 
     <!-- semPixels -->
     
-    <%-- TODO: only for new/modified orders --%>
+    <%-- TODO: refactor? --%>
     <%
-      /*
-			String sem_validOrderCount = "0";
-				sem_validOrderCount = Integer.toString(sem_user.getAdjustedValidOrderCount());
-			double sem_checkCartSubtotal = 0;
-			String sem_cartSubtotal = "0";
-			DecimalFormat sem_df = new DecimalFormat("0.00");
-				sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "").replace(",","");
-				sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
-					
-			String sem_totalDiscountAmount = "0";
-				sem_totalDiscountAmount = NVL.apply((String)request.getAttribute("totalDiscountAmount"), "0").replace("$", "");
-				sem_totalDiscountAmount = sem_df.format(Double.parseDouble(sem_totalDiscountAmount));
-			boolean isOrderModify = Boolean.parseBoolean(NVL.apply((String)request.getAttribute("modifyOrderMode"), "false"));
-			String sem_defaultCounty = sem_user.getDefaultCounty();
-			String sem_totalCartItems = "0";
-				sem_totalCartItems = NVL.apply((Integer)request.getAttribute("totalCartItems"), 0).toString();
-      */
-	
-			/* Google AdWords Pixel */
-			%><fd:SemPixelIncludeMedia pixelNames="GoogleAdWords" /><%
-	
+      Map<String, Object> potato = (Map<String, Object>)pageContext.getAttribute("singlePageCheckoutSuccessPotato");
+      Map<String, Object> semPixelData = (Map<String, Object>)potato.get("semPixelData");
+    %>
+    <%-- do not render semPixels for old orders --%>
+    <c:if test="${singlePageCheckoutSuccessPotato.semPixelData.newOrder or singlePageCheckoutSuccessPotato.semPixelData.modifyOrder}">
+
+      <%-- Google AdWords Pixel --%>
+      <fd:SemPixelIncludeMedia pixelNames="GoogleAdWords" />
+      
+      <%
 			/* CheetahMail Pixel */
 			SemPixelModel semPixel_CM = FDSemPixelCache.getInstance().getSemPixel("CheetahMail");
 	
 			//add a param to the params sent to the FTL
-			semPixel_CM.setParam("subtotal", "10"); // sem_cartSubtotal
-			semPixel_CM.setParam("orderId", "12345"); // sem_orderNumber
-			semPixel_CM.setParam("isOrderModify", "false"); // String.valueOf(isOrderModify)
-			semPixel_CM.setParam("userCounty", "NY"); // sem_defaultCounty
-			semPixel_CM.setParam("totalCartItems", "10"); // sem_totalCartItems
-			%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" /><%
+			semPixel_CM.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
+			semPixel_CM.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+			semPixel_CM.setParam("isOrderModify", String.valueOf((Boolean)semPixelData.get("isOrderModify"))); // String.valueOf(isOrderModify)
+			semPixel_CM.setParam("userCounty", semPixelData.get("userCounty")); // sem_defaultCounty
+			semPixel_CM.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
+			%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" />
 		
-			/* TheSearchAgency Pixel */
-      /*
-			if ( !isOrderModify ) { //do not send on order modify
-      */
-				//get ref to Pixel
+      <c:if test="${not singlePageCheckoutSuccessPotato.semPixelData.modifyOrder}">
+        <%
+        /* TheSearchAgency Pixel */
 				SemPixelModel semPixel_TSA = FDSemPixelCache.getInstance().getSemPixel("TheSearchAgency");
 				
-        /*
-				sem_cartSubtotal = sem_cartSubtotal.replace(".", "");
-				sem_totalDiscountAmount = sem_totalDiscountAmount.replace(".", "");
-	
-				//change triple zero ($0.00 -> 000) to single zero
-				if ("000".equals(sem_cartSubtotal)) { sem_cartSubtotal = "0"; }
-				if ("000".equals(sem_totalDiscountAmount)) { sem_totalDiscountAmount = "0"; }
-        */
-	
 				//add a param to the params sent to the FTL
-				semPixel_TSA.setParam("subtotal", "1000"); // sem_cartSubtotal
-				semPixel_TSA.setParam("orderId", "12345"); // sem_orderNumber
-				semPixel_TSA.setParam("validOrders", "10"); // sem_validOrderCount
-				semPixel_TSA.setParam("discountAmount", "2"); // sem_totalDiscountAmount
-				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
-      /*
-			}
-      */
-			
+				semPixel_TSA.setParam("subtotal", semPixelData.get("subtotalND")); // sem_cartSubtotal
+				semPixel_TSA.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+				semPixel_TSA.setParam("validOrders", ((Integer)semPixelData.get("validOrders")).toString()); // sem_validOrderCount
+				semPixel_TSA.setParam("discountAmount", semPixelData.get("discountAmountND")); // sem_totalDiscountAmount
+				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" />
 
-			/* Digo2 Pixel */
-      /*
-			if ( !isOrderModify ) { //do not send on order modify
-      */
+        <%
+        /* Digo2 Pixel */
 				SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
 				semPixel_DIGO2.clearParams();
 	
 				semPixel_DIGO2.setParam("checkout_receipt", "true");
-				semPixel_DIGO2.setParam("subtotal", "10"); // sem_cartSubtotal
-				semPixel_DIGO2.setParam("orderId", "12345"); // sem_orderNumber
-				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" /><%
-      /*
-      }
-      */
-		%>
+				semPixel_DIGO2.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
+				semPixel_DIGO2.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" />
+      </c:if>
+    </c:if>
 
   </div>
   </tmpl:put>
