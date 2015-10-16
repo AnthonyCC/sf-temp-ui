@@ -614,7 +614,8 @@ public class ProductDetailPopulator {
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
-		
+
+		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );
 		populateBursts( item, user, productModel, priceCalculator, useFavBurst );
 		populateQuantity( item, user, productModel, fdProduct, orderLine );		
@@ -630,17 +631,6 @@ public class ProductDetailPopulator {
             // if unavailable add product replacements
             if (item instanceof QuickShopLineItem) {
                 QuickShopHelper.populateReplacements((QuickShopLineItem) item, productModel, user);
-            }
-        } else {
-            if (item.getHolidayMealBundleContainer() != null && item.getHolidayMealBundleContainer().getMealIncludeDatas() != null) {
-                for (HolidayMealBundleIncludeMealData mealInclude : item.getHolidayMealBundleContainer().getMealIncludeDatas()) {
-                    for (HolidayMealBundleIncludeMealProductData mealIncludeProduct : mealInclude.getIncludeMealProducts()) {
-                        if (mealIncludeProduct.isUnavailable()){
-                            available = false;
-                            break;
-                        };
-                    }
-                }
             }
         }
         item.setAvailable(available);
@@ -854,8 +844,6 @@ public class ProductDetailPopulator {
 		}
 
         data.setHolidayMealBundleContainer(HolidayMealBundleService.defaultService().populateHolidayMealBundleData(product, user));
-
-        populateAvailable(data, user, product);
 
         return data;
     }

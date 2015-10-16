@@ -7,7 +7,6 @@ public class HolidayMealBundleIncludeMealProductData {
     private String label;
     private String description;
     private String imagePath;
-    private boolean unavailable;
 
     public String getCategoryId() {
         return categoryId;
@@ -48,15 +47,4 @@ public class HolidayMealBundleIncludeMealProductData {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
-
-    
-    public boolean isUnavailable() {
-        return unavailable;
-    }
-
-    
-    public void setUnavailable(boolean unavailable) {
-        this.unavailable = unavailable;
-    }
-    
 }
