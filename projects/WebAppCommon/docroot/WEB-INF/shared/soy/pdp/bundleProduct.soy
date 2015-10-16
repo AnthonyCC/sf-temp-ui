@@ -69,8 +69,10 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 * @param quantity
 *param availMatPrices
 * @param inCartAmount
+* @param available
 */
 {template .bundleProductAddToCart}
+{if $available}
 {call common.quantitybox data="all" /}
 {call pdp.subtotal data="all" /}
 <input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
@@ -82,6 +84,7 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
   {/call}
 </div>
 <button id="atc-addtolist" class="addtolist cssbutton green transparent medium icon-list-black-before" alt="" data-component="addToListButton">Save to a List</button>
+{/if}
 {/template}
 
 /**
