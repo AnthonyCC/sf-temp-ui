@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -20,6 +21,7 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -58,6 +60,7 @@ import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class RegistrationAction extends WebActionSupport {
 
@@ -378,7 +381,9 @@ public class RegistrationAction extends WebActionSupport {
 		} else {
 			//Directly from Zip Check page
 			String zipCode = user.getZipCode();
-			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
+			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, 
+					(user.getUserContext()!=null 
+					&& user.getUserContext().getStoreContext()!=null)?user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD);
 	        AddressModel addr = new AddressModel();
 	        addr.setZipCode(zipCode);
         	this.reclassifyUser(user, addr,serviceType , serviceResult);

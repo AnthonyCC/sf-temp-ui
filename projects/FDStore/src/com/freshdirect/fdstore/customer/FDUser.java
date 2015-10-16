@@ -2725,7 +2725,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		if (serviceResult==null){
-			serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(selectedAddress.getZipCode());
+			serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(selectedAddress.getZipCode(), this.getUserContext().getStoreContext().getEStoreId());
 		}
 	
 		return serviceResult.getServiceStatus(getUserServiceType());

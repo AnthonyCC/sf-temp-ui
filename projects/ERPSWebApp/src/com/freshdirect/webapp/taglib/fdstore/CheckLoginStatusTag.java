@@ -551,7 +551,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         return FDDeliveryManager.getInstance()
-                                .getDeliveryServicesByZipCode(this.address.getZipCode());
+                                .getDeliveryServicesByZipCode(this.address.getZipCode(), StoreContextUtil.getStoreContext(pageContext.getSession()).getEStoreId());
     }
 
     private void populate(HttpServletRequest request) {
@@ -755,7 +755,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 	    	newSession();
 	    	address = new AddressModel();
 	    	address.setZipCode(zipCode);
-	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode).getAvailableServices();
+	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, StoreContextUtil.getStoreContext(pageContext.getSession()).getEStoreId()).getAvailableServices();
 	    	
 	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
 	    	//City and State information will be appended to user.address.

@@ -482,6 +482,15 @@ public class FDDeliveryManager {
 		return null; 
 	}
 	
+	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode, EnumEStoreId eStoreId) throws FDResourceException {
+		FDDeliveryServiceSelectionResult result = getDeliveryServicesByZipCode(zipCode);
+		if(EnumEStoreId.FDX.equals(eStoreId)){
+			result.addServiceStatus(EnumServiceType.HOME, result.getServiceStatus(EnumServiceType.FDX));
+			result.addServiceStatus(EnumServiceType.CORPORATE, result.getServiceStatus(EnumServiceType.FDX));
+		}
+		return result;
+	}
+	
 	public boolean isZipCodeEbtAccepted(String zipCode) throws FDResourceException {
 		boolean isEBTAccepted = false;
 		if (zipCode != null) {

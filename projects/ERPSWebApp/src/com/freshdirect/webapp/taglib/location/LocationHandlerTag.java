@@ -21,6 +21,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -129,7 +130,9 @@ public class LocationHandlerTag extends SimpleTagSupport {
 				address.setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
 			}
 			//no error check needed here, front end will display no delivery error if needed
-			handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode));
+			handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, 
+					(user.getUserContext()!=null 
+					&& user.getUserContext().getStoreContext()!=null)?user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD));
 			user.setAddress(address);
 			handleNewAddressSet();
 			user.updateUserState(); //based on DeliveryAddressManipulator.performSetDeliveryAddress()

@@ -467,7 +467,9 @@ public class FDCustomerManager {
 			availableServices.add(EnumServiceType.DEPOT);
 		}
 
-		FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(user.getZipCode());
+		FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(user.getZipCode(), 
+				(user.getUserContext()!=null 
+				&& user.getUserContext().getStoreContext()!=null)?user.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD);
 		EnumDeliveryStatus status = serviceResult.getServiceStatus(lastServiceType);
 		availableServices.addAll(serviceResult.getAvailableServices());
 

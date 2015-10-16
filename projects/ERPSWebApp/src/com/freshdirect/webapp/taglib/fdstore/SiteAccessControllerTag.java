@@ -485,7 +485,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			return null;
 		}
 
-		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode());
+		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode(), StoreContextUtil.getStoreContext(request.getSession()).getEStoreId());
 	}
 	
 	private FDDeliveryServiceSelectionResult checkSLiteZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
@@ -524,7 +524,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			return null;
 		}
 		
-		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode());
+		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode(), StoreContextUtil.getStoreContext(pageContext.getSession()).getEStoreId());
 	}
 
 	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */

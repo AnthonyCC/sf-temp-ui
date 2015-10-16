@@ -97,7 +97,8 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 	
 	private void createGCUser(HttpServletRequest request,HttpServletResponse response) throws FDResourceException {
 		
-		FDDeliveryServiceSelectionResult result=FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(GIFTCARD_DEFAULT_ZPCOD);//new DlvServiceSelectionResult();
+		FDDeliveryServiceSelectionResult result=FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(GIFTCARD_DEFAULT_ZPCOD, 
+				StoreContextUtil.getStoreContext(pageContext.getSession()).getEStoreId());//new DlvServiceSelectionResult();
 		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
 //		result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);	
 		StoreContext storeContext =StoreContextUtil.getStoreContext(request.getSession());
