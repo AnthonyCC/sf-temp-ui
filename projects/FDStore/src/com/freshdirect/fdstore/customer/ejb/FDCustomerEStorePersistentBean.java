@@ -206,8 +206,8 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 				model.setDeliveryNotification(this.DeliveryNotification);
 				model.setFdxOffersNotification(this.FdxOfferNotification);
 				model.setFdxdeliveryNotification(this.FdxDeliveryNotification);
-				model.setSmsPreferenceflag(this.smsPreferenceflag !=null? this.smsPreferenceflag:"N");
-				model.setFdxSmsPreferenceflag(this.fdxSmsPreferenceflag!=null? this.fdxSmsPreferenceflag:"N");
+				model.setSmsPreferenceflag(this.smsPreferenceflag);
+				model.setFdxSmsPreferenceflag(this.fdxSmsPreferenceflag);
 				
 				ps.close();
 				ps1.close();

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -46,7 +45,6 @@ public class TextMessageAlertService {
 
 		try {
 			FDIdentity identity = user.getIdentity();
-			ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
 			Map<String, String> formData = FormDataService.defaultService().getSimpleMap(alertRequest);
 			String mobileNumber = formData.get(AlertValidationConstraints.MOBILE);
 			
@@ -82,16 +80,9 @@ public class TextMessageAlertService {
 	}
 
 	public boolean showTextMessageAlertPopup(final FDUserI user) throws FDResourceException {
-		boolean showTextMessageAlertPopup = false;
-		FDIdentity identity = user.getIdentity();
-		//ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
-		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 		FDCustomerEStoreModel fdCustomerEStoreModel=fdCustomer.getCustomerEStoreModel();
-
-		if (isTextMessageAlertPopupEnabled(user, fdCustomerEStoreModel )) {
-			showTextMessageAlertPopup = true;
-		}
-		return showTextMessageAlertPopup;
+		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerEStoreModel);
 	}
 	
 	public String getTermsAndConditionsMedia() throws IOException, TemplateException{
@@ -104,10 +95,6 @@ public class TextMessageAlertService {
 			out.close();
 		}
 		return result;
-	}
-
-	private boolean isTextMessageAlertPopupEnabled(final FDUserI user, final FDCustomerEStoreModel fdCustomerEStoreModel) {
-		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerEStoreModel);
 	}
 
 	private boolean isModeModifyOrder(final FDUserI user) {
