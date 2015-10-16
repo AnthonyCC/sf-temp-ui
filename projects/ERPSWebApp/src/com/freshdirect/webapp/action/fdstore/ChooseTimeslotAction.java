@@ -150,8 +150,10 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
 			}
 					}
-		} catch (ReservationUnavailableException re) {
+		}catch (ReservationUnavailableException re) {
 					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
+		}catch (ReservationException re) {
+			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 		}
 			}
 		}	
