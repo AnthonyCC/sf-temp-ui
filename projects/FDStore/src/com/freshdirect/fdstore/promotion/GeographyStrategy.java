@@ -53,7 +53,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 	private boolean isAllowedGeography(PromotionContextI context, PromotionGeography geo) {
 
 		EnumOrderType orderType = context.getOrderType();
-		if (EnumOrderType.HOME.equals(orderType) || EnumOrderType.CORPORATE.equals(orderType)) {
+		if (EnumOrderType.HOME.equals(orderType) || EnumOrderType.CORPORATE.equals(orderType) || EnumOrderType.FDX.equals(orderType)) {
 			return geo.isAllowedZipCode(context.getZipCode());
 
 		} else if (EnumOrderType.DEPOT.equals(orderType) || EnumOrderType.PICKUP.equals(orderType)) {
@@ -77,7 +77,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 	private boolean isAllowedGeography(EnumOrderType orderType, PromotionGeography geo, String zipCode, String depotCode) {
 
 		
-		if (EnumOrderType.HOME.equals(orderType)) {
+		if (EnumOrderType.HOME.equals(orderType) || EnumOrderType.FDX.equals(orderType) ) {
 			return geo.isAllowedZipCode(zipCode);
 
 		} else if (EnumOrderType.DEPOT.equals(orderType) || EnumOrderType.PICKUP.equals(orderType)) {
