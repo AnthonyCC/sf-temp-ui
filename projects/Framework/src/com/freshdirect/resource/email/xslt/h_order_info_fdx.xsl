@@ -103,23 +103,17 @@
 					<td width="2%"></td>
 					<td width="30%" valign="top"></td>
 				</tr>
+				<tr>
+					<td colspan="5">
+						<xsl:variable name="countedFDW">
+							<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[affiliate = 'FDW'])" />
+						</xsl:variable>
+						<xsl:if test="$countedFDW > 0">		
+							<div>I acknowledge that I have purchased alcohol from FreshDirect Wines &amp; Spirits, and that my credit card or checking account will be charged separately by "FreshDirect Wines".<br /><br /></div>
+						</xsl:if>
+					</td>
+				</tr>
 			</table>
-			
-			<xsl:variable name="countedFDW">
-				<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[affiliate = 'FDW'])" />
-			</xsl:variable>
-			<xsl:if test="$countedFDW > 0">		
-				<div>I acknowledge that I have purchased alcohol from FreshDirect Wines &amp; Spirits, and that my credit card or checking account will be charged separately by "FreshDirect Wines".<br /><br /></div>
-			</xsl:if>
-			
-		</div>
-		<div style="background-color: #ffffff; border: 1px solid #bbbbbb; margin: 5px; padding: 20px;">
-			<xsl:variable name="countedFDW">
-				<xsl:value-of select="count(order/orderViews/orderViews/orderLines/orderLines[affiliate = 'FDW'])" />
-			</xsl:variable>
-			<xsl:if test="$countedFDW > 0">		
-				<div>I acknowledge that I have purchased alcohol from FreshDirect Wines &amp; Spirits, and that my credit card or checking account will be charged separately by "FreshDirect Wines".<br /><br /></div>
-			</xsl:if>
 			
 		</div>
 		<div style="background-color: #ffffff; border: 1px solid #bbbbbb; margin: 5px; padding: 20px;">

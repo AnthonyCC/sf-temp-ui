@@ -97,14 +97,17 @@
 					<td width="2%">&nbsp;</td>
 					<td width="30%" valign="top">&nbsp;</td>
 				</tr>
+				<tr>
+					<td colspan="5">
+						<xsl:variable name="countedFDW">
+							<xsl:value-of select="count(order/invoicedOrderViews/invoicedOrderViews/orderLines/orderLines[affiliate = 'FDW'])" />
+						</xsl:variable>
+						<xsl:if test="$countedFDW > 0">		
+							<div>I acknowledge that I have purchased alcohol from FreshDirect Wines &amp; Spirits, and that my credit card or checking account will be charged separately by "FreshDirect Wines".<br /><br /></div>
+						</xsl:if>
+					</td>
+				</tr>
 			</table>
-			
-			<xsl:variable name="countedFDW">
-				<xsl:value-of select="count(order/invoicedOrderViews/invoicedOrderViews/orderLines/orderLines[affiliate = 'FDW'])" />
-			</xsl:variable>
-			<xsl:if test="$countedFDW > 0">		
-				<div>I acknowledge that I have purchased alcohol from FreshDirect Wines &amp; Spirits, and that my credit card or checking account will be charged separately by "FreshDirect Wines".<br /><br /></div>
-			</xsl:if>
 			
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 			     <tr>
