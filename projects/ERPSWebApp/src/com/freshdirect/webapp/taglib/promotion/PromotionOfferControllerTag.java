@@ -455,11 +455,13 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			}else{
 				this.promotion.setMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(subTotal)));
 			}
-			if(null!=dcpdMinSubtotal && !"".equals("") && !NumberUtil.isDouble(dcpdMinSubtotal)){
-				this.promotion.setDcpdMinSubtotal(dcpdMinSubtotal);			
-				actionResult.addError(true, "dcpdSubtotalNumber", " Subtotal value should be a number.");
-			}else{
-				this.promotion.setDcpdMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(dcpdMinSubtotal)));
+			if(null!=dcpdMinSubtotal && !"".equals(dcpdMinSubtotal.trim())){
+				if(!NumberUtil.isDouble(dcpdMinSubtotal)){
+					this.promotion.setDcpdMinSubtotal(dcpdMinSubtotal);			
+					actionResult.addError(true, "dcpdSubtotalNumber", "DCPD Subtotal value should be a number.");
+				}else{
+					this.promotion.setDcpdMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(dcpdMinSubtotal)));
+				}
 			}
 			this.promotion.setNeedDryGoods("YES".equalsIgnoreCase(needDryGoods));
 			
@@ -537,6 +539,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				contentModel.setContentId(departmentsArr[i].trim());
 				contentModel.setExcluded(false);		
 				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setContent_set_num(1);
 				dcpdData.add(contentModel);
 			}
 		}
@@ -549,6 +552,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				contentModel.setContentId(categoriesArr[i].trim());
 				contentModel.setExcluded(false);		
 				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setContent_set_num(1);
 				dcpdData.add(contentModel);
 			}
 		}
@@ -566,6 +570,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					contentModel.setLoopEnabled(false);
 				contentModel.setPromotionId(this.promotion.getId());
 				contentModel.setRecCategory(true);
+				contentModel.setContent_set_num(1);
 				dcpdData.add(contentModel);
 			}
 		}
@@ -578,6 +583,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				contentModel.setContentId(recipesArr[i].trim());
 				contentModel.setExcluded(false);		
 				contentModel.setPromotionId(this.promotion.getId());
+				contentModel.setContent_set_num(1);
 				dcpdData.add(contentModel);
 			}
 		}

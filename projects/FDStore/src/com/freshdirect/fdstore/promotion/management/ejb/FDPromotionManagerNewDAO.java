@@ -1382,7 +1382,11 @@ public class FDPromotionManagerNewDAO {
 				ps.setString(index++, promotionId);
 				ps.setString(index++, object.getContentType().getName());
 				ps.setString(index++, object.getContentId());
-				ps.setInt(index++, object.getContent_set_num());
+				if(null !=object.getContent_set_num()){
+					ps.setInt(index++, object.getContent_set_num());
+				}else{
+					ps.setNull(index++, Types.NUMERIC);
+				}
 				
 				ps.addBatch();
 			}			
