@@ -1495,7 +1495,7 @@ public class FDPromotionNewDAO {
 
 	private static CartStrategy loadCartStrategy(Connection conn, String promoPK) throws SQLException{
 		CartStrategy cartStrategy = new CartStrategy();
-		PreparedStatement ps = conn.prepareStatement("select id, promotion_id, content_type, content_id from cust.promo_cart_strategy pcs where pcs.promotion_id = ? ");
+		PreparedStatement ps = conn.prepareStatement("select id, promotion_id, content_type, content_id, content_set_num from cust.promo_cart_strategy pcs where pcs.promotion_id = ? ");
 		ps.setString(1, promoPK);
 		ResultSet rs = ps.executeQuery();
 

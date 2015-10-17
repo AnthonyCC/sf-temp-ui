@@ -2221,7 +2221,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 		for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
 			ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
-			ReturnAccumulator acc = accs.get(ErpAffiliate.CODE_FDX.equals(orderLine.getAffiliate())? ErpAffiliate.CODE_FD:orderLine.getAffiliate());
+			ReturnAccumulator acc = accs.get(ErpAffiliate.CODE_FDX.equals(orderLine.getAffiliate().getCode())? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD):orderLine.getAffiliate());
 			acc.process(invoiceLine);
 		}
 
