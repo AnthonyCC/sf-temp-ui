@@ -8,7 +8,7 @@
 		<param name="enumClassName">com.freshdirect.cms.publish.EnumPublishStatus</param>
 	</typedef>
 
-	<class name="Publish" table="Publish" lazy="false">
+	<class name="Publish" table="Publish" lazy="false" polymorphism="explicit">
 		<id name="id" length="16">
 			<generator class="sequence">
 				<param name="sequence">publish_seq</param>
