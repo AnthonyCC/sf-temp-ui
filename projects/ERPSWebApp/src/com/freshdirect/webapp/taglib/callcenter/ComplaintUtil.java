@@ -175,6 +175,7 @@ public class ComplaintUtil {
     
     private static String standardizeDepartment(String dept) {
         String r = "none";
+        
         if ( "bakery".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("bakery")) ) { r = "BAK"; }
 		else if ( "cheese".equalsIgnoreCase(dept)  || (dept != null && dept.toLowerCase().contains("cheese")) ) { r = "CHE"; }
 		else if ( "coffee".equalsIgnoreCase(dept) ) { r = "COF"; }
@@ -210,6 +211,14 @@ public class ComplaintUtil {
         else if ( "RAF".equalsIgnoreCase(dept) ){ r = "RAF"; }
         else if ( "Flowers".equalsIgnoreCase(dept) ){ r = "FLO"; }
         else if ( "Pet".equalsIgnoreCase(dept) ){ r = "PET"; }
+        
+        else if ( "Deals".equalsIgnoreCase(dept) ){ r = "DEALS"; }
+        else if ( "Drugstore & Household".equalsIgnoreCase(dept) ){ r = "DRUGHAUS"; }
+        else if ( "FD Kitchen".equalsIgnoreCase(dept) ){ r = "HMR"; }
+        else if ( "Fresh".equalsIgnoreCase(dept) || "Top-Rated".equalsIgnoreCase(dept) ){ r = "FRESHTOP"; }
+        else if ( "Pantry & Freezer".equalsIgnoreCase(dept) ){ r = "PNTRYFRZ"; }
+        else if ( "Pastry".equalsIgnoreCase(dept) ){ r = "PASTRY"; }
+        else if ( "Snacks".equalsIgnoreCase(dept) ){ r = "SNACKS"; }
 
         return r;
     }
