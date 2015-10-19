@@ -1,4 +1,4 @@
-/*global jQuery,Bacon*/
+/*global Bacon*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -8,6 +8,12 @@ var FreshDirect = FreshDirect || {};
 
   var signal = function(to,body){
     try {
+      // add metadata and abFeatures to body if not present
+      body = body || {};
+      if (typeof body === 'object') {
+        body.metadata = body.metadata || fd.metaData;
+        body.abFeatures = body.abFeatures || fd.features && fd.features.active;
+      }
       bus.push({
         to: to,
         body: body

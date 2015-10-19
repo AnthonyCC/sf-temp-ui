@@ -26,6 +26,7 @@
         FreshDirect.common.dispatcher.signal('payment', FreshDirect.expressco.data.payment);
         FreshDirect.common.dispatcher.signal('address', FreshDirect.expressco.data.address);
         FreshDirect.common.dispatcher.signal('timeslot', FreshDirect.expressco.data.timeslot);
+        FreshDirect.common.dispatcher.signal('atpFailure', FreshDirect.expressco.data.atpFailure);
         if(FreshDirect.expressco.data.redirectUrl){
           FreshDirect.common.dispatcher.signal('redirectUrl', FreshDirect.expressco.data.redirectUrl);
         }
@@ -91,10 +92,6 @@
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
           <a href="/expressco/view_cart.jsp">Make Changes</a>
-        </div>
-
-        <div id="atpfailure" class="checkout-atpfailure">
-          <soy:render template="expressco.atpFailure" data="${singlePageCheckoutPotato}" />
         </div>
 
         <%-- cart content --%>

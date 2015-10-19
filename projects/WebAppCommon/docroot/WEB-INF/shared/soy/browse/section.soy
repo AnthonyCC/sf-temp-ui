@@ -44,6 +44,7 @@
  * @param? numProducts
  * @param? fromProducts
  * @param? noFilterTags
+ * @param? abFeatures
  */
 {template .section autoescape="false"}
 {let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
@@ -58,6 +59,7 @@
           {param level:($level+1) /}
           {param lastLevel:$lastLevel /}
           {param usePopularCategoriesLayout:true /}
+          {param abFeatures:$abFeatures /}
         {/call}
       {/foreach}
     {/if}
@@ -101,6 +103,7 @@
             {param section:$subSection /}
             {param level:($level+1) /}
             {param lastLevel:$lastLevel /}
+            {param abFeatures:$abFeatures /}
           {/call}
         {/foreach}
       {/if}
@@ -110,6 +113,7 @@
           {param fromProducts:$fromProducts /}
           {param numProducts:$numProducts /}
           {param productList:$section.products /}
+          {param abFeatures:$abFeatures /}
         {/call}
       {elseif $section.recipes}
         {let $len: length($section.recipes) /}

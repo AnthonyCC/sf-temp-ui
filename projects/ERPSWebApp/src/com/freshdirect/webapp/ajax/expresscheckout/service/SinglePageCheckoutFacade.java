@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -26,6 +27,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
+import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -54,6 +57,7 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SinglePageCheckoutFacade {
@@ -78,13 +82,13 @@ public class SinglePageCheckoutFacade {
 
     private static final SinglePageCheckoutFacade INSTANCE = new SinglePageCheckoutFacade();
 
-    private PaymentService paymentService;
-    private ReceiptService receiptService;
-    private TimeslotService timeslotService;
-    private AvailabilityService availabilityService;
-    private ContentFactoryService contentFactoryService;
-    private TextMessageAlertService textMessageAlertService;
-    private DeliveryAddressService deliveryAddressService;
+    private final PaymentService paymentService;
+    private final ReceiptService receiptService;
+    private final TimeslotService timeslotService;
+    private final AvailabilityService availabilityService;
+    private final ContentFactoryService contentFactoryService;
+    private final TextMessageAlertService textMessageAlertService;
+    private final DeliveryAddressService deliveryAddressService;
 
     private SinglePageCheckoutFacade() {
         paymentService = PaymentService.defaultService();
@@ -108,6 +112,13 @@ public class SinglePageCheckoutFacade {
         result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
         result.setRedirectUrl(
                 RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+        if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
+            UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
+            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
+                result.setAtpFailure(atpFailureData);
+            }
+        }
+
         return result;
     }
 

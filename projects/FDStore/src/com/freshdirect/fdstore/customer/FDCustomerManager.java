@@ -1444,7 +1444,7 @@ public class FDCustomerManager {
 
 	public static int getOrderCountForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
 		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
-		return (int)history.getOrderCountForChefsTableEligibility();
+		return history.getOrderCountForChefsTableEligibility();
 	}
 
 	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
@@ -1890,7 +1890,7 @@ public class FDCustomerManager {
 			if (LOGGER.isInfoEnabled()) {
 				int unavCount = 0;
 				for ( String key : invs.keySet() ) {
-					FDAvailabilityI inv = (FDAvailabilityI) invs.get(key);
+					FDAvailabilityI inv = invs.get(key);
 					FDReservation deliveryReservation = cart.getDeliveryReservation();
 					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
 					FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
@@ -2566,7 +2566,7 @@ public class FDCustomerManager {
 			List<Object> historyInfo = null;
 			for ( DeliveryPassModel model : dlvPasses ) {
 				String dlvPassId = model.getPK().getId();
-				DlvPassUsageInfo usageInfo = (DlvPassUsageInfo)usageInfos.get(dlvPassId);
+				DlvPassUsageInfo usageInfo = usageInfos.get(dlvPassId);
 
 				DeliveryPassInfo info = new DeliveryPassInfo(model, usageInfo);
 

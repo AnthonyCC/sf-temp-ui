@@ -35,7 +35,7 @@
 </head>
 
 <!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" data-department="<tmpl:get name='department'/>"><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" data-department="<tmpl:get name='department'/>"><![endif]-->
+<!--[if IE 9]><body class="ie9" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" data-department="<tmpl:get name='department'/>"><![endif]-->
 <!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" data-department="<tmpl:get name='department'/>"><!--<![endif]-->
   
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

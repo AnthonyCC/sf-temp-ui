@@ -450,7 +450,10 @@
         <dt>to</dt>
         <dd>Name of the signal</dd>
         <dt class="optional">body</dt>
-        <dd>Regular JSON data (or null)</dd>
+        <dd>
+        Regular JSON data (or null)<br/>
+        <b>Note:</b> if this data is an object, then it will be extended with a <code>metadata</code> and an <code>abFeatures</b> field (the values of <code>FreshDirect.metaData</code> and <code>FreshDirect.features.active</code>), to enable the soy templates access for site metadata and features. In this way we can use different templates for different feature versions without writing/changing any JS code.
+        </dd>
       </dl>
       <pre class="prettyprint example">
          document.getElementById("signal-send-button").addEventListener('click', function(e){

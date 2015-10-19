@@ -6,6 +6,7 @@
  * @param? usePopularCategoriesLayout
  * @param? filterLabels
  * @param? limit
+ * @param? abFeatures
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
@@ -16,6 +17,7 @@
   {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
   {param filterLabels:$filterLabels /}
   {param numProducts:$l /}
+  {param abFeatures:$abFeatures /}
 {/call}
 {/template}
 
@@ -23,6 +25,7 @@
  * @param? sections sections
  * @param? sectionMaxLevel The max depth of sections starting by 1
  * @param? limit
+ * @param? abFeatures
  */
 {template .bottomContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
@@ -35,6 +38,7 @@
         {param level:1 /}
         {param fromProducts:$l /}
         {param noFilterTags:true /}
+        {param abFeatures:$abFeatures /}
       {/call}
     {/foreach}
   </div>

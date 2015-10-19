@@ -3,7 +3,6 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
 
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
-		<treshold value="debug"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%d{DATE} %t %p] %c{3} - %m %n" />
 		</layout>
@@ -23,18 +22,6 @@
 
 	<category name="net.sf.tapestry">
 		<priority value="info" />
-	</category>
-
-	<category name="com.freshdirect.erp.ejb.ErpGrpInfoDAO">
-		<priority value="OFF"/>
-	</category>
-
-	<category name="com.freshdirect.cms.classgenerator.ContentNodeGenerator">
-		<priority value="OFF"/>
-	</category>
-
-	<category name="com.freshdirect.webapp.soy.SoyTemplateEngine">
-		<priority value="OFF"/>
 	</category>
 
 	<category name="org">
@@ -63,15 +50,25 @@
 	<category name="com.freshdirect.framework.monitor">
 		<priority value="error" />
 	</category>
-	<category name="com.freshdirect.fdstore.content.ContentNodeModelUtil">
-		<priority value="error" />
-	</category>
 	
 	<category name="com.freshdirect.framework.monitor.RequestLogger" additivity="false">
 		<priority value="info" />
 		<appender-ref ref="request-log" />
 	</category>
+
+	<category name="com.freshdirect.webapp.soy.SoyTemplateEngine">
+		<priority value="OFF" />
+	</category>
+
+	<category name="com.freshdirect.cms.classgenerator.ContentNodeGenerator">
+		<priority value="OFF" />
+	</category>
 	
+	<category name="com.freshdirect.erp.ejb.ErpGrpInfoDAO">
+		<priority value="OFF" />
+	</category>
+
+			
 	<root>
 		<priority value="debug"/>
 		<appender-ref ref="stdout" />
@@ -81,4 +78,3 @@
 	</root>
 
 </log4j:configuration>
-

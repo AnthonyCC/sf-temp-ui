@@ -7,6 +7,7 @@
  * @param? filterLabels
  * @param? numProducts
  * @param? fromProducts
+ * @param? abFeatures
  */
 {template .content autoescape="false"}
 
@@ -26,6 +27,7 @@
         {param filterLabels:$filterLabels.filterLabels /}
         {param numProducts:$numProducts /}
         {param fromProducts:$fromProducts /}
+        {param abFeatures:$abFeatures /}
       {/call}
     {/foreach}
   {/if}

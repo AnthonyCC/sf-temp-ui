@@ -1,11 +1,11 @@
 {namespace expressco}
 
 /**
-* @param? atpFailure
+* @param? data
 */
 {template .atpFailure}
-{if $atpFailure}
-  {call .atpFailureInner data="$atpFailure"}{/call}
+{if $data}
+  {call .atpFailureInner data="$data"}{/call}
 {/if}
 {/template}
 
@@ -18,12 +18,15 @@
 * @param? passes
 */
 {template .atpFailureInner}
+  <form fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
+   <button class="cssbutton orange footer__button">Continue</button>
+  </form>
   {call .deliveryTime data="all"}{/call}
   {call .unavailableNonReplaceableLines data="all"}{/call}
   {call .replaceableWrapper data="all"}{/call}
   {call .deliveryPasses data="all"}{/call}
   <form fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
-   <button class="cssbutton orange footer__button">Save Changes</button>
+   <button class="cssbutton orange footer__button">Continue</button>
   </form>
 {/template}
 

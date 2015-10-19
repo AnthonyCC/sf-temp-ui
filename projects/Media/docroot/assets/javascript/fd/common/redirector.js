@@ -10,7 +10,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback:{
 			value:function( redirectUrl ) {
-        if(redirectUrl){
+        if(redirectUrl && typeof redirectUrl === 'string'){
           location.href=redirectUrl;
         }
 			}

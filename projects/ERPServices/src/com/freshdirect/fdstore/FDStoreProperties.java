@@ -772,6 +772,8 @@ public class FDStoreProperties {
 	private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
     private static final String PROP_MIDDLETIER_PROVIDER_URL = "fdstore.middletier.providerURL";
+    // APPDEV - 4354 - ATP in overlay
+    private static final String PROP_ATP_AVAILABILTY_MOCK_ENABLED = "fdstore.atp.availability.mock.enabled";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1527,6 +1529,7 @@ public class FDStoreProperties {
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
+        defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
 		refresh();
     }
 
@@ -3817,6 +3820,10 @@ public class FDStoreProperties {
 	
     public static boolean isCoreNonCoreGlobalNavSwitchEnabled() {
         return Boolean.parseBoolean(get(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED));
+    }
+
+    public static boolean getAtpAvailabiltyMockEnabled() {
+        return (Boolean.valueOf(get(PROP_ATP_AVAILABILTY_MOCK_ENABLED))).booleanValue();
     }
 
     public static String getCSContactDaysFDX() {

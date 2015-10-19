@@ -231,3 +231,12 @@
 #atpfailure .text-right{
   text-align:right;
 }
+
+#atpfailure .fixedPopupContent{
+  max-width:none;
+}
+
+.popupcontentoverlay.atpFailureOverlay{
+  background-color: #fff;
+  opacity: .7;
+}
