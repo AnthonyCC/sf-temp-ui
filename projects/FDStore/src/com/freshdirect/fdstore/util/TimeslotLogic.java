@@ -134,15 +134,17 @@ public class TimeslotLogic {
 		
 		Map<EnumDeliveryFeeTier, TieredPrice> tierDlvFeeMap = new HashMap<EnumDeliveryFeeTier, TieredPrice>();
 		
-		FDRulesContextImpl tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER1);
-		TieredPrice tier1Price = getTieredDlvFee(tierFeeCalc);
-		if(tier1Price!=null){
-			tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER1, tier1Price);
-		}
-		tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER2);
-		TieredPrice tier2Price = getTieredDlvFee(tierFeeCalc);
-		if(tier2Price!=null){
-			tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER2, tier2Price);
+		if(FDStoreProperties.isDlvFeeTierEnabled()){
+			FDRulesContextImpl tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER1);
+			TieredPrice tier1Price = getTieredDlvFee(tierFeeCalc);
+			if(tier1Price!=null){
+				tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER1, tier1Price);
+			}
+			tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER2);
+			TieredPrice tier2Price = getTieredDlvFee(tierFeeCalc);
+			if(tier2Price!=null){
+				tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER2, tier2Price);
+			}
 		}
 		
 		
@@ -224,8 +226,9 @@ public class TimeslotLogic {
 
 					minOrderReqd = applyOrderMinimum(user, _ts) || minOrderReqd;
 					
-					
-					calcDeliveryFee(tierDlvFeeMap, _ts);
+					if(FDStoreProperties.isDlvFeeTierEnabled()){
+						calcDeliveryFee(tierDlvFeeMap, _ts);
+					}
 					
 					
 				}

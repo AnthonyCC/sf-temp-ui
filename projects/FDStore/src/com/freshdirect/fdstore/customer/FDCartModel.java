@@ -1924,7 +1924,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
 				
 				//TIER DLV FEE. This has higher priority if there is tier price defined at the timeslot level.
-				if(this.getDeliveryReservation()!=null && this.getDeliveryReservation().getTimeslot()!=null){
+				if(FDStoreProperties.isDlvFeeTierEnabled() 
+						&& this.getDeliveryReservation()!=null 
+						&& this.getDeliveryReservation().getTimeslot()!=null){
 					TieredPrice tieredPrice =  TimeslotLogic.getTieredDlvFee(ctx.getUser(), (this.getDeliveryReservation().getDeliveryFeeTier()!=null)? EnumDeliveryFeeTier.getEnum(this.getDeliveryReservation().getDeliveryFeeTier()):null);
 					if(tieredPrice!=null){
 						dlvFee = tieredPrice.getPromoPrice();

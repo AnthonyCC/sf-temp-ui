@@ -72,8 +72,9 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		}
 			boolean chefsTable = user.isChefsTable() || "true".equals(chefsTableValue);
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, cart.getDeliveryAddress().getBuildingId(), true);
-		
-		TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
+		if(FDStoreProperties.isDlvFeeTierEnabled()){
+			TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
+		}
 		
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
 		if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {

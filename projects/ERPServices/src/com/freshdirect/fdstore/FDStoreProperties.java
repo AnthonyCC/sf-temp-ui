@@ -87,6 +87,7 @@ public class FDStoreProperties {
     private final static String PROP_PRERESERVE_HOURS = "fdstore.preReserve.hours";
     private final static String PROP_AD_SERVER_URL = "fdstore.adServerURL";
     private final static String PROP_AD_SERVER_ENABLED = "fdstore.adServerEnabled";
+    private final static String PROP_DLVFEE_TIER_ENABLED = "fdstore.dlvfeeTierEnabled";
     private final static String PROP_AD_SERVER_UPDATES_URL = "fdstore.adServerUpdatesURL";
     private final static String PROP_AD_SERVER_PROFILE_ATTRIBS = "fdstore.adServerProfileAttribs";
     private final static String PROP_AD_SERVER_USES_DEFERRED_IMAGE_LOADING = "fdstore.adServerUsesDeferredImageLoading";
@@ -840,6 +841,7 @@ public class FDStoreProperties {
             "freshdirect.content.ContentManager");
         defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
         defaults.put(PROP_AD_SERVER_ENABLED, "false");
+        defaults.put(PROP_DLVFEE_TIER_ENABLED, "false");
 
         // cut off time
         defaults.put(CUT_OFF_TIME_SUN, "0-20");
@@ -1757,6 +1759,10 @@ public class FDStoreProperties {
 
     public static boolean isAdServerEnabled() {
         return Boolean.valueOf(get(PROP_AD_SERVER_ENABLED)).booleanValue();
+    }
+
+    public static boolean isDlvFeeTierEnabled() {
+        return Boolean.valueOf(get(PROP_DLVFEE_TIER_ENABLED)).booleanValue();
     }
 
     public static String getAdServerUpdatesURL() {
