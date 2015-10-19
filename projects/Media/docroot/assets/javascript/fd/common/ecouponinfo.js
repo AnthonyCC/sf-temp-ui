@@ -33,7 +33,11 @@ var FreshDirect = FreshDirect || {};
     callback:{
       value:function( statusTexts ) {
         Object.keys(statusTexts).forEach(function(ecouponId){
-          this.renderItem(ecouponId,statusTexts[ecouponId]);
+          var message = statusTexts[ecouponId];
+
+          if (message && message.atcId) {
+            this.renderItem(ecouponId,statusTexts[ecouponId]);
+          }
         },this);
       }
     }
