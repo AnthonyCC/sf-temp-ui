@@ -15,6 +15,7 @@
 	<input id="all_dept" type="radio" name="deptIdList" value="all" {if $deptSelected == ''}checked='checked'{/if}><label for="all_dept">All Departments</label>
 </li>
 {foreach $dataItem in $data}
+{if $dataItem.name}
 {let $id}dept_{index($dataItem)}{/let}
 <li>
   <span class="{if (($dataItem.counter < 1) and (not $dataItem.selected)) }noitem{/if}">
@@ -22,5 +23,6 @@
   	<label for="{$id}"><span>{$dataItem.name}</span> ({$dataItem.counter})</label>
   </span>			
 </li>
+{/if}
 {/foreach}
 {/template}

@@ -21,7 +21,9 @@ var FreshDirect = FreshDirect || {};
 			value: function( value ){
 
 				WIDGET.callback.call(this,{
-					data:Object.keys(value).map(function(prop){
+					data:Object.keys(value).filter(function (key) {
+            return value[key];
+          }).map(function(prop){
 						return value[prop];
 					}).reduce(function( prev, current ){
 						return prev.concat(current);

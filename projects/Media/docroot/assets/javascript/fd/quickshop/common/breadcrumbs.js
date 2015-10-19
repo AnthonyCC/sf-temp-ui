@@ -39,9 +39,13 @@ var FreshDirect = FreshDirect || {};
 				var result={};
 				Object.keys(data).forEach(function(item){
 					var menuItem = data[item];
-					Object.keys(menuItem).forEach(function(filterName){
-						menuItem[filterName].reduce(filterList,result);
-          });
+          if (menuItem) {
+            Object.keys(menuItem).forEach(function(filterName){
+              if (menuItem[filterName] && menuItem[filterName].reduce) {
+                menuItem[filterName].reduce(filterList,result);
+              }
+            });
+          }
 				});
 
         WIDGET.callback.call(this,{data:Object.keys(result).map(function (k) {

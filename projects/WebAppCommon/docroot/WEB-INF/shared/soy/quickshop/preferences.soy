@@ -9,14 +9,16 @@
 	<div class="preferences-header qs-menu-header">Only Show</div>
 	<ul class="preferences-list checkboxlist" data-component="preferences">
 	{foreach $dataItem in $data}
-		<li>
-			{let $id}pref_{$dataItem.filteringUrlValue}{/let}
-			{call .checklistItem}
-				{param id:$id /}
-				{param dataItem:$dataItem /}
-				{param filterName:'filterIdList' /}
-			{/call}
-		</li>
+    {if $dataItem.filteringUrlValue}
+      <li>
+        {let $id}pref_{$dataItem.filteringUrlValue}{/let}
+        {call .checklistItem}
+          {param id:$id /}
+          {param dataItem:$dataItem /}
+          {param filterName:'filterIdList' /}
+        {/call}
+      </li>
+    {/if}
 	{/foreach}
 	</ul>
 </div>
