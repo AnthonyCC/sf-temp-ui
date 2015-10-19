@@ -12,7 +12,8 @@ import java.util.Set;
 
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.erp.ErpFactory;
+import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
@@ -189,7 +190,9 @@ public class OrderLineUtil {
 			theProduct.setConfigurationDesc(createConfigurationDescription(theProduct));
 		} catch (FDSkuNotFoundException e) {
 			throw new FDInvalidConfigurationException.Unavailable(e,"Sku not found");
-		}
+		} catch (FDResourceException e) {
+		    throw new FDInvalidConfigurationException.Unavailable(e,"Material not found");
+        }
 
 	}
 
@@ -201,7 +204,7 @@ public class OrderLineUtil {
 		}
 	}
 	
-	private static String createConfigurationDescription(FDProductSelectionI theProduct) throws FDSkuNotFoundException {
+	private static String createConfigurationDescription(FDProductSelectionI theProduct) throws FDSkuNotFoundException, FDResourceException {
 
 		FDProduct product = theProduct.lookupFDProduct();
 		ProductModel prodNode = theProduct.lookupProduct();
@@ -292,14 +295,8 @@ public class OrderLineUtil {
 
             for (FDVariationOption option : variation.getVariationOptions()) {
                 if (option.getName().equals(optionName)) {
-                    String optionSkuCode = option.getAttribute(EnumAttributeName.SKUCODE);
-                    List<String> sideBoxIncludeProductNames = populateSideBoxIncludeProductNames(optionSkuCode);
-                    if (sideBoxIncludeProductNames.isEmpty()) {
-                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, option.getDescription());
-                    } else {
-                        for (String sideBoxIncludeProductName : sideBoxIncludeProductNames) {
-                            appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
-                        }
+                    for (String sideBoxIncludeProductName : populateSideBoxIncludeProductNames(option)) {
+                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
                     }
                 }
             }
@@ -308,13 +305,22 @@ public class OrderLineUtil {
         return confDescr.toString();
     }
 
-    private static List<String> populateSideBoxIncludeProductNames(String sideBoxSkuCode) throws FDSkuNotFoundException {
+    private static List<String> populateSideBoxIncludeProductNames(FDVariationOption option) throws FDSkuNotFoundException, FDResourceException {
         List<String> includeProductNames = new ArrayList<String>();
+        String sideBoxSkuCode = option.getSkuCode();
         if (sideBoxSkuCode != null && !sideBoxSkuCode.isEmpty()) {
             ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(sideBoxSkuCode);
             for (ProductModel productModel : sideBoxProductModel.getIncludeProducts()) {
-                includeProductNames.add(productModel.getFullName());
+                SkuModel defaultSku = productModel.getDefaultSku();
+                if (defaultSku != null) {
+                    Collection<ErpMaterialInfoModel> findMaterialsBySkus = ErpFactory.getInstance().findMaterialsBySku(defaultSku.getSkuCode());
+                    for (ErpMaterialInfoModel erpMaterialInfoModel : findMaterialsBySkus) {
+                        includeProductNames.add(erpMaterialInfoModel.getDescription());
+                    }
+                }
             }
+        } else {
+            includeProductNames.add(option.getDescription());
         }
         return includeProductNames;
     }

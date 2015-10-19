@@ -7,7 +7,6 @@ import java.util.Map;
 import org.jmock.Expectations;
 
 import com.freshdirect.Fixture;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -308,7 +307,7 @@ public class OrderLineUtilTest extends Fixture {
                 oneOf(variationOption).getName();
                 will(returnValue(VARIATION_OPTION_NAME));
 
-                oneOf(variationOption).getAttribute(EnumAttributeName.SKUCODE);
+                oneOf(variationOption).getSkuCode();
                 will(returnValue(skuCode));
 
                 oneOf(variationOption).getDescription();
