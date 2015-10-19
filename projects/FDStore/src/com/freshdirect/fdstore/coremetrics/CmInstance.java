@@ -70,8 +70,9 @@ public enum CmInstance {
 	}
 
 
-	private static final Map<String,CmInstance> client2inst = new HashMap<String,CmInstance>(6);
-	private static final Map<String,CmInstance> client2inst_tst = new HashMap<String,CmInstance>(6);
+	private static final Map<String,CmInstance> client2inst = new HashMap<String,CmInstance>(7);
+	private static final Map<String,CmInstance> client2inst_tst = new HashMap<String,CmInstance>(7);
+	private static final Map<String,CmInstance> site2inst = new HashMap<String,CmInstance>(7);
 	static {
 		// production client IDs
 		client2inst.put("90391309", FDW);
@@ -92,6 +93,16 @@ public enum CmInstance {
 		client2inst_tst.put("81640007", SDST);
 
 		client2inst_tst.put("81640000", GLOBAL);
+
+		// site IDs
+		site2inst.put("33000000", FDW);
+		site2inst.put("33000001", FDP);
+		site2inst.put("33000002", FDT);
+		site2inst.put("33000004", SDSW);
+		site2inst.put("33000003", SDSP);
+		site2inst.put("33000005", SDST);
+		
+		site2inst.put("51640000", GLOBAL);
 	}
 
 
@@ -115,6 +126,7 @@ public enum CmInstance {
 		return client2inst_tst.get(clientId);
 	}
 
+	
 	/**
 	 * Return corresponding CM client ID
 	 * @param test look for test account
@@ -131,6 +143,20 @@ public enum CmInstance {
 				if (this.equals(e.getValue())) {
 					return e.getKey();
 				}
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Return CM Site ID
+	 * @return
+	 */
+	public String getSiteId() {
+		for (Map.Entry<String, CmInstance> e : site2inst.entrySet()) {
+			if (this.equals(e.getValue())) {
+				return e.getKey();
 			}
 		}
 		return null;

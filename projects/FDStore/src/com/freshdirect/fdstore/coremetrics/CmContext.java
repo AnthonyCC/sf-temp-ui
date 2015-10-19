@@ -92,7 +92,12 @@ public class CmContext implements Serializable {
 	 */
 	private String clientId = null;
 	
-	
+	/**
+	 * CoreMetrics site ID 
+	 */
+	private String siteId = null;
+
+
 	protected void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
@@ -147,6 +152,15 @@ public class CmContext implements Serializable {
 		return clientId;
 	}
 	
+
+	protected void setSiteId(String siteId) {
+		this.siteId = siteId;
+	}
+	
+	
+	public String getSiteId() {
+		return siteId;
+	}
 	
 	/**
 	 * Default context getter
@@ -260,6 +274,7 @@ public class CmContext implements Serializable {
 					.append(", facade: 'N/A'")
 					.append(", test: '"+ testAccount + "'")
 					.append(", clientId: '"+ clientId + "'")
+					.append(", siteId: '"+ siteId + "'")
 					.append("}")
 				;
 
@@ -270,6 +285,7 @@ public class CmContext implements Serializable {
 					.append(", facade: '"+ instance.getFacade() + "'")
 					.append(", test: '"+ testAccount + "'")
 					.append(", clientId: '"+ clientId + "'")
+					.append(", siteId: '"+ siteId + "'")
 					.append("}")
 				;
 
@@ -428,11 +444,13 @@ public class CmContext implements Serializable {
 				ctx.setInstance(CmInstance.GLOBAL);
 				ctx.setTestAccount(testAcc);
 				ctx.setClientId( clientId );
+				ctx.setSiteId( CmInstance.GLOBAL.getSiteId() );
 			} else {
 				ctx.setEnabled(isEnabled);
 				ctx.setInstance(instance);
 				ctx.setTestAccount(testAcc);
 				ctx.setClientId( clientId );
+				ctx.setSiteId( this.instance.getSiteId() );
 			}
 
 			if (clientId != null) {
