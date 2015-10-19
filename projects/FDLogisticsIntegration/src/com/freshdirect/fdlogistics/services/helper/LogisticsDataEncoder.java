@@ -158,9 +158,9 @@ public class LogisticsDataEncoder {
 			String customerId, EnumReservationType type,
 			Customer customer, boolean chefsTable,
 			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
-			boolean hasSteeringDiscount) {
+			boolean hasSteeringDiscount, String deliveryFeeTier) {
 		ReserveTimeslotRequest request = new ReserveTimeslotRequest(timeslotId, customer,
-				encodeCart(event), type.getName(), chefsTable, isForced, hasSteeringDiscount);
+				encodeCart(event), type.getName(), chefsTable, isForced, hasSteeringDiscount, deliveryFeeTier);
 		return request;
 		
 	}

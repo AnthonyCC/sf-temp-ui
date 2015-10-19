@@ -27,6 +27,7 @@ public class FDReservation extends ModelSupport {
 	private boolean hasSteeringDiscount;
 	private EnumRegionServiceType regionSvcType;
 	private FDDeliveryETAModel deliveryETA;
+	private String deliveryFeeTier;
 
 	public FDReservation(
 		PrimaryKey pk,
@@ -38,7 +39,7 @@ public class FDReservation extends ModelSupport {
 		boolean chefsTable,
 		String orderId,
 		int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount,
-		EnumRegionServiceType regionSvcType) {
+		EnumRegionServiceType regionSvcType, String deliveryFeeTier) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -51,6 +52,7 @@ public class FDReservation extends ModelSupport {
 		this.rsvClass=rsvClass;
 		this.hasSteeringDiscount = hasSteeringDiscount;
 		this.regionSvcType = regionSvcType;
+		this.deliveryFeeTier = deliveryFeeTier;
 	}
 	
 	
@@ -154,6 +156,16 @@ public class FDReservation extends ModelSupport {
 	}
 	public void setDeliveryETA(FDDeliveryETAModel deliveryETA) {
 		this.deliveryETA = deliveryETA;
+	}
+
+
+	public String getDeliveryFeeTier() {
+		return deliveryFeeTier;
+	}
+
+
+	public void setDeliveryFeeTier(String deliveryFeeTier) {
+		this.deliveryFeeTier = deliveryFeeTier;
 	}
 
 }

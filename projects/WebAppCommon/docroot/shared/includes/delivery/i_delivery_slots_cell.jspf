@@ -223,6 +223,16 @@
 					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
 					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
 					.append("									</div>");
+	} else if(slot.getDeliveryFee()>0) {
+					stringBuffer.append("						<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+					.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+					.append("<div><font class=\"tsPremiumE\">"+"<strike>"+slot.getDeliveryFee()+" </strike>"+"</font><font class=\"tsPremiumE\"> "+slot.getPromoDeliveryFee()+"</font></div>")
+					.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
+					.append("									</div>");
 	} else if (isPreReservedSlotId && hasPreReserved ){
 		stringBuffer.append("									<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div>");

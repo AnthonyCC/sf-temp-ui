@@ -1889,6 +1889,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${thirdparty.home}/tapestry-4.0.2.jar"/>
 			<pathelement location="${thirdparty.home}/tapestry-contrib-4.0.2.jar"/>
 			<pathelement location="${thirdparty.home}/tacos-core-4.0.2-20070420.095420-14.jar"/>

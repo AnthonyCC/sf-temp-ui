@@ -37,3 +37,9 @@
 		<select jwcid="@PropertySelection" model="ognl:serviceTypeSelectionModel" value="ognl:currServiceType"/>
 	</td>
 </span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.fdstore.rules.TierCondition">
+	<td>Tier: </td>
+	<td>
+		<select jwcid="@PropertySelection" model="ognl:tierSelectionModel" value="ognl:currTier"/>
+	</td>
+</span>

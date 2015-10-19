@@ -4,6 +4,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -24,6 +25,7 @@ public class FDRulesContextImpl implements FDRuleContextI {
 	private final FDUserI user;
 	private final FDTimeslot timeslot;
 	private Double subTotal;
+	private EnumDeliveryFeeTier deliveryFeeTier;
 
 	public FDRulesContextImpl(FDUserI user) {
 		this.user = user;
@@ -40,6 +42,12 @@ public class FDRulesContextImpl implements FDRuleContextI {
 		this.timeslot = timeslot;
 		this.subTotal = subTotal;
 	}
+	public FDRulesContextImpl(FDUserI user, EnumDeliveryFeeTier tier) {
+		this.user = user;
+		this.timeslot = null;
+		this.deliveryFeeTier = tier;
+	}
+
 	public String getCounty() {
 		try {
 			ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
@@ -109,5 +117,10 @@ public class FDRulesContextImpl implements FDRuleContextI {
 	}
 	public Double getSubTotal() {
 		return subTotal;
+	}
+
+	@Override
+	public EnumDeliveryFeeTier getDeliverFeeTier() {
+		return deliveryFeeTier;
 	}
 }

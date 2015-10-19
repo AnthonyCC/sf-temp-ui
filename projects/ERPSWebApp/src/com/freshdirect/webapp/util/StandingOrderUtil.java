@@ -1231,7 +1231,7 @@ class TimeslotReservationInfo {
 			LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
 			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, 
 					TimeslotLogic.encodeCustomer(deliveryAddress, customerUser), false,
-					null, false, event, false);
+					null, false, event, false, null);
 			
 			selectedTimeslot = timeslot;
 			LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
@@ -1240,7 +1240,7 @@ class TimeslotReservationInfo {
 				try {
 					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, 
 							TimeslotLogic.encodeCustomer(deliveryAddress, customerUser), false,
-							null, forceCapacity, event, false);
+							null, forceCapacity, event, false, null);
 					
 				} catch (ReservationException e1) {						
 					e1.printStackTrace();

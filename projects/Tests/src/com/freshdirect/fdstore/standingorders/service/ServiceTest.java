@@ -34,6 +34,7 @@ import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -189,7 +190,7 @@ public class ServiceTest extends MockObjectTestCase {
 			new PrimaryKey("1"), timeSlot, expirationDT,
 			EnumReservationType.STANDARD_RESERVATION,
 			customerID, addressID,
-			false, null, 20,null,false, EnumRegionServiceType.HOME);
+			false, null, 20,null,false, EnumRegionServiceType.HOME,null);
 		return reservation;
 
 	}
@@ -625,6 +626,16 @@ class MockRuleContext implements FDRuleContextI {
 
 	@Override
 	public Double getSubTotal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+	@Override
+	public EnumDeliveryFeeTier getDeliverFeeTier() {
 		// TODO Auto-generated method stub
 		return null;
 	}

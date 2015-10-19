@@ -4008,6 +4008,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDUserDAO.updateOrderInModifyState(conn, sale.getId());
 			 
 		} catch (SQLException sqle) {
+			LOGGER.info("LOCKED THE ORDER FOR MODIFICATION FAILED... "+sale.getId());
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
 			close(conn);
@@ -4016,13 +4017,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public void updateOrderInProcess(String orderNum)	throws FDResourceException{
-
+		LOGGER.info("UPDATING THE ORDER IN PROCESS ... "+orderNum);
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDUserDAO.updateOrderInProcess(conn, orderNum);
 			 
 		} catch (SQLException sqle) {
+			LOGGER.info("UPDATE THE ORDER IN PROCESS FAILED... "+orderNum);
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
 			close(conn);
@@ -4032,13 +4034,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 
 	public boolean isReadyForPick(String orderNum) throws FDResourceException{
-
+		LOGGER.info("CHECKING THE ORDER IS READY FOR PICKING... "+orderNum);
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			return FDUserDAO.isReadyForPick(conn, orderNum);
 			 
 		} catch (SQLException sqle) {
+			LOGGER.info("CHECKING THE ORDER IS READY FOR PICKING FAILED... "+orderNum);
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
 			close(conn);
@@ -4412,7 +4415,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 */
 		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslotId, identity.getErpCustomerPK(), rsvType, 
-				TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false);
+				TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
 
 		/*if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,

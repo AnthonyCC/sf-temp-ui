@@ -229,7 +229,7 @@ public class UserUtil {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=getFDTimeSlot();
 		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
-				customerID, addressID, false,null,-1,null, false, null);
+				customerID, addressID, false,null,-1,null, false, null,null);
 		return reservation;
 
 	}

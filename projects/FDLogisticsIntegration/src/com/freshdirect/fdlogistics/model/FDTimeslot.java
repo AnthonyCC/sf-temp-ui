@@ -185,6 +185,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	
 	private double deliveryFee;
 	private double promoDeliveryFee;
+	private EnumDeliveryFeeTier dlvfeeTier;
 	
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
@@ -666,6 +667,14 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setPromoDeliveryFee(double promoDeliveryFee) {
 		this.promoDeliveryFee = promoDeliveryFee;
+	}
+
+	public EnumDeliveryFeeTier getDlvfeeTier() {
+		return dlvfeeTier;
+	}
+
+	public void setDlvfeeTier(EnumDeliveryFeeTier dlvfeeTier) {
+		this.dlvfeeTier = dlvfeeTier;
 	}
 	
 	

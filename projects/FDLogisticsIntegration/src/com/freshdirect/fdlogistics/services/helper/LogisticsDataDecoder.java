@@ -153,7 +153,7 @@ public class LogisticsDataDecoder {
 				.getEnum(reservation.getType()), reservation
 				.getCustomerId(), reservation.getAddress().getId(), reservation.isChefsTable(), reservation.getOrderId(), reservation
 						.getStatusCode(), EnumReservationClass.getEnum(reservation.getRsvClass()), reservation.isSteeringDiscount(), 
-						EnumRegionServiceType.getEnum(reservation.getRegionServiceType()));
+						EnumRegionServiceType.getEnum(reservation.getRegionServiceType()), reservation.getDeliveryFeeTier());
 	}
 
 	public static List<FDTimeslot> decodeTimeslots(List<Timeslot> timeslots) {

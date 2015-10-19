@@ -12,7 +12,9 @@ import org.apache.tapestry.BaseComponent;
 import org.apache.tapestry.form.IPropertySelectionModel;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdstore.rules.ServiceTypeCondition;
+import com.freshdirect.fdstore.rules.TierCondition;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.Rule;
 import com.freshdirect.rules.RuleRef;
@@ -42,6 +44,14 @@ public abstract class ConditionEditor extends BaseComponent {
         }
         return new LabelPropertySelectionModel(types, true);
     }
+    
+    public IPropertySelectionModel getTierSelectionModel() {
+        Map types = new HashMap();
+        for (EnumDeliveryFeeTier st : EnumDeliveryFeeTier.values()) {
+            types.put(st.name(), st.name());
+        }
+        return new LabelPropertySelectionModel(types, true);
+    }
 	
 	public String getCurrServiceType() {
 		ServiceTypeCondition st = (ServiceTypeCondition) getCondition();
@@ -54,6 +64,18 @@ public abstract class ConditionEditor extends BaseComponent {
 		this.setCondition(st);
 	}
 
+	
+	public String getCurrTier() {
+		TierCondition st = (TierCondition) getCondition();
+		return st.getValue() ;
+	}
+	
+	public void setCurrTier(String value) {
+		TierCondition st = (TierCondition) getCondition();
+		st.setValue(value);
+		this.setCondition(st);
+	}
+	
 	public String getCurrRuleRefId() {
 		RuleRef rr = (RuleRef) getCondition();
 		return rr.getId();

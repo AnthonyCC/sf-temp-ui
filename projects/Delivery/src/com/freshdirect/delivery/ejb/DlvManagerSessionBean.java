@@ -423,7 +423,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
 			EnumReservationType type, Customer customer,
 			boolean chefsTable, String ctDeliveryProfile, boolean isForced,
-			TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException{
+			TimeslotEvent event, boolean hasSteeringDiscount, String deliveryFeeTier) throws FDResourceException, ReservationException{
 	try {
 
 		ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
@@ -434,7 +434,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				 customer,
 				 chefsTable,
 				 ctDeliveryProfile,
-				 isForced,  event, hasSteeringDiscount));
+				 isForced,  event, hasSteeringDiscount, deliveryFeeTier));
 		
 		if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
 			this.getSessionContext().setRollbackOnly();

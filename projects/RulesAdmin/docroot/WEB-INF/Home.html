@@ -41,6 +41,12 @@
 					<td>Outcome: </td>
 					<td>
 						<select jwcid="@PropertySelection" model="ognl:outcomeSelectionModel" value="ognl:outcomeType" submitOnChange="ognl:true"/>
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.TieredPrice" >
+							<td>
+								Base Price <input jwcid="@TextField"  validators="validators:required" value="ognl:selectedRule.outcome.basePrice" displayName="basePrice" size="5" />
+								Promo Price <input jwcid="@TextField"  validators="validators:required" value="ognl:selectedRule.outcome.promoPrice" displayName="promoPrice" size="5" />
+							</td>
+						</span>
 						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.BasePrice">
 							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.price" displayName="price" size="5" />
 						</span>

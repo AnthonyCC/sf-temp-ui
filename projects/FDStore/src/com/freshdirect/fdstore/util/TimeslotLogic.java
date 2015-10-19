@@ -24,6 +24,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
@@ -32,11 +33,15 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
+import com.freshdirect.fdstore.rules.TierDeliveryFeeCalculator;
+import com.freshdirect.fdstore.rules.TieredPrice;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -127,6 +132,20 @@ public class TimeslotLogic {
 		user.setSteeringSlotIds(new HashSet<String>());
 		boolean minOrderReqd = false;
 		
+		Map<EnumDeliveryFeeTier, TieredPrice> tierDlvFeeMap = new HashMap<EnumDeliveryFeeTier, TieredPrice>();
+		
+		FDRulesContextImpl tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER1);
+		TieredPrice tier1Price = getTieredDlvFee(tierFeeCalc);
+		if(tier1Price!=null){
+			tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER1, tier1Price);
+		}
+		tierFeeCalc = new FDRulesContextImpl(user, EnumDeliveryFeeTier.TIER2);
+		TieredPrice tier2Price = getTieredDlvFee(tierFeeCalc);
+		if(tier2Price!=null){
+			tierDlvFeeMap.put(EnumDeliveryFeeTier.TIER2, tier2Price);
+		}
+		
+		
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
 				for (FDTimeslot _ts : col) {
@@ -205,20 +224,9 @@ public class TimeslotLogic {
 
 					minOrderReqd = applyOrderMinimum(user, _ts) || minOrderReqd;
 					
-					//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
-					TimeOfDay currentTime = new TimeOfDay(DateUtil.getCurrentTime());
-					if(TimeOfDay.getDurationAsHours(_ts.getDlvStartTime(), _ts.getDlvEndTime()) <=1 
-							&& TimeOfDay.getDurationAsHours(currentTime, _ts.getDlvStartTime()) <=1){
-						_ts.setDeliveryFee(6.99); _ts.setPromoDeliveryFee(4.99);
-					}else{
-						_ts.setDeliveryFee(4.99); _ts.setPromoDeliveryFee(2.99);
-					}
 					
-					calendar.get().setTime(_ts.getStartDateTime());
-					if(calendar.get().get(Calendar.HOUR_OF_DAY)>=17 &&
-							calendar.get().get(Calendar.HOUR_OF_DAY) <=20){
-						_ts.setPromoDeliveryFee(0);
-					}
+					calcDeliveryFee(tierDlvFeeMap, _ts);
+					
 					
 				}
 			}
@@ -230,6 +238,66 @@ public class TimeslotLogic {
 		return stats;
 	}
 
+	private static void calcDeliveryFee(Map<EnumDeliveryFeeTier, TieredPrice> tierDlvFeeMap, FDTimeslot _ts) {
+		
+		//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
+		Date currentTime = DateUtil.getCurrentTime();
+		if(DateUtil.getDiffInMinutes(_ts.getEndDateTime(), _ts.getStartDateTime()) <=60 
+				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime(), currentTime) <=60){
+			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER1);
+			if(tierDlvFeeMap.containsKey(EnumDeliveryFeeTier.TIER1) 
+					&& tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER1).getBasePrice()>0){
+				_ts.setDeliveryFee(tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER1).getBasePrice());
+				_ts.setPromoDeliveryFee(tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER1).getPromoPrice());
+			}
+		}else{
+			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER2);
+			if(tierDlvFeeMap.containsKey(EnumDeliveryFeeTier.TIER2) 
+					&& tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER2).getBasePrice()>0){
+				_ts.setDeliveryFee(tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER2).getBasePrice());
+				_ts.setPromoDeliveryFee(tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER2).getPromoPrice());
+			}
+		}
+	}
+	
+
+	public static void calcTieredDeliveryFee(FDUserI user, FDTimeslot _ts) {
+		
+		//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
+		Date currentTime = DateUtil.getCurrentTime();
+		if(DateUtil.getDiffInMinutes(_ts.getEndDateTime() , _ts.getStartDateTime()) <=60 
+				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime() , currentTime) <=60){
+			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER1);
+			setTieredDeliveryFee(user, _ts);
+		}else{
+			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER2);
+			setTieredDeliveryFee(user, _ts);
+		}
+	}
+	
+	
+	public static void setTieredDeliveryFee(FDUserI user, FDTimeslot _ts) {
+		
+		TieredPrice tierPrice = getTieredDlvFee(user, _ts.getDlvfeeTier());
+		if(tierPrice!=null){
+			_ts.setDeliveryFee(tierPrice.getBasePrice());
+			_ts.setPromoDeliveryFee(tierPrice.getPromoPrice());
+		}
+	}
+
+	public static TieredPrice getTieredDlvFee(FDUserI user, EnumDeliveryFeeTier deliveryFeeTier){
+
+		FDRulesContextImpl tierFeeCalc = new FDRulesContextImpl(user, deliveryFeeTier);
+		TieredPrice tierPrice = getTieredDlvFee(tierFeeCalc);
+		return tierPrice;
+	}
+	
+	public static TieredPrice getTieredDlvFee(FDRuleContextI ctx){
+		TierDeliveryFeeCalculator calc = new TierDeliveryFeeCalculator("TIER");
+		return calc.getTieredDeliveryFee(ctx);
+	}
+
+	
 	public static boolean applyOrderMinimum(FDUserI user, FDTimeslot timeslot) {
 		double orderMinimum  = 0;
 		try{
@@ -568,5 +636,6 @@ public class TimeslotLogic {
 					e);
 		}
 	}
+	
 	
 }

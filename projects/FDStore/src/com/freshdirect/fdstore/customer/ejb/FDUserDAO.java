@@ -1092,18 +1092,18 @@ public class FDUserDAO {
 		return null;
 	}
 
-	private static final String UPDATEORDER_MODIFYSTATE = "update cust.sale set IN_MODIFY = ? where id = ?";
+	private static final String UPDATEORDER_MODIFYSTATE = "update cust.sale set IN_MODIFY = ?, LOCK_TIMESTAMP = SYSDATE where id = ?";
 			
 	public static void updateOrderInModifyState(Connection conn, String id) throws SQLException {
-
-		PreparedStatement ps = conn.prepareStatement(UPDATEORDER_MODIFYSTATE);
-		ps.setString(1, "X");
-		ps.setString(2, id);
-		int rowcount = ps.executeUpdate();
-		if(rowcount != 0)
-			LOGGER.info("order is locked in  modify successful");
-		ps.close();
-	
+			LOGGER.info("LOCKING THE ORDER FOR MODIFICATION... "+id);
+			PreparedStatement ps = conn.prepareStatement(UPDATEORDER_MODIFYSTATE);
+			ps.setString(1, "X");
+			ps.setString(2, id);
+			int rowcount = ps.executeUpdate();
+			if(rowcount != 0)
+				LOGGER.info("LOCKED THE ORDER FOR MODIFICATION SUCCESSFUL... "+id);
+			ps.close();
+		
 	}
 
 	private static final String IS_READY_FOR_PICK = "select 1 from cust.sale where (IN_MODIFY is null OR status IN ('PRC', 'PNA')) and id = ?";
@@ -1118,6 +1118,7 @@ public class FDUserDAO {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
+			LOGGER.info("ORDER IS READY FOR PICKING... "+id);
 			return true;
 		}
 		rs.close();
@@ -1135,7 +1136,7 @@ public class FDUserDAO {
 		ps.setString(1, orderNum);
 		int rowcount = ps.executeUpdate();
 		if(rowcount != 0)
-			LOGGER.info("order is in process");
+			LOGGER.info("UPDATE THE ORDER IN PROCESS SUCCESSFUL... "+orderNum);
 		ps.close();
 		
 	}
@@ -1149,7 +1150,7 @@ public class FDUserDAO {
 		ps.setString(1, orderId);
 		int rowcount = ps.executeUpdate();
 		if(rowcount != 0)
-			LOGGER.info("order is locked in  modify successful");
+			LOGGER.info("UNLOCK THE ORDER FROM MODIFICATION SUCCESSFUL... "+orderId);
 		ps.close();
 	
 	

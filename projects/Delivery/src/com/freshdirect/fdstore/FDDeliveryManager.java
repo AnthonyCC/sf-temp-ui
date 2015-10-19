@@ -596,7 +596,7 @@ public class FDDeliveryManager {
 		Customer customer,
 		boolean chefsTable,
 		String ctDeliveryProfile,
-		boolean isForced, TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException {
+		boolean isForced, TimeslotEvent event, boolean hasSteeringDiscount, String deliveryFeeTier) throws FDResourceException, ReservationException {
 		
 
 		try {
@@ -608,7 +608,7 @@ public class FDDeliveryManager {
 					 customer,
 					 chefsTable,
 					 ctDeliveryProfile,
-					 isForced,  event, hasSteeringDiscount);
+					 isForced,  event, hasSteeringDiscount, deliveryFeeTier);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

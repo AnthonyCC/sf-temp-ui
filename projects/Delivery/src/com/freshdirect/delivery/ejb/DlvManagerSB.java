@@ -35,7 +35,7 @@ public interface DlvManagerSB extends EJBObject {
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
 			EnumReservationType type, Customer customer,
 			boolean chefsTable, String ctDeliveryProfile, boolean isForced,
-			TimeslotEvent event, boolean hasSteeringDiscount) throws RemoteException, ReservationException, FDResourceException;
+			TimeslotEvent event, boolean hasSteeringDiscount, String deliveryFeeTier) throws RemoteException, ReservationException, FDResourceException;
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
 			TimeslotEvent event) throws RemoteException, ReservationException, FDResourceException;

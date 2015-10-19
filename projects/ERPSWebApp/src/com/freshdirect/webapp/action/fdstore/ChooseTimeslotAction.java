@@ -72,6 +72,9 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		}
 			boolean chefsTable = user.isChefsTable() || "true".equals(chefsTableValue);
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, cart.getDeliveryAddress().getBuildingId(), true);
+		
+		TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
+		
 		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
 		if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
 			//user bypassed dp terms block
@@ -140,7 +143,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						EnumReservationType.STANDARD_RESERVATION,
 						TimeslotLogic.encodeCustomer(erpAddress, user),
 						chefsTable,
-						null, isForced,event, hasSteeringDiscount);
+						null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
 				TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					setDeliveryTimeslot(session, timeSlotResrv);

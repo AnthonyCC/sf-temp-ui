@@ -430,13 +430,13 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				// give till cutoff time.
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.MINUTE, (int)order.getDeliveryInfo().getMinDurationForModification());
-				if(cal.getTime().after(order.getDeliveryReservation().getCutoffTime())){
+				if(cal.getTime().after(order.getDeliveryInfo().getDeliveryCutoffTime())){
 					order.getDeliveryInfo().setDeliveryCutoffTime(cal.getTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(cal.getTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(cal.getTime()));
 					
 				}else{
-					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryReservation().getCutoffTime());
+					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryInfo().getDeliveryCutoffTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(order.getDeliveryInfo().getDeliveryCutoffTime());
 					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(order.getDeliveryInfo().getDeliveryCutoffTime()));
 				}
@@ -1083,7 +1083,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=null;
 		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, 
-				EnumReservationType.STANDARD_RESERVATION, customerID, addressID,false, null,20,null,false,null);
+				EnumReservationType.STANDARD_RESERVATION, customerID, addressID,false, null,20,null,false,null,null);
 		return reservation;
 		
 	}

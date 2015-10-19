@@ -246,11 +246,6 @@ public class FDOrderTranslator {
 		}*/
 	}
 
-	private static Date calcMODCutoffTime(EnumEStoreId eStoreId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public static void translateOrderLines(FDCartModel cart,
 			boolean skipModifyLines, boolean sameDeliveryDate,
 			List<ErpOrderLineModel> orderLines) throws FDResourceException {

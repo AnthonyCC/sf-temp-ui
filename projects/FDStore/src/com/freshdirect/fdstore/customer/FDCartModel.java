@@ -45,6 +45,7 @@ import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -71,6 +72,9 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FeeCalculator;
+import com.freshdirect.fdstore.rules.TierDeliveryFeeCalculator;
+import com.freshdirect.fdstore.rules.TieredPrice;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.FormatterUtil;
@@ -1913,11 +1917,23 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		
 		// final FDRulesContextImpl ctx = new FDRulesContextImpl(user);
 		if (address != null) {
+			
 			// DLV
 			FeeCalculator calc = new FeeCalculator("DLV");
 			double dlvFee = 0.0;
 			if(null ==getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())){
-				dlvFee = calc.calculateFee(ctx);
+				
+				//TIER DLV FEE. This has higher priority if there is tier price defined at the timeslot level.
+				if(this.getDeliveryReservation()!=null && this.getDeliveryReservation().getTimeslot()!=null){
+					TieredPrice tieredPrice =  TimeslotLogic.getTieredDlvFee(ctx.getUser(), (this.getDeliveryReservation().getDeliveryFeeTier()!=null)? EnumDeliveryFeeTier.getEnum(this.getDeliveryReservation().getDeliveryFeeTier()):null);
+					if(tieredPrice!=null){
+						dlvFee = tieredPrice.getPromoPrice();
+					}else{ // fall back to deliver fee if 
+						dlvFee = calc.calculateFee(ctx);
+					}
+				}else{ // fall back to deliver fee if 
+					dlvFee = calc.calculateFee(ctx);
+				}
 			}
 			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
 			double premiumFee = 0.0;

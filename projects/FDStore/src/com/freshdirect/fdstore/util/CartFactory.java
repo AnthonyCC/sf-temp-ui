@@ -56,7 +56,7 @@ public class CartFactory {
 					null,
 					new FDTimeslot(),
 					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), 
-					null, false, null,20,null,false,null);
+					null, false, null,20,null,false,null,null);
             
             cart.setZoneInfo(zInfo);
             cart.setDeliveryReservation(deliveryReservation);
