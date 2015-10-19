@@ -391,6 +391,7 @@ public class CmContext implements Serializable {
 					
 					if (eStoreId == i.getEStoreId() && facade == i.getFacade()) {
 						this.instance = i;
+						this.clientId = this.instance.getClientId( this.testAcc );
 						break;
 					}
 				}
@@ -418,17 +419,6 @@ public class CmContext implements Serializable {
 			this.isEnabled = !( CmInstance.SDSW == instance ); return this;
 		}
 
-		/**
-		 * Make up compound ID from enterprise and client ID.
-		 * 
-		 * @return
-		 */
-		@Deprecated
-		public Builder setCompoundId() {
-			this.compoundId = ENTERPRISE_ID + "|" + this.clientId; return this;
-		}
-
-
 		public CmContext build() {
 			CmContext ctx = new CmContext();
 
@@ -446,7 +436,6 @@ public class CmContext implements Serializable {
 			}
 
 			if (clientId != null) {
-				// TODO: Consider null compoundId for global contexts
 				ctx.setCompoundId(
 					ENTERPRISE_ID + "|" + this.clientId
 				);
