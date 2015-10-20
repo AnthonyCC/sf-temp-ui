@@ -7,7 +7,16 @@ public class ExternalAccountLogin {
 	private String provider;
 	private String accessToken;
 	private String source;
+	private String context;
 	
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
 	public String getProvider() {
 		return provider;
 	}
