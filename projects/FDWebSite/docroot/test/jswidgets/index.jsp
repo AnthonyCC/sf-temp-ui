@@ -7,7 +7,7 @@
   <title>JS Widget test page</title>
   <jwr:style src="/grid.css" media="all" />
   <jwr:style src="/global.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="jswidgets.css">
+  <link rel="stylesheet" type="text/css" href="/test/jswidgets/jswidgets.css">
   <jwr:script src="/fdlibs.js"  useRandomParam="false" />
 
 </head>
