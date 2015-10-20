@@ -544,7 +544,7 @@ public class TimeslotLogic {
 				if(user.getShoppingCart() instanceof FDModifyCartModel){
 					context.setAction(EnumOrderAction.MODIFY);
 					context.setType(EnumOrderType.REGULAR);
-					context.setOrderId(((FDModifyCartModel)user.getShoppingCart()).getOriginalOrder().getErpSalesId());
+					context.setOrderId(((FDModifyCartModel)user.getShoppingCart()).getOriginalReservationId());
 				}else{
 					context.setAction(EnumOrderAction.CREATE);
 					context.setType(EnumOrderType.REGULAR);

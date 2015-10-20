@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -221,7 +222,7 @@ public class ShipToAddress extends DeliveryAddress {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		return serviceResult.getAvailableServices();		
+		return (null!=serviceResult)?serviceResult.getAvailableServices(): new HashSet();		
 	}
 
     public String getAltDeliveryApt() {

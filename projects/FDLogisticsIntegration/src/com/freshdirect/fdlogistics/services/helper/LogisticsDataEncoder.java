@@ -161,6 +161,7 @@ public class LogisticsDataEncoder {
 			boolean hasSteeringDiscount, String deliveryFeeTier) {
 		ReserveTimeslotRequest request = new ReserveTimeslotRequest(timeslotId, customer,
 				encodeCart(event), type.getName(), chefsTable, isForced, hasSteeringDiscount, deliveryFeeTier);
+		request.setApplicationId(event.getTransactionSource());
 		return request;
 		
 	}
@@ -176,6 +177,7 @@ public class LogisticsDataEncoder {
 		TimeslotRequest request = new TimeslotRequest(ranges, customer, 
 				encodeCart(event), context, forceOrder, deliveryInfo , 
 				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(), encodeTimeslotContext(), event.isLogged());
+		request.setApplicationId(event.getTransactionSource());
 		return request;
 		
 	}
@@ -199,14 +201,16 @@ public class LogisticsDataEncoder {
 		return new PickupLocationsRequest();
 	}
 
-	public static SearchRequest encodeReservationByIdRequest(String rsvId) {
+	public static SearchRequest encodeReservationByIdRequest(String applicationId, String rsvId) {
 		SearchRequest request = new SearchRequest();
+		request.setApplicationId(applicationId);
 		request.setSearchType(EnumSearchType.RESERVATION_SEARCH.getName());
 		request.setCriteriaMap("id", rsvId);
 		return request;
 	}
-	public static SearchRequest encodeReservationByCustomerRequest(String customerId) {
+	public static SearchRequest encodeReservationByCustomerRequest(String applicationId, String customerId) {
 		SearchRequest request = new SearchRequest();
+		request.setApplicationId(applicationId);
 		request.setSearchType(EnumSearchType.RESERVATION_SEARCH.getName());
 		request.setCriteriaMap("customerId", customerId);
 		request.setCriteriaMap("statusCode", EnumReservationStatus.RESERVED.getCode());

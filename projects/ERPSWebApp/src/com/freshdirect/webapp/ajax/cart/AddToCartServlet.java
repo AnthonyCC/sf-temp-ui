@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
@@ -382,6 +383,9 @@ public class AddToCartServlet extends BaseJsonServlet {
         FDOrderAdapter order;
         try {
             order = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), reqData.getOrderId());
+            
+            ModifyOrderHelper.handleModificationCutoff(order, sessionUser, request.getSession(), new ActionResult());
+    		
             FDModifyCartModel modifycart = new FDModifyCartModel(order);
 
             // this is added because the delivery pass is false when you modify the order though original order has delivery pass applied. This will fix any rules that use

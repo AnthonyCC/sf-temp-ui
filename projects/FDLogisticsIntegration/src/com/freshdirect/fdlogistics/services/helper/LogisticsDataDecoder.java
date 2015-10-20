@@ -175,7 +175,7 @@ public class LogisticsDataDecoder {
 				timeslot.isTimeslotRestricted(), timeslot.isTimeslotRemoved(), timeslot.getStoreFrontAvailable(), timeslot.isUnavailable(), timeslot.getEcoFriendly(), 
 				timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(), timeslot.isFdxSlot(),
 				timeslot.getTotalAvailable(), timeslot.getBaseAvailable(), timeslot.getChefsTableAvailble(), timeslot.isRadius(), timeslot.getTravelZone(), 
-				timeslot.getModX(), timeslot.getModY(), timeslot.getAdditionalDistance(), EnumRegionServiceType.getEnum(timeslot.getRegionServiceType()));
+				timeslot.getModX(), timeslot.getModY(), timeslot.getAdditionalDistance(), EnumRegionServiceType.getEnum(timeslot.getRegionServiceType()), timeslot.getOriginalCutoffDateTime());
 		return t;
 	}
 	

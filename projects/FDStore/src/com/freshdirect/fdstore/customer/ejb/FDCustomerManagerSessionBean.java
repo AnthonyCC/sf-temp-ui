@@ -1911,8 +1911,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				orderMobileNumber=createOrder.getDeliveryInfo().getOrderMobileNumber().getPhone();
 				else if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null){
 						orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
-				}
+			}
 				
+			//update original cutoff in deliveryinfo if the order is placed via Masquerade
+			if(createOrder.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(createOrder.geteStoreId().name())){
+				if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode())) ||
+						(createOrder.getDeliveryInfo().getDeliveryCutoffTime()!=null 
+						&& createOrder.getDeliveryInfo().getOriginalCutoffTime()!=null 
+						&& createOrder.getDeliveryInfo().getDeliveryCutoffTime().after(createOrder.getDeliveryInfo().getOriginalCutoffTime()))){
+					createOrder.getDeliveryInfo().setDeliveryCutoffTime(createOrder.getDeliveryInfo().getOriginalCutoffTime());
+				}
+			}
 		}
 		catch(Exception e)
 		{
@@ -1934,7 +1943,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 
 			try {
-				FDDeliveryManager.getInstance().getReservationById(reservationId);
+				FDDeliveryManager.getInstance().getReservationById(event.getTransactionSource(), reservationId);
 			} catch (FDResourceException e) {
 				this.getSessionContext().setRollbackOnly();
 				throw new ReservationException(e.getMessage());
@@ -2079,7 +2088,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("Before commiting the reservation "+reservationId);
 			FDDeliveryManager.getInstance().commitReservation(reservationId, 
 					identity.getErpCustomerPK(), 
-					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
+					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, reservationId),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 			
 			
@@ -2579,6 +2588,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
 							orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
 			
+				//update original cutoff in deliveryinfo if the order is placed via Masquerade
+				if(order.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(order.geteStoreId().name())){
+					if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode())) ||
+							(order.getDeliveryInfo().getDeliveryCutoffTime()!=null 
+							&& order.getDeliveryInfo().getOriginalCutoffTime()!=null 
+							&& order.getDeliveryInfo().getDeliveryCutoffTime().after(order.getDeliveryInfo().getOriginalCutoffTime()))){
+						order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryInfo().getOriginalCutoffTime());
+					}
+				}
 		}
 		catch(Exception e)
 		{
@@ -2815,7 +2833,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							
 							FDDeliveryManager.getInstance().commitReservation(
 									newReservationId, identity.getErpCustomerPK(), 
-									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
+									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, newReservationId),
 									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 						}
 		

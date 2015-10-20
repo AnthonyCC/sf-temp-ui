@@ -103,7 +103,9 @@ public class FDOrderTranslator {
 			if(deliveryReservation!=null && deliveryReservation.getTimeslot()!=null) {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
+				
 				if(EnumEStoreId.FDX.name().equals(cart.getEStoreId().name())){
+					deliveryInfo.setOriginalCutoffTime(deliveryReservation.getTimeslot().getOriginalCutoffDateTime()); // this is used by CSR
 					//give minimum time specified in  deliveryReservation.getTimeslot().getMinDurationForModStart() to start order modification
 					// if the sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() is after the timeslot cutoff then 
 					// customer will get till sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() to start order MOD. or 

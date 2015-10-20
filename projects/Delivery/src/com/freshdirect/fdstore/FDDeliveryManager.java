@@ -617,12 +617,12 @@ public class FDDeliveryManager {
 	
 	}
 
-	public List<FDReservation> getReservationsForCustomer(String customerId) throws FDResourceException {
+	public List<FDReservation> getReservationsForCustomer(String applicationId, String customerId) throws FDResourceException {
 
 		try {
 
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByCustomerRequest(customerId));
+			DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByCustomerRequest(applicationId, customerId));
 			return LogisticsDataDecoder.decodeReservations(response);			
 		}  catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);
@@ -1046,12 +1046,12 @@ public class FDDeliveryManager {
 		return null;
 	}
 
-	public FDReservation getReservationById(String reservationId) throws FDResourceException {
+	public FDReservation getReservationById(String applicationId, String reservationId) throws FDResourceException {
 		try {
 				
 
 				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-				DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByIdRequest(reservationId));
+				DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByIdRequest(applicationId, reservationId));
 				List<FDReservation> fdReservations =  LogisticsDataDecoder.decodeReservations(response);
 				FDReservation fdReservation = null;
 				if(fdReservations!=null && fdReservations.size()>0){

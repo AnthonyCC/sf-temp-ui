@@ -191,8 +191,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 									&& !StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
 			address.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
-				
-		TimeslotEvent event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
+			
+		String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
+		if(user.getMasqueradeContext()!=null){
+			applicationId = "CSR";
+		}
+		TimeslotEvent event = new TimeslotEvent(applicationId,
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
 				(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 		
@@ -359,8 +363,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		List<FDTimeslotUtil> singleTSset = new ArrayList<FDTimeslotUtil>();
 		FDDeliveryTimeslots deliveryTimeslots = null;
 		{
-
-			TimeslotEvent event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
+			String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
+			if(user.getMasqueradeContext()!=null){
+				applicationId = "CSR";
+			}
+			TimeslotEvent event = new TimeslotEvent(applicationId,
 					cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
 					(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 

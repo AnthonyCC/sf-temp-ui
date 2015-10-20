@@ -420,29 +420,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
 		
-		if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())){
-			if (EnumSaleStatus.INPROCESS.equals(order.getSaleStatus()) || new Date().after(order.getDeliveryInfo().getDeliveryCutoffTime())) {
-				results.addError(true, "invalid_reservation", MessageFormat.format(
-					SystemMessageList.MSG_CHECKOUT_PAST_CUTOFF_MODIFY,
-					new Object[] {order.getDeliveryInfo().getDeliveryCutoffTime()}) );
-			}else{
-				// Give minimum MOD_Y min for order modification and max till the timeslot cutoff. if sysdate + MOD_Y is past cutoff then give till sysdate + MOD_Y to modify the order. if less then
-				// give till cutoff time.
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MINUTE, (int)order.getDeliveryInfo().getMinDurationForModification());
-				if(cal.getTime().after(order.getDeliveryInfo().getDeliveryCutoffTime())){
-					order.getDeliveryInfo().setDeliveryCutoffTime(cal.getTime());
-					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(cal.getTime());
-					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(cal.getTime()));
-					
-				}else{
-					order.getDeliveryInfo().setDeliveryCutoffTime(order.getDeliveryInfo().getDeliveryCutoffTime());
-					order.getDeliveryReservation().getTimeslot().setCutoffDateTime(order.getDeliveryInfo().getDeliveryCutoffTime());
-					order.getDeliveryReservation().getTimeslot().setCutoffTime(new TimeOfDay(order.getDeliveryInfo().getDeliveryCutoffTime()));
-				}
-			}
-		}
-		
+		ModifyOrderHelper.handleModificationCutoff(order, currentUser, session, results);
+				
 		FDCustomerManager.storeUser(currentUser.getUser());
 		FDModifyCartModel cart = new FDModifyCartModel(order);
 		
@@ -499,8 +478,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//Reload gift card balance.
 		ModifyOrderHelper.loadGiftCardsIntoCart(currentUser, order);
 		
-		// resolve timeslot id based on delivery reservation id
-		ModifyOrderHelper.handleReservation(order, cart);
+		if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())){
+			cart.setDeliveryReservation(order.getDeliveryReservation());
+		}else{
+			// resolve timeslot id based on delivery reservation id
+			ModifyOrderHelper.handleReservation(order, cart);
+		}
 		
 		
 		// resolve the redemption promotions

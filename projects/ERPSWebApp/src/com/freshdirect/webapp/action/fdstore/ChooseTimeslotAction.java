@@ -94,7 +94,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				if (cart != null && cart.getZoneInfo() != null) {
 			zoneId = cart.getZoneInfo().getZoneId();
 		
-		TimeslotEvent event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
+		String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
+		if(user.getMasqueradeContext()!=null){
+				applicationId = "CSR";
+		}
+		TimeslotEvent event = new TimeslotEvent(applicationId, 
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), 
 				(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(),EnumCompanyCode.fd.name());
 		

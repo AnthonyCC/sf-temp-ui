@@ -416,7 +416,8 @@ public class FDCustomerManager {
 	private static void restoreReservations(FDUser user) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
-			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer(identity.getErpCustomerPK());
+			
+			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer((user.getMasqueradeContext()!=null)?EnumTransactionSource.CUSTOMER_REP.getCode():EnumTransactionSource.WEBSITE.getCode(), identity.getErpCustomerPK());
 			if(rsvList!=null){
 				for ( FDReservation rsv : rsvList ) {
 

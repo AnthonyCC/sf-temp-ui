@@ -166,24 +166,6 @@ public class FDOrderAdapter implements FDOrderI {
 		try {
 			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
 			
-			if(EnumEStoreId.FDX.name().equals(erpOrder.geteStoreId().name())){
-				Date cutoffTime = delInfo.getDeliveryCutoffTime(); // Delivery Info stores the correct cutoff time for the order modify
-				
-				/*Date timeslotCutoff = deliveryReservation.getTimeslot().getCutoffDateTime();
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MINUTE, (int)deliveryReservation.getTimeslot().getMinDurationForModification());
-				if(timeslotCutoff.before(cal.getTime())){
-						delInfo.setDeliveryCutoffTime(cal.getTime());
-				}else{
-						delInfo.setDeliveryCutoffTime(timeslotCutoff);
-				}
-				*/
-				if(deliveryReservation!=null){
-				FDTimeslot timeslot = deliveryReservation.getTimeslot();
-				timeslot.setCutoffTime(new TimeOfDay(cutoffTime)); // restoring the cutoff from Delivery Info instead of recalc.
-				deliveryReservation.setTimeslot(timeslot);
-				}
-			}
 			if (deliveryReservation == null) {
 				//!!! this is just a temporary fix until pre-reserve slots is completely implemented
 				FDTimeslot t = new FDTimeslot();
@@ -211,6 +193,7 @@ public class FDOrderAdapter implements FDOrderI {
 					null,false, sale.getId(),20,null,false,null,null);
 				
 			}
+			delInfo.setOriginalCutoffTime(deliveryReservation.getTimeslot().getOriginalCutoffDateTime()); 
 		} catch (FDResourceException ex) {
 			throw new FDRuntimeException(ex);
 		}

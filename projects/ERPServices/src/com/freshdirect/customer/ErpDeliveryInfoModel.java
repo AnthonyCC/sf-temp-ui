@@ -25,7 +25,7 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     private double minDurationForModStart;
     private double minDurationForModification;
     private PhoneNumber orderMobileNumber;
-    
+    private Date originalCutoffTime;
     
    
   
@@ -46,6 +46,9 @@ public class ErpDeliveryInfoModel extends ModelSupport {
 	
 	public Date getDeliveryCutoffTime() { return deliveryCutoffTime; }
 	public void setDeliveryCutoffTime(Date deliveryCutoffTime) { this.deliveryCutoffTime = deliveryCutoffTime; }
+
+	public Date getOriginalCutoffTime() { return originalCutoffTime; }
+	public void setOriginalCutoffTime(Date originalCutoffTime) { this.originalCutoffTime = originalCutoffTime; }
 
     public String getDeliveryZone(){ return deliveryZone; }
     public void setDeliveryZone(String deliveryZone){ this.deliveryZone = deliveryZone; }
