@@ -48,7 +48,7 @@ public class EnumDlvRestrictionReason extends Enum {
 	private final String description;
 	private final boolean specialHoliday;
 
-	private EnumDlvRestrictionReason(String name, String description) {
+	public EnumDlvRestrictionReason(String name, String description) {
 		this(name, description, false);
 	}
 

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -27,6 +28,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private String dlvZoneId;
 	private EnumDeliveryOption dlvDayType;
 	private Map<Integer, PromotionDlvDay> dlvDayRedemtions;
+	private EnumPromoFDXTierType fdxTierType;
 	
 	public String getDlvDays() {
 		return dlvDays;
@@ -215,6 +217,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				}
 			}
 		}
+		if(isOK && fdxTierType !=null){
+			isOK = checkFDXTierTypeEligibility(dlvTimeslotModel);
+		}
 		return isOK;
 	}
 
@@ -338,13 +343,33 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return isOK;		
 	}
 
-		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
-			return ts1.getAdditionalDistance() - ts2.getAdditionalDistance();
+	public int compare(FDTimeslot ts1, FDTimeslot ts2) {
+		return ts1.getAdditionalDistance() - ts2.getAdditionalDistance();
 
+	}
+		
+	public boolean checkFDXTierTypeEligibility(FDTimeslot dlvTimeslotModel){
+		boolean isOK = false;
+		if(null == fdxTierType || EnumPromoFDXTierType.ALL.equals(fdxTierType)){
+			isOK = true;
+		}else{
+			isOK = null !=dlvTimeslotModel && null !=dlvTimeslotModel.getDlvfeeTier() && fdxTierType.getName().equalsIgnoreCase(dlvTimeslotModel.getDlvfeeTier().name());
 		}
+		return isOK;		
+	}
+	
 	@Override
 	public boolean isStoreRequired() {
 		return false;
 	}
+
+	/**
+	 * @param fdxTierType the fdxTierType to set
+	 */
+	public void setFdxTierType(EnumPromoFDXTierType fdxTierType) {
+		this.fdxTierType = fdxTierType;
+	}
+	
+	
 }
  

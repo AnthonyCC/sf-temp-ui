@@ -39,6 +39,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String expirationMonth;
 	private String expirationYear;
 	private Integer rollingExpirationDays;
+	private boolean isRollingExpDayFrom1stOrder;
 	private String maxUsage;
 	private String promotionType;
 	private String minSubtotal;
@@ -109,6 +110,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String batchId;
 	private boolean batchPromo = false;
 	private String DcpdMinSubtotal;
+	private String sapConditionType;
 
 
 	/*
@@ -1262,5 +1264,34 @@ public class FDPromotionNewModel extends ModelSupport {
 	public void setDcpdMinSubtotal(String dcpdMinSubtotal) {
 		DcpdMinSubtotal = dcpdMinSubtotal;
 	}
+
+	/**
+	 * @return the isRollingExpDayFrom1stOrder
+	 */
+	public boolean isRollingExpDayFrom1stOrder() {
+		return isRollingExpDayFrom1stOrder;
+	}
+
+	/**
+	 * @param isRollingExpDayFrom1stOrder the isRollingExpDayFrom1stOrder to set
+	 */
+	public void setRollingExpDayFrom1stOrder(boolean isRollingExpDayFrom1stOrder) {
+		this.isRollingExpDayFrom1stOrder = isRollingExpDayFrom1stOrder;
+	}
+
+	/**
+	 * @return the sapConditionType
+	 */
+	public String getSapConditionType() {
+		return sapConditionType;
+	}
+
+	/**
+	 * @param sapConditionType the sapConditionType to set
+	 */
+	public void setSapConditionType(String sapConditionType) {
+		this.sapConditionType = sapConditionType;
+	}
+	
 	
 }

@@ -13,6 +13,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.text.DecimalFormat"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.WSPromoControllerTag"%>
+<%@ page import="com.freshdirect.delivery.EnumPromoFDXTierType" %>
 <%
 	//fetch profiles
 	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
@@ -39,7 +40,7 @@
 	Date today = Calendar.getInstance().getTime();
 	String f_today = CCFormatter.formatDateMonth(today);
 
-	List<DlvZoneModel> availableDeliveryZones = (List)FDDeliveryManager.getInstance().getActiveZones();
+	List<DlvZoneModel> availableDeliveryZones = (List)FDDeliveryManager.getInstance().getAllActiveZones();//getActiveZones();
 	String[] discounts = FDStoreProperties.getWSDiscountAmountList().split(",");
 	List<String> discountList = new ArrayList<String>();
 	for(int i = 0; i < discounts.length ; i++){
@@ -94,7 +95,10 @@ function numbersonly(myfield, e, dec)
 	String redeemLimit = request.getParameter("redeemlimit");
 	String radius = request.getParameter("radius");
 	String profileOperator = NVL.apply(request.getParameter("custreq_profileAndOr"),"").trim();
-	
+	String fdxTierType = request.getParameter("fdxTierType");
+	String rollingType = request.getParameter("rollingType");
+	String rolling_days_induction =request.getParameter("rolling_days_induction");
+	String rolling_days_firstorder = request.getParameter("rolling_days_firstorder");
 	Enumeration paramNames = request.getParameterNames();
 	
 	List<FDPromotionAttributeParam> attrList = new ArrayList<FDPromotionAttributeParam>();
@@ -121,6 +125,16 @@ function numbersonly(myfield, e, dec)
 			startTime = promotion.getWSSelectedStartTime();
 		if(endTime == null)
 			endTime = promotion.getWSSelectedEndTime();
+		if(discount == null){
+			discount = promotion.getWaiveChargeType();
+		}
+		if(rollingType ==null){
+			if(promotion.isRollingExpDayFrom1stOrder()){
+				rolling_days_firstorder = ""+promotion.getRollingExpirationDays();
+			}else{
+				rolling_days_induction = ""+promotion.getRollingExpirationDays();
+			}
+		}
 		if(discount == null)
 			discount = promotion.getMaxAmount();
 		if(redeemLimit == null)
@@ -159,6 +173,9 @@ function numbersonly(myfield, e, dec)
 				if(csm != null && csm.getCohorts() != null) {
 					cohortList = Arrays.asList(csm.getCohorts());
 				}								
+				if(csm !=null && fdxTierType == null){
+					fdxTierType = null !=csm.getFdxTierType()? csm.getFdxTierType().getName():null;
+				}
 			}
 		}
 		
@@ -188,7 +205,7 @@ function numbersonly(myfield, e, dec)
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
 		<script language="JavaScript" type="text/javascript">
 			function doPublish() {
-				document.timePick.selectedZoneId.value = document.timePick.zone.value;
+				//document.timePick.selectedZoneId.value = document.timePick.zone.value;
 				document.timePick.actionName.value = "publish";
 				document.timePick.submit();
 			}
@@ -250,7 +267,10 @@ function numbersonly(myfield, e, dec)
 				</fd:ErrorHandler>							
 				<fd:ErrorHandler result='<%= result %>' name='addressTypeEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
-				</fd:ErrorHandler>							
+				</fd:ErrorHandler>	
+				<fd:ErrorHandler result='<%= result %>' name='fdxTierTypeEmpty' id='errorMsg'>
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>						
 				<fd:ErrorHandler result='<%= result %>' name='minSubTotalEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>							
@@ -372,7 +392,7 @@ function numbersonly(myfield, e, dec)
 			
 								    function setDate(field){
 								    	document.getElementById("effectiveDate").value=field.value;
-								    	document.timePick.selectedZoneId.value = document.timePick.zone.value;
+								    	//document.timePick.selectedZoneId.value = document.timePick.zone.value;
 								    }
 					
 					
@@ -543,18 +563,50 @@ function numbersonly(myfield, e, dec)
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td> Zone: &nbsp;&nbsp;
-						<select id="zone" name="zone" class="h10px w200px">
+						<select id="zone" name="zone" class="h10px w200px" onchange="javascript: toggleFdxSection();">
 							<option value="">Select Zone</option>
 		 					<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.logistics.delivery.model.DlvZoneModel" indexId="idx">
 		 						<% if(zoneModel.getZoneDescriptor().getZoneCode().equals(selectedZoneId)) {%>
-								 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>" selected><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>" selected><%= zoneModel.getCompanyCode()%> <%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 								 <% } else { %>
-								 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getCompanyCode()%> <%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 								 <% } %>
 							</logic:iterate>
 						</select>
 					</td>
 				</tr>
+				<tr><td width="3%">&nbsp;</td>
+				<td>
+				<div id="fdxSection" style="display:block;">
+				<table>
+				<tr>
+					<td><span>FDX Timeslot Type:&nbsp;&nbsp;<input  type="radio" id="nextHour" name="fdxTierType" value="<%= EnumPromoFDXTierType.NEXT_HOUR.getName() %>" <%= EnumPromoFDXTierType.NEXT_HOUR.getName().equals(fdxTierType)?"checked":"" %> >Next Hour Only</input>
+					<input  type="radio" id="postNextHour" name="fdxTierType" value="<%= EnumPromoFDXTierType.POST_NEXT_HOUR.getName() %>" <%= EnumPromoFDXTierType.POST_NEXT_HOUR.getName().equals(fdxTierType)?"checked":"" %>>Post Next Hour Only</input>
+					<input type="radio" id="allHours" name="fdxTierType" value="<%= EnumPromoFDXTierType.ALL.getName() %>" <%= EnumPromoFDXTierType.ALL.getName().equals(fdxTierType)?"checked":"" %>>All</input></span></td>
+				</tr>
+				<tr>
+				<td>Rolling Expiration Days: 
+				<input type="radio" id="rolling_firstorder" name="rollingType" <%= promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="rolling_firstorder" /><input type="text" id="rolling_days_firstorder" name="rolling_days_firstorder" class="w30px alignC" value="<%= promotion.isRollingExpDayFrom1stOrder()?promotion.getRollingExpirationDays():"" %>" /> <span class="gray">days from 1st order</span>
+				<input type="radio" id="rolling_induction" name="rollingType" value="rolling_induction" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> /><input type="text" id="rolling_days_induction" name="rolling_days_induction" class="w30px alignC" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="<%= !promotion.isRollingExpDayFrom1stOrder()?promotion.getRollingExpirationDays():"" %>" /> <span class="gray">days after eligibility induction</span>
+				</td>
+				</tr>
+				</table>
+				</div>
+				<script language="javascript">
+				function toggleFdxSection(){
+					var zone = document.getElementById("zone").value;
+					if(null !=zone && ""!=zone && zone.substring(0,3)=="fdx"){
+						document.getElementById("fdxSection").style.display="block";
+						document.getElementById("WAIVECHARGE").style.display="block";
+					}else{
+						document.getElementById("fdxSection").style.display="none";
+						document.getElementById("WAIVECHARGE").style.display="none";
+					}
+					var zoneId = zone.split("/")[1];
+					document.timePick.selectedZoneId.value=zoneId;
+				}
+				</script>
+				</td></tr>
 				<tr>
 					<td width="3%">&nbsp;</td>
 					<td><span>Radius&nbsp;&nbsp;<input onclick="toggleRadius()" type="checkbox" id="radius" name="radius" value="<%= (radius == null || "".equalsIgnoreCase(radius))  ? "X" : radius %>" <%= radiusChecked %> /></span></td>
@@ -680,8 +732,9 @@ function numbersonly(myfield, e, dec)
 								 <option value="<%= discountAmt %>" selected>$<%= discountAmt %></option>
 							<% } else { %>				
 								<option value="<%= discountAmt %>">$<%= discountAmt %></option>
-							<% } %>				 
+							<% } %>						
 							</logic:iterate>
+							<option id="WAIVECHARGE" value="DLV" style="display: block;" <%="DLV".equals(discount) ?"selected":""%>>FREE DELIVERY</option>
 						</select>
 					</td>
 				</tr>	

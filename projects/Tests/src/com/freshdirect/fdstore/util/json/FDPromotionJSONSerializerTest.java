@@ -76,7 +76,7 @@ public class FDPromotionJSONSerializerTest extends TestCase {
 				aDate, aDate,
 				true, false, false, false, /* order types */
 				new EnumCardType[]{EnumCardType.AMEX, EnumCardType.GCP},
-				"tejbetok",EnumComparisionType.EQUAL);
+				"tejbetok",EnumComparisionType.EQUAL,null);
 
 		// FDPromoPaymentStrategyModel
 		paymentStrategy = new FDPromoPaymentStrategyModel();

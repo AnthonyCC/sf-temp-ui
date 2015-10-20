@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion.management;
 import java.util.Date;
 
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.framework.core.ModelSupport;
 
@@ -15,6 +16,8 @@ public class WSPromotionInfo extends ModelSupport {
 	private EnumDeliveryOption deliveryDayType;
 	private Date requestedDate;
 	private boolean isRecurringPromo;
+	private String waiveChargeType;
+	private EnumPromoFDXTierType fdxTierType;
 	
 	public Date getStartDate() {
 		return startDate;
@@ -159,5 +162,29 @@ public class WSPromotionInfo extends ModelSupport {
 			}
 		}
 		return buf.toString();
+	}
+	/**
+	 * @return the waiveChargeType
+	 */
+	public String getWaiveChargeType() {
+		return waiveChargeType;
+	}
+	/**
+	 * @param waiveChargeType the waiveChargeType to set
+	 */
+	public void setWaiveChargeType(String waiveChargeType) {
+		this.waiveChargeType = waiveChargeType;
+	}
+	/**
+	 * @return the fdxTierType
+	 */
+	public EnumPromoFDXTierType getFdxTierType() {
+		return fdxTierType;
+	}
+	/**
+	 * @param fdxTierType the fdxTierType to set
+	 */
+	public void setFdxTierType(EnumPromoFDXTierType fdxTierType) {
+		this.fdxTierType = fdxTierType;
 	}
 }

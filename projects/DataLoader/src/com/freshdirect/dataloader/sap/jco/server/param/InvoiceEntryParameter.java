@@ -28,7 +28,7 @@ public class InvoiceEntryParameter implements Serializable
 	private double taxAmt;
 	private double bottleDepositAmount;
 	private double customizationPrice;
-	private int orderQuantity;
+	private double orderQuantity;
 	private String invoiceLineNo;
 	private String weightUnitCode;
 	private double grossWeight;
@@ -246,14 +246,14 @@ public class InvoiceEntryParameter implements Serializable
 	/**
 	 * @return the orderQuantity
 	 */
-	public int getOrderQuantity()
+	public double getOrderQuantity()
 	{
 		return orderQuantity;
 	}
 	/**
 	 * @param orderQuantity the orderQuantity to set
 	 */
-	public void setOrderQuantity(int orderQuantity)
+	public void setOrderQuantity(double orderQuantity)
 	{
 		this.orderQuantity = orderQuantity;
 	}

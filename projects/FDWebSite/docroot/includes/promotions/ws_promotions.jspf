@@ -109,7 +109,7 @@ function openURL(inLocationURL) {
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getWindowTypeStr() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text">$<%= df.format(promotion.getDiscount()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= null !=promotion.getWaiveChargeType() && "DLV".equalsIgnoreCase(promotion.getWaiveChargeType())? "FREE Delivery" :"$"+df.format(promotion.getDiscount()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getRedeemCount() %></span></td>
 	<td class="border_bottom">&nbsp;</td>

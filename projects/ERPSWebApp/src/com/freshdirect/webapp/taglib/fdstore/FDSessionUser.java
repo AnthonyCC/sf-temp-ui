@@ -1805,4 +1805,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isProductSample(prodRef);
 	}
 
+	public Date getFirstOrderDate() throws FDResourceException{
+		return this.user.getFirstOrderDate();
+	}
 }

@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductReferenceImpl;
@@ -162,11 +163,12 @@ public class FDPromotionNewDAO {
 			Promotion promo = new Promotion(pk, promoType, promoCode, name, description, lastModified);
 			EnumOfferType offerType = EnumOfferType.getEnum(rs.getString("OFFER_TYPE"));
 			promo.setOfferType(offerType);
-			if("Y".equalsIgnoreCase(rs.getString("NEEDCUSTOMERLIST"))){
+			if("Y".equalsIgnoreCase(rs.getString("NEEDCUSTOMERLIST")) || "Y".equalsIgnoreCase(rs.getString("rolling_from_first_order"))){
 				//This is customer restricted Promotion. Create Audience Strategy.
 				int rollingExpirationDays = rs.getInt("ROLLING_EXPIRATION_DAYS");
+				boolean isRollingExpFrom1stOrder = "Y".equalsIgnoreCase(rs.getString("rolling_from_first_order"));
 				//APPDEV-659 - Made isMaxUsagePerCustomer obsolete.
-				AudienceStrategy aStrategy = new AudienceStrategy(false, rollingExpirationDays);
+				AudienceStrategy aStrategy = new AudienceStrategy(false, rollingExpirationDays, isRollingExpFrom1stOrder);
 				promo.addStrategy(aStrategy);
 			}
 			String excludeSkusFromSubTotal = rs.getString("EXCLUDE_SKU_SUBTOTAL");
@@ -425,11 +427,12 @@ public class FDPromotionNewDAO {
 		promo = new Promotion(new PrimaryKey(promoId), promoType, promoCode, name, description, lastModified);
 		EnumOfferType offerType = EnumOfferType.getEnum(rs.getString("OFFER_TYPE"));
 		promo.setOfferType(offerType);		
-		if("Y".equalsIgnoreCase(rs.getString("NEEDCUSTOMERLIST"))){
+		if("Y".equalsIgnoreCase(rs.getString("NEEDCUSTOMERLIST"))|| "Y".equalsIgnoreCase(rs.getString("rolling_from_first_order"))){
 			//This is customer restricted Promotion. Create Audience Strategy.
 			int rollingExpirationDays = rs.getInt("ROLLING_EXPIRATION_DAYS");
+			boolean isRollingExpFrom1stOrder = "Y".equalsIgnoreCase(rs.getString("rolling_from_first_order"));
 			//APPDEV-659 - Made isMaxUsagePerCustomer obsolete.
-			AudienceStrategy aStrategy = new AudienceStrategy(false, rollingExpirationDays);
+			AudienceStrategy aStrategy = new AudienceStrategy(false, rollingExpirationDays, isRollingExpFrom1stOrder);
 			promo.addStrategy(aStrategy);
 		}
 
@@ -1180,7 +1183,7 @@ public class FDPromotionNewDAO {
 	protected static PromotionStrategyI loadCustomerStrategy(Connection conn, String promoId) throws SQLException {
 		CustomerStrategy strategy = null;
 		PreparedStatement ps = conn.prepareStatement("select cs.promotion_id, cs.cohort,cs.dp_types, cs.dp_exp_end,cs.dp_exp_start, cs.dp_status, cs.order_range_end, " +
-													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx " +
+													 "cs.order_range_start,cs.payment_type,cs.prior_echeck_use,cs.echeck_match_type, ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, fdx_tier_type " +
 													 "from cust.promo_cust_strategy cs, cust.promotion_new p " +
 													 "where p.ID = cs.PROMOTION_ID and cs.promotion_id = ?");
 		ps.setString(1, promoId);
@@ -1463,12 +1466,14 @@ public class FDPromotionNewDAO {
 			DlvZoneStrategy dlvZoneStrategy) throws SQLException {
 		PreparedStatement ps;
 		ResultSet rs;
-		ps = conn.prepareStatement("SELECT DELIVERY_DAY_TYPE FROM CUST.PROMO_CUST_STRATEGY WHERE PROMOTION_ID=?");
+		ps = conn.prepareStatement("SELECT DELIVERY_DAY_TYPE, FDX_TIER_TYPE FROM CUST.PROMO_CUST_STRATEGY WHERE PROMOTION_ID=?");
 		ps.setString(1, promoPK);
 		rs = ps.executeQuery();
 		if(rs.next()) {
 			String dlvDayType = rs.getString("DELIVERY_DAY_TYPE");
 			dlvZoneStrategy.setDlvDayType(EnumDeliveryOption.getEnum(dlvDayType));
+			String fdxTierType = rs.getString("FDX_TIER_TYPE");
+			dlvZoneStrategy.setFdxTierType(EnumPromoFDXTierType.getEnum(fdxTierType));
 		}
 		rs.close();
 		ps.close();

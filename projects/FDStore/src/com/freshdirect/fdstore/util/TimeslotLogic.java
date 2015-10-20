@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
+import com.freshdirect.fdstore.promotion.SteeringDiscount;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
@@ -151,6 +152,9 @@ public class TimeslotLogic {
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
 				for (FDTimeslot _ts : col) {
+					if(FDStoreProperties.isDlvFeeTierEnabled()){
+						calcDeliveryFee(tierDlvFeeMap, _ts);
+					}
 					// holiday restricted timeslot
 					if (!genericTimeslots && list.getHolidays().contains(_ts.getDeliveryDate())) {
 						_ts.setHolidayRestricted(true);
@@ -182,8 +186,7 @@ public class TimeslotLogic {
 						_ts.setUnavailable(true);
 						_remove = true;
 					}
-					
-					double steeringDiscount = 0;
+					SteeringDiscount steeringDiscount = null;
 					if (!genericTimeslots) {
 						// Calculate steering discount and apply to the current timeslot
 						if(_ts.isPremiumSlot())
@@ -198,7 +201,12 @@ public class TimeslotLogic {
 						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
 						{
 							steeringDiscount = PromotionHelper.getDiscount(user, _ts, timeslotMap.get(_ts.getDayOfWeek()), deliveryModel, forceorder);
-							_ts.setSteeringDiscount(steeringDiscount);
+//							_ts.setSteeringDiscount(steeringDiscount);
+							if(null !=steeringDiscount){
+								_ts.setSteeringDiscount(steeringDiscount.getDiscount());
+								if(steeringDiscount.isFreeDelivery())
+								_ts.setPromoDeliveryFee(0);//Free Delivery.
+							}
 						}
 					}
 
@@ -208,7 +216,8 @@ public class TimeslotLogic {
 					if (_remove)
 						continue;
 
-					stats.setMaximumDiscount(steeringDiscount);
+//					stats.setMaximumDiscount(steeringDiscount);
+					stats.setMaximumDiscount(null !=steeringDiscount? steeringDiscount.getDiscount():0.0);
 
 
 					/* Update various slot counters */
@@ -226,9 +235,9 @@ public class TimeslotLogic {
 
 					minOrderReqd = applyOrderMinimum(user, _ts) || minOrderReqd;
 					
-					if(FDStoreProperties.isDlvFeeTierEnabled()){
+					/*if(FDStoreProperties.isDlvFeeTierEnabled()){
 						calcDeliveryFee(tierDlvFeeMap, _ts);
-					}
+					}*/
 					
 					
 				}

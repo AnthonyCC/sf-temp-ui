@@ -58,7 +58,7 @@ public class PromotionHelper {
 		return discountAmount;
 	}
 	
-	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot, List<FDTimeslot> dayTimeslots, FDDeliveryTimeslotModel deliveryModel, boolean forceorder) {
+	 public static SteeringDiscount getDiscount(FDUserI user, FDTimeslot timeSlot, List<FDTimeslot> dayTimeslots, FDDeliveryTimeslotModel deliveryModel, boolean forceorder) {
 		 
 		 Map<Double, List<FDTimeslot>> tsWindowMap = new HashMap<Double, List<FDTimeslot>>();
 		 for(FDTimeslot ts : dayTimeslots){
@@ -73,8 +73,9 @@ public class PromotionHelper {
 		 }
 		 
 		 Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
-		 if(null == eligiblePromoCodes || eligiblePromoCodes.isEmpty()) return 0.0;
+		 if(null == eligiblePromoCodes || eligiblePromoCodes.isEmpty()) return null;
 		 Discount applied = null;
+		 SteeringDiscount steeringDisc = null;
 		 for(Iterator<String> it=eligiblePromoCodes.iterator(); it.hasNext();){
 				String promoId = it.next();
 				Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
@@ -88,14 +89,20 @@ public class PromotionHelper {
 					if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
 							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)){
 						double promoAmt = p.getHeaderDiscountTotal();
-						if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
+						boolean isWaiveCharge = p.isWaiveCharge();
+						if(isWaiveCharge){
+							steeringDisc = new SteeringDiscount(true, 0.0);
+							break; //Free delivery steering discount has higher priority than any other $value steering discount.
+						}
+						else if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
 							applied = new Discount(promoId, EnumDiscountType.DOLLAR_OFF, promoAmt);
-							
+							steeringDisc = new SteeringDiscount(false,applied.getAmount());
 						}
 					}
 				}
 		 }
-		 return applied != null ? applied.getAmount() :  0.0;
+//		 return applied != null ? applied.getAmount() :  0.0;
+		 return steeringDisc;
 	 }
 	 
 		private static boolean isMaxDiscountAmount(double promotionAmt, int priority, Discount applied) {

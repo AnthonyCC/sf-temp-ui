@@ -5,6 +5,7 @@ import java.util.Date;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.framework.core.ModelSupport;
 
 public class FDPromoCustStrategyModel extends ModelSupport {
@@ -22,6 +23,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	private boolean orderTypePickup;
 	private boolean orderTypeCorporate;
 	private boolean orderTypeFDX;
+	private EnumPromoFDXTierType fdxTierType;
 	private EnumCardType[] paymentType;
 	private String priorEcheckUse;
 	private boolean excludeSameDayDlv;
@@ -38,7 +40,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 			boolean orderTypeHome, boolean orderTypePickup,
 			boolean orderTypeCorporate, boolean orderTypeFDX,
 			EnumCardType[] paymentType,
-			String priorEcheckUse,EnumComparisionType echeckMatchType) {
+			String priorEcheckUse,EnumComparisionType echeckMatchType, EnumPromoFDXTierType fdxTierType) {
 		super();
 		this.promotionId = promotionId;
 		this.orderRangeStart = orderRangeStart;
@@ -55,6 +57,7 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 		this.priorEcheckUse = priorEcheckUse;
 		this.dpTypes=dpTypes;
 		this.echeckMatchType=echeckMatchType;
+		this.fdxTierType = fdxTierType;
 	}
 	/*public FDPromoCustStrategyModel(String promotionId,
 			Integer orderRangeStart, Integer orderRangeEnd, String[] cohorts,
@@ -171,6 +174,18 @@ public class FDPromoCustStrategyModel extends ModelSupport {
 	}
 	public void setOrderTypeFDX(boolean orderTypeFDX) {
 		this.orderTypeFDX = orderTypeFDX;
+	}
+	/**
+	 * @return the fdxTierType
+	 */
+	public EnumPromoFDXTierType getFdxTierType() {
+		return fdxTierType;
+	}
+	/**
+	 * @param fdxTierType the fdxTierType to set
+	 */
+	public void setFdxTierType(EnumPromoFDXTierType fdxTierType) {
+		this.fdxTierType = fdxTierType;
 	}
 	
 	

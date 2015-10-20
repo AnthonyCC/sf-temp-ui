@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -223,8 +224,8 @@ public class FDPromotionManagerNewDAO {
 		return promotion;
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
-		"select P.ID, P.CODE, P.NAME, DD.START_DATE DLV_DATE, D.DAY_ID, P.START_DATE, P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		"select P.ID, P.CODE, P.NAME, DD.START_DATE DLV_DATE, D.DAY_ID, P.START_DATE, P.EXPIRATION_DATE, P.WAIVE_CHARGE_TYPE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE,pc.FDX_TIER_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates dd, cust.promo_dlv_day d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
@@ -291,6 +292,8 @@ public class FDPromotionManagerNewDAO {
 				wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 				wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 				wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
+				wsPromotionInfo.setWaiveChargeType(rs.getString("WAIVE_CHARGE_TYPE"));
+				wsPromotionInfo.setFdxTierType(EnumPromoFDXTierType.getEnum(rs.getString("FDX_TIER_TYPE")));
 				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
 				wsPromotionInfo.setWindowType(windowArray != null ? (String[]) rs.getArray("DLV_WINDOWTYPE").getArray() : null);
 				wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
@@ -539,6 +542,9 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			promotion.setDcpdMinSubtotal("");
 		}
+		
+		promotion.setRollingExpDayFrom1stOrder("Y".equalsIgnoreCase(rs.getString("ROLLING_FROM_FIRST_ORDER"))?true:false);
+		promotion.setSapConditionType(rs.getString("SAP_CONDITION_TYPE"));
 		return promotion;
 	}
 
@@ -741,8 +747,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id, DCPD_MIN_SUBTOTAL)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id, DCPD_MIN_SUBTOTAL,ROLLING_FROM_FIRST_ORDER,SAP_CONDITION_TYPE)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -808,6 +814,9 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.DOUBLE);
 		}
+		
+		ps.setString(i++, promotion.isRollingExpDayFrom1stOrder()?"Y":"N");
+		ps.setString(i++, promotion.getSapConditionType());
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -1224,11 +1233,11 @@ public class FDPromotionManagerNewDAO {
 
 	private static String INSERT_PROMO_CUST_STRATEGY = "INSERT INTO cust.promo_cust_strategy"
 			+ " (id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type, ordertype_fdx)"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type, ordertype_fdx, fdx_tier_type)"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	private static String UPDATE_PROMO_CUST_STRATEGY = "UPDATE cust.promo_cust_strategy"
-			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=?,ordertype_fdx=? where promotion_id = ?";
+			+ " SET order_range_start=?,order_range_end=?, cohort=?,dp_types=?, dp_status=?,dp_exp_start=?,dp_exp_end=?,ordertype_home=?,ordertype_pickup=?,ordertype_corporate=?,payment_type=?,prior_echeck_use=?,DELIVERY_DAY_TYPE=?,echeck_match_type=?,ordertype_fdx=?,fdx_tier_type=? where promotion_id = ?";
 	
 	private static void storeCustomerStrategy(Connection conn, String promotionId,
 			FDPromotionNewModel promotion) throws SQLException {
@@ -1334,6 +1343,7 @@ public class FDPromotionManagerNewDAO {
 					ps.setNull(index++, Types.VARCHAR);
 				}
 				ps.setString(index++, model.isOrderTypeFDX() ? "X" : " ");
+				ps.setString(index++, null !=model.getFdxTierType()?model.getFdxTierType().getName():null);
 				if (null !=model.getId()) {
 					ps.setString(index++, promotionId);
 				}
@@ -1588,6 +1598,7 @@ public class FDPromotionManagerNewDAO {
 			promoCustStrategyModel.setPriorEcheckUse(rs.getString("PRIOR_ECHECK_USE"));
 			promoCustStrategyModel.setEcheckMatchType(EnumComparisionType.getEnum(rs.getString("ECHECK_MATCH_TYPE")));
 			promoCustStrategyModel.setPromotionId(promotionId);
+			promoCustStrategyModel.setFdxTierType(EnumPromoFDXTierType.getEnum(rs.getString("FDX_TIER_TYPE")));
 			list.add(promoCustStrategyModel);
 		}
 	
@@ -3171,8 +3182,8 @@ public class FDPromotionManagerNewDAO {
 						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
-						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, MAX_PERCENTAGE_DISCOUNT=?, radius=?"
-						+ " WHERE ID = ?");
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, MAX_PERCENTAGE_DISCOUNT=?, radius=?, ROLLING_FROM_FIRST_ORDER=?,"
+						+ " SAP_CONDITION_TYPE=? WHERE ID = ?");
 
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -3215,6 +3226,10 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
+		
+		ps.setString(i++, promotion.isRollingExpDayFrom1stOrder()?"Y":"N");
+		ps.setString(i++, promotion.getSapConditionType());
+		
 		ps.setString(i++, promotion.getPK().getId());
 		// Execute update
 		if (ps.executeUpdate() != 1) {

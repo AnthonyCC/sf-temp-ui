@@ -4,6 +4,7 @@
 package com.freshdirect.dataloader.sap.jco.server.param;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class InvoiceHeaderParameter implements Serializable
 	private double invoiceSubTotal;
 	private double creditAmount;
 	private List<InvoiceEntryParameter> entries;
-	private List<InvoiceCreditParameter> creditEntries;
+	private List<InvoiceCreditParameter> creditEntries = new ArrayList<InvoiceCreditParameter>();
 	private String deliveryDate;
 	private String billingType;
 	private String truckNumber;

@@ -599,7 +599,7 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 
 		param.setSalesUOMCode(FDSapHelperUtils.getString(invoiceLineTable.getString("SALES_UOM")));
 
-		param.setOrderQuantity(FDSapHelperUtils.getInt(invoiceLineTable.getString("ORDER_QTY")));
+		param.setOrderQuantity(FDSapHelperUtils.getDouble(invoiceLineTable.getString("ORDER_QTY")));
 		param.setShippedQuantity(FDSapHelperUtils.getDouble(invoiceLineTable.getString("SHIPPED_QTY")));
 		param.setWeightUnitCode(FDSapHelperUtils.getString(invoiceLineTable.getString("WEIGHT_UNIT")));
 		param.setGrossWeight(FDSapHelperUtils.getDouble(invoiceLineTable.getString("GROSS_WEIGHT")));

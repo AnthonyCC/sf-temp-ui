@@ -2,16 +2,24 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.Date;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.DateUtil;
 
 public class AudienceStrategy implements PromotionStrategyI {
 
 	private boolean maxUsagePerCust;
 	private int rollingExpirationDays;
+	private boolean isRollingExpFrom1stOrder;
 	
 	public AudienceStrategy(boolean maxUsagePerCust, int rollingExpirationDays) {
 		this.maxUsagePerCust = maxUsagePerCust;
 		this.rollingExpirationDays = rollingExpirationDays;
+	}
+	
+	public AudienceStrategy(boolean maxUsagePerCust, int rollingExpirationDays, boolean isRollingExpFrom1stOrder) {
+		this.maxUsagePerCust = maxUsagePerCust;
+		this.rollingExpirationDays = rollingExpirationDays;
+		this.isRollingExpFrom1stOrder = isRollingExpFrom1stOrder;
 	}
 	
 	public boolean isMaxUsagePerCustomer() { return this.maxUsagePerCust; } 
@@ -22,6 +30,8 @@ public class AudienceStrategy implements PromotionStrategyI {
 		AssignedCustomerParam param = context.getAssignedCustomerParam(promotionCode);
 		if (param != null && isValidUsageCount(promotionCode, context, param) && isBeforeExpirationDate(promotionCode, context, param)) {
 					return ALLOW;
+		}else if(isRollingExpFrom1stOrder){
+			return isBeforeExpirationDate(promotionCode, context)?ALLOW:DENY;
 		}
 		return DENY;		
 	}
@@ -36,6 +46,22 @@ public class AudienceStrategy implements PromotionStrategyI {
 		Date today = DateUtil.truncate(new Date());
 		Date expirationDate = param.getExpirationDate();
 		return (this.rollingExpirationDays == 0 || (expirationDate != null && !today.after(DateUtil.truncate(expirationDate))));					
+	}
+	
+	private boolean isBeforeExpirationDate(String promotionCode, PromotionContextI context) {
+		boolean isBeforeExpDate = true;
+		Date firstOrderDate = null;
+		try {
+			firstOrderDate = context.getUser().getFirstOrderDate();
+		} catch (FDResourceException e) {
+			//ignore
+		}
+		if(null !=firstOrderDate && this.rollingExpirationDays > 0){
+			Date today = DateUtil.truncate(new Date());
+			Date expirationDate = DateUtil.addDays(firstOrderDate, rollingExpirationDays);
+			isBeforeExpDate = (!today.after(DateUtil.truncate(expirationDate)));	
+		}
+		return isBeforeExpDate;
 	}
 
 	@Override

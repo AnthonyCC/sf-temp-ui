@@ -22,6 +22,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -92,6 +93,19 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String redeemLimit = request.getParameter("redeemlimit");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
 					String deliveryDayType =NVL.apply(request.getParameter("deliveryDayType"), "").trim();
+					String rollingExpType = request.getParameter("rollingType");
+					String fdxTierType = request.getParameter("fdxTierType");
+					boolean isRollingFrom1stOrder = false;
+					Integer rollingExpDays = null;
+					if(null != rollingExpType){
+						if("rolling_induction".equalsIgnoreCase(rollingExpType)){
+							rollingExpDays = Integer.parseInt(request.getParameter("rolling_days_induction"));
+						}else{
+							isRollingFrom1stOrder = true;
+							rollingExpDays = Integer.parseInt(request.getParameter("rolling_days_firstorder"));
+						}
+					}
+					String sapConditionType = NVL.apply(request.getParameter("sapConditionType"), "").trim();
 					if("".equalsIgnoreCase(deliveryDayType)){
 						deliveryDayType = "R";//REGULAR
 					}
@@ -140,7 +154,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 						//Create a new WS Promotion.
 						FDPromotionNewModel promotion = constructPromotion(request, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, 
-								deliveryDayType, radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType);
+								deliveryDayType, radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType,isRollingFrom1stOrder,rollingExpDays,sapConditionType,fdxTierType);
 						postValidate(promotion, actionResult);
 						
 
@@ -202,7 +216,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						promotion.setModifiedDate(new Date());
 
 						updatePromotion(request, promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, 
-								radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType);
+								radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType,isRollingFrom1stOrder,rollingExpDays,sapConditionType,fdxTierType);
 
 						postValidate(promotion, actionResult);
 						/*APPDEV-2004*/
@@ -430,7 +444,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	@SuppressWarnings("unchecked")
 	private FDPromotionNewModel constructPromotion(HttpServletRequest request, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime,
 			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator,
-			String dlvRestrictionType) throws FDResourceException {
+			String dlvRestrictionType, boolean isRollingFrom1stOrder, Integer rollingExpDays,String sapConditionType, String fdxTierType) throws FDResourceException {
 
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
@@ -466,6 +480,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			custModel.setOrderTypeCorporate(true);
 			custModel.setOrderTypePickup(true);
 			custModel.setOrderTypeFDX(true);
+			custModel.setFdxTierType(EnumPromoFDXTierType.getEnum(fdxTierType));
 			custModel.setCohorts(cohorts);
 			EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
 			custModel.setDeliveryDayType(deliveryOption);
@@ -482,6 +497,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setExpirationDate(expDate);
 
 			promotion.setRadius(radius);
+			promotion.setRollingExpDayFrom1stOrder(isRollingFrom1stOrder);
+			promotion.setNeedCustomerList(!isRollingFrom1stOrder);
+			promotion.setRollingExpirationDays(rollingExpDays);
+			promotion.setSapConditionType(sapConditionType);
 
 			Date dlvDate = null;
 			FDPromoDlvTimeSlotModel timeSlotModel = null;
@@ -552,7 +571,15 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			List<FDPromoDlvZoneStrategyModel> dlvZones = new ArrayList<FDPromoDlvZoneStrategyModel>();
 			dlvZones.add(dlvZoneModel);
 			promotion.setDlvZoneStrategies(dlvZones);
-			promotion.setMaxAmount(discount);
+			if("DLV".equalsIgnoreCase(discount)){
+				promotion.setWaiveChargeType("DLV");
+				promotion.setMaxAmount(null);
+			}else{
+				promotion.setMaxAmount(discount);
+				promotion.setWaiveChargeType(null);
+				promotion.setRollingExpirationDays(null);
+				promotion.setRollingExpDayFrom1stOrder(false);
+			}
 			promotion.setStatus(EnumPromotionStatus.DRAFT);
 			populatePromoChangeModelOnCreate(promotion);
 			promotion.setAttributeList(attrParamList);
@@ -565,7 +592,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 
 	private void updatePromotion(HttpServletRequest request, FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
 			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator,
-			String dlvRestrictionType) throws FDResourceException{
+			String dlvRestrictionType, boolean isRollingFrom1stOrder, Integer rollingExpDays,String sapConditionType, String fdxTierType) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -674,13 +701,28 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					//Clear PK
 					custStrategy.setPK(null);
 				}
+				custStrategy.setFdxTierType(EnumPromoFDXTierType.getEnum(fdxTierType));
 				EnumDeliveryOption deliveryOption= EnumDeliveryOption.getEnum(deliveryDayType);
 				custStrategy.setDeliveryDayType(deliveryOption);
 			}
-			promotion.setMaxAmount(discount);
+//			promotion.setMaxAmount(discount);
+
+			promotion.setRollingExpDayFrom1stOrder(isRollingFrom1stOrder);
+			promotion.setNeedCustomerList(!isRollingFrom1stOrder);
+			promotion.setRollingExpirationDays(rollingExpDays);
+			if("DLV".equalsIgnoreCase(discount)){
+				promotion.setWaiveChargeType("DLV");
+				promotion.setMaxAmount(null);
+			}else{
+				promotion.setMaxAmount(discount);
+				promotion.setWaiveChargeType(null);
+				promotion.setRollingExpirationDays(null);
+				promotion.setRollingExpDayFrom1stOrder(false);
+			}
 			promotion.setStatus(EnumPromotionStatus.PROGRESS);
 			populatePromoChangeModelOnModify(promotion, dlvZoneModel);
 			promotion.setRadius(radius);
+			promotion.setSapConditionType(sapConditionType);
 			promotion.setAttributeList(attrParamList);
 			promotion.setProfileOperator(profileOperator);
 		}catch(ParseException pe){
@@ -776,7 +818,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						}
 					}
 				}
-				if(null != oldPromotion && !promotion.getMaxAmount().equalsIgnoreCase(oldPromotion.getMaxAmount())){
+				if(null != oldPromotion && (null== promotion.getMaxAmount() || !promotion.getMaxAmount().equalsIgnoreCase(oldPromotion.getMaxAmount()))){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 					changeDetailModel.setChangeFieldName("Max Amount");
 					changeDetailModel.setChangeFieldOldValue(NVL.apply(oldPromotion.getMaxAmount(),"").trim());
@@ -825,8 +867,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					if(!custModel.isOrderTypeHome() && !custModel.isOrderTypeCorporate() && !custModel.isOrderTypePickup()){
 						result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
 					}
+					if("DLV".equalsIgnoreCase(promotion.getWaiveChargeType()) && null == custModel.getFdxTierType()){
+						result.addError(true, "fdxTierTypeEmpty", "For 'Free Delivery' window steering promotion, FDX timeslot type must be selected.");
+					}
 				}else{
 					result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
+					result.addError(true, "fdxTierTypeEmpty", "For 'Free Delivery' window steering promotion, FDX timeslot type must be selected.");
 				}
 				if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
 					result.addError(true, "minSubTotalEmpty", "Minimum Sub Total is required for the promotion.");

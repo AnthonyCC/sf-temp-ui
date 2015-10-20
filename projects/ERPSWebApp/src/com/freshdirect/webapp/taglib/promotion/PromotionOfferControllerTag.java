@@ -10,17 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -36,10 +32,10 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
+import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
-import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.NumberUtil;
@@ -211,11 +207,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					//sample offer is selected.
 					this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
 					this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
-					ContentFactory contentFactory = ContentFactory.getInstance();
+//					ContentFactory contentFactory = ContentFactory.getInstance();
 					if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
 						actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
 					}
-					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+					//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+					/*if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
 						}
@@ -224,7 +221,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 						if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
 							actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
 						}
-					}
+					}*/
 				} else {
 					clearSampleTypeInfo();
 				}
@@ -313,11 +310,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					//sample offer is selected.
 					this.promotion.setCategoryName(NVL.apply(request.getParameter("li_categoryName"), "").trim());
 					this.promotion.setProductName(NVL.apply(request.getParameter("li_productName"), "").trim());
-					ContentFactory contentFactory = ContentFactory.getInstance();
+//					ContentFactory contentFactory = ContentFactory.getInstance();
 					if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
 						actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
 					}
-					if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+					//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+					/*if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 						if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 							actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
 						}
@@ -326,7 +324,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 						if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
 							actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
 						}
-					}
+					}*/
 				} else {
 					clearSampleTypeInfo();
 				}
@@ -334,11 +332,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
 				this.promotion.setCategoryName(NVL.apply(request.getParameter("sam_categoryName"), "").trim());
 				this.promotion.setProductName(NVL.apply(request.getParameter("sam_productName"), "").trim());
-				ContentFactory contentFactory = ContentFactory.getInstance();
+//				ContentFactory contentFactory = ContentFactory.getInstance();
 				if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
 					actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
 				}
-				if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+				//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+				/*if(!"".equalsIgnoreCase(promotion.getCategoryName())){
 					if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
 						actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
 					}
@@ -347,7 +346,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
 						actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
 					}
-				}
+				}*/
 				
 				
 				this.promotion.setPromotionType(promotionType);
@@ -674,11 +673,13 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(departments)){
 			List invalidDepts = new ArrayList();
 			String[] departmentsArr = departments.split(",");
-			for (int i = 0; i < departmentsArr.length; i++) {
+			
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < departmentsArr.length; i++) {
 				if(null==contentFactory.getContentNode(FDContentTypes.DEPARTMENT, departmentsArr[i].toLowerCase())){
 					invalidDepts.add(departmentsArr[i]);
 				}
-			}
+			}*/
 			if(!invalidDepts.isEmpty()){
 				result.addError(true, "invalidDepts", invalidDepts.toString()+" are invalid Departments." );
 			}
@@ -687,11 +688,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(categories)){
 			List invalidCats = new ArrayList();
 			String[] categoriesArr = categories.split(",");
-			for (int i = 0; i < categoriesArr.length; i++) {
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < categoriesArr.length; i++) {
 				if(null==contentFactory.getContentNode(FDContentTypes.CATEGORY, categoriesArr[i].toLowerCase())){
 					invalidCats.add(categoriesArr[i]);
 				}
-			}
+			}*/
 			if(!invalidCats.isEmpty()){
 				result.addError(true, "invalidCats", invalidCats.toString()+" are invalid Categories." );
 			}
@@ -701,7 +703,8 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(rec_categories)){
 			List<String> invalidCats = new ArrayList<String>();
 			String[] rec_categoriesArr = rec_categories.split(",");
-			for (int i = 0; i < rec_categoriesArr.length; i++) {
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < rec_categoriesArr.length; i++) {
 				if(null!=contentFactory.getContentNode(FDContentTypes.CATEGORY, rec_categoriesArr[i].toLowerCase())) {
 					ContentNodeModel cn = contentFactory.getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, rec_categoriesArr[i]));
 					if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
@@ -715,7 +718,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				} else {
 					invalidCats.add(rec_categoriesArr[i]);
 				}
-			}
+			}*/
 			if(!invalidCats.isEmpty()){
 				result.addError(true, "invalidRCats", invalidCats.toString()+" are invalid Recommended Categories." );
 			}
@@ -724,11 +727,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(recipes)){
 			List invalidRecipes = new ArrayList();
 			String[] recipesArr = recipes.split(",");
-			for (int i = 0; i < recipesArr.length; i++) {
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < recipesArr.length; i++) {
 				if(null==contentFactory.getContentNode(FDContentTypes.RECIPE, recipesArr[i].toLowerCase())){
 					invalidRecipes.add(recipesArr[i]);
 				}
-			}
+			}*/
 			if(!invalidRecipes.isEmpty()){
 				result.addError(true, "invalidRecipes", invalidRecipes.toString()+" are invalid Recipes." );
 			}
@@ -737,11 +741,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(eligibleSku)){
 			List invalidSkus = new ArrayList();
 			String[] eligibleSkuArr = eligibleSku.split(",");
-			for (int i = 0; i < eligibleSkuArr.length; i++) {
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < eligibleSkuArr.length; i++) {
 				if(null==contentFactory.getContentNode(FDContentTypes.SKU, eligibleSkuArr[i].toUpperCase())){
 					invalidSkus.add(eligibleSkuArr[i]);
 				}
-			}
+			}*/
 			if(!invalidSkus.isEmpty()){
 				result.addError(true, "invalidSKUs", invalidSkus.toString()+" are invalid SKUs." );
 			}
@@ -750,11 +755,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		if(!"".equals(eligibleBrand)){
 			List invalidBrands = new ArrayList();
 			String[] eligibleBrandArr = eligibleBrand.split(",");
-			for (int i = 0; i < eligibleBrandArr.length; i++) {
+			//FDX:Removing this validation as we can't validate both FD and FDX dcpd data against a single cms store
+			/*for (int i = 0; i < eligibleBrandArr.length; i++) {
 				if(null==contentFactory.getContentNode(FDContentTypes.BRAND, eligibleBrandArr[i].toLowerCase())){
 					invalidBrands.add(eligibleBrandArr[i]);
 				}
-			}
+			}*/
 			if(!invalidBrands.isEmpty()){
 				result.addError(true, "invalidBrands", invalidBrands.toString()+" are invalid Brands." );
 			}

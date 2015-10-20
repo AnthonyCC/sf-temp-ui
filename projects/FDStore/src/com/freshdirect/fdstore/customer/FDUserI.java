@@ -143,6 +143,8 @@ public interface FDUserI extends java.io.Serializable {
 	public void invalidateCache();
 
 	public OrderHistoryI getOrderHistory() throws FDResourceException;
+	
+	public Date getFirstOrderDate() throws FDResourceException;
 
 	public int getOrderCountForChefsTableEligibility() throws FDResourceException;
 

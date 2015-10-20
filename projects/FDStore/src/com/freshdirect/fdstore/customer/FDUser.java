@@ -286,6 +286,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	/* APPDEV-3756 */
 	private boolean isGlobalNavTutorialSeen = false;
 	private List<ProductReference> productSamples;
+	private Date firstOrderDate = null;
 	
 	private boolean crmMode;
 
@@ -610,6 +611,16 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         
         return this.cachedOrderHistory;
+    }
+    
+    public Date getFirstOrderDate() throws FDResourceException{
+    	if(null == firstOrderDate){
+    		OrderHistoryI orderHistory = this.getOrderHistory();
+    		if(null != orderHistory){
+    			firstOrderDate = orderHistory.getFirstOrderDate();
+    		}
+    	}
+    	return firstOrderDate;
     }
 
   /* private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
