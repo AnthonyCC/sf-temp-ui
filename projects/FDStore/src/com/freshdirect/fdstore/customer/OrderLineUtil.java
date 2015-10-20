@@ -295,8 +295,14 @@ public class OrderLineUtil {
 
             for (FDVariationOption option : variation.getVariationOptions()) {
                 if (option.getName().equals(optionName)) {
-                    for (String sideBoxIncludeProductName : populateSideBoxIncludeProductNames(option)) {
-                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
+                    String optionSkuCode = option.getSkuCode();
+                    List<String> sideBoxIncludeProductNames = populateSideBoxIncludeProductNames(optionSkuCode);
+                    if (sideBoxIncludeProductNames.isEmpty()) {
+                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, option.getDescription());
+                    } else {
+                        for (String sideBoxIncludeProductName : sideBoxIncludeProductNames) {
+                            appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
+                        }
                     }
                 }
             }
@@ -305,13 +311,11 @@ public class OrderLineUtil {
         return confDescr.toString();
     }
 
-    private static List<String> populateSideBoxIncludeProductNames(FDVariationOption option) throws FDSkuNotFoundException, FDResourceException {
+    private static List<String> populateSideBoxIncludeProductNames(String sideBoxSkuCode) throws FDSkuNotFoundException, FDResourceException {
         List<String> includeProductNames = new ArrayList<String>();
-        String sideBoxSkuCode = option.getSkuCode();
         if (sideBoxSkuCode != null && !sideBoxSkuCode.isEmpty()) {
-            ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(sideBoxSkuCode);
-            for (ProductModel productModel : sideBoxProductModel.getIncludeProducts()) {
-                SkuModel defaultSku = productModel.getDefaultSku();
+            for (ProductModel includeProduct : ContentFactory.getInstance().getProduct(sideBoxSkuCode).getIncludeProducts()) {
+                SkuModel defaultSku = includeProduct.getDefaultSku();
                 if (defaultSku != null) {
                     Collection<ErpMaterialInfoModel> findMaterialsBySkus = ErpFactory.getInstance().findMaterialsBySku(defaultSku.getSkuCode());
                     for (ErpMaterialInfoModel erpMaterialInfoModel : findMaterialsBySkus) {
@@ -319,8 +323,6 @@ public class OrderLineUtil {
                     }
                 }
             }
-        } else {
-            includeProductNames.add(option.getDescription());
         }
         return includeProductNames;
     }
