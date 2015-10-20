@@ -67,6 +67,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 			.getInstance(FDLogisticsService.class);
 
 	private static final String ACTIVE_ZONES_API ="/delivery/zones/active";
+	private static final String ALL_ACTIVE_ZONES_API = "/delivery/zones/active/all";
 	private static final String ZONE_CUTOFF_API ="/delivery/zone/cutoffs";
 	
 	private static final String GET_ZONEINFO ="/delivery/zone";
@@ -302,6 +303,15 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		DeliveryZones response =  getData(null, getEndPoint(ACTIVE_ZONES_API), DeliveryZones.class);
 		return response;
 	}
+	
+	@Override
+	public DeliveryZones getAllActiveZones() throws FDLogisticsServiceException {
+		
+		DeliveryZones response =  getData(null, getEndPoint(ALL_ACTIVE_ZONES_API), DeliveryZones.class);
+
+		return response;
+		
+		}
 
 	@Override
 	public FulfillmentInfoResponse getFulfillmentInfo(String companycode,

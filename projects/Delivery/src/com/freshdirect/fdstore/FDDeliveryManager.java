@@ -994,6 +994,17 @@ public class FDDeliveryManager {
 			throw new FDResourceException(e);
 		}
 	}
+	
+	public  List<DlvZoneModel> getAllActiveZones() throws FDResourceException{
+		try{
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			DeliveryZones zones = logisticsService.getAllActiveZones();
+			return LogisticsDataDecoder.decodeDeliveryZones(zones);
+			
+		}catch(FDLogisticsServiceException e){
+			throw new FDResourceException(e);
+		}
+	}
 
 	public String getDepotFacility(String depotLocationId) throws FDResourceException {
 		FDDeliveryDepotModel d = getDepotByLocationId(depotLocationId);

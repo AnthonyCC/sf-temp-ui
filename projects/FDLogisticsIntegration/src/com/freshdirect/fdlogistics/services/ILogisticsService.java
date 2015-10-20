@@ -135,4 +135,6 @@ public interface ILogisticsService {
 	Result uploadOrderSizeFeed(UpdateOrderSizeRequest request)throws FDLogisticsServiceException;
 
 	DeliveryReservations getReservationById(String rsvId)throws FDLogisticsServiceException;
+
+	DeliveryZones getAllActiveZones() throws FDLogisticsServiceException;
 }

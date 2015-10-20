@@ -113,7 +113,7 @@ public class LogisticsDataDecoder {
 		List<DlvZoneModel> result = new ArrayList<DlvZoneModel>();
 		if(zones!=null && zones.getDeliveryZones()!=null){
 			for (DeliveryZone zone : zones.getDeliveryZones()) {
-				result.add(new DlvZoneModel(zone.getName(), zone.getZoneCode()));
+				result.add(new DlvZoneModel(zone.getName(), zone.getZoneCode(), zone.getCompanyCode()));
 			}
 		}
 		return result;
