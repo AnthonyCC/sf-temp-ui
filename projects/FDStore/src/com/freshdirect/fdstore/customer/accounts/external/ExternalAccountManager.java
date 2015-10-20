@@ -53,7 +53,7 @@ public class ExternalAccountManager{
 		}
 	}
 	
-	public static boolean isUserEmailAlreadyExist(String email, String provider) throws FDResourceException {
+	public static int isUserEmailAlreadyExist(String email, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
@@ -136,6 +136,22 @@ public class ExternalAccountManager{
 		try {
 			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
 			sb.unlinkExternalAccountWithUser(email, userToken, provider);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		
+	}
+	
+	public static void unlinkExternalAccountWithUser(String email, String provider) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			sb.unlinkExternalAccountWithUser(email, provider);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();

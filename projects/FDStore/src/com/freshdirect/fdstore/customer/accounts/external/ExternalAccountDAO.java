@@ -138,46 +138,49 @@ public class ExternalAccountDAO {
 		return isEmailExist;
 	}
 	
-	public static boolean isUserEmailAlreadyExist(Connection con,String email, String provider)
-	{
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		boolean isEmailExist = false;
+	public static int isUserEmailAlreadyExist(Connection con,String email, String provider)
+	{		PreparedStatement ps = null;
+	ResultSet rs = null;
+	String sql = "select c.id as customerid, ec.user_token as usertoken from cust.customer c, CUST.EXTERNAL_ACCOUNT_LINK ec where C.ID = EC.CUSTOMER_ID (+) and C.USER_ID = ? and EC.PROVIDER (+) = ?";
 
-		String sql = "SELECT COUNT(*) FROM CUST.CUSTOMER WHERE USER_ID=? AND PROVIDER=?";
-	
-		try {
-			
-			ps = con.prepareStatement(sql);
-			ps.setString(1,email.trim());
-			ps.setString(2,provider.trim());
-			rs = ps.executeQuery();
+	try {
 		
-			while(rs.next()) {
-				if(rs.getInt(1) > 0)
-					isEmailExist = true;
-				
+		ps = con.prepareStatement(sql);
+		ps.setString(1,email.trim());
+		ps.setString(2,provider.trim());
+		rs = ps.executeQuery();
+	 
+		while(rs.next()) {
+			if(rs.getString("customerid")!=null && rs.getString("usertoken")!=null) {
+				// FD Account and Non matching Social link
+				return 1;
+			} else if(rs.getString("customerid")!=null){
+				// FD Account and No Social link
+				return 0;
 			}
 			
-		} catch (SQLException ex) {
-			LOGGER.error(ex.getMessage());
-		} finally {
+		}
+		
+		
+	} catch (SQLException ex) {
+		LOGGER.error(ex.getMessage());
+	} finally {
 
-			try {
+		try {
 
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-			} catch (SQLException e) {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		} catch (SQLException e) {
 
-				LOGGER.error(e.getMessage());
-			}
-
+			LOGGER.error(e.getMessage());
 		}
 
-		
-		return isEmailExist;
+	}
+
+	// No FD Account and No Social link
+	return -1;
 	}
 	
 	public static void linkUserTokenToUserId(Connection con,String customerId,String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified)

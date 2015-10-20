@@ -13,7 +13,7 @@ public interface ExternalAccountManagerSB extends EJBObject  {
 	
 	public boolean isUserEmailAlreadyExist(String email) throws RemoteException;
 	
-	public boolean isUserEmailAlreadyExist(String email, String provider) throws RemoteException;
+	public int isUserEmailAlreadyExist(String email, String provider) throws RemoteException;
 	
 	public void linkUserTokenToUserId(String customerId, String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified) throws RemoteException;
 
@@ -22,5 +22,7 @@ public interface ExternalAccountManagerSB extends EJBObject  {
 	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) throws RemoteException;
 
 	public void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws RemoteException;
+	
+	public void unlinkExternalAccountWithUser(String email, String provider) throws RemoteException;
 	
 }

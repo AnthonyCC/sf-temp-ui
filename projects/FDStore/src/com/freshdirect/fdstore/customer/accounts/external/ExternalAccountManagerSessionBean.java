@@ -40,7 +40,7 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	
 	}
 	
-	public boolean isUserEmailAlreadyExist(String email, String provider)
+	public int isUserEmailAlreadyExist(String email, String provider)
 	{
 		try {
 			return ExternalAccountDAO.isUserEmailAlreadyExist(this.getConnection(), email, provider);
@@ -48,7 +48,7 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		}
-		return false;
+		return -1;
 	
 	}
 	
@@ -92,6 +92,17 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			
 			ExternalAccountDAO.unlinkExternalAccountWithUser(this.getConnection(), userId, userToken, provider);
+			
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
+	}
+	
+	public void unlinkExternalAccountWithUser(String userId, String provider)
+	{
+		try {
+			
+			ExternalAccountDAO.unlinkExternalAccountWithUser(this.getConnection(), userId, provider);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());

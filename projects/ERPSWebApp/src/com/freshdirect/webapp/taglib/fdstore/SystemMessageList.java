@@ -207,4 +207,18 @@ public interface SystemMessageList {
 	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
 	public static final String MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD = "This delivery address is not valid for an EBT payment method.";
     public static final String MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE = "Your delivery or pickup location has an order minimum of {0} (pre-tax). To place an order, add more items to your cart.";
+    
+    public static final String MSG_SOCIAL_ACCOUNT_EXIST_SIGNIN = "You have an existing account. You are signed in";
+    public static final String MSG_SOCIAL_AUTO_SIGNIN = "Auto Sign In";
+    public static final String MSG_SOCIAL_EXISTING_LINK_SIGNIN = "You have an existing account. It is now linked to {0}";
+    public static final String MSG_SOCIAL_LINKED = "Your Social account linked successfully.";
+    public static final String MSG_SOCIAL_UNLINKED = "Your Social account unlinked successfully.";
+    public static final String MSG_SOCIAL_NO_ACCOUNT_CONNECTED = "No FreshDirect Account is connected to this Social account";
+    public static final String MSG_SOCIAL_ACCOUNT_CREATED = "Created a new account using your Social account.";
+    public static final String MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE ="You have an existing account linked to {0} Please sign in using {0}";
+    public static final String MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN ="User Name & Password do not match. Please try again or sign in with {0}";
+    public static final String MSG_SOCIAL_INVALID_USERTOKEN="Invalid User Token";
+    public static final String MSG_SOCIAL_PROFILE_NOT_FOUND="Social profile not found";
+    
+    
 }
