@@ -59,6 +59,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	private String passwordHash;
 	private String sapId;
 	private boolean active;
+	private boolean socialLoginOnly;
 	
 	/**
 	 * @link aggregationByValue
@@ -102,6 +103,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		model.setUserId(this.userId);
 		model.setPasswordHash(this.passwordHash);
 		model.setActive(this.active);
+		model.setSocialLoginOnly(this.socialLoginOnly);
 		model.setSapId(this.sapId);
 
 		// deep copy properties
@@ -131,6 +133,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.passwordHash = m.getPasswordHash();
 		this.sapId = m.getSapId();
 		this.active = m.isActive();
+		this.socialLoginOnly = m.isSocialLoginOnly();
 		this.customerInfo.setFromModel(m.getCustomerInfo());
 		this.setShipToAddressFromModel(m.getShipToAddresses());
 		this.setPaymentMethodFromModel(m.getPaymentMethods());
@@ -145,6 +148,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.passwordHash = "";
 		this.sapId = "";
 		this.active = false;
+		this.socialLoginOnly = false;
 		this.customerInfo = new ErpCustomerInfoPersistentBean();
 		this.shipToAddress = new AddressList();
 		this.paymentMethodList = new PaymentMethodList();
@@ -207,7 +211,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
             conn.close();
             return pk;
         } catch (SQLException sqle) {
-        	LOGGER.warn("Error in ejbCreate(model), setting rollbackOnly, throwing CreateException", sqle);
+        	LOGGER.warn("Error in ejbCreate(model)111, setting rollbackOnly, throwing CreateException", sqle);
             if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
                 throw new DuplicateKeyException("The user id already exists");
             }
@@ -227,12 +231,14 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	public PrimaryKey create(Connection conn) throws SQLException{
 
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CUSTOMER (ID, USER_ID, SAP_ID, ACTIVE, PASSWORDHASH) values (?,LOWER(?),?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CUSTOMER (ID, USER_ID, SAP_ID, ACTIVE, PASSWORDHASH,SOCIAL_LOGIN_ONLY) values (?,LOWER(?),?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
 		ps.setString(2, this.getUserId());
 		ps.setString(3, this.getSapId());
 		ps.setString(4, (this.isActive()? "1" : "0"));
 		ps.setString(5, this.passwordHash);
+		ps.setString(6, (this.isSocialLoginOnly()? "1" : "0"));
+		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -269,7 +275,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT USER_ID, PASSWORDHASH, SAP_ID, ACTIVE FROM CUST.CUSTOMER WHERE ID = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT USER_ID, PASSWORDHASH, SAP_ID, ACTIVE, SOCIAL_LOGIN_ONLY FROM CUST.CUSTOMER WHERE ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -279,6 +285,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.setPasswordHash(rs.getString("PASSWORDHASH"));
 		this.setSapId(rs.getString("SAP_ID"));
 		this.setActive(("1".equals(rs.getString("ACTIVE"))? true : false));
+		this.setSocialLoginOnly(("1".equals(rs.getString("SOCIAL_LOGIN_ONLY"))? true : false));
 
 		rs.close();
 		rs = null;
@@ -309,12 +316,13 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 
 	public void store(Connection conn) throws SQLException {
 		if (super.isModified()) {
-			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CUSTOMER SET USER_ID = LOWER(?),  SAP_ID = ?, ACTIVE = ?, PASSWORDHASH = ? WHERE ID=?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CUSTOMER SET USER_ID = LOWER(?),  SAP_ID = ?, ACTIVE = ?, PASSWORDHASH = ?, SOCIAL_LOGIN_ONLY = ?  WHERE ID=?");
 			ps.setString(1, this.getUserId());
 			ps.setString(2, this.getSapId());
 			ps.setString(3, (this.isActive() ? "1" : "0"));
 			ps.setString(4, this.passwordHash);
-			ps.setString(5, this.getPK().getId());
+			ps.setString(5, (this.isSocialLoginOnly() ? "1" : "0"));
+			ps.setString(6, this.getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
@@ -619,6 +627,16 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.setModified();
 	}
 
+	public boolean isSocialLoginOnly() {
+		return socialLoginOnly;
+	}
+
+	public void setSocialLoginOnly(boolean socialLoginOnly) {
+		this.socialLoginOnly = socialLoginOnly;
+		this.setModified();
+	}		
+	
+	
 	public void updatePaymentMethod(ErpPaymentMethodI element) throws RemoteException {
 		this.paymentMethodList.update(new ErpPaymentMethodPersistentBean((ErpPaymentMethodModel)element));			
 	}

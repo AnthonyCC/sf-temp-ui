@@ -5677,8 +5677,8 @@
 		<tagclass>com.freshdirect.webapp.taglib.sitemap.SitemapTag</tagclass>
 	</tag>
 	<tag>
-		<name>SocialLoginController</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.SocialLoginControllerTag</tagclass>
+		<name>ExternalAccountController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ExternalAccountControllerTag</tagclass>
 	</tag>
 	
 	

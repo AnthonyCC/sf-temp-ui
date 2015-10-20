@@ -68,7 +68,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.baseAvailable = baseAvailable;
 		this.chefsTableAvailble = chefsTableAvailble;
 		this.additionalDistance = additionalDistance;
-		
+		this.hasSteeringRadius = hasSteeringRadius;
 		this.travelZone = travelZone;
 		this.minDurationForModStart = minDurationForModStart;
 		this.minDurationForModification = minDurationForModification;

@@ -29,6 +29,8 @@
   <features:potato />
   <%-- TODO !!! --%>
   <script type="text/javascript">
+  
+	function setAndAppendExtoleObject() {}
   (function () {
     window.FreshDirect = window.FreshDirect || {};
     var fd = window.FreshDirect;
@@ -109,3 +111,4 @@
 		}
 	%>
 	
+<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>

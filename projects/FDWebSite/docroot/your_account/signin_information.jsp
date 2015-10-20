@@ -143,6 +143,7 @@ String displayName = "";
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());  
 
 FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
 String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
@@ -380,8 +381,16 @@ if (request.getParameter("employeeId") != null) {
 %>
 <%// CONFIRMATION MESSAGE %>
 <%if(result.isSuccess() && "POST".equalsIgnoreCase(request.getMethod())){
-    String confirmationMsg = "Your changes have been saved.";
-    /* remove fraud messaging 
+
+	String confirmationMsg = "";		// used in 'i_confirmation_messages.jspf'
+	
+	if(request.getAttribute("SocialNetworkProvider") != null){
+		confirmationMsg = "Social network " + request.getAttribute("SocialNetworkProvider") + " has been disconnected.";
+	} else {
+		confirmationMsg = "Your changes have been saved.";     
+	}	
+	
+	/* remove fraud messaging 
 	if ( user.isFraudulent()) { 
 		confirmationMsg = confirmationMsg +"<br><br>" + MessageFormat.format(SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]{user.getCustomerServiceContact()});
 	}
@@ -461,8 +470,16 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-	<img src="/media_stat/images/navigation/change_your_password.gif" width="162" height="9" border="0" alt="CHANGE YOUR PASSWORD" align="absbottom">&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br>
-  <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+	
+		<%  boolean isPasswordAddedForSocialUser = UserUtil.isPasswordAddedForSocialUser(identity.getErpCustomerPK());
+			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){	
+		%>
+			<img src="/media_stat/images/navigation/add_a_password.png" width="110" height="20" border="0" alt="ADD A PASSWORD" align="absbottom">&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br>	
+		<%	} else { %>		
+			<img src="/media_stat/images/navigation/change_your_password.gif" width="162" height="9" border="0" alt="CHANGE YOUR PASSWORD" align="absbottom">&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br>		
+		<%	} %>	
+		
+	  		<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
 	</td>
 </tr>
 
@@ -732,6 +749,13 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	</form>
 <% }else{ %>
+
+
+	
+	<%@ include file="/includes/i_social_accounts.jspf"%>	
+
+
+
 	<form name="update_email_preference" method="post">
 	<input type="hidden" name="actionName" value="changeEmailPreference">
 	<tr>

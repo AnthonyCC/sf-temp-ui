@@ -17,9 +17,9 @@ import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerHome;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
-import com.freshdirect.fdstore.social.ejb.FDSocialManagerHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -156,10 +156,9 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
-    public FDSocialManagerHome getFDSocialLoginManagerHome() {
+    public ExternalAccountManagerHome getExternalLoginManagerHome() {
         try {
-            //return (FDSocialLoginManagerHome) getRemoteHome(FDStoreProperties.getFDSocialLoginManagerHome());
-        	return (FDSocialManagerHome) getRemoteHome("freshdirect.fdstore.SocialManager");
+            return (ExternalAccountManagerHome) getRemoteHome(FDStoreProperties.getExternalAccountManagerHome());
         } catch (NamingException e) {
             throw new EJBException(e);
         }

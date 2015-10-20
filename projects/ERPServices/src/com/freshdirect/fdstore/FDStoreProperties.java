@@ -48,7 +48,7 @@ public class FDStoreProperties {
     private final static String PROP_COMPLAINTMGR_HOME = "fdstore.complaintManager.home";
     private final static String PROP_CALLCENTERMGR_HOME = "fdstore.callCenterManager.home";
     private final static String PROP_FDCUSTMGR_HOME = "fdstore.fdCustomerManager.home";
-    private final static String PROP_FDSOCIALMGR_HOME = "freshdirect.fdstore.SocialManager";
+    private final static String PROP_EXTERNAL_ACCOUNTMGR_HOME = "fdstore.externalLoginManager.home";
     private final static String PROP_FDPROMOTIONMGR_HOME = "fdstore.fdPromotionManager.home";
     private final static String PROP_FDPROMOTIONMGR_NEW_HOME = "fdstore.fdPromotionManagerNew.home";
     private final static String PROP_DLVMANAGER_HOME = "fdstore.deliveryManager.home";
@@ -1423,7 +1423,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1531,6 +1531,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
+        defaults.put(PROP_EXTERNAL_ACCOUNTMGR_HOME, "freshdirect.fdstore.ExternalAccountManager");
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
@@ -1653,12 +1654,10 @@ public class FDStoreProperties {
         return get(PROP_FDCUSTMGR_HOME);
     }
     
-    public static String getFDSocialLoginManagerHome() {
-    	return get(PROP_FDSOCIALMGR_HOME);
+    public static String getExternalAccountManagerHome() {
+    	return get(PROP_EXTERNAL_ACCOUNTMGR_HOME);
     }
     
-    
-
     public static String getFDPromotionManagerHome() {
         return get(PROP_FDPROMOTIONMGR_HOME);
     }

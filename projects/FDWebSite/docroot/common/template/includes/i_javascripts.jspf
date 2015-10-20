@@ -132,3 +132,5 @@
   	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
   	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
   <% } %>
+<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
+  

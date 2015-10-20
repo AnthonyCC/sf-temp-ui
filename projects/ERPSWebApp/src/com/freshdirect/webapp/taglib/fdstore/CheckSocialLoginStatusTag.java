@@ -5,9 +5,14 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import weblogic.auddi.util.Logger;
+
+import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.social.ejb.FDSocialManager;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
 
@@ -33,7 +38,8 @@ public class CheckSocialLoginStatusTag extends BodyTagSupportEx {
 			
 				LOGGER.debug("Id: "+ user.getIdentity().getErpCustomerPK());
 				
-				isSocialLoginOnly =	FDSocialManager.isSocialLoginOnlyUser(user.getIdentity().getErpCustomerPK());
+				isSocialLoginOnly =	ExternalAccountManager.isExternalLoginOnlyUser(user.getIdentity().getErpCustomerPK(),
+						EnumExternalLoginSource.SOCIAL);
 		
 		
 			} catch (FDResourceException e1) {

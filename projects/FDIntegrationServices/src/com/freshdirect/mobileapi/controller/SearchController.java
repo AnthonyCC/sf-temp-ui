@@ -16,8 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
@@ -33,6 +31,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.SortType;
 
 public class SearchController extends BaseController {
@@ -118,7 +117,12 @@ public class SearchController extends BaseController {
 
         List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response));
-
+        
+        ListPaginator<Product> paginator = new ListPaginator<Product>(
+  			   products, resultMax);
+  	   	
+        products = paginator.getPage(page);
+        
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();
         List<FilterOption> brandList = new ArrayList<FilterOption>();

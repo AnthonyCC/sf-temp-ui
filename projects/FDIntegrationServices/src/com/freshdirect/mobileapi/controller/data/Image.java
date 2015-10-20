@@ -10,7 +10,7 @@ import com.freshdirect.mobileapi.util.MobileApiProperties;
 public class Image {
 
     public enum ImageSizeType {
-        THUMB, MEDIUM, LARGE, ICON
+        THUMB, MEDIUM, LARGE, ICON, BANNER
     }
 
     public Image() {

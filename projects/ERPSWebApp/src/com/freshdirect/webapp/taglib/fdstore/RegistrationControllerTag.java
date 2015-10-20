@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -75,6 +76,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	private String statusChangePage;
 	private boolean signupFromCheckout;
 	private int registrationType;
+	private String source;
 
 	private ErpAddressModel lastSavedAddressModel;
 	
@@ -97,10 +99,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	public ErpAddressModel getLastSavedAddressModel(){
 		return lastSavedAddressModel;
 	}
+	
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) {
 		String actionName = this.getActionName();
 		try {
+			String source = (request.getParameter("source") == null) ? "" : (String)request.getParameter("source");
 			HttpSession session = (HttpSession) pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 			FDCartModel cart = null;
@@ -137,69 +141,13 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
-				this.pageContext.getSession().removeAttribute("LITESIGNUP_COMPLETE");
-				if(session.getAttribute("REFERRALNAME") != null ) {
-					if(!"done".equals(request.getParameter("submission"))) {
-						actionResult.addError(new ActionError("Dummy","Dummy"));
-						return true;
-					}
+				
+				String successPage = AccountServiceFactory.getService(source).register(user, this.pageContext, actionResult, this.registrationType);
+				if(successPage!=null){
+					this.setSuccessPage(successPage);
+					this.setAjax(true);
 				}
-				RegistrationAction ra = new RegistrationAction(this.registrationType);
-
-				HttpContext ctx =
-					new HttpContext(
-						this.pageContext.getSession(),
-						(HttpServletRequest) this.pageContext.getRequest(),
-						(HttpServletResponse) this.pageContext.getResponse());
-
-				ra.setHttpContext(ctx);
-				ra.setResult(actionResult);
-				/* APPDEV-1888 Refer a Friend */
-				String result = ra.executeEx();
-				if((Action.SUCCESS).equals(result)) {
-					//if referral information is available, record it.
-					if(this.pageContext.getSession().getAttribute("REFERRALNAME") != null) {
-						try {
-							user = (FDSessionUser) session.getAttribute(USER);
-							LOGGER.debug(user.getIdentity().getErpCustomerPK());
-							LOGGER.debug(user.getUserId());
-							LOGGER.debug((String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
-							LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) this.pageContext.getSession().getAttribute("REFERRALNAME"));
-							String customerId = user.getIdentity().getErpCustomerPK();
-							String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) this.pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
-							user.setReferralCustomerId(referralCustomerId);
-							session.setAttribute(USER, user);
-							//Record the referee signup in referral activitylog
-							ErpActivityRecord rec = new ErpActivityRecord();
-							rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
-							rec.setSource(EnumTransactionSource.WEBSITE);
-							rec.setInitiator("CUSTOMER");
-							rec.setCustomerId(referralCustomerId);
-							rec.setDate(new Date());
-							rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
-							new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
-							//this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
-							this.setSuccessPage("/registration/referee_signup2.jsp");
-							this.setAjax(true);
-							CmRegistrationTag.setPendingRegistrationEvent(session);
-						} catch (Exception e) {
-							LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
-						}
-					} else {
-						if("true".equals(this.pageContext.getRequest().getParameter("LITESIGNUP"))) {
-							this.setSuccessPage("/registration/signup_lite.jsp");
-							this.setAjax(true);
-							this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
-							CmRegistrationTag.setPendingRegistrationEvent(pageContext.getSession());
-						}
-					}
-
-					user = (FDSessionUser) session.getAttribute(USER);
-					if (user != null) {
-						user.setJustSignedUp(true);
-					}
-				}
-
+				
 			} else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				lastSavedAddressModel = m.performAddDeliveryAddress();
@@ -284,6 +232,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//coming from order receipt screen. store all of them together.
 				this.addAllSmsAlerts(request, actionResult);
 			}
+			else if("disconnectSocialAccount".equals(actionName)) {
+				//disconnect social account from user's profile.
+				this.performDisconnectSocialAccount(request, actionResult);
+			}			
 			
 
 		} catch (Exception ex) {
@@ -921,6 +873,31 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 	}
 	
+	protected void performDisconnectSocialAccount(HttpServletRequest request, ActionResult result) throws FDResourceException {
+
+		String socialEmail = request.getParameter("socialEmail");
+		String userToken = request.getParameter("userToken");
+		String socialNetworkProvider = request.getParameter("socialNetworkProvider");
+		
+		
+		if ((socialEmail == null || "".equals(socialEmail)) ||
+			(userToken == null || "".equals(userToken))) {
+			
+			return;
+			
+		} else {
+			
+			try {
+				//FDSocialManager.unlinkSocialAccountWithUser( socialEmail, userToken);  
+				ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
+				request.setAttribute("SocialNetworkProvider", socialNetworkProvider);
+			} catch (FDResourceException e1) {
+				LOGGER.error("Error in disconnecting social account:" + e1.getMessage());
+				result.addError(new ActionError("Error in disconnecting social account:" + socialEmail));
+			}
+		} 
+	}		
+	
 	protected void changeEmailPreferenceLevel(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
 		//get value
@@ -1051,6 +1028,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			}
 		}
 		return clean.toString();
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 }
 

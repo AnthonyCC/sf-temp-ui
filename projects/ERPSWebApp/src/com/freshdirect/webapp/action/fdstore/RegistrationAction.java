@@ -6,12 +6,15 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -28,9 +31,9 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.RegistrationResult;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.referral.FDReferralManager;
-import com.freshdirect.fdstore.social.ejb.FDSocialManager;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyFactory;
@@ -293,6 +296,18 @@ public class RegistrationAction extends WebActionSupport {
 		AccountInfo aInfo = new AccountInfo(request);
 		AddressInfo addInfo = new AddressInfo(request);
 		
+		if("true".equals(request.getParameter("DELIVERYADDRESS"))) {
+			if(session.getAttribute("SOCIALCONTACTINFO") != null && session.getAttribute("SOCIALACCOUNTINFO") != null) {		
+				cInfo = (ContactInfo) session.getAttribute("SOCIALCONTACTINFO");
+				aInfo = (AccountInfo) session.getAttribute("SOCIALACCOUNTINFO");				
+			} 
+			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {				
+				addInfo.validate(actionResult);
+				cInfo.workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
+				cInfo.workPhoneExt = NVL.apply(request.getParameter("busphoneext"), "").trim();
+			}
+		}
+		
 		if("true".equals(request.getParameter("LITESIGNUP"))) {
 			if(session.getAttribute("LITECONTACTINFO") != null && session.getAttribute("LITEACCOUNTINFO") != null) {		
 				cInfo = (ContactInfo) session.getAttribute("LITECONTACTINFO");
@@ -517,7 +532,8 @@ public class RegistrationAction extends WebActionSupport {
 						
 						try {
 
-							FDSocialManager.mergeSocialAccountWithUser(
+							ExternalAccountManager.linkUserTokenToUserId(
+									regIdent.getFDCustomerPK(),
 									socialUser.get("email"),
 									socialUser.get("userToken"),
 									socialUser.get("identityToken"),
@@ -600,6 +616,52 @@ public class RegistrationAction extends WebActionSupport {
 
 	}
 	
+	/*
+	 * 'addDeliverayAddress' is to add delivery info, including first name/last name, to user's profile
+	 * copy logic from executeEx()
+	 */
+	public String addDeliverayAddress() throws FDResourceException {   
+			
+			HttpServletRequest request = this.getWebActionContext().getRequest();
+			HttpSession session = this.getWebActionContext().getSession();
+			
+			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);			
+			EnumServiceType serviceType = user.getSelectedServiceType();
+			AddressModel address = user.getAddress();
+			
+			// address info
+			AddressInfo addInfo = new AddressInfo(request);
+			// contact info: first name, last name, phone #, etc.
+			ContactInfo cInfo = new ContactInfo(request);	
+			
+			ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();    
+			cInfo.decorateCustomerInfo(customerInfo);  // populate ErpCustomerInfoModel object
+						
+			ErpAddressModel erpAddress = null;
+			if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
+				erpAddress = new ErpAddressModel(address);
+				erpAddress.setFirstName(customerInfo.getFirstName());
+				erpAddress.setLastName(customerInfo.getLastName());
+				erpAddress.setPhone(customerInfo.getHomePhone());			
+				if("true".equals(request.getParameter("LITESIGNUP"))) {
+					if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {
+						erpAddress.setPhone(new PhoneNumber(NVL.apply(request.getParameter("busphone"), "").trim()));
+					}
+				}
+				erpAddress.setAddressInfo(address.getAddressInfo());
+				erpAddress.setServiceType(serviceType);
+				//erpCustomer.addShipToAddress(erpAddress);
+				if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
+					erpAddress.setCompanyName(addInfo.getCompanyName());
+				}				
+			} 
+
+			// to add delivery info, including first name/last name, to user's profile
+			FDCustomerManager.createAddress(erpAddress, user.getIdentity().getErpCustomerPK());
+
+			return SUCCESS;
+		}
+	
 	public String validateLiteSignup() {
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 		ActionResult actionResult = this.getResult();
@@ -621,7 +683,9 @@ public class RegistrationAction extends WebActionSupport {
 		}
 
 		aInfo.validateExSLite(actionResult);
-		cInfo.validateEx(actionResult);
+		if(!"true".equals(request.getParameter("LITESIGNUP"))) {
+			cInfo.validateEx(actionResult);
+		}
 		AccountUtil.validatePasswordEx(actionResult, aInfo.password, aInfo.repeatPassword);		
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
@@ -637,10 +701,57 @@ public class RegistrationAction extends WebActionSupport {
 		//store contactInfo and AccountInfo in session
 		session.setAttribute("LITECONTACTINFO", cInfo);
 		session.setAttribute("LITEACCOUNTINFO", aInfo);
+		return SUCCESS;
+	}
+	
+	public String validateSocialSignupEmail() {
+		HttpServletRequest request = this.getWebActionContext().getRequest();
+		ActionResult actionResult = this.getResult();
+		
+		AccountInfo aInfo = new AccountInfo(request);
+		
+		try {
+			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
+				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				
+			}
+		} catch (FDResourceException e) {			
+		}
+		
+		if (!actionResult.isSuccess()) {
+			return ERROR;
+		}
+		
+		//store Email/Password in session
+		HttpSession session = this.getWebActionContext().getSession();
+		session.setAttribute("SOCIALACCOUNTINFO", aInfo);
 		
 		return SUCCESS;
 	}
 	
+	public String validateSocialSignupFirstLast() {
+		HttpServletRequest request = this.getWebActionContext().getRequest();
+		ActionResult actionResult = this.getResult();
+
+		ContactInfo cInfo = new ContactInfo(request);
+		HttpSession session = this.getWebActionContext().getSession();
+		
+		if(request.getParameter("serviceType").equals("HOME")){
+			cInfo.validate(actionResult,EnumServiceType.HOME);
+		}
+		else
+		{
+			cInfo.validate(actionResult,EnumServiceType.CORPORATE);
+		}
+		
+		if (!actionResult.isSuccess()) {
+			return ERROR;
+		}
+		
+		//store contactInfo and AccountInfo in session
+		session.setAttribute("SOCIALCONTACTINFO", cInfo);
+		
+		return SUCCESS;
+	}
 	class ContactInfo {
 
 		private String title;
@@ -773,10 +884,17 @@ public class RegistrationAction extends WebActionSupport {
 			this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
 			this.repeatEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "").trim();
 			this.altEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode()), "").trim();
-			if(request.getParameter("LITESIGNUP_SOCIAL") != null && "true".equals(request.getParameter("LITESIGNUP_SOCIAL")))
+			if(request.getParameter("LITESIGNUP_SOCIAL") != null && "true".equals(request.getParameter("LITESIGNUP_SOCIAL"))
+					&& (StringUtils.isEmpty(request.getParameter("source")) || EnumExternalLoginSource.SOCIAL.value().equalsIgnoreCase(request.getParameter("source"))))
 			{	
 				this.password="^0X!3X!X!1^";  //Dummy password for social login. will not be exposed to anyone. 
 				this.socialLoginOnly = true;
+			}			
+			else if(request.getSession().getAttribute("SOCIALONLYACCOUNT") != null)
+			{
+				this.password="^0X!3X!X!1^";  //Dummy password for social login. will not be exposed to anyone. 
+				this.socialLoginOnly = true;
+				request.getSession().setAttribute("SOCIALONLYACCOUNT",null);
 			}
 			else 
 				this.password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim();

@@ -1,24 +1,22 @@
-package com.freshdirect.fdstore.social.ejb;
+package com.freshdirect.fdstore.customer.accounts.external;
 
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.ejb.CreateException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.ERPServiceLocator;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-@SuppressWarnings("deprecation")
-public class FDSocialManager extends ERPServiceLocator{
+public class ExternalAccountManager{
 	
-	private static Category LOGGER = LoggerFactory.getInstance(FDSocialManager.class);
+	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountManager.class);
 	
-	private static FDSocialManagerHome socialManagerHome = null;
+	private static ExternalAccountManagerHome externalLoginManagerHome = null;
 	
 	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 	
@@ -26,7 +24,7 @@ public class FDSocialManager extends ERPServiceLocator{
 		lookupManagerHome();
 		String userId="";
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
 			userId = sb.getUserIdForUserToken(userToken);
 			LOGGER.info("USER ID for token: "+userToken+" is:"+userId);
 		} catch (CreateException ce) {
@@ -43,7 +41,7 @@ public class FDSocialManager extends ERPServiceLocator{
 	public static boolean isUserEmailAlreadyExist(String email) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
 			return sb.isUserEmailAlreadyExist(email);
 			
 		} catch (CreateException ce) {
@@ -55,12 +53,27 @@ public class FDSocialManager extends ERPServiceLocator{
 		}
 	}
 	
-	
-	public static List<String> getConnectedProvidersByUserId(String userId) throws FDResourceException {
+	public static boolean isUserEmailAlreadyExist(String email, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
-			return sb.getConnectedProvidersByUserId(userId);
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			return sb.isUserEmailAlreadyExist(email, provider);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}	
+	
+	
+	public static List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			return sb.getConnectedProvidersByUserId(userId, source);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -71,12 +84,12 @@ public class FDSocialManager extends ERPServiceLocator{
 		}
 	}
 	
-	public static boolean isSocialLoginOnlyUser(String userId) throws FDResourceException
+	public static boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) throws FDResourceException
 	{
 		lookupManagerHome();
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
-			return sb.isSocialLoginOnlyUser(userId);
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			return sb.isExternalLoginOnlyUser(userId, source);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -90,12 +103,12 @@ public class FDSocialManager extends ERPServiceLocator{
 	
 	
 	
-	public static void mergeSocialAccountWithUser(String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified) throws FDResourceException
+	public static void linkUserTokenToUserId(String customerId, String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified) throws FDResourceException
 	{
 		lookupManagerHome();
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
-			sb.mergeSocialAccountWithUser(userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			sb.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -108,21 +121,21 @@ public class FDSocialManager extends ERPServiceLocator{
 	
 	
 	private static void invalidateManagerHome() {
-		socialManagerHome = null;
+		externalLoginManagerHome = null;
 	}
 
 	private static void lookupManagerHome() {
-		if (socialManagerHome != null) {
+		if (externalLoginManagerHome != null) {
 			return;
 		}
-		socialManagerHome = LOCATOR.getFDSocialLoginManagerHome();
+		externalLoginManagerHome = LOCATOR.getExternalLoginManagerHome();
 	}
 
-	public static void unlinkSocialAccountWithUser(String email, String userToken) throws FDResourceException {
+	public static void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDSocialManagerSB sb = socialManagerHome.create();
-			sb.unlinkSocialAccountWithUser(email, userToken);
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			sb.unlinkExternalAccountWithUser(email, userToken, provider);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();

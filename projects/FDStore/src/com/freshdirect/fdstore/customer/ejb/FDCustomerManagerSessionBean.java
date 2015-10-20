@@ -135,6 +135,7 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -447,7 +448,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType, eStoreId);
+			FDUser user = null;
+			if(address != null){
+				user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType, eStoreId);
+			}else{
+				user = FDUserDAO.createUser(conn, serviceType, eStoreId);
+			}
 
 			return user;
 
@@ -466,6 +472,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDUser user = FDUserDAO.createDepotUser(conn, depotCode, serviceType, eStoreId);
 
 			return user;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+
+	public void createAddress(ErpAddressModel addressModel, String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			AddressDAO addressDAO = new AddressDAO();
+			addressDAO.create(conn, addressModel, customerId);
+			return;
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);

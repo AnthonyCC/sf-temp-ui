@@ -1,12 +1,12 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-public class SocialLogin {
+public class ExternalAccountLogin {
 	
 	private String userToken;
 	private String email;
 	private String provider;
 	private String accessToken;
-	private String context;
+	private String source;
 	
 	public String getProvider() {
 		return provider;
@@ -40,12 +40,12 @@ public class SocialLogin {
 		this.accessToken = accessToken;
 	}
 
-	public String getContext() {
-		return context;
+	public String getSource() {
+		return source;
 	}
 
-	public void setContext(String context) {
-		this.context = context;
+	public void setSource(String source) {
+		this.source = source;
 	}
 	
 	

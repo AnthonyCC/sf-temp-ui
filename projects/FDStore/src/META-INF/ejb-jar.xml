@@ -109,10 +109,10 @@
     </session>
     
     <session>
-      <ejb-name>FDSocialManager</ejb-name>
-      <home>com.freshdirect.fdstore.social.ejb.FDSocialManagerHome</home>
-      <remote>com.freshdirect.fdstore.social.ejb.FDSocialManagerSB</remote>
-      <ejb-class>com.freshdirect.fdstore.social.ejb.FDSocialManagerSessionBean</ejb-class>
+      <ejb-name>ExternalAccountManager</ejb-name>
+      <home>com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerHome</home>
+      <remote>com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerSB</remote>
+      <ejb-class>com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerSessionBean</ejb-class>
       <session-type>Stateless</session-type>
       <transaction-type>Container</transaction-type>
       <ejb-ref>

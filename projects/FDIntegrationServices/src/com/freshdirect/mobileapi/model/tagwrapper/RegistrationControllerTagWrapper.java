@@ -1,8 +1,10 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.FDException;
@@ -14,8 +16,8 @@ import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessageFdxRequest;
-import com.freshdirect.mobileapi.controller.data.request.SocialRegisterRequest;
+import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
+import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
@@ -54,9 +56,9 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     public ResultBundle register(RegisterMessage registerMessage) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
         		SESSION_PARAM_SS_PREV_RECOMMENDATIONS, SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,
-        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
+        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER, "SOCIALONLYACCOUNT"}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
         		SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_LITE_SIGNUP_COMPLETE,
-        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER}); //gets,sets
+        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER, "SOCIALONLYACCOUNT"}); //gets,sets
     	
         addExpectedRequestValues(new String[] {"title", EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),
         		EnumUserInfoName.DLV_HOME_PHONE.getCode(),"homephoneext","busphone", "busphoneext", "cellphone", "cellphoneext",
@@ -72,7 +74,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS"}
         		, new String[] {});//gets,sets
         
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());
@@ -102,12 +104,12 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
     }
     
    
-    public ResultBundle registerSocial(SocialRegisterRequest registerMessage) throws FDException {
+    public ResultBundle registerSocial(ExternalAccountRegisterRequest registerMessage) throws FDException {
         addExpectedSessionValues(new String[] {SESSION_PARAM_APPLICATION,SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,
         		SESSION_PARAM_SS_PREV_RECOMMENDATIONS, SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,
-        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER,SessionName.LITECONTACTINFO,SessionName.LITEACCOUNTINFO}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
+        		SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_REFERRAL_NAME,SessionName.SOCIAL_USER,SessionName.LITECONTACTINFO,SessionName.LITEACCOUNTINFO, "SOCIALONLYACCOUNT", "SOCIALCONTACTINFO", "SOCIALACCOUNTINFO"}, new String[] {SESSION_PARAM_SS_PREV_RECOMMENDATIONS, 
         		SESSION_PARAM_SAVINGS_FEATURE_LOOK_UP_TABLE,SESSION_PARAM_PREV_SAVINGS_VARIANT, SESSION_PARAM_USER, SESSION_PARAM_LITE_SIGNUP_COMPLETE,
-        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER,SessionName.LITECONTACTINFO,SessionName.LITEACCOUNTINFO}); //gets,sets
+        		SESSION_PARAM_PENDING_REGISTRATION_EVENT, SESSION_PARAM_PENDING_LOGIN_EVENT, SESSION_PARAM_REGISTRATION_LOCATION, SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE,SessionName.SOCIAL_USER,SessionName.LITECONTACTINFO,SessionName.LITEACCOUNTINFO, "SOCIALONLYACCOUNT", "SOCIALCONTACTINFO", "SOCIALACCOUNTINFO"}); //gets,sets
     	
         addExpectedRequestValues(new String[] {"title", EnumUserInfoName.DLV_FIRST_NAME.getCode(),EnumUserInfoName.DLV_LAST_NAME.getCode(),
         		EnumUserInfoName.DLV_HOME_PHONE.getCode(),"homephoneext","busphone", "busphoneext", "cellphone", "cellphoneext",
@@ -123,14 +125,18 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"fd_successPage","userToken","provider"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"fd_successPage","userToken","provider", "DELIVERYADDRESS"}
         		, new String[] {"fd_successPage","userToken","provider"});//gets,sets
         
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());
         addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), registerMessage.getLastName());
         addRequestValue(EnumUserInfoName.EMAIL.getCode(), registerMessage.getEmail());
         addRequestValue(EnumUserInfoName.REPEAT_EMAIL.getCode(), registerMessage.getEmail());
-        String password="^0X!3X!X!1^";
+        String password = registerMessage.getPassword(); //using the password provided in case of non social external account
+        
+        if(StringUtils.isEmpty(registerMessage.getSource()) || EnumExternalLoginSource.SOCIAL.value().equalsIgnoreCase(registerMessage.getSource())){
+        	 password="^0X!3X!X!1^";	
+        }
         addRequestValue(EnumUserInfoName.PASSWORD.getCode(), password);
         addRequestValue(EnumUserInfoName.REPEAT_PASSWORD.getCode(), password);
         addRequestValue("password_hint", registerMessage.getSecurityQuestion());
@@ -145,7 +151,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(REQ_PARAM_LITE_SIGNUP_SOCIAL,"true");
         addRequestValue("userToken",registerMessage.getUserToken());
         addRequestValue("provider",registerMessage.getProvider());
-        
+        addRequestValue("source",registerMessage.getSource());
         
         addRequestValue("terms", "Y");
         //addRequestValue("partialDelivery", registerMessage.isPartialDelivery() ? "Y" : "");

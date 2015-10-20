@@ -187,6 +187,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/cart/getdetail/");
   	$("#payload").val("");
   	
+  }else if (loaddata == "SaveCart") {
+  	$("#url").val("/saptest12@freshdirect.com/cart/save/");
+  	$("#payload").val("");
+  	
   } else if (loaddata == "SetTip") {
   	$("#url").val("/saptest12@freshdirect.com/cart/tip/set/1.5");
   	$("#payload").val('');
@@ -894,6 +898,22 @@ function loadStuff() {
   	$("#url").val("/home/getPage/");
   	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
+  }  else if (  loaddata == "sociallogin") {
+  	$("#url").val("/social/login/"); 
+  	$("#payload").val('{"userToken":"e3314c02-9884-434e-b7b8-548da63dbe70","provider":"mastercard", "source" : " mastercard ", "email": "tirumal_b@yahoo.com"}'); 	
+  	
+  } else if (  loaddata == "linkaccount") {
+  	$("#url").val("/social/linkaccount/"); 
+  	$("#payload").val('{"email" : "tirumal_b@yahoo.com", "password" : "qwert1","existingToken":"e3314c02-9884-434e-b7b8-548da63dbe70","newToken":"e3314c02-9884-434e-b7b8-548da63dbe70","provider":"mastercard", "source" : "mastercard"}'); 	
+  	
+  } else if (  loaddata == "registersocial") {
+  	$("#url").val("/saptest12@freshdirect.com/registersocial/"); 
+  	$("#payload").val('{"email" : "test978@gmail.com", "password" : "welcome", "securityQuestion" : "test", "firstName" : "Test", "lastName" : "Registration", "serviceType" : "HOME", "address1" : "500 W 43 st", "apartment" : "8c", "city" : "New York", "state" : "NY", "zipCode" : "10036" , "mobile_number": "2035594466", "recieveSMSAlerts" : "true","userToken" : "e3314c02-9884-434e-b7b8-548da63dbe70", "provider" : "mastercard", "source" : " mastercard "}'); 	
+  	
+  }  else if (  loaddata == "unlinkaccount") {
+  	$("#url").val("/social/unlinkaccount/"); 
+  	$("#payload").val('{"email" : "test@yahoo.com", "userToken":"123"}'); 	
+  	
   } else if (  loaddata == "socialConnect") {
   	$("#url").val("/social/socialConnect/"); 
   	$("#payload").val('{"context" : "SIGNIN", "accessToken" : "12345", "provider":"google"}'); 	
@@ -1039,6 +1059,7 @@ function doStuff() {
   <option value="RemoveMultipleItems">CART - Remove Multiple</option>
   <option value="ViewItems">CART - View Items</option>
   <option value="ViewItem">CART - View Cartline</option>
+  <option value="SaveCart">CART - Save Cart</option>
   <option value="ClipCoupon">CART - Clip Coupon</option>
   <option value="SetTip">CART - Set Tip</option>
   <option value=""> ========== CHECKOUT ========== </option>
@@ -1209,6 +1230,10 @@ function doStuff() {
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
   <option value=""> ========== Social Login ========== </option>
+  <option value="sociallogin"> Social - Login</option>
+  <option value="linkaccount"> Social - Link Account </option>
+  <option value="registersocial"> Social - Register </option>
+  <option value="unlinkaccount"> Social - Unlink Account </option>
   <option value="socialConnect"> Social - Connect </option>
   <option value=""> ========== NEW BROWSE ========== </option>
   <option value="NewBrowseCategory">NEW BROWSE - CATEGORY</option>

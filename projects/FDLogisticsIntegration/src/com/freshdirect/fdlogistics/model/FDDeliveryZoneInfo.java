@@ -85,5 +85,13 @@ public class FDDeliveryZoneInfo implements Serializable  {
 	public FulfillmentInfo getFulfillmentInfo() {
 		return fulfillmentInfo;
 	}
+
+	@Override
+	public String toString() {
+		return "FDDeliveryZoneInfo [zoneCode=" + zoneCode + ", zoneId="
+				+ zoneId + ", unattended=" + unattended + ", cosEnabled="
+				+ cosEnabled + ", ctActive=" + ctActive + ", regionId="
+				+ regionId + ", serviceType=" + serviceType + "]";
+	}
 	
 }

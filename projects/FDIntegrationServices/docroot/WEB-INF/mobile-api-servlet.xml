@@ -93,7 +93,7 @@
 	<bean id="newProductController" class="com.freshdirect.mobileapi.controller.NewProductController"
 		parent="baseController" />
 						
-	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.SocialLoginController"
+	<bean id="socialLoginController" class="com.freshdirect.mobileapi.controller.ExternalAccountController"
 		parent="baseController" />
 		
     	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"

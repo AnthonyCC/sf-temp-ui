@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -18,6 +20,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -26,14 +29,14 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.MobilePreferencesResult;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
+import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLinkRequest;
+import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
 import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessageFdxRequest;
-import com.freshdirect.mobileapi.controller.data.request.SocialLogin;
-import com.freshdirect.mobileapi.controller.data.request.SocialRegisterRequest;
+import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
+import com.freshdirect.mobileapi.controller.data.response.ExternalAccountLoginResponse;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
-import com.freshdirect.mobileapi.controller.data.response.SocialResponse;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -41,17 +44,14 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.sms.EnumSMSAlertStatus;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
+import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
-import com.freshdirect.webapp.util.LocatorUtil;
 
 public class RegistrationController extends BaseController {
 
@@ -100,11 +100,11 @@ public class RegistrationController extends BaseController {
 					response, RegisterMessage.class);
 			model = register(model, requestMessage, request, response,user);
 		}else if (ACTION_REGISTER_FROM_FDX.equals(action)) {
-			RegisterMessageFdxRequest requestMessage = parseRequestObject(request,
-					response, RegisterMessageFdxRequest.class);
+			RegisterMessageEx requestMessage = parseRequestObject(request,
+					response, RegisterMessageEx.class);
 			model = registerEX(model, requestMessage, request, response,user);			
 		}else if (ACTION_REGISTER_FROM_SOCIAL.equals(action)) {
-			SocialRegisterRequest requestMessage = parseRequestObject(request,response, SocialRegisterRequest.class);
+			ExternalAccountRegisterRequest requestMessage = parseRequestObject(request,response, ExternalAccountRegisterRequest.class);
 			model = registerSocial(model, requestMessage, request, response,user);			
 		}  else if (ACTION_ADD_DELIVERY_ADDRESS.equals(action)) {
         	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
@@ -175,7 +175,7 @@ public class RegistrationController extends BaseController {
 	
 	
 	private ModelAndView registerEX(ModelAndView model,
-			RegisterMessageFdxRequest requestMessage, HttpServletRequest request,
+			RegisterMessageEx requestMessage, HttpServletRequest request,
 			HttpServletResponse response, SessionUser user) throws FDException,
 			NoSessionException, JsonException {	
 		Message responseMessage = null;
@@ -226,6 +226,7 @@ public class RegistrationController extends BaseController {
 			dliveryAddressRequest.setDlvhomephone(requestMessage.getMobile_number());		
 			ResultBundle resultBundleAdd = tagWrapper.addDeliveryAddress(dliveryAddressRequest);		*/
 			//------------------------------
+		
 		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		
@@ -270,7 +271,7 @@ public class RegistrationController extends BaseController {
 		return model;
 	}
 	
-	private ModelAndView registerSocial(ModelAndView model, SocialRegisterRequest requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) throws FDException, JsonException, NoSessionException{
+	private ModelAndView registerSocial(ModelAndView model, ExternalAccountRegisterRequest requestMessage, HttpServletRequest request, HttpServletResponse response, SessionUser user) throws FDException, JsonException, NoSessionException{
 		
 		Message responseMessage = null;
 		FDIdentity userIdentity = null;
@@ -279,6 +280,7 @@ public class RegistrationController extends BaseController {
 		HttpSession session = request.getSession();
 		userToken = requestMessage.getUserToken();
 		providerName = requestMessage.getProvider();
+		String source = requestMessage.getSource();
 		
 		request.setAttribute("userToken", userToken);
 		request.setAttribute("provider", providerName);
@@ -291,21 +293,23 @@ public class RegistrationController extends BaseController {
 		}
 		else
 		{
-			SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
-			
-			if(socialProvider != null && userToken != null)
-				socialUser = socialProvider.getSocialUserProfileByUserToken(userToken,providerName);
-			if(socialUser == null)
-			{
-				LOGGER.debug("User's social profile could not be found");
-				throw new FDException("User's social profile could not be found");
-			}
-			else
-			{
-				if(!requestMessage.getEmail().equalsIgnoreCase(socialUser.get("email")))
-					throw new FDException("User Email did not match with Social Email.");
+			if(StringUtils.isEmpty(source) || EnumExternalLoginSource.SOCIAL.value().equals(source)){
+				SocialProvider socialProvider = SocialGateway.getSocialProvider("ONE_ALL");
 				
-				session.setAttribute(SessionName.SOCIAL_USER,socialUser);
+				if(socialProvider != null && userToken != null)
+					socialUser = socialProvider.getSocialUserProfileByUserToken(userToken,providerName);
+				if(socialUser == null)
+				{
+					LOGGER.debug("User's social profile could not be found");
+					throw new FDException("User's social profile could not be found");
+				}
+				else
+				{
+					if(!requestMessage.getEmail().equalsIgnoreCase(socialUser.get("email")))
+						throw new FDException("User Email did not match with Social Email.");
+					
+					session.setAttribute(SessionName.SOCIAL_USER,socialUser);
+				}
 			}
 		}
 			
@@ -336,6 +340,9 @@ public class RegistrationController extends BaseController {
 		registerMessage.setState(requestMessage.getState());
 		registerMessage.setZipCode(requestMessage.getZipCode());
 		registerMessage.setWorkPhone(requestMessage.getWorkPhone());
+		
+		ExternalAccountLinkRequest linkRequest = new ExternalAccountLinkRequest(requestMessage.getEmail(), requestMessage.getPassword(), 
+				requestMessage.getUserToken(), requestMessage.getUserToken(), requestMessage.getProvider(), requestMessage.getSource());
 		
 		ResultBundle resultBundle = tagWrapper.registerSocial(requestMessage);	
 		
@@ -368,6 +375,19 @@ public class RegistrationController extends BaseController {
 		propogateSetSessionValues(request.getSession(), resultBundle1);
 		//Message responseMessage = null;
 		if (result.isSuccess() && result1.isSuccess()) {
+			
+			ExternalAccountManager.linkUserTokenToUserId(
+					identity.getFDCustomerPK(),
+					linkRequest.getEmail(),
+					linkRequest.getNewToken(),
+					linkRequest.getNewToken(),
+					linkRequest.getProvider(),
+					registerMessage.getFirstName()+" "+registerMessage.getLastName(),
+					linkRequest.getEmail(),
+					linkRequest.getEmail(),
+					"N");
+		
+	
 			request.getSession().setAttribute(SessionName.APPLICATION,
 					EnumTransactionSource.FDX_IPHONE.getCode());
 			user = getUserFromSession(request, response);
@@ -375,11 +395,11 @@ public class RegistrationController extends BaseController {
 			user.setEligibleForDDPP();
 			// Create a new Visitor object.
 			//responseMessage = formatLoginMessage(user);
-			responseMessage = new SocialResponse();
+			responseMessage = new ExternalAccountLoginResponse();
 			
 			responseMessage.setStatus(Message.STATUS_SUCCESS);
 			
-			((SocialResponse) responseMessage).setLoggedInSuccess(true);
+			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(true);
 			
 			responseMessage.setSuccessMessage("User registered and successfully logged in");
 			

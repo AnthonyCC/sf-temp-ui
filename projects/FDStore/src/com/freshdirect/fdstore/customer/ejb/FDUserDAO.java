@@ -237,6 +237,11 @@ public class FDUserDAO {
 		FDUser user = createUser(conn, newCookieId(), null, null, zipCode, null, serviceType, eStoreId);
 		return user;
 	}
+	
+	public static FDUser createUser(Connection conn, EnumServiceType serviceType,EnumEStoreId eStoreId) throws SQLException {
+		FDUser user = createUser(conn, newCookieId(), null, null, null, null, serviceType, eStoreId);
+		return user;
+	}	
 
 	public static FDUser createUser(Connection conn, AddressModel address, EnumServiceType serviceType,EnumEStoreId eStoreId) throws SQLException {
 		FDUser user = createUser(conn, newCookieId(), address.getAddress1(), address.getApartment(), address.getZipCode(), null, serviceType, eStoreId);

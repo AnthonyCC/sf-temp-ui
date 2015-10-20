@@ -1,11 +1,11 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-public class SocialRegisterRequest extends RegisterMessageFdxRequest  {
+public class ExternalAccountRegisterRequest extends RegisterMessageEx  {
 	private String userToken;
 	private String provider;
+	private String source;
 	
-	
-	public SocialRegisterRequest()
+	public ExternalAccountRegisterRequest()
 	{
 		super();
 	}
@@ -24,6 +24,14 @@ public class SocialRegisterRequest extends RegisterMessageFdxRequest  {
 
 	public void setProvider(String provider) {
 		this.provider = provider;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	

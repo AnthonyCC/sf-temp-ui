@@ -19,7 +19,12 @@ import com.freshdirect.sms.EnumSMSAlertStatus;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ErpCustomerSocialLoginModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ErpCustomerInfo persistent bean.
@@ -99,6 +104,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private int numOfEmployees;
 	private String secondEmailAddress;
 	
+	// Social login 
+	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
 	
 
 	/**
@@ -161,6 +168,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		/* APPDEV-2475 DP T&C */
 		this.dpTcViewCount = 0;
 		this.dpTcAgreeDate = null;
+		
+		// Social login
+		this.socialLoginInfo = null;		
 	}
 
 	/**
@@ -259,6 +269,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setNumOfEmployees(this.numOfEmployees);
 		model.setSecondEmailAddress(this.secondEmailAddress);
 
+		model.setSocialLoginInfo(socialLoginInfo); 		
+		
 		return model;
 	}
 
@@ -386,9 +398,17 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
-		ps.setString(3, this.firstName);
+		if(this.firstName == null){
+			ps.setString(3, this.firstName);
+		}else{			
+			ps.setString(3, email.substring(0, email.indexOf("@")));  // temporary placeholder
+		}		
 		ps.setString(4, this.middleName);
-		ps.setString(5, this.lastName);
+		if(this.lastName == null){
+			ps.setString(5, this.lastName);
+		}else{
+			ps.setString(5, " "); // temporary placeholder
+		}				
 		ps.setString(6, this.email);
 		ps.setString(7, this.alternateEmail);
 		ps.setString(8, (this.emailPlaintext ? "X" : " "));
@@ -609,6 +629,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.numOfEmployees = rs.getInt("NUM_OF_EMPLOYEES");
 			this.secondEmailAddress = rs.getString("SECOND_EMAIL_ADDRESS");
 			
+			this.socialLoginInfo = loadSocialUserInfo(conn, this.email);			
+			
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());
 		}
@@ -618,6 +640,45 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.unsetModified();
 	}
 
+
+	private List<ErpCustomerSocialLoginModel> loadSocialUserInfo(Connection conn, String user_id)  throws SQLException {
+		
+		List<ErpCustomerSocialLoginModel> socialLoginInfo = new ArrayList<ErpCustomerSocialLoginModel>(); // **********************************************************
+		
+		//PreparedStatement ps = conn.prepareStatement( "SELECT USER_TOKEN, IDENTITY_TOKEN, PROVIDER, DISPLAY_NAME, PREFERRED_USER_NAME, EMAIL, EMAIL_VERIFIED FROM CUST.CUST_SOCIAL_LINK WHERE USER_ID = ?");
+		PreparedStatement ps = conn.prepareStatement( "SELECT USER_TOKEN, IDENTITY_TOKEN, PROVIDER, DISPLAY_NAME, PREFERRED_USER_NAME, EMAIL, EMAIL_VERIFIED FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE USER_ID = ?");
+		ps.setString(1, user_id);
+		
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {		
+			String user_token = rs.getString("USER_TOKEN");
+			String identity_token = rs.getString("IDENTITY_TOKEN");
+			String provider = rs.getString("PROVIDER");
+			String display_name = rs.getString("DISPLAY_NAME");
+			String preferred_user_name = rs.getString("PREFERRED_USER_NAME");
+			String email = rs.getString("EMAIL");
+
+			ErpCustomerSocialLoginModel socialLoginModel = new ErpCustomerSocialLoginModel( user_id,  
+																							user_token,
+																							identity_token,  
+																							provider,  
+																							display_name,
+																							preferred_user_name,  
+																							email, 
+																							false);
+			
+			socialLoginInfo.add(socialLoginModel);
+		} 
+		
+		rs.close();
+		ps.close();
+
+		this.unsetModified();		
+		
+		return socialLoginInfo;
+	}
+		
+	
 	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(

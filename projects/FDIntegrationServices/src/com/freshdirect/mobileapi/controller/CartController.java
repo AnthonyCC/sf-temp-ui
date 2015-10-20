@@ -81,6 +81,8 @@ public class CartController extends BaseController {
     
     private static final String ACTION_SET_TIP = "settip";
 
+    private static final String ACTION_SAVE_CART = "save";
+    
     protected boolean validateCart() {
         return true;
     }
@@ -172,6 +174,10 @@ public class CartController extends BaseController {
         	double _tip = Double.parseDouble(tipAmount);
         	user.getShoppingCart().setTip(_tip);
         	Message responseMessage = Message.createSuccessMessage("Tip added successfully.");
+			setResponseMessage(model, responseMessage, user);
+        } else if(ACTION_SAVE_CART.equals(action)) {
+        	user.getFDSessionUser().saveCart(true);
+        	Message responseMessage = Message.createSuccessMessage("Cart Saved successfully");
 			setResponseMessage(model, responseMessage, user);
         }
 

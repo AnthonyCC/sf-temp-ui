@@ -23,9 +23,10 @@ public class SocialProviderOneAll implements SocialProvider {
 	private final static Category LOGGER = LoggerFactory.getInstance(SocialProviderOneAll.class);
 	
 	//Settings
-	String site_subdomain = "fd-test";
-	String site_public_key = "997ddd3a-9965-489c-96df-0a6585e66d6b";
-	String site_private_key = "026599dc-10c3-4e69-bcf6-2db43c66dd37";
+	String site_subdomain = "freshdirect";
+	String site_public_key = "493e89df-35af-48ff-a856-125064fed179";
+	String site_private_key = "64bf95b4-9dea-4832-8528-31bba3ae09d6";
+
 	
 
 	// API Access Domain

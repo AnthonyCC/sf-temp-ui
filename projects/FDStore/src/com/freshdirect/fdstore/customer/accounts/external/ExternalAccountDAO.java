@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.social.ejb;
+package com.freshdirect.fdstore.customer.accounts.external;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,12 +9,13 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-public class FDSocialDAO {
+public class ExternalAccountDAO {
 	
-	private static Category LOGGER = LoggerFactory.getInstance(FDSocialDAO.class);
+	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountDAO.class);
 	
 	public static String getUserIdForUserToken(Connection con, String userToken) {
 		
@@ -22,7 +23,7 @@ public class FDSocialDAO {
 		ResultSet rs = null;
 		String userId = "";
 
-		String sql = "SELECT USER_ID FROM CUST.CUST_SOCIAL_LINK WHERE USER_TOKEN=?";
+		String sql = "SELECT USER_ID FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE USER_TOKEN=?";
 	
 		try {
 			
@@ -56,29 +57,25 @@ public class FDSocialDAO {
 
 	}
 	
-	public static List<String> getConnectedProvidersByUserId(String userId,Connection con)
+	public static List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source, Connection con)
 	{
 		List<String> providers = new ArrayList<String>();
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		String sql = "SELECT PROVIDER FROM CUST.CUST_SOCIAL_LINK WHERE USER_ID=?";
+		String sql = "SELECT PROVIDER FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE USER_ID=?";
 	
 		try {
 			
 			ps = con.prepareStatement(sql);
 			ps.setString(1,userId);
+			ps.setString(2, source.value());
 			rs = ps.executeQuery();
 		
 			while(rs.next()) {
-				
 				providers.add(rs.getString("PROVIDER"));
-				
-				
 			}
-			
-			//LOGGER.info(providers);
 			
 		} catch (SQLException ex) {
 			LOGGER.error(ex.getMessage());
@@ -99,7 +96,6 @@ public class FDSocialDAO {
 
 		return providers;
 	}
-	
 	
 	public static boolean isUserEmailAlreadyExist(Connection con,String email)
 	{
@@ -142,23 +138,66 @@ public class FDSocialDAO {
 		return isEmailExist;
 	}
 	
-	public static void linkUserTokenToUserId(Connection con,String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified)
+	public static boolean isUserEmailAlreadyExist(Connection con,String email, String provider)
 	{
-		String sql="INSERT INTO CUST.CUST_SOCIAL_LINK (USER_ID,USER_TOKEN,IDENTITY_TOKEN,PROVIDER,DISPLAY_NAME,PREFERRED_USER_NAME,EMAIL,EMAIL_VERIFIED) VALUES(?,?,?,?,?,?,?,?)";
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean isEmailExist = false;
+
+		String sql = "SELECT COUNT(*) FROM CUST.CUSTOMER WHERE USER_ID=? AND PROVIDER=?";
+	
+		try {
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1,email.trim());
+			ps.setString(2,provider.trim());
+			rs = ps.executeQuery();
+		
+			while(rs.next()) {
+				if(rs.getInt(1) > 0)
+					isEmailExist = true;
+				
+			}
+			
+		} catch (SQLException ex) {
+			LOGGER.error(ex.getMessage());
+		} finally {
+
+			try {
+
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+
+				LOGGER.error(e.getMessage());
+			}
+
+		}
+
+		
+		return isEmailExist;
+	}
+	
+	public static void linkUserTokenToUserId(Connection con,String customerId,String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified)
+	{
+		String sql="INSERT INTO CUST.EXTERNAL_ACCOUNT_LINK (CUSTOMER_ID,USER_ID,USER_TOKEN,IDENTITY_TOKEN,PROVIDER,DISPLAY_NAME,PREFERRED_USER_NAME,EMAIL,EMAIL_VERIFIED) VALUES(?,?,?,?,?,?,?,?,?)";
 		PreparedStatement ps = null;
 		
 		try {
 			//LOGGER.info("inside link user");
 			
 			ps = con.prepareStatement(sql);
-			ps.setString(1,userId.trim());
-			ps.setString(2,userToken.trim());
-			ps.setString(3,identityToken.trim());
-			ps.setString(4,provider.trim());
-			ps.setString(5,displayName.trim());
-			ps.setString(6,preferredUserName);
-			ps.setString(7,email.trim());
-			ps.setString(8,emailVerified.trim());
+			ps.setString(1,customerId.trim());
+			ps.setString(2,userId.trim());
+			ps.setString(3,userToken.trim());
+			ps.setString(4,identityToken.trim());
+			ps.setString(5,provider.trim());
+			ps.setString(6,displayName.trim());
+			ps.setString(7,preferredUserName);
+			ps.setString(8,email.trim());
+			ps.setString(9,emailVerified.trim());
 			ps.executeUpdate();
 		
 			//LOGGER.info("inside link user");
@@ -178,9 +217,9 @@ public class FDSocialDAO {
 		}
 	}
 	
-	public static void unLinkUserTokenFromUserId(Connection con,String userId,String userToken)
+	public static void unlinkExternalAccountWithUser(Connection con,String userId,String userToken, String provider)
 	{
-		String sql="DELETE FROM CUST.CUST_SOCIAL_LINK WHERE USER_ID=? AND USER_TOKEN=?";
+		String sql="DELETE FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE USER_ID=? AND USER_TOKEN=? AND PROVIDER=?";
 		PreparedStatement ps = null;
 		
 		try {
@@ -188,9 +227,10 @@ public class FDSocialDAO {
 			ps = con.prepareStatement(sql);
 			ps.setString(1,userId.trim());
 			ps.setString(2,userToken.trim());
-			ps.executeQuery();
+			ps.setString(3,provider.trim());
+			ps.executeUpdate();
 			
-		} catch (Exception ex) {
+		} catch (SQLException ex) {
 			LOGGER.error(ex.getMessage());
 		} finally {
 
@@ -207,25 +247,52 @@ public class FDSocialDAO {
 
 	}
 	
-	public static boolean isSocialLoginOnlyUser(String id,Connection con)
+	
+	public static void unlinkExternalAccountWithUser(Connection con,String customerId,String provider)
+	{
+		String sql="DELETE FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE CUSTOMER_ID=? AND PROVIDER=?";
+		PreparedStatement ps = null;
+		
+		try {
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1,customerId.trim());
+			ps.setString(2,provider.trim());
+			ps.executeUpdate();
+			
+		} catch (SQLException ex) {
+			LOGGER.error(ex.getMessage());
+		} finally {
+
+			try {
+
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+
+				LOGGER.error(e.getMessage());
+			}
+
+		}
+
+	}	
+	
+	public static boolean isExternalLoginOnlyUser(String id, EnumExternalLoginSource source, Connection con)
 	{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		boolean isSocialLoginOnly = false;
-
-		String sql = "SELECT COUNT(*) FROM CUST.CUSTOMER WHERE ID=? AND SOCIAL_LOGIN_ONLY=?";
+		
+		String sql = "SELECT 1 FROM CUST.CUSTOMER WHERE ID=? AND EXTERNAL_LOGIN_SRC=?";
 	
 		try {
 			
 			ps = con.prepareStatement(sql);
 			ps.setString(1,id);
-			ps.setString(2,"1");
+			ps.setString(2, source.value());
 			rs = ps.executeQuery();
 		
-			while(rs.next()) {
-				if(rs.getInt(1) > 0)
-					isSocialLoginOnly = true;
-				
+			if(rs.next()) {
+				return true;
 			}
 			
 			
@@ -248,6 +315,6 @@ public class FDSocialDAO {
 
 		}
 	
-		return isSocialLoginOnly;
+		return false;
 	}
 }

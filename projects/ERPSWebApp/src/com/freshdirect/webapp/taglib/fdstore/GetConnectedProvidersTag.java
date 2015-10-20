@@ -7,7 +7,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.social.ejb.FDSocialManager;
+import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -36,7 +37,7 @@ public class GetConnectedProvidersTag extends AbstractGetterTag implements Sessi
 			
 			if(userId != null)
 			{
-				connectedProviders =  FDSocialManager.getConnectedProvidersByUserId(userId);
+				connectedProviders =  ExternalAccountManager.getConnectedProvidersByUserId(userId, EnumExternalLoginSource.SOCIAL);
 				
 				for(String provider : connectedProviders)
 		  		{

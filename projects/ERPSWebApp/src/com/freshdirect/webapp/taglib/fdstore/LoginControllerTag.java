@@ -18,10 +18,10 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.fdstore.social.ejb.FDSocialManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -60,7 +60,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		String updatedSuccessPage = null;
 		if(isCaptchaSuccess){
-			updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, password, mergePage, this.getSuccessPage());
+			updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, password, mergePage, this.getSuccessPage(), false);
 		} else {
 			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA)); 
 		}
@@ -81,7 +81,8 @@ public class LoginControllerTag extends AbstractControllerTag {
 		    		// add this pending account entry to database.
 		    		try {
 	
-						FDSocialManager.mergeSocialAccountWithUser(
+						ExternalAccountManager.linkUserTokenToUserId(
+								user.getIdentity().getFDCustomerPK(),
 								userLinkAccPendingProp.get("email"),
 								userLinkAccPendingProp.get("userToken"),
 								userLinkAccPendingProp.get("identityToken"),

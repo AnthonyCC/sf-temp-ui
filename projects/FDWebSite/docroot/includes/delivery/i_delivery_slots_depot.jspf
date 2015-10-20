@@ -1,5 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil"%>
 <%@ page import="com.freshdirect.logistics.delivery.model.DlvZoneModel"%>
+<%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot' %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>

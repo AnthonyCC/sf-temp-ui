@@ -6,15 +6,15 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.common.address.AddressModel"%>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
+<%@ page import="com.freshdirect.mail.EmailUtil"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 
 <fd:CheckLoginStatus />
 
-<%
+<% 
 	
-
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
@@ -33,13 +33,12 @@
 	
 	  
 	
-      String failurePage = "/registration/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+      String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
-      CmRegistrationTag.setRegistrationLocation(session,"signup lite");
+      CmRegistrationTag.setRegistrationLocation(session,"signup social");
 %>
 
-
-<fd:SiteAccessController action='signupLite' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>	
+<fd:SiteAccessController action='expressSignup' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>	
 
 
 	<%
@@ -60,10 +59,12 @@
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
+<jwr:style src="/assets/css/social_login_signup.css" media="all" />
+
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
-		var oneall_subdomain = 'fd-test';
+		var oneall_subdomain = 'freshdirect';
  
 		/* The library is loaded asynchronously */
 		var oa = document.createElement('script');
@@ -183,23 +184,27 @@
 					$jq(function(){
 					
 						$jq("#email_img").addClass("show_bg_arrow");
-
-						$jq("#email").addClass("error");
+						$jq("#email").addClass("error");						
+						document.getElementById("email").style.display='block';
+			        	document.getElementById("password1").style.display='block';
+			        	document.getElementById("signupbtn").style.display='block';
+			        	document.getElementById("emailbtn").style.display='none';
   
 					});
 </script>
 		<% } %>	
 <!-- end email validation --> 
 
-			<div id="sulCont" class="signup-style" style="height:698px;">
+			<div id="sulCont" class="signup-style-social">
 				
 				
-				<div class="form-side" >
+				
+					<div class="form-side-social" style="width:322px; margin-left :100px;margin-top:25px; margin-bottom: 30;">
 
-					<p style="font-size:12px;font-weight:bold;margin-bottom:2px;font-family: Verdana, Arial, sans-serif;text-align:left;margin-left:46px">Sign Up with Email:</p>
+						<span
+							style="font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-bottom:20px;margin-left:20px">Create Account:</span>
 
-
-					<div id="form_feilds">
+						<div id="form_feilds" style="width:294px;margin-top:20px; margin-left: 20px;">
 
 
 						<form id="litesignup" name="litesignup" method="post"
@@ -213,69 +218,23 @@
 			
 				    <table border="0" cellpadding="5" cellspacing="8">
 
-						<% if (result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) || result.hasError(EnumUserInfoName.DLV_SERVICE_TYPE.getCode())) { %>
-						<tr>
-						 <td>&nbsp;</td>						  
-							<td class="errMsg">
-								<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
-							</td>
-                        </tr>
-                        
-                        <tr>
-                        <td>&nbsp;</td>                       
-                            <td class="errMsg">
-                            <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
-                            </td>
-                        </tr>
-
-					<% } %>
-						<tr>							
-							<td>
-							<!-- span id should be the input box id+"_img" -->
-							<span class="error_img" id="zipcode_img"></span></td>							
-							<td><input class="padding-input-box text11ref inputUser required" type="number"  maxlength="5" class="" size="20" name="zipcode" value="<%=zipcode%>" id="zipcode" placeholder="Delivery ZIP Code" >
-							</td>
-                        </tr>
-                        <tr>
-							
-							<td></td>
-							<td>
-							<input type="radio" name="serviceType" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %>/>HOME&nbsp;
-							<input type="radio" name="serviceType" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %>/>OFFICE
-							</td>
-						</tr>
-					
-					
-					<% if (result.hasError(EnumUserInfoName.DLV_FIRST_NAME.getCode())) { %><tr><td>&nbsp;</td><td class="errMsg "><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
-					<tr>				
-					<td>
-					<!-- span id should be the input box id+"_img" -->
-					<span class="error_img" id="first_name_img"></span></td>
-					<td>
-					<input class="padding-input-box text11ref inputUser required" type="text"  maxlength="25" size="20" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" id="first_name" placeholder="First Name" ></td>
-					</tr>
-					
-					
-					<% if (result.hasError(EnumUserInfoName.DLV_LAST_NAME.getCode())) { %><tr><td>&nbsp;</td><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
-					<tr>
-					<td>
-					<!-- span id should be the input box id+"_img" -->
-					<span class="error_img" id="last_name_img"></span></td>
-					<td><input class="padding-input-box text11ref inputUser required" type="text"  maxlength="25" size="20" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" value="<%=lastname%>" id="last_name" placeholder="Last Name" ></td>
-					</tr>
-					
 					
 					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
 					
-					<tr><td>&nbsp;</td><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>													
+					<tr><td>&nbsp;</td>
+					<td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' 
+					id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>													
 							
 					<tr>
 					<td>
 					<!-- span id should be the input box id+"_img" -->
 								
 					<span class="error_img" id="email_img"></span></td>
-					<td>
-					<input class="padding-input-box text11ref inputDef required" type="email"  maxlength="128" size="20" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email" placeholder="E-mail" >
+					<td >
+					<input 	class="padding-input-box text11ref inputDef required" style="box-sizing: border-box; width: 199px;display:block" 
+							type="email" maxlength="128" size="23" 
+							name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" 
+							id="email" placeholder="E-mail" >
 					</td>
 					</tr><br/>
 
@@ -285,55 +244,82 @@
                         <td>
                         <!-- span id should be the input box id+"_img" -->
                         <span class="error_img" id="password1_img"></span></td>
-						<td>
-						<input class="padding-input-box text11ref inputUser required" type="password"  minlength="6"  size="20" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" >
-						<a class="show-password">Show</a></td>
+						<td style="padding-top: 10px;">
+						<input 	class="padding-input-box text11ref inputUser required" 
+								type="password" style="box-sizing: border-box; width: 199px; padding-top: 10px;display:block" size="23" 
+								name="<%=EnumUserInfoName.PASSWORD.getCode()%>" 
+							   	id="password1" placeholder="Password" >
+						<a class="show-password"  style="top: 130px; right: 145px;">Show</a></td>
 					</tr>
 
-					<tr>
-					<td></td>
-					<td><span class="bodyCopySULNote" style="color:#B8B894;font-size:11px;">Security Question:What is your town of birth or mother's maiden name?</span>
-					</td>
-					</tr>
-					<% if (result.hasError(EnumUserInfoName.PASSWORD_HINT.getCode())) { %><tr><td>&nbsp;</td><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
-					<tr>
-					<td>
-					<!-- span id should be the input box id+"_img" -->
-					<span class="error_img" id="secret_answer_img"></span></td>
-					<td class="bodyCopySUL"><input class="padding-input-box text11ref inputUser required" type="text" maxlength="25"  size="20" name="<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>" id="secret_answer"  placeholder="Security Answer" >
-					</td>
-					</tr>
+
 									
 					<tr>
 					<td></td>
-						<td style="padding-top: 10px;"><a onclick="document.litesignup.submit();"  class="butText" style="font-weight:bold;font-size:14px;">
-						<input type="submit" id="signupbtn" maxlength="25" size="19" value="Create Account"> </a></td>
+						<td style="padding-top: 10px;"><a onclick="dlvadrspage();" class="butText" style="font-weight:bold;font-size:14px;">
+						<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" style="display:block;"> </a></td>
 					</tr>
+					<!-- 
+					<tr>
+								<td></td>
+								<td style="padding-top: 10px;"><a onclick="display();"
+									class="butText" style="font-weight: bold; font-size: 14px;">
+										<input type="submit1" id="emailbtn" maxlength="25" size="19"
+										value="Use E-mail">
+								</a></td>
+							</tr>	
+							 -->										
 					
 				</table>
 				</form>
 												
 					</div>
 					<!-- form_fields ends here -->
+						
+					
+<script type="text/javascript">
+        function display() {
+        	document.getElementById("email").style.display='block';
+        	document.getElementById("password1").style.display='block';
+        	document.getElementById("signupbtn").style.display='block';
+        	document.getElementById("emailbtn").style.display='none';
+        }
+</script>					
 					
  <script type="text/javascript" language="javascript">
+ 
+ $jq.validator.addMethod("customemail", 
+		 function validateEmail(email) {
+	    	var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	    	return re.test(email);
+		} 
+ );
 	
  $jq('#litesignup').validate(
  {
- 		
+ 	
 	 errorElement: "div",
 	 rules:{
              email:{
              required:true,
              email:true,
-             },          
+             customemail:true
+             }, 
+             password:{
+             required:true,
+             minlength: 6
+             }
  		},
  		messages:{
-            email:{
-            required:"Required",
-            email:"Incomplete e-mail Address",
-            },
-            
+             email:{
+             required:"Required",
+             email:"Incomplete e-mail Address",
+             customemail:"Incomplete e-mail Address"
+             },
+             password:{
+             required:"Required",
+			 minlength: $jq.validator.format( "Must be {0} or more characters" )
+            }
          },
          highlight: function(element, errorClass, validClass) {
           $jq(element).addClass(errorClass).removeClass(validClass);
@@ -370,59 +356,51 @@
 
 				</div><!--  form-side ends here -->
 				
-<div class="social-login-header">
+<div class="social-login-headerscr-social"  style="float:none; margin-left: 40px; margin-top: 40px; padding-top: 160px;">
 
-	<p style="font-size:12px;font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-right:35px">Or Sign Up with:
+	<p style="font-size:12px;font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-top:40px;">
+	<img src="/media_stat/images/navigation/line.png" WIDTH="100" HEIGHT="2" border="0" >
+	Or
+	<img src="/media_stat/images/navigation/line.png" WIDTH="100" HEIGHT="2" border="0" >
 	</p><br>
 
 </div>
 
-				<div id="social_login_demo" class="social-login">
+				
+<div id="social_login_demo" class="social-login-social" style="float:none; margin-left: 120px;">
+	<script type="text/javascript">
+		/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
+		var oneall_subdomain = 'freshdirect';
+	
+		/* Asynchronously load the library */
+		var oa = document.createElement('script');
+		oa.type = 'text/javascript';
+		oa.async = true;
+		oa.src = '//' + oneall_subdomain
+				+ '.api.oneall.com/socialize/library.js';
+		var s = document.getElementsByTagName('script')[0];
+		s.parentNode.insertBefore(oa, s);
+	
+		/* This is an event */
+		var my_on_login_redirect = function(args) {
+			return true;
+		}
+	
+		/* Initialise the asynchronous queue */
+		var _oneall = _oneall || [];
+    	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
+		_oneall.push([ 'social_login', 'set_grid_sizes', [ 2, 2 ] ]);
+		_oneall.push([ 'social_login', 'set_callback_uri',
+						       		'<%=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);
+		_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
+		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
+	</script>
+</div> <!-- social login ends here -->
 
-
-				<script type="text/javascript">
-					/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
-					var oneall_subdomain = 'fd-test';
-
-					/* Asynchronously load the library */
-					var oa = document.createElement('script');
-					oa.type = 'text/javascript';
-					oa.async = true;
-					oa.src = '//' + oneall_subdomain
-							+ '.api.oneall.com/socialize/library.js';
-					var s = document.getElementsByTagName('script')[0];
-					s.parentNode.insertBefore(oa, s);
-
-					/* This is an event */
-					var my_on_login_redirect = function(args) {
-						//alert("You have logged in with " + args.provider.name);
-						return true;
-					}
-
-					/* Initialise the asynchronous queue */
-					var _oneall = _oneall || [];
-
-					/* Social Login Example */
-					_oneall.push([ 'social_login', 'set_providers',
-							[ 'facebook', 'google' ] ]);
-					_oneall
-							.push([ 'social_login', 'set_grid_sizes', [ 2, 2 ] ]);
-					/* _oneall
-							.push([ 'social_login', 'set_callback_uri',
-									'http://127.0.0.1:7001/social/social_login_success.jsp' ]); */
-				 _oneall.push([ 'social_login', 'set_callback_uri',
-									       		'<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"  %>' ]);
-					_oneall.push([ 'social_login', 'set_event',
-							'on_login_redirect', my_on_login_redirect ]);
-					_oneall.push([ 'social_login', 'do_render_ui',
-							'social_login_demo' ]);
-				</script>
-               </div>
-				<!-- social login ends here -->
 
 				<div class="clear"></div>
 
-				<div class="bottom-contents">
+				<div class="bottom-contents" style="margin-left: 50px;">
 
 					<span class="text12">By signing up, you agree to the <a
 						href="javascript:popup('/registration/user_agreement.jsp', 'large')"
@@ -430,7 +408,7 @@
 							of Service</a></span><br> <br> <span class="bottom-links">
 						<b>Already have an Account? 
 						   <a href="#"
-							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 500, height: 350}) ">
+							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 518, height: 518}) ">
 							 Log In
 						</a>
 					
@@ -461,6 +439,24 @@
 				%>
 
 	</center>
+
+
+
+
+	<%	
+		/*
+		 * "EXPRESS_REGISTRATION_COMPLETE" is set in SiteAccessControllerTag after express registration succeed
+		 */
+		if (pageContext.getSession().getAttribute("EXPRESS_REGISTRATION_COMPLETE") != null) {			
+			session.setAttribute("EXPRESS_REGISTRATION_COMPLETE",null);
+	%>
+			<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
+			<script language="javascript">
+				window.top.location = '/index.jsp';   // close popup and return to index page
+			</script>				
+	<%
+		} 
+	%>
 
 
 </body>

@@ -150,6 +150,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
     
+    public void createAddress(ErpAddressModel addressModel, String customerId) throws FDResourceException, RemoteException;
+    
     public FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException, RemoteException;
     
     public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;

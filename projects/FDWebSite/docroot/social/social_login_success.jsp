@@ -8,7 +8,7 @@
   <img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
   </div>
     <fd:CheckLoginStatus />
-    <fd:SocialLoginController />
+    <fd:ExternalAccountController />
   <%  
   	/*
     String connectionToken  = (String) request.getParameter("connection_token"); 

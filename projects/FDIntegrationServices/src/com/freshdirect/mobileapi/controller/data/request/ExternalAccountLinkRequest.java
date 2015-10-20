@@ -1,11 +1,27 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
-public class SocialLinkAccountRequest {
+public class ExternalAccountLinkRequest {
+	
+	public ExternalAccountLinkRequest() {
+		super();
+	}
+	public ExternalAccountLinkRequest(String email, String password,
+			String existingToken, String newToken, String provider,
+			String source) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.existingToken = existingToken;
+		this.newToken = newToken;
+		this.provider = provider;
+		this.source = source;
+	}
 	private String email;
 	private String password;
 	private String existingToken;
 	private String newToken;
 	private String provider;
+	private String source;
 	
 	
 	public String getEmail() {
@@ -38,6 +54,12 @@ public class SocialLinkAccountRequest {
 	}
 	public void setProvider(String provider) {
 		this.provider = provider;
+	}
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
 	}
 	
 }

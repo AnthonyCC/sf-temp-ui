@@ -41,6 +41,16 @@ public class Department extends ProductContainer {
         List<Image> images = new ArrayList<Image>();
         result.setImages(images);
         
+        com.freshdirect.fdstore.content.Image heroImage = model.getHeroImage();
+        if(heroImage != null) {
+        	Image detailImage = new Image();
+        	detailImage.setHeight(heroImage.getHeight());
+            detailImage.setWidth(heroImage.getWidth());
+            detailImage.setSource(heroImage.getPath());
+            detailImage.setType(ImageSizeType.BANNER);
+            images.add(detailImage);
+        }
+        
         com.freshdirect.fdstore.content.Image smallImage = model.getPhotoSmall();
         if(smallImage != null) {
         	Image detailImage = new Image();

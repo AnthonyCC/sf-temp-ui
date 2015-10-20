@@ -249,6 +249,12 @@
 		<to last="true">/cart.do?action=viewitem&amp;cartLineId=$3&amp;ver=$1</to>
 	</rule>
 	
+	<!-- Cart : Retrieve Cart Line Item -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/cart/save/</from>
+		<to last="true">/cart.do?action=save&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Cart : Clip Coupon -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/cart/coupon/clip/(.*)$</from>

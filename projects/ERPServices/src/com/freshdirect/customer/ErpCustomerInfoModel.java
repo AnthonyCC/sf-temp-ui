@@ -9,7 +9,10 @@
 
 package com.freshdirect.customer;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -89,7 +92,17 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String smsPreferenceflag;
 	private Date smsOptinDate;
 	
+	// Social login 
+	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
 	
+
+	public List<ErpCustomerSocialLoginModel> getSocialLoginInfo() {
+		return socialLoginInfo;
+	}
+
+	public void setSocialLoginInfo(List<ErpCustomerSocialLoginModel> socialLoginInfo) {
+		this.socialLoginInfo = socialLoginInfo;
+	}	
 
 	public Date getSmsOptinDate() {
 		return smsOptinDate;

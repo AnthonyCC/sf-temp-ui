@@ -330,7 +330,7 @@ public class LoginController extends BaseController {
 					response);*/
 			//instead of above Call Make a call to UserUtil.loginUser
 			ActionResult actionResult = new ActionResult();
-			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE);
+			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE, false);
 			if(actionResult.getErrors()!=null && !actionResult.getErrors().isEmpty()){
 				throw new FDAuthenticationException();
 			}
