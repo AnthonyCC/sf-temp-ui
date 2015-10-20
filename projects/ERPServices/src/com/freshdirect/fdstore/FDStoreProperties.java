@@ -1542,7 +1542,7 @@ public class FDStoreProperties {
         refresh(false);
     }
 
-    private synchronized static void refresh(boolean force) {
+    public synchronized static void refresh(boolean force) {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
@@ -3853,5 +3853,9 @@ public class FDStoreProperties {
     
     public static String getMiddleTierProviderURL() {
         return get(PROP_MIDDLETIER_PROVIDER_URL);
+    }
+
+    public static Properties getConfig() {
+        return config;
     }
 }

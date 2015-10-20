@@ -397,6 +397,16 @@
     <servlet-name>AtpRestrictionServlet</servlet-name>
     <url-pattern>/api/expresscheckout/atpfailure</url-pattern>
   </servlet-mapping>
+  
+  <!-- Dev Tools -->
+  <servlet>
+    <servlet-name>StorePropertiesServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.dev.storeproperties.StorePropertiesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StorePropertiesServlet</servlet-name>
+    <url-pattern>/api/dev/storeproperties</url-pattern>
+  </servlet-mapping>
 
 	<servlet>
 	   <servlet-name>CmsChangePropagatorServlet</servlet-name>

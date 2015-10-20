@@ -973,6 +973,12 @@
 		<div class="link"><a href="/test/components/cssbuttons.jsp">/test/components/cssbuttons.jsp</a></div>
 		<div class="pageDesc">Demo page for FD CSS buttons</div>
 	</div>
+
+	<div class="tag properties buttons">
+		<div class="pageName"><span>FD Store Properties Live!</span></div>
+		<div class="link"><a href="/test/smartstore/storeproperties.jsp">/test/smartstore/storeproperties.jsp</a></div>
+		<div class="pageDesc">Lists/filters all FD Store properties set up in your machine. Also it can force a full refresh.</div>
+	</div>
 	
 	<hr />
 </div>
