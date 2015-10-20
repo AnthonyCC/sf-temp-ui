@@ -34,7 +34,6 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -354,7 +353,6 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
-            session.setAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL, true);
 		} catch (ErpFraudException ex) {
 			
 			LOGGER.info("Potential fraud detected, saving shopping cart");

@@ -129,6 +129,7 @@ public class CheckoutService {
 					responseData.getSubmitForm().setSuccess(true);
 					session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
                     session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
+                    session.setAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL, true);
 				} else {
 					checkoutPageReloadNeeded = true;
 				}
