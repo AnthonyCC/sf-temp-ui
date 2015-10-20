@@ -3,32 +3,27 @@ package com.freshdirect.mobileapi.util;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Date;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -43,6 +38,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -118,7 +114,7 @@ public class BrowseUtil {
     		String redirectURL = ((CategoryModel)currentFolder).getRedirectUrl();
     		if(redirectURL != null && redirectURL.trim().length() > 0) {
     			Map<String, String> redirectParams = getQueryMap(redirectURL);
-    			String redirectContentId = (String)redirectParams.get("catId");
+    			String redirectContentId = redirectParams.get("catId");
     			if(redirectContentId != null && redirectContentId.trim().length() > 0) {
     				contentId = redirectContentId;
     				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
@@ -126,7 +122,7 @@ public class BrowseUtil {
 				//APPDEV-4237 No Carousel Products
     			else
     			{
-    				redirectContentId = (String)redirectParams.get("deptId");
+    				redirectContentId = redirectParams.get("deptId");
     				if(redirectContentId != null && redirectContentId.trim().length() > 0) {
         				contentId = redirectContentId;
         				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
@@ -314,6 +310,7 @@ public class BrowseUtil {
 			result.setResultCount(result.getCategories() != null ? result.getCategories().size() : 0);
 			result.setTotalResultCount(categories.size());
         } else {
+            eliminateHolidayMealBundleUnavailableProducts(unavailableProducts);
         	products.addAll(unavailableProducts);//add all unavailable to the end of the list
 
         	ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
@@ -331,7 +328,19 @@ public class BrowseUtil {
 		
 	}
 	
-	//APPDEV 4231 Start
+    private static void eliminateHolidayMealBundleUnavailableProducts(List<Product> unavailableProducts) {
+        if (unavailableProducts != null) {
+            Iterator<Product> iterator = unavailableProducts.iterator();
+            while (iterator.hasNext()) {
+                Product product = iterator.next();
+                if (FDStoreProperties.getHolidayMealBundleCategoryId().equals(product.getCategoryId())) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    // APPDEV 4231 Start
 	private static boolean isProductAvailable(List<ProductModel> prodList){
 		boolean result = false;
 		
@@ -711,7 +720,7 @@ public class BrowseUtil {
 	    		return ;
 	    	} else {
 	    		//Loop through the content node to get all the products recursively
-	    		CategoryModel category = (CategoryModel)contentNode;
+	    		CategoryModel category = contentNode;
 	    		List<ProductModel> productModels = category.getProducts();
 	    		//Now we need to wrap the product Model and then do a recursive call.
 	    		if(productModels!=null && !productModels.isEmpty()){
@@ -835,7 +844,7 @@ public class BrowseUtil {
 
 	                // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
 	                if(category instanceof CategoryModel 
-	                			&& ((CategoryModel)category).getProductPromotionType() != null) {
+	                			&& category.getProductPromotionType() != null) {
 	                	layoutManagerSetting.setFilterUnavailable(true);
 	                	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
 	                	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));

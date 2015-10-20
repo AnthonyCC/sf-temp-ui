@@ -773,6 +773,7 @@ public class FDStoreProperties {
 	private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
     private static final String PROP_MIDDLETIER_PROVIDER_URL = "fdstore.middletier.providerURL";
+    private static final String PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID = "fdstore.hmb.category.id";
     // APPDEV - 4354 - ATP in overlay
     private static final String PROP_ATP_AVAILABILTY_MOCK_ENABLED = "fdstore.atp.availability.mock.enabled";
 	
@@ -1532,6 +1533,7 @@ public class FDStoreProperties {
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
+        defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
 		refresh();
     }
 
@@ -3853,6 +3855,10 @@ public class FDStoreProperties {
     
     public static String getMiddleTierProviderURL() {
         return get(PROP_MIDDLETIER_PROVIDER_URL);
+    }
+
+    public static String getHolidayMealBundleCategoryId() {
+        return get(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID);
     }
 
     public static Properties getConfig() {
