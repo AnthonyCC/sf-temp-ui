@@ -1,0 +1,10 @@
+alter table ERPS.MATERIAL_SALES_AREA add (DAYPART_VALUE varchar2(20 byte)); 
+alter table ERPS.PLANT_MATERIAL add (HIDE_OOS varchar2(1byte));
+
+alter table cust.promotion_new add(rolling_from_first_order varchar2(1 char),sap_condition_type varchar2(6 char));
+alter table cust.promo_cust_strategy add(fdx_tier_type varchar2(20 char));
+
+ROLLING_FROM_FIRST_ORDER
+SAP_CONDITION_TYPE
+
+
