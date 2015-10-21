@@ -784,6 +784,12 @@ public class FDStoreProperties {
     private static final String PROP_ATP_AVAILABILTY_MOCK_ENABLED = "fdstore.atp.availability.mock.enabled";
 	 private static final String PROP_EWALLET_ENCRYPTION_KEY = "fdstore.ewallet.encryption.key";
     private static final String PROP_EWALLET_ENCRYPTION_ALGORITHM = "fdstore.ewallet.encryption.algorithm";	 	
+    
+    private static final String PROP_SOCIAL_ONEALL_SUBDOMAIN = "fdstore.social.oneall.subdomain";
+    private static final String PROP_SOCIAL_ONEALL_PUBLICKEY = "fdstore.social.oneall.publickey";
+    private static final String PROP_SOCIAL_ONEALL_PRIVATEKEY = "fdstore.social.oneall.privatekey";
+    private static final String PROP_SOCIAL_ONEALL_POSTURL = "fdstore.social.oneall.posturl";
+    
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1551,6 +1557,12 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME, "Sandbox-Profile.ini");
         defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
         defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
+        
+        defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "freshdirect");
+        defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "493e89df-35af-48ff-a856-125064fed179");
+        defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "64bf95b4-9dea-4832-8528-31bba3ae09d6");
+        defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
+        
 		refresh();
     }
 
@@ -3905,6 +3917,22 @@ public class FDStoreProperties {
     public static String getHolidayMealBundleCategoryId() {
         return get(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID);
     }
+    
+    public static String getSocialOneAllSubdomain() {
+        return get(PROP_SOCIAL_ONEALL_SUBDOMAIN);
+    }
+    
+    public static String getSocialOneAllPrivateKey() {
+        return get(PROP_SOCIAL_ONEALL_PRIVATEKEY);
+    }
+    
+    public static String getSocialOneAllPublicKey() {
+        return get(PROP_SOCIAL_ONEALL_PUBLICKEY);
+    }
+    
+	public static String getSocialOneAllPostUrl() {
+        return get(PROP_SOCIAL_ONEALL_POSTURL);
+	}
 
     public static Properties getConfig() {
         return config;

@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SocialProviderOneAll implements SocialProvider {
@@ -23,14 +24,13 @@ public class SocialProviderOneAll implements SocialProvider {
 	private final static Category LOGGER = LoggerFactory.getInstance(SocialProviderOneAll.class);
 	
 	//Settings
-	String site_subdomain = "freshdirect";
-	String site_public_key = "493e89df-35af-48ff-a856-125064fed179";
-	String site_private_key = "64bf95b4-9dea-4832-8528-31bba3ae09d6";
-
-	
+	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+	String site_public_key = FDStoreProperties.getSocialOneAllPublicKey();
+	String site_private_key = FDStoreProperties.getSocialOneAllPrivateKey();
+	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 
 	// API Access Domain
-	String site_domain = site_subdomain + ".api.oneall.com";
+	String site_domain = site_subdomain + site_post_url;
 
 	// Connection Resource
 	// http://docs.oneall.com/api/resources/connections/read-connection-details/
