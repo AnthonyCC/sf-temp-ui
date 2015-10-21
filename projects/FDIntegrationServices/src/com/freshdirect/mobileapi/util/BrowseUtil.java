@@ -1214,7 +1214,13 @@ public class BrowseUtil {
 						
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
-					skuInfo.setLimitedQuantity(productInfo.isLimitedQuantity(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()));
+					boolean isLimitedQuantity = false;
+					isLimitedQuantity = productInfo.isLimitedQuantity(plantID);
+					/*//TODO: Fix it - This is only for test
+					if(!isLimitedQuantity){
+						isLimitedQuantity = productInfo.isLimitedQuantity(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel());
+					}*/
+					skuInfo.setLimitedQuantity(isLimitedQuantity);
 					return skuInfo;
 				} catch (FDResourceException e) {
 					LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
