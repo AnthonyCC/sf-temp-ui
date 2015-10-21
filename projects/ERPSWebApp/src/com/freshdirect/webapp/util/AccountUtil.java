@@ -34,6 +34,8 @@ public class AccountUtil {
 		} else if (password.length() < MIN_PASSWORD_LENGTH) {
 			result.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_LENGTH));
 
-		} 
+		} else if (!password.equals(repeatPassword)){
+			result.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_REPEAT));
+		}
 	}
 }
