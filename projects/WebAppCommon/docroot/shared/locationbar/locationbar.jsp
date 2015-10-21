@@ -115,7 +115,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 <tmpl:put name="signupButton"><%
 	if (FDStoreProperties.isLightSignupEnabled()) {
 		if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
-			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', width: 500, height: 698, opacity: .5}) }">sign up</button><% 
+			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', width: 500, height: 554, opacity: .5}) }">sign up</button><% 
 		} else {
 			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">sign up</button><%
 		}

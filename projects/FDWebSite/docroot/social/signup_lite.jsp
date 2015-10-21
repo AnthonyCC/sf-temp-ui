@@ -121,8 +121,7 @@
 	<%@ include file="/shared/template/includes/i_body_start.jspf"%>
 </head>
 
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="10" topmargin="10">
-
+<body>
 	<center>
 
 	<%
@@ -195,48 +194,38 @@
 		<% } %>	
 <!-- end email validation --> 
 
-			<div id="sulCont" class="signup-style-social">
-				
-				
-				
-					<div class="form-side-social" style="width:322px; margin-left :100px;margin-top:25px; margin-bottom: 30;">
-
-						<span
-							style="font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-bottom:20px;margin-left:20px">Create Account:</span>
-
-						<div id="form_feilds" style="width:294px;margin-top:20px; margin-left: 20px;">
-
-
-						<form id="litesignup" name="litesignup" method="post"
-							action="/social/signup_lite.jsp">
-							<input type="hidden" name="submission" value="done" /> <input
-								type="hidden" name="actionName" value="ordermobilepref" /> <input
-								type="hidden" name="successPage" value="<%= successPage %>" />
-							<input type="hidden" name="terms" value="true" /> <input
-								type="hidden" name="LITESIGNUP" value="true" />
-
-			
-				    <table border="0" cellpadding="5" cellspacing="8">
-
-					
+	<div id="sulCont" class="signup-style-social social-singup">
+		<div class="form-side-social">
+		<div class="form-side-social-header">Create Account:</div>
+		<div id="form_feilds">
+			<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp">
+				<input type="hidden" name="submission" value="done" />
+				<input type="hidden" name="actionName" value="ordermobilepref" /> 
+				<input type="hidden" name="successPage" value="<%= successPage %>" />
+				<input type="hidden" name="terms" value="true" />
+				<input type="hidden" name="LITESIGNUP" value="true" />
+			    <table border="0" cellpadding="5" cellspacing="8">					
 					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
-					
-					<tr><td>&nbsp;</td>
-					<td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' 
-					id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>													
-							
+						<tr>
+							<td></td>
+							<td class="errMsg">
+								<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
+									<span class="text11rbold"><%=errorMsg%></span>
+								</fd:ErrorHandler>
+							</td>
+						</tr><% } %>	
 					<tr>
+						<td>
+							<!-- span id should be the input box id+"_img" -->
+							<span class="error_img" id="email_img"></span>
+						</td>
 					<td>
-					<!-- span id should be the input box id+"_img" -->
-								
-					<span class="error_img" id="email_img"></span></td>
-					<td >
-					<input 	class="padding-input-box text11ref inputDef required" style="box-sizing: border-box; width: 199px;display:block" 
+						<input 	class="padding-input-box text11ref inputDef required" style="display:block;" 
 							type="email" maxlength="128" size="23" 
 							name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" 
 							id="email" placeholder="E-mail" >
 					</td>
-					</tr><br/>
+					</tr>
 
 
                     <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td>&nbsp;</td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
@@ -245,19 +234,18 @@
                         <!-- span id should be the input box id+"_img" -->
                         <span class="error_img" id="password1_img"></span></td>
 						<td style="padding-top: 10px;">
-						<input 	class="padding-input-box text11ref inputUser required" 
-								type="password" style="box-sizing: border-box; width: 199px; padding-top: 10px;display:block" size="23" 
-								name="<%=EnumUserInfoName.PASSWORD.getCode()%>" 
-							   	id="password1" placeholder="Password" >
-						<a class="show-password"  style="top: 130px; right: 145px;">Show</a></td>
-					</tr>
-
-
-									
+							<input 	class="padding-input-box text11ref inputUser required" type="password" size="23" 
+									name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" >
+							<a class="show-password"  style="top: 130px; right: 145px;">Show</a>
+						</td>
+					</tr>		
 					<tr>
-					<td></td>
-						<td style="padding-top: 10px;"><a onclick="dlvadrspage();" class="butText" style="font-weight:bold;font-size:14px;">
-						<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" style="display:block;"> </a></td>
+						<td></td>
+						<td style="padding-top: 10px;">
+							<a onclick="dlvadrspage();" class="butText" style="font-weight:bold;font-size:14px;">
+								<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" style="display:block;">
+							</a>
+						</td>
 					</tr>
 					<!-- 
 					<tr>
@@ -268,13 +256,11 @@
 										value="Use E-mail">
 								</a></td>
 							</tr>	
-							 -->										
-					
+							 -->
 				</table>
-				</form>
-												
-					</div>
-					<!-- form_fields ends here -->
+			</form>							
+		</div>
+<!-- form_fields ends here -->
 						
 					
 <script type="text/javascript">
@@ -354,20 +340,16 @@
 		 		 
 </script> <!-- front end validations end here -->	
 
-				</div><!--  form-side ends here -->
+		</div><!--  form-side ends here -->
 				
-<div class="social-login-headerscr-social"  style="float:none; margin-left: 40px; margin-top: 40px; padding-top: 160px;">
-
-	<p style="font-size:12px;font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-top:40px;">
-	<img src="/media_stat/images/navigation/line.png" WIDTH="100" HEIGHT="2" border="0" >
-	Or
-	<img src="/media_stat/images/navigation/line.png" WIDTH="100" HEIGHT="2" border="0" >
-	</p><br>
-
+<div class="social-login-headerscr-social">
+	<div class="social-login-line-separator"></div>
+	<span class="social-login-or-separator">or</span>
+	<div class="social-login-line-separator"></div>
 </div>
 
 				
-<div id="social_login_demo" class="social-login-social" style="float:none; margin-left: 120px;">
+<div id="social_login_demo" class="social-login-social">
 	<script type="text/javascript">
 		/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
 		var oneall_subdomain = 'freshdirect';
@@ -390,34 +372,32 @@
 		var _oneall = _oneall || [];
     	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
 		_oneall.push([ 'social_login', 'set_grid_sizes', [ 2, 2 ] ]);
+		_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/images/social_login/social_login_media.css?r']);
 		_oneall.push([ 'social_login', 'set_callback_uri',
 						       		'<%=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);
 		_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
 		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
+		
 	</script>
 </div> <!-- social login ends here -->
 
 
 				<div class="clear"></div>
 
-				<div class="bottom-contents" style="margin-left: 50px;">
-
-					<span class="text12">By signing up, you agree to the <a
-						href="javascript:popup('/registration/user_agreement.jsp', 'large')"
-						style="font-weight: normal; text-decoration: underline">Terms
-							of Service</a></span><br> <br> <span class="bottom-links">
-						<b>Already have an Account? 
-						   <a href="#"
-							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 518, height: 518}) ">
-							 Log In
+				<div class="bottom-contents">
+					<div class="bottom-contents-terms">
+						<div class="bottom-contents-terms-text">
+							By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Terms of Service</a>
+						</div>
+					</div>
+					<div class="bottom-links">
+						Already have an account? 
+						<a href="#" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 518, height: 518}) ">
+							Sign In
 						</a>
-					
-					</b>
-
-					</span>
-
-
+					</div>
 				</div>
+				
 				<!-- signup-style ends here -->
 				<%
 					if (result.isFailure()) {
@@ -439,10 +419,6 @@
 				%>
 
 	</center>
-
-
-
-
 	<%	
 		/*
 		 * "EXPRESS_REGISTRATION_COMPLETE" is set in SiteAccessControllerTag after express registration succeed

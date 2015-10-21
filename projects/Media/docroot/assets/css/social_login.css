@@ -1,5 +1,9 @@
 @CHARSET "ISO-8859-1";
 
+.fixedPopupContent{
+	border-radius: 10px;
+}
+
 #sulCont .signup-style{
   width:500px; 
   height:auto; 
@@ -53,28 +57,32 @@
 #sulCont .clear{clear:both;}
 
 #sulCont input[type="submit"]{
-  width:200px;
-  padding:10px;
-  margin-top:0px;
-  background-color:#00B800;
-  color:#ffffff;
-  text-align:center;  
-  border-radius:5px;
-}
-
-#sulCont input[type="submit"]:hover{
-  color:#000;
+  	width: 238px;
+	height: 44px;
+	border: 0;
+  	padding: 10px;
+  	margin-top: 0px;
+  	background-color: #00B800;
+  	color: #ffffff;
+  	text-align: center;  
+  	border-radius: 5px;
+  	font-family: Verdana;
+	font-size: 18px;
 }
 
 #sulCont .bottom-contents{
-  width:500px;
-  margin-top:10px;
   text-align:center;
-  margin-bottom:0px;
 }
 
 #sulCont input[disabled="disabled"]{
-  background-color:#D6D6C2;
+	background: rgb(204,204,204);
+	background: -moz-linear-gradient(top,  rgba(204,204,204,1) 0%, rgba(194,194,194,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,1)), color-stop(100%,rgba(194,194,194,1)));
+	background: -webkit-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: -o-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	background: linear-gradient(to bottom,  rgba(204,204,204,1) 0%,rgba(194,194,194,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#c2c2c2',GradientType=0 ); 
 }
 
 #sulCont .error{
@@ -97,6 +105,10 @@
   display:block;
   width:17px;
   height:12px;
+}
+
+#sulCont .form-side-social #litesignup{
+	margin-left: -17px;
 }
 
 #sulCont .password-class{
@@ -129,3 +141,83 @@ input[type="socialButton"] {
 	border-radius: 5px;
 }
 
+.social-login-social{
+	width: 238px;
+}
+#sulCont.social-singup{
+	
+}
+
+#sulCont.social-singup .form-side-social{
+	
+}
+#sulCont .form-side-social-header{
+	padding: 29px 0 33px;
+	font-family: Verdana;
+	color:  #333333;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 16px;
+	text-align: center;
+}
+
+#sulCont .form-side-social .padding-input-box{
+	padding: 12px 15px;
+    border: 1px solid #c2c2c2;
+    background-color: #ffffff;
+    font-family: Verdana;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: left;
+    width: 206px;
+	
+}
+#sulCont .social-login-headerscr-social{
+	padding: 32px 0;
+}
+#sulCont .social-login-or-separator{
+	display: inline-block;
+	padding: 0 90px;
+	font-family: Verdana;
+	color:  #333333;
+	font-size: 16px;
+	line-height: 16px;
+	font-weight: 700;
+}
+
+#sulCont .social-login-line-separator{
+	display: inline-block;
+	width: 116px;
+	height: 1px;
+	margin-bottom: 3px;
+	background-color: #c2c2c2;
+}
+
+#sulCont .bottom-contents .bottom-contents-terms{
+	width: 238px;
+	margin: auto;
+}
+
+#sulCont .bottom-contents .bottom-contents-terms-text{
+	padding-right: 30px;
+    color: #888888;
+    font-size: 12px;
+    line-height: 12px;
+    text-align: left;
+}
+#sulCont .bottom-contents .bottom-contents-terms-text a{
+	color: #888888;
+	text-decoration: underline;
+}
+#sulCont .bottom-contents .bottom-links{
+	padding-top: 20px;
+    font-size: 14px;
+    line-height: 16px;
+}
+#sulCont .bottom-contents .bottom-links a{
+	font-family: Verdana;
+    color: #669933;
+    font-size: 14px;
+    font-weight: 700;
+}

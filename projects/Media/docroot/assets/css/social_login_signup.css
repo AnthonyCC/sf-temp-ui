@@ -5,15 +5,9 @@ a:hover {
 }
 
 .signup-style-social {
-	width: 500px;
+	width: 518px;
 	height: auto;
 	overflow: hidden;
-}
-
-.padding-input-box {
-	padding: 9px;
-	/*border-radius:2px;*/
-	width: 199px;
 }
 
 .alignment {
@@ -21,27 +15,6 @@ a:hover {
 	float: left;
 	margin-left: 10px;
 	margin-bottom: 10px;
-}
-
-.form-side-social {
-	width: 180px;
-	float: left;
-	margin-right: 40px;
-}
-
-.social-login-header {
-	width: 240;
-	float: right;
-}
-
-.social-login-headerscr-social {
-	width: 225px;
-	float: right;
-}
-
-.social-login-social {
-	width: 210px;
-	float: left;
 }
 
 .social-loginscr {
