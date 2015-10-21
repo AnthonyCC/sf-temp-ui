@@ -293,6 +293,15 @@ public class ShipToAddress extends DeliveryAddress {
         return address.getPK();
     }
 
+  //Appdev 4351 : Delivery Instructions not Recorded
+	public String getDeliveryInstruction() {
+		String result="";
+		 if(null != address.getInstructions())
+		 {
+			 result=address.getInstructions();
+		 }
+		 return result;
+	}
 
 
 }

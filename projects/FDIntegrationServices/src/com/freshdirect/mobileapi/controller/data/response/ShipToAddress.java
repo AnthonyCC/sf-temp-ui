@@ -24,6 +24,9 @@ public class ShipToAddress extends DeliveryAddress {
 
     private String altType;
     
+//Appdev 4351 : Delivery Instructions not Recorded
+    private String deliveryInstruction;
+	
     private String instructions;
     
     private Set availableServiceTypes;
@@ -47,6 +50,10 @@ public class ShipToAddress extends DeliveryAddress {
         this.city = address.getCity();
         this.state = address.getState();
         this.postalCode = address.getPostalCode();
+        
+        //Appdev 4351 : Delivery Instructions not Recorded
+        this.deliveryInstruction = address.getDeliveryInstruction();
+        
         if (null != address.getContactPhone()) {
             this.contactPhoneNumber = new PhoneNumber(address.getContactPhone().getPhone(), address.getContactPhone().getExtension());
         }
@@ -147,6 +154,15 @@ public class ShipToAddress extends DeliveryAddress {
 
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
+	}
+	
+	  //Appdev 4351 : Delivery Instructions not Recorded
+	public String getDeliveryInstruction() {
+		return deliveryInstruction;
+	}
+
+	public void setDeliveryInstruction(String deliveryInstruction) {
+		this.deliveryInstruction = deliveryInstruction;
 	}
 
 }
