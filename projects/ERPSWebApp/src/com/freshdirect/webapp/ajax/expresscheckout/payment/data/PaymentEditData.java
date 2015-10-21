@@ -38,6 +38,7 @@ public class PaymentEditData {
 	private String billingZipcode;
 
 	private String phone;
+	private String eWalletID;
 
 	public String getCardHolderName() {
 		return cardHolderName;
@@ -190,4 +191,19 @@ public class PaymentEditData {
 	public void setBankAccountType(String bankAccountType) {
 		this.bankAccountType = bankAccountType;
 	}
+
+	/**
+	 * @return the eWalletID
+	 */
+	public String geteWalletID() {
+		return eWalletID;
+	}
+
+	/**
+	 * @param eWalletID the eWalletID to set
+	 */
+	public void seteWalletID(String eWalletID) {
+		this.eWalletID = eWalletID;
+	}
+
 }

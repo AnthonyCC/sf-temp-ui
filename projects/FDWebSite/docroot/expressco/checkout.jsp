@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
@@ -32,6 +33,8 @@
         }
       }());
     </script>
+
+<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
 
 	 <!-- APPDEV-4287  Dstillery pixel -->
          <script type="text/javascript" async>

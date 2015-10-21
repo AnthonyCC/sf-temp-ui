@@ -132,9 +132,15 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
 	            <% } %>
 	                      
             <% } %>     
-            <BR>  
-			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
-            <font class="space4pix"><br></font>
+            <BR>
+            
+            <%if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){%> 
+				<img src="https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif">
+			<%}else{ %> 
+			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>
+			<% }%>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
+			<font class="space4pix"><br></font>
             <%= paymentMethod.getName()%><BR>
             <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
             <BR>            

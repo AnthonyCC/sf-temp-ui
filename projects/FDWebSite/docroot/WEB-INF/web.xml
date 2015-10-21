@@ -325,6 +325,16 @@
 		<servlet-name>PaymentMethodServlet</servlet-name>
 		<url-pattern>/api/expresscheckout/payment</url-pattern>
 	</servlet-mapping>
+	
+	<!--  Ewallet Payment Integration -->
+	<servlet>
+		<servlet-name>EwalletPaymentServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.servlet.EwalletPaymentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EwalletPaymentServlet</servlet-name>
+		<url-pattern>/api/expresscheckout/addpayment/ewalletPayment</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<servlet-name>TextMessageAlertSubmitDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.servlet.TextMessageAlertSubmitDataServlet</servlet-class>

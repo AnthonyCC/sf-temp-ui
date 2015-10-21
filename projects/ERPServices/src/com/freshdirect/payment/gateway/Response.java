@@ -30,5 +30,9 @@ public interface Response  extends java.io.Serializable {
 	public boolean isSuccess();
 	public String getResponseCode();
 	public String getResponseCodeAlt();
-	
+
+	public String getEwalletId();
+	public void setEwalletId(String ewalletId);
+	public String getEwalletTxId();
+	public void setEwalletTxId(String ewalletId);
 }

@@ -259,6 +259,11 @@ public class GatewayAdapter {
 				billingInfo.setTransactionID(saleId);
 				billingInfo.setAmount(amount);
 				billingInfo.setTax(tax);
+				billingInfo.setEwalletId(paymentMethod.geteWalletID());
+				billingInfo.setEwalletTxId(paymentMethod.geteWalletTrxnId());
+			} else {
+				billingInfo.setEwalletId(paymentMethod.geteWalletID());
+				billingInfo.setEwalletTxId(paymentMethod.geteWalletTrxnId());
 			}
 			request.setBillingInfo(billingInfo);
 		} else return null;
@@ -455,6 +460,9 @@ public class GatewayAdapter {
 			cc.setCVV(paymentMethod.getCVV());
 			cc.setBillingProfileID(paymentMethod.getProfileID());
 			cc.setCustomerID(paymentMethod.getCustomerId());
+			// Get EWallet ID
+			cc.setEwalletId(paymentMethod.geteWalletID());
+			cc.setEwalletTxId(paymentMethod.geteWalletTrxnId());
 			return cc;
 		
 	}

@@ -34,8 +34,23 @@ class ResponseImpl implements Response {
 	private BillingInfo billingInfo;
 	private String responseCode;
 	private String responseCodeAlt;
+	private String ewalletId;
+	private String ewalletTxId;
 	
-	
+	/**
+	 * @return the ewalletTxId
+	 */
+	public String getEwalletTxId() {
+		return ewalletTxId;
+	}
+
+	/**
+	 * @param ewalletTxId the ewalletTxId to set
+	 */
+	public void setEwalletTxId(String ewalletTxId) {
+		this.ewalletTxId = ewalletTxId;
+	}
+
 	ResponseImpl(Request request) {
 		this.request=request;
 	}
@@ -342,6 +357,16 @@ class ResponseImpl implements Response {
 				//+ ", rawRequest=" + rawRequest + ", rawResponse=" + rawResponse
 				+ ", request=" + request + ", responseTime=" + responseTime+"]";
 				
+	}
+
+	@Override
+	public String getEwalletId() {
+		return ewalletId;
+	}
+
+	@Override
+	public void setEwalletId(String ewalletId) {
+		this.ewalletId = ewalletId;
 	}
 	
 }

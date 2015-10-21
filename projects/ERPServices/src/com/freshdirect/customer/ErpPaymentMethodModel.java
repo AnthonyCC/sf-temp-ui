@@ -32,6 +32,24 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String accountNumLast4;
 	private String bestNumberForBillingInquiries;
 
+	private String eWalletID="";
+	private String vendorEWalletID="";
+	private String eWalletTrxnId="";
+	
+	/**
+	 * @return the trxnId
+	 */
+	public String geteWalletTrxnId() {
+		return eWalletTrxnId;
+	}
+
+	/**
+	 * @param trxnId the trxnId to set
+	 */
+	public void seteWalletTrxnId(String trxnId) {
+		this.eWalletTrxnId = trxnId;
+	}
+
 	public String getAccountNumLast4() {
 		return accountNumLast4;
 	}
@@ -319,4 +337,37 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setBestNumberForBillingInquiries(String bestNumberForBillingInquiries) {
 		this.bestNumberForBillingInquiries = bestNumberForBillingInquiries;
 	}
+
+	/**
+	 * @return the eWalletID
+	 */
+	@Override
+	public String geteWalletID() {
+		return eWalletID;
+	}
+
+	/**
+	 * @param eWalletID the eWalletID to set
+	 */
+	@Override
+	public void seteWalletID(String eWalletID) {
+		this.eWalletID = eWalletID;
+	}
+
+	/**
+	 * @return the vendorEWalletID
+	 */
+	@Override
+	public String getVendorEWalletID() {
+		return vendorEWalletID;
+	}
+
+	/**
+	 * @param vendorEWalletID the vendorEWalletID to set
+	 */
+	@Override
+	public void setVendorEWalletID(String vendorEWalletID) {
+		this.vendorEWalletID = vendorEWalletID;
+	}
+	
 }

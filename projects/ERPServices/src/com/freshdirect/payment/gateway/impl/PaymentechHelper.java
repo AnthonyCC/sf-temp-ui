@@ -135,6 +135,10 @@ class PaymentechHelper {
 						val=_response.getCVV2RespCode();
 						response.setCVVMatch(PaymentechResponseHelper.isCVVMatch(val));
 						response.setCVVResponse(val);
+						
+						// EWallet Id 
+						response.setEwalletId(cc.getEwalletId());
+						response.setEwalletTxId(cc.getEwalletTxId());
 					} else if(pm!=null && PaymentMethodType.ECHECK.equals(pm.getType())) {
 						ECheck ec=(ECheck)pm;
 						
@@ -206,6 +210,8 @@ class PaymentechHelper {
 				pm.setState(_response.getValue(PaymentechFields.ProfileResponse.CustomerState.name()));
 				pm.setZipCode(_response.getValue(PaymentechFields.ProfileResponse.CustomerZIP.name()));
 				response.setBillingInfo(new BillingInfoImpl(response.getMerchant(),pm));
+				response.setEwalletId(response.getRequest().getBillingInfo().getPaymentMethod().getEwalletId());
+				response.setEwalletTxId(response.getRequest().getBillingInfo().getPaymentMethod().getEwalletTxId());
 				
 			} else {
 				response.setRequestProcessed(false);

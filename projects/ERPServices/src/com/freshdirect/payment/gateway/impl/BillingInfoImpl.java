@@ -15,7 +15,23 @@ class BillingInfoImpl implements BillingInfo{
 	private Currency currency=Currency.USD;
 	private Merchant merchant;
 	private PaymentMethod pymtMethod;
+	private String ewalletId;
+	private String ewalletTxId;
 	
+	/**
+	 * @return the ewalletTxId
+	 */
+	public String getEwalletTxId() {
+		return ewalletTxId;
+	}
+
+	/**
+	 * @param ewalletTxId the ewalletTxId to set
+	 */
+	public void setEwalletTxId(String ewalletTxId) {
+		this.ewalletTxId = ewalletTxId;
+	}
+
 	public BillingInfoImpl(Merchant merchant,PaymentMethod pymtMethod) {
 		this.merchant=merchant;
 		this.pymtMethod=pymtMethod;
@@ -158,6 +174,15 @@ class BillingInfoImpl implements BillingInfo{
 				+ ", transactionRefIndex=" + transactionRefIndex +"]";
 	}
 
-	
-	
+	@Override
+	public String getEwalletId() {
+		return this.ewalletId;
+	}
+
+	@Override
+	public void setEwalletId(String ewalletId) {
+		this.ewalletId = ewalletId;
+		
+	}
+
 }

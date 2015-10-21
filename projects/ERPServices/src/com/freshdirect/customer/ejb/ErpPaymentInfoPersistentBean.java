@@ -102,7 +102,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,EWALLET_TX_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
 		ps.setString(index++, this.getParentPK().getId());
 		ps.setString(index++, this.model.getName());
@@ -169,6 +169,23 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		} else {
 			ps.setNull(index++, Types.VARCHAR);
 		}
+		if (model.geteWalletID() != null) {
+			ps.setString(index++, model.geteWalletID());
+		} else {
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		
+		if (model.getVendorEWalletID() != null) {
+			ps.setString(index++, model.getVendorEWalletID());
+		} else {
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		
+		if (model.geteWalletTrxnId() != null) {
+			ps.setString(index++, model.geteWalletTrxnId());
+		} else {
+			ps.setNull(index++, Types.VARCHAR);
+		}
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -186,7 +203,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED,BEST_NUM_BILLING_INQ FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED,BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID, EWALLET_TX_ID FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -233,6 +250,10 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			this.model.setAccountNumber(rs.getString("ACCOUNT_NUM_MASKED"));
 		}
 		this.model.setBestNumberForBillingInquiries(rs.getString("BEST_NUM_BILLING_INQ"));
+
+		this.model.seteWalletID(rs.getString("EWALLET_ID"));
+		this.model.setVendorEWalletID(rs.getString("VENDOR_EWALLET_ID"));
+		this.model.seteWalletTrxnId(rs.getString("EWALLET_TX_ID"));
 
 		this.unsetModified();
 	}

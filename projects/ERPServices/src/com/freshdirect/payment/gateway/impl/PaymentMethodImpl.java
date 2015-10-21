@@ -18,7 +18,25 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 	private String billingProfileID;
 	private PaymentMethodType type;
 	private Currency currency=Currency.USD;
+	private String ewalletId;
+	private String ewalletTxId;
 	
+	/* (non-Javadoc)
+	 * @see com.freshdirect.payment.gateway.PaymentMethod#setEwalletTxId(java.lang.String)
+	 */
+	@Override
+	public void setEwalletTxId(String ewalletId) {
+		this.ewalletTxId = ewalletId;
+		
+	}
+	/* (non-Javadoc)
+	 * @see com.freshdirect.payment.gateway.PaymentMethod#getEwalletTxId()
+	 */
+	@Override
+	public String getEwalletTxId() {
+		// TODO Auto-generated method stub
+		return ewalletTxId;
+	}
 	PaymentMethodImpl(PaymentMethodType type) {
 		this.type=type;
 	}

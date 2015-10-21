@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.checkout.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,12 +12,14 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -32,6 +35,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
+import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
+import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.restriction.service.RestrictionService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -50,6 +55,14 @@ public class CheckoutService {
 	private static final CheckoutService INSTANCE = new CheckoutService();
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CheckoutService.class);
+	
+//	private static final String CUSTOMER_NOTIFY_STATUS = "Pending";
+//	private static final String MASTERPASS_TRANSACTIONID="transactionId";
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String MP_EWALLET_CARD="MP_CARD";
+	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+
+
 
 	private CheckoutService() {
 	}
@@ -127,6 +140,14 @@ public class CheckoutService {
 					String orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
                     responseData.getSubmitForm().getResult().put(SinglePageCheckoutFacade.REDIRECT_URL_JSON_KEY, "/expressco/success.jsp?orderId=" + orderId);
 					responseData.getSubmitForm().setSuccess(true);
+					
+					// Remove the EWallet Payment MEthod ID from session
+					if(session.getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
+						session.removeAttribute(EWALLET_SESSION_ATTRIBUTE_NAME);
+					}if(session.getAttribute(WALLET_SESSION_CARD_ID) != null){
+						session.removeAttribute(WALLET_SESSION_CARD_ID);
+					}
+					
 					session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
                     session.removeAttribute(SessionName.PAYMENT_BILLING_REFERENCE);
                     session.setAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL, true);
@@ -141,6 +162,10 @@ public class CheckoutService {
 		}
 		if (checkoutPageReloadNeeded) {
 			SinglePageCheckoutData checkoutData = SinglePageCheckoutFacade.defaultFacade().load(user, request);
+			
+			removeOlderEwalletPaymentMethod(checkoutData.getPayment(),request);
+			checkEWalletCard(checkoutData.getPayment(),request);
+			
             checkoutData.setAtpFailure(atpFailureData);
 			if (checkPlaceOrderResult != null && !checkPlaceOrderResult.isPassed()) {
 				checkoutData.setRestriction(checkPlaceOrderResult);
@@ -172,5 +197,78 @@ public class CheckoutService {
 		validationResult.setFdform(requestData.getFormId());
 		responseData.setValidationResult(validationResult);
 		return responseData;
+	}
+	
+		/**
+		 * @param txNotifyModel
+		 */
+		/*private void updateIntoEWalletTxNotify(ErpEWalletTxNotifyModel txNotifyModel){
+	    	FDCustomerManager.updateEWalletTxnNotify(txNotifyModel);
+	    }
+			*/
+	
+	/**
+	 * @param formpaymentData
+	 * @param request
+	 */
+	private void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
+		if (formpaymentData != null) {
+			List<PaymentData> payments = formpaymentData.getPayments();
+			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
+			String session_card = "";
+			String selectedWalletCardId="";
+			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
+				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
+			}
+			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
+				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
+			}
+			for (PaymentData data : payments) {
+				if(data.geteWalletID() == null){
+					paymentsNew.add(data);
+				}else{
+					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
+						if(data.geteWalletID()!=null && data.geteWalletID().equals("1") && selectedWalletCardId.equals(data.getId())){
+							data.setSelected(true);
+							formpaymentData.setSelected(data.getId());
+							paymentsNew.add(data);
+						}else{
+							data.setSelected(false);
+						}
+					}
+				}
+			}
+			formpaymentData.setPayments(paymentsNew);
+		}
+	}
+	/**
+	 * @param formpaymentData
+	 * @param request
+	 */
+	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
+		if (formpaymentData != null) {
+			List<PaymentData> payments = formpaymentData.getPayments();
+			String session_card = "";
+			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
+				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
+			}
+			String selectedWalletCardId="";
+			if(request.getSession().getAttribute("WALLET_CARD_ID") != null ){
+				selectedWalletCardId = request.getSession().getAttribute("WALLET_CARD_ID").toString();
+			}
+			for (PaymentData data : payments) {
+				if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
+						request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
+						int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+						data.setSelected(true);
+						formpaymentData.setSelected(data.getId());
+						data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
+					}else{
+						data.setSelected(false);
+					}
+				}
+			}
+		}
 	}
 }

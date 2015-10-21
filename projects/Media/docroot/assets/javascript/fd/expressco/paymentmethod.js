@@ -60,6 +60,28 @@ var FreshDirect = FreshDirect || {};
     }
   });
   fd.modules.common.forms.register({
+	    id: "MP",
+	    success: function (id, result) {
+          MasterPass.client.checkout({       
+              "requestToken":result.eWalletResponseData.token,                
+              "callbackUrl":result.eWalletResponseData.callbackUrl,
+              "requestedDataTypes":[result.eWalletResponseData.reqDatatype],
+              "merchantCheckoutId":result.eWalletResponseData.eWalletIdentifier,                
+              "allowedCardTypes":[result.eWalletResponseData.allowedPaymentMethodTypes],
+			  "suppressShippingAddressEnable": result.eWalletResponseData.suppressShippingEnable,
+			  "requestBasicCheckout" : result.eWalletResponseData.requestBasicCkt,
+			  "loyaltyEnabled":result.eWalletResponseData.LoyaltyEnabled,
+              "version":result.eWalletResponseData.version,
+            /* "cancelCallback": function onCancelledCheckout(data)
+             {
+                 
+                 // no op
+
+             }*/
+        });
+	    }
+	  });
+  fd.modules.common.forms.register({
     id: "EC",
     success: function () {
       if (fd.expressco.addpaymentmethodpopup) {

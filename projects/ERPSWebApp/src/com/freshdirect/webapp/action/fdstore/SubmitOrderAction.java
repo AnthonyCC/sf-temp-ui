@@ -476,10 +476,12 @@ public class SubmitOrderAction extends WebActionSupport {
 			return ERROR;
 		}
 		if(!cart.getPaymentMethod().isGiftCard()) {	
-			// set the default credit card to the one that is in the cart
-			FDCustomerManager.setDefaultPaymentMethod(
-				AccountActivityUtil.getActionInfo(session),
-				((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK());
+			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
+			ErpPaymentMethodModel paymentMethodModel = (ErpPaymentMethodModel) cart.getPaymentMethod();
+			if(paymentMethodModel.geteWalletID() == null){ 
+				FDCustomerManager.setDefaultPaymentMethod(
+					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK());
+			}
 		}
 		ErpAddressModel address = cart.getDeliveryAddress();
 		if(address instanceof ErpDepotAddressModel){

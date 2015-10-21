@@ -110,6 +110,7 @@
 		<pathelement location="${thirdparty.home}/commons-vfs2-2.0.jar"/>
 		<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+		<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1742,6 +1743,8 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
+			
 		</path>
 
 		<makeProject
@@ -2140,6 +2143,9 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2176,6 +2182,9 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2217,6 +2226,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 				
 				<include name="commons-lang-2.3.jar"/>
 								<include name="spring-aop-4.0.1.RELEASE.jar"/>	
@@ -2272,6 +2283,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 				
 				<include name="commons-lang-2.3.jar"/>
 				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
@@ -2345,6 +2358,8 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 				<include name="httpclient-4.5.jar"/>
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
@@ -2379,6 +2394,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 				<include name="httpclient-4.5.jar"/>
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
@@ -2456,6 +2473,8 @@
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
@@ -2952,6 +2971,8 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 
+				<!-- masterpass integration -->
+				<include name="masterpassExpressSdk.jar"/>
 			</lib>
 		
 		</makeFDAdminEar>

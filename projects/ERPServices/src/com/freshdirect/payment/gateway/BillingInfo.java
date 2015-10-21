@@ -20,5 +20,10 @@ public interface BillingInfo extends java.io.Serializable {
 	public void setTransactionRef(String transactionRef);
 	public String getTransactionRefIndex();
 	public void setTransactionRefIndex(String transactionRefIndex);
+	
+	public String getEwalletId();
+	public void setEwalletId(String ewalletId);
+	public String getEwalletTxId();
+	public void setEwalletTxId(String ewalletId);
 
 }

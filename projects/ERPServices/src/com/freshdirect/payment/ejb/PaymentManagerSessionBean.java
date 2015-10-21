@@ -129,6 +129,17 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
+	public String getOrderStatusById(String saleId) throws ErpTransactionException, RemoteException{
+		try {
+			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
+
+			return sale.getStatus().getStatusCode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 	public List<ErpAuthorizationModel> authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
 						
 		try {

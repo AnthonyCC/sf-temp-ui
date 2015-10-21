@@ -105,6 +105,10 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 					ECheck ec=(ECheck)pm;
 					logModel.setBankAccountType(ec.getBankAccountType());
 				}
+				
+				// Update EWallet ID
+				logModel.seteWalletId(response.getEwalletId());
+				logModel.seteWalletTxId(response.getEwalletTxId());
 			}
 			
 		}

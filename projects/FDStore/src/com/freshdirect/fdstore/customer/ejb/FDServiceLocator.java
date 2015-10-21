@@ -15,11 +15,13 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManagerHome;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -165,7 +167,21 @@ public class FDServiceLocator extends ERPServiceLocator {
     }
  
     
-
+	public ErpEWalletHome getErpEWalletHome() {
+        try {
+            return (ErpEWalletHome) getRemoteHome(FDStoreProperties.getErpEWalletHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public MasterpassServiceHome getMasterpassServiceHome() {
+        try {
+            return (MasterpassServiceHome) getRemoteHome(FDStoreProperties.getMPServiceHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
     public ErpSaleHome getErpSaleHome() {
         try {
             return (ErpSaleHome) getRemoteHome("freshdirect.erp.Sale");

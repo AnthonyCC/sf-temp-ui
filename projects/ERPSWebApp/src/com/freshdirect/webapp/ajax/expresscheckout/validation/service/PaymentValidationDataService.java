@@ -14,6 +14,7 @@ public class PaymentValidationDataService implements FormValidationService {
 	private static final String ADD_PAYMENT_CREDIT_CARD = "CC";
 	private static final String ADD_PAYMENT_BANK = "EC";
 	private static final String ADD_PAYMENT_ELECTRONIC_BENEFIT_TRANSFER = "ET";
+	private static final String ADD_PAYMENT_MASTER_PASS = "MP";
 
 	private static final PaymentValidationDataService INSTANCE = new PaymentValidationDataService();
 
@@ -41,6 +42,8 @@ public class PaymentValidationDataService implements FormValidationService {
 			validationErrors = validationService.validateBankPayment(validatedData);
 		} else if (checkEbtValidator(formId)) {
 			validationErrors = validationService.validateEbtPayment(validatedData);
+		}else if (checkMPValidator(formId)) {
+			validationErrors = validationService.validateCreditCardPayment(validatedData);
 		} else {
 			noValidatiorAvailable();
 		}
@@ -74,6 +77,10 @@ public class PaymentValidationDataService implements FormValidationService {
 		return ADD_PAYMENT_ELECTRONIC_BENEFIT_TRANSFER.equalsIgnoreCase(formId);
 	}
 
+	private boolean checkMPValidator(String formId) {
+		return ADD_PAYMENT_MASTER_PASS.equalsIgnoreCase(formId);
+	}
+	
 	private void noValidatiorAvailable() {
 		throw new IllegalArgumentException(NO_AVAILABLE_VALIDATOR_IS_FOUND);
 	}

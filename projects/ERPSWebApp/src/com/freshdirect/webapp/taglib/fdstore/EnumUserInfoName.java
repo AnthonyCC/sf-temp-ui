@@ -132,6 +132,12 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName					OFFER_EXISTING   				        = new EnumUserInfoName( "offer_existing", "offer existing" );
 	public final static EnumUserInfoName					PARTNER_EXISTING   				        = new EnumUserInfoName( "partner_existing", "partner existing" );
 
+	// Masterpass Required 
+	public final static EnumUserInfoName EWALLET_ID = new EnumUserInfoName("eWalletID", "EWallet ID");
+	public final static EnumUserInfoName VENDOR_EWALLETID = new EnumUserInfoName("vendorEWalletId", "Vendor EWallet ID");
+	public final static EnumUserInfoName EWALLET_TXN_ID = new EnumUserInfoName("eWallet_TrxnId", "EWallet Trxn ID");
+
+	
 	// Gift Card Donation
 	public final static EnumUserInfoName GC_DONOR_ORGANIZATION_NAME = new EnumUserInfoName("gcDonorOrganizationName", "Donor Organization Name");
 

@@ -34,6 +34,10 @@ public class FDStoreProperties {
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
     private static final SimpleDateFormat SF = new SimpleDateFormat(
             "yyyy-MM-dd");
+    private static final String PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL = "masterpass.lightbox.url";
+    private static final String PROP_EWALLET_MASTERPASS_ENV_PROP_NAME = "masterpass.environment";
+    private static final String PROP_EWALLET_MP_BTN_IMG_URL = "masterpass.button.img.url";
+    private static final String PROP_EWALLET_MP_LOGO_URL = "masterpass.logo.url";
     private static final String SUB_DOMAIN = "fdstore.media.subdomain";
     private final static String PROP_PROVIDER_URL = "fdstore.providerURL";
     private final static String PROP_INIT_CTX_FACTORY = "fdstore.initialContextFactory";
@@ -48,6 +52,8 @@ public class FDStoreProperties {
     private final static String PROP_COMPLAINTMGR_HOME = "fdstore.complaintManager.home";
     private final static String PROP_CALLCENTERMGR_HOME = "fdstore.callCenterManager.home";
     private final static String PROP_FDCUSTMGR_HOME = "fdstore.fdCustomerManager.home";
+    private final static String PROP_EWALLET_HOME= "fdstore.ErpEWallet.home";
+    private final static String PROP_MPService_HOME= "fdstore.MPService.home";
     private final static String PROP_EXTERNAL_ACCOUNTMGR_HOME = "fdstore.externalLoginManager.home";
     private final static String PROP_FDPROMOTIONMGR_HOME = "fdstore.fdPromotionManager.home";
     private final static String PROP_FDPROMOTIONMGR_NEW_HOME = "fdstore.fdPromotionManagerNew.home";
@@ -776,7 +782,8 @@ public class FDStoreProperties {
     private static final String PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID = "fdstore.hmb.category.id";
     // APPDEV - 4354 - ATP in overlay
     private static final String PROP_ATP_AVAILABILTY_MOCK_ENABLED = "fdstore.atp.availability.mock.enabled";
-	
+	 private static final String PROP_EWALLET_ENCRYPTION_KEY = "fdstore.ewallet.encryption.key";
+    private static final String PROP_EWALLET_ENCRYPTION_ALGORITHM = "fdstore.ewallet.encryption.algorithm";	 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -796,6 +803,11 @@ public class FDStoreProperties {
         defaults.put(PROP_CALLCENTERMGR_HOME,
             "freshdirect.fdstore.CallCenterManager");
         defaults.put(PROP_FDCUSTMGR_HOME, "freshdirect.fdstore.CustomerManager");
+        defaults.put(PROP_EWALLET_HOME, "freshdirect.fdstore.ErpEWallet");
+        defaults.put(PROP_MPService_HOME, "freshdirect.fdstore.MPService");
+        
+        defaults.put(PROP_EWALLET_ENCRYPTION_ALGORITHM,"AES");
+        defaults.put(PROP_EWALLET_ENCRYPTION_KEY, "Z8LSq0wWwB5v+6YJzurcP463H3F12iZh74fDj4S74oUH4EONkiKb2FmiWUbtFh97GG/c/lbDE47mvw6j94yXxKHOpoqu6zpLKMKPcOoSppcVWb2q34qENBJkudXUh4MWcreondLmLL2UyydtFKuU9Sa5VgY/CzGaVGJABK2ZR94=");
         defaults.put(PROP_FDPROMOTIONMGR_HOME,
             "freshdirect.fdstore.PromotionManager");
         defaults.put(PROP_FDPROMOTIONMGR_NEW_HOME,
@@ -1535,6 +1547,10 @@ public class FDStoreProperties {
         defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
+        defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
+        defaults.put(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME, "Sandbox-Profile.ini");
+        defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
+        defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
 		refresh();
     }
 
@@ -1654,10 +1670,25 @@ public class FDStoreProperties {
         return get(PROP_FDCUSTMGR_HOME);
     }
     
+    public static String getErpEWalletHome() {
+        return get(PROP_EWALLET_HOME);
+    }
+    
+    public static String getMPServiceHome() {
+        return get(PROP_MPService_HOME);
+    }
+	
     public static String getExternalAccountManagerHome() {
     	return get(PROP_EXTERNAL_ACCOUNTMGR_HOME);
     }
     
+    public static String getEwalletEncryptionKey() {
+        return get(PROP_EWALLET_ENCRYPTION_KEY);
+    }
+    
+    public static String getEwalletEncryptionAlgorithm() {
+        return get(PROP_EWALLET_ENCRYPTION_ALGORITHM);
+    }
     public static String getFDPromotionManagerHome() {
         return get(PROP_FDPROMOTIONMGR_HOME);
     }
@@ -3609,6 +3640,21 @@ public class FDStoreProperties {
     
     public static String getSTPassword() {
     	return get(PROP_ST_PASSWORD);
+    }
+    public static String getMasterpassLightBoxURL() {
+    	return get(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL);
+    }
+    
+    public static String getMasterpassEnvironment() {
+    	return get(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME);
+    }
+    
+    public static String getMasterpassBtnImgURL() {
+    	return get(PROP_EWALLET_MP_BTN_IMG_URL);
+    }
+    
+    public static String getMasterpassLogoURL() {
+    	return get(PROP_EWALLET_MP_LOGO_URL);
     }
     public static String getSTFdxUsername() {
     	return get(PROP_ST_FDX_USERNAME);

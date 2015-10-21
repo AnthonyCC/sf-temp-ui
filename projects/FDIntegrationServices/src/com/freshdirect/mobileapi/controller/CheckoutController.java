@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.freshdirect.FDCouponProperties;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -24,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -987,7 +990,8 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView getPaymentMethods(ModelAndView model, SessionUser user) throws FDException, JsonException {
-        List paymentMethods = user.getPaymentMethods();
+		// Discard Masterpass Wallet Cards from list -- For Standard Checkout Feature
+		List<ErpPaymentMethodI> paymentMethods = discardEwalletCards(user.getPaymentMethods(),"MP");
         List<PaymentMethod> electronicChecks = user.getElectronicChecks(paymentMethods);
         List<PaymentMethod> creditCards = user.getCreditCards(paymentMethods);
         List<PaymentMethod> ebtCards = user.getEBTCards(paymentMethods);
@@ -1007,7 +1011,30 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
-    
+    /**
+     * @param paymentMethods
+     * @param walletType
+     */
+    private List<ErpPaymentMethodI> discardEwalletCards(List<ErpPaymentMethodI> paymentMethods, String walletType){
+    	List<ErpPaymentMethodI> updatedPaymentMethodList  = new ArrayList<ErpPaymentMethodI>();
+    	if(paymentMethods != null && !paymentMethods.isEmpty()){
+    		for(ErpPaymentMethodI paymentMethod : paymentMethods){
+    			if( paymentMethod.geteWalletID() != null ){
+    				int ewalletId = Integer.parseInt(paymentMethod.geteWalletID());
+    	    		if( ewalletId == EnumEwalletType.getEnum(walletType).getValue()){
+    	    			continue;
+    	    		}else{
+    	    			updatedPaymentMethodList.add(paymentMethod);
+    	    		}
+    			}else{
+    				updatedPaymentMethodList.add(paymentMethod);
+    			}
+    		}
+    	}else{
+    		Collections.<ErpPaymentMethodI>emptyList();
+    	}
+    	return updatedPaymentMethodList;
+    }
     private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);

@@ -19,6 +19,10 @@ public class PaymentData {
 	private String bankAccountType;
 	private String bankName;
 	private String abaRouteNumber;
+	
+	private String eWalletID;
+	private String vendorEWalletID;
+	private String mpLogoURL;
 
 	public String getId() {
 		return id;
@@ -154,6 +158,48 @@ public class PaymentData {
 
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+
+	/**
+	 * @return the eWalletID
+	 */
+	public String geteWalletID() {
+		return eWalletID;
+	}
+
+	/**
+	 * @param eWalletID the eWalletID to set
+	 */
+	public void seteWalletID(String eWalletID) {
+		this.eWalletID = eWalletID;
+	}
+
+	/**
+	 * @return the vendorEWalletID
+	 */
+	public String getVendorEWalletID() {
+		return vendorEWalletID;
+	}
+
+	/**
+	 * @param vendorEWalletID the vendorEWalletID to set
+	 */
+	public void setVendorEWalletID(String vendorEWalletID) {
+		this.vendorEWalletID = vendorEWalletID;
+	}
+
+	/**
+	 * @return the mpLogoURL
+	 */
+	public String getMpLogoURL() {
+		return mpLogoURL;
+	}
+
+	/**
+	 * @param mpLogoURL the mpLogoURL to set
+	 */
+	public void setMpLogoURL(String mpLogoURL) {
+		this.mpLogoURL = mpLogoURL;
 	}
 
 }

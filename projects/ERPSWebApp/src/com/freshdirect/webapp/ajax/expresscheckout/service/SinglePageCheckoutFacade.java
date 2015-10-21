@@ -13,7 +13,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -75,6 +76,10 @@ public class SinglePageCheckoutFacade {
     private static final String EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL = "/expressco/view_cart.jsp";
     private static final String CART_DATA_JSON_KEY = "cartData";
     private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
+    private static final String MASTERPASS_EWALLET_TYPE = "MP";
+//    private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+//	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+//	private static final String MP_EWALLET_CARD="MP_CARD";
 
     private static final Category LOGGER = LoggerFactory.getInstance(SinglePageCheckoutFacade.class);
 
@@ -170,6 +175,9 @@ public class SinglePageCheckoutFacade {
                 //$FALL-THROUGH$
             case DELETE_PAYMENT_METHOD:
                 //$FALL-THROUGH$
+//            case MASTERPASS_SELECT_PAYMENTMETHOD:			// Express Checkout
+            case MASTERPASS_PICK_MP_PAYMENTMETHOD:
+            	//$FALL-THROUGH$
             case SELECT_PAYMENT_METHOD:
                 result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                 break;
@@ -297,7 +305,8 @@ public class SinglePageCheckoutFacade {
 				String billingReference = cart.getPaymentMethod().getBillingRef();
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
                 String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-                PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
+                if(paymentId != null)
+                	PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
                 for (ActionError error : actionResult.getErrors()) {
                     validationErrors.add(new ValidationError(error));
                 }
@@ -376,11 +385,23 @@ public class SinglePageCheckoutFacade {
         List<PaymentData> cartPaymentDatas = paymentService.loadCartPayment(cart, user);
 
         FormPaymentData formPaymentData = new FormPaymentData();
+        updateEwalleTMPLogo(cartPaymentDatas);
         formPaymentData.setPayments(cartPaymentDatas);
         formPaymentData.setSelected(getSelectedPaymentId(cartPaymentDatas));
         return formPaymentData;
     }
 
+    /**
+     * @param paymentDataList
+     */
+    private void updateEwalleTMPLogo(List<PaymentData> paymentDataList){
+    	int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+    	for(PaymentData data: paymentDataList){
+    		if(data.geteWalletID() != null && data.geteWalletID().equals(""+ewalletId)){
+    			data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
+    		}
+    	}
+    }
     private FDOrderI loadOrder(final String orderNumber, final FDUserI user) throws FDResourceException {
         FDOrderI order;
         if (user != null && user.getIdentity() != null) {
@@ -412,6 +433,7 @@ public class SinglePageCheckoutFacade {
 
         FormPaymentData formPaymentData = new FormPaymentData();
         processGiftCards(user, formPaymentData);
+//        boolean isMPCard = false;
 
         if (formPaymentData.isCoveredByGiftCard()) {
             paymentService.setNoPaymentMethod(user, request);
@@ -424,8 +446,40 @@ public class SinglePageCheckoutFacade {
                     break;
                 }
             }
+            
+            formPaymentData.setMpEwalletStatus(getMasterpassEwalletStatus(MASTERPASS_EWALLET_TYPE));
+            formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
+            
+            // Express Checkout Code
+/*            if(formPaymentData.isMpEwalletStatus()){
+            	ErpCustEWalletModel custEWalletModel = getCustomerEWallet(user);
+	            // Check MPEWallet Paired or not
+	            for (PaymentData data : userPaymentMethods) {
+	                if (data.geteWalletID()!=null && data.geteWalletID().equals("1")) {
+	                    formPaymentData.setMpEWalletID(data.geteWalletID());
+	                    isMPCard = true;
+	                    break;
+	                }
+	            }
+	            if(custEWalletModel != null && !isMPCard){
+	            	if( custEWalletModel.getLongAccessToken() != null && custEWalletModel.getLongAccessToken().length()>0){
+	            		formPaymentData.setMpCardPaired("Yes");
+	            	}
+	            }
+            }*/
         }
         return formPaymentData;
     }
 
+    /**
+     * @param eWalletType
+     * @return
+     */
+    private boolean getMasterpassEwalletStatus(String eWalletType){
+    	return FDCustomerManager.getEwalletStatusByType(eWalletType);
+    }
+    
+    /*private ErpCustEWalletModel getCustomerEWallet(FDUserI user) throws FDResourceException{
+    	return FDCustomerManager.findLongAccessTokenByCustID(user.getFDCustomer().getErpCustomerPK(),MASTERPASS_EWALLET_TYPE);
+    }*/
 }

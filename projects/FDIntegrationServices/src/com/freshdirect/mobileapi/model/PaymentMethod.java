@@ -5,6 +5,7 @@ import java.util.Date;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 
 public class PaymentMethod {
@@ -88,4 +89,12 @@ public class PaymentMethod {
         return paymentMethod.getExpirationDate();
     }
 
+    public String geteWalletID() {
+    	if(paymentMethod.geteWalletID() != null){
+    		int ewalletId = Integer.parseInt(paymentMethod.geteWalletID());
+    		return EnumEwalletType.getEnum(ewalletId).getName();
+    	}else{
+    		return "";
+    	}
+    }
 }

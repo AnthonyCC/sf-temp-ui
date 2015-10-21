@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -201,6 +202,7 @@ public class PaymentService {
         data.setCardNum(paymentMethod.getAccountNumber());
         data.setCsv(paymentMethod.getCVV());
         data.setId(paymentMethod.getPK().getId());
+        data.seteWalletID(paymentMethod.geteWalletID());
         if (paymentMethod.getPaymentMethodType() != null) {
             data.setPaymentMethodType(paymentMethod.getPaymentMethodType().getName());
         }
@@ -276,6 +278,9 @@ public class PaymentService {
             if (payment.getBankAccountType() != null) {
                 paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
             }
+			paymentData.seteWalletID(payment.geteWalletID());
+        	paymentData.setVendorEWalletID(payment.getVendorEWalletID());
+        	paymentData.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
             paymentData.setBankName(payment.getBankName());
         }
         return paymentData;
@@ -328,7 +333,7 @@ public class PaymentService {
         Calendar expCal = new GregorianCalendar();
         if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
             SimpleDateFormat sf = new SimpleDateFormat("MMyyyy");
-            Date date = sf.parse(month.trim() + year.trim(), new ParsePosition(0));
+            Date date = sf.parse((month.trim().length() == 1 ? "0" + month.trim() : month.trim()) + year.trim(), new ParsePosition(0));
             expCal.setTime(date);
             expCal.set(Calendar.DATE, expCal.getActualMaximum(Calendar.DATE));
         } else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && abaRouteNumber != null && !"".equals(abaRouteNumber)) {
@@ -350,6 +355,10 @@ public class PaymentService {
         paymentMethod.setState(formData.get(EnumUserInfoName.BIL_STATE.getCode()));
         paymentMethod.setZipCode(formData.get(EnumUserInfoName.BIL_ZIPCODE.getCode()));
         paymentMethod.setCountry(formData.get(EnumUserInfoName.BIL_COUNTRY.getCode()));
+        
+        paymentMethod.seteWalletID(formData.get(EnumUserInfoName.EWALLET_ID.getCode()));
+        paymentMethod.setVendorEWalletID(formData.get(EnumUserInfoName.VENDOR_EWALLETID.getCode()));
+        
         if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
             paymentMethod.setCountry("US");
         }

@@ -97,7 +97,7 @@ asyncPixelWithTimeout();
             <soy:render template="expressco.successtimeslot" data="${singlePageCheckoutSuccessPotato.timeslot}" />
           </div>
           <div data-drawer-default-content="payment">
-            <soy:render template="expressco.paymentmethodpreview" data="${singlePageCheckoutSuccessPotato.payment}" />
+            <soy:render template="expressco.paymentmethodpreviewNew" data="${singlePageCheckoutSuccessPotato.payment}" />
           </div>
         </div>
 

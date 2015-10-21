@@ -44,7 +44,21 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	private String countryCode;
 	private BankAccountType bankAccountType;
 	private PaymentMethodType paymentType;
+	private String eWalletId;
+	private String eWalletTxId;
 	
+	/**
+	 * @return the eWalletTxId
+	 */
+	public String geteWalletTxId() {
+		return eWalletTxId;
+	}
+	/**
+	 * @param eWalletTxId the eWalletTxId to set
+	 */
+	public void seteWalletTxId(String eWalletTxId) {
+		this.eWalletTxId = eWalletTxId;
+	}
 	public TransactionType getTransactionType() {
 		return transactionType;
 	}
@@ -249,6 +263,12 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	}
 	public void setPaymentType(PaymentMethodType paymentType) {
 		this.paymentType = paymentType;
+	}
+	public String geteWalletId() {
+		return eWalletId;
+	}
+	public void seteWalletId(String eWalletId) {
+		this.eWalletId = eWalletId;
 	}
 	
 }

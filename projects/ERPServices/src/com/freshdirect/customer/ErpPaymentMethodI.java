@@ -131,5 +131,36 @@ public interface ErpPaymentMethodI extends AddressI {
 	
 	void setBestNumberForBillingInquiries(String phoneNumber);
 
+	/**
+	 * @return the eWalletID
+	 */
+	public String geteWalletID();
+
+	/**
+	 * @param eWalletID the eWalletID to set
+	 */
+	public void seteWalletID(String eWalletID);
+
+	/**
+	 * @return the vendorEWalletID
+	 */
+	public String getVendorEWalletID();
+
+	/**
+	 * @param vendorEWalletID the vendorEWalletID to set
+	 */
+	public void setVendorEWalletID(String vendorEWalletID);
+	
+	
+	/**
+	 * @return the trxnId
+	 */
+	public String geteWalletTrxnId();
+
+	/**
+	 * @param trxnId the trxnId to set
+	 */
+	public void seteWalletTrxnId(String trxnId);
+	
 }
 

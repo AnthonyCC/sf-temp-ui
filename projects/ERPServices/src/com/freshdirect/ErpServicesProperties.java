@@ -217,6 +217,12 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY   = "erpservices.materialbatch.status.expiry"; // in minutes
 	
+	public final static String PROP_EWALLET_NOTIFY_EMAIL_FROM	= "ewallet.notify.email.from";
+	public final static String PROP_EWALLET_NOTIFY_EMAIL_TO	= "ewallet.notify.email.to";
+	public final static String PROP_EWALLET_NOTIFY_EMAIL_CC	= "ewallet.notify.email.cc";
+	public final static String PROP_EWALLET_NOTIFY_EMAIL_ENABLED	= "ewallet.notify.email.send";
+	public final static String PROP_EWALLET_POSTBACK_CHUNK_SIZE = "ewallet.notify.postback.chunk";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -390,6 +396,12 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD, "fd8848admin");
 		
 		defaults.put(PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY, "30");
+		
+		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_CC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_FROM, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_ENABLED, "true");
+		defaults.put(PROP_EWALLET_POSTBACK_CHUNK_SIZE, "0");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -910,4 +922,30 @@ public class ErpServicesProperties {
 		return Integer.parseInt(config.getProperty(PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY));
 	}
 	
+	public static String geteWalletNotifyFrom() {
+		return config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_FROM);
+	}
+	
+	public static String geteWalletNotifyTo() {
+		return config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_TO);
+	}
+	
+	
+	public static String geteWalletNotifyCC() {
+		return config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_CC);
+	}
+	
+	public static String geteWalletNotifyEnabled() {
+		return config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_ENABLED);
+	}
+	
+	public static int geteWalletPostbackChunkSize() {
+		int result = 0;
+		try {
+			result = Integer.parseInt(config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_ENABLED));
+		} catch (Exception e) {
+			result = 0;
+		}
+		return result;
+	}
 }

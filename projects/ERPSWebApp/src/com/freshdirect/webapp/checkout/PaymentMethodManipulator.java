@@ -41,6 +41,9 @@ import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 public class PaymentMethodManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( PaymentMethodManipulator.class );
 
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String MP_EWALLET_CARD="MP_CARD";
+	
 	public PaymentMethodManipulator(PageContext context, ActionResult result, String actionName) {
 		super(context, result, actionName);
 	}
@@ -208,8 +211,11 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		//
 		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
-		FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
-
+		// Do not set Ewallet card as default Payment Method
+		if(paymentMethod.geteWalletID() == null){
+			FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
+		}
+		
 			/*
 			 * if ( user.isDepotUser() ) { if (
 			 * user.isEligibleForSignupPromotion() ) { if (

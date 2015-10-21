@@ -48,6 +48,7 @@ import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
+import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -55,6 +56,8 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpEWalletModel;
+import com.freshdirect.customer.ErpEWalletTxNotifyModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ErpModifyOrderModel;
@@ -81,6 +84,8 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.erp.ejb.ErpEWalletHome;
+import com.freshdirect.erp.ejb.ErpEWalletSB;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -152,6 +157,7 @@ public class FDCustomerManager {
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerManager.class);
 
 	private static FDCustomerManagerHome managerHome = null;
+	private static ErpEWalletHome eWalletHome = null;
 	private static MailerGatewayHome mailerHome = null;
 	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 	FDCustomerEStoreModel customerSmsPreferenceModel=null;
@@ -623,6 +629,187 @@ public class FDCustomerManager {
 		}
 	}
 
+	public static ErpEWalletModel getEWalletById(){
+		lookupeWalletHome();
+		ErpEWalletModel erpEWalletModel = null;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 erpEWalletModel= erpEWalletSB.findEWalletById("1");
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return erpEWalletModel;
+	}
+	
+	/**
+	 * This method will call ErpEWalletSB class method 
+	 * @param custEWallet
+	 * @return
+	 */
+	public static int insertLongAccessToken(ErpCustEWalletModel custEWallet){
+		lookupeWalletHome();
+		int rows=0;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 rows= erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (CreateException e) {
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	
+	/**
+	 * This method will call ErpEWalletSB class method 
+	 * @param custEWallet
+	 * @return
+	 */
+	public static boolean getEwalletStatusByType(String eWalletType){
+		lookupeWalletHome();
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 ErpEWalletModel erpEWalletModel= erpEWalletSB.findEWalletByType(eWalletType);
+			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
+				 if(erpEWalletModel.geteWalletStatus().equalsIgnoreCase("E"))
+				 	return true;
+				 else
+					 return false;
+			 }
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (CreateException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * This method will call ErpEWalletSB class method to get the Status of Masterpass (Enable/Disable) for Mobile
+	 * @param custEWallet
+	 * @return
+	 */
+	public static boolean getEwalletMobileStatusByType(String eWalletType){
+		lookupeWalletHome();
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 ErpEWalletModel erpEWalletModel= erpEWalletSB.findEWalletByType(eWalletType);
+			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
+				 if(erpEWalletModel.getEwalletmStatus().equalsIgnoreCase("Y"))
+				 	return true;
+				 else
+					return false;
+			 }
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (CreateException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	/**
+	 * @param custId
+	 * @param longAccessToken
+	 * @param eWalletType
+	 * @return
+	 */
+	public static int updateLongAccessToken(String custId, String longAccessToken, String eWalletType){
+		lookupeWalletHome();
+		int rows=0;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 rows= erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	
+	/**
+	 * Delete the Long Access Token from the Database
+	 * @param custId
+	 * @param longAccessToken
+	 * @param data.geteWalletType()
+	 * @return
+	 */
+	public static int deleteLongAccessToken(String custId, String eWalletID){
+		lookupeWalletHome();
+		int rows=0;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 rows= erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	
+	public static ErpCustEWalletModel findLongAccessTokenByCustID(String customerId, String eWalletType){
+		lookupeWalletHome();
+		ErpCustEWalletModel custEWalletModel = null;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (CreateException e) {
+			e.printStackTrace();
+		}
+		return custEWalletModel;
+	}
+	
+	/**
+	 * @param txNotifyModel
+	 * @return
+	 */
+	public static int insertEWalletTxnNotify(ErpEWalletTxNotifyModel txNotifyModel){
+		lookupeWalletHome();
+		int rows=0;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 rows= erpEWalletSB.insertEWalletTxnNotify(txNotifyModel);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	
+	/**
+	 * @param txNotifyModel
+	 * @return
+	 */
+	public static int updateEWalletTxnNotify(ErpEWalletTxNotifyModel txNotifyModel){
+		lookupeWalletHome();
+		int rows=0;
+		 try {
+			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
+			 rows= erpEWalletSB.updateEWalletTxnNotify(txNotifyModel);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CreateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	
 	public static ErpPaymentMethodI getPaymentMethod(FDIdentity identity, String paymentId) throws FDResourceException {
 		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 		for ( ErpPaymentMethodI model : paymentMethods ) {
@@ -2396,6 +2583,14 @@ public class FDCustomerManager {
 		managerHome = LOCATOR.getFDCustomerManagerHome();
 	}
 
+	private static void lookupeWalletHome() {
+		if (eWalletHome != null) {
+			return;
+		}
+		eWalletHome = LOCATOR.getErpEWalletHome();
+	}
+
+	
 	private static void lookupMailerGatewayHome() throws FDResourceException {
 		if (mailerHome != null) {
 			return;

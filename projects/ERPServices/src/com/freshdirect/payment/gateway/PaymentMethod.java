@@ -26,5 +26,10 @@ public interface PaymentMethod extends java.io.Serializable {
 	public void setCustomerID(String customerID);
 	public void setCurrency(Currency currency);
 	public Currency getCurrency();
+	
+	public void setEwalletId(String ewalletId);
+	public String getEwalletId();
+	public void setEwalletTxId(String ewalletId);
+	public String getEwalletTxId();
 }
 

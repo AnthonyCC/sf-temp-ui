@@ -121,3 +121,27 @@
   font-size:16px;
   line-height:16px;
 }
+
+#payment-method-separator{
+		font-size: 11px;
+    		font-weight: bold;
+		color: rgb(102,102,102);
+}
+#payment-method-separator hr{
+	display: inline-block;
+	width: 60px;
+}
+#payment-method-separator span{
+	font-size: 15px;
+	padding: 0 20px;
+}
+.wallet-error-msg{
+	padding-bottom: 4px;
+}
+.wallet-error-msg span{
+	color: #c94747;
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: top;
+	
+}
