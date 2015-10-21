@@ -29,6 +29,8 @@ public class MobileApiProperties {
     private final static String PROP_CART_MISC_CHARGE_LABEL = "mobileapi.cart.misc.label";
 
     private final static String PROP_MEDIA_PATH = "mobileapi.media.path";
+    
+    private final static String PROP_ADDITION_MEDIA_PATH = "mobileapi.media.additionpath";
 
     private final static String PROP_WHATS_GOOD_CAT_IDS = "mobileapi.whatsgood.catIds";
 
@@ -185,5 +187,9 @@ public class MobileApiProperties {
     
     public static String getUnattendedDeliveryMediaPath() {
         return get(PROP_UNATTENDED_DLV_MSG);
+    }
+    
+    public static String getAdditionMediaPath(){
+    	return get(PROP_ADDITION_MEDIA_PATH);
     }
 }

@@ -112,9 +112,10 @@ public class Wine extends Product {
         reviews.add(ProductUtil.readHtml(productNode.getWineReview1()));
         reviews.add(ProductUtil.readHtml(productNode.getWineReview2()));
         reviews.add(ProductUtil.readHtml(productNode.getWineReview3()));
-
-        wineTypeIcons.addAll(getIconPath(wineType, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/", ".gif"));
-        wineTypeIcons.addAll(getIconPath(ratings, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/", ".gif"));
+        
+        //APPDEV-4355 (FDAP-89)& FDAP-86 Fix : Changed mediapath from win_usq to win_fdw in properties file
+        wineTypeIcons.addAll(getIconPath(wineType, MobileApiProperties.getMediaPath()+MobileApiProperties.getAdditionMediaPath(), ".gif"));
+        wineTypeIcons.addAll(getIconPath(ratings, MobileApiProperties.getMediaPath()+MobileApiProperties.getAdditionMediaPath(), ".gif"));
 
         ratingIcons.addAll(getIconPath(wineRating1, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
         ratingIcons.addAll(getIconPath(wineRating2, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
