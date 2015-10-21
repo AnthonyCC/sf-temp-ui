@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.service;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -284,7 +286,15 @@ public class SinglePageCheckoutFacade {
                 String addressId = cart.getDeliveryReservation().getAddressId();
                 DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true, actionResult,
                         null, null, null, null, null, null);
-                String billingReference = cart.getPaymentMethod().getBillingRef();
+                try{
+                	if(cart.getDeliveryReservation()!=null){
+                		TimeslotService.defaultService().reserveDeliveryTimeslot(cart.getDeliveryReservation().getTimeslotId(), session);
+                	}
+                }catch (ReservationException e) {
+                    LOGGER.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", cart.getDeliveryReservation().getTimeslotId()), e);
+                    throw new FDResourceException(e);
+                }
+				String billingReference = cart.getPaymentMethod().getBillingRef();
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
                 String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
                 PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);

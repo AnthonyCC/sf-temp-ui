@@ -132,7 +132,7 @@ public class TimeslotService {
         }
     }
 
-    private List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session) throws FDResourceException, ReservationException {
+    public List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session) throws FDResourceException, ReservationException {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ActionResult actionResult = new ActionResult();
         ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
