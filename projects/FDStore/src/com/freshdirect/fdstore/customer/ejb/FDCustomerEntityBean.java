@@ -65,6 +65,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private String depotCode;
 	private int pymtVerifyAttempts;
 	private FDCustomerEStorePersistentBean customerEStore;
+	private FDCustomerSmsPreferencePersistentBean customerSmsPreferences;
 	/**
 	 * Copy into model.
 	 *
@@ -84,6 +85,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setDepotCode(this.depotCode);
 		model.setPasswordRequestExpiration(this.passwordRequestExpiration);
 		model.setCustomerEStoreModel((FDCustomerEStoreModel)this.customerEStore.getModel());
+		model.setCustomerSmsPreferenceModel((FDCustomerEStoreModel)this.customerSmsPreferences.getModel());
 		return model;
 	}
 
@@ -102,6 +104,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordHint = m.getPasswordHint();
 		this.depotCode = m.getDepotCode();
 		this.customerEStore.setFromModel(m.getCustomerEStoreModel());
+		this.customerSmsPreferences.setFromModel(m.getCustomerSmsPreferenceModel());
 		this.setModified();
 	}
 
@@ -329,6 +332,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.customerEStore.setParentPK(this.getPK());
 		replaceCustomerEStoreModel();
 		this.customerEStore.create(conn);
+		this.customerSmsPreferences.setParentPK(this.getPK());
+		this.customerSmsPreferences.load(conn);
+		
 
 		return this.getPK();
 	}
@@ -376,6 +382,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		
 		this.customerEStore.setParentPK(this.getPK());
 		this.customerEStore.load(conn);
+		this.customerSmsPreferences.setParentPK(this.getPK());
+		this.customerSmsPreferences.load(conn);
 		
 		//Assigning the Estore specific values. 
 		if(null !=this.customerEStore.getModel() && null !=((FDCustomerEStoreModel)this.customerEStore.getModel()).geteStoreId()){
@@ -419,6 +427,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		
 		replaceCustomerEStoreModel();
 		customerEStore.store(conn);
+		customerSmsPreferences.store(conn);
 
 	}
 
@@ -460,6 +469,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.depotCode = null;
 		this.pymtVerifyAttempts=0;
 		customerEStore = new FDCustomerEStorePersistentBean();
+		customerSmsPreferences = new FDCustomerSmsPreferencePersistentBean();
 	}
 
 	public String getErpCustomerPK() {

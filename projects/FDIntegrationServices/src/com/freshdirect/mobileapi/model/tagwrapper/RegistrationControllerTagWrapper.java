@@ -7,11 +7,13 @@ import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.EmailPreferenceRequest;
 import com.freshdirect.mobileapi.controller.data.request.MobilePreferenceRequest;
@@ -286,7 +288,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         return new ResultBundle(executeTagLogic(), this);
     }
     
-    public ResultBundle setMobilePreferences(MobilePreferenceRequest reqestMessage,  FDCustomerEStoreModel fdCustomerEStoreModel, String eStoreId) throws FDException {
+    public ResultBundle setMobilePreferences(MobilePreferenceRequest reqestMessage,  FDCustomerEStoreModel customerSmsPreferenceModel, String eStoreId) throws FDException {
     	/*boolean currentOrderNotices = cm.getOrderNotices().equals(EnumSMSAlertStatus.NONE)? false:true;
 		boolean currentOrderExceptions = cm.getOrderExceptions().equals(EnumSMSAlertStatus.NONE) ? false:true;
 		boolean currentOffers = cm.getOffers().equals(EnumSMSAlertStatus.NONE) ? false:true;
@@ -299,19 +301,19 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
 		boolean currentPartnerMessages;
 		String currentMobileNo;
     	
-    	if("FDX".equals(eStoreId)){
-    		 currentOrderNotices = fdCustomerEStoreModel.getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE)? false:true;
-			 currentOrderExceptions = fdCustomerEStoreModel.getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE) ? false:true;
-			 currentOffers = fdCustomerEStoreModel.getFdxOffers().equals(EnumSMSAlertStatus.NONE) ? false:true;
-			 currentPartnerMessages = fdCustomerEStoreModel.getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE) ? false:true;
-			 currentMobileNo = fdCustomerEStoreModel.getFdxMobileNumber()==null ? "":fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+    	if(EnumEStoreId.FDX.getContentId().equals(eStoreId)){
+    		 currentOrderNotices = customerSmsPreferenceModel.getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())? false:true;
+			 currentOrderExceptions = customerSmsPreferenceModel.getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentOffers = customerSmsPreferenceModel.getFdxOffers().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentPartnerMessages = customerSmsPreferenceModel.getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentMobileNo = customerSmsPreferenceModel.getFdxMobileNumber()==null ? "":customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
 	    	}
 	      else{
-	    	  	currentOrderNotices = fdCustomerEStoreModel.getOrderNotices().equals(EnumSMSAlertStatus.NONE)? false:true;
-				 currentOrderExceptions = fdCustomerEStoreModel.getOrderExceptions().equals(EnumSMSAlertStatus.NONE) ? false:true;
-				 currentOffers = fdCustomerEStoreModel.getOffers().equals(EnumSMSAlertStatus.NONE) ? false:true;
-				 currentPartnerMessages = fdCustomerEStoreModel.getPartnerMessages().equals(EnumSMSAlertStatus.NONE) ? false:true;
-				 currentMobileNo = fdCustomerEStoreModel.getMobileNumber()==null ? "":fdCustomerEStoreModel.getMobileNumber().getPhone();
+	    	  	currentOrderNotices = customerSmsPreferenceModel.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())? false:true;
+				 currentOrderExceptions = customerSmsPreferenceModel.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+				 currentOffers = customerSmsPreferenceModel.getOffers().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+				 currentPartnerMessages = customerSmsPreferenceModel.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+				 currentMobileNo = customerSmsPreferenceModel.getMobileNumber()==null ? "":customerSmsPreferenceModel.getMobileNumber().getPhone();
 	    	}
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
@@ -332,6 +334,42 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
     }
+    
+    public ResultBundle setMobilePreferencesFirstOrder(OrderMobileNumberRequest reqestMessage,  FDCustomerEStoreModel customerSmsPreferenceModel, String eStoreId) throws FDException {
+ 	    	
+    	boolean currentOrderNotices;
+		boolean currentOrderExceptions; 
+		boolean currentOffers;
+		boolean currentPartnerMessages;
+		String currentMobileNo;
+
+    		 currentOrderNotices = customerSmsPreferenceModel.getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())? false:true;
+			 currentOrderExceptions = customerSmsPreferenceModel.getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentOffers = customerSmsPreferenceModel.getFdxOffers().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentPartnerMessages = customerSmsPreferenceModel.getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
+			 currentMobileNo = customerSmsPreferenceModel.getFdxMobileNumber()==null ? "":customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
+	    	
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_MOBILE_NUMBER,REQ_PARAM_TEXT_OFFERS,REQ_PARAM_TEXT_DELIVERY,REQ_PARAM_ORDER_NOTICES,REQ_PARAM_ORDER_EXCEPTIONS,REQ_PARAM_OFFERS,REQ_PARAM_PARTNER_MESSAGES,REQ_PARAM_ORDER_NOTICES_EXISTING,REQ_PARAM_ORDER_EXCETION_EXISTING,REQ_PARAM_OFFER_EXISTING,REQ_PARAM_PARTNER_EXISTING,REQ_PARAM_MOBILE_EXISTING}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_MOBILE_NUMBER, reqestMessage.getMobile_number());
+        addRequestValue(REQ_PARAM_ORDER_NOTICES, reqestMessage.getNon_marketing_sms());
+        addRequestValue(REQ_PARAM_ORDER_EXCEPTIONS, reqestMessage.getNon_marketing_sms());
+        addRequestValue(REQ_PARAM_OFFERS, reqestMessage.getMarketing_sms());
+                
+        addRequestValue(REQ_PARAM_ORDER_NOTICES_EXISTING, currentOrderNotices);
+        addRequestValue(REQ_PARAM_ORDER_EXCETION_EXISTING, currentOrderExceptions);
+        addRequestValue(REQ_PARAM_OFFER_EXISTING, currentOffers);
+        addRequestValue(REQ_PARAM_PARTNER_EXISTING, currentPartnerMessages);
+        addRequestValue(REQ_PARAM_MOBILE_EXISTING, currentMobileNo);
+        
+        getWrapTarget().setActionName(ACTION_SET_MOBILE_PREFERENCES);
+        
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+    
+    
     
     public ResultBundle setEmailPreferences(EmailPreferenceRequest reqestMessage, ErpCustomerInfoModel cm) throws FDException {
 		//cm.setEmailPreferenceLevel(receive_emailLevel)

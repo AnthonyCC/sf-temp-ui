@@ -856,6 +856,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public void releaseModificationLock(String orderId)	throws FDResourceException, RemoteException;
 
-	public void setFdxSmsPreferences(FDCustomerEStoreModel fdCustomerEStoreModel2, String ErpCustomerPK)throws FDResourceException, RemoteException;
+	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String ErpCustomerPK)throws FDResourceException, RemoteException;
 }
 

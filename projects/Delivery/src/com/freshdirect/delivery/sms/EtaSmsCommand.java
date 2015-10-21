@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.sms.FDSmsGateway;
 import com.freshdirect.sms.model.st.STSmsResponse;
 import com.freshdirect.sms.service.SmsServiceException;
@@ -69,7 +70,7 @@ public class EtaSmsCommand implements Serializable, Runnable {
 							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
 													+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
 													+ getTime(etaInfoList.get(i).getEtaEndTime())
-													+ ETA_MESSAGE_TEXT_2);
+													+ ETA_MESSAGE_TEXT_2, EnumEStoreId.FD.name());
 							
 							
 							smsResponseModel.setDate(new Date());
@@ -85,7 +86,7 @@ public class EtaSmsCommand implements Serializable, Runnable {
 													+ getTime(etaInfoList.get(i).getWindowStartTime())
 													+ " and "
 													+ getTime(etaInfoList.get(i).getWindowEndTime())
-													+ ETA_MESSAGE_TEXT_2);
+													+ ETA_MESSAGE_TEXT_2, EnumEStoreId.FD.name());
 							
 							smsResponseModel.setDate(new Date());
 							smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());

@@ -52,10 +52,10 @@ public class TextMessageAlertService {
 			isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(), mobileNumber, user.getUserContext().getStoreContext().getEStoreId().getContentId());
 
 			if (isSent) {
-				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobileNumber, convertBooleanValueToString(fdCustomer.getCustomerEStoreModel().getOffersNotification()),
-						convertBooleanValueToString(fdCustomer.getCustomerEStoreModel().getDeliveryNotification()), isOptionEnabled(formData, AlertValidationConstraints.NOTICES),
+				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobileNumber, convertBooleanValueToString(fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification()),
+						convertBooleanValueToString(fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification()), isOptionEnabled(formData, AlertValidationConstraints.NOTICES),
 						isOptionEnabled(formData, AlertValidationConstraints.ALERTS), isOptionEnabled(formData, AlertValidationConstraints.PERKS),
-						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerEStoreModel().getPartnerMessages())), fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());
+						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages())), fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
 
 				FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
 			}
@@ -81,8 +81,8 @@ public class TextMessageAlertService {
 
 	public boolean showTextMessageAlertPopup(final FDUserI user) throws FDResourceException {
 		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-		FDCustomerEStoreModel fdCustomerEStoreModel=fdCustomer.getCustomerEStoreModel();
-		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerEStoreModel);
+		FDCustomerEStoreModel fdCustomerSmsPreferenceModel=fdCustomer.getCustomerSmsPreferenceModel();
+		return FDStoreProperties.getSMSOverlayFlag() && !isModeModifyOrder(user) && isAlertFlagNotSet(fdCustomerSmsPreferenceModel);
 	}
 	
 	public String getTermsAndConditionsMedia() throws IOException, TemplateException{

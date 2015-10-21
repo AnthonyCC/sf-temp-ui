@@ -174,7 +174,7 @@ public class STSmsProvider implements SmsNotificationService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public STSmsResponse sendSMSRequest(String mobileNumber, String message)
+	public STSmsResponse sendSMSRequest(String mobileNumber, String message, String eStoreId)
 			throws com.freshdirect.sms.service.SmsServiceException {
 		
 		STSmsResponse response = null;
@@ -193,9 +193,14 @@ public class STSmsProvider implements SmsNotificationService {
 					md5Auth.processChallenge(challenge);
 					// Generate a solution Authentication header using your user name and password.
 					Header authHeader;
-
-					authHeader = md5Auth.authenticate(new UsernamePasswordCredentials(SmsConfigProvider.getSTUserName(), SmsConfigProvider.getSTPassword())
-															, new BasicHttpRequest(HttpPost.METHOD_NAME, new URL(getBaseUrl(urlParameters).toString()).getPath()));
+						if("FDX".equalsIgnoreCase(eStoreId)){
+							authHeader = md5Auth.authenticate(new UsernamePasswordCredentials(SmsConfigProvider.getSTFdxUserName(), SmsConfigProvider.getSTFdxPassword())
+							, new BasicHttpRequest(HttpPost.METHOD_NAME, new URL(getBaseUrl(urlParameters).toString()).getPath()));
+						}
+						else{
+							authHeader = md5Auth.authenticate(new UsernamePasswordCredentials(SmsConfigProvider.getSTUserName(), SmsConfigProvider.getSTPassword())
+							, new BasicHttpRequest(HttpPost.METHOD_NAME, new URL(getBaseUrl(urlParameters).toString()).getPath()));
+						}
 					
 					StringEntity postRequestData = new StringEntity("{\"sms_to\":" + retainDigits(mobileNumber) + ",\"sms_msg\":\"" + message + "\"}");
 					final HttpResponse finalResponse = sendPOSTRequest(getBaseUrl(urlParameters), true, authHeader, postRequestData);
@@ -234,7 +239,7 @@ public class STSmsProvider implements SmsNotificationService {
 	public static void main(String[] args) throws SmsServiceException {
 		
 		STSmsProvider provider = new STSmsProvider();
-		provider.sendSMSRequest("3472634065", "HeyKris");
+		provider.sendSMSRequest("3472634065", "HeyKris", "Freshdirect" );
 		
 	}
 	

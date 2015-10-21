@@ -80,16 +80,14 @@ public class SMSAlertManager {
 		
 		return isSent;
 	}
-	
-	
-	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+	public boolean smsOptInNonMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException{
 		boolean isSent=false;
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-			LOGGER.debug("calling smsAlertSB.smsOrderConfirmation()");
-			isSent = smsAlertSB.smsOrderConfirmation(customerId, mobileNumber, orderId);
+			LOGGER.debug("calling smsAlertSB.smsOptInNonMarketing()");
+			isSent = smsAlertSB.smsOptInNonMarketing(customerId,mobileNumber, eStoreId);
 		}catch (NamingException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {
@@ -97,17 +95,18 @@ public class SMSAlertManager {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
+		
+		
 		return isSent;
 	}
-	
-	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+	public boolean smsOptInMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException{
 		boolean isSent=false;
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-			LOGGER.debug("calling smsAlertSB.smsOrderModification()");
-			isSent = smsAlertSB.smsOrderModification(customerId, mobileNumber, orderId);
+			LOGGER.debug("calling smsAlertSB.smsOptInMarketing()");
+			isSent = smsAlertSB.smsOptInMarketing(customerId,mobileNumber, eStoreId);
 		}catch (NamingException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {
@@ -115,12 +114,14 @@ public class SMSAlertManager {
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
+		
+		
 		return isSent;
 	}
+	
 	
 	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) throws FDResourceException{
 		boolean isSent=false;
-		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();

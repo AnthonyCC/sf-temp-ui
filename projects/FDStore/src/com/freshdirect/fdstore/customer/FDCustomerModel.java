@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerSmsPreferencePersistentBean;
 import com.freshdirect.framework.core.ModelSupport;
 
 
@@ -35,13 +36,15 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     private String depotCode;
     private java.util.Date passwordRequestExpiration;
     private FDCustomerEStoreModel customerEStoreModel;
+    private FDCustomerEStoreModel customerSmsPreferenceModel;
     
-    /**
+	/**
      * Default constructor.
      */
     public FDCustomerModel() {
         super();
         customerEStoreModel = new FDCustomerEStoreModel();
+        customerSmsPreferenceModel= new FDCustomerEStoreModel();
     }
     
     public String getErpCustomerPK() {
@@ -202,5 +205,15 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 	public void setCustomerEStoreModel(FDCustomerEStoreModel customerEStoreModel) {
 		this.customerEStoreModel = customerEStoreModel;
 	}
+	
+	public FDCustomerEStoreModel getCustomerSmsPreferenceModel() {
+		return customerSmsPreferenceModel;
+	}
+
+	public void setCustomerSmsPreferenceModel(
+			FDCustomerEStoreModel customerSmsPreferenceModel) {
+		this.customerSmsPreferenceModel = customerSmsPreferenceModel;
+	}
+
 
 }

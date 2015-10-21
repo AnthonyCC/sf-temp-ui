@@ -38,11 +38,11 @@ public class FDSmsGateway {
 		}
 	}
 	
-	public static STSmsResponse sendSMS(String mobileNumber, String message) throws SmsServiceException {
+	public static STSmsResponse sendSMS(String mobileNumber, String message, String eStoreId) throws SmsServiceException {
 		STSmsResponse response = null;
 		try {
 			
-			response = getService().sendSMSRequest(mobileNumber, message);
+			response = getService().sendSMSRequest(mobileNumber, message, eStoreId);
 			
 		} catch (SmsServiceCreationException e) {
 			LOG.error("Exception while sending SMS request: "+e.getMessage());

@@ -196,9 +196,9 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		this.customerInfo.setFdxDeliveryNotification("Y".equals(request.getParameter("text_delivery")));
 		this.customerInfo.setFdxOffersNotification("Y".equals(request.getParameter("text_offers")));
 		this.customerInfo.setFdxMobileNumber(new PhoneNumber(NVL.apply(request.getParameter("fdx_mobile_number"), "")));
-		this.customerInfo.setFdxOrderNotices("Y".equals(request.getParameter("fdx_order_notices"))?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
-		this.customerInfo.setFdxOrderExceptions("Y".equals(request.getParameter("fdx_order_exceptions"))?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
-		this.customerInfo.setFdxOffers("Y".equals(request.getParameter("fdx_offers"))?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+		this.customerInfo.setFdxOrderNotices("Y".equals(request.getParameter("fdx_order_notices"))?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+		this.customerInfo.setFdxOrderExceptions("Y".equals(request.getParameter("fdx_order_exceptions"))?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+		this.customerInfo.setFdxOffers("Y".equals(request.getParameter("fdx_offers"))?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
 	}
 	
 	private void validateInfo(ActionResult result) {
@@ -239,27 +239,28 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(user.getIdentity());
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
 		FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(user.getIdentity());
-		FDCustomerEStoreModel fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
-		boolean beforeUpdateDelNotif = fdCustomerEStoreModel.getDeliveryNotification();
-		boolean beforeUpdateOfferNotif = fdCustomerEStoreModel.getDeliveryNotification();
-		String existingMobNum= fdCustomerEStoreModel.getMobileNumber()!=null?fdCustomerEStoreModel.getMobileNumber().getPhone():"N/A";
-		String fdxExistingMobNum= fdCustomerEStoreModel.getFdxMobileNumber()!=null?fdCustomerEStoreModel.getFdxMobileNumber().getPhone():"N/A";
+		FDCustomerEStoreModel customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
+		boolean beforeUpdateDelNotif = customerSmsPreferenceModel.getDeliveryNotification();
+		boolean beforeUpdateOfferNotif = customerSmsPreferenceModel.getDeliveryNotification();
+		String existingMobNum= customerSmsPreferenceModel.getMobileNumber()!=null?customerSmsPreferenceModel.getMobileNumber().getPhone():"N/A";
+		String fdxExistingMobNum= customerSmsPreferenceModel.getFdxMobileNumber()!=null?customerSmsPreferenceModel.getFdxMobileNumber().getPhone():"N/A";
 		
-		String beforeUpdateOrderNotices=fdCustomerEStoreModel.getOrderNotices()!=null ? fdCustomerEStoreModel.getOrderNotices(): EnumSMSAlertStatus.NONE.value();
-		String beforeUpdateOrderExceptions=fdCustomerEStoreModel.getOrderExceptions()!=null? fdCustomerEStoreModel.getOrderExceptions() : EnumSMSAlertStatus.NONE.value();
-		String beforeUpdateOffers=fdCustomerEStoreModel.getOffers()!=null ? fdCustomerEStoreModel.getOffers():EnumSMSAlertStatus.NONE.value();
-		String beforeUpdatePartnerMessages=fdCustomerEStoreModel.getPartnerMessages()!=null?fdCustomerEStoreModel.getPartnerMessages():EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateOrderNotices=customerSmsPreferenceModel.getOrderNotices()!=null ? customerSmsPreferenceModel.getOrderNotices(): EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateOrderExceptions=customerSmsPreferenceModel.getOrderExceptions()!=null? customerSmsPreferenceModel.getOrderExceptions() : EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateOffers=customerSmsPreferenceModel.getOffers()!=null ? customerSmsPreferenceModel.getOffers():EnumSMSAlertStatus.NONE.value();
+		String beforeUpdatePartnerMessages=customerSmsPreferenceModel.getPartnerMessages()!=null?customerSmsPreferenceModel.getPartnerMessages():EnumSMSAlertStatus.NONE.value();
 			//FDX SMS Alert	
-		String beforeUpdateFdxOrderNotices=fdCustomerEStoreModel.getFdxOrderNotices()!=null ? fdCustomerEStoreModel.getFdxOrderNotices(): EnumSMSAlertStatus.NONE.value();
-		String beforeUpdateFdxOrderExceptions=fdCustomerEStoreModel.getFdxOrderExceptions()!=null? fdCustomerEStoreModel.getFdxOrderExceptions(): EnumSMSAlertStatus.NONE.value();
-		String beforeUpdateFdxOffers=fdCustomerEStoreModel.getOffers()!=null ? fdCustomerEStoreModel.getOffers():EnumSMSAlertStatus.NONE.value();
-		String beforeUpdateFdxPartnerMessages=fdCustomerEStoreModel.getPartnerMessages()!=null?fdCustomerEStoreModel.getPartnerMessages():EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateFdxOrderNotices=customerSmsPreferenceModel.getFdxOrderNotices()!=null ? customerSmsPreferenceModel.getFdxOrderNotices(): EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateFdxOrderExceptions=customerSmsPreferenceModel.getFdxOrderExceptions()!=null? customerSmsPreferenceModel.getFdxOrderExceptions(): EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateFdxOffers=customerSmsPreferenceModel.getFdxOffers()!=null ? customerSmsPreferenceModel.getFdxOffers():EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateFdxPartnerMessages=customerSmsPreferenceModel.getFdxPartnerMessages()!=null?customerSmsPreferenceModel.getPartnerMessages():EnumSMSAlertStatus.NONE.value();
 		
 		boolean beforeUpdateGoGreen = info.isGoGreen();
 		FDActionInfo aInfo = AccountActivityUtil.getActionInfo(pageContext.getSession());
 		
 		boolean optedInBefore=false;
-		boolean optedInFdxBefore=false;
+		boolean optedInFdxBeforeNonMarketing=false;
+		boolean optedInFdxBeforeMarketing=false;
 		
 		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.PENDING.value())
 			||	beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())|| beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.PENDING.value())
@@ -267,16 +268,15 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			optedInBefore=true;
 		}
 		
-		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.PENDING.value())
-				||	beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())|| beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.PENDING.value())
-				|| beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) ||beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.PENDING.value()) ){
-				optedInFdxBefore=true;
-			}
+		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))
+			optedInFdxBeforeNonMarketing=true;
+		
+			optedInFdxBeforeMarketing=beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value());
 		
 		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())){
 			customerInfo.setOrderNotices(beforeUpdateOrderNotices);
 		}
-		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())){
+ 		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())){
 			customerInfo.setOrderExceptions(beforeUpdateOrderExceptions);
 		}
 		if(beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())){
@@ -288,16 +288,16 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		
 		//FDX SMS Alert	
 		
-		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
 			customerInfo.setFdxOrderNotices(beforeUpdateFdxOrderNotices);
 		}
-		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
 			customerInfo.setFdxOrderExceptions(beforeUpdateFdxOrderExceptions);
 		}
-		if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
 			customerInfo.setFdxOffers(beforeUpdateFdxOffers);
 		}
-		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxPartnerMessages().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxPartnerMessages().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
 			customerInfo.setPartnerMessages(beforeUpdateFdxPartnerMessages);
 		}
 		
@@ -323,13 +323,14 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			
 		//FDX SMS Alert	
 		
-		if(this.customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&&beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
+		
+		if(this.customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOrderExceptionOptin=true;
 		}
-		if(this.customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
+		if(this.customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOrderNoticeOptin=true;
 		}
-		if(this.customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.NONE.value())){
+		if(this.customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOffersOptin=true;
 		}
 		
@@ -356,8 +357,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 						!this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
 			
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
-			fdCustomerEStoreModel.setSmsPreferenceflag("Y");
-			boolean isSent=false;
+			customerSmsPreferenceModel.setSmsPreferenceflag("Y");
+			boolean isSent=true;
 			if(!this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())||
@@ -382,8 +383,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 						}
 						
 					} else{
-					
-						isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone(), EnumEStoreId.FD.name() );
+						if(this.customerInfo.getMobileNumber().getPhone()!=null&& !"".equalsIgnoreCase(this.customerInfo.getMobileNumber().getPhone()))
+							isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone(), EnumEStoreId.FD.getContentId());
 						if(info.getMobileNumber()!=null && !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum)){
 							
 							if( beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
@@ -411,8 +412,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
 				|| this.customerInfo.getMobileNumber() != null 
 				|| !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum)
-				|| this.customerInfo.isDelNotification() != fdCustomerEStoreModel.getDeliveryNotification()
-				|| this.customerInfo.isOffNotification() != fdCustomerEStoreModel.getOffersNotification()
+				|| this.customerInfo.isDelNotification() != customerSmsPreferenceModel.getDeliveryNotification()
+				|| this.customerInfo.isOffNotification() != customerSmsPreferenceModel.getOffersNotification()
 				|| ! this.customerInfo.getOrderNotices().equals(beforeUpdateOrderNotices)
 				|| ! this.customerInfo.getOrderExceptions().equals(beforeUpdateOrderExceptions)
 				|| !this.customerInfo.getOffers().equals(beforeUpdateOffers)
@@ -420,16 +421,18 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setReceiveNewsletter(this.customerInfo.isRecieveFdNews());
 			info.setEmailPlaintext(this.customerInfo.isTextOnlyEmail()); 
 			info.setReceiveOptinNewsletter(this.customerInfo.isReceiveOptinNewsletter());
-			fdCustomerEStoreModel.setMobileNumber(this.customerInfo.getMobileNumber());
-			fdCustomerEStoreModel.setDeliveryNotification(this.customerInfo.isDelNotification());
-			fdCustomerEStoreModel.setOffersNotification(this.customerInfo.isOffNotification());
-			fdCustomerEStoreModel.setOrderNotices(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderNotices()).value());
-			fdCustomerEStoreModel.setOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderExceptions()).value());
-			fdCustomerEStoreModel.setOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getOffers()).value());
-			fdCustomerEStoreModel.setPartnerMessages(EnumSMSAlertStatus.NONE.value());
-			fdCustomerEStoreModel.setSmsOptinDate(new java.util.Date());
+			customerSmsPreferenceModel.setMobileNumber(this.customerInfo.getMobileNumber());
+			customerSmsPreferenceModel.setDeliveryNotification(this.customerInfo.isDelNotification());
+			customerSmsPreferenceModel.setOffersNotification(this.customerInfo.isOffNotification());
+			customerSmsPreferenceModel.setOrderNotices(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderNotices()).value());
+			customerSmsPreferenceModel.setOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderExceptions()).value());
+			customerSmsPreferenceModel.setOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getOffers()).value());
+			customerSmsPreferenceModel.setPartnerMessages(EnumSMSAlertStatus.NONE.value());
+			customerSmsPreferenceModel.setSmsOptinDate(new java.util.Date());
+			customerSmsPreferenceModel.setCrmStore(EnumEStoreId.FD.getContentId());
 			info.setGoGreen(this.customerInfo.isGoGreen());
 			FDCustomerManager.updateCustomerInfo(aInfo, info);
+			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
 		}
 		
 		//FDX SMS Alert	
@@ -439,48 +442,55 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 						!this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)))
 		{
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
-			fdCustomerEStoreModel.setFdxSmsPreferenceflag("Y");
-			boolean isSent=false;
+			customerSmsPreferenceModel.setFdxSmsPreferenceflag("Y");
+			boolean isSent=true;
 			if(this.customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())||	!this.customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())||
-					!this.customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.NONE.value())||	!this.customerInfo.getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()))
+					!this.customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.NONE.value()))
 				{
-					if(optedInFdxBefore && (this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)))
+					isSent=true;
+					if(optedInFdxBeforeNonMarketing && (this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)))
 					{
-						isSent=true;
+						
 						if(fdxOrderExceptionOptin && isAlreadyFdxSubscribed){
 							this.customerInfo.setFdxOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
 						} else if(orderExceptionOptin){
-							this.customerInfo.setFdxOrderExceptions(EnumSMSAlertStatus.PENDING.value());
+							this.customerInfo.setFdxOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
 						}
 						if(fdxOrderNoticeOptin && isAlreadyFdxSubscribed){
 							this.customerInfo.setFdxOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
 						} else if(fdxOrderNoticeOptin){
-							this.customerInfo.setFdxOrderNotices(EnumSMSAlertStatus.PENDING.value());
-						}
-						if(fdxOffersOptin && isAlreadyFdxSubscribed){
-							this.customerInfo.setFdxOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
-						} else if(fdxOffersOptin){
-							this.customerInfo.setFdxOffers(EnumSMSAlertStatus.PENDING.value());
+							this.customerInfo.setFdxOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
 						}
 						
 					} else{
+						if(this.customerInfo.getFdxMobileNumber().getPhone()!=null&& !"".equalsIgnoreCase(this.customerInfo.getFdxMobileNumber().getPhone()))
+						isSent=smsAlertManager.smsOptInNonMarketing(customer.getId(), this.customerInfo.getFdxMobileNumber().getPhone(), EnumEStoreId.FDX.getContentId());
 						
-						isSent=smsAlertManager.smsOptIn(customer.getId(), this.customerInfo.getFdxMobileNumber().getPhone(), EnumEStoreId.FD.name());
-						if(fdCustomerEStoreModel.getFdxMobileNumber()!=null && !this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)){
+						if(customerSmsPreferenceModel.getFdxMobileNumber()!=null && !this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)){
 							
-							if( beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.PENDING.value())){
-								this.customerInfo.setFdxOrderNotices(EnumSMSAlertStatus.PENDING.value());
+							if( beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+								this.customerInfo.setFdxOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
 							}
-							if(beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.PENDING.value())){
-								this.customerInfo.setFdxOrderExceptions(EnumSMSAlertStatus.PENDING.value());
+							if(beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+								this.customerInfo.setFdxOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
 							}
-							if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.PENDING.value())){
-								this.customerInfo.setFdxOffers(EnumSMSAlertStatus.PENDING.value());
+						}
+					}
+					if(optedInFdxBeforeMarketing && (this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)))
+					{
+						
+						if(fdxOffersOptin && isAlreadyFdxSubscribed){
+							this.customerInfo.setFdxOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
+						} else if(fdxOffersOptin){
+							this.customerInfo.setFdxOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
+						}
+					} else{
+						if(this.customerInfo.getFdxMobileNumber().getPhone()!=null&& !"".equalsIgnoreCase(this.customerInfo.getFdxMobileNumber().getPhone()))
+						isSent=smsAlertManager.smsOptInMarketing(customer.getId(), this.customerInfo.getFdxMobileNumber().getPhone(), EnumEStoreId.FDX.getContentId());
+						if(customerSmsPreferenceModel.getFdxMobileNumber()!=null && !this.customerInfo.getFdxMobileNumber().getPhone().equals(fdxExistingMobNum)){
+							if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+								this.customerInfo.setFdxOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
 							}
-							
 						}
 					}
 			}
@@ -493,8 +503,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
 				|| this.customerInfo.getFdxMobileNumber() != null 
 				|| !this.customerInfo.getFdxMobileNumber().getPhone().equals(existingMobNum)
-				|| this.customerInfo.isFdxDeliveryNotification() != fdCustomerEStoreModel.getFdxdeliveryNotification()
-				|| this.customerInfo.isFdxOffersNotification() != fdCustomerEStoreModel.getFdxOffersNotification()
+				|| this.customerInfo.isFdxDeliveryNotification() != customerSmsPreferenceModel.getFdxdeliveryNotification()
+				|| this.customerInfo.isFdxOffersNotification() != customerSmsPreferenceModel.getFdxOffersNotification()
 				|| !this.customerInfo.getFdxOrderNotices().equals(beforeUpdateOrderNotices)
 				|| !this.customerInfo.getFdxOrderExceptions().equals(beforeUpdateOrderExceptions)
 				|| !this.customerInfo.getFdxOffers().equals(beforeUpdateOffers)
@@ -502,15 +512,16 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setReceiveNewsletter(this.customerInfo.isRecieveFdNews());
 			info.setEmailPlaintext(this.customerInfo.isTextOnlyEmail()); 
 			info.setReceiveOptinNewsletter(this.customerInfo.isReceiveOptinNewsletter());
-			fdCustomerEStoreModel.setFdxMobileNumber(this.customerInfo.getFdxMobileNumber());
-			fdCustomerEStoreModel.setFdxdeliveryNotification(this.customerInfo.isDelNotification());
-			fdCustomerEStoreModel.setFdxOffersNotification((this.customerInfo.isOffNotification()));
-			fdCustomerEStoreModel.setFdxOrderNotices(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOrderNotices()).value());
-			fdCustomerEStoreModel.setFdxOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOrderExceptions()).value());
-			fdCustomerEStoreModel.setFdxOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOffers()).value());
-			fdCustomerEStoreModel.setFdxPartnerMessages((EnumSMSAlertStatus.NONE).value());
-			fdCustomerEStoreModel.setSmsOptinDate(new java.util.Date());
-			FDCustomerManager.setFdxSmsPreferences(fdCustomerEStoreModel, user.getIdentity().getErpCustomerPK());
+			customerSmsPreferenceModel.setFdxMobileNumber(this.customerInfo.getFdxMobileNumber());
+			customerSmsPreferenceModel.setFdxdeliveryNotification(this.customerInfo.isDelNotification());
+			customerSmsPreferenceModel.setFdxOffersNotification((this.customerInfo.isOffNotification()));
+			customerSmsPreferenceModel.setFdxOrderNotices(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOrderNotices()).value());
+			customerSmsPreferenceModel.setFdxOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOrderExceptions()).value());
+			customerSmsPreferenceModel.setFdxOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getFdxOffers()).value());
+			customerSmsPreferenceModel.setFdxPartnerMessages((EnumSMSAlertStatus.NONE).value());
+			customerSmsPreferenceModel.setSmsOptinDate(new java.util.Date());
+			customerSmsPreferenceModel.setCrmStore(EnumEStoreId.FDX.getContentId());
+			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
 		}
 		
 		

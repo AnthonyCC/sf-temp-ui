@@ -342,7 +342,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		partnerMessagesOptin = "Y".equalsIgnoreCase(partner_messages);
 		
 		boolean subscribedBefore = order_notice_existing || order_exception_existing || offer_existing || partner_existing;
+		boolean subscribedBeforeNonMarketingSmsFdx =order_notice_existing || order_exception_existing;
+		boolean subscribedBeforeMarketingSmsFdx =offer_existing;
 		boolean subscribedNow = orderNoticeOptin || orderExceptionOptin || offersOptin || partnerMessagesOptin;
+		boolean subscribedNowNonMarketingSmsFdx = orderNoticeOptin || orderExceptionOptin;
+		boolean subscribedNowMarketingSmsFdx = offersOptin;
 		
 		PhoneNumber phone = new PhoneNumber(mobile_number);
 		
@@ -384,23 +388,55 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		 PhoneNumber _tmpNo = new PhoneNumber(mobile_number);
 		 PhoneNumber _tmpExistingNo = new PhoneNumber(existingMobileNumber);
 		 
-		try {
-			if(subscribedNow || !_tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
-				if(subscribedBefore && _tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
-					isSent=true;
-				} else{
+		 if(user.getUserContext().getStoreContext().getEStoreId().getContentId().equals("FDX"))
+		 {
+			 try {
+					if(subscribedNowNonMarketingSmsFdx || !_tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+						if(subscribedBeforeNonMarketingSmsFdx && _tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+							isSent=true;
+						} else{
+							
+							isSent = SMSAlertManager.getInstance().smsOptInNonMarketing(identity.getErpCustomerPK(), mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId() );
+						}
+					} else{
+						optOut=true;
+					}
+					if(subscribedNowMarketingSmsFdx || !_tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+						if(subscribedBeforeMarketingSmsFdx && _tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+							isSent=true;
+						} else{
+							
+							isSent = SMSAlertManager.getInstance().smsOptInMarketing(identity.getErpCustomerPK(),mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId() );
+						}
+					} else{
+						optOut=true;
+					}
 					
-					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId() );
+					
+				} catch (FDResourceException e) {
+					LOGGER.error("Error from mobile preferences", e);
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
+					return;
 				}
-			} else{
-				optOut=true;
-			}
-		} catch (FDResourceException e) {
-			LOGGER.error("Error from mobile preferences", e);
-			actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
-			return;
-		}
-		
+		 }
+		 else{
+				try {
+					if(subscribedNow || !_tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+						if(subscribedBefore && _tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+							isSent=true;
+						} else{
+							
+							isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number, user.getUserContext().getStoreContext().getEStoreId().getContentId() );
+						}
+					} else{
+						optOut=true;
+					}
+				} catch (FDResourceException e) {
+					LOGGER.error("Error from mobile preferences", e);
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
+					return;
+				}
+		  }
 		if(isSent || optOut){
 			try {
 				
@@ -408,7 +444,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 				
 				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery,
-						order_notices, order_exceptions, offers, partner_messages, fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());					
+						order_notices, order_exceptions, offers, partner_messages, fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());					
 				if(subscribedNow) {
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId());
 				} else {
@@ -913,7 +949,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(getIdentity());
 		FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(getIdentity());
-		FDCustomerEStoreModel fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+		FDCustomerEStoreModel customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 				
 		cim.setEmailPreferenceLevel(receive_emailLevel);
 
@@ -980,7 +1016,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 						ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 						FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(),identity.getFDCustomerPK(), mobile_number, "N", "N",
-								"Y", "Y", "Y", "Y", fdCustomer.getCustomerEStoreModel(), user.getUserContext().getStoreContext().getEStoreId());
+								"Y", "Y", "Y", "Y", fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
 						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId() );
 						session.setAttribute("SMSAlert" + orderNumber, "done");
 					} catch (FDResourceException e) {

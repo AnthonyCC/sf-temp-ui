@@ -6,6 +6,6 @@ public interface SmsNotificationService {
 	
 	void close();
 	
-	STSmsResponse sendSMSRequest(String mobileNumber, String message) throws SmsServiceException;
+	STSmsResponse sendSMSRequest(String mobileNumber, String message, String eStoreId) throws SmsServiceException;
 	
 }

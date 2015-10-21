@@ -30,22 +30,23 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			customer.getCustomerInfo().isReceiveNewsletter(),
 			customer.getCustomerInfo().isEmailPlaintext(),
 			customer.getCustomerInfo().isReceiveOptinNewsletter(),
-			fdCustomer.getCustomerEStoreModel().getMobileNumber(),
-			fdCustomer.getCustomerEStoreModel().getDeliveryNotification(),
-			fdCustomer.getCustomerEStoreModel().getOffersNotification(),
-			fdCustomer.getCustomerEStoreModel().getOrderNotices(),
-			fdCustomer.getCustomerEStoreModel().getOrderExceptions(),
-			fdCustomer.getCustomerEStoreModel().getOffers(),
-			fdCustomer.getCustomerEStoreModel().getPartnerMessages(),
+			fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber(),
+			fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification(),
+			fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification(),
+			fdCustomer.getCustomerSmsPreferenceModel().getOrderNotices(),
+			fdCustomer.getCustomerSmsPreferenceModel().getOrderExceptions(),
+			fdCustomer.getCustomerSmsPreferenceModel().getOffers(),
+			fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages(),
 			customer.getCustomerInfo().isGoGreen(),
 			customer.getCustomerInfo().getMobilePreference(),
-			fdCustomer.getCustomerEStoreModel().getFdxMobileNumber(),
-			fdCustomer.getCustomerEStoreModel().getFdxOrderNotices(),
-			fdCustomer.getCustomerEStoreModel().getFdxOrderExceptions(),
-			fdCustomer.getCustomerEStoreModel().getFdxOffers(),
-			fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification(),
-			fdCustomer.getCustomerEStoreModel().getFdxOffersNotification(),
-			fdCustomer.getCustomerEStoreModel());
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxOrderNotices(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxOrderExceptions(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxOffers(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification(),
+			fdCustomer.getCustomerSmsPreferenceModel().getFdxPartnerMessages(),
+			fdCustomer.getCustomerSmsPreferenceModel());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
@@ -72,7 +73,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 		private PhoneNumber fdxMobileNumber;
 		private String fdxOrderExceptions;
 		private String fdxOffers;
-		private String FdxPartnerMessages;
+		private String fdxPartnerMessages;
 		private boolean fdxDeliveryNotification;
 		private boolean fdxOffersNotification;
 		
@@ -94,16 +95,16 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 		}
 
 		public String getFdxPartnerMessages() {
-			return FdxPartnerMessages;
+			return fdxPartnerMessages;
 		}
 
 		public void setFdxPartnerMessages(String fdxPartnerMessages) {
-			FdxPartnerMessages = fdxPartnerMessages;
+			fdxPartnerMessages = fdxPartnerMessages;
 		}
 
 		private boolean goGreen;
 		private String mobilePrefs;
-		private FDCustomerEStoreModel fdCustomerEStoreModel;
+		private FDCustomerEStoreModel customerSmsPreferenceModel;
 
 		//FDX SMS Alerts
 		private String fdxOrderNotices;
@@ -139,19 +140,19 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			this.fdxMobileNumber = fdxMobileNumber;
 		}
 		
-		public FDCustomerEStoreModel getFdCustomerEStoreModel() {
-			return fdCustomerEStoreModel;
+		public FDCustomerEStoreModel getCustomerSmsPreferenceModel() {
+			return customerSmsPreferenceModel;
 		}
 
-		public void setFdCustomerEStoreModel(FDCustomerEStoreModel fdCustomerEStoreModel) {
-			this.fdCustomerEStoreModel = fdCustomerEStoreModel;
+		public void setFdCustomerEStoreModel(FDCustomerEStoreModel customerSmsPreferenceModel) {
+			this.customerSmsPreferenceModel = customerSmsPreferenceModel;
 		}
 
 		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter,
 					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, String orderNotices, String orderExceptions,
 					String offers, String partnerMessages, boolean goGreen, String mobilePrefs,PhoneNumber fdxMobileNumber,
 					String fdxOrderNotices, String fdxOrderExceptions, String fdxOffers, boolean fdxDeliveryNotification,
-					boolean fdxOffersNotification, FDCustomerEStoreModel fdCustomerEStoreModel) {
+					boolean fdxOffersNotification, String fdxPartnerMessages, FDCustomerEStoreModel customerSmsPreferenceModel) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
@@ -168,13 +169,13 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			this.offers = offers;
 			this.partnerMessages = partnerMessages;
 			this.fdxOrderNotices = fdxOrderNotices;
-			this.fdxOrderExceptions = orderExceptions;
+			this.fdxOrderExceptions = fdxOrderExceptions;
 			this.fdxMobileNumber = fdxMobileNumber;
 			this.fdxOffers = fdxOffers;
-			this.fdxOrderExceptions=fdxOrderExceptions;
 			this.goGreen = goGreen;
 			this.mobilePrefs = mobilePrefs;
-			this.fdCustomerEStoreModel=fdCustomerEStoreModel;
+			this.fdxPartnerMessages=fdxPartnerMessages;
+			this.customerSmsPreferenceModel=customerSmsPreferenceModel;
 		}
 
 		public String getOrderNotices() {

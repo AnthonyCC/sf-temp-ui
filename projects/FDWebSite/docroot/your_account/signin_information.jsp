@@ -283,95 +283,96 @@ if (request.getParameter("employeeId") != null) {
 	if(request.getParameter("text_offers") != null)
 		 text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
 	
-			if(fdCustomer.getCustomerEStoreModel().getFdxOffersNotification()!=null)		
- 			text_offers = fdCustomer.getCustomerEStoreModel().getFdxOffersNotification(); 
+			if(fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification()!=null)		
+ 			text_offers = fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification(); 
 			
 		if(request.getParameter("text_delivery") != null)
 				text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
 
-		if(fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification()!=null)		
- 			text_delivery = fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification();
+		if(fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification()!=null)		
+ 			text_delivery = fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification();
 		
 			if(request.getParameter("mobile_number") != null)
 			mobile_number = request.getParameter("mobile_number");
 		else	
-			mobile_number = fdCustomer.getCustomerEStoreModel().getFdxMobileNumber()==null ?"":fdCustomer.getCustomerEStoreModel().getFdxMobileNumber().getPhone();
+			mobile_number = fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber()==null ?"":fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber().getPhone();
 		
 		if(request.getParameter("order_notices") != null)
 			order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
 		else
 			{
-			   if(fdCustomer.getCustomerEStoreModel().getFdxOrderNotices()!=null)
-				order_notices=fdCustomer.getCustomerEStoreModel().getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+			   if(fdCustomer.getCustomerSmsPreferenceModel().getFdxOrderNotices()!=null)
+				order_notices=fdCustomer.getCustomerSmsPreferenceModel().getFdxOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 			}
 		
 		if(request.getParameter("order_exceptions") != null)
 			order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
 		else
 		{
-		  	if(fdCustomer.getCustomerEStoreModel().getOrderExceptions()!=null)
-			order_exceptions=fdCustomer.getCustomerEStoreModel().getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		  	if(fdCustomer.getCustomerSmsPreferenceModel().getOrderExceptions()!=null)
+			order_exceptions=fdCustomer.getCustomerSmsPreferenceModel().getFdxOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		}
 		
 		if(request.getParameter("offers") != null)
 			offers = "Y".equals(request.getParameter("offers"))?true:false;
 		else
 		{
-		  if(fdCustomer.getCustomerEStoreModel().getOffers()!=null)
-			offers=fdCustomer.getCustomerEStoreModel().getFdxOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+		  if(fdCustomer.getCustomerSmsPreferenceModel().getOffers()!=null)
+			offers=fdCustomer.getCustomerSmsPreferenceModel().getFdxOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		}
 		if(request.getParameter("partner_messages") != null)
 			partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
 		
 		else
 		{
-		  if(fdCustomer.getCustomerEStoreModel().getPartnerMessages()!=null)
-			partner_messages=fdCustomer.getCustomerEStoreModel().getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
+		  if(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages()!=null)
+			partner_messages=fdCustomer.getCustomerSmsPreferenceModel().getFdxPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		}
 	}
 	else{
 		if(request.getParameter("text_offers") != null)
 		 text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
 		
-			if(fdCustomer.getCustomerEStoreModel().getOffersNotification()!=null)		
- 			text_offers = fdCustomer.getCustomerEStoreModel().getOffersNotification();
+			if(fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification()!=null)		
+ 			text_offers = fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification();
 			
 		if(request.getParameter("text_delivery") != null)
 				text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
 
-		if(fdCustomer.getCustomerEStoreModel().getDeliveryNotification()!=null)		
- 			text_delivery = fdCustomer.getCustomerEStoreModel().getDeliveryNotification();
+		if(fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification()!=null)		
+ 			text_delivery = fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification();
 
 		if(request.getParameter("mobile_number") != null)
 			mobile_number = request.getParameter("mobile_number");
 		else
-			mobile_number = fdCustomer.getCustomerEStoreModel().getMobileNumber()!=null ? fdCustomer.getCustomerEStoreModel().getMobileNumber().getPhone():"";
+			mobile_number = fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber()!=null ? fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber().getPhone():"";
 		
 		 if(request.getParameter("order_notices") != null)
 				order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
 		 else{ 
-				if(fdCustomer.getCustomerEStoreModel().getOrderNotices()!=null)
-				 order_notices=fdCustomer.getCustomerEStoreModel().getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+				if(fdCustomer.getCustomerSmsPreferenceModel().getOrderNotices()!=null)
+				 order_notices=fdCustomer.getCustomerSmsPreferenceModel().getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		 	}
 		
 		 if(request.getParameter("order_exceptions") != null)
 				order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
 		 else {
-				if(fdCustomer.getCustomerEStoreModel().getOrderExceptions()!=null)
-				 order_exceptions=fdCustomer.getCustomerEStoreModel().getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+				if(fdCustomer.getCustomerSmsPreferenceModel().getOrderExceptions()!=null)
+				 order_exceptions=fdCustomer.getCustomerSmsPreferenceModel().getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		  }	
 		 if(request.getParameter("offers") != null)
 				offers = "Y".equals(request.getParameter("offers"))?true:false;
 		 else{
-			if(fdCustomer.getCustomerEStoreModel().getOffers()!=null)
-		  	offers=fdCustomer.getCustomerEStoreModel().getOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
+			if(fdCustomer.getCustomerSmsPreferenceModel().getOffers()!=null)
+		  	offers=fdCustomer.getCustomerSmsPreferenceModel().getOffers().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		 }
 		
 		 if(request.getParameter("partner_messages") != null)
-				partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
+		 {		partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
+		 	}
 		 else{
-			if(fdCustomer.getCustomerEStoreModel().getPartnerMessages()!=null)
-			 partner_messages=fdCustomer.getCustomerEStoreModel().getPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
+			if(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages()!=null)
+			 partner_messages=fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())?false:true;
 		 }
 }
 	

@@ -68,14 +68,14 @@ function blinkIt() {
 String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
 
 if("FDX".equalsIgnoreCase(eStoreId)){
-	custInfo.setMobileNumber(fdCustomer.getCustomerEStoreModel().getFdxMobileNumber());
-	custInfo.setOffersNotification(fdCustomer.getCustomerEStoreModel().getFdxOffersNotification());
-	custInfo.setDeliveryNotification(fdCustomer.getCustomerEStoreModel().getFdxdeliveryNotification());
+	custInfo.setMobileNumber(fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber());
+	custInfo.setOffersNotification(fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification());
+	custInfo.setDeliveryNotification(fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification());
 }
 else{	
-	custInfo.setMobileNumber(fdCustomer.getCustomerEStoreModel().getMobileNumber());
-	custInfo.setOffersNotification(fdCustomer.getCustomerEStoreModel().getOffersNotification());
-	custInfo.setDeliveryNotification(fdCustomer.getCustomerEStoreModel().getDeliveryNotification());
+	custInfo.setMobileNumber(fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber());
+	custInfo.setOffersNotification(fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification());
+	custInfo.setDeliveryNotification(fdCustomer.getCustomerSmsPreferenceModel().getDeliveryNotification());
 	}%> 
 
 

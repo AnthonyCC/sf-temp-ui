@@ -20,6 +20,14 @@ public class SmsConfigProvider implements Serializable {
 		return FDStoreProperties.getSTPassword();
 	}	
 	
+	public static String getSTFdxUserName() {
+		return FDStoreProperties.getSTFdxUsername();
+	}
+	
+	public static String getSTFdxPassword() {
+		return FDStoreProperties.getSTFdxPassword();
+	}
+	
 	public static Integer getSTConnectionTimeoutPeriod() {
 		return FDStoreProperties.getSTConnectionTimeoutPeriod();
 	}

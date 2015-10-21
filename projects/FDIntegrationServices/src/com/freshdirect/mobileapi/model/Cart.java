@@ -1092,7 +1092,7 @@ public class Cart {
 			if(identity!=null){
 				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 				FDCustomerModel fdcm = FDCustomerFactory.getFDCustomer(identity);
-				FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerEStoreModel() : null;
+				FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerSmsPreferenceModel() : null;
 				String esid = user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId().getContentId();
 				if(fdcm != null){
 					if(cm != null && esid == null){

@@ -261,7 +261,11 @@ function loadStuff() {
   } else if (loaddata == "CheckoutSetOrderLevelMobileNumberEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/order/set/");
   	    $("#payload").val('{"mobile_number" : "2019361486"}');
-   }  else if (loaddata == "AddPaymentMethod") {
+   } else if(loaddata == "CheckoutSetOrderLevelMobilePreferencesEx") {  	
+  	$("#url").val("/saptest12@freshdirect.com/account/setorderlevelmobilepreferences/");
+  	$("#payload").val('{"mobile_number" : "6462467793", "non_marketing_sms" : "Y", "marketing_sms" : "Y"}');
+  	
+  } else if (loaddata == "AddPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
   	
@@ -1057,6 +1061,7 @@ function doStuff() {
   <option value="CheckoutEditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
   <option value="CheckoutDeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
   <option value="CheckoutSetOrderLevelMobileNumberEx">CHECKOUT- Set Order Level Mobile Number Ex</option>
+  <option value="CheckoutSetOrderLevelMobilePreferencesEx">CHECKOUT- Set Order Level Mobile Preferences Ex</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>
   <option value="RemoveAlcohol">CHECKOUT - Remove All Alcohol</option>
   <option value="ReserveDeliverySlot">CHECKOUT - Set Delivery Slot</option>

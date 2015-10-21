@@ -62,7 +62,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			
 			FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(curridentity);
 			// if atleast one of the smsAlerts is none -- Will have to change this
-			if(FDStoreProperties.getSMSOverlayFlag() && fdCustomer.getCustomerEStoreModel().getSmsPreferenceflag()==null ){
+			if(FDStoreProperties.getSMSOverlayFlag() && fdCustomer.getCustomerSmsPreferenceModel().getSmsPreferenceflag()==null ){
 				if(session.getAttribute("SMSAlert" + _ordNum) == null){
 					%>
 		<script type="text/javascript"

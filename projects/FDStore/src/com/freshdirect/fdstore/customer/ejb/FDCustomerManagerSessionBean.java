@@ -1856,13 +1856,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void setFdxSmsPreferences(FDCustomerEStoreModel eStoreModel, String ErpCustomerPK) throws FDResourceException {
+	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String ErpCustomerPK) throws FDResourceException {
 		try {
 			
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
 					.findByErpCustomerId(ErpCustomerPK);
 			FDCustomerModel model = (FDCustomerModel) fdCustomerEB.getModel();
-			model.setCustomerEStoreModel(eStoreModel);
+			model.setCustomerSmsPreferenceModel(customerSmsPreferenceModel);
 			fdCustomerEB.setFromModel(model);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -1922,18 +1922,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		FDIdentity identity = info.getIdentity();
 		String zoneId = null;
 		String orderMobileNumber=null;
-		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		FDCustomerEStoreModel customerSmsPreferenceModel=null;
 		boolean isSent=false;
 		try
 		{
 			zoneId = createOrder.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
 			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(identity);
-							fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+							customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 				
-			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+			if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()!=null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
 				orderMobileNumber=createOrder.getDeliveryInfo().getOrderMobileNumber().getPhone();
-				else if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null){
-						orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+				else if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()==null && customerSmsPreferenceModel.getFdxMobileNumber()!=null){
+						orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
 			}
 				
 			//update original cutoff in deliveryinfo if the order is placed via Masquerade
@@ -2179,18 +2179,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error Sending email for Order Confirmantion: "+ pk.getId(), e);
 			}
 			
-			//Start:: Add FDX SMS Order confirmation 
-				try {
-					FDOrderI order = getOrder(pk.getId());
-					if("S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
-					 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId());
-					
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					LOGGER.warn("Error Sending FDXSMS for Order Confirmantion: ", e);
-				}
-			
-
 			try {
 				if(null!=createOrder.getCouponTransModel()){
 					createOrder.getCouponTransModel().setSaleId(pk.getId());
@@ -2389,7 +2377,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			boolean sendEmail, int currentDPExtendDays, boolean restoreReservation) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
 		String orderMobileNumber=null;
-		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		FDCustomerEStoreModel customerSmsPreferenceModel=null;
 		boolean isSent=false;
 		try {
 			TimeslotEvent event = new TimeslotEvent((info.getSource()!=null)?info.getSource().getCode():"", 
@@ -2404,14 +2392,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDOrderI order = getOrder(saleId);
 			
 			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(info.getIdentity());
-			 fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
-				fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
-	
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+			 customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
+				
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
 							orderMobileNumber= order.getDeliveryInfo().getOrderMobileNumber().getPhone();
 				
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
-							orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
+							orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
 			
 			String appliedPass_ID = order.getDeliveryPassId();
 			// Begin Handle Delivery Pass.
@@ -2497,7 +2484,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			//Start:: Add FDX SMS for order Cancelled
 			
 			try {
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
 					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId);
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
@@ -2595,7 +2582,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		String zoneId = null;
 		String orderMobileNumber=null;
-		FDCustomerEStoreModel fdCustomerEStoreModel=null;
+		FDCustomerEStoreModel customerSmsPreferenceModel=null;
 		boolean isSent=false;
 		try
 		{
@@ -2603,13 +2590,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			zoneId = order.getDeliveryInfo().getDeliveryAddress().getAddressInfo().getZoneId();
 			
 			FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(info.getIdentity());
-			 fdCustomerEStoreModel = FDCustomerModel.getCustomerEStoreModel();
+			 customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
 	
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()!=null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
 							orderMobileNumber= order.getDeliveryInfo().getOrderMobileNumber().getPhone();
 				
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && fdCustomerEStoreModel.getFdxMobileNumber()!=null)
-							orderMobileNumber=fdCustomerEStoreModel.getFdxMobileNumber().getPhone();
+				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
+							orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
 			
 				//update original cutoff in deliveryinfo if the order is placed via Masquerade
 				if(order.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(order.geteStoreId().name())){
@@ -2924,8 +2911,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					FDDeliveryManager.getInstance().modifyOrder(saleId, null,
 							order.getTip(), newReservationId, orderMobileNumber);
 				}
-				
-				//Start:: Add FDX SMS for order Modification
 			}
 
 			try {
@@ -2937,17 +2922,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
-			
-			
-			try {
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())&&"S".equalsIgnoreCase(fdCustomerEStoreModel.getFdxOrderExceptions()))
-					 isSent = SMSAlertManager.getInstance().smsOrderModification(info.getFdUserId() ,orderMobileNumber, saleId);
-			} catch (FDResourceException e) {
-				LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
-			}
-			
-			//End:: Add FDX SMSfor order Modification
-			
+							
 			//Moving the commit reservation section to the end of modify order flow as reservation can be committed to logistics and still modify order fails because of the auth.
 			// Deal with Reservation in DLV
 						/*newReservationId = order.getDeliveryInfo()
@@ -3584,7 +3559,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		if(createOrder.getDeliveryInfo()!=null && createOrder.getDeliveryInfo().getDeliveryPlantInfo()!=null) {
 			plantId=createOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId();
 		}
-
+		
 		DateRange requestedRange = new DateRange(createOrder.getDeliveryInfo()
 				.getDeliveryStartTime(), createOrder.getDeliveryInfo()
 				.getDeliveryEndTime());

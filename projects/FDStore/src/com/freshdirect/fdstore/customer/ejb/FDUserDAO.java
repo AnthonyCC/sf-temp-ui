@@ -646,6 +646,8 @@ public class FDUserDAO {
 			
 			Date optinDate=new Date();
 			
+		if(eStoreId.getContentId().contentEquals(EnumEStoreId.FD.getContentId()))
+	      {
 			if(existingMobNum!=null && phone.getPhone()!=null && !phone.getPhone().isEmpty() && phone.getPhone().length()!=0 && !phone.getPhone().equals(existingMobNum)){
 				ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set mobile_number=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, " +
 						"SMS_OPTIN_DATE=?, DELIVERY_NOTIFICATION=? , OFFERS_NOTIFICATION=? WHERE FDCUSTOMER_ID=?  AND E_STORE=? ");
@@ -732,7 +734,96 @@ public class FDUserDAO {
 				ps.setString(10, eStoreId.getContentId());
 				ps.execute();
 			}
-		
+	      }
+		else{
+			if(existingMobNum!=null && phone.getPhone()!=null && !phone.getPhone().isEmpty() && phone.getPhone().length()!=0 && !phone.getPhone().equals(existingMobNum)){
+				ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set mobile_number=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, " +
+						"SMS_OPTIN_DATE=?, DELIVERY_NOTIFICATION=? , OFFERS_NOTIFICATION=? WHERE FDCUSTOMER_ID=?  AND E_STORE=? ");
+				ps.setString(1, phone.getPhone());
+				if((notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "y".equalsIgnoreCase(orderNotices))){
+					ps.setString(2,EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else {
+					ps.setString(2, "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+				}
+				if((exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& "y".equalsIgnoreCase(orderExceptions))){
+					ps.setString(3, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					ps.setString(3, "Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+				}
+				if((offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "y".equalsIgnoreCase(offers))){
+					ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else {
+					ps.setString(4, "Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+				}
+				if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+					ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					ps.setString(5, "Y".equals(partnerMessages)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+				}
+				ps.setTimestamp(6, new java.sql.Timestamp(optinDate.getTime()));
+				ps.setString(7, "Y".equals(textOffers)?"Y":"N");
+				ps.setString(8, "Y".equals(textDelivery)?"Y":"N");
+				ps.setString(9, fdCustomerId);
+				ps.setString(10, eStoreId.getContentId());
+				ps.execute();				
+			} else {
+				boolean alreadyOptedIn=false;
+				if((notice!=null && notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(exceptions!=null && exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(offer!=null && offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(pMessage!=null && pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))){
+					
+					alreadyOptedIn=true;
+				}
+				ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set MOBILE_NUMBER=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?," +
+						" SMS_OPTIN_DATE=?, DELIVERY_NOTIFICATION=?, OFFERS_NOTIFICATION=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+				
+				ps.setString(1, phone.getPhone());
+				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
+					ps.setString(2, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(orderNotices)){
+						ps.setString(2,EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(2, "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderExceptions)){
+					ps.setString(3, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(orderExceptions)){
+						ps.setString(3,EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(3, "Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(offers)){
+					ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(offers)){
+						ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(4, "Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(partnerMessages)){
+					ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(partnerMessages)){
+						ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
+					} else{
+						ps.setString(5, "Y".equals(partnerMessages)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				ps.setTimestamp(6, new java.sql.Timestamp(optinDate.getTime()));
+				ps.setString(7, "Y".equals(textOffers)?"Y":"N");
+				ps.setString(8, "Y".equals(textDelivery)?"Y":"N");
+				ps.setString(9, fdCustomerId);
+				ps.setString(10, eStoreId.getContentId());
+				ps.execute();
+			}
+		}
+				
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
 		} finally {

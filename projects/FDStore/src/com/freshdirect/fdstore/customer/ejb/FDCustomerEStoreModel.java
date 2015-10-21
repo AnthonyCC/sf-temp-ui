@@ -41,8 +41,17 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean fdxdeliveryNotification;
 	private Boolean offersNotification;
 	private Boolean fdxOffersNotification;
+	private String crmStore;
 	
 	
+
+	public String getCrmStore() {
+		return crmStore;
+	}
+
+	public void setCrmStore(String crmStore) {
+		this.crmStore = crmStore;
+	}
 
 	public Boolean getFdxOffersNotification() {
 		return fdxOffersNotification;
