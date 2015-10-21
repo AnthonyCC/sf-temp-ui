@@ -21,7 +21,7 @@
 			<div style="margin: 15px 0; font-size: 16px;">
 				(Is there any better phrase in the English language?) Expect our Kickers to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>.<br />
 				<br />
-				Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Hope everything is absolutely Instagram-worthy. #FoodKick
+				Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Hope everything is absolutely Instagram-worthy. <span style="font-weight: bold;">#FoodKick</span>
 			</div>
 			<!-- <div class="email-footer-block" style="height: 30px; margin: 10px 0;"><a class="email-body-button" href="#">ADD MORE STUFF</a></div> -->
 		</div>

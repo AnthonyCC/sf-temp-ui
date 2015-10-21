@@ -20,7 +20,7 @@
 		
 		<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Hi <xsl:value-of select="customer/firstName"/>,</div>
 		<div style="margin: 15px 0; font-size: 16px;">
-			<span style="font-weight: bold;">So the bad news first:</span> we weren't able to process the e-check payment for your order <xsl:value-of select="orderNumber"/> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>. The good news: it's usually just an input error so give us a call and we'll figure it out.
+			<span style="font-weight: bold;">So the bad news first:</span> we weren't able to process the e-check payment for your order <xsl:value-of select="orderNumber"/> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>. The good news: it's usually just an input error so <span style="font-weight: bold;">give us a call</span> and we'll figure it out.
 			<br /><br />
 			If we don't hear from you in 24 hours, we'll attempt to settle the payment with one of your other account payment methods.
 			<br /><br />

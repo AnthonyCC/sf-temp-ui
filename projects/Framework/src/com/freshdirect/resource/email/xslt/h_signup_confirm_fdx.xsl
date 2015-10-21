@@ -30,7 +30,7 @@
 		
 		<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Welcome to FoodKick.</div>
 		<div style="margin: 15px 0; font-size: 16px;">
-			We're here to bring you #allthefood and #allthebooze &mdash; whenever and wherever you want it.<br />
+			We're here to bring you <span style="font-weight: bold;">#allthefood</span> and <span style="font-weight: bold;">#allthebooze</span> &mdash; whenever and wherever you want it.<br />
 			<br />
 			<span style="font-weight: bold;">You ready to kick it?</span>
 		</div>

@@ -258,6 +258,13 @@
 	<xsl:template name="orderlinesView">
 		<xsl:param name="view"/>
 		<table cellpadding="0" cellspacing="0" width="100%" border="0" style="padding:0;margin:0;border-collapse:collapse;border-spacing:0;border-style:none;">	
+			<xsl:if test="'' != description">
+				<tr>
+					<td colspan="11" style="background-color: #732484; color: #fff; font-weight:bold; text-align:left;">
+						<div style="margin: 10px; padding: 10px; font-size: 16px; font-weight: bold; color: #ffffff;"><xsl:value-of select="description"/></div>
+					</td>
+				</tr>
+			</xsl:if>
 			<xsl:for-each select="$view/orderLines/orderLines">					
 				<!-- PRODUCT LINE -->
 					<tr><td colspan="9">

@@ -26,10 +26,10 @@
 								<td width="50%" style="font-size: 22px; font-weight: bold; padding-right: 10px;" align="right" valign="middle">
 									Spread the <img src="http://www.freshdirect.com/media/images/email/foodkick/heart.png" alt="love" style="margin-bottom: -5px;" /> tell a friend</td>
 								<td align="left" style="padding-left: 10px;">
-									<img src="http://www.freshdirect.com/media/images/email/foodkick/logo_facebook.png" alt="Facebook" />
-									<img src="http://www.freshdirect.com/media/images/email/foodkick/logo_twitter.png" alt="Twitter" />
-									<img src="http://www.freshdirect.com/media/images/email/foodkick/logo_pinterest.png" alt="Pinterest" />
-									<img src="http://www.freshdirect.com/media/images/email/foodkick/logo_instagram.png" alt="Instagram" />
+									<a href="https://www.facebook.com/FoodKick/" style="text-decoration: none; border: none;"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_facebook.png" alt="Facebook" style="text-decoration: none; border: none;" border="0" /></a>
+									<a href="https://twitter.com/foodkick" style="text-decoration: none; border: none;"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_twitter.png" alt="Twitter"  style="text-decoration: none; border: none;" border="0" /></a>
+									<!-- <img src="http://www.freshdirect.com/media/images/email/foodkick/logo_pinterest.png" alt="Pinterest" /> -->
+									<a href="https://instagram.com/foodkick/" style="text-decoration: none; border: none;"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_instagram.png" alt="Instagram" style="text-decoration: none; border: none;" border="0" /></a>
 								</td>
 							</tr>
 						</table>
