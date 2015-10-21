@@ -78,6 +78,7 @@ public class MobileApiProperties {
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
+		defaults.put(PROP_ADDITION_MEDIA_PATH,"/media/editorial/win_fdw/icons/");
         
         refresh();
     }
