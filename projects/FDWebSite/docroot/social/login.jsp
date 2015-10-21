@@ -17,10 +17,7 @@
   <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-  
-  <fd:css href="/assets/css/social_login.css" />
-	
-  
+    
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
@@ -41,14 +38,14 @@
 		// Hide all the error arrow images
 		//$jq('.error_img').hide();
 		// disable the submit button on page load
-		$jq('#submit').attr('disabled', true);
+		$jq('#signinbtn').attr('disabled', true);
 		// on keyup we will check every time the form is valid or not
 		$jq('#fd_login').bind('change keyup', function() {
 		    if($jq(this).validate().checkForm()) { // form is valid
-		        $jq('#submit').removeClass('button_disabled').attr('disabled', false);
+		        $jq('#signinbtn').removeClass('button_disabled').attr('disabled', false);
 	
 		    } else { // form is invalid
-		        $jq('#submit').addClass('button_disabled').attr('disabled', true);
+		        $jq('#signinbtn').addClass('button_disabled').attr('disabled', true);
 	
 		    }
 		});
@@ -87,106 +84,75 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		
 </fd:ErrorHandler>
 
-<body bgcolor="#ffffff" text="#333333" class="text10">
+<body>
+	<center>
+		<div id="sulCont" class="signup-style-social social-singin">
 
-
-		<center>
-			
-
-				<div id="sulCont" class="signup-style-social">
-
-
-					<div class="form-side-social" style="width:322px; margin-left :100px;margin-top:25px; margin-bottom: 30;">
-
-						<span
-							style="font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-bottom:20px;margin-left:20px">Sign in with email:</span>
-
-							<%
-								// The user tried to sign in with an unrecognized social user, and redirected back to sign in with existing recognized social user.
-								if(triedToConnect != null && triedToConnect.length() >0){
-							%>									
-									<div>									
-										<br>										
-										<img src="/media_stat/images/navigation/social_accounts/<%=triedToConnect%>_logo_round.png" width="32" height="26" border="0" alt="<%=triedToConnect%> Round">
-										<font class="text13">sign in to connect with <%=triedToConnect%>.</a></FONT>								
-									</div>		
-									
-									<input type="hidden" id="triedToConnectSocialProvider" name="triedToConnectSocialProvider" value="<%=triedToConnect%>"> 						
-							<%
-								}
-							%>							
-
-						<div id="form_feilds" style="width:294px;margin-top:20px;">
-
-
-							<form name="fd_login" id="fd_login" method="post"
-								action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>" >
-								<table border="0" cellpadding="5" cellspacing="8">
-
-									<%
-										if (!result.isSuccess()) {
-												out.println("<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td>&nbsp;</td><td><font color='red' size='2px'>Please try again.</font></td></tr>");%>
-										<script type="text/javascript">
-											$jq(function(){
-												$jq('#email_img').addClass('show_bg_arrow');
-												$jq('#email').addClass('error');
-												$jq('#password_img').addClass('show_bg_arrow');
-												$jq('#password').addClass('error');
-											});
-																			
-										</script>
-										<% } %>
-																			
-									<tr>
-									
-										<td>
-										<!-- span id should be the input box id+"_img" -->
-										<span class="error_img" id="email_img"></span>
-										</td>
-
-										<!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->									
-										<td><input id="email" name="userid"
-											class="padding-input-box text11ref inputDef required" type="email"
-											 maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
-										</td>
-									</tr>
-
-
-									<tr>
-										 
-										<td>
-										<!-- span id should be the input box id+"_img" -->
-										<span class="error_img" id="password_img"></span>
-										</td>
-										
-										<td><input id="password" name="password"
-											class="padding-input-box text11ref inputDef required" type="password" minlength="6"
-											 size="23" placeholder="Password"  style="margin-top: 10px;" >
-									    </td>
-									</tr>
-
-									<tr>
-										<td>&nbsp;</td>
-										<td style="padding-top: 10px;">
-										<a
-											onclick="document.fd_login.submit();" href="#"
-											class="butText" style="font-weight: bold; font-size: 14px; ">
-												<input type="submit" id="submit" maxlength="25" size="19" value="Sign in" >
-										</a>
-										</td>
-									</tr>
-
-									<tr>
-									<td>&nbsp;</td>
-									<td style="text-align: center; padding-top: 10px;"><font class="text13"> <A HREF="/social/forgot_password.jsp">Forgot Password?</a></FONT></td></tr>
-
- 								</table>
-
-							</form>
-
-					</div><!-- form_fields ends here -->
-					
-
+   			<div class="form-side-social">
+   			<div class="form-side-social-header">Sign in with email:</div>
+	
+			<!-- 
+	        <% // The user tried to sign in with an unrecognized social user, and redirected back to sign in with existing recognized social user. if(triedToConnect !=n ull && triedToConnect.length()>0){ %>
+		            <div style=>
+		                <img src="/media_stat/images/navigation/social_accounts/<%=triedToConnect%>_logo_round.png" width="32" height="26" border="0" alt="<%=triedToConnect%> Round">
+		                <font class="text13">sign in to connect with <%=triedToConnect%>.</font>
+		            </div>
+	
+	            <input type="hidden" id="triedToConnectSocialProvider" name="triedToConnectSocialProvider" value="<%=triedToConnect%>">
+	        <% //} %>
+	        -->
+	
+	        <div id="form_feilds">
+	            <form name="fd_login" id="fd_login" method="post" action="<%= request.getRequestURI()+" ? "+StringUtil.escapeXssUri(request.getQueryString()) %>">
+	            	<table border="0" cellpadding="5" cellspacing="8">
+		                <% if (!result.isSuccess()) { out.println( "<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td>&nbsp;</td><td><font color='red' size='2px'>Please try again.</font></td></tr>");%>
+	    	                <script type="text/javascript">
+	        	            	$jq(function() {
+	            	            	$jq('#email_img').addClass('show_bg_arrow');
+	                                $jq('#email').addClass('error');
+	                                $jq('#password_img').addClass('show_bg_arrow');
+	                                $jq('#password').addClass('error');
+	                            });
+	                       	</script>
+	                    <% } %>
+	                    <tr>
+	                	 	<td>
+	                    	    <!-- span id should be the input box id+"_img" -->
+	                            <span class="error_img" id="email_img"></span>
+	                        </td>
+                                <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
+                            <td>
+	                            <input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
+	                        </td>
+	                    </tr>
+	                    <tr>
+		  	                <td>
+	                       		<!-- span id should be the input box id+"_img" -->
+	                            <span class="error_img" id="password_img"></span>
+	                        </td>
+	                        <td style="padding-top: 15px;">
+	                            <input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                    	<td></td>
+	                        <td style="padding-top: 15px;">
+	                   		   	<a onclick="document.fd_login.submit();" href="#" class="butText">
+	                              	<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
+	                            </a>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                       	<td></td>
+	                        <td class="social-login-pass-forgot">
+	                        	<a href="/social/forgot_password.jsp">Forgot Password?</a>
+	                        </td>
+	                    </tr>
+              		</table>
+              	</form>
+	        </div>
+        <!-- form_fields ends here -->
+                
 	<script type="text/javascript" language="javascript">
 	
 	 $jq('#fd_login').validate(
@@ -248,18 +214,14 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 					
            </div><!--  form-side ends here -->
            
-  <div class="social-login-headerscr-social"  style="float:none; margin-left: 60px;">
-
-	<p style="font-size:12px;font-weight: bold; font-family: Verdana, Arial, sans-serif;margin-right:40px;">
-	<img src="/media_stat/images/navigation/line.png" WIDTH="150" HEIGHT="2" border="0" >
-	   Or   
-	<img src="/media_stat/images/navigation/line.png" WIDTH="150" HEIGHT="2" border="0" >
-	</p><br>
-
-</div>         
+		<div class="social-login-headerscr-social">
+			<div class="social-login-line-separator"></div>
+			<span class="social-login-or-separator">or</span>
+			<div class="social-login-line-separator"></div>
+		</div>        
 
 
-<div id="social_login_demo" class="social-login-social" style="float:none; margin-left: 120px;">
+<div id="social_login_demo" class="social-login-social">
 
 
 <script type="text/javascript">
@@ -300,6 +262,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	// ***  dynamically show the social providers - ends
 	
 	_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
+	_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/images/social_login/social_login_media.css?r']);
 	/* _oneall.push([ 'social_login', 'set_callback_uri', 'http://127.0.0.1:7001/social/social_login_success.jsp' ]); */
 	_oneall.push([ 'social_login', 'set_callback_uri',
 	       		'<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"  %>' ]);
@@ -312,19 +275,19 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 
 
 
-<div class="clear"></div>
+		<div class="clear"></div>
 
-<div class="bottom-contents-social">
-    <span class="bottom-links"> <b>New to FreshDirect? <a href="/social/signup_lite.jsp"
-
-onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', width: 518, height: 518, opacity: .5}) ">Create Account</a></b>
-
-       </span>
+		<div class="bottom-contents">
+			<div class="bottom-links">
+				New to FreshDirect?
+				<a href="/social/signup_lite.jsp" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', width: 518, height: 518, opacity: .5}) ">
+					Create Account
+				</a>
+			</div>
+		</div>
 
 </div>
-
-
-<!--</div> container ends here -->
+<!-- container ends here -->
 </fd:LoginController>
 
 </center>

@@ -59,8 +59,6 @@
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
-<jwr:style src="/assets/css/social_login_signup.css" media="all" />
-
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
@@ -228,21 +226,20 @@
 					</tr>
 
 
-                    <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td>&nbsp;</td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+                    <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
                     <tr>
                         <td>
                         <!-- span id should be the input box id+"_img" -->
                         <span class="error_img" id="password1_img"></span></td>
-						<td style="padding-top: 10px;">
-							<input 	class="padding-input-box text11ref inputUser required" type="password" size="23" 
-									name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" >
-							<a class="show-password"  style="top: 130px; right: 145px;">Show</a>
+						<td style="padding-top: 15px;">
+							<input 	class="padding-input-box text11ref inputUser required" type="password" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" >
+							<a class="show-password">Show</a>
 						</td>
 					</tr>		
 					<tr>
 						<td></td>
-						<td style="padding-top: 10px;">
-							<a onclick="dlvadrspage();" class="butText" style="font-weight:bold;font-size:14px;">
+						<td style="padding-top: 15px;">
+							<a onclick="dlvadrspage();" href="#" class="butText">
 								<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" style="display:block;">
 							</a>
 						</td>
@@ -371,7 +368,7 @@
 		/* Initialise the asynchronous queue */
 		var _oneall = _oneall || [];
     	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
-		_oneall.push([ 'social_login', 'set_grid_sizes', [ 2, 2 ] ]);
+		_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
 		_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/images/social_login/social_login_media.css?r']);
 		_oneall.push([ 'social_login', 'set_callback_uri',
 						       		'<%=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);

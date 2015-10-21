@@ -104,7 +104,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 <tmpl:put name="loginButton">
 	<% if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) { %>
-       <button class="loginButton loginButtonSocial" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 500, height: 350, opacity: .5}) }">Log In</button>
+       <button class="loginButton loginButtonSocial" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 500, height: 532, opacity: .5}) }">Log In</button>
     <% } else { %>
     	<button class="loginButton" id="locabar_loginButton">log in</button>
     <% } %>
