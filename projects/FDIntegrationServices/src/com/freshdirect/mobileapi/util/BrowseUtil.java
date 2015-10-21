@@ -954,13 +954,16 @@ public class BrowseUtil {
 	    				productSet.add(p.getContentName());
     					returnableProductList.add(product);
 					}
+					productList.add(p);
 //					cat.addProduct(p.getContentName());
 					
 	    		}
 				
 			}
 	    	
-	    	if(catProducts.size() > 0){
+	    	productList.addAll(catProducts);
+	    	
+	    	if(productList.size() > 0){
 	    		sortProductByPopularity(productList, user);
 	    		for(ProductModel pm1 : catProducts){
 	    			cat.addProduct(pm1.getContentName());
@@ -969,8 +972,6 @@ public class BrowseUtil {
 	    	
 	    	if(cat.getCategories().size()>0 || cat.getProducts().size()>0)
 	    		catalog.addCategory(cat);
-
-	    	
 	    	
 	    	return returnableProductList;
 	    }
