@@ -76,9 +76,10 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS", "source"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS"}
         		, new String[] {});//gets,sets
-        
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());
         addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), registerMessage.getLastName());
         addRequestValue(EnumUserInfoName.EMAIL.getCode(), registerMessage.getEmail());
@@ -134,6 +135,10 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), registerMessage.getLastName());
         addRequestValue(EnumUserInfoName.EMAIL.getCode(), registerMessage.getEmail());
         addRequestValue(EnumUserInfoName.REPEAT_EMAIL.getCode(), registerMessage.getEmail());
+        
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+
+        
         String password = registerMessage.getPassword(); //using the password provided in case of non social external account
         
         if(StringUtils.isEmpty(registerMessage.getSource()) || EnumExternalLoginSource.SOCIAL.value().equalsIgnoreCase(registerMessage.getSource())){
@@ -153,7 +158,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(REQ_PARAM_LITE_SIGNUP_SOCIAL,"true");
         addRequestValue("userToken",registerMessage.getUserToken());
         addRequestValue("provider",registerMessage.getProvider());
-        addRequestValue("source",registerMessage.getSource());
+        addRequestValue(REQ_PARAM_SOURCE,registerMessage.getSource());
         
         addRequestValue("terms", "Y");
         //addRequestValue("partialDelivery", registerMessage.isPartialDelivery() ? "Y" : "");
@@ -192,7 +197,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
         addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
         addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
-        addRequestValue("source",  new String[]{});
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
         
 		if (deliveryAddress.isDoorman()) {
 //APPDEV-4228  Doorman Property  not Adding/Editing addresses
@@ -257,7 +262,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(EnumUserInfoName.DLV_ZIPCODE.getCode(), deliveryAddress.getZipcode());
         addRequestValue(EnumUserInfoName.DLV_COUNTRY.getCode(), deliveryAddress.getCountry());
         addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
-        addRequestValue("source",  new String[]{});
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
 
         if(deliveryAddress.isDoorman()) {
 //APPDEV-4228  Doorman Property  not Adding/Editing addresses
@@ -330,7 +335,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(REQ_PARAM_OFFER_EXISTING, currentOffers);
         addRequestValue(REQ_PARAM_PARTNER_EXISTING, currentPartnerMessages);
         addRequestValue(REQ_PARAM_MOBILE_EXISTING, currentMobileNo);
-        
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+
         getWrapTarget().setActionName(ACTION_SET_MOBILE_PREFERENCES);
         
         setMethodMode(true);
@@ -381,7 +387,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addExpectedRequestValues(new String[] { REQ_PARAM_EMAIL_PREFERENCE_LEVEL}, new String[] {});//gets,sets
                 
         addRequestValue(REQ_PARAM_EMAIL_PREFERENCE_LEVEL, cm.getEmailPreferenceLevel());
-        
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+
         getWrapTarget().setActionName(ACTION_SET_EMAIL_PREFERENCE);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
@@ -394,7 +401,8 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         
         addRequestValue(REQ_PARAM_USER_LAST_NAME, lastName);
         addRequestValue(REQ_PARAM_USER_FIRST_NAME, firstName);
-        
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
+
         getWrapTarget().setActionName(ACTION_CHANGE_CONTACT_NAMES);
         setMethodMode(true);
         return new ResultBundle(executeTagLogic(), this);
