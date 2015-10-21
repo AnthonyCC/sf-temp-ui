@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.action.fdstore;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import java.util.HashMap;
@@ -416,6 +417,7 @@ public class RegistrationAction extends WebActionSupport {
 				// changes done by gopal
 				customerInfo.setReferralProgId(user.getLastRefProgId());
 				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
+
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				ErpAddressModel erpAddress = null;
@@ -967,6 +969,9 @@ public class RegistrationAction extends WebActionSupport {
 		
 		public void validateExSLite(ActionResult actionResult) {
 			actionResult.addError("".equals(emailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_REQUIRED);
+			
+			actionResult.addError("".equals(repeatEmailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_REQUIRED);
+			actionResult.addError(!emailAddress.equals(repeatEmailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT);
 
 			actionResult.addError(!actionResult.hasError(EnumUserInfoName.EMAIL.getCode())
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
