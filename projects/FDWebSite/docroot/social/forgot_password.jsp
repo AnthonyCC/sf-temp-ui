@@ -48,18 +48,6 @@
 </script >
 <!-- ********************************************************* -->	
 
-
-
-
-
-
-
-
-
-
-
-		
-
 <%!
 //System Message fields
 final List FIELD_NAMES = new ArrayList();
@@ -69,7 +57,7 @@ FIELD_NAMES.add(0, "email");
 %>
 </head>
 
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="10" topmargin="10" >
+<body>
 	<fd:ForgotPasswordController results="result" successPage='/social/forgot_password_confirm.jsp' password="password">	
 	<center>
 	
@@ -79,23 +67,15 @@ FIELD_NAMES.add(0, "email");
 		<%@ include file="/includes/i_error_messages.jspf" %>	
 	</fd:ErrorHandler>
 
-	<div id="sulCont" class="signup-style" style="width:372px; margin-left :20px;margin-top:25px; margin-bottom: 30;">
+	<div id="sulCont" class="signup-style-social signin-social-forgot-pass">
 
-			<span style="font-size:12px;font-weight:bold;font-family: Verdana, Arial, sans-serif; margin-left :20px; margin-right:100px">Forgot your password? No Problem.</span>
-		
-			
-			
-			
-				<div><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0" alt=""><br></div>
-		
-			
-			<font class="align">
-				<div style="font-size:12px">Enter your email address and we'll send you a link to </div>
-				<div style="font-size:12px; margin-left :20px; ">reset your password:</div>
-			</FONT>
+			<div class="form-side-social-header">Forgot your password? No Problem.</div>
+			<div class="signin-social-forgot-pass-header-message">
+				Enter your email address and we'll send you a link to reset your password:
+			</div>
 			
 		
-		<div id="form_feilds" style="margin-top:40px;">
+		<div id="form_feilds">
 
 			<form id="lost_password" name="lost_password" method="post" >
 				
@@ -111,13 +91,13 @@ FIELD_NAMES.add(0, "email");
 					</tr>
 
 					<tr>
-						<td style="valign:center">
+						<td style="padding-top: 12px;">
 							<input type="checkbox" id="altEmail" name="altEmail" value="true">
-							<span class="text12 bodyCopySULNote">Send to all emails on file.</span>
+							<span class="input-email-send-message">Send to all emails on file.</span>
 						</td>
 					</tr>
 					<tr>
-						<td style="padding-top: 10px;">
+						<td style="padding-top: 15px;">
 							<a onclick="document.lost_password.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;">
 								<input type="submit" id="signupbtn" maxlength="25" size="21" value="Submit"> 
 							</a>
@@ -155,12 +135,12 @@ FIELD_NAMES.add(0, "email");
 		         },
 
 			     errorPlacement: function(error, element) {
-			         error.insertBefore(element);		
+			         error.insertBefore(element);
 			     },  
 		   
 		 	}
 		 
-		 );		 		
+		 );
 		</script> <!-- front end validations end here -->	
 		
 		<!-- ********************************************************* -->	
@@ -169,6 +149,6 @@ FIELD_NAMES.add(0, "email");
 	</div>
 	</center>
 	</fd:ForgotPasswordController>
-
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </body>
 </html>

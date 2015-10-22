@@ -93,7 +93,15 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 <tmpl:put name="loginButton">
 	<button class="loginButton" id="locabar_loginButton">log in</button>
 </tmpl:put>
-<tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
+
+<tmpl:put name="logoutButton">
+	<% if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) { %>
+		<button onclick="window.location='/logout.jsp';" class="logoutButton locationbar-social-logout-button">logout</button>
+	<% } else { %>
+	    <button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button>
+	<% } %>
+</tmpl:put>
+
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) { 
   %><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) } else { doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>') }">sign up</button><% 
@@ -104,18 +112,16 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 <tmpl:put name="loginButton">
 	<% if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) { %>
-       <button class="loginButton loginButtonSocial" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 500, height: 532, opacity: .5}) }">Log In</button>
+       <button class="loginButton loginButtonSocial locationbar-social-login-button" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}) }">Log In</button>
     <% } else { %>
     	<button class="loginButton" id="locabar_loginButton">log in</button>
     <% } %>
 </tmpl:put>
 
-<tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
-
 <tmpl:put name="signupButton"><%
 	if (FDStoreProperties.isLightSignupEnabled()) {
 		if ( !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
-			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', width: 500, height: 554, opacity: .5}) }">sign up</button><% 
+			%><button class="signUpButton locationbar-social-create-account-button" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}) }">sign up</button><% 
 		} else {
 			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">sign up</button><%
 		}

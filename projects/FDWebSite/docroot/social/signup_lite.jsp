@@ -55,7 +55,7 @@
 <head>
 <title>FreshDirect</title>
 
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
@@ -213,7 +213,7 @@
 							</td>
 						</tr><% } %>	
 					<tr>
-						<td>
+						<td valign="bottom">
 							<!-- span id should be the input box id+"_img" -->
 							<span class="error_img" id="email_img"></span>
 						</td>
@@ -228,7 +228,7 @@
 
                     <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
                     <tr>
-                        <td>
+                        <td valign="bottom">
                         <!-- span id should be the input box id+"_img" -->
                         <span class="error_img" id="password1_img"></span></td>
 						<td style="padding-top: 15px;">
@@ -328,11 +328,8 @@
 
      errorPlacement: function(error, element) {
          error.insertBefore(element);
-
      },  
-   
  	}
- 
  );
 		 		 
 </script> <!-- front end validations end here -->	
@@ -369,12 +366,15 @@
 		var _oneall = _oneall || [];
     	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
 		_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-		_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/images/social_login/social_login_media.css?r']);
+		_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/social_login/social_login_media.css']);
 		_oneall.push([ 'social_login', 'set_callback_uri',
 						       		'<%=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);
 		_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
 		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
 		
+		$jq( document ).ready(function() {
+			FreshDirect.components.ifrPopup.reposition();
+		});
 	</script>
 </div> <!-- social login ends here -->
 
@@ -389,7 +389,7 @@
 					</div>
 					<div class="bottom-links">
 						Already have an account? 
-						<a href="#" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 518, height: 518}) ">
+						<a href="#" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">
 							Sign In
 						</a>
 					</div>
@@ -431,7 +431,7 @@
 		} 
 	%>
 
-
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </body>
 	</html>
 	<%
