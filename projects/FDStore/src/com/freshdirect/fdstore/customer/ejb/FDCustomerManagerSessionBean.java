@@ -2111,7 +2111,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("Before commiting the reservation "+reservationId);
 			FDDeliveryManager.getInstance().commitReservation(reservationId, 
 					identity.getErpCustomerPK(), 
-					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, reservationId),
+					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
 					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 			
 			
@@ -2843,7 +2843,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							
 							FDDeliveryManager.getInstance().commitReservation(
 									newReservationId, identity.getErpCustomerPK(), 
-									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, newReservationId),
+									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
 									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
 						}
 		
