@@ -152,9 +152,9 @@ public class BrowseController extends BaseController {
 		        	   
 	        	   }
 	           }
-	        if(store!=null && store.getContentKey()!=null && store.getContentKey().getId()!=null && store.getContentKey().getId().equals(MobileApiProperties.getStoreId())) {
+	       /* if(store!=null && store.getContentKey()!=null && store.getContentKey().getId()!=null && store.getContentKey().getId().equals(MobileApiProperties.getStoreId())) {
 	        	Collections.sort(departments, departmentNameComparator);
-	        }
+	        }*/
         	res.setDepartments(departments);
         	setResponseMessage(model, res, user);
             return model;

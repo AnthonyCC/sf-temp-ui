@@ -66,6 +66,7 @@ import com.freshdirect.mobileapi.catalog.model.SkuInfo.AlcoholType;
 import com.freshdirect.mobileapi.catalog.model.SortOptionInfo;
 import com.freshdirect.mobileapi.catalog.model.UnitPrice;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.Lookup;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.model.Brand;
@@ -881,11 +882,28 @@ public class BrowseUtil {
 	    		CategoryModel cat = (CategoryModel)contentNode;
 	    		List<SortOptionModel> options = cat.getSortOptions();
 	    		SortType tmp;
+	    		boolean isToBeAdded = true;
 	    		for(SortOptionModel o : options){	
 	    			tmp = SortType.wrap(o);
 	    			
 	    			if(!soi.getSortOptions().contains(tmp))
 	    				soi.getSortOptions().add(SortType.wrap(o));
+	    		}
+	    		
+	    		for(SortOptionModel o : options){	
+	    			if(soi.getSortOptionsLookup().size()==0){
+	    				soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel()));
+	    			} else {
+	    				isToBeAdded = true;
+	    				for(Lookup lookupItr: soi.getSortOptionsLookup()) {
+	    					if(o.getLabel().equals(lookupItr.getName())){
+	    						isToBeAdded = false;
+	    					} 
+	    				}
+	    				if(isToBeAdded){
+	    					soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel()));
+	    				}
+	    			}
 	    		}
 	    		
 	    		if(cat.isNutritionSort() && soi.getNutritionSortOptions().isEmpty()){
