@@ -29,7 +29,9 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.Buildver;
@@ -476,7 +478,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FeatureRolloutArbiter
 				.isFeatureRolledOut(EnumRolloutFeature.sociallogin,
 						user.getFDSessionUser().getUser()));
-		configuration.setMasterPassEnabled(true);
+		configuration.setMasterPassEnabled(FDCustomerManager.getEwalletMobileStatusByType(EnumEwalletType.MP.getName()));
 		
 		return configuration;
 	}
