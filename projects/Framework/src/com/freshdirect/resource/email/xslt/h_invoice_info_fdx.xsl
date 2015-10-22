@@ -61,7 +61,7 @@
 					</td>
 					
 					<td width="2%">&nbsp;</td>
-					<td width="33%" valign="top"><font face="verdana, arial, sans-serif" size="1" color="black">
+					<td width="33%" valign="top" style="background-color: #732484; color: #ffffff; font-weight:bold;"><font face="verdana, arial, sans-serif" size="1" color="black">
 						<b>ORDER TOTAL</b><br/>
 						$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/><br/>
 						<br/>
@@ -205,12 +205,12 @@
 					</tr>
 				</xsl:if>
 			        
-				<tr valign="top" class="orderTotal">
-					<td colspan="1" align="right"><b>ORDER TOTAL:</b></td>
-					<td align="right">
+				<tr valign="top" class="orderTotal" style="background-color: #732484; color: #ffffff; font-weight:bold;">
+					<td colspan="1" align="right" style="background-color: #732484; color: #ffffff; font-weight:bold;"><b>ORDER TOTAL:</b></td>
+					<td align="right" style="background-color: #732484; color: #ffffff; font-weight:bold;">
 						<b>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></b>
 					</td>
-					<td colspan="1">&nbsp;</td>
+					<td colspan="1" style="background-color: #732484; color: #ffffff; font-weight:bold;">&nbsp;</td>
 				</tr>
 				<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">
 					<tr valign="top" class="orderTotal">
@@ -260,7 +260,7 @@
 		<table cellpadding="0" cellspacing="0" width="100%" border="0" style="padding:0;margin:0;border-collapse:collapse;border-spacing:0;border-style:none;">	
 			<xsl:if test="'' != description">
 				<tr>
-					<td colspan="11" style="background-color: #732484; color: #fff; font-weight:bold; text-align:left;">
+					<td colspan="11" style="background-color: #732484; color: #ffffff; font-weight:bold; text-align:left;">
 						<div style="margin: 10px; padding: 10px; font-size: 16px; font-weight: bold; color: #ffffff;"><xsl:value-of select="description"/></div>
 					</td>
 				</tr>
@@ -357,24 +357,21 @@
 		</table>
 		
 		<table cellpadding="0" cellspacing="0" width="100%"  style="padding:0;margin:0;border-collapse:collapse;border-spacing:0;border-style:none;">
-			<tr><td colspan="3" style="height: 8px;">&nbsp;</td></tr>
+			<tr><td colspan="2" style="height: 8px;">&nbsp;</td></tr>
 		
 			<tr class="orderViewSummary">
 				<td colspan="1" align="right">Subtotal:</td>
 				<td colspan="1" align="right" width="75"><b><xsl:value-of select="format-number($view/subtotal, '$###,##0.00', 'USD')"/></b></td>
-				<td colspan="1">&nbsp;</td>
 			</tr>
 			
 			<tr class="orderViewSummary">
 				<td colspan="1" align="right">Tax:</td>
 				<td colspan="1" align="right"><xsl:value-of select="format-number($view/tax, '$###,##0.00', 'USD')"/></td>
-				<td colspan="1">&nbsp;</td>
 			</tr>
 		
 			<tr class="orderViewSummary">
 				<td colspan="1" align="right">State Bottle Deposit:</td>
 				<td colspan="1" align="right"><xsl:value-of select="format-number($view/depositValue, '$###,##0.00', 'USD')"/></td>
-				<td colspan="1">&nbsp;</td>
 			</tr>
 		</table>
 	</xsl:template>
