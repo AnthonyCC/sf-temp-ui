@@ -74,6 +74,17 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 		return null;
 	}
 	
+	public List<String> getConnectedProvidersByUserId(String userId)
+	{
+		try {
+			return ExternalAccountDAO.getConnectedProvidersByUserId(userId, this.getConnection());
+			
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+	
 	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) 
 	{
 		try {

@@ -84,6 +84,21 @@ public class ExternalAccountManager{
 		}
 	}
 	
+	public static List<String> getConnectedProvidersByUserId(String userId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			return sb.getConnectedProvidersByUserId(userId);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	public static boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) throws FDResourceException
 	{
 		lookupManagerHome();

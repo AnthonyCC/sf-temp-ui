@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,8 +55,9 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
-public class RegistrationController extends BaseController {
+public class RegistrationController extends BaseController implements SystemMessageList {
 
 	private static Category LOGGER = LoggerFactory
 			.getInstance(RegistrationController.class);
@@ -272,7 +274,12 @@ public class RegistrationController extends BaseController {
 		}
 		responseMessage.addWarningMessages(result.getWarnings());
 		} else{
-			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());			
+			List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(requestMessage.getEmail());
+			if(providers!=null && providers.size()!=0){
+				responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE, providers));	
+			} else {
+			responseMessage = Message.createFailureMessage("Account already exists with this Email address. "+requestMessage.getEmail());	
+			}
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;

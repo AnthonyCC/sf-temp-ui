@@ -320,4 +320,43 @@ public class ExternalAccountDAO {
 	
 		return false;
 	}
+
+	public static List<String> getConnectedProvidersByUserId(String userId,
+			Connection con) {
+		List<String> providers = new ArrayList<String>();
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		String sql = "SELECT PROVIDER FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE USER_ID=?";
+	
+		try {
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1,userId);
+			rs = ps.executeQuery();
+		
+			while(rs.next()) {
+				providers.add(rs.getString("PROVIDER"));
+			}
+			
+		} catch (SQLException ex) {
+			LOGGER.error(ex.getMessage());
+		} finally {
+
+			try {
+
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+
+				LOGGER.error(e.getMessage());
+			}
+
+		}
+
+		return providers;
+	}
 }

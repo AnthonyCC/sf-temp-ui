@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -59,7 +60,7 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
 
-public class LoginController extends BaseController {
+public class LoginController extends BaseController  implements SystemMessageList {
 
 	public static final String ACTION_LOGIN = "login";
 
@@ -363,8 +364,13 @@ public class LoginController extends BaseController {
 								new Object[] { UserUtil
 										.getCustomerServiceContact(request) }));
 			} else {
+				List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(username);
+				if(providers!=null && providers.size()!=0){
+					responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN, providers));	
+				} else {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
 						MessageCodes.MSG_AUTHENTICATION_FAILED);
+				}
 			}
 		}
 		setResponseMessage(model, responseMessage, user);
