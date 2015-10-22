@@ -48,6 +48,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.SortType;
 
 /**
@@ -128,6 +129,7 @@ public class BrowseController extends BaseController {
         	
         	GlobalNavResult res = new GlobalNavResult();
         	StoreModel store = ContentFactory.getInstance().getStore();
+        	DepartmentNameComparator departmentNameComparator = new DepartmentNameComparator();
         	
         	List<Department> departments = new ArrayList<Department>();
         	Department dpt = null;
@@ -150,6 +152,9 @@ public class BrowseController extends BaseController {
 		        	   
 	        	   }
 	           }
+	        if(store!=null && store.getContentKey()!=null && store.getContentKey().getId()!=null && store.getContentKey().getId().equals(MobileApiProperties.getStoreId())) {
+	        	Collections.sort(departments, departmentNameComparator);
+	        }
         	res.setDepartments(departments);
         	setResponseMessage(model, res, user);
             return model;
@@ -446,6 +451,12 @@ public class BrowseController extends BaseController {
 		return map;
 	}
 	
-	
+	private class DepartmentNameComparator implements Comparator<Department> {
+		@Override
+		public int compare(Department o1, Department o2) {
+			return o1.getName().compareToIgnoreCase(o2.getName());
+		}
+
+	}
 
 }
