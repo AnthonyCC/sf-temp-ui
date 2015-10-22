@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -89,7 +90,7 @@ public class OrderLineUtilTest extends Fixture {
         expectingModels();
         expectingMissingSalesUnitDescription();
         expectingMissingSkuVariantDescription();
-        expectingMissingVariationOptions();
+        expectingMissingVariationOptions(EnumProductLayout.PERISHABLE);
 
         assertSetConfigurationDescription("");
 
@@ -103,7 +104,7 @@ public class OrderLineUtilTest extends Fixture {
         expectingModels();
         expectingMissingSalesUnitDescription();
         expectingMissingSkuVariantDescription();
-        expectingConfigurationOptions(configurationOptions);
+        expectingConfigurationOptions(configurationOptions, EnumProductLayout.PERISHABLE);
 
         assertSetConfigurationDescription("");
 
@@ -118,7 +119,7 @@ public class OrderLineUtilTest extends Fixture {
         expectingModels();
         expectingMissingSalesUnitDescription();
         expectingMissingSkuVariantDescription();
-        expectingConfigurationOptions(configurationOptions);
+        expectingConfigurationOptions(configurationOptions, EnumProductLayout.PERISHABLE);
 
         context.checking(new Expectations() {
 
@@ -136,7 +137,7 @@ public class OrderLineUtilTest extends Fixture {
         OrderLineUtil.describe(productSelection);
     }
 
-    public void testDescribeConfigurationDescriptonContainsVariationOptionsWithEmptySkuCodeAndNormalDescription() throws FDInvalidConfigurationException {
+    public void testDescribeConfigurationDescriptonContainsVariationOptionsAndProductLayoutNotHolidayMealBundleAndNormalDescription() throws FDInvalidConfigurationException {
         final String variantOptionDescription = "variantOptionDescription";
         Map<String, String> configurationOptions = new HashMap<String, String>();
         configurationOptions.put(VARIATION_NAME, VARIATION_OPTION_NAME);
@@ -145,8 +146,8 @@ public class OrderLineUtilTest extends Fixture {
         expectingModels();
         expectingMissingSalesUnitDescription();
         expectingMissingSkuVariantDescription();
-        expectingConfigurationOptions(configurationOptions);
-        expectingVariantOptionsWithSkuCode("", variantOptionDescription);
+        expectingConfigurationOptions(configurationOptions, EnumProductLayout.PERISHABLE);
+        expectingVariantOptionsWithSkuCode(variantOptionDescription);
 
         assertSetConfigurationDescription(variantOptionDescription);
 
@@ -268,20 +269,26 @@ public class OrderLineUtilTest extends Fixture {
         });
     }
 
-    private void expectingMissingVariationOptions() {
+    private void expectingMissingVariationOptions(final EnumProductLayout productLayout) {
         context.checking(new Expectations() {
 
             {
+                oneOf(productModel).getSpecialLayout();
+                will(returnValue(productLayout));
+
                 oneOf(fdProductModel).getVariations();
                 will(returnValue(new FDVariation[] {}));
             }
         });
     }
 
-    private void expectingConfigurationOptions(final Map<String, String> configurationOptions) {
+    private void expectingConfigurationOptions(final Map<String, String> configurationOptions, final EnumProductLayout productLayout) {
         context.checking(new Expectations() {
 
             {
+                oneOf(productModel).getSpecialLayout();
+                will(returnValue(productLayout));
+
                 oneOf(fdProductModel).getVariations();
                 will(returnValue(new FDVariation[] { variation }));
 
@@ -297,7 +304,7 @@ public class OrderLineUtilTest extends Fixture {
         });
     }
 
-    private void expectingVariantOptionsWithSkuCode(final String skuCode, final String variantOptionDescription) {
+    private void expectingVariantOptionsWithSkuCode(final String variantOptionDescription) {
         context.checking(new Expectations() {
 
             {
@@ -306,9 +313,6 @@ public class OrderLineUtilTest extends Fixture {
 
                 oneOf(variationOption).getName();
                 will(returnValue(VARIATION_OPTION_NAME));
-
-                oneOf(variationOption).getSkuCode();
-                will(returnValue(skuCode));
 
                 oneOf(variationOption).getDescription();
                 will(returnValue(variantOptionDescription));

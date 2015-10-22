@@ -12,8 +12,6 @@ import java.util.Set;
 
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.erp.ErpFactory;
-import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
@@ -24,10 +22,12 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.ProductReferenceImpl;
@@ -288,43 +288,45 @@ public class OrderLineUtil {
         //
         // add variation options
         //
-        for (FDVariation variation : product.getVariations()) {
-            String optionName = theProduct.getConfiguration().getOptions().get(variation.getName());
-            if (optionName == null)
-                continue;
+        if (EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT.equals(prodNode.getSpecialLayout())) {
+            List<ComponentGroupModel> componentGroups = prodNode.getComponentGroups();
+            if (componentGroups != null) {
+                for (ComponentGroupModel componentGroup : componentGroups) {
+                    if (componentGroup.getOptionalProducts().isEmpty()) {
+                       List<String> characteristicNames = componentGroup.getCharacteristicNames();
+                       for (FDVariation variation : product.getVariations()) {
+                           if (characteristicNames.contains(variation.getName())) {
+                               for (FDVariationOption variationOption : variation.getVariationOptions()) {
+                                   ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
+                                   List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
+                                   if (includeSideBoxProductModels.isEmpty()) {
+                                       appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxProductModel.getFullName());
+                                   } else {
+                                       for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
+                                           appendVariationOptionDescriptionToConfigurationDescription(confDescr, includeSideBoxProductModel.getFullName());
+                                       }
+                                   }
+                               }
+                           }
+                       }
+                    }
+                }
+            }
+        } else {
+            for (FDVariation variation : product.getVariations()) {
+                String optionName = theProduct.getConfiguration().getOptions().get(variation.getName());
+                if (optionName == null)
+                    continue;
 
-            for (FDVariationOption option : variation.getVariationOptions()) {
-                if (option.getName().equals(optionName)) {
-                    String optionSkuCode = option.getSkuCode();
-                    List<String> sideBoxIncludeProductNames = populateSideBoxIncludeProductNames(optionSkuCode);
-                    if (sideBoxIncludeProductNames.isEmpty()) {
+                for (FDVariationOption option : variation.getVariationOptions()) {
+                    if (option.getName().equals(optionName)) {
                         appendVariationOptionDescriptionToConfigurationDescription(confDescr, option.getDescription());
-                    } else {
-                        for (String sideBoxIncludeProductName : sideBoxIncludeProductNames) {
-                            appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxIncludeProductName);
-                        }
                     }
                 }
             }
         }
 
         return confDescr.toString();
-    }
-
-    private static List<String> populateSideBoxIncludeProductNames(String sideBoxSkuCode) throws FDSkuNotFoundException, FDResourceException {
-        List<String> includeProductNames = new ArrayList<String>();
-        if (sideBoxSkuCode != null && !sideBoxSkuCode.isEmpty()) {
-            for (ProductModel includeProduct : ContentFactory.getInstance().getProduct(sideBoxSkuCode).getIncludeProducts()) {
-                SkuModel defaultSku = includeProduct.getDefaultSku();
-                if (defaultSku != null) {
-                    Collection<ErpMaterialInfoModel> findMaterialsBySkus = ErpFactory.getInstance().findMaterialsBySku(defaultSku.getSkuCode());
-                    for (ErpMaterialInfoModel erpMaterialInfoModel : findMaterialsBySkus) {
-                        includeProductNames.add(erpMaterialInfoModel.getDescription());
-                    }
-                }
-            }
-        }
-        return includeProductNames;
     }
 
     private static void appendVariationOptionDescriptionToConfigurationDescription(StringBuffer configurationDescription, String optionDescription) {
