@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumExternalLoginSource;
@@ -25,7 +24,6 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -64,7 +62,6 @@ import com.freshdirect.webapp.taglib.fdstore.SocialGateway;
 import com.freshdirect.webapp.taglib.fdstore.SocialProvider;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.AccountUtil;
-import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class RegistrationAction extends WebActionSupport {
 
@@ -324,8 +321,13 @@ public class RegistrationAction extends WebActionSupport {
 		}
 		else
 		{
-			aInfo.validateEx(actionResult);
-			cInfo.validateEx(actionResult);
+			if(session.getAttribute("SOCIALONLYACCOUNT_SKIP_VALIDATION") != null){
+				session.setAttribute("SOCIALONLYACCOUNT_SKIP_VALIDATION", null);
+			} else{
+				aInfo.validateEx(actionResult);
+				cInfo.validateEx(actionResult);
+			}
+
 		}
 			
 		
@@ -535,7 +537,7 @@ public class RegistrationAction extends WebActionSupport {
 						try {
 
 							ExternalAccountManager.linkUserTokenToUserId(
-									regIdent.getFDCustomerPK(),
+									regIdent.getErpCustomerPK(),
 									socialUser.get("email"),
 									socialUser.get("userToken"),
 									socialUser.get("identityToken"),
@@ -883,7 +885,13 @@ public class RegistrationAction extends WebActionSupport {
 
 
         private void initialize(HttpServletRequest request) {
-			this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
+        	if(request.getSession().getAttribute("SOCIALONLYEMAIL") != null){
+        		this.emailAddress = (String)request.getSession().getAttribute("SOCIALONLYEMAIL");
+        		request.getSession().setAttribute("SOCIALONLYEMAIL",null);
+        	}
+        	else{
+        		this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
+        	}
 			this.repeatEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "").trim();
 			this.altEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode()), "").trim();
 			if(request.getParameter("LITESIGNUP_SOCIAL") != null && "true".equals(request.getParameter("LITESIGNUP_SOCIAL"))

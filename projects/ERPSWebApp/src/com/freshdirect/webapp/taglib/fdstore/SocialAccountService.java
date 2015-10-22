@@ -1,8 +1,10 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,28 +13,37 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
+import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SocialAccountService implements AccountService {
 
 	private static Category LOGGER = LoggerFactory.getInstance(SocialAccountService.class);
 	
-	private String signUpUnrecognized = "/social/DeliveryAddress.jsp";
+	//private String signUpUnrecognized = "/social/DeliveryAddress.jsp";
+	private String expressSignUpRelay = "/social/signup_lite_relay.jsp";
 	//private String socialLoginMergePage ="/social/social_login_merge.jsp";
 	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
 	private String socialLoginAccountLinked ="/social/social_login_account_linked.jsp";
@@ -195,7 +206,53 @@ public class SocialAccountService implements AccountService {
 					} else {
 						//NOT Existed in FD
 						
-						return signUpUnrecognized;
+						
+						/*
+						 * 'SOCIALONLYACCOUNT' 
+						 */		
+						
+						/*
+						 * session attributes used in RegistrationAction.java, class AccountInfo { initialize()}
+						 */
+						session.setAttribute("SOCIALONLYACCOUNT", true);   
+						session.setAttribute("SOCIALONLYEMAIL", socialUserId);
+						session.setAttribute("SOCIALONLYACCOUNT_SKIP_VALIDATION", true); 
+						
+						
+						HttpContext ctx = new HttpContext( session, request, response);
+						ActionResult result = new ActionResult();	
+						
+						/*
+						 *  For express registration, 
+						 *  	default "user type" to 'Home_USER'
+						 *  	default "delivery status" to 'DONOT_DELIVER'
+						 *  	default "available services" to empty
+						 */
+						int regType = AccountUtil.HOME_USER;
+									
+						EnumDeliveryStatus dlvStatus = EnumDeliveryStatus.DONOT_DELIVER;   
+						Set<EnumServiceType> availableServices = Collections.<EnumServiceType>emptySet(); 
+						
+						
+						// Set RegistrationAction which will do the major work										
+						RegistrationAction ra = new RegistrationAction(regType);
+						ra.setHttpContext(ctx);
+						ra.setResult(result);
+						
+															
+						// Delegate to RegistrationAction to register the new user						
+						try {							
+							createUser(EnumServiceType.PICKUP, availableServices, session, response); 
+							
+							String res = ra.executeEx();
+							if((Action.SUCCESS).equals(res)) {
+								response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length())); 					
+							}
+						} catch (Exception ex) {
+							LOGGER.error("Error performing action expresssignup", ex);
+							result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+						}																		
+				
 					}
 				}
 
@@ -312,5 +369,81 @@ public class SocialAccountService implements AccountService {
 
 		return false;
 	}
+	
+	/*
+	 *  copied from SiteAccessControllerTag.java -createUser(EnumServiceType serviceType, Set availableServices)
+	 */
+	private void createUser(EnumServiceType serviceType, Set availableServices, HttpSession session, HttpServletResponse response) throws FDResourceException {
+		//HttpSession session = pageContext.getSession();
+		//HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+
+		AddressModel address = new AddressModel();   //========================================================
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
+
+			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
+				//
+				// if there is no user object or a dummy user object created in
+				// CallCenter, make a new using this zipcode
+				// make sure to hang on to the cart that might be in progress in
+				// CallCenter
+				//
+				FDCartModel oldCart = null;
+				if (user != null) {
+					oldCart = user.getShoppingCart();
+				}
+				StoreContext storeContext =StoreContextUtil.getStoreContext(session);				
+				//user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType, storeContext.getEStoreId()), session);
+				user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
+				user.setUserCreatedInThisSession(true);
+				
+
+				//user.setAddress(this.address);
+				user.setAddress(address); //=========================================
+				user.setSelectedServiceType(serviceType);
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(serviceType);
+				user.setAvailableServices(availableServices);			
+				
+				if (oldCart != null) {
+					user.setShoppingCart(oldCart);
+				}
+	
+				CookieMonster.storeCookie(user, response);
+				session.setAttribute(SessionName.USER, user);
+	
+			} else {	
+				//
+				// otherwise, just update the zipcode in their existing object if
+				// they haven't yet registered
+				//
+				if (user.getLevel() < FDUser.RECOGNIZED) {
+					//user.setAddress(this.address);
+					user.setAddress(address);//=================================================================
+					user.setSelectedServiceType(serviceType);
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(serviceType);
+					user.setAvailableServices(availableServices);
+					//Need to reset the pricing context so the pricing context can be recalculated.
+					//user.resetPricingContext();
+					//user.setP
+					CookieMonster.storeCookie(user, response);
+					FDCustomerManager.storeUser(user.getUser());
+					session.setAttribute(SessionName.USER, user);
+				}
+							
+			}		
+			
+		//To fetch and set customer's coupons.
+		if(user != null){
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+			user.setNewUserWelcomePageShown(true); //do not redirect to welcome.jsp 
+		}
+		
+        //The previous recommendations of the current session need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		
+	}		
 
 }
