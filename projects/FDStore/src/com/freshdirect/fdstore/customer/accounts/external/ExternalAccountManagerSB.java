@@ -25,6 +25,6 @@ public interface ExternalAccountManagerSB extends EJBObject  {
 	
 	public void unlinkExternalAccountWithUser(String email, String provider) throws RemoteException;
 
-	public List<String> getConnectedProvidersByUserId(String userId);
+	public List<String> getConnectedProvidersByUserId(String userId) throws RemoteException;
 	
 }
