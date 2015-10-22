@@ -2040,8 +2040,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 					zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
 				} else {
 					//default
-					fulfillmentContext.setPlantId("1000");
-					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+//					fulfillmentContext.setPlantId("1000");
+//					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+					
+					if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
+						//default
+							fulfillmentContext.setPlantId("1300");
+							zoneInfo=new ZoneInfo(pricingZoneId,"1300","01", new ZoneInfo(pricingZoneId,"0001","01"));
+						} else {
+							fulfillmentContext.setPlantId("1000");
+							zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+						} 
+						
 				}
 				userContext.setFulfillmentContext(fulfillmentContext);
 				userContext.setPricingContext(new PricingContext(zoneInfo));
