@@ -1558,9 +1558,9 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
         defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
         
-        defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "freshdirect");
-        defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "493e89df-35af-48ff-a856-125064fed179");
-        defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "64bf95b4-9dea-4832-8528-31bba3ae09d6");
+        defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "fd-test");
+        defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "997ddd3a-9965-489c-96df-0a6585e66d6b");
+        defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "026599dc-10c3-4e69-bcf6-2db43c66dd37");
         defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
         
 		refresh();

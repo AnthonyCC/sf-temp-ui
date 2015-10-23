@@ -157,10 +157,10 @@ public class ExternalAccountController extends BaseController implements SystemM
 					if(isFDAccountExist == 0) {
 						// FD Account and No Social link
 						userLogin(socialEmail, session, request, response);			
-						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 							ExternalAccountManager.linkUserTokenToUserId(
 								user.getFDSessionUser().getIdentity().getErpCustomerPK(),
-								socialUser.get("email"),
+								user.getUsername(),
 								socialUser.get("userToken"),
 								socialUser.get("identityToken"),
 								socialUser.get("provider"),
@@ -177,11 +177,11 @@ public class ExternalAccountController extends BaseController implements SystemM
 						//if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getUserId()!=null) {
 						userLogin(socialEmail, session, request, response);
 						//}
-						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 							ExternalAccountManager.unlinkExternalAccountWithUser(user.getFDSessionUser().getIdentity().getErpCustomerPK(), socialAccountProvider);
 							ExternalAccountManager.linkUserTokenToUserId(
 								user.getFDSessionUser().getIdentity().getErpCustomerPK(),
-								socialUser.get("email"),
+								user.getUsername(),
 								socialUser.get("userToken"),
 								socialUser.get("identityToken"),
 								socialUser.get("provider"),
@@ -203,10 +203,10 @@ public class ExternalAccountController extends BaseController implements SystemM
 							//Registering social user
 							ResultBundle registrationResultBundle = userRegistration(socialUser, user, request, response);
 							userLogin(socialEmail, session, request, response);			
-							if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+							if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 								ExternalAccountManager.linkUserTokenToUserId(
 									user.getFDSessionUser().getIdentity().getErpCustomerPK(),
-									socialUser.get("email"),
+									user.getUsername(),
 									socialUser.get("userToken"),
 									socialUser.get("identityToken"),
 									socialUser.get("provider"),
@@ -231,11 +231,11 @@ public class ExternalAccountController extends BaseController implements SystemM
 				}
 			} else if (context.equalsIgnoreCase("LINK")) {
 				// unlink if there is any link available for the same social network
-				if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+				if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 					ExternalAccountManager.unlinkExternalAccountWithUser(user.getFDSessionUser().getIdentity().getErpCustomerPK(), socialAccountProvider);
 					ExternalAccountManager.linkUserTokenToUserId(
 						user.getFDSessionUser().getIdentity().getErpCustomerPK(),
-						socialUser.get("email"),
+						user.getUsername(),
 						socialUser.get("userToken"),
 						socialUser.get("identityToken"),
 						socialUser.get("provider"),
