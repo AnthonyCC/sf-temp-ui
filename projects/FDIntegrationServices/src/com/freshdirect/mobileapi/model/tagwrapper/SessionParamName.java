@@ -12,6 +12,8 @@ public interface SessionParamName {
     public static final String SESSION_PARAM_CUSTOMER_SERVICE_REP = SessionName.CUSTOMER_SERVICE_REP;
 
     public static final String SESSION_PARAM_USER = SessionName.USER;
+    
+    public static final String SESSION_PARAM_SOCIALONLYACCOUNT = "SOCIALONLYACCOUNT";
 
     public static final String SESSION_PARAM_MAKE_GOOD_ORDER = "makeGoodOrder";
 
