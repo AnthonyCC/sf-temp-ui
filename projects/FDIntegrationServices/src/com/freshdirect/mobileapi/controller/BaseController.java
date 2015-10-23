@@ -447,7 +447,7 @@ public abstract class BaseController extends AbstractController implements Messa
     protected SessionUser fakeUser(HttpSession session) {
     	fakedUserForRequest.set(Boolean.TRUE);
     	FDUser user = new FDUser();
-    	user.setDefaultPricingContext();
+//    	user.setDefaultPricingContext();
     	user.setRobot(true);// I hate to do this but door3 didnt do anonymous browsing properly, revisit during fdx please
 		FDSessionUser sessionUser = new FDSessionUser(user, session);
     	session.setAttribute(SessionName.USER, sessionUser);

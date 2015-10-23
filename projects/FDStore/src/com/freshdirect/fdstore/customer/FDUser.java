@@ -2033,7 +2033,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				FulfillmentContext fulfillmentContext = new FulfillmentContext();
 				ZoneInfo zoneInfo=null;
 				String pricingZoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
-				if(address!=null) {
+				if(address!=null && !StringUtil.isEmpty(address.getZipCode())) {
 					FulfillmentInfo fulfillmentInfo = getFulfillmentInfo(address,today(), getHistoricOrderSize());
 					fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);
 					fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
