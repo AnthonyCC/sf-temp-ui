@@ -14,6 +14,10 @@ public interface SessionParamName {
     public static final String SESSION_PARAM_USER = SessionName.USER;
     
     public static final String SESSION_PARAM_SOCIALONLYACCOUNT = "SOCIALONLYACCOUNT";
+    
+    public static final String SESSION_PARAM_SOCIALONLYEMAIL = "SOCIALONLYEMAIL";
+    
+    public static final String SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION = "SOCIALONLYACCOUNT_SKIP_VALIDATION";
 
     public static final String SESSION_PARAM_MAKE_GOOD_ORDER = "makeGoodOrder";
 
