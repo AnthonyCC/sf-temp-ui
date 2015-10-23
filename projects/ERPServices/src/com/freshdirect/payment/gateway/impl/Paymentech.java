@@ -11,6 +11,8 @@ import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.PaylinxResourceException;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.CreditCard;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Merchant;

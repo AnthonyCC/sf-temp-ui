@@ -942,7 +942,7 @@ public class ErpServicesProperties {
 	public static int geteWalletPostbackChunkSize() {
 		int result = 0;
 		try {
-			result = Integer.parseInt(config.getProperty(PROP_EWALLET_NOTIFY_EMAIL_ENABLED));
+			result = Integer.parseInt(config.getProperty(PROP_EWALLET_POSTBACK_CHUNK_SIZE));
 		} catch (Exception e) {
 			result = 0;
 		}

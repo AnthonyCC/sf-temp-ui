@@ -223,6 +223,20 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 				+ state + ", type=" + type + ", zipCode=" + zipCode  
 				+", currency=" + currency +"]";
 	}
+	/**
+	 * @return the ewalletId
+	 */
+	@Override
+	public String getEwalletId() {
+		return ewalletId;
+	}
+	/**
+	 * @param ewalletId the ewalletId to set
+	 */
+	@Override
+	public void setEwalletId(String ewalletId) {
+		this.ewalletId = ewalletId;
+	}
 	
 	
 	
