@@ -68,8 +68,6 @@ public class MobileApiProperties {
 
     private final static Properties defaults = new Properties();
 
-	private static final String PROP_STORE_ID = "mobileapi.store.id";
-
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
@@ -81,7 +79,6 @@ public class MobileApiProperties {
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
 		defaults.put(PROP_ADDITION_MEDIA_PATH,"/media/editorial/win_fdw/icons/");
-		defaults.put(PROP_STORE_ID,"FDX");
 		
         refresh();
     }
@@ -197,7 +194,4 @@ public class MobileApiProperties {
     	return get(PROP_ADDITION_MEDIA_PATH);
     }
 
-	public static Object getStoreId() {
-		return get(PROP_STORE_ID);
-	}
 }
