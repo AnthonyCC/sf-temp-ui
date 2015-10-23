@@ -44,6 +44,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductFilterGroupModel;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
@@ -68,6 +70,8 @@ import com.freshdirect.mobileapi.catalog.model.UnitPrice;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.Lookup;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.FilterGroup;
+import com.freshdirect.mobileapi.controller.data.response.FilterGroupItem;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
@@ -867,10 +871,45 @@ public class BrowseUtil {
 	    	if(contentNode instanceof DepartmentModel || contentNode instanceof CategoryModel){
 		    	getSortOptionsForCategory(contentNode,user, request, sortOptions);
 		    	//sortOptions.addAll(sortOptionSet);
+		    	//NO FILTERS ON DEPARTMENT LEVEL
+		    	if(contentNode instanceof CategoryModel){
+		    		getFiltersForCategory((CategoryModel)contentNode, sortOptions, user, request);
+		    	}
 	    	}
+	    	
 	    	
 	    	return sortOptions;
 	    }
+	    
+	    private static void getFiltersForCategory(CategoryModel category, SortOptionInfo soi, SessionUser user, HttpServletRequest request) {
+	    	if(category == null)
+	    		return;
+	    	
+	    	FilterGroup fg = null;
+	    	FilterGroupItem fgi = null;
+	    	
+	    	List<ContentNodeModel> pfgiList = category.getProductFilterGroups();
+	    	if(pfgiList != null && pfgiList.size() > 0){
+	    		for(ContentNodeModel tmp : pfgiList){
+	    			ProductFilterGroupModel pf = (ProductFilterGroupModel) tmp;
+	    			
+	    			fg = new FilterGroup();
+	    			fg.setName(pf.getName());
+	    			fg.setId(pf.getContentName());
+	    			soi.addFilterGroup(fg);
+	    			
+	    			for(ContentNodeModel fm : pf.getProductFilterModels()){
+	    				ProductFilterModel pfm = (ProductFilterModel) fm;
+	    				fgi = new FilterGroupItem();
+	    				fgi.setId(pfm.getContentName());
+	    				fgi.setLabel(pfm.getName());
+	    				fg.addFilterGroupItem(fgi);
+	    			}
+	    		}
+	    	}
+	    	
+	    }
+		    
 	    
 	    private static void getSortOptionsForCategory(ContentNodeModel contentNode, SessionUser user, HttpServletRequest request, SortOptionInfo soi) {
 	    	//If Department loop through all categories in it
