@@ -131,6 +131,7 @@ public class BrowseUtil {
         }
     	if( currentFolder instanceof CategoryModel ){
     		CategoryModel cm = (CategoryModel) currentFolder;
+    		
     		BannerModel bm = cm.getTabletCallToActionBanner();
     		if( bm != null )
     		{
@@ -936,6 +937,7 @@ public class BrowseUtil {
 	    private static List<com.freshdirect.mobileapi.catalog.model.Product> getProductsForCategory(SessionUser user, CatalogInfo catalog, CategoryModel category, Set<String> productSet, List<ProductModel> productList, String plantId, PricingContext pc) {
 	    	if(category == null)
 	    		return null;
+	    	
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> returnableProductList = new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	com.freshdirect.mobileapi.catalog.model.Category cat=new com.freshdirect.mobileapi.catalog.model.Category(category.getContentName(), category.getFullName());
 	    	
@@ -952,6 +954,7 @@ public class BrowseUtil {
 	    	List<ProductModel> pm=category.getProducts();
 	    	
 	    	for(ProductModel p:pm) {
+	    		
 	    		//SkuModel sku=p.getDefaultSku();
 	    		if(p.isFullyAvailable()) {
 					//display(p);
@@ -973,17 +976,16 @@ public class BrowseUtil {
     					returnableProductList.add(product);
 					}
 					productList.add(p);
-//					cat.addProduct(p.getContentName());
 					
 	    		}
 				
 			}
 	    	
 	    	productList.addAll(catProducts);
-	    	
+
 	    	if(productList.size() > 0){
 	    		sortProductByPopularity(productList, user);
-	    		for(ProductModel pm1 : catProducts){
+	    		for(ProductModel pm1 : productList){
 	    			cat.addProduct(pm1.getContentName());
 	    		}
 	    	}
