@@ -687,11 +687,18 @@ public class RegistrationAction extends WebActionSupport {
 			
 		}
 
-		aInfo.validateExSLite(actionResult);
+		if(!"true".equals(request.getParameter("EXPRESSSIGNUP_SKIP_VALIDATION"))) {
+			aInfo.validateExSLite(actionResult);
+		}
+		
 		if(!"true".equals(request.getParameter("LITESIGNUP"))) {
 			cInfo.validateEx(actionResult);
 		}
-		AccountUtil.validatePasswordEx(actionResult, aInfo.password, aInfo.repeatPassword);		
+		
+		if(!"true".equals(request.getParameter("EXPRESSSIGNUP_SKIP_VALIDATION"))) {
+			AccountUtil.validatePasswordEx(actionResult, aInfo.password, aInfo.repeatPassword);	
+		}
+			
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
 				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				

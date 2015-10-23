@@ -118,8 +118,8 @@ public class SocialAccountService implements AccountService {
 					 */
 					if( sessionUserId !=null && !socialUserId.equalsIgnoreCase(sessionUserId) &&
 						(sessionUserLevel == FDUserI.SIGNED_IN)){
-						
-						session.setAttribute("AlreadyConnectedSocialAccount", socialUserId);
+						String markedUserId = socialUserId.substring(0, 2) + "******" + socialUserId.substring(socialUserId.indexOf("@"), socialUserId.length() );
+						session.setAttribute("AlreadyConnectedSocialAccount", markedUserId);
 						return socialAccountAlreadyConnected;
 					}					
 					

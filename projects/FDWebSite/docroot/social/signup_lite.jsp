@@ -202,6 +202,7 @@
 				<input type="hidden" name="successPage" value="<%= successPage %>" />
 				<input type="hidden" name="terms" value="true" />
 				<input type="hidden" name="LITESIGNUP" value="true" />
+				<input type="hidden" name="EXPRESSSIGNUP_SKIP_VALIDATION" value="true" />
 			    <table border="0" cellpadding="5" cellspacing="8">					
 					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
 						<tr>
