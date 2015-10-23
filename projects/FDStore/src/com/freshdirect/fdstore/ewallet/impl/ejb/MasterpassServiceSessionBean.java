@@ -7,6 +7,8 @@ package com.freshdirect.fdstore.ewallet.impl.ejb;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.security.Key;
@@ -40,6 +42,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.xml.sax.Attributes;
@@ -2211,7 +2214,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		trxns.add(req);
 		new MasterpassServiceSessionBean().postBack(trxns);*/
 		
-		new MasterpassServiceSessionBean().transformErrorRespToEwalletInterface(//"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+		new MasterpassServiceSessionBean().transformErrorRespToEwalletInterface("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
 				"<Errors>" +
 					"<Error>" +
 						"<Description>checkout ID: 315123150</Description>" +
@@ -2298,6 +2301,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			EwalletPostBackModel m = new EwalletPostBackModel();
 			m.setKey(ewalletKeyMap.get(trxn.getTransactionId()+trxn.getApprovalCode()));
 			m.setgAL(isGALMap.get(trxn.getTransactionId()+trxn.getApprovalCode()));
+			m.setPostBackSuccess(true);
 			trxns.add(m);
 		}
 		return trxns;
@@ -2306,7 +2310,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	private List<EwalletPostBackModel> transformErrorRespToEwalletInterface(String retTrxns) {
 		try {
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			parser.parse(retTrxns, new XmlDocumentHandler());
+			parser.parse(IOUtils.toInputStream(retTrxns), new XmlDocumentHandler());
 			
 		} catch (Exception e) {
 			
@@ -2315,51 +2319,86 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	}
 	
 	private class XmlDocumentHandler extends DefaultHandler {
-		private List<String> keys = new ArrayList<String>();
-	 
-	    private HashMap tags;
-
-	    public void startDocument() throws SAXException {
-	       //System.out.println();
-	    }
-
-	    /* (non-Javadoc)
-		 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
-		 */
-		@Override
-		public void characters(char[] arg0, int arg1, int arg2)
-				throws SAXException {
-			//System.out.println("chars - " + arg0 + "; arg1 - " + arg1 + "; arg2 - " + arg2 );
-		}
-
-		/* (non-Javadoc)
-		 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-		 */
-		@Override
-		public void endElement(String arg0, String arg1, String arg2)
-				throws SAXException {
-			//System.out.println("namespaceURI - " + arg0 + "; localName - " + arg1 + "; qName - " + arg2 );
-		}
-
+ 
+		/*"<Errors>" +
+				"<Error>" +
+					"<Description>checkout ID: 315123150</Description>" +
+					"<ReasonCode>AUTHORIZATION_FAILED</ReasonCode>" +
+					"<Recoverable>false</Recoverable>" +
+					"<Source>HttpHeader.OAuth.ConsumerKey</Source>" +
+				"</Error>" +
+				"<Error>" +
+					"<Description>checkout ID: 315123095</Description>" +
+					"<ReasonCode>AUTHORIZATION_FAILED</ReasonCode>" +
+					"<Recoverable>false</Recoverable>" +
+					"<Source>HttpHeader.OAuth.ConsumerKey</Source>" +
+				"</Error>" +
+			"<Errors>");*/
+	    private List<EwalletPostBackModel> errTrxns;
+	    EwalletPostBackModel currTrxn;
+	    boolean error = false;
+	    boolean inDescr = false;
+	    boolean inRecov = false;
+	    private static final String ERROR_ELEM = "Error";
+	    private static final String DESCR_ELEM = "Description";
+	    private static final String DESCR_TRNX_PREFIX = "checkout ID: ";
+	    private static final String RECOVERY_ELEM = "Recoverable";
+	    
 		/* (non-Javadoc)
 		 * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
 		 */
 		@Override
 		public void startElement(String namespaceURI, String localName, String qName,
 				Attributes attrs) throws SAXException {
-			//System.out.println("namespaceURI - " + namespaceURI + "; localName - " + localName + "; qName - " + qName + "; attrs - " + attrs);
+			if (qName.equals(ERROR_ELEM)) {
+				error = true;
+			}
+			if (error && qName.equals(DESCR_ELEM)) {
+				inDescr = true;
+			}
+			if (error && qName.equals(RECOVERY_ELEM)) {
+				inRecov = true;
+			}
+		}
+	    
+	    /* (non-Javadoc)
+		 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+		 */
+		@Override
+		public void characters(char[] chars, int start, int length)
+				throws SAXException {
+			if (error && inDescr) {
+				boolean trnxPrefix = new String(chars, start, DESCR_TRNX_PREFIX.length()).equals(DESCR_TRNX_PREFIX);
+				if (trnxPrefix) {
+					currTrxn = new EwalletPostBackModel();
+					currTrxn.setError(true);
+					currTrxn.setTransactionId(new String(chars, DESCR_TRNX_PREFIX.length(), length));
+				}
+			}
+			
+			if (error && inRecov) {
+				String recovStr = new String(chars, start, length);
+				currTrxn.setRecoverable(recovStr);
+			}
 		}
 
-		public void endDocument() throws SAXException {
-	    	
-/*	        while (tags.hasMoreElements()) {
-	            String tag = (String)e.nextElement();
-	            int count = ((Integer)tags.get(tag)).intValue();
-	            System.out.println("Local Name \"" + tag + "\" occurs " 
-	                               + count + " times");
-	        }    */
-	    }
-		
+		/* (non-Javadoc)
+		 * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+		 */
+		@Override
+		public void endElement(String namespaceURI, String localName, String qName)
+				throws SAXException {
+			if (error && qName.equals(ERROR_ELEM)) {
+				error = false;
+			}
+			if (error && qName.equals(DESCR_ELEM)) {
+				inDescr = false;
+			}
+			if (error && qName.equals(RECOVERY_ELEM)) {
+				inRecov = false;
+			}
+		}
+
 	}
 	
 	
