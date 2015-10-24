@@ -1658,9 +1658,12 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	        StringBuffer orderIds = new StringBuffer();
 	        String sep = "";
 	        for (EwalletPostBackModel trxn : trxns) {
-	        	custIds.append(sep + trxn.getCustomerId());
-	        	trxnIds.append(sep + trxn.getTransactionId() + sep);
-	        	orderIds.append(sep + trxn.getOrderId() + sep);
+	        	custIds.append(sep);
+	        	custIds.append(trxn.getCustomerId());
+	        	trxnIds.append(sep);
+	        	trxnIds.append(trxn.getTransactionId());
+	        	orderIds.append(sep);
+	        	orderIds.append(trxn.getOrderId());
 	        	sep = ",";
 	        }
 	        
@@ -1673,18 +1676,6 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	        String custIdsStr = custIds.toString();
 	        String trxnIdsStr = trxnIds.toString();
 	        
-	        
-	        if (orderIdsStr != null && orderIdsStr.trim().length() > 0) {
-	        	orderIdsStr = orderIdsStr.substring(0, orderIdsStr.lastIndexOf(","));
-	        }
-	        
-	        if (custIdsStr != null && custIdsStr.trim().length() > 0) {
-	        	custIdsStr = custIdsStr.substring(0, custIdsStr.lastIndexOf(","));
-	        }
-	        
-	        if (trxnIdsStr != null && trxnIdsStr.trim().length() > 0) {
-	        	trxnIdsStr = trxnIdsStr.substring(0, trxnIdsStr.lastIndexOf(","));
-	        }
 	        
 	        if (orderIdsStr.length() > 1500) {
 	        	eWalletLogModel.setOrderId(orderIdsStr.substring(0, 1500) + "...");

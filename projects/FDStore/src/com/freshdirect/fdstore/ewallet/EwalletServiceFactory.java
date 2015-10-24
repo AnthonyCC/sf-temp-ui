@@ -72,7 +72,7 @@ public class EwalletServiceFactory {
 	public IEwallet.NotificationService getEwalletNotificationService(EwalletRequestData ewalletRequestData){
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP)){
+		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
 			ewallet = new EwalletServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
@@ -86,7 +86,7 @@ public class EwalletServiceFactory {
 	public IEwallet.NotificationService getVendorNotificationService(EwalletRequestData ewalletRequestData){
 		LOG.info("EwalletServiceFactory -->  getVendorNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP)){
+		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
