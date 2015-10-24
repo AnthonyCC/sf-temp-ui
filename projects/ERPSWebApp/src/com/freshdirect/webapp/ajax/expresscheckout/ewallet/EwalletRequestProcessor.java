@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.expresscheckout.ewallet;
 
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletServiceFactory;
@@ -12,7 +13,6 @@ import com.freshdirect.fdstore.ewallet.IEwallet;
  */
 public class EwalletRequestProcessor {
 
-	private static final String MASTERPASS_EWALLET_TYPE="MP";
 
 /*	Required for EWallet Express Checkout
  * private static final String EWALLET_MP_EXPRESS_CHECKOUT="MP_Express_Checkout";
@@ -47,7 +47,7 @@ public class EwalletRequestProcessor {
 		}
 		
 		// For Masterpass 
-		if(ewallet != null && ewalletRequestData.geteWalletType().equalsIgnoreCase(MASTERPASS_EWALLET_TYPE)){
+		if(ewallet != null && ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
 			/*if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_MP_PAIRING_CHECKOUT)){
 				ewalletResponseData  = processMasterpassStartPairing(ewallet,ewalletRequestData);
 			}

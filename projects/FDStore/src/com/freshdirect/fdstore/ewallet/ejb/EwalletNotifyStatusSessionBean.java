@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletServiceFactory;
@@ -77,7 +78,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
-			trxns = dao.getAllTrxnsForPostback(conn, MASTERPASS_EWALLET_TYPE);
+			trxns = dao.getAllTrxnsForPostback(conn, EnumEwalletType.MP);
 
 			int chunkSize = ErpServicesProperties.geteWalletPostbackChunkSize();
 			
@@ -86,7 +87,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 				if (chunkSize > 0) {
 					for (; i < (trxns.size() / chunkSize); i++) {
 						EwalletResponseData resp = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, (i + 1)*chunkSize)), 
-																MASTERPASS_EWALLET_TYPE);
+																EnumEwalletType.MP);
 						
 						if (resp.getTrxns() != null && resp.getTrxns().size() > 0) {
 							dao.updateTrxnStatus(conn, resp.getTrxns());
@@ -95,7 +96,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 					}
 				}
 				EwalletResponseData remaining = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, trxns.size())), 
-																MASTERPASS_EWALLET_TYPE);
+																EnumEwalletType.MP);
 				
 				if (remaining.getTrxns() != null && remaining.getTrxns().size() > 0) {
 					dao.updateTrxnStatus(conn, remaining.getTrxns());
@@ -148,10 +149,10 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.fdstore.ewallet.ejb.EwalletNotifyStatusHome";
 	}
     
-    private EwalletResponseData postTrxns(List<EwalletPostBackModel> trxns, String walletType) {
+    private EwalletResponseData postTrxns(List<EwalletPostBackModel> trxns, EnumEwalletType walletType) {
     	EwalletRequestData req = new EwalletRequestData();
     	EwalletResponseData resp = new EwalletResponseData();
-    	req.seteWalletType(walletType);
+    	req.setEnumeWalletType(walletType);
     	if (trxns != null && trxns.size() > 0) {
     		req.setTrxns(trxns);
     	}

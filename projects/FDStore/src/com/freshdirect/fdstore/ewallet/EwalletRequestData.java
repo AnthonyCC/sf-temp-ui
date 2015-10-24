@@ -15,7 +15,7 @@ public class EwalletRequestData implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2108583405975394387L;
-	private String eWalletType;
+	private EnumEwalletType eWalletType;
 	private String eWalletAction;
 	private String shoppingCartItems;
 	private String customerId;
@@ -54,15 +54,29 @@ public class EwalletRequestData implements Serializable {
 	/**
 	 * @return the eWalletType
 	 */
-	public String geteWalletType() {
+	public EnumEwalletType getEnumeWalletType() {
 		return eWalletType;
 	}
 	/**
 	 * @param eWalletType the eWalletType to set
 	 */
-	public void seteWalletType(String eWalletType) {
+	public void setEnumeWalletType(EnumEwalletType eWalletType) {
 		this.eWalletType = eWalletType;
 	}
+	
+	/**
+	 * @return the eWalletType
+	 */
+	public String geteWalletType() {
+		return eWalletType.getName();
+	}
+	/**
+	 * @param eWalletType the eWalletType to set
+	 */
+	public void seteWalletType(String eWalletType) {
+		this.eWalletType = EnumEwalletType.getEnum(eWalletType);
+	}
+	
 	/**
 	 * @return the eWalletAction
 	 */

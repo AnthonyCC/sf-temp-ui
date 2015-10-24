@@ -14,6 +14,8 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletOldOrderException;
 import com.freshdirect.fdstore.ewallet.EwalletPostBackModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -264,7 +266,7 @@ public class EwalletTxNotifyDAO {
 		
 	}
 	
-	public List<EwalletPostBackModel> getAllTrxnsForPostback( Connection conn, String walletType ) throws SQLException {
+	public List<EwalletPostBackModel> getAllTrxnsForPostback( Connection conn, EnumEwalletType walletType ) throws SQLException {
 
 		List<EwalletPostBackModel> allTrxns = new ArrayList<EwalletPostBackModel>();
 		Map<String, EwalletPostBackModel> nonGALTrxnMap = new HashMap<String, EwalletPostBackModel>();
@@ -272,7 +274,7 @@ public class EwalletTxNotifyDAO {
 		loadCommonData(conn, walletType);
 		
 		PreparedStatement nonGALTrxnsPS = conn.prepareStatement( GET_NONGAL_TRXNS_FOR_POSTBACK );
-		nonGALTrxnsPS.setString(1, walletType);
+		nonGALTrxnsPS.setString(1, walletType.getName());
 		ResultSet nonGALTrxnsRS = nonGALTrxnsPS.executeQuery();
 		while (nonGALTrxnsRS.next()) {
 			String salesActionId = nonGALTrxnsRS.getString("salesaction_id");
@@ -291,7 +293,7 @@ public class EwalletTxNotifyDAO {
 		}
 	
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_OTHER_DATA_FOR_ORDER);
-		otherDataPS.setString(1, walletType);
+		otherDataPS.setString(1, walletType.getName());
 		ResultSet otherDataRS = otherDataPS.executeQuery();
 		while (otherDataRS.next()) {
 			EwalletPostBackModel pbItem = nonGALTrxnMap.get(otherDataRS.getString("salesaction_id"));
@@ -300,7 +302,12 @@ public class EwalletTxNotifyDAO {
 						" Postback Data. SalesAction Id - " + otherDataRS.getString("salesaction_id") + " - ###################");
 				continue;
 			}
-			loadPostBackReqData(otherDataRS, pbItem);
+			
+			try {
+				loadPostBackReqData(otherDataRS, pbItem);
+			} catch (EwalletOldOrderException e) {
+				nonGALTrxnMap.remove(otherDataRS.getString("salesaction_id"));
+			}
 		}
 		
 		//Code for post back by salesaction id
@@ -330,12 +337,12 @@ public class EwalletTxNotifyDAO {
 	}
 
 	
-	private List<EwalletPostBackModel> getGALTrxnsForPostback( Connection conn, String walletType ) throws SQLException {
+	private List<EwalletPostBackModel> getGALTrxnsForPostback( Connection conn, EnumEwalletType walletType ) throws SQLException {
 
 		Map<String, EwalletPostBackModel> gALTrxnMap = new HashMap<String, EwalletPostBackModel>();
 		
 		PreparedStatement trxnPS = conn.prepareStatement( GET_GAL_TRXNS_FOR_POSTBACK );
-		trxnPS.setString(1, walletType);
+		trxnPS.setString(1, walletType.getName());
 		ResultSet trxnRS = trxnPS.executeQuery();
 
 		while (trxnRS.next()) {
@@ -368,7 +375,11 @@ public class EwalletTxNotifyDAO {
 				continue;
 			}
 			
-			loadPostBackReqData(otherDataRS, pbItem);
+			try {
+				loadPostBackReqData(otherDataRS, pbItem);
+			} catch (EwalletOldOrderException e) {
+				gALOrderAmountMap.remove(otherDataRS.getString("GALId"));
+			}
 			pbItem.setPurchaseDate(otherDataRS.getDate("transaction_time"));
 		}
 
@@ -418,11 +429,26 @@ public class EwalletTxNotifyDAO {
 		}
 	}
 	
-	void loadPostBackReqData(ResultSet otherData, EwalletPostBackModel pbItem) throws SQLException {
+	void loadPostBackReqData(ResultSet otherData, EwalletPostBackModel pbItem) throws SQLException, EwalletOldOrderException {
 		if (pbItem.isgAL()) {
-			pbItem.setOrderAmount((long)(Double.valueOf(gALOrderAmountMap.get(otherData.getString("GALId"))) * 100));
+			String amt = gALOrderAmountMap.get(otherData.getString("GALId"));
+			if (amt != null) {
+				pbItem.setOrderAmount((long)(Double.valueOf(amt) * 100));
+			}
+			else {
+				LOGGER.error("Order amount of order in Postback is null. Order may be older than 1 week. Ignoring it. " + pbItem.getTransactionId());
+				throw new EwalletOldOrderException("Order amount of order in Postback is null. Order may be older than 1 week. Ignoring it. " + pbItem.getTransactionId());
+			}
 		} else {
-			pbItem.setOrderAmount((long)(Double.valueOf(orderAmountMap.get(pbItem.getOrderId()))*100));
+			String amt = orderAmountMap.get(pbItem.getOrderId());
+			if (amt != null) {
+				pbItem.setOrderAmount((long)(Double.valueOf(amt) * 100));
+			}
+			else {
+				LOGGER.error("Order amount of order in Postback is null. Order may be older than 1 week. Ignoring it. " + pbItem.getTransactionId());
+				throw new EwalletOldOrderException("Order amount of order in Postback is null. Order may be older than 1 week. Ignoring it. " + pbItem.getTransactionId());
+			}
+
 		}
 
 		pbItem.setCurrency(CURRENCY);
@@ -452,7 +478,7 @@ public class EwalletTxNotifyDAO {
 		}
 	}
 	
-	private void loadCommonData(Connection conn, String walletType) throws SQLException {
+	private void loadCommonData(Connection conn, EnumEwalletType walletType) throws SQLException {
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_ORDER);
 		ResultSet otherDataRS = otherDataPS.executeQuery();
 		while (otherDataRS.next()) {
@@ -466,7 +492,7 @@ public class EwalletTxNotifyDAO {
 		}
 		
 		PreparedStatement orderPurchPS = conn.prepareStatement(GET_ORDER_PURCHASE_DATE);
-		orderPurchPS.setString(1, walletType);
+		orderPurchPS.setString(1, walletType.getName());
 		ResultSet orderPurchRS = orderPurchPS.executeQuery();
 
 		while (orderPurchRS.next()) {
@@ -479,7 +505,7 @@ public class EwalletTxNotifyDAO {
 	public static void main(String args[]) throws SQLException {
 		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:fdstore_prda/fdstore_prda@scan-dev.dev.nyc1.freshdirect.com:1521/devint");
 		//new EwalletTxNotifyDAO().prepareForPostBack(conn);
-		PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
+/*		PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
 
 		int rows = stmt.executeUpdate();
 		System.out.println(rows);
@@ -534,10 +560,10 @@ public class EwalletTxNotifyDAO {
 		ResultSet gALOtherDataRS = gALOtherDataPS.executeQuery();
 		while (gALOtherDataRS.next()) {
 			System.out.println(gALOtherDataRS.getString("GALId"));
-		}
+		}*/
 		
 		EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
-		System.out.println(dao.getAllTrxnsForPostback(conn, "MP"));
+		System.out.println(dao.getAllTrxnsForPostback(conn, EnumEwalletType.MP));
 		
 		//List<EwalletPostBackModel> data = new EwalletTxNotifyDAO().getAllTrxnsForPostback(conn, "MP");
 		conn.close();

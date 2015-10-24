@@ -53,6 +53,7 @@ public class FDStoreProperties {
     private final static String PROP_CALLCENTERMGR_HOME = "fdstore.callCenterManager.home";
     private final static String PROP_FDCUSTMGR_HOME = "fdstore.fdCustomerManager.home";
     private final static String PROP_EWALLET_HOME= "fdstore.ErpEWallet.home";
+    private final static String PROP_EWALLET_SERVICE_HOME= "fdstore.EWalletService.home";
     private final static String PROP_MPService_HOME= "fdstore.MPService.home";
     private final static String PROP_EXTERNAL_ACCOUNTMGR_HOME = "fdstore.externalLoginManager.home";
     private final static String PROP_FDPROMOTIONMGR_HOME = "fdstore.fdPromotionManager.home";
@@ -810,6 +811,7 @@ public class FDStoreProperties {
             "freshdirect.fdstore.CallCenterManager");
         defaults.put(PROP_FDCUSTMGR_HOME, "freshdirect.fdstore.CustomerManager");
         defaults.put(PROP_EWALLET_HOME, "freshdirect.fdstore.ErpEWallet");
+        defaults.put(PROP_EWALLET_SERVICE_HOME, "freshdirect.fdstore.EWalletService");
         defaults.put(PROP_MPService_HOME, "freshdirect.fdstore.MPService");
         
         defaults.put(PROP_EWALLET_ENCRYPTION_ALGORITHM,"AES");
@@ -1684,6 +1686,10 @@ public class FDStoreProperties {
     
     public static String getErpEWalletHome() {
         return get(PROP_EWALLET_HOME);
+    }
+
+    public static String getEwalletServiceHome() {
+        return get(PROP_EWALLET_SERVICE_HOME);
     }
     
     public static String getMPServiceHome() {
