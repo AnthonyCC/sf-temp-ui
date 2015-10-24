@@ -6,6 +6,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.enums.ValuedEnum;
 
+/**
+ * @author Aniwesh Vatsal
+ *
+ */
 public class EnumEwalletType extends ValuedEnum {
 
 	private static final long serialVersionUID = -8962535387638057138L;
