@@ -118,7 +118,7 @@ public class EwalletTxNotifyDAO {
 	private static final String IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK =
 		"INSERT " +
 				"INTO CUST.ewallet_txnotify ( id, status, ewallet_id, vendor_ewallet_id, transaction_id, customer_id, order_id, salesaction_id, notify_status ) " +
-					"(SELECT CUST.SYSTEM_SEQ.nextval, s.status, f.ewallet_id, f.vendor_ewallet_id, f.ewallet_trxn_id,  s.customer_id, s.id sale_id, sa.id salesaction_id, 'Pending' " +
+					"(SELECT CUST.SYSTEM_SEQ.nextval, 'AUF', f.ewallet_id, f.vendor_ewallet_id, f.ewallet_trxn_id,  s.customer_id, s.id sale_id, sa.id salesaction_id, 'Pending' " +
 				    	"FROM cust.sale s, CUST.salesaction sa, cust.payment p, " +
 				    		"(SELECT sale_id, ewallet_id, vendor_ewallet_id, MAX(d.ewallet_tx_id) ewallet_trxn_id, MAX(e.id) latest_cromod_sa_id " +
 				    			"FROM CUST.paymentinfo_new d, CUST.salesaction e " +
@@ -128,11 +128,11 @@ public class EwalletTxNotifyDAO {
 				    		"(SELECT i.id, MAX(j.id) max_order_sa_id " +
 				    			"FROM cust.sale i, cust.salesaction j, cust.payment n " +
 				    			"WHERE i.id = j.sale_id AND j.id = n.salesaction_id AND j.action_date > (sysdate -7) " +
-				    				" AND i.status  = 'AUF' AND j.action_type     = 'AUT' " +
+				    				" AND j.action_type     = 'AUT' " +
 				    				" AND n.response_code     != 'A' " +
 				    			"GROUP BY i.id ) m " +
 				   " WHERE s.id  = sa.sale_id AND sa.id = p.salesaction_id AND sa.id = m.max_order_sa_id AND s.id = f.sale_id " +
-				    	"AND s.status  = 'AUF' AND sa.action_type = 'AUT' AND f.ewallet_trxn_id IS NOT NULL " +
+				    	"AND sa.action_type = 'AUT' AND f.ewallet_trxn_id IS NOT NULL " +
 				    	"AND p.response_code != 'A' AND sa.action_date  > (sysdate - 7) AND NOT EXISTS " +
 						      "(SELECT 1 " +
 						      "FROM cust.ewallet_txnotify g " +
@@ -195,8 +195,7 @@ public class EwalletTxNotifyDAO {
 						"from cust.salesaction " +
 						"where action_date > (sysdate - 7) and (action_type = 'CRO' or action_type = 'MOD') " +
 						"group by sale_id) d " +
-				"where s.id = sa.sale_id and sa.action_date > (sysdate - 7) and sa.id = max_salesaction_id and " +
-					"(s.status = 'AUF' or s.status = 'STF')";
+				"where s.id = sa.sale_id and sa.action_date > (sysdate - 7) and sa.id = max_salesaction_id ";
 	
 	private static final String GET_OTHER_DATA_FOR_ORDER = "select s.id id, max(sa.id) salesaction_id, max(auth_code) auth_code " +
 			"from cust.sale s, cust.salesaction sa, cust.payment p " +
@@ -214,20 +213,17 @@ public class EwalletTxNotifyDAO {
 	
 	
 	//Nested SQL is redundant but is included to avoid too may SQLs which cannot be prepared and hence are slow.
-	private static final String GET_ORDER_PURCHASE_DATE = "select sa.customer_id customer_id, s.id sale_id, max(sa.action_date) action_date " +
-																"from cust.sale s, cust.salesaction sa " +
-																"where s.id = sa.sale_id and (sa.action_type = 'CRO' or sa.action_type = 'MOD' ) and s.id in (" +
+	private static final String GET_ORDER_PURCHASE_DATE = "select sa.customer_id customer_id, sa.sale_id sale_id, max(sa.action_date) action_date " +
+																"from cust.salesaction sa " +
+																"where (sa.action_type = 'CRO' or sa.action_type = 'MOD' ) and sa.sale_id in (" +
 																	" select ewtxn.order_id from " +
-																	   		"cust.ewallet_txnotify ewtxn, cust.sale s2, cust.ewallet ew " +
-																	   		"where ewtxn.order_id = s2.id and ewtxn.notify_status like 'Pending' and s2.status in ('" +
-																			   		EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "', '" +
-																			   		EnumSaleStatus.SETTLED.getStatusCode() + "', '" +
-																			   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
+																	   		"cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
+																	   		"where ewtxn.order_id = sa.sale_id and ewtxn.notify_status like 'Pending' and " +
 																	   			"ewtxn.salesaction_id is not null and " +
 																	   			"ewtxn.transaction_id is not null and " +
 																	   			"sa.action_date > (sysdate - 7) and " +
 																	   			"ewtxn.ewallet_id = ew.id and ew.ewallet_type like ?) " +
-																"group by  sa.customer_id, s.id ";
+																"group by sa.customer_id, sa.sale_id ";
 	
 	/****************************************************************
 	 * Queries for GAL (Gateway Activity Log) transactional data
