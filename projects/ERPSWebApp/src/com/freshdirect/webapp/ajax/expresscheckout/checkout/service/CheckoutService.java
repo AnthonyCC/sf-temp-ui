@@ -61,6 +61,7 @@ public class CheckoutService {
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+	private final String EWALLET_ERROR_CODE = "WALLET_ERROR";
 
 
 
@@ -215,11 +216,7 @@ public class CheckoutService {
 		if (formpaymentData != null) {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
-			String session_card = "";
 			String selectedWalletCardId="";
-			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
-				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
-			}
 			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
 				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
@@ -227,14 +224,9 @@ public class CheckoutService {
 				if(data.geteWalletID() == null){
 					paymentsNew.add(data);
 				}else{
-					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
-						if(data.geteWalletID()!=null && data.geteWalletID().equals("1") && selectedWalletCardId.equals(data.getId())){
-							data.setSelected(true);
-							formpaymentData.setSelected(data.getId());
-							paymentsNew.add(data);
-						}else{
-							data.setSelected(false);
-						}
+					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+						paymentsNew.add(data);
 					}
 				}
 			}
@@ -247,25 +239,30 @@ public class CheckoutService {
 	 */
 	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
+			// Remove Error Message From session
+			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
+				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
+			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";
 			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
 				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
 			}
 			String selectedWalletCardId="";
-			if(request.getSession().getAttribute("WALLET_CARD_ID") != null ){
-				selectedWalletCardId = request.getSession().getAttribute("WALLET_CARD_ID").toString();
+			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
+				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
-			for (PaymentData data : payments) {
-				if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
-						request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
+			if(formpaymentData.getSelected().equals(selectedWalletCardId)){
+				for (PaymentData data : payments) {
+					data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
+					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
 						int ewalletId = EnumEwalletType.getEnum("MP").getValue();
-					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
-						data.setSelected(true);
-						formpaymentData.setSelected(data.getId());
-						data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
-					}else{
-						data.setSelected(false);
+						if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+							data.setSelected(true);
+							formpaymentData.setSelected(data.getId());
+						}else{
+							data.setSelected(false);
+						}
 					}
 				}
 			}

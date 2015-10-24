@@ -156,11 +156,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
 			boolean selectedMacted = false;
-			String session_card = "";
 			String selectedWalletCardId="";
-			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
-				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
-			}
 			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
 				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
@@ -171,18 +167,10 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 					}
 					paymentsNew.add(data);
 				}else{
-					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
-						int ewalletId = EnumEwalletType.getEnum("MP").getValue();
-						if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
-							data.setSelected(true);
-							formpaymentData.setSelected(data.getId());
-							paymentsNew.add(data);
-						}else{
-							data.setSelected(false);
-						}
-						if(formpaymentData.getSelected() != null && formpaymentData.getSelected().equals(data.getId())){
-							selectedMacted = true;
-						}
+					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+						paymentsNew.add(data);
+						selectedMacted = true;
 					}
 				}
 			}
@@ -210,8 +198,8 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
 			}
 			String selectedWalletCardId="";
-			if(request.getSession().getAttribute("WALLET_CARD_ID") != null ){
-				selectedWalletCardId = request.getSession().getAttribute("WALLET_CARD_ID").toString();
+			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
+				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
 			if(request.getAttribute(EWALLET_REQ_ATTR_ACTION_COMPLETED) !=null ){
 				actionCompleted =request.getAttribute(EWALLET_REQ_ATTR_ACTION_COMPLETED).toString();
@@ -219,12 +207,12 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 			if( (actionCompleted != null && actionCompleted.equalsIgnoreCase(MP_REQ_ATTR_ACTION_COMPLETED_VALUE)) 
 					|| (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
 				for (PaymentData data : payments) {
-					request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
 					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
 					if(data.geteWalletID() != null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
 						data.setSelected(true);
 						formpaymentData.setSelected(data.getId());
 						data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
+						request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
 					}else{
 						data.setSelected(false);
 					}

@@ -70,7 +70,6 @@ var FreshDirect = FreshDirect || {};
               "allowedCardTypes":[result.eWalletResponseData.allowedPaymentMethodTypes],
 			  "suppressShippingAddressEnable": result.eWalletResponseData.suppressShippingEnable,
 			  "requestBasicCheckout" : result.eWalletResponseData.requestBasicCkt,
-			  "loyaltyEnabled":result.eWalletResponseData.LoyaltyEnabled,
               "version":result.eWalletResponseData.version,
             /* "cancelCallback": function onCancelledCheckout(data)
              {

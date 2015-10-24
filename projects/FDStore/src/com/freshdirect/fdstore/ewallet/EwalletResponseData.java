@@ -34,7 +34,6 @@ public class EwalletResponseData  implements Serializable{
 	private String version;
 	@JsonProperty
 	private String allowedPaymentMethodTypes;
-	@JsonProperty
 	private String LoyaltyEnabled;
 	@JsonProperty
 	private String reqDatatype;

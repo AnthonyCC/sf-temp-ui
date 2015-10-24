@@ -95,7 +95,6 @@ public class MasterPassApplicationHelper {
 	 */
 	public static String xmlEscapeText(String t) {
 
-		System.out.print(t);   
 		if(t!= null){
 		StringBuilder sb = new StringBuilder();
 		   for(int i = 0; i < t.length(); i++){

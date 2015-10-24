@@ -7,8 +7,6 @@ package com.freshdirect.fdstore.ewallet.impl.ejb;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.security.Key;
@@ -46,7 +44,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.xml.sax.Attributes;
-import org.xml.sax.HandlerBase;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -60,11 +57,11 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumUserInfoName;
+import com.freshdirect.fdstore.ewallet.EwalletPostBackModel;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.PaymentData;
 import com.freshdirect.fdstore.ewallet.PaymentMethodName;
-import com.freshdirect.fdstore.ewallet.EwalletPostBackModel;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
 import com.freshdirect.fdstore.ewallet.impl.MasterPassApplicationHelper;
@@ -99,12 +96,6 @@ import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartRequest;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartResponse;
 import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationRequest;
 import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationResponse;
-import com.sun.org.apache.xerces.internal.impl.xs.opti.DefaultXMLDocumentHandler;
-import com.sun.org.apache.xerces.internal.xni.Augmentations;
-import com.sun.org.apache.xerces.internal.xni.QName;
-import com.sun.org.apache.xerces.internal.xni.XMLAttributes;
-import com.sun.org.apache.xerces.internal.xni.XMLString;
-import com.sun.org.apache.xerces.internal.xni.XNIException;
 
 /**
  * @author Aniwesh Vatsal
@@ -249,6 +240,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		ewalletResponseData.setCallbackUrl(data.getStdChkCallbackpath()+"&action="+MASTERPASS_STD_CHECKOUT_ACTION);
+		data.setCallbackUrl(ewalletResponseData.getCallbackUrl());
 		ewalletResponseData.seteWalletIdentifier(data.getCheckoutIdentifier());	// Comes from Properties file
 		List<ValidationError> eWalletValidationErrors = new ArrayList<ValidationError>(); 
 		try{

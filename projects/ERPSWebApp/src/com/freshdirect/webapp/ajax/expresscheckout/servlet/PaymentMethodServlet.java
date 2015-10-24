@@ -128,6 +128,17 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         	
                         }else{
                         */
+                        
+                        // If selected Card is not Wallet Card
+                        String selectedWalletCardId="";
+            			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
+            				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
+            				if(selectedWalletCardId != null && selectedWalletCardId.length() > 0 && !selectedWalletCardId.equals(paymentId)){
+            					request.getSession().removeAttribute(EWALLET_SESSION_ATTRIBUTE_NAME);
+            				}else{
+            					request.getSession().setAttribute(EWALLET_SESSION_ATTRIBUTE_NAME, MP_EWALLET_CARD);
+            				}
+            			}
                         List<ValidationError> validationErrors = PaymentService.defaultService().selectPaymentMethod(paymentId, pageAction.actionName, request);
                         validationResult.getErrors().addAll(validationErrors);
 //                        }
@@ -303,11 +314,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 		if (formpaymentData != null) {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
-			String session_card = "";
 			String selectedWalletCardId="";
-			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
-				session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
-			}
 			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
 				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
@@ -315,11 +322,9 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 				if(data.geteWalletID() == null){
 					paymentsNew.add(data);
 				}else{
-					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
-						int ewalletId = EnumEwalletType.getEnum("MP").getValue();
-						if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
-							paymentsNew.add(data);
-						}
+					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+						paymentsNew.add(data);
 					}
 				}
 			}

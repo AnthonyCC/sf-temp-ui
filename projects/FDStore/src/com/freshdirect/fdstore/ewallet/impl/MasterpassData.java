@@ -170,9 +170,9 @@ public class MasterpassData {
 	
 	//Checkout static data
 	@JsonProperty
-	private long tax = 348;
+	private long tax = 0;
 	@JsonProperty
-	private long shipping = 895;
+	private long shipping = 0;
 	// Pairing callback
 	private String pairingCallbackPath;
 	// pairing token
@@ -304,40 +304,53 @@ public class MasterpassData {
 		Properties props = loadProperties(configFile);
 		
 		this.callbackDomain = props.getProperty("callbackdomain");
-		this.callbackPath = props.getProperty("callbackpath");
-		this.callbackUrl = this.callbackDomain + this.callbackPath;
-		this.callbackpathConnect = this.callbackDomain + props.getProperty("callbackpathConnect");
 		this.requestURL = props.getProperty("requesturl");
 		this.shoppingCartUrl = props.getProperty("shoppingcarturl");
 		this.accessURL = props.getProperty("accessurl");
 		this.postbackurl = props.getProperty("postbackurl");
 		this.checkoutIdentifier = props.getProperty("checkoutidentifier");
 		this.consumerKey = props.getProperty("consumerkey");
+		this.stdChkCallbackpath=this.callbackDomain + props.getProperty("stdChkCallbackpath");
+		this.callbackUrl = this.callbackDomain + props.getProperty("stdChkCallbackpath");
+		this.keystorePassword = props.getProperty("keystorepassword");
+		this.keystorePath = props.getProperty("keystorepath");
+		this.lightboxUrl = props.getProperty("lightboxurl");
+		this.acceptedCards = props.getProperty("allowedCardTypes");
+		this.xmlVersion = props.getProperty("xmlVersion");
+		this.requestBasicCheckout = props.getProperty("requestBasicCheckout"); 
+		this.reqDatatype=props.getProperty("reqDatatype");
+		this.redirectShippingProfiles = props.getProperty("redirectShippingProfiles");
+		this.loyaltyEnabled = props.getProperty("loyaltyEnabled");
+		if(props.getProperty("shippingSuppression") != null){
+			this.shippingSuppression=  props.getProperty("shippingSuppression").equalsIgnoreCase("true") ? true : false;
+		}
+		if(props.getProperty("authLevelBasic") != null){
+			this.authLevelBasic = props.getProperty("authLevelBasic").equalsIgnoreCase("true") ? true : false;
+		}
+		this.shippingProfiles = props.getProperty("shippingprofiles");
+		if(props.getProperty("rewards") != null){
+			this.rewards=props.getProperty("rewards").equalsIgnoreCase("true") ? true : false;
+		}
+		
+		
+		
+		/*
+		 * Required for Master Pass Express Checkout
+		this.callbackPath = props.getProperty("callbackpath");
+		this.callbackUrl = this.callbackDomain + this.callbackPath;
+		this.callbackpathConnect = this.callbackDomain + props.getProperty("callbackpathConnect");
 		this.setPreCheckoutUrl(props.getProperty("precheckouturl"));
 		this.setSpPrecheckoutUrl(props.getProperty("spprecheckouturl"));
 		this.setSpExpressCheckoutUrl(props.getProperty("spexpresscheckouturl"));
-		this.keystorePassword = props.getProperty("keystorepassword");
-		this.keystorePath = props.getProperty("keystorepath");
-		this.shippingProfiles = props.getProperty("shippingprofiles");
 		this.merchantInitUrl = props.getProperty("merchantiniturl");
 		this.pairingCallbackPath = this.callbackDomain + props.getProperty("pairingcallbackpath");
 		this.expressCallbackPath = this.callbackDomain + props.getProperty("expresscallbackpath");
 		this.expressCheckoutUrl = props.getProperty("expresscheckouturl");
-		this.lightboxUrl = props.getProperty("lightboxurl");
 		this.connectedCallbackPath = props.getProperty("connectedcallbackpath");
 		this.expresscheckoutEnable=  props.getProperty("expresscheckoutEnable");
-		this.reqDatatype=props.getProperty("reqDatatype");
 		this.loyaltyEnabled = props.getProperty("loyaltyEnabled");
-		this.reqDatatype=props.getProperty("reqDatatype");
 		this.reqPairing=props.getProperty("reqPairing");
-		this.stdChkCallbackpath=this.callbackDomain + props.getProperty("stdChkCallbackpath");
-		this.redirectShippingProfiles = props.getProperty("stdChkCallbackpath");
-		this.rewards=props.getProperty("rewards").equalsIgnoreCase("true") ? true : false;
-		this.authLevelBasic = props.getProperty("authLevelBasic").equalsIgnoreCase("true") ? true : false;
-		this.acceptedCards = props.getProperty("allowedCardTypes");
-		this.xmlVersion = props.getProperty("xmlVersion");
-		this.requestBasicCheckout = props.getProperty("requestBasicCheckout"); 
-		this.shippingSuppression=  props.getProperty("shippingSuppression").equalsIgnoreCase("true") ? true : false; 
+		*/
 
 	}
 	
