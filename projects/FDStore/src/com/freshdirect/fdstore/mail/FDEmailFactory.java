@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -1271,17 +1272,35 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public XMLEmailI createUserIdChangeEmail(FDCustomerInfo customer, String oldUserId, String newUserId) {
-		//START : APPBUG-2900 - Added Logger for checking duplicate emails.
-		LOGGER.debug("FDEmailFactory :: createUserIdChangeEmail ===> Entered ");
-		FDInfoEmail email = new FDInfoEmail(customer);
-		email.setXslPath("h_user_id_change_V1.xsl", "x_user_id_change_V1.xsl");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		//Added changes for Email Subject
-		email.setSubject("FreshDirect: Change in your Email Id");		
+	public XMLEmailI createUserIdChangeEmail(FDCustomerInfo customer, String oldUserId, String newUserId, EnumEStoreId eStoreId) {
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDInfoEmail email = null;
+
+		if (isFdxOrder) {
+			//START : APPBUG-2900 - Added Logger for checking duplicate emails.
+			LOGGER.debug("FDEmailFactory :: createUserIdChangeEmail (FDX) ===> Entered ");
+			email = new FDInfoEmail(customer);
+			email.setXslPath("h_user_id_change_fdx.xsl", "h_user_id_change_fdx.xsl");
+
+			email.setSubject("Email Address Updated");
+			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
+			
+		} else {
+			
+			//START : APPBUG-2900 - Added Logger for checking duplicate emails.
+			LOGGER.debug("FDEmailFactory :: createUserIdChangeEmail (FD) ===> Entered ");
+			email = new FDInfoEmail(customer);
+			email.setXslPath("h_user_id_change_V1.xsl", "x_user_id_change_V1.xsl");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			//Added changes for Email Subject
+			email.setSubject("FreshDirect: Change in your Email Id");
+		}
+		
 		email.setRecipient(oldUserId);	
 		List<String> ccAddress = Arrays.asList(oldUserId, newUserId);
 		email.setCCList(ccAddress);
+		
 		return email;
 	}
 	
@@ -1297,44 +1316,77 @@ public class FDEmailFactory {
 		
 		@Override
 		protected void decorateMap(Map map) {
+			map.put("fromEmail", this.getFromEmail()); 
+			map.put("curYear", Calendar.getInstance().get(Calendar.YEAR)); //used in footer
 			map.putAll(this.attributes);
 		}
 	}
 	
-	public XMLEmailI createShippingAddressChangeEmail(FDCustomerInfo customer, ErpAddressModel erpAddress) {
+	public XMLEmailI createShippingAddressChangeEmail(FDCustomerInfo customer, ErpAddressModel erpAddress, EnumEStoreId eStoreId){
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDCustomerInfoEmail email = null;
+
 		Map<String,Object> attributeMap = new HashMap<String,Object>();
 		attributeMap.put("erpAddressModel", erpAddress);
 		attributeMap.put("phone", PhoneNumber.format(erpAddress.getPhone().getPhone()));
 		if(null!=erpAddress.getAltContactPhone()){
-		attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
+			attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
 		}
-		FDInfoEmail email = new FDCustomerInfoEmail(customer,attributeMap);
-		email.setXslPath("h_user_edit_delv_address_V1.xsl", "x_user_edit_delv_address_V1.xsl");
-		//Added changes for Email Subject
-		email.setSubject("FreshDirect: Shipping Address changed to your account");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));		
+		
+		if (isFdxOrder) {
+			email = new FDCustomerInfoEmail(customer,attributeMap);
+
+			email.setXslPath("h_user_edit_delv_address_fdx.xsl", "h_user_edit_delv_address_fdx.xsl"); //no text version
+			email.setSubject("Delivery Address Updated");
+			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
+		} else {
+			email = new FDCustomerInfoEmail(customer,attributeMap);
+			email.setXslPath("h_user_edit_delv_address_fdx.xsl", "h_user_edit_delv_address_fdx.xsl");
+			//Added changes for Email Subject
+			email.setSubject("FreshDirect: Shipping Address changed to your account");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));		
+		}
+		
 		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address. 
 		if(customer.getEmailAddress() != null){
 			email.setRecipient(customer.getEmailAddress());	
 			List<String> ccAddress = Arrays.asList(customer.getEmailAddress());
 			//email.setCCList(ccAddress);
 		}
-		//END : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address. 		
+		//END : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
+		
 		return email;
 	}
 	
-	public XMLEmailI createShippingAddressAdditionEmail(FDCustomerInfo customer, ErpAddressModel erpAddress) {
+	public XMLEmailI createShippingAddressAdditionEmail(FDCustomerInfo customer, ErpAddressModel erpAddress, EnumEStoreId eStoreId){
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		FDCustomerInfoEmail email = null;
+		
 		Map<String,Object> attributeMap = new HashMap<String,Object>();
 		attributeMap.put("erpAddressModel", erpAddress);
 		attributeMap.put("phone", PhoneNumber.format(erpAddress.getPhone().getPhone()));
 		if(null!=erpAddress.getAltContactPhone()){
-		attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
+			attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
 		}
-		FDInfoEmail email = new FDCustomerInfoEmail(customer,attributeMap);
-		email.setXslPath("h_user_new_delv_address_V1.xsl", "x_user_new_delv_address_V1.xsl");
-		//Added changes for Email Subject
-		email.setSubject("FreshDirect: New Shipping Address added to your account");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		if (isFdxOrder) {
+			email = new FDCustomerInfoEmail(customer,attributeMap);
+
+			email.setXslPath("h_user_new_delv_address_fdx.xsl", "h_user_new_delv_address_fdx.xsl"); //no text version
+			email.setSubject("Delivery Address Updated");
+			email.setFromEmail(FDX_ACTSERVICE_EMAIL); //add to email's data for footer text
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
+			
+		} else {			
+			email = new FDCustomerInfoEmail(customer,attributeMap);
+			email.setXslPath("h_user_new_delv_address_V1.xsl", "x_user_new_delv_address_V1.xsl");
+			//Added changes for Email Subject
+			email.setSubject("FreshDirect: New Shipping Address added to your account");
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			
+		}
+		
 		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
 		if(customer.getEmailAddress() != null){
 			email.setRecipient(customer.getEmailAddress());	
@@ -1342,6 +1394,7 @@ public class FDEmailFactory {
 			//email.setCCList(ccAddress);
 		}
 		//END : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
+		
 		return email;
 	}
 }

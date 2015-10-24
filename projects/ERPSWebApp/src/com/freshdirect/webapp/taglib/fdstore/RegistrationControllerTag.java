@@ -33,8 +33,10 @@ import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -162,7 +164,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					ActionResult result=new ActionResult();
 					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
 					LOGGER.debug("RegistrationControllerTag :: addDeliveryAddress ===> If no address error send email");
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressAdditionEmail(customerInfo,erpAddress));
+					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressAdditionEmail(customerInfo,erpAddress, estoreId));
 				}
 				
 			} else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
@@ -177,7 +180,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					ActionResult result=new ActionResult();
 					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
 					LOGGER.debug("RegistrationControllerTag :: editDeliveryAddress ===> If no address error send email");
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
+					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress, estoreId));
 				}
 				
 				
@@ -674,7 +678,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				
 				if(!StringUtils.equals(oldUserId,userId)){
 					FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createUserIdChangeEmail(customerInfo, oldUserId,userId));
+					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createUserIdChangeEmail(customerInfo, oldUserId,userId, estoreId));
 				}
 			} catch (ErpDuplicateUserIdException ex) {
 				LOGGER.warn("New userId already exists in system", ex);

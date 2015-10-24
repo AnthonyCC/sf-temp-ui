@@ -26,8 +26,10 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -211,7 +213,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					ActionResult resultSuccess=new ActionResult();
 					ErpAddressModel erpAddress = RegistrationControllerTag.checkDeliveryAddressInForm(request, resultSuccess , session);
 					LOGGER.debug("CheckoutControllerTag :: Editing the delivery adderss and sending mail during checkout flow");
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
+					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress, estoreId));
 				}	
 			
 			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
