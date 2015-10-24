@@ -109,6 +109,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private final String CHARGE_ORDER_ACTION	= "charge_order";
 	private final String AUTO_RENEW_AUTH	= "auto_renew_auth";
 	private final String PLACE_AUTO_RENEW_ORDER	= "place_auto_renew_order";
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+
 	
 	private String action;
 	private String orderId;
@@ -135,7 +138,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		ActionResult results = new ActionResult();
-
+		
+		HttpSession session = request.getSession();
+		
 		boolean actionPerformed = false;
 
 		if (this.action==null) {
@@ -208,7 +213,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			} else if ( MODIFY_ACTION.equalsIgnoreCase(this.action) ) {
 				this.modifyOrder(request, results);
 				actionPerformed = true;
-		}
+				
+				// Remove the EWallet Payment MEthod ID from session
+				if(session.getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
+					session.removeAttribute(EWALLET_SESSION_ATTRIBUTE_NAME);
+				}if(session.getAttribute(WALLET_SESSION_CARD_ID) != null){
+					session.removeAttribute(WALLET_SESSION_CARD_ID);
+				}
+			}
 		}
 
 		//
