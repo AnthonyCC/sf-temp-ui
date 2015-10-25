@@ -222,6 +222,7 @@ public class ErpServicesProperties {
 	public final static String PROP_EWALLET_NOTIFY_EMAIL_CC	= "ewallet.notify.email.cc";
 	public final static String PROP_EWALLET_NOTIFY_EMAIL_ENABLED	= "ewallet.notify.email.send";
 	public final static String PROP_EWALLET_POSTBACK_CHUNK_SIZE = "ewallet.notify.postback.chunk";
+	public final static String PROP_EWALLET_POSTBACK_MAXDAYS = "ewallet.notify.postback.maxdays";
 	
 	static {
 		Properties defaults = new Properties();
@@ -402,6 +403,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_FROM, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_ENABLED, "true");
 		defaults.put(PROP_EWALLET_POSTBACK_CHUNK_SIZE, "0");
+		defaults.put(PROP_EWALLET_POSTBACK_MAXDAYS, "7");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -945,6 +947,16 @@ public class ErpServicesProperties {
 			result = Integer.parseInt(config.getProperty(PROP_EWALLET_POSTBACK_CHUNK_SIZE));
 		} catch (Exception e) {
 			result = 0;
+		}
+		return result;
+	}
+	
+	public static int geteWalletPostbackMaxDays() {
+		int result = 0;
+		try {
+			result = Integer.parseInt(config.getProperty(PROP_EWALLET_POSTBACK_MAXDAYS));
+		} catch (Exception e) {
+			result = 7;
 		}
 		return result;
 	}

@@ -114,7 +114,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while rollback in postTrxnsToEwallet ", e);
 			}
 
-			throw new RemoteException("SQL Exception while obtaining trxns for Postback ", e.getCause());
+			throw new RemoteException("SQL Exception while posting trxns for Postback ", e.getCause());
 		} finally {
 			try {
 				if(conn != null) {

@@ -2213,7 +2213,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		trxns.add(req);
 		new MasterpassServiceSessionBean().postBack(trxns);*/
 		
-		new MasterpassServiceSessionBean().transformErrorRespToEwalletInterface("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+		/*new MasterpassServiceSessionBean().transformErrorRespToEwalletInterface("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
 				"<Errors>" +
 					"<Error>" +
 						"<Description>checkout ID: 315123150</Description>" +
@@ -2227,7 +2227,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 						"<Recoverable>false</Recoverable>" +
 						"<Source>HttpHeader.OAuth.ConsumerKey</Source>" +
 					"</Error>" +
-				"<Errors>");
+				"<Errors>");*/
 	}
 	
 	private List<EwalletPostBackModel> postBack(List<EwalletPostBackModel> postTrxns) {
@@ -2237,10 +2237,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		Map<String, String> ewalletKeyMap = new HashMap<String, String>();
 		Map<String, Boolean> isGALMap = new HashMap<String, Boolean>();
+		Map<String, EwalletPostBackModel> trxnKeyMap =  new HashMap<String, EwalletPostBackModel>();
 		
 		MasterPassService svc = initiateMasterpassService(mpData);
 		
-		MerchantTransactions reqTrxns = transformTrxnsToMPInterface(postTrxns, mpData, ewalletKeyMap, isGALMap);
+		MerchantTransactions reqTrxns = transformTrxnsToMPInterface(postTrxns, mpData, ewalletKeyMap, isGALMap, trxnKeyMap);
 		
 		MerchantTransactions returnedTrxns = null;
 		try {
@@ -2249,12 +2250,12 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			logMPPostbackEwalletRequestResponse(mpData, xmlToString(reqTrxns), xmlToString(returnedTrxns), MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_SUCCESS, postTrxns);
 		} catch (MasterPassServiceRuntimeException e) {
 
-			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.toString(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
-			return transformErrorRespToEwalletInterface(e.getMessage());
+			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.getMessage(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
+			return transformErrorRespToEwalletInterface(e.getMessage(), trxnKeyMap);
 		} catch (MCOpenApiRuntimeException e) {
 
-			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.toString(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
-			return transformErrorRespToEwalletInterface(e.getMessage());
+			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.getMessage(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
+			return transformErrorRespToEwalletInterface(e.getMessage(), trxnKeyMap);
 		}
 		
 		List<EwalletPostBackModel> result = new ArrayList<EwalletPostBackModel>();
@@ -2265,7 +2266,8 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		return result;
 	}
 	
-	private MerchantTransactions transformTrxnsToMPInterface(List<EwalletPostBackModel> postTrxns, MasterpassData mpData, Map<String, String> ewalletKeyMap, Map<String, Boolean> isGALMap) {
+	private MerchantTransactions transformTrxnsToMPInterface(List<EwalletPostBackModel> postTrxns, MasterpassData mpData, Map<String, String> ewalletKeyMap,
+						Map<String, Boolean> isGALMap, Map<String, EwalletPostBackModel> trxnKeyMap) {
 		MerchantTransactions trxns = new MerchantTransactions();
 		for (EwalletPostBackModel postTrxn : postTrxns) {
 			MerchantTransaction trxn = new MerchantTransaction();
@@ -2288,6 +2290,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			trxns.getMerchantTransactions().add(trxn);
 			ewalletKeyMap.put(trxn.getTransactionId() + trxn.getApprovalCode(), postTrxn.getKey());
 			isGALMap.put(trxn.getTransactionId() + trxn.getApprovalCode(), postTrxn.isgAL());
+			trxnKeyMap.put(trxn.getTransactionId(), postTrxn);
 			
 		}
 		
@@ -2306,15 +2309,27 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		return trxns;
 	}
 	
-	private List<EwalletPostBackModel> transformErrorRespToEwalletInterface(String retTrxns) {
+	private List<EwalletPostBackModel> transformErrorRespToEwalletInterface(String retTrxns, Map<String, EwalletPostBackModel> trxnKeyMap) {
+		XmlDocumentHandler docContent = new XmlDocumentHandler();
+		List<EwalletPostBackModel> result = new ArrayList<EwalletPostBackModel>();
 		try {
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			parser.parse(IOUtils.toInputStream(retTrxns), new XmlDocumentHandler());
+			parser.parse(IOUtils.toInputStream(retTrxns), docContent);
 			
 		} catch (Exception e) {
-			
+			LOGGER.error("Error while parsing Error Response from Masterpass. It could be due to change in format ", e);
+			return result;
 		}
-		return null;
+		
+		result = docContent.getErrTrxns();
+		for (EwalletPostBackModel model : result) {
+			EwalletPostBackModel orig = trxnKeyMap.get(model.getTransactionId());
+			
+			model.setKey(orig.getKey());
+			model.setgAL(orig.isgAL());
+		}
+		
+		return result;
 	}
 	
 	private class XmlDocumentHandler extends DefaultHandler {
@@ -2333,7 +2348,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 					"<Source>HttpHeader.OAuth.ConsumerKey</Source>" +
 				"</Error>" +
 			"<Errors>");*/
-	    private List<EwalletPostBackModel> errTrxns;
+	    private List<EwalletPostBackModel> errTrxns = new ArrayList<EwalletPostBackModel>();
 	    EwalletPostBackModel currTrxn;
 	    boolean error = false;
 	    boolean inDescr = false;
@@ -2367,11 +2382,16 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		public void characters(char[] chars, int start, int length)
 				throws SAXException {
 			if (error && inDescr) {
-				boolean trnxPrefix = new String(chars, start, DESCR_TRNX_PREFIX.length()).equals(DESCR_TRNX_PREFIX);
-				if (trnxPrefix) {
-					currTrxn = new EwalletPostBackModel();
-					currTrxn.setError(true);
-					currTrxn.setTransactionId(new String(chars, DESCR_TRNX_PREFIX.length(), length));
+				String descr = new String(chars, start, length);
+				int trnxPrefixIdx = descr.indexOf(DESCR_TRNX_PREFIX);
+				if (trnxPrefixIdx != -1) {
+					String trxId = descr.substring(trnxPrefixIdx + DESCR_TRNX_PREFIX.length());
+
+					if (trxId != null && !"".equals(trxId.trim())) {
+						currTrxn = new EwalletPostBackModel();
+						currTrxn.setError(true);
+						currTrxn.setTransactionId(trxId.trim());
+					}
 				}
 			}
 			
@@ -2389,6 +2409,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				throws SAXException {
 			if (error && qName.equals(ERROR_ELEM)) {
 				error = false;
+				errTrxns.add(currTrxn);
 			}
 			if (error && qName.equals(DESCR_ELEM)) {
 				inDescr = false;
@@ -2396,6 +2417,10 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			if (error && qName.equals(RECOVERY_ELEM)) {
 				inRecov = false;
 			}
+		}
+		
+		public List<EwalletPostBackModel> getErrTrxns() {
+			return errTrxns;
 		}
 
 	}

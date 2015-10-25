@@ -135,22 +135,23 @@ class PaymentechHelper {
 						val=_response.getCVV2RespCode();
 						response.setCVVMatch(PaymentechResponseHelper.isCVVMatch(val));
 						response.setCVVResponse(val);
-						
-						// EWallet Id 
-						response.setEwalletId(cc.getEwalletId());
-						response.setEwalletTxId(cc.getEwalletTxId());
+
 					} else if(pm!=null && PaymentMethodType.ECHECK.equals(pm.getType())) {
 						ECheck ec=(ECheck)pm;
 						
 						val=_response.getValue(PaymentechFields.NewOrderResponse.CheckDDA.name());
 						if(val!=null && !val.trim().equals(""))
 							ec.setAccountNumber(val);
-						
+
 						
 					}
 				} else {
 					response.setRequestProcessed(false);
 				}
+				
+				response.setEwalletId(response.getBillingInfo().getEwalletId());
+				response.setEwalletTxId(response.getBillingInfo().getEwalletTxId());
+				
 				response.setResponseTime(_response.getValue(PaymentechFields.NewOrderResponse.RespTime.name()));
 				return response;
 		 }

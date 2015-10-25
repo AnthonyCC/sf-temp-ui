@@ -63,17 +63,4 @@ class ECheckImpl extends PaymentMethodImpl implements ECheck {
 				+ super.toString() + "]";
 	}
 
-	@Override
-	public void setEwalletId(String ewalletId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getEwalletId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 }

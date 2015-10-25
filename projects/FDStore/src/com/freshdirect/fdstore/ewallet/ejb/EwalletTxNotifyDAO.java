@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletOldOrderException;
@@ -98,18 +99,18 @@ public class EwalletTxNotifyDAO {
 							"(select sa2.sale_id, pi.ewallet_id, pi.vendor_ewallet_id, max(pi.ewallet_tx_id) ewallet_trxn_id  "+
 								"from  CUST.salesaction sa2, CUST.paymentinfo_new pi "+
 								"where sa2.id = pi.salesaction_id and (sa2.action_type = 'CRO' or sa2.action_type = 'MOD') "+
-                    "and sa2.action_date > (sysdate - 7) "+
+                    "and sa2.action_date > (sysdate - ?) "+
                     "and pi.ewallet_tx_id is not null "+
 								"group by (sa2.sale_id, pi.ewallet_id, pi.vendor_ewallet_id )) f,  "+
 							"(select sa3.sale_id, max(sa3.id) latest_salesaction_id  "+
 								"from CUST.salesaction sa3 "+
-								"where (sa3.action_type = 'STF' or sa3.action_type = 'STL') and sa3.action_date > (sysdate - 7)  "+
+								"where (sa3.action_type = 'STF' or sa3.action_type = 'STL') and sa3.action_date > (sysdate - ?)  "+
 								"group by (sa3.sale_id)) g  "+
 						"where s.id = sa.sale_id and sa.id = p.salesaction_id and sa.id = g.latest_salesaction_id and s.id = f.sale_id and s.id = g.sale_id and  "+
 							"s.status in ('STL', 'STF') and  "+
 							"f.ewallet_trxn_id is not null and  "+
 							"s.status = sa.action_type and  "+
-							"sa.action_date > (sysdate - 7) and  "+
+							"sa.action_date > (sysdate - ?) and  "+
 								"not exists (select 1  "+
 											"from cust.ewallet_txnotify h  "+
 											"where sa.id = h.salesaction_id))";
@@ -123,17 +124,17 @@ public class EwalletTxNotifyDAO {
 				    		"(SELECT sale_id, ewallet_id, vendor_ewallet_id, MAX(d.ewallet_tx_id) ewallet_trxn_id, MAX(e.id) latest_cromod_sa_id " +
 				    			"FROM CUST.paymentinfo_new d, CUST.salesaction e " +
 				    			" WHERE d.salesaction_id = e.id AND (e.action_type     = 'CRO' OR e.action_type       = 'MOD') " +
-				    					"AND e.action_date      > (sysdate - 7) AND d.ewallet_tx_id   IS NOT NULL " +
+				    					"AND e.action_date      > (sysdate - ?) AND d.ewallet_tx_id   IS NOT NULL " +
 				    			"GROUP BY sale_id, ewallet_id, vendor_ewallet_id ) f, " +
 				    		"(SELECT i.id, MAX(j.id) max_order_sa_id " +
 				    			"FROM cust.sale i, cust.salesaction j, cust.payment n " +
-				    			"WHERE i.id = j.sale_id AND j.id = n.salesaction_id AND j.action_date > (sysdate -7) " +
+				    			"WHERE i.id = j.sale_id AND j.id = n.salesaction_id AND j.action_date > (sysdate -?) " +
 				    				" AND j.action_type     = 'AUT' " +
 				    				" AND n.response_code     != 'A' " +
 				    			"GROUP BY i.id ) m " +
 				   " WHERE s.id  = sa.sale_id AND sa.id = p.salesaction_id AND sa.id = m.max_order_sa_id AND s.id = f.sale_id " +
 				    	"AND sa.action_type = 'AUT' AND f.ewallet_trxn_id IS NOT NULL " +
-				    	"AND p.response_code != 'A' AND sa.action_date  > (sysdate - 7) AND NOT EXISTS " +
+				    	"AND p.response_code != 'A' AND sa.action_date  > (sysdate - ?) AND NOT EXISTS " +
 						      "(SELECT 1 " +
 						      "FROM cust.ewallet_txnotify g " +
 						     " WHERE max_order_sa_id = g.salesaction_id " +
@@ -147,7 +148,7 @@ public class EwalletTxNotifyDAO {
 										"select CUST.SYSTEM_SEQ.nextval, 'AUF', gl.ewallet_id, gl.ewallet_tx_id, gl.customer_id," +
 										"SUBSTR(gl.ORDER_ID,1,INSTRB(gl.ORDER_ID, 'X', 1, 1)-1), gl.id, 'Pending' " +
 										"from MIS.gateway_activity_log gl " +
-										"where gl.transaction_time > (sysdate -7) and gl.transaction_type = 'AUTHORIZE' and " +
+										"where gl.transaction_time > (sysdate - ?) and gl.transaction_type = 'AUTHORIZE' and " +
 										"gl.ewallet_tx_id is not null and " +
 										"gl.is_approved = 'N' and gl.status_code != 'ERROR'  and " +
 										" not exists ( select 1 " +
@@ -185,17 +186,34 @@ public class EwalletTxNotifyDAO {
 	
 	private static final String GET_AMOUNT_DATA_FOR_ORDER = "select s.id id, sum(sa.amount) amount " +
 			"from cust.sale s, cust.salesaction sa " +
-			"where s.id = sa.sale_id and sa.action_date > (sysdate - 7)  and sa.action_type = 'STL' " +
+			"where s.id = sa.sale_id and sa.action_type = 'STL' and sa.id in (" +
+							"select ewtxn.salesaction_id " +
+							"from cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
+					   		"where ewtxn.ewallet_id = ew.id and ewtxn.notify_status like 'Pending' and ewtxn.status in ('" +
+							   		EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "', '" +
+							   		EnumSaleStatus.SETTLED.getStatusCode() + "', '" +
+							   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
+						   		"ewtxn.salesaction_id is not null and " +
+					   			"ewtxn.transaction_id is not null and " +
+						   		"ew.ewallet_type like ? ) " +
 			"group by s.id";
 	
 	private static final String GET_AMOUNT_DATA_FOR_STF_AUF_ORDER =
-			"select distinct s.id id, sa.amount amount " +
+			"select s.id id, sa.amount amount " +
 				"from cust.sale s, cust.salesaction sa, " +
 					"(select sale_id, max(id) max_salesaction_id " +
 						"from cust.salesaction " +
-						"where action_date > (sysdate - 7) and (action_type = 'CRO' or action_type = 'MOD') " +
+						"where (action_type = 'CRO' or action_type = 'MOD') and action_date > (sysdate - ?) " +
 						"group by sale_id) d " +
-				"where s.id = sa.sale_id and sa.action_date > (sysdate - 7) and sa.id = max_salesaction_id ";
+				"where s.id = sa.sale_id and sa.id = max_salesaction_id and s.id in ( " +
+					"select ewtxn.order_id " +
+					"from cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
+			   		"where ewtxn.ewallet_id = ew.id and ewtxn.notify_status like 'Pending' and ewtxn.status in ('" +
+					   		EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "', '" +
+					   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
+				   		"ewtxn.salesaction_id is not null and " +
+			   			"ewtxn.transaction_id is not null and " +
+				   		"ew.ewallet_type like ? ) ";
 	
 	private static final String GET_OTHER_DATA_FOR_ORDER = "select s.id id, max(sa.id) salesaction_id, max(auth_code) auth_code " +
 			"from cust.sale s, cust.salesaction sa, cust.payment p " +
@@ -221,7 +239,6 @@ public class EwalletTxNotifyDAO {
 																	   		"where ewtxn.order_id = sa.sale_id and ewtxn.notify_status like 'Pending' and " +
 																	   			"ewtxn.salesaction_id is not null and " +
 																	   			"ewtxn.transaction_id is not null and " +
-																	   			"sa.action_date > (sysdate - 7) and " +
 																	   			"ewtxn.ewallet_id = ew.id and ew.ewallet_type like ?) " +
 																"group by sa.customer_id, sa.sale_id ";
 	
@@ -238,9 +255,16 @@ public class EwalletTxNotifyDAO {
 
 	private static final String GET_OTHER_DATA_FOR_GAL_ORDER = "select gl.id GALId, gl.amount amount, gl.auth_code auth_code, 'AUF' status, gl.transaction_time transaction_time " +
 																		"from MIS.gateway_activity_log gl " +
-																		"where gl.transaction_time > (sysdate -7) and gl.transaction_type = 'AUTHORIZE' and " +
+																		"where gl.transaction_type = 'AUTHORIZE' and " +
 																			"gl.ewallet_tx_id is not null and " +
-																			"gl.is_approved = 'N' and gl.status_code != 'ERROR' ";
+																			"gl.is_approved = 'N' and gl.status_code != 'ERROR' and gl.id in ( " +
+																				"select ewtxn.gateway_activity_log_id " +
+																				"from cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
+																		   		"where ewtxn.ewallet_id = ew.id and ewtxn.notify_status like 'Pending' and ewtxn.status = '" +
+																		   				EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "' and " +
+																		   			"ewtxn.gateway_activity_log_id is not null and " +
+																		   			"ewtxn.transaction_id is not null and " +
+																	   				"ew.ewallet_type like ? )";
 	
 	/****************************************************************
 	 * Final update to Post back
@@ -248,15 +272,25 @@ public class EwalletTxNotifyDAO {
 	private static final String UPDATE_NONGAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where salesaction_id in (";
 	private static final String UPDATE_GAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where gateway_activity_log_id in (";
 	
+	//No of the days of history the queries above will run
+	private int noOfTrxnDays = ErpServicesProperties.geteWalletPostbackMaxDays();
+	
 	
 	public void prepareForPostBack(Connection conn) throws SQLException {
 		PreparedStatement settlementPS = conn.prepareStatement( IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK );
+		settlementPS.setInt(1, noOfTrxnDays);
+		settlementPS.setInt(2, noOfTrxnDays);
+		settlementPS.setInt(3, noOfTrxnDays);
 		int noOfSettlementRecs = settlementPS.executeUpdate();
 		LOGGER.info("Settlement records for Ewallet Postback today : " + noOfSettlementRecs);
 		PreparedStatement onlineAufPS = conn.prepareStatement( IDENTIFY_ONLINE_AUF_FOR_POSTBACK );
+		onlineAufPS.setInt(1, noOfTrxnDays);
 		int noOfOnlineAUFRecs = onlineAufPS.executeUpdate();
 		LOGGER.info("Online Auth Failure records for Ewallet Postback today (GAL) : " + noOfOnlineAUFRecs);
 		PreparedStatement offlineAufPS = conn.prepareStatement( IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK );
+		offlineAufPS.setInt(1, noOfTrxnDays);
+		offlineAufPS.setInt(2, noOfTrxnDays);
+		offlineAufPS.setInt(3, noOfTrxnDays);
 		int noOfOfflineAUFRecs = offlineAufPS.executeUpdate();
 		LOGGER.info("Offline Auth Failure records for Ewallet Postback today : " + noOfOfflineAUFRecs);
 		
@@ -360,7 +394,7 @@ public class EwalletTxNotifyDAO {
 		}
 
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_OTHER_DATA_FOR_GAL_ORDER);
-
+		otherDataPS.setString(1, walletType.getName());
 		ResultSet otherDataRS = otherDataPS.executeQuery();
 		while (otherDataRS.next()) {
 			EwalletPostBackModel pbItem = gALTrxnMap.get(otherDataRS.getString("GALId"));
@@ -476,12 +510,15 @@ public class EwalletTxNotifyDAO {
 	
 	private void loadCommonData(Connection conn, EnumEwalletType walletType) throws SQLException {
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_ORDER);
+		otherDataPS.setString(1, walletType.getName());
 		ResultSet otherDataRS = otherDataPS.executeQuery();
 		while (otherDataRS.next()) {
 			orderAmountMap.put(otherDataRS.getString("id"), otherDataRS.getString("amount"));
 		}
 		
 		PreparedStatement otherAUFDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_STF_AUF_ORDER);
+		otherAUFDataPS.setInt(1, noOfTrxnDays * 10);
+		otherAUFDataPS.setString(2, walletType.getName());
 		ResultSet otherAUFDataRS = otherAUFDataPS.executeQuery();
 		while (otherAUFDataRS.next()) {
 			orderAmountMap.put(otherAUFDataRS.getString("id"), otherAUFDataRS.getString("amount"));
@@ -501,19 +538,23 @@ public class EwalletTxNotifyDAO {
 	public static void main(String args[]) throws SQLException {
 		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:fdstore_prda/fdstore_prda@scan-dev.dev.nyc1.freshdirect.com:1521/devint");
 		//new EwalletTxNotifyDAO().prepareForPostBack(conn);
-/*		PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
-
+		PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
+		stmt.setInt(1, 7);
+		stmt.setInt(2, 7);
+		stmt.setInt(3, 7);
 		int rows = stmt.executeUpdate();
 		System.out.println(rows);
 
 		PreparedStatement onlineAUFstmt = conn.prepareStatement(IDENTIFY_ONLINE_AUF_FOR_POSTBACK);
-
+		onlineAUFstmt.setInt(1, 7);
 		rows = onlineAUFstmt.executeUpdate();
 		System.out.println(rows);
 
 		
 		PreparedStatement offlineAUFstmt = conn.prepareStatement(IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK);
-
+		offlineAUFstmt.setInt(1, 7);
+		offlineAUFstmt.setInt(2, 7);
+		offlineAUFstmt.setInt(3, 7);
 		rows = offlineAUFstmt.executeUpdate();
 		System.out.println(rows);
 		
@@ -525,6 +566,7 @@ public class EwalletTxNotifyDAO {
 		}
 		
 		PreparedStatement amtDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_ORDER);
+		amtDataPS.setString(1, "MP");
 		ResultSet amtDataRS = amtDataPS.executeQuery();
 		while (amtDataRS.next()) {
 			System.out.println(amtDataRS.getString("id") + " , " + amtDataRS.getString("amount"));
@@ -553,10 +595,11 @@ public class EwalletTxNotifyDAO {
 		
 		
 		PreparedStatement gALOtherDataPS = conn.prepareStatement(GET_OTHER_DATA_FOR_GAL_ORDER);
+		gALOtherDataPS.setString(1, "MP");
 		ResultSet gALOtherDataRS = gALOtherDataPS.executeQuery();
 		while (gALOtherDataRS.next()) {
 			System.out.println(gALOtherDataRS.getString("GALId"));
-		}*/
+		}
 		
 		EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
 		System.out.println(dao.getAllTrxnsForPostback(conn, EnumEwalletType.MP));
