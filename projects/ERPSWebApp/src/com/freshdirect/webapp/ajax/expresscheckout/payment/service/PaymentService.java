@@ -50,6 +50,9 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class PaymentService {
 
     private static final PaymentService INSTANCE = new PaymentService();
+	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
+	private static final String MP_EWALLET_CARD="MP_CARD";
+	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
 
     private PaymentService() {
     }
@@ -236,9 +239,36 @@ public class PaymentService {
             }
             paymentDatas.add(paymentData);
         }
+        // Update Shopping Cart if Wallet Cart is selected and available in session
+        updateShoppingCartWithWalletCard(user, request, paymentMethods);
         return paymentDatas;
     }
 
+    /**
+     * @param user
+     * @param request
+     * @param paymentMethods
+     */
+    private void updateShoppingCartWithWalletCard(FDUserI user, HttpServletRequest request,List<ErpPaymentMethodI> paymentMethods){
+    	String session_card = "";
+		if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
+			session_card = request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME).toString();
+		}
+		String selectedWalletCardId="";
+		if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
+			selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
+		}
+		
+		if(session_card != null && selectedWalletCardId != null && session_card.equals(MP_EWALLET_CARD)){
+			for (ErpPaymentMethodI paymentMethod: paymentMethods) {
+				if(paymentMethod.getPK().getId().equals(selectedWalletCardId)){
+					user.getShoppingCart().setPaymentMethod(paymentMethod);
+					break;
+				}
+			}
+		}
+    }
+    
     public List<PaymentData> loadCartPayment(final FDCartI cart, final FDUserI user) {
         List<PaymentData> paymentDatas = new ArrayList<PaymentData>();
         ErpPaymentMethodI payment = cart.getPaymentMethod();
