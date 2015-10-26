@@ -43,14 +43,18 @@ import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupModel;
 import com.freshdirect.fdstore.content.ProductFilterModel;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.fdstore.content.browse.filter.ProductItemFilterFactory;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
@@ -82,6 +86,7 @@ import com.freshdirect.mobileapi.model.Wine;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
+import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 public class BrowseUtil {
@@ -462,6 +467,42 @@ public class BrowseUtil {
 	    	return false;
 		}
 		
+		public static List<ProductModel> filterFiltersInCategory(SessionUser user, ProductContainer pc, List<ProductModel> productList, String filterId){
+			if(pc == null || productList == null || filterId == null){
+				return null;
+			}
+			
+			List<ContentNodeModel> groups = pc.getProductFilterGroups();
+			if(groups == null || groups.size() <= 0)
+				return null;
+			
+			List<ProductModel> toReturn = productList;
+			
+			for(ContentNodeModel group : groups){
+    			ProductFilterGroupModel pf = (ProductFilterGroupModel) group;
+    			for(ContentNodeModel fm : pf.getProductFilterModels()){
+    				ProductFilterModel pfm = (ProductFilterModel) fm;
+    				
+    				if(filterId.equals(pfm.getContentName())){
+    					Set<ProductItemFilterI> activeFilters = new HashSet<ProductItemFilterI>(1);
+    					activeFilters.add(ProductItemFilterFactory.getInstance().getProductFilter(pfm, pc.getContentName(), user.getFDSessionUser()));
+    					List<FilteringProductItem> filteredItems = ProductItemFilterUtil.getFilteredProducts(
+    	    					ProductItemFilterUtil.createFilteringProductItems(productList),
+    	    					activeFilters, true, true);
+    					
+    					if(filteredItems != null && filteredItems.size() > 0){
+    						toReturn = new ArrayList<ProductModel>();
+    						for(FilteringProductItem item : filteredItems){
+    							toReturn.add(item.getProductModel());
+    						}
+    					}
+    				}
+    			}
+    		}
+			
+			return toReturn;
+		}
+		
 		private static  class NameComparator implements Comparator<Category> {
 
 			@Override
@@ -805,10 +846,16 @@ public class BrowseUtil {
 	    	List<ProductModel> productList = new ArrayList<ProductModel>();
 	    	if((contentNode instanceof CategoryModel ) || (contentNode instanceof DepartmentModel)){
 	    		getAllProductsEX(contentNode, requestMessage.getSortBy(), user, request,products, productList);
-	    		LOG.debug("ProductListSize: " + productList.size());
+	    		
+	    		if(requestMessage.getFilterById() != null && !requestMessage.getFilterById().isEmpty()){
+	    			
+	    			productList = filterFiltersInCategory(user, (ProductContainer)contentNode, productList, requestMessage.getFilterById());
+	    			
+	    		}
+    			products = new ArrayList<String>(productList.size());	    		
+	    		
 	    		if(requestMessage.getSortBy() != null && !requestMessage.getSortBy().isEmpty()){
 	    			sortProductsBy(user, productList, requestMessage.getSortBy());
-	    			products = new ArrayList<String>(productList.size());	    		
 	    		}
 	    		for(ProductModel pm : productList){
 	    			products.add(pm.getContentName());
@@ -881,13 +928,34 @@ public class BrowseUtil {
 	    	return sortOptions;
 	    }
 	    
+	    private static List<ProductModel> getProductListForCategory(CategoryModel category){
+	    	if(category == null)
+	    		return null;
+	    	
+	    	List<ProductModel> productList = new ArrayList<ProductModel>();
+	    	productList.addAll(category.getProducts());
+	    	
+	    	List<CategoryModel> subCats = category.getSubcategories();
+	    	
+	    	if(subCats != null && subCats.size() > 0){
+	    		for(CategoryModel subCat : subCats){
+	    			productList.addAll(getProductListForCategory(subCat));
+	    		}
+	    	}
+	    	
+	    	return productList;
+	    	
+	    }
+	    
 	    private static void getFiltersForCategory(CategoryModel category, SortOptionInfo soi, SessionUser user, HttpServletRequest request) {
 	    	if(category == null)
 	    		return;
 	    	
 	    	FilterGroup fg = null;
 	    	FilterGroupItem fgi = null;
+	    	List<ProductModel> productList = getProductListForCategory(category);
 	    	
+	    	List<FilteringProductItem> filteringList = ProductItemFilterUtil.createFilteringProductItems(productList);
 	    	List<ContentNodeModel> pfgiList = category.getProductFilterGroups();
 	    	if(pfgiList != null && pfgiList.size() > 0){
 	    		for(ContentNodeModel tmp : pfgiList){
@@ -897,13 +965,16 @@ public class BrowseUtil {
 	    			fg.setName(pf.getName());
 	    			fg.setId(pf.getContentName());
 	    			soi.addFilterGroup(fg);
-	    			
 	    			for(ContentNodeModel fm : pf.getProductFilterModels()){
 	    				ProductFilterModel pfm = (ProductFilterModel) fm;
-	    				fgi = new FilterGroupItem();
-	    				fgi.setId(pfm.getContentName());
-	    				fgi.setLabel(pfm.getName());
-	    				fg.addFilterGroupItem(fgi);
+	    				
+	    				if(ProductItemFilterUtil.countItemsForFilter(filteringList, ProductItemFilterFactory.getInstance().getProductFilter(pfm, tmp.getParentId(), user.getFDSessionUser()))  > 0){
+		    				fgi = new FilterGroupItem();
+		    				fgi.setId(pfm.getContentName());
+		    				fgi.setLabel(pfm.getName());
+		    				fg.addFilterGroupItem(fgi);
+	    					
+	    				}
 	    			}
 	    		}
 	    	}

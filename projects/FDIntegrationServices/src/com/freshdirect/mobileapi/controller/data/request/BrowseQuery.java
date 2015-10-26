@@ -45,6 +45,7 @@ public class BrowseQuery extends Message {
 	
 	private Integer carouselProductCount;
 	
+	private String filterById;
 
 	public String getZipCode() {
 		return zipCode;
@@ -124,6 +125,14 @@ public class BrowseQuery extends Message {
 
 	public void setSortBy(String sortBy) {
 		this.sortBy = sortBy;
+	}
+	
+	public String getFilterById(){
+		return filterById;
+	}
+	
+	public void setFilterById(String filterById) {
+		this.filterById = filterById;
 	}
 
 	public String getCategory() {

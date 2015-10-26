@@ -765,7 +765,7 @@ function loadStuff() {
   	
   } else if (  loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/"); 
-  	var postdata = '{"id": "fdx_test", "sortBy" : "PRICE"}';
+  	var postdata = '{"id": "fsh_deli_meat", "filterById" : "filter_global_rwa", "sortBy" : "PRICE"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
@@ -1136,14 +1136,14 @@ function doStuff() {
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
   <option value="getAllProductsForCategory">BROWSE - ALL PRODUCTS FOR CATEGORY</option>
-  <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH SORT </option>
+  <option value="getAllProductsForCategoryEX">BROWSE - ALL PRODUCTS FOR CATEGORY WITH REFINE </option>
   <option value="getCatalog">BROWSE - GET CATALOG FOR ADDRESS</option>
   <option value="getAllCatalogKeys">BROWSE - GET ALL CATALOG KEYS</option>
   <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
   <option value="getCatalogKey">BROWSE - GET CATALOG KEY FOR ADDRESS EX</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
     <option value="globalNav">BROWSE - NAVIGATION</option>
-  <option value="getSortOptionsForCat">BROWSE - GET SORT OPTIONS FOR CATEOGRY</option>
+  <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
