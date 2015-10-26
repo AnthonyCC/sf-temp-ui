@@ -6,10 +6,12 @@
 <html>
 
 <head>
-	<fd:css href="/assets/css/social_login.css" />	
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="10" topmargin="10" >
+<body>
 
 	<center>
 	<div class="container" style="width:222px; margin-left :30px;margin-top:25px; margin-bottom: 30;">

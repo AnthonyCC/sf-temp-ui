@@ -15,7 +15,7 @@
 	<br/><br/>
 	
 	<center>
-		<button onclick="close_window()" style="width: 200px;padding: 10px; margin-top: 0px; background-color: #00B800; color: #ffffff; text-align: center; border-radius: 5px; margin-left: 20px;">
+		<button onclick="close_window()">
 			Continue
 		</button>
 	</center>

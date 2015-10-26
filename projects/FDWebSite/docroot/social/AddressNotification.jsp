@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<title></title>
+
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+  
+</head>
 <body>
-
-<h4 align="center">Thank you!</h4>
-<br/><br/>
-<h4 align="center">We'll let you know once we start delivering to your area.</h4>
-<br/><br/>
-
-<button onclick="close_window()" style="width: 200px;padding: 10px; margin-top: 0px; background-color: #00B800; color: #ffffff; text-align: center;
-	border-radius: 5px; margin-left: 90px;">Continue</button>
-
-<script>
-function close_window()
-{
-	window.top['FreshDirect'].components.ifrPopup.close();
-} 
-</script>
-
+	<center>
+		<div id="sulCont" class="signup-style-social signup-social-address-notification">
+			<div class="form-side-social-header">Thank you!</div>
+			<div class="signin-social-forgot-pass-header-message">We'll let you know once we start delivering to your area.</div>
+			
+			<button onclick="close_window()" class="social-login-green-button">Continue</button>
+			
+			<script>
+			function close_window(){
+					window.top['FreshDirect'].components.ifrPopup.close();
+				};
+			$jq( document ).ready(function() {
+				FreshDirect.components.ifrPopup.reposition();
+			});
+			</script>
+		
+		</div>
+	</center>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </body>
 </html>
