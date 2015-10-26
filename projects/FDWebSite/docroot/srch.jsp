@@ -10,7 +10,6 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <%
@@ -46,7 +45,6 @@
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
 <%-- TODO search --%>
-<certona:resonanceJSObject action="init"/>
 <potato:browse/>
 
 <%-- OAS variables --%>

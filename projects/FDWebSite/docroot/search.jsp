@@ -32,13 +32,11 @@
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
 <%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@ page import="com.freshdirect.fdstore.util.CertonaTransitionUtil"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='oscache' prefix='oscache'%>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -49,7 +47,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
 <fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.SEARCH%>"/>
 <fd:PendingOrderChecker/>
-<certona:resonanceJSObject action="init"/>
 
 <%  
 
@@ -63,17 +60,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	//decrease pagesize to 12 if the user is srch_promoted and got recommendations with this variant [APPDEV-3033]
 	int pageSize = 16;
-// 	if(user.getIdentity()!=null){
-// 		Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
-// 		boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
-// 		if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
-// 			pageSize = 12;
-// 		}		
-// 	}
 	// storing the view settings in the session
 	FilteringNavigator nav = new FilteringNavigator(request,pageSize);
 
-  request.setAttribute("filternav", nav);
+	request.setAttribute("filternav", nav);
 
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
@@ -196,20 +186,15 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	 */
 	Recommendations rec = null;
 	boolean promote_recommendation_row = false;
-	boolean fallBack = true;
-	// APPBUG-2401 NOTE: once Certona is introduced to all cohorts, fall-back option can be eliminated
-	final boolean isCertona = CertonaTransitionUtil.isEligibleForCertona(user, EnumSiteFeature.getEnum("SRCH"));
-	if(isCertona || user.getIdentity()!=null){
+	if(user.getIdentity()!=null){
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 	<%
-		fallBack = false;
 		rec = recommendedProducts;  // <-- round #1, personal recommendations, no fall back
 		promote_recommendation_row =
 			Boolean.parseBoolean( rec.getVariant().getServiceConfig().get("srch_promoted") );
 	%>
 	</fd:ProductGroupRecommender>
-	<% }
-	if (!isCertona && fallBack) {
+	<% } else {
 		ProductModel firstProduct = null;		
 		if ( products != null && products.size() > 0 ) {
 			FilteringSortingItem <ProductModel> firstItem = (FilteringSortingItem <ProductModel>)products.get( 0 );

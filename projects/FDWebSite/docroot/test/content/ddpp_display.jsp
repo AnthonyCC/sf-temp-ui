@@ -143,7 +143,7 @@
 														<input type="hidden" name="source" value="cart_selection_<%= transProdIndex %>" />
 														<% transProdIndex++; %>
 												<% }else{ %>
-													<a href="#" onclick="FD_QuickBuy.showPanel('<%= pm.getDepartment() %>', '<%= pm.getParentNode() %>', '<%= pm %>', 'CUSTOMIZE')(); return false;"><img src="/media/images/buttons/customize_blue.gif" height="28" width="89" alt="customize" border="0" /></a>
+													<a href="#" onclick="FD_QuickBuy.showPanel('<%= pm.getDepartment() %>', '<%= pm.getParentNode() %>', '<%= pm %>')(); return false;"><img src="/media/images/buttons/customize_blue.gif" height="28" width="89" alt="customize" border="0" /></a>
 												<% } %>
 											</div>
 											
@@ -176,7 +176,7 @@
 												<input type="hidden" name="source" value="cart_selection_<%= transProdIndex %>" />
 												<% transProdIndex++; %>
 										<% }else{ %>
-											<a href="#" onclick="FD_QuickBuy.showPanel('<%= pm.getDepartment() %>', '<%= pm.getParentNode() %>', '<%= pm %>', 'CUSTOMIZE')(); return false;"><img src="/media/images/buttons/customize_blue.gif" height="28" width="89" alt="customize" border="0" /></a>
+											<a href="#" onclick="FD_QuickBuy.showPanel('<%= pm.getDepartment() %>', '<%= pm.getParentNode() %>', '<%= pm %>')(); return false;"><img src="/media/images/buttons/customize_blue.gif" height="28" width="89" alt="customize" border="0" /></a>
 										<% } %>
 									</div>
 								</div>

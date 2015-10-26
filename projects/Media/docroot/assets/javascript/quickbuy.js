@@ -97,12 +97,11 @@ FD_QuickBuy._includeTrackingCodes = function(uri, tracking) {
  * @param {String} deptId Department ID of product
  * @param {String} catId Parent category ID of product
  * @param {String} prdId Product ID
- * @param {String} differentiator between quickbuy and customize for certona
  * @param {String} iatcNamespace 'instant add to cart' namespace (optional)
  * @param {Object} tracking Object holding various tracking parameters [optional]
  */
 
-FD_QuickBuy.showPanel = function(deptId, catId, prdId, certonaPopUpType, iatcNamespace, tracking) {
+FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) {
 	return function() {
 		var elementId= prdId+'_'+FD_QuickBuy._randomId(16), oStyle;
 		var ctPanel = new YAHOO.widget.Panel(elementId, {
@@ -133,7 +132,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, certonaPopUpType, iatcNam
 
 		
 
-		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId+'&amp;coremetrics.pageid='+encodeURIComponent(FreshDirect.Coremetrics.pageId)+'&amp;coremetrics.pagecontenthierarchy='+encodeURIComponent(FreshDirect.Coremetrics.pageContentHierarchy)+'&amp;certona.popUpType='+encodeURIComponent(certonaPopUpType);
+		var uri = '/quickbuy/product.jsp?catId='+encodeURIComponent(catId)+'&amp;productId='+encodeURIComponent(prdId)+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId+'&amp;coremetrics.pageid='+encodeURIComponent(FreshDirect.Coremetrics.pageId)+'&amp;coremetrics.pagecontenthierarchy='+encodeURIComponent(FreshDirect.Coremetrics.pageContentHierarchy);
 
 		// store DOM ID
 		uri += '&amp;uid='+encodeURIComponent(elementId);
@@ -264,11 +263,10 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
  * @param {Object} btn Quick Buy button
  * @param {Object} prd Product object with three attributes: departmentId, categoryId and productId
  * 					optional fourth param the current wine dept id
- * @param {String} differentiator between quickbuy and customize for certona
  * @param {Object} tracking Optional parameter. It contains various codes such as variantId, impressionId, etc.
  * 
  */
-FD_QuickBuy.decorate = function(hotspot, btn, prd, certonaPopUpType, tracking) {
+FD_QuickBuy.decorate = function(hotspot, btn, prd, tracking) {
 	var __btns = YAHOO.lang.isArray(btn) ? btn : [btn];
 	var __btn = YAHOO.util.Dom.get(__btns[0]); // default button
 
@@ -292,7 +290,7 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd, certonaPopUpType, tracking) {
 
 	// BUTTONS / click receivers
 	//
-	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId, certonaPopUpType, null ,tracking);
+	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId, null, tracking);
 
 	var k;
 	for (k in __btns) {

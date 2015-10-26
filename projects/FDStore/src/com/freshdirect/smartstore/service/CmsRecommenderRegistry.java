@@ -22,7 +22,6 @@ import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.external.certona.CertonaInfrastructure;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -48,7 +47,6 @@ public class CmsRecommenderRegistry {
 
 	private void load(boolean forceReload) {
 		ScarabInfrastructure.reload();
-		CertonaInfrastructure.reload();
 		Map<String, RecommendationService> tmpSmartCatVariants = new HashMap<String, RecommendationService>();
 		Set<ContentKey> rss = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECOMMENDER_STRATEGY);
 		if (smartCatVariants == null) {

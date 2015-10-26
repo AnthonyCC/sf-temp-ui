@@ -12,7 +12,6 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <potato:cartConfirm name="cartConfirmPotatoes" cartlineId='${param.cartlineId}'/>
-<% request.setAttribute("cartConfirmInputForCertona", cartConfirmPotatoes); %>
 <c:if test="${cartConfirmPotatoes == null}">
 	<jsp:forward page="/checkout/view_cart.jsp"/>
 </c:if>

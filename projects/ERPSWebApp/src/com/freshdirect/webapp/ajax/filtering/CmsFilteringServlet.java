@@ -19,8 +19,6 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.external.certona.CertonaUserContextHolder;
-import com.freshdirect.smartstore.external.certona.CertonaUtil;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
@@ -51,8 +49,6 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 			final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
 			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 
-			adjustCertonaSearchStatus(navigator, result);
-	
 			writeResponseData(response, result);
 		} catch (InvalidFilteringArgumentException e) {
 			returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request
@@ -76,15 +72,8 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 		try {
 			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request);
 			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
-			CertonaUserContextHolder.initCertonaContextFromCookies(request);
-			CertonaUserContextHolder.setId(navigator.getId());
-			CertonaUserContextHolder.setSearchParam(navigator.getSearchParams());
 			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
-
-			// certona extension
-			adjustCertonaSearchStatus(navigator, flow);
-
 
 			if ( request.getParameterMap().keySet().contains("data") ) {
 				final Map<String, Object> clientInput;
@@ -141,15 +130,6 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 				}				
 			}
 			
-			String certonaPageId = null;
-			if(FilteringFlowType.BROWSE.equals(navigator.getPageType()) ) {
-				certonaPageId = "BROWSE";
-			} else {
-				certonaPageId = "SRCH";
-			}
-			//add certona data
-			CertonaUtil.appendCertonaObjectToPayload(CertonaUtil.getCertonaResonanceData(request, certonaPageId, user, null, navigator.getId()), (Map<String, Object>) payload);
-			
 			writeResponseData(response, payload);
 			
 		} catch (FDResourceException e) {
@@ -179,48 +159,5 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	@Override
 	protected int getRequiredUserLevel() {		
 		return FDUserI.GUEST;
-	}
-
-	/**
-	 * Utility function that maintains certona context
-	 * based on recent navigation flow result
-	 * 
-	 * @param navigator
-	 * @param result
-	 */
-	public static void adjustCertonaSearchStatus(final CmsFilteringNavigator navigator, final CmsFilteringFlowResult result) {
-		// certona extension
-		if (navigator.getPageType().isSearchLike() && result.getBrowseDataPrototype() != null) {
-			switch (navigator.getPageType()) {
-			case SEARCH:
-				if (result.getBrowseDataPrototype().getSearchParams() != null && result.getBrowseDataPrototype().getSearchParams().getTabs() != null) {
-					// assume search operation was executed
-					for (Tab t : result.getBrowseDataPrototype().getSearchParams().getTabs()) {
-						// pick active tab, check the search result
-						if (t.isActive()) {
-							if (t.getHits() > 0) {
-								CertonaUserContextHolder.setSuccessfulSearch(true);
-								break;
-							}
-						}
-					}
-				}
-				break;
-			case NEWPRODUCTS:
-				// TBD
-				break;
-			case PRES_PICKS:
-				// TBD
-				break;
-			case ECOUPON:
-				// TBD
-				break;
-			default:
-				// DO NOTHING
-				break;
-			}
-			
-			
-		}
 	}
 }

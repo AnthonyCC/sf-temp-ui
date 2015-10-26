@@ -3,7 +3,6 @@ package com.freshdirect.webapp.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +29,6 @@ import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.CertonaTransitionUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -242,52 +240,15 @@ public class ProductRecommenderUtil {
 	}
 	
 	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
-		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_CAT_LST");
-
-		if (CertonaTransitionUtil.isEligibleForCertona(user, siteFeature)) {
-			// single-step recommender for Certona customers
-			return doRecommend(user, null, siteFeature, MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
-		}
-
-		// recommenders for Scarab customers
-		Recommendations recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
-		
-		return recommendations;
+		return doRecommend(user, null,
+			EnumSiteFeature.getEnum("BRWS_CAT_LST"),
+			MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 	}
 
 	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
-		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_PRD_LST");
-
-		if (CertonaTransitionUtil.isEligibleForCertona(user, siteFeature)) {
-			// single-step recommender for Certona customers
-			return doRecommend(user, null,
-				siteFeature,
-				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
-		}
-
-
-		//   Get YMAL recommendations triggered by the first product from the selection
-		//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
-		ContentNodeModel currentNode = null;
-		if (keys.size() > 0) {
-			currentNode = ContentFactory.getInstance().getContentNodeByKey(keys.iterator().next());
-		}
-
-		SessionInput si = new SessionInput.Builder()
-				.setUser(user)
-				.setExcludeAlcoholicContent(false)
-				.setMaxRecommendations(MAX_CAT_SCARAB_RECOMMENDER_COUNT)
-				.setCurrentNode(currentNode)
-				.setCartContents(keys)
-				.setExcludeCartContent(true)
-				.build();
-
-		/* recommendations = doRecommend(user, null,
-				EnumSiteFeature.getEnum("SRCH_RLTD"),
-				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, currentNode); */
-		Recommendations recommendations = doRecommend(user, EnumSiteFeature.getEnum("SRCH_RLTD"), si);
-
-		return recommendations;
+		return doRecommend(user, null,
+			EnumSiteFeature.getEnum("BRWS_PRD_LST"),
+			MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
 	}
 	
 	public static Recommendations getSearchPageRecommendations(FDUserI user, ProductData product) throws FDResourceException {

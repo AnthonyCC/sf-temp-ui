@@ -81,9 +81,6 @@
 		<span class="bull">&bull;</span> <a href="compare_variants.jsp"><span>Variants Comparison</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="certona.jsp"><span>Certona Test Page</span></a>
-		</p>
-    	<p>
 		<span class="bull">&bull;</span> <a href="view_tabs.jsp"><span>View Cart Tab Strategies</span></a>
 		</p>
     	<p>

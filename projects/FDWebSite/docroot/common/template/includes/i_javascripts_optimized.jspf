@@ -5,7 +5,6 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
 	<%
@@ -48,8 +47,6 @@
     <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
     <jwr:script src="/fdccl.js"  useRandomParam="false" />
   <% } %>
-
-	<certona:resonanceJSObject action="init"/>
 	
 	<script type="text/javascript">
 

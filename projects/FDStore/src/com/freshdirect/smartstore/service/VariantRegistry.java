@@ -18,7 +18,6 @@ import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
-import com.freshdirect.smartstore.external.certona.CertonaInfrastructure;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -84,7 +83,6 @@ final public class VariantRegistry {
 	private void load() {
 		try {
 			ScarabInfrastructure.reload();
-			CertonaInfrastructure.reload();
 			EnumSiteFeature.refresh();
 			SmartStoreServiceConfigurationSB sb;
 

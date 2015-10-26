@@ -14,7 +14,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%!
 // final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -449,7 +448,5 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		}
 	%>
 <% } %>
-<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
-<certona:resonanceJSObject action="create"/>
 </tmpl:put>
 </tmpl:insert>

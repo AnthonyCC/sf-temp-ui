@@ -1,4 +1,4 @@
-/*global quickshop,certona*/
+/*global quickshop*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -57,11 +57,6 @@ var FreshDirect = FreshDirect || {};
 
         data.itemType = fd.quickshop.itemType || 'general';
         data.searchTerm = $('#searchTerm').val();
-        certona.itemid = '';
-        $.each(data.data, function(i) {
-          certona.itemid = certona.itemid.concat(data.data[i].productId).concat(';');
-        });
-        certona.itemid = certona.itemid.substring(0, certona.itemid.length - 1).toUpperCase();
         data.data=data.data.map(setAdditionalInfos);
         $content.attr('data-items', data.data.length);
 

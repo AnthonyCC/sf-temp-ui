@@ -17,7 +17,6 @@ import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
-import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -60,8 +59,6 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			
 			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(nav, user);
-			
-			CmsFilteringServlet.adjustCertonaSearchStatus(nav, result);
 			
 			ctx.setAttribute(name, DataPotatoField.digBrowse(result));
 		

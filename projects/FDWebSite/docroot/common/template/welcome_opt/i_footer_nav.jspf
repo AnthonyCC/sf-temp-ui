@@ -13,10 +13,6 @@
 
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
-
-<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
-<certona:resonanceJSObject action="create"/>
 
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <%@ include file="/common/template/includes/footer_grid24.jspf" %>

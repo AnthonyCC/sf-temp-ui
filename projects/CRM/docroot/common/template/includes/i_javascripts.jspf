@@ -1,6 +1,5 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%-- this file will be included in the <head> tag --%>
 	
 	<%@ include file="/shared/template/includes/yui.jspf" %>
@@ -23,8 +22,6 @@
 
 <!--	<script src="/assets/javascript/jquery.hint.js" type="text/javascript" language="javascript"></script> -->
 	<script src="/assets/javascript/jquery.pwstrength.js" type="text/javascript" language="javascript"></script>	
-	
-	<certona:resonanceJSObject action="init"/>
 	
 	<script type="text/javascript" language="javascript">
 		var $jq;

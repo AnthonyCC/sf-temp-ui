@@ -27,9 +27,7 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <fd:CheckLoginStatus id="user"/>
-<certona:resonanceJSObject action="init"/>
 <%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 

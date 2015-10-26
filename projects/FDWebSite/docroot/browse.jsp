@@ -11,14 +11,11 @@
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.PRES_PICKS%>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
-
-<certona:resonanceJSObject action="init"/>
 <%--Might be useless
  <potato:globalnav/> --%> 
 <potato:browse/>

@@ -8,10 +8,6 @@
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
-
-<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
-<certona:resonanceJSObject action="create"/>
 
 <% 
     String bottomUri = request.getRequestURI();

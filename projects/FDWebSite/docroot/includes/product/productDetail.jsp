@@ -13,10 +13,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
-<certona:resonanceJSObject action="init"/>
 
 <potato:merchant productId='${param.productId}' categoryId='${param.catId}' upSellName="evenBetter" crossSellName="xsell"/>
 <potato:images images="imagePotato" productId='${param.productId}' categoryId='${param.catId}'/>

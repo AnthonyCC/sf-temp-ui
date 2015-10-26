@@ -12,7 +12,6 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag" %>
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 
 <fd:CheckLoginStatus id="user"/>
 <fd:FDShoppingCart id='cart' result='result'>
@@ -96,8 +95,6 @@ ERROR!
 <%
 	}
 %>
-<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
-<certona:resonanceJSObject action="create"/>
 
 </body>
 </html>

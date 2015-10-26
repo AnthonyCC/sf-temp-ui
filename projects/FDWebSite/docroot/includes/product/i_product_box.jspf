@@ -145,7 +145,7 @@
 				} else {
 					String _deptId = pm.getDepartment().getContentKey().getId();
 		%>
-					<button class="customize" onclick="FD_QuickBuy.showPanel('<%= _deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', 'CUSTOMIZE', '<%= namespaceName %>')();"></button>
+					<button class="customize" onclick="FD_QuickBuy.showPanel('<%= _deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= namespaceName %>')();"></button>
 		<%
 				}
 			} else {
