@@ -252,7 +252,7 @@ public class CheckoutService {
 			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
 				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
-			if(formpaymentData.getSelected().equals(selectedWalletCardId)){
+			if(formpaymentData.getSelected() != null && formpaymentData.getSelected().equals(selectedWalletCardId)){
 				for (PaymentData data : payments) {
 					data.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
 					if( (session_card != null && session_card.equals(MP_EWALLET_CARD)) ){
