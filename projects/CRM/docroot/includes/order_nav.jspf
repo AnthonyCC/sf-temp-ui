@@ -194,7 +194,7 @@ boolean hasCase = false;
 				<% if (!o_modify && orderPermissions.allowModifyOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"order_modify.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;">
 						<% if (hasCustomerCase && isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %>
-							<a href="masquerade.jsp?modifyOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+							<a href="/main/masquerade.jsp?modifyOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
 						<% } %>
 						Modify Order
 						<%if(hasCustomerCase && isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %></a><%}%>
@@ -222,7 +222,7 @@ boolean hasCase = false;
 				<%if(isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"shop_from_order.jsp")){%>
 				    <div class="cust_sub_nav" style="width: 120px;">
 				    	<% if (hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %>
-				    		<a href="masquerade.jsp?shopFromOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+				    		<a href="/main/masquerade.jsp?shopFromOrderId=<%= nav_orderId %>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
 				    	<% } %>
 				    	Reorder
 				    	<% if (hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")) { %></a><% } %>
@@ -231,7 +231,7 @@ boolean hasCase = false;
 				<%if(o_details && isRegularOrder && orderPermissions.allowComplaint()){%>
 				    <div class="cust_sub_nav" style="width: 120px;">
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
-				    		<a href="masquerade.jsp?makeGoodFromOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+				    		<a href="/main/masquerade.jsp?makeGoodFromOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
 				    	<%}%>
 				    		MakeGood
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
