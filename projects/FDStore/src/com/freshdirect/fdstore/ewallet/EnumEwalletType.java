@@ -35,11 +35,11 @@ public class EnumEwalletType extends ValuedEnum {
 		return getEnumMap(EnumEwalletType.class);
 	}
 
-	public static List getEnumList() {
+	public static List<EnumEwalletType> getEnumList() {
 		return getEnumList(EnumEwalletType.class);
 	}
 
-	public static Iterator iterator() {
+	public static Iterator<EnumEwalletType> iterator() {
 		return iterator(EnumEwalletType.class);
 	}
 	

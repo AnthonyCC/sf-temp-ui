@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -78,32 +79,36 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
-			trxns = dao.getAllTrxnsForPostback(conn, EnumEwalletType.MP);
-
-			int chunkSize = ErpServicesProperties.geteWalletPostbackChunkSize();
 			
-			if (trxns.size() > 0) {
-				int i = 0;
-				if (chunkSize > 0) {
-					for (; i < (trxns.size() / chunkSize); i++) {
-						EwalletResponseData resp = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, (i + 1)*chunkSize)), 
-																EnumEwalletType.MP);
-						
-						if (resp.getTrxns() != null && resp.getTrxns().size() > 0) {
-							dao.updateTrxnStatus(conn, resp.getTrxns());
-							conn.commit();
+			for (Iterator<EnumEwalletType> enumIter = EnumEwalletType.iterator(); enumIter.hasNext(); ) {
+				EnumEwalletType ewType = enumIter.next();
+				trxns = dao.getAllTrxnsForPostback(conn, ewType);
+
+				int chunkSize = ErpServicesProperties.geteWalletPostbackChunkSize();
+				
+				if (trxns.size() > 0) {
+					int i = 0;
+					if (chunkSize > 0) {
+						for (; i < (trxns.size() / chunkSize); i++) {
+							EwalletResponseData resp = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, (i + 1)*chunkSize)), 
+									ewType);
+							
+							if (resp.getTrxns() != null && resp.getTrxns().size() > 0) {
+								dao.updateTrxnStatus(conn, resp.getTrxns());
+								conn.commit();
+							}
 						}
 					}
+					EwalletResponseData remaining = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, trxns.size())), 
+							ewType);
+					
+					if (remaining.getTrxns() != null && remaining.getTrxns().size() > 0) {
+						dao.updateTrxnStatus(conn, remaining.getTrxns());
+						conn.commit();
+					}
+				} else {
+					LOGGER.info("No transactions are posted for today");
 				}
-				EwalletResponseData remaining = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, trxns.size())), 
-																EnumEwalletType.MP);
-				
-				if (remaining.getTrxns() != null && remaining.getTrxns().size() > 0) {
-					dao.updateTrxnStatus(conn, remaining.getTrxns());
-					conn.commit();
-				}
-			} else {
-				LOGGER.info("No transactions are posted for today");
 			}
 
 		} catch(SQLException e) {

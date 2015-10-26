@@ -186,16 +186,14 @@ public class EwalletTxNotifyDAO {
 	
 	private static final String GET_AMOUNT_DATA_FOR_ORDER = "select s.id id, sum(sa.amount) amount " +
 			"from cust.sale s, cust.salesaction sa " +
-			"where s.id = sa.sale_id and sa.action_type = 'STL' and sa.id in (" +
-							"select ewtxn.salesaction_id " +
-							"from cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
-					   		"where ewtxn.ewallet_id = ew.id and ewtxn.notify_status like 'Pending' and ewtxn.status in ('" +
-							   		EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "', '" +
-							   		EnumSaleStatus.SETTLED.getStatusCode() + "', '" +
-							   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
-						   		"ewtxn.salesaction_id is not null and " +
-					   			"ewtxn.transaction_id is not null and " +
-						   		"ew.ewallet_type like ? ) " +
+			"where s.id = sa.sale_id and sa.action_type = 'STL' and s.id in ( " +
+					"select ewtxn.order_id " +
+					"from cust.ewallet_txnotify ewtxn, cust.ewallet ew " +
+			   		"where ewtxn.ewallet_id = ew.id and ewtxn.notify_status like 'Pending' and ewtxn.status = '" +
+					   		EnumSaleStatus.SETTLED.getStatusCode() + "' and " +
+				   		"ewtxn.salesaction_id is not null and " +
+			   			"ewtxn.transaction_id is not null and " +
+				   		"ew.ewallet_type like ? ) " +
 			"group by s.id";
 	
 	private static final String GET_AMOUNT_DATA_FOR_STF_AUF_ORDER =
