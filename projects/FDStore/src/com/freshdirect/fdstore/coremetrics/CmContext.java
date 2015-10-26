@@ -56,7 +56,8 @@ public class CmContext implements Serializable {
 	/**
 	 * Enterprise ID := FD client ID in CoreMetrics system
 	 */
-	public static final String ENTERPRISE_ID = "51640000";
+	public static final String ENTERPRISE_ID 		= "51640000";
+	public static final String ENTERPRISE_ID_TEST	= "81640000";
 	
 	
 	/**
@@ -438,28 +439,61 @@ public class CmContext implements Serializable {
 		public CmContext build() {
 			CmContext ctx = new CmContext();
 
+			final String siteId = global
+					? CmInstance.GLOBAL.getSiteId()
+					: this.instance.getSiteId();
+			
 			if (global) {
 				// Do not send events as global ctx is abstract
 				ctx.setEnabled(false);
 				ctx.setInstance(CmInstance.GLOBAL);
 				ctx.setTestAccount(testAcc);
 				ctx.setClientId( clientId );
-				ctx.setSiteId( CmInstance.GLOBAL.getSiteId() );
+				ctx.setSiteId( siteId );
 			} else {
 				ctx.setEnabled(isEnabled);
 				ctx.setInstance(instance);
 				ctx.setTestAccount(testAcc);
 				ctx.setClientId( clientId );
-				ctx.setSiteId( this.instance.getSiteId() );
+				ctx.setSiteId( siteId );
 			}
 
 			if (clientId != null) {
-				ctx.setCompoundId(
-					ENTERPRISE_ID + "|" + this.clientId
-				);
+				StringBuilder bld = new StringBuilder();
+				if (testAcc) {
+					bld.append(ENTERPRISE_ID_TEST);
+				} else {
+					bld.append(ENTERPRISE_ID);
+				}
+
+				bld.append("|");
+
+				if (CmInstance.FDW == this.instance) {
+					bld.append( this.clientId );
+				} else {
+					bld.append( siteId );
+				}
+
+				ctx.setCompoundId( bld.toString() );
 			}
 
 			return ctx;
 		}
 	}
+	
+	/*** TEST CODE FOR APPDEV-4496
+	public static void main(String[] args) {
+		
+		
+		for (final EnumEStoreId eStore : EnumEStoreId.values()) {
+			for (final CmFacade facade : CmFacade.values()) {
+				CmContext ctx1 = CmContext.createContextFor(eStore, facade, false);
+				CmContext ctx2 = CmContext.createContextFor(eStore, facade, true);
+				
+				System.out.println( eStore + "/" + facade + " --> " + ctx1.getCompoundId() );
+				System.out.println( eStore + "/" + facade + " --> " + ctx2.getCompoundId() );
+			}
+		}
+	}
+	***/
 }
