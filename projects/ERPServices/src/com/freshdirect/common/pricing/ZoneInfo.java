@@ -11,40 +11,18 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	private final String salesOrg;
 	private final String distributionChanel;
 	private final ZoneInfo parent;
-	public enum PricingIndicator {BASE("B"),SALE("S");
 	
-		private PricingIndicator(String value) {
-			this.value=value;
-		}
-		public String getValue() {
-			return value;
-		}
-		private String value;
-	};
-	private final PricingIndicator pricingIndicator;
-	
-	
-	public ZoneInfo(String zoneId,String salesOrg,String distributionChanel,PricingIndicator pricingIndicator,ZoneInfo parent) {
+	public ZoneInfo(String zoneId,String salesOrg,String distributionChanel,ZoneInfo parent) {
 		this.zoneId=zoneId;
 		this.salesOrg=salesOrg;
 		this.distributionChanel=distributionChanel;
 		this.parent=parent;
-		this.pricingIndicator=pricingIndicator;
 	}
 	public ZoneInfo(String zoneId,String salesOrg,String distributionChanel) {
 		this.zoneId=zoneId;
 		this.salesOrg=salesOrg;
 		this.distributionChanel=distributionChanel;
 		this.parent=null;
-		this.pricingIndicator=PricingIndicator.SALE;
-	}
-	
-	private ZoneInfo(String zoneId,String salesOrg,String distributionChanel,ZoneInfo parent) {
-		this.zoneId=zoneId;
-		this.salesOrg=salesOrg;
-		this.distributionChanel=distributionChanel;
-		this.parent=parent;
-		this.pricingIndicator=PricingIndicator.SALE;
 	}
 
 	public String getPricingZoneId() {
@@ -148,8 +126,7 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	@Override
 	public String toString() {
 		return "ZoneInfo [zoneId=" + zoneId + ", salesOrg=" + salesOrg
-				+ ", distributionChanel=" + distributionChanel 
-				+ ", pricingIndicator=" + pricingIndicator +", parent="
+				+ ", distributionChanel=" + distributionChanel + ", parent="
 				+ parent + "]";
 	}
 	/**
@@ -192,12 +169,6 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	
 	public ZoneInfo getParentZone() {
 		return this.parent;
-	}
-	/**
-	 * @return the pricingIndicator
-	 */
-	public PricingIndicator getPricingIndicator() {
-		return pricingIndicator;
 	}
 	
 	
