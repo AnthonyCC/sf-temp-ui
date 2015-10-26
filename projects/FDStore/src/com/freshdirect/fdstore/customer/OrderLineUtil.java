@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.customer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -293,22 +294,25 @@ public class OrderLineUtil {
             if (componentGroups != null) {
                 for (ComponentGroupModel componentGroup : componentGroups) {
                     if (componentGroup.getOptionalProducts().isEmpty()) {
-                       List<String> characteristicNames = componentGroup.getCharacteristicNames();
-                       for (FDVariation variation : product.getVariations()) {
-                           if (characteristicNames.contains(variation.getName())) {
-                               for (FDVariationOption variationOption : variation.getVariationOptions()) {
-                                   ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
-                                   List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
-                                   if (includeSideBoxProductModels.isEmpty()) {
-                                       appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxProductModel.getFullName());
-                                   } else {
-                                       for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
-                                           appendVariationOptionDescriptionToConfigurationDescription(confDescr, includeSideBoxProductModel.getFullName());
-                                       }
-                                   }
-                               }
-                           }
-                       }
+                        Map<String, FDVariationOption[]> variationOptions = new HashMap<String, FDVariationOption[]>();
+                        for (FDVariation variation : product.getVariations()) {
+                            variationOptions.put(variation.getName(), variation.getVariationOptions());
+                        }
+                        for (String characteristicName : componentGroup.getCharacteristicNames()) {
+                            if (variationOptions.containsKey(characteristicName)) {
+                                for (FDVariationOption variationOption : variationOptions.get(characteristicName)) {
+                                    ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
+                                    List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
+                                    if (includeSideBoxProductModels.isEmpty()) {
+                                        appendVariationOptionDescriptionToConfigurationDescription(confDescr, sideBoxProductModel.getFullName());
+                                    } else {
+                                        for (ProductModel includeSideBoxProductModel : includeSideBoxProductModels) {
+                                            appendVariationOptionDescriptionToConfigurationDescription(confDescr, includeSideBoxProductModel.getFullName());
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -1,8 +1,11 @@
 package com.freshdirect.webapp.ajax.holidaymealbundle.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
@@ -63,7 +66,7 @@ public class HolidayMealBundleService {
             if (componentGroups != null) {
                 for (ComponentGroupModel componentGroup : componentGroups) {
                     if (componentGroup.getOptionalProducts().isEmpty()) {
-                        mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, defaultSkuModel.getProduct().getVariations())));
+                        mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, defaultSkuModel.getProduct())));
                     }
                 }
             }
@@ -71,12 +74,15 @@ public class HolidayMealBundleService {
         return mealIncludes;
     }
 
-    private List<HolidayMealBundleIncludeMealProductData> populateIncludeMealProducts(ComponentGroupModel componentGroup, FDVariation[] variations) throws FDSkuNotFoundException {
+    private List<HolidayMealBundleIncludeMealProductData> populateIncludeMealProducts(ComponentGroupModel componentGroup, FDProduct product) throws FDSkuNotFoundException {
         List<HolidayMealBundleIncludeMealProductData> includeMealProducts = new ArrayList<HolidayMealBundleIncludeMealProductData>();
-        List<String> characteristicNames = componentGroup.getCharacteristicNames();
-        for (FDVariation variation : variations) {
-            if (characteristicNames.contains(variation.getName())) {
-                for (FDVariationOption variationOption : variation.getVariationOptions()) {
+        Map<String, FDVariationOption[]> variationOptions = new HashMap<String, FDVariationOption[]>();
+        for (FDVariation variation : product.getVariations()) {
+            variationOptions.put(variation.getName(), variation.getVariationOptions());
+        }
+        for (String characteristicName : componentGroup.getCharacteristicNames()) {
+            if (variationOptions.containsKey(characteristicName)) {
+                for (FDVariationOption variationOption : variationOptions.get(characteristicName)) {
                     ProductModel sideBoxProductModel = ContentFactory.getInstance().getProduct(variationOption.getSkuCode());
                     List<ProductModel> includeSideBoxProductModels = sideBoxProductModel.getIncludeProducts();
                     if (includeSideBoxProductModels.isEmpty()) {
