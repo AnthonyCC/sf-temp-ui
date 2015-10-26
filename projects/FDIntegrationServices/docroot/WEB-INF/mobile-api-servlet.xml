@@ -144,8 +144,8 @@
 				<prop key="**/newproduct.do">newProductController</prop>
 				<prop key="**/sociallogin.do">socialLoginController</prop>
 				<prop key="**/newbrowse.do">newBrowseController</prop>
-				<prop key="**/ewallet.do">ewalletStatusController</prop>
-<!-- 				<prop key="**/ewalletcheckout.do">ewalletCheckoutController</prop>
+<!-- 				<prop key="**/ewallet.do">ewalletStatusController</prop>
+				<prop key="**/ewalletcheckout.do">ewalletCheckoutController</prop>
 				<prop key="ewalletcheckoutdata.do">ewalletCheckoutController</prop>
 				<prop key="ewalletprecheckout.do">ewalletExpressController</prop>
 				<prop key="ewalletexpresscheckout.do">ewalletExpressController</prop> -->
