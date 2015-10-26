@@ -98,8 +98,9 @@
 		
     	<bean id="newBrowseController" class="com.freshdirect.mobileapi.controller.NewBrowseController"
 		parent="baseController" />
-			<bean id="ewalletStatusController" class="com.freshdirect.mobileapi.controller.EwalletStatusController"
-		parent="baseController" />
+		
+	<!-- <bean id="ewalletStatusController" class="com.freshdirect.mobileapi.controller.EwalletStatusController"
+		parent="baseController" />  -->
 	
 <!-- 	<bean id="ewalletCheckoutController" class="com.freshdirect.mobileapi.controller.EwalletCheckoutController"
 		parent="baseController" />
