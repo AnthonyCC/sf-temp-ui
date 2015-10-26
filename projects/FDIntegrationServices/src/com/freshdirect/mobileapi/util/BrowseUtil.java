@@ -964,7 +964,6 @@ public class BrowseUtil {
 	    			fg = new FilterGroup();
 	    			fg.setName(pf.getName());
 	    			fg.setId(pf.getContentName());
-	    			soi.addFilterGroup(fg);
 	    			for(ContentNodeModel fm : pf.getProductFilterModels()){
 	    				ProductFilterModel pfm = (ProductFilterModel) fm;
 	    				
@@ -972,9 +971,12 @@ public class BrowseUtil {
 		    				fgi = new FilterGroupItem();
 		    				fgi.setId(pfm.getContentName());
 		    				fgi.setLabel(pfm.getName());
-		    				fg.addFilterGroupItem(fgi);
-	    					
+		    				fg.addFilterGroupItem(fgi);	    					
 	    				}
+	    				
+	    			}
+	    			if(fg.getFilterGroupItems() != null && fg.getFilterGroupItems().size() > 0){
+		    			soi.addFilterGroup(fg);
 	    			}
 	    		}
 	    	}
