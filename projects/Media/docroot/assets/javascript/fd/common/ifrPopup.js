@@ -133,8 +133,8 @@ var FreshDirect = FreshDirect || {};
         
         try {
             $ifr[0].contentWindow.resizeTo=function(width,height){
-              height = height || 200;
-              width = width || 200;
+              height = height || 400;
+              width = width || 400;
 
               maxwidth = width;
               maxheight = height;
@@ -155,7 +155,7 @@ var FreshDirect = FreshDirect || {};
         	var $ifr = $('#ifrPopup iframe'), $body = $($ifr[0].contentWindow.document.body), height, width;
 
             try {
-            	var configH = config.height||200, configW = config.width||200;
+            	var configH = config.height||400, configW = config.width||400;
             	height = configH+$('.qs-popup-close-icon').height();
             	width = Math.min(1000, Math.max(configW, $body.innerWidth()+$('.qs-popup-close-icon').width()));
             	$ifr[0].contentWindow.resizeTo(width, height);
