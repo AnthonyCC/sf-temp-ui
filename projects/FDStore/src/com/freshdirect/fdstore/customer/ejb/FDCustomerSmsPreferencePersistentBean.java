@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
@@ -133,8 +134,8 @@ public class FDCustomerSmsPreferencePersistentBean extends DependentPersistentBe
 				model.setDeliveryNotification(this.DeliveryNotification);
 				model.setFdxOffersNotification(this.FdxOfferNotification);
 				model.setFdxdeliveryNotification(this.FdxDeliveryNotification);
-				model.setSmsPreferenceflag(this.smsPreferenceflag !=null? this.smsPreferenceflag:"N");
-				model.setFdxSmsPreferenceflag(this.fdxSmsPreferenceflag!=null? this.fdxSmsPreferenceflag:"N");
+        model.setSmsPreferenceflag(this.smsPreferenceflag);
+        model.setFdxSmsPreferenceflag(this.fdxSmsPreferenceflag);
 				
 				ps.close();
 				rs.close();
