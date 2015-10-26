@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
@@ -359,6 +360,11 @@ public class FDProductInfo extends FDSku  {
         		}
         		if(zpModel==null) {
         			LOGGER.debug("No price setup for zone: "+zone+" and sku=>"+this.getSkuCode());
+        		}
+        		
+        		if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())) {
+        			
+        			zpModel= new ZonePriceInfoModel(zpModel.getSellingPrice(), 0, zpModel.getDefaultPriceUnit(), zpModel.getDisplayableDefaultPriceUnit(),false,0,0,zpModel.getZoneInfo(),false);
         		}
         		return zpModel;
         }
