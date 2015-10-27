@@ -156,7 +156,12 @@ public class ExternalAccountController extends BaseController implements SystemM
 					
 					if(isFDAccountExist == 0) {
 						// FD Account and No Social link
-						userLogin(socialEmail, session, request, response);			
+						SessionUser sessionUser = getUserFromSession(request, response);
+						if(sessionUser.isLoggedIn()){
+							logout(model, user, request, response);
+						}
+						userLogin(socialEmail, session, request, response);		
+						user = getUserFromSession(request, response);
 						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 							ExternalAccountManager.linkUserTokenToUserId(
 								user.getFDSessionUser().getIdentity().getErpCustomerPK(),
@@ -166,7 +171,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 								socialUser.get("provider"),
 								socialUser.get("displayName"),
 								socialUser.get("preferredUsername"),
-								socialUser.get("email"), socialUser.get("emailVerified"));
+								socialEmail, socialUser.get("emailVerified"));
 						}
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
@@ -175,7 +180,12 @@ public class ExternalAccountController extends BaseController implements SystemM
 					} else if (isFDAccountExist == 1){ 
 						// FD Account and Non matching Social link
 						//if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getUserId()!=null) {
+						SessionUser sessionUser = getUserFromSession(request, response);
+						if(sessionUser.isLoggedIn()){
+							logout(model, user, request, response);
+						}
 						userLogin(socialEmail, session, request, response);
+						user = getUserFromSession(request, response);
 						//}
 						if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 							ExternalAccountManager.unlinkExternalAccountWithUser(user.getFDSessionUser().getIdentity().getErpCustomerPK(), socialAccountProvider);
@@ -187,7 +197,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 								socialUser.get("provider"),
 								socialUser.get("displayName"),
 								socialUser.get("preferredUsername"),
-								socialUser.get("email"), socialUser.get("emailVerified"));
+								socialEmail, socialUser.get("emailVerified"));
 						}
 						responseMessage = setCurrentCartToTheUser(user, request, response);
 						((LoggedIn) responseMessage)
@@ -202,7 +212,12 @@ public class ExternalAccountController extends BaseController implements SystemM
 						} else if (context.equalsIgnoreCase("CREATE")) {
 							//Registering social user
 							ResultBundle registrationResultBundle = userRegistration(socialUser, user, request, response);
-							userLogin(socialEmail, session, request, response);			
+							SessionUser sessionUser = getUserFromSession(request, response);
+							if(sessionUser.isLoggedIn()){
+								logout(model, user, request, response);
+							}
+							userLogin(socialEmail, session, request, response);	
+							user = getUserFromSession(request, response);
 							if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
 								ExternalAccountManager.linkUserTokenToUserId(
 									user.getFDSessionUser().getIdentity().getErpCustomerPK(),
@@ -212,7 +227,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 									socialUser.get("provider"),
 									socialUser.get("displayName"),
 									socialUser.get("preferredUsername"),
-									socialUser.get("email"), socialUser.get("emailVerified"));
+									socialEmail, socialUser.get("emailVerified"));
 							}
 							if(registrationResultBundle.getActionResult().isSuccess()) {
 								request.getSession().setAttribute(
@@ -241,7 +256,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 						socialUser.get("provider"),
 						socialUser.get("displayName"),
 						socialUser.get("preferredUsername"),
-						socialUser.get("email"), socialUser.get("emailVerified"));
+						socialEmail, socialUser.get("emailVerified"));
 				}
 				responseMessage = new SocialResponse();
 				((SocialResponse) responseMessage).setLoggedInSuccess(true);
@@ -532,5 +547,17 @@ public class ExternalAccountController extends BaseController implements SystemM
 		}
 	
 		return resultBundleOne;
+	}
+	
+	private ModelAndView logout(ModelAndView model, SessionUser user,
+			HttpServletRequest request, HttpServletResponse response)
+			throws JsonException {
+
+		removeUserInSession(user, request, response);
+
+		Message responseMessage = Message
+				.createSuccessMessage("User logged out successfully.");
+		setResponseMessage(model, responseMessage, user);
+		return model;
 	}
 }
