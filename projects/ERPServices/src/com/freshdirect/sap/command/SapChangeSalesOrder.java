@@ -22,6 +22,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.PosexUtil;
 import com.freshdirect.sap.SapOrderI;
+import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.ejb.SapException;
@@ -118,6 +119,19 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 
 		bapi.setOrderHeaderIn(new BapiSalesOrderChange.OrderHeaderIn() {
 
+			public String getSalesOrg() {
+				
+				return order.getSalesOrg();
+			}
+
+			public String getDistrChan() {
+				return order.getDistributionChannel();
+				
+			}
+
+			public String getDivision() {
+				return SapProperties.getDivision();
+			}
 			public String getCollectiveNo() {
 				// delivery zone
 				String dlvZone = order.getDeliveryZone();

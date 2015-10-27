@@ -19,6 +19,9 @@ import java.util.Date;
 public interface BapiSalesOrderChange extends BapiOrder {
 
 	public static interface OrderHeaderIn {
+		public String getSalesOrg();
+		public String getDistrChan();
+		public String getDivision();
 		public String getCollectiveNo();
 		public String getCustGrp1();
 		public String getRef1();

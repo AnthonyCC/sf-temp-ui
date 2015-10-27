@@ -29,6 +29,10 @@ class JcoBapiSalesOrderChange extends JcoBapiOrder implements BapiSalesOrderChan
 		JCoStructure orderHeaderIn = this.function.getImportParameterList().getStructure("ORDER_HEADER_IN");
 		JCoStructure orderHeaderInX = this.function.getImportParameterList().getStructure("ORDER_HEADER_INX");
 
+		orderHeaderIn.setValue("SALES_ORG", hdr.getSalesOrg());
+		orderHeaderIn.setValue("DISTR_CHAN", hdr.getDistrChan());
+		orderHeaderIn.setValue("DIVISION", hdr.getDivision());
+		
 		// Collective number (Delivery zone/depot number)
 		orderHeaderIn.setValue("COLLECT_NO", hdr.getCollectiveNo());
 		orderHeaderInX.setValue("COLLECT_NO", "X");
