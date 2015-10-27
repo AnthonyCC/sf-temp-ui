@@ -256,8 +256,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	// ***  dynamically show the social providers - ends
 	
 	_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-	_oneall.push([ 'social_login', 'set_custom_css_uri', 'http://freshdirect.com/media/social_login/social_login_media.css']);
-	/* _oneall.push([ 'social_login', 'set_callback_uri', 'http://127.0.0.1:7001/social/social_login_success.jsp' ]); */
+	_oneall.push([ 'social_login', 'set_custom_css_uri', '//freshdirect.com/media/social_login/social_login_media.css']);
 	_oneall.push([ 'social_login', 'set_callback_uri',
 	       		'<%= request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"  %>' ]);
 
