@@ -837,31 +837,6 @@ function loadStuff() {
   }else if (  loaddata == "GetNewProducts") {
   	$("#url").val("/product/getnewproducts/"); 
   	$("#payload").val("");
-  }else if (  loaddata == "GetEWalletStatus") {
-  	$("#url").val("/ewalletstatus/"); 
-  	var postdata = '{"eWalletType": "MP"}';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  
-  }else if (  loaddata == "EwalletCheckout") {
-  	$("#url").val("/ewalletcheckout/"); 
-  	var postdata = '{"eWalletType":"MP","callBackUrl":"http://MASTERPASSTEST"}';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  
-  }else if (  loaddata == "EwalletCheckoutData") {
-  	$("#url").val("/ewalletcheckoutdata/"); 
-  	var postdata = '{"eWalletType":"MP", "oauthToken" : "204f8e865b7bdc", "oauthVerifer":"266f8e865b7", "pairingToken":"204f8e865b7b", "pairingVerifer":"204f8e8681c2ae", "checkoutUrl":"http://masterpasstest//chekouturl"}';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  
-  }else if (  loaddata == "EwalletPreCheckoutData") {
-  	$("#url").val("/ewalletprecheckout/"); 
-  	var postdata = '{"eWalletType":"MP"}';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  
-  }else if (  loaddata == "EwalletExpressCheckout") {
-  	$("#url").val("/ewalletexpresscheckout/"); 
-  	var postdata = '{"eWalletType":"MP", "transCode" : "EXP", "originUrl" : "http://MASTERPASSTEST", "ewalletCardId" : "310994369" , "precheckoutTransactionId" : "a4a6x55-igdjwp-idy574d4-1-ie178gu9-1a4j" }';
-  	$("#payload").val(postdata);
-  	$("#result").val("");  
   }else if (  loaddata == "EwalletStdCheckout") {
   	$("#url").val("/stdcheckout/"); 
   	var postdata = '{"eWalletType":"MP","callBackUrl":"http://MASTERPASSTEST"}';
@@ -1151,13 +1126,8 @@ function doStuff() {
   <option value="BrowseCouponCategoryContentProductOnly">BROWSE COUPON - CATEGORYCONTENT(Product Only)</option>
   
   <option value=""> ========== EWallet ========== </option>
-  <option value="GetEWalletStatus">EWallet - EWALLET STATUS</option>
   <option value="EwalletStdCheckout">EWallet - STANDARD CHECKOUT</option>
   <option value="EwalletStdCheckoutData">EWallet - STANDARD CHECKOUT DATA</option>
-  <option value="EwalletCheckout">EWallet - CHECKOUT</option>    
-  <option value="EwalletCheckoutData">EWallet - CHECKOUT-DATA</option>
-  <option value="EwalletPreCheckoutData">EWallet - PRECHECKOUT-DATA</option>
-  <option value="EwalletExpressCheckout">EWallet - EXPRESS CHECKOUT</option>
   
   <option value=""> ========== New Products ========== </option>
   <option value="GetNewProducts">NEW PRODUCTS - GET ALL NEW PRODUCTS</option>  
