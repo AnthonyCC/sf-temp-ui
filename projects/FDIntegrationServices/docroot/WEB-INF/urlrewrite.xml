@@ -1032,23 +1032,25 @@
 		<from>^/v/([0-9]+)/ewalletexpresscheckout/(.*)</from>
 		<to last="true">/ewalletexpresscheckout.do?action=ewalletExpresscheckout&amp;ver=$1</to>
 	</rule>			
-	<rule>
-		<from>^/v/([0-9]+)/stdcheckout/(.*)</from>
-		<to last="true">/ewalletstdcheckout.do?action=stdCheckout&amp;ver=$1</to>
-	</rule>	
-	<rule>
-		<from>^/v/([0-9]+)/stdcheckoutdata/(.*)</from>
-		<to last="true">/ewalletstdcheckout.do?action=stdCheckoutData&amp;ver=$1</to>
-	</rule>		
-	 -->	
-	<rule>
+		<rule>
 		<from>^/v/([0-9]+)/ewalletcheckout/(.*)</from>
 		<to last="true">/ewalletcheckout.do?action=ewalletCheckout&amp;ver=$1</to>
 	</rule>	
 	<rule>
 		<from>^/v/([0-9]+)/ewalletcheckoutdata/(.*)</from>
 		<to last="true">/ewalletcheckoutdata.do?action=ewalletCheckoutData&amp;ver=$1</to>
-	</rule>		
+	</rule>	
+	 -->	
+	 
+	 <rule>
+		<from>^/v/([0-9]+)/stdcheckout/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=stdCheckout&amp;ver=$1</to>
+	</rule>	
+	<rule>
+		<from>^/v/([0-9]+)/stdcheckoutdata/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=stdCheckoutData&amp;ver=$1</to>
+	</rule>	
+		
 		
 	<!-- Test -->
 	<rule>
