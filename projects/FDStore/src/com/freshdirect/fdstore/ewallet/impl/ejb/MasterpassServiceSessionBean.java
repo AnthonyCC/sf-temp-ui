@@ -294,6 +294,11 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 						ValidationResult result = new ValidationResult();
 						result.setErrors(eWalletValidationErrors);
 						ewalletResponseData.setValidationResult(result);
+					}catch(Exception exception){
+						eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
+						ValidationResult result = new ValidationResult();
+						result.setErrors(eWalletValidationErrors);
+						ewalletResponseData.setValidationResult(result);
 					}
 				}else{
 					searchedPM.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
