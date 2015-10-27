@@ -628,22 +628,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	public static ErpEWalletModel getEWalletById(){
-		lookupeWalletHome();
-		ErpEWalletModel erpEWalletModel = null;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 erpEWalletModel= erpEWalletSB.findEWalletById("1");
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return erpEWalletModel;
-	}
 	
 	/**
 	 * This method will call ErpEWalletSB class method 
@@ -770,46 +754,7 @@ public class FDCustomerManager {
 		return custEWalletModel;
 	}
 	
-	/**
-	 * @param txNotifyModel
-	 * @return
-	 */
-	public static int insertEWalletTxnNotify(ErpEWalletTxNotifyModel txNotifyModel){
-		lookupeWalletHome();
-		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.insertEWalletTxnNotify(txNotifyModel);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return rows;
-	}
-	
-	/**
-	 * @param txNotifyModel
-	 * @return
-	 */
-	public static int updateEWalletTxnNotify(ErpEWalletTxNotifyModel txNotifyModel){
-		lookupeWalletHome();
-		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.updateEWalletTxnNotify(txNotifyModel);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return rows;
-	}
-	
+		
 	public static ErpPaymentMethodI getPaymentMethod(FDIdentity identity, String paymentId) throws FDResourceException {
 		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 		for ( ErpPaymentMethodI model : paymentMethods ) {

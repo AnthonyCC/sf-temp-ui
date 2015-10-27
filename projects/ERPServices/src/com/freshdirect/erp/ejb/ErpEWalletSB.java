@@ -7,7 +7,6 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
-import com.freshdirect.customer.ErpEWalletTxNotifyModel;
 
 
 /**
@@ -25,15 +24,10 @@ public interface ErpEWalletSB extends EJBObject{
 	
 	int insertCustomerLongAccessToken(ErpCustEWalletModel custEWallet) throws RemoteException;
 
-	int insertEWalletTxnNotify(ErpEWalletTxNotifyModel eWallettxtNotify) throws RemoteException;
-	
 	ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType) throws RemoteException;
 	
 	int updateLongAccessToken(String custId, String longAccessToken,String eWalletType) throws RemoteException;
 	
 	int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException;
 	
-	int updateEWalletTxnNotify(ErpEWalletTxNotifyModel eWallettxtNotify) throws RemoteException;
-	
-	void updateEWalletTxnNotifyStatus(String orderId, String status) throws RemoteException;
 }
