@@ -1,5 +1,7 @@
 package com.freshdirect.customer;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.BasicAddressI;
 import com.freshdirect.common.address.BasicContactAddressI;
@@ -182,11 +184,17 @@ public class ErpAddressModel extends ContactAddressModel {
 			private static final long	serialVersionUID	= 8009887805313335384L;
 
 			public String getFirstName() {
-				return ErpAddressModel.this.getAltFirstName();
+				if(StringUtils.isNotBlank(ErpAddressModel.this.getAltFirstName()))
+					return ErpAddressModel.this.getAltFirstName();
+				else
+					return ErpAddressModel.this.getFirstName();
 			}
 
 			public String getLastName() {
-				return ErpAddressModel.this.getAltLastName();
+				if(StringUtils.isNotBlank(ErpAddressModel.this.getAltLastName()))
+					return ErpAddressModel.this.getAltLastName();
+				else
+					return ErpAddressModel.this.getLastName();
 			}
 
 			public String getApartment() {
