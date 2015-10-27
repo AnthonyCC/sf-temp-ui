@@ -25,6 +25,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
@@ -1282,7 +1283,7 @@ public class BrowseUtil {
 					tmp.setPricingZone(plant1k);
 					keyList.add(tmp);
 					//Currently using stubs for sales and distribution
-					plant1300 = new ZoneInfo(zoneId, "1300", "01", plant1k);
+					plant1300 = new ZoneInfo(zoneId, "1300", "01",PricingIndicator.BASE, plant1k);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1300);
@@ -1290,7 +1291,7 @@ public class BrowseUtil {
 					keyList.add(tmp);
 					
 					//Currently using stubs for sales and distribution
-					plant1310 = new ZoneInfo(zoneId, "1310", "01", plant1k);
+					plant1310 = new ZoneInfo(zoneId, "1310", "01",PricingIndicator.BASE, plant1k);
 					tmp = new CatalogKey();
 					tmp.seteStore(eStore);
 					tmp.setPlantId(1310);

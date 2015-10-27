@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
@@ -322,9 +323,9 @@ public class FDProductInfo extends FDSku  {
                 				freshness = pm.getFreshness();
                 			}
                     	}
-                        if ((freshness != null && freshness.trim().length() > 0) 
-                        	&& !"000".equalsIgnoreCase(freshness.trim()) 
-                        	&& StringUtil.isNumeric(freshness) 
+                        if ((freshness != null && freshness.trim().length() > 0)
+                        	&& !"000".equalsIgnoreCase(freshness.trim())
+                        	&& StringUtil.isNumeric(freshness)
                         	&& Integer.parseInt(freshness) > 0)  {
                         	    	return freshness;
                         }
@@ -348,9 +349,9 @@ public class FDProductInfo extends FDSku  {
 			return null;
 		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0],plantID);
 	}
-	
+
     	public ZonePriceInfoModel getZonePriceInfo(ZoneInfo pricingZoneInfo) {
-    		
+
     		ZoneInfo zone=pricingZoneInfo;
         		ZonePriceInfoModel zpModel=_getZonePriceInfo(zone);
         		while(zpModel==null && zone.hasParentZone()) {
@@ -360,12 +361,17 @@ public class FDProductInfo extends FDSku  {
         		if(zpModel==null) {
         			LOGGER.debug("No price setup for zone: "+zone+" and sku=>"+this.getSkuCode());
         		}
+
+        		else if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())) {
+
+        			zpModel= new ZonePriceInfoModel(zpModel.getSellingPrice(), 0, zpModel.getDefaultPriceUnit(), zpModel.getDisplayableDefaultPriceUnit(),false,0,0,zpModel.getZoneInfo(),false);
+        		}
         		return zpModel;
         }
     	private ZonePriceInfoModel _getZonePriceInfo(ZoneInfo zoneInfo) {
     		if (zoneInfo==null)
     				return null;
-    		
+
     		try {
     			ZonePriceInfoModel zpInfo = this.zonePriceInfoList.getZonePriceInfo(zoneInfo.hasParentZone()?new ZoneInfo(zoneInfo.getPricingZoneId(),zoneInfo.getSalesOrg(),zoneInfo.getDistributionChanel()):zoneInfo);
     			if(zpInfo == null) {
@@ -376,7 +382,7 @@ public class FDProductInfo extends FDSku  {
     				} else {
     					//go to default sales area now?
     				}
-    			} 
+    			}
     			return zpInfo;
     		}
     		catch(FDResourceException fe){
@@ -404,19 +410,19 @@ public class FDProductInfo extends FDSku  {
 	public FDGroup getGroup(String salesOrg, String distributionChannel) {
 		if(groups==null)
 			return null;
-		
+
 		if(StringUtils.isEmpty(salesOrg)|| StringUtils.isEmpty(distributionChannel))
 			return null;
 		return groups.get(salesOrg+"-"+distributionChannel);
 	}
 	public boolean isGroupExists(String salesOrg, String distributionChannel) {
-		
+
 		if(StringUtils.isEmpty(salesOrg)|| StringUtils.isEmpty(distributionChannel))
 			return false;
-		
+
 		if(groups == null)
 			return false;
-		
+
 		return groups.containsKey(salesOrg+"-"+distributionChannel);
 	}
 	/** Getter for property sustainabilityRating.
@@ -481,18 +487,18 @@ public class FDProductInfo extends FDSku  {
 	public Map<String, FDMaterialSalesArea> getAvailability() {
 		return materialAvailability;
 	}
-	
+
 	//TODO: Remove this method.
 	public boolean isLimitedQuantity(String salesOrg, String distributionChannel) {
 		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null) {
 			if(this.getSkuCode().startsWith("VI"))
-				return true;			
+				return true;
 		}
 		return false;
-		
+
 	}
-	
+
 	public boolean isLimitedQuantity(String plantID) {
 		if(!StringUtils.isEmpty(plantID)) {
 			FDPlantMaterial pm=plantMaterialInfo.get(plantID);
@@ -500,13 +506,13 @@ public class FDProductInfo extends FDSku  {
 				return pm.isLimitedQuantity();
 		}
 		return false;
-		
+
 	}
-	
+
 	public EnumDayPartValueType getDayPartValueType(String salesOrg, String distributionChannel) {
 		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null)
 			return sa.getDayPartValueType();
-		return null;		
+		return null;
 	}
 }

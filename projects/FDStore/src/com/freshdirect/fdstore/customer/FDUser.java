@@ -34,6 +34,7 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
@@ -2039,19 +2040,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 					fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
 					zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
 				} else {
-					//default
-//					fulfillmentContext.setPlantId("1000");
-//					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
-					
 					if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
-						//default
-							fulfillmentContext.setPlantId("1300");
-							zoneInfo=new ZoneInfo(pricingZoneId,"1300","01", new ZoneInfo(pricingZoneId,"0001","01"));
-						} else {
-							fulfillmentContext.setPlantId("1000");
-							zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
-						} 
-						
+					//default
+						fulfillmentContext.setPlantId("1300");
+						zoneInfo=new ZoneInfo(pricingZoneId,"1300","01",ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId,"0001","01"));
+					} else {
+					fulfillmentContext.setPlantId("1000");
+					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+				}
 				}
 				userContext.setFulfillmentContext(fulfillmentContext);
 				userContext.setPricingContext(new PricingContext(zoneInfo));
@@ -3080,16 +3076,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return fulfillmentInfo;
 	}
 	
-	private ZoneInfo getZoneInfo(String pricingZone,SalesArea salesArea) {
-		ZoneInfo zoneInfo=null;
-		ZoneInfo parentZone=null;
-		if(salesArea.getDefaultSalesArea()!=null) {
-			parentZone=new ZoneInfo(pricingZone,salesArea.getDefaultSalesArea().getSalesOrg(),salesArea.getDefaultSalesArea().getDistChannel());
+	private  static ZoneInfo getZoneInfo(String pricingZone,SalesArea salesArea) {
+		if(salesArea.getDefaultSalesArea()!=null && salesArea.getDefaultSalesArea().getSalesOrg()!=null) {
+			return new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel(),ZoneInfo.PricingIndicator.BASE.getValue().equals(salesArea.getPricingIndicator())?ZoneInfo.PricingIndicator.BASE:ZoneInfo.PricingIndicator.SALE,getZoneInfo(pricingZone,salesArea.getDefaultSalesArea()));
+		} else {
+			return new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel());
 		}
-		zoneInfo=(parentZone!=null)?new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel(),parentZone):new ZoneInfo(pricingZone, salesArea.getSalesOrg(),salesArea.getDistChannel());
-		return zoneInfo;
 	}
-
 	@Override
 	public void resetUserContext() {
 		this.userContext=null;
@@ -3104,4 +3097,5 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setCrmMode(boolean flag) {
 		crmMode = flag;
 	}
+	
 }
