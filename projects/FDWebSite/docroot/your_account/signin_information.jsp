@@ -752,11 +752,6 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <% }else{ %>
 
 
-	
-	<%@ include file="/includes/i_social_accounts.jspf"%>	
-
-
-
 	<form name="update_email_preference" method="post">
 	<input type="hidden" name="actionName" value="changeEmailPreference">
 	<tr>
@@ -780,6 +775,12 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	</form>
 <% } %>
+
+
+<%@ include file="/includes/i_social_accounts.jspf"%>
+
+
+
 
 <!-- mobile preferences-->
 <form name="update_email_preference" method="post">
