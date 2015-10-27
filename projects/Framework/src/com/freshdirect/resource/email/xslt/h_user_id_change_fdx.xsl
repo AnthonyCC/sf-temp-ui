@@ -30,7 +30,7 @@
 		<div style="margin: 0 0 15px 0;"><xsl:call-template name="h_header_fdx" /></div>
 		
 		
-		<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Hi <xsl:value-of select="customer/firstName"/>,</div>
+		<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Hey <xsl:value-of select="customer/firstName"/>,</div>
 		
 		<div style="margin: 15px 0; font-size: 16px;">
 			<span style="font-weight: bold;">#Success!</span> You just updated an email address for your account.<br />
