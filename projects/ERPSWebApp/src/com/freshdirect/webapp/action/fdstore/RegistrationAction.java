@@ -420,6 +420,7 @@ public class RegistrationAction extends WebActionSupport {
 				// changes done by gopal
 				customerInfo.setReferralProgId(user.getLastRefProgId());
 				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
+				
 
 				
 				erpCustomer.setCustomerInfo(customerInfo);
@@ -937,21 +938,21 @@ public class RegistrationAction extends WebActionSupport {
 				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
 				SystemMessageList.MSG_EMAIL_FORMAT);
 
-			/*
+			
 			if ("".equals(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
 			} else if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
 				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
 			}
-
+			
+			/*
 			actionResult.addError(!"".equals(altEmailAddress) && !EmailUtil.isValidEmailAddress(altEmailAddress),
 				EnumUserInfoName.ALT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_FORMAT);
-
+			 */
 			AccountUtil.validatePassword(actionResult, password, repeatPassword);
-			*/
 			
-			actionResult
-				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
+			
+			//actionResult.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
 			// actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
 		}
