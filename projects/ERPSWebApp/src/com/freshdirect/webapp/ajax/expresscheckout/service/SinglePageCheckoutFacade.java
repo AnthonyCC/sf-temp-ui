@@ -38,6 +38,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
+import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.SinglePageCheckoutHeaderService;
@@ -236,6 +237,7 @@ public class SinglePageCheckoutFacade {
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
+        formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
     }
 
@@ -468,6 +470,9 @@ public class SinglePageCheckoutFacade {
 	            }
             }*/
         }
+
+        formPaymentData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("payment"));
+
         return formPaymentData;
     }
 

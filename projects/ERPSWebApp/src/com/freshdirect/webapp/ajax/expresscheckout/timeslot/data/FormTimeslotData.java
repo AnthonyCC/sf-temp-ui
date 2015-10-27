@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.timeslot.data;
 
+import java.util.List;
+
 public class FormTimeslotData {
 
 	private String id;
@@ -8,6 +10,7 @@ public class FormTimeslotData {
 	private String month;
 	private String year;
 	private String timePeriod;
+    private List<String> onOpenCoremetrics;
 
 	public String getId() {
 		return id;
@@ -56,5 +59,13 @@ public class FormTimeslotData {
 	public void setTimePeriod(String timePeriod) {
 		this.timePeriod = timePeriod;
 	}
+
+    public List<String> getOnOpenCoremetrics() {
+        return onOpenCoremetrics;
+    }
+
+    public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
+        this.onOpenCoremetrics = onOpenCoremetrics;
+    }
 
 }

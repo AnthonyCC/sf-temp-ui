@@ -19,6 +19,7 @@
  * @param? dayOfMonth
  * @param? dayOfWeek
  * @param? timePeriod
+ * @param? onOpenCoremetrics
  */
 {template .timeselectorpreview autoescape="false"}
 {if $id and $timePeriod}
@@ -34,7 +35,7 @@
 {else}
 <div class='drawer__previewitem'>
   <div class="drawer__previewitem__button__section">
-    <button class="cssbutton green" data-drawer-activate="timeslot">Select a Time</button>
+    <button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a Time</button>
   </div>
 </div>
 {/if}

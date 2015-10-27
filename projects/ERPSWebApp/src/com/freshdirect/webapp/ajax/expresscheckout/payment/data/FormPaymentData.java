@@ -15,6 +15,7 @@ public class FormPaymentData {
 	private boolean mpEwalletStatus;
 	private String walletErrorMsg;
 	private String mpButtonImgURL;
+    private List<String> onOpenCoremetrics;
 
 	public boolean isCoveredByGiftCard() {
 		return coveredByGiftCard;
@@ -89,5 +90,13 @@ public class FormPaymentData {
 	public void setMpButtonImgURL(String mpButtonImgURL) {
 		this.mpButtonImgURL = mpButtonImgURL;
 	}
+
+    public List<String> getOnOpenCoremetrics() {
+        return onOpenCoremetrics;
+    }
+
+    public void setOnOpenCoremetrics(List<String> onOpenCoremetrics) {
+        this.onOpenCoremetrics = onOpenCoremetrics;
+    }
 
 }

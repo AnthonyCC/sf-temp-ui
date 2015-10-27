@@ -26,6 +26,7 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.framework.util.LoggerFactory;
 import com.freshdirect.webapp.action.fdstore.ChooseTimeslotAction;
+import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
@@ -90,6 +91,7 @@ public class TimeslotService {
             timeslotData.setDayOfWeek(dayNames[startTimeCalendar.get(Calendar.DAY_OF_WEEK)]);
             timeslotData.setTimePeriod(format(startTime, reservation.getEndTime()));
         }
+        timeslotData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("timeslot"));
         return timeslotData;
     }
 

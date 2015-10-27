@@ -15,6 +15,7 @@
  * @param backupPaymentRequiredForGiftCard
  * @param? walletErrorMsg 
  * @param? mpButtonImgURL
+ * @param? onOpenCoremetrics
  */
 {template .paymentmethodpreview autoescape="false"}
 {if $coveredByGiftCard}
@@ -144,7 +145,7 @@
 	 /** End here MP Exp Checkout */
 	 
     {else}
-		<button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
+		<button class='cssbutton green' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
 
  		/** Masterpass Standard Checkout  */ 
     	{if $mpEwalletStatus}
