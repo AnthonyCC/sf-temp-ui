@@ -20,7 +20,7 @@ import com.freshdirect.fdstore.ewallet.EwalletOldOrderException;
 import com.freshdirect.fdstore.ewallet.EwalletPostBackModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-//TODO merge with other EwalletNotifyDAO
+
 public class EwalletTxNotifyDAO {
 	
 	@SuppressWarnings( "unused" )
