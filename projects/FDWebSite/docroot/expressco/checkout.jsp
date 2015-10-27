@@ -94,7 +94,7 @@
        
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
-          <a href="/expressco/view_cart.jsp">Make Changes</a>
+          <a class="cssbutton green" href="/expressco/view_cart.jsp">Make Changes</a>
         </div>
 
         <%-- cart content --%>
