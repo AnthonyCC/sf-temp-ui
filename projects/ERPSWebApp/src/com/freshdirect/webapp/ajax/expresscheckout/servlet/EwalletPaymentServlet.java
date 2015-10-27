@@ -66,6 +66,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	private static final String EWALLET_MP_STANDARD_CHECKOUT="MP_Standard_Checkout";
 	private static final String EWALLET_MP_STANDARD_CHECKOUT_DATA="MP_Standard_CheckoutData";
 	private static final String MASTERPASS_CANCEL_STATUS="cancel";
+	private static final String MASTERPASS_FAILURE_STATUS="failure";
 	private static final String MASTERPASS_TRANSACTIONID="transactionId";
 	private static final String MASTERPASS_REQ_ATTR_ACTION_COMPLETED="actionCompleted";
 	private static final String MP_REQ_ATTR_ACTION_COMPLETED_VALUE="Standard_Checkout";
@@ -90,7 +91,6 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response, FDUserI user)
 			throws HttpErrorResponse {
-//		convertParamsToJSON(request);
 		process(request, response, user);
 	}
 
@@ -165,10 +165,9 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     				break;
     			}
     			case MASTERPASS_STANDARD_CHECKOUT_DATA: {
-    				if(ewalletRequestData.geteWalletResponseStatus()!= null && ewalletRequestData.geteWalletResponseStatus().equalsIgnoreCase(MASTERPASS_CANCEL_STATUS)){
+    				// Check for Error response from EWallet Vendor
+    				if( checkWalletErrorResponse(ewalletRequestData,response)){
     					response.sendRedirect("/expressco/checkout.jsp");
-    				}else{
-    					ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT_DATA);
     				}
     				break;
     			}
@@ -211,6 +210,25 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 		}
 	}
 
+	/**
+	 * User can click on "Cancel button on Masterpass Light UI before or after login to Wallet
+	 * @param ewalletRequestData
+	 * @param response
+	 * @return
+	 */
+	private boolean checkWalletErrorResponse(EwalletRequestData ewalletRequestData,HttpServletResponse response){
+		boolean retVal = false;
+		if(ewalletRequestData.getReqParams() != null && ewalletRequestData.getReqParams().containsKey(MP_EWALLET_RESPONSE_STATUS)){
+			String responseStatus = ewalletRequestData.getReqParams().get(MP_EWALLET_RESPONSE_STATUS);
+			if(responseStatus.equals(MASTERPASS_CANCEL_STATUS) || responseStatus.equals(MASTERPASS_FAILURE_STATUS)){
+				retVal =  true;
+			}else{
+				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT_DATA);
+				retVal =  false;
+			}
+		}
+		return retVal;
+	}
 	/**
 	 * @param ewalletResponseData
 	 * @return
@@ -300,15 +318,12 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 		// Masterpass Standard Checkout request parameters after Light Box finished
 		if (request.getParameter(PARAM_REQUEST_TOKEN) != null){
 			params.put(PARAM_REQUEST_TOKEN, request.getParameter(PARAM_REQUEST_TOKEN));
-//			ewalletRequestData.setToken(request.getParameter(PARAM_REQUEST_TOKEN));
 		}
 		if (request.getParameter(PARAM_OAUTH_VERIFIER) != null){
 			params.put(PARAM_OAUTH_VERIFIER, request.getParameter(PARAM_OAUTH_VERIFIER));
-//			ewalletRequestData.setVerifier(request.getParameter(PARAM_OAUTH_VERIFIER));
 		}
 		if (request.getParameter(PARAM_CHECKOUT_URL) != null){
 			params.put(PARAM_CHECKOUT_URL, request.getParameter(PARAM_CHECKOUT_URL));
-//			ewalletRequestData.setCheckoutUrl(request.getParameter(PARAM_CHECKOUT_URL));
 		}
 		if (request.getParameter(MP_EWALLET_RESPONSE_STATUS) != null) {
 			params.put(MP_EWALLET_RESPONSE_STATUS, request.getParameter(MP_EWALLET_RESPONSE_STATUS));
@@ -490,7 +505,5 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				+ "</Subtotal>";
 		ewalletRequestData.setShoppingCartItems(subTotalTag
 				+ cartItems.toString());
-//		System.out.println("Shopping Cart XML prepared : " + cartItems);
-
 	}
 }
