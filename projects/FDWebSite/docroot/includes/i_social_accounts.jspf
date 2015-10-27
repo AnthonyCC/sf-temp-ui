@@ -95,14 +95,15 @@
 				}
 			}
 		
-			//=================================================================================================================================================================================================
-			String subdomain = "freshdirect";
+			//=================================================================================================================================================================================================						
+			String subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+			String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();	
 			//String provider_key = "facebook";
 			String service = "social_login";
 			String callback_uri = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_link_success.jsp";
 		
 			//String directConnectUrl = "https://" + subdomain + ".api.oneall.com/socialize/connect/direct/" + socialNetworkProvider + "/";
-			String directConnectUrl = "https://" + subdomain + ".api.oneall.com/socialize/connect/direct";
+			String directConnectUrl = "https://" + subdomain + site_post_url + "/socialize/connect/direct";
 			
 			// https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp			
 			//String forwardUrl = "https://freshdirect.api.oneall.com/socialize/connect/direct/facebook/?service=social_login&callback_uri=http%3A%2F%2Flocalhost%3A7001%2Fsocial%2Fsocial_login_success.jsp";
@@ -117,7 +118,10 @@
 				<tr>
 					<td colspan="6">
 						<img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook. 
+						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser)){	
+						%>						
 						<input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
+						<%	} %>
 					</td>									
 				</tr>				
 		<%	} else { %>		
@@ -140,7 +144,10 @@
 				<tr>
 					<td colspan="6">
 						<img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google. 
-						<input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">						
+						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser)){	
+						%>
+						<input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
+						<%	} %>						
 					</td>
 				</tr>				
 		<%	} else { %>		

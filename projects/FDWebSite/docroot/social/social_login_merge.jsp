@@ -15,14 +15,20 @@
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
+
+<% 
+	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
+%>	
+	
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
-		var oneall_subdomain = 'freshdirect';
+		var oneall_subdomain = '<%=site_subdomain%>';
  		/* The library is loaded asynchronously */
 		var oa = document.createElement('script');
 		oa.type = 'text/javascript'; oa.async = true;
-		oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';
+		oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js';
 		var s = document.getElementsByTagName('script')[0];
 		s.parentNode.insertBefore(oa, s);
        
@@ -238,13 +244,13 @@ $jq(function(){
 
 <script type="text/javascript">
 	/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
-	var oneall_subdomain = 'freshdirect';
+	var oneall_subdomain = '<%=site_subdomain%>';
 
 	/* Asynchronously load the library */
 	var oa = document.createElement('script');
 	oa.type = 'text/javascript';
 	oa.async = true;
-	oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js'
+	oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js'
 	var s = document.getElementsByTagName('script')[0];
 	s.parentNode.insertBefore(oa, s)
 
@@ -258,6 +264,7 @@ $jq(function(){
 	var _oneall = _oneall || [];
 
 	/* Social Login  */
+	_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 	_oneall.push([ 'social_login', 'set_providers',
 			[ <%=session.getAttribute("providerStr")%> ] ]);
 	_oneall.push([ 'social_login', 'set_grid_sizes', [ 4, 4 ] ]);

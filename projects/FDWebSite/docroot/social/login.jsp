@@ -18,15 +18,20 @@
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     
+<% 
+	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
+%>	    
+    
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
-		var oneall_subdomain = 'freshdirect';
+		var oneall_subdomain = '<%=site_subdomain%>';
  
 		/* The library is loaded asynchronously */
 		var oa = document.createElement('script');
 		oa.type = 'text/javascript'; oa.async = true;
-		oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';
+		oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js';
 		var s = document.getElementsByTagName('script')[0];
 		s.parentNode.insertBefore(oa, s);
        
@@ -220,13 +225,13 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 
 <script type="text/javascript">
 	/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
-	var oneall_subdomain = 'freshdirect';
+	var oneall_subdomain = '<%=site_subdomain%>';
 
 	/* Asynchronously load the library */
 	var oa = document.createElement('script');
 	oa.type = 'text/javascript';
 	oa.async = true;
-	oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';
+	oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js';
 	var s = document.getElementsByTagName('script')[0];
 	s.parentNode.insertBefore(oa, s);
 
@@ -255,6 +260,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	}	
 	// ***  dynamically show the social providers - ends
 	
+	_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 	_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
 	_oneall.push([ 'social_login', 'set_custom_css_uri', '//freshdirect.com/media/social_login/social_login_media.css']);
 	_oneall.push([ 'social_login', 'set_callback_uri',

@@ -14,7 +14,8 @@
 <fd:CheckLoginStatus />
 
 <% 
-	
+	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
+	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
@@ -62,12 +63,12 @@
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
-		var oneall_subdomain = 'freshdirect';
+		var oneall_subdomain = '<%=site_subdomain%>';
  
 		/* The library is loaded asynchronously */
 		var oa = document.createElement('script');
 		oa.type = 'text/javascript'; oa.async = true;
-		oa.src = '//' + oneall_subdomain + '.api.oneall.com/socialize/library.js';
+		oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js';
 		var s = document.getElementsByTagName('script')[0];
 		s.parentNode.insertBefore(oa, s);
        
@@ -347,14 +348,14 @@
 <div id="social_login_demo" class="social-login-social">
 	<script type="text/javascript">
 		/* Replace the subdomain with your own subdomain from a Site in your OneAll account */
-		var oneall_subdomain = 'freshdirect';
+		var oneall_subdomain = '<%=site_subdomain%>';
 	
 		/* Asynchronously load the library */
 		var oa = document.createElement('script');
 		oa.type = 'text/javascript';
 		oa.async = true;
 		oa.src = '//' + oneall_subdomain
-				+ '.api.oneall.com/socialize/library.js';
+				+ '<%=site_post_url%>/socialize/library.js';
 		var s = document.getElementsByTagName('script')[0];
 		s.parentNode.insertBefore(oa, s);
 	
@@ -365,6 +366,7 @@
 	
 		/* Initialise the asynchronous queue */
 		var _oneall = _oneall || [];
+		_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
     	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
 		_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
 		_oneall.push([ 'social_login', 'set_custom_css_uri', '//freshdirect.com/media/social_login/social_login_media.css']);
