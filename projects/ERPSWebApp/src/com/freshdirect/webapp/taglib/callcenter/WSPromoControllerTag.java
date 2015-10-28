@@ -96,13 +96,21 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String rollingExpType = request.getParameter("rollingType");
 					String fdxTierType = request.getParameter("fdxTierType");
 					boolean isRollingFrom1stOrder = false;
+					String strRollingExpDays = null;
 					Integer rollingExpDays = null;
-					if(null != rollingExpType){
+					if(null != rollingExpType){						
 						if("rolling_induction".equalsIgnoreCase(rollingExpType)){
-							rollingExpDays = Integer.parseInt(request.getParameter("rolling_days_induction"));
+							strRollingExpDays =request.getParameter("rolling_days_induction");								
 						}else{
 							isRollingFrom1stOrder = true;
-							rollingExpDays = Integer.parseInt(request.getParameter("rolling_days_firstorder"));
+							strRollingExpDays = request.getParameter("rolling_days_firstorder");
+						}
+						try {
+							if(null != strRollingExpDays && !"".equals(strRollingExpDays.trim())){
+								rollingExpDays = Integer.parseInt(strRollingExpDays);
+							}
+						} catch (Exception e) {
+							LOGGER.warn(e);
 						}
 					}
 					String sapConditionType = NVL.apply(request.getParameter("sapConditionType"), "").trim();

@@ -82,7 +82,7 @@ function numbersonly(myfield, e, dec)
 
 //-->
 </SCRIPT>
-
+<body onload="javascript: toggleFdxSection();">
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 <%
 	String f_effectiveDate = request.getParameter("effectiveDate");	
@@ -166,18 +166,19 @@ function numbersonly(myfield, e, dec)
 			}
 		}
 		
-		if(cohortList.isEmpty()) {
+		
 			List<FDPromoCustStrategyModel> csms = promotion.getCustStrategies();
 			if(csms != null && csms.size() > 0) {
 				FDPromoCustStrategyModel csm = (FDPromoCustStrategyModel) csms.get(0);
-				if(csm != null && csm.getCohorts() != null) {
-					cohortList = Arrays.asList(csm.getCohorts());
-				}								
+				if(cohortList.isEmpty()) {
+					if(csm != null && csm.getCohorts() != null) {
+						cohortList = Arrays.asList(csm.getCohorts());
+					}							
+				}
 				if(csm !=null && fdxTierType == null){
 					fdxTierType = null !=csm.getFdxTierType()? csm.getFdxTierType().getName():null;
 				}
 			}
-		}
 		
 		
 	}
@@ -586,8 +587,8 @@ function numbersonly(myfield, e, dec)
 				</tr>
 				<tr>
 				<td>Rolling Expiration Days: 
-				<input type="radio" id="rolling_firstorder" name="rollingType" <%= promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="rolling_firstorder" /><input type="text" id="rolling_days_firstorder" name="rolling_days_firstorder" class="w30px alignC" value="<%= promotion.isRollingExpDayFrom1stOrder()?promotion.getRollingExpirationDays():"" %>" /> <span class="gray">days from 1st order</span>
-				<input type="radio" id="rolling_induction" name="rollingType" value="rolling_induction" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> /><input type="text" id="rolling_days_induction" name="rolling_days_induction" class="w30px alignC" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="<%= !promotion.isRollingExpDayFrom1stOrder()?promotion.getRollingExpirationDays():"" %>" /> <span class="gray">days after eligibility induction</span>
+				<input type="radio" id="rolling_firstorder" name="rollingType" <%= promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="rolling_firstorder" /><input type="text" id="rolling_days_firstorder" name="rolling_days_firstorder" class="w30px alignC" value="<%= rolling_days_firstorder %>" /> <span class="gray">days from 1st order</span>
+				<input type="radio" id="rolling_induction" name="rollingType" value="rolling_induction" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> /><input type="text" id="rolling_days_induction" name="rolling_days_induction" class="w30px alignC" <%= !promotion.isRollingExpDayFrom1stOrder()?"checked":"" %> value="<%=rolling_days_induction %>" /> <span class="gray">days after eligibility induction</span>
 				</td>
 				</tr>
 				</table>
@@ -734,7 +735,9 @@ function numbersonly(myfield, e, dec)
 								<option value="<%= discountAmt %>">$<%= discountAmt %></option>
 							<% } %>						
 							</logic:iterate>
-							<option id="WAIVECHARGE" value="DLV" style="display: block;" <%="DLV".equals(discount) ?"selected":""%>>FREE DELIVERY</option>
+							<% if(null !=selectedZoneId){ %>
+							<option id="WAIVECHARGE" value="DLV" style="display: none;" <%="DLV".equals(discount) ?"selected":""%>>FREE DELIVERY</option>
+							<% } %>
 						</select>
 					</td>
 				</tr>	
@@ -1076,4 +1079,5 @@ function numbersonly(myfield, e, dec)
 	</crm:GetCurrentAgent>
 	</tmpl:put>
 	</fd:GetPromotionNew>
+	</body>
 </tmpl:insert>

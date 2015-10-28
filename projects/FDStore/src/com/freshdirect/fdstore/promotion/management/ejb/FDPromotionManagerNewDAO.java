@@ -245,7 +245,7 @@ public class FDPromotionManagerNewDAO {
 		StringBuffer buf = new StringBuffer();
 		buf.append(GET_WS_PROMOTION_INFOS);
 		if(fromDate != null && toDate != null) {
-			buf.append(" AND P.START_DATE >= ? AND P.START_DATE <= ? ");
+			buf.append(" AND P.START_DATE >= ? AND P.EXPIRATION_DATE <= ? ");
 		}
 		if(dlvDate != null) {
 			buf.append(" AND DD.START_DATE = ? ");
