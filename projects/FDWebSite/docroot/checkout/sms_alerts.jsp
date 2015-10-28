@@ -4,7 +4,9 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
 <%@page import="com.freshdirect.common.address.PhoneNumber"%>
+<%@page import="com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
@@ -43,16 +45,41 @@
 		<%
 			FDIdentity identity  = user.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-		
-			String mobile_number = cm.getMobileNumber()==null?"":cm.getMobileNumber().getPhone();
-			boolean text_offers = cm.isOffersNotification();
-			if(request.getParameter("text_offers") != null)
-				text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
-			boolean text_delivery = cm.isDeliveryNotification();
-			if(request.getParameter("text_delivery") != null)
-				text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
-			if(request.getParameter("mobile_number") != null)
-				mobile_number = request.getParameter("mobile_number");
+			FDCustomerModel fdCustomer= FDCustomerFactory.getFDCustomer(identity);
+			String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();	
+			String mobile_number;
+			boolean text_offers = false;
+			boolean text_delivery =false;
+			
+			if("FDX".equalsIgnoreCase(eStoreId) && fdCustomer.getCustomerSmsPreferenceModel()!=null){
+				
+				 mobile_number=fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber()==null ?"":fdCustomer.getCustomerSmsPreferenceModel().getFdxMobileNumber().getPhone();
+				 text_delivery=fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification();
+				 text_offers = fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification();
+				
+				 if(request.getParameter("text_offers") != null)
+					text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
+				if(request.getParameter("text_delivery") != null)
+					text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+				if(request.getParameter("mobile_number") != null)
+					mobile_number = request.getParameter("mobile_number");
+				}
+			else{
+				if(fdCustomer.getCustomerSmsPreferenceModel()!=null){
+				
+					mobile_number=fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber()!=null ? fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber().getPhone():"";
+					text_offers=fdCustomer.getCustomerSmsPreferenceModel().getOffersNotification();
+					text_delivery=fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification();
+				}
+					if(request.getParameter("text_offers") != null)
+						text_offers = "Y".equals(request.getParameter("text_offers"))?true:false;
+					if(request.getParameter("text_delivery") != null)
+						text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+					if(request.getParameter("mobile_number") != null)
+						mobile_number = request.getParameter("mobile_number");
+				
+			}
+			
 			boolean go_green = cm.isGoGreen();
 			if(request.getParameter("go_green") != null)
 				go_green = "Y".equals(request.getParameter("go_green"))?true:false;
