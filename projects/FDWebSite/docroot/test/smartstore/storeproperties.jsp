@@ -33,6 +33,7 @@
       var $ = fd.libs.$;
       var WIDGET = fd.modules.common.widget;
       var DISPATCHER = fd.common.dispatcher;
+      var PROPERTIES_API_URI = "/api/dev/properties/store";
 
       var storeProperties = Object.create(WIDGET, {
         signal : {
@@ -72,7 +73,7 @@
       });
       storeProperties.listen();
 
-      DISPATCHER.signal('server',{ url: '/api/dev/storeproperties', type: 'GET' });
+      DISPATCHER.signal('server',{ url: PROPERTIES_API_URI, type: 'GET' });
 
       $(document).on('change', storeProperties.inputSelector, function(e){
         $('[data-prop-name]').show();
@@ -85,7 +86,7 @@
       });
 
       $(document).on('click', '#refresh-action', function(e){
-        DISPATCHER.signal('server', { url: '/api/dev/storeproperties', method: 'POST' });
+        DISPATCHER.signal('server', { url: PROPERTIES_API_URI, method: 'POST' });
       });
 
     }(FreshDirect));

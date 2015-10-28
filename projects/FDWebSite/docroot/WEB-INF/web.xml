@@ -415,7 +415,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>StorePropertiesServlet</servlet-name>
-    <url-pattern>/api/dev/storeproperties</url-pattern>
+    <url-pattern>/api/dev/properties/store</url-pattern>
   </servlet-mapping>
 
 	<servlet>

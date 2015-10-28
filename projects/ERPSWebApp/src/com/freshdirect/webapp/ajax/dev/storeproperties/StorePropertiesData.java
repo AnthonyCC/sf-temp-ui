@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StorePropertiesData {
 
-    List<StoreProperty> storeProperties;
+    private List<StoreProperty> storeProperties;
 
     public List<StoreProperty> getStoreProperties() {
         return storeProperties;

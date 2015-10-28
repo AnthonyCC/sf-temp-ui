@@ -1562,7 +1562,7 @@ public class FDStoreProperties {
         refresh(false);
     }
 
-    public synchronized static void refresh(boolean force) {
+    private synchronized static void refresh(boolean force) {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {

@@ -40,6 +40,6 @@ public class StorePropertiesService {
     }
 
     public void refreshStoreProperties() {
-        FDStoreProperties.refresh(true);
+        FDStoreProperties.forceRefresh();
     }
 }
