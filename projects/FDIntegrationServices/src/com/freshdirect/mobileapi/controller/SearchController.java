@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
@@ -33,6 +34,7 @@ import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.SortType;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SearchController extends BaseController {
     private static org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
@@ -118,10 +120,13 @@ public class SearchController extends BaseController {
         List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response));
         
-        ListPaginator<Product> paginator = new ListPaginator<Product>(
-  			   products, resultMax);
-  	   	
-        products = paginator.getPage(page);
+        if(request.getSession().getAttribute(SessionName.APPLICATION)!=null 
+        		&& EnumTransactionSource.FRIDGE.getCode().equalsIgnoreCase((String)request.getSession().getAttribute(SessionName.APPLICATION))){
+        		ListPaginator<Product> paginator = new ListPaginator<Product>(
+           			   products, resultMax);
+                products = paginator.getPage(page);
+        }
+        		
         
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();

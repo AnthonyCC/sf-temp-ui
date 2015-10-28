@@ -19,6 +19,8 @@ public class SalesUnit {
 	
 	private String unitPriceDescription;
 	
+	private double ratio;
+	
     public SalesUnit(String name) {
         this.name = name;
     }
@@ -31,7 +33,7 @@ public class SalesUnit {
         name = su.getName();
         description = su.getDescription();
         defaultSalesUnit = su.isDefault();
-
+        ratio = (double)su.getNumerator() / (double)su.getDenominator();
         int lbIndex = description.indexOf("lb");
         if (lbIndex >= 0) {
             shortDescription = description.substring(0, lbIndex).trim();
@@ -103,6 +105,16 @@ public class SalesUnit {
 	public void setUnitPriceDescription(String unitPriceDescription) {
 		this.unitPriceDescription = unitPriceDescription;
 	}
+
+	public double getRatio() {
+		return ratio;
+	}
+
+	public void setRatio(double ratio) {
+		this.ratio = ratio;
+	}
+
+	
 
     
 }
