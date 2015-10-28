@@ -416,13 +416,13 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
-		if(this.firstName == null){
+		if((this.firstName != null) && (this.firstName.trim() != "")){
 			ps.setString(3, this.firstName);
 		}else{			
 			ps.setString(3, email.substring(0, email.indexOf("@")));  // temporary placeholder
 		}		
 		ps.setString(4, this.middleName);
-		if(this.lastName == null){
+		if((this.lastName != null) && (this.lastName.trim() != "") ){
 			ps.setString(5, this.lastName);
 		}else{
 			ps.setString(5, " "); // temporary placeholder

@@ -866,8 +866,18 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setTitle(this.title);
 			customerInfo.setBusinessPhone(new PhoneNumber(this.workPhone, this.workPhoneExt));
 			customerInfo.setCellPhone(new PhoneNumber(this.cellPhone, this.cellPhoneExt));
-			customerInfo.setFirstName(this.firstName);
-			customerInfo.setLastName(this.lastName);
+			if((customerInfo.getEmail() != null ) &&  ((this.firstName == null) || (this.firstName.trim() == ""))){
+				String fname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
+				customerInfo.setFirstName(fname);
+			}else{
+				customerInfo.setFirstName(this.firstName);
+			}
+			if((customerInfo.getEmail() != null ) &&  ((this.lastName == null) || (this.lastName.trim() == ""))){
+				String lname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
+				customerInfo.setLastName(lname);
+			}else{
+				customerInfo.setLastName(this.lastName);
+			}						
 			customerInfo.setHomePhone(new PhoneNumber(this.homePhone, this.homePhoneExt));
 			customerInfo.setWorkDepartment(this.department);
 			customerInfo.setEmployeeId(this.employeeId);
