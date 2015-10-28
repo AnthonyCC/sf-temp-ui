@@ -625,4 +625,5 @@ public interface FDUserI extends java.io.Serializable {
 	 */
 	public boolean isCrmMode();
 	public void setCrmMode(boolean flag);
+	public boolean getTcAcknowledge();
 }
