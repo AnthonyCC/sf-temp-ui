@@ -51,6 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -279,31 +280,35 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(paymentDataMap,ewalletRequestData.getCustomerId());
 				ErpPaymentMethodI searchedPM = searchMPWalletCards(ewalletRequestData, paymentMethod);
 				
-				if(searchedPM == null){
-				// Add the card detail to Database if not found 
-					try{
+				try{
+					if(searchedPM == null){
+					// Add the card detail to Database if not found 
 						FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isPaymentechEnabled());
 						List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
 		                if (!paymentMethods.isEmpty() && paymentMethods.size() > 1) {
 		                	sortPaymentMethodsByIdReserved(paymentMethods);
 		                }
-		                
 	            		ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
-					}catch(FDResourceException exception){
-						eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
-						ValidationResult result = new ValidationResult();
-						result.setErrors(eWalletValidationErrors);
-						ewalletResponseData.setValidationResult(result);
-					}catch(Exception exception){
-						eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
-						ValidationResult result = new ValidationResult();
-						result.setErrors(eWalletValidationErrors);
-						ewalletResponseData.setValidationResult(result);
+					}else{
+						searchedPM.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
+						FDCustomerManager.updatePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
+						ewalletResponseData.setPaymentMethod(searchedPM);
 					}
-				}else{
-					searchedPM.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
-					FDCustomerManager.updatePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
-					ewalletResponseData.setPaymentMethod(searchedPM);
+				}catch(FDResourceException exception){
+					eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
+					ValidationResult result = new ValidationResult();
+					result.setErrors(eWalletValidationErrors);
+					ewalletResponseData.setValidationResult(result);
+				}catch(ErpPaymentMethodException exception){
+					eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
+					ValidationResult result = new ValidationResult();
+					result.setErrors(eWalletValidationErrors);
+					ewalletResponseData.setValidationResult(result);
+				}catch(Exception exception){
+					eWalletValidationErrors.add(new ValidationError("Invalid Credit Card", "Selected Card is not Valid."));
+					ValidationResult result = new ValidationResult();
+					result.setErrors(eWalletValidationErrors);
+					ewalletResponseData.setValidationResult(result);
 				}
                 
 				if(data.getCheckout() != null && data.getCheckout().getTransactionId()!= null){
