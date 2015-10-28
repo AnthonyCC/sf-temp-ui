@@ -21,7 +21,7 @@ public class EwalletPostBackModel implements Serializable {
     private String approvalCode = "";
     private String preCheckoutTransactionId = ""; //Optional
     //TODO Change it for Standard checkout impl
-    private Boolean expressCheckoutIndicator = true; //Optional
+    private Boolean expressCheckoutIndicator = false; //Optional
     private boolean postBackSuccess = true;
     
     //Tracks errors of data if any.

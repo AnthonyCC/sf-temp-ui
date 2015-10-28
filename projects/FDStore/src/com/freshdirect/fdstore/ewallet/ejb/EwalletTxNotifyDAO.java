@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
@@ -115,7 +117,6 @@ public class EwalletTxNotifyDAO {
 											"from cust.ewallet_txnotify h  "+
 											"where sa.id = h.salesaction_id))";
 	
-	//TODO unit test
 	private static final String IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK =
 		"INSERT " +
 				"INTO CUST.ewallet_txnotify ( id, status, ewallet_id, vendor_ewallet_id, transaction_id, customer_id, order_id, salesaction_id, notify_status ) " +
@@ -125,6 +126,11 @@ public class EwalletTxNotifyDAO {
 				    			"FROM CUST.paymentinfo_new d, CUST.salesaction e " +
 				    			" WHERE d.salesaction_id = e.id AND (e.action_type     = 'CRO' OR e.action_type       = 'MOD') " +
 				    					"AND e.action_date      > (sysdate - ?) AND d.ewallet_tx_id   IS NOT NULL " +
+				    					"AND e.action_date      < (select min(action_date) " +
+                                                  "from cust.salesaction sa3, cust.payment p2 " +
+                                                  "where sa3.action_type = 'AUT' and p2.response_code != 'A' and " +
+                                                      "sa3.id = p2.salesaction_id and " +
+                                                      "sa3.sale_id = e.sale_id)" +
 				    			"GROUP BY sale_id, ewallet_id, vendor_ewallet_id ) f, " +
 				    		"(SELECT i.id, MAX(j.id) max_order_sa_id " +
 				    			"FROM cust.sale i, cust.salesaction j, cust.payment n " +
@@ -141,7 +147,6 @@ public class EwalletTxNotifyDAO {
 						      ") " +
 					 ")";
 		
-		//TODO unit test
 		private static final String IDENTIFY_ONLINE_AUF_FOR_POSTBACK = 
 									"insert into cust.ewallet_txnotify (id, status, ewallet_id, transaction_id, customer_id, " +
 										"order_id, gateway_activity_log_id, notify_status) (" +
@@ -213,7 +218,7 @@ public class EwalletTxNotifyDAO {
 			   			"ewtxn.transaction_id is not null and " +
 				   		"ew.ewallet_type like ? ) ";
 	
-	private static final String GET_OTHER_DATA_FOR_ORDER = "select s.id id, max(sa.id) salesaction_id, max(auth_code) auth_code " +
+	private static final String GET_OTHER_DATA_FOR_ORDER = "select s.id id, sa.id salesaction_id, auth_code " +
 			"from cust.sale s, cust.salesaction sa, cust.payment p " +
 			"where s.id = sa.sale_id and sa.id = p.salesaction_id and sa.id in (" +
 				"select ewtxn.salesaction_id " +
@@ -224,8 +229,7 @@ public class EwalletTxNotifyDAO {
 					   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
 				   		"ewtxn.salesaction_id is not null and " +
 			   			"ewtxn.transaction_id is not null and " +
-				   		"ew.ewallet_type like ? ) " +
-			"group by s.id";
+				   		"ew.ewallet_type like ? ) ";
 	
 	
 	//Nested SQL is redundant but is included to avoid too may SQLs which cannot be prepared and hence are slow.
@@ -249,7 +253,7 @@ public class EwalletTxNotifyDAO {
 														   				EnumSaleStatus.AUTHORIZATION_FAILED.getStatusCode() + "' and " +
 														   			"ewtxn.gateway_activity_log_id is not null and " +
 														   			"ewtxn.transaction_id is not null and " +
-													   				"ew.ewallet_type like ?";
+													   				"ew.ewallet_type like ? ";
 
 	private static final String GET_OTHER_DATA_FOR_GAL_ORDER = "select gl.id GALId, gl.amount amount, gl.auth_code auth_code, 'AUF' status, gl.transaction_time transaction_time " +
 																		"from MIS.gateway_activity_log gl " +
@@ -358,7 +362,11 @@ public class EwalletTxNotifyDAO {
 			trxn.setCustomerId(orderCustomerIdMap.get(trxn.getOrderId()));
 		}
 		
-		allTrxns.addAll(nonGALTrxnMap.values());
+		SortedSet<String> salesactionKeys = new TreeSet<String>(nonGALTrxnMap.keySet());
+		for (String key : salesactionKeys) {
+			allTrxns.add(nonGALTrxnMap.get(key));
+		}
+		
 		allTrxns.addAll(getGALTrxnsForPostback(conn, walletType));
 		
 		return allTrxns;
@@ -487,10 +495,7 @@ public class EwalletTxNotifyDAO {
 		}
 		
 		pbItem.setApprovalCode(authCd);
-		
-		//pbItem.setTransactionStatus(getTrxnStatus(otherData.getString("status")));
-		
-		//TODO This should be based on configuration
+				
 		pbItem.setExpressCheckoutIndicator(false);
 	}
 	
@@ -536,7 +541,7 @@ public class EwalletTxNotifyDAO {
 	public static void main(String args[]) throws SQLException {
 		Connection conn = DriverManager.getConnection("jdbc:oracle:thin:fdstore_prda/fdstore_prda@scan-dev.dev.nyc1.freshdirect.com:1521/devint");
 		//new EwalletTxNotifyDAO().prepareForPostBack(conn);
-		PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
+		/*PreparedStatement stmt = conn.prepareStatement(IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK);
 		stmt.setInt(1, 7);
 		stmt.setInt(2, 7);
 		stmt.setInt(3, 7);
@@ -597,7 +602,7 @@ public class EwalletTxNotifyDAO {
 		ResultSet gALOtherDataRS = gALOtherDataPS.executeQuery();
 		while (gALOtherDataRS.next()) {
 			System.out.println(gALOtherDataRS.getString("GALId"));
-		}
+		}*/
 		
 		EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
 		System.out.println(dao.getAllTrxnsForPostback(conn, EnumEwalletType.MP));
