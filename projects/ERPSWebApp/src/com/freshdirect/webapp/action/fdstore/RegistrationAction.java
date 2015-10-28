@@ -421,7 +421,9 @@ public class RegistrationAction extends WebActionSupport {
 				customerInfo.setReferralProgId(user.getLastRefProgId());
 				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
 				
-
+				/*  APPDEV-4381   */
+				customerInfo.setFdTcAgree("X");
+				customerInfo.setFdTcAgreeDate(new Date());
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				ErpAddressModel erpAddress = null;
