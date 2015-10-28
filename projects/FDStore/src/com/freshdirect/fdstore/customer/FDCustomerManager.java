@@ -4601,4 +4601,24 @@ public class FDCustomerManager {
 
 	}
 
+	public static boolean updateAck(FDIdentity identity, boolean acknowledge,
+			String ackType) throws FDResourceException {
+
+		lookupManagerHome();
+		boolean status=true;
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			status =sb.setAcknowledge(identity, acknowledge,ackType);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	return status;
+	}
+	
 }
