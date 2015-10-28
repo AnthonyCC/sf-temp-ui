@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
-
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ taglib uri='template' prefix='tmpl' %>
