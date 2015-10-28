@@ -121,7 +121,11 @@ public class LoginControllerTag extends AbstractControllerTag {
 				fdLoginAttempt++;
 			}
 			
-
+			 
+			 // APPDEV-4381 TC Accept.
+			 if(!user.getTcAcknowledge()){
+					 this.setSuccessPage("/registration/tcaccept_lite.jsp");
+			 }
 	    	
         } else {
 			fdLoginAttempt++;
