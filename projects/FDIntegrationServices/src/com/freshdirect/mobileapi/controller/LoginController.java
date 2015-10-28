@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
@@ -31,6 +32,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.AckRequest;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.SessionRequest;
 import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
@@ -50,6 +52,7 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -78,6 +81,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	private final static String ERR_INVALID_TRANSACTIONCODE = "Invalid Transaction Source";
 	
 	public static final String ACTION_SESSION = "checksession";
+	
+	public static final String ACTION_ACK = "acknowledge";
 	
 	public static final String ACTION_SESSION_ADD_ANONYMOUS_ADDRESS = "addanonymousaddress";
 	
@@ -154,6 +159,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		} else if (ACTION_SESSION.equals(action)) {
 			SessionRequest requestMessage = parseRequestObject(request, response, SessionRequest.class);  
 			model = checkSession(model, request, response, user, requestMessage);
+		}else if (ACTION_ACK.equals(action)) {
+			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class); 
+				
+			model = udateAck(model, request, response, user, requestMessage);
 		}  else if (ACTION_SESSION_ADD_ANONYMOUS_ADDRESS.equals(action)) {
 			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class); 
 			try {
@@ -216,6 +225,32 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		return model;
 	}
 	
+	private ModelAndView udateAck(ModelAndView model,
+			HttpServletRequest request, HttpServletResponse response,
+			SessionUser user, AckRequest requestMessage)throws NoSessionException,
+			FDException {
+		Message responseMessage=null;
+		if (null == user) {
+            throw new NoSessionException("No session");
+        }
+		try {
+		
+       boolean success= FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),requestMessage.isAcknowledge(), requestMessage.getAckType());
+		
+       if(!success){
+		 responseMessage = getErrorMessage(ERR_AUTHENTICATION,MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
+       }else {
+    	   responseMessage = Message.createSuccessMessage(MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS);
+    	   
+       }
+		setResponseMessage(model, responseMessage, user);
+		} catch (JsonException e) {
+			 LOGGER.warn(e);
+			
+		}
+		return model;
+	}
+
 	private boolean isAddressSet(SessionUser user, AddressModel address) {
 		return user.getAddress().isSameLocation(address);
 	}
@@ -484,6 +519,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		((LoggedIn) responseMessage).setCohort(user.getCohort());
 		((LoggedIn) responseMessage).setTotalOrderCount(user
 				.getTotalOrderCount());
+
+		((LoggedIn) responseMessage).setTcAcknowledge(user
+				.getTcAcknowledge());
 
 		return responseMessage;
 	}
