@@ -47,7 +47,7 @@
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 			FDCustomerModel fdCustomer= FDCustomerFactory.getFDCustomer(identity);
 			String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();	
-			String mobile_number;
+			String mobile_number=null;
 			boolean text_offers = false;
 			boolean text_delivery =false;
 			
