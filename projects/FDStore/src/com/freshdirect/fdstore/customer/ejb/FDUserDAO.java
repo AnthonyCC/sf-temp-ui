@@ -251,7 +251,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_IDENTITY_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
-		",fdc.referer_customer_id, fdu.default_list_id " +
+		",fdc.referer_customer_id, fdu.default_list_id, ci.fd_tc_agree " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci,CUST.FDUSER_ESTORE fde " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
 		"AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
@@ -295,7 +295,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_EMAIL_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.zipcode,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
-		",fdc.referer_customer_id, fdu.default_list_id " +
+		",fdc.referer_customer_id, fdu.default_list_id,ci.fd_tc_agree  " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.FDUSER_ESTORE fde " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
 		"AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
@@ -345,7 +345,7 @@ public class FDUserDAO {
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, NVL(fde.zipcode,fdu.ZIPCODE) ZIPCODE, fdu.DEPOT_CODE, NVL(FDE.SERVICE_TYPE, fdu.SERVICE_TYPE) SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
-		",rl.referral_link, fdc.referer_customer_id, fdu.default_list_id " +
+		",rl.referral_link, fdc.referer_customer_id, fdu.default_list_id,ci.fd_tc_agree  " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.REFERRAL_LINK rl, CUST.FDUSER_ESTORE fde  " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
 		"AND erpc.id = ci.customer_id(+) " +
@@ -423,6 +423,8 @@ public class FDUserDAO {
 			user.setReferralCustomerId(rs.getString("referer_customer_id"));
 			
 			user.setDefaultListId( rs.getString( "default_list_id" ) );
+			
+			user.setTcAcknowledge(NVL.apply(rs.getString("fd_tc_agree"), "").equalsIgnoreCase("X")?true:false);
 			
 		} else {
 			user = new FDUser();
@@ -1250,6 +1252,29 @@ public class FDUserDAO {
 		ps.close();
 	
 	
+	}
+
+	public static boolean storeFDTCAgreeDate(Connection conn,String erpCustomerPK, Date fdTcAgreeDate) {
+
+		boolean status = true;
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set FD_TC_AGREE_DATE=?,FD_TC_AGREE=? where customer_id=?");	
+			ps.setTimestamp(1, new Timestamp(fdTcAgreeDate.getTime()));
+			ps.setString(2, "X");
+			ps.setString(3, erpCustomerPK);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating DP_TC_AGREE_DATE date", e);
+			status=false;
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+		return status;
+		
 	}
 	
 	
