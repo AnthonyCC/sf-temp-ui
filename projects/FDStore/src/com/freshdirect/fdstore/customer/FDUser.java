@@ -290,6 +290,29 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private Date firstOrderDate = null;
 	
 	private boolean crmMode;
+	
+	/* APPDEV-4381 */
+	private Date tcAcknowledgeDate=null;
+	private boolean tcAcknowledge=false;
+	
+	public Date getTcAcknowledgeDate() {
+		return tcAcknowledgeDate;
+	}
+
+	public void setTcAcknowledgeDate(Date tcAcknowledgeDate) {
+		this.tcAcknowledgeDate = tcAcknowledgeDate;
+	}
+
+	public boolean getTcAcknowledge() {
+		return tcAcknowledge;
+	}
+
+	public void setTcAcknowledge(boolean tcAcknowledge) {
+		this.tcAcknowledge = tcAcknowledge;
+	}
+
+
+
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
