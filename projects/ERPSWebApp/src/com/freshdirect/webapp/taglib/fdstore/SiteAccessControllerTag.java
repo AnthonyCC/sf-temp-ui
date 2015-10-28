@@ -58,6 +58,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
 	private String deliveryaddrpage = "/social/DeliveryAddress.jsp";
 	private String addressnotificationpage = "/social/AddressNotification.jsp";
+	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
+	private String socialLoginAccountLinked ="/social/social_login_account_linked.jsp";
 	
 	private String failureCorporatePageCRM = null;
 	
@@ -158,6 +160,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		
 		String application1 = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
 		
 		this.pageContext.getSession().removeAttribute("morepage");
@@ -307,6 +310,15 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByAddress".equalsIgnoreCase(action)) {
 					checkByAddress(request, result);
+				}else if ("tcAgreed".equalsIgnoreCase(action)) {
+					setFDTcAccept(request, result);
+					HttpSession session = pageContext.getSession();
+					if(null!=request.getParameter("socialNavPage")||"".equals(request.getParameter("socialNavPage"))){
+						socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + request.getParameter("socialNavPage");	
+						doRedirect(socialLoginRecognized);
+					}else{
+					session.setAttribute("LITESIGNUP_COMPLETE", "true");
+					}
 				} else if ("checkByAddressEX".equalsIgnoreCase(action)) {
 					checkByAddress(request, result, false);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
@@ -592,6 +604,18 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		return EVAL_BODY_BUFFERED;
 	}
 	
+	private void setFDTcAccept(HttpServletRequest request, ActionResult result) {
+		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+		try {
+			boolean success= FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
+		} catch (FDResourceException e) {
+			LOGGER.error("Error performing action setFDTcAccept", e);
+			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+			
+		}
+		
+	}
+
 	private void doRegistration(ActionResult result) {
 		int regType = AccountUtil.HOME_USER;
 		if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
