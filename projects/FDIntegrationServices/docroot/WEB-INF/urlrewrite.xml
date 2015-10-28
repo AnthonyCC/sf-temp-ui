@@ -18,6 +18,18 @@
 		<!-- Social Login  -->
 
 	<rule>
+		<from>^/v/([0-9]+)/social/login/</from>
+		<to last="true">/sociallogin.do?action=login&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/social/linkaccount/</from>
+		<to last="true">/sociallogin.do?action=linkaccount&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/social/unlinkaccount/</from>
+		<to last="true">/sociallogin.do?action=unlinkaccount&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/social/socialConnect/</from>
 		<to last="true">/sociallogin.do?action=socialConnect&amp;ver=$1</to>
 	</rule>
@@ -178,6 +190,7 @@
 		<from>^/v/([0-9]+)/(.*)/registersocial/</from>
 		<to last="true">/register.do?action=registersocial&amp;ver=$1</to>
 	</rule>
+		
 		
 	<!-- Cart : Apply Promo -->
 	<rule>

@@ -61,7 +61,7 @@ public class ExternalAccountService implements AccountService {
 		if (userIdInDb != null && userIdInDb.length() > 0) {
 					
 				    
-				    String updatedSuccessPage = UserUtil.loginUser(session, request, response,null, userId, null, "", this.updatedSuccessPage, true);
+				    String updatedSuccessPage = UserUtil.loginUser(session, request, response, new ActionResult(), userId, null, "", this.updatedSuccessPage, true);
 				    
 				    
 				    

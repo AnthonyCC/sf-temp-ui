@@ -33,7 +33,9 @@ public class SalesUnit {
         name = su.getName();
         description = su.getDescription();
         defaultSalesUnit = su.isDefault();
-        ratio = (double)su.getNumerator() / (double)su.getDenominator();
+        if(su.getDenominator()>0){
+        	ratio = (double)su.getNumerator() / (double)su.getDenominator();
+        }
         int lbIndex = description.indexOf("lb");
         if (lbIndex >= 0) {
             shortDescription = description.substring(0, lbIndex).trim();

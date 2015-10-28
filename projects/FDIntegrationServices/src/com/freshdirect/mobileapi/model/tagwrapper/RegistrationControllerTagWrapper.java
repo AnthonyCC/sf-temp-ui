@@ -76,7 +76,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"userToken","provider", "DELIVERYADDRESS","EXPRESSSIGNUP_SKIP_VALIDATION"}
         		, new String[] {});//gets,sets
         addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
 
@@ -128,7 +128,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         		EnumUserInfoName.DLV_STATE.getCode(),
         		EnumUserInfoName.DLV_ZIPCODE.getCode(),
         		EnumUserInfoName.DLV_WORK_PHONE.getCode(),
-        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"fd_successPage","userToken","provider", "DELIVERYADDRESS"}
+        		"selectAddressList", "deliveryTypeFlag", REQ_PARAM_LITE_SIGNUP,REQ_PARAM_LITE_SIGNUP_SOCIAL,"fd_successPage","userToken","provider", "DELIVERYADDRESS","EXPRESSSIGNUP_SKIP_VALIDATION"}
         		, new String[] {"fd_successPage","userToken","provider"});//gets,sets
         
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), registerMessage.getFirstName());

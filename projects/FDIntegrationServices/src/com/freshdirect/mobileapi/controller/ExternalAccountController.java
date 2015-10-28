@@ -68,15 +68,30 @@ public class ExternalAccountController extends BaseController implements SystemM
 	private static Category LOGGER = LoggerFactory.getInstance(ExternalAccountController.class);
 	
 	//Actions
+	 private final static String ACTION_RECOGNIZE_ACCOUNT = "login";
 	 private final static String ACTION_SOCIAL_CONNECT_ACCOUNT = "socialConnect";
+	 private final static String ACTION_LINK_ACCOUNT = "linkaccount";
+	 private final static String ACTION_UNLINK_ACCOUNT = "unlinkaccount";
+	 
 	
 	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws JsonException, FDException  {
 		//recognize Account will merge the existing accounts as well as login the user.
-		
-		 if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){			
+		if(ACTION_RECOGNIZE_ACCOUNT.equals(action)){
+			ExternalAccountLogin requestMessage = null;
+			requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
+			model = recognizeAccountAndLogin(model, user, requestMessage, request);
+		} else if (ACTION_LINK_ACCOUNT.equals(action)){
+			ExternalAccountLinkRequest requestMessage = null;
+			requestMessage = parseRequestObject(request, response, ExternalAccountLinkRequest.class);
+			model = connectExistingAccounts(model, user, requestMessage, request);
+		} else if(ACTION_UNLINK_ACCOUNT.equals(action)){
+			ExternalAccountLogin requestMessage = null;
+			requestMessage = parseRequestObject(request, response, ExternalAccountLogin.class);
+			model = unlinkExistingAccounts(model, user, requestMessage, request);
+		} if(ACTION_SOCIAL_CONNECT_ACCOUNT.equals(action)){			
 			SocialLogin requestMessage = null;
 			requestMessage = parseRequestObject(request, response, SocialLogin.class);
 			model = socialConnectAccount(model, user, requestMessage, request, response);		
@@ -84,6 +99,53 @@ public class ExternalAccountController extends BaseController implements SystemM
 		return model;
 	}	
 	
+	
+	private ModelAndView unlinkExistingAccounts(ModelAndView model,
+			SessionUser user, ExternalAccountLogin requestMessage,
+			HttpServletRequest request) throws JsonException, FDException {
+		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(
+				user);
+		ResultBundle resultBundle = wrapper
+				.unlinkExistingAccounts(requestMessage);
+		ActionResult result = resultBundle.getActionResult();
+		Message responseMessage = new ExternalAccountLoginResponse();
+		if (result.isSuccess()) {
+			responseMessage.setStatus(Message.STATUS_SUCCESS);
+			responseMessage
+					.setSuccessMessage("User Social Account Unlinked Successfully.");
+		} else {
+			responseMessage.setStatus(Message.STATUS_FAILED);
+			responseMessage = getErrorMessage(result, request);
+		}
+		setResponseMessage(model, responseMessage, user);
+		return model;
+	}
+
+private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request ) throws FDException, JsonException{
+		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
+		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
+		ActionResult result = resultBundle.getActionResult();
+		propogateSetSessionValues(request.getSession(), resultBundle);
+		Message responseMessage = null;
+		if(result.isSuccess()){
+			responseMessage = new SocialLoginResponse();
+			responseMessage.setStatus(Message.STATUS_SUCCESS);
+			((SocialLoginResponse) responseMessage).setUserExists(true);
+			((SocialLoginResponse) responseMessage).setLoggedInSuccess(true);
+			if(resultBundle.getExtraData(ExternalAccountControllerTagWrapper.EXTERNAL_PROVIDERS) != null)
+				((SocialLoginResponse) responseMessage).setProviderTypes((List<String>) resultBundle.getExtraData(ExternalAccountControllerTagWrapper.EXTERNAL_PROVIDERS));
+			((SocialLoginResponse) responseMessage).setUserSocialProfile((UserSocialProfile) resultBundle.getExtraData(ExternalAccountControllerTagWrapper.EXTERNAL_USERPROFILE));
+			responseMessage.setSuccessMessage("User was recognized and successfully logged in");
+		} else {
+			 responseMessage =  getErrorMessage(result, request);
+			
+		}
+		setResponseMessage(model, responseMessage, user);
+		return model;
+	}
+
+
+
 	//Social Connect for handling Social login/signup
 	private ModelAndView socialConnectAccount(ModelAndView model,
 			SessionUser user, SocialLogin requestMessage,
@@ -279,7 +341,40 @@ public class ExternalAccountController extends BaseController implements SystemM
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
-	
+
+	private ModelAndView connectExistingAccounts(ModelAndView model, SessionUser user,ExternalAccountLinkRequest requestMessage, HttpServletRequest request ) throws FDException, JsonException{
+		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
+		//ResultBundle resultBundle = wrapper.connectExistingAccounts(requestMessage);
+		ResultBundle resultBundle = wrapper.connectExistingAccounts(requestMessage);
+		
+		ActionResult result = resultBundle.getActionResult();
+		//Message responseMessage = null;
+		
+		Message responseMessage = new ExternalAccountLoginResponse();
+		
+		if(result.isSuccess()){
+			responseMessage.setStatus(Message.STATUS_SUCCESS);
+			
+			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(true);
+			
+			responseMessage.setSuccessMessage("User Social Account Linked Successfully.");
+		} else {
+			 //responseMessage = getErrorMessage(result, request);
+			responseMessage.setStatus(Message.STATUS_FAILED);
+			
+			((ExternalAccountLoginResponse) responseMessage).setLoggedInSuccess(false);
+			
+			//responseMessage.setSuccessMessage("Unable to Link User's Social Account.");
+			
+			responseMessage =  getErrorMessage(result, request);
+			
+		}
+		
+		setResponseMessage(model, responseMessage, user);
+		
+		return model;
+	}
+
 	
 	private Message formatLoginMessage(SessionUser user) throws FDException {
 		Message responseMessage = null;
