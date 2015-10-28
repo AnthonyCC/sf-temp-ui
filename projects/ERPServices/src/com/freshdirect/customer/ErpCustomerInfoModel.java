@@ -92,8 +92,30 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String smsPreferenceflag;
 	private Date smsOptinDate;
 	
+
+	/* APPDEV-4381  */
+	private String fdTcAgree;
+	public String getFdTcAgree() {
+		return fdTcAgree;
+	}
+
+	public void setFdTcAgree(String fdTcAgree) {
+		this.fdTcAgree = fdTcAgree;
+	}
+
+	public Date getFdTcAgreeDate() {
+		return fdTcAgreeDate;
+	}
+
+	public void setFdTcAgreeDate(Date fdTcAgreeDate) {
+		this.fdTcAgreeDate = fdTcAgreeDate;
+	}
+
+	private Date fdTcAgreeDate;
+
 	// Social login 
 	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
+
 	
 
 	public List<ErpCustomerSocialLoginModel> getSocialLoginInfo() {
