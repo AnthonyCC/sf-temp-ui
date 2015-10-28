@@ -61,7 +61,7 @@
 					</td>
 					
 					<td width="2%">&nbsp;</td>
-					<td width="33%" valign="top" style="background-color: #732484; color: #ffffff; font-weight:bold;"><font face="verdana, arial, sans-serif" size="1" color="black">
+					<td width="33%" valign="top" style="color: #ffffff; font-weight:bold;"><font face="verdana, arial, sans-serif" size="1" color="black">
 						<b>ORDER TOTAL</b><br/>
 						$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/><br/>
 						<br/>
