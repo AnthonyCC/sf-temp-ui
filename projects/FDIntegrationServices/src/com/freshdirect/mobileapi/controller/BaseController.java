@@ -57,7 +57,6 @@ import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-import com.freshdirect.webapp.util.LocatorUtil;
 
 
 import freemarker.template.Configuration;
@@ -196,21 +195,9 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-	/*if (null == request.getSession().getAttribute(SessionName.USER)) {
+	if (null == request.getSession().getAttribute(SessionName.USER)) {
             throw new NoSessionException("No session");
-        }*/
-	    if (null == request.getSession().getAttribute(SessionName.USER)) {
-	        FDSessionUser fdSessionUser = null;             
-	        try {
-				fdSessionUser = CookieMonster.loadCookie(request);
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
-	        request.getSession().setAttribute(SessionName.USER, fdSessionUser);
-	        return SessionUser.wrap(fdSessionUser);      
-	    }
+        }
 
         return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
     }
