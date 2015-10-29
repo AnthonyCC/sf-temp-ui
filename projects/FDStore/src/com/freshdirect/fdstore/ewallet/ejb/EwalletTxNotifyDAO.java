@@ -255,7 +255,7 @@ public class EwalletTxNotifyDAO {
 														   			"ewtxn.transaction_id is not null and " +
 													   				"ew.ewallet_type like ? ";
 
-	private static final String GET_OTHER_DATA_FOR_GAL_ORDER = "select gl.id GALId, gl.amount amount, gl.auth_code auth_code, 'AUF' status, gl.transaction_time transaction_time " +
+	private static final String GET_OTHER_DATA_FOR_GAL_ORDER = "select gl.id GALId, gl.amount amount, gl.customer_id customer_id, gl.auth_code auth_code, 'AUF' status, gl.transaction_time transaction_time " +
 																		"from MIS.gateway_activity_log gl " +
 																		"where gl.transaction_type = 'AUTHORIZE' and " +
 																			"gl.ewallet_tx_id is not null and " +
@@ -416,6 +416,7 @@ public class EwalletTxNotifyDAO {
 			} catch (EwalletOldOrderException e) {
 				gALOrderAmountMap.remove(otherDataRS.getString("GALId"));
 			}
+			pbItem.setCustomerId(otherDataRS.getString("customer_id"));
 			pbItem.setPurchaseDate(otherDataRS.getDate("transaction_time"));
 		}
 
