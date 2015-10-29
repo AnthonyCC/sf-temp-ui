@@ -19,6 +19,8 @@ Example call: mvn -Dwl.home=<weblogic server home> compile
 		<module>projects/FDLogisticsIntegration</module>
 		<module>projects/Delivery</module>
 		<module>projects/CMS</module>
+
+		<module>projects/cms-gwt</module>
 	</modules>
 
 	<!--
