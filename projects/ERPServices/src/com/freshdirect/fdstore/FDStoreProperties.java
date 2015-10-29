@@ -1539,7 +1539,7 @@ public class FDStoreProperties {
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
         defaults.put(PROP_EXTERNAL_ACCOUNTMGR_HOME, "freshdirect.fdstore.ExternalAccountManager");
-        defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.24.36.54/dl");
+        defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.42.36.54/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
         defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
@@ -1547,9 +1547,9 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
         defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
         
-        defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "fd-test");
-        defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "997ddd3a-9965-489c-96df-0a6585e66d6b");
-        defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "026599dc-10c3-4e69-bcf6-2db43c66dd37");
+        defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "freshdirect");
+        defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "493e89df-35af-48ff-a856-125064fed179");
+        defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "64bf95b4-9dea-4832-8528-31bba3ae09d6");
         defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
         
 		refresh();
