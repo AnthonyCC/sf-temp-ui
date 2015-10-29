@@ -18,11 +18,18 @@
 * @param? passes
 */
 {template .atpFailureInner}
-  <form fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
-   <button class="cssbutton orange footer__button">Continue</button>
-  </form>
   {call .deliveryTime data="all"}{/call}
   {call .unavailableNonReplaceableLines data="all"}{/call}
+  {if $replaceableLines and length($replaceableLines) > 0}
+    <div class="warningBox">
+        <div class="warningTitle">Items in your order are not available for delivery {$deliveryDate} {$deliveryTimeSlot}</div>
+        <div>Items will be adjusted to the quantity we can deliver.</div>
+        <div>Shop for optional replacement(s) below, or continue checkout.</div>
+    </div>
+  {/if}
+  <form class="continue-top" fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
+   <button class="cssbutton orange footer__button">Continue</button>
+  </form>
   {call .replaceableWrapper data="all"}{/call}
   {call .deliveryPasses data="all"}{/call}
   <form fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
@@ -117,17 +124,9 @@
 
 /**
 * @param replaceableLines
-* @param deliveryDate
-* @param deliveryTimeSlot
 */
 {template .replaceableWrapper}
   {if $replaceableLines and length($replaceableLines) > 0}
-    <div class="warningBox">
-        <div class="warningTitle">Items in your order are not available for delivery {$deliveryDate} {$deliveryTimeSlot}</div>
-        <div>Items will be adjusted to the quantity we can deliver.</div>
-        <div>Shop for optional replacement(s) below, or continue checkout.</div>
-    </div>
-
     {foreach $line in $replaceableLines}
       {call .unavailableLine data="$line" /}
     {/foreach}

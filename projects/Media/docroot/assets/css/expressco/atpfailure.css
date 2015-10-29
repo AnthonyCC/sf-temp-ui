@@ -1,5 +1,11 @@
 #atpfailure .warningBox {
   margin: 20px auto;
+  padding-left:10px;
+  width:700px;
+}
+
+#atpfailure .warningBox:before{
+  display:none;
 }
 
 #atpfailure .lineContents {
@@ -239,4 +245,9 @@
 .popupcontentoverlay.atpFailureOverlay{
   background-color: #fff;
   opacity: .7;
+}
+
+#atpfailure .continue-top{
+  margin:10px 0;
+  text-align:right;
 }

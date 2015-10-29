@@ -31,6 +31,21 @@ var FreshDirect = FreshDirect || {};
             align: false
           }
         },
+        hasClose: {
+          value: true
+        },
+        close: {
+            value: function (e) {
+              fd.modules.common.forms.get("atpfail").submit();
+            }
+        },
+        hide: {
+            value: function (e) {
+              if (this.popup) {
+                this.popup.hide(e);
+              }
+            }
+        },
         scrollCheck: {
           value: '.fixedPopupContent'
         },
@@ -70,8 +85,10 @@ var FreshDirect = FreshDirect || {};
     fd.modules.common.forms.register({
       id: "atpfail",
       submit: function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+        if(e){
+          e.preventDefault();
+          e.stopPropagation();
+        }
 
         var formdata = {
             action: 'atpAdjust',
@@ -91,11 +108,11 @@ var FreshDirect = FreshDirect || {};
       },
       success:function(id, data){
         id && FORMS.get(id).releaseLockWhenNotRedirecting(id, data);
-        atpFailure.close.call(atpFailure);
+        atpFailure.hide.call(atpFailure);
       },
       failure:function(id, data){
         id && FORMS.get(id).releaseLockWhenNotRedirecting(id, data);
-        atpFailure.close.call(atpFailure);
+        atpFailure.hide.call(atpFailure);
       },
       releaseLockWhenNotRedirecting:function(id, data){
         var hasRedirectUrl = data && data.redirectUrl && data.redirectUrl.length;
