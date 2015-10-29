@@ -122,15 +122,15 @@ public class EwalletTxNotifyDAO {
 				"INTO CUST.ewallet_txnotify ( id, status, ewallet_id, vendor_ewallet_id, transaction_id, customer_id, order_id, salesaction_id, notify_status ) " +
 					"(SELECT CUST.SYSTEM_SEQ.nextval, 'AUF', f.ewallet_id, f.vendor_ewallet_id, f.ewallet_trxn_id,  s.customer_id, s.id sale_id, sa.id salesaction_id, 'Pending' " +
 				    	"FROM cust.sale s, CUST.salesaction sa, cust.payment p, " +
-				    		"(SELECT sale_id, ewallet_id, vendor_ewallet_id, MAX(d.ewallet_tx_id) ewallet_trxn_id, MAX(e.id) latest_cromod_sa_id " +
-				    			"FROM CUST.paymentinfo_new d, CUST.salesaction e " +
-				    			" WHERE d.salesaction_id = e.id AND (e.action_type     = 'CRO' OR e.action_type       = 'MOD') " +
-				    					"AND e.action_date      > (sysdate - ?) AND d.ewallet_tx_id   IS NOT NULL " +
-				    					"AND e.action_date      < (select min(action_date) " +
+				    		"(SELECT sale_id, ewallet_id, vendor_ewallet_id, MAX(pi.ewallet_tx_id) ewallet_trxn_id, MAX(sa2.id) latest_cromod_sa_id " +
+				    			"FROM CUST.paymentinfo_new pi, CUST.salesaction sa2 " +
+				    			" WHERE pi.salesaction_id = sa2.id AND (sa2.action_type     = 'CRO' OR sa2.action_type       = 'MOD') " +
+				    					"AND sa2.action_date      > (sysdate - ?) AND pi.ewallet_tx_id   IS NOT NULL " +
+				    					"AND sa2.id      < (select min(sa3.id) " +
                                                   "from cust.salesaction sa3, cust.payment p2 " +
                                                   "where sa3.action_type = 'AUT' and p2.response_code != 'A' and " +
                                                       "sa3.id = p2.salesaction_id and " +
-                                                      "sa3.sale_id = e.sale_id)" +
+                                                      "sa3.sale_id = sa2.sale_id)" +
 				    			"GROUP BY sale_id, ewallet_id, vendor_ewallet_id ) f, " +
 				    		"(SELECT i.id, MAX(j.id) max_order_sa_id " +
 				    			"FROM cust.sale i, cust.salesaction j, cust.payment n " +
@@ -431,20 +431,26 @@ public class EwalletTxNotifyDAO {
 		String nonGALTrxnsStr = "";
 		String gALTrxnsStr = "";
 		int noOfFailedTrxns = 0;
+		String sep = "";
 		for (EwalletPostBackModel resp : resps) {
 			if (!resp.isError() ||  (resp.isError() && resp.getRecoverable() != null && resp.getRecoverable().equals("false"))) {
-				if (!resp.isgAL())
-					nonGALTrxnsStr += "'" + resp.getKey() + "', ";
-				else
-					gALTrxnsStr += "'" + resp.getKey() + "', ";
+
+				if (!resp.isgAL()) {
+
+					nonGALTrxnsStr += sep + "'" + resp.getKey() + "'";
+				}
+				else {
+					gALTrxnsStr += sep + "'" + resp.getKey() + "'";
+				}
 			}
 			else
 				noOfFailedTrxns++;
+			sep = ", ";
 		}
 		
 		String updQry = "";
 		if (!nonGALTrxnsStr.isEmpty()) {
-			updQry += UPDATE_NONGAL_SUCCESS_TXNS + nonGALTrxnsStr.substring(0, nonGALTrxnsStr.lastIndexOf(",")) + ")";
+			updQry += UPDATE_NONGAL_SUCCESS_TXNS + nonGALTrxnsStr + ")";
 		}
 		
 		if (!updQry.isEmpty()) {
@@ -455,7 +461,7 @@ public class EwalletTxNotifyDAO {
 		}
 		
 		if (!gALTrxnsStr.isEmpty()) {
-			updQry += UPDATE_GAL_SUCCESS_TXNS + gALTrxnsStr.substring(0, nonGALTrxnsStr.lastIndexOf(",")) + ")";
+			updQry += UPDATE_GAL_SUCCESS_TXNS + gALTrxnsStr + ")";
 		}
 		
 		if (!updQry.isEmpty()) {
@@ -551,17 +557,17 @@ public class EwalletTxNotifyDAO {
 		PreparedStatement onlineAUFstmt = conn.prepareStatement(IDENTIFY_ONLINE_AUF_FOR_POSTBACK);
 		onlineAUFstmt.setInt(1, 7);
 		rows = onlineAUFstmt.executeUpdate();
-		System.out.println(rows);
+		System.out.println(rows);*/
 
-		
+/*		int rows = 0;
 		PreparedStatement offlineAUFstmt = conn.prepareStatement(IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK);
 		offlineAUFstmt.setInt(1, 7);
 		offlineAUFstmt.setInt(2, 7);
 		offlineAUFstmt.setInt(3, 7);
 		rows = offlineAUFstmt.executeUpdate();
-		System.out.println(rows);
+		System.out.println(rows);*/
 		
-		PreparedStatement nonGALTrxnsPS = conn.prepareStatement(GET_NONGAL_TRXNS_FOR_POSTBACK);
+		/*PreparedStatement nonGALTrxnsPS = conn.prepareStatement(GET_NONGAL_TRXNS_FOR_POSTBACK);
 		nonGALTrxnsPS.setString(1, "MP");
 		ResultSet nonGALTrxnsRS = nonGALTrxnsPS.executeQuery();
 		while (nonGALTrxnsRS.next()) {
