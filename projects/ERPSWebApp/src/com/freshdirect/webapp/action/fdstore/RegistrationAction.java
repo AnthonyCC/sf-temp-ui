@@ -692,9 +692,9 @@ public class RegistrationAction extends WebActionSupport {
 			aInfo.validateExSLite(actionResult);
 		}
 		
-		if(!"true".equals(request.getParameter("LITESIGNUP"))) {
+//		if(!"true".equals(request.getParameter("LITESIGNUP"))) {
 			cInfo.validateEx(actionResult);
-		}
+//		}
 		
 		if(!"true".equals(request.getParameter("EXPRESSSIGNUP_SKIP_VALIDATION"))) {
 			AccountUtil.validatePasswordEx(actionResult, aInfo.password, aInfo.repeatPassword);	
