@@ -4108,7 +4108,7 @@ public class FDCustomerManager {
 			sb.storeMobilePreferences(fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, eStoreId );
 			FDDeliveryManager.getInstance().addSubscriptions(customerId,
 					mobileNumber, textOffers, textDelivery, orderNotices,
-				orderExceptions, offers, partnerMessages, customerSmsPreferenceModel.getSmsOptinDate(), eStoreId.getContentId());
+				orderExceptions, offers, partnerMessages, new Date(), eStoreId.toString());
 			logSmsActivity(customerId, orderNotices, orderExceptions, offers, customerSmsPreferenceModel, eStoreId.getContentId());
 	
 		

@@ -273,31 +273,31 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		
 			optedInFdxBeforeMarketing=beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value());
 		
-		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOrderNotices())){
 			customerInfo.setOrderNotices(beforeUpdateOrderNotices);
 		}
- 		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())){
+ 		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOrderExceptions())){
 			customerInfo.setOrderExceptions(beforeUpdateOrderExceptions);
 		}
-		if(beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOffers())){
 			customerInfo.setOffers(beforeUpdateOffers);
 		}
-		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getPartnerMessages())){
 			customerInfo.setPartnerMessages(beforeUpdatePartnerMessages);
 		}
 		
 		//FDX SMS Alert	
 		
-		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+		if(beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.SUBSCRIBED.value().equals(customerInfo.getFdxOrderNotices())){
 			customerInfo.setFdxOrderNotices(beforeUpdateFdxOrderNotices);
 		}
-		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.SUBSCRIBED.value().equals(customerInfo.getFdxOrderExceptions())){
 			customerInfo.setFdxOrderExceptions(beforeUpdateFdxOrderExceptions);
 		}
-		if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+		if(beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.SUBSCRIBED.value().equals(customerInfo.getFdxOffers())){
 			customerInfo.setFdxOffers(beforeUpdateFdxOffers);
 		}
-		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& customerInfo.getFdxPartnerMessages().equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+		if(beforeUpdatePartnerMessages.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& EnumSMSAlertStatus.SUBSCRIBED.value().equals(customerInfo.getFdxPartnerMessages())){
 			customerInfo.setPartnerMessages(beforeUpdateFdxPartnerMessages);
 		}
 		
@@ -310,13 +310,13 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		boolean fdxOffersOptin=false;
 		
 		
-		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&&beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOrderExceptions())&&beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
 			orderExceptionOptin=true;
 		}
-		if(this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOrderNotices())&& beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
 			orderNoticeOptin=true;
 		}
-		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateOffers.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.PENDING.value().equals(this.customerInfo.getOffers())&& beforeUpdateOffers.equals(EnumSMSAlertStatus.NONE.value())){
 			offersOptin=true;
 		}
 		
@@ -324,13 +324,13 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		//FDX SMS Alert	
 		
 		
-		if(this.customerInfo.getFdxOrderExceptions().equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.SUBSCRIBED.value().equals(this.customerInfo.getFdxOrderExceptions())&& beforeUpdateFdxOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOrderExceptionOptin=true;
 		}
-		if(this.customerInfo.getFdxOrderNotices().equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.SUBSCRIBED.value().equals(this.customerInfo.getFdxOrderNotices()) && beforeUpdateFdxOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOrderNoticeOptin=true;
 		}
-		if(this.customerInfo.getFdxOffers().equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.NONE.value())){
+		if(EnumSMSAlertStatus.SUBSCRIBED.value().equals(this.customerInfo.getFdxOffers()) && beforeUpdateFdxOffers.equals(EnumSMSAlertStatus.NONE.value())){
 			fdxOffersOptin=true;
 		}
 		
