@@ -37,25 +37,24 @@ boolean isECheckRestricted = false;
 if(user!=null  && user.getIdentity()!=null) {
     identity = user.getIdentity();
     paymentMethods = FDCustomerManager.getPaymentMethods(identity);
-    
-    List<ErpPaymentMethodI> paymentsNew = new ArrayList<ErpPaymentMethodI>();
 	
-	Iterator payItr = paymentMethods.iterator();
-	while (payItr.hasNext()) {
-  		ErpPaymentMethodI  paymentM = (ErpPaymentMethodI) payItr.next();
-  		if (paymentM.geteWalletID() == null) {
- 			paymentsNew.add(paymentM);
-        }
- 		if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
-            	hasCheck = true;
-        }else if (EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
-            	hasEBT = true;
-        }
-	}
-	
-	paymentMethods = paymentsNew;
+    if(paymentMethods != null && !paymentMethods.isEmpty()){
+    	List<ErpPaymentMethodI> paymentsNew = new ArrayList<ErpPaymentMethodI>();
+		Iterator payItr = paymentMethods.iterator();
+		while (payItr.hasNext()) {
+	  		ErpPaymentMethodI  paymentM = (ErpPaymentMethodI) payItr.next();
+	  		if (paymentM.geteWalletID() == null) {
+	 			paymentsNew.add(paymentM);
+	        }
+	 		if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
+	            	hasCheck = true;
+	        }else if (EnumPaymentMethodType.EBT.equals(paymentM.getPaymentMethodType())) {
+	            	hasEBT = true;
+	        }
+		}
+		paymentMethods = paymentsNew;
+    }
     isECheckRestricted = FDCustomerManager.isECheckRestricted(identity); 
-	
 }
 boolean isCheckEligible	= user.isCheckEligible();
 // MP Use Case #4

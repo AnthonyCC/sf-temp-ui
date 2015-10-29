@@ -280,6 +280,19 @@ if (isPaymentRequired) {
 	if(user!=null && user.getIdentity()!=null) {
 		identity = user.getIdentity();
 		paymentMethods = FDCustomerManager.getPaymentMethods(identity);    
+		
+		if(paymentMethods != null && !paymentMethods.isEmpty()){
+			List<ErpPaymentMethodI> paymentsNew = new ArrayList<ErpPaymentMethodI>();
+			Iterator payItr = paymentMethods.iterator();
+			while (payItr.hasNext()) {
+		  		ErpPaymentMethodI  paymentM = (ErpPaymentMethodI) payItr.next();
+		  		if (paymentM.geteWalletID() == null) {
+		 			paymentsNew.add(paymentM);
+		        }
+			}
+			paymentMethods = paymentsNew;
+		}
+			
 		isECheckRestricted = FDCustomerManager.isECheckRestricted(identity); 
 	}
 

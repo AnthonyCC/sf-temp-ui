@@ -165,6 +165,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     				break;
     			}
     			case MASTERPASS_STANDARD_CHECKOUT_DATA: {
+    				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT_DATA);
     				// Check for Error response from EWallet Vendor
     				if( checkWalletErrorResponse(ewalletRequestData,response)){
     					response.sendRedirect("/expressco/checkout.jsp");
