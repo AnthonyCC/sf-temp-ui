@@ -432,21 +432,24 @@ public class EwalletTxNotifyDAO {
 		String nonGALTrxnsStr = "";
 		String gALTrxnsStr = "";
 		int noOfFailedTrxns = 0;
-		String sep = "";
+		String nonGALsep = "";
+		String gALsep = "";
 		for (EwalletPostBackModel resp : resps) {
 			if (!resp.isError() ||  (resp.isError() && resp.getRecoverable() != null && resp.getRecoverable().equals("false"))) {
 
 				if (!resp.isgAL()) {
 
-					nonGALTrxnsStr += sep + "'" + resp.getKey() + "'";
+					nonGALTrxnsStr += nonGALsep + "'" + resp.getKey() + "'";
+					nonGALsep = ", ";
 				}
 				else {
-					gALTrxnsStr += sep + "'" + resp.getKey() + "'";
+					gALTrxnsStr += gALsep + "'" + resp.getKey() + "'";
+					gALsep = ", ";
 				}
 			}
 			else
 				noOfFailedTrxns++;
-			sep = ", ";
+
 		}
 		
 		String updQry = "";
