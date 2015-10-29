@@ -274,10 +274,10 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 						} else if (context.equalsIgnoreCase("CREATE")) {
 							//Registering social user
 							ResultBundle registrationResultBundle = userRegistration(socialUser, user, request, response);
-							SessionUser sessionUser = getUserFromSession(request, response);
+							/*SessionUser sessionUser = getUserFromSession(request, response);
 							if(sessionUser.isLoggedIn()){
 								logout(model, user, request, response);
-							}
+							}*/
 							userLogin(socialEmail, session, request, response);	
 							user = getUserFromSession(request, response);
 							if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null && user.getUsername()!=null) {
