@@ -9,14 +9,7 @@ public class LoginRequest implements Serializable{
 	private String userId;
 	private String password;
 	private String successPage;
-	private boolean fdtcacknowledge;
 	
-	public boolean isFdtcacknowledge() {
-		return fdtcacknowledge;
-	}
-	public void setFdtcacknowledge(boolean fdtcacknowledge) {
-		this.fdtcacknowledge = fdtcacknowledge;
-	}
 	public String getUserId() {
 		return userId;
 	}

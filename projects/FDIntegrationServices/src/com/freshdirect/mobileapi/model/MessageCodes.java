@@ -217,10 +217,6 @@ public interface MessageCodes {
     
     public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_FAILED 					= "Delivery Pass Terms And Condition Acceptance Failed.";
     
-    public final static String MSG_ACCEPT_FD_TERMSANDCONDITIONS 					= "Freshdirect Terms And Condition Accepted Successfully.";
-    
-    public final static String MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED 					= "Freshdirect Terms And Condition Acceptance Failed.";
-    
     public final static String MSG_ACCEPT_DP_TERMSANDCONDITIONS_NOADDRESS 					= "Delivery Pass Terms And Condition Acceptance Successfully. Address not found in cart";
     
     public static final String ERR_EBT_RESTRICTED = "ERR_EBT_RESTRICTED";

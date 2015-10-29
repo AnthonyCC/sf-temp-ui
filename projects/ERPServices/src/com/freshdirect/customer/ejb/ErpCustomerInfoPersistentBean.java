@@ -104,12 +104,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private int numOfEmployees;
 	private String secondEmailAddress;
 	
-
-	private java.util.Date fdTcAgreeDate;
-	private String fdTcAgree;
-
 	// Social login 
 	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
+	
 
 	/**
 	 * Default constructor.
@@ -171,16 +168,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		/* APPDEV-2475 DP T&C */
 		this.dpTcViewCount = 0;
 		this.dpTcAgreeDate = null;
-
-		
-		/* APPDEV-4381 */
-		this.fdTcAgreeDate=null;
-		this.fdTcAgree=null;
-
 		
 		// Social login
 		this.socialLoginInfo = null;		
-
 	}
 
 	/**
@@ -274,11 +264,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setDpTcViewCount(this.dpTcViewCount);
 		model.setDpTcAgreeDate(this.dpTcAgreeDate);
 		
-		/*   APPDEV-4381  */
-		
-		model.setFdTcAgree(this.fdTcAgree);
-		model.setFdTcAgreeDate(this.fdTcAgreeDate);
-		
 		
 		model.setIndustry(this.industry);
 		model.setNumOfEmployees(this.numOfEmployees);
@@ -358,10 +343,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.setIndustry(m.getIndustry());
 		this.setNumOfEmployees(m.getNumOfEmployees());
 		this.setSecondEmailAddress(m.getSecondEmailAddress());
-		/*   APPDEV-4381  */
-		this.fdTcAgree=m.getFdTcAgree();
-		this.fdTcAgreeDate=m.getFdTcAgreeDate();
-		
+
 		this.setModified();
 	}
 
@@ -411,8 +393,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, "
 				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
 				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
-				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS,FD_TC_AGREE,FD_TC_AGREE_DATE) "
-					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS) "
+					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
@@ -513,14 +495,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		ps.setInt(42, this.numOfEmployees);
 		ps.setString(43, this.secondEmailAddress);
 		
-		/* APPDEV-4381 */
-		ps.setString(44, this.fdTcAgree);
-		if (this.fdTcAgreeDate == null) {
-			ps.setNull(45, Types.TIMESTAMP);
-		} else {
-			ps.setTimestamp(45, new Timestamp(this.fdTcAgreeDate.getTime()));
-		}
-		
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -547,7 +521,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
 					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION,SMS_PREFERENCE_FLAG, go_green, display_name, "
-					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE,FD_TC_AGREE,FD_TC_AGREE_DATE"
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -650,10 +624,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			/* APPDEV-2475 DP T&C */
 			this.dpTcViewCount = rs.getInt("DP_TC_VIEWS");
 			this.dpTcAgreeDate = rs.getDate("DP_TC_AGREE_DATE");
-			
-			/* APPDEV-4381 FD T&C */
-			this.fdTcAgree = rs.getString("FD_TC_AGREE");
-			this.fdTcAgreeDate = rs.getDate("FD_TC_AGREE_DATE");
 			
 			this.industry = NVL.apply(rs.getString("INDUSTRY"), "");
 			this.numOfEmployees = rs.getInt("NUM_OF_EMPLOYEES");

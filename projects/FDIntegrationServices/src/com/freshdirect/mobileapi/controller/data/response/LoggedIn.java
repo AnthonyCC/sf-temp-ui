@@ -47,17 +47,8 @@ public class LoggedIn extends Message {
     private boolean onMailingList = false;
     private String resultAction;
     private String resultMessage;
-    private boolean tcAcknowledge;
     
-    public boolean isTcAcknowledge() {
-		return tcAcknowledge;
-	}
-
-	public void setTcAcknowledge(boolean tcAcknowledge) {
-		this.tcAcknowledge = tcAcknowledge;
-	}
-
-	public String getFdUserId() {
+    public String getFdUserId() {
 		return fdUserId;
 	}
 

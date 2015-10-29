@@ -7886,18 +7886,5 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
-	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType) throws FDResourceException{
-		Connection conn = null;
-		boolean status = true;
-		try {
-			conn = getConnection();
-			status=FDUserDAO.storeFDTCAgreeDate(conn, identity.getErpCustomerPK(), new Date());
-		} catch (SQLException sqle) {
-			throw new FDResourceException(sqle);
-		} finally {
-			close(conn);
-		}
-		return status;
-	}
 }
 
