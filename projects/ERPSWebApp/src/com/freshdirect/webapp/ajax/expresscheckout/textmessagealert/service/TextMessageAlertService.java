@@ -57,7 +57,7 @@ public class TextMessageAlertService {
 						isOptionEnabled(formData, AlertValidationConstraints.ALERTS), isOptionEnabled(formData, AlertValidationConstraints.PERKS),
 						isAlertStatusEnabled(EnumSMSAlertStatus.getEnum(fdCustomer.getCustomerSmsPreferenceModel().getPartnerMessages())), fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
 
-				FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
+				FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "Y", user.getUserContext().getStoreContext().getEStoreId());
 			}
 		} catch (FDResourceException e) {
 			LOGGER.error("Error while store text message alert preferences.", e);
@@ -70,7 +70,7 @@ public class TextMessageAlertService {
 
 		try {
 			FDIdentity identity = user.getIdentity();
-			FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(), "N", user.getUserContext().getStoreContext().getEStoreId());
+			FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(), "N", user.getUserContext().getStoreContext().getEStoreId());
 			isCancel = true;
 		} catch (FDResourceException e) {
 			LOGGER.error("Error while cancel text message alert preferences.", e);

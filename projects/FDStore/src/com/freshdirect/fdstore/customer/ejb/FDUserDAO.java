@@ -899,7 +899,6 @@ public class FDUserDAO {
 	public static void storeSmsPreferences(Connection conn, String fdCustomerId, String flag, EnumEStoreId eStoreId){
 		PreparedStatement ps = null;
 		try {
-			//ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SMS_PREFERENCE_FLAG=? where customer_id=?");
 			ps = conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set SMS_PREFERENCE_FLAG=? where fdcustomer_id=? and e_store=?");
 			ps.setString(1, flag!=null?flag:null);
 			ps.setString(2, fdCustomerId);
@@ -924,12 +923,10 @@ public class FDUserDAO {
 		
 		try {
 			if(isCorpUser)
-			//	ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag=?  where customer_id=?");
 			{	ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?,business_phone=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),business_ext=?,mobile_preference_flag=?  where customer_id=?");
 				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where FDCUSTOMER_ID=? and e_store=?");
 			}
 			else
-			//ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag=? where customer_id=?");
 			{
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=?, home_phone = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), home_ext = ?,mobile_preference_flag=? where customer_id=?");
 				ps1= conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set mobile_number=?, offers_notification=?,delivery_notification=?  where FDCUSTOMER_ID=? and e_store=?");

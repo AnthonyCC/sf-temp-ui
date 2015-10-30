@@ -450,9 +450,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), identity.getFDCustomerPK(), mobile_number, text_offers, text_delivery,
 						order_notices, order_exceptions, offers, partner_messages, fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());					
 				if(subscribedNow) {
-					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId());
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId());
 				} else {
-					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null, user.getUserContext().getStoreContext().getEStoreId());
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(),null, user.getUserContext().getStoreContext().getEStoreId());
 				}
 			} catch (Exception e) {
 				LOGGER.error("Error from mobile preferences", e);
@@ -1022,7 +1022,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 						FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(),identity.getFDCustomerPK(), mobile_number, "N", "N",
 								"Y", "Y", "Y", "Y", fdCustomer.getCustomerSmsPreferenceModel(), user.getUserContext().getStoreContext().getEStoreId());
-						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId() );
+						FDCustomerManager.storeSmsPreferenceFlag(identity.getFDCustomerPK(),"Y", user.getUserContext().getStoreContext().getEStoreId() );
 						session.setAttribute("SMSAlert" + orderNumber, "done");
 					} catch (FDResourceException e) {
 						LOGGER.error("Error from mobile preferences", e);
@@ -1035,7 +1035,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		} else {
 			//no thanks
 			try {
-				FDCustomerManager.storeSmsPreferenceFlag(user.getIdentity().getErpCustomerPK(),"N", user.getUserContext().getStoreContext().getEStoreId());
+				FDCustomerManager.storeSmsPreferenceFlag(user.getIdentity().getFDCustomerPK(),"N", user.getUserContext().getStoreContext().getEStoreId());
 			} catch (FDResourceException e) {
 				LOGGER.error("Error from mobile preferences", e);
 			}

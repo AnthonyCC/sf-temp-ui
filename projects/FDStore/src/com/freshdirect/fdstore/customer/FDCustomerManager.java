@@ -25,7 +25,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -57,7 +56,6 @@ import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpEWalletModel;
-import com.freshdirect.customer.ErpEWalletTxNotifyModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ErpModifyOrderModel;
@@ -429,12 +427,6 @@ public class FDCustomerManager {
 		}
 	}
 
-    private static ErpDeliveryPlantInfoModel getDeliveryPlantInfo(FDUser user) {
-    	ErpDeliveryPlantInfoModel plantInfo=new ErpDeliveryPlantInfoModel();
-    	UserContext ctx=user.getUserContext();
-    	plantInfo.setPlantId(ctx.getFulfillmentContext().getPlantId());
-    	return plantInfo;
-    }
 	private static void restoreReservations(FDUser user) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
@@ -4167,11 +4159,11 @@ public class FDCustomerManager {
 		logActivity(rec);
 	}
 
-	public static void storeSmsPreferenceFlag(String customerId, String flag, EnumEStoreId eStoreId)throws FDResourceException{
+	public static void storeSmsPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)throws FDResourceException{
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			 sb.storeSmsPrefereceFlag(customerId,flag, eStoreId);
+			 sb.storeSmsPrefereceFlag(fdCustomerId,flag, eStoreId);
 		}catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -4225,11 +4217,11 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void storeSmsPreferencesNoThanks(String customerId, EnumEStoreId eStoreId) throws FDResourceException{
+	public static void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException{
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSmsPreferencesNoThanks(customerId, eStoreId);
+			sb.storeSmsPreferencesNoThanks(fdCustomerId, eStoreId);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

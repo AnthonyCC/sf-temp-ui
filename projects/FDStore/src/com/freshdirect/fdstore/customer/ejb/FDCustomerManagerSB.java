@@ -802,7 +802,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public boolean loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
-	public void storeSmsPreferencesNoThanks(String customerId, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
+	public void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
 	public void storeAllMobilePreferences(String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser,EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
@@ -839,14 +839,15 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public CustomerAvgOrderSize getHistoricOrderSize(String customerId) throws FDResourceException, RemoteException;
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException, RemoteException;
 	
-	public void storeSmsPrefereceFlag(String CustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
+	public void storeSmsPrefereceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	//4125 coremetrics
-    public String getCustomersProfileValue(String CustomerId) throws FDResourceException, RemoteException;
-	public String getCustomersCounty(String CustomerID) throws FDResourceException, RemoteException;
+    public String getCustomersProfileValue(String customerId) throws FDResourceException, RemoteException;
+
+    public String getCustomersCounty(String customerId) throws FDResourceException, RemoteException;
 
 	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
 	
-	public String getLastOrderID(FDIdentity identity,EnumEStoreId eStoreId)	throws FDResourceException, RemoteException;
+	public String getLastOrderID(FDIdentity identity, EnumEStoreId eStoreId)	throws FDResourceException, RemoteException;
 
 	public void updateOrderInModifyState(ErpSaleModel sale)	throws FDResourceException, RemoteException;
 
@@ -856,6 +857,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public void releaseModificationLock(String orderId)	throws FDResourceException, RemoteException;
 
-	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String ErpCustomerPK)throws FDResourceException, RemoteException;
+	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String erpCustomerPk)throws FDResourceException, RemoteException;
 }
 
