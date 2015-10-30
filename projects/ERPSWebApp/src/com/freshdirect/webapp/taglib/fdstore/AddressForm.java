@@ -83,8 +83,7 @@ public class AddressForm implements WebFormI { //, AddressName
         
         //Replace the special characters that may exist in customer's input with spaces.
         
-        //instructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()).replaceAll(FDStoreProperties.getDlvInstructionsSpecialChar(), " "), "");
-        instructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()), "");
+        instructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()).replaceAll(FDStoreProperties.getDlvInstructionsSpecialChar(), " "), "");
         
         alternateDeliverySetting = request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode());
         
