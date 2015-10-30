@@ -23,21 +23,7 @@ if(user != null) {
         depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
     }
     
-    // Check if Delivery Address Available
-    boolean isDeliveryAddressAvailable = false;     
-   	{
-   	    FDUserI fdSessionUser = (FDUserI)session.getAttribute(SessionName.USER);
-   	    if(fdSessionUser != null){
-	   		FDIdentity fdSessionUserIdentity  = fdSessionUser.getIdentity();
-	   		if(fdSessionUserIdentity != null){
-				Collection fdSessionUserDlvAddresses = FDCustomerManager.getShipToAddresses(fdSessionUserIdentity);
-				if (fdSessionUserDlvAddresses.size() > 0) {
-					isDeliveryAddressAvailable = true;
-				}
-   	    	}
-   	    }						
-   	}
-    		
+
     request.setAttribute("listPos", "SystemMessage");
     %><% 
     if (FDStoreProperties.isAdServerEnabled()) { 
@@ -92,11 +78,9 @@ if(user != null) {
       <span class="close"></span>
       <a class="cart" href="/view_cart.jsp"><div class="vahidden">view cart</div></a>
       
-      <% if(isDeliveryAddressAvailable){%>
-      		<a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
-       <% } else { %>
-     	   <a class="checkout" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/DeliveryAddress.jsp', width: 500, height: 698, opacity: .5}) }" ><div class="vahidden">checkout</div></a>      
-      <% } %>
+
+      <a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+
     </div>
     </fd:GetCart>
 
