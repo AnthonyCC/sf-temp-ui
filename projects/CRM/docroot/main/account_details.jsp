@@ -611,7 +611,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 
             <logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
             <%
-            if(EnumPaymentMethodType.CREDITCARD.equals(payment.getPaymentMethodType())){
+            if(EnumPaymentMethodType.CREDITCARD.equals(payment.getPaymentMethodType()) && payment.geteWalletID() == null){
             %>
                 <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
                      <div class="cust_module_content">
