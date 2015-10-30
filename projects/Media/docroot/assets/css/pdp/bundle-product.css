@@ -122,14 +122,13 @@
   margin-left:5px;
 }
 
-.thxgiving-actions a.action-item:active,
-.thxgiving-actions a.action-item:hover {
+.thxgiving-actions .action-item:hover {
   text-decoration: none;
 }
 
-.thxgiving-actions a.action-item:active .action-item-content,
-.thxgiving-actions a.action-item:hover .action-item-content{
+.thxgiving-actions .action-item:hover .action-item-content{
   text-decoration:underline;
+  cursor:pointer;
 }
 
 .thxgiving-actions .action-item.meal-details .action-item-content{
