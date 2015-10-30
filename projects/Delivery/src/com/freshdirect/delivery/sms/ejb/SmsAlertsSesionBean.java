@@ -88,7 +88,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try {	
 			STSmsResponse smsResponseModel;
 				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPT_IN_MESSAGE, eStoreId);
-			if (smsResponseModel != null) {
+				if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				Connection con = null;
 				smsResponseModel.setDate(new Date());
 				try {
@@ -128,7 +128,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			STSmsResponse smsResponseModel;
 				 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPT_IN_MESSAGE_NON_MARKETING, eStoreId);	
 			
-			if (smsResponseModel != null) {
+			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				Connection con = null;
 				smsResponseModel.setDate(new Date());
 				try {
@@ -167,7 +167,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try {	
 			STSmsResponse smsResponseModel;
 				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPT_IN_MESSAGE_MARKETING, eStoreId);
-			if (smsResponseModel != null) {
+				
+			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				Connection con = null;
 				smsResponseModel.setDate(new Date());
 				try {
@@ -213,7 +214,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			if(count<=5){
 				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_CANCEL, EnumEStoreId.FDX.name());
 	
-			if (smsResponseModel != null) {
+			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				smsResponseModel.setDate(new Date());
 				try {
 					con = this.getConnection();
