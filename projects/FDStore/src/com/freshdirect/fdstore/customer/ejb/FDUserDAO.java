@@ -1198,7 +1198,7 @@ public class FDUserDAO {
 		
 	}
 
-	private static final String IS_READY_FOR_PICK = "select 1 from cust.sale where (IN_MODIFY is null OR status IN ('PRC', 'PNA')) and id = ?";
+	private static final String IS_READY_FOR_PICK = "select 1 from cust.sale where IN_MODIFY is null AND status NOT IN ('NEW', 'NSM', 'MOD', 'MOC', 'AUF', 'CAN', 'AVE') and id = ?";
 
 	public static boolean isReadyForPick(Connection conn, String id) throws SQLException {
 
