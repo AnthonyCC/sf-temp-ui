@@ -370,6 +370,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(REQ_PARAM_OFFER_EXISTING, currentOffers);
         addRequestValue(REQ_PARAM_PARTNER_EXISTING, currentPartnerMessages);
         addRequestValue(REQ_PARAM_MOBILE_EXISTING, currentMobileNo);
+        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
         
         getWrapTarget().setActionName(ACTION_SET_MOBILE_PREFERENCES);
         
