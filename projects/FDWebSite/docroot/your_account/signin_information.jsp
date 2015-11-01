@@ -777,7 +777,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <% } %>
 
 
-<%@ include file="/includes/i_social_accounts.jspf"%>
+<%--@ include file="/includes/i_social_accounts.jspf"--%>
 
 
 
