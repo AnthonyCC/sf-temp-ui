@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -615,14 +616,14 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			
 			if(orderNotificationChanged || orderExceptionsChanged || offersChanged){
 				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
-				rec.setNote("Updated FD SMS Flags- Order Notif:" + this.customerInfo.getOrderNotices() + ", OrderExp Notif:"+ this.customerInfo.getOrderExceptions()+ ", MrkOffers:"+this.customerInfo.getOffers());
+				rec.setNote("Updated FD SMS Flags- Order Notif:" + customerSmsPreferenceModel.getOrderNotices() + ", OrderExp Notif:"+ customerSmsPreferenceModel.getOrderExceptions()+ ", MrkOffers:"+ customerSmsPreferenceModel.getOffers());
 				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
 				command.execute();
 			}
 			// FDX SMS For Activity Log
 			if(fddOrderNotificationChanged || fdxOrderExceptionsChanged || FdxOffersChanged){
 				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
-				rec.setNote("Updated FDX SMS Flags- Order Notif:" + this.customerInfo.getFdxOrderNotices() + ", OrderExp Notif:"+ this.customerInfo.getFdxOrderExceptions()+ ", MrkOffers:"+this.customerInfo.getFdxOffers());
+				rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + this.customerInfo.getFdxOrderNotices() + ", Order Status:"+ this.customerInfo.getFdxOrderExceptions()+ ", Offers:"+this.customerInfo.getFdxOffers());
 				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
 				command.execute();
 			}

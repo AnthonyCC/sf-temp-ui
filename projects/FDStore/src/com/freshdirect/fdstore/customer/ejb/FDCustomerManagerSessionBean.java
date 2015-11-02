@@ -2178,6 +2178,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error Sending email for Order Confirmantion: "+ pk.getId(), e);
 			}
+			try {
+				FDOrderI order = getOrder(pk.getId());
+				if(FDStoreProperties.getSmsOrderConfirmation() && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices()))
+				 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId(), EnumEStoreId.FDX.name());
+				
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				LOGGER.warn("Error Sending FDXSMS for Order Confirmantion: ", e);
+			}		
+		
 			
 			try {
 				if(null!=createOrder.getCouponTransModel()){
@@ -2484,8 +2494,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			//Start:: Add FDX SMS for order Cancelled
 			
 			try {
-				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
-					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId);
+				if(FDStoreProperties.getSmsOrderCancel() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
+					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId, EnumEStoreId.FDX.name());
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
@@ -2912,6 +2922,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							order.getTip(), newReservationId, orderMobileNumber);
 				}
 			}
+			
+			// Order Modification for SMS
+			try {
+				if(FDStoreProperties.getSmsOrderModification() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().getContentId()) && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices()))
+					 isSent = SMSAlertManager.getInstance().smsOrderModification(info.getFdUserId() ,orderMobileNumber, saleId, EnumEStoreId.FDX.name());
+				} catch (FDResourceException e) {
+				LOGGER.warn("Error Sending FDXSMS for Order Modification: ", e);
+				}
 
 			try {
 				if(null!=order.getCouponTransModel()){

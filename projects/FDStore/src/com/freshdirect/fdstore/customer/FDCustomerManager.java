@@ -4154,7 +4154,7 @@ public class FDCustomerManager {
 		if(EnumEStoreId.FD.getContentId().equals(eStore))
 	     rec.setNote("Updated SMS Flags- Order Notif:" + _orderNotices + ", OrderExp Notif:"+ _orderExceptions +", MrkOffers:"+_offers);
 		else
-			rec.setNote("Updated FDX SMS Flags- Order Notif:" + _orderNotices + ", OrderExp Notif:"+ _orderExceptions +", MrkOffers:"+_offers);
+			rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + _orderNotices + ", order Status:"+ _orderExceptions +", Offers:"+_offers);
 		
 		logActivity(rec);
 	}

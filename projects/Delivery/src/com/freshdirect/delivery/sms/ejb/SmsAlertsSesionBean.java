@@ -68,6 +68,12 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String FDX_ORDER_CANCEL = "We got your order cancellation.:'(  Let us know if there's another time we can bring you some delicious food.";
 	private static final String FDX_ORDER_CANCEL_ALERT_TYPE = "ORDER_CANCEL_FDX";
 	private static final String FDX_HELP_ALERT_TYPE = "HELP_FDX";
+	private static final String FDX_ORDER_COFIRMATION="We got your FoodKick order! All we need you to do now is put your feet up and decide which channel to watch";
+	private static final String FDX_ORDER_MODIFIED="Change is good! We modified your FoodKick order exactly how you want it";
+	private static final String FDX_ORDER_COFIRMATION_ALERT_TYPE="FDX_ORDER_COFIRM";
+	private static final String FDX_ORDER_MODIFIED_ALERT_TYPE="FDX_ORDER_MODIFIED";
+	int count=0;
+	
 	
 	
 
@@ -200,19 +206,114 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		return isSent;
 	}
 	
-	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) {
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) {
 		boolean isSent = false;
 		Connection con = null;
-		PreparedStatement ps = null;
+
+		LOGGER.debug("Starting the smsOrderConfirmation session Bean");
+		
+		try {
+			con = this.getConnection();
+			count=this.smsCountOfEachOrder(con, count, orderId);
+			if(count<=5){
+			
+			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_COFIRMATION, eStoreId);
+	
+			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+				smsResponseModel.setDate(new Date());
+				try {
+					con = this.getConnection();
+					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_COFIRMATION_ALERT_TYPE, customerId);
+	
+				} catch (Exception e) {
+					LOGGER.warn(e);
+	
+					throw new EJBException(e);
+				} finally {
+					try {
+						if (con != null) {
+							con.close();
+							con = null;
+						}
+					} catch (SQLException se) {
+						LOGGER.warn("Exception while trying to cleanup", se);
+					}
+				}
+				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+					isSent = true;
+				}
+			}
+		 }
+		}catch(SQLException e){
+			e.printStackTrace();
+		} catch (SmsServiceException e){
+			LOGGER.info("Confirmed sms failed with exception: " + e);
+		}
+
+		return isSent;
+	}
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) {
+		boolean isSent = false;
+		Connection con = null;
+
+		LOGGER.debug("Starting the optin session Bean");
+		
+		try {	
+			con = this.getConnection();
+			count=this.smsCountOfEachOrder(con, count, orderId);
+			
+			if(count<=5){
+			
+			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_MODIFIED, eStoreId);
+	
+			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+				
+				try {
+					smsResponseModel.setDate(new Date());
+					con = this.getConnection();
+					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_MODIFIED_ALERT_TYPE, customerId);
+	
+				} catch (Exception e) {
+					LOGGER.warn(e);
+	
+					throw new EJBException(e);
+				} finally {
+					try {
+						if (con != null) {
+							con.close();
+							con = null;
+						}
+					} catch (SQLException se) {
+						LOGGER.warn("Exception while trying to cleanup", se);
+					}
+				}
+				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+					isSent = true;
+				}
+			}
+		  }	
+		}catch(SQLException e){
+			e.printStackTrace();
+		} catch (SmsServiceException e){
+			LOGGER.info(" OrderMofifiedsms failed with exception: " + e);
+		}
+
+		return isSent;
+	}
+		
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) {
+		boolean isSent = false;
+		Connection con = null;
 		STSmsResponse smsResponseModel=null;
-		int count=0;
+		
 		LOGGER.debug("Starting the smsOrderCancel session Bean");
 		try {	
 			con = this.getConnection();
 			count=this.smsCountOfEachOrder(con, count, orderId);
 			
 			if(count<=5){
-				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_CANCEL, EnumEStoreId.FDX.name());
+				smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_ORDER_CANCEL, eStoreId);
 	
 			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				smsResponseModel.setDate(new Date());

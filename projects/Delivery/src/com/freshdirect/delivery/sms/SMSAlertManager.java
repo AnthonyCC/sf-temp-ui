@@ -120,13 +120,49 @@ public class SMSAlertManager {
 	}
 	
 	
-	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) throws FDResourceException{
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
+		boolean isSent=false;
+		PhoneNumber phone = new PhoneNumber(mobileNumber);
+		try{
+			lookupSmsAlertsHome();
+			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+			LOGGER.debug("calling smsAlertSB.smsOrderConfirmation()");
+			isSent = smsAlertSB.smsOrderConfirmation(customerId, mobileNumber, orderId, eStore);
+		}catch (NamingException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		return isSent;
+	}
+	
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
+		boolean isSent=false;
+		PhoneNumber phone = new PhoneNumber(mobileNumber);
+		try{
+			lookupSmsAlertsHome();
+			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
+			LOGGER.debug("calling smsAlertSB.smsOrderModification()");
+			isSent = smsAlertSB.smsOrderModification(customerId, mobileNumber, orderId, eStore);
+		}catch (NamingException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+		return isSent;
+	}
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStore) throws FDResourceException{
 		boolean isSent=false;
 		try{
 			lookupSmsAlertsHome();
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
 			LOGGER.debug("calling smsAlertSB.smsOrderCancel()");
-			isSent = smsAlertSB.smsOrderCancel(customerId, mobileNumber, orderId);
+			isSent = smsAlertSB.smsOrderCancel(customerId, mobileNumber, orderId, eStore );
 		}catch (NamingException e) {
 			throw new FDResourceException(e);
 		} catch (RemoteException e) {

@@ -19,6 +19,8 @@ public interface SmsAlertsSB extends EJBObject{
 	public void expireOptin() throws RemoteException;
 	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws RemoteException;
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws RemoteException;
-	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId) throws RemoteException;
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws RemoteException;
 	
 }
