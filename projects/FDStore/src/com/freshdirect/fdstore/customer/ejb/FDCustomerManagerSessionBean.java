@@ -296,6 +296,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			//System.out.println("FDCustomerManagerSessionBean: Fraud check done");
 			erpCustomer.setActive(true);
+			
 			ErpCustomerManagerSB erpCustomerManagerSB = this
 					.getErpCustomerManagerHome().create();
 			LOGGER.debug("Creating customer in ERPS");
@@ -311,6 +312,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			fdCustomer.setErpCustomerPK(erpCustomerId);
 			fdCustomer.setProfile(new ProfileModel());
+			fdCustomer.getCustomerEStoreModel().seteStoreId(info.geteStore());
+			
 			FDCustomerEB fdCustomerEB = getFdCustomerHome().create(fdCustomer);
 
 			conn = getConnection();

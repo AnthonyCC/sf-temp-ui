@@ -344,7 +344,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	 */
 	private void replaceCustomerEStoreModel() {
 		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
-		customerEStoreModel.seteStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+		//customerEStoreModel.seteStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
 		customerEStoreModel.setDefaultShipToAddressPK(this.getDefaultShipToAddressPK());
 		customerEStoreModel.setDefaultPaymentMethodPK(this.getDefaultPaymentMethodPK());
 		customerEStoreModel.setDefaultDepotLocationPK(this.getDefaultDepotLocationPK());
