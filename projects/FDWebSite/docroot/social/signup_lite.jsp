@@ -235,7 +235,7 @@
                         <span class="error_img" id="password1_img"></span></td>
 						<td style="padding-top: 15px;">
 							<input 	class="padding-input-box text11ref inputUser required" type="password" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" >
-							<a class="show-password">Show</a>
+							<div style="position: relative"><a class="show-password">Show</a></div>
 						</td>
 					</tr>		
 					<tr>

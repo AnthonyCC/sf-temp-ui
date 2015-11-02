@@ -783,6 +783,7 @@ public class FDStoreProperties {
     private static final String PROP_SOCIAL_ONEALL_PUBLICKEY = "fdstore.social.oneall.publickey";
     private static final String PROP_SOCIAL_ONEALL_PRIVATEKEY = "fdstore.social.oneall.privatekey";
     private static final String PROP_SOCIAL_ONEALL_POSTURL = "fdstore.social.oneall.posturl";
+    private static final String PROP_SOCIAL_LOGIN_ENABLED = "fdstore.social.login.enabled";
     private static final String PROP_FDX_SMS_ORDER_CONFIRMATION="fdstore.sms.order.confirmation";
     private static final String PROP_FDX_SMS_ORDER_MODIFICATION= "fdstore.sms.order.modification";
     private static final String PROP_FDX_SMS_ORDER_CANCEL="fdstore.sms.order.cancel";
@@ -1439,7 +1440,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,false;");
+        //defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1554,6 +1555,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOCIAL_ONEALL_PUBLICKEY, "493e89df-35af-48ff-a856-125064fed179");
         defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "64bf95b4-9dea-4832-8528-31bba3ae09d6");
         defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
+        defaults.put(PROP_SOCIAL_LOGIN_ENABLED, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CONFIRMATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_MODIFICATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
@@ -3918,6 +3920,11 @@ public class FDStoreProperties {
 	public static String getSocialOneAllPostUrl() {
         return get(PROP_SOCIAL_ONEALL_POSTURL);
 	}
+	
+	public static boolean isSocialLoginEnabled() {
+        return (Boolean.valueOf(get(PROP_SOCIAL_LOGIN_ENABLED))).booleanValue();
+    }
+
 	public static boolean getSmsOrderConfirmation() {
 		return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CONFIRMATION));
 	}

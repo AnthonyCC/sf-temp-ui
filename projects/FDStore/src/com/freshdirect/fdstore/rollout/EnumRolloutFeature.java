@@ -4,7 +4,7 @@ public enum EnumRolloutFeature {
     pdplayout2014("pdplayout", "2014"), pplayout2014("pplayout", "2014"), leftnav2014("leftnav", "2014"), searchredesign2014("searchredesign", "2014"), leftnavtut2014(
             "leftnavtut", "2014"), browseflyoutrecommenders("browseflyout", "recommenders"), // fly-out recommended products on "browse" pages (transactionalPopup)
     quickshop2_2("quickshop", "2_2"), quickshop2_0(quickshop2_2, "quickshop", "2_0"), akamaiimageconvertor("akamaiimageconvertor", "2015"), checkout2_0("checkout", "2_0"), checkout1_0(
-            checkout2_0, "checkout", "1_0"), sociallogin("sociallogin", "1_0"), gridlayoutcolumn4_0("gridlayoutcolumn", "4_0"), gridlayoutcolumn5_0(gridlayoutcolumn4_0,
+            checkout2_0, "checkout", "1_0"), gridlayoutcolumn4_0("gridlayoutcolumn", "4_0"), gridlayoutcolumn5_0(gridlayoutcolumn4_0,
             "gridlayoutcolumn", "5_0");
 
     private final EnumRolloutFeature child;

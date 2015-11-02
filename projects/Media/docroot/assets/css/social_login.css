@@ -119,9 +119,9 @@
 }
 
 #sulCont .show-password{
-  	position: fixed;
-	top: 148px;
-    right: 167px;
+  	position: absolute;
+	bottom: 10px;
+    right: 8px;
     font-size: 12px;
     line-height: 12px;
     background: #A4A5A4;
@@ -156,7 +156,8 @@ input[type="socialButton"] {
 }
 
 #sulCont.signin-social-forgot-pass .form-side-social-header,
-#sulCont .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-forgot-pass .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-forgot-pass-confirm .signin-social-forgot-pass-header-message,
 #sulCont.signin-social-forgot-pass-confirm .form-side-social-header{
 	padding: 29px 0 15px 14px;
 	text-align: left;
@@ -277,10 +278,21 @@ input[type="socialButton"] {
 	padding-bottom: 120px;
 }
 #sulCont.signup-social-account-exist .signin-social-forgot-pass-header-message,
-#sulCont.signup-social-address-notification .signin-social-forgot-pass-header-message{
+#sulCont.signup-social-address-notification .signin-social-forgot-pass-header-message,
+#sulCont.signin-social-login-not-recognized .signin-social-forgot-pass-header-message{
 	text-align: center;
+}
+#sulCont.signin-social-login-not-recognized .form-side-social-header{
+	padding: 29px 0 15px 14px;
 }
 #sulCont.signup-social-account-exist .social-login-green-button,
 #sulCont.signup-social-address-notification .social-login-green-button{
 	margin: 15px auto 30px;
+}
+#sulCont.signin-social-login-not-recognized .social-login-green-button{
+	width: 182px;
+}
+#sulCont.signin-social-login-not-recognized .social-login-green-button-space {
+	width: 50px;
+    display: inline-block;
 }

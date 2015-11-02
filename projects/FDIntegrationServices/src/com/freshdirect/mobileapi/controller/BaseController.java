@@ -475,9 +475,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setTipRange(FDStoreProperties.getTipRangeConfig());
 		
 		configuration.setMiddleTierUrl(FDStoreProperties.getMiddleTierProviderURL());
-		configuration.setSocialLoginEnabled(FeatureRolloutArbiter
-				.isFeatureRolledOut(EnumRolloutFeature.sociallogin,
-						user.getFDSessionUser().getUser()));
+		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(FDCustomerManager.getEwalletMobileStatusByType(EnumEwalletType.MP.getName()));
 		
 		return configuration;

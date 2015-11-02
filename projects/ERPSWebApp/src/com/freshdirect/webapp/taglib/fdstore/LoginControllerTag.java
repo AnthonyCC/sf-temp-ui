@@ -18,6 +18,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -68,7 +69,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 		
 		/* code for merging social account */
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-        if ( user != null && !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
+        if ( user != null && FDStoreProperties.isSocialLoginEnabled() ) {
 	    	HashMap<String, String> userLinkAccPendingProp = null;
 	        Object objLinkAccPendingProp = session.getAttribute(userId);
 		    
@@ -109,7 +110,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 	    /* merging social account code ends here */
         
 	    if(updatedSuccessPage != null && updatedSuccessPage.length() > 0) {
-	    	if ( user != null && !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.sociallogin, user)) ) {
+	    	if ( user != null && FDStoreProperties.isSocialLoginEnabled() ) {
 	    		this.setSuccessPage("/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()));
 	    	} else {
 	    		this.setSuccessPage(updatedSuccessPage);

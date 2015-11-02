@@ -10,8 +10,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<title>FreshDirect</title>
@@ -22,8 +21,8 @@
 <body>
 	
 	<div id="sulCont" class="signup-style-social signin-social-forgot-pass-confirm">
-			<div class="form-side-social-header">Check your email.</div>
-			<div class="signin-social-forgot-pass-header-message">A link to reset your password is on its way.</div>
+		<div class="form-side-social-header">Check your email.</div>
+		<div class="signin-social-forgot-pass-header-message">A link to reset your password is on its way.</div>
 	</div>
 
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>	
