@@ -424,8 +424,8 @@ boolean orderAsc = true;
 	<%
 	String nullValue = "<span style=\"color: gray;\">(null)</null>";
 	Date now = new Date();
-	Map<String, Date> newSkus = FDCachedFactory.getNewSkus();
-	Map<String, Date> backSkus = FDCachedFactory.getBackInStockSkus();
+	Map<String, Map<String,Date>> newSkus = FDCachedFactory.getNewSkus();
+	Map<String, Map<String,Date>> backSkus = FDCachedFactory.getBackInStockSkus();
 	Map<String, Date> newOverridden = FDCachedFactory.getOverriddenNewSkus();
 	Map<String, Date> backOverridden = FDCachedFactory.getOverdiddenBackInStockSkus();
 	if (!showProducts) {
