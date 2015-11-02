@@ -1283,7 +1283,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				}
 				skus.put(sku, value);
 			}
-
 			return skus;
 
 		} catch (SQLException sqle) {
@@ -1297,7 +1296,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 	
 	private static final String QUERY_BACK_IN_STOCK_SKUS = 
-		"SELECT * FROM erps.back_in_stock_products";
+		"SELECT * FROM erps.back_in_stock_products_v1";
 
 	public Map<String, Map<String,Date>> getBackInStockSkus() {
 		Connection conn = null;

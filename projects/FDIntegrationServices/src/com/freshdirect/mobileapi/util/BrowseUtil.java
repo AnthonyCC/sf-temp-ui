@@ -801,17 +801,23 @@ public class BrowseUtil {
 		 * @return
 		 */
 		public static List<Product> getAllNewProductList(SessionUser user,HttpServletRequest request) {
-			/*List<Product> products = new ArrayList<Product>();
+			List<Product> products = new ArrayList<Product>();
 			List<ProductModel> items = new ArrayList<ProductModel>();
+			String productNewnessKey=getProductNewnessKey(user);
 			// Get All new Products
-			Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
-			for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
-				items.add(entry.getKey());
+			Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+			for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+				
+				Map<String,Date> value=entry.getValue();
+				if(value.containsKey(productNewnessKey))
+					items.add(entry.getKey());
 			}
 			newProducts = ContentFactory.getInstance().getBackInStockProducts();
 
-			for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
-				items.add(entry.getKey());
+			for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+				Map<String,Date> value=entry.getValue();
+				if(value.containsKey(productNewnessKey))
+					items.add(entry.getKey());
 			}
 
 			// Now we need to wrap the product Model
@@ -831,11 +837,18 @@ public class BrowseUtil {
 				}
 			}
 
-			return products;*///--Manoj
-			return null;
+			return products;
+			
 		}
 
-	    
+		private static String getProductNewnessKey(SessionUser user) {
+			String key="";
+			ZoneInfo zone=user.getFDSessionUser().getUserContext().getPricingContext().getZoneInfo();
+			if(zone!=null) {
+				key=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+			}
+			return key;
+		}
 	    public static List<String> getAllProductsEX(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
 	    	String contentId = null;
 	    	 //products.clear();

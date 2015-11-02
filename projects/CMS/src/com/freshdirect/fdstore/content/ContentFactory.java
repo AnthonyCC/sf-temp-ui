@@ -655,6 +655,7 @@ public class ContentFactory {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
 						// !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
 						try {
+							
 							if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
 								ProductModel p = this.filterProduct(sku.getContentName());
 								//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
@@ -663,7 +664,11 @@ public class ContentFactory {
 									for (Map.Entry<String,Date> valueEntry : entry.getValue().entrySet()) {
 										
 										
-										Date prev = productNewness.get(valueEntry.getKey());
+										Date prev = null;
+										if(productNewness!=null)
+											prev=productNewness.get(valueEntry.getKey());
+										else 
+											productNewness=new HashMap<String,Date>();
 										if (prev == null || valueEntry.getValue().after(prev)) {
 											productNewness.put(valueEntry.getKey(), valueEntry.getValue());
 											newCache.put(p, productNewness);
@@ -790,7 +795,11 @@ public class ContentFactory {
 									for (Map.Entry<String,Date> valueEntry : entry.getValue().entrySet()) {
 										
 										
-										Date prev = productNewness.get(valueEntry.getKey());
+										Date prev = null;
+										if(productNewness!=null)
+											prev=productNewness.get(valueEntry.getKey());
+										else 
+											productNewness=new HashMap<String,Date>();
 										if (prev == null || valueEntry.getValue().after(prev)) {
 											productNewness.put(valueEntry.getKey(), valueEntry.getValue());
 											newCache.put(p, productNewness);
