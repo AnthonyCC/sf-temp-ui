@@ -777,7 +777,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <% } %>
 
 
-<%--@ include file="/includes/i_social_accounts.jspf"--%>
+<% if(FDStoreProperties.isSocialLoginEnabled()){ %>
+	<%@ include file="/includes/i_social_accounts.jspf"%>
+<% } %>
 
 
 
