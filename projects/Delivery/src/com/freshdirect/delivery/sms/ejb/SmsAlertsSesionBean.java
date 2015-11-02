@@ -68,8 +68,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String FDX_ORDER_CANCEL = "We got your order cancellation.:'(  Let us know if there's another time we can bring you some delicious food.";
 	private static final String FDX_ORDER_CANCEL_ALERT_TYPE = "ORDER_CANCEL_FDX";
 	private static final String FDX_HELP_ALERT_TYPE = "HELP_FDX";
-	private static final String FDX_ORDER_COFIRMATION="We got your FoodKick order! All we need you to do now is put your feet up and decide which channel to watch";
-	private static final String FDX_ORDER_MODIFIED="Change is good! We modified your FoodKick order exactly how you want it";
+	private static final String FDX_ORDER_COFIRMATION="We got your FoodKick order! All we need you to do now is put your feet up and decide which channel to watch.";
+	private static final String FDX_ORDER_MODIFIED="Change is good! We modified your FoodKick order exactly how you want it.";
 	private static final String FDX_ORDER_COFIRMATION_ALERT_TYPE="FDX_ORDER_COFIRM";
 	private static final String FDX_ORDER_MODIFIED_ALERT_TYPE="FDX_ORDER_MODIFIED";
 	int count=0;
