@@ -399,6 +399,17 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 	
 	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser) throws FDAuthenticationException, FDResourceException {
+		
+		String currentOrderId = null;
+		try{
+			
+			currentOrderId = ((FDModifyCartModel)currentUser.getShoppingCart()).getOriginalOrder().getSale().getId();
+		
+			FDCustomerManager.releaseModificationLock(currentOrderId);
+		}catch(Exception e){
+			LOGGER.info("Unable to release the in_modify lock for orderId"+currentOrderId);
+		}
+		
 		ShoppingCartUtil.restoreCart(session);
 	
 		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
