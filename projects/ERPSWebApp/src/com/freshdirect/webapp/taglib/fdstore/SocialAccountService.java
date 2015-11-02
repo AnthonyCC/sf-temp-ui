@@ -218,6 +218,11 @@ public class SocialAccountService implements AccountService {
 						session.setAttribute("SOCIALONLYEMAIL", socialUserId);
 						session.setAttribute("SOCIALONLYACCOUNT_SKIP_VALIDATION", true); 
 						
+						/*
+						 * Retrieve firstName/lastName from socialUserProfile. 
+						 */
+						request.setAttribute("firstName", socialUserProfile.get("firstName"));
+						request.setAttribute("lastName", socialUserProfile.get("lastName"));
 						
 						HttpContext ctx = new HttpContext( session, request, response);
 						ActionResult result = new ActionResult();	

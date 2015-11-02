@@ -145,8 +145,8 @@ public class SocialProviderOneAll implements SocialProvider {
 		ObjectMapper objectMapper = new ObjectMapper();
 		 
 		//read JSON like DOM Parser
-		JsonNode rootNode,responseNode,resultNode,dataNode,userNode,identityNode,emailsNode,accountsNode;
-		String userToken="",identityToken="",provider="",displayName="",preferredUsername="",domain="",userid="",username="",email="",emailVerified="N";
+		JsonNode rootNode,responseNode,resultNode,dataNode,userNode,identityNode,emailsNode,accountsNode, namesNode;
+		String userToken="",identityToken="",provider="",displayName="",preferredUsername="",domain="",userid="",username="",email="",emailVerified="N", firstName="", lastName="";
 		
 		try {
 			rootNode = objectMapper.readTree(jsonData);
@@ -172,7 +172,7 @@ public class SocialProviderOneAll implements SocialProvider {
 					displayName = identityNode.path("displayName").isNull() ? "" : (String)identityNode.path("displayName").asText();
 					preferredUsername = identityNode.path("preferredUsername").isNull() ? "" : (String)identityNode.path("preferredUsername").asText();
 					accountsNode = identityNode.path("accounts");
-					
+					namesNode = identityNode.path("name");
 					emailsNode = identityNode.path("emails");
 					
 					if(emailsNode != null)
@@ -190,6 +190,12 @@ public class SocialProviderOneAll implements SocialProvider {
 						}
 						
 					}
+					
+					if(namesNode != null)
+					{
+						firstName = namesNode.path("givenName").asText();
+						lastName = namesNode.path("familyName").asText();
+					}					
 					
 					if(accountsNode != null)
 					{
@@ -220,6 +226,8 @@ public class SocialProviderOneAll implements SocialProvider {
 		socialUser.put("identityToken",identityToken);
 		socialUser.put("provider",provider);
 		socialUser.put("displayName",displayName);
+		socialUser.put("firstName",firstName);
+		socialUser.put("lastName",lastName);
 		socialUser.put("preferredUsername",preferredUsername);
 		socialUser.put("domain",domain);
 		socialUser.put("userid",userid);

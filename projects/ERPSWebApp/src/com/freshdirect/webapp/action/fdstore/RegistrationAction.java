@@ -788,9 +788,16 @@ public class RegistrationAction extends WebActionSupport {
 		private void initialize(HttpServletRequest request) {
 
 			this.title = NVL.apply(request.getParameter("title"), "");
+			
 			this.firstName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "").trim();
+			if((this.firstName !=null ) && this.firstName.trim() == "" && request.getAttribute("firstName") != null){
+				this.firstName = (String)request.getAttribute("firstName");
+			}
 			this.lastName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "").trim();
-
+			if((this.lastName !=null ) && this.lastName.trim() == "" && request.getAttribute("lastName") != null){
+				this.lastName = (String)request.getAttribute("lastName");
+			}
+			
 			this.homePhone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()), "").trim();
 			this.homePhoneExt = NVL.apply(request.getParameter("homephoneext"), "").trim();
 
