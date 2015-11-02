@@ -105,7 +105,7 @@ var FreshDirect = FreshDirect || {};
     return cartdata;
   }
 
-	function serialize(element, collectRequired) {
+	function serialize(element, collectRequired, ignoreUnavailable) {
 		if ($.isArray(element)) { // serialize array of quickshopitems directly instead of dom element
 			return  element.map(function(item){
                 return {
@@ -136,6 +136,14 @@ var FreshDirect = FreshDirect || {};
 			var $toggle = $('[data-component="productToggle"]', this);
 			return $toggle.length === 0 || $toggle.prop("checked");
 		});
+
+    if (ignoreUnavailable) {
+      products = products.filter(function (i, el) {
+        var $el = $(el);
+
+        return !$el.hasClass('unavailable');
+      });
+    }
 
 		return collectRequired ? $.makeArray(products).map(serializeProductWithRequired) : $.makeArray(products).map(serializeProduct);
 

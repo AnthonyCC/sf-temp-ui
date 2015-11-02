@@ -148,12 +148,12 @@ var FreshDirect = FreshDirect || {};
 	}
 	
 	function addToCart(element, extraData) {
-		var items = fd.modules.common.productSerialize(element, true);
+		var items = fd.modules.common.productSerialize(element, true, true);
     ATC_BUS.push($.extend({items: items}, extraData));
 	}
 	
 	$(document).on('click','[data-component="ATCButton"]',function(e){
-		var items = fd.modules.common.productSerialize(e.target, true),
+		var items = fd.modules.common.productSerialize(e.target, true, true),
         cartdata = fd.modules.common.getCartData(e.target),
         amount,
         $t = $(e.target);
