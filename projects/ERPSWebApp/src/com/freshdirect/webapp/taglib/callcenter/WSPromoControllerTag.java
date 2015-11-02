@@ -506,7 +506,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 
 			promotion.setRadius(radius);
 			promotion.setRollingExpDayFrom1stOrder(isRollingFrom1stOrder);
-			promotion.setNeedCustomerList(!isRollingFrom1stOrder);
+			promotion.setNeedCustomerList(null !=rollingExpDays && rollingExpDays >0 && !isRollingFrom1stOrder);
 			promotion.setRollingExpirationDays(rollingExpDays);
 			promotion.setSapConditionType(sapConditionType);
 
@@ -716,7 +716,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 //			promotion.setMaxAmount(discount);
 
 			promotion.setRollingExpDayFrom1stOrder(isRollingFrom1stOrder);
-			promotion.setNeedCustomerList(!isRollingFrom1stOrder);
+			promotion.setNeedCustomerList(null !=rollingExpDays && rollingExpDays >0 && !isRollingFrom1stOrder);
 			promotion.setRollingExpirationDays(rollingExpDays);
 			if("DLV".equalsIgnoreCase(discount)){
 				promotion.setWaiveChargeType("DLV");

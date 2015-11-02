@@ -125,7 +125,7 @@ function numbersonly(myfield, e, dec)
 			startTime = promotion.getWSSelectedStartTime();
 		if(endTime == null)
 			endTime = promotion.getWSSelectedEndTime();
-		if(discount == null){
+		if(discount == null||"".equals(discount)){
 			discount = promotion.getWaiveChargeType();
 		}
 		if(rollingType ==null){
@@ -135,7 +135,7 @@ function numbersonly(myfield, e, dec)
 				rolling_days_induction = ""+promotion.getRollingExpirationDays();
 			}
 		}
-		if(discount == null)
+		if(discount == null ||"".equals(discount))
 			discount = promotion.getMaxAmount();
 		if(redeemLimit == null)
 			redeemLimit = String.valueOf(promotion.getRedeemCount());
