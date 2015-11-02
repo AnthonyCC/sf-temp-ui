@@ -544,7 +544,7 @@ boolean orderAsc = true;
 			<% if (FDStoreProperties.isAnnotationMode()) { %><th class="text12"></th><% } %>
 		</tr>
 		<%
-		List<SkuEntry> entries = calcSkuEntries(newSkus, newOverridden, now, orderBy, orderAsc);
+		List<SkuEntry> entries = null;//calcSkuEntries(newSkus, newOverridden, now, orderBy, orderAsc);//FDX
 		for (SkuEntry entry: entries) {
 		 %>
 		<%
@@ -597,7 +597,7 @@ boolean orderAsc = true;
 			<% if (FDStoreProperties.isAnnotationMode()) { %><th class="text12"></th><% } %>
 		</tr>
 		<%
-		List<SkuEntry> entries = calcSkuEntries(backSkus, backOverridden, now, orderBy, orderAsc);
+		List<SkuEntry> entries = null;//calcSkuEntries(backSkus, backOverridden, now, orderBy, orderAsc);//FDX
 		for (SkuEntry entry: entries) {
 		 %>
 		<%
