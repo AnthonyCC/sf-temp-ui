@@ -17,6 +17,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
@@ -56,15 +57,23 @@ public class GetNewProductsTag extends AbstractProductPagerTag {
 	protected SearchResults getResults() {
 		Date now = new Date();
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>(1000);
-		Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+		Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+		ZoneInfo zone=getFDUser().getUserContext().getPricingContext().getZoneInfo();
+		String productNewnessKey="";
+		if(zone!=null) {
+			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+		}
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet())
-			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
+		}
 		SearchResults results = new SearchResults(items, FilteringSortingItem.<Recipe> emptyList(),
 				FilteringSortingItem.<CategoryModel> emptyList(), null, false);
 		return results;
+		
 	}
 
 	@Override

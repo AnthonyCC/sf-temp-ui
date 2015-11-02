@@ -639,7 +639,7 @@ public class FDFactory {
 		
 	}
 
-	public static Map<String, Date> getNewSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getNewSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
@@ -647,20 +647,35 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			Map<String, Date> regular = sb.getNewSkus();
-			Map<String, Date> overridden = sb.getOverriddenNewSkus();
-			Map<String, Date> overriddenBack = sb.getOverriddenBackInStockSkus();
-			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
-			for (Map.Entry<String, Date> entry : regular.entrySet())
-				if (entry.getValue().after(first) && entry.getValue().before(now))
-					results.put(entry.getKey(), entry.getValue());
-			for (Map.Entry<String, Date> entry : overridden.entrySet())
+			Map<String, Map<String,Date>> regular = sb.getNewSkus();
+			//Map<String, Date> overridden = sb.getOverriddenNewSkus();
+			//Map<String, Date> overriddenBack = sb.getOverriddenBackInStockSkus();
+			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() /*+ overridden.size()*/) * 4 / 3);
+			String product="";
+			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
+				product=entry.getKey();
+				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
+						
+						if (valueEntry.getValue().after(first) && valueEntry.getValue().before(now)) {
+							if(results.containsKey(product)) {
+								Map<String,Date> _value=results.get(product);
+								_value.put(valueEntry.getKey(), valueEntry.getValue());
+								results.put(product, _value);
+							} else {
+								Map<String, Date> _value=new HashMap<String, Date>();
+								_value.put(valueEntry.getKey(), valueEntry.getValue());
+							  results.put(product,_value);
+							}
+						}
+				 }
+			}
+			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
 				else if (entry.getValue().before(now))
 					results.put(entry.getKey(), entry.getValue());
 			for (Map.Entry<String, Date> entry : overriddenBack.entrySet())
-				results.remove(entry.getKey());
+				results.remove(entry.getKey());*/
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -671,7 +686,7 @@ public class FDFactory {
 		}
 	}
 
-	public static Map<String, Date> getBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
@@ -679,18 +694,34 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			Map<String, Date> regular = sb.getBackInStockSkus();
+			Map<String, Map<String,Date>> regular = sb.getBackInStockSkus();
 			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
-			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
-			Map<String, Date> newSkus = getNewSkus();
-			for (Map.Entry<String, Date> entry : regular.entrySet())
-				if (entry.getValue().after(first) && entry.getValue().before(now) && !newSkus.containsKey(entry.getKey()))
-					results.put(entry.getKey(), entry.getValue());
-			for (Map.Entry<String, Date> entry : overridden.entrySet())
+			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() + overridden.size()) * 4 / 3);
+			Map<String, Map<String,Date>> newSkus = getNewSkus();
+			String product="";
+			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
+				product=entry.getKey();
+				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
+						
+						if (valueEntry.getValue().after(first) && valueEntry.getValue().before(now)) {
+							if(results.containsKey(product)) {
+								Map<String,Date> _value=regular.get(product);
+								_value.put(valueEntry.getKey(), valueEntry.getValue());
+								results.put(product, _value);
+							} else {
+								Map<String, Date> _value=new HashMap<String, Date>();
+								_value.put(valueEntry.getKey(), valueEntry.getValue());
+							  results.put(product,_value);
+							}
+						}
+				 }
+			}
+			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
 				else if (entry.getValue().before(now) && !newSkus.containsKey(entry.getKey()))
 					results.put(entry.getKey(), entry.getValue());
+					*/
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;

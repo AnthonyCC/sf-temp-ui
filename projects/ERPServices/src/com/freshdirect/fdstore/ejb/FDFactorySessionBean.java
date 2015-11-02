@@ -582,18 +582,18 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getNewSkus() throws FDResourceException {
+	public Map<String, Map<String,Date>> getNewSkus(/*String salesOrg, String distributionChannel*/) throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
 
-			return infoSB.getNewSkus();
+			return infoSB.getNewSkus(/*salesOrg,distributionChannel*/);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
 
-	public Map<String, Date> getBackInStockSkus() throws FDResourceException {
+	public Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
 

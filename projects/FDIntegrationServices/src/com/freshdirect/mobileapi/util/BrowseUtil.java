@@ -801,7 +801,7 @@ public class BrowseUtil {
 		 * @return
 		 */
 		public static List<Product> getAllNewProductList(SessionUser user,HttpServletRequest request) {
-			List<Product> products = new ArrayList<Product>();
+			/*List<Product> products = new ArrayList<Product>();
 			List<ProductModel> items = new ArrayList<ProductModel>();
 			// Get All new Products
 			Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
@@ -831,7 +831,8 @@ public class BrowseUtil {
 				}
 			}
 
-			return products;
+			return products;*///--Manoj
+			return null;
 		}
 
 	    

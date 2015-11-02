@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -221,7 +222,14 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     }
 
 	public boolean isNew() {
-		return ContentFactory.getInstance().getNewProducts().containsKey(this);
+		
+		Map<ProductModel, Map<String,Date>> newProducts=ContentFactory.getInstance().getNewProducts();
+		if(newProducts.containsKey(this)) {
+			return newProducts.get(this).containsKey(getProductNewnessKey());
+		} else {
+			return false;
+		}
+		
 	}
 
 	@Override
@@ -231,9 +239,23 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	@Override
 	public Date getNewDate() {
-		return ContentFactory.getInstance().getNewProducts().get(this);
+		
+		Map<ProductModel, Map<String,Date>> newProducts=ContentFactory.getInstance().getNewProducts();
+		if(newProducts.containsKey(this)) {
+			return newProducts.get(this).get(getProductNewnessKey());
+		} else {
+			return null;
+		}
 	}
 
+	private String getProductNewnessKey() {
+		String key="";
+		ZoneInfo zone=this.getUserContext().getPricingContext().getZoneInfo();
+		if(zone!=null) {
+			key=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
+		return key;
+	}
 	@Override
 	public boolean isBackInStock() {
 		return ContentFactory.getInstance().getBackInStockProducts().containsKey(this);
@@ -246,7 +268,12 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	@Override
 	public Date getBackInStockDate() {
-		return ContentFactory.getInstance().getBackInStockProducts().get(this);
+		Map<ProductModel, Map<String,Date>> newProducts=ContentFactory.getInstance().getBackInStockProducts();
+		if(newProducts.containsKey(this)) {
+			return newProducts.get(this).get(getProductNewnessKey());
+		} else {
+			return null;
+		}
 	}
 
 	@Override

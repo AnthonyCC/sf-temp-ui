@@ -26,6 +26,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -45,13 +46,13 @@ public class ContentFactory {
 
 	private static ContentFactory instance = new ContentFactory();
 	
-	private static Map<ProductModel, Date> newProducts = Collections.emptyMap();
+	private static Map<ProductModel, Map<String,Date>> newProducts = Collections.emptyMap();
 	
 	private static long newProductsLastUpdated = Long.MIN_VALUE;
 	
 	private static final Object newProductsLock = new Object();
 
-	private static Map<ProductModel, Date> backInStockProducts = Collections.emptyMap();
+	private static Map<ProductModel, Map<String,Date>> backInStockProducts = Collections.emptyMap();
 	
 	private static long backInStockProductsLastUpdated = Long.MIN_VALUE;
 
@@ -642,14 +643,15 @@ public class ContentFactory {
 	 * 
 	 * @return a {@link Map} of {@link ProductModel} - {@link Date} pairs
 	 */
-	public Map<ProductModel, Date> getNewProducts() {
+	public Map<ProductModel, Map<String,Date>> getNewProducts() {
+		
 		synchronized (newProductsLock) {
 			if (System.currentTimeMillis() > newProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
 				// refresh
 				try {
-					Map<String, Date> skus = FDCachedFactory.getNewSkus();
-					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
-					for (Map.Entry<String, Date> entry : skus.entrySet()) {
+					Map<String, Map<String,Date>> skus = FDCachedFactory.getNewSkus();
+					Map<ProductModel, Map<String,Date>> newCache = new HashMap<ProductModel, Map<String,Date>>(skus.size());
+					for (Map.Entry<String, Map<String,Date>> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
 						// !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
 						try {
@@ -657,9 +659,16 @@ public class ContentFactory {
 								ProductModel p = this.filterProduct(sku.getContentName());
 								//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
 								if (p != null && ContentUtil.isAvailableByContext(p)) {
-									Date prev = newCache.get(p);
-									if (prev == null || entry.getValue().after(prev))
-										newCache.put(p, entry.getValue());
+									Map<String,Date> productNewness=newCache.get(p);
+									for (Map.Entry<String,Date> valueEntry : entry.getValue().entrySet()) {
+										
+										
+										Date prev = productNewness.get(valueEntry.getKey());
+										if (prev == null || valueEntry.getValue().after(prev)) {
+											productNewness.put(valueEntry.getKey(), valueEntry.getValue());
+											newCache.put(p, productNewness);
+										}
+									}
 								}
 							}
 						} catch (Exception e) {
@@ -686,23 +695,37 @@ public class ContentFactory {
 	 * @return the list of the products in the sorted order where the most recent product comes first
 	 */
 	public LinkedHashMap<ProductModel, Date> getNewProducts(int inDays) {
-		final Map<ProductModel, Date> x = getNewProducts();
+		final Map<ProductModel, Map<String,Date>> x = getNewProducts();
+		final Map<ProductModel, Date> y=new HashMap<ProductModel, Date> ();
+		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		ZoneInfo zone=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
+		String productNewnessKey="";
+		if(zone!=null) {
+			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
 		List<ProductModel> products = new ArrayList<ProductModel>(x.size());
 		long limit = System.currentTimeMillis() - inDays * DAY_IN_MILLISECONDS;
-		for (Map.Entry<ProductModel, Date> entry : x.entrySet()) {
-			if (entry.getValue().getTime() > limit)
-				products.add(entry.getKey());
+		for (Map.Entry<ProductModel, Map<String,Date>> entry : x.entrySet()) {
+			Map<String,Date> valueEntries=entry.getValue();
+			for(Map.Entry<String,Date> valueEntry:valueEntries.entrySet()) {
+				if (valueEntry.getKey().equals(productNewnessKey)&& valueEntry.getValue().getTime() > limit) {
+					products.add(entry.getKey());
+					y.put(entry.getKey(),valueEntry.getValue());
+				}
+			}
 		}
 		Collections.sort(products, new Comparator<ProductModel>() {
 			@Override
 			public int compare(ProductModel o1, ProductModel o2) {
-				return -x.get(o1).compareTo(x.get(o2));
+				
+				return -y.get(o1) .compareTo(y.get(o2));
 			}
 		});
-		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		
 		for (ProductModel p : products)
-			productsInDays.put(p, x.get(p));
+			productsInDays.put(p, y.get(p));
 		return productsInDays;
+		
 	}
 	
 	/**
@@ -712,13 +735,26 @@ public class ContentFactory {
 	 * @return the number of days (plus fraction of day)
 	 */
 	public double getProductAge(ProductModel product) {
-		Date when = getNewProducts().get(product);
-		if (when == null) {
+		
+		String productNewnessKey=getProductNewnessKey(product);
+		Map<ProductModel, Map<String,Date>> newProducts=getNewProducts();
+		if(newProducts.containsKey(product)) {
+			Date when = newProducts.get(product).get(productNewnessKey);
+			return when==null?Integer.MAX_VALUE:((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
+		}
+		else {
 			return Integer.MAX_VALUE; // very long time ago
-		}		
-		return ((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
+		}
 	}
 	
+	private String getProductNewnessKey(ProductModel product) {
+		String key="";
+		ZoneInfo zone=product.getUserContext().getPricingContext().getZoneInfo();
+		if(zone!=null) {
+			key=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
+		return key;
+	}
 	/**
 	 * Alias to {@link #getProductAge(ProductModel)}
 	 * 
@@ -726,6 +762,7 @@ public class ContentFactory {
 	 * @return
 	 */
 	public double getNewProductAge(ProductModel product) {
+		
 		return getProductAge(product);
 	}
 
@@ -734,14 +771,14 @@ public class ContentFactory {
 	 * 
 	 * @return a {@link Map} of {@link ProductModel} - {@link Date} pairs
 	 */
-	public Map<ProductModel, Date> getBackInStockProducts() {
+	public Map<ProductModel, Map<String,Date>> getBackInStockProducts() {
 		synchronized (backInStockProductsLock) {
 			if (System.currentTimeMillis() > backInStockProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
 				// refresh
 				try {
-					Map<String, Date> skus = FDCachedFactory.getBackInStockSkus();
-					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
-					for (Map.Entry<String, Date> entry : skus.entrySet()) {
+					Map<String, Map<String,Date>> skus = FDCachedFactory.getBackInStockSkus();
+					Map<ProductModel, Map<String,Date>> newCache = new HashMap<ProductModel, Map<String,Date>>(skus.size());
+					for (Map.Entry<String, Map<String,Date>> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
 						// !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
 						try {
@@ -749,9 +786,16 @@ public class ContentFactory {
 								ProductModel p = this.filterProduct(sku.getContentName());
 								//Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
 								if (p != null && ContentUtil.isAvailableByContext(p)) {
-									Date prev = newCache.get(p);
-									if (prev == null || entry.getValue().after(prev))
-										newCache.put(p, entry.getValue());
+									Map<String,Date> productNewness=newCache.get(p);
+									for (Map.Entry<String,Date> valueEntry : entry.getValue().entrySet()) {
+										
+										
+										Date prev = productNewness.get(valueEntry.getKey());
+										if (prev == null || valueEntry.getValue().after(prev)) {
+											productNewness.put(valueEntry.getKey(), valueEntry.getValue());
+											newCache.put(p, productNewness);
+										}
+									}
 								}
 							}
 						} catch (Exception e) {
@@ -778,22 +822,35 @@ public class ContentFactory {
 	 * @return the list of the products in the sorted order where the most recent product comes first
 	 */
 	public LinkedHashMap<ProductModel, Date> getBackInStockProducts(int inDays) {
-		final Map<ProductModel, Date> x = getBackInStockProducts();
+		final Map<ProductModel, Map<String,Date>> x = getBackInStockProducts();
+		final Map<ProductModel, Date> y=new HashMap<ProductModel, Date> ();
+		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		ZoneInfo zone=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
+		String productNewnessKey="";
+		if(zone!=null) {
+			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
 		List<ProductModel> products = new ArrayList<ProductModel>(x.size());
 		long limit = System.currentTimeMillis() - inDays * DAY_IN_MILLISECONDS;
-		for (Map.Entry<ProductModel, Date> entry : x.entrySet()) {
-			if (entry.getValue().getTime() > limit)
-				products.add(entry.getKey());
+		for (Map.Entry<ProductModel, Map<String,Date>> entry : x.entrySet()) {
+			Map<String,Date> valueEntries=entry.getValue();
+			for(Map.Entry<String,Date> valueEntry:valueEntries.entrySet()) {
+				if (valueEntry.getKey().equals(productNewnessKey)&& valueEntry.getValue().getTime() > limit) {
+					products.add(entry.getKey());
+					y.put(entry.getKey(),valueEntry.getValue());
+				}
+			}
 		}
 		Collections.sort(products, new Comparator<ProductModel>() {
 			@Override
 			public int compare(ProductModel o1, ProductModel o2) {
-				return -x.get(o1).compareTo(x.get(o2));
+				
+				return -y.get(o1) .compareTo(y.get(o2));
 			}
 		});
-		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		
 		for (ProductModel p : products)
-			productsInDays.put(p, x.get(p));
+			productsInDays.put(p, y.get(p));
 		return productsInDays;
 	}
 	
@@ -804,11 +861,16 @@ public class ContentFactory {
 	 * @return the number of days (plus fraction of day)
 	 */
 	public double getBackInStockProductAge(ProductModel product) {
-		Date when = getBackInStockProducts().get(product);
-		if (when == null) {
+		
+		String productNewnessKey=getProductNewnessKey(product);
+		Map<ProductModel, Map<String,Date>> newProducts=getBackInStockProducts();
+		if(newProducts.containsKey(product)) {
+			Date when = newProducts.get(product).get(productNewnessKey);
+			return when==null?Integer.MAX_VALUE:((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
+		}
+		else {
 			return Integer.MAX_VALUE; // very long time ago
 		}
-		return ((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
 	}
 	
 	/**

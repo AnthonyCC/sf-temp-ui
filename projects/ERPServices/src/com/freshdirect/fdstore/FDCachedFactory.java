@@ -516,11 +516,11 @@ public class FDCachedFactory {
 		return FDFactory.findPeakProduceSKUsByDepartment(skuPrefixes);
 	}
 	
-	public static Map<String, Date> getNewSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getNewSkus() throws FDResourceException {
 		return FDFactory.getNewSkus();
 	}
 
-	public static Map<String, Date> getBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getBackInStockSkus() throws FDResourceException {
 		return FDFactory.getBackInStockSkus();
 	}
 	

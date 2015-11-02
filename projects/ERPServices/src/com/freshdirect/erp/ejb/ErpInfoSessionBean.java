@@ -1255,20 +1255,33 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String QUERY_NEW_SKUS =
-		"SELECT * FROM erps.new_products";
+		"SELECT * FROM erps.new_products_v1";
 
-	public Map<String, Date> getNewSkus() {
+	public Map<String, Map<String,Date>> getNewSkus(/*String salesOrg, String distributionChannel*/) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
 			ps = conn.prepareStatement(QUERY_NEW_SKUS);
+			/*ps.setString(1, salesOrg);
+			ps.setString(2, distributionChannel);
+			*/
 			rs = ps.executeQuery();
 
-			Map<String, Date> skus = new TreeMap<String, Date>();
+			Map<String, Map<String,Date>> skus = new TreeMap<String, Map<String,Date>>();
+			String sku="";
+			Map<String,Date> value=null;
 			while (rs.next()) {
-				skus.put(rs.getString(1), rs.getTimestamp(2));
+				sku=rs.getString(1);
+				if(skus.containsKey(sku)) {
+					value=skus.get(sku);
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+				} else {
+					value=new HashMap<String,Date>();
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+				}
+				skus.put(sku, value);
 			}
 
 			return skus;
@@ -1286,7 +1299,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	private static final String QUERY_BACK_IN_STOCK_SKUS = 
 		"SELECT * FROM erps.back_in_stock_products";
 
-	public Map<String, Date> getBackInStockSkus() {
+	public Map<String, Map<String,Date>> getBackInStockSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -1294,10 +1307,19 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS);
 			rs = ps.executeQuery();
-
-			Map<String, Date> skus = new TreeMap<String, Date>();
+			Map<String, Map<String,Date>> skus = new TreeMap<String, Map<String,Date>>();
+			String sku="";
+			Map<String,Date> value=null;
 			while (rs.next()) {
-				skus.put(rs.getString(1), rs.getTimestamp(2));
+				sku=rs.getString(1);
+				if(skus.containsKey(sku)) {
+					value=skus.get(sku);
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+				} else {
+					value=new HashMap<String,Date>();
+					value.put(new StringBuilder(5).append(rs.getString(2)).append(rs.getString(3)).toString(), rs.getTimestamp(4));
+				}
+				skus.put(sku, value);
 			}
 
 			return skus;

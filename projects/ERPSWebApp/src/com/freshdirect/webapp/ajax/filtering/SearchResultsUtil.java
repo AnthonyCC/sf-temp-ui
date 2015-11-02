@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -78,16 +79,26 @@ public class SearchResultsUtil {
 		
 		Date now = new Date();
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
-		Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
+		Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+		ZoneInfo zone=user.getUserContext().getPricingContext().getZoneInfo();
 		
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
-			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+		String productNewnessKey="";
+		if(zone!=null) {
+			
+			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
+		}
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			Map<String,Date> newProductsBySalesArea=entry.getValue();
+			if(newProductsBySalesArea.containsKey(productNewnessKey))
+				items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
 		
-		for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
-			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue())));
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
+			Map<String,Date> newProductsBySalesArea=entry.getValue();
+			if(newProductsBySalesArea.containsKey(productNewnessKey))
+			items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		
 		CategoryModel featuredCategory = null;
@@ -154,6 +165,7 @@ public class SearchResultsUtil {
 		SearchResults searchResults = new SearchResults(items, FilteringSortingItem.<Recipe> emptyList(), FilteringSortingItem.<CategoryModel> emptyList(), null, false);
 		searchResults.setDDPPProducts(ddppProducts);
 		return searchResults;
+		//return null;
 
 	}
 }

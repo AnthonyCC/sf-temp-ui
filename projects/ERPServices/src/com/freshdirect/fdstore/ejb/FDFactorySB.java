@@ -116,9 +116,9 @@ public interface FDFactorySB extends EJBObject {
 	
 	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
 	
-	public Map<String, Date> getNewSkus() throws RemoteException, FDResourceException;
+	public Map<String, Map<String,Date>> getNewSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Date> getBackInStockSkus() throws RemoteException, FDResourceException;
+	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException, FDResourceException;
 
 	public Map<String, Date> getOverriddenNewSkus() throws RemoteException, FDResourceException;
 
