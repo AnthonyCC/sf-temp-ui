@@ -370,8 +370,7 @@
     	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
 		_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
 		_oneall.push([ 'social_login', 'set_custom_css_uri', '//freshdirect.com/media/social_login/social_login_media.css']);
-		_oneall.push([ 'social_login', 'set_callback_uri',
-						       		'<%=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);
+		_oneall.push([ 'social_login', 'set_callback_uri', '<%= "https://" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp"%>' ]);
 		_oneall.push([ 'social_login', 'set_event','on_login_redirect', my_on_login_redirect ]);
 		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
 		
