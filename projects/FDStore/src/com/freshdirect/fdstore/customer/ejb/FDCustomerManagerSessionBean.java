@@ -1934,7 +1934,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				orderMobileNumber=createOrder.getDeliveryInfo().getOrderMobileNumber().getPhone();
 				else if(EnumEStoreId.FDX.name().equalsIgnoreCase(createOrder.geteStoreId().name()) && createOrder.getDeliveryInfo().getOrderMobileNumber()==null && customerSmsPreferenceModel.getFdxMobileNumber()!=null){
 						orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
-			}
+						createOrder.getDeliveryInfo().setOrderMobileNumber(customerSmsPreferenceModel.getFdxMobileNumber());
+						}
 				
 			//update original cutoff in deliveryinfo if the order is placed via Masquerade
 			if(createOrder.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(createOrder.geteStoreId().name())){
@@ -2606,7 +2607,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							orderMobileNumber= order.getDeliveryInfo().getOrderMobileNumber().getPhone();
 				
 				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name()) && order.getDeliveryInfo().getOrderMobileNumber()==null && customerSmsPreferenceModel.getFdxMobileNumber()!=null)
-							orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
+					{  orderMobileNumber=customerSmsPreferenceModel.getFdxMobileNumber().getPhone();
+						order.getDeliveryInfo().setOrderMobileNumber(customerSmsPreferenceModel.getFdxMobileNumber());
+					}
 			
 				//update original cutoff in deliveryinfo if the order is placed via Masquerade
 				if(order.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(order.geteStoreId().name())){
