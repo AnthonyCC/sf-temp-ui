@@ -21,6 +21,16 @@ public class EnumDlvRestrictionReason extends Enum {
 	public static final EnumDlvRestrictionReason TEMP_A = new EnumDlvRestrictionReason("TMPA", "Temporary A");
 	public static final EnumDlvRestrictionReason TEMP_B = new EnumDlvRestrictionReason("TMPB", "Temporary B");
 	public static final EnumDlvRestrictionReason TEMP_C = new EnumDlvRestrictionReason("TMPC", "Temporary C");
+	public static final EnumDlvRestrictionReason TEMP_D = new EnumDlvRestrictionReason("TMPD", "Temporary D");
+	public static final EnumDlvRestrictionReason TEMP_E = new EnumDlvRestrictionReason("TMPE", "Temporary E");
+	public static final EnumDlvRestrictionReason TEMP_F = new EnumDlvRestrictionReason("TMPF", "Temporary F");
+	public static final EnumDlvRestrictionReason TEMP_G = new EnumDlvRestrictionReason("TMPG", "Temporary G");
+	public static final EnumDlvRestrictionReason TEMP_H = new EnumDlvRestrictionReason("TMPH", "Temporary H");
+	public static final EnumDlvRestrictionReason TEMP_I = new EnumDlvRestrictionReason("TMPI", "Temporary I");
+	public static final EnumDlvRestrictionReason TEMP_J = new EnumDlvRestrictionReason("TMPJ", "Temporary J");
+	public static final EnumDlvRestrictionReason TEMP_K = new EnumDlvRestrictionReason("TMPK", "Temporary K");
+	public static final EnumDlvRestrictionReason TEMP_L = new EnumDlvRestrictionReason("TMPL", "Temporary L");
+	public static final EnumDlvRestrictionReason TEMP_M = new EnumDlvRestrictionReason("TMPM", "Temporary M");
 
 	public static final EnumDlvRestrictionReason BLOCK_SUNDAY = new EnumDlvRestrictionReason("B_SUN", "Block Sunday");
 	public static final EnumDlvRestrictionReason BLOCK_MONDAY = new EnumDlvRestrictionReason("B_MON", "Block Monday");
@@ -96,6 +106,16 @@ public class EnumDlvRestrictionReason extends Enum {
 		aList.add(EnumDlvRestrictionReason.TEMP_A);
 		aList.add(EnumDlvRestrictionReason.TEMP_B);
 		aList.add(EnumDlvRestrictionReason.TEMP_C);
+		aList.add(EnumDlvRestrictionReason.TEMP_D);
+		aList.add(EnumDlvRestrictionReason.TEMP_E);
+		aList.add(EnumDlvRestrictionReason.TEMP_F);
+		aList.add(EnumDlvRestrictionReason.TEMP_G);
+		aList.add(EnumDlvRestrictionReason.TEMP_H);
+		aList.add(EnumDlvRestrictionReason.TEMP_I);
+		aList.add(EnumDlvRestrictionReason.TEMP_J);
+		aList.add(EnumDlvRestrictionReason.TEMP_K);
+		aList.add(EnumDlvRestrictionReason.TEMP_L);
+		aList.add(EnumDlvRestrictionReason.TEMP_M);
 		aList.add(EnumDlvRestrictionReason.BLOCK_SUNDAY);
 		aList.add(EnumDlvRestrictionReason.BLOCK_MONDAY);
 		aList.add(EnumDlvRestrictionReason.BLOCK_TUESDAY);
