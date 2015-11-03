@@ -49,24 +49,24 @@ public class HolidayMealBundleService {
         return categoryMedia;
     }
 
-    public HolidayMealBundleContainer populateHolidayMealBundleData(ProductModel productModel, FDUserI user) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
+    public HolidayMealBundleContainer populateHolidayMealBundleData(SkuModel skuModel, FDUserI user) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
         HolidayMealBundleContainer container = new HolidayMealBundleContainer();
+        ProductModel productModel = skuModel.getProductModel();
         if (productModel != null && productModel.getParentNode() != null && isProductModelLayoutTypeHolidayMealBundle(productModel)) {
-            container.setMealIncludeDatas(populateIncludeMealDatas(productModel));
+            container.setMealIncludeDatas(populateIncludeMealDatas(skuModel));
             container.setOptionalProducts(populateAvailableOptionalProducts(productModel, user));
         }
         return container;
     }
 
-    private List<HolidayMealBundleIncludeMealData> populateIncludeMealDatas(ProductModel productModel) throws FDSkuNotFoundException, FDResourceException {
+    private List<HolidayMealBundleIncludeMealData> populateIncludeMealDatas(SkuModel skuModel) throws FDSkuNotFoundException, FDResourceException {
         List<HolidayMealBundleIncludeMealData> mealIncludes = new ArrayList<HolidayMealBundleIncludeMealData>();
-        SkuModel defaultSkuModel = productModel.getDefaultSku();
-        if (defaultSkuModel != null) {
-            List<ComponentGroupModel> componentGroups = productModel.getComponentGroups();
+        if (skuModel != null) {
+            List<ComponentGroupModel> componentGroups = skuModel.getProductModel().getComponentGroups();
             if (componentGroups != null) {
                 for (ComponentGroupModel componentGroup : componentGroups) {
                     if (componentGroup.getOptionalProducts().isEmpty()) {
-                        mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, defaultSkuModel.getProduct())));
+                        mealIncludes.add(createIncludeMealData(componentGroup, populateIncludeMealProducts(componentGroup, skuModel.getProduct())));
                     }
                 }
             }

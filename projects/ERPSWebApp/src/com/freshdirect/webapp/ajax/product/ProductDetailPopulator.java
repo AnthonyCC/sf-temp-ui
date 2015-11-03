@@ -843,7 +843,7 @@ public class ProductDetailPopulator {
 			data.setSalesUnitDescrPopup( popupUrl.toString() );
 		}
 
-        data.setHolidayMealBundleContainer(HolidayMealBundleService.defaultService().populateHolidayMealBundleData(product, user));
+        data.setHolidayMealBundleContainer(HolidayMealBundleService.defaultService().populateHolidayMealBundleData(sku, user));
 
         return data;
     }

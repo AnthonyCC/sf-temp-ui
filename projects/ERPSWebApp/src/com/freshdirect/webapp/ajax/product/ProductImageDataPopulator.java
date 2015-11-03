@@ -154,7 +154,7 @@ public class ProductImageDataPopulator {
 			}
 		}
 		
-        List<HolidayMealBundleIncludeMealData> mealIncludeDatas = HolidayMealBundleService.defaultService().populateHolidayMealBundleData(productNode, user).getMealIncludeDatas();
+        List<HolidayMealBundleIncludeMealData> mealIncludeDatas = HolidayMealBundleService.defaultService().populateHolidayMealBundleData(defaultSku, user).getMealIncludeDatas();
         if (mealIncludeDatas != null) {
             for (HolidayMealBundleIncludeMealData mealIncludeData : mealIncludeDatas) {
                 for (HolidayMealBundleIncludeMealProductData includeMealProduct : mealIncludeData.getIncludeMealProducts()) {
