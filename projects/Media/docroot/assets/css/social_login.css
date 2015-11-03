@@ -296,3 +296,8 @@ input[type="socialButton"] {
 	width: 50px;
     display: inline-block;
 }
+.social-login-spinner img.fleft{
+	position: absolute;
+	left: 50%;
+	margin-left: -25px;
+}

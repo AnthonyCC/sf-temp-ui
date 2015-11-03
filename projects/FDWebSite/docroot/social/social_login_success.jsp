@@ -4,7 +4,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 
-  <div style="width:500px;margin-left:250px">
+  <div class="social-login-spinner">
   <img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
   </div>
     <fd:CheckLoginStatus />
