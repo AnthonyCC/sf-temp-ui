@@ -35,6 +35,7 @@ import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -136,6 +137,10 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 			try {
 				final JCoTable groupTable = function.getTableParameterList().getTable("ZSD_BAPI_SGRP_PRICE_WEB");
 
+				if(SapProperties.isGroupScaleExportLogEnabled()){
+					LOG.info("*********** Group Scale Export Data ************");
+					LOG.info(groupTable);
+				}
 				final Map<String, Map<String, List<GroupScalePriceParameter>>> salesAreaGroupScaleRecordMap = new HashMap<String, Map<String, List<GroupScalePriceParameter>>>();
 				for (int i = 0; i < groupTable.getNumRows(); i++) {
 					groupTable.setRow(i);
