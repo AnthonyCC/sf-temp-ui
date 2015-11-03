@@ -3,15 +3,16 @@
 /**
  * @param productName
  * @param price
+ * @param? available
  * @param? salesUnitDescrPDP
  */
 {template .bundleProductTitle}
 <p class="thxgiving-bundle-title">{$productName}{if $salesUnitDescrPDP}<br/>{$salesUnitDescrPDP}{/if}</p><!--
-bundle-title-ends --><p class="thxgiving-bundle-price">
+bundle-title-ends -->{if $available}<p class="thxgiving-bundle-price">
   {call common.formatDecimalPrice}
     {param price:$price /}
   {/call}
-</p>
+</p>{else}<p class="availability-dialog">Item is temporarily unavailable.</p>{/if}
 {/template}
 
 /**

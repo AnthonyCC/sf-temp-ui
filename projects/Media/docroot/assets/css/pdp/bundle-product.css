@@ -284,3 +284,15 @@
   margin: 15px 0;
   text-align: center;
 }
+
+.thxigiving-bundle .availability-dialog{
+  border:2px solid #f93;
+  border-radius:10px;
+  box-sizing:border-box;
+  display:inline-block;
+  font-size:16px;
+  font-weight:bold;
+  margin-bottom:20px;
+  padding:5px 5px;
+  width:200px;
+}
