@@ -34,7 +34,6 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
@@ -2018,11 +2017,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
 				userContext.setStoreContext(storeContext); //TODO this should be changed once FDX_CMS is merged!!! also check StoreContext.createDefault()
 				
-				//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
-				boolean alcoholRestrictedByContext=false;
-				if(this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
-					alcoholRestrictedByContext = 	FDUserUtil.isAlcoholRestricted(this.getZipCode());					
-				}
+				
+				
 				
 				userContext.setFdIdentity(getIdentity()); //TODO maybe FDIdentity should be removed from FDUser	
 				ErpAddressModel address=null;
@@ -2031,48 +2027,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				else if(this.getAddress()!=null) 
 					address=new ErpAddressModel(this.getAddress());
 				
-				FulfillmentContext fulfillmentContext = new FulfillmentContext();
-				ZoneInfo zoneInfo=null;
-				String pricingZoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
-				if(address!=null && !StringUtil.isEmpty(address.getZipCode())) {
-					FulfillmentInfo fulfillmentInfo = getFulfillmentInfo(address,today(), getHistoricOrderSize());
-					fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);
-					fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
-					zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
-				} else {
-					if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
-					//default
-						fulfillmentContext.setPlantId("1300");
-						zoneInfo=new ZoneInfo(pricingZoneId,"1300","01",ZoneInfo.PricingIndicator.SALE, new ZoneInfo(pricingZoneId,"0001","01"));
-					} else {
-					fulfillmentContext.setPlantId("1000");
-					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
-				}
-				}
-				userContext.setFulfillmentContext(fulfillmentContext);
-				userContext.setPricingContext(new PricingContext(zoneInfo));
-				
-
-/*
-				if(this.isZonePricingEnabled()) {
-					//Pricing context is yet to be set. Resolve it now.
-					if(identity!=null)
-						address=getFulfillmentAddress(identity,storeContext.getEStoreId());
-					else if(this.getAddress()!=null) 
-						address=new ErpAddressModel(this.getAddress());
-					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
-
-					 if (userContext.getFdIdentity()!=null && this.isChefsTable() && EnumEStoreId.FDX.getContentId().equals(ContentFactory.getInstance().getStoreKey().getId())) {
-						ZoneInfo parent=new ZoneInfo(zoneId,"0001","01");
-						userContext.setPricingContext(new PricingContext(new ZoneInfo(zoneId,"1300","01",parent)));//::FDX::
-					} else {
-						userContext.setPricingContext(new PricingContext(new ZoneInfo(zoneId,"0001","01")));
-					}
-				}else {
-					//Set it to Master default zone
-					userContext.setPricingContext(PricingContext.DEFAULT);
-				}*/
-
+				userContext=setFulfillmentAndPricingContext(userContext,address);
 			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e, e.getMessage());
@@ -2083,8 +2038,65 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	
-
-	
+    private boolean isAddressValidForFulfillmentCheck(ErpAddressModel address) {
+    	
+    	return (address!=null && !StringUtil.isEmpty(address.getZipCode()))?true:false;
+    }
+    
+    private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address) {
+    	
+    	try {
+			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()));
+			if(deliveryZoneInfo!=null)
+				return deliveryZoneInfo.getFulfillmentInfo();
+			
+		} catch (FDInvalidAddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+	private UserContext setFulfillmentAndPricingContext( UserContext userContext,ErpAddressModel address) throws FDResourceException {                                  
+			                                            
+		
+		FulfillmentContext fulfillmentContext= new FulfillmentContext();
+		if(this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
+			//[APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
+			boolean alcoholRestrictedByContext=FDUserUtil.isAlcoholRestricted(this.getZipCode());
+			fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);					
+		}
+		
+		String pricingZoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address!=null?address.getZipCode():getZipCode());
+		
+		FulfillmentInfo fulfillmentInfo=null;
+		ZoneInfo zoneInfo=null;
+		
+		if(isAddressValidForFulfillmentCheck(address)) {
+			fulfillmentInfo=getFulfillmentInfo(address);
+		}
+		
+		if(fulfillmentInfo==null) {
+				//default the fulfillments
+				if(EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
+					fulfillmentContext.setPlantId("1300");
+					zoneInfo=new ZoneInfo(pricingZoneId,"1300","01",ZoneInfo.PricingIndicator.BASE, new ZoneInfo(pricingZoneId,"0001","01"));
+				} else {
+					fulfillmentContext.setPlantId("1000");
+					zoneInfo=new ZoneInfo(pricingZoneId,"0001","01");
+				}
+				
+		 } else {
+			 	fulfillmentContext.setPlantId(fulfillmentInfo.getPlantCode());
+				zoneInfo=getZoneInfo(pricingZoneId,fulfillmentInfo.getSalesArea());
+		 }
+		userContext.setFulfillmentContext(fulfillmentContext);
+		userContext.setPricingContext(new PricingContext(zoneInfo));
+		return userContext;
+	}	
 
 	/** use getUserContext().setPricingContext() instead */
 	@Deprecated
@@ -3042,38 +3054,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 			d = new Date();
 		}
 		return d;
-	}
-	
-	private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address,	Date today, CustomerAvgOrderSize historicOrderSize) {
-		
-		FulfillmentInfo fulfillmentInfo=null;
-		
-		try {
-			FDDeliveryZoneInfo deliveryZoneInfo=FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()));
-			if(deliveryZoneInfo!=null)
-				fulfillmentInfo=deliveryZoneInfo.getFulfillmentInfo();
-			
-		} catch (FDInvalidAddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			if(fulfillmentInfo==null) {
-				fulfillmentInfo=new FulfillmentInfo();
-				fulfillmentInfo.setPlantCode("1000");
-				SalesArea salesArea=new SalesArea();
-				salesArea.setSalesOrg("0001");
-				salesArea.setDistChannel("01");
-				
-				fulfillmentInfo.setSalesArea(salesArea);
-				
-			}
-			
-		}
-		return fulfillmentInfo;
 	}
 	
 	private  static ZoneInfo getZoneInfo(String pricingZone,SalesArea salesArea) {
