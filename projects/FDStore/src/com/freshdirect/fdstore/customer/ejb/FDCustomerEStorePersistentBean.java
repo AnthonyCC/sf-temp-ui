@@ -137,7 +137,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	}
 
 	private static EnumEStoreId getCustomerEStoreId(){
-		return ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+		return EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 	}
 
 }

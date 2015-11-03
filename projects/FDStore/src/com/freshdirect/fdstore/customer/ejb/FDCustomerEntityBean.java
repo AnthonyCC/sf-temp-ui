@@ -16,8 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -26,11 +24,11 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.ProfileModel;
-import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -344,7 +342,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	 */
 	private void replaceCustomerEStoreModel() {
 		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
-		//customerEStoreModel.seteStoreId(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
+		if(customerEStoreModel.geteStoreId()==null)
+			customerEStoreModel.seteStoreId(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
+		
 		customerEStoreModel.setDefaultShipToAddressPK(this.getDefaultShipToAddressPK());
 		customerEStoreModel.setDefaultPaymentMethodPK(this.getDefaultPaymentMethodPK());
 		customerEStoreModel.setDefaultDepotLocationPK(this.getDefaultDepotLocationPK());
@@ -425,10 +425,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			this.profile.store(conn);
 		}
 		
-		replaceCustomerEStoreModel();
-		customerEStore.store(conn);
-		customerSmsPreferences.store(conn);
-
+			replaceCustomerEStoreModel();
+			customerEStore.store(conn);
+			customerSmsPreferences.store(conn);
 	}
 
 	public void remove(Connection conn) throws SQLException {
