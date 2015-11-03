@@ -1138,7 +1138,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
 
-			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
+			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null) && (user.getIdentity() == null))) {
 				//
 				// if there is no user object or a dummy user object created in
 				// CallCenter, make a new using this zipcode
