@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -139,7 +140,7 @@ public class UnavailabilityPopulator {
 				boolean singleOptionIsOut= false;
 				for (Iterator<Map.Entry<String,FDAvailabilityInfo>> i = componentInfos.entrySet().iterator(); i.hasNext(); ) {
 					Map.Entry<String,FDAvailabilityInfo> e = i.next();
-					String componentKey = (String)e.getKey();
+					String componentKey = e.getKey();
 					if (componentKey != null) {
 						FDProduct fdp = cartLine.lookupFDProduct();
 						String matNo = StringUtils.right(componentKey, 9);
@@ -158,7 +159,13 @@ public class UnavailabilityPopulator {
 				}
 				
 				if (!singleOptionIsOut) {
-					description.append("<a href=\"/product_modify.jsp?cartLine=" + cartLine.getRandomId() + "&skuCode=" + cartLine.getSku().getSkuCode() + "\">Click here</a> to select other options.");
+                    ProductModel productNode = cartLine.lookupProduct();
+                    boolean mealBundleProduct = (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT);
+                    if (!mealBundleProduct) {
+                        description.append("<a href=\"/product_modify.jsp?cartLine=" + cartLine.getRandomId() + "&skuCode=" + cartLine.getSku().getSkuCode()
+                                + "\">Click here</a> to select other options.");
+                    }
+
 				}
 	
 				line.setDescription(description.toString());
