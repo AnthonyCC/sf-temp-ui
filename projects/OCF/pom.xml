@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.freshdirect</groupId>
-	<artifactId>fdlogisticsintegration</artifactId>
+	<artifactId>ocf</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>FD Logistics Integration Client</name>
+	<name>OCF</name>
 
 	<parent>
 		<groupId>com.freshdirect</groupId>
@@ -13,31 +13,20 @@
 	</parent>
 
 	<dependencies>
-		<!-- Spring Framework -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-
-		<!-- internal project dependencies -->
 		<dependency>
 			<groupId>com.freshdirect</groupId>
-			<artifactId>erpservices</artifactId>
+			<artifactId>listadmin</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.freshdirect</groupId>
+			<artifactId>fdstore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

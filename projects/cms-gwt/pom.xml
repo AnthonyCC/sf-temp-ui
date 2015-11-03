@@ -1,74 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<!-- POM file generated with GWT webAppCreator -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.freshdirect</groupId>
 	<artifactId>cms-gwt</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>CMS Editor</name>
 
 	<parent>
 		<groupId>com.freshdirect</groupId>
 		<artifactId>fdworld</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
 	</parent>
-
-	<properties>
-		<!-- Convenience property to set the GWT version -->
-		<gwtVersion>2.0.3</gwtVersion>
-		<!-- GWT needs at least java 1.5 -->
-		<webappDirectory>war</webappDirectory>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 
 	<dependencies>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>${gwtVersion}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>${gwtVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Sencha GXT library -->
 		<dependency>
 			<groupId>com.extjs</groupId>
 			<artifactId>gxt</artifactId>
-			<version>2.1.1</version>
 		</dependency>
 
-		<!-- Google Maps extension for GWT -->
 		<dependency>
 			<groupId>com.google.gwt.google-apis</groupId>
 			<artifactId>gwt-maps</artifactId>
-			<version>1.0.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.auroris</groupId>
-			<artifactId>gwt-colorpicker</artifactId>
-			<version>1.6</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../../lib/thirdparty/gwt/ColorPicker-GWT-1.6.jar</systemPath>
+			<artifactId>colorpicker</artifactId>
 		</dependency>
 
-		<!-- internal project dependencies -->
 		<dependency>
 			<groupId>com.freshdirect</groupId>
 			<artifactId>cms</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -108,13 +85,8 @@
 						<artifactId>gwt-servlet</artifactId>
 						<version>${gwtVersion}</version>
 					</dependency>
-					<!-- 
-					<dependency>
-						<groupId>com.google.gwt</groupId>
-						<artifactId>gwt-codeserver</artifactId>
-						<version>${gwtVersion}</version>
-					</dependency>
-					-->
+					<!-- <dependency> <groupId>com.google.gwt</groupId> <artifactId>gwt-codeserver</artifactId> 
+						<version>${gwtVersion}</version> </dependency> -->
 				</dependencies>
 				<!-- type>maven-plugin</type -->
 				<executions>
@@ -162,8 +134,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>

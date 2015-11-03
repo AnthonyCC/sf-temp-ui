@@ -10,90 +10,50 @@
 		<groupId>com.freshdirect</groupId>
 		<artifactId>fdworld</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
 	</parent>
 
-
 	<dependencies>
-		<!-- Java Programming Assistant, bytecode manipulation toolkit -->
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.4.GA</version>
 		</dependency>
 
-		<!-- Java UUID Generator -->
 		<dependency>
 			<groupId>org.safehaus.jug</groupId>
 			<artifactId>jug</artifactId>
-			<version>2.0.0</version>
 			<classifier>lgpl</classifier>
 		</dependency>
 
-		<!-- Slide WebDAV lib [obsolete] -->
-		<!-- NOTE: only used in CMS publish to fetch media items from media SVN -->
 		<dependency>
 			<groupId>slide</groupId>
 			<artifactId>slide-webdavlib</artifactId>
-			<version>2.1</version>
 		</dependency>
 
-		<!-- Apache POI - Java API To Access Microsoft Format Files -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.13</version>
 		</dependency>
 
-
-		<!-- Lucene indexing -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>3.0.3</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-queries</artifactId>
-			<version>3.0.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-snowball</artifactId>
-			<version>3.0.3</version>
 		</dependency>
 
-		<!-- internal project dependencies -->
 		<dependency>
 			<groupId>com.freshdirect</groupId>
 			<artifactId>delivery</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

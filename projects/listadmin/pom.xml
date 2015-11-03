@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.freshdirect</groupId>
-	<artifactId>fdlogisticsintegration</artifactId>
+	<artifactId>listadmin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>FD Logistics Integration Client</name>
+	<name>ListAdmin</name>
 
 	<parent>
 		<groupId>com.freshdirect</groupId>
@@ -13,31 +13,25 @@
 	</parent>
 
 	<dependencies>
-		<!-- Spring Framework -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
+			<groupId>tapestry</groupId>
+			<artifactId>tapestry</artifactId>
+			<version>3.0.3</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
+			<groupId>org.gibello</groupId>
+			<artifactId>zql-parser</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-
-		<!-- internal project dependencies -->
 		<dependency>
 			<groupId>com.freshdirect</groupId>
-			<artifactId>erpservices</artifactId>
+			<artifactId>framework</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
