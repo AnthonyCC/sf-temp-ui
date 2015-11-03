@@ -11,8 +11,10 @@
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@page import="com.freshdirect.fdstore.FDSku"%>
 <%@page import="com.freshdirect.fdstore.FDCachedFactory"%>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.FDMaterialSalesArea"%>
+<%@page import="com.freshdirect.fdstore.FDPlantMaterial"%>
+<%@taglib uri="freshdirect" prefix="fd"%>
 <%!String format(Object x) {
         if (x == null) {
             return "<b>Not found!</b>";
@@ -25,8 +27,8 @@
     FDProductInfo productInfo = null;
 
     String skuCode = request.getParameter("sku");
-    Integer version = request.getParameter("version") != null && request.getParameter("version").trim().length() > 0 ? Integer.parseInt(request
-            .getParameter("version").trim()) : null;
+    Integer version = request.getParameter("version") != null && request.getParameter("version").trim().length() > 0
+            ? Integer.parseInt(request.getParameter("version").trim()) : null;
 
     if (skuCode != null) {
         skuCode = skuCode.trim();
@@ -41,9 +43,9 @@
         version = productInfo.getVersion();
     }
     FDSku sku = skuCode != null && version != null ? new FDSku(skuCode, version) : null;
-    String plantID="";
-    String salesOrg="";
-    String distrChannel="";
+    String plantID = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+    String salesOrg = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+    String distrChannel = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
     if (sku != null) {
         try {
             product = FDCachedFactory.getProduct(sku);
@@ -52,6 +54,7 @@
         }
     }
     if (productInfo != null && request.getParameter("setStatus") != null) {
+        FDMaterialSalesArea sa = productInfo.getAvailability().get(new String(salesOrg + distrChannel).intern());
         EnumAvailabilityStatus e = EnumAvailabilityStatus.valueOf(request.getParameter("newStatus"));
         String newFreshness = request.getParameter("newFreshness");
         if (newFreshness != null) {
@@ -64,76 +67,74 @@
         if (tmp != null && tmp.trim().length() > 0) {
             r = EnumOrderLineRating.valueOf(tmp);
         }
-        //productInfo = FDCachedFactory.addNewAvailabilityInformation(skuCode, e, r, newFreshness);//::FDX::
-        plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();	
-        salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
-        distrChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-
-        message.append("<ol>New sku version injected into the system for <i>" + skuCode + "</i>, which <li>status: "
-                + productInfo.getAvailabilityStatus(salesOrg,distrChannel) + "</li><li>freshness:" + productInfo.getFreshness(plantID) + "</li>" + "</li><li>rating:"
-                + productInfo.getRating(plantID) + "</li></ol>");
+        sa.setUnavailabilityStatus(e.getStatusCode());
+        FDPlantMaterial pm = productInfo.getPlantMaterialInfo().get(plantID);
+        if (pm != null) {
+            pm.setFreshness(newFreshness);
+            pm.setRating(r);
+        }
+        message.append(
+                "<ol>New sku version injected into the system for <i>" + skuCode + "</i>, which <li>status: " + productInfo.getAvailabilityStatus(salesOrg, distrChannel)
+                        + "</li><li>freshness:" + productInfo.getFreshness(plantID) + "</li>" + "</li><li>rating:" + productInfo.getRating(plantID) + "</li></ol>");
         version = productInfo.getVersion();
     }
-    EnumAvailabilityStatus oldStatus = productInfo != null ? productInfo.getAvailabilityStatus(salesOrg,distrChannel) : null;
+    EnumAvailabilityStatus oldStatus = productInfo != null ? productInfo.getAvailabilityStatus(salesOrg, distrChannel) : null;
     EnumOrderLineRating oldRating = productInfo != null ? productInfo.getRating(plantID) : null;
     String oldFreshness = productInfo != null ? productInfo.getFreshness(plantID) : null;
-%>    
+%>
 <html>
 <head>
-	<fd:css href="/test/search/config.css"/>
-	<title>Cache Content</title>
+<fd:css href="/test/search/config.css" />
+<title>Cache Content</title>
 </head>
 <body>
-<%
-    if (message.length() > 0) {
-%>
+	<%
+	    if (message.length() > 0) {
+	%>
 	<div class="error"><%=message%></div>
-<%
-    }
-%>
- <form method="get" >
- 	<label for="sku">SKU code:</label>
- 	<input id="sku" type="text" name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>"/>
- 	<br/>
- 	<label for="version">Version:</label>
- 	<input id="version" type="text" name="version" maxlength="10" value="<%=version != null ? version.toString() : ""%>"/>
- 	<br/>
- 	<input type="submit" value="Check"/>
- 	<br/>
-</form> 	
-<form method="post">
- 	<label for="sku">SKU code:</label>
- 	<input id="sku" type="text" name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>"/>
- 	<br/>
- 	<label for="newStatus">New status</label>
- 	<select id="newStatus" name="newStatus">
- 		<option value="" <%=oldStatus == null ? "selected" : ""%>>NA</option>
-<%
-    for (EnumAvailabilityStatus e : EnumAvailabilityStatus.values()) {
-%>
-		<option value="<%=e.name()%>" <%=e.equals(oldStatus) ? "selected" : ""%>><%=e.getShortDescription()%></option>
-<%
-    }
-%> 	
- 	</select>
- 	<br/>
- 	<label for="newRating">New rating</label>
- 	<select id="newRating" name="newRating">
- 		<option value="" <%=oldRating == null ? "selected" : ""%>>NA</option>
-<%
-    for (EnumOrderLineRating e : EnumOrderLineRating.values()) {
-%>
-		<option value="<%=e.name()%>" <%=e.equals(oldStatus) ? "selected" : ""%>><%=e.getShortDescription()%> (<%=e.getStatusCode()%>)</option>
-<%
-    }
-%> 	
- 	</select>
- 	<br/>
- 	<label for="newFreshness">New freshness:</label>
- 	<input id="newFreshness" type="text" name="newFreshness" maxlength="50" value="<%=oldFreshness != null ? oldFreshness : ""%>"/>
- 	
- 	<input type="submit" name="setStatus" value="Change status!">
- </form>
+	<%
+	    }
+	%>
+	<form method="get">
+		<label for="sku">SKU code:</label> <input id="sku" type="text"
+			name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>" />
+		<br /> <label for="version">Version:</label> <input id="version"
+			type="text" name="version" maxlength="10"
+			value="<%=version != null ? version.toString() : ""%>" /> <br /> <input
+			type="submit" value="Check" /> <br />
+	</form>
+	<form method="post">
+		<label for="sku">SKU code:</label> <input id="sku" type="text"
+			name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>" />
+		<br /> <label for="newStatus">New status</label> <select
+			id="newStatus" name="newStatus">
+			<option value="" <%=oldStatus == null ? "selected" : ""%>>NA</option>
+			<%
+			    for (EnumAvailabilityStatus e : EnumAvailabilityStatus.values()) {
+			%>
+			<option value="<%=e.name()%>"
+				<%=e.equals(oldStatus) ? "selected" : ""%>><%=e.getShortDescription()%></option>
+			<%
+			    }
+			%>
+		</select> <br /> <label for="newRating">New rating</label> <select
+			id="newRating" name="newRating">
+			<option value="" <%=oldRating == null ? "selected" : ""%>>NA</option>
+			<%
+			    for (EnumOrderLineRating e : EnumOrderLineRating.values()) {
+			%>
+			<option value="<%=e.name()%>"
+				<%=e.equals(oldRating) ? "selected" : ""%>><%=e.getShortDescription()%>
+				(<%=e.getStatusCode()%>)
+			</option>
+			<%
+			    }
+			%>
+		</select> <br /> <label for="newFreshness">New freshness:</label> <input
+			id="newFreshness" type="text" name="newFreshness" maxlength="50"
+			value="<%=oldFreshness != null ? oldFreshness : ""%>" /> <input
+			type="submit" name="setStatus" value="Change status!">
+	</form>
 	<table>
 		<tr>
 			<td class="even">Sku</td>
@@ -143,11 +144,11 @@
 			<td class="odd">FDProduct in VM</td>
 			<td class="odd"><%=format(product)%></td>
 		</tr>
-		
+
 		<tr>
 			<td class="even">FDProductInfo in VM</td>
 			<td class="even"><%=format(productInfo)%></td>
 		</tr>
-		
+
 	</table>
-</body>    
+</body>
