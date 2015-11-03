@@ -26,6 +26,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -702,7 +703,13 @@ public class RegistrationAction extends WebActionSupport {
 			
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
-				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				
+				
+				if(FDStoreProperties.isSocialLoginEnabled()){ 
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
+				}else{
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));
+				}
+				
 			}
 		} catch (FDResourceException e) {			
 		}
@@ -725,7 +732,12 @@ public class RegistrationAction extends WebActionSupport {
 		
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
-				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));				
+				if(FDStoreProperties.isSocialLoginEnabled()){ 
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
+				}else{
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));	
+				}
+							
 			}
 		} catch (FDResourceException e) {			
 		}
