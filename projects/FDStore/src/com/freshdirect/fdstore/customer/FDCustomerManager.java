@@ -4098,9 +4098,16 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 
 			sb.storeMobilePreferences(fdCustomerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, eStoreId );
-			FDDeliveryManager.getInstance().addSubscriptions(customerId,
-					mobileNumber, textOffers, textDelivery, orderNotices,
-				orderExceptions, offers, partnerMessages, new Date(), eStoreId.toString());
+			if(EnumEStoreId.FD.getContentId().equalsIgnoreCase(eStoreId.getContentId()))
+				{
+					FDDeliveryManager.getInstance().addSubscriptions(customerId,mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages, 
+							new Date(), eStoreId.toString());
+				}
+			else{
+					FDDeliveryManager.getInstance().addSubscriptions(customerId,mobileNumber, textOffers, textDelivery, "Y".equalsIgnoreCase(orderNotices)?"S":"N", "Y".equalsIgnoreCase(orderExceptions)?"S":"N", "Y".equalsIgnoreCase(offers)?"S":"N", "Y".equalsIgnoreCase(partnerMessages)?"S":"N", 
+							new Date(), eStoreId.toString());
+				
+			}
 			logSmsActivity(customerId, orderNotices, orderExceptions, offers, customerSmsPreferenceModel, eStoreId.getContentId());
 	
 		
