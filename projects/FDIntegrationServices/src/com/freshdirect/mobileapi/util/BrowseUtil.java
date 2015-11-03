@@ -27,6 +27,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
@@ -1151,7 +1152,7 @@ public class BrowseUtil {
 	    	List<com.freshdirect.mobileapi.catalog.model.Product> productList=new ArrayList<com.freshdirect.mobileapi.catalog.model.Product>();
 	    	for(ProductModel p:pm) {
 	    		//SkuModel sku=p.getDefaultSku();
-	    		if(p.isFullyAvailable()) {
+	    		if(p.isTemporaryUnavailableOrAvailable()) {
 					//display(p);
 					if(!productSet.contains(p.getContentName())) {
 	    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
@@ -1165,7 +1166,8 @@ public class BrowseUtil {
 				            .generateWineAttributes(p)
 	    					.addKeyWords(p.getKeywords())
 	    					.generateAdditionTagsFromProduct(p)
-	    					.skuInfo(getSkuInfo(p,plantId,pc ));
+	    					.skuInfo(getSkuInfo(p,plantId,pc ))
+	    					.productLayout(p.getProductLayout().getId());
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
     					productList.add(product);
@@ -1365,6 +1367,12 @@ public class BrowseUtil {
 						
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
+					EnumAvailabilityStatus status = productInfo.getAvailabilityStatus(pc.getPricingContext().getZoneInfo().getSalesOrg(), pc.getPricingContext().getZoneInfo().getDistributionChanel());
+					if(status==null){
+						skuInfo.setAvailable(EnumAvailabilityStatus.TEMP_UNAV.getId());
+					}else{
+					skuInfo.setAvailable(status.getId());
+					}
 					boolean isLimitedQuantity = false;
 					isLimitedQuantity = productInfo.isLimitedQuantity(plantID);
 					/*//TODO: Fix it - This is only for test

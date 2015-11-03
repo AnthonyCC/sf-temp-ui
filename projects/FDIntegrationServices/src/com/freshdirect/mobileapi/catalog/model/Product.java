@@ -33,6 +33,7 @@ public class Product {
 	private final SkuInfo skuInfo;
 	private final WineAttributes wineAttributes;
 	private final List<String> keywords;
+	private final int productLayout;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -49,6 +50,7 @@ public class Product {
 		skuInfo=builder.skuInfo;
 		wineAttributes = builder.wineAttributes;
 		keywords = builder.keywords;
+		productLayout=builder.productLayout;
 	}
 	
 	public String getId() {
@@ -105,6 +107,9 @@ public class Product {
 	
 	public List<String> getKeywords(){
 		return this.keywords;
+	}
+	public int getProductLayout() {
+		return productLayout;
 	}
 
 	public static final class WineAttributes {
@@ -212,6 +217,7 @@ public class Product {
 		private String primaryHome;
 		private SkuInfo skuInfo;
 		private WineAttributes wineAttributes;
+		private int productLayout;
 		
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
@@ -348,6 +354,11 @@ public class Product {
         	maxQty = val;
         	return this;
         }
+		public ProductBuilder productLayout(int val) {
+			productLayout = val;
+        	return this;
+			
+		}
         
        
         public ProductBuilder incrementQty(float val) {

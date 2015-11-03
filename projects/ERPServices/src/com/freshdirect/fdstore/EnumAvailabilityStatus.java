@@ -24,7 +24,11 @@ public enum EnumAvailabilityStatus implements java.io.Serializable {
 	    }
 	}
     
-    protected final int id;
+    public int getId() {
+		return id;
+	}
+
+	protected final int id;
     private final String statusCode;
     private final String shortDescription;
     

@@ -2,6 +2,8 @@ package com.freshdirect.mobileapi.catalog.model;
 
 import java.util.List;
 
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
+
 public class SkuInfo {
 	
 	public static enum AlcoholType {
@@ -20,8 +22,16 @@ public class SkuInfo {
 	private UnitPrice unitPrice;
 	
 	private List<ScalePrice> scalePrice;
+	private int available;
 	
 		
+	public int getAvailable() {
+		return available;
+	}
+	public void setAvailable(int availabilityId) {
+		
+		this.available = availabilityId;
+	}
 	public List<ScalePrice> getScalePrice() {
 		return scalePrice;
 	}
