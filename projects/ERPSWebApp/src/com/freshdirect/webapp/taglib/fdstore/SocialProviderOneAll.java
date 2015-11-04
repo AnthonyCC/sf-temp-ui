@@ -54,7 +54,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		if(connectionToken == null || connectionToken.length() ==0)
 			throw new IllegalArgumentException("Invalid Connection Token");
 
-		String resource_uri = "https://" + site_domain + "/connections/" + connectionToken + ".json"; 
+		String resource_uri = "http://" + site_domain + "/connections/" + connectionToken + ".json"; 
 
 		String resultJson = apiCall(resource_uri);
 		
@@ -73,7 +73,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		if(providerName == null || providerName.length() ==0)
 			throw new IllegalArgumentException("Invalid Provider Name");
 
-		String resource_uri = "https://" + site_domain + "/users/" + userToken + ".json"; 
+		String resource_uri = "http://" + site_domain + "/users/" + userToken + ".json"; 
 
 		String resultJson = apiCall(resource_uri);
 		
@@ -347,7 +347,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		if(providerName == null || providerName.length() ==0)
 			throw new IllegalArgumentException("Invalid Provider Name");
 
-		String resource_uri = "https://" + site_domain + "/users.json"; 
+		String resource_uri = "http://" + site_domain + "/users.json"; 
 
 		String resultJson = apiCallUsingAccessToken(resource_uri, accessToken, providerName);
 		
