@@ -696,7 +696,9 @@ public class RegistrationAction extends WebActionSupport {
 		}
 		
 //		if(!"true".equals(request.getParameter("LITESIGNUP"))) {
+		if(!"true".equals(request.getParameter("EXPRESSSIGNUP_SKIP_VALIDATION"))) {
 			cInfo.validateEx(actionResult);
+		}
 //		}
 		
 		if(!"true".equals(request.getParameter("EXPRESSSIGNUP_SKIP_VALIDATION"))) {
