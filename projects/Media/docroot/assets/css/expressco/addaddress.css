@@ -332,3 +332,11 @@
 a.pickuppopup {
   text-decoration: none;
 }
+
+#addaddresspopup [bd-id="unattended"] {
+  display: none;
+}
+
+[unattendeddeliveryavailable="true"] #addaddresspopup [bd-id="unattended"] {
+  display: block;
+}

@@ -426,6 +426,13 @@ var FreshDirect = FreshDirect || {};
             form = forms.get(id);
 
         forms.showErrors(form, data.errors, true);
+
+        if (data.result) {
+          Object.keys(data.result).forEach(function (key) {
+            DISPATCHER.signal(key, data.result[key]);
+          });
+        }
+
       }
     }
   });

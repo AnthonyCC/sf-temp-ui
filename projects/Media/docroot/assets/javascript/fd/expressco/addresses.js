@@ -4,7 +4,8 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
   'use strict';
 
-  var DRAWER_WIDGET = fd.modules.common.drawerWidget;
+  var DRAWER_WIDGET = fd.modules.common.drawerWidget,
+      $ = fd.libs.$;
 
   var address = Object.create(DRAWER_WIDGET,{
     signal:{
@@ -24,6 +25,19 @@ var FreshDirect = FreshDirect || {};
   });
 
   address.listen();
+
+  var unattendedSelector = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'unattendedDeliveryDisplay'
+    },
+    callback: {
+      value: function (data) {
+        $(document.body).attr("unattendeddeliveryavailable", data && data.isUnattendedDelivery);
+      }
+    }
+  });
+
+  unattendedSelector.listen();
 
   // address related forms
   fd.modules.common.forms.register({
