@@ -2,7 +2,9 @@ package com.freshdirect.webapp.ajax.expresscheckout.location.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
@@ -23,6 +26,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
+import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
 
 public class DeliveryAddressServlet extends BaseJsonServlet {
 
@@ -42,8 +46,13 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                 switch (pageAction) {
                     case GET_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
-                        deliveryAddressResponse.getSubmitForm().getResult().put(ADDRESS_BY_ID_KEY,
-                                SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId));
+                        deliveryAddressResponse.getSubmitForm().getResult()
+                                .put(ADDRESS_BY_ID_KEY, SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId));
+
+                        List<LocationData> locations = DeliveryAddressService.defaultService().loadDeliveryAddressById(user, deliveryAddressId);
+
+                        deliveryAddressResponse.getValidationResult().getResult().put("unattendedDeliveryDisplay", setupUnattendedDeliveryMap(locations));
+
                         break;
                     }
                     case ADD_DELIVERY_ADDRESS_METHOD: {
@@ -94,7 +103,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
         } catch (IOException e) {
             returnHttpError(500, "Failed to load Learn More media for restriction message.", e);
         } catch (TemplateException e) {
-            returnHttpError(500, "Failed to render Learn More HTML media for restricion message.", e);
+            returnHttpError(500, "Failed to render Learn More HTML media for restriction message.", e);
         } catch (JspException e) {
             returnHttpError(500, "Failed to check delivery pass status.", e);
         } catch (RedirectToPage e) {
@@ -110,6 +119,23 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
     @Override
     protected boolean synchronizeOnUser() {
         return false;
+    }
+
+    private Map<String, Object> setupUnattendedDeliveryMap(List<LocationData> locations) {
+
+        ErpAddressModel address = new ErpAddressModel();
+        address.setAddress1(locations.get(0).getAddress1());
+        address.setCity(locations.get(0).getCity());
+        address.setState(locations.get(0).getState());
+        address.setApartment(locations.get(0).getApartment());
+        address.setZipCode(locations.get(0).getZip());
+
+        Map<String, Object> unattendedResult = new HashMap<String, Object>();
+
+        unattendedResult.put("isUnattendedDelivery", UnattendedDeliveryTag.checkUnattendedDelivery(address));
+
+        return unattendedResult;
+
     }
 
 }

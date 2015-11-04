@@ -45,5 +45,9 @@ public class ValidationProviderService {
 	public List<ValidationError> validateSmsAlert(final Map<String, String> data) {
 		return validator.validate(data, constraintService.getSmsAlertConstraints(data));
 	}
+	
+	public List<ValidationError> validateUnattendedDelivery(final Map<String, String> data) {
+		return validator.validate(data, constraintService.getUnattendedDeliveryAddressConstraints(data));
+	}
 
 }

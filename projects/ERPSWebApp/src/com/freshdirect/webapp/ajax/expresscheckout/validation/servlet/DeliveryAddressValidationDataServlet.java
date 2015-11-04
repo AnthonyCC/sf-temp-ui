@@ -1,5 +1,8 @@
 package com.freshdirect.webapp.ajax.expresscheckout.validation.servlet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +16,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.service.DeliveryAd
 public class DeliveryAddressValidationDataServlet extends BaseJsonServlet {
 
     private static final long serialVersionUID = -7582639712245761241L;
+    private static final String UNATTENDED_DELIVERY_DISPLAY_KEY = "unattendedDeliveryDisplay";
+    private static final String IS_UNATTENDED_DELIVERY_KEY = "isUnattendedDelivery";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
@@ -22,6 +27,12 @@ public class DeliveryAddressValidationDataServlet extends BaseJsonServlet {
             validationResult.setFdform(deliveryAddressRequest.getFormId());
             validationResult.getErrors().addAll(DeliveryAddressValidationDataService.defaultService().prepareAndValidate(deliveryAddressRequest));
             FormDataResponse deliveryAddressResponse = createDeliveryAddressResponse(validationResult);
+
+            Map<String, Object> unattendedDeliveryData = new HashMap<String, Object>();
+            unattendedDeliveryData.put(IS_UNATTENDED_DELIVERY_KEY,
+                    DeliveryAddressValidationDataService.defaultService().prepareAndValidateForUnattendedCheck(deliveryAddressRequest));
+            deliveryAddressResponse.getValidationResult().getResult().put(UNATTENDED_DELIVERY_DISPLAY_KEY, unattendedDeliveryData);
+
             writeResponseData(response, deliveryAddressResponse);
         } catch (Exception e) {
             BaseJsonServlet.returnHttpError(500, "Error while validate delivery address for user " + user.getUserId());

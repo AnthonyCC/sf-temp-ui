@@ -4,23 +4,23 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationRes
 
 public class FormDataResponse {
 
-	private SubmitForm submitForm;
-	private ValidationResult validationResult;
+    private SubmitForm submitForm;
+    private ValidationResult validationResult;
 
-	public SubmitForm getSubmitForm() {
-		return submitForm;
-	}
+    public SubmitForm getSubmitForm() {
+        return submitForm;
+    }
 
-	public void setFormSubmit(SubmitForm submitForm) {
-		this.submitForm = submitForm;
-	}
+    public ValidationResult getValidationResult() {
+        return validationResult;
+    }
 
-	public ValidationResult getValidationResult() {
-		return validationResult;
-	}
+    public void setFormSubmit(SubmitForm submitForm) {
+        this.submitForm = submitForm;
+    }
 
-	public void setValidationResult(ValidationResult validationResult) {
-		this.validationResult = validationResult;
-	}
+    public void setValidationResult(ValidationResult validationResult) {
+        this.validationResult = validationResult;
+    }
 
 }
