@@ -1805,6 +1805,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isProductSample(prodRef);
 	}
 
+
+	@Override
+	public boolean getTcAcknowledge() {
+		
+		return this.user.getTcAcknowledge();
+	}
+
+
 	public Date getFirstOrderDate() throws FDResourceException{
 		return this.user.getFirstOrderDate();
 	}

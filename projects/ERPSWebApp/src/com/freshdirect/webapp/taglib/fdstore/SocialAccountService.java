@@ -132,9 +132,16 @@ public class SocialAccountService implements AccountService {
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
-				    	try {							
+				    	try {						
+							 // APPDEV-4381 TC Accept.
+				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+							 if(!user.getTcAcknowledge()){
+								 response.sendRedirect("/registration/tcaccept_lite.jsp");
+								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
+							 }else {
 							response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 							LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
+							 }
 						} catch (IOException e) {
 							LOGGER.error(e.getMessage());
 						}
@@ -196,9 +203,14 @@ public class SocialAccountService implements AccountService {
 						}else{							
 				    		// Auto login
 				    		UserUtil.loginUser(session, request, response,null, socialUserId, null, "", this.updatedSuccessPage, true);
-				    		
-				    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
-							return socialLoginRecognized;
+				    		// APPDEV-4381 TC Accept.
+				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				    		 if(!user.getTcAcknowledge()){
+								 return "/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
+							 }else {
+					    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
+								return socialLoginRecognized;
+							 }
 						}
 			    		
 

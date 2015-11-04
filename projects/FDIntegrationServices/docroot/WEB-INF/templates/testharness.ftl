@@ -466,6 +466,11 @@ function loadStuff() {
   	var postdata = '{"source" : "IPW"}';
   	$("#payload").val(postdata);
   	
+  }else if (loaddata == "Acknowledge") {
+  	$("#url").val("/saptest12@freshdirect.com/acknowledge/");
+  	var postdata = '{ "ackType" : "TC","appSource":"FD", "acknowledge" : "true" }';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "ForgotPassword") {
   	$("#url").val("/saptest12@freshdirect.com/forgotpassword/");
   	$("#payload").val('{ "username" : "saptest12@freshdirect.com"}');
@@ -1060,6 +1065,7 @@ function doStuff() {
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
   <option value="TransactionSource">Transaction Source</option>
+   <option value="Acknowledge">Acknowledge</option>
   <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
   <option value="AddCode">CART - Apply Code</option>

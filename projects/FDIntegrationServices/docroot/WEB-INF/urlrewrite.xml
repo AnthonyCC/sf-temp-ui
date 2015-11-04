@@ -629,6 +629,12 @@
 
 	<!-- Refresh -->
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/acknowledge/</from>
+		<to last="true">/login.do?action=acknowledge&amp;ver=$1</to>
+	</rule>
+
+	<!-- Refresh -->
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/login/refresh/</from>
 		<to last="true">/login.do?action=ping&amp;ver=$1</to>
 	</rule>

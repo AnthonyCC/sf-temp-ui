@@ -679,4 +679,7 @@ public class SessionUser {
 	public void setAddress(AddressModel a) {
 		sessionUser.setAddress(a);
 	}
+	public boolean getTcAcknowledge(){
+		return sessionUser.getTcAcknowledge();
+	}
 }
