@@ -17,7 +17,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -812,25 +811,28 @@ public class ScoreProvider implements DataAccess {
 	
 	private Map<ContentKey,double[]> loadPersonalizedDBScores(String erpCustomerId) throws Exception {
 		
-		ScoreRangeProvider personalScores = ((PersonalizedScoreRangeProvider)personalizedScoreRangeProvider).replicate();
-		
-		List<String> products = personalScores.products(erpCustomerId);
-		
-		Map<ContentKey,double[]> result = new HashMap<ContentKey,double[]>(5*products.size()/3+1,0.75f);
-		
-		for(Iterator<String> i = products.iterator(); i.hasNext();) {
-			result.put(new ContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
-		}
-		
-		for (Iterator<Map.Entry<String, Integer>> i = personalizedIndexes.entrySet().iterator(); i.hasNext();) {
-			// Map.Entry<String,Number>
-			Map.Entry<String, Integer> entry = i.next();
-			FactorRangeConverter converter = rangeConverters.get(entry.getKey().toString());
-			double[] values = converter.map(erpCustomerId,personalScores);
+		if(personalizedScoreRangeProvider != null) {
+			ScoreRangeProvider personalScores = ((PersonalizedScoreRangeProvider)personalizedScoreRangeProvider).replicate();
 			
-			storeScores(products, result, entry, values);
+			List<String> products = personalScores.products(erpCustomerId);
+			
+			Map<ContentKey,double[]> result = new HashMap<ContentKey,double[]>(5*products.size()/3+1,0.75f);
+			
+			for(Iterator<String> i = products.iterator(); i.hasNext();) {
+				result.put(new ContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
+			}
+			
+			for (Iterator<Map.Entry<String, Integer>> i = personalizedIndexes.entrySet().iterator(); i.hasNext();) {
+				// Map.Entry<String,Number>
+				Map.Entry<String, Integer> entry = i.next();
+				FactorRangeConverter converter = rangeConverters.get(entry.getKey().toString());
+				double[] values = converter.map(erpCustomerId,personalScores);
+				
+				storeScores(products, result, entry, values);
+			}
+			return result;
 		}
-		return result;
+		return null;
 	}
 
     private void storeScores(List<String> products, Map<ContentKey,double[]> result, Map.Entry<String, Integer> entry, double[] values) {

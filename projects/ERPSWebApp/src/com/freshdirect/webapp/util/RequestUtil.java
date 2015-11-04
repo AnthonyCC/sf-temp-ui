@@ -105,8 +105,10 @@ public class RequestUtil {
 	 */
 	public static String getClientIp(HttpServletRequest request){
 		String ip = null;
-		String xffHeader = request.getHeader("X-Forwarded-For");
-		
+		String xffHeader = request.getHeader("True-Client-IP"); // Check if AKAMAI_IPHEADER is present
+		if(xffHeader == null || xffHeader.trim().length() == 0) {
+			xffHeader = request.getHeader("X-Forwarded-For"); //Check if Standard XForward Header is available
+		}
 		if (xffHeader != null){
 			ip = xffHeader.substring(xffHeader.lastIndexOf(",")+1).trim();
 			//LOGGER.debug("Resolved IP ("+ip+") from X-Forwarded-For header (" + xffHeader +")");
