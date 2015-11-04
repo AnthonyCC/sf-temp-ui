@@ -16,14 +16,14 @@ public class RecencyComparator extends OptionalObjectComparator<FilteringProduct
 		String key=getProductNewnessKey(prod);
 		Date addedDate =null;
 		Map<ProductModel, Map<String,Date>> newProducts=ContentFactory.getInstance().getNewProducts();
-		if(newProducts.containsKey(this)) {
-			addedDate= newProducts.get(this).get(key);
+		if(newProducts.containsKey(prod)) {
+			addedDate= newProducts.get(prod).get(key);
 		} 
 		
 		if (addedDate == null){
 			newProducts = ContentFactory.getInstance().getBackInStockProducts();
-			if(newProducts.containsKey(this)) {
-				addedDate= newProducts.get(this).get(key);
+			if(newProducts.containsKey(prod)) {
+				addedDate= newProducts.get(prod).get(key);
 			} 
 		}
 		
