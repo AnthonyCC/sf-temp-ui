@@ -1342,7 +1342,7 @@ public class FDEmailFactory {
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
 		} else {
 			email = new FDCustomerInfoEmail(customer,attributeMap);
-			email.setXslPath("h_user_edit_delv_address_fdx.xsl", "h_user_edit_delv_address_fdx.xsl");
+			email.setXslPath("h_user_edit_delv_address_V1.xsl", "x_user_edit_delv_address_V1.xsl");
 			//Added changes for Email Subject
 			email.setSubject("FreshDirect: Shipping Address changed to your account");
 			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));		
