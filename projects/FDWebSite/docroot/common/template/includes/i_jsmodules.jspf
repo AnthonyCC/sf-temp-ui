@@ -11,8 +11,8 @@
 	if (session.getAttribute("DELIVERYADDRESS_COMPLETE") != null) {%>	
 			
 	<script>
-
-	function setAndAppendExtoleObject() {}
+	//fuck
+	//function setAndAppendExtoleObject() {}
 	$jq(document).ready(function() {
 		if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 			FreshDirect.components.ifrPopup.open({ 
@@ -22,7 +22,7 @@
 		}
 	});
 	</script>
-	
+	<%@ include file="/common/template/includes/extol_tags.jspf" %>
 <% 
 	session.setAttribute("DELIVERYADDRESS_COMPLETE",null);
 	} 

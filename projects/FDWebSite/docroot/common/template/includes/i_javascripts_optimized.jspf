@@ -28,8 +28,8 @@
   <features:potato />
   <%-- TODO !!! --%>
   <script type="text/javascript">
-  
-	function setAndAppendExtoleObject() {}
+  	//test
+	//function setAndAppendExtoleObject() {}
   (function () {
     window.FreshDirect = window.FreshDirect || {};
     var fd = window.FreshDirect;

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd">
 	<display-name>FD development server</display-name>
-	<module>
+<module>
 		<ejb>../ERPServices/bin</ejb>
 	</module>
 	<module>
@@ -24,6 +24,7 @@
 			<context-root>/</context-root>
 		</web>
 	</module>
+	<!--  
 	<module>
 		<web>
 			<web-uri>../CRM/docroot</web-uri>
@@ -35,7 +36,7 @@
 			<web-uri>../cms-gwt/target/docroot</web-uri>
 			<context-root>cms-gwt</context-root>
 		</web>
-	</module>
+	</module> -->
 	<!-- 
 	<module>
 		<web>

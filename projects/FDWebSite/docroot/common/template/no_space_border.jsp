@@ -2,8 +2,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<% //expanded page dimensions
-final int W_NO_SPACE_BORDER_TOTAL = 970;
+<%!
+
+//expanded page dimensions
+public static final int W_NO_SPACE_BORDER_TOTAL = 970;
 %>
 
 <%

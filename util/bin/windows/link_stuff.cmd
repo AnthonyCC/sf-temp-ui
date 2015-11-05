@@ -7,7 +7,7 @@ rem
 rem for more on junctions,
 rem see http://www.microsoft.com/technet/sysinternals/FileAndDisk/Junction.mspx
 
-set JUNCTION=util\bin\windows\junction.exe
+set JUNCTION=junction.exe
 
 
 %JUNCTION% projects\DlvAdmin\docroot\WEB-INF\shared        projects\WebAppCommon\docroot\WEB-INF\shared
