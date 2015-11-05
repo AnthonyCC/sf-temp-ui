@@ -1,7 +1,8 @@
 #atpfailure .warningBox {
   margin: 20px auto;
   padding-left:10px;
-  width:auto;
+  width:960px;
+  box-sizing:border-box;
 }
 
 #atpfailure .warningBox:before{
