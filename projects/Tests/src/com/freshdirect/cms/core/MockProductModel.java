@@ -16,6 +16,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -2096,7 +2097,7 @@ public class MockProductModel extends MockContentNodeModel implements
 
 	@Override
 	public UserContext getUserContext() {
-		return UserContext.createDefault();
+		return UserContext.createDefault(EnumEStoreId.FD);
 	}
 	@Override
 	public String getPageTitle() {

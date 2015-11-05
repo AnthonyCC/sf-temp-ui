@@ -141,8 +141,6 @@ public class Warmup {
 					if (category.getRecommender() != null || category.getProductPromotionType() != null) {
 						LOGGER.info("category " + category.getContentName() + " is smart or promo, pre-loading child products for " + zones.size() + " zones");
 						for (String zone : zones) {
-							UserContext userContext = UserContext.createDefault();
-							userContext.setPricingContext(new PricingContext(new ZoneInfo(zone,"0001","01")));//::FDX::
 							category.getProducts();
 						}
 					}
