@@ -1099,7 +1099,8 @@ public class BrowseUtil {
 		    					.addKeyWords(p.getKeywords())
 		    					.generateAdditionTagsFromProduct(p)
 		    					//.setAvailability(p)
-		    					.skuInfo(getSkuInfo(p,plantId,pc ));		    					;
+		    					.skuInfo(getSkuInfo(p,plantId,pc ))
+		    					.productLayout(p.getProductLayout().getId());		    				
 		    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 		    				productSet.add(p.getContentName());
 	    					returnableProductList.add(product);
