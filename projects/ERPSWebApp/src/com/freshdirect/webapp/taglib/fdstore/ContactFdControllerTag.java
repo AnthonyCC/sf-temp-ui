@@ -20,6 +20,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -186,6 +187,17 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_PROMOTION, "Promotion"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Web Site/Technical")
 		};
+	
+	
+	public final static Selection[] selectionsFdx =
+		{
+			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
+			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
+			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "Help with my Account"),
+			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
+			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
+			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
+		};
 
 	private static class ContactForm implements WebFormI {
 
@@ -217,8 +229,21 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			}
 
 			LOGGER.debug(">>> subject index " + subjectIndex);
+			
+			String storeKey = ContentFactory.getInstance().getCurrentUserContext() != null 
+					&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null
+						&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId() != null
+							&& !EnumEStoreId.FD.equals(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()) 
+									? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
+	        
+	        if(storeKey!=null) {
+			subject = subjectIndex > -1 ? selectionsFdx[subjectIndex].getDescription() : null;
+			summary = subject != null ? "Web Form Inquiry: " + selectionsFdx[subjectIndex].getDescription() : "";
 
-			subject = subjectIndex > -1 ? selections[subjectIndex].getDescription() : null;
+	        } else {
+				subject = subjectIndex > -1 ? selections[subjectIndex].getDescription() : null;
+				summary = subject != null ? "Web Form Inquiry: " + selections[subjectIndex].getDescription() : "";
+	        }
 
 			LOGGER.debug(">>> subject " + subject);
 			//actionType = this.getActionTypeByName(request.getParameter("actionTypeName"));
@@ -232,7 +257,6 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			salePK = "".equals(saleId) ? null : new PrimaryKey(saleId);
 			LOGGER.debug(">>> order " + salePK);
 
-			summary = subject != null ? "Web Form Inquiry: " + selections[subjectIndex].getDescription() : "";
 
 			//set desired confirm msg
 			if (subjectIndex == 0) {

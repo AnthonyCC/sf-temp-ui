@@ -10,10 +10,13 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.request.ContactUsData;
 import com.freshdirect.mobileapi.model.tagwrapper.ContactFdControllerWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
 import com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection;
@@ -33,9 +36,19 @@ public class ContactUs {
      */
     public Map<String, String> getContactUsSubjects() {
         ContactFdControllerWrapper tagWrapper = new ContactFdControllerWrapper(this.sessionUser);
-
+        Selection[] selections;
         Map<String, String> values = new LinkedHashMap<String, String>();
-        Selection[] selections = tagWrapper.getSubjects();
+        
+        String storeKey = ContentFactory.getInstance().getCurrentUserContext() != null 
+				&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null
+					&& ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId() != null
+						&& !EnumEStoreId.FD.equals(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()) 
+								? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
+        
+        if(storeKey!=null)
+        selections = tagWrapper.getSubjectsFdx();
+        else
+        selections = tagWrapper.getSubjects();
         int index = 0;
         for (Selection selection : selections) {
             values.put(Integer.toString(index), selection.getDescription());
@@ -80,9 +93,9 @@ public class ContactUs {
         return values;
     }
 
-    public ResultBundle submitContactUs(String subject, String orderId, String message) throws FDException {
+    public ResultBundle submitContactUs(String subject, String orderId, String message, ContactUsData contactUsData) throws FDException {
         ContactFdControllerWrapper tagWrapper = new ContactFdControllerWrapper(this.sessionUser);
-        ResultBundle bundle = tagWrapper.submitRequest(subject, orderId, message);
+        ResultBundle bundle = tagWrapper.submitRequest(subject, orderId, message, contactUsData);
         if (bundle.getActionResult() == null) {
             bundle.setActionResult(new ActionResult());
         }

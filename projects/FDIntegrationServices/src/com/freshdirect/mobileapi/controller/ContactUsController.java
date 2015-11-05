@@ -88,7 +88,7 @@ public class ContactUsController extends BaseController {
         ContactUs contactUs = new ContactUs(user);
 
         ResultBundle resultBundle = contactUs.submitContactUs(contactUsData.getSubject(), contactUsData.getOrderId(), contactUsData
-                .getMessage());
+                .getMessage(), contactUsData);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
 
