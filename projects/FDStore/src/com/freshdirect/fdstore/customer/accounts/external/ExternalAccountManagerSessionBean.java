@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.customer.accounts.external;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,11 +19,21 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	public String getUserIdForUserToken(String userToken) 
 	{
 		String userId= null;
+		Connection conn = null;
 		try {
-			userId = ExternalAccountDAO.getUserIdForUserToken(this.getConnection(), userToken);
+			conn = this.getConnection();
+			userId = ExternalAccountDAO.getUserIdForUserToken(conn, userToken);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		
 		return userId;
@@ -30,11 +41,21 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	
 	public boolean isUserEmailAlreadyExist(String email)
 	{
+		Connection conn = null;
 		try {
-			return ExternalAccountDAO.isUserEmailAlreadyExist(this.getConnection(), email);
+			conn = this.getConnection();
+			return ExternalAccountDAO.isUserEmailAlreadyExist(conn, email);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		return false;
 	
@@ -42,11 +63,21 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	
 	public int isUserEmailAlreadyExist(String email, String provider)
 	{
+		Connection conn = null;
 		try {
-			return ExternalAccountDAO.isUserEmailAlreadyExist(this.getConnection(), email, provider);
+			conn = this.getConnection();
+			return ExternalAccountDAO.isUserEmailAlreadyExist(conn, email, provider);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		return -1;
 	
@@ -54,44 +85,83 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	
 	public void linkUserTokenToUserId(String customerId,String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified)
 	{
+		Connection conn = null;
 		try {
-			
-			ExternalAccountDAO.linkUserTokenToUserId(this.getConnection(), customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
+			conn = this.getConnection();
+			ExternalAccountDAO.linkUserTokenToUserId(conn, customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 	}
 	
 	public List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source)
 	{
+		Connection conn = null;
 		try {
-			return ExternalAccountDAO.getConnectedProvidersByUserId(userId, source, this.getConnection());
+			conn = this.getConnection();
+			return ExternalAccountDAO.getConnectedProvidersByUserId(userId, source, conn);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		return null;
 	}
 	
 	public List<String> getConnectedProvidersByUserId(String userId)
 	{
+		Connection conn = null;
 		try {
-			return ExternalAccountDAO.getConnectedProvidersByUserId(userId, this.getConnection());
+			conn = this.getConnection();
+			return ExternalAccountDAO.getConnectedProvidersByUserId(userId, conn);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		return null;
 	}
 	
 	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) 
 	{
+		Connection conn = null;
 		try {
-			return ExternalAccountDAO.isExternalLoginOnlyUser(userId, source, this.getConnection());
+			conn = this.getConnection();
+			return ExternalAccountDAO.isExternalLoginOnlyUser(userId, source, conn);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 		return false;
 	}
@@ -100,23 +170,41 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 	
 	public void unlinkExternalAccountWithUser(String userId, String userToken, String provider)
 	{
+		Connection conn = null;
 		try {
-			
-			ExternalAccountDAO.unlinkExternalAccountWithUser(this.getConnection(), userId, userToken, provider);
+			conn = this.getConnection();
+			ExternalAccountDAO.unlinkExternalAccountWithUser(conn, userId, userToken, provider);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 	}
 	
 	public void unlinkExternalAccountWithUser(String userId, String provider)
 	{
+		Connection conn = null;
 		try {
-			
-			ExternalAccountDAO.unlinkExternalAccountWithUser(this.getConnection(), userId, provider);
+			conn = this.getConnection();
+			ExternalAccountDAO.unlinkExternalAccountWithUser(conn, userId, provider);
 			
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
 		}
 	}
 	
