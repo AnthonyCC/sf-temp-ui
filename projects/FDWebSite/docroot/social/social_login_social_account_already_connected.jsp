@@ -28,7 +28,7 @@
 				</br><bold><%= alreadyConnectedSocialAccount %></bold>						
 			</div>
 			<button class="social-login-green-button" onclick="window.close();">
-				Sign In
+				Continue
 			</button>
 		</div>
 	</center>
