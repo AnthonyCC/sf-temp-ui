@@ -51,6 +51,7 @@ public interface FDUserI extends java.io.Serializable {
 
     /** order minimum (before taxes and promotions are applied) */
     public final static double MINIMUM_ORDER_AMOUNT = 30.00;
+    public final static double FDX_MINIMUM_ORDER_AMOUNT = 20.00;
     public final static double MIN_CORP_ORDER_AMOUNT = 50.00;
     public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
     public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text

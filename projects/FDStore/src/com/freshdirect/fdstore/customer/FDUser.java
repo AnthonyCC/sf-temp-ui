@@ -859,7 +859,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 				throw new FDRuntimeException(e);
 			}
 		}
-		return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? MIN_CORP_ORDER_AMOUNT : MINIMUM_ORDER_AMOUNT;
+		return EnumServiceType.CORPORATE.equals(this.getSelectedServiceType()) ? MIN_CORP_ORDER_AMOUNT 
+							: ((EnumEStoreId.FDX.equals(this.getUserContext().getStoreContext().getEStoreId())) ? FDX_MINIMUM_ORDER_AMOUNT : MINIMUM_ORDER_AMOUNT);
 	}
     
 	public float getQuantityMaximum(ProductModel product) {
