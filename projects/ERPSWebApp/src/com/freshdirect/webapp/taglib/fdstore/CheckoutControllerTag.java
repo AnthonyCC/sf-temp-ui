@@ -406,9 +406,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					LOGGER.debug("setOrderMobileNumber[RedirectToPage] :"+ e);
 					this.redirectTo(e.getPage());
 				}
-				if ( result.isSuccess() ) {
+				/*if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
-				}
+				}*/
 				
 				LOGGER.debug("setOrderMobileNumber[END] :");
 			} 
