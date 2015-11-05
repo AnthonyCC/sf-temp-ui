@@ -1,0 +1,295 @@
+		<a name="slideshow" id="slideshow"></a>
+		<section id="section_slideshow" class="main_section">
+			<div id="carousel_1">
+				<figure>
+					<figcaption>
+						<h1>Great food for the good life, delivered fresh to your door today.</h1>
+					</figcaption>
+					<img src="<%=IMAGES_DIR %>/carousel_1/slide_001.jpg" />
+				</figure>
+				
+				<figure>
+					<figcaption>
+						<h1>Great food for the good life, delivered fresh to your door today.</h1>
+					</figcaption>
+					<img src="<%=IMAGES_DIR %>/carousel_1/slide_002.jpg" />
+				</figure>
+				
+				<figure>
+					<figcaption>
+						<h1>Great food for the good life, delivered fresh to your door today.</h1>
+					</figcaption>
+					<img src="<%=IMAGES_DIR %>/carousel_1/slide_003.jpg" />
+				</figure>
+				
+				<figure>
+					<figcaption>
+						<h1>Great food for the good life, delivered fresh to your door today.</h1>
+					</figcaption>
+					<img src="<%=IMAGES_DIR %>/carousel_1/slide_004.jpg" />
+				</figure>
+			</div>
+			
+			<button class="download_button purple">Download the APP</button>
+			<button class="appstore_button">
+				<%--svg_obj("appstore.svg") --%>
+				
+				<img src="<%=svg_src("appstore.svg") %>" />
+			</button>
+		</section> <!-- end of section 'section_1'  -->
+		
+		<a name="Get_Foodkick" id="Get_Foodkick"></a>
+		<section id="section_Get_Foodkick" class="main_section">
+			<article>
+				<h1>Hey Brooklyn <span class="plus_span">+</span> LIC</h1>
+				<h2>the party starts now!</h2>
+				<hr/>
+				<p>We're expanding fast. Check your ZIP to see if we're in your hood.</p>
+			</article>
+			
+			<img src="<%=SVG_SRC %>section_3/arrow.svg" class="svg_arrow" />
+			<article>
+				<form action="/api/locationhandler.jsp" method="post" id="ziphandler">
+					<p class="ucwords">CHECK AND SEE IF WE DELIVER TO YOUR AREA.</p>
+				
+					<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
+					
+					<button type="submit">Check</button>
+				</form>
+				<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
+					<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
+				
+					<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
+					<input type="email" name="email_lh" id="email_lh" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required />
+					
+					<button type="submit">Submit</button>
+				</form>
+				
+				<div id="we_deliver_to_you" style="display:none">
+					<p class="ucwords">We deliver in your area!</p>
+					<button class="download_button purple">Download the APP</button>
+				</div>
+				
+				<div id="form_congratulations" style="display:none">
+					<p class="ucwords">Thank you for your submission!</p>
+					We will contact you when Foodkick DOES deliver to your area!
+				</div>
+			</article>
+			<%=svg_obj("section_3/form_bg_full.svg") %>
+		</section>
+		
+		<a name="How_it_works" id="How_it_works"></a>
+		<section id="section_How_it_works" class="main_section">
+			<h1>This is the part where we tell you how fast and easy it is.</h1>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/clock.svg") --%> <img src="<%=SVG_SRC %>section_2/clock.svg" /></div>
+					<figcaption>
+						<h4>OPEN THE APP FOR DELIVERY TIME</h4>
+						that works for you
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/bowl_bottle_fruit.svg") --%> <img src="<%=SVG_SRC %>section_2/bowl_bottle_fruit.svg" /> </div>
+					<figcaption>
+						<h4>GET WHAT YOU NEED FOR TODAY AND TOMORROW</h4>
+						like meals, fresh ingredients, beer and wine, and even household supplies
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/check.svg") --%> <img src="<%=SVG_SRC %>section_2/check.svg" /></div>
+					<figcaption>
+						<h4>GET BACK TO WHAT YOU WERE DOING</h4>
+						Place your order and we'll do the rest while you post on Instagram, text about dinner later or check your email
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article class="last">
+				<figure>
+					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" /></div>
+					<figcaption>
+						<h4>HAVE AN AMAZING FOOD EXPERIENCE</h4>
+						An amazing meal will be waiting for you to dig into and enjoy!
+					</figcaption>
+				</figure>
+			</article>
+			
+			<button class="download_button purple">Download the APP</button>
+		</section>
+		
+		<a name="Whats_Good" id="Whats_Good"></a>
+		<section id="section_Whats_Good" class="main_section">
+			<div class="container">
+				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good">
+					<figure>
+						<figcaption>
+							<h1>Bagel Fridays with Blackseed Bagels</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/foodkick/black_seed_bagels.jpg" />
+					</figure>
+					<figure>
+						<h4>Limited Time Offer</h4>
+						<figcaption>
+							<h1>Farm to Fork: Grass-Fed Beef</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/foodkick/FoodKick_080515_annotations-Image-121.jpg" />
+					</figure>
+					<figure>
+						<h4>Featured Recipie</h4>
+						<figcaption>
+							<img id="action_branson" src="<%=IMAGES_DIR %>/section_4/foodkick/FoodKick_080515_annotations-Image-122.jpg" />
+							<h1>Action Bronson's Insane Beet Burger</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/foodkick/FoodKick_080515_annotations-Image-128.jpg" />
+					</figure>
+					<figure>
+						<h4>New Product</h4>
+						<figcaption>
+							<h1>All Malt Amber Lager Worcestershire Sauce</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/foodkick/FoodKick_080515_annotations-Image-126.jpg" />
+					</figure>
+				</div>
+			</div>
+			
+			<div class="container">
+				<div id="carousel_Whats_Good_scenes" class="carousel_Whats_Good">
+					<figure>
+						<figcaption>
+							<h1>Meet Sarah and Anne, FoodKick Master Chefs</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/behind_the_scenes/FoodKick_080515_annotations-Image-014.jpg" />
+					</figure>
+					
+					<figure>
+						<figcaption>
+							<h1>Solving the Lunch Problem by the Mile</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/behind_the_scenes/FoodKick_080515_annotations-Image-131.jpg" />
+					</figure>
+					
+					<figure>
+						<figcaption>
+							<h1>Hot Bread Kitchen Turns Up the Heat</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/behind_the_scenes/FoodKick_080515_annotations-Image-134.jpg" />
+					</figure>
+					
+					<figure>
+						<figcaption>
+							<h1>We're Powered by FreshDirect</h1>
+							<p>
+								Lorem ipsum dolor sit amet, consectetur
+								adipiscing elit. Sed non interdum massa.
+								Etiam ultrices sapien eget arcu venenatis
+								vestibulum.
+							</p>
+						</figcaption>
+						<img src="<%=IMAGES_DIR %>/section_4/behind_the_scenes/FoodKick_080515_annotations-Image-133.jpg" />
+					</figure>
+				</div>
+			</div>
+		</section>
+		
+		<a name="FOODKICK" id="FOODKICK"></a>
+		<section id="section_FOODKICK" class="main_section">
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/1.jpg" /> <span class="author_name">@THEBAKER</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/1.jpg" />
+				<figcaption>
+					<p class="likes">31 likes</p>
+					<span class="caption_text">Loving this view</span>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#clintonhill</span>
+					<span class="hash">#gingersnapseason</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/2.jpg" /> <span class="author_name">@MOSTESSHOSTESS</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/2.jpg" />
+				<figcaption>
+					<p class="likes">2 likes</p>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#dinnerparty</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/3.jpg" /> <span class="author_name">@JHOLT</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/3.jpg" />
+				<figcaption>
+					<p class="likes">45 likes</p>
+					<span class="caption_text">@rjacoby Look what you're missing!!</span>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#betterlucknexttime</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/4.jpg" /> <span class="author_name">@BKFOODIE</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/4.jpg" />
+				<figcaption>
+					<p class="likes">18 likes</p>
+					<span class="caption_text">Nothing better than a homecooked meal with friends</span>
+					<span class="hash">#myfoodkick</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/5.jpg" /> <span class="author_name">@GYROSUPERHERO</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/5.jpg" />
+				<figcaption>
+					<p class="likes">6 likes</p>
+					<span class="hash">#wheresthechampagne</span>
+					<span class="hash">#ojmakesitbreakfast</span>
+					<span class="hash">#myfoodkick</span>
+				</figcaption>
+			</figure>
+		</section>

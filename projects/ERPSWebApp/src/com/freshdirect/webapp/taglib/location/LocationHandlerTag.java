@@ -30,6 +30,8 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.controller.data.PickupLocationData;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -41,7 +43,6 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-
 
 public class LocationHandlerTag extends SimpleTagSupport {
 	
@@ -56,8 +57,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	public static String ZIP_CODE_PARAMETER = "zipCode";
 	
 	public static String ZIP_CODE_PATTERN = "\\d{5}";
-	
-	public static boolean isDeliveryZone = false;
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(LocationHandlerTag.class);
 	
@@ -78,6 +77,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 				ctx.setAttribute(SERVER_ERROR_ATTR, "Server error occured. Sorry for your inconvinience, please refresh this page.");
 			
 			} else {
+				LOGGER.debug("action: " + action);
 
 				if ("selectAddress".equalsIgnoreCase(action)){
 					doSelectAddressAction();
@@ -87,13 +87,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
 					doSetMoreInfoAction();
 				} else if ("futureZoneNotification".equalsIgnoreCase(action)){
 					doFutureZoneNotificationAction();
-				} else if ("ifDeliveryZone".equalsIgnoreCase(action)){
-					
-					//find out if Fresh Direct delivers to this zip code
-					isDeliveryZone = hasFdxService();
-					
-				} else if ("futureZoneNotificationFdx".equalsIgnoreCase(action)){
-					doFutureZoneNotificationActionFdx();
 				} else { //no action parameter
 					doSetServiceTypeAction();
 				}
@@ -144,8 +137,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			handleNewAddressSet();
 			user.updateUserState(); //based on DeliveryAddressManipulator.performSetDeliveryAddress()
 			FDCustomerManager.storeUser(user.getUser());
-			
-			System.out.println("You entered the java zone");
 		}
 	}
 
@@ -235,42 +226,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			result.addError(true, FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER, SystemMessageList.MSG_EMAIL_FORMAT);
 		}
 	}
-
-	/** based on SiteAccessControllerTag.saveEmail() */
-	private void doFutureZoneNotificationActionFdx() throws FDResourceException{
-		
-		//String email = request.getParameter(FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER);
-		String email = request.getParameter("email");
-		String zipCode = processZipCodeField();
-		
-		FDDeliveryServiceSelectionResult willThisWorkCode = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
-
-		if(EmailUtil.isValidEmailAddress(email) ){
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zipCode, user.getSelectedServiceType());
-			
-			user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
-		} else {
-			result.addError(true, FUTURE_ZONE_NOTIFICATION_EMAIL_PARAMETER, SystemMessageList.MSG_EMAIL_FORMAT);
-		}
-	}
-	
-	private boolean hasFdxService() {
-		String zipCode = processZipCodeField();
-		
-		try {
-			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FDX);
-			Set<EnumServiceType> availServices = result.getAvailableServices();
-			if (!availServices.isEmpty()) {				
-				return true;
-			}
-		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
-
 	
 	private void doSetServiceTypeAction() throws FDResourceException{
 		if (isServiceTypeModificationEnabled()) {

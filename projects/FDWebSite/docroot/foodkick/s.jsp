@@ -1,0 +1,1 @@
+<%@ page language="java" contentType="image/svg+xml; charset=UTF-8" pageEncoding="UTF-8"%><% String f = request.getParameter("f"); %><jsp:include page="<%= f %>" flush="true" />
