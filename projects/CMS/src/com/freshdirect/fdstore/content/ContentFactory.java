@@ -27,6 +27,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -182,7 +183,7 @@ public class ContentFactory {
 			@Override
 			protected UserContext initialValue() {
 				LOGGER.debug("initializing current user context with default value");
-				return UserContext.createDefault();
+				return UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
 			}
 		};
 		

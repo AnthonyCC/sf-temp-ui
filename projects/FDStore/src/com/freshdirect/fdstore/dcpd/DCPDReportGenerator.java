@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDResourceException;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -122,7 +124,7 @@ public class DCPDReportGenerator {
 	        } else if (rootNode instanceof CategoryModel) {
 	        	renderCategoryNode( (CategoryModel) rootNode, 1);
 	        } else if (rootNode instanceof Recipe) {
-	            renderRecipeNode(UserContext.createDefault(), (Recipe) rootNode, 1);
+	            renderRecipeNode(UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))), (Recipe) rootNode, 1);
 	        } else {
 	            System.out.println("Nothing to do with " + rootNode.getClass() + "/" + rootNode);
 	        }
@@ -228,7 +230,7 @@ public class DCPDReportGenerator {
 		Iterator pit = catNode.getPrivateProducts().iterator();
 		while(pit.hasNext()) {
 			ProductModel prodNode = (ProductModel) pit.next();
-			renderSKUs( UserContext.createDefault(),prodNode.getSkus(), prodNode.getContentName(), level, null);
+			renderSKUs( UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))),prodNode.getSkus(), prodNode.getContentName(), level, null);
 		}
 		
 

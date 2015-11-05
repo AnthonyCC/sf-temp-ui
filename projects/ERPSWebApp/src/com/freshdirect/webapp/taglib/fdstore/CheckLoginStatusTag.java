@@ -26,6 +26,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -313,7 +314,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
         } else {
             LOGGER.warn("cannot set pricing context");
-            ContentFactory.getInstance().setCurrentUserContext(UserContext.createDefault());
+            ContentFactory.getInstance().setCurrentUserContext(UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))));
             WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled());
         }

@@ -3,6 +3,7 @@ package com.freshdirect.common.context;
 import java.io.Serializable;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.customer.FDIdentity;
 
 public class UserContext implements Serializable {
@@ -14,10 +15,10 @@ public class UserContext implements Serializable {
 	private StoreContext storeContext;
 	private FulfillmentContext fulfillmentContext;
 
-	public static UserContext createDefault(){
+	public static UserContext createDefault(EnumEStoreId eStore){
 		UserContext userContext = new UserContext();
 		userContext.setPricingContext(PricingContext.DEFAULT);
-		userContext.setStoreContext(StoreContext.createDefault());
+		userContext.setStoreContext(StoreContext.createStoreContext(eStore));
 		userContext.setFulfillmentContext(FulfillmentContext.createDefault());
 		//default FDIdentity is null
 		return userContext;

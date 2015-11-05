@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
 
@@ -27,11 +26,10 @@ import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.customer.ErpClientCode;
-import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.event.EventLogger;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDMaterial;
@@ -44,9 +42,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -60,7 +55,6 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.framework.event.FDEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -287,7 +281,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 				new FDCartLineModel(
 					new FDSku(product),
 					prodNode,
-					new FDConfiguration(quantity, salesUnit.getName(), varMap), null, UserContext.createDefault());
+					new FDConfiguration(quantity, salesUnit.getName(), varMap), null, UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))));
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -300,7 +294,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 					new FDSku(product),
 					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false, null, UserContext.createDefault(), clientCodes);
+					origCartLineId, null, false, null, UserContext.createDefault(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()))), clientCodes);
 		}
 
 		try {

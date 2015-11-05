@@ -1080,36 +1080,36 @@ public class BrowseUtil {
 	    		catProducts.addAll(subCatProducts);
 	    	}
 	    	
-	    	List<ProductModel> pm=category.getProducts();
-	    	
-	    	for(ProductModel p:pm) {
-	    		
-	    		//SkuModel sku=p.getDefaultSku();
-	    		if(p.isFullyAvailable()) {
-					//display(p);
-					if(!productSet.contains(p.getContentName())) {
-	    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
-	    				prodBuilder.brandTags(p.getBrands())
-				            .minQty(p.getQuantityMinimum())
-				            .maxQty(p.getQuantityMaximum())
-				            .incrementQty(p.getQuantityIncrement())
-				            .quantityText(p.getQuantityText())
-				            .images(getImages(p))
-				            .tags(p.getTags())
-				            .generateWineAttributes(p)
-	    					.addKeyWords(p.getKeywords())
-	    					.generateAdditionTagsFromProduct(p)
-	    					.skuInfo(getSkuInfo(p,plantId,pc ));
-	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
-	    				productSet.add(p.getContentName());
-    					returnableProductList.add(product);
-					}
-					catProducts.add(p);
-//					productList.add(p);
+		    	List<ProductModel> pm=category.getProducts();
+		    	
+		    	for(ProductModel p:pm) {
+		    		
+		    		if(p.isTemporaryUnavailableOrAvailable() ) {
+						//display(p);
+						if(!productSet.contains(p.getContentName())) {
+		    				com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder prodBuilder=new com.freshdirect.mobileapi.catalog.model.Product.ProductBuilder(p.getContentName(),p.getFullName());
+		    				prodBuilder.brandTags(p.getBrands())
+					            .minQty(p.getQuantityMinimum())
+					            .maxQty(p.getQuantityMaximum())
+					            .incrementQty(p.getQuantityIncrement())
+					            .quantityText(p.getQuantityText())
+					            .images(getImages(p))
+					            .tags(p.getTags())
+					            .generateWineAttributes(p)
+		    					.addKeyWords(p.getKeywords())
+		    					.generateAdditionTagsFromProduct(p)
+		    					//.setAvailability(p)
+		    					.skuInfo(getSkuInfo(p,plantId,pc ));		    					;
+		    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
+		    				productSet.add(p.getContentName());
+	    					returnableProductList.add(product);
+						}
+						catProducts.add(p);
+	
+						
+		    		}
 					
-	    		}
-				
-			}
+				}
 	    	
 	    	if(catProducts.size() > 0){
 	    		sortProductByPopularity(catProducts, user);
@@ -1225,7 +1225,7 @@ public class BrowseUtil {
 		    		
 		    	}
 	    	} else {
-	    	
+	    		ContentFactory.getInstance().setCurrentUserContext(user.getFDSessionUser().getUserContext());
 		    	for(DepartmentModel d:depts) {
 		    		
 		    		List<CategoryModel> cm=d.getCategories();
