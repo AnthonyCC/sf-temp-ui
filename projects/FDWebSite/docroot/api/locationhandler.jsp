@@ -28,7 +28,6 @@ if (request.getHeader("X-Requested-With") != null) {
 				}		
 				%></div><%
 			} else if("ifDeliveryZone".equals(action)){
-				out.println(LocationHandlerTag.isDeliveryZone);
 			} else if(!"setZipCode".equals(action) && !"selectAddress".equals(action) ) { // because reload happens
 				AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
 				%><span class="invisible addresstext"><%= LocationHandlerTag.formatAddressShortText(selectedAddress) %></span>
