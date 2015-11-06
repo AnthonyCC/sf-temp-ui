@@ -379,7 +379,9 @@
 		_oneall.push([ 'social_login', 'do_render_ui','social_login_demo' ]);
 		
 		$jq( document ).ready(function() {
-			FreshDirect.components.ifrPopup.reposition();
+			setTimeout(function(){ 
+				FreshDirect.components.ifrPopup.reposition();
+			}, 100);
 		});
 	</script>
 </div> <!-- social login ends here -->
