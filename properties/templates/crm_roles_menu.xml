@@ -6,13 +6,13 @@
 			address_restrictions.jsp,addrRestrictionForm.jsp,alcohol_restrictions.jsp,manage_alcohol_restrictions.jsp,mass_cancellation.jsp,mass_returns.jsp,platter_restrictions.jsp,platterForm.jsp,platterRestrictionForm.jsp,restrictionForm.jsp,restrictionForm_save.jsp,resubmit_orders.jsp,reverseauth_orders.jsp,top_faqs.jsp,voidcapture_orders.jsp
 		</links>
 		<links name="cases">
-			case.jsp,case_summary.jsp,connect.html,connect.jsp,new_case.jsp,summary_case_actions.jsp,unlock.jsp
+			case.jsp,case_summary.jsp,connect.html,new_case.jsp,summary_case_actions.jsp,unlock.jsp
 		</links>
 		<links name="customer">
 			account_details.jsp,activity_log.jsp,case_history.jsp,company_search_results.jsp,coupon_history.jsp,credit_history.jsp,customer_profile_summary.jsp,customer_search_results.jsp,delivery_pass.jsp,depot_info.jsp,order_cases.jsp,order_history.jsp,order_search_results.jsp,profile_list.jsp,promotion_history.jsp,promotion_popup.jsp,referral_history.jsp,smartstore_info.jsp,summary.jsp,summary_report.jsp,vip_info.jsp
 		</links>
 		<links name="customeraccount">
-			add_delivery_address.jsp,customer_alert_list.jsp,deactivate_account.jsp,edit_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,edit_ebt_card.jsp,extend_reservation.jsp,name_contact_info.jsp,new_checking_account.jsp,new_credit_card.jsp,new_ebt_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,set_profile_attr.jsp,username_password_option.jsp
+			add_delivery_address.jsp,customer_alert_list.jsp,deactivate_account.jsp,edit_checking_account.jsp,edit_credit_card.jsp,edit_delivery_address.jsp,edit_ebt_card.jsp,extend_reservation.jsp,name_contact_info.jsp,new_checking_account.jsp,new_credit_card.jsp,new_ebt_card.jsp,place_alert.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp
 		</links>
 		<links name="giftcards">
 			add_bulk_giftcard.jsp,add_giftcard.jsp,bt_giftcard.jsp,giftcard_addused.jsp,giftcard_summary.jsp,purchase_history.jsp
