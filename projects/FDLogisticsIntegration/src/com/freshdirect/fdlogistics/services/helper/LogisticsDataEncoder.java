@@ -285,7 +285,7 @@ public class LogisticsDataEncoder {
 		subscription.setOrderExceptionNotification(orderExceptions);
 		subscription.setOrderNotification(orderNotices);
 		subscription.setPartnerMessageNotification(partnerMessages);
-		subscription.setSmsOffersAlert(textOffers);
+		subscription.setSmsOffersAlert(offers);
 		subscription.setSmsOptinDate(receivedDate);
 		subscription.setCompanyCode(companyCode);
 		
