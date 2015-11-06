@@ -524,8 +524,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			customerSmsPreferenceModel.setFdxPartnerMessages((EnumSMSAlertStatus.NONE).value());
 			customerSmsPreferenceModel.setSmsOptinDate(new java.util.Date());
 			customerSmsPreferenceModel.setCrmStore(EnumEStoreId.FDX.getContentId());
-			if(customerSmsPreferenceModel.getFdxMobileNumber()!=null){
-			FDDeliveryManager.getInstance().addSubscriptions(customer.getId(),customerSmsPreferenceModel.getFdxMobileNumber().getPhone(), null, null, customerSmsPreferenceModel.getFdxOrderNotices(),
+			if(customerSmsPreferenceModel.getFdxMobileNumber()!=null ){
+			FDDeliveryManager.getInstance().addSubscriptions(customer.getId(), PhoneNumber.normalize(customerSmsPreferenceModel.getFdxMobileNumber().getPhone()), null, null, customerSmsPreferenceModel.getFdxOrderNotices(),
 					customerSmsPreferenceModel.getFdxOrderExceptions(), customerSmsPreferenceModel.getFdxOffers(), "N",	new Date(), EnumEStoreId.FDX.toString());
 			}
 			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
