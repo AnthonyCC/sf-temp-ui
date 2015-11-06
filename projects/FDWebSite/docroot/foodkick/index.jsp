@@ -1,3 +1,4 @@
+<%@ page trimDirectiveWhitespaces="true" %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -10,14 +11,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
+<%@ include file="includes/fk_core_settings.jspf"%>
 <%!
-public final String FKAPP_DIR = "/foodkick";
-public final String ASSETS_DIR = "assets";
-public final String CSS_DIR = ASSETS_DIR + "/css";
-public final String JS_DIR = ASSETS_DIR + "/javascript";
-public final String IMAGES_DIR = ASSETS_DIR + "/svg_and_images";
-public final String SVG_SRC = IMAGES_DIR + "/s.jsp?f=";
-
 public String result = "";
 public String errorMsg = "";
 
