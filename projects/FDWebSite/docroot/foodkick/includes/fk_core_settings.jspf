@@ -1,0 +1,10 @@
+<%!
+public final String FKAPP_DIR = "/foodkick";
+//public final String ASSETS_DIR = "assets";
+public final String ASSETS_DIR = "/assets";
+public final String CSS_DIR = ASSETS_DIR + "/css/foodkick";
+public final String JS_DIR = ASSETS_DIR + "/javascript/foodkick";
+//public final String IMAGES_DIR = ASSETS_DIR + "/svg_and_images";
+public final String IMAGES_DIR = "/media_stat/foodkick";
+public final String SVG_SRC = "s.jsp?f=";
+%>
