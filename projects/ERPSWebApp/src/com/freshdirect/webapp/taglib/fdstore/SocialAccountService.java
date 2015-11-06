@@ -152,7 +152,7 @@ public class SocialAccountService implements AccountService {
 							//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								 // http://localhost:7001/social/social_login_success.jsp?successPage=index.jsp  
 								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 String newURL = request.getRequestURL().substring(0, request.getRequestURL().indexOf("/social/"));
+								 String newURL = request.getScheme() + "://" + request.getServerName();
 								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
 							
 							 }
@@ -279,7 +279,7 @@ public class SocialAccountService implements AccountService {
 							if((Action.SUCCESS).equals(res)) {
 								//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								
-								String newURL = request.getRequestURL().substring(0, request.getRequestURL().indexOf("/social/"));
+								String newURL = request.getScheme() + "://" + request.getServerName();
 								return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
 								
 								//return "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
