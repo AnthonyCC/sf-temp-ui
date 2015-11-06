@@ -540,7 +540,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 					null, notice.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : notice,
 					exceptions.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value(): exceptions, 
 					null, pMessage.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : pMessage,
-							receivedDate, eStoreId.getContentId());
+							receivedDate, EnumEStoreId.FD.toString());
 			
 			 if(eStoreId.getContentId().equalsIgnoreCase(EnumEStoreId.FD.getContentId()))
 					smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE, eStoreId.getContentId());
@@ -588,16 +588,10 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			ps1.setString(6, eStoreId.getContentId());
 			ps1.executeUpdate();
 			
-			FDDeliveryManager.getInstance().addSubscriptions(customerId,
-					null, EnumSMSAlertStatus.NONE.value(), 
-					null, EnumSMSAlertStatus.NONE.value(),
-					EnumSMSAlertStatus.NONE.value(), 
-					customerInfo.getSmsOffers(), EnumSMSAlertStatus.NONE.value(),
-					receivedDate,eStoreId.getContentId());
-			 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTOUT_SUCCESS_MESSAG, eStoreId.getContentId());	
+			 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTOUT_SUCCESS_MESSAG, EnumEStoreId.FDX.toString());	
 			 
 			 FDDeliveryManager.getInstance().addSubscriptions(customerId, mobileNumber, EnumSMSAlertStatus.NONE.value(), null, EnumSMSAlertStatus.NONE.value(),
-					 EnumSMSAlertStatus.NONE.value(), customerInfo.getSmsOffers(), EnumSMSAlertStatus.NONE.value(),	receivedDate,eStoreId.getContentId());
+					 EnumSMSAlertStatus.NONE.value(), customerInfo.getSmsOffers(), EnumSMSAlertStatus.NONE.value(),	receivedDate, EnumEStoreId.FDX.toString());
 			 
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTOUT_ALERT_TYPE, customerId);
@@ -612,7 +606,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				ps1.executeUpdate();
 				
 				FDDeliveryManager.getInstance().addSubscriptions(customerId,	mobileNumber, EnumSMSAlertStatus.NONE.value(), 	null, customerInfo.getSmsOrderNotice(),
-						customerInfo.getSmsOrderException(), null, EnumSMSAlertStatus.NONE.value(),	receivedDate,eStoreId.getContentId());
+						customerInfo.getSmsOrderException(), null, EnumSMSAlertStatus.NONE.value(),	receivedDate,EnumEStoreId.FDX.toString());
 				
 				 smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, FDX_OPTOUT_SUCCESS_MESSAG, eStoreId.getContentId());	
 				smsResponseModel.setDate(new Date());
