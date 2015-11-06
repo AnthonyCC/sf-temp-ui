@@ -1,11 +1,8 @@
-<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
-<%@ page import="com.freshdirect.common.address.AddressModel" %>
-<%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
@@ -67,19 +64,12 @@
 		};
 		asyncPixelWithTimeout();
 	</script>
-<!-- end of dstillery pixel swap  APPDEV-4287 -->
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
-    
-    <!--  Added for Password Strength Display -->
-    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
-	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
-	<!--  Added for Password Strength Display -->
-  
 
   
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
@@ -101,7 +91,6 @@
 	<center>
 
 	<%
-		
 		String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String socialNavPage = NVL.apply(request.getParameter("socialnetwork"), "");
@@ -126,7 +115,7 @@
 	%>
 			
 
-		<div class="fright hline" id="" style="width:100%; float:left;"><!-- --></div>
+		<div class="fright hline" id="" style="width:100%; float:left;"></div>
 		<div id="form_feilds" style="float:left;">
 			<form id="litetcaccept" name="litetcaccept" method="post" action="/registration/tcaccept_lite.jsp" style="padding: 0; margin: 0;">
 
@@ -137,11 +126,9 @@
 				<table border="0" cellpadding="0" cellspacing="0">
 					<tr><td class="bodyCopySUL"><span><label>Hello <%=user.getFirstName()+" "+user.getLastName() %> </label> </span> </td></tr>
 					<br/>
-					<tr><span>Our terms of service have changed. By continuing to use our services, you agree to the recent modification to our terms of services.
+					<tr><td class="SystemMessage"<span>Our terms of service have changed. By continuing to use our services, you agree to the recent modification to our terms of services.
 					 If you wish to view or print the new terms of services, tap or click "View Terms Of Use" button below. </span> </td></tr>
 					
-
-
 					<tr><td style="padding-top: 4px;"><!-- --></td></tr>
 					<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
 					

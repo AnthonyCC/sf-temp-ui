@@ -208,6 +208,9 @@
 	    		formData.successPage = encodeURIComponent(formData.successPage);
 	    		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
 	    			if (data.success) {
+	    				if(data.message =="TcAgreeFail"){
+	    					 FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 400, height: 400});
+	    				}else{
 	    				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
 	    					window.location = data.successPage;
 	    				} else {
@@ -217,6 +220,7 @@
 	    				
 	                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
 	                   	$('#login_cont_formContent').toggle();
+	    				}
 	    			} else if(data.message == "CaptchaRedirect") {
     					window.location = '/login/login.jsp';
     				} else{

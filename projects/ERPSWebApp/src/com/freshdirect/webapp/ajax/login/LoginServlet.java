@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 /**
@@ -47,6 +49,11 @@ public class LoginServlet extends HttpServlet {
 			ActionResult actionResult = new ActionResult();
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
 															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage(), false);
+			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+			if(!user.getTcAcknowledge()){
+				loginResponse.setMessage("TcAgreeFail");
+				//updatedSuccessPage = "/registration/tcaccept_lite.jsp";
+			}
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
 				loginResponse.setSuccess(true);
