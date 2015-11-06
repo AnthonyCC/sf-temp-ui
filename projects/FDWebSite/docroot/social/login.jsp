@@ -141,7 +141,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	                    <tr>
 	                    	<td></td>
 	                        <td style="padding-top: 15px;">
-	                   		   	<a onclick="document.fd_login.submit();" href="#" class="butText">
+	                   		   	<a onclick="document.fd_login.submit();" href="#" class="butText social-login-continue-button">
 	                              	<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
 	                            </a>
 	                        </td>
