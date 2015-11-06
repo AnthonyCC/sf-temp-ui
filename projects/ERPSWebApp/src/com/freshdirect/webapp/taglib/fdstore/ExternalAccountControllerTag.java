@@ -23,20 +23,13 @@ public class ExternalAccountControllerTag extends
 	@Override
 	public int doStartTag() throws JspException {
 		
-		String abURL = null;
 		HttpSession session = this.pageContext.getSession();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		String source = (request.getParameter("source") == null) ? "" : (String)request.getParameter("source");
 	
 		String redirectPage = AccountServiceFactory.getService(source).login(session, request, response);
-		if(!redirectPage.contains("https")) {
-			abURL = redirectPage.replace("http", "https");
-		} else {
-			abURL = redirectPage;
-		}
-
-		doRedirect(abURL);
+		doRedirect(redirectPage);
 		
 		return SKIP_BODY;
 		

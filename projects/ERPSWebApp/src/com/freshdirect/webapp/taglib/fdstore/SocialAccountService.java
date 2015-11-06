@@ -56,16 +56,6 @@ public class SocialAccountService implements AccountService {
 	@Override
 	public String login (HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
-		
-		System.out.println("request.getProtocol():   " + request.getProtocol());
-		System.out.println("request.getScheme():   " + request.getScheme());
-		System.out.println("request.getRequestURL():   " + request.getRequestURL());
-		System.out.println("request.getServerName():   " + request.getServerName());
-		System.out.println("request.getServerPort():   " + request.getServerPort());
-		System.out.println("request.getServletPath():   " + request.getServletPath());
-		System.out.println("request.getRequestURL():   " + request.getRequestURL());
-					
-		
 		// Retrieve sessionUser
 		final FDSessionUser fdSessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);					
 		String sessionUserId = "";	
@@ -149,12 +139,8 @@ public class SocialAccountService implements AccountService {
 								 response.sendRedirect("/registration/tcaccept_lite.jsp");
 								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
 							 }else {
-							//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 // http://localhost:7001/social/social_login_success.jsp?successPage=index.jsp  
-								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 String newURL = request.getScheme() + "://" + request.getServerName();
-								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
-							
+							response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
+							LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 							 }
 						} catch (IOException e) {
 							LOGGER.error(e.getMessage());
@@ -277,12 +263,7 @@ public class SocialAccountService implements AccountService {
 							
 							String res = ra.executeEx();
 							if((Action.SUCCESS).equals(res)) {
-								//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								
-								String newURL = request.getScheme() + "://" + request.getServerName();
-								return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
-								
-								//return "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+								response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length())); 					
 							}
 						} catch (Exception ex) {
 							LOGGER.error("Error performing action expresssignup", ex);
