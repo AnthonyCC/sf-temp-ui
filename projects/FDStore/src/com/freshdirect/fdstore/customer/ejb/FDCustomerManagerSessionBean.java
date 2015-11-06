@@ -116,6 +116,8 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -932,7 +934,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "and sa.action_type in ('CRO', 'MOD') "
 			+ "and sa.action_date = (select max(action_date) from cust.salesaction where s.id = sale_id and action_type in ('CRO', 'MOD'))";
 
-	public ErpAddressModel getLastOrderAddress(String lastOrderId) throws SQLException {
+	public ErpAddressModel getLastOrderAddress(String lastOrderId) throws SQLException, FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -958,7 +960,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException {
+	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException, FDResourceException {
 		ErpAddressModel address;
 		if (rs.getString("DEPOTLOCATION_ID") == null){
 			address = loadDeliveryAddressFromResultSet(rs);
@@ -993,7 +995,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return address;
 	}
 	
-	private ErpDepotAddressModel loadDepotAddressFromResultSet(ResultSet rs) throws SQLException {
+	private ErpDepotAddressModel loadDepotAddressFromResultSet(ResultSet rs) throws SQLException, FDResourceException {
 		ErpDepotAddressModel address = new ErpDepotAddressModel();
 		address.setLocationId( rs.getString("DEPOTLOCATION_ID"));
 		address.setFirstName(rs.getString("FIRST_NAME"));
@@ -1016,6 +1018,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
 
+		// TODO Reconsider this solution!
+        for (FDDeliveryDepotModel pickupModel : FDDeliveryManager.getInstance().getPickupDepots()) {
+            if (pickupModel.getLocation(rs.getString("DEPOTLOCATION_ID")) != null) {
+                address.setPickup(pickupModel.isPickup());
+            }
+        }
+		
 		return address;
 	}
 
