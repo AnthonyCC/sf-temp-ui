@@ -125,7 +125,12 @@ public class LoginControllerTag extends AbstractControllerTag {
 			 
 			 // APPDEV-4381 TC Accept.
 			 if(user !=null&&!user.getTcAcknowledge()){
+					if (updatedSuccessPage.indexOf("quickshop/index.jsp")!=-1 || updatedSuccessPage.indexOf("your_account/manage_account.jsp")!=-1) {
+						
+						session.setAttribute("fdTcAgree", false);
+					}else{
 					 this.setSuccessPage("/registration/tcaccept_lite.jsp");
+					}
 			 }
 			
 	    	

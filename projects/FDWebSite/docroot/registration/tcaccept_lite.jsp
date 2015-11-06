@@ -11,8 +11,12 @@
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String successPage = "index.jsp";
+	String navPage = NVL.apply(request.getParameter("successPage"), "");
+	if(!"".equals(navPage)) {
+		successPage = navPage;
+	}
+	
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
-	//System.out.println("\n\n\n"+user.getSelectedServiceType().getName()+"\n\n\n");
 	if("".equals(serviceType)) {
 		if(user != null) {
 			serviceType = user.getSelectedServiceType().getName();
@@ -85,7 +89,7 @@
     
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+
 
 
 	<center>
@@ -106,7 +110,19 @@
 			</script>
 					
 		<%		 
-		} else {
+		} else if(session.getAttribute("TCAGREE_COMPLETE") != null){
+			
+		%>
+			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<script language="javascript">
+			
+				window.top.Modalbox.hide();
+				
+			</script>
+					
+		<%
+			
+		}else {
 
 			if(user != null && "".equals(zipcode)) {
 				zipcode = user.getZipCode();
@@ -117,31 +133,26 @@
 
 		<div class="fright hline" id="" style="width:100%; float:left;"></div>
 		<div id="form_feilds" style="float:left;">
-			<form id="litetcaccept" name="litetcaccept" method="post" action="/registration/tcaccept_lite.jsp" style="padding: 0; margin: 0;">
+			<form id="litetcaccept" name="litetcaccept" method="post"  style="padding: 0; margin: 0;">
 
 				<input type="hidden" name="socialNavPage" value="<%= socialNavPage %>" />
 				<input type="hidden" name="successPage" value="<%= successPage %>" />
 				<input type="hidden" name="litetcaccept" value="true" />
 				
 				<table border="0" cellpadding="0" cellspacing="0">
-					<tr><td class="bodyCopySUL"><span><label>Hello <%=user.getFirstName()+" "+user.getLastName() %> </label> </span> </td></tr>
+					<tr><td colspan="2" class="bodyCopySUL"><label style="padding-left: 20px;">Hello <%=user.getFirstName()+" "+user.getLastName() %> </label>  </td></tr>
 					<br/>
-					<tr><td class="SystemMessage"<span>Our terms of service have changed. By continuing to use our services, you agree to the recent modification to our terms of services.
-					 If you wish to view or print the new terms of services, tap or click "View Terms Of Use" button below. </span> </td></tr>
+					<tr><td colspan="2" class="SystemMessage" style="padding-left: 20px;">Our terms of service have changed. By continuing to use our services, you agree to the recent modification to our terms of services.
+					 If you wish to view or print the new terms of services, tap or click "View Terms Of Use" button below.  </td></tr>
 					
-					<tr><td style="padding-top: 4px;"><!-- --></td></tr>
-					<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
+					<tr><td colspan="2" style="padding-top: 4px;"></td></tr>
+					<tr><td colspan="2"><div class="fright hline" id="" style="width:100%;"></div></td></tr>
 					
-					<td style="padding-top: 10px;">
-					<button onclick="document.litetcaccept.submit();" style="width: 100px;padding: 10px; margin-top: 0px; background-color: #00B800; color: #ffffff; text-align: center; border-radius: 5px; margin-left: 20px;">
-						Continue
-					</button>
-									
-					<button onclick="javascript:popup('/registration/user_agreement.jsp', 'large',alt='')" style="width: 150px;padding: 10px; margin-top: 0px; background-color: #00B800; color: #ffffff; text-align: center; border-radius: 5px; margin-left: 20px;">
-						View Terms Of Use
-					</button>
-					</td>
+					<tr>
+					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">Continue</a></td>
+					<td style="padding-top: 10px;"> <a href="javascript:popup('/registration/user_agreement.jsp', 'large',alt='')" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">View Terms Of Use</a></td>
 					</tr>
+				
 				</table>
 			</form>
 		</div>

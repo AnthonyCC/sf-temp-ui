@@ -57,12 +57,21 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
         //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/your_account");
 request.setAttribute("listPos", "SystemMessage,CategoryNote");
 
 %>
+
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+			<script type="text/javascript">
+			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); } else {
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');}
+			
+			</script>
+<%}%>
 <fd:OrderHistoryInfo id='orderHistoryInfo'>		
 <%  if (orderHistoryInfo != null && orderHistoryInfo.size() != 0) {
 		for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {

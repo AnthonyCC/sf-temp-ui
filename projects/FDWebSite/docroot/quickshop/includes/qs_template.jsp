@@ -13,6 +13,7 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%  request.setAttribute("sitePage", "www.freshdirect.com/quickshop/");
 	request.setAttribute("listPos", "SystemMessage,QSTop");
+    Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 <features:isActive name="isQS20" featureName="quickshop2_0" />
 
@@ -42,6 +43,15 @@
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>
 
+
+	<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+				<script type="text/javascript">
+				
+				if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); } else {
+				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');}
+				
+				</script>
+	<%}%>
     <div id="content">
         <div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
           <!-- content lands here -->
