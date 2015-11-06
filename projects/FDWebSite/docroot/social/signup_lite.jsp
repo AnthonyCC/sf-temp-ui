@@ -103,10 +103,12 @@
 			if($jq("#password1").hasClass("showpwd"))
 			{
 				$jq("#password1").prop("type","text");
+				$jq('.show-password').text('Hide');
 			}
 			else
 			{
 				$jq("#password1").prop("type","password");
+				$jq('.show-password').text('Show');
 			}
 		 
 		});

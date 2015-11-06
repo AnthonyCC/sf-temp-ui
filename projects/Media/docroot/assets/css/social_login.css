@@ -126,6 +126,8 @@
   	position: absolute;
 	bottom: 10px;
     right: 8px;
+    width: 33px;
+    text-align: center;
     font-size: 12px;
     line-height: 12px;
     background: #A4A5A4;
