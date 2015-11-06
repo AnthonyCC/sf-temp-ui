@@ -49,9 +49,10 @@ String previousPage;
 	<head>
 		<title>A fresh kick <c:out value="${param.f}" /></title>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="initial-scale=1.0, <%=FKAPP_DIR %>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<link href="<%=CSS_DIR %>/freshkick_page.css" rel="stylesheet" type="text/css" />
+		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
+		<script src="ad_server_opt.js.jsp"></script>
 	</head>
 	<body>
 		<header></header>
@@ -158,9 +159,9 @@ String previousPage;
 	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 	--%>
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><!-- for jquery and other things -->
-	<script src="<%=JS_DIR %>/ad_server_opt.js.jsp"></script>
 	<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
-	<script src="<%=JS_DIR %>/app.js"></script>
+	<script src="<%=JS_DIR %>/app.js"></script> 
+	<!-- <jwr:script src="/foodkick.js" useRandomParam="false" />-->
 	<script type="text/javascript">
 		window.IMAGES_DIR = "<%=IMAGES_DIR%>";
 		OAS_AD('HPFeatureTop');

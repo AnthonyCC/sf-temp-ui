@@ -6,7 +6,7 @@
 			<button class="appstore_button">
 				<%--svg_obj("appstore.svg") --%>
 				
-				<img src="<%=svg_src("appstore.svg") %>" />
+				<img src="<%=SVG_SRC %>appstore.svg" />
 			</button>
 		</section> <!-- end of section 'section_1'  -->
 		
