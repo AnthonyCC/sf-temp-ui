@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -522,6 +524,10 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			customerSmsPreferenceModel.setFdxPartnerMessages((EnumSMSAlertStatus.NONE).value());
 			customerSmsPreferenceModel.setSmsOptinDate(new java.util.Date());
 			customerSmsPreferenceModel.setCrmStore(EnumEStoreId.FDX.getContentId());
+			if(customerSmsPreferenceModel.getFdxMobileNumber()!=null){
+			FDDeliveryManager.getInstance().addSubscriptions(customer.getId(),customerSmsPreferenceModel.getFdxMobileNumber().getPhone(), null, null, customerSmsPreferenceModel.getFdxOrderNotices(),
+					customerSmsPreferenceModel.getFdxOrderExceptions(), customerSmsPreferenceModel.getFdxOffers(), "N",	new Date(), EnumEStoreId.FDX.toString());
+			}
 			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
 		}
 		
@@ -623,7 +629,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			// FDX SMS For Activity Log
 			if(fddOrderNotificationChanged || fdxOrderExceptionsChanged || FdxOffersChanged){
 				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
-				rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + this.customerInfo.getFdxOrderNotices() + ", Order Status:"+ this.customerInfo.getFdxOrderExceptions()+ ", Offers:"+this.customerInfo.getFdxOffers());
+				rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + customerSmsPreferenceModel.getFdxOrderNotices() + ", Order Status:"+ customerSmsPreferenceModel.getFdxOrderExceptions()+ ", Offers:"+ customerSmsPreferenceModel.getFdxOffers());
 				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
 				command.execute();
 			}
