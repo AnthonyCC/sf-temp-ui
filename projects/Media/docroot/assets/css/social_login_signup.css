@@ -80,7 +80,7 @@ input.error {
 }
 
 span.error_img {
-	/*background:url( "/media_stat/images/common/red_arrow.PNG") no-repeat;*/
+	/*background:url( "/media_stat/images/common/red_arrow.png") no-repeat;*/
 	display: block;
 	width: 17px;
 	height: 12px;
@@ -91,7 +91,7 @@ span.error_img {
 }
 
 span.show_bg_arrow {
-	background: url( "/media_stat/images/common/red_arrow.PNG") no-repeat;
+	background: url( "/media_stat/images/common/red_arrow.png") no-repeat;
 }
 
 .show-password {

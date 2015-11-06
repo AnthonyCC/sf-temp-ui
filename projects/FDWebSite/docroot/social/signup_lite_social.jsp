@@ -110,7 +110,7 @@
 	  if(lastPage != null)
 	  	session.removeAttribute("lastpage");
 	  
-	  String arrowImg = "<img src='/media_stat/images/common/black_arrow.PNG' alt='arrow_graphic'>";
+	  String arrowImg = "<img src='/media_stat/images/common/black_arrow.png' alt='arrow_graphic'>";
 		
 
     	if(socialUser != null)    	{
