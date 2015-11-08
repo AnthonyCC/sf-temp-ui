@@ -66,13 +66,19 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	private static  final DateFormat endDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");	
 	
 	private final static String PROMO_DESCRIPTION = "${0} timeslot discount";
+	private final static String PROMO_FREE_DELIVERY_DESCRIPTION = "{0} timeslot discount";
 	private final static String OFFER_DESCRIPTION = "This offer is good for a ${0} discount on orders received in Zone {1} " +
 													"on {2} during the timeslot window {3} - {4}";
+	private final static String OFFER_FREE_DELIVERY_DESCRIPTION = "This offer is good for a {0} discount on orders received in Zone {1} " +
+			"on {2} during the timeslot window {3} - {4}";
     private final static String AUDIENCE_DESCRIPTION = "This promotion is only good for customers receiving delivery in Zone {0} " +
     												"on {1} during the timeslot window {2} - {3}";
     private final static String TERMS = "${0} Discount for orders delivered on {1} in timeslot {2} - {3}. " +
     						"Addresses eligible for this promotion are limited. Other restrictions may apply. Expires tonight at 11:59pm. " +
     						"Offers modified after this time will not be eligible. Offer is nontransferable. Void where prohibited.";
+    private final static String TERMS_FREE_DELIVERY = "{0} Discount for orders delivered on {1} in timeslot {2} - {3}. " +
+			"Addresses eligible for this promotion are limited. Other restrictions may apply. Expires tonight at 11:59pm. " +
+			"Offers modified after this time will not be eligible. Offer is nontransferable. Void where prohibited.";
 
 	
 	@SuppressWarnings("unchecked")
@@ -467,16 +473,29 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			String section1 = "X".equalsIgnoreCase(radius) ? "RADIUS" : "STATIC";
-			promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+			if(!"DLV".equalsIgnoreCase(discount)){
+				promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+				promotion.setPromotionType(EnumPromotionType.HEADER.getName());
+				promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
+				promotion.setCombineOffer(true);
+				promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
+				promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
+				promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			}else{
+				promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_"+"FREE_DELIVERY");
+				promotion.setPromotionType(EnumPromotionType.HEADER.getName());
+				promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
+				promotion.setCombineOffer(true);
+				promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
+				promotion.setDescription(formatPromoDescription(PROMO_FREE_DELIVERY_DESCRIPTION, "Free Delivery"));
+				promotion.setOfferDesc(formatAudienceDescription(OFFER_FREE_DELIVERY_DESCRIPTION, "Free Delivery", zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setTerms(formatTerms(TERMS_FREE_DELIVERY, "Free Delivery", CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			}
 			
-			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
-			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
-			promotion.setCombineOffer(true);
-			promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
-			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
-			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			
 			promotion.setMaxUsage("999");
 			if(redeemCnt > 0 && "DELIVERYDATE".equals(dlvRestrictionType))
 				promotion.setRedeemCount(redeemCnt);
@@ -611,11 +630,20 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			String section1 = "X".equalsIgnoreCase(radius)?"RADIUS":"STATIC";
-			promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
-			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
-			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			if(!"DLV".equalsIgnoreCase(discount)){
+				promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+				promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
+				promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			}else{
+				promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_"+"FREE_DELIVERY");				
+				promotion.setDescription(formatPromoDescription(PROMO_FREE_DELIVERY_DESCRIPTION, "Free Delivery"));
+				promotion.setOfferDesc(formatAudienceDescription(OFFER_FREE_DELIVERY_DESCRIPTION, "Free Delivery", zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+				promotion.setTerms(formatTerms(TERMS_FREE_DELIVERY, "Free Delivery", CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			}
+			
 			Date today = new Date();
 			if(DateUtil.isSameDay(startDate, today)) {
 				//If start date is today then Should default to today and the current time.
