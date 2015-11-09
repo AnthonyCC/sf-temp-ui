@@ -267,6 +267,10 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		return "ADD&nbsp;$" + premiumAmountFmt.format(premiumAmount);
 	}
 
+	public String getPromoDeliveryFeeFmt() {
+		return "ADD&nbsp;$" + premiumAmountFmt.format(promoDeliveryFee);
+	}
+	
 	public boolean isMinOrderSlot() {
 		return (minOrderAmt > 0) ? true : false;
 	}
