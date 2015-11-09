@@ -58,6 +58,13 @@ try {
     a:hover {
       text-decoration: underline;
     }
+    #errorcode {
+      color: #aaa;
+      text-align: right;
+    }
+    #logo {
+      margin-top: 250px;
+    }
     .container {
       width: 970px;
       margin: auto;
@@ -108,10 +115,13 @@ try {
 </head>
 <body>
   <div class="container">
-    <div>
+    <div id="errorcode">
+      Error code: 500
+    </div>
+    <div id="logo">
       <a href="/" title="back to the homepage"><img src="/media/images/navigation/global_nav/fd_logo_on.png" alt="broken truck" /></a>
     </div>
-    <h1>Sorry, we're experiencing an<br>internal server problem</h1>
+    <h1 id="errormessage">Sorry, we're experiencing an<br>internal server problem</h1>
     <ul class="links">
       <li id="refresh"><a href="#" onclick="window.location.reload();">Refresh the page</a></li>
       <li id="continue"><a href="/">Continue shopping</a></li>
