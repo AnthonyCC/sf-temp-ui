@@ -23,19 +23,7 @@
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 %>	    
     
-<script type="text/javascript">
- 
-		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
-		var oneall_subdomain = '<%=site_subdomain%>';
- 
-		/* The library is loaded asynchronously */
-		var oa = document.createElement('script');
-		oa.type = 'text/javascript'; oa.async = true;
-		oa.src = '//' + oneall_subdomain + '<%=site_post_url%>/socialize/library.js';
-		var s = document.getElementsByTagName('script')[0];
-		s.parentNode.insertBefore(oa, s);
-       
-</script>
+
 
 <!-- enable/disable submit button -->
 <script type="text/javascript" language="javascript">
@@ -61,10 +49,7 @@
 
 
 <%
-	String newURL = request.getScheme() + "://" + request.getServerName();
-	if(!newURL.contains("https")) {
-		newURL = request.getScheme() + "://" + request.getServerName()+":"+request.getServerPort();
-	} 
+
 
     String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
@@ -111,7 +96,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	        -->
 			
 	        <div id="form_feilds">
-	            <form name="fd_login" id="fd_login" method="post" action="<%= newURL + request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
+	            <form name="fd_login" id="fd_login" method="post" >
 	            	<table border="0" cellpadding="5" cellspacing="8">
 		                <% if (!result.isSuccess()) { out.println( "<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please try again.</font></td></tr>");%>
 	    	                <script type="text/javascript">
