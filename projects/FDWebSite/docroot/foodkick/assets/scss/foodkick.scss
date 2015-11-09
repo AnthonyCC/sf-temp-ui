@@ -1,7 +1,8 @@
 //VARS
 $full100: 100%;
 $MEDIA_DIR: "/media_stat/foodkick";
-$FONT_DIR: $MEDIA_DIR + "/webfonts";
+//$FONT_DIR: $MEDIA_DIR + "/webfonts";
+$FONT_DIR: "/assets/css/fonts";
 $IMG_DIR: $MEDIA_DIR;
 $SVG_SRC: "/foodkick/s.jsp?f=";
 $main_purple: #732282;
@@ -18,7 +19,8 @@ $TiemposBold_n: "TiemposHeadlineApp-Bold";
 //font stuff, to help get the right font file of a master font presented to the right browser
 //REQUIRES: existing font files where referenced, use site like 'http://www.fontsquirrel.com/tools/webfont-generator' to create all the font files for each custom font family
 @mixin font_face_mixin($font_name){
-	$font_name_file_pre: "#{$FONT_DIR}/#{$font_name}/#{$font_name}";
+	//$font_name_file_pre: "#{$FONT_DIR}/#{$font_name}/#{$font_name}";
+	$font_name_file_pre: "#{$FONT_DIR}/#{$font_name}";
 
 	@font-face {
 		font-family: '#{$font_name}';
@@ -200,7 +202,7 @@ img[src$=".gif"], img[src$=".jpg"], img[src$=".png"] {
 
 header{
 	background-color: rgba(115,34,130,0.75);
-	mix-blend-mode: multiply;
+	mix-blend-mode: darken;
 	width: $full100;
 	height:57px;
 	
