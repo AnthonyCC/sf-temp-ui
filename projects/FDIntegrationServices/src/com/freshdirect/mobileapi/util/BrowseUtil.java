@@ -1357,11 +1357,13 @@ public class BrowseUtil {
 					skuInfo.setSkuCode(sku.getSkuCode());
 					skuInfo.setProductId(prodModel.getContentName());
 					skuInfo.setBasePrice(pc.getWasPrice());
-					if(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel())!=null)
+					if(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel())!=null) {
 						skuInfo.setGroupInfo(getGroupInfo(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()),pc));
+					}
 					skuInfo.setSalesUnits(getSalesUnits(product.getSalesUnits()));
-					if(product.getSalesUnits().length>0)
+					if(product.getSalesUnits().length>0) {
 						skuInfo.setUnitPrice(getUnitPrice(product.getSalesUnits()[0],pc));
+					}
 					if(sku.getSkuCode()!=null) {
 						if(pc.getProduct()!=null)
 							skuInfo.setScalePrice(getScalePrice(pc.getZonePriceModel()));
@@ -1369,10 +1371,10 @@ public class BrowseUtil {
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
 					EnumAvailabilityStatus status = productInfo.getAvailabilityStatus(pc.getPricingContext().getZoneInfo().getSalesOrg(), pc.getPricingContext().getZoneInfo().getDistributionChanel());
-					if(status==null){
+					if(status == null || prodModel.isUnavailable()) {
 						skuInfo.setAvailable(EnumAvailabilityStatus.TEMP_UNAV.getId());
-					}else{
-					skuInfo.setAvailable(status.getId());
+					} else{
+						skuInfo.setAvailable(status.getId());
 					}
 					boolean isLimitedQuantity = false;
 					isLimitedQuantity = productInfo.isLimitedQuantity(plantID);
