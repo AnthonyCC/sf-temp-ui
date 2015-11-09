@@ -1,0 +1,1243 @@
+//VARS
+$full100: 100%;
+$MEDIA_DIR: "/media_stat/foodkick";
+$FONT_DIR: $MEDIA_DIR + "/webfonts";
+$IMG_DIR: $MEDIA_DIR;
+$SVG_SRC: "/foodkick/s.jsp?f=";
+$main_purple: #732282;
+
+//FONT CORE variable names
+$GraphikApp_r_n: "GraphikApp-Regular";
+$GraphikApp_s_n: "GraphikApp-Semibold";
+$TiemposRegular_n: "tiempo_regular";
+$TiemposBold_n: "TiemposHeadlineApp-Bold";
+
+
+//MIXINS, mostly used for cross browser stuff or other complex features
+
+//font stuff, to help get the right font file of a master font presented to the right browser
+//REQUIRES: existing font files where referenced, use site like 'http://www.fontsquirrel.com/tools/webfont-generator' to create all the font files for each custom font family
+@mixin font_face_mixin($font_name){
+	$font_name_file_pre: "#{$FONT_DIR}/#{$font_name}/#{$font_name}";
+
+	@font-face {
+		font-family: '#{$font_name}';
+		src: local('#{$font_name}'),
+		url("#{$font_name_file_pre}.otf"),
+		url("#{$font_name_file_pre}.ttf"),
+		url("#{$font_name_file_pre}.eot"),
+		url("#{$font_name_file_pre}.svg"),
+		url("#{$font_name_file_pre}.woff");
+	}
+}
+
+//cross browser opacity
+@mixin opacity_mixin($opacity:0.5){
+	$ms_opacity: $opacity * 100;
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$ms_opacity)";
+	filter: alpha(opacity=$ms_opacity);
+	-moz-opacity: $opacity;
+	-khtml-opacity: $opacity;
+	opacity: $opacity;
+}
+
+//for animations
+@mixin transition_mixin($t:1, $e:ease, $type:all){
+	-webkit-transition: $type $t $e;
+	-moz-transition: $type $t $e;
+	-ms-transition: $type $t $e;
+	-o-transition: $type $t $e;
+	transition: $type $t $e;
+}
+
+//drop shadows (box type only), x is how far to the right, y is how far down, b is how much blur, c is color, inset is for whether it is an inner shadow
+@mixin box_shadow_mixin($x:3, $y:3, $b:4, $c:#000, $inset: false){
+	$ifInset: null;
+
+	@if $inset {
+		$ifInset: inset;
+	}
+	
+	-moz-box-shadow: $ifInset #{$x}px #{$y}px #{$b}px $c;
+	-webkit-box-shadow: $ifInset #{$x}px #{$y}px #{$b}px $c;
+	box-shadow: $ifInset #{$x}px #{$y}px #{$b}px $c;
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=#{$b}, Direction=135, Color='#{$c}')";
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=#{$b}, Direction=135, Color='#{$c}');
+}
+
+//drop shadows (good for png images and svg files which would have non-rectangular shapes)
+@mixin drop_shadow_mixin($x:3, $y:3, $b:4, $c:#000){
+	-webkit-filter: drop-shadow(#{$x}px #{$y}px #{$b}px $c);
+	filter: drop-shadow(#{$x}px #{$y}px #{$b}px $c);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=$x, OffY=$y, Color='$c')";
+	filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=$x, OffY=$y, Color='$c')";
+}
+
+//rounded corners
+@mixin rounded_mixin($radius: 0.5em) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	border-radius: $radius;
+}
+
+
+// generic transform
+@mixin transform_mixin($transforms){
+	-moz-transform: $transforms;
+	-o-transform: $transforms;
+	-ms-transform: $transforms;
+	-webkit-transform: $transforms;
+	transform: $transforms;
+}
+// rotate
+@mixin rotate_mixin($deg){
+	@include transform_mixin(rotate(#{$deg}deg));
+}
+// scale
+@mixin scale_mixin($x, $y:1){
+	@include transform_mixin(scale($x, $y));
+} 
+// translate
+@mixin translate_mixin($x, $y){
+	@include transform_mixin(translate($x, $y));
+}
+// skew
+@mixin skew_mixin($x, $y){
+	@include transform_mixin(skew(#{$x}deg, #{$y}deg));
+}
+//transform origin
+@mixin transform-origin_mixin($origin){
+	moz-transform-origin: $origin;
+	-o-transform-origin: $origin;
+	-ms-transform-origin: $origin;
+	-webkit-transform-origin: $origin;
+	transform-origin: $origin;
+}
+
+
+//media query breakpoints
+@mixin breakpoint_mixin($point) {
+	@if $point == medium {
+		@media (min-width: 30em) { @content; }
+	}
+	@else if $point == large {
+		@media (min-width: 50em) { @content; }
+	}
+	@else if $point { // allows custom breakpoints
+		@media (min-width: $point) { @content; }
+	}
+}
+
+//don't you hate how you can't seem to change the placeholder text color on input tags?  This allows for that.
+@mixin inp_ph_mixin(){
+	&::-webkit-input-placeholder { @content; }
+	&:-moz-placeholder { @content; }
+	&::-moz-placeholder { @content; }
+	&:-ms-input-placeholder { @content; }
+}
+
+
+/*FONTS */
+@include font_face_mixin($GraphikApp_r_n);
+@include font_face_mixin($GraphikApp_s_n);
+@include font_face_mixin($TiemposRegular_n);
+@include font_face_mixin($TiemposBold_n);
+
+
+/*CORE TAGS*/
+body{
+	padding:0px;
+	margin:0px;
+	background-color: #FFF;
+}
+
+body, div, span, section, article{
+	font-family: '#{$GraphikApp_r_n}';
+}
+
+a{
+	font-family: '#{$GraphikApp_s_n}';
+	object{
+		pointer-events: none;
+	}
+	
+	color:rgb(115, 34, 130);
+	
+	&:visited{
+		color:rgba(115, 34, 130, 0.5);
+	}
+	
+	&:hover{
+		color:rgb(128, 0, 153);
+	}
+}
+
+button, button *{
+	font-family: '#{$GraphikApp_r_n}';
+	cursor:pointer;
+}
+
+h1, h2, h3{
+	font-family: '#{$TiemposRegular_n}';
+	font-weight: normal;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+img[src$=".gif"], img[src$=".jpg"], img[src$=".png"] {
+	-ms-interpolation-mode: bicubic;  /* IE (non-standard property) */
+	image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
+	image-rendering:          -moz-crisp-edges;         /* Firefox */
+	image-rendering:            -o-crisp-edges;         /* Opera */
+	image-rendering: optimizeQuality;
+}
+
+header{
+	background-color: rgba(115,34,130,0.75);
+	mix-blend-mode: multiply;
+	width: $full100;
+	height:57px;
+	
+	position:fixed;
+	top:0px;
+	z-index:11;
+	
+	@include transition_mixin(500ms);
+	
+	&.sticky {
+		height: 57px;
+	}
+
+	@include breakpoint_mixin(medium){
+		height:112px;
+	}
+}
+nav{
+	padding-top:0px;
+	top:0px;
+	position:fixed;
+	z-index:12;
+	width: $full100;
+	text-align:center;
+	
+	@include transition_mixin(500ms);
+	
+	/*generally the top level item within the 'nav' tag*/
+	ul{
+		list-style-type: none;
+		margin: 0px;
+		padding: 0px;
+		
+		li{
+			display:inline-block;
+			
+			&.standard_link{ //VARIATION
+				display:none;
+
+				@include breakpoint_mixin(medium){
+					display:inline-block;
+					margin: 0px 3px;
+				}
+
+				@include breakpoint_mixin(large){
+					margin: 0px 22px;
+				}
+			}
+		}
+	}
+	
+	a{
+		color:white;
+		text-decoration:none;
+		text-transform:uppercase;
+		font-weight:bold;
+		font-size: 9pt;
+		display: inline-block;
+		
+		&:visited{
+			color:#DDD;
+		}
+		
+		&:hover{
+			color:white;
+			text-decoration:underline;
+
+			img, & object{
+				border-bottom:1px solid white;
+			}
+		}
+		
+		img, & object{
+			padding:0px;
+			width:55px;
+			height:55px;
+			
+			@include drop_shadow_mixin(0,0,0,#FFF);
+			//@include drop_shadow_mixin(1,0,0,#000);
+			
+			@include transition_mixin(500ms);
+			
+			& *{
+				cursor: pointer!important;
+			}
+
+			@include breakpoint_mixin(medium){
+				width:75px;
+				height:71px;
+				position:relative;
+				top:12px;
+			}
+
+			@include breakpoint_mixin(large){
+				width:150px;
+				height:95px;
+				/*margin-left:74px;
+				margin-right:74px;*/
+
+				top:5px;
+			}
+
+			@include breakpoint_mixin(1280px){
+				margin-left:200px;
+				margin-right:200px;
+			}
+		}
+
+		@include breakpoint_mixin(medium){
+			font-size:8.5pt;
+		}
+
+		@include breakpoint_mixin(large){
+			font-size:10.5pt;
+		}
+	}
+	
+	&.sticky {
+		height: 57px;
+		padding-top:2px;
+    	
+    	a{
+    		img, & object{
+    			width: 90px;
+				height: 45px;
+    		}
+    	}
+	}
+	
+	.dropdown{
+		display:none;
+		position:absolute;
+	}
+	
+	.mobile_dropdown_master{
+		float:left;
+	
+		&:hover .dropdown{
+			display:block;
+			
+			& a.mobile_link{
+				
+			}
+		}
+		
+		.dropdown.mobile_dropdown{
+			background-color: $main_purple;
+			padding: 15px 0px;
+			text-align: left;
+			top: 45px;
+			height: calc(100vh - 30px);
+			width: 50vw;
+			
+			li{
+				display:block;
+				padding:0px;
+				
+				a{
+					padding:5px 20px;
+					margin: 2px 0px;
+					display:block;
+					
+					font-weight:normal;
+					/*background-color:#852896;*/
+					
+					&:hover{
+						background-color:#404;
+					}
+				}
+			}
+		}
+		
+		& a.mobile_link{
+			float:left;
+			margin-top: 10px;
+			opacity:0.5;
+			
+			img{
+				height: 40px;
+				width:40px;
+			}
+		}
+	}
+
+	@include breakpoint_mixin(medium){
+		padding-top:1px;
+	}
+}/*end of 'nav' */
+
+section#section_slideshow{
+	width:$full100;
+	height: 68vw;
+	max-height: 100vh;
+	
+	background-size: $full100;
+	background-repeat: no-repeat;
+	
+	@include breakpoint_mixin(medium){
+		height: 68vw;
+	}
+
+	#carousel_1 {
+		display:none;
+		text-align: center;
+
+		height: inherit;
+		max-height: inherit;
+		
+		.slidesjs-container {
+			margin-bottom:10px;
+			background-color:#B4A8A9;
+			
+			/*
+			height: calc(100vw / 1.4769);
+			max-height: 100vh;*/
+			height: inherit;
+			max-height: inherit;
+		}
+		
+		.slidesjs-slide{
+			margin:0px;
+			
+			background-color: #B4A8A9;
+			height:100%;
+			
+			img{
+				width:100%;
+				/*height:auto;*/
+				height:100%;
+				
+				mix-blend-mode: multiply;
+			}
+		}
+		
+		.slidesjs-pagination{
+			top:-75px;
+			
+			a{
+				background-color: rgba(#FFF, 0.5);
+				
+				@include box_shadow_mixin(3, 3, 4, rgba(#000, 0.5) );
+			}
+		}
+
+		figcaption{
+			position: absolute;
+			top: calc(33% - 24px);
+			text-align: center;
+			width: calc(100% - 20px);
+			margin-left:10px;
+			
+			z-index: 9;
+		
+			h1{
+				font-size:14pt;
+				/*color:white;
+				text-shadow: 2px 2px 2px rgba(#2D2E37, 0.30);*/
+				background-color: rgba(255, 255, 255, 0.75);
+				max-width:1000px;
+				margin:auto;
+				padding:6px;
+
+				@include breakpoint_mixin(medium){
+					font-size:17pt;
+				}
+
+				@include breakpoint_mixin(large){
+					font-size:42pt;
+				}
+			}
+		}
+	}
+	
+	button.download_button{
+		position: relative;
+		top: -120px;
+	    left: calc(50% - 60px);
+	    
+	    z-index: 10;
+	    @include box_shadow_mixin(3, 3, 4, rgba(#000, 0.2) );
+	    
+	    @include breakpoint_mixin(medium){
+	    	top: -180px;
+	    }
+	    
+	    @include breakpoint_mixin(large){
+			left: calc(50% - 120px);
+	    	top: -165px;
+	    }
+
+		@include breakpoint_mixin(1000px){
+
+			top: -300px;
+		}
+	}
+	
+	button.appstore_button{
+	    position: relative;
+		left: calc(100% - 300px);
+		top: -40px;
+	    z-index: 10;
+	    
+	    @include breakpoint_mixin(medium){
+	    	top: -120px;
+	    }
+
+		@include breakpoint_mixin(large){
+			left: calc(100% - 505px);
+		}
+		
+		@include breakpoint_mixin(1000px){
+			left: calc(100% - 525px);
+			top: -160px;
+		}
+	}
+}/*end section '#section_slideshow' */
+
+section#section_Get_Foodkick{
+	/*width:100%;*/
+	min-height: inherit;
+	background-color: $main_purple;
+	margin-top:-20px;
+	padding: 25px 0px;
+	
+	@include breakpoint_mixin(medium){
+		min-height:inherit;
+		padding: 25px 0px 25px 12%;
+	}
+	
+	article{
+		margin-left: 10%;
+		width: 80%;
+		color:white;
+		text-align:center;
+		
+		@include breakpoint_mixin(medium){
+			margin-top: 0%;
+			margin-left: 0%;
+			width: 35%;
+			display:inline-block;
+			vertical-align: middle;
+		}
+		
+		@include breakpoint_mixin(large){
+			/*margin-top: 2%;*/
+			/*margin-left: 5%;*/
+			/*width: 33%;*/
+			
+			/*margin-top: -25%;*/
+		}
+		
+		h1{
+			font-size:2.5em;
+			margin-bottom:2px;
+			
+			@include breakpoint_mixin(medium){
+				font-size:3em;
+				margin-top:16px;
+				margin-bottom:8px;
+			}
+			
+			@include breakpoint_mixin(large){
+				font-size:4em;
+			}
+			
+			span{
+				display:block;
+				margin:0px;
+				line-height:14px;
+				
+				@include breakpoint_mixin(medium){
+					display:inline;
+				}
+			}
+		}
+		
+		h2{
+			font-size:2em;
+			padding: 0px;
+			margin: 0px;
+		}
+		
+		p{
+			@include breakpoint_mixin(medium){
+				font-size:0.75em;
+			}
+			@include breakpoint_mixin(large){
+				font-size:1em;
+			}
+		}
+		
+		hr{
+			background-color:white;
+			border: 0;
+			height: 3px;
+			width:50%;
+			
+			margin-top:2em;
+			margin-bottom:2em;
+			
+			@include breakpoint_mixin(medium){
+				margin-top:1em;
+				margin-bottom:1em;
+			}
+			@include breakpoint_mixin(1000px){
+				margin-top:2em;
+				margin-bottom:2em;
+			}
+		}
+
+		form{
+			text-align:center;
+			
+			//$form_t_color: white;
+			$form_t_color: black;
+			$form_t_color_p: rgba($form_t_color, 0.5);
+			
+			input{
+				height:1.75em;
+				font-size:1.5em;
+				/*background-color:transparent;*/
+				
+				font-weight:bold;
+				/*border: 1px solid #262626;*/
+				border:none;
+				margin-bottom:0.25em;
+				/*margin-left: -10px;*/
+				margin-left: auto;
+				margin-right: auto;
+				
+				text-align:center;
+				width: 100%;
+				display:block;
+				
+				
+				@include breakpoint_mixin(medium){
+					padding-left:15px;
+					color:$form_t_color;
+					/*margin-left: 0px;*/
+					margin-bottom:0em;
+					
+					height:1.1em;
+					font-size:0.7em;
+					
+					@include inp_ph_mixin(){
+						color: $form_t_color_p;
+					};
+				}
+				
+				@include breakpoint_mixin(large){
+					padding-left:5px;
+					height:1.66em;
+					font-size:1.4em;
+					margin-bottom:5px;
+				}
+				
+				@include breakpoint_mixin(1000px){
+					width:inherit;
+				}
+			}
+			
+			button{
+				/*clear:both;*/
+				font-size:1.5em;
+				/*height:5em;*/
+				margin:auto;
+				margin-top:15px;
+				display:block;
+				background-color:#262626;
+				border:none;
+				padding: 12px;
+				color: white;
+				text-transform: uppercase;
+				width:8em;
+				
+				@include breakpoint_mixin(medium){
+					margin-top:5px;
+					font-size:1em;
+					padding: 6px;
+				}
+				@include breakpoint_mixin(large){
+					font-size:1.25em;
+					padding: 9px;
+				}
+				@include breakpoint_mixin(1000px){
+					margin-top:15px;
+					font-size:1.5em;
+					padding: 12px;
+				}
+			}
+		}
+	}
+	
+	/*img, & object{*/
+	img.svg_arrow{
+		width: 10%;
+		display:none;
+		
+		@include breakpoint_mixin(medium){
+			display:inline;
+		}
+	}
+	
+	object{
+		float:right;
+		height:inherit;
+		/*min-height:95vw;*/
+		overflow:hidden;
+		background-image: url(#{$IMG_DIR}/section_3/form_bg_faded.jpg);
+		
+		@include breakpoint_mixin(medium){
+			min-height:inherit;
+		}
+		
+		display:none;
+	}
+}/*end section '#section_Get_Foodkick' */
+
+section#section_How_it_works{
+	margin-top:10px;
+	margin-bottom: 50px;
+	text-align:center;
+	
+	h1{
+		text-align:center;
+		
+		font-weight:normal;
+		color:#2D2E37;
+		
+		@include breakpoint_mixin(medium){
+			font-size: 24pt;
+		}
+	}
+	
+	article{
+		min-height:220px;
+		mix-blend-mode: darken;
+		
+		@include breakpoint_mixin(medium){
+			display:inline-block;
+			width:300px;
+			vertical-align:top;
+		}
+		
+		&:last-of-type{
+			figcaption:before{
+				display:none;
+			}
+		}
+	}
+	
+	figure{
+		div{
+			margin-bottom: 30px;
+			height: 109px;
+			vertical-align: bottom;
+			display: table-cell;
+			
+			&::after{
+				content: " ";
+				min-width:250px;
+				border-bottom: #722A81 solid 4px;
+				display:block;
+				
+				@include breakpoint_mixin(medium){
+					min-width:305px;
+				}
+			}
+		}
+		img, & object{
+			position:relative;
+			top:9px;
+		}
+		
+		figcaption{
+			color: $main_purple;
+			min-width:250px;
+			float:left;
+			
+			@include breakpoint_mixin(medium){
+				min-width:305px;
+				
+				&:before{
+
+					content: ">";
+					display: block;
+					float: right;
+					font-size: 48px;
+					height: 200px;
+					margin-right: 20px;
+					@include opacity_mixin(0.5);
+					font-family: none;
+					transform: scaleY(2);
+					height: 48px;
+					margin-bottom: 80px;
+					margin-left: 10px;
+					margin-top: 18px;
+				}
+			}
+			
+			h4{
+				color: $main_purple;
+				font-family: $GraphikApp_s_n;
+				margin-bottom: 4px;
+			}
+		}
+	}
+	
+	.download_button{
+		margin-top:35px;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}/*end section '#section_How_it_works' */
+
+section#section_Whats_Good{
+	margin-bottom:30px;
+	
+	.container{
+		/*width:600px;*/
+		width: 100%;
+		
+		@include breakpoint_mixin(large){
+			width: 50%;
+			float:left;
+		}
+		
+		.carousel_Whats_Good:before{
+			background-color:rgba(black, 0.5);
+			color:white;
+			text-transform:uppercase;
+			position:absolute;
+			z-index: 11;
+			width: 100%;
+			text-align: center;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			
+			@include breakpoint_mixin(large){
+				width: 50%;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+		}
+		#carousel_Whats_Good_foodkick:before{
+			content:"Now on foodkick";
+		}
+		#carousel_Whats_Good_scenes:before{
+			content:"Behind the scenes";
+		}
+		
+		figure{
+			margin: 0px;
+			
+			h4{
+				position:absolute;
+				background-image:url(#{$SVG_SRC}section_4/h4_backing.svg);
+				background-repeat: no-repeat;
+				min-height: 52px;
+				min-width: 180px;
+				color:white;
+				text-transform:uppercase;
+				width: 33%;
+
+				background-size: 100% 100%;
+				background-position: 0px -10px;
+				display: block;
+				padding-top: 3%;
+				padding-left: 5%;
+				/*margin-top:9%;*/
+				
+				bottom:185%;
+				left: -24%;
+				
+				@include breakpoint_mixin(medium){
+					padding-top: 1.75%;
+				}
+			}
+			
+			figcaption{
+				position: absolute;
+				width: 75%;
+				height: 42%;
+				bottom: 0px;
+				left: calc(20% - 23px);
+				padding: 0px;
+				background-color: rgba(white, 0.66);
+				
+				h1{
+					margin-top:10px;
+					margin-bottom: 0px;
+					/*font-size: 21pt;*/
+					text-align: center;
+					
+					font-size: 1.25em;
+					
+					@include breakpoint_mixin(medium){
+						margin-top:1%;
+						font-size: 1.5em;
+					}
+
+					@include breakpoint_mixin(large){
+						margin-top:2%;
+						/*font-size: 1.75em;*/
+						
+						font-size: 1.5vw;
+					}
+				}
+				
+				p{
+					font-size: 0.66em;
+					margin: 5px 10px;
+					
+					@include breakpoint_mixin(medium){
+						font-size: 1em;
+					}
+				}
+			}
+			
+			img{
+				width:100%;
+				
+				&#action_branson{
+					@include rounded_mixin(50%);
+					
+					@include box_shadow_mixin(1, 1, 4, rgba(black, 0.5));
+					
+					/*height: 60px;
+					width: 60px;*/
+					height: 38%;
+					width: auto;
+					position: absolute;
+					top: -35%;
+					/*left: calc(50% - 40px);*/
+					left: calc(38%);
+				}
+			}
+		}
+	}
+	
+	.slidesjs-pagination{
+		position: relative;
+		top: -60px;
+		width: 100%;
+		text-align: center;
+		padding: 0px;
+		
+		li a{
+			background-color:rgba(black, 0.5);
+			
+			&.active{
+				background-color:rgba(black, 0.75);
+			}
+			
+			&:hover{
+				background-color:rgba(black, 1);
+			}
+		}
+	}
+}/*end section '#section_Whats_Good' */
+
+section#section_FOODKICK{
+	margin:auto;
+	display:none;
+	
+	@include breakpoint_mixin(medium){
+		/*display:table;*/
+	}
+	
+	figure{
+		display:block;
+		vertical-align:top;
+		width:20%;
+		padding-left:1%;
+		margin-bottom: 66px;
+		
+		@include breakpoint_mixin(medium){
+			display:table-cell;
+		}
+		
+		p.author{
+			white-space:nowrap;
+		
+			img{
+				@include rounded_mixin(25px);
+				border:1px solid rgba(black, 0.5);
+				float:left;
+			}
+			
+			span.author_name{
+				text-transform:uppercase;
+				font-weight:bold;
+				
+				margin: 15px 0px 0px 5px;
+				display: inline-block;
+			}
+		}
+		
+		figcaption{
+			width: 200px;
+		
+			.likes{
+				
+				&:before{
+					content: "\2764";
+				}			
+			}
+		}
+	}
+}/*end section '#section_FOODKICK' */
+
+section.forgot_password_section{
+	height:90vh;
+	width:calc(100vw - 20px);
+	text-align:center;
+	vertical-align:middle;
+	display:table-cell;
+	/*display:inline-block;*/
+	/*padding-left: 25%;
+	padding-right: 25%;*/
+	margin-top:150px;
+	
+	h1,h2,h3{
+		display:inline-block;
+	}
+	
+	table{
+		margin:auto;
+		
+		text-align:left;
+		
+		.bodyCopy{
+			white-space:nowrap;
+		}
+		
+		.text9{
+			font-style:italic;
+		}
+		
+		.text13{
+			padding-top:10px;
+		}
+		
+		.text13bold{
+			font-weight:bold;
+		}
+	}
+}
+
+footer{
+	background-color:#2D2E37;
+	margin-top:20px;
+	padding-bottom:40px;
+	color:white;
+	text-transform:uppercase;
+	
+	.stripes{
+		text-align: center;
+		background: repeating-linear-gradient(
+			-45deg,
+			#2D2E37,
+			#2D2E37 26px,
+			#575860 6px,
+			#575860 30px
+		);
+		
+		button{
+			margin-top: 25px;
+			margin-bottom: 25px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+	
+	section#footer_subsection{
+		text-align:center;
+		margin-top:30px;
+
+		&, & *{
+			font-family: '#{$GraphikApp_s_n}';
+		}
+	
+		section{
+			margin-left:40px;
+			margin-right:40px;
+			margin-bottom: 60px;
+			text-align:left;
+			vertical-align: top;
+			
+			@include breakpoint_mixin(medium){
+				width:calc(20% - 15px);
+				margin-left:15px;
+				display:inline-block;
+			}
+			
+			&:first-of-type{
+				text-align:center;
+				
+				img, & object{
+					width:150px;
+					height:100px;
+					clear:both;
+					
+					margin:30px 30px 0px 30px;
+				}
+			}
+			
+			&.last{
+				ul{
+					width:250px;
+					padding-left: 0px;
+					display:table;
+					
+					li{
+						list-style-type: none;
+						padding-right:45px;
+						display:table-cell;
+						/*width:calc(25% - 15px);*/
+						height:30px;
+						vertical-align:top;
+						
+						a{
+							width:30px;
+							height:inherit;
+							display: block;
+							background-repeat: no-repeat;
+							
+							@include opacity_mixin(0.75);
+							
+							&:hover{
+								@include opacity_mixin(1);
+							}
+						}
+					}
+				}
+			}
+			
+			a{
+				color:white;
+				text-decoration:none;
+			}
+			
+			hr{
+				margin-bottom:35px;
+			}
+		}
+	}
+}
+
+/* special styled elements (sitewide) */
+.mobile{
+	@include breakpoint_mixin(medium){
+		display:none;
+	}
+}
+
+.ucwords{
+	text-transform:uppercase;
+}
+
+.slidesjs-previous, .slidesjs-next {
+	display:none;
+}
+
+.slidesjs-pagination { /* those little white dots that always seem to be used every carousel in existence */
+	list-style: none;
+	position:relative;
+	display:inline-block;
+	
+	z-index: 11;
+	
+	li {
+		margin: 0 3px;
+		display: inline-block;
+		
+		a {
+			display: block;
+			width: 13px;
+			height: 0;
+			padding-top: 13px;
+
+			@include rounded_mixin(8px);
+			
+			float: left;
+			overflow: hidden;
+			
+			&:hover { background-position: 0 -26px; background-color: rgba(#FFF, 0.9); }
+			&:visited { color: #333 }
+			&:active { color: #9e2020 }
+		}
+	}
+}
+
+
+button.download_button{
+	width: 170px;
+	height: 45px;
+	border:none;
+	text-transform:uppercase;
+	font-weight:bold;
+	cursor: pointer;
+	
+	&.purple{
+		background-color:$main_purple;
+		color:white;
+		
+		&:hover{
+			background-color:#A3D;
+		}
+	}
+	
+	&.white{
+		background-color:#EEE;
+		color:#2D2E37;
+		font-family: '#{$GraphikApp_s_n}';
+		
+		&:hover{
+			background-color:#FFF;
+			color:black;
+		}
+	}
+
+	@include breakpoint_mixin(large){
+		width:277px;
+		height:80px;
+	}
+}
+
+button.appstore_button{
+	width: 120px;
+    height: 40px;
+	background-color:transparent;
+	border:none;
+
+	@include breakpoint_mixin(large){
+		width: 220px;
+		height: 70px;
+	}
+}
