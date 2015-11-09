@@ -160,8 +160,8 @@ String previousPage;
 	--%>
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><!-- for jquery and other things -->
 	<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
-	<script src="<%=JS_DIR %>/app.js"></script> 
-	<!-- <jwr:script src="/foodkick.js" useRandomParam="false" />-->
+	<script src="<%=JS_DIR %>/foodkick.js"></script>
+	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
 	<script type="text/javascript">
 		window.IMAGES_DIR = "<%=IMAGES_DIR%>";
 		OAS_AD('HPFeatureTop');
