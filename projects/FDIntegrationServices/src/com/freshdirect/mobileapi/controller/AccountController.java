@@ -183,20 +183,45 @@ public class AccountController extends BaseController {
 
     private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user) throws FDException, JsonException, ServiceException {
         String addressId = user.getReservationAddressId();
+        ShipToAddress anonymousAddress = null;
+        
         if (addressId == null) {
-            if (user.getDefaultShipToAddress() != null){
-                addressId = user.getDefaultShipToAddress();
-            } else{
-            	if(user.getDeliveryAddresses().size() == 0) {//This can happen when user signed up through Iphone.
-            		Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
-            		setResponseMessage(model, responseMessage, user);
-            		return model;
-            	}
-            		
-            		addressId =  user.getDeliveryAddresses().get(0).getId();
-            }
+        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
+	            if (user.getDefaultShipToAddress() != null){
+	                addressId = user.getDefaultShipToAddress();
+	            } else{
+	            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
+	            		addressId =  user.getDeliveryAddresses().get(0).getId();
+	            	}	            	
+	            }
+        	}
+        	if(addressId == null) { // Still Null See if it has anonymous address
+        		if(user.getAddress() != null && user.getAddress().getAddress1() != null) {
+        			anonymousAddress = ShipToAddress.wrap(user.getAddress());
+        		}
+        	}     	
+        	
         }
-        return getDeliveryTimeslot(model, user, addressId);
+        
+        if (anonymousAddress != null) {
+        	
+        	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
+            DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+
+            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+            responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
+            setResponseMessage(model, responseMessage, user);
+            return model;
+    	} else if(addressId == null) {
+        	
+        	Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
+    		setResponseMessage(model, responseMessage, user);
+    		return model;
+        } else {
+    		
+    		return getDeliveryTimeslot(model, user, addressId);
+    	}
+        
     }
 
     private TimeSlotCalculationResult getTimeSlotCalculationResult(ModelAndView model, SessionUser user, String addressId)

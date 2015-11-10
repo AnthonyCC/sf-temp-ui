@@ -81,7 +81,9 @@ public class DeliveryAddress {
         Result result = wrapper.getDeliveryTimeSlotResult(this.address);
         final FDDeliveryTimeslotModel model = result.getDeliveryTimeslotModel();
         TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(model, user.isChefsTable(), preReservationMode, user.isDpNewTcBlocking());
-        user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
+        if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
+        	user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
+        }
         
         return timeSlotCalculationResult;
     }
@@ -91,7 +93,9 @@ public class DeliveryAddress {
         Result result = wrapper.getDeliveryTimeSlotResult(this.address,isAuthenticated);
         final FDDeliveryTimeslotModel model = result.getDeliveryTimeslotModel();
         TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(model, user.isChefsTable(), preReservationMode, user.isDpNewTcBlocking());
-        user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
+        if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
+        	user.setReservationAndPreselectedTimeslotIds(model.getTimeslotList(), timeSlotCalculationResult, this.address);
+        }
         
         return timeSlotCalculationResult;
     }

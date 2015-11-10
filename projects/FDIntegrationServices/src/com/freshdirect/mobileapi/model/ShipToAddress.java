@@ -89,6 +89,21 @@ public class ShipToAddress extends DeliveryAddress {
         }
         return wrappedAddresses;
     }
+    
+    public static ShipToAddress wrap(AddressModel anonymousAddress){
+
+ 		ErpAddressModel address = new ErpAddressModel();
+ 		address.setAddress1(anonymousAddress.getAddress1());
+ 		address.setApartment(anonymousAddress.getApartment());
+ 		address.setZipCode(anonymousAddress.getZipCode());
+        address.setCity(anonymousAddress.getCity());
+        address.setState(anonymousAddress.getState());
+        address.setServiceType(EnumServiceType.HOME);
+        
+        ShipToAddress newInstance = new ShipToAddress();
+        newInstance.address = address;
+        return newInstance;
+ 	}
 
     public static ShipToAddress wrap(ErpAddressModel address) {
         ShipToAddress newInstance = new ShipToAddress();
