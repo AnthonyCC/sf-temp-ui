@@ -65,7 +65,7 @@ String previousPage;
 					<ul class="dropdown mobile_dropdown">
 						<li><a href="#How_it_works">How It Works</a></li>
 						<li><a href="#Whats_Good">What's Good</a></li>
-						<li><a href="#MYFOODKICK">#MYFOODKICK</a></li>
+						<!--  <li><a href="#MYFOODKICK">#MYFOODKICK</a></li>-->
 						<li><a href="#Get_Foodkick">Get Foodkick</a></li>
 					</ul>
 				</li>
@@ -77,7 +77,7 @@ String previousPage;
 						<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
 					</a>
 				</li>
-				<li class="standard_link"><a href="#MYFOODKICK">#MYFOODKICK</a></li>
+				<!--  <li class="standard_link"><a href="#MYFOODKICK">#MYFOODKICK</a></li> -->
 				<li class="standard_link"><a href="#Get_Foodkick">Get Foodkick</a></li>
 			</ul>
 		</nav>
