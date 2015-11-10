@@ -66,6 +66,7 @@
   height: 16px;
 }
 
+.portrait-item > form.atc > .atc-info,
 .portrait-item > .atc-info {
   float: left;
   width: 100%;
