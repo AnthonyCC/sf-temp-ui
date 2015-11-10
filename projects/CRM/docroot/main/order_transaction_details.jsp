@@ -51,6 +51,7 @@
 <div class="list_content" style="height: 65%;">
 <table width="100%"  cellpadding="0" cellspacing="0" border="0" class="list_content_text">
 <%
+    ErpSaleModel saleModel = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) order).getSale();
     List txList = new ArrayList( saleModel.getTransactions() );
   	Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
 	CrmAgentModel currentAgent = CrmSession.getCurrentAgent(session);

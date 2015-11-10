@@ -56,7 +56,7 @@ boolean makeGood = EnumPaymentType.MAKE_GOOD.equals(nav_order.getPaymentMethod()
 boolean isEBTPayment = EnumPaymentMethodType.EBT.equals(nav_order.getPaymentMethod().getPaymentMethodType());
 OrderPermissionsI orderPermissions = new OrderPermissionsImpl(nav_order.getOrderStatus(), app, makeGood, nav_order.hasCreditIssued());
 boolean addOnOrder = EnumPaymentType.ADD_ON_ORDER.equals(nav_order.getPaymentMethod().getPaymentType());
-ErpSaleModel saleModel = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) nav_order).getSale();
+ErpSaleModel saleModel1 = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) nav_order).getSale();
 
 boolean displayChargeOrderLink = EnumSaleStatus.SETTLEMENT_FAILED.equals(nav_order.getOrderStatus()) || EnumSaleStatus.PAYMENT_PENDING.equals(nav_order.getOrderStatus());
 
@@ -248,7 +248,7 @@ boolean hasCase = false;
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/main/delivery_center_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Delivery Center</a></div>
 				<% } %>
 				<%	
-				if(isRegularOrder && orderPermissions.isAddOnOrder() && saleModel.getAddOnOrderCountOfParent() <=5 && !(addOnOrder)){%>
+				if(isRegularOrder && orderPermissions.isAddOnOrder() && saleModel1.getAddOnOrderCountOfParent() <=5 && !(addOnOrder)){%>
 				    <div class="cust_sub_nav" style="width: 120px;">
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
 				    		<a href="/main/masquerade.jsp?parentOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
