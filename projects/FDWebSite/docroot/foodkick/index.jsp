@@ -113,7 +113,7 @@ String previousPage;
 			<section id="footer_subsection">
 				<section>
 					<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
-					<div>&copy;2015 FOODKICK</div>
+					<div>&copy;FRESH DIRECT, LLC</div>
 				</section>
 				<section>
 					<h4>Contact</h4>
