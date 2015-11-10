@@ -94,7 +94,7 @@ public interface SystemMessageList {
 
 	public final static String MSG_UNIQUE_USERNAME				= "An account already exists with this email address.  Please enter a different one or <a href=\"/login/forget_password.jsp\">click here</a> if you have forgotten your password.";
 	public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP	= "An account already exists with this email address.  Please enter a different one or <a href=\"#\" onclick=\"window.top.location='/login/forget_password.jsp';\">click here</a> if you have forgotten your password.";
-    public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL	= "An account with the referenced e-mail address already exists. Please <a href=\"/social/login.jsp\">Log In</a> .";
+    public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL	= "An account with the referenced e-mail address already exists. Please <a href=\"/social/login.jsp\">Sign in</a> .";
 	public final static String MSG_INVALID_ADDRESS				= "Sorry, we're unable to recognize this address - please make sure it's entered correctly.";
 	public final static String MSG_OUTERSPACE_ADDRESS			= "We're sorry, but you must have a valid home address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please check your address or enter a new address.";
 
