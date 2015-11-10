@@ -115,6 +115,10 @@ public class UnavailabilityPopulator {
 		}
 	}
 	
+    private static boolean hasProductSpecialLayout(ProductModel productNode, EnumProductLayout layout) {
+        return (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == layout);
+	}
+
 	//TODO revise html generation
 	private static void processCartLine(UnavailabilityData data, FDCartLineI cartLine, FDAvailabilityInfo info, FDSessionUser user){
 		try {
@@ -159,16 +163,11 @@ public class UnavailabilityPopulator {
 				}
 				
 				if (!singleOptionIsOut) {
-                    ProductModel productNode = cartLine.lookupProduct();
-                    boolean mealBundleProduct = (productNode != null && productNode.getSpecialLayout() != null && productNode.getSpecialLayout() == EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT);
-                    if (!mealBundleProduct) {
-                        description.append("<a href=\"/product_modify.jsp?cartLine=" + cartLine.getRandomId() + "&skuCode=" + cartLine.getSku().getSkuCode()
-                                + "\">Click here</a> to select other options.");
-                    }
-
+                    description.append("<a href=\"/product_modify.jsp?cartLine=" + cartLine.getRandomId() + "&skuCode=" + cartLine.getSku().getSkuCode()
+                            + "\">Click here</a> to select other options.");
 				}
 	
-				line.setDescription(description.toString());
+                line.setDescription(hasProductSpecialLayout(cartLine.lookupProduct(), EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) ? "" : description.toString());
 				data.getNonReplaceableLines().add(line);
 				
 			} else if (info instanceof FDMuniAvailabilityInfo) {

@@ -17,7 +17,7 @@
   		{foreach $line in $nonReplaceableLines}
 			<br>
 			<div><b>{$line.cartLine.quantity} {$line.cartLine.description}</b>  {if $line.cartLine.configurationDescription} ({$line.cartLine.configurationDescription}){/if}</div>
-			<div>{$line.description}</div>
+			{if $line.description}<div>{$line.description}</div>{/if}
 			//send unavailable cart line id back to server as ATC disrupts server side state
 			<input style="display:none" type="radio" name="line{$line.cartLine.randomId}" id="{$line.cartLine.randomId}" value="remove" data-component="atpremove" checked>
 		{/foreach}
