@@ -18,7 +18,7 @@ var FreshDirect = FreshDirect || {};
     setMessage:{
       value:function(item) {
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
-        var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
+        var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"], [id="trnp_'+item.itemId+'"], [id="trnp_'+item.atcItemId+'"]'),
             controls, amount, product, oSu, cSu, oQ, cQ;
 
         if(element) {
@@ -67,7 +67,7 @@ var FreshDirect = FreshDirect || {};
     },
     renderItem:{
       value:function(item) {
-        var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
+        var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"], [id="trnp_'+item.itemId+'"], [id="trnp_'+item.atcItemId+'"]'),
             controls, product, oSu, cSu, oQ, cQ;
 
         if(element.size()) {

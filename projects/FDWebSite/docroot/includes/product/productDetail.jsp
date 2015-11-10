@@ -84,19 +84,19 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 								<soy:render template="pdp.badges" data="${productExtraPotato}" />
 								<soy:render template="pdp.heatRating" data="${productPotato}" />
 							</div>
-							<div class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
+							<form fdform="pdpatc" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
 								<soy:render template="pdp.productDataMin" data="${productPotato}" />
 								<soy:render template="pdp.configWrapper" data="${productPotato}" />
 								<soy:render template="pdp.ecoupon" data="${productPotato}" />
 								<div class="pdp-atc">
 									<div class="pdp-atc-buttons">
-										<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" alt="" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" alt="" data-component="addToListButton">add to list</button>
+										<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" type="button" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" type="button" data-component="addToListButton">add to list</button>
 									</div>
 									<div>
 										<soy:render template="pdp.subtotal" data="${productPotato}"/>
 									</div>
 								</div>
-							</div>
+							</form>
 							<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
 								<%-- don't show evenBetter if we're in group scale context --%>
 							<c:if test="${empty param.grpId}">

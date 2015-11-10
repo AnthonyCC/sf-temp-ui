@@ -45,8 +45,6 @@
 	vertical-align: middle;
 }
 
-button.addtocart,
-button.customize,
 button[data-component="applyCustomization"],
 button[data-component="saveCustomization"],
 #reset {
@@ -58,34 +56,6 @@ button[data-component="saveCustomization"],
 	border:none;
 	cursor:pointer;
 	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
-}
-
-
-
-button.addtocart {
-	width:82px;
-    background-position: -5px -5px;
-}
-
-button.addtocart:hover,
-button.addtocart.incart:hover {
-    background-position: -97px -5px;
-}
-
-button.addtocart.incart {
-    background-position: -105px -115px;
-}
-
-button.customize {
-    width: 82px;
-    background-position: -240px -152px;
-}
-button.customize:hover,
-button.customize.incart:hover {
-    background-position: -240px -184px;
-}
-button.customize.incart{
-    background-position: -155px -216px;
 }
 
 [data-feature-quickshop="2_0"] button.qs-addtolist,

@@ -389,6 +389,7 @@
     <div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
   </div>
   {/if}
+  <form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
   {call common.potatoTransactionalGridItemControls}
     {param customizePopup:$customizePopup /}
     {param hasTerms:$hasTerms /}
@@ -422,12 +423,13 @@
   {if $originalLineId}
     <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
   {/if}
+  </form>
   {if not $freeSamplePromoProduct}
   <div class="portrait-item-atl">
-    <span class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</span>
+    <button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</button>
     {if $listId and $originalLineId}
-    <span class="deletefromlist cssbutton white transparent icon-remove-before" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</span>
-    <span class="editinlist cssbutton purple transparent" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</span>
+    <button class="deletefromlist cssbutton white transparent icon-remove-before" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</button>
+    <button class="editinlist cssbutton purple transparent" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</button>
     <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}" />
     {/if}
   </div>
@@ -435,9 +437,9 @@
   {if $replacement}
   <div class="portrait-item-replacement">
     {if $useReplacement}
-    <span class="cssbutton green transparent">We Recommend</span>
+    <button class="cssbutton green transparent">We Recommend</button>
     {else}
-    We Recommend: <span class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</span>
+    We Recommend: <button class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</button>
     {/if}
   </div>
   {/if}
@@ -506,7 +508,7 @@
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
         {if $customizePopup}
-          <span class="customize cssbutton orange small" {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">Add to Cart</span>
+          <button class="customize cssbutton orange small" {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">Add to Cart</button>
         {else}
           {if $quantity}
             {call common.subtotal}
@@ -520,8 +522,8 @@
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
           {/if}
-          <span class="addtocart cssbutton orange small" data-component="ATCButton" alt="">Add to Cart</span>
-          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton" alt="">Add to List</span>
+          <button class="addtocart cssbutton orange small" data-component="ATCButton" alt="">Add to Cart</button>
+          <button class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton" alt="">Add to List</button>
         {/if}
       </div>
       {call common.productData}
@@ -577,6 +579,7 @@
           {param salesUnit:$salesUnit /}
           {param quantity:$quantity /}
           {param freeSamplePromoProduct:$freeSamplePromoProduct /}
+          {param uid: $catId+'_'+$productId /}
         {/call}
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
@@ -598,7 +601,7 @@
           {else}
             <div class="subtotalPlaceholder"></div>
           {/if}
-          <span class="customize cssbutton orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</span>
+          <button type="button" class="customize cssbutton orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</button>
         {else}
           {if $quantity}
             {call common.subtotal}
@@ -612,7 +615,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <span class="addtocart cssbutton orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></span>
+            <button type="button" class="addtocart cssbutton orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
           {/if}
         {/if}
       </div>

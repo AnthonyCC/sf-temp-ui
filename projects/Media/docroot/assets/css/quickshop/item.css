@@ -48,67 +48,6 @@
   display: inline-block;
 }
 
-.itemlist-item-header-buttons button,
-button[data-component="addToListButton"] {
-	display: inline-block;
-	padding: 0;
-	border: none;
-	text-indent: -9000px;
-	overflow: hidden;
-	cursor: pointer;
-	margin-left: 12px;
-}
-
-.itemlist-item-header-buttons button.save,
-.itemlist-item-header-buttons button.deletefromlist,
-.itemlist-item-header-buttons button.deletefromrecipe,
-.itemlist-item-header-buttons button.addtolist,
-button[data-component="addToListButton"] {
-	background:url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
-}
-
-.itemlist-item-header-buttons button.save {
-    width: 45px;
-    height: 22px;
-    background-position: -332px -171px;
-  margin-top: 3px;
-	cursor: default;
-
-}
-.itemlist-item.changed .itemlist-item-header-buttons button.save {
-    background-position: -342px -203px;
-	cursor: pointer;
-}
-.itemlist-item.changed .itemlist-item-header-buttons button.save:hover,
-.itemlist-item.changed .itemlist-item-header-buttons button.save:focus {
-    background-position: -342px -235px;
-}
-.itemlist-item-header-buttons button.deletefromrecipe,
-.itemlist-item-header-buttons button.deletefromlist {
-    width: 22px;
-    height: 22px;
-    background-position: -189px -5px;
-}
-.itemlist-item-header-buttons button.deletefromrecipe:hover,
-.itemlist-item-header-buttons button.deletefromrecipe:focus,
-.itemlist-item-header-buttons button.deletefromlist:hover,
-.itemlist-item-header-buttons button.deletefromlist:focus {
-    background-position: -221px -5px;
-
-}
-.itemlist-item-header-buttons button.addtolist,
-button[data-component="addToListButton"] {
-    width: 22px;
-    height: 22px;
-    background-position: -253px -5px;
-}
-.itemlist-item-header-buttons button.addtolist:hover,
-.itemlist-item-header-buttons button.addtolist:focus,
-button[data-component="addToListButton"]:hover,
-button[data-component="addToListButton"]:focus {
-    background-position: -285px -5px;
-}
-
 .itemlist-item-header-name {
 	font-size: 12px;
 	font-weight: bold;

@@ -4,7 +4,8 @@
  * @param data
  */
 {template .productDisplay autoescape="false"}
-<div class="leftColumn" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
+<div class="leftColumn">
+<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
 	<h1>{if $data.productName}{$data.productName}{/if}
 	{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
 	{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
@@ -44,13 +45,13 @@
   <div class="buttons">
 	{if $data.ATCApply}
 		<span data-component="applyCustomization">
-      <span class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></span>
+      <button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
     </span>
 	{else}
-      <span class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></span>
-      <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</span>
+      <button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
+      <button type="button" class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</button>
 		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br>
-      <span class="cssbutton blue" data-component="saveCustomization"><span class="message">Save customization</span></span>
+      <button type="button" class="cssbutton blue" data-component="saveCustomization"><span class="message">Save customization</span></button>
     </div>{/if}
 	{/if}
   </div>
@@ -61,6 +62,7 @@
 	/*<a href="/product.jsp?catId={$data.catId}&productId={$data.productId}" class="moreinfo">More about this product</a>*/
 	<a href="{$data.productPageUrl}" class="learnmore">Learn more</a>
 	<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
+</form>
 </div>
 {/template}
 
@@ -120,7 +122,7 @@
     {param optional:false /}
   {/call}
  {if $salesUnitDescrPopup}
-   <button class="cssbutton green css-help-button" onclick="pop('{$salesUnitDescrPopup}',335,375)">?</button>
+   <button type="button" class="cssbutton green css-help-button" onclick="pop('{$salesUnitDescrPopup}',335,375)">?</button>
  {/if}
 </div>
 {/if}

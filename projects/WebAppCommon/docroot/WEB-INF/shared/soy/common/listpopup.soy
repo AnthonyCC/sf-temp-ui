@@ -5,28 +5,32 @@
  * @param data shopping lists
  */
 {template .selectList private="true" autoescape="true"}
-	<p>
-		<label for="addtolist-selectList">Add to Existing List</label>
-		<select name="selectList" id="addtolist-selectList">
-      {foreach $listInfo in $data}
-        <option value="{$listInfo.listId}">
-          {$listInfo.name}
-        </option>
-      {/foreach}
-		</select>
-		<button class="addtolist-button-add enabled cssbutton green">Add</button>
-	</p>
+  <form fdform="selectlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
+    <p>
+      <label for="addtolist-selectList">Add to Existing List</label>
+      <select name="selectList" id="addtolist-selectList">
+        {foreach $listInfo in $data}
+          <option value="{$listInfo.listId}">
+            {$listInfo.name}
+          </option>
+        {/foreach}
+      </select>
+      <button type="button" fdform-default-button class="addtolist-button-add enabled cssbutton green">Add</button>
+    </p>
+  </form>
 {/template}
 
 /**
  */
 {template .newList private="true" autoescape="true"}
-	<p>
-		<label for="addtolist-newList">Create New List</label>
-		<label class="error"></label>
-		<input type="text" id="addtolist-newList" maxlength="35">
-		<button class="addtolist-button-go enabled cssbutton green">Create</button>
-	</p>
+  <form fdform="createlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
+    <p>
+      <label for="addtolist-newList">Create New List</label>
+      <label class="error"></label>
+      <input type="text" id="addtolist-newList" maxlength="35">
+      <button type="button" fdform-default-button class="addtolist-button-go enabled cssbutton green">Create</button>
+    </p>
+  </form>
 {/template}
 
 

@@ -393,6 +393,35 @@ var FreshDirect = FreshDirect || {};
     this.formatter(e, true);
   };
 
+  forms.decorateFields = function (formEl) {
+    $('input, select, textarea', formEl).each(function (i2, field) {
+      var $el = $(field), type = $el.attr('type'),
+          id, label, ph, name = $el.attr('name');
+
+      if (type !== 'hidden' && !$el.attr('id') && name) {
+        id = $(formEl).attr('fdform') + '_' + name;
+
+        if (type === 'radio' || type === 'checkbox') {
+          id = id + '_' + $el.attr('value');
+        }
+
+        $el.attr('id', id);
+
+        // check for label
+        if ($el) {
+          label = $el.closest('label').first();
+          if (label.size() > 0) {
+            label.attr('for', id);
+          } else {
+            ph = $el.attr('placeholder');
+            label = $('<label for="'+id+'" fdform-generated-label><span>'+(ph || name)+'</span></label>');
+            label.insertBefore($el);
+          }
+        }
+      }
+    });
+  };
+
   forms.initModule = function () {
     // prevent browsers validation
     $(document).on('submit', this.selector, this.submitForm.bind(this));
@@ -413,6 +442,11 @@ var FreshDirect = FreshDirect || {};
 
     $(document).on('paste keydown focus', '['+this.attrPrefix+'-formatter]', this.focusedFormatter.bind(this));
     $(document).on('change', '['+this.attrPrefix+'-formatter]', this.formatter.bind(this));
+
+    // try to create unique ids for fields that are missing it
+    $(this.selector).each(function (i, form) {
+      forms.decorateFields(form);
+    });
   };
 
   // listeners for validationErrors and submitSucceeded
@@ -486,6 +520,14 @@ var FreshDirect = FreshDirect || {};
   });
 
   formFillListener.listen();
+
+  // basic submit functions
+  forms.submitFns = {};
+  forms.submitFns.defaultButton = function (e) {
+    var formEl = $(e.currentTarget);
+
+    formEl.find('[fdform-default-button]').click();
+  };
 
   // basic success functions
   forms.successFns = {};

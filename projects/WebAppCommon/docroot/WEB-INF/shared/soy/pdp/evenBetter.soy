@@ -75,7 +75,7 @@
 
     {if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
 		
-    <div class="pdp-evenbetter-atc" data-cmeventsource="EB">
+    <form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-cmeventsource="EB">
 			<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 			<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
       {if $alcoholic}
@@ -94,14 +94,14 @@
 				{/call}
 			</div>
 			<div class="pdp-evenbetter-atcbutton">
-				<button data-component="ATCButton" class="cssbutton orange small">add to cart</button>
-        <button class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>
+				<button type="button" data-component="ATCButton" class="cssbutton orange small">add to cart</button>
+        <button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>
 				{call common.atcInCart}
 					{param amount:$inCartAmount /}
 					{param atcItemId:$atcItemId /}
 				{/call}
 			</div>
-		</div>
+		</form>
 	</div>
 </div>
 {/template}

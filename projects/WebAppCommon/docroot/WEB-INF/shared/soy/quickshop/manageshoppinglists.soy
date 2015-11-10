@@ -4,25 +4,27 @@
  * @param data shopping lists
  */
 {template .manageshoppinglists autoescape="true"}
-<ul class="manage">
-  <li class="header">
-    <span class="name">List</span>
-    <span class="rename">Rename List</span>
-    <span class="default">Make Default</span>
-    <span class="delete">Delete List</span>
-  </li>
-	{foreach $listInfo in $data}
-    <li class="item">
-			{call .editListInfo}
-				{param item:$listInfo /}
-			{/call}
+<form fdform="managelists" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
+  <ul class="manage">
+    <li class="header">
+      <span class="name">List</span>
+      <span class="rename">Rename List</span>
+      <span class="default">Make Default</span>
+      <span class="delete">Delete List</span>
     </li>
-  {/foreach}
-</ul>
-<div class="buttons">
-  <button class="qs-popup-cancel-button">cancel</button>
-  <button class="qs-popup-confirm-button">confirm changes</button>
-</div>
+    {foreach $listInfo in $data}
+      <li class="item">
+        {call .editListInfo}
+          {param item:$listInfo /}
+        {/call}
+      </li>
+    {/foreach}
+  </ul>
+  <div class="buttons">
+    <button type="button" class="qs-popup-cancel-button">cancel</button>
+    <button type="button" fdform-default-button class="qs-popup-confirm-button">confirm changes</button>
+  </div>
+</form>
 {/template}
 
 /**
@@ -39,19 +41,21 @@
  * @param data shopping lists
  */
 {template .manageshoppinglistsQS22 autoescape="true"}
-<ul class="manage">
-	{foreach $listInfo in $data}
-    <li class="item">
-			{call .editListInfoQS22}
-				{param item:$listInfo /}
-			{/call}
-    </li>
-  {/foreach}
-</ul>
-<div class="buttons">
-  <button class="qs-popup-cancel-button cssbutton grey">Cancel</button>
-  <button class="qs-popup-confirm-button cssbutton green">Save Changes</button>
-</div>
+<form fdform="managelists" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
+  <ul class="manage">
+    {foreach $listInfo in $data}
+      <li class="item">
+        {call .editListInfoQS22}
+          {param item:$listInfo /}
+        {/call}
+      </li>
+    {/foreach}
+  </ul>
+  <div class="buttons">
+    <button type="button" class="qs-popup-cancel-button cssbutton grey">Cancel</button>
+    <button type="button" fdform-default-button class="qs-popup-confirm-button cssbutton green">Save Changes</button>
+  </div>
+</form>
 {/template}
 
 /**

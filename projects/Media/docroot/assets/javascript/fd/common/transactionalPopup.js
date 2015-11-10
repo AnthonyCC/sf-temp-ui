@@ -119,6 +119,17 @@ var FreshDirect = FreshDirect || {};
 
           $('#'+popupId+' '+this.bodySelector).html('').append(target.clone());
 
+          // make ID-s unique
+          $('#'+popupId+' '+this.bodySelector+' [id]').each(function (i, el) {
+            el.id = 'trnp_'+el.id;
+          });
+          $('#'+popupId+' '+this.bodySelector+' [for]').each(function (i, el) {
+            $(el).attr('for', 'trnp_'+$(el).attr('for'));
+          });
+          $('#'+popupId+' '+this.bodySelector+' [fdform]').each(function (i, el) {
+            $(el).attr('fdform', 'trnp_'+$(el).attr('fdform'));
+          });
+
           $('#'+popupId).attr('data-cmeventsource', null);
           cmEvSource = $(target).closest('[data-cmeventsource]').data('cmeventsource');
 

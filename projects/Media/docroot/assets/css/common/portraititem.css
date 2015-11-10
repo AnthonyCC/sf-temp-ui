@@ -79,6 +79,8 @@
   transition-property: all;
 }
 
+.lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
+.portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
 .portrait-item > .atc-info .incart-info {
   display: block;
@@ -97,11 +99,14 @@
   z-index: 1;
 }
 
+.lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > .atc-info .incart-info {
   height: 20px;
   line-height: 20px;
 }
 
+.lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info,
+#transactionalPopup .portrait-item > form.atc > .atc-info .incart-info,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info,
 #transactionalPopup .portrait-item > .atc-info .incart-info {
   margin-top: -5px;
@@ -112,25 +117,37 @@
   top: 0;
 }
 
+.lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info.ADDING,
+#transactionalPopup .portrait-item > form.atc > .atc-info .incart-info.ADDING,
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info.ADDING,
 #transactionalPopup .portrait-item > .atc-info .incart-info.ADDING {
   top: -30px;
 }
 
+.lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > form.atc > .atc-info .incart-info.ADDING,
 .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart > .atc-info .incart-info.ADDING {
   top: -22px;
 }
 
+.lineitems22 .itemlist-item-addtocart > form.atc > .atc-info .incart-info[data-amount="0"],
 .lineitems22 .itemlist-item-addtocart > .atc-info .incart-info[data-amount="0"],
+.portrait-item > form.atc > .atc-info .incart-info[data-amount="0"],
 .portrait-item > .atc-info .incart-info[data-amount="0"] {
   display: none;
 }
 
+#transactionalPopup .portrait-item > form.atc > .atc-info[data-amount="0"],
 #transactionalPopup .portrait-item > .atc-info[data-amount="0"] {
   margin-top: -28px;
   visibility: hidden;
 }
 
+#transactionalPopup .portrait-item button.addtocart,
+#transactionalPopup .portrait-item button.customize {
+  width: 100%;
+}
+
+.portrait-item > form.atc > .atc-info .incart-message,
 .portrait-item > .portrait-item-controls + .atc-info .incart-message {
   display: none;
 }
@@ -153,16 +170,20 @@
 }
 
 #customizePopup .buttons .addtolist,
-.portrait-item-atl span.fakeaddtolist,
-.portrait-item-atl span.addtolist {
+.portrait-item-atl .fakeaddtolist,
+.portrait-item-atl .fakeaddtolist[data-component],
+.portrait-item-atl .addtolist,
+.portrait-item-atl .addtolist[data-component] {
+  box-sizing: content-box;
   font-weight: normal;
   height: 20px;
   line-height: 20px;
   border-radius: 50px;
   padding: 2px 12px;
+  margin: 0;
 }
 
-.portrait-item-atl span.deletefromlist {
+.portrait-item-atl .deletefromlist {
   margin-top: 4px;
 }
 
@@ -174,30 +195,30 @@
   display:none;
 }
 
-.qs-lists .portrait-item.unavailable .portrait-item-atl span.deletefromlist{
+.qs-lists .portrait-item.unavailable .portrait-item-atl .deletefromlist{
   display:block;
   text-align:center;
 }
 
 #customizePopup .buttons .addtolist:before,
-.portrait-item-atl span.fakeaddtolist:before,
-.portrait-item-atl span.addtolist:before {
+.portrait-item-atl .fakeaddtolist:before,
+.portrait-item-atl .addtolist:before {
   vertical-align: middle;
 }
 
-.portrait-item-atl span.editinlist {
+.portrait-item-atl .editinlist {
   display: none;
 }
 
-[data-component="product"].changed .portrait-item-atl span.editinlist {
-  display: block;
+[data-component="product"].changed .portrait-item-atl .editinlist {
+  display: inline-block;
 }
 
-[data-component="product"].unavailable.changed .portrait-item-atl span.editinlist {
+[data-component="product"].unavailable.changed .portrait-item-atl .editinlist {
   display: none;
 }
 
-.portrait-item-atl span.hiddenfakeaddtolist {
+.portrait-item-atl .hiddenfakeaddtolist {
 	display: none;
 }
 
@@ -205,6 +226,11 @@
   display: block;
   text-align: center;
   margin-top: 10px;
+}
+
+#transactionalPopup [data-component="product"] > form {
+  display: inline-block;
+  width: 100%;
 }
 
 .portrait-item-productimage_wrapper {
@@ -722,6 +748,7 @@ a.portrait-item-header-name:link {
   height:28px;
   line-height:28px;
   white-space:nowrap;
+  width: 100%;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls .addtocart,

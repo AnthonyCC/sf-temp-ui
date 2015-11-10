@@ -160,6 +160,14 @@ h2.centerline span {
   -webkit-user-select: none;
 }
 
+.qtyinput > button > div {
+  display: none;
+}
+
+.qtyinput .qtywrapper > label > span {
+  display: none;
+}
+
 .qtyinput.small {
   line-height:18px;
   font-size: 100%;

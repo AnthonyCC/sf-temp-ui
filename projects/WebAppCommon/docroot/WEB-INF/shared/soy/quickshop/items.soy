@@ -208,7 +208,7 @@
 {let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
 {let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
 <li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}>
-	<div class="itemlist-item-controls smaller" data-component="product-controls">
+	<form class="itemlist-item-controls smaller" data-component="product-controls" action="#" fdform="qsatc_{$item.itemId}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
 		<div class="itemlist-item-controls-subtotal">
 		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
 			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
@@ -236,13 +236,13 @@
 		</div>
 		<div class="itemlist-item-addtocart">
 			{if $replaced}
-				{if $item.customizePopup}<button class="customize cssbutton orange small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
-				{else}<span class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
+				{if $item.customizePopup}<button fdform-default-button type="button" class="customize cssbutton orange small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
+				{else}<button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
 				{/if}
 			{else}
 				{if not $item.customizePopup }
-<span class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
-				{else}<button class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
+          <button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+				{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
 				{/if}
 			{/if}
 			{call common.atcInCart}
@@ -261,7 +261,7 @@
 			{param originalLineId:$item.originalLineId /}
 			{param productPageUrl:$item.productPageUrl /}
 		{/call}
-	</div>
+	</form>
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">
       {if $item.discontinued}
@@ -321,10 +321,10 @@
   </div>
   {if $item.available}
   <div class="itemlist-item-header-buttons">
-    <span class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</span>
+    <button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
     {if $type == 'shopfromlists' and not $replaced}
-  		<span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc">Remove</span>
-  		<span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</span>
+  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc">Remove</button>
+  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
     {/if}
   </div>
   {else}
@@ -336,10 +336,10 @@
       {/if}
     </div>
     {if $type == 'shopfromlists' and not $replaced}
-    <div class="itemlist-item-header-buttons"><span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" data-alignpopup="tc-bc">Remove</span></div>
+    <div class="itemlist-item-header-buttons"><button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" data-alignpopup="tc-bc">Remove</button></div>
     {/if}
     {if $item.replacement and not $item.useReplacement}
-    <div class="itemlist-item-replacement">We Recommend: <span class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</span></div>
+    <div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
     {/if}
   {/if}
   </div>

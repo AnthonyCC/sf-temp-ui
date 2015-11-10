@@ -151,8 +151,8 @@ var FreshDirect = FreshDirect || {};
 		var items = fd.modules.common.productSerialize(element, true, true);
     ATC_BUS.push($.extend({items: items}, extraData));
 	}
-	
-	$(document).on('click','[data-component="ATCButton"]',function(e){
+
+  function eventATC (e) {
 		var items = fd.modules.common.productSerialize(e.target, true, true),
         cartdata = fd.modules.common.getCartData(e.target),
         amount,
@@ -168,15 +168,15 @@ var FreshDirect = FreshDirect || {};
     // set amount on button
     if (items.length) {
       amount = +items[0].quantity;
-      
+
       if (cartdata.max && (cartdata.max < amount + (cartdata.incart || 0))) {
         amount = cartdata.max - (cartdata.incart || 0);
       }
-      
-      e.currentTarget.setAttribute('data-amount', amount);
+
+      $(e.currentTarget).attr('data-amount', amount);
     }
 
-    var ignoreRedirect = e.currentTarget && e.currentTarget.getAttribute('data-ignoreredirect');
+    var ignoreRedirect = e.currentTarget && $(e.currentTarget).attr('data-ignoreredirect');
     ignoreRedirect = ignoreRedirect && ignoreRedirect === 'true';
 
     if(ignoreRedirect){
@@ -184,7 +184,20 @@ var FreshDirect = FreshDirect || {};
     }
 
 		ATC_BUS.push(e);
-	});
+  }
+
+  function formAddToCart(e) {
+    var ATCButton = e.formEl.find('[data-component="ATCButton"]').first();
+
+    if (ATCButton.size()) {
+      e.target = ATCButton;
+      e.currentTarget = ATCButton;
+    }
+
+    eventATC(e);
+  }
+
+	$(document).on('click','[data-component="ATCButton"]', eventATC);
 
 	$(document).on('addToCart',atcHandler);
 
@@ -212,6 +225,7 @@ var FreshDirect = FreshDirect || {};
 	
   fd.modules.common.utils.register("components", "AddToCart", {
     addToCart:addToCart,
+    formAddToCart:formAddToCart,
     requiredValidator:requiredValidator,
     atcFilter:atcFilter,
     triggerATC:triggerATC,

@@ -189,14 +189,6 @@ span.cssbutton.notext[class*=" icon-"] {
 	padding:0;
 }
 
-button.cssbutton.incart[data-component="ATCButton"] {
-	color:#c07b36;
-	text-shadow: 1px 1px rgba(240, 240, 240, 0.4);
-}
-
-button.cssbutton[data-component="addToListButton"] {
-}
-
 .cssbutton.white.transparent {
   color: #aaa;
   font-weight: normal;
