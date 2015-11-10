@@ -2,6 +2,7 @@ package com.freshdirect.payment.gateway.ejb;
 
 import java.util.Date;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.payment.gateway.BankAccountType;
 import com.freshdirect.payment.gateway.CreditCardType;
 import com.freshdirect.payment.gateway.GatewayType;
@@ -46,6 +47,7 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	private PaymentMethodType paymentType;
 	private String eWalletId;
 	private String eWalletTxId;
+	private EnumEStoreId eStoreId;
 	
 	/**
 	 * @return the eWalletTxId
@@ -269,6 +271,14 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	}
 	public void seteWalletId(String eWalletId) {
 		this.eWalletId = eWalletId;
+	}
+	
+	public void setEStoreId(EnumEStoreId eStoreId) {
+		this.eStoreId=eStoreId;
+	}
+	
+	public EnumEStoreId getEStoreId() {
+		return eStoreId;
 	}
 	
 }

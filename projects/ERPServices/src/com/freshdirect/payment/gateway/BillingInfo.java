@@ -1,5 +1,7 @@
 package com.freshdirect.payment.gateway;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+
 
 
 public interface BillingInfo extends java.io.Serializable {
@@ -25,5 +27,6 @@ public interface BillingInfo extends java.io.Serializable {
 	public void setEwalletId(String ewalletId);
 	public String getEwalletTxId();
 	public void setEwalletTxId(String ewalletId);
-
+	public void setEStoreId(EnumEStoreId eStore);
+	public EnumEStoreId getEStoreId();
 }

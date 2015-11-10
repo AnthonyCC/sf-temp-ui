@@ -1,5 +1,6 @@
 package com.freshdirect.payment.gateway.impl;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.payment.gateway.BillingInfo;
 import com.freshdirect.payment.gateway.Currency;
 import com.freshdirect.payment.gateway.Merchant;
@@ -17,7 +18,7 @@ class BillingInfoImpl implements BillingInfo{
 	private PaymentMethod pymtMethod;
 	private String ewalletId;
 	private String ewalletTxId;
-	
+	private EnumEStoreId eStore;
 	/**
 	 * @return the ewalletTxId
 	 */
@@ -183,6 +184,18 @@ class BillingInfoImpl implements BillingInfo{
 	public void setEwalletId(String ewalletId) {
 		this.ewalletId = ewalletId;
 		
+	}
+
+	@Override
+	public void setEStoreId(EnumEStoreId eStore) {
+		this.eStore=eStore;
+		
+	}
+
+	@Override
+	public EnumEStoreId getEStoreId() {
+		
+		return eStore;
 	}
 
 }

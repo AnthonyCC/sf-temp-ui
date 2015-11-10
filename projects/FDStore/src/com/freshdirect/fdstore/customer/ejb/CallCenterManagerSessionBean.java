@@ -3447,8 +3447,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			"and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )";
 	*/
 	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE =
-	"select DISTINCT A.sale_id, A.status,  A.amount, A.action_date,A.last_name||',' ||A.first_name as CUSTOMER_NAME from "+
-    " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+
+	"select DISTINCT A.sale_id, A.status,  A.amount, A.action_date,A.last_name||',' ||A.first_name as CUSTOMER_NAME, A.e_store from "+
+    " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name,s.e_store from cust.sale s, "+
     " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+
     " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
     " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+
@@ -3457,7 +3457,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
     " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
     " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' ) "+
     " UNION "+
-    " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "+
+    " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME,GAL.E_STORE from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "+
     " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' ";
 	
 	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException {
@@ -3484,6 +3484,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setAmount(rs.getDouble("AMOUNT"));
 				info.setFirstName(rs.getString("CUSTOMER_NAME"));
 				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
+				info.seteStore(rs.getString("E_STORE"));
 				lst.add(info);
 }
 			rs.close();

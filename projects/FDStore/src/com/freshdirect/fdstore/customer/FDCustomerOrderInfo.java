@@ -15,6 +15,7 @@ import java.util.Date;
 
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 /**
@@ -30,8 +31,8 @@ public class FDCustomerOrderInfo implements Serializable {
 	private Date cutoffTime;
 	private EnumSaleStatus status;
 	private double amount;
-	private String firstName;
-	private String lastName;
+	private String firstName="";
+	private String lastName="";
 	private FDIdentity identity;
 	private String email;
 	private String phone;
@@ -130,7 +131,8 @@ public class FDCustomerOrderInfo implements Serializable {
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		if(!StringUtil.isEmpty(firstName))
+			this.firstName = firstName;
 	}
 
 	public String getLastName() {
@@ -138,7 +140,8 @@ public class FDCustomerOrderInfo implements Serializable {
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		if(!StringUtil.isEmpty(lastName))
+			this.lastName = lastName;
 	}
 
 	public FDIdentity getIdentity() {

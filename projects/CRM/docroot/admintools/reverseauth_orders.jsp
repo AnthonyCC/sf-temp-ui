@@ -62,6 +62,7 @@
 				<tr bgcolor="#333366" class="list_header_text">
 					<td align="left">&nbsp;</td>
 					<td align="left">Order ID</td>
+					<td align="left">Store</td>
 					<td align="left">Last Action Date</td>
 					<td align="left">Status</td>
 					<td align="left">Amount</td>
@@ -81,6 +82,7 @@
 								<%=orderInfo.getSaleId()%>
 							<% } %>	
 						</td>
+						<td class="border_bottom"><%=orderInfo.geteStore()%></td>
 						<td class="border_bottom"><%=orderInfo.getLastCroModDate()%></td>
 						<td class="border_bottom"><%=orderInfo.getOrderStatus()%></td>
 						<td class="border_bottom"><%=orderInfo.getAmount()%></td>

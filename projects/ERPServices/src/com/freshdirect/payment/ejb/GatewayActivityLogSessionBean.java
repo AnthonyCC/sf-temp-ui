@@ -109,6 +109,7 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 				// Update EWallet ID
 				logModel.seteWalletId(response.getEwalletId());
 				logModel.seteWalletTxId(response.getEwalletTxId());
+				logModel.setEStoreId(billingInfo.getEStoreId());
 			}
 			
 		}
