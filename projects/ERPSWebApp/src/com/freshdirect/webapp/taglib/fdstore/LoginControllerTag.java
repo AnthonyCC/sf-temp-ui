@@ -111,7 +111,14 @@ public class LoginControllerTag extends AbstractControllerTag {
         
 	    if(updatedSuccessPage != null && updatedSuccessPage.length() > 0) {
 	    	if ( user != null && FDStoreProperties.isSocialLoginEnabled() ) {
-	    		this.setSuccessPage("/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()));
+	    		String newURL = "";
+	    		if(!request.getScheme().contains("https")) {
+	    			newURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+	    		} else {
+	    			newURL = request.getScheme() + "://" + request.getServerName();
+	    		}
+	    		
+	    		this.setSuccessPage(newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()), true);
 	    	} else {
 	    		this.setSuccessPage(updatedSuccessPage);
 	    	}

@@ -47,6 +47,10 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		
 		this.successPage = successPage;
 	}
+	
+	public void setSuccessPage(String successPage, boolean isFullPath) {		
+		this.successPage = successPage;
+	}	
 
 	public String getActionName() {
 		return this.actionName;
