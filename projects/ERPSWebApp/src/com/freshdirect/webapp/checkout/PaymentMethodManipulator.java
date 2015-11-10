@@ -58,6 +58,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName) throws FDResourceException {
 		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );	
 		boolean makeGoodOrder = false;
+		boolean addOnOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
@@ -70,8 +71,11 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		} else if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().getMakeGoodFromOrderId()!=null) {
 			referencedOrder = user.getMasqueradeContext().getMakeGoodFromOrderId();
 			makeGoodOrder = true;
+		} else if (user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null) {
+			referencedOrder = user.getMasqueradeContext().getParentOrderId();
+			addOnOrder = true;
 		}
-		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, referencedOrder );
+		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, addOnOrder, referencedOrder );
 	}
 
 	private void setNoPaymentMethod( HttpServletRequest request, ActionResult result ) throws FDResourceException {
@@ -112,7 +116,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		user.updateUserState();
 	}
 	
-	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, String referencedOrder ) throws FDResourceException {
+	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder ) throws FDResourceException {
 		//
 		// check for a valid payment ID
 		//
@@ -199,7 +203,13 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
 		paymentMethod.setBillingRef( billingRef );
-		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
+		if(makeGoodOrder)
+			paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
+		else if(addOnOrder)
+			paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
+		else 
+			paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
+		
 		paymentMethod.setReferencedOrder( referencedOrder );
 		cart.setPaymentMethod( paymentMethod );
 			setCart(cart, user, actionName, session);
@@ -289,7 +299,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
                 paymentId = payMethods.get(0).getPK().getId();
             }
             if(paymentId != null) {
-                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, "");
+                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, false,"");
             }
             if ( result.isSuccess() ) {
                 applyCustomerCredits(actionName, user, session);

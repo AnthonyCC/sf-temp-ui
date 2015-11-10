@@ -29,6 +29,7 @@ public class MasqueradeParams implements Serializable {
 	public String modifyOrderId;			// source : request
 	
 	public String destination;
+	public String parentOrderId;
 
 	
 	public MasqueradeParams() {}
@@ -54,6 +55,7 @@ public class MasqueradeParams implements Serializable {
 		modifyOrderId = request.getParameter("modifyOrderId");
 
 		destination = request.getParameter("destination");
+		parentOrderId = request.getParameter("parentOrderId");
 	}
 
 
@@ -79,6 +81,10 @@ public class MasqueradeParams implements Serializable {
 		result = prime * result
 				+ ((shopFromOrderId == null) ? 0 : shopFromOrderId.hashCode());
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime
+				* result
+				+ ((parentOrderId == null) ? 0 : parentOrderId
+						.hashCode());
 		return result;
 	}
 

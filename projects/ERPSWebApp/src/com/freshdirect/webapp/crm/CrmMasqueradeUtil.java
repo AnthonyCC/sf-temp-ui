@@ -50,6 +50,9 @@ public class CrmMasqueradeUtil {
 		if (params.makeGoodFromOrderId!=null){
 			url += "&makeGoodFromOrderId=" + params.makeGoodFromOrderId;
 		}
+		if (params.parentOrderId!=null){
+			url += "&parentOrderId=" + params.parentOrderId;
+		}
 
 		if (params.autoApprovalLimit!=null){
 			url += "&autoApprovalLimit=" + params.autoApprovalLimit;
@@ -118,6 +121,9 @@ public class CrmMasqueradeUtil {
 			if (params.modifyOrderId != null) {
 				redirectUri = "/your_account/modify_order.jsp?orderId="+params.modifyOrderId+"&action=modify";
 			}
+			if (params.parentOrderId != null) {
+				redirectUri = "/checkout/view_cart.jsp?orderId="+params.parentOrderId;
+			}
 		}
 		return redirectUri;
 	}
@@ -146,6 +152,7 @@ public class CrmMasqueradeUtil {
 		params.modifyOrderId = request.getParameter("modifyOrderId");
 		
 		params.destination = request.getParameter("destination");
+		params.parentOrderId = request.getParameter("parentOrderId");
 
 		return params;
 	}

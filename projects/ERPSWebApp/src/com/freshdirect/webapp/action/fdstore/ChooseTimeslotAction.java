@@ -62,7 +62,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getShoppingCart();
-		boolean isForced = false;
+		boolean isForced=false;
+		
+		if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null)
+			 isForced = true;
+		
 		if (deliveryTimeSlotId == null) {
 			actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
 		} else {

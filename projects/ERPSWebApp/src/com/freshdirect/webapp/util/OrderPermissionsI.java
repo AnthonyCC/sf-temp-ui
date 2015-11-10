@@ -24,5 +24,6 @@ public interface OrderPermissionsI {
 	public boolean isRefusedOrder();
 	public boolean isPNAOrder();
 	public boolean isAuthFailedOrder();
+	public boolean isAddOnOrder();
 
 }

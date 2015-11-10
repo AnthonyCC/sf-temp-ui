@@ -11,6 +11,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -23,6 +24,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -40,8 +43,10 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -50,6 +55,7 @@ import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.RestrictionUtil;
 import com.freshdirect.fdstore.util.TimeslotContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -57,10 +63,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.controller.data.response.TimeslotList;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
@@ -81,6 +89,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	private boolean returnSameDaySlots = true;
 	
 	private TimeslotContext timeSlotContext = null;
+	FDOrderI order;
 	
 	// selected timeslot ID
 	private String timeSlotId = "";
@@ -148,7 +157,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	}
 
 	@Override
-	protected Result getResult() throws FDResourceException {
+	protected Result getResult() throws FDResourceException, ReservationException {
 		if (address == null) {
 			return null;
 		}
@@ -216,6 +225,27 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		if(!returnSameDaySlots || (timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS))) {		
 			TimeslotLogic.purgeSDSlots(timeslotList);
 		}
+		
+		
+		//Start:: Add On Order
+		
+		if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null){
+			String parentOrderId=user.getMasqueradeContext().getParentOrderId();
+			order=	FDCustomerManager.getOrder(parentOrderId);
+		timeslotList= this.addOnOrderTimeSlot(timeslotList, order);
+			if(timeslotList== null || timeslotList.isEmpty())
+				try {
+					throw new ReservationException();
+				} catch (ReservationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			deliveryModel.setPreReserveSlotId(order.getDeliveryReservation().getTimeslot().getId());
+			deliveryModel.setPreReserved(true);
+			TimeslotService.defaultService().reserveDeliveryTimeslot(order.getDeliveryReservation().getTimeslot().getId(),  pageContext.getSession());
+					
+		}
+		//End:: Add On Order
 				
 		showPremiumSlots =TimeslotLogic.hasPremiumSlots(timeslotList);
 				
@@ -808,6 +838,20 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			}
 			return 0;
 		}
+	}
+	
+	 private List<FDTimeslotUtil> addOnOrderTimeSlot(List<FDTimeslotUtil> timeslotList , FDOrderI order){
+	 for (FDTimeslotUtil list : timeslotList) {
+		for (Collection<FDTimeslot> col : list.getTimeslots()) {
+			for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext(); ) {
+				FDTimeslot timeslot = k.next();
+				if (!timeslot.getId().equals(order.getDeliveryReservation().getTimeslot().getId()))
+					k.remove();
+			  }
+			}
+		}
+		return timeslotList;
+		
 	}
 }
 

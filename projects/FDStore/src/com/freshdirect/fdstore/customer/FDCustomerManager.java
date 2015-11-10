@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -307,15 +308,19 @@ public class FDCustomerManager {
 
 	public static FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		//The method was changed as part of task PERF-22.
-		return recognize(identity, null, null);
+		return recognize(identity, null, null, null);
+	}
+	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+		//The method was changed as part of task PERF-22.
+		return recognize(identity, null, null, ctx);
 	}
 
 	public static FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, null, eStoreId);
+		return recognize(identity, null, eStoreId, null);
 	}
 
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, source, null);
+		return recognize(identity, source, null, null);
 	}
 	/*
 	 * This new method was added as part of task PERF-22. This method
@@ -324,12 +329,13 @@ public class FDCustomerManager {
 	 * object should be loaded before the FDSessionUser object is created
 	 * where it is actually set.
 	 */
-	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity, eStoreId);
 			user.setApplication(source);
+			user.setMasqueradeContext(ctx);
 			populateShoppingCart(user);
 
 			return user;
@@ -394,6 +400,13 @@ public class FDCustomerManager {
 
     private static void assumeDeliveryAddress(FDUser user) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
+		
+		String partentOrderId=null;
+		if(user.getMasqueradeContext()!=null)
+		{
+			 partentOrderId=user.getMasqueradeContext().getParentOrderId();
+		}
+		
 		if(user.getShoppingCart()==null)
 			return;
 		/*
@@ -407,7 +420,10 @@ public class FDCustomerManager {
     			FDCustomerManagerSB sb = managerHome.create();
     			ErpAddressModel address = null;
     			try {
-    			address=sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
+    				if(partentOrderId!=null)
+    					address=sb.assumeDeliveryAddress(identity, partentOrderId);
+    				else
+    					address=sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
     			}catch(Exception e) {}
 
     			if(address != null && user.getShoppingCart() != null){

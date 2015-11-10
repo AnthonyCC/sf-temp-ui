@@ -14,6 +14,18 @@ public class MasqueradeContext implements Serializable {
 	private Set<String> makeGoodAllowedOrderLineIds;
 	private boolean autoApproveAuthorized;
 	private Double autoApprovalLimit;
+	
+	private String parentOrderId;
+	
+
+	public String getParentOrderId() {
+		return parentOrderId;
+	}
+
+	public void setParentOrderId(String parentOrderId) {
+		this.parentOrderId = parentOrderId;
+	}
+
 
 	public String validateAddToCart(String orderLineId){
 		if (makeGoodAllowedOrderLineIds!=null && (orderLineId==null || !makeGoodAllowedOrderLineIds.contains(orderLineId))){

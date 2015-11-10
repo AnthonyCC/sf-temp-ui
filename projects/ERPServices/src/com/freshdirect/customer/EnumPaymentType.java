@@ -11,6 +11,7 @@ public class EnumPaymentType extends Enum {
 	public static final EnumPaymentType REGULAR = new EnumPaymentType("R", "Regular");
 	public static final EnumPaymentType ON_FD_ACCOUNT = new EnumPaymentType("X", "On FD Account");
 	public static final EnumPaymentType MAKE_GOOD = new EnumPaymentType("M", "Make good");
+	public static final EnumPaymentType ADD_ON_ORDER = new EnumPaymentType("O", "Add on Order");
 
 	private final String description;
 

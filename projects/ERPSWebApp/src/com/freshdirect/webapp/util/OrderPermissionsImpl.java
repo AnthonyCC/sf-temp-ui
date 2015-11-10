@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.util;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderI;
 
 
 public class OrderPermissionsImpl implements OrderPermissionsI {
@@ -123,5 +125,8 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		return EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)?true:false;
 	}
 	
+	public boolean isAddOnOrder() {
+		 return EnumSaleStatus.INPROCESS.equals(status)?true:false;
+			}
 }	
 

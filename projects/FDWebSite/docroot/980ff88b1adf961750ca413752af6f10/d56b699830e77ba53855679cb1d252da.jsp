@@ -52,7 +52,8 @@
 	out.print( "autoApprovalLimit = " + params.autoApprovalLimit + "<br/>" );
 	out.print( "shopFromOrderId = " + params.shopFromOrderId + "<br/>" );
 	out.print( "modifyOrderId = " + params.modifyOrderId + "<br/>" );
-	
+	out.print( "parentOrderId = " + params.parentOrderId + "<br/>" );
+
 	try {
 		
 		Ticket ticket = TicketService.getInstance().use( loginKey, agentId, 
@@ -79,7 +80,7 @@
 		LOGGER.error(ex);
 		out.print("Validating ticket failed due to FDResourceException.<br/>");
 		return;
-	}
+	} 
 	
 	out.print("Ticket is valid. Logging in.<br/>");
 	
@@ -116,7 +117,12 @@
 				makeGoodAllowedOrderLineIds.add(mgOrderLine.getOrderLineId());
 	    	}
 		}
-
+    	
+    	if (params.parentOrderId!=null) {
+    		final FDOrderI _order = FDCustomerManager.getOrder(loginUser.getIdentity(), params.parentOrderId);
+    		ctx.setParentOrderId(params.parentOrderId);
+		}
+    	loginUser = FDCustomerManager.recognize(identity, ctx);
     	// set masqueraded context for customer
     	loginUser.setMasqueradeContext(ctx);
     	if (params.makeGoodFromOrderId!=null) {

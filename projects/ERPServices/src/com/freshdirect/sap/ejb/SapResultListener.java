@@ -31,6 +31,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -223,6 +224,9 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					}
 
 					if(EnumSaleType.REGULAR.equals(saleType)) {
+						if(((ErpSaleModel)saleEB.getModel()).getCurrentOrder() !=null && ((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod() !=null && ((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getReferencedOrder()!=null)
+							    saleEB.cutoff();
+						
 						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
@@ -230,10 +234,13 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 				
 						if(((ErpSaleModel)saleEB.getModel()).geteStoreId() !=null &&
 								EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name()))
-								 {
-										 erpRoutingGateway.sendSubmitOrderRequest(saleId, null, saleEB.getCurrentOrder().getTip(), 
+								 { 
+												erpRoutingGateway.sendSubmitOrderRequest(saleId, 
+														(((ErpSaleModel)saleEB.getModel()).getCurrentOrder()!=null && 
+																((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod()!=null)?
+																		((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getReferencedOrder():null, saleEB.getCurrentOrder().getTip(), 
 												 saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
-												 ,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone(): null);
+												 ,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
 									
 								 }
 					}

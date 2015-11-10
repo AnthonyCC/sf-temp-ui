@@ -1951,10 +1951,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				
 			//update original cutoff in deliveryinfo if the order is placed via Masquerade
 			if(createOrder.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(createOrder.geteStoreId().name())){
-				if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode())) ||
+				if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode()) && createOrder.getDeliveryInfo().getOriginalCutoffTime()!=null) ||
 						(createOrder.getDeliveryInfo().getDeliveryCutoffTime()!=null 
-						&& createOrder.getDeliveryInfo().getOriginalCutoffTime()!=null 
-						&& createOrder.getDeliveryInfo().getDeliveryCutoffTime().after(createOrder.getDeliveryInfo().getOriginalCutoffTime()))){
+						 && createOrder.getDeliveryInfo().getDeliveryCutoffTime().after(createOrder.getDeliveryInfo().getOriginalCutoffTime()))){
 					createOrder.getDeliveryInfo().setDeliveryCutoffTime(createOrder.getDeliveryInfo().getOriginalCutoffTime());
 				}
 			}
