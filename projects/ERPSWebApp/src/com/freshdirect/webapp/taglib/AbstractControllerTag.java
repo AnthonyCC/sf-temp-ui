@@ -94,6 +94,12 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 					LOGGER.debug("Skipping redirect, eval body");
 				} else {
 					LOGGER.debug("Success, redirecting to: " + successPage);
+					
+					// enforce https
+					if(!successPage.contains("https")) {
+						successPage = successPage.replace("http", "https");
+					} 				
+					
 					this.redirectTo(successPage);
 					return SKIP_BODY;
 				}
