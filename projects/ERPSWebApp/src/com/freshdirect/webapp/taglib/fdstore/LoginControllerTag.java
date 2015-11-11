@@ -19,6 +19,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -130,15 +131,27 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			 
 			 // APPDEV-4381 TC Accept.
+			if(!FDStoreProperties.isTCEnabled()){
+				try {
+					if(user !=null&&!user.getTcAcknowledge())
+					FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
+					
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else{
 			 if(user !=null&&!user.getTcAcknowledge()){
-					if (updatedSuccessPage.indexOf("quickshop/index.jsp")!=-1 || updatedSuccessPage.indexOf("your_account/manage_account.jsp")!=-1) {
+					if (updatedSuccessPage.indexOf("quickshop/index.jsp")!=-1 || updatedSuccessPage.indexOf("your_account/manage_account.jsp")!=-1||updatedSuccessPage.indexOf("step_1_choose.jsp")!=-1) {
 						
 						session.setAttribute("fdTcAgree", false);
-					}else{
+					}else if(updatedSuccessPage.indexOf("request_product.jsp")!=-1 ){
+						this.setSuccessPage(updatedSuccessPage);
+					}else{	
 					 this.setSuccessPage("/registration/tcaccept_lite.jsp");
 					}
 			 }
-			
+			}
 	    	
         } else {
 			fdLoginAttempt++;

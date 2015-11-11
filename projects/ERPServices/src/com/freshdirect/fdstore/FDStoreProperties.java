@@ -661,6 +661,7 @@ public class FDStoreProperties {
 	private final static String PROP_SOY_DEBUG = "soy.debug";
 
 	private final static String PROP_EH_CACHE_ENABLED = "ehcache.enabled";	
+	private final static String PROP_FD_TC_ENABLED = "terms.condition.enabled";	
 	
 	private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
 	private final static String PROP_QS_ENABLED = "quickshop.enabled";
@@ -1417,6 +1418,7 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_EH_CACHE_ENABLED, "true");		
 		
+		defaults.put(PROP_FD_TC_ENABLED, "false");
 		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
 		defaults.put(PROP_QS_ENABLED, "true");
 		
@@ -3941,6 +3943,9 @@ public class FDStoreProperties {
 	  public static boolean getSmsOrderCancel() {
 		  return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CANCEL));
 	}
+	  public static boolean isTCEnabled() {
+			return ( Boolean.valueOf( get( PROP_FD_TC_ENABLED ) ) ).booleanValue();
+		}
     public static Properties getConfig() {
         return config;
     }

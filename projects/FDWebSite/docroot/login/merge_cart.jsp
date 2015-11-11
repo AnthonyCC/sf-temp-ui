@@ -10,8 +10,16 @@ final int W_MERGE_CART_RADIO = 30;
 final int W_MERGE_CART_COL = 250;
 final int W_MERGE_CART_PADDING = 60;
 final int W_MERGE_CART_PADDING_RIGHT = 10;
-%>
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
+%>
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+			<script type="text/javascript">
+			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); } else {
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');}
+			
+			</script>
+<%}%>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
 <fd:MergeCartController successPage='<%= request.getParameter("successPage") %>'>
