@@ -11,8 +11,9 @@
 
 <% 
 	int sessionUserLevel = 0;
-	if(user != null) {
-		sessionUserLevel = user.getLevel();
+	FDSessionUser fdSessionUser1 = (FDSessionUser) session.getAttribute(SessionName.USER);	
+	if(fdSessionUser1 != null) {
+		sessionUserLevel = fdSessionUser1.getLevel();
 	}	
     String bottomUri = request.getRequestURI();
 	String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
