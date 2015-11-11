@@ -784,6 +784,7 @@ public class FDStoreProperties {
     private static final String PROP_SOCIAL_ONEALL_PRIVATEKEY = "fdstore.social.oneall.privatekey";
     private static final String PROP_SOCIAL_ONEALL_POSTURL = "fdstore.social.oneall.posturl";
     private static final String PROP_SOCIAL_LOGIN_ENABLED = "fdstore.social.login.enabled";
+    private static final String PROP_DEPLOYMENT_LOCAL = "fdstore.deployment.local";
     private static final String PROP_FDX_SMS_ORDER_CONFIRMATION="fdstore.sms.order.confirmation";
     private static final String PROP_FDX_SMS_ORDER_MODIFICATION= "fdstore.sms.order.modification";
     private static final String PROP_FDX_SMS_ORDER_CANCEL="fdstore.sms.order.cancel";
@@ -1556,6 +1557,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOCIAL_ONEALL_PRIVATEKEY, "64bf95b4-9dea-4832-8528-31bba3ae09d6");
         defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
         defaults.put(PROP_SOCIAL_LOGIN_ENABLED, "false");
+        defaults.put(PROP_DEPLOYMENT_LOCAL, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CONFIRMATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_MODIFICATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
@@ -3925,6 +3927,10 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_SOCIAL_LOGIN_ENABLED))).booleanValue();
     }
 
+	public static boolean isLocalDeployment() {
+        return (Boolean.valueOf(get(PROP_DEPLOYMENT_LOCAL))).booleanValue();
+    }
+	
 	public static boolean getSmsOrderConfirmation() {
 		return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CONFIRMATION));
 	}

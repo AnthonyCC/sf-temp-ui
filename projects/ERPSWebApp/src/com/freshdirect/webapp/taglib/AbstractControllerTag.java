@@ -14,6 +14,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 
@@ -96,9 +97,11 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 					LOGGER.debug("Success, redirecting to: " + successPage);
 					
 					// enforce https
-					if(!successPage.contains("https")) {
-						successPage = successPage.replace("http", "https");
-					} 				
+					if(!FDStoreProperties.isLocalDeployment()){
+						if(!successPage.contains("https")) {
+							successPage = successPage.replace("http", "https");
+						} 
+					}				
 					
 					this.redirectTo(successPage);
 					return SKIP_BODY;

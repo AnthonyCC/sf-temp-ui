@@ -21,6 +21,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -54,8 +55,8 @@ public class SocialAccountService implements AccountService {
 	
 		
 	@Override
-	public String login (HttpSession session, HttpServletRequest request, HttpServletResponse response) {	
-		
+	public String login (HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+
 		// Retrieve sessionUser
 		final FDSessionUser fdSessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);					
 		String sessionUserId = "";	
@@ -139,10 +140,13 @@ public class SocialAccountService implements AccountService {
 								 response.sendRedirect("/registration/tcaccept_lite.jsp");
 								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
 							 }else {
-							//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 // http://localhost:7001/social/social_login_success.jsp?successPage=index.jsp  
+								 //response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
+								 
 								 String newURL = request.getScheme() + "://" + request.getServerName() ;
+								 if(FDStoreProperties.isLocalDeployment()){
+									 newURL = newURL + ":" + request.getServerPort();
+								 }								 
 								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
 							
 							 }
@@ -269,10 +273,11 @@ public class SocialAccountService implements AccountService {
 							if((Action.SUCCESS).equals(res)) {
 								//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								
-								String newURL = request.getScheme() + "://" + request.getServerName();
-								return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
-								
-								//return "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+								String newURL = request.getScheme() + "://" + request.getServerName() ;
+								 if(FDStoreProperties.isLocalDeployment()){
+									 newURL = newURL + ":" + request.getServerPort();
+								 }								 
+								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());																								
 							}
 						} catch (Exception ex) {
 							LOGGER.error("Error performing action expresssignup", ex);

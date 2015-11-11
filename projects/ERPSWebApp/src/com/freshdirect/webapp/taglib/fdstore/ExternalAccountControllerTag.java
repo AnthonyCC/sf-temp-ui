@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ExternalAccountControllerTag extends
@@ -23,20 +24,21 @@ public class ExternalAccountControllerTag extends
 	@Override
 	public int doStartTag() throws JspException {
 		
-		String abURL = null;
 		HttpSession session = this.pageContext.getSession();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		String source = (request.getParameter("source") == null) ? "" : (String)request.getParameter("source");
 	
 		String redirectPage = AccountServiceFactory.getService(source).login(session, request, response);
-		if(!redirectPage.contains("https")) {
-			abURL = redirectPage.replace("http", "https");
-		} else {
-			abURL = redirectPage;
+		
+		if(!FDStoreProperties.isLocalDeployment()){
+			if(!redirectPage.contains("https")) {
+				redirectPage = redirectPage.replace("http", "https");
+			} 
 		}
 
-		doRedirect(abURL);
+
+		doRedirect(redirectPage);
 		
 		return SKIP_BODY;
 		
