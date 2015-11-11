@@ -218,7 +218,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "and exists (select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 			+ "where sale.id = s.id and sale.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
-			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and di.cutofftime < sysdate)";
+			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and di.cutofftime < sysdate and di.delivery_type <> 'X')";
+	
+	private final static String UNLOCK_INMODIFY_ORDERS =
+			"UPDATE CUST.SALE S1 SET S1.IN_MODIFY = NULL WHERE S1.ID IN ( " +
+			"SELECT S.ID FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE " +
+			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.ID = DI.SALESACTION_ID AND DI.DELIVERY_TYPE = 'X' AND DI.STARTTIME>=TRUNC(SYSDATE) " +
+			"AND DI.CUTOFFTIME + DI.MOD_CUTOFF_Y < SYSDATE AND IN_MODIFY = 'X')";
+		
+		
 	
 	private final static String CUTOFF_DELIVERY_DATES_QUERY =
 			"select distinct SA.REQUESTED_DATE from cust.sale s, cust.salesaction sa, CUST.DELIVERYINFO di where sa.sale_id=s.id " +
@@ -593,6 +601,21 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		ps.close();
 		return affected;
 	}
+	
+	private int unlockInModifyOrders(Connection conn) throws SQLException {
+		try {
+			PreparedStatement ps = conn.prepareStatement(UNLOCK_INMODIFY_ORDERS);
+			int affected = ps.executeUpdate();
+			ps.close();
+			return affected;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	
 
 	private List<String> querySalesInStatusCPG(Connection conn, EnumSaleStatus status) throws SQLException {
 		List<String> saleIds = new ArrayList<String>();
@@ -771,7 +794,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			con = this.getConnection();
 
 			affected = this.updateToProcessStatus(con);
-
+			
+			this.unlockInModifyOrders(con);
+			
 			utx.commit();
 		} catch (Exception e) {
 			LOGGER.warn(e);
