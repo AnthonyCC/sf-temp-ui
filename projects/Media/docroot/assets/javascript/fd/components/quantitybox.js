@@ -1,11 +1,9 @@
-/*global jQuery*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   "use strict";
 
   var $ = fd.libs.$;
-  
   var QuantityBox = { initialized: false };
 
   function triggerEvent($quantitybox, newVal) {
@@ -47,7 +45,7 @@ var FreshDirect = FreshDirect || {};
     } else if (qty >= max-incart) {
       qty = Math.max(max-incart, min);
     }
-    qty = originalValueIsFloat ? ((qty-min)/inc)*inc  + min : Math.floor( (qty-min)/inc )*inc  + min;
+    qty = originalValueIsFloat ? ((qty-min)/inc)*inc + min : Math.floor( (qty-min)/inc )*inc + min;
 
     return qty;
   }
@@ -55,62 +53,84 @@ var FreshDirect = FreshDirect || {};
   var getValue = function($quantitybox){
     var $qtybox = $($quantitybox),
         cartdata = fd.modules.common.getCartData($qtybox);
-    
-    if($quantitybox) {
+
+    if ($quantitybox) {
       return chgQty( getInput($quantitybox).val(), parseFloat(cartdata.min), parseFloat(cartdata.max), parseFloat(cartdata.step), cartdata.incart )+'';
-    } else {
-      return '0';
     }
+
+    return '0';
   };
 
+  function incQty ($el, mul) {
+    mul = mul || 1;
+
+    var increment = +$el.data("step")*mul,
+        $input = getInput($el),
+        oldVal = +$input.val(),
+        min = +$el.data("min"),
+        max = +$el.data("max"),
+        cartdata = fd.modules.common.getCartData($el),
+        newVal = oldVal + increment;
+
+    if($el.data("mayempty") && newVal < min && increment < 0) {
+      newVal = 0;
+    } else {
+      newVal = Math.max(min, Math.min(max-(cartdata.incart||0), newVal));
+    }
+
+    return newVal;
+  }
 
   $(document).on('click','[data-component="quantitybox"]',function(e){
-    var $input,$this,mul,increment, newVal, oldVal, min, button, cartdata;
+    var $input, $this, mul, newVal, button;
 
     $this=$(this);
-    cartdata = fd.modules.common.getCartData($this);
     $input=getInput($this);
     button = $(e.target).data("component");
 
     mul = 0;
-    if(button === "quantitybox.dec" ) {
+    if (button === "quantitybox.dec") {
       mul = -1;
-    } else if(button === "quantitybox.inc") {
+    } else if (button === "quantitybox.inc") {
       mul = 1;
     }
 
-    if(mul) {
-      increment = +$this.data("step")*mul;
-      oldVal = +$input.val();
-      min = +$this.data("min");
-
-      newVal= oldVal+increment;
-      if($this.data("mayempty") && newVal < min  && increment < 0) {
-        newVal = 0;
-      } else {
-        newVal=Math.max(min,Math.min(+$this.data("max")-(cartdata.incart||0),newVal));
-      }
+    if (mul) {
+      newVal = incQty($this, mul);
 
       $input.val(newVal);
       markProductChanged($this);
-      triggerEvent($this,newVal);     
+      triggerEvent($this,newVal);
     }
   });
 
   $(document).on('keyup','[data-component="quantitybox"]',function(e){
-    var $input,$this;
-    $this=$(this);
-    $input=getInput($this);
+    var $input,$this, newVal;
+
+    $this = $(this);
+    $input = getInput($this);
+
+    // increase / decrease quantity w/ up / down arrows
+    if (e.keyCode === 38) {
+      // up
+      newVal = incQty($this, 1);
+      $input.val(newVal);
+    } else if (e.keyCode === 40) {
+      // down
+      newVal = incQty($this, -1);
+      $input.val(newVal);
+    }
+
     markProductChanged($this);
     triggerEvent($this,$input.val());
   });
 
-  $(document).on('change','[data-component="quantitybox.value"]',function(e){
+  $(document).on('change','[data-component="quantitybox.value"]',function(){
 
     var $qtyinput = $(this),
         $qtybox = $qtyinput.closest('[data-component="quantitybox"]'),
         cartdata = fd.modules.common.getCartData($qtybox);
-    
+
     $(this).val(chgQty($qtyinput.val(), parseFloat(cartdata.min), parseFloat(cartdata.max), parseFloat(cartdata.step), cartdata.incart));
     triggerEvent($qtybox,$qtyinput.val());
   });
@@ -123,21 +143,21 @@ var FreshDirect = FreshDirect || {};
 */
 
   var getBoxAndValue = function() {
-    return { 
+    return {
       quantityBox:this,
       value:getValue(this)
     };
   };
-  
-  var _updateSubtotal = function(index) {
-    var $input,$this;
+
+  var _updateSubtotal = function() {
+    var $input, $this;
 
     $this=$(this);
     $input=getInput($this);
   };
 
   var methods = {
-    value : function( ) { 
+    value : function( ) {
        return getValue(this[0]);
     },
     boxValue:function(){
@@ -148,14 +168,14 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  $.fn.quantityBox = function( method ) { 
+  $.fn.quantityBox = function( method ) {
       // Method calling logic
     if ( methods[method] ) {
       return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-    } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.quantityBox' );
-    }    
+    }
+
+    $.error( 'Method ' + method + ' does not exist on jQuery.quantityBox' );
   };
-  
+
   fd.modules.common.utils.register("components", "QuantityBox", QuantityBox, fd);
 }(FreshDirect));
