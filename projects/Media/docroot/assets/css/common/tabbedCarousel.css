@@ -249,19 +249,20 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 }
 
 #i_viewcart .quantity_col.product-sample-cart-quantity{
-	opacity: .5;
-	filter: alpha(opacity=50);
-	pointer-events: none;
-   	cursor: default;
+  opacity: .5;
+  filter: alpha(opacity=50);
+  pointer-events: none;
+  cursor: default;
 }
 
 #transactionalPopup .product-sample-qty-one{
-	font-weight: bold;
-	text-align: left;
-	margin: 0px;
-	padding: 10px 0px;
+  font-weight: bold;
+  text-align: left;
+  margin: 0;
+  padding: 10px 0;
 }
 
-#transactionalPopup .portrait-item-controls .portrait-item-addtocart .subtotal{
-	display: none;
+.product-sample-free + .portrait-item-controls .portrait-item-addtocart .subtotal,
+.product-sample-free + form.atc .portrait-item-controls .portrait-item-addtocart .subtotal {
+  display: none;
 }
