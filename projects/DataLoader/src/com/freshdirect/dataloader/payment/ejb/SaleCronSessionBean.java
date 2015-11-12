@@ -231,7 +231,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String CUTOFF_DELIVERY_DATES_QUERY =
 			"select distinct SA.REQUESTED_DATE from cust.sale s, cust.salesaction sa, CUST.DELIVERYINFO di where sa.sale_id=s.id " +
 			"and SA.ID = DI.SALESACTION_ID and sa.action_type in ('CRO','MOD') and s.type='REG' and sa.action_date = S.CROMOD_DATE and " +
-			"di.starttime > sysdate-1 and di.cutofftime < sysdate and status in ('AUT', 'AVE', 'SUB')";
+			"di.starttime > sysdate-1 and di.cutofftime < sysdate and status in ('AUT', 'AVE', 'SUB') and di.delivery_type!='X' ";
 	
 	
 	private final static String AUTH_NEEDED_CORP_ORDERS_FOR_MONDAY_TUESDAY =
