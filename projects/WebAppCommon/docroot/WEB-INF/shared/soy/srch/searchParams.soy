@@ -21,7 +21,7 @@
 {template .searchTabs autoescape="false"} 
   {if $tabs and length($tabs) > 0}
     {foreach $tab in $tabs}
-      <li {if $tab.active}class="active"{/if} data-type="{$tab.type}"><span>{$tab.label}</span>{sp}<i>({$tab.filteredHits})</i></li>
+      <li id="tab{index($tab)}" role="tab" tabindex="0" aria-controls="searchPanel" {if $tab.active}class="active" aria-selected="true"{/if} data-type="{$tab.type}"><span>{$tab.label}</span>{sp}<i>({$tab.filteredHits})</i></li>
     {/foreach}
   {/if}
 {/template}

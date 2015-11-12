@@ -81,11 +81,11 @@
             
              <div style="display:none"  class="oas-cnt" id="QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div> 
             
-            <ul class="tabs qs-tabs clearfix">
+            <ul class="tabs qs-tabs clearfix" role="tablist">
                 <c:if test="${!isQS20}">
-                <li><a href="/quickshop/qs_top_items.jsp" class="<tmpl:get name='tiSelected'/>" ><strong>Your Top Items</strong> <span class="count" data-component="tabMeta" data-tabMeta="topitems"></span></a></li>
-                <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>" ><strong>Your Past Orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
-                <li><a href="/quickshop/qs_shop_from_list.jsp" class="<tmpl:get name='listSelected'/>"><strong>Your Shopping Lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="lists"></span></a></li>
+                <li><a id="tabTopItems" role="tab" tabindex="0" aria-controls="reorder-content" href="/quickshop/qs_top_items.jsp" class="<tmpl:get name='tiSelected'/>"><strong>Your Top Items</strong> <span class="count" data-component="tabMeta" data-tabMeta="topitems"></span></a></li>
+                <li><a id="tabPastOrders" role="tab" tabindex="0" aria-controls="reorder-content" href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>" ><strong>Your Past Orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
+                <li><a id="tabShopFromList" role="tab" tabindex="0" aria-controls="reorder-content" href="/quickshop/qs_shop_from_list.jsp" class="<tmpl:get name='listSelected'/>"><strong>Your Shopping Lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="lists"></span></a></li>
                 </c:if>
                 <c:if test="${isQS20}">
                 <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>"><strong>shop from past orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
@@ -112,7 +112,7 @@
                     <div class="qs-menu">
                         <tmpl:get name="menu" />
                     </div>
-                    <div class="qs-content">
+                    <div id="reorder-content" class="qs-content" role="tabpanel" tabindex="0">
                         <tmpl:get name="ymal" />
                         <c:if test="${!isQS20}">
                           <tmpl:get name="listheader" />

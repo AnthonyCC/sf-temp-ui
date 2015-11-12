@@ -103,7 +103,7 @@
         </script>
       </div>
     </section>
-    <nav class="tabs">
+    <nav class="tabs" role="tablist">
       <soy:render template="srch.searchTabs" data="${browsePotato.searchParams}" />
     </nav>
     <section class="itemcount">
@@ -121,6 +121,7 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <div id="searchPanel" role="tabpanel" tabindex="0">
     <div class="oas-cnt PPSearchContent" id="oas_b_PPSearchContent">
      <script type="text/javascript">
        OAS_AD('PPSearchContent');
@@ -179,6 +180,7 @@
       window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
       window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
     </script>
+    </div>
   </tmpl:put>
 
   <tmpl:put name='bottom' direct='true'>

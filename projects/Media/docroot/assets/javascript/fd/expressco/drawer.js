@@ -135,5 +135,13 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  $(document).on('keydown', "[data-drawer-id]", function(e){
+    // make drawer open by enter key
+    if (e.which === 13) {
+      $(this).click();
+      $(this).find(".change").click();
+    }
+  });
+
   fd.modules.common.utils.register("expressco", "drawer", drawer, fd);
 }(FreshDirect));
