@@ -927,7 +927,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private static final String LAST_ORDER_ADDRESS_QUERY = "select di.* "
+	private static final String LAST_ORDER_ADDRESS_QUERY = "select di.*, sa.customer_id "
 			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 			+ "where s.id = ? and s.id = sa.sale_id and sa.id = di.salesaction_id "
 			+ "and s.type = 'REG' "
@@ -991,6 +991,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
+		
+		address.setCustomerId(rs.getString("CUSTOMER_ID"));
+		
 
 		return address;
 	}
@@ -1017,6 +1020,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
+		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 
 		// TODO Reconsider this solution!
         for (FDDeliveryDepotModel pickupModel : FDDeliveryManager.getInstance().getPickupDepots()) {
@@ -1951,8 +1955,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				
 			//update original cutoff in deliveryinfo if the order is placed via Masquerade
 			if(createOrder.geteStoreId()!=null && EnumEStoreId.FDX.name().equals(createOrder.geteStoreId().name())){
-				if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode()) && createOrder.getDeliveryInfo().getOriginalCutoffTime()!=null) ||
-						(createOrder.getDeliveryInfo().getDeliveryCutoffTime()!=null 
+				if((info.getSource()!=null && EnumTransactionSource.CUSTOMER_REP.getCode().equalsIgnoreCase(info.getSource().getCode()) 
+						&& createOrder.getDeliveryInfo().getOriginalCutoffTime()!=null 
+						&& createOrder.getDeliveryInfo().getDeliveryCutoffTime()!=null 
 						 && createOrder.getDeliveryInfo().getDeliveryCutoffTime().after(createOrder.getDeliveryInfo().getOriginalCutoffTime()))){
 					createOrder.getDeliveryInfo().setDeliveryCutoffTime(createOrder.getDeliveryInfo().getOriginalCutoffTime());
 				}
@@ -7931,5 +7936,37 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return status;
 	}
+	
+	public String getParentOrderAddressId(String parentOrderId)throws FDResourceException{
+		LOGGER.info("getParentOrderAddressId... "+parentOrderId);
+		Connection conn = null;
+		String parentOrderAddressId=null;
+		try {
+			
+			ErpAddressModel deliveryAddressModel = null;
+
+			conn = getConnection();
+			
+			deliveryAddressModel= this.getLastOrderAddress(parentOrderId);
+			
+			Collection<ErpAddressModel> addressList=FDUserDAO.getParentAddresscheck(conn, deliveryAddressModel);
+			
+			for ( ErpAddressModel address : addressList ) {
+				if (deliveryAddressModel.getZipCode()!=null&&deliveryAddressModel.getZipCode().equalsIgnoreCase(address.getZipCode()) &&
+								deliveryAddressModel.getScrubbedStreet()!=null && deliveryAddressModel.getScrubbedStreet().equalsIgnoreCase(address.getScrubbedStreet())
+								&& deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment()))
+					parentOrderAddressId= address.getId();
+		       }
+			
+		} catch (SQLException sqle) {
+			LOGGER.info("getParentOrderAddressId  FAILED... "+parentOrderId);
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return parentOrderAddressId;
+	}
+	
+	
 }
 

@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -1273,5 +1275,30 @@ public class FDUserDAO {
 		
 	}
 	
+	
+	public static  Collection<ErpAddressModel> getParentAddresscheck(Connection conn, ErpAddressModel deliveryAddressModel )throws SQLException {
+
+		PreparedStatement ps = null;
+		ErpAddressModel addressModel = null;
+			ps = conn.prepareStatement("select * from CUST.ADDRESS H where  H.CUSTOMER_ID=?");	
+			ps.setString(1, deliveryAddressModel.getCustomerId());
+			ResultSet rs = ps.executeQuery();
+			Collection<ErpAddressModel> addressList = new  ArrayList<ErpAddressModel>();
+			while (rs.next()) {
+				addressModel = new ErpAddressModel();					
+				addressModel.setAddress1(rs.getString("ADDRESS1"));
+				addressModel.setAddress2(rs.getString("ADDRESS2"));
+				addressModel.setApartment(rs.getString("APARTMENT"));
+				addressModel.setCity(rs.getString("CITY"));
+				addressModel.setZipCode(rs.getString("ZIP"));
+				addressModel.setPK(new PrimaryKey(rs.getString("ID")));
+				addressList.add(addressModel);	
+						
+					}
+			rs.close();
+			ps.close();
+			
+			return addressList;
+	}
 	
 }

@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 
@@ -23,6 +24,11 @@ final String __linkURL = (String) pageContext.getAttribute("__linkURL");
 
 FDUserI __user = (FDUserI) session.getAttribute(SessionName.USER);
 
+ MasqueradeContext masConxt1 = __user.getMasqueradeContext();
+String parentOrderid=null;
+if (masConxt1!=null) {
+parentOrderid = masConxt1.getParentOrderId(); 
+}
 final boolean isSOOperation = EnumCheckoutMode.NORMAL != __user.getCheckoutMode();
 
 if (__shipToAddresses.size() > 0) {
@@ -52,9 +58,11 @@ if (__shipToAddresses.size() > 0) {
 				}
 			} 
 		}
-		if(selectedAddrPKId==null) {
-			selectedAddrPKId = FDCustomerManager.getDefaultShipToAddressPK(identity);
-		}
+		if(selectedAddrPKId==null && parentOrderid!=null) 
+				selectedAddrPKId=FDCustomerManager.getParentOrderAddressId(parentOrderid);
+		 if(selectedAddrPKId==null)
+           	selectedAddrPKId = FDCustomerManager.getDefaultShipToAddressPK(identity);
+	
 	}
 	
 	int itemCounter = 0;
@@ -89,12 +97,19 @@ if (__shipToAddresses.size() > 0) {
 			<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>">
 				<TR>
 					<%itemCounter=0;
-				}%>
-            <%if (__allowSelection) {
-				%>
-				<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
-				<%
-			} else { 
+				}
+            	if(__allowSelection && parentOrderid!=null) {
+            		
+            	if(checkedAddress){%>
+					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<%}else{%>
+					<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio" disabled="disabled" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<%}
+			}
+            else if (__allowSelection) {%>
+				<TD width="20" valign="top" class="chooser_radio"><input type="radio" name="selectAddressList" class="radio"  value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<%}
+            else { 
 				%>
 				<TD width="20" valign="top">&nbsp;</TD>
 				<%
@@ -150,10 +165,18 @@ if (__shipToAddresses.size() > 0) {
 						<%}%>
 				<%}%>
 				</font>
+				
+				<%if(parentOrderid!=null){ %>
+				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>" onclick="return false" ><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+				<%if (showDeleteButtons) {%>
+					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0" disabled="disabled">
+				<% } 
+				}else{%>		
 				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
 				<%if (showDeleteButtons) {%>
 					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0">
-				<% } %>
+					<% }
+				}%>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 			</TD>
 			<%itemCounter++;

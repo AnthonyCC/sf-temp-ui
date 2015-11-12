@@ -311,7 +311,7 @@ public class FDCustomerManager {
 		return recognize(identity, null, null, null);
 	}
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
-		//The method was changed as part of task PERF-22.
+		
 		return recognize(identity, null, null, ctx);
 	}
 
@@ -4638,6 +4638,25 @@ public class FDCustomerManager {
 		}
 	
 	return status;
+	}
+	
+	public static String getParentOrderAddressId(String parentOrderId) throws FDResourceException {
+
+		lookupManagerHome();
+		String parentOrderAddressId=null;
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			parentOrderAddressId =sb.getParentOrderAddressId(parentOrderId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	return parentOrderAddressId;
 	}
 	
 }

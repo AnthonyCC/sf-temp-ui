@@ -859,5 +859,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public void setFdxSmsPreferences(FDCustomerEStoreModel customerSmsPreferenceModel, String erpCustomerPk)throws FDResourceException, RemoteException;
 	public boolean setAcknowledge(FDIdentity identity, boolean acknowledge,String ackType)throws FDResourceException, RemoteException;
+	
+	public String getParentOrderAddressId(String parentOrderAddressId)throws FDResourceException, RemoteException;
+	
 }
 

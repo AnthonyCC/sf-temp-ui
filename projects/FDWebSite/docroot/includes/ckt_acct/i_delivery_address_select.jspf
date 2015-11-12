@@ -11,6 +11,12 @@ boolean isInYourAccount = (request.getRequestURI().indexOf("your_account") > -1)
 
 FDUserI yuzer = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity = yuzer.getIdentity();
+
+MasqueradeContext masConxt = yuzer.getMasqueradeContext();
+String parentOrderId=null;
+if (masConxt!=null) {
+parentOrderId = masConxt.getParentOrderId();
+}
 boolean allowSelection = false;
 
 final boolean isNormalCheckout = yuzer.getCheckoutMode() == EnumCheckoutMode.NORMAL;
@@ -59,8 +65,11 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 				<font class="text12"><b>Unfortunately, we do not currently deliver to your neighborhood.</b></font><br>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 				<%
-			}%>
-			<font class="text13">If you need to enter a different address: <a href="<%=response.encodeURL( isInYourAccount?"/your_account/add_delivery_address.jsp" : "/checkout/step_1_enter.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a New Address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a></font>
+			}if(parentOrderId!=null){%>
+			<font class="text13">If you need to enter a different address: <a href="<%=response.encodeURL( isInYourAccount?"/your_account/add_delivery_address.jsp" : "/checkout/step_1_enter.jsp")%>" onclick="return false" ><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a New Address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a></font>
+			<%}else{%>
+			<font class="text13">If you need to enter a different address: <a href="<%=response.encodeURL( isInYourAccount?"/your_account/add_delivery_address.jsp" : "/checkout/step_1_enter.jsp")%>" ><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a New Address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a></font>
+			<%}%>
 		</TD>
 	</TR>
 	<%

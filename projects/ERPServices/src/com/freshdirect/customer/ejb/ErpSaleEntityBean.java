@@ -558,19 +558,17 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				pstmt.close();
 		}
 		
-		
-		PreparedStatement pstmt1 =null;ResultSet resultSet1 =null;
 		int addOnOrderCountOfParent=0;
 		try
 		{
 			
-			pstmt1 = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
+			pstmt = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
 					" SA.ACTION_TYPE IN ('CRO','MOD') AND S.TYPE = 'REG' AND SA.ID = PI.SALESACTION_ID AND  PI.ON_FD_ACCOUNT='O' AND PI.REFERENCED_ORDER = ? GROUP BY PI.ON_FD_ACCOUNT "); 
-			pstmt1.setString(1, getPK().getId());
-			resultSet1 = pstmt1.executeQuery();
+			pstmt.setString(1, getPK().getId());
+			resultSet = pstmt.executeQuery();
 			
-			if(resultSet1.next()){	
-				addOnOrderCountOfParent=rs.getInt(1);
+			if(resultSet.next()){	
+				addOnOrderCountOfParent=resultSet.getInt(1);
 			 }
 		}
 		catch(Exception e)
@@ -578,11 +576,12 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			LOGGER.debug("Exception while fetching the addOnOrderCountOfParent");
 		}
 		finally{
-			if(resultSet1!=null)
-				resultSet1.close();
-			if(pstmt1!=null)
-				pstmt1.close();
+			if(resultSet!=null)
+				resultSet.close();
+			if(pstmt!=null)
+				pstmt.close();
 		}
+		
 
 		// load children
 
