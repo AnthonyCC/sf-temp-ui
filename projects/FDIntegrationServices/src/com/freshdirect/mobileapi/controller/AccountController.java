@@ -186,21 +186,19 @@ public class AccountController extends BaseController {
         ShipToAddress anonymousAddress = null;
         
         if (addressId == null) {
-        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
-	            if (user.getDefaultShipToAddress() != null){
-	                addressId = user.getDefaultShipToAddress();
-	            } else{
-	            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
-	            		addressId =  user.getDeliveryAddresses().get(0).getId();
-	            	}	            	
-	            }
-        	}
-        	if(addressId == null) { // Still Null See if it has anonymous address
-        		if(user.getAddress() != null && user.getAddress().getAddress1() != null) {
-        			anonymousAddress = ShipToAddress.wrap(user.getAddress());
-        		}
-        	}     	
-        	
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0) {
+    			anonymousAddress = ShipToAddress.wrap(user.getAddress());
+    		} else {
+	        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
+		            if (user.getDefaultShipToAddress() != null){
+		                addressId = user.getDefaultShipToAddress();
+		            } else{
+		            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
+		            		addressId =  user.getDeliveryAddresses().get(0).getId();
+		            	}	            	
+		            }
+	        	}
+    		}        	
         }
         
         if (anonymousAddress != null) {

@@ -64,111 +64,114 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		FDCartModel cart = user.getShoppingCart();
 		boolean isForced=false;
 		
-		if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null)
+		if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null) {
 			 isForced = true;
+		}
 		
 		if (deliveryTimeSlotId == null) {
 			actionResult.addError(new ActionError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
+		} else if(cart.getDeliveryAddress() == null) {
+			actionResult.addError(new ActionError("deliveryAddress", "You must select a address."));
 		} else {
-		if(deliveryTimeSlotId.startsWith("f_")) {
-			deliveryTimeSlotId = deliveryTimeSlotId.replaceAll("f_", "");
-			isForced = true;
-		}
+			if(deliveryTimeSlotId.startsWith("f_")) {
+				deliveryTimeSlotId = deliveryTimeSlotId.replaceAll("f_", "");
+				isForced = true;
+			}
 			boolean chefsTable = user.isChefsTable() || "true".equals(chefsTableValue);
-		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, cart.getDeliveryAddress().getBuildingId(), true);
-		if(FDStoreProperties.isDlvFeeTierEnabled()){
-			TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
-		}
-		
-		ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
-		if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
-			//user bypassed dp terms block
-				actionResult.addError(new ActionError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot."));
+			FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, cart.getDeliveryAddress().getBuildingId(), true);
+			if(FDStoreProperties.isDlvFeeTierEnabled()){
+				TimeslotLogic.calcTieredDeliveryFee(user, timeSlot);
+			}
+			
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(user.getUser().getIdentity());
+			if (timeSlot.isPremiumSlot() && dpTcCheckUser.isDpNewTcBlocking(false) && cm.getDpTcViewCount() <= FDStoreProperties.getDpTcViewLimit()) {
+				//user bypassed dp terms block
+					actionResult.addError(new ActionError("bypassedDpTcBlock", "You must agree to the new DeliveryPass Terms & Conditions before selecting a Same Day time slot."));
+				} else {
+			ErpAddressModel erpAddress = cart.getDeliveryAddress();
+			String addressId = "";
+			if (!(erpAddress instanceof ErpDepotAddressModel)) {
+				FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
+				cart.setZoneInfo(zoneInfo);
+				addressId = erpAddress.getPK().getId();
 			} else {
-		ErpAddressModel erpAddress = cart.getDeliveryAddress();
-		String addressId = "";
-		if (!(erpAddress instanceof ErpDepotAddressModel)) {
-			FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
-			cart.setZoneInfo(zoneInfo);
-			addressId = erpAddress.getPK().getId();
-		} else {
-			addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();
-		}
-		String zoneId = null;
-				if (cart != null && cart.getZoneInfo() != null) {
-			zoneId = cart.getZoneInfo().getZoneId();
-		
-		String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
-		if(user.getMasqueradeContext()!=null){
-				applicationId = "CSR";
-		}
-		TimeslotEvent event = new TimeslotEvent(applicationId, 
-				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), 
-				(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(),EnumCompanyCode.fd.name());
-		
-		try {
-			FDReservation dlvRsv = cart.getDeliveryReservation();
-			FDReservation advRsv = user.getReservation();
-			if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
-				if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
-					try {
-						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event, true);
-					} catch (FDResourceException fdre) {
-						LOGGER.warn("Error releasing reservation", fdre);
+				addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();
+			}
+			String zoneId = null;
+					if (cart != null && cart.getZoneInfo() != null) {
+				zoneId = cart.getZoneInfo().getZoneId();
+			
+			String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
+			if(user.getMasqueradeContext()!=null){
+					applicationId = "CSR";
+			}
+			TimeslotEvent event = new TimeslotEvent(applicationId, 
+					cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(), 
+					(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(),EnumCompanyCode.fd.name());
+			
+			try {
+				FDReservation dlvRsv = cart.getDeliveryReservation();
+				FDReservation advRsv = user.getReservation();
+				if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
+					if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
+						try {
+							FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event, true);
+						} catch (FDResourceException fdre) {
+							LOGGER.warn("Error releasing reservation", fdre);
+						}
 					}
-				}
-				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
-					setDeliveryTimeslot(session, advRsv);
-				} else {
-					setSODeliveryTimeslot(session, advRsv);
-				}
-				
-				LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
+					if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+						setDeliveryTimeslot(session, advRsv);
 					} else {
-						if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (addressId != null && !addressId.equals(dlvRsv.getAddressId()))) {
-				// new reservation or different timeslot selected
-							if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
-								// release prev reservation, unless it's a
-								// modify order
-					String prevResrvId = dlvRsv.getPK().getId();
-					try {
-						LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
-						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event, true);
-					} catch (FDResourceException fdre) {
-						LOGGER.warn("Error releasing reservation", fdre);
+						setSODeliveryTimeslot(session, advRsv);
 					}
-				}
-				boolean hasSteeringDiscount = false;
-				if(user.getSteeringSlotIds().contains(timeSlot.getId())){
-					hasSteeringDiscount = true;
-				}
-				// reserve the new slot
-				LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
-				String custId = user.getIdentity().getErpCustomerPK();
-				FDReservation timeSlotResrv =
-					FDDeliveryManager.getInstance().reserveTimeslot(
-						timeSlot.getId(),
-						custId,
-						EnumReservationType.STANDARD_RESERVATION,
-						TimeslotLogic.encodeCustomer(erpAddress, user),
-						chefsTable,
-						null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
-				TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
-				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
-					setDeliveryTimeslot(session, timeSlotResrv);
-				} else {
-					setSODeliveryTimeslot(session, timeSlotResrv);
-				}
-				LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
-			}
+					
+					LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
+						} else {
+							if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (addressId != null && !addressId.equals(dlvRsv.getAddressId()))) {
+					// new reservation or different timeslot selected
+								if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
+									// release prev reservation, unless it's a
+									// modify order
+						String prevResrvId = dlvRsv.getPK().getId();
+						try {
+							LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
+							FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress, event, true);
+						} catch (FDResourceException fdre) {
+							LOGGER.warn("Error releasing reservation", fdre);
+						}
 					}
-		}catch (ReservationUnavailableException re) {
-					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
-		}catch (ReservationException re) {
-			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
-		}
+					boolean hasSteeringDiscount = false;
+					if(user.getSteeringSlotIds().contains(timeSlot.getId())){
+						hasSteeringDiscount = true;
+					}
+					// reserve the new slot
+					LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
+					String custId = user.getIdentity().getErpCustomerPK();
+					FDReservation timeSlotResrv =
+						FDDeliveryManager.getInstance().reserveTimeslot(
+							timeSlot.getId(),
+							custId,
+							EnumReservationType.STANDARD_RESERVATION,
+							TimeslotLogic.encodeCustomer(erpAddress, user),
+							chefsTable,
+							null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
+					TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
+					if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+						setDeliveryTimeslot(session, timeSlotResrv);
+					} else {
+						setSODeliveryTimeslot(session, timeSlotResrv);
+					}
+					LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
+				}
+				}
+			}catch (ReservationUnavailableException re) {
+						actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
+			}catch (ReservationException re) {
+				actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 			}
-		}	
+				}
+			}	
 		
 		}
 		return actionResult;
