@@ -185,6 +185,9 @@ public class FDProductInfo extends FDSku  {
 	 */
 	public ErpInventoryModel getInventory(String plantId) {
 
+		if(null ==materialNumbers || materialNumbers.length == 0){//To prevent NPEs
+			return null;
+		}
 		if(this.inventory != null){
 
 			return this.inventory.getInventory(materialNumbers[0]);
