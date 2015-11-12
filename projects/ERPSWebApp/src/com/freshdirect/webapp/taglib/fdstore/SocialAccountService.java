@@ -136,10 +136,18 @@ public class SocialAccountService implements AccountService {
 				    	try {						
 							 // APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				    		
 							 if(!user.getTcAcknowledge()){
+								 if(FDStoreProperties.isTCEnabled()){
 								 response.sendRedirect("/registration/tcaccept_lite.jsp");
 								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
-							 }else {
+								 }else{
+									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
+									 String newURL = request.getScheme() + "://" + request.getServerName() ;
+									 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+								 }
+							 }
+							 else {
 								 //response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								 
@@ -214,7 +222,12 @@ public class SocialAccountService implements AccountService {
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
+				    			 if(FDStoreProperties.isTCEnabled()){
 								 return "/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
+				    			 }else{
+				    				 socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
+										return socialLoginRecognized;
+				    			 }
 							 }else {
 					    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
 								return socialLoginRecognized;

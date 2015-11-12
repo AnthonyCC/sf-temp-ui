@@ -18,7 +18,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -50,10 +52,24 @@ public class LoginServlet extends HttpServlet {
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
 															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage(), false);
 			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-			if(!user.getTcAcknowledge()){
-				loginResponse.setMessage("TcAgreeFail");
-				//updatedSuccessPage = "/registration/tcaccept_lite.jsp";
+			
+			
+			if(!FDStoreProperties.isTCEnabled()){
+				try {
+					if(user !=null&&!user.getTcAcknowledge())
+					FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
+					
+				} catch (FDResourceException e) {
+					
+					e.printStackTrace();
+				}
+			}else{
+			 if(user !=null&&!user.getTcAcknowledge()){
+				 loginResponse.setMessage("TcAgreeFail");
+					
+			 }
 			}
+			
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
 				loginResponse.setSuccess(true);
