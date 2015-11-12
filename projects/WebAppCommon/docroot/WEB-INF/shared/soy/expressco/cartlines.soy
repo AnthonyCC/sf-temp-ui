@@ -92,6 +92,7 @@
  * @param? estimatedTotal Estimated total
  * @param? deliveryCharge Formatted price value
  * @param? cartChangedByCleanUp Boolean flag
+ * @param? beforeCheckoutAction on-click action
  */
 {template .cartheader autoescape="false"}
 <div class='cartheader'>
@@ -117,7 +118,7 @@
   </div>
   <div class='cartheader__action'>
       <form fdform="viewcart_startcheckout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-        <button class="cssbutton orange cartheader__button">Checkout &gt;</button>
+        <button class="cssbutton orange cartheader__button" {$beforeCheckoutAction}>Checkout &gt;</button>
       </form>
   </div>
 </div>

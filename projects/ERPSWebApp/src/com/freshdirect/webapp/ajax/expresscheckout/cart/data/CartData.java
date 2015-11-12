@@ -81,8 +81,10 @@ public class CartData extends AbstractCoremetricsResponse {
     private String warningMessage;
 
     private String couponMessage;
+    
+    private String beforeCheckoutAction;
 
-    private ModifyCartData modifyCartData;
+	private ModifyCartData modifyCartData;
 
     private ProductSamplesCarousel productSamplesTab;
 
@@ -240,6 +242,14 @@ public class CartData extends AbstractCoremetricsResponse {
         this.couponMessage = couponMessage;
     }
 
+    public String getBeforeCheckoutAction() {
+		return beforeCheckoutAction;
+	}
+
+	public void setBeforeCheckoutAction(String beforeCheckoutAction) {
+		this.beforeCheckoutAction = beforeCheckoutAction;
+	}
+	
     public static class Section implements Serializable {
 
         private static final long serialVersionUID = 1965764194639278346L;

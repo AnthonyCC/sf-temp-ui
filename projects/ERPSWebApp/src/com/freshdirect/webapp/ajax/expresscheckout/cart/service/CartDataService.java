@@ -394,6 +394,7 @@ public class CartDataService {
             Map<String, SectionInfo> sectionInfos = new HashMap<String, SectionInfo>();
             boolean isWineInCart = false;
             boolean hasEstimatedPriceItemInCart = false;
+            int sessionUserLevel = 0;
             for (FDCartLineI cartLine : cartLines) {
                 ProductModel productNode = cartLine.lookupProduct();
                 if (productNode == null) {
@@ -450,6 +451,16 @@ public class CartDataService {
             cartData.setItemCount(itemCount.getValue());
             cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
             cartData.setEstimatedTotal(JspMethods.formatPrice(cart.getTotal()));
+            
+            if(user!= null){
+            	sessionUserLevel = user.getLevel();
+            }            
+            if(sessionUserLevel == FDUserI.GUEST) {
+            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}); return false;\"");
+            } else if(sessionUserLevel == FDUserI.RECOGNIZED) {
+            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}); return false;\"");
+            } 
+                        
             populateSubTotalBox(cartData, cart, user);
             populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
             if (FDUserI.GUEST < user.getLevel()) {
