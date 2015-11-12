@@ -51,7 +51,7 @@ class FDCustomerOrderInfoDAO {
 		+ "(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "
 		+ "from cust.sale s,  cust.salesaction sa, cust.deliveryinfo di, cust.customer c, cust.fdcustomer fc "   
 		+ "where s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and s.CROMOD_DATE = sa.action_date and sa.id=di.salesaction_id " 
-		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id ";
+		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id and di.delivery_type <> 'X' ";
 		
 	
 	
