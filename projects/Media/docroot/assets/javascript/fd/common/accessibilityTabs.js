@@ -1,4 +1,3 @@
-/*global jQuery,quickshop*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {

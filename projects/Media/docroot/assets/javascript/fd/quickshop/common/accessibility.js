@@ -11,8 +11,6 @@ var FreshDirect = FreshDirect || {};
     var currentTab = $("[role='tab'].selected")[0];
     fd.components.accessibleTabs.updateSelectedTab(currentTab);
     fd.components.accessibleTabs.updateTabContentLabelledBy(currentTab);
-
-    console.log('quickshop tab accessibility set up');
   });
 
   // fd.modules.common.utils.register("quickshop.common", "accessibility", {}, fd);

@@ -138,8 +138,8 @@ var FreshDirect = FreshDirect || {};
   $(document).on('keydown', "[data-drawer-id]", function(e){
     // make drawer open by enter key
     if (e.which === 13) {
-      $(this).click();
-      $(this).find(".change").click();
+      $(e.currentTarget).click();
+      $(e.currentTarget).find(".change").click();
     }
   });
 
