@@ -12,10 +12,13 @@
 	<div id="sulCont" class="signup-style-social signin-social-account-create-success">
 		<div class="form-side-social-header">Congratulations!</div>
 		<div class="signin-social-forgot-pass-header-message">Your account has been created!</div>
-		<button onclick="close_window()" class="social-login-green-button">Begin Shopping</button>
+		<center>
+			<button onclick="close_window()" class="social-login-green-button">Begin Shopping</button>
+		</center>
 	</div>
 	<script>
 		function close_window(){
+			window.top.location='/login/index.jsp';
 				window.top['FreshDirect'].components.ifrPopup.close();
 			};
 		$jq( document ).ready(function() {

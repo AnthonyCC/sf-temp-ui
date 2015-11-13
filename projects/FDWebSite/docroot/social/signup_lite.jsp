@@ -433,7 +433,8 @@
 	%>
 			<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
 			<script language="javascript">
-				window.top.location = '/index.jsp';   // close popup and return to index page
+				//window.top.location = '/index.jsp';   // close popup and return to index page
+				window.location = '/social/AccountCreateSuccess.jsp';  // forward to this page
 			</script>				
 	<%
 		} 
