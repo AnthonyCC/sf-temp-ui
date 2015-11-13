@@ -225,12 +225,21 @@ public class SocialAccountService implements AccountService {
 				    			 if(FDStoreProperties.isTCEnabled()){
 								 return "/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
 				    			 }else{
-				    				 socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
-										return socialLoginRecognized;
+									 String newURL = request.getScheme() + "://" + request.getServerName() ;
+									 if(FDStoreProperties.isLocalDeployment()){
+										 newURL = newURL + ":" + request.getServerPort();
+									 }									 
+						    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
+									return newURL + socialLoginRecognized;
 				    			 }
 							 }else {
+
+								 String newURL = request.getScheme() + "://" + request.getServerName() ;
+								 if(FDStoreProperties.isLocalDeployment()){
+									 newURL = newURL + ":" + request.getServerPort();
+								 }									 
 					    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
-								return socialLoginRecognized;
+								return newURL + socialLoginRecognized;
 							 }
 						}
 			    		
