@@ -331,7 +331,7 @@
                $jq('.bodyCopySULNote').css("color","");
               }           
            },
-
+           onkeyup: false,
      errorPlacement: function(error, element) {
          error.insertBefore(element);
      },  

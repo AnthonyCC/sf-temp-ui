@@ -189,6 +189,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		             $jq(element.form).find("span[id=" + element.id + "_img]").removeClass('show_bg_arrow');
 		             
 		           },
+		         onkeyup: false,
 		 		 errorElement: "div",
 
 		     errorPlacement: function(error, element) {

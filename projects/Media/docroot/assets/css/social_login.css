@@ -90,15 +90,7 @@
   text-align:left;
   font-size:12px;
   font-family:"Verdana", Georgia, Serif;
-  color:red;
-}
-
-#sulCont input.error{
-  width:200px;
-  padding:9px;
-  border-radius:2px;
-  border-color:#FF6C47;
-  background-color:#FFE0E0;
+  color: #FF0000;
 }
 
 #sulCont span.error_img {
@@ -177,6 +169,7 @@ input[type="socialButton"] {
 
 #sulCont .form-side-social input.padding-input-box,
 #sulCont #lost_password input.padding-input-box{
+	color: #000000;
 	padding: 12px 15px;
     border: 1px solid #c2c2c2;
     box-sizing: content-box;
@@ -187,6 +180,11 @@ input[type="socialButton"] {
     line-height: 16px;
     text-align: left;
     width: 206px;
+}
+#sulCont .form-side-social input.error,
+#sulCont #lost_password input.error{
+  border-color:#FF6C47;
+  background-color:#FFE0E0;
 }
 #sulCont .form-side-social .padding-input-box#password1{
 	padding-right: 59px;
@@ -218,6 +216,10 @@ input[type="socialButton"] {
 	height: 1px;
 	margin-bottom: 3px;
 	background-color: #c2c2c2;
+}
+
+#sulCont #social_login_demo iframe{
+	display: block;
 }
 
 #sulCont .bottom-contents .bottom-contents-terms{
