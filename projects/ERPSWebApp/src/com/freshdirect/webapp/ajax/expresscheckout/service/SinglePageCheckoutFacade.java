@@ -39,6 +39,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
 import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
+import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.service.SinglePageCheckoutHeaderService;
@@ -135,10 +136,11 @@ public class SinglePageCheckoutFacade {
         Map<String, Object> result = new HashMap<String, Object>();
 
         final boolean hasValidationErrors = validationResult != null && !validationResult.getErrors().isEmpty();
-
+        FormRestriction restriction = null;
         // [APPDEV-4425] : prevent restriction check when invalid dlv address is selected
         if  ( !( PageAction.SELECT_DELIVERY_ADDRESS_METHOD == pageAction && hasValidationErrors) ) {
-            result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
+            restriction = CheckoutService.defaultService().preCheckOrder(user);
+            result.put(RESTRICTION_JSON_KEY, restriction);
         } else {
         	LOGGER.debug("Skipped restriction check for fraud address");
         }
@@ -184,14 +186,18 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_TIMESLOT:
                 result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user));
-                result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
+                    result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                }
                 break;
             case REMOVE_ALCOHOL_FROM_CART:
                 //$FALL-THROUGH$
             case REMOVE_WINE_AND_SPIRITS_FROM_CART:
                 //$FALL-THROUGH$
             case REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART: {
-                result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
+                    result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                }
                 String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user);
                 result.put(REDIRECT_URL_JSON_KEY,
                         RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
@@ -200,14 +206,18 @@ public class SinglePageCheckoutFacade {
                 break;
             }
             case APPLY_AGE_VERIFICATION_FOR_ALCOHOL_IN_CART: {
-                result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
+                    result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                }
                 String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user);
                 result.put(REDIRECT_URL_JSON_KEY,
                         RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
                 break;
             }
             case ATP_ADJUST: {
-                result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
+                    result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                }
                 result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                         availabilityService.selectWarningType(user)));
                 CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);

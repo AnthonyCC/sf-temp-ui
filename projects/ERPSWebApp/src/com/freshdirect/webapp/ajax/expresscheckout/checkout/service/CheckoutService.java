@@ -99,6 +99,10 @@ public class CheckoutService {
         return unavailabilityData;
 	}
 
+    public boolean checkAtpCheckEligibleByRestrictions(FormRestriction restriction) {
+        return restriction == null || restriction.isPassed();
+    }
+
 	public FormRestriction checkPlaceOrder(FDUserI user) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
 		return RestrictionService.defaultService().verifyEbtPaymentRestriction(user);
 	}
@@ -111,7 +115,7 @@ public class CheckoutService {
 		boolean checkoutPageReloadNeeded = false;
 		FormRestriction restriction = preCheckOrder(user);
 		UnavailabilityData atpFailureData = null;
-		if (restriction == null || restriction.isPassed()) {
+        if (checkAtpCheckEligibleByRestrictions(restriction)) {
 			atpFailureData = applyAtpCheck(user);
 		}
 		FormRestriction checkPlaceOrderResult = null;
