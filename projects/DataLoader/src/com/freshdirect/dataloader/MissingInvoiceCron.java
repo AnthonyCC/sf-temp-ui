@@ -42,7 +42,8 @@ public class MissingInvoiceCron extends DBReportCreator {
 			criteria.setDeliveryDate(Calendar.getInstance().getTime());
 			
 			List orders = sb.locateOrders(criteria);
-			List<String> missingOrders = new ArrayList<String>();
+			List<String> missingFDOrders = new ArrayList<String>();
+			List<String> missingFDXOrders = new ArrayList<String>();
 
 			int processed = 0;
 			int invoiced = 0;
@@ -53,7 +54,11 @@ public class MissingInvoiceCron extends DBReportCreator {
 
 				if (EnumSaleStatus.INPROCESS.equals(status)) {
 					processed++;
-					missingOrders.add(order.getSaleId());
+					if("X".equalsIgnoreCase(order.getDeliveryType())){
+						missingFDXOrders.add(order.getSaleId());
+					}else{
+						missingFDOrders.add(order.getSaleId());
+					}
 				} else if (
 					EnumSaleStatus.SETTLED.equals(status)
 						|| EnumSaleStatus.ENROUTE.equals(status)
@@ -74,9 +79,17 @@ public class MissingInvoiceCron extends DBReportCreator {
 			buff.append("Orders Processed: ").append(processed).append("\n");
 			buff.append("Orders Invoiced: ").append(invoiced).append("\n");
 			
-			buff.append("Missing: ").append(missingOrders.size()).append("\n");
+			buff.append("Missing FD Orders: ").append(missingFDOrders.size()).append("\n");
 			int count = 1;
-			for(Iterator<String> ri = missingOrders.iterator(); ri.hasNext(); count++){
+			for(Iterator<String> ri = missingFDOrders.iterator(); ri.hasNext(); count++){
+				String id = ri.next();
+				buff.append("\t").append(count).append(".  ").append(id);
+			}
+			buff.append("---------------------------------------------\n");
+			
+			buff.append("Missing FDX Orders: ").append(missingFDXOrders.size()).append("\n");
+			count = 1;
+			for(Iterator<String> ri = missingFDXOrders.iterator(); ri.hasNext(); count++){
 				String id = ri.next();
 				buff.append("\t").append(count).append(".  ").append(id);
 			}
