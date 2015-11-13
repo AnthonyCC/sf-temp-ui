@@ -367,7 +367,7 @@ public class RegistrationAction extends WebActionSupport {
 		ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
 		aInfo.decorateCustomerInfo(customerInfo);
 		cInfo.decorateCustomerInfo(customerInfo);
-		
+						
 		if(session.getAttribute("REFERRALNAME") != null ) {
 			
 			//Check for new rule. Reject user registration if a same FirstName + LastName + Zipcode 
@@ -917,6 +917,7 @@ public class RegistrationAction extends WebActionSupport {
 		private String deliveryInstructions;
 
 		private boolean receiveNews;
+		private String emailPreferenceLevel;
 		private boolean plainTextEmail;
 		private boolean termsAccepted;
 		private boolean socialLoginOnly;
@@ -927,6 +928,7 @@ public class RegistrationAction extends WebActionSupport {
 
 
         private void initialize(HttpServletRequest request) {
+        	
         	if(request.getSession().getAttribute("SOCIALONLYEMAIL") != null){
         		this.emailAddress = (String)request.getSession().getAttribute("SOCIALONLYEMAIL");
         		request.getSession().setAttribute("SOCIALONLYEMAIL",null);
@@ -952,8 +954,19 @@ public class RegistrationAction extends WebActionSupport {
 				this.password = NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim();
 			this.repeatPassword = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_PASSWORD.getCode()), "").trim();
 			this.passwordHint = NVL.apply(request.getParameter("password_hint"), "").trim();
-
-			this.receiveNews = true;
+			
+			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+			
+			if(user.getUserContext()!=null 
+					&& user.getUserContext().getStoreContext()!=null 
+					&& user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FDX)) {
+				// For FDX Registration set FD Email Preference to false and FDX email Preference to true ("2")
+				this.receiveNews = false;
+				this.emailPreferenceLevel = "2";
+			} else {
+				this.receiveNews = true;
+				this.emailPreferenceLevel = "0";
+			}
 			this.plainTextEmail = false;
 			
 			this.termsAccepted = request.getParameter("terms") != null;
@@ -1039,7 +1052,8 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setEmail(this.emailAddress);
 			customerInfo.setUnsubscribeDate(this.receiveNews ? null : new java.util.Date());
 			customerInfo.setAlternateEmail(altEmailAddress.trim());
-			customerInfo.setReceiveNewsletter(this.receiveNews);
+			customerInfo.setReceiveNewsletter(this.receiveNews); // FD Email Preference
+			customerInfo.setEmailPreferenceLevel(this.emailPreferenceLevel); // FDX Email Preference
 			customerInfo.setEmailPlaintext(this.plainTextEmail);
 		}
 
