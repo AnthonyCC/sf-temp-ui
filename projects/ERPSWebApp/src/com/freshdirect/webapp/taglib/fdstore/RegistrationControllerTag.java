@@ -929,6 +929,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	
 	protected void performDisconnectSocialAccount(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		String customerId = user.getUser().getIdentity().getErpCustomerPK();
+		
 		String socialEmail = request.getParameter("socialEmail");
 		String userToken = request.getParameter("userToken");
 		String socialNetworkProvider = request.getParameter("socialNetworkProvider");
@@ -943,7 +947,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			
 			try {
 				//FDSocialManager.unlinkSocialAccountWithUser( socialEmail, userToken);  
-				ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
+				//ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
+				ExternalAccountManager.unlinkExternalAccountWithUser(customerId, socialNetworkProvider);
 				request.setAttribute("SocialNetworkProvider", socialNetworkProvider);
 			} catch (FDResourceException e1) {
 				LOGGER.error("Error in disconnecting social account:" + e1.getMessage());

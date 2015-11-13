@@ -240,6 +240,39 @@ public class SocialAccountService implements AccountService {
 						//NOT Existed in FD
 						
 						
+						// APPBUG-3908
+			    		if(sessionUserLevel == FDUserI.SIGNED_IN){	
+
+				    		try {
+				    			
+				    			String customerId = FDCustomerManager.getCustomerId(sessionUserId).getId();
+				    			
+								ExternalAccountManager.linkUserTokenToUserId( customerId,
+																			  socialUserProfile.get("email"),
+																			  socialUserProfile.get("userToken"),
+																			  socialUserProfile.get("identityToken"),
+																			  socialUserProfile.get("provider"),
+																			  socialUserProfile.get("displayName"),
+																			  socialUserProfile.get("preferredUsername"),
+																			  socialUserProfile.get("email"),
+																			  socialUserProfile.get("emailVerified"));
+								
+								LOGGER.info("Account: "+socialUserProfile.get("email")+" provider: "+ socialUserProfile.get("provider")+" linked");														
+								
+							} catch (FDResourceException e1) {
+								LOGGER.error("error in merging account:" + e1.getMessage());
+							}	
+				    		
+			    			// Account Preference page
+			    			socialLoginAccountLinked = socialLoginAccountLinked + "?socialnetwork=" + socialUserProfile.get("provider");	
+							return socialLoginAccountLinked;							
+						}						
+						
+						
+						
+						
+						
+						
 						/*
 						 * 'SOCIALONLYACCOUNT' 
 						 */		

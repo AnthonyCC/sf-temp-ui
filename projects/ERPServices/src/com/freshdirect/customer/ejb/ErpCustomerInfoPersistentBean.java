@@ -658,7 +658,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.numOfEmployees = rs.getInt("NUM_OF_EMPLOYEES");
 			this.secondEmailAddress = rs.getString("SECOND_EMAIL_ADDRESS");
 			
-			this.socialLoginInfo = loadSocialUserInfo(conn, this.email);			
+			this.socialLoginInfo = loadSocialUserInfo(conn, this.email, this.getParentPK());			
 			
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());
@@ -669,6 +669,44 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.unsetModified();
 	}
 
+	
+	private List<ErpCustomerSocialLoginModel> loadSocialUserInfo(Connection conn, String user_id, PrimaryKey primaryKey )  throws SQLException {
+		
+		List<ErpCustomerSocialLoginModel> socialLoginInfo = new ArrayList<ErpCustomerSocialLoginModel>(); // **********************************************************
+		
+		//PreparedStatement ps = conn.prepareStatement( "SELECT USER_TOKEN, IDENTITY_TOKEN, PROVIDER, DISPLAY_NAME, PREFERRED_USER_NAME, EMAIL, EMAIL_VERIFIED FROM CUST.CUST_SOCIAL_LINK WHERE USER_ID = ?");
+		PreparedStatement ps = conn.prepareStatement( "SELECT USER_TOKEN, IDENTITY_TOKEN, PROVIDER, DISPLAY_NAME, PREFERRED_USER_NAME, EMAIL, EMAIL_VERIFIED FROM CUST.EXTERNAL_ACCOUNT_LINK WHERE CUSTOMER_ID = ?");
+		ps.setString(1, primaryKey.getId());
+		
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {		
+			String user_token = rs.getString("USER_TOKEN");
+			String identity_token = rs.getString("IDENTITY_TOKEN");
+			String provider = rs.getString("PROVIDER");
+			String display_name = rs.getString("DISPLAY_NAME");
+			String preferred_user_name = rs.getString("PREFERRED_USER_NAME");
+			String email = rs.getString("EMAIL");
+
+			ErpCustomerSocialLoginModel socialLoginModel = new ErpCustomerSocialLoginModel( user_id,  
+																							user_token,
+																							identity_token,  
+																							provider,  
+																							display_name,
+																							preferred_user_name,  
+																							email, 
+																							false);
+			
+			socialLoginInfo.add(socialLoginModel);
+		} 
+		
+		rs.close();
+		ps.close();
+
+		this.unsetModified();		
+		
+		return socialLoginInfo;
+	}
+	
 
 	private List<ErpCustomerSocialLoginModel> loadSocialUserInfo(Connection conn, String user_id)  throws SQLException {
 		
