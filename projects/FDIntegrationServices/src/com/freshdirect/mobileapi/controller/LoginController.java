@@ -20,6 +20,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -519,10 +520,13 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		((LoggedIn) responseMessage).setCohort(user.getCohort());
 		((LoggedIn) responseMessage).setTotalOrderCount(user
 				.getTotalOrderCount());
-
+		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
+			FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, "FD");
+			((LoggedIn) responseMessage).setTcAcknowledge(true);
+		}else{
 		((LoggedIn) responseMessage).setTcAcknowledge(user
 				.getTcAcknowledge());
-
+		}
 		return responseMessage;
 	}
 }
