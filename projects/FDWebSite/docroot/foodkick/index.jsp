@@ -38,11 +38,6 @@ String emailAddress = request.getParameter("emailAddress");
 final int W_FORGET_PASSWORD_TOTAL = 700;
 final int W_FORGET_PASSWORD_CONFIRMATION_TOTAL = 700;
 String previousPage;
-
-//this is for OAS inclusions
-//request.setAttribute("sitePage", "foodkick.freshdirect.com/index.jsp");
-//request.setAttribute("listPos", "4mmAd1,SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
-//request.setAttribute("listPos", "HPFeatureTop,HPTab2,HPTab3");
 %>
 <!DOCTYPE html>
 <html>
@@ -51,6 +46,18 @@ String previousPage;
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!--[if lt IE 9]>
+		   <script>
+		      document.createElement('header');
+		      document.createElement('nav');
+		      document.createElement('section');
+		      document.createElement('article');
+		      document.createElement('aside');
+		      document.createElement('footer');
+		      document.createElement('figure');
+		      document.createElement('figcaption');
+		   </script>
+		<![endif]-->
 		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
 	</head>
@@ -95,6 +102,7 @@ String previousPage;
 					<%@ include file="/login/includes/forget_password_confirmation.jspf" %>
 				</section>
 			</c:when>
+			<!--  
 			<c:when test="${param.p == 'retrieve_password'}">
 				<fd:CheckLoginStatus id="user" />
 				<% String fName = user.getFirstName(); %>
@@ -104,11 +112,19 @@ String previousPage;
 					</fd:ForgotPasswordController>
 				</section>
 			</c:when>
+			-->
 			<c:otherwise>
 				<%@ include file="includes/index_main.jspf" %>
 			</c:otherwise>
 		</c:choose>
 		<footer>
+			 <section id="footer_disclaimer">
+			 *This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
+must (a) exceed minimum purchase requirements before taxes & fees, (b) be within eligible <span>delivery areas</span>, and (c) have a delivery window greater than one (1) hour. Delivery is subject to
+availability. No promotion code necessary and the Offer will automatically apply starting with your first purchase and will continue for 30 days. This is a limited time Offer. All standard customer
+terms and conditions apply. FoodKick reserves the right to cancel or modify this Offer at any time. Offer is nontransferable. Void where prohibited. All right reserved, Fresh Direct, LLC.
+			</section> 
+			
 			<div class="stripes"><button class="download_button white">Download the APP</button></div>
 			<section id="footer_subsection">
 				<section>
@@ -158,7 +174,8 @@ String previousPage;
 	<%-- 
 	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 	--%>
-	<jwr:script src="/fdlibs.js" useRandomParam="false" /><!-- for jquery and other things -->
+	
+	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
 	<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
 	<script src="<%=JS_DIR %>/foodkick.js"></script>
 	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>

@@ -37,8 +37,8 @@ $TiemposBold_n: "TiemposHeadlineApp-Bold";
 @mixin opacity_mixin($opacity:0.5){
 	$ms_opacity: $opacity * 100;
 	
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=$ms_opacity)";
-	filter: alpha(opacity=$ms_opacity);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$ms_opacity})";
+	filter: alpha(opacity=#{$ms_opacity});
 	-moz-opacity: $opacity;
 	-khtml-opacity: $opacity;
 	opacity: $opacity;
@@ -251,6 +251,10 @@ nav{
 					margin: 0px 22px;
 				}
 			}
+			
+			&.logo_link a{
+				color: transparent;
+			}
 		}
 	}
 	
@@ -268,10 +272,10 @@ nav{
 		
 		&:hover{
 			color:white;
-			text-decoration:underline;
+			//text-decoration:underline;
 
 			img, & object{
-				border-bottom:1px solid white;
+				//border-bottom:1px solid white;
 			}
 		}
 		
@@ -280,8 +284,10 @@ nav{
 			width:55px;
 			height:55px;
 			
-			@include drop_shadow_mixin(0,0,0,#FFF);
+			/*
+			//@include drop_shadow_mixin(0,0,0,#FFF);
 			//@include drop_shadow_mixin(1,0,0,#000);
+			*/
 			
 			@include transition_mixin(500ms);
 			
@@ -444,6 +450,10 @@ section#section_slideshow{
 				background-color: rgba(#FFF, 0.5);
 				
 				@include box_shadow_mixin(3, 3, 4, rgba(#000, 0.5) );
+				
+				&.active{
+					background-color: rgba(#FFF, 1);
+				}
 			}
 		}
 
@@ -858,6 +868,7 @@ section#section_How_it_works{
 
 section#section_Whats_Good{
 	margin-bottom:30px;
+	height:48vw;
 	
 	.container{
 		/*width:600px;*/
@@ -1115,6 +1126,19 @@ footer{
 		}
 	}
 	
+	section#footer_disclaimer{
+		text-transform: initial;
+		margin-bottom:20px;
+		position: relative;
+	    top: -15px;
+	    padding-left: 3%;
+	    padding-right: 3%;
+		
+		span{
+			color: #0BF;
+		}
+	}
+	
 	section#footer_subsection{
 		text-align:center;
 		margin-top:30px;
@@ -1233,7 +1257,12 @@ footer{
 		}
 	}
 }
-
+.slidesjs-stop, .slidesjs-play{
+	display:none!important;
+}
+.hidden_content{
+	display:none;
+}
 
 button.download_button{
 	width: 170px;
