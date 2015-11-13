@@ -87,13 +87,13 @@ public class MissingInvoiceCron extends DBReportCreator {
 			}
 			buff.append("---------------------------------------------\n");
 			
-			buff.append("Missing FDX Orders: ").append(missingFDXOrders.size()).append("\n");
+			/*buff.append("Missing FDX Orders: ").append(missingFDXOrders.size()).append("\n");
 			count = 1;
 			for(Iterator<String> ri = missingFDXOrders.iterator(); ri.hasNext(); count++){
 				String id = ri.next();
 				buff.append("\t").append(count).append(".  ").append(id);
 			}
-			buff.append("---------------------------------------------\n");
+			buff.append("---------------------------------------------\n");*/
 
 			ErpMailSender mailer = new ErpMailSender();
 			System.out.println(ErpServicesProperties.getSapMailFrom() + "  " + ErpServicesProperties.getSapMailTo() + "  " + ErpServicesProperties.getSapMailCC());
