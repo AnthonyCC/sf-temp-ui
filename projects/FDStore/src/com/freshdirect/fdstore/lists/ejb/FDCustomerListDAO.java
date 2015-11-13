@@ -691,10 +691,10 @@ class FDCustomerListDAO {
 
 	private static final String LOAD_CUSTOMER_LIST_INFOS = 
 		"select cl.id as list_id, cl.name as name, cl.create_date as create_date," + 
-		" cl.modification_date as modification_date, count(cld.list_id) as elem_count, cl.recipe_id as recipe_id, cl.recipe_name as recipe_name " + 
+		" cl.modification_date as modification_date, count(cld.list_id) as elem_count, cl.recipe_id as recipe_id, cl.recipe_name as recipe_name,cl.e_store as e_store " + 
 		" from cust.customerlist cl LEFT JOIN cust.customerlist_details cld ON cl.id = cld.list_id and cld.delete_date is null " + 
 		" where cl.customer_id = ? and cl.type = ? " +
-		" group by cl.id, cl.name, cl.create_date, cl.modification_date, cl.recipe_id, cl.recipe_name";
+		" group by cl.id, cl.name, cl.create_date, cl.modification_date, cl.recipe_id, cl.recipe_name, cl.e_store";
 	
 	public List<FDCustomerListInfo> getCustomerCreatedListInfos(Connection conn, FDIdentity identity)	throws SQLException {
 		final EnumCustomerListType type = EnumCustomerListType.CC_LIST;
@@ -719,6 +719,7 @@ class FDCustomerListDAO {
 			list.setModificationDate(rs.getTimestamp("MODIFICATION_DATE"));
 			list.setRecipeId( rs.getString( "recipe_id" ) );
 			list.setRecipeName( rs.getString("recipe_name"));
+			list.seteStoreType(rs.getString("e_store"));
 		
 			cclLists.add(list);
 		}

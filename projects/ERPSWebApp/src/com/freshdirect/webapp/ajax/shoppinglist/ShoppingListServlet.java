@@ -269,6 +269,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		// Add items to list
 		addItemsToList( list, items, recipeId, recipeName, responseItems, listCreated );
 
+		
 		// Save list
 		try {
 			FDListManager.storeCustomerList(list);
@@ -313,6 +314,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		// Set recipe id for list
 		list.setRecipeId( recipeId );
 		list.setRecipeName(recipeName);
+		list.seteStoreType(ContentFactory.getInstance().getStore().getContentName());
 	}
 	
 	public static FDCustomerProductListLineItem createListLineItem(AddToCartItem item, String recipeId, boolean editItem) throws FDResourceException{
@@ -408,6 +410,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		
 		List<ShoppingListInfo> listInfos = new ArrayList<ShoppingListInfo>( lists.size() );
 		for ( FDCustomerListInfo list : lists ) {
+			if(list.geteStoreType()!=null&&list.geteStoreType().equalsIgnoreCase(ContentFactory.getInstance().getStore().getContentName())){
 			ShoppingListInfo info = new ShoppingListInfo();
 			info.setListId( list.getId() );
 			info.setName( list.getName() );
@@ -415,6 +418,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			info.setRecipeId( list.getRecipeId() );
 			info.setDefault( list.getId().equals( defaultListId ) );
 			listInfos.add( info );
+			}
 		}
 		
 		Collections.sort( listInfos, new Comparator<ShoppingListInfo>() {
