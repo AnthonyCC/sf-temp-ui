@@ -112,7 +112,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 <tmpl:put name="loginButton">
 	<% if ( FDStoreProperties.isSocialLoginEnabled() ) { %>
-       <button class="loginButton loginButtonSocial locationbar-social-signin-button" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}) }">Sign In</button>
+       <button class="loginButton loginButtonSocial locationbar-social-signin-button" id="locabar_loginButton"  onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', height: 580, opacity: .5}) }">Sign In</button>
     <% } else { %>
     	<button class="loginButton" id="locabar_loginButton">log in</button>
     <% } %>
@@ -121,7 +121,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 <tmpl:put name="signupButton"><%
 	if (FDStoreProperties.isLightSignupEnabled()) {
 		if ( FDStoreProperties.isSocialLoginEnabled() ) {
-			%><button class="signUpButton locationbar-social-create-account-button" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}) }">Create Account</button><% 
+			%><button class="signUpButton locationbar-social-create-account-button" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}) }">Create Account</button><% 
 		} else {
 			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">sign up</button><%
 		}

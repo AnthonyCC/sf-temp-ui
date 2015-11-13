@@ -169,6 +169,8 @@ input[type="socialButton"] {
 
 #sulCont .form-side-social input.padding-input-box,
 #sulCont #lost_password input.padding-input-box{
+	height: 27px;
+	width: 206px;
 	color: #000000;
 	padding: 8px 15px;
     border: 1px solid #c2c2c2;
@@ -177,9 +179,8 @@ input[type="socialButton"] {
     font-family: Verdana;
     font-size: 16px;
     font-weight: 400;
-   	line-height: 20px;
     text-align: left;
-    width: 206px;
+    
 }
 #sulCont .form-side-social input.error,
 #sulCont #lost_password input.error{
