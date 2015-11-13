@@ -37,7 +37,7 @@
        </c:if>
     </div>
     <div class="addtocart-right center-content" data-component="product" data-cmeventsource="pdp_main">
-      <soy:render template="pdp.productDataMin" data="${productPotato}" />
+      <soy:render template="pdp.productData" data="${productPotato}" />
       <soy:render template="pdp.bundleProductAddToCart" data="${productPotato}"/>
     </div>
   </div>
