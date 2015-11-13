@@ -1,9 +1,11 @@
 <%@page import="com.freshdirect.fdstore.content.CMSWebPageModel"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Date"%>
+<%@page import="java.util.Locale"%>
 <%@page import="com.freshdirect.fdstore.content.CMSPageRequest"%>
 <%@page import="com.freshdirect.fdstore.content.CMSSectionModel"%>
 <%@page import="com.freshdirect.wcms.CMSContentFactory"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <html>
@@ -16,7 +18,9 @@
 			CMSPageRequest pageRequest = new CMSPageRequest();
 			String pageName = request.getParameter("pageName") != null ? request.getParameter("pageName") : "Feed";
 			String date = request.getParameter("dateTime");
-			pageRequest.setRequestedDate(new Date());
+			SimpleDateFormat format = new SimpleDateFormat(
+				    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+			pageRequest.setRequestedDate(format.parse(date));
 			pageRequest.setPageType(pageName);
 			pageRequest.setPreview(true);
 			pageRequest.setIgnoreSchedule(request.getParameter("ignoreSchedule") != null);
