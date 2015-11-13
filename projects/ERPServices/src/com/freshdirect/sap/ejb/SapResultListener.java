@@ -261,7 +261,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
-								,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)?saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone():null);
+								,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
 					}
 				}
 
