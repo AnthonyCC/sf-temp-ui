@@ -43,7 +43,7 @@ public class MissingInvoiceCron extends DBReportCreator {
 			
 			List orders = sb.locateOrders(criteria);
 			List<String> missingFDOrders = new ArrayList<String>();
-			List<String> missingFDXOrders = new ArrayList<String>();
+//			List<String> missingFDXOrders = new ArrayList<String>();
 
 			int processed = 0;
 			int invoiced = 0;
@@ -51,23 +51,20 @@ public class MissingInvoiceCron extends DBReportCreator {
 
 				FDCustomerOrderInfo order = (FDCustomerOrderInfo) i.next();
 				EnumSaleStatus status = order.getOrderStatus();
-
-				if (EnumSaleStatus.INPROCESS.equals(status)) {
-					processed++;
-					if("X".equalsIgnoreCase(order.getDeliveryType())){
-						missingFDXOrders.add(order.getSaleId());
-					}else{
-						missingFDOrders.add(order.getSaleId());
+				if(!"X".equalsIgnoreCase(order.getDeliveryType())){
+					if (EnumSaleStatus.INPROCESS.equals(status)) {
+						processed++;
+						missingFDOrders.add(order.getSaleId());						
+					} else if (
+						EnumSaleStatus.SETTLED.equals(status)
+							|| EnumSaleStatus.ENROUTE.equals(status)
+							|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
+							|| EnumSaleStatus.REFUSED_ORDER.equals(status)
+							|| EnumSaleStatus.RETURNED.equals(status)
+							|| EnumSaleStatus.CAPTURE_PENDING.equals(status)) {
+						processed++;
+						invoiced++;
 					}
-				} else if (
-					EnumSaleStatus.SETTLED.equals(status)
-						|| EnumSaleStatus.ENROUTE.equals(status)
-						|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
-						|| EnumSaleStatus.REFUSED_ORDER.equals(status)
-						|| EnumSaleStatus.RETURNED.equals(status)
-						|| EnumSaleStatus.CAPTURE_PENDING.equals(status)) {
-					processed++;
-					invoiced++;
 				}
 			}
 			
