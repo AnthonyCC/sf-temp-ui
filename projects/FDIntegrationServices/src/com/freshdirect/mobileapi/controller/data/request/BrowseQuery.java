@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.request;
 
+import java.util.List;
+
 import com.freshdirect.mobileapi.catalog.model.CatalogKey;
 import com.freshdirect.mobileapi.controller.data.Message;
 
@@ -44,6 +46,8 @@ public class BrowseQuery extends Message {
 	private Integer loadCategoriesCarousel;
 	
 	private Integer carouselProductCount;
+	
+	private List<String> filterByIds;
 	
 	private String filterById;
 
@@ -126,14 +130,24 @@ public class BrowseQuery extends Message {
 	public void setSortBy(String sortBy) {
 		this.sortBy = sortBy;
 	}
-	
+	@Deprecated
 	public String getFilterById(){
 		return filterById;
 	}
 	
+	@Deprecated
 	public void setFilterById(String filterById) {
 		this.filterById = filterById;
 	}
+
+	public List<String> getFilterByIds() {
+		return filterByIds;
+	}
+
+	public void setFilterByIds(List<String> filterByIds) {
+		this.filterByIds = filterByIds;
+	}
+
 
 	public String getCategory() {
 		return category;
