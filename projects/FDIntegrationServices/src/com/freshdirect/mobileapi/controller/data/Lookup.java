@@ -6,7 +6,15 @@ public class Lookup {
 	
 	private String name;
 	
-	public Lookup(String code, String name) {
+	private String selectedLabel;
+	
+	public String getSelectedLabel() {
+		return selectedLabel;
+	}
+	public void setSelectedLabel(String selectedLabel) {
+		this.selectedLabel = selectedLabel;
+	}
+	public Lookup(String code, String name, String selectedLabel) {
 		super();
 		this.code = code;
 		this.name = name;

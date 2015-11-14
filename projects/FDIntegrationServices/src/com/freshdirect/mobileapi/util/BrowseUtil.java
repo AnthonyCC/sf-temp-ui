@@ -89,7 +89,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
-import com.freshdirect.webapp.ajax.filtering.BrowseDataBuilderFactory.SubCategoryDataBuilder;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 public class BrowseUtil {
@@ -1022,7 +1021,7 @@ public class BrowseUtil {
 	    		
 	    		for(SortOptionModel o : options){	
 	    			if(soi.getSortOptionsLookup().size()==0){
-	    				soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel()));
+	    				soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel(), o.getSelectedLabel()));
 	    			} else {
 	    				isToBeAdded = true;
 	    				for(Lookup lookupItr: soi.getSortOptionsLookup()) {
@@ -1031,7 +1030,7 @@ public class BrowseUtil {
 	    					} 
 	    				}
 	    				if(isToBeAdded){
-	    					soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel()));
+	    					soi.getSortOptionsLookup().add(new Lookup(SortType.wrap(o).toString(), o.getLabel(), o.getSelectedLabel()));
 	    				}
 	    			}
 	    		}
