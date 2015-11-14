@@ -19,6 +19,10 @@ public class Lookup {
 		this.code = code;
 		this.name = name;
 	}
+	
+	public Lookup(String code, String name){
+		this(code, name, null);
+	}
 	public String getCode() {
 		return code;
 	}
