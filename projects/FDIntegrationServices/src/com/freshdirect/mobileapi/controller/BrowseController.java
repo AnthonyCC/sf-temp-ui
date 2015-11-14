@@ -97,10 +97,10 @@ public class BrowseController extends BaseController {
 		return false;
 	}
 
-    public void addSections(DepartmentModel storeDepartment, Department result) {
+    public void addSections(DepartmentModel storeDepartment, Department result, boolean isFDX) {
     	//Department sections are added here
     	//Call BrowseUtil to populate all the categories.
-	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(storeDepartment);
+	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(storeDepartment, isFDX);
 	   result.setSections(departmentSections);
     }
 
@@ -145,7 +145,7 @@ public class BrowseController extends BaseController {
 		        				   && !storeDepartment.isHideIphone()) {
 		        			   //Add logic to populate departmentSections
 		        			   dpt = Department.wrap(storeDepartment);
-		        			   addSections(storeDepartment, dpt);
+		        			   addSections(storeDepartment, dpt, store.getContentName().equals("FDX"));
 		        			   departments.add(dpt);		        			   
 		        		   }
 		        	   }

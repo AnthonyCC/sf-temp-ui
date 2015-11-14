@@ -593,12 +593,21 @@ public class BrowseUtil {
 	    	return sortedCategories;
 	    	
 	    }
+	    
+	    public static List<DepartmentSection> getDepartmentSectionsEX(DepartmentModel dept){
+	    	List<DepartmentSection> sectionList = new ArrayList<DepartmentSection>();
+	    	
+	    	List<CategoryModel> categories = dept.getCategories();
+	    	
+	    	return sectionList;
+	    }
+	    
 //-------------------------------------------browse/Navigation-----------------------------------------------------------------------------	    
 	    /**
 	     * Populate the department section for a given department 
 	     * @return
 	     */
-	    public static List<DepartmentSection> getDepartmentSections(DepartmentModel storeDepartment){
+	    public static List<DepartmentSection> getDepartmentSections(DepartmentModel storeDepartment, boolean isFDX){
 	    	
 	    	List<DepartmentSection> departmentSections = new ArrayList<DepartmentSection>();
 	    	
@@ -623,12 +632,12 @@ public class BrowseUtil {
 	    			DepartmentSection section = new DepartmentSection();
 	    			//create department section for nosectionCategories for preference categories
 	    			if(entry.getKey().equals("prefCat")){
-	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				List<Category> selectedcategories = buildcategories(entry.getValue(), isFDX);
 			    		section.setCategories(selectedcategories);
 			    		section.setSectionHeader(sectionNamePref);
 			    		departmentSections.add(section);
 	    			} else if(entry.getKey().equals("normalCat")){
-	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				List<Category> selectedcategories = buildcategories(entry.getValue(), isFDX);
 	    				section.setCategories(selectedcategories);
 	    				section.setSectionHeader(sectionNameNormal);
 	    				departmentSections.add(section);
@@ -643,7 +652,7 @@ public class BrowseUtil {
 	    			DepartmentSection section = new DepartmentSection();
 	    			section.setSectionHeader(catSection.getHeadline());
 	    			//Call build categories with selected categories as argument and add it to categories of departmentsection
-	    			List<Category> selectedcategories = buildcategories(catSection.getSelectedCategories());
+	    			List<Category> selectedcategories = buildcategories(catSection.getSelectedCategories(), isFDX);
 	    			section.setCategories(selectedcategories);
 	    			departmentSections.add(section);
 	    		}
@@ -652,12 +661,12 @@ public class BrowseUtil {
 	    			DepartmentSection section = new DepartmentSection();
 	    			//create department section for nosectionCategories for preference categories
 	    			if(entry.getKey().equals("prefCat")){
-	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				List<Category> selectedcategories = buildcategories(entry.getValue(), isFDX);
 			    		section.setCategories(selectedcategories);
 			    		section.setSectionHeader(sectionNamePref);
 			    		departmentSections.add(section);
 	    			} else if(entry.getKey().equals("normalCat")){
-	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				List<Category> selectedcategories = buildcategories(entry.getValue(), isFDX);
 	    				section.setCategories(selectedcategories);
 	    				section.setSectionHeader(sectionNameNormal);
 	    				departmentSections.add(section);
@@ -675,14 +684,16 @@ public class BrowseUtil {
 	     * This should be a recursive call to build the tree of categories from CMS
 	     * @return
 	     */
-	    private static List<Category> buildcategories(List<CategoryModel> selectedCategories){
+	    private static List<Category> buildcategories(List<CategoryModel> selectedCategories, boolean isFDX){
 	    	long startTime = System.currentTimeMillis();
 	    	List<Category> categories = new ArrayList<Category>();
 	    	for(CategoryModel model : selectedCategories){
 	    		Category cat = buildCategoryData(model);
 	    		categories.add(cat);
 	    	}
-	    	sortByName(categories);
+	    	if(!isFDX){
+	    		sortByName(categories);
+	    	}
 	    	long endTime   = System.currentTimeMillis();
         	long totalTime = endTime - startTime;
         	LOG.debug("Time to construct  categories :" +totalTime);
