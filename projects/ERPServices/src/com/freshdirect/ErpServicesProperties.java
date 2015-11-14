@@ -210,11 +210,6 @@ public class ErpServicesProperties {
 	private final static String PROP_DP_REPORT_MAIL_CC = "dpReport.mail.cc";
 	private final static String PROP_DP_REPORT_MAIL_FROM = "dpReport.mail.from";
 	
-	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_HOST		= "product.feed.uploader.ftp.host";
-	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_USER		= "product.feed.uploader.ftp.user";
-	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD	= "product.feed.uploader.ftp.passwd";
-	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR	= "product.feed.uploader.ftp.workdir";
-	
 	private final static String PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY   = "erpservices.materialbatch.status.expiry"; // in minutes
 	
 	public final static String PROP_EWALLET_NOTIFY_EMAIL_FROM	= "ewallet.notify.email.from";
@@ -367,7 +362,7 @@ public class ErpServicesProperties {
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
-		defaults.put( MASQUERADE_FDX_STOREFRONT_BASEURL, "http://fdx.freshdirect.com/" );
+		defaults.put( MASQUERADE_FDX_STOREFRONT_BASEURL, "http://foodkick.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
 		defaults.put(PROP_CARD_VERIFICATION_AUTH_AMOUNT,"1");
 		
@@ -390,12 +385,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_DP_REPORT_MAIL_TO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_DP_REPORT_MAIL_CC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_DP_REPORT_MAIL_FROM, "applicationdevelopment@freshdirect.com");
-		
-		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR, "/opt/fdlog/weblogic-web01/");
-		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_HOST, "web01.stdev05.nyc1.freshdirect.com");
-		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_USER, "fdadmin");
-		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD, "fd8848admin");
-		
+				
 		defaults.put(PROP_MATERIALBATCH_LOADERSTATUS_EXPIRY, "30");
 		
 		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_TO, "applicationdevelopment@freshdirect.com");
