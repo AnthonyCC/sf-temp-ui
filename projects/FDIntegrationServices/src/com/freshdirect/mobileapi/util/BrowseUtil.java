@@ -48,7 +48,9 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterGroupModel;
+import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
@@ -492,9 +494,28 @@ public class BrowseUtil {
 	    				}
 	    			}
     			} else if(group instanceof ProductFilterMultiGroupModel){
-    				//TODO: WHAAA??? Skip for now
-    				ProductFilterMultiGroupModel pfmg = (ProductFilterMultiGroupModel)group;
-//    				pfmg.get
+    				TagModel rootTag = ((ProductFilterMultiGroupModel) group).getRootTag();
+    				List<TagModel> rootChildren = rootTag.getChildren();
+    				if(rootChildren != null && rootChildren.size() > 0){
+    					
+						List<ProductFilterGroupI> pfglist = ProductItemFilterFactory.getInstance().getProductFilterGroups((ProductFilterMultiGroupModel)group, rootChildren);
+
+						if(pfglist != null & pfglist.size() > 0){
+							
+							for(ProductFilterGroupI filterGroup : pfglist){
+								List<ProductItemFilterI> filterItemList = filterGroup.getProductFilters();
+								if(filterItemList != null && filterItemList.size() > 0){
+									for(ProductItemFilterI itemFilter : filterItemList){
+										if(filterIds.contains(itemFilter.getId())){
+											activeFilters.add(itemFilter);
+										}
+									}
+								}
+
+							}
+						}
+    					
+    				}
     				
     			}
     		}
@@ -944,7 +965,7 @@ public class BrowseUtil {
 		    	//sortOptions.addAll(sortOptionSet);
 		    	//NO FILTERS ON DEPARTMENT LEVEL
 		    	if(contentNode instanceof CategoryModel){
-		    		getFiltersForCategory((CategoryModel)contentNode, sortOptions, user, request);
+		    		getFiltersForCategory((CategoryModel)contentNode, sortOptions, requestMessage.getFilterByIds(), user, request);
 		    	}
 	    	}
 	    	
@@ -971,13 +992,15 @@ public class BrowseUtil {
 	    	
 	    }
 	    
-	    private static void getFiltersForCategory(CategoryModel category, SortOptionInfo soi, SessionUser user, HttpServletRequest request) {
+	    private static void getFiltersForCategory(CategoryModel category, SortOptionInfo soi, List<String> activeFilters, SessionUser user, HttpServletRequest request) {
 	    	if(category == null)
 	    		return;
 	    	long s = System.currentTimeMillis();
 	    	FilterGroup fg = null;
 	    	FilterGroupItem fgi = null;
 	    	List<ProductModel> productList = getProductListForCategory(category);
+	    	
+	    	productList = filterFiltersInCategory(user, category, productList, activeFilters);
 	    	
 	    	List<FilteringProductItem> filteringList = ProductItemFilterUtil.createFilteringProductItems(productList);
 	    	
