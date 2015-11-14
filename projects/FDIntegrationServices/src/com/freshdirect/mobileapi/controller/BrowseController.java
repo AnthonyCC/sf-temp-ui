@@ -129,7 +129,7 @@ public class BrowseController extends BaseController {
         	
         	GlobalNavResult res = new GlobalNavResult();
         	StoreModel store = ContentFactory.getInstance().getStore();
-        	DepartmentNameComparator departmentNameComparator = new DepartmentNameComparator();
+        	//DepartmentNameComparator departmentNameComparator = new DepartmentNameComparator();
         	
         	List<Department> departments = new ArrayList<Department>();
         	Department dpt = null;
