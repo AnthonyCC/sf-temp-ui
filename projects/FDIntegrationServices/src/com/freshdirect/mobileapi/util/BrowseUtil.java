@@ -1000,7 +1000,9 @@ public class BrowseUtil {
 	    	FilterGroupItem fgi = null;
 	    	List<ProductModel> productList = getProductListForCategory(category);
 	    	
-	    	productList = filterFiltersInCategory(user, category, productList, activeFilters);
+	    	if(activeFilters != null && activeFilters.size() > 0){
+	    		productList = filterFiltersInCategory(user, category, productList, activeFilters);
+	    	}
 	    	
 	    	List<FilteringProductItem> filteringList = ProductItemFilterUtil.createFilteringProductItems(productList);
 	    	
