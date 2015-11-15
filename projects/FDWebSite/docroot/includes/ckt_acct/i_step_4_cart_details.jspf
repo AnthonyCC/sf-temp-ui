@@ -359,7 +359,11 @@ int idx = 0;
 	<%  } 
 	if (cart.getPhoneCharge() > 0 && !isReceiptPage && user.getMasqueradeContext()!=null){%>
 	<tr valign="top" class="orderSummary">
+			<%if(user.getMasqueradeContext()!=null&& parentOrderId!=null) {%>
+			<td colspan="3" align="right">Waive Phone Handling Charge<input type="checkbox" value="true" checked="checked" name="waive_phone_fee"></td>
+			<%}else{%>
 			<td colspan="3" align="right">Waive Phone Handling Charge<input type="checkbox" value="true" <%=cart.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee"></td>
+			<%}%>
 			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.PHONE)){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getPhoneCharge()) %><%}%></td>
 			<td colspan="7">&nbsp;</td>
 		</tr>
