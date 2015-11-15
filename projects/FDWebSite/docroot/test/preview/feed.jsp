@@ -18,9 +18,13 @@
 			CMSPageRequest pageRequest = new CMSPageRequest();
 			String pageName = request.getParameter("pageName") != null ? request.getParameter("pageName") : "Feed";
 			String date = request.getParameter("dateTime");
+			if(date != null){
 			SimpleDateFormat format = new SimpleDateFormat(
 				    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 			pageRequest.setRequestedDate(format.parse(date));
+			} else {
+			pageRequest.setRequestedDate(new Date());
+			}
 			pageRequest.setPageType(pageName);
 			pageRequest.setPreview(true);
 			pageRequest.setIgnoreSchedule(request.getParameter("ignoreSchedule") != null);
@@ -32,8 +36,6 @@
 			<form action="">
 				Name: <input name="pageName" type="text" value="Feed"/>
 				Date: <input name="dateTime" type="text" value="2015-07-16T12:12:00.000Z"/>
-<!-- 				Preview: <input name="preview" type="checkbox" value="true"/>
- -->				Match Schedule: <input name="ignoreSchedule" type="checkbox"/>
 				<input type="submit"/>			
 			</form>
 		</div>
