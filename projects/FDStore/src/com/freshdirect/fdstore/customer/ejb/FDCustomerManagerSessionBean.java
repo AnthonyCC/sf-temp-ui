@@ -991,7 +991,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
-		
+		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 		
 
@@ -1020,6 +1020,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
+		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 
 		// TODO Reconsider this solution!
@@ -7952,9 +7953,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Collection<ErpAddressModel> addressList=FDUserDAO.getParentAddresscheck(conn, deliveryAddressModel);
 			
 			for ( ErpAddressModel address : addressList ) {
-				if (deliveryAddressModel.getZipCode()!=null&&deliveryAddressModel.getZipCode().equalsIgnoreCase(address.getZipCode()) &&
-								deliveryAddressModel.getScrubbedStreet()!=null && deliveryAddressModel.getScrubbedStreet().equalsIgnoreCase(address.getScrubbedStreet())
-								&& deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment()))
+				if ((deliveryAddressModel.getApartment()==null && address.getApartment()==null) || 
+						deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment()))
 					parentOrderAddressId= address.getId();
 		       }
 			

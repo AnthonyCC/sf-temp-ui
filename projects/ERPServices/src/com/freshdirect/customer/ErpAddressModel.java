@@ -50,6 +50,17 @@ public class ErpAddressModel extends ContactAddressModel {
 	
 	//This is a non-persistent field.
 	private boolean isEbtAccepted;
+	
+	private String scrubbedStreet;
+	
+	public String getScrubbedStreet() {
+		return scrubbedStreet;
+	}
+
+	public void setScrubbedStreet(String scrubbedStreet) {
+		this.scrubbedStreet = scrubbedStreet;
+	}
+
 	/**
 	 * Default constructor.
 	 */

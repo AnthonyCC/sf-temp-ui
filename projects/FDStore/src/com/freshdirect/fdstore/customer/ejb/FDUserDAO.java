@@ -1276,24 +1276,23 @@ public class FDUserDAO {
 	}
 	
 	
-	public static  Collection<ErpAddressModel> getParentAddresscheck(Connection conn, ErpAddressModel deliveryAddressModel )throws SQLException {
+	public static   Collection<ErpAddressModel> getParentAddresscheck(Connection conn, ErpAddressModel deliveryAddressModel )throws SQLException {
 
 		PreparedStatement ps = null;
-		ErpAddressModel addressModel = null;
-			ps = conn.prepareStatement("select * from CUST.ADDRESS H where  H.CUSTOMER_ID=?");	
-			ps.setString(1, deliveryAddressModel.getCustomerId());
+		ErpAddressModel addressModel=null;
+		String parentAddressId=null;
+			ps = conn.prepareStatement("select a.id, a.apartment from cust.address a where  a.customer_id=? and a.scrubbed_address=? and a.zip=? and a.city=?");	
+					ps.setString(1, deliveryAddressModel.getCustomerId());
+					ps.setString(2, deliveryAddressModel.getScrubbedStreet());
+					ps.setString(3, deliveryAddressModel.getZipCode());
+					ps.setString(4, deliveryAddressModel.getCity());
 			ResultSet rs = ps.executeQuery();
 			Collection<ErpAddressModel> addressList = new  ArrayList<ErpAddressModel>();
 			while (rs.next()) {
 				addressModel = new ErpAddressModel();					
-				addressModel.setAddress1(rs.getString("ADDRESS1"));
-				addressModel.setAddress2(rs.getString("ADDRESS2"));
 				addressModel.setApartment(rs.getString("APARTMENT"));
-				addressModel.setCity(rs.getString("CITY"));
-				addressModel.setZipCode(rs.getString("ZIP"));
 				addressModel.setPK(new PrimaryKey(rs.getString("ID")));
 				addressList.add(addressModel);	
-						
 					}
 			rs.close();
 			ps.close();
