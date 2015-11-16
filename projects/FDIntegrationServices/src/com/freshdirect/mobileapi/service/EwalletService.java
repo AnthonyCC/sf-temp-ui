@@ -33,6 +33,7 @@ import com.freshdirect.mobileapi.controller.data.request.EwalletRequest;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethod;
 import com.freshdirect.mobileapi.ewallet.EwalletMobileRequestProcessor;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
@@ -700,8 +701,7 @@ public class EwalletService {
 					cartItem.append("<Value>"
 							+ (new Double(cartLine.getPrice() * 100)).longValue()
 							+ "</Value>");
-					cartItem.append("<ImageURL>" + ewalletRequestData.getAppBaseUrl()
-							+ ewalletRequestData.getContextPath()
+					cartItem.append("<ImageURL>" + MobileApiProperties.getMediaPath()
 							+ StringEscapeUtils.escapeXml(productNode.getProdImage().getPathWithPublishId())
 							+ "</ImageURL>");
 					cartItem.append("</ShoppingCartItem>");
