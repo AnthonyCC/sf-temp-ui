@@ -89,13 +89,14 @@ FIELD_NAMES.add(0, "email");
 							<input type="hidden" name="isSocialLogin" value="true">   	
 						</td>
 					</tr>
-
+					<!-- 
 					<tr>
 						<td style="padding-top: 12px;">
 							<input type="checkbox" id="altEmail" name="altEmail" value="true">
 							<span class="input-email-send-message">Send to all emails on file.</span>
 						</td>
 					</tr>
+					-->
 					<tr>
 						<td style="padding-top: 15px;">
 							<a onclick="document.lost_password.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;">

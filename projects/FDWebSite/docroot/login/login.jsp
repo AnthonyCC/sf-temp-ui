@@ -45,6 +45,8 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 		<%@ include file="/includes/i_login_field.jspf" %>
 		<br>
 		<% if (!isPopup) { %>
+		
+			<!--  
 			<%if(uri.indexOf("quickshop")== -1){%>
 
 				<font class="text13bold">Forgot your password?</FONT><BR>
@@ -56,6 +58,7 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 				<%}%>
 				</FONT>
 			<%}%>
+			-->
 		
 		<br><br>
 			<% if( null != request.getParameter("successPage")) { %>
