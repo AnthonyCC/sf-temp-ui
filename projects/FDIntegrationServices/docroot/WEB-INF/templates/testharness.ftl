@@ -770,7 +770,7 @@ function loadStuff() {
   	
   } else if (  loaddata == "getAllProductsForCategoryEX") {
   	$("#url").val("/browse/getproductsEX/"); 
-  	var postdata = '{"id": "fsh_deli_meat", "filterById" : "filter_global_rwa", "sortBy" : "PRICE"}';
+  	var postdata = '{"id": "fsh_deli_meat", "filterByIds" : ["filter_global_rwa"], "sortBy" : "PRICE"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
