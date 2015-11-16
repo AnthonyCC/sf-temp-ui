@@ -12,7 +12,7 @@
 {template .popup autoescape="false"}
 
     <div id="{$popupId}" class="qs-popup {if not $helpTemplate}qs-hidehelp{/if} {if $hasClose}qs-hasclose{/if} {$customClass}">
-        <h2 class="qs-popup-header"><span>{$headerContent}</span> <button class="qs-popup-help-icon" data-bodytemplate="{$helpTemplate}" data-header="{$helpHeader}">help</button> <button class="qs-popup-close-icon">close</button></h2>
+        <h2 class="qs-popup-header"><span>{$headerContent}</span> <button nofocus class="qs-popup-help-icon" data-bodytemplate="{$helpTemplate}" data-header="{$helpHeader}">help</button> <button nofocus class="qs-popup-close-icon">close</button></h2>
         <div class="qs-popup-content">
         	{$bodyContent}
         </div>

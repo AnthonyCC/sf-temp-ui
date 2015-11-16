@@ -175,6 +175,11 @@ var FreshDirect = FreshDirect || {};
     popupId: {
       value: 'addtolistpopup'
     },
+    decorate: {
+      value: function () {
+        $(this.trigger).attr('aria-haspopup', 'true');
+      }
+    },
     validateOpen: {
       value: function (e) {
         var target = $(e.currentTarget),
@@ -216,6 +221,11 @@ var FreshDirect = FreshDirect || {};
     },
     trigger: {
       value: '.qs-actions button.qs-addtolist'
+    },
+    decorate: {
+      value: function () {
+        $(this.trigger).attr('aria-haspopup', 'true');
+      }
     },
     popupId: {
       value: 'createlistpopup'

@@ -24,7 +24,7 @@ var FreshDirect = FreshDirect || {};
     if (this.el.next() && this.el.next().hasClass(this.config.cssClass)) {
       return this.el.next();
     } else {
-      widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.config.buttonClass || '')+' '+(this.el.attr('data-custom-select-button-class') || '')+'"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
+      widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.config.buttonClass || '')+' '+(this.el.attr('data-custom-select-button-class') || '')+'" aria-haspopup="true"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
       this.el.after(widgetNode);
       return widgetNode;
     }

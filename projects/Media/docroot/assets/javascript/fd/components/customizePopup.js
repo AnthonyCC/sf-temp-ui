@@ -1,4 +1,4 @@
-/*global jQuery,common*/
+/*global common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -6,14 +6,13 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
-  var DISPATCHER = fd.common.dispatcher;
 
   var customizePopup = Object.create(POPUPWIDGET,{
     signal:{
       value:'productConfig'
     },
     serialize:{
-      value:function(element){
+      value:function(){
         return {};
       }
     },
@@ -34,6 +33,9 @@ var FreshDirect = FreshDirect || {};
     },
     bodyTemplate: {
       value: common.productDisplay
+    },
+    trigger: {
+      value: '[data-component="customizeButton"]'
     },
     $trigger: {
       value: null
@@ -66,6 +68,11 @@ var FreshDirect = FreshDirect || {};
     skuControlTemplate:{
       value:common.skuControl
     },
+    decorate: {
+      value: function () {
+        $(this.trigger).attr('aria-haspopup', 'true');
+      }
+    },
     getSelectedSku:{
       value:function(){
         return $(this.bodySelector + ' input[name="skuCode"]:checked').val();
@@ -85,7 +92,9 @@ var FreshDirect = FreshDirect || {};
           prev[current.skuCode].quantityText=value.quantityText;
           return prev;
         },{});
-        if(!value.atcItemId && this.dataConfig.atcId) {value.atcItemId=this.dataConfig.atcId;}
+        if(!value.atcItemId && this.dataConfig.atcId) {
+          value.atcItemId=this.dataConfig.atcId;
+        }
         value.hasApply = this.dataConfig.hasApply;
         value.originalLineId = this.dataConfig.lineId;
         value.listId = this.dataConfig.listId;
@@ -106,7 +115,7 @@ var FreshDirect = FreshDirect || {};
 
         this.popup.show($(config.element));
         this.popup.clicked = true;
-        
+
         request.productId = item.productId;
         request.configuration = item.configuration;
         request.quantity = parseFloat(item.quantity);
@@ -126,12 +135,10 @@ var FreshDirect = FreshDirect || {};
         };
 
         fd.common.dispatcher.signal('server',{
-      url:'/api/productconfig',
-      data:{data:JSON.stringify(request)},
-      method:'GET'      
-    });
-        
-        
+          url:'/api/productconfig',
+          data:{data:JSON.stringify(request)},
+          method:'GET'
+        });
       }
     }
   });
@@ -139,26 +146,26 @@ var FreshDirect = FreshDirect || {};
   customizePopup.render();
   customizePopup.listen();
 
-  $(document).on('click', '[data-component="customizeButton"]', function(event){
+  $(document).on('click', customizePopup.trigger, function(event){
     var element = event.currentTarget;
-    
+
     /* go to product instead of showing customize */
     if ($(element).data('bypasscustomizepopup')) {
-    	var $par = $(element).closest('[data-component="product-controls"]');
-    	if ($par.length === 0) { $par = $(element).closest('[data-component="product"]').find('[data-component="product-controls"]'); }
-    	if ($par) {
-	    	var bypassUri = $par.find('[data-productdata-name="productPageUrl"]:first').val();
-	    	if (bypassUri) {
-	    		document.location = bypassUri; 
-	    		return;
-	    	}
-    	}
+      var $par = $(element).closest('[data-component="product-controls"]');
+      if ($par.length === 0) { $par = $(element).closest('[data-component="product"]').find('[data-component="product-controls"]'); }
+      if ($par) {
+        var bypassUri = $par.find('[data-productdata-name="productPageUrl"]:first').val();
+        if (bypassUri) {
+          document.location = bypassUri;
+          return;
+        }
+      }
     }
-    
+
     var item = fd.modules.common.productSerialize(element).pop();
     var cartData = fd.modules.common.getCartData(element);
     var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
-    
+
     customizePopup.open({
       element:element,
       item:item,
@@ -169,15 +176,12 @@ var FreshDirect = FreshDirect || {};
   });
 
 
-  
   $(document).on('change','#' + customizePopup.popupId + ' input[name="skuCode"]',customizePopup.refreshSkuControls.bind(customizePopup));
 
   $(document).on('click', '#' + customizePopup.popupId + ' [data-popup-control="close"]', customizePopup.close.bind(customizePopup));
-  $(document).on('addToCart', function(e){
+  $(document).on('addToCart', function(){
     customizePopup.close();
   });
 
-  
-  
   fd.modules.common.utils.register("components", "customizePopup", customizePopup, fd);
 }(FreshDirect));

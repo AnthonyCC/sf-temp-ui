@@ -132,7 +132,7 @@
   <div class="itemlist-item-header-buttons">
     {if $type == 'shopfromlists' and not $replaced}
   		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save">save changes</button>
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist">delete from list</button>
+  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
     {/if}
     <button class="addtolist">add to list</button>
   </div>
@@ -323,7 +323,7 @@
   <div class="itemlist-item-header-buttons">
     <button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
     {if $type == 'shopfromlists' and not $replaced}
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc">Remove</button>
+  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
   		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
     {/if}
   </div>
@@ -336,7 +336,7 @@
       {/if}
     </div>
     {if $type == 'shopfromlists' and not $replaced}
-    <div class="itemlist-item-header-buttons"><button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" data-alignpopup="tc-bc">Remove</button></div>
+    <div class="itemlist-item-header-buttons"><button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button></div>
     {/if}
     {if $item.replacement and not $item.useReplacement}
     <div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
@@ -458,7 +458,7 @@
 	</div>
 	<div class="itemlist-item-header-buttons">
     {if $type == 'shopfromlists'}
-      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist">delete from list</button>
+      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
     {/if}
 	</div>
 	<div class="itemlist-item-header">
@@ -491,7 +491,7 @@
 	</div>
 	<div class="itemlist-item-header-buttons">
     {if $type == 'shopfromlists'}
-      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist">delete from list</button>
+      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
     {/if}
 	</div>
 	<div class="itemlist-item-header">

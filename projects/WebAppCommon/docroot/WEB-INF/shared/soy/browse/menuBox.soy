@@ -31,7 +31,7 @@
       	{foreach $item in $menuBox.items}
       		{if $menuBox.selectedLabel}
       			{if $item.selected}
-					<button data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if} category popup leftnav-category-popup-button cssbutton green">
+					<button data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if} category popup leftnav-category-popup-button cssbutton green" aria-haspopup="true">
 				    	<span class="icon-arrow-down2-after">
 							{$menuBox.selectedLabel}						        
 						</span>
@@ -40,7 +40,7 @@
         	{/if}
 	  	{/foreach}
 	  	{if $menuBox.selectedLabel}{else}
-	  		<button class="category popup leftnav-category-popup-button cssbutton green">
+	  		<button class="category popup leftnav-category-popup-button cssbutton green" aria-haspopup="true">
 		  		<span class="icon-arrow-down2-after">
 	        		Select a {$menuBox.name}
 	        	</span>
@@ -64,7 +64,7 @@
       </div>
     {elseif $menuBox.displayType == 'CENTER_POPUP'}
       <h2>{$menuBox.name}</h2>
-      <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-down2-after">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
+      <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-down2-after" aria-haspopup="true">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
           <form>

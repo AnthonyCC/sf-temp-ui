@@ -145,7 +145,7 @@
 	 /** End here MP Exp Checkout */
 	 
     {else}
-		<button class='cssbutton green' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
+		<button aria-haspopup="true" class='cssbutton green' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
 
  		/** Masterpass Standard Checkout  */ 
     	{if $mpEwalletStatus}
@@ -220,7 +220,7 @@
     {/foreach}
     <div class="drawer__item drawer__item-addaction">
       <div class="addaction__center">
-        <button class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
+        <button aria-haspopup="true" class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
         {if $metadata and $metadata.paymentPromoOAS}
         <p class="addaction__desc">
           <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
@@ -326,8 +326,8 @@
   </label>
   {if $eWalletID != '1'}
   <div class="drawer__item__action">
-    <span data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete</span>
-    <span data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit</span>
+    <button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete</button>
+    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit</button>
   </div>
   {/if}
 </div><!--/ drawer__item -->

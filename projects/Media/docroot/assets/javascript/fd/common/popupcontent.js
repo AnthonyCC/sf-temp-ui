@@ -214,8 +214,23 @@ var FreshDirect = FreshDirect || {};
         }
       },500);
       
-      
+      // focus first focusable element
+      setTimeout(function () {
+        this.focus();
+      }.bind(this), 10);
     }
+  };
+
+  PopupContent.prototype.focus = function () {
+    var $el;
+
+    $el = this.$el.find('form').first();
+
+    if ($el.size() === 0) {
+      $el = this.$el;
+    }
+
+    $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').first().focus();
   };
 
   PopupContent.prototype.hide = function (e, noCallback) {

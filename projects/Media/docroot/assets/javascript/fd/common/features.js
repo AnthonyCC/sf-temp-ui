@@ -8,12 +8,17 @@ var FreshDirect = FreshDirect || {};
   var FDFeatures = function (fd) {
     return {
       initFeatures: function () {
-        var features = fd.modules.common.utils.getActiveFeatures();
+        var features = fd.utils.getActiveFeatures(),
+            developer = fd.utils.readCookie('developer');
 
         if (features) {
           Object.keys(features).forEach(function (feature) {
             document.body.setAttribute('data-feature-'+feature, features[feature]);
           });
+        }
+
+        if (developer) {
+          document.body.setAttribute('developer', developer);
         }
       },
       initModule: function () {

@@ -44,7 +44,7 @@
     {/call}
   {/foreach}
   {if $pastOrdersGroupedByYear and length($pastOrdersGroupedByYear)}
-    <div class="seemore" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></div>
+    <button class="seemore" aria-haspopup="true" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></button>
     <div class="moreorders">
       <span class="bubblearrow"></span>
       {foreach $orders in $pastOrdersGroupedByYear}

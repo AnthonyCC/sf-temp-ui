@@ -63,6 +63,9 @@
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   cursor: pointer;
+  display: block;
+  font-size: 11px;
+  width: 100%;
 }
 
 .orders .seemore:hover span {

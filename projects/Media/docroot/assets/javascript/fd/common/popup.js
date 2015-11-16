@@ -22,7 +22,7 @@ var FreshDirect = FreshDirect || {};
         trigger:{
             // value:null
             // TMP
-            value: ''
+            value: '[data-popup]'
         },
         $trigger:{
             // value:null
@@ -57,6 +57,11 @@ var FreshDirect = FreshDirect || {};
             value:{},
             writable:true
         },
+        decorate: {
+          value: function () {
+            $(this.trigger).attr('aria-haspopup', 'true');
+          }
+        },
         close: {
             value: function (e) {
               if (this.popup) {
@@ -67,7 +72,7 @@ var FreshDirect = FreshDirect || {};
         noscroll: {
           value: function (force) {
             var tooHigh = false, boxes = [];
-            
+
             if (this.scrollCheck) {
               boxes = [].concat(this.scrollCheck);
             } else {
@@ -78,16 +83,16 @@ var FreshDirect = FreshDirect || {};
             this.popup.$el.removeClass('noscroll').css({
               top: 0
             });
-            
+
             boxes.forEach(function (box) {
               var contentBox = this.popup.$el.find(box).first()[0];
-              
+
               if (contentBox) {
                 tooHigh = tooHigh || contentBox.clientHeight < contentBox.scrollHeight;
               }
             }, this);
 
-            if ((tooHigh || 
+            if ((tooHigh ||
                 navigator.userAgent.toLowerCase().indexOf("ipad") > -1) || force) {
               this.popup.$el.addClass('noscroll').css({
                 top: $(window).scrollTop() < 200 ? 220 : $(window).scrollTop() + 20
@@ -251,10 +256,8 @@ var FreshDirect = FreshDirect || {};
 
     // init popups based on annotated triggers
 
-    var popupTriggers = $('[data-popup]');
-
-    popupTriggers.each(function(i,trigger){
-        initPopup($(trigger));
+    $(popupWidget.trigger).each(function(i, trigger){
+      initPopup($(trigger));
     });
 
 }(FreshDirect));

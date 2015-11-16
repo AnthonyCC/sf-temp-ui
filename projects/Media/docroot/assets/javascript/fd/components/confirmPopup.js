@@ -37,6 +37,11 @@ var FreshDirect = FreshDirect || {};
         halign: 'left'
       }
     },
+    decorate: {
+      value: function () {
+        $(this.trigger).attr('role', 'alertdialog');
+      }
+    },
     buttonClick: {
       value: function (e) {
         var $button = $(e.currentTarget),
