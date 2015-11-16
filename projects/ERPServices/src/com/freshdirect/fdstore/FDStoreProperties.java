@@ -789,6 +789,8 @@ public class FDStoreProperties {
     private static final String PROP_FDX_SMS_ORDER_CONFIRMATION="fdstore.sms.order.confirmation";
     private static final String PROP_FDX_SMS_ORDER_MODIFICATION= "fdstore.sms.order.modification";
     private static final String PROP_FDX_SMS_ORDER_CANCEL="fdstore.sms.order.cancel";
+
+    private static final String PROP_FDX_APP_APPLE_URL="fdstore.fdx.app.url.apple";
     
     //fdx new locationbar
 	private final static String PROP_FDX_LOCATIONBAR = "fdstore.fdxlocationbar.enabled";
@@ -1567,6 +1569,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDX_SMS_ORDER_CONFIRMATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_MODIFICATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
+        defaults.put(PROP_FDX_APP_APPLE_URL, "https://www.itunes.com");
         
         defaults.put(PROP_FDX_LOCATIONBAR, "false");
         defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
@@ -3947,8 +3950,9 @@ public class FDStoreProperties {
 		return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_MODIFICATION));
 	}
 	
-	  public static boolean getSmsOrderCancel() {
-		  return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CANCEL));
+
+	public static boolean getSmsOrderCancel() {
+		return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CANCEL));
 	}
 	public static boolean isFdxLocationbarEnabled() {
         return Boolean.parseBoolean(get(PROP_FDX_LOCATIONBAR));
@@ -3963,4 +3967,8 @@ public class FDStoreProperties {
     public static Properties getConfig() {
         return config;
     }
+
+	public static String getFdxAppUrl_Apple() {
+        return get( PROP_FDX_APP_APPLE_URL );
+	}
 }

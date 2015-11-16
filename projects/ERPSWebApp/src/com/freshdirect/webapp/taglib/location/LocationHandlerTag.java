@@ -121,7 +121,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			Set<EnumServiceType> availServices = result.getAvailableServices();
 			if (!availServices.isEmpty()) { return true; }
 		} catch (FDResourceException e) {
-			LOGGER.debug(e);
+			//LOGGER.debug(e);
 		}
 		
 		return false;

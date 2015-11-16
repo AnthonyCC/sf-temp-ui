@@ -55,7 +55,7 @@ img[src$=".gif"], img[src$=".jpg"], img[src$=".png"] {
   image-rendering: optimizeQuality; }
 
 header {
-  background-color: rgba(115, 34, 130, 0.75);
+  background-color: rgba(76, 0, 90, 0.75);
   mix-blend-mode: darken;
   width: 100%;
   height: 57px;
@@ -701,20 +701,29 @@ section#section_FOODKICK {
 
 /*end section '#section_FOODKICK' */
 section.forgot_password_section {
-  height: 90vh;
-  width: calc(100vw - 20px);
   text-align: center;
   vertical-align: middle;
-  display: table-cell;
-  /*display:inline-block;*/
-  /*padding-left: 25%;
-  padding-right: 25%;*/
-  margin-top: 150px; }
+  margin-top: 150px;
+  background-color: #F1F1F1;
+  width: 50%;
+  margin-left: 25%;
+  margin-bottom: 5%;
+  min-width: 305px;
+  color: #3E3F49;
+  padding-bottom: 50px; }
   section.forgot_password_section h1, section.forgot_password_section h2, section.forgot_password_section h3 {
-    display: inline-block; }
+    display: inline-block;
+    font-family: "TiemposHeadlineApp-Bold";
+    display: block;
+    border-bottom: 2px solid #DDD;
+    padding-bottom: 12px;
+    margin-top: 5%;
+    text-align: center; }
   section.forgot_password_section table {
     margin: auto;
-    text-align: left; }
+    text-align: left;
+    width: 90%;
+    min-width: 310px; }
     section.forgot_password_section table .bodyCopy {
       white-space: nowrap; }
     section.forgot_password_section table .text9 {
@@ -723,6 +732,32 @@ section.forgot_password_section {
       padding-top: 10px; }
     section.forgot_password_section table .text13bold {
       font-weight: bold; }
+  section.forgot_password_section table.retrieve_pw_table tr td {
+    display: block; }
+    section.forgot_password_section table.retrieve_pw_table tr td.bodyCopy {
+      text-align: left;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: #44454D;
+      letter-spacing: 1px;
+      padding-bottom: 8px; }
+  section.forgot_password_section input.text9, section.forgot_password_section input.text11 {
+    border: none;
+    height: 59px;
+    width: 100%;
+    margin-bottom: 20px; }
+  section.forgot_password_section img {
+    display: none; }
+  section.forgot_password_section .valid_msg {
+    color: #91949D;
+    font-size: 0.75em; }
+  section.forgot_password_section .nextbutton {
+    text-align: center;
+    display: block;
+    margin-top: 20px; }
+    section.forgot_password_section .nextbutton button {
+      letter-spacing: 2px;
+      font-size: 1em; }
 
 footer {
   background-color: #2D2E37;
@@ -741,7 +776,7 @@ footer {
   footer section#footer_disclaimer {
     text-transform: initial;
     margin-bottom: 20px;
-    position: relative;
+    /*position: relative;*/
     top: -15px;
     padding-left: 3%;
     padding-right: 3%; }

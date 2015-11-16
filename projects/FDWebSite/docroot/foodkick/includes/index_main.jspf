@@ -5,7 +5,6 @@
 			<button class="download_button purple">Download the APP</button>
 			<button class="appstore_button">
 				<%--svg_obj("appstore.svg") --%>
-				
 				<img src="<%=SVG_SRC %>appstore.svg" />
 			</button>
 		</section> <!-- end of section 'section_1'  -->

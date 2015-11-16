@@ -1,5 +1,7 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory'%>
+<%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -7,6 +9,8 @@
 
 <%
 String emailAddress = request.getParameter("emailAddress");
+
+
 %>
 <fd:CheckLoginStatus id="user" /> 
 <fd:ForgotPasswordController results="result" successPage='/login/forget_password_confirmation.jsp' password="password">	

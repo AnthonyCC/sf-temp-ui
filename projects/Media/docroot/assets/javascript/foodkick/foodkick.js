@@ -235,8 +235,3 @@ $(function(){
 		event.preventDefault();
 	});
 });
-
-//html5 quickfix for Internet Explorer versions below 9.  probably should run last.
-if (isIE () && isIE () < 9) {
-	'article aside footer figure figcaption header nav section time'.replace(/\w+/g,function(n){document.createElement(n)});
-}
