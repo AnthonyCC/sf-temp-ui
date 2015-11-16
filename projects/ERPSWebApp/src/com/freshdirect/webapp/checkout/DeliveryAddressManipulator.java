@@ -368,6 +368,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	
 	public static ErpAddressModel checkDeliveryAddressInForm(FDSessionUser user, ActionResult actionResult, HttpSession session, FDCartModel cart, String actionName,ErpAddressModel erpAddress, AddressModel deliveryAddressModel) throws FDResourceException {
 		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddressModel);
+		validator.setEStoreId(user.getUserContext().getStoreContext().getEStoreId().toString());
 
 		if (!validator.validateAddress(actionResult)) {
 			return  null;

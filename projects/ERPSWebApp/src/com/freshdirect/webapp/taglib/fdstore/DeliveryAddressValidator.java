@@ -36,6 +36,8 @@ public class DeliveryAddressValidator {
 	// scrubbed address
 	private AddressModel scrubbedAddress;
 	private FDDeliveryServiceSelectionResult serviceResult;
+	
+	private String eStoreId;
 
 
 	public DeliveryAddressValidator(AddressModel address) {
@@ -88,6 +90,12 @@ public class DeliveryAddressValidator {
 					}
 					return false;
 				}// NOT(address type == HOME AND service status == DELIVER)
+				
+				if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
+						serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
+					return false;
+				}
 			}
 			
 			// [3] since address looks alright need geocode
@@ -147,11 +155,22 @@ public class DeliveryAddressValidator {
 		return serviceResult;
 	}
 
+	public String getEStoreId() {
+		return eStoreId;
+	}
+
+	public void setEStoreId(String eStoreId) {
+		this.eStoreId = eStoreId;
+	}
+
 	public boolean isAddressDeliverable() throws FDResourceException {
 		if (serviceResult == null) {
 			return false;
 		}
 		EnumDeliveryStatus status = serviceResult.getServiceStatus(scrubbedAddress.getServiceType());
+		if(this.getEStoreId() != null && this.getEStoreId().equalsIgnoreCase("FDX")) {
+			status = serviceResult.getServiceStatus(EnumServiceType.getEnum(eStoreId.toUpperCase()));
+		}
 		return EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) || EnumDeliveryStatus.COS_ENABLED.equals(status);
 	}
 	
