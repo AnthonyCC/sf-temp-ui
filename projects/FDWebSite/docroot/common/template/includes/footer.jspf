@@ -211,14 +211,17 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			<div style="float:right; padding: 10px 5px 0px 5px">
 				<a href="/index.jsp">Home</a>
 				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-				
-		    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-		        	&nbsp;&nbsp;<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
-		    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-		        	&nbsp;&nbsp;<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
+				<% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+			    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+			        	&nbsp;&nbsp;<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
+			    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+			        	&nbsp;&nbsp;<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
+			        <% } else {	%>
+			        	&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
+			        <% } %>
 		        <% } else {	%>
 		        	&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
-		        <% } %>				
+		        <% } %>			    				
 				
 				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
 				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
