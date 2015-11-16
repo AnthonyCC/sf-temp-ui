@@ -426,8 +426,8 @@ boolean orderAsc = true;
 	Date now = new Date();
 	Map<String, Map<String,Date>> newSkus = FDCachedFactory.getNewSkus();
 	Map<String, Map<String,Date>> backSkus = FDCachedFactory.getBackInStockSkus();
-	Map<String, Date> newOverridden = FDCachedFactory.getOverriddenNewSkus();
-	Map<String, Date> backOverridden = FDCachedFactory.getOverdiddenBackInStockSkus();
+	Map<String, Date> newOverridden = new HashMap<String, Date>();//FDCachedFactory.getOverriddenNewSkus(); //TODO: Fix
+	Map<String, Date> backOverridden = new HashMap<String, Date>();//FDCachedFactory.getOverdiddenBackInStockSkus(); //TODO: Fix
 	if (!showProducts) {
 	if (searchTerm.length() > 0) {
 	%>
