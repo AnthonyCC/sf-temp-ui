@@ -120,9 +120,9 @@ public interface FDFactorySB extends EJBObject {
 
 	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Date> getOverriddenNewSkus() throws RemoteException, FDResourceException;
+	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Date> getOverriddenBackInStockSkus() throws RemoteException, FDResourceException;
+	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws RemoteException, FDResourceException;
 	
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException;
 

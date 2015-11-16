@@ -181,16 +181,7 @@
                     <tr><td><%= product.getProxiedMaterial().getDescription() %></td></tr>
                     <% if (product.getSkuCode() == null) { %>
 						<tr><td><b>There is no such product in ERPServices with skucode : <%= skuCode %></b></td></tr>
-					<% } else {
-                            if ((product.getUnavailabilityStatus() != null) && (product.getUnavailabilityStatus().equals("DISC"))) { %>
-                        <tr><td><b>This product is discontinued</b></td></tr>
-                    <%      } else if ((product.getUnavailabilityStatus() != null) && (product.getUnavailabilityStatus().equals("UNAV"))) { %>
-                        <tr><td><b>This product is temporarily unavailable</b></td></tr>
-                     <%     } else if ((product.getUnavailabilityStatus() != null) && (product.getUnavailabilityStatus().equals("SEAS"))) { %>
-                        <tr><td><b>This product is out of season</b></td></tr>
-                     <%     } else { %>
-                        <tr><td><b>This product is currently available for sale</b></td></tr>
-                     <%     }
+					<% 
                         } %>
                 </table>
 				
@@ -256,12 +247,30 @@
                 	<input type=hidden name="sku_code" value="<%= skuCode %>">
                 	<input type=hidden name="skuCode" value="<%= skuCode %>">
                 <table width="600" cellspacing="2" cellpadding="0">
-                    <tr><th align="left" class="section_title">New / Back-in-Stock Manual Override</th></tr>
-                    <tr><td align="left">Date of becoming new <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
-                    (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
-                    <tr><td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE) %>'>
-                    (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
-                    <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
+                <tr>
+                    <th align="left" class="section_title">New / Back-in-Stock Manual Override</th>
+                    <td align="left">(use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
+                <% 
+                
+                      java.util.List salesAreas=product.getProxiedMaterial().getMaterialSalesAreas();
+                      for(int i=0;i<salesAreas.size();i++)
+                      {
+                    	  ErpMaterialSalesAreaModel model=(ErpMaterialSalesAreaModel)salesAreas.get(i);   
+                      
+                %>
+                    <tr>
+                    
+                    <th align="left" >Sales Org <%=model.getSalesOrg() %></th>
+                    <th align="left" >Distribution Channel <%=model.getDistChannel() %></th>
+                    <td align="left">New date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, model.getSalesOrg()+"-"+EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
+                    </td>
+                    <td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE) %>'>
+                    </td></tr>
+                    
+                 <%
+                      }
+                 %>
+                 <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
                 </table>
                 </form>
                 <% } %>

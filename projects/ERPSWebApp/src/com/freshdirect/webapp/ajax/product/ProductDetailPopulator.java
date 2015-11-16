@@ -1129,8 +1129,10 @@ public class ProductDetailPopulator {
 		ZonePriceInfoModel zpi;
 		try {
 			zpi = priceCalculator.getZonePriceInfoModel();
+			
+			
 			if ( zpi != null ) {
-				item.setPrice( zpi.getDefaultPrice() );
+				item.setPrice( zpi.getDefaultPrice(/*priceCalculator.getPricingContext().getZoneInfo().getPricingIndicator()*/) );
 				item.setScaleUnit( productInfo.getDisplayableDefaultPriceUnit().toLowerCase() );
 			}
 		} catch ( FDSkuNotFoundException e ) {

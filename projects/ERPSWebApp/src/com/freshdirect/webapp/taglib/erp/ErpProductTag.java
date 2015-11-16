@@ -13,22 +13,21 @@ package com.freshdirect.webapp.taglib.erp;
  */
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-
-import com.freshdirect.webapp.util.FormElementNameHelper;
-
-import com.freshdirect.erp.model.*;
-import com.freshdirect.erp.ErpFactory;
-import com.freshdirect.fdstore.FDResourceException;
-
-import com.freshdirect.content.attributes.*;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-//import com.rsa.jsafe.ba;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
+
+import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.erp.ErpFactory;
+import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.util.FormElementNameHelper;
+//import com.rsa.jsafe.ba;
 
 public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSupport {
     
@@ -103,7 +102,8 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 			}
             prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
         }
-
+        Map m=request.getParameterMap();
+        
         String new_product_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.NEW_PRODUCT_DATE.getName()));
         /* APPDEV-2395 */
         if(new_product_date == null || new_product_date.trim().length() ==0)

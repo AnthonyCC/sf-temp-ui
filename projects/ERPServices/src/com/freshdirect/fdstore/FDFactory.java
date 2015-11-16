@@ -648,9 +648,9 @@ public class FDFactory {
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			Map<String, Map<String,Date>> regular = sb.getNewSkus();
-			//Map<String, Date> overridden = sb.getOverriddenNewSkus();
-			//Map<String, Date> overriddenBack = sb.getOverriddenBackInStockSkus();
-			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() /*+ overridden.size()*/) * 4 / 3);
+			Map<String, Map<String,Date>> overridden = sb.getOverriddenNewSkus();
+			Map<String, Map<String,Date>> overriddenBack = sb.getOverriddenBackInStockSkus();
+			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() + overridden.size()) * 4 / 3);
 			String product="";
 			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
 				product=entry.getKey();
@@ -669,6 +669,52 @@ public class FDFactory {
 						}
 				 }
 			}
+			
+			for (Map.Entry<String,  Map<String,Date>> entry : overridden.entrySet()) {
+				product=entry.getKey();
+				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
+					if (valueEntry.getValue().compareTo(first) <= 0) {
+						Map<String,Date> _value=results.get(product);
+						if(_value!=null) {
+							_value.remove(valueEntry.getKey());
+							if(_value.isEmpty()) {
+								results.remove(product);
+							} else {
+								// do nothing now.
+							}
+						}
+					} else if (valueEntry.getValue().before(now)) {
+						Map<String,Date> _value=results.get(product);
+						if(_value!=null) {
+							_value.put(valueEntry.getKey(), valueEntry.getValue());
+							results.put(product, _value);
+						}else {
+							
+							_value=new HashMap<String, Date>();
+							_value.put(valueEntry.getKey(), valueEntry.getValue());
+						  results.put(product,_value);
+						}
+					}
+				}
+			}
+			
+			for (Map.Entry<String, Map<String,Date>> entry : overriddenBack.entrySet()) {
+				product=entry.getKey();
+				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
+					if(results.containsKey(product)) {
+						Map<String,Date> _value=results.get(product);
+						if(_value!=null) {
+							_value.remove(valueEntry.getKey());
+							if(_value.isEmpty()) {
+								results.remove(product);
+							} else {
+								// do nothing now.
+							}
+						}
+					}
+				}
+			}
+			
 			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
@@ -695,7 +741,7 @@ public class FDFactory {
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			Map<String, Map<String,Date>> regular = sb.getBackInStockSkus();
-			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
+			Map<String, Map<String,Date>> overridden = sb.getOverriddenBackInStockSkus();
 			Map<String, Map<String,Date>> results = new HashMap<String, Map<String,Date>>((regular.size() + overridden.size()) * 4 / 3);
 			Map<String, Map<String,Date>> newSkus = getNewSkus();
 			String product="";
@@ -716,6 +762,36 @@ public class FDFactory {
 						}
 				 }
 			}
+			
+			for (Map.Entry<String, Map<String,Date>> entry : overridden.entrySet()) {
+				product=entry.getKey();
+				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
+					if(valueEntry.getValue().compareTo(first) <= 0) {
+						Map<String,Date> _value=results.get(product);
+						if(_value!=null) {
+							_value.remove(valueEntry.getKey());
+							if(_value.isEmpty()) {
+								results.remove(product);
+							} else {
+								// do nothing now.
+							}
+						}
+					} else if (valueEntry.getValue().before(now)){
+						if(newSkus.containsKey(product)) {
+							Map<String,Date> _value=regular.get(product);
+							if(!_value.containsKey(valueEntry.getKey())) {
+								_value.put(valueEntry.getKey(), valueEntry.getValue());
+								results.put(product, _value);
+							}
+						} else {
+							Map<String, Date> _value=new HashMap<String, Date>();
+							_value.put(valueEntry.getKey(), valueEntry.getValue());
+						    results.put(product,_value);
+						}
+					}
+				}
+			}
+				
 			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
@@ -732,7 +808,7 @@ public class FDFactory {
 		}
 	}
 
-	public static Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
@@ -748,7 +824,7 @@ public class FDFactory {
 		}
 	}
 
-	public static Map<String, Date> getOverriddenBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}

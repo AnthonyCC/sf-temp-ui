@@ -604,7 +604,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
 
@@ -615,7 +615,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getOverriddenBackInStockSkus() throws FDResourceException {
+	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws FDResourceException {
 		try {
 			ErpInfoSB infoSB = this.getErpInfoSB();
 

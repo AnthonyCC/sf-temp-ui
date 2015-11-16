@@ -90,9 +90,9 @@ public interface ErpInfoSB extends EJBObject {
 
 	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException;
 	
-	public Map<String, Date> getOverriddenNewSkus() throws RemoteException;
+	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException;
 
-	public Map<String, Date> getOverriddenBackInStockSkus() throws RemoteException;
+	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws RemoteException;
 
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;
 

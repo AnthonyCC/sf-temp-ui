@@ -528,11 +528,11 @@ public class FDCachedFactory {
 		return FDFactory.getSkuAvailabilityHistory(skuCode);
 	}
 
-	public static Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getOverriddenNewSkus() throws FDResourceException {
 		return FDFactory.getOverriddenNewSkus();
 	}
 
-	public static Map<String, Date> getOverdiddenBackInStockSkus() throws FDResourceException {
+	public static Map<String, Map<String,Date>> getOverdiddenBackInStockSkus() throws FDResourceException {
 		return FDFactory.getOverriddenBackInStockSkus();
 	}
 	

@@ -1339,13 +1339,13 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private static DateFormat DATE_FORMAT3 = new SimpleDateFormat("MM/dd/yy");
 	
-	public Map<String, Date> getOverriddenNewSkus() {
+	public Map<String, Map<String,Date>> getOverriddenNewSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'new_prod_date'");
+			ps = conn.prepareStatement("SELECT skucode,SALES_ORG,DISTRIBUTION_CHANNEL, atr_value FROM erps.ATTRIBUTES_SALES_AREA WHERE atr_name = 'new_prod_date'");
 			rs = ps.executeQuery();
 
 			return extractOverridenValues(rs);
@@ -1365,11 +1365,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
      * @return
      * @throws SQLException
      */
-    protected Map<String, Date> extractOverridenValues(ResultSet rs) throws SQLException {
-        Map<String, Date> skus = new TreeMap<String, Date>();
+    protected Map<String, Map<String,Date>> extractOverridenValues(ResultSet rs) throws SQLException {
+    	Map<String, Map<String,Date>> skus = new TreeMap<String, Map<String,Date>>();
+    	Map<String,Date> value=null;
+    	String sku="";
+    	String salesOrg="";
+    	String distributionChannel="";
         while (rs.next()) {
-        	String sku = rs.getString(1);
-        	String ds = rs.getString(2);
+        	 sku = rs.getString(1);
+        	 salesOrg=rs.getString(2);
+        	 distributionChannel=rs.getString(3);
+        	String ds = rs.getString(4);
         	Date date;
         	try {
         		date = DATE_FORMAT1.parse(ds);
@@ -1384,20 +1390,28 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         				continue;
         			}
         		}
+        		
+        		if(skus.containsKey(sku)) {
+					value=skus.get(sku);
+					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				} else {
+					value=new HashMap<String,Date>();
+					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				}
         	}
-        	skus.put(sku, date);
+        	skus.put(sku, value);
         }
 
         return skus;
     }
 
-	public Map<String, Date> getOverriddenBackInStockSkus() {
+	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'back_in_stock'");
+			ps = conn.prepareStatement("SELECT skucode,SALES_ORG,DISTRIBUTION_CHANNEL, atr_value FROM erps.ATTRIBUTES_SALES_AREA WHERE atr_name = 'back_in_stock'");
 			rs = ps.executeQuery();
 
 			return extractOverridenValues(rs);
