@@ -264,4 +264,9 @@ var FreshDirect = FreshDirect || {};
   // register utils under FreshDirect.utils
   utils.register("FreshDirect", "utils", utils, window);
 
+  // meaningful keyCode mappings
+  utils.keyCode = {
+    ENTER: 13,
+    SPACE: 32
+  };
 }(FreshDirect));
