@@ -5,6 +5,7 @@
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@page import="com.freshdirect.fdstore.FDCachedFactory"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.DateFormat"%>
 <%!
