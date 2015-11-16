@@ -23,14 +23,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%--
-final Logger LOGGER_LOCATIONBAR_FDX = LoggerFactory.getInstance("locationbar_fdx.jsp");
-try { 
-} catch (Exception e) {
-	LOGGER_LOCATIONBAR_FDX.debug("error inlocationbar_fdx.jsp");
-	e.printStackTrace();
-}
---%>
 <fd:LocationHandler/>
 <%
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -101,8 +93,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 						$jq('#test3').messages('add','test3');
 					});
 				</script>
-			--%>
-	</div></tmpl:put>
+
+			--%>	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
 	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://foodkick.freshdirect.com" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a><% } %></tmpl:put>
@@ -334,7 +326,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				<%
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
-				<%@ include file="/common/template/includes/i_youraccount_links.jspf"%>
+				<%@ include file="/shared/template/includes/i_youraccount_links.jspf"%>
 				<div id="locabar_user" class="posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
