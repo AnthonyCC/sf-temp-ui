@@ -779,7 +779,7 @@ public class FDFactory {
 					} else if (valueEntry.getValue().before(now)){
 						if(newSkus.containsKey(product)) {
 							Map<String,Date> _value=regular.get(product);
-							if(!_value.containsKey(valueEntry.getKey())) {
+							if(_value!=null &&_value.containsKey(valueEntry.getKey())) {
 								_value.put(valueEntry.getKey(), valueEntry.getValue());
 								results.put(product, _value);
 							}
