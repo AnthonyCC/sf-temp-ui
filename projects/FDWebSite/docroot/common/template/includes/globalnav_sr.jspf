@@ -121,13 +121,17 @@ if(user != null) {
 					<% } %>
 			    	
 				<div class="topnavitem" id="topnavitem_reorder">
-			    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-			        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-			    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-			        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+					<% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+				    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
+				    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+				        <% } else {	%>
+				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
+				        <% } %>
 			        <% } else {	%>
 			        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-			        <% } %>            
+			        <% } %>			                    
 				</div>
 			    
 				<div class="topnavitem" id="topnavitem_help">
@@ -191,22 +195,30 @@ if(user != null) {
 				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
 				    </div>
 				    <div class="topnavitem" id="topnavitem_reorder">
-				    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-				    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
+					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+					        <% } else {	%>
+					        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
+					        <% } %>
 				        <% } else {	%>
 				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-				        <% } %>            
+				        <% } %>				                    
 				    </div>
 				    <div class="topnavitem" id="topnavitem_yourAccount">
-				    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
-				    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
-				        <% } else {	%>
-				        	<a href="/your_account/manage_account.jsp">Your Account</a>
-				        <% } %>
+					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
+					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
+					        <% } else {	%>
+					        	<a href="/your_account/manage_account.jsp">Your Account</a>
+					        <% } %>
+						<% } else {	%> 	 
+						     	<a href="/your_account/manage_account.jsp">Your Account</a>
+					    <% } %>				        
 				    </div>
 				<div>
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">

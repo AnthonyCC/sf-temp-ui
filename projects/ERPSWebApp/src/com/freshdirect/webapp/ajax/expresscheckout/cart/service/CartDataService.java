@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -454,11 +455,13 @@ public class CartDataService {
             if(user!= null){
             	sessionUserLevel = user.getLevel();
             }            
-            if(sessionUserLevel == FDUserI.GUEST) {
-            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}); return false;\"");
-            } else if(sessionUserLevel == FDUserI.RECOGNIZED) {
-            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}); return false;\"");
-            } 
+            if (FDStoreProperties.isSocialLoginEnabled()) {            	            
+	            if(sessionUserLevel == FDUserI.GUEST) {
+	            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}); return false;\"");
+	            } else if(sessionUserLevel == FDUserI.RECOGNIZED) {
+	            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}); return false;\"");
+	            } 
+            }
                         
             populateSubTotalBox(cartData, cart, user);
             populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
