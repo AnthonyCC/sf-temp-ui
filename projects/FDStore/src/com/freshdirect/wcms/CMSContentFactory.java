@@ -186,7 +186,7 @@ public class CMSContentFactory {
 			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
 			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule", request);
 			
-			boolean matchingSchedule = isSchedulesMatches(schedules, request);
+			boolean matchingSchedule = isSchedulesMatches(schedules, request, true);
 			if(!matchingSchedule){
 				LOG.debug("Schedule is not matching for :"+ contentNode.getKey());
 				return null;
@@ -216,7 +216,7 @@ public class CMSContentFactory {
 					if(sectionNode!=null){
 					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
 					}
-					if(isSchedulesMatches(schedules, request) && sectionNode!=null){
+					if(isSchedulesMatches(schedules, request, false) && sectionNode!=null){
 						section.setName((String)sectionNode.getAttributeValue("name"));
 						section.setType((String)sectionNode.getAttributeValue("Type"));
 						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
@@ -394,7 +394,7 @@ public class CMSContentFactory {
 			if("PickList".equals(contentNode.getKey().getType().getName())){
 				CMSPickListModel pickList = null;
 				List<CMSScheduleModel> schedule = createSchedule(getContentKeysList(contentNode,"PickListSchedule"), request);
-				if(isSchedulesMatches(schedule, request)){
+				if(isSchedulesMatches(schedule, request, false)){
 					pickList = new CMSPickListModel();
 					pickList.setComponentType(CMSComponentType.PICKLIST);
 					pickList.setName((String)contentNode.getAttributeValue("Name"));
@@ -502,23 +502,27 @@ public class CMSContentFactory {
 		return contentNodeI;
 	}
 	
-	public boolean isSchedulesMatches(List<CMSScheduleModel> schedules, CMSPageRequest request){
+	public boolean isSchedulesMatches(List<CMSScheduleModel> schedules, CMSPageRequest request, boolean isFeedLevel){
 		boolean isMatchingSchedule = false;
 		if(CollectionUtils.isNotEmpty(schedules)){
 			for(CMSScheduleModel schedule:schedules){
-				if(isScheduleMatches(schedule, request)){
+				if(isScheduleMatches(schedule, request, isFeedLevel)){
 					isMatchingSchedule = true;
 					break;
 				}
 			}
 		} else {
-			//If no schedule present! Pages/Sections should be available.
-			isMatchingSchedule = true;
+			//If no schedule present, page shouldn't be available but sections should be available.
+			if(isFeedLevel && (!request.isPreview())) {
+			isMatchingSchedule = false;
+			} else {
+				isMatchingSchedule = true;
+			}
 		}
 		return isMatchingSchedule;
 	}
 	
-	public boolean isScheduleMatches(CMSScheduleModel schedule, CMSPageRequest request){
+	public boolean isScheduleMatches(CMSScheduleModel schedule, CMSPageRequest request, boolean isFeedLevel){
 		boolean isMatchingSchedule = false;
 		if(!request.isIgnoreSchedule()){
 			Calendar currentDate = Calendar.getInstance();
@@ -539,13 +543,21 @@ public class CMSContentFactory {
 							isMatchingSchedule = true;
 						}
 					} else {
+						if(isFeedLevel && (!request.isPreview())) {
+							isMatchingSchedule = false;
+						} else {
 						isMatchingSchedule = true;
+						}
 					}
 					
 				}
 			} 
 		} else {
+			if(isFeedLevel && (!request.isPreview())) {
+				isMatchingSchedule = false;
+			} else {
 			isMatchingSchedule = true;
+			}
 		}
 		return isMatchingSchedule;
 	}
