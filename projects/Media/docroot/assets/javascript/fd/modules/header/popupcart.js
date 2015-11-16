@@ -28,7 +28,9 @@ var FreshDirect = FreshDirect || {};
       $cartContent = $("#popupcart .content"),
       $checkoutButton = $("#popupcart .checkout"),
       orderLines = $("#sidecartbuttons .summary .nritems"),
-      summary = $("#sidecartbuttons .totalprice, #popupcart .totalprice");
+      summary = $("#sidecartbuttons .totalprice, #popupcart .totalprice, .locabar-popupcart-total");
+  
+  var $locabar_popupcart_count = $('.locabar-popupcart-count');
 
   var cartContext;
 
@@ -41,10 +43,16 @@ var FreshDirect = FreshDirect || {};
     remove:'<div class="remove"><button class="remove">remove</button></div>',
     cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td class="remove">{{>remove}}</td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td><div class="price">{{price}}</div></td>'
   };
+  
+  /* fdx has a dif col order */
+  var partialsFdx=$.extend(partials, {
+		  cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{price}}</div></td><td class="remove">{{>remove}}</td>'
+  });
 
 
   function updateCartLines(ol) {
     orderLines.html('<em>'+Math.ceil(ol)+'</em> ' + ((ol>1) ? 'items' : 'item'));
+    $locabar_popupcart_count.html(Math.ceil(ol));
   };
 
   function updateTotal(total) {
@@ -52,7 +60,13 @@ var FreshDirect = FreshDirect || {};
   };
 
   function updateSections(cartData) {
-    var cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partials);
+	  var cartHtml='';
+	  if (FreshDirect.locabar.isFdx) {
+		  cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partialsFdx);
+	  } else {
+		  cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partials);
+	  }
+    
     $cartContent.html(cartHtml);
     $('#popupcart tr.cartline select').each(function(opt){
       $(this).data('oldVal', $(this).val());
@@ -61,9 +75,9 @@ var FreshDirect = FreshDirect || {};
   
   function updateModifyNote(cartData) {
   	if(cartData[CARTDATA_MODIFY]) {
-    	$cart.addClass('modifycart');  		
+    	$cart.addClass('modifycart');
   	} else {
-    	$cart.removeClass('modifycart');  		
+    	$cart.removeClass('modifycart');
   	}
   }
 
@@ -177,7 +191,8 @@ var FreshDirect = FreshDirect || {};
       value:collectData
     }
   };
-
+  
+ 
   cartContext = Object.create(new fd.modules.common.PopupContent(
     $cart,
     $trigger,
@@ -191,6 +206,8 @@ var FreshDirect = FreshDirect || {};
       $clickTrigger: $clickTrigger
     }
   ), cartProperties);
+	  
+
 
   $(document).on('change','#popupcart tr.cartline',function(e){
     var $this = $(this),

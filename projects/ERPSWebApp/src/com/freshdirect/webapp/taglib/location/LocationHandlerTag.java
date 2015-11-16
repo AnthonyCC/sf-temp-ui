@@ -115,6 +115,30 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		CmRegistrationTag.setPendingAddressChangeEvent(ctx.getSession());
 	}
 	
+	public static boolean hasFdService(String zipCode) {
+		try {
+			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FD);
+			Set<EnumServiceType> availServices = result.getAvailableServices();
+			if (!availServices.isEmpty()) { return true; }
+		} catch (FDResourceException e) {
+			LOGGER.debug(e);
+		}
+		
+		return false;
+	}
+	
+	public static boolean hasFdxService(String zipCode) {
+		try {
+			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FDX);
+			Set<EnumServiceType> availServices = result.getAvailableServices();
+			if (!availServices.isEmpty()) { return true; }
+		} catch (FDResourceException e) {
+			LOGGER.debug(e);
+		}
+		
+		return false;
+	}
+	
 	private void doSetZipCodeAction() throws FDResourceException{
 		String zipCode = processZipCodeField();
 

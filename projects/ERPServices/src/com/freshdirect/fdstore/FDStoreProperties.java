@@ -790,6 +790,10 @@ public class FDStoreProperties {
     private static final String PROP_FDX_SMS_ORDER_MODIFICATION= "fdstore.sms.order.modification";
     private static final String PROP_FDX_SMS_ORDER_CANCEL="fdstore.sms.order.cancel";
     
+    //fdx new locationbar
+	private final static String PROP_FDX_LOCATIONBAR = "fdstore.fdxlocationbar.enabled";
+	private final static String PROP_FDX_LOCATIONBAR_FDXTAB = "fdstore.fdxlocationbar.fdxtab.enabled";
+    
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1563,6 +1567,9 @@ public class FDStoreProperties {
         defaults.put(PROP_FDX_SMS_ORDER_CONFIRMATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_MODIFICATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
+        
+        defaults.put(PROP_FDX_LOCATIONBAR, "false");
+        defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
         
 		refresh();
     }
@@ -3924,7 +3931,7 @@ public class FDStoreProperties {
 	public static String getSocialOneAllPostUrl() {
         return get(PROP_SOCIAL_ONEALL_POSTURL);
 	}
-	
+
 	public static boolean isSocialLoginEnabled() {
         return (Boolean.valueOf(get(PROP_SOCIAL_LOGIN_ENABLED))).booleanValue();
     }
@@ -3943,6 +3950,13 @@ public class FDStoreProperties {
 	  public static boolean getSmsOrderCancel() {
 		  return Boolean.parseBoolean(get(PROP_FDX_SMS_ORDER_CANCEL));
 	}
+	public static boolean isFdxLocationbarEnabled() {
+        return Boolean.parseBoolean(get(PROP_FDX_LOCATIONBAR));
+	}
+	public static boolean isFdxTabEnabled() {
+        return Boolean.parseBoolean(get(PROP_FDX_LOCATIONBAR_FDXTAB));
+	}
+	
 	  public static boolean isTCEnabled() {
 			return ( Boolean.valueOf( get( PROP_FD_TC_ENABLED ) ) ).booleanValue();
 		}

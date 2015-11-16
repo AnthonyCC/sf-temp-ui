@@ -20,7 +20,7 @@
 	
 %>
 <% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) {
-	System.out.println("globalnav_optimized.jspf");
+	//System.out.println("globalnav_optimized.jspf");
 	%>
 	<script type="text/javascript">
 		FreshDirect = FreshDirect || {};

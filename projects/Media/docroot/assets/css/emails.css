@@ -1,6 +1,6 @@
 TD			{ font-size: 12px;  font-family: Verdana, Arial, sans-serif;	}
 td			 { font-size: 12px;  font-family: Verdana, Arial, sans-serif;	}
-BODY                  { font-color: #333333; font-family : Verdana, Arial, sans-serif; font-size : 12px; }
+BODY                  { color: #333333; font-family : Verdana, Arial, sans-serif; font-size : 12px; }
 A:link                 { color : #336600; }
 A:visited      	     { color : #336600; }
 A:active             { color : #FF9900; }
@@ -11,7 +11,7 @@ A:active             { color : #FF9900; }
 .header               { font-size: 18px;  font-family: Verdana, Arial, sans-serif; }
 .bodyCopy	    { font-size: 12px;  font-family: Verdana, Arial, sans-serif; }
 .bodyCopySmall	 { font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
-.red12px             { font-size: 12px;  font-color:#CC0000; font-family: Verdana, Arial, sans-serif; }
+.red12px             { font-size: 12px;  color:#CC0000; font-family: Verdana, Arial, sans-serif; }
 
 .mainLink    { font-size: 16px; color: #336600; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }
 a.mainLink:link {color: #336600; text-decoration: underline; }

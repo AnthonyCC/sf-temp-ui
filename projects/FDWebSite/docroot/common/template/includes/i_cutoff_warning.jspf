@@ -53,8 +53,8 @@ if (cutoffInfo.displayWarning()) {
 				<% } %>
 </div><%
 } else if (cutoffInfo.isHourPastCutoff()) {
-	String uri = request.getRequestURI().toLowerCase();
-	if (uri.endsWith("index.jsp") || uri.endsWith("view_cart.jsp")) {
+	String uri_cutoffWarning = request.getRequestURI().toLowerCase();
+	if (uri_cutoffWarning.endsWith("index.jsp") || uri_cutoffWarning.endsWith("view_cart.jsp")) {
 		cutoffInfoDisplayed = true;
 %>
 <div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoffpasthour"><b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b></div></div>

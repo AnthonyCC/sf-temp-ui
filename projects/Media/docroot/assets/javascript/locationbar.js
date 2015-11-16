@@ -52,17 +52,37 @@
 		}
   };
 
+  function updateAlertCount() {
+		var $alerts_count = $('.alerts-count');
+		var curCount = 0;
+		
+		$alerts_count.data('count', ($alerts_count.data('count') || $alerts_count.attr('data-count') || curCount));
+
+		curCount = $alerts_count.data('count');
+		
+		curCount++;
+		
+		$alerts_count.data('count', curCount);
+		
+		if ($alerts_count.parent().hasClass('section-warning-small')) {
+			$alerts_count.parent().addClass('section-warning-small-circle');
+		}
+		
+		$alerts_count.html(curCount);
+  }
+  
 	$document.on('messageAdded',function(e){
-		var $target = $(e.target); 
+		var $target = $(e.target);
 		if($target.hasClass('moreinfo')) {
 			FDModalDialog.close('.partial-delivery-moreinfo .fd-dialog');
 			FDModalDialog.openUrl('/shared/locationbar/more_info.jsp',' ',700,300,'partial-delivery-moreinfo');
 			if($target.hasClass('cos')) {
-				$('.partial-delivery-moreinfo').addClass('cos')
+				$('.partial-delivery-moreinfo').addClass('cos');
 			} else {
-				$('.partial-delivery-moreinfo').removeClass('cos')
+				$('.partial-delivery-moreinfo').removeClass('cos');
 			}
-		}		
+		}
+		updateAlertCount();
 	});
 	
 	$document.on('click','.ui-widget-overlay',function(e){
@@ -137,12 +157,11 @@
 			error:errorHandler
 		});
 	});
-	
-	
+
 	$document.on('mouseup', function(event) {
     	if($(event.target).attr('id') != 'locabar_loginButton' && $(event.target).closest('#login_cont_formContent').length==0) {
         	$("#locabar_loginButton").removeClass("loginButtonTab");
-        	$('#login_cont_formContent').hide();
+        	$('#login_cont_formContent').hide().trigger('hide');
     	}
     });
     
@@ -195,7 +214,9 @@
 				$('#login_cont_formContent .errorMsg').hide();
 	    		form.data('submitting', true);
 				$('#login_cont_formContentForm_loggingIn').show();
-				$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+				if (!FreshDirect.locabar.isFdx) {
+					$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+				}
 				
 	    		var formData = {};
 	    		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });

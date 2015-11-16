@@ -18,54 +18,9 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 %>
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="middle">
-			<%
-				Map<String, String> folderMap=new LinkedHashMap<String, String>();
-				folderMap.put("Your Orders","/your_account/order_history.jsp");
-				if (user.isEligibleForStandingOrders()){
-					folderMap.put("Your Standing Orders","/quickshop/standing_orders.jsp");
-				}
-				if(user.isEligibleForPreReservation()){
-					folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");
-					folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					/* APPDEV-2971 */ 
-					/* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-					folderMap.put("Reminder Service","/your_account/reminder_service.jsp");folderMap.put("Your Profile","/your_account/customer_profile_summary.jsp");
-				}
-				if(user.isEligibleForPreReservation() && (user.isDlvPassActive() || user.isEligibleForDeliveryPass())){
-					 folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");folderMap.put("FreshDirect DeliveryPass","/your_account/delivery_pass.jsp");folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					 /* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-				} if(user.isEligibleForPreReservation() && user.isGiftCardsEnabled() ){
-					folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					 /* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-					 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
-				}if(user.isEligibleForPreReservation() && user.isGiftCardsEnabled() && (user.isDlvPassActive() || user.isEligibleForDeliveryPass())){
-					folderMap.put("Reserve Delivery","/your_account/reserve_timeslot.jsp");folderMap.put("FreshDirect DeliveryPass","/your_account/delivery_pass.jsp");folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					 /* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-					 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
-				} if(!user.isEligibleForPreReservation() && user.isGiftCardsEnabled() && (user.isDlvPassActive() || user.isEligibleForDeliveryPass())){
-					folderMap.put("FreshDirect DeliveryPass","/your_account/delivery_pass.jsp");folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					 /* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-					 folderMap.put("Gift Cards","/your_account/giftcards.jsp");
-				} if(!user.isEligibleForPreReservation() && (user.isDlvPassActive() || user.isEligibleForDeliveryPass())){
-					folderMap.put("FreshDirect DeliveryPass","/your_account/delivery_pass.jsp");folderMap.put("Delivery Addresses","/your_account/delivery_information.jsp");folderMap.put("Payment Options","/your_account/payment_information.jsp");folderMap.put("Your Account Preferences","/your_account/signin_information.jsp");
-					 /* if (!FDStoreProperties.isEmailOptdownEnabled()){folderMap.put("President's Picks Newsletter","/your_account/newsletter.jsp");} */
-				}
-				folderMap.put("Reminder Service","/your_account/reminder_service.jsp");
-				folderMap.put("Your Shopping Lists","/quickshop/all_lists.jsp");
-				folderMap.put("Your Profile","/your_account/customer_profile_summary.jsp");
-				
-				if(user.isReferralProgramAvailable()) {
-					FDIdentity customerIdentity = null;
-					if (user!=null && user.getLevel() == 2){
-						customerIdentity = user.getIdentity();
-					}
-					ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
-					if(rpModel != null) {
-						folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
-					}
-				}
-				folderMap.put("Account Credits","/your_account/credits.jsp");
-				
+			<% Map<String, String> folderMap=new LinkedHashMap<String, String>(); %>
+			<%@ include file="/common/template/includes/i_youraccount_links.jspf"%>
+			<%			
 				int maxRows = 3;
 				int maxCols = folderMap.size() / maxRows+(folderMap.size()%maxRows!=0?1:0);
 				Iterator<String> itr=folderMap.keySet().iterator();
