@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -694,6 +693,7 @@ public class CartDataService {
             double qu = Double.parseDouble((String) change.getData());
             CartOperations.changeQuantity(user, cart, cartLine, qu, serverName);
             clines2report.add(cartLine);
+            user.setCouponEvaluationRequired(true);
         } else if (CartRequestData.Change.CHANGE_SALESUNIT.equals(chType)) {
             String su = (String) change.getData();
             CartOperations.changeSalesUnit(user, cart, cartLine, su, serverName);
