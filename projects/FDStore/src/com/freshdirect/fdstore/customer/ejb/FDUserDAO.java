@@ -1280,18 +1280,18 @@ public class FDUserDAO {
 
 		PreparedStatement ps = null;
 		ErpAddressModel addressModel=null;
-		String parentAddressId=null;
-			ps = conn.prepareStatement("select a.id, a.apartment from cust.address a where  a.customer_id=? and a.scrubbed_address=? and a.zip=? and a.city=?");	
+			ps = conn.prepareStatement("select a.id, a.apartment, a.scrubbed_address, a.address1 from cust.address a where  a.customer_id=? and a.zip=? and a.city=?");	
 					ps.setString(1, deliveryAddressModel.getCustomerId());
-					ps.setString(2, deliveryAddressModel.getScrubbedStreet());
-					ps.setString(3, deliveryAddressModel.getZipCode());
-					ps.setString(4, deliveryAddressModel.getCity());
+					ps.setString(2, deliveryAddressModel.getZipCode());
+					ps.setString(3, deliveryAddressModel.getCity());
 			ResultSet rs = ps.executeQuery();
 			Collection<ErpAddressModel> addressList = new  ArrayList<ErpAddressModel>();
 			while (rs.next()) {
 				addressModel = new ErpAddressModel();					
 				addressModel.setApartment(rs.getString("APARTMENT"));
+				addressModel.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 				addressModel.setPK(new PrimaryKey(rs.getString("ID")));
+				addressModel.setAddress1((rs.getString("ADDRESS1")));
 				addressList.add(addressModel);	
 					}
 			rs.close();

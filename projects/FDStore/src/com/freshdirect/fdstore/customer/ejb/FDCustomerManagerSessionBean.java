@@ -7953,9 +7953,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			Collection<ErpAddressModel> addressList=FDUserDAO.getParentAddresscheck(conn, deliveryAddressModel);
 			
 			for ( ErpAddressModel address : addressList ) {
-				if ((deliveryAddressModel.getApartment()==null && address.getApartment()==null) || 
-						deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment()))
-					parentOrderAddressId= address.getId();
+				
+				if(((deliveryAddressModel.getScrubbedStreet()==null || address.getScrubbedStreet()==null))|| 
+							(deliveryAddressModel.getScrubbedStreet()!=null || deliveryAddressModel.getScrubbedStreet().equalsIgnoreCase(address.getScrubbedStreet()))){
+					if(((deliveryAddressModel.getAddress1()==null || address.getAddress1()==null)) || 
+						(deliveryAddressModel.getAddress1()!=null && deliveryAddressModel.getAddress1().equalsIgnoreCase(address.getAddress1()))){
+							if ((deliveryAddressModel.getApartment()==null && address.getApartment()==null) || 
+									(deliveryAddressModel.getApartment()!=null && deliveryAddressModel.getApartment().equalsIgnoreCase(address.getApartment()))){
+								parentOrderAddressId= address.getId();
+						}
+					}
+				 }	
 		       }
 			
 		} catch (SQLException sqle) {
