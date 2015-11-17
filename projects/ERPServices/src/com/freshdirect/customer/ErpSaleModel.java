@@ -977,7 +977,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void cutoff() throws ErpTransactionException {
 		
 		if(this.getCurrentOrder()!=null && this.getCurrentOrder().getPaymentMethod()!=null && 
-				this.getCurrentOrder().getPaymentMethod().getReferencedOrder()!=null){
+				this.getCurrentOrder().getPaymentMethod().getReferencedOrder()!=null && 
+				this.getCurrentOrder().getPaymentMethod().getPaymentType()!=null &&
+				EnumPaymentType.ADD_ON_ORDER.getName().equalsIgnoreCase(this.getCurrentOrder().getPaymentMethod().getPaymentType().getName())){
 			assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.SUBMITTED });
 			if(status.equals(EnumSaleStatus.SUBMITTED)){
 				status = EnumSaleStatus.INPROCESS_NO_AUTHORIZATION;

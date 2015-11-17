@@ -35,6 +35,7 @@ import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -54,6 +55,8 @@ import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
+import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
@@ -66,6 +69,7 @@ import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
 import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.command.SapCancelSalesOrder;
 import com.freshdirect.sap.command.SapChangeSalesOrder;
 import com.freshdirect.sap.command.SapCommandI;
@@ -224,8 +228,25 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					}
 
 					if(EnumSaleType.REGULAR.equals(saleType)) {
-						if(((ErpSaleModel)saleEB.getModel()).getCurrentOrder() !=null && ((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod() !=null && ((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getReferencedOrder()!=null)
-							    saleEB.cutoff();
+						
+						if(((ErpSaleModel)saleEB.getModel()).getCurrentOrder() !=null && 
+								((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod() !=null && 
+								((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getReferencedOrder()!=null &&
+								((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getPaymentType()!=null &&
+								EnumPaymentType.ADD_ON_ORDER.getName().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getPaymentType().getName())){
+						
+							saleEB.cutoff();
+							List<SapOrderPickEligibleInfo> list = new ArrayList<SapOrderPickEligibleInfo>();
+							list.add(new SapOrderPickEligibleInfo(saleEB.getCurrentOrder().getRequestedDate(), ((SapCreateSalesOrder) command).getSapOrderNumber(), saleId));
+							FDXOrderPickEligibleCronSB pickEligiblesb = getFDXOrderPickEligibleHome().create();
+							try {
+								pickEligiblesb.sendOrdersToSAP(list);
+							} catch (SapException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							LOGGER.info(list);
+						}
 						
 						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
@@ -348,6 +369,14 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private GCGatewayHome getGCGatewayHome() {
 		try {
 			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+	private FDXOrderPickEligibleCronHome getFDXOrderPickEligibleHome() {
+		try {
+			return (FDXOrderPickEligibleCronHome) LOCATOR.getRemoteHome("freshdirect.erp.FDXOrderPickEligibleCron");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
