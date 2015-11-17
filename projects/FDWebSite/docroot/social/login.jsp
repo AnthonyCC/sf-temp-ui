@@ -148,16 +148,25 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
                 
 	<script type="text/javascript" language="javascript">
 	
+	 $jq.validator.addMethod("customemail", 
+			 function validateEmail(email) {
+		 		var re = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
+		 		return re.test(email);
+			} 
+	 );
+	
 	 $jq('#fd_login').validate(
 			 {
 		 		 rules:{
 		             email:{
-		             required:true,
-		             email:true
+			             required:true,
+			             email:true,
+			             customemail:true
 		            },
 		            userid:{
 			             required:true,
-			             email:true
+			             email:true,
+			             customemail:true
 			            },		            
 		            password:{
 		            	required:true,
@@ -167,12 +176,13 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		 		messages:{
 		            email:{
 		            	required:"Required",
-		            	email:"Incomplete e-mail Address"
+		            	email:"Incomplete e-mail Address",
+		                customemail:"Incomplete e-mail Address"
 		            },
-		 		
 		            userid:{
 		            	required:"Required",
-		            	email:"Incomplete e-mail Address"
+		            	email:"Incomplete e-mail Address",
+		                customemail:"Incomplete e-mail Address"
 		            },		 		
 		 		
 		            password:{

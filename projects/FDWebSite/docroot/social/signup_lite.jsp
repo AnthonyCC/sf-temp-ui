@@ -279,7 +279,7 @@
  
  $jq.validator.addMethod("customemail", 
 		 function validateEmail(email) {
-	    	var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	    	var re = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
 	    	return re.test(email);
 		} 
  );
@@ -288,26 +288,26 @@
  {
  	
 	 errorElement: "div",
-	 rules:{
+	 	rules:{
              email:{
-             required:true,
-             email:true,
-             customemail:true
+	             required:true,
+	             email:true,
+	             customemail:true
              }, 
              password:{
-             required:true,
-             minlength: 6
+	             required:true,
+	             minlength: 6
              }
  		},
  		messages:{
              email:{
-             required:"Required",
-             email:"Incomplete e-mail Address",
-             customemail:"Incomplete e-mail Address"
+	             required:"Required",
+	             email:"Incomplete e-mail Address",
+	             customemail:"Incomplete e-mail Address"
              },
              password:{
-             required:"Required",
-			 minlength: $jq.validator.format( "Must be {0} or more characters" )
+	             required:"Required",
+				 minlength: $jq.validator.format( "Must be {0} or more characters" )
             }
          },
          highlight: function(element, errorClass, validClass) {
