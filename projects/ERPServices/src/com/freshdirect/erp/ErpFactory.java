@@ -377,6 +377,7 @@ public class ErpFactory {
 				productModel = new ErpProductModel();
 				productModel.setAttributes(new AttributeCollection());
 			}
+			
 			return productModel;
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe);
@@ -384,7 +385,8 @@ public class ErpFactory {
 			throw new FDResourceException(re);
 		}
 	}
-
+    
+	
 	private void lookupProductHome() throws FDResourceException {
 		Context ctx = null;
 		try {
@@ -754,5 +756,60 @@ public class ErpFactory {
 			}
 		}
 	}
+	
+	public void setOverriddenBackInStock(String sku, Map<String,String> salesAreaOverrides) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 infoSB.setOverriddenBackInStock(sku, salesAreaOverrides);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public void setOverriddenNewness(String sku, Map<String,String> salesAreaOverrides) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 infoSB.setOverriddenNewness(sku, salesAreaOverrides);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
+	public Map<String,String> getOverriddenBackInStock(String sku) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 return infoSB.getOverriddenBackInStock(sku);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	
+	public Map<String,String> getOverriddenNewness(String sku) throws FDResourceException {
+		if (erpInfoHome == null) {
+			lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = erpInfoHome.create();
+			 return infoSB.getOverriddenNewness(sku);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 }

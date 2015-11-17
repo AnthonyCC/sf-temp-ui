@@ -253,21 +253,31 @@
                 <% 
                 
                       java.util.List salesAreas=product.getProxiedMaterial().getMaterialSalesAreas();
+                      String _newnessOverride="";
+                      String _backInStockOverride="";
+                      String key="";
                       for(int i=0;i<salesAreas.size();i++)
                       {
-                    	  ErpMaterialSalesAreaModel model=(ErpMaterialSalesAreaModel)salesAreas.get(i);   
+                    	  ErpMaterialSalesAreaModel model=(ErpMaterialSalesAreaModel)salesAreas.get(i); 
+                    	  key=model.getSalesOrg()+"-"+model.getDistChannel();
+                    	  if(product.getNewnessOverride().containsKey(key))
+                    		  _newnessOverride=product.getNewnessOverride().get(key);
+                    	  if(product.getBackInStockOverride().containsKey(key))
+                    		  _backInStockOverride=product.getBackInStockOverride().get(key);
                       
                 %>
                     <tr>
                     
                     <th align="left" >Sales Org <%=model.getSalesOrg() %></th>
                     <th align="left" >Distribution Channel <%=model.getDistChannel() %></th>
-                    <td align="left">New date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, model.getSalesOrg()+"-"+EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
+                    <td align="left">New date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, key +EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= _newnessOverride %>'>
                     </td>
-                    <td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE) %>'>
+                    <td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, key+EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= _backInStockOverride %>'>
                     </td></tr>
                     
                  <%
+                  _newnessOverride="";
+                  _backInStockOverride="";
                       }
                  %>
                  <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>

@@ -1426,6 +1426,151 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public Map<String,String> getOverriddenNewness(String sku) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
+		ResultSet rs = null;
+		Map<String,String> result=new HashMap<String,String>(2);
+		try {
+			conn = getConnection();
+			ps=conn.prepareStatement("SELECT sales_org, distribution_channel, atr_value FROM erps.ATTRIBUTES_SALES_AREA where skucode=? and atr_name='new_prod_date'");
+			ps.setString(1,sku);
+			rs=ps.executeQuery();
+			while(rs.next()) {
+				result.put(rs.getString(1)+"-"+rs.getString(2), rs.getString(3));
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
+		}
+		return result;
+	}
+	
+	public Map<String,String> getOverriddenBackInStock(String sku) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
+		ResultSet rs = null;
+		Map<String,String> result=new HashMap<String,String>(2);
+		try {
+			conn = getConnection();
+			ps=conn.prepareStatement("SELECT sales_org, distribution_channel, atr_value FROM erps.ATTRIBUTES_SALES_AREA where skucode=? and atr_name='back_in_stock'");
+			ps.setString(1,sku);
+			rs=ps.executeQuery();
+			while(rs.next()) {
+				result.put(rs.getString(1)+"-"+rs.getString(2), rs.getString(3));
+			}
+		}catch (SQLException sqle) {
+			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
+		}
+		return result;
+	}
+	public void setOverriddenBackInStock(String sku, Map<String,String> salesAreaOverrides) {
+		//get timestamp to replace sysdate
+		Timestamp ts = new Timestamp(new Date().getTime());
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			ps1=conn.prepareStatement("DELETE FROM erps.ATTRIBUTES_SALES_AREA where skucode=? and atr_name='back_in_stock'");
+			ps1.setString(1,sku);
+			ps1.execute();
+			
+			ps = conn
+					.prepareStatement("Insert into ERPS.ATTRIBUTES_SALES_AREA   (id, skucode, sales_org, distribution_channel, atr_type, atr_name, atr_value, date_modified) Values (?,?,?,?,?,?,?,?)");
+			for (Map.Entry<String,String> entry : salesAreaOverrides.entrySet()) {
+				
+			    String[] val=entry.getKey().split("-");
+			    
+				ps.setString(1, getNextId(conn, "ERPS"));
+				ps.setString(2,sku);
+				ps.setString(3, val[0]);
+				ps.setString(4, val[1]);
+				ps.setString(5, "S");
+				ps.setString(6, "back_in_stock");
+				
+				ps.setString(7, entry.getValue());
+				ps.setTimestamp(8, ts);
+				ps.addBatch();
+			}
+			if(ps!=null) {
+				ps.executeBatch();
+				ps.close();
+			}
+			
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
+		}
+	}
+	
+	public void setOverriddenNewness(String sku, Map<String,String> salesAreaOverrides) {
+		//get timestamp to replace sysdate
+		Timestamp ts = new Timestamp(new Date().getTime());
+		Connection conn = null;
+		PreparedStatement ps = null;
+		PreparedStatement ps1=null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			ps1=conn.prepareStatement("DELETE FROM erps.ATTRIBUTES_SALES_AREA where skucode=? and atr_name='new_prod_date'");
+			ps1.setString(1,sku);
+			ps1.execute();
+			
+			ps = conn
+					.prepareStatement("Insert into ERPS.ATTRIBUTES_SALES_AREA   (id, skucode, sales_org, distribution_channel, atr_type, atr_name, atr_value, date_modified) Values (?,?,?,?,?,?,?,?)");
+			for (Map.Entry<String,String> entry : salesAreaOverrides.entrySet()) {
+				
+			    String[] val=entry.getKey().split("-");
+			    
+				ps.setString(1, getNextId(conn, "ERPS"));
+				ps.setString(2,sku);
+				ps.setString(3, val[0]);
+				ps.setString(4, val[1]);
+				ps.setString(5, "S");
+				ps.setString(6, "new_prod_date");
+				ps.setString(7, entry.getValue());
+				ps.setTimestamp(8, ts);
+				ps.addBatch();
+			}
+			if(ps!=null) {
+				ps.executeBatch();
+				ps.close();
+			}
+			
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to setOverriddenBackInStock for SKU: " + sku, sqle);
+			throw new EJBException(sqle);
+		} finally {
+                    close(rs);
+                    close(ps1);
+                    close(ps);
+                    close(conn);
+		}
+	}
 	private static final String QUERY_SKU_AVAILABILITY_HISTORY = 
 			"SELECT p.sku_code, h.version, p.unavailability_status, h.date_created FROM erps.product p" +
 			" INNER JOIN erps.history h ON p.version     = h.version WHERE p.sku_code = ? ORDER BY version";

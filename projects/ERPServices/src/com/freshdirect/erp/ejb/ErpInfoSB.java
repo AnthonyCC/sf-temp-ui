@@ -99,5 +99,13 @@ public interface ErpInfoSB extends EJBObject {
 	public void refreshNewAndBackViews() throws RemoteException;
 	
 	public List<Date> getAvailableDeliveryDates(String materialNumber, int daysInPast) throws RemoteException;
+	
+	public void setOverriddenNewness(String sku, Map<String,String> salesAreaOverrides)throws RemoteException;
+	
+	public void setOverriddenBackInStock(String sku, Map<String,String> salesAreaOverrides)throws RemoteException;
+	
+	public Map<String,String> getOverriddenNewness(String sku)throws RemoteException;
+	
+	public Map<String,String> getOverriddenBackInStock(String sku)throws RemoteException;
 }
 

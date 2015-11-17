@@ -11,8 +11,10 @@ package com.freshdirect.erp.model;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.erp.DurableModelI;
 import com.freshdirect.erp.EntityModelI;
@@ -76,6 +78,10 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	/** upc */
 	private String upc;
 	
+	private Map<String,String> newnessOverride=EMPTY;
+	
+	private Map<String,String> backInStockOverride=EMPTY;
+	private static Map<String,String> EMPTY=new HashMap<String,String>();
 	/**
 	 * Default constructor.
 	 */
@@ -421,6 +427,23 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		 */
 		public void setUpc(String upc) {
 			this.upc = upc;
+		}
+
+		public Map<String, String> getNewnessOverride() {
+			return newnessOverride;
+		}
+
+		public void setNewnessOverride(Map<String, String> newnessOverride) {
+			this.newnessOverride = newnessOverride;
+		}
+
+		public Map<String, String> getBackInStockOverride() {
+			return backInStockOverride;
+		}
+
+		public void setBackInStockOverride(Map<String, String> backInStockOverride) {
+			this.backInStockOverride = backInStockOverride;
 		}	
 
+		
 }
