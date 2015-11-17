@@ -42,6 +42,7 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -1545,7 +1546,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				
 			    String[] val=entry.getKey().split("-");
 			    
-				ps.setString(1, getNextId(conn, "ERPS"));
+				ps.setString(1, SequenceGenerator.getNextId(conn, "ERPS","ATTRIBUTE_MSA_SEQ"));
 				ps.setString(2,sku);
 				ps.setString(3, val[0]);
 				ps.setString(4, val[1]);
