@@ -428,7 +428,8 @@ public class RegistrationAction extends WebActionSupport {
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				ErpAddressModel erpAddress = null;
-				if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
+				//on Nov 17 door3 wanted to stop this feature of saving the anonymous address during registration
+				/*if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
 					erpAddress = new ErpAddressModel(address);
 					erpAddress.setFirstName(customerInfo.getFirstName());
 					erpAddress.setLastName(customerInfo.getLastName());
@@ -444,7 +445,7 @@ public class RegistrationAction extends WebActionSupport {
 					if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
 						erpAddress.setCompanyName(addInfo.getCompanyName());
 					}
-				} else {
+				} else {*/
 					erpAddress=new ErpAddressModel();
 					erpAddress.setFirstName(customerInfo.getFirstName());
 					erpAddress.setLastName(customerInfo.getLastName());
@@ -472,7 +473,7 @@ public class RegistrationAction extends WebActionSupport {
 					*/
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
-				}
+			/*	}*/
 	
 				FDCustomerModel fdCustomer = new FDCustomerModel();
 	
