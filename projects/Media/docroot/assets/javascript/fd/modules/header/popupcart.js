@@ -45,7 +45,7 @@ var FreshDirect = FreshDirect || {};
   };
   
   /* fdx has a dif col order */
-  var partialsFdx=$.extend(partials, {
+  var partialsFdx=$.extend({}, partials, {
 		  cartline:'<tr class="cartline" name="{{id}}" data-freeproduct="{{freeSamplePromoProduct}}"><td><div class="item">{{{descr}}}{{#confDescr}} ({{confDescr}}){{/confDescr}}{{#newItem}}<small class="new">(new)</small>{{/newItem}}</div></td><td class="quantity"><div class="quantity">{{#qu}}{{>quantity}}{{/qu}}{{^qu}}<select>{{#su}}{{>salesunit}}{{/su}}</select>{{/qu}}</div></td><td class="price-td"><div class="price">{{price}}</div></td><td class="remove">{{>remove}}</td>'
   });
 
@@ -61,7 +61,7 @@ var FreshDirect = FreshDirect || {};
 
   function updateSections(cartData) {
 	  var cartHtml='';
-	  if (FreshDirect.locabar.isFdx) {
+	  if (FreshDirect.locabar.isFdx === true) {
 		  cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partialsFdx);
 	  } else {
 		  cartHtml=$.mustache("{{#cartSections}}{{>section}}{{/cartSections}}",cartData,partials);
