@@ -89,6 +89,7 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
             //
             try {
 				setAttributes(product, request,newnessOverride,backInStockOverride);
+				session.setAttribute(sessionName, product);
 			} catch (FDResourceException fdre) {
 				fdre.printStackTrace();
 				LOGGER.debug(fdre);
@@ -120,12 +121,19 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
             prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
         }
         Map<Object,Object> m=request.getParameterMap();
+        boolean saveNewness=false;
+        for (Map.Entry<Object, Object> entry : m.entrySet())
+        {
+            if(entry.getKey().toString().indexOf(EnumAttributeName.NEW_PRODUCT_DATE.getName())!=-1) {
+            	saveNewness=true;
+            }
+        }
         
+        if(!saveNewness)
+        	return;
         java.util.List<ErpMaterialSalesAreaModel> salesAreas=product.getProxiedMaterial().getMaterialSalesAreas();
         Map<String,String> overriddenNewnessValues=new HashMap<String,String>();
         Map<String,String> overriddenBackInStockValues=new HashMap<String,String>();
-        String newnessDate="";
-        String backInStockDate="";
         String salesOrg="";
         String distrChanel="";
         String _key="";
@@ -156,7 +164,7 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
         ErpFactory.getInstance().setOverriddenBackInStock(prod.getSkuCode(),overriddenBackInStockValues);
         ErpFactory.getInstance().setOverriddenNewness(prod.getSkuCode(), overriddenNewnessValues);
         product.setNewnessOverride(overriddenNewnessValues);
-        product.setBackInStockOverride(backInStockOverride);
+        product.setBackInStockOverride(overriddenBackInStockValues);
     }
     
     
