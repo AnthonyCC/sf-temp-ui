@@ -94,9 +94,11 @@
 	    		 if($.trim(text).length >1) {
 	    			 hash = getHash(text);
 	    			 messages[ntype] = this.innerHTML;
-	    			 if (!$.inArray(ntype, order)) {
+	    			 
+	    			 if ($.inArray(ntype, order) == -1) {
 	    				 order.push(ntype); //make available for update
 	    			 }
+	    			 
 	    			 if(hashes[ntype] != hash ) {			 
 		    		 	 opened = true;
 		    		 	 hashes[ntype]=hash;
