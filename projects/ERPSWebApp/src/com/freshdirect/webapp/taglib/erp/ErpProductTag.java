@@ -69,11 +69,12 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
         if ((skuCode != null) && !"".equals(skuCode)) {
             try {
                 product = ErpFactory.getInstance().getProduct(skuCode);
-                session.setAttribute(sessionName, product);
+                
                 newnessOverride=ErpFactory.getInstance().getOverriddenNewness(skuCode);
                 product.setNewnessOverride(newnessOverride);
                 backInStockOverride=ErpFactory.getInstance().getOverriddenBackInStock(skuCode);
                 product.setBackInStockOverride(backInStockOverride);
+                session.setAttribute(sessionName, product);
             } catch (FDResourceException fdre) {
                 LOGGER.debug(fdre);
                 throw new JspException(fdre.getMessage());
