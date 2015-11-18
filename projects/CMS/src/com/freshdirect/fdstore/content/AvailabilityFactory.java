@@ -14,6 +14,7 @@ import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -93,8 +94,7 @@ public class AvailabilityFactory {
 	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo,String plantID) {
 
 		FDAvailabilityI av = NullAvailability.AVAILABLE;
-
-		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule(plantID))) {
+		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule(plantID)) || (FDStoreProperties.getPreviewMode() && null == fdProductInfo.getATPRule(plantID))) {
 			return av;
 		}
 

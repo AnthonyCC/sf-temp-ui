@@ -11,6 +11,7 @@ import java.util.Map;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
+import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -91,18 +92,22 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
 							context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
 							return DENY;
+						}		
+						FDTimeslot dlvTimeSlot = dlvReservation.getTimeslot();
+						if(null != dlvReservation.getDeliveryFeeTier()){
+							dlvTimeSlot.setDlvfeeTier(EnumDeliveryFeeTier.getEnum(dlvReservation.getDeliveryFeeTier()));
 						}
-						int day = dlvReservation.getTimeslot().getDayOfWeek();		
+						int day = dlvTimeSlot.getDayOfWeek();
 						boolean e = dlvDays.contains(String.valueOf(day));
 						if(e && null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
-							e = checkDayMaxRedemtions(dlvReservation.getTimeslot(), promotionCode);
+							e = checkDayMaxRedemtions(dlvTimeSlot, promotionCode);
 						}
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 							if(null != dlvTimeSlotList) {								
-								if((!(dlvReservation.getTimeslot().isPremiumSlot() && promotionCode.startsWith("WS_"))
+								if((!(dlvTimeSlot.isPremiumSlot() && promotionCode.startsWith("WS_"))
 										|| FDStoreProperties.allowDiscountsOnPremiumSlots())
-										&& checkDlvTimeSlots(dlvReservation.getTimeslot(), dlvTimeSlotList, null, context.getUser(), true))
+										&& checkDlvTimeSlots(dlvTimeSlot, dlvTimeSlotList, null, context.getUser(), true))
 									return ALLOW;
 								else{
 									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
