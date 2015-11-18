@@ -361,8 +361,8 @@ public class ErpServicesProperties {
 		
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
-		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
-		defaults.put( MASQUERADE_FDX_STOREFRONT_BASEURL, "http://foodkick.freshdirect.com/" );
+		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "https://www.freshdirect.com/" );
+		defaults.put( MASQUERADE_FDX_STOREFRONT_BASEURL, "https://foodkick.freshdirect.com/" );
 		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
 		defaults.put(PROP_CARD_VERIFICATION_AUTH_AMOUNT,"1");
 		
