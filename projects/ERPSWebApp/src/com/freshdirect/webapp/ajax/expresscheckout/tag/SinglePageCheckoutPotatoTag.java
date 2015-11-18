@@ -152,7 +152,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 * @param request
 	 */
 	private void removeOlderEwalletPaymentMethod(FormPaymentData formpaymentData,HttpServletRequest request){
-		if (formpaymentData != null) {
+		if (formpaymentData != null && formpaymentData.getPayments()!=null) {
 			List<PaymentData> payments = formpaymentData.getPayments();
 			List<PaymentData> paymentsNew = new ArrayList<PaymentData>();
 			boolean selectedMacted = false;
