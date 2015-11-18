@@ -299,7 +299,6 @@
 
 
 		<br>
-		<% if (!isPopup) { %>
 		
 			<!--  
 			<%if(uri.indexOf("quickshop")== -1){%>
@@ -331,7 +330,6 @@
 			<%} else { %>        
 				<font class="text13bold">New Customer?</FONT><BR>
 				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<% } %>
-		<% } %>
 		
 		<br><br>
 
