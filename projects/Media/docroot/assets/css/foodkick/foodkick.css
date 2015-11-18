@@ -61,23 +61,23 @@ header {
   height: 57px;
   position: fixed;
   top: 0px;
-  z-index: 11;
+  z-index: 51;
   -webkit-transition: all 500ms ease;
   -moz-transition: all 500ms ease;
   -ms-transition: all 500ms ease;
   -o-transition: all 500ms ease;
   transition: all 500ms ease; }
-  header.sticky {
-    height: 57px; }
   @media (min-width: 30em) {
     header {
       height: 112px; } }
+  header.sticky {
+    height: 57px; }
 
 nav {
   padding-top: 0px;
   top: 0px;
   position: fixed;
-  z-index: 12;
+  z-index: 52;
   width: 100%;
   text-align: center;
   -webkit-transition: all 500ms ease;
