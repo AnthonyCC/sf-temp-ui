@@ -70,7 +70,7 @@
 
 
 <center>
-<div id="sulCont" class="signup-style-social social-singin">
+<div id="sulCont" class="signup-style-social social-singin login-page">
 
 	<%
 		if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {

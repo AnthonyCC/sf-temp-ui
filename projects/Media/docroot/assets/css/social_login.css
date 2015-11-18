@@ -101,7 +101,8 @@
 }
 
 #sulCont .form-side-social #litesignup,
-#sulCont .form-side-social #fd_login{
+#sulCont .form-side-social #fd_login,
+#sulCont.login-page #fd_login{
 	margin-left: -22px;
 }
 
