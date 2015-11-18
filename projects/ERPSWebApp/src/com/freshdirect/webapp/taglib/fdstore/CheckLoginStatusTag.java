@@ -380,6 +380,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             redirBuf.append(URLEncoder.encode("?" + request.getQueryString()));
         }
 
+        HttpSession session = pageContext.getSession();
+        session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
+        
         return redirBuf.toString();
     }
 

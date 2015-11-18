@@ -144,18 +144,37 @@ public class SocialAccountService implements AccountService {
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 									 String newURL = request.getScheme() + "://" + request.getServerName() ;
-									 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+									 if(FDStoreProperties.isLocalDeployment()){
+										 newURL = newURL + ":" + request.getServerPort();
+									 }						
+									 
+									 // determine whether socialsignin is trigger from workflow
+									 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+									 if( preSuccessPage != null){
+										 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+										 return  newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length());
+									 } else {
+										 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+									 }
 								 }
 							 }
 							 else {
-								 //response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
+								 
 								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								 
 								 String newURL = request.getScheme() + "://" + request.getServerName() ;
 								 if(FDStoreProperties.isLocalDeployment()){
 									 newURL = newURL + ":" + request.getServerPort();
+								 }		
+								 
+								// determine whether socialsignin is trigger from workflow
+								 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+								 if( preSuccessPage != null){
+									 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+									 return  newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length());
+								 } else {
+									 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()); 
 								 }								 
-								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
 							
 							 }
 						} catch (IOException e) {
@@ -326,7 +345,6 @@ public class SocialAccountService implements AccountService {
 							
 							String res = ra.executeEx();
 							if((Action.SUCCESS).equals(res)) {
-								//response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 								
 								String newURL = request.getScheme() + "://" + request.getServerName() ;
 								 if(FDStoreProperties.isLocalDeployment()){

@@ -53,6 +53,8 @@ public interface SessionName {
 	
 	public static final String PREV_VARIANT_FOUND = "prevVariantFound";
 	
+	public static final String PREV_SUCCESS_PAGE = "prevSuccessPage";
+	
 	public static final String APC_PROMO = "fd.apcpromo";
 	public static final String TSA_PROMO = "fd.tsapromo";
 	
