@@ -407,6 +407,15 @@
     <servlet-name>AtpRestrictionServlet</servlet-name>
     <url-pattern>/api/expresscheckout/atpfailure</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>CouponServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.coupon.servlet.CouponServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CouponServlet</servlet-name>
+    <url-pattern>/api/expressco/coupon</url-pattern>
+  </servlet-mapping>
+  
   
   <!-- Dev Tools -->
   <servlet>

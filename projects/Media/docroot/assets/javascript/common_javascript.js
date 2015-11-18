@@ -1442,14 +1442,19 @@ function checkBatch() {
 			});
 			$jq.ajax({
 				type: 'GET',
-				url: '/api/cp_api.jsp',
+				url: window.overrideCouponEndpoint || '/api/cp_api.jsp',
 				data: { action: 'clip', cpid: couponId },
-				success: function() {
+				success: function(data) {
 					/* make sure the tooltips are gone (IE) */
 					$jq('.cDetToolTipClickToApply').each(function (i, e){
 						$jq(e).hide();
 					});
 					window.parent['qbClippedSuccess']('input[name="fdCoupon_'+couponId+'_cb"]');
+					try {
+						if (data && data.cartData) {
+							FreshDirect.common.dispatcher.signal('cartData', data.cartData);
+						}
+					} catch (e) {}
 				},
 				error: function() {
 					/* clear check box(es) */
