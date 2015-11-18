@@ -150,7 +150,7 @@
   </div>
   <div class='questions__right'>
     <span class='questions__empty' data-component='emptycart'>
-      <img src="/media_stat/images/icon-trash.png" alt="Delete" class='questions__emptycart-image' />Empty Cart</span>
+      <img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart</span>
   </div>
 </div>
 {/template}
@@ -164,7 +164,7 @@
  */
 {template .cartsection autoescape="false"}
 <div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
-  <h2 class='cartsection__title'>{if $info.recipe}Recipe: <span class="cartsection__title-noweight">{$title}</span>{else}{$title}{/if}{if $info.recipe and $cartlineType == 'YOUR_CART'}<span data-component="removeRecipeButton"><img src="/media_stat/images/icon-trash.png" alt="Delete" class='cartline-delete-image' />Delete all recipe ingredients</span>{/if}</h2>
+  <h2 class='cartsection__title'>{if $info.recipe}Recipe: <span class="cartsection__title-noweight">{$title}</span>{else}{$title}{/if}{if $info.recipe and $cartlineType == 'YOUR_CART'}<span data-component="removeRecipeButton"><img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete all recipe ingredients</span>{/if}</h2>
   {foreach $cartline in $cartLines}
     {delcall expressco.cartline data="$cartline" variant="$cartlineType"}
 		{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
@@ -249,7 +249,7 @@
   </div>
   <div class='cartline-delete cartline-box'>
     <a class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
-      <img src="/media_stat/images/icon-trash.png" alt="Delete" class='cartline-delete-image' />Delete</a>
+      <img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete</a>
   </div>
   <div class='cartline-quantity cartline-box'>
     {if $freeSamplePromoProduct}

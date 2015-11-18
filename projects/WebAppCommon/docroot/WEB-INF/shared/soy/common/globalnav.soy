@@ -26,7 +26,7 @@
 {template .globalnavPopups autoescape="false"}
 <ul style="display:none" class="globalnavPopups" data-component="globalnav-popups">
   {foreach $menuitem in $abstractDepartments}
-    {call .globalnavMenuItem} 
+    {call .globalnavMenuItem}
      {param menuitem: $menuitem/}
     {/call}
   {/foreach}
@@ -40,30 +40,30 @@
 {template .globalnavMenuItem autoescape="false"}
 {if $menuitem.departments}
   {if not $menuitem.hideDropDown}
-	<li data-component="globalnav-popup-body" data-id="{$menuitem.id}" data-popup-type="superdepartment">
-		//{call .globalnavSuperDepartment data="$menuitem" /} 
-      	<!-- SUPERDEPARTMENT - {$menuitem.id} -->
-      	<div class="subdepartments_cont">
-	    	<ul class="subdepartments">
-			{foreach $department in $menuitem.departments}
-	        	<li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+  <li data-component="globalnav-popup-body" data-id="{$menuitem.id}" data-popup-type="superdepartment">
+    //{call .globalnavSuperDepartment data="$menuitem" /}
+        <!-- SUPERDEPARTMENT - {$menuitem.id} -->
+        <div class="subdepartments_cont">
+        <ul class="subdepartments">
+      {foreach $department in $menuitem.departments}
+            <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
               <span class="submenuitem-link">
-	          		<a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
+                <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
               </span>
               <div class="arrow-down"></div>
-	        	</li> 
-	      	{/foreach}
-	    	</ul>
-	    </div>
+            </li>
+          {/foreach}
+        </ul>
+      </div>
   </li>
   {/if}
   {foreach $department in $menuitem.departments}
-    {call .globalnavDepartment} 
+    {call .globalnavDepartment}
      {param department: $department/}
     {/call}
   {/foreach}
 {else}
-  {call .globalnavDepartment} 
+  {call .globalnavDepartment}
    {param department: $menuitem/}
   {/call}
 {/if}
@@ -77,7 +77,7 @@
 <div class="sub-container">
  <ul class="secondary-items">
     {foreach $department in $departments}
-      {call .globalNavSuperDeptItem data="$department" /} 
+      {call .globalNavSuperDeptItem data="$department" /}
     {/foreach}
  </ul>
 </div>
@@ -107,8 +107,8 @@
 {if not $department.hideDropDown}
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
   <div class="deptcontainer">
-    {if $department.heroImage} 
-      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="Department background" /></div>
+    {if $department.heroImage}
+      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
     {/if}
     {if $hasCategories or $hasPrefCategories}
       <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
@@ -120,11 +120,11 @@
                   <ul>
                     {foreach $category in $elem.categories}
                       <li>
-                        {call .categoryLink data="$category" /} 
+                        {call .categoryLink data="$category" /}
                       </li>
                     {/foreach}
                     {if isLast($column) and isLast($elem)}
-                      <li><a href="/browse.jsp?id={$department.id}">VIEW ALL</a></li> 
+                      <li><a href="/browse.jsp?id={$department.id}">VIEW ALL</a></li>
                     {/if}
                   </ul>
                 {/foreach}
@@ -137,7 +137,7 @@
             <ul>
               {foreach $category in $department.preferenceCategories}
                 <li>
-                  {call .categoryLink data="$category" /} 
+                  {call .categoryLink data="$category" /}
                 </li>
               {/foreach}
             </ul>
@@ -164,7 +164,7 @@
     <a href="/browse.jsp?id={$id}">
       {$globalNavShortName}
       {if $globalNavPostNameImage}
-        <img src="{$globalNavPostNameImage}" alt="category icon" class="smallicon" />
+        <img src="{$globalNavPostNameImage}" alt="" class="smallicon" />
       {/if}
     </a>
   {/if}

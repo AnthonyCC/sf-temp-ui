@@ -60,7 +60,7 @@
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
 	<div class="pdp-evenbetter-image">
 		<div class="portrait-item-burst_wrapper">
-			<img src="{$productImage}" alt="" data-evenbetteritem-trigger class="portrait-item-productimage">
+			<img src="{$productImage}" alt="{$productNameNoBrand}" data-evenbetteritem-trigger class="portrait-item-productimage">
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
 		</div>
 	</div>
