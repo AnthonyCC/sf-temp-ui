@@ -413,6 +413,11 @@ public class UserUtil {
                         
             FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
             
+            
+            if(currentUser!=null && currentUser.getAddress()!=null && currentUser.getAddress().getAddress1()!=null && currentUser.getAddress().getAddress1().trim().length() > 0) {        	
+            	loginUser.setAddress(currentUser.getAddress());
+            }
+            
             if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
             	session.removeAttribute(SessionName.USER);
             	currentUser = null;
