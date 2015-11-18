@@ -69,6 +69,10 @@
 		}
 		
 		$alerts_count.html(curCount);
+
+		if (curCount) {
+			$('.locabar-alerts-section').show();
+		}
   }
   
 	$document.on('messageAdded',function(e){
@@ -113,8 +117,8 @@
 	});
 	
 	$document.on('click','#location-submit',function(e){
-		var email = $('#messages #location-email').val(),
-				$form = $('#messages .nodeliver-form form'),
+		var email = $('#location-email').val(),
+				$form = $('.nodeliver-form form'),
 				pattern=/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
 				       
 		
@@ -130,6 +134,11 @@
 				},
 				success:function(data){
 					$('#nodeliver-thanks').messages('add');
+
+					if (FreshDirect.locabar.isFdx === true) {
+						$('label.n',$form).html('<b>Thanks for your email!</b> We will notify you once we start delivering to your area.');
+						$('#location-email').val('');
+					}
 					playScripts($(data));
 				},
 				error:function(){
@@ -214,7 +223,7 @@
 				$('#login_cont_formContent .errorMsg').hide();
 	    		form.data('submitting', true);
 				$('#login_cont_formContentForm_loggingIn').show();
-				if (!FreshDirect.locabar.isFdx) {
+				if (FreshDirect.locabar.isFdx === false) {
 					$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
 				}
 				
@@ -232,24 +241,32 @@
 	    				if(data.message =="TcAgreeFail"){
 	    					 FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp', width: 400, height: 400});
 	    				}else{
-	    				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
-	    					window.location = data.successPage;
-	    				} else {
-	    					//refresh
-	    					window.location = window.location;
-	    				}
-	    				
-	                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
-	                   	$('#login_cont_formContent').toggle();
+							if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
+								window.location = data.successPage;
+							} else {
+								//refresh
+								window.location = window.location;
+							}
+							
+							if (FreshDirect.locabar.isFdx === false) {
+								$("#locabar_loginButton").toggleClass("loginButtonTab");
+								$('#login_cont_formContent').toggle();
+							}
 	    				}
 	    			} else if(data.message == "CaptchaRedirect") {
     					window.location = '/login/login.jsp';
     				} else{
 	    				$('#login_cont_formContent .errorMsg').show();
 	    			}
-					$('#login_cont_formContentForm_loggingIn').hide();
+					
+					if (FreshDirect.locabar.isFdx === false) {
+						$('#login_cont_formContentForm_loggingIn').hide();
+					}
 	        		form.data('submitting', false);
-					$('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
+					
+					if (FreshDirect.locabar.isFdx === false) {
+						$('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
+					}
 	    		}, "json");
 	    	}
 	    });

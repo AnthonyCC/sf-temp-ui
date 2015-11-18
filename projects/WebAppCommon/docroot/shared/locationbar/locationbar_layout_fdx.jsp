@@ -7,10 +7,11 @@
 <%@ taglib prefix="fd" uri="freshdirect" %>
 <%
 	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+	String uri = request.getRequestURI().toLowerCase();
 %>
 <tmpl:get name="topwarningbar" />
 
-<div id="locationbar">
+<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
 	<div class="locabar-spacer"></div>
 	<tmpl:get name="tab_fdx" />
 	<tmpl:get name="tab_cos" />

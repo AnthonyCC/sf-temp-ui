@@ -5,6 +5,23 @@ function centerLoginModal() {
 		of: window
 	});
 }
+/* fix cart for now, until actual solution is found */
+$jq(document).on('ready', function() {
+	$jq('#popupcart').appendTo('#locabar_popupcart');
+	
+	$jq( '#locabar_popupcart' ).position({
+		my: 'right top',
+		at: 'right bottom+8',
+		of: '#locabar_popupcart_trigger'
+	});
+});
+
+/* right align this one arrow */
+$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
+	my: 'right top',
+	at: 'right-20 top-16',
+	of: '#locabar_popupcart'
+});
 
 /* align to triggers */
 $jq( '#locabar_addresses' ).position({
@@ -16,18 +33,6 @@ $jq( '#locabar_user' ).position({
 	my: 'center top',
 	at: 'center bottom+8',
 	of: '#locabar_user_trigger'
-});
-$jq( '#locabar_popupcart' ).position({
-	my: 'right top',
-	at: 'right bottom+8',
-	of: '#locabar_popupcart_trigger'
-});
-
-/* right align this one arrow */
-$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
-	my: 'right top',
-	at: 'right-20 top-16',
-	of: '#locabar_popupcart'
 });
 
 function showOverlay(zIndexVar) {
@@ -101,28 +106,19 @@ $jq('#selectAddressList').iconselectmenu({
 			},
 			error: function(data){
 				/* this needs fixing */
-				//console.log('address error', data.responseText);
+				console.log('address error', data.responseText);
 			}
 		});
 	} 
 }).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 
 $jq('#locabar_addresses_choices' ).on('mouseleave', function(){
-	//console.log('locabar_addresses_trigger mouseleave');
 	$jq('#selectAddressList').iconselectmenu('refresh');
-});
-	
-$jq('#locationbar').on('mouseover', '#locabar_user_trigger', function(e) {
-	//console.log('signed in', $jq(this), $jq(this).data('signedin'));
-	if ($jq(this).data('signedin')) {
-		
-	}
 });
 
 $jq('#locabar_user_trigger').on('click', function(e) {
 	var $this = $jq(this);
 	if (!$this.data('signedin') ) {
-		//console.log('do not signed in click');
 		if ($this.data('social')) {
 			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
 				FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', height: 580, opacity: .5});
@@ -145,10 +141,5 @@ $jq('#login_cont_formContent').on('hide', function() {
 
 $jq(window).on('resize', function(event) {
 	centerLoginModal();
-});
-
-/* fix cart for now, until actual solution is found */
-$jq(document).on('ready', function() {
-	$jq('#popupcart').appendTo('#locabar_popupcart');
 });
 

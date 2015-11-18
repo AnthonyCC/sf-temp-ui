@@ -23,6 +23,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+
 <fd:LocationHandler/>
 <%
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -40,16 +41,21 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	
 	<tmpl:put name="fdx_login_form">
     	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
+    		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" border="0" /></div>
+    		<div class="sign-in">Sign in</div>
     		<form id="login_cont_formContentForm">
     			<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>
     			<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>
-        		<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="cssbutton orange cssbutton-flat">Sign in</button></div>
+        		<div id="login_cont_formContentForm_signInCont">
+        			<div style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</div>
+        			<button id="login_cont_formContentForm_signIn" name="submit" class="cssbutton fdxgreen">Sign in</button>
+        		</div>
     		</form>
 			<div class="errorMsg" style="display: none;">
 				<div class="header">Please re-enter your Email and Password.</div> 
 				The information you entered is incorrect. Please try again.
 			</div>
-    		<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>
+    		<div id="login_cont_formContent_forgotpass"><a href="/login/forget_password.jsp">Forgot your password?</a></div>
     	</div>
     	<%-- this script chunk is necessary to move the login form out of toptoolbar, because of relative z-index issues --%>
 		<script>
@@ -74,14 +80,15 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	<% } %>
 
 <%-- alerts icon --%>
-	<tmpl:put name="alerts"><div class="locabar-section">
+	<tmpl:put name="alerts"><div class="locabar-section locabar-alerts-section" style="display: none;">
 			<div id="locabar_alerts_trigger" class="cursor-pointer">
 				<div class="section-warning-small" id="locabar-alerts-open">
-					<div id="locabar-alerts-count" class="locabar-circle-cont alerts-count" data-count="0"></div>
+					<div id="locabar-alerts-count" class="locabar-circle-cont alerts-count" data-count="0">0</div>
 				</div>
 			</div>
 			
 			<%-- TEST ALERTS
+			--%>
 			
 				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
 				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
@@ -93,11 +100,10 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 						$jq('#test3').messages('add','test3');
 					});
 				</script>
-
-			--%>	</div></tmpl:put>
+	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
-	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://foodkick.freshdirect.com" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a><% } %></tmpl:put>
+	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://foodkick.freshdirect.com" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
 
 <%-- COS tab --%>
 	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/cos.jsp" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
@@ -216,8 +222,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					
 					<div class="nodeliver-form">
 						<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
-							<div class=""><label class="n">We'll notify you when service expands in<br />your area.</label></div>
 							<form class="n">
+								<div class=""><label class="n">We'll notify you when service expands in<br />your area.</label></div>
 								<div>
 									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 								</div>
@@ -244,7 +250,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	        dlvInfoLink += ".jsp";
     	}
 	%>
-	<tmpl:put name="zip_address"><div class="locabar-section"><div style="display: inline-block; position: relative;" id="locabar_addresses_trigger">
+	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section"><div style="display: inline-block; position: relative;" id="locabar_addresses_trigger">
 				<div style="display: inline-block;" class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
@@ -313,7 +319,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				}
 			}
 			
-		%><div class="locabar-section">
+		%><div class="locabar-section locabar-user-section">
 			<div style="display: inline-block; position: relative;" id="locabar_user_trigger" data-signedin="<%= signedIn %>"data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
@@ -351,7 +357,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		</div></tmpl:put>
 
 <%-- CART area --%>
-	<tmpl:put name="cartTotal"><div class="locabar-section" style="margin-right: 0;">
+	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
 			<div id="locabar_popupcart_trigger">
 				<div class="bold cursor-pointer">
 					<div class="locabar-cart-count-cont">
