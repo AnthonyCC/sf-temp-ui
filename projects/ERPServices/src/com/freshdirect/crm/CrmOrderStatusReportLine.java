@@ -3,12 +3,14 @@
  */
 package com.freshdirect.crm;
 
+import java.io.Serializable;
+
 import com.freshdirect.customer.EnumSaleStatus;
 
 /**
  * @author ekracoff
  */
-public class CrmOrderStatusReportLine {
+public class CrmOrderStatusReportLine implements Serializable {
 	private final String saleId;
 	private final EnumSaleStatus status;
 	private final String sapNumber;
