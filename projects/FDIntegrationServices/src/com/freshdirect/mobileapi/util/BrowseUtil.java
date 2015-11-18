@@ -973,7 +973,7 @@ public class BrowseUtil {
 	    	}
 	    	ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(contentId);
 	    	
-	    	if(contentNode instanceof DepartmentModel || contentNode instanceof CategoryModel){
+	    	if(contentNode instanceof CategoryModel){
 		    	getSortOptionsForCategory(contentNode,user, request, sortOptions);
 		    	//sortOptions.addAll(sortOptionSet);
 		    	//NO FILTERS ON DEPARTMENT LEVEL
