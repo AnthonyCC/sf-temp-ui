@@ -522,7 +522,7 @@ public class BrowseUtil {
 			
 			List<FilteringProductItem> filteredItems = ProductItemFilterUtil.getFilteredProducts(
 					ProductItemFilterUtil.createFilteringProductItems(productList),
-					activeFilters, false, true);
+					activeFilters, true, true);
 			
 			if(filteredItems != null && filteredItems.size() > 0){
 				toReturn = new ArrayList<ProductModel>();
