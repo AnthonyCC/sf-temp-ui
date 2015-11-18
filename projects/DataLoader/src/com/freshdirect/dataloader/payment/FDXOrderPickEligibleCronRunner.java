@@ -40,7 +40,7 @@ public class FDXOrderPickEligibleCronRunner {
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx.lookup("freshdirect.dataloader.FDXOrderPickEligibleCron");
+			FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx.lookup("freshdirect.erp.FDXOrderPickEligibleCron");
 
 			FDXOrderPickEligibleCronSB sb = home.create();
 			sb.queryForSalesPickEligible();
