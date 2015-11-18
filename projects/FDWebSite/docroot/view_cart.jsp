@@ -138,7 +138,15 @@ StringBuffer buffer = new StringBuffer(
 	</fd:ErrorHandler>
 <%} %>
 
-<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
+<div fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
+<potato:viewCart />
+<% if (user.getCurrentStandingOrder() == null) { %>
+<!-- product sampling carousel -->
+<soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
+<% } %>
+</div>
+
+<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
 	<div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
@@ -193,12 +201,6 @@ StringBuffer buffer = new StringBuffer(
 <img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" />
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
-
-<potato:viewCart />
-<% if (user.getCurrentStandingOrder() == null) { %>
-<!-- product sampling carousel -->
-<soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
-<% } %>
 
 <%@ include file="/includes/i_viewcart.jspf" %> 
 
