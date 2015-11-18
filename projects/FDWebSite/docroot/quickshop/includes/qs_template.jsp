@@ -93,7 +93,7 @@
                 <li><a href="/quickshop/qs_fd_lists.jsp" class="<tmpl:get name='fdSelected'/>"><strong>shop<span class="fd"> FD </span>lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="fd_lists"></span></a></li>
                 </c:if>
                 <% if (user.isEligibleForStandingOrders()) { %>
-                <li><a href="/quickshop/qs_standing_orders.jsp" class="<tmpl:get name='soSelected'/>" ><strong>standing orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="so"></span></a></li>
+                <li><a id="tabStandingOrders" role="tab" tabindex="0" aria-controls="reorder-content" href="/quickshop/qs_standing_orders.jsp" class="<tmpl:get name='soSelected'/>" ><strong>standing orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="so"></span></a></li>
                 <%} %>
             </ul>
             <div class="qs-loader">
