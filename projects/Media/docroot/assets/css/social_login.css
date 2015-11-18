@@ -168,7 +168,8 @@ input[type="socialButton"] {
 }
 
 #sulCont .form-side-social input.padding-input-box,
-#sulCont #lost_password input.padding-input-box{
+#sulCont #lost_password input.padding-input-box,
+#sulCont #fd_login input.padding-input-box{
 	height: 27px;
 	width: 206px;
 	color: #000000;
@@ -183,11 +184,12 @@ input[type="socialButton"] {
     
 }
 #sulCont .form-side-social input.error,
-#sulCont #lost_password input.error{
+#sulCont #lost_password input.error,
+#sulCont #fd_login input.error{
   border-color:#FF6C47;
   background-color:#FFE0E0;
 }
-#sulCont .form-side-social .padding-input-box#password1{
+#sulCont .padding-input-box#password1{
 	padding-right: 59px;
     width: 160px;
 }

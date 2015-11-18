@@ -69,8 +69,8 @@
 </fd:ErrorHandler>
 
 
-
-<div id="sulContLogin" class="signup-style-social social-singin">
+<center>
+<div id="sulCont" class="signup-style-social social-singin">
 
 
 
@@ -312,7 +312,8 @@
 
 
 
-</div> 
+</div>
+</center>
 
 
 </fd:LoginController>
