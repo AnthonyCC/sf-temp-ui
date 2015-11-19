@@ -23,7 +23,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
-
+<%-- 
+--%>
+<%
+final Logger LOGGER_LOCATIONBAR_FDX = LoggerFactory.getInstance("locationbar_fdx.jsp");
+try {
+%>
 <fd:LocationHandler/>
 <%
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -254,7 +259,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				<div style="display: inline-block;" class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
-						<div>
+						<div class="locabar-addresses-addzip">
 							<%
 							/* it's possible to not have the selected address in the address list, so check that as well */
 							if (user!=null && user.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
@@ -276,7 +281,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
 						<div class="section-header">
 							DELIVERY ADDRESSES
-							<% if (user != null && user.getLevel() == FDUserI.SIGNED_IN) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
+							<% if (user != null && user.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
 						</div>
 					<% } %>
 					
@@ -311,22 +316,24 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	<tmpl:put name="sign_in"><%
 			String greetingsString = "Sign in";
 			boolean signedIn = false; //used for js logic for hover/click event results
+			boolean recog = false; //used for js logic for hover/click event results
 			if (user != null && user.getLevel() != FDUserI.GUEST) {
 				greetingsString = user.getFirstName();
 				
 				if (user.getLevel() == FDUserI.SIGNED_IN) {
 					signedIn = true;
 				}
+				if (user.getLevel() == FDUserI.RECOGNIZED) {
+					recog = true;
+				}
 			}
 			
 		%><div class="locabar-section locabar-user-section">
-			<div style="display: inline-block; position: relative;" id="locabar_user_trigger" data-signedin="<%= signedIn %>"data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
+			<div style="display: inline-block; position: relative;" id="locabar_user_trigger" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
-					<div>
-						<div>
-							<%= greetingsString %><div class="locabar-down-arrow"></div>
-						</div>
+					<div class="locabar-user-greeting-cont">
+						<div class="locabar-user-greeting"><%= greetingsString %></div><div class="locabar-down-arrow"></div>
 					</div>
 				</div>
 				<%
@@ -404,4 +411,16 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				</div>
 			</div>
 		</div></tmpl:put>
+		
+<%-- OUT OF AREA MSGS --%>
+	<% if (user != null && user.getLevel() == FDUserI.GUEST) { %>
+		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /> </tmpl:put>
+	<% } %>
 </tmpl:insert>
+
+
+<%
+} catch (Exception e) {
+	LOGGER_LOCATIONBAR_FDX.debug("error inlocationbar_fdx.jsp");
+	e.printStackTrace();
+}%>

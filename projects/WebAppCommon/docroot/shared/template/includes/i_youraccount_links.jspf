@@ -19,7 +19,7 @@
 <%
 	final Logger LOGGER = LoggerFactory.getInstance("i_youraccount_links.jspf");
 	FDSessionUser user_youract = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if (user_youract != null && user_youract.getLevel() == FDUserI.SIGNED_IN) {
+	if (user_youract != null && user_youract.getLevel() != FDUserI.GUEST) {
 		folderMap.put("Your Orders","/your_account/order_history.jsp");
 		if (user_youract.isEligibleForStandingOrders()){
 			folderMap.put("Your Standing Orders","/quickshop/standing_orders.jsp");

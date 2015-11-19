@@ -116,17 +116,46 @@ $jq('#locabar_addresses_choices' ).on('mouseleave', function(){
 	$jq('#selectAddressList').iconselectmenu('refresh');
 });
 
-$jq('#locabar_user_trigger').on('click', function(e) {
-	var $this = $jq(this);
-	if (!$this.data('signedin') ) {
-		if ($this.data('social')) {
-			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
-				FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', height: 580, opacity: .5});
+function showLoginDialog(successPage, useSocial) {
+
+	if (useSocial) {
+		var socialUrl = '/social/login.jsp';
+		if (successPage && successPage !== '') {
+			socialUrl += '?successPage='+successPage;
+		}
+
+		if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
+			FreshDirect.components.ifrPopup.open({ url: socialUrl, height: 580, opacity: .5});
+		}
+	} else {
+		if (successPage && successPage !== '') {
+			if ($jq('#login_cont_formContentForm #successPage').length === 0) {
+				$jq('#login_cont_formContentForm').append('<input type="hidden" id="successPage" name="successPage" value="'+successPage+'" />');
 			}
-		} else {
-			showOverlay(1001);
-			$jq('#login_cont_formContent').show();
-			centerLoginModal();
+		}
+
+
+		showOverlay(1001);
+		$jq('#login_cont_formContent').show();
+		centerLoginModal();
+	}
+}
+
+$jq('#locabar_user_trigger').on('click', function(e) {
+	
+	var $this = $jq(this);
+	if (!($this.data('signedin') || $this.data('recog'))) {
+		showLoginDialog($jq.QueryString["successPage"], $this.data('social'));
+	} else if (!$this.data('signedin') && $this.data('recog')) {
+		e.preventDefault();
+
+		var eTargetHref ='';
+		if (e.target.href) {
+			eTargetHref = (e.target.href).replace(e.target.origin, '');
+			
+			if(eTargetHref !== '') {
+				showLoginDialog(eTargetHref, $this.data('social'));
+			}
 		}
 	}
 });
