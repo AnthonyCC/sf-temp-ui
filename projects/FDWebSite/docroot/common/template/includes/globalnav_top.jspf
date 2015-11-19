@@ -11,13 +11,23 @@
 %><%@ taglib prefix="logic" uri="logic" %>
 
 <% //expanded page dimensions
-final int W_GLOBAL_NAV_TOP_TOTAL = 970;
+	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
+	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 %>
 
 <%@ include file="/shared/template/includes/yui.jspf" %>
 
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+
+
+<script>
+	FreshDirect = FreshDirect || {};
+	FreshDirect.locabar = FreshDirect.locabar || {};
+	FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
+	$jq.fn.messages = function( method ) {};
+</script>
+
 <div id="toptoolbar">
 <jsp:include page="/shared/locationbar/locationbar.jsp" />
 <jsp:include page="/shared/messages/messages.jsp" />
