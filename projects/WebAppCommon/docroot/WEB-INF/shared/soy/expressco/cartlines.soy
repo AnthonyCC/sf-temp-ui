@@ -11,6 +11,7 @@
  * @param? promotionApplied
  * @param? couponMessage subtotal
  * @param populateDCPDPromoDiscount
+ * @param? beforeCheckoutAction
  */
 {template .viewcartlines autoescape="false"}
 {call .couponMessage}
@@ -37,6 +38,7 @@
 {call .footer}
     {param buttonText: 'Checkout' /}
     {param form: 'viewcart_startcheckout' /}
+    {param beforeCheckoutAction: $beforeCheckoutAction /}    
 {/call}
 {/template}
 
@@ -569,8 +571,9 @@
  * @param? buttonText Display text of button
  * @param? navLink Where the button should navigate
  * @param? form form id for button
+ * @param? beforeCheckoutAction on-click action
  */
-{template .footer}
+{template .footer autoescape="false"}
 <div class='footer'>
   {if $form}
     <div fdform-error-container="{$form}">
@@ -589,7 +592,7 @@
   <div class='footer__right'>
       {if $form}<form fdform="{$form}" action="#">{/if}
       {if $navLink}<a href='{$navLink}'>{/if}
-      {if $buttonText}<button class="cssbutton orange footer__button">{$buttonText} &gt;</button>{/if}
+      {if $buttonText}<button class="cssbutton orange footer__button" {$beforeCheckoutAction}>{$buttonText} &gt;</button>{/if}
       {if $navLink}</a>{/if}
       {if $form}</form>{/if}
   </div>
