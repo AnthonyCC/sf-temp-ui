@@ -400,14 +400,18 @@ nav{
 
 section#section_slideshow{
 	width:$full100;
-	height: 68vw;
+	/*height: 68vw;*/
 	max-height: 100vh;
+	
+	
 	
 	background-size: $full100;
 	background-repeat: no-repeat;
 	
+	/*display:none;*/
+	
 	@include breakpoint_mixin(medium){
-		height: 68vw;
+		/*height: 68vw;*/
 	}
 
 	#carousel_1 {
@@ -869,10 +873,12 @@ section#section_How_it_works{
 section#section_Whats_Good{
 	margin-bottom:30px;
 	height:48vw;
+	display:none;
 	
 	.container{
 		/*width:600px;*/
 		width: 100%;
+		height:inherit;
 		
 		@include breakpoint_mixin(large){
 			width: 50%;
@@ -901,6 +907,13 @@ section#section_Whats_Good{
 		}
 		#carousel_Whats_Good_scenes:before{
 			content:"Behind the scenes";
+		}
+		
+		#carousel_Whats_Good_foodkick{
+			display:none;
+		}
+		#carousel_Whats_Good_scenes{
+			display:none;
 		}
 		
 		figure{
@@ -1160,6 +1173,7 @@ section.forgot_password_section{
 footer{
 	background-color:#2D2E37;
 	margin-top:20px;
+	padding-top: 20px;
 	padding-bottom:40px;
 	color:white;
 	text-transform:uppercase;
@@ -1185,8 +1199,6 @@ footer{
 	section#footer_disclaimer{
 		text-transform: initial;
 		margin-bottom:20px;
-		/*position: relative;*/
-	    top: -15px;
 	    padding-left: 3%;
 	    padding-right: 3%;
 		

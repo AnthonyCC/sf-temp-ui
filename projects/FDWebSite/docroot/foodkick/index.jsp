@@ -57,6 +57,7 @@ if( request.getParameter("p") != null ){
 	<head>
 		<title>A fresh kick <c:out value="${param.f}" /></title>
 		<meta charset="UTF-8" />
+		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<!--[if lt IE 9]>

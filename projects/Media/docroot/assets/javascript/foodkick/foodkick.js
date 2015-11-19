@@ -46,6 +46,10 @@ function prepare_slideshow(ss_obj){
 		placeafter.after("<div id='"+ss_obj.html_id+"'></div>");
 	}
 	
+	//make sure that the slideshow holder shows the slideshow container, just in case
+	$("#" + ss_obj.html_id).css("display", "block");
+	$("#" + ss_obj.html_id).parents("section").css("display", "block");
+	
 	//loop through the slide array object from OAS
 	for(var i in ss_obj.slides){
 		//if no one specifies a 'type' property for this slide, then default to 'img'
@@ -92,7 +96,7 @@ function prepare_slideshow(ss_obj){
 		height: ss_obj.height,
         play: {
 			active: true,
-			auto: true,
+			//auto: true,
 			interval: 5000,
 			swap: true,
 			//pauseOnHover: true,

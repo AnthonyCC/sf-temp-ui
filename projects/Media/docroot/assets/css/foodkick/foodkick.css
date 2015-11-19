@@ -197,13 +197,14 @@ nav {
 /*end of 'nav' */
 section#section_slideshow {
   width: 100%;
-  height: 68vw;
+  /*height: 68vw;*/
   max-height: 100vh;
   background-size: 100%;
-  background-repeat: no-repeat; }
+  background-repeat: no-repeat;
+  /*display:none;*/ }
   @media (min-width: 30em) {
     section#section_slideshow {
-      height: 68vw; } }
+      /*height: 68vw;*/ } }
   section#section_slideshow #carousel_1 {
     display: none;
     text-align: center;
@@ -555,10 +556,12 @@ section#section_How_it_works {
 /*end section '#section_How_it_works' */
 section#section_Whats_Good {
   margin-bottom: 30px;
-  height: 48vw; }
+  height: 48vw;
+  display: none; }
   section#section_Whats_Good .container {
     /*width:600px;*/
-    width: 100%; }
+    width: 100%;
+    height: inherit; }
     @media (min-width: 50em) {
       section#section_Whats_Good .container {
         width: 50%;
@@ -582,6 +585,10 @@ section#section_Whats_Good {
       content: "Now on foodkick"; }
     section#section_Whats_Good .container #carousel_Whats_Good_scenes:before {
       content: "Behind the scenes"; }
+    section#section_Whats_Good .container #carousel_Whats_Good_foodkick {
+      display: none; }
+    section#section_Whats_Good .container #carousel_Whats_Good_scenes {
+      display: none; }
     section#section_Whats_Good .container figure {
       margin: 0px; }
       section#section_Whats_Good .container figure h4 {
@@ -762,6 +769,7 @@ section.forgot_password_section {
 footer {
   background-color: #2D2E37;
   margin-top: 20px;
+  padding-top: 20px;
   padding-bottom: 40px;
   color: white;
   text-transform: uppercase; }
@@ -776,8 +784,6 @@ footer {
   footer section#footer_disclaimer {
     text-transform: initial;
     margin-bottom: 20px;
-    /*position: relative;*/
-    top: -15px;
     padding-left: 3%;
     padding-right: 3%; }
     footer section#footer_disclaimer span {
