@@ -559,29 +559,30 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 		
 		int addOnOrderCountOfParent=0;
-		try
-		{
-			
-			pstmt = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
-					" SA.ACTION_TYPE IN ('CRO','MOD') AND S.TYPE = 'REG' AND SA.ID = PI.SALESACTION_ID AND  PI.ON_FD_ACCOUNT='O' AND PI.REFERENCED_ORDER = ? GROUP BY PI.ON_FD_ACCOUNT "); 
-			pstmt.setString(1, getPK().getId());
-			resultSet = pstmt.executeQuery();
-			
-			if(resultSet.next()){	
-				addOnOrderCountOfParent=resultSet.getInt(1);
-			 }
+		if(EnumEStoreId.FDX.equals(eStoreId)) {
+			try
+			{
+				
+				pstmt = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
+						" SA.ACTION_TYPE IN ('CRO','MOD') AND S.TYPE = 'REG' AND SA.ID = PI.SALESACTION_ID AND  PI.ON_FD_ACCOUNT='O' AND PI.REFERENCED_ORDER = s.id and s.id=? GROUP BY PI.ON_FD_ACCOUNT "); 
+				pstmt.setString(1, getPK().getId());
+				resultSet = pstmt.executeQuery();
+				
+				if(resultSet.next()){	
+					addOnOrderCountOfParent=resultSet.getInt(1);
+				 }
+			}
+			catch(Exception e)
+			{
+				LOGGER.debug("Exception while fetching the addOnOrderCountOfParent");
+			}
+			finally{
+				if(resultSet!=null)
+					resultSet.close();
+				if(pstmt!=null)
+					pstmt.close();
+			}
 		}
-		catch(Exception e)
-		{
-			LOGGER.debug("Exception while fetching the addOnOrderCountOfParent");
-		}
-		finally{
-			if(resultSet!=null)
-				resultSet.close();
-			if(pstmt!=null)
-				pstmt.close();
-		}
-		
 
 		// load children
 
