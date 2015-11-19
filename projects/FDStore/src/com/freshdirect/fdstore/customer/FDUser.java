@@ -2362,15 +2362,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean getShowPendingOrderOverlay() {
 
 		boolean showOverlay = false;
+		boolean addOnOrder = false;
 			MasqueradeContext curContext = getMasqueradeContext();
+			if(curContext!=null)
+				addOnOrder=curContext.getParentOrderId()!=null?true:false;
+			
 			Set<String> mgOLs = null;
 			if (curContext != null) {
 				mgOLs = curContext.getMakeGoodAllowedOrderLineIds();
 			}
+			if(!addOnOrder){
 			showOverlay = FDStoreProperties.isPendingOrderPopupEnabled()
 					&& (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay))
 					&& (curContext == null || (curContext != null && mgOLs == null) );
-		
+			}
 		return showOverlay;
 	}
 
