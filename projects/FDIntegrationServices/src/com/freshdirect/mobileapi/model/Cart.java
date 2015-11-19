@@ -159,7 +159,11 @@ public class Cart {
     }
 
     public void setDeliveryAddress(ShipToAddress shippingAddress) {
+    	if(shippingAddress!=null) {
         ((FDCartModel) cart).setDeliveryAddress(shippingAddress.getAddress());
+    	} else {
+    		 ((FDCartModel) cart).setDeliveryAddress(null);	
+    	}
     }
     
     public void setUnavailablePasses(List<DlvPassAvailabilityInfo> unavailablePasses) {
@@ -1065,8 +1069,10 @@ public class Cart {
         
         
         if(cart.getDeliveryAddress() == null) {
+        	if(user.getAddress() ==null || (user.getAddress() !=null && user.getAddress().getAddress1() ==null ) || user.getAddress().getAddress1().trim().length()==0) {
         	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
         	cartDetail.setDeliveryAddressId(new Checkout(user).getPreselectedDeliveryAddressId());
+        	}
         }
         
         if(cart.getPaymentMethod() == null) {
@@ -1080,7 +1086,9 @@ public class Cart {
     	}
         
     	if(cart.getDeliveryAddress() != null && cart.getDeliveryAddress().getPK() != null) {
+    		if(user.getAddress() ==null || (user.getAddress() !=null && user.getAddress().getAddress1() ==null ) || user.getAddress().getAddress1().trim().length()==0) {
     		cartDetail.setDeliveryAddressId(cart.getDeliveryAddress().getId());
+    		}
     	}
     	if(cart.getPaymentMethod() != null && cart.getPaymentMethod().getPK() != null) {
     		cartDetail.setPaymentMethodId(cart.getPaymentMethod().getPK().getId());
