@@ -18,12 +18,14 @@ import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -44,11 +46,14 @@ import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Cart;
+import com.freshdirect.mobileapi.model.Checkout;
+import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.OrderHistory;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.ShipToAddress;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -394,7 +399,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				//FDX-1873 - Show timeslots for anonymous address
 				if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0 && user.getAddress().isCustomerAnonymousAddress()) {
 					user.getShoppingCart().setDeliveryAddress(null);
-				}
+				} 
 			}
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
@@ -530,6 +535,47 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		((LoggedIn) responseMessage).setTcAcknowledge(user
 				.getTcAcknowledge());
 		}
+		// FDX-1873 - Show timeslots for anonymous address
+				boolean deliveryAddr = setDeliveryAddress(user);
+				((LoggedIn) responseMessage).setAnonymousAddressSetFromAcc(deliveryAddr);
 		return responseMessage;
+	}
+	
+	// FDX-1873 - Show timeslots for anonymous address
+	//FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
+	public boolean setDeliveryAddress(SessionUser user) throws FDException{
+				 List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
+				 ShipToAddress anonymousAddr = ShipToAddress.wrap(user.getAddress());
+		if(user.getAddress()!=null && user.getAddress().isCustomerAnonymousAddress() && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
+		List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
+		for(ErpAddressModel acctAddr: addresses) {
+			boolean isAddressMatching = matchAddress(acctAddr, user.getAddress());
+			if(isAddressMatching) {
+				Checkout checkout = new Checkout(user);    	
+				// ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(acctAddr.getId(), DeliveryAddressType.valueOf(user.getAddress().getServiceType()));
+				ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(acctAddr.getId(), DeliveryAddressType.RESIDENTIAL);
+				ActionResult result = resultBundle.getActionResult();
+				if(result.isSuccess()){					
+					user.getAddress().setCustomerAnonymousAddress(false);
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		}
+		return false;
+	}
+	
+	// FDX-1873 - Show timeslots for anonymous address
+	public static boolean matchAddress(ErpAddressModel addr1, AddressModel addr2) {
+		if (addr1 == null || addr2 == null)
+			return false;
+		if (addr1.getAddress1() != null && addr1.getAddress1().equalsIgnoreCase(addr2.getAddress1())
+				&& ((addr1.getAddress2() == null && addr2.getAddress2() == null) || (addr1.getAddress2() != null && addr1.getAddress2().equalsIgnoreCase(addr2.getAddress2())) || (addr1.getAddress2().trim().length()==0 && addr2.getAddress2().trim().length()==0 ))
+				&& addr1.getCity() != null && addr1.getCity().equalsIgnoreCase(addr2.getCity())) {
+			return true;
+		}
+		return false;
 	}
 }

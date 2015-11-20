@@ -48,6 +48,7 @@ public class LoggedIn extends Message {
     private String resultAction;
     private String resultMessage;
     private boolean tcAcknowledge;
+    private boolean anonymousAddressSetFromAcc;
     
     public boolean isTcAcknowledge() {
 		return tcAcknowledge;
@@ -214,6 +215,15 @@ public class LoggedIn extends Message {
 	public void setResultMessage(String resultMessage) {
 		this.resultMessage = resultMessage;
 	}
+
+	public boolean isAnonymousAddressSetFromAcc() {
+		return anonymousAddressSetFromAcc;
+	}
+
+	public void setAnonymousAddressSetFromAcc(boolean anonymousAddressSetFromAcc) {
+		this.anonymousAddressSetFromAcc = anonymousAddressSetFromAcc;
+	}
+
 	
 	
 	
