@@ -6,6 +6,8 @@
 
 				
 		jQuery(document).ready(function() {			
+						
+			jQuery("#actionName").val(""); 
 			
 			//$('#disconnect_social_accounts_facebook').click(function(){  		//********  NOT WORKING since '$' has been set to $jq in 'i_javascripts.jspf'. 
 			jQuery("#disconnect_social_accounts_facebook").click(function(){			

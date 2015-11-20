@@ -124,6 +124,19 @@ public class SocialAccountService implements AccountService {
 						return socialAccountAlreadyConnected;
 					}					
 					
+										
+					/*  APPBUG-3955
+					 *  on Account Setting page
+					 *  Check if the just authenticated social email has been associated with the current logged in FD user
+					 */
+					if( sessionUserId !=null && socialUserId.equalsIgnoreCase(sessionUserId) &&
+						(sessionUserLevel == FDUserI.SIGNED_IN)){
+						
+		    			socialLoginAccountLinked = socialLoginAccountLinked + "?socialnetwork=" + socialUserProfile.get("provider");	
+						return socialLoginAccountLinked;	
+					}	
+					
+					
 							    
 					/*
 					 * The socialUserId has been linked with FD account. 
