@@ -1365,6 +1365,11 @@ public class BrowseUtil {
 	    public static CatalogInfo getCatalogInfo(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request) {
 	    	
 	    	user.setAddress(getAddress(requestMessage));
+	    	return getCatalogInfo(user, request);
+	    }
+	    
+	    public static CatalogInfo getCatalogInfo(SessionUser user, HttpServletRequest request) {
+	    	
 	    	String plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();
 	    	PricingContext pc=user.getFDSessionUser().getUserContext().getPricingContext();
 	    	user.setUserContext();
@@ -1462,11 +1467,13 @@ public class BrowseUtil {
 					}
 					skuInfo.setAlcoholType(getAlcoholType(product));
 					EnumAvailabilityStatus status = productInfo.getAvailabilityStatus(pc.getPricingContext().getZoneInfo().getSalesOrg(), pc.getPricingContext().getZoneInfo().getDistributionChanel());
+					
 					if(status == null || prodModel.isUnavailable()) {
 						skuInfo.setAvailable(EnumAvailabilityStatus.TEMP_UNAV.getId());
 					} else{
 						skuInfo.setAvailable(status.getId());
 					}
+					
 					boolean isLimitedQuantity = false;
 					isLimitedQuantity = productInfo.isLimitedQuantity(plantID);
 					/*//TODO: Fix it - This is only for test

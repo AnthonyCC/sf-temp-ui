@@ -83,6 +83,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATALOG_ID_FOR_ADDRESS="getCatalogIdForAddress";
 
     private static final String ACTION_GET_CATALOG_KEY_FOR_ADDRESS="getCatalogKeyForAddress";
+    
+    private static final String ACTION_GET_CATALOG_KEY_FOR_SESSION="getCatalogKeyForCurrentSession";
 
     private static final String ACTION_GET_SORT_OPTIONS_FOR_CATEGORY = "getSortOptionsForCategory";
     
@@ -246,8 +248,13 @@ public class BrowseController extends BaseController {
 	        } else if(ACTION_GET_CATALOG_KEY_FOR_ADDRESS.equals(action)){
 
 	        	CatalogKeyResult res = new CatalogKeyResult();
+	        	CatalogInfo ci = null;
 	        	
-	        	CatalogInfo ci = BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	if(requestMessage != null && requestMessage.getZipCode() != null && requestMessage.getZipCode().trim().length() > 0) {
+	        		ci = BrowseUtil.getCatalogInfo(requestMessage, user, request);
+	        	} else {
+	        		ci = BrowseUtil.getCatalogInfo(user, request);
+	        	}
 	        	CatalogId cid = ci.getKey();
 	        	CatalogKey ck = new CatalogKey();
 	        	ck.seteStore(cid.geteStore());
@@ -256,13 +263,19 @@ public class BrowseController extends BaseController {
 	        	res.setKey(ck.toString());
 	        	setResponseMessage(model, res, user);
 	        	return model;
-	        	/*
-	        	CatalogInfoResult res = new CatalogInfoResult();
-	        	CatalogInfo catalogInfo =  BrowseUtil.getCatalogInfo(requestMessage, user, request);
-	        	res.setCatalogInfo(catalogInfo);
+	        } else if(ACTION_GET_CATALOG_KEY_FOR_SESSION.equals(action)){
+
+	        	CatalogKeyResult res = new CatalogKeyResult();
+	        	
+	        	CatalogInfo ci = BrowseUtil.getCatalogInfo(user, request);
+	        	CatalogId cid = ci.getKey();
+	        	CatalogKey ck = new CatalogKey();
+	        	ck.seteStore(cid.geteStore());
+	        	ck.setPlantId(Long.parseLong(cid.getPlantId()));
+	        	ck.setPricingZone(cid.getPricingZone());
+	        	res.setKey(ck.toString());
 	        	setResponseMessage(model, res, user);
-	            return model;
-	            */
+	        	return model;
 	        } else if(ACTION_GET_SORT_OPTIONS_FOR_CATEGORY.equals(action)){
 	        	//List<SortType> optionList = BrowseUtil.getSortOptionsForCategory(requestMessage, user, request);
 	        	//SortOptionResult res = new SortOptionResult();

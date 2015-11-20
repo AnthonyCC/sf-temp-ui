@@ -904,6 +904,10 @@
 		<to last="true">/browse.do?action=getCatalogKeyForAddress&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/browse/getCatalogKeyForCurrentSession/(.*)</from>
+		<to last="true">/browse.do?action=getCatalogKeyForCurrentSession&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/browse/getAllCatalogKeys/(.*)</from>
 		<to last="true">/browse.do?action=getAllCatalogKeys&amp;ver=$1</to>
 	</rule>

@@ -530,7 +530,7 @@ public class CheckoutController extends BaseController {
         	
         	if(invalidLines.size()>0) {
         		
-        		 Cart cart = user.getShoppingCart();
+        		Cart cart = user.getShoppingCart();
 		        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
 		        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
 		        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
@@ -547,7 +547,12 @@ public class CheckoutController extends BaseController {
         }
     
         
-        if (result.isSuccess()) {       	
+        if (result.isSuccess()) {    
+        	// FDX-1873 - Show timeslots for anonymous address
+        	if(user != null && user.getAddress() != null) {
+        		user.getAddress().setCustomerAnonymousAddress(false);
+        	}
+        	
             responseMessage.setSuccessMessage("Address Set Successfully.");            
         }else {  
         	

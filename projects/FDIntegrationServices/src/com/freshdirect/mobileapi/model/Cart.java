@@ -164,6 +164,7 @@ public class Cart {
     		((FDCartModel) cart).setDeliveryAddress(shippingAddress.getAddress());
     	} else {
     		((FDCartModel) cart).setDeliveryAddress(null);
+    		((FDCartModel) cart).setDeliveryReservation(null);
     	}
     }
     
@@ -1065,22 +1066,25 @@ public class Cart {
 //        	cartDetail.setTip(((FDCartModel)cart).getTip());
 //        } 
         //APPDEV-4417 
-    	if(cart.getTip()>0.0)
-    	cartDetail.setTip(cart.getTip());
-        
-        
-        if(cart.getDeliveryAddress() == null) {
-        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
-        	cartDetail.setDeliveryAddressId(new Checkout(user).getPreselectedDeliveryAddressId());
+    	if(cart.getTip() > 0.0) {
+    		cartDetail.setTip(cart.getTip());
+    	}
+    	
+    	// FDX-1873 - Show timeslots for anonymous address
+        if(cart.getDeliveryAddress() == null && (user.getAddress() == null || !user.getAddress().isCustomerAnonymousAddress())) {
+        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+        		cartDetail.setDeliveryAddressId(new Checkout(user).getPreselectedDeliveryAddressId());
+        	}
         }
         
         if(cart.getPaymentMethod() == null) {
-        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null)
-        	cartDetail.setPaymentMethodId(new Checkout(user).getPreselectedPaymethodMethodId());
+        	if(user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()!=null) {
+        		cartDetail.setPaymentMethodId(new Checkout(user).getPreselectedPaymethodMethodId());
+        	}
         }
         
         if(cart.getDeliveryAddress() != null && cart.getDeliveryAddress().getPK() == null 
-        		&& cart.getDeliveryReservation() != null) {
+        		&& cart.getDeliveryReservation() != null && (user.getAddress() == null || !user.getAddress().isCustomerAnonymousAddress())) {
     		cartDetail.setDeliveryAddressId(cart.getDeliveryReservation().getAddressId());
     	}
         
@@ -1095,46 +1099,46 @@ public class Cart {
     		cartDetail.setTimeslotId(cart.getDeliveryReservation().getTimeslotId());
     	}
     	
-			FDIdentity identity  = user.getFDSessionUser().getIdentity();
-			if(identity!=null){
-				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-				FDCustomerModel fdcm = FDCustomerFactory.getFDCustomer(identity);
-				FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerSmsPreferenceModel() : null;
-				String esid = user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId().getContentId();
-				if(fdcm != null){
-					if(cm != null && esid == null){
-						//Default
-						cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
-					} else {
-						String mobileNumber = null;
-						
-						if(cart instanceof FDCartModel){
-							FDCartModel tmp = (FDCartModel)cart;
-							mobileNumber = tmp.getOrderMobileNumber() != null ? tmp.getOrderMobileNumber().getPhone() : null;
-						}
-
-						if(mobileNumber == null){
-							if("FDX".equals(esid)){
-								if(esm.getFdxMobileNumber() != null){
-									mobileNumber = esm.getFdxMobileNumber().getPhone();
-								} else if(esm.getMobileNumber() != null){
-									mobileNumber = esm.getMobileNumber().getPhone();
-								}							
-							} else {
-								if(cm.getMobileNumber() != null){
-									mobileNumber = cm.getMobileNumber().getPhone();
-								}
-							}
-						}
-						cartDetail.setMobileNumber(mobileNumber);
-					}
-					
-					
-				} else if( cm != null) {
+		FDIdentity identity  = user.getFDSessionUser().getIdentity();
+		if(identity!=null){
+			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+			FDCustomerModel fdcm = FDCustomerFactory.getFDCustomer(identity);
+			FDCustomerEStoreModel esm = fdcm != null ? fdcm.getCustomerSmsPreferenceModel() : null;
+			String esid = user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId().getContentId();
+			if(fdcm != null){
+				if(cm != null && esid == null){
 					//Default
 					cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
+				} else {
+					String mobileNumber = null;
+					
+					if(cart instanceof FDCartModel){
+						FDCartModel tmp = (FDCartModel)cart;
+						mobileNumber = tmp.getOrderMobileNumber() != null ? tmp.getOrderMobileNumber().getPhone() : null;
+					}
+
+					if(mobileNumber == null){
+						if("FDX".equals(esid)){
+							if(esm.getFdxMobileNumber() != null){
+								mobileNumber = esm.getFdxMobileNumber().getPhone();
+							} else if(esm.getMobileNumber() != null){
+								mobileNumber = esm.getMobileNumber().getPhone();
+							}							
+						} else {
+							if(cm.getMobileNumber() != null){
+								mobileNumber = cm.getMobileNumber().getPhone();
+							}
+						}
+					}
+					cartDetail.setMobileNumber(mobileNumber);
 				}
+				
+				
+			} else if( cm != null) {
+				//Default
+				cartDetail.setMobileNumber(cm.getMobileNumber() !=null ? cm.getMobileNumber().getPhone() : null);
 			}
+		}
 		    	  	
     	
         return cartDetail;

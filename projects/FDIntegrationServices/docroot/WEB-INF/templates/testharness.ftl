@@ -804,7 +804,13 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");  	
   	
- }else if (loaddata == "BrowseCategoryContent") {
+ } else if (  loaddata == "getCatalogKeyForCurrentSession") {
+  	$("#url").val("/browse/getCatalogKeyForCurrentSession/"); 
+  	var postdata='';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+ } else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
@@ -1138,6 +1144,7 @@ function doStuff() {
   <option value="getAllCatalogKeys">BROWSE - GET ALL CATALOG KEYS</option>
   <option value="getCatalogId">BROWSE - GET CATALOG KEY FOR ADDRESS</option>
   <option value="getCatalogKey">BROWSE - GET CATALOG KEY FOR ADDRESS EX</option>
+  <option value="getCatalogKeyForCurrentSession">BROWSE - GET CATALOG KEY FOR SESSION</option>
   <option value="getCatalogForKey">BROWSE - GET CATALOG FOR CATALOG KEY</option>
     <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value="getSortOptionsForCat">BROWSE - GET REFINE OPTIONS FOR CATEOGRY</option>
