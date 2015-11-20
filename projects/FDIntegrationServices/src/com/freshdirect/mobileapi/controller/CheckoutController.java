@@ -519,17 +519,12 @@ public class CheckoutController extends BaseController {
     	
         ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage
                 .getType()));
-        
         ActionResult result = resultBundle.getActionResult();
         
         propogateSetSessionValues(request.getSession(), resultBundle);
         
         Message responseMessage = new DynamicAvailabilityError();
         if(result.isSuccess()&& user.getShoppingCart()!=null && user.getFDSessionUser().getShoppingCart().getItemCount()>0) {
-        	
-        	if(user.getAddress()!=null && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
-				user.setAddress(null);
-			}
         	
         	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
         	
@@ -547,21 +542,12 @@ public class CheckoutController extends BaseController {
 			        return model;
         		
         	} else {
-        		
-        		if(user.getAddress()!=null && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
-        			user.setAddress(null);
-    			}
         		responseMessage.setSuccessMessage("Address Set Successfully.");
         	}
         }
     
         
-        if (result.isSuccess()) {   
-        	
-        	if(user.getAddress()!=null && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
-        		user.setAddress(null);
-			}
-        	
+        if (result.isSuccess()) {       	
             responseMessage.setSuccessMessage("Address Set Successfully.");            
         }else {  
         	

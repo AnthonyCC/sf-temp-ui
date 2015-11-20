@@ -191,12 +191,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				        
 				} else {
 					
-					if(user.getAddress()!=null && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
-	        			user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setDeliveryAddressId(null);
-	        			user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setReservationId(null);
-	        			user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setTimeslotId(null);
-	        			user.getShoppingCart().setDeliveryAddress(null);
-	    			}
+
 		        	
 		        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
 		        	
@@ -385,13 +380,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			user = getUserFromSession(request, response);
 			user.setUserContext();
 			user.setEligibleForDDPP();
-			
-			if(user.getAddress()!=null && user.getAddress().getAddress1()!=null && user.getAddress().getAddress1().trim().length()>0) {
-				user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setDeliveryAddressId(null);
-    			user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setReservationId(null);
-    			user.getShoppingCart().getCartDetail(user, EnumCouponContext.VIEWCART).setTimeslotId(null);
-    			user.getShoppingCart().setDeliveryAddress(null);
-				}
 			
 			//Call the MergeCartControllerTagWrapper
 			MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
