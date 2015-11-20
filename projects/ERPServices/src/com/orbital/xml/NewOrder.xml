@@ -121,22 +121,5 @@
 		<CustomerBrowserName>[% CustomerBrowserName= %]</CustomerBrowserName>
 		<ShippingMethod>[% ShippingMethod= %]</ShippingMethod>
 		[# FraudAnalysis #]
-        [# SoftMerchantDescriptors #]
-        <CardIndicators>[% CardIndicators= %]</CardIndicators>
-        <EUDDBankBranchCode>[% EUDDBankBranchCode= %]</EUDDBankBranchCode>
-        <EUDDIBAN>[% EUDDIBAN= %]</EUDDIBAN>
-        <EUDDBIC>[% EUDDBIC= %]</EUDDBIC>
-        <EUDDMandateSignatureDate>[% EUDDMandateSignatureDate= %]</EUDDMandateSignatureDate>
-        <EUDDMandateID>[% EUDDMandateID= %]</EUDDMandateID>
-        <EUDDMandateType>[% EUDDMandateType= %]</EUDDMandateType>
-        <PaymentInd>[% PaymentInd= %]</PaymentInd>
-        <TxnSurchargeAmt>[% TxnSurchargeAmt= %]</TxnSurchargeAmt>
-        <PaymentActionInd>[% PaymentActionInd= %]</PaymentActionInd>
-        <DPANInd>[% DPANInd= %]</DPANInd>
-        <AEVV>[% AEVV= %]</AEVV>
-        <DWWalletID>[% DWWalletID= %]</DWWalletID>
-        <DWSLI>[% DWSLI= %]</DWSLI>
-        <DWIncentiveInd>[% DWIncentiveInd= %]</DWIncentiveInd>
-        <DigitalWalletType>[% DigitalWalletType= %]</DigitalWalletType>
 	</NewOrder>
 </Request>
