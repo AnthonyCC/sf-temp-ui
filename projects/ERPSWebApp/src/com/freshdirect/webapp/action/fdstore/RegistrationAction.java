@@ -3,13 +3,12 @@ package com.freshdirect.webapp.action.fdstore;
 import java.util.Date;
 import java.util.HashMap;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -24,6 +23,7 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -33,7 +33,6 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
@@ -47,7 +46,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -428,8 +426,8 @@ public class RegistrationAction extends WebActionSupport {
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				ErpAddressModel erpAddress = null;
-				//on Nov 17 door3 wanted to stop this feature of saving the anonymous address during registration
-				/*if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
+				// FDX-1873 - Show timeslots for anonymous address
+				if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0 && !address.isCustomerAnonymousAddress()) {//Only true when customer came from partial zip check page in IPhone.
 					erpAddress = new ErpAddressModel(address);
 					erpAddress.setFirstName(customerInfo.getFirstName());
 					erpAddress.setLastName(customerInfo.getLastName());
@@ -445,7 +443,7 @@ public class RegistrationAction extends WebActionSupport {
 					if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
 						erpAddress.setCompanyName(addInfo.getCompanyName());
 					}
-				} else {*/
+				} else {
 					erpAddress=new ErpAddressModel();
 					erpAddress.setFirstName(customerInfo.getFirstName());
 					erpAddress.setLastName(customerInfo.getLastName());
@@ -473,7 +471,7 @@ public class RegistrationAction extends WebActionSupport {
 					*/
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
-			/*	}*/
+				}
 	
 				FDCustomerModel fdCustomer = new FDCustomerModel();
 	

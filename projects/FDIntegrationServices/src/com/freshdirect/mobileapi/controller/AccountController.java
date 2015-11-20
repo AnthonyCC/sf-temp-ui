@@ -182,7 +182,12 @@ public class AccountController extends BaseController {
     }
 
     private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user) throws FDException, JsonException, ServiceException {
-        String addressId = user.getReservationAddressId();
+        String addressId = null;
+        
+        //FDX-1873 - Show timeslots for anonymous address
+        if(user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) {
+        	addressId = user.getReservationAddressId();
+        }
         ShipToAddress anonymousAddress = null;
         
         if (addressId == null) {

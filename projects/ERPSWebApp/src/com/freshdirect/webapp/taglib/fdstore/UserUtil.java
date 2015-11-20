@@ -413,8 +413,9 @@ public class UserUtil {
                         
             FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
             
-            // Change made to Fix FDX issue - Session has a anonymous user and login clears it
-            if(currentUser!=null && currentUser.getAddress()!=null && currentUser.getAddress().getAddress1()!=null && currentUser.getAddress().getAddress1().trim().length() > 0) {        	
+            // FDX-1873 - Show timeslots for anonymous address
+            if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null 
+            				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {        	
             	loginUser.setAddress(currentUser.getAddress());
             }
             

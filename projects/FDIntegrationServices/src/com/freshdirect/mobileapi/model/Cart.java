@@ -159,7 +159,12 @@ public class Cart {
     }
 
     public void setDeliveryAddress(ShipToAddress shippingAddress) {
-        ((FDCartModel) cart).setDeliveryAddress(shippingAddress.getAddress());
+    	// FDX-1873 - Show timeslots for anonymous address
+    	if(shippingAddress != null) {
+    		((FDCartModel) cart).setDeliveryAddress(shippingAddress.getAddress());
+    	} else {
+    		((FDCartModel) cart).setDeliveryAddress(null);
+    	}
     }
     
     public void setUnavailablePasses(List<DlvPassAvailabilityInfo> unavailablePasses) {

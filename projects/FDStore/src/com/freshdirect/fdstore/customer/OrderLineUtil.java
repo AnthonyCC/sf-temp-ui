@@ -577,8 +577,9 @@ public class OrderLineUtil {
 
 		for ( FDCartLineI ps : productSelections ) {
 			
-				if(OrderLineUtil.isInvalid(ps,userCtx))
+				if(OrderLineUtil.isInvalid(ps,userCtx)) {
 					invalidSelections.add(ps);
+				}
 		}
 
 		return invalidSelections;

@@ -531,15 +531,15 @@ public class CheckoutController extends BaseController {
         	if(invalidLines.size()>0) {
         		
         		 Cart cart = user.getShoppingCart();
-			        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
-			        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-			        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
-			        _responseMessage.setCartDetail(cartDetail);
-			        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
-			        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-			        }*/
-			        setResponseMessage(model, _responseMessage, user);
-			        return model;
+		        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+		        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+		        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
+		        _responseMessage.setCartDetail(cartDetail);
+		        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+		        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+		        }*/
+		        setResponseMessage(model, _responseMessage, user);
+		        return model;
         		
         	} else {
         		responseMessage.setSuccessMessage("Address Set Successfully.");
@@ -551,7 +551,7 @@ public class CheckoutController extends BaseController {
             responseMessage.setSuccessMessage("Address Set Successfully.");            
         }else {  
         	
-        		responseMessage = getErrorMessage(result, request);
+        	responseMessage = getErrorMessage(result, request);
         	
         }
         setResponseMessage(model, responseMessage, user);

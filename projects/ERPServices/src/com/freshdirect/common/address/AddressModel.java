@@ -19,6 +19,9 @@ public class AddressModel extends ModelSupport implements AddressI {
 	private EnumServiceType serviceType;
 	private String companyName;
 	private AddressInfo addressInfo = null;
+	
+	//FDX-1873 - Show timeslots for anonymous address
+	private  boolean isCustomerAnonymousAddress;
 
 	public AddressModel() {
 	}
@@ -99,6 +102,15 @@ public class AddressModel extends ModelSupport implements AddressI {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	
+	public boolean isCustomerAnonymousAddress() {
+		return isCustomerAnonymousAddress;
+	}
+
+	public void setCustomerAnonymousAddress(boolean isCustomerAnonymousAddress) {
+		this.isCustomerAnonymousAddress = isCustomerAnonymousAddress;
+	}
+	
 	
 	public EnumServiceType getServiceType(){
 		
@@ -227,5 +239,4 @@ public class AddressModel extends ModelSupport implements AddressI {
 		
 		return sb.toString();
 	}
-
 }

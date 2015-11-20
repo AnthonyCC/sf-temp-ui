@@ -175,45 +175,44 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				address.setCity(requestMessage.getCity());
 				address.setState(requestMessage.getState());
 				address.setZipCode(requestMessage.getZipCode());
+				//FDX-1873 - Show timeslots for anonymous address
+				address.setCustomerAnonymousAddress(true);
 				user.setAddress(address);
 				
 				if(!isAddressSet(user,address)) {
-					 Cart cart = user.getShoppingCart();
-				        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
-				        com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-				        responseMessage.addErrorMessage("Failed to add anonymous address. Cart has invalid items.");
-				        responseMessage.setCartDetail(cartDetail);
-				        if(!user.getFDSessionUser().isCouponsSystemAvailable()&& FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
-				        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-				        }
-				        setResponseMessage(model, responseMessage, user);
-				        user.getFDSessionUser().resetUserContext();
+					Cart cart = user.getShoppingCart();
+			        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+			        com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+			        responseMessage.addErrorMessage("Failed to add anonymous address. Cart has invalid items.");
+			        responseMessage.setCartDetail(cartDetail);
+			        if(!user.getFDSessionUser().isCouponsSystemAvailable()&& FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+			        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+			        }
+			        setResponseMessage(model, responseMessage, user);
+			        user.getFDSessionUser().resetUserContext();
 				        
 				} else {
-					
-
-		        	
+					//FDX-1873 - Show timeslots for anonymous address
+					user.getShoppingCart().setDeliveryAddress(null);		        	
 		        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
 		        	
 		        	if(invalidLines.size()>0) {
 		        		
-		        		 Cart cart = user.getShoppingCart();
-					        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
-					        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-					        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
-					        _responseMessage.setCartDetail(cartDetail);
-					        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
-					        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
-					        }*/
-					        setResponseMessage(model, _responseMessage, user);
-					        return model;
+		        		Cart cart = user.getShoppingCart();
+				        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
+				        com.freshdirect.mobileapi.controller.data.response.Cart _responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+				        _responseMessage.addErrorMessage(DIR_ERROR_KEY,MessageCodes.ERR_DIR_ADDRESS_SET_EX);
+				        _responseMessage.setCartDetail(cartDetail);
+				        /*if(!user.getFDSessionUser().isCouponsSystemAvailable()) {
+				        	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE, SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE);
+				        }*/
+				        setResponseMessage(model, _responseMessage, user);
+				        return model;
 		        		
-		        	} 
-		        
-					
+		        	} 					
 				
-				Message responseMessage = Message.createSuccessMessage("Anonymous Address added successfully.");
-				setResponseMessage(model, responseMessage, user);
+					Message responseMessage = Message.createSuccessMessage("Anonymous Address added successfully.");
+					setResponseMessage(model, responseMessage, user);
 				}
 				
 				
@@ -392,6 +391,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			resetMobileSessionData(request);
 			if (user != null) {
 				FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
+				//FDX-1873 - Show timeslots for anonymous address
+				if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0 && user.getAddress().isCustomerAnonymousAddress()) {
+					user.getShoppingCart().setDeliveryAddress(null);
+				}
 			}
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
