@@ -15,6 +15,7 @@
 				var userTokenFacebook = jQuery("#user_token_facebook").val();
 				var socialEmailFacebook = jQuery("#socialEmail_facebook").val();
 				
+				jQuery("#actionName").val("disconnectSocialAccount");  
 				jQuery("#socialNetworkProvider").val("facebook");  
 				jQuery("#socialEmail").val(socialEmailFacebook);
 				jQuery("#userToken").val(userTokenFacebook);  				
@@ -28,6 +29,7 @@
 				var userTokenGoogle = jQuery("#user_token_google").val();   							
 				var socialEmailGoogle = jQuery("#socialEmail_google").val();
 				
+				jQuery("#actionName").val("disconnectSocialAccount"); 
 				jQuery("#socialNetworkProvider").val("google"); 
 				jQuery("#socialEmail").val(socialEmailGoogle);  
 				jQuery("#userToken").val(userTokenGoogle);  				
@@ -44,9 +46,10 @@
 	<form name="social_accounts" method="post">
 	
 		<!-- hidden fields used to pass value to RegistrationControllerTag -->
-		<input type="hidden" name="actionName" value="disconnectSocialAccount">   
+		<input type="hidden" id="actionName" name="actionName" value="">   
 		<input type="hidden" id="userToken" name="userToken" value="">   
 		<input type="hidden" id="socialEmail" name="socialEmail" value="">   
+		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">   
 		
 		<tr>
 			<td colspan="6"><br><br>
@@ -160,8 +163,7 @@
 		<%	} %>		
 		
 		
-		<!-- hidden fields used to pass java variables to jQuery -->
-		<input type="hidden" id="socialNetworkProvider" name="socialNetworkProvider" value="">   		
+		<!-- hidden fields used to pass java variables to jQuery -->		
 		<input type="hidden" id="user_token_facebook" name="user_token_facebook" value="<%=user_token_facebook%>">   
 		<input type="hidden" id="socialEmail_facebook" name="socialEmail_facebook" value="<%=socialEmail_facebook%>">   		
 		<input type="hidden" id="user_token_google" name="user_token_google" value="<%=user_token_google%>">   
