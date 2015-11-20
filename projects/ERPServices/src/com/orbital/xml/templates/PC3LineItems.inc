@@ -14,5 +14,5 @@
 	<PC3DtlTaxType>[% PC3DtlTaxType= %]</PC3DtlTaxType>
 	<PC3DtlDiscInd>[% PC3DtlDiscInd= %]</PC3DtlDiscInd>
 	<PC3DtlDebitInd>[% PC3DtlDebitInd= %]</PC3DtlDebitInd>
-        <PC3DtlDiscountRate>[% PC3DtlDiscountRate= %]</PC3DtlDiscountRate>
+	<PC3DtlDiscountRate>[% PC3DtlDiscountRate= %]</PC3DtlDiscountRate>
 </PC3LineItem>
