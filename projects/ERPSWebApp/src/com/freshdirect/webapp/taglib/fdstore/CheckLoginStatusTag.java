@@ -174,7 +174,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             //LOGGER.debug("request.getRequestURI() :" + request.getRequestURI());
 
             if ((user != null) &&
-                    EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
+                    EnumServiceType.CORPORATE.equals(user.getUserServiceType())
+                    && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
                 // only index page request will be redirected to corporate page
                 if (request.getRequestURI().indexOf("index.jsp") != -1) {
                     this.redirectPage = "/department.jsp?deptId=COS";

@@ -24,6 +24,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
@@ -497,7 +498,8 @@ public class UserUtil {
           }
           
           
-          if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
+          if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null 
+        		  	&& user.getUserContext().getStoreContext() != null && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
         	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (successPage != null && successPage.indexOf("/login/index.jsp")!=-1)){        	  
         		  updatedSuccessPage = "/department.jsp?deptId=COS";
         	  }
