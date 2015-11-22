@@ -1003,9 +1003,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return p.isVIPCustomer() || p.isChefsTable() || p.isCOSPilot();
 	}
 
-	public EnumServiceType getSelectedServiceType(){
+	public EnumServiceType getSelectedServiceType() {
 		AddressModel address = this.shoppingCart.getDeliveryAddress();
-		return address != null  ? address.getServiceType() : this.selectedServiceType ;
+		// FDX-2029 API - COS Delivery fee and order minimum used instead of FK
+		if(userContext != null && userContext.getStoreContext() != null && EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
+			return EnumServiceType.HOME;
+		} else {
+			return address != null  ? address.getServiceType() : this.selectedServiceType ;
+		}
 	}
 
 
