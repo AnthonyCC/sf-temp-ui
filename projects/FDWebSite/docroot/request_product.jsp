@@ -23,6 +23,7 @@
 	}
 
 	String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
+	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
 <%
@@ -43,11 +44,23 @@
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
 
+
 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 
 <%@ include file="/includes/search/brandautocomplete.jspf" %>
+
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+				<script type="text/javascript">
+				tcAgreewindow=doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+				</script>
+	<%}%>
+
 <fd:javascript src="/assets/javascript/prototype.js"/>
 <script type="text/javascript">
 
