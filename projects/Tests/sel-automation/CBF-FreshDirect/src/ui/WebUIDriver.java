@@ -108,10 +108,11 @@ public class WebUIDriver extends BaseAppDriver {
 	public String add_method;
 	//	public static String fistnameEdit=null;
 	public String match=null;
+	public String address=null;
 	public static TableHandler tableObj;
 	public static WebDriverBackedSelenium selenium;
 	Actions actions = new Actions(webDriver);
-	public static boolean reserve_flag = false;
+	public boolean reserve_flag = false;
 	public String verify_day, verify_time, prdct_category, prdct_department,
 	verify_subtotal;
 	public static String fd_username;
@@ -121,6 +122,7 @@ public class WebUIDriver extends BaseAppDriver {
 	public String UserID = null;
 	public String Password = null;
 	public WebDriverWait wait = new WebDriverWait(webDriver, 180);
+	public static String CRMWindow;
 	// public Configuration GCONFIG = Harness.GCONFIG;
 	// custom mouseover
 	public RobotPowered robot;
@@ -1957,7 +1959,8 @@ public class WebUIDriver extends BaseAppDriver {
 					getwebDriverLocator(loc).click();
 				}
 			} catch (NullPointerException e) {
-
+				RESULT.failed("Click on link ", "Should not click on link "+sValue, "Not able to click on link "+sValue+"Error "+e);
+                  return;
 				// e.printStackTrace();
 			}
 		}
@@ -2331,8 +2334,9 @@ public class WebUIDriver extends BaseAppDriver {
 					for (i = 0; i < shoppinglist.size(); i++)
 					{
 						listName = shoppinglist.get(i).getText();
+						listName=listName.split(" \\(")[0];
 
-						if (listName.contains(YourList)) 
+						if (listName.equals(YourList)) 
 						{
 							shoppinglist.get(i).findElement(By.xpath(objMap.getLocator("radlistName"))).click();
 							try {
@@ -3523,8 +3527,9 @@ public class WebUIDriver extends BaseAppDriver {
 						By.xpath(objMap.getLocator("btnchangeAddress")))
 						.isDisplayed()) {
 			// Remove the item 
-			if (restrinction_handle.equalsIgnoreCase("Remove")) {
+			if (restrinction_handle.equalsIgnoreCase("Remove") || restrinction_handle.isEmpty()) {
 				uiDriver.click("btnremoveProceed");
+				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnremoveProceed"))));
 				RESULT
 				.passed("Alcohol Restriction",
 						"Alcohol Restriciton popup should be displayed and Remove should be clicked",
@@ -3533,6 +3538,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// change the address
 			else if (restrinction_handle.equalsIgnoreCase("Change")) {
 				uiDriver.click("btnchangeAddress");
+				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnchangeAddress"))));
 				RESULT
 				.passed("Alcohol Restriction",
 						"Alcohol Restriciton popup should be displayed and Change Address should be clicked",
@@ -3542,6 +3548,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// if Chnage/Remove variable is not set then By default remove
 			else {
 				uiDriver.click("btnremoveProceed");
+				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnremoveProceed"))));
 				RESULT
 				.passed("Alcohol Restriction",
 						"Alcohol Restriciton popup should be displayed and Remove should be clicked by default",
@@ -3684,10 +3691,10 @@ public class WebUIDriver extends BaseAppDriver {
 						if (ContactType.equalsIgnoreCase("Mobile")) {
 							uiDriver.click("radmobileNumber");
 						}
-						if (ContactType.equalsIgnoreCase("Home")) {
+						else if (ContactType.equalsIgnoreCase("Home")) {
 							uiDriver.click("radhomeNumber");
 						}
-						if (ContactType.equalsIgnoreCase("Work")) {
+						else if (ContactType.equalsIgnoreCase("Work")) {
 							uiDriver.click("radworkNumber");
 						}
 						else
@@ -3708,11 +3715,6 @@ public class WebUIDriver extends BaseAppDriver {
 							}
 							if (AltContacttype.equalsIgnoreCase("Work")) {
 								uiDriver.click("radaltWorkNumber");
-							}
-							else
-							{
-								RESULT.warning("Add delivery Address","Alternate Contact type argument should be 'Home'or 'Mobile' or 'Work'",
-								"Alternate Contact type argument is other than 'Home'or 'Mobile' or 'Work'");
 							}
 						}
 						uiDriver.setValue("txtdeliveryInstructions",
@@ -3762,10 +3764,8 @@ public class WebUIDriver extends BaseAppDriver {
 												.getLocator("popnewAddressHome")));
 								System.out.println("size" + Errorlist.size());
 								for (int i = 0; i < Errorlist.size(); i++) {
-									WebElement Error = Errorlist.get(i)
-									.findElement(By.tagName("span"));
+									WebElement Error = Errorlist.get(i);
 									k++;
-									System.out.println("Element present" + k);
 									String Error1 = Error
 									.getAttribute("fdform-error");
 									System.out.println("Error Attribute"
@@ -3820,7 +3820,7 @@ public class WebUIDriver extends BaseAppDriver {
 						}
 					}
 					//adding address details for Office
-					if (ServiceType.equalsIgnoreCase("Office")) {
+					else if (ServiceType.equalsIgnoreCase("Office")) {
 						uiDriver.click("radofficeDelAddress");
 						uiDriver.setValue("txtcompanyNameOffice", CompanyName);
 						uiDriver.setValue("txtfirstNameOffice", FirstName);
@@ -3856,8 +3856,7 @@ public class WebUIDriver extends BaseAppDriver {
 							System.out.println("size" + Errorlist.size());
 							for (int p = 0; p < Errorlist.size(); p++) {
 								try {
-									WebElement Error = Errorlist.get(p)
-									.findElement(By.tagName("span"));
+									WebElement Error = Errorlist.get(p);
 									k++;
 									System.out.println("Element present" + k);
 									String Error1 = Error
@@ -3955,14 +3954,11 @@ public class WebUIDriver extends BaseAppDriver {
 							a++;
 							System.out.println(gotadd);
 							try {
-								if (selectLst.get(j).getAttribute("checked").equalsIgnoreCase("true")) 
-								{
-									System.out
-									.println("Delivery Address already selected");
-								} else {
 									selectLst.get(j).click();
 									System.out.println("Delivery Address selected");
-								}
+									List<WebElement> addLst1 = webDriver.findElements(By.xpath(objMap.getLocator("lstselectingAddress")));
+									address = addLst1.get(j).getText();
+								
 							} catch (Exception e) {
 								try
 								{
@@ -3976,23 +3972,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 								System.out.println("Delivery Address selected in catch");
 							}
-							SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
-							if (selectLst.get(j).getAttribute("checked")
-									.equalsIgnoreCase("true")) 
-							{
-								RESULT
-								.passed(
-										"Select Delivery Address",
-										"User should be able to select delivery address",
-										myaddnew
-										+ " Address selected Sucessfully!!!!");
-							}
-							else
-							{
-								RESULT.failed("Select Delivery Address","User should be able to select delivery address",
-								"User is unable to select delivery Address");
-							}
-
+							SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);						
 							break;
 						}
 					}
@@ -4000,24 +3980,10 @@ public class WebUIDriver extends BaseAppDriver {
 					if (a == 0) {
 						if (FlexibilityFlag.equalsIgnoreCase("Yes")) {
 							uiDriver.click("raddefaultAddress");
-							SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
-							if(webDriver.findElement(By.xpath(objMap.getLocator("raddefaultAddress"))).
-									getAttribute("checked").equalsIgnoreCase("true"))
-							{
-								RESULT
-								.passed(
-										"Select Delivery Address",
-										"User should be able to select delivery address",
-										myaddnew
-										+ " Address do not exist in the list.Default First Address selected Sucessfully!!!!");
-							}
-							else
-							{
-								RESULT.failed("Select Delivery Address","User should be able to select delivery address",
-								"User is unable to select delivery Address");
-							}
-
-
+							List<WebElement> addLst1 = webDriver.findElements(By.xpath(objMap.getLocator("lstselectingAddress")));
+							address = addLst1.get(0).getText();
+							System.out.println(address);
+							SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);							
 						} else {
 							String Error_Msg = "Address did not match";
 							System.out.println(Error_Msg);
@@ -4063,18 +4029,23 @@ public class WebUIDriver extends BaseAppDriver {
 							if (uiDriver.getwebDriverLocator(
 									objMap.getLocator("btndelete")).isDisplayed()) {
 								RESULT
-								.done(
-										"Delete Address",
+								.done("Delete Address",
 										"Delete OR Cancel popup should be displayed",
 								"Delete OR Cancel popup is displayed");
 								uiDriver.click("btndelete");
+								try{
+									wait.until(ExpectedConditions.stalenessOf(delLst.get(j)));
+								}catch (Exception e) {
+									RESULT.failed("Delete Address buttton","Delete Address buttton should get vanished",
+									"DDelete Address buttton is available");
+								}
 							}
 							else
 							{
 								RESULT.warning("Delete Address","Delete OR Cancel popup should be displayed",
 								"Delete OR Cancel popup is not displayed");
 							}
-							SleepUtils.getInstance().sleep(TimeSlab.HIGH);
+							//SleepUtils.getInstance().sleep(TimeSlab.HIGH);
 							String AddressCountAfter =  uiDriver.getwebDriverLocator(
 									objMap.getLocator("straddressCount")).getAttribute(
 									"data-item-count");
@@ -4164,10 +4135,10 @@ public class WebUIDriver extends BaseAppDriver {
 								if (ContactType.equalsIgnoreCase("Mobile")) {
 									uiDriver.click("radmobileNumber");
 								}
-								if (ContactType.equalsIgnoreCase("Home")) {
+								else if (ContactType.equalsIgnoreCase("Home")) {
 									uiDriver.click("radhomeNumber");
 								}
-								if (ContactType.equalsIgnoreCase("Work")) {
+								else if (ContactType.equalsIgnoreCase("Work")) {
 									uiDriver.click("radworkNumber");
 								}
 								if (AddAltContact.equalsIgnoreCase("Yes")) {
@@ -4232,11 +4203,8 @@ public class WebUIDriver extends BaseAppDriver {
 												+ Errorlist.size());
 										for (int p = 0; p < Errorlist.size(); p++) {
 											WebElement Error = Errorlist
-											.get(p)
-											.findElement(By.tagName("span"));
+											.get(p);
 											k++;
-											System.out.println("Element present"
-													+ k);
 											String Error1 = Error
 											.getAttribute("fdform-error");
 											System.out.println("Error Attribute"
@@ -4279,7 +4247,7 @@ public class WebUIDriver extends BaseAppDriver {
 								}
 							}
 							//Editing Office address
-							if (ServiceType1.equalsIgnoreCase("Office")) {
+							else if (ServiceType1.equalsIgnoreCase("Office")) {
 								uiDriver.click("radofficeDelAddress");
 								uiDriver.setValue("txtcompanyNameOffice",
 										CompanyName);
@@ -4326,11 +4294,8 @@ public class WebUIDriver extends BaseAppDriver {
 									for (int p = 0; p < Errorlist.size(); p++) {
 										try {
 											WebElement Error = Errorlist
-											.get(p)
-											.findElement(By.tagName("span"));
+											.get(p);
 											k++;
-											System.out.println("Element present"
-													+ k);
 											String Error1 = Error
 											.getAttribute("fdform-error");
 											System.out.println("Error Attribute"
@@ -4480,6 +4445,7 @@ public class WebUIDriver extends BaseAppDriver {
 				String SaveCancelButton = CRMSaveCancelBtn;
 				if (SaveCancelButton.equalsIgnoreCase("save")) {
 					uiDriver.click("CRM_SaveBtn");
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("CRM_SaveBtn"))));
 					System.out.println("Address added Sucessfully!!!!");
 					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					List<WebElement> Listafter = webDriver.findElements(By
@@ -5013,7 +4979,7 @@ public class WebUIDriver extends BaseAppDriver {
 		FlexibilityFlag = FlexibilityFlag.toUpperCase();
 		// find the list of days from table
 		try {
-			wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By
+			wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By
 					.xpath(objMap.getLocator("lstdays"))));
 		} catch (TimeoutException e) {
 			RESULT.warning("Time Slot ", "List of days should be available", "List of days is not available");
@@ -5136,13 +5102,14 @@ public class WebUIDriver extends BaseAppDriver {
 											verify_time = TimeSlot;
 											System.out
 											.println("Your order will delivered at   "
-													+ TimeSlot + DeliveryDay);
+													+ TimeSlot + day);
 											Check_Slot = true;
+											robot.scrollToElement(element1,webDriver);
 											RESULT.passed(
 													"choose Time Slot",
 													"User should be able to Select Given Time Slot",
 													"User has select Time Slot successfully"
-													+ TimeSlot);
+													+ TimeSlot+ day);
 											break;
 										}
 									}
@@ -5190,6 +5157,7 @@ public class WebUIDriver extends BaseAppDriver {
 												.println(" Fresh direct will deliver your order at"
 														+ Slot + DeliveryDay);
 												Check_Slot = true;
+												robot.scrollToElement(element1,webDriver);
 												RESULT.passed(
 														"choose Time slot",
 														"User should be able to Select Time Slot for given day",
@@ -5295,6 +5263,7 @@ public class WebUIDriver extends BaseAppDriver {
 									System.out
 									.println(" Fresh direct will deliver your order at  "
 											+ Slot + day);
+									robot.scrollToElement(element1,webDriver);
 									RESULT.passed(
 											"choose Time Slot",
 											"User should be able to Select Time Slot for next day",
@@ -5335,7 +5304,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 				// get the warning message
 				RESULT.warning(
-						"Place Order",
+						"Unvailability popup",
 						"Few items should be lesser than the available cart items.",
 						"Message: "+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).getText());
 				try {
@@ -5348,15 +5317,16 @@ public class WebUIDriver extends BaseAppDriver {
 						wait.until(ExpectedConditions
 								.invisibilityOfElementLocated(By.xpath(objMap
 										.getLocator("btncontinuePopUp"))));
-
+						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() > 0 
 								&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).isDisplayed() ) {
 							RESULT.warning(
-									"Place Order",
+									"Unvailability popup",
 									"Order should be placed and review page should be displayed.",
 									"ATTENTION: "
 									+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
-						}
+						return;
+						}						
 					}else{
 						RESULT.failed("Items unavailability pop up", "Continue button should be available", "Continue button is not available");
 					}
@@ -5678,7 +5648,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 						}
 						for (int i = 0; i < products_to_verify.size(); i++) {
-							if (verify_products[i].contains(product_to_verify_name[i])
+							if ((verify_products[i].contains(product_to_verify_name[i]) || product_to_verify_name[i].contains(verify_products[i]))
 									&& verify_products_quantity[i].equals(product_to_verify_qty[i])) 
 							{
 								RESULT.passed("Place Order", "Expected product: "
@@ -5870,7 +5840,6 @@ public class WebUIDriver extends BaseAppDriver {
 	 **/
 	public void FD_reviewOrder() {
 		try {
-
 			// store the subtotal in global variable
 			String temp_subtotal = uiDriver.getwebDriverLocator(
 					objMap.getLocator("strverifySubTotalOld")).getText();
@@ -5975,34 +5944,44 @@ public class WebUIDriver extends BaseAppDriver {
 					String product_text = products_to_verify
 					.get(i).findElement(
 							By.xpath(objMap.getLocator("strverifyProductNameOld")))
-									.getText();
+							.getText();
 					String product_quantity_text = products_to_verify
 					.get(i)
 					.findElement(
 							By.xpath(objMap.getLocator("strverifyProductQtyOld")))
-									.getText();
+							.getText();
 					product_to_verify_name[i] = product_text;
 					product_to_verify_qty[i] = product_quantity_text;
 					System.out.println(product_text + product_quantity_text);
 				}
 
 				for (int i = 0; i < products_to_verify.size(); i++) {
-					if (verify_products[i].contains(product_to_verify_name[i])
-							&& verify_products_quantity[i]
-							                            .equals(product_to_verify_qty[i])) {
-						RESULT.passed("Submit Order", "Expected product: "
-								+ verify_products[i] + " and Quantity: "
-								+ verify_products_quantity[i],
-								"Actual product: " + product_to_verify_name[i]
-								                                            + " and Quantity: "
-								                                            + product_to_verify_qty[i]);
-					} else {
-						RESULT.failed("Submit Order", "Expected product: "
-								+ verify_products[i] + " and Quantity: "
-								+ verify_products_quantity[i],
-								"Actual product: " + product_to_verify_name[i]
-								                                            + " and Quantity: "
-								                                            + product_to_verify_qty[i]);
+					for (int j = 0; j < verify_products.length; j++) {
+						if (product_to_verify_name[i].contains(verify_products[j])){
+							if(verify_products_quantity[j].equals(product_to_verify_qty[i])) {
+								RESULT.passed("Submit Order", "Expected product: "
+										+ verify_products[j] + " and Quantity: "
+										+ verify_products_quantity[j],
+										"Actual product: " + product_to_verify_name[i]
+										                                            + " and Quantity: "
+										                                            + product_to_verify_qty[i]);
+								break;
+							}else{
+								RESULT.failed("Submit Order", "Expected product: "
+										+ verify_products[j] + " and Quantity: "
+										+ verify_products_quantity[j],
+										"Actual product: " + product_to_verify_name[i]
+										                                            + " and Quantity: "
+										                                            + product_to_verify_qty[i]);
+							}	
+						}if(!Arrays.asList(product_to_verify_name).contains(verify_products[j])){
+							RESULT.failed("Submit Order", "Expected product: "
+									+ verify_products[j] + " and Quantity: "
+									+ verify_products_quantity[j],
+									"Actual product: " + product_to_verify_name[i]
+									                                            + " and Quantity: "
+									                                            + product_to_verify_qty[i]);
+						}
 					}
 				}
 
@@ -6015,8 +5994,9 @@ public class WebUIDriver extends BaseAppDriver {
 			}
 
 		} catch (Exception e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			RESULT.failed("Submit Order ","Submit order should be successful","Submit order is not successful");
+			return;
 		}
 	}
 
@@ -6638,7 +6618,7 @@ public class WebUIDriver extends BaseAppDriver {
 							// Retrieve one by one all card details to compare with
 							// given card detail
 							String details = card.getText().replaceAll("\n", "");
-							if (details.startsWith(mycard)) {
+							if (details.contains(mycard)) {
 								a++;
 								card.findElement(By.tagName(objMap.getLocator("radcard"))).click();
 //								SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
@@ -6649,8 +6629,8 @@ public class WebUIDriver extends BaseAppDriver {
 								break;
 							}
 						}
-						if (a == 0 && FlexibilityFlg.equalsIgnoreCase("Yes")||
-								!FlexibilityFlg.equalsIgnoreCase("No")) {
+						if (a == 0 && (FlexibilityFlg.equalsIgnoreCase("Yes")||
+								!FlexibilityFlg.equalsIgnoreCase("No"))) {
 							
 							RESULT.warning(
 									"Selection of Credit/EBT card/checking account",
@@ -7430,6 +7410,14 @@ public class WebUIDriver extends BaseAppDriver {
 			// get the default first item for
 			if (webDriver.findElements(
 					By.xpath(objMap.getLocator("tabyourTopItems"))).size() > 0) {
+				
+				//refresh for IE
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) {
+					webDriver.navigate().refresh();
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By
+							.xpath(objMap.getLocator("tabyourTopItems"))));
+				}
+				
 				// update the reorder_page flag
 				reorder_page = true;
 				// for grid
@@ -7561,6 +7549,7 @@ public class WebUIDriver extends BaseAppDriver {
 							"Add item to cart using hover method should be successful",
 							"Add item to cart using hover method failed due to: "
 							+ e.getMessage());
+					e.printStackTrace();
 					return;
 				}
 			}
@@ -8007,8 +7996,8 @@ public class WebUIDriver extends BaseAppDriver {
 									.getText().split(" ")[0]);			
 						}else{
 							RESULT.failed("Add to cart using hover method",
-									"Add to cart with error quantity should be available using hover method",
-									"Add to cart with error quantity is not available using hover method for user quantity: " + quantity);
+									"Quantity added message should be available in hover method",
+									"Quantity added message is not available in hover method for user quantity: " + quantity);
 							return;
 						}		
 					}
@@ -8216,10 +8205,8 @@ public class WebUIDriver extends BaseAppDriver {
 					By.cssSelector(objMap
 							.getLocator("stritemInCartError"))).size() > 0) {
 				clickerror_added_quantity = Double
-				.parseDouble(uiDriver
-						.getwebDriverLocator(
-								objMap
-								.getLocator("stritemInCartError"))
+				.parseDouble(uiDriver.getwebDriverLocator(
+								objMap.getLocator("stritemInCartError"))
 								.getText().split(" ")[0]);				
 			}else{
 				RESULT.failed("Product add to cart quantity exceeded",
@@ -8354,15 +8341,11 @@ public class WebUIDriver extends BaseAppDriver {
 					By.xpath(objMap.getLocator("strprodUnavailability")))
 					.size() > 0) {
 				// warning for out of stock product
-				RESULT
-				.warning(
-						"Out of stock product",
+				RESULT.warning("Out of stock product",
 						"Product is Out of stock",
 						"Message: "
 						+ uiDriver
-						.getwebDriverLocator(
-								objMap
-								.getLocator("strprodUnavailability"))
+						.getwebDriverLocator(objMap.getLocator("strprodUnavailability"))
 								.getText());
 
 				// go back to the product list page
@@ -8392,9 +8375,7 @@ public class WebUIDriver extends BaseAppDriver {
 					// if out of stock flag is true then return as first product
 					// is out of stock too
 					if (temp_flags[0] == true) {
-						RESULT
-						.warning(
-								"Out of stock product",
+						RESULT.warning("Out of stock product",
 								"First product on the page should be out of stock",
 						"First product on the page is out of stock");
 						return null;
@@ -8408,9 +8389,7 @@ public class WebUIDriver extends BaseAppDriver {
 					return null;
 				}
 			} else {
-				RESULT
-				.failed(
-						"Out of stock unavailable message on PDP page",
+				RESULT.failed("Out of stock unavailable message on PDP page",
 						"Unavailable message should be dispalyed on PDP page for out of stock product",
 				"Unavailable message is not dispalyed on PDP page for out of stock product");
 				return null;
@@ -8500,7 +8479,7 @@ public class WebUIDriver extends BaseAppDriver {
 		try{
 			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("alertAlcoholClick"))));
 		}catch(Exception e){
-			RESULT.passed("Health warning alert ",
+			RESULT.failed("Health warning alert ",
 					"Health warning : Alcohol alert should get displayed",
 			"Health warning : Alcohol alert is not displayed");
 		}
@@ -8588,8 +8567,8 @@ public class WebUIDriver extends BaseAppDriver {
 					RESULT.warning("Item unavailability",
 							"User specified Item: " + item
 							+ " should be available", "Item: " + item
-							+ " instead " + productFullName
-							+ " is added to cart ");
+							+ " is not available so " + productFullName
+							+ " will get added to cart ");
 
 				}
 				// if flexibility is no then return null and abort the script
@@ -8638,227 +8617,357 @@ public class WebUIDriver extends BaseAppDriver {
 	};
 
 	//This function returns the quantity of specific item in cart(if it is displayed in textbbox) else it returns -1
-	public double getCartItemQuantity(String lineItem) {
-		double itemQty = 0.0;
-		int initialLineItems = 0, finalLineItems = 0;
-		List<WebElement> cartItemRows;
-		String itemText;		
-		try
-		{
-			cartItemRows = webDriver.findElements(By.className(objMap
-					.getLocator("lblcartItemRows")));
-			for (int j = 0; j < cartItemRows.size(); j++) {
-				itemText = cartItemRows.get(j).findElement(
-						By.xpath(objMap.getLocator("lnkcartItemName"))).getText();
-				if (itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("txtqty"))).size()>0) {
-					itemQty += Double.parseDouble(cartItemRows.get(j).findElement(
-							By.className(objMap.getLocator("txtqty")))
-							.getAttribute("value"));
-				}
-				else if(itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("drpqty"))).size()>0){
-					return -1;
+		public double getCartItemQuantity(String lineItem) {
+			double itemQty = 0.0;
+			int initialLineItems = 0, finalLineItems = 0;
+			List<WebElement> cartItemRows;
+			String itemText;		
+			try
+			{
+				waitForPageLoad();
+				cartItemRows = webDriver.findElements(By.className(objMap
+						.getLocator("lblcartItemRows")));
+				for (int j = 0; j < cartItemRows.size(); j++) {
+					itemText = cartItemRows.get(j).findElement(
+							By.xpath(objMap.getLocator("lnkcartItemName"))).getText();
+					if (itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("txtqty"))).size()>0) {
+						itemQty += Double.parseDouble(cartItemRows.get(j).findElement(
+								By.className(objMap.getLocator("txtqty")))
+								.getAttribute("value"));
+					}
+					else if(itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("drpqty"))).size()>0){
+						return -1;
+					}
 				}
 			}
+			catch(Exception e)
+			{
+				RESULT.failed("Get Item Quantity Exception", "Quantity should be successfully retrieved", "Unable to retrieve quantity");
+
+			}
+			return itemQty;
 		}
-		catch(Exception e)
-		{
-			RESULT.failed("Get Item Quantity Exception", "Quantity should be successfully retrieved", "Unable to retrieve quantity");
 
-		}
-		return itemQty;
-	}
+		public boolean updateCartItemQuantity(String lineItem) {
+			List<WebElement> cartItemRows;
+			String itemText;
 
-	public boolean updateCartItemQuantity(String lineItem) {
-		List<WebElement> cartItemRows;
-		String itemText;
+			try
+			{
+				cartItemRows = webDriver.findElements(By.className(objMap
+						.getLocator("lblcartItemRows")));
+				for (int j = 0; j < cartItemRows.size(); j++) {
+					itemText = cartItemRows.get(j).findElement(
+							By.xpath(objMap.getLocator("lnkcartItemName"))).getText();
+					if (itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("drpqty"))).size()>0) {
 
-		try
-		{
-			cartItemRows = webDriver.findElements(By.className(objMap
-					.getLocator("lblcartItemRows")));
-			for (int j = 0; j < cartItemRows.size(); j++) {
-				itemText = cartItemRows.get(j).findElement(
-						By.xpath(objMap.getLocator("lnkcartItemName"))).getText();
-				if (itemText.equals(lineItem) && cartItemRows.get(j).findElements(By.className(objMap.getLocator("drpqty"))).size()>0) {
-
-					//Verify '+' or '-' buttons are not displayed for dropdown item qty
-					if(cartItemRows.get(j).findElements(By.className(objMap.getLocator("btnqtyPlus"))).size()>0 && cartItemRows.get(j).findElement(By.className(objMap.getLocator("btnqtyPlus"))).isDisplayed()){
-						RESULT.failed("'+' button presence check for item with qty dropdown", "'+' button should not be displayed","'+' button is displayed");
-					}
-					if(cartItemRows.get(j).findElements(By.className(objMap.getLocator("btnqtyMinus"))).size()>0 && cartItemRows.get(j).findElement(By.className(objMap.getLocator("btnqtyMinus"))).isDisplayed()){
-						RESULT.failed("'-' button presence check for item with qty dropdown", "'-' button should not be displayed","'-' button is displayed");
-					}
-
-					//Select any other value in the dropdown					
-					Select dropdown = new Select(cartItemRows.get(j).findElement(By.className(objMap.getLocator("drpqty"))));
-					WebElement selectedOption=dropdown.getFirstSelectedOption();
-					List<WebElement> options=dropdown.getOptions();
-					for (WebElement option : options) {
-						if(selectedOption.getText().equalsIgnoreCase(option.getText())){
-							continue;
+						//Verify '+' or '-' buttons are not displayed for dropdown item qty
+						if(cartItemRows.get(j).findElements(By.className(objMap.getLocator("btnqtyPlus"))).size()>0 && cartItemRows.get(j).findElement(By.className(objMap.getLocator("btnqtyPlus"))).isDisplayed()){
+							RESULT.failed("'+' button presence check for item with qty dropdown", "'+' button should not be displayed","'+' button is displayed");
 						}
-						else{
-							dropdown.selectByVisibleText(option.getText());
+						if(cartItemRows.get(j).findElements(By.className(objMap.getLocator("btnqtyMinus"))).size()>0 && cartItemRows.get(j).findElement(By.className(objMap.getLocator("btnqtyMinus"))).isDisplayed()){
+							RESULT.failed("'-' button presence check for item with qty dropdown", "'-' button should not be displayed","'-' button is displayed");
+						}
+
+						//Select any other value in the dropdown					
+						Select dropdown = new Select(cartItemRows.get(j).findElement(By.className(objMap.getLocator("drpqty"))));
+						WebElement selectedOption=dropdown.getFirstSelectedOption();
+						List<WebElement> options=dropdown.getOptions();
+						for (WebElement option : options) {
+							if(selectedOption.getText().equalsIgnoreCase(option.getText())){
+								continue;
+							}
+							else{
+								dropdown.selectByVisibleText(option.getText());
+								return true;
+							}
+						}					
+
+					}
+
+				}
+			}
+			catch(Exception e)
+			{
+				RESULT.failed("Get Item Quantity Exception", "Quantity should be successfully retrieved", "Unable to retrieve quantity");
+
+			}
+			return false;
+		}
+
+		public boolean cartOperation(String lineItem, String quantity,
+				String operation, String emptyCartAcceptDecline)
+		{
+			String ops = operation.toUpperCase();
+			double initialQty = 0.0, finalQty = 0.0, qty = 0.0, qtyBefore, qtyAfter;
+			int initialLineItems = 0, finalLineItems = 0;
+			boolean found = false, search=false;
+			List<WebElement> cartItems, cartItemRows;
+			String itemText;
+
+			try
+			{
+				switch (ModifyCart.valueOf(ops)) {
+				case INCREASE: {
+					// Getting initial quantities of that item
+					initialQty = getCartItemQuantity(lineItem);
+
+					//Check if the item qty is displayed in dropdown
+					if(initialQty==-1){
+						RESULT.warning("Product with qty in dropdown","Quantity increase operation should not be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
+						if(updateCartItemQuantity(lineItem)){
+							RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
 							return true;
 						}
-					}					
+					}
 
-				}
+					// Increasing the item quantities
+					for (int i = 0; i < Integer.parseInt(quantity); i++) {
+						// Reading all cart item rows
+						try
+						{
+							cartItemRows = webDriver.findElements(By.className(objMap
+									.getLocator("lblcartItemRows")));
 
-			}
-		}
-		catch(Exception e)
-		{
-			RESULT.failed("Get Item Quantity Exception", "Quantity should be successfully retrieved", "Unable to retrieve quantity");
+							for (int j = 0; j < cartItemRows.size(); j++) {
+								// Reading item name for one row
+								try{
+									itemText = cartItemRows.get(j).findElement(
+											By.xpath(objMap.getLocator("lnkcartItemName")))
+											.getText();
 
-		}
-		return false;
-	}
 
-	public boolean cartOperation(String lineItem, String quantity,
-			String operation, String emptyCartAcceptDecline)
-	{
-		String ops = operation.toUpperCase();
-		double initialQty = 0.0, finalQty = 0.0, qty = 0.0, qtyBefore, qtyAfter;
-		int initialLineItems = 0, finalLineItems = 0;
-		boolean found = false;
-		List<WebElement> cartItems, cartItemRows;
-		String itemText;
+									if (itemText.equals(lineItem)) {
+										if (cartItemRows.get(j).findElements(
+												By.className(objMap.getLocator("btnqtyPlus")))
+												.size() > 0) {
+											// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
+											qtyBefore = getCartItemQuantity(lineItem);
+											cartItemRows.get(j).findElement(
+													By.className(objMap
+															.getLocator("btnqtyPlus"))).click();
+											try {
+												SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+												qtyAfter = getCartItemQuantity(lineItem);
+												if (Double.compare(qtyBefore, qtyAfter) == 0) {
+													RESULT.warning(
+															"Modify cart - Increase Qty",
+															"Quantity should be increased",
+															lineItem
+															+ " : quantity is no more increasing.");
+													search=true;
+													break;
+												}
+											} catch (Exception e) {
+												RESULT.failed("Modify cart - Increase Qty",
+														"Exception block caught",
+														"Exception caught for product:"
+														+ lineItem);
+											}
+											break;
+										} else {
+											RESULT.warning(
+													"Modify cart - Increase Qty",
+													lineItem
+													+ ": Item name matched. '+' button should be available for : "
+													+ itemText,
+													"Quantity failed to incremented as '+' button is not found for item : "
+													+ itemText);
+											search=true;
+											break;
+										}
+									}
+								}
+								catch(Exception e)
+								{
+									RESULT.warning("Cart Operation", "Item name should be available", "Item name is not available");
+								}
 
-		try
-		{
-			switch (ModifyCart.valueOf(ops)) {
-			case INCREASE: {
-				// Getting initial quantities of that item
-				initialQty = getCartItemQuantity(lineItem);
 
-				//Check if the item qty is displayed in dropdown
-				if(initialQty==-1){
-					RESULT.warning("Product with qty in dropdown","Quantity increase operation should not be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
-					if(updateCartItemQuantity(lineItem)){
-						RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
+							}//inner for loop
+							if(search){
+								break;
+							}
+						}
+						catch(Exception e)
+						{
+							RESULT.warning("Cart Operation : Increase","Item rows should be available","Item rows is not available");
+						}
+					}//Outer for loop
+					
+					// Getting final quantities of that item
+					finalQty = getCartItemQuantity(lineItem);
+					// Compare results based on quantities
+					// If given quantity increased in the application then pass
+					if (Double.compare((finalQty - initialQty), Double
+							.parseDouble(quantity)) == 0) {
+						RESULT.passed("Modify cart - Increase Qty", lineItem
+								+ " : Quantity should be incremented by " + quantity,
+								"Quantity increased by " + (finalQty - initialQty));
 						return true;
+					}
+					// if quantity is increased but only till certain limit because of
+					// cart constraint then warn user
+					else if (finalQty > initialQty) {
+						RESULT.warning("Modify cart - Increase Qty", lineItem
+								+ " : Quantity should be incremented by" + quantity,
+								"Quantity increased by " + (finalQty - initialQty));
+						return true;
+					}
+					// If quantity is not increased at all
+					else {
+						RESULT.failed("Modify cart - Increase Qty", lineItem
+								+ " : Quantity should be incremented",
+								"Failed to increase quantity. \nInitial qty:"
+								+ initialQty + "\nFinal qty:" + finalQty);
+						return false;
 					}
 				}
 
-				// Increasing the item quantities
-				outer: for (int i = 0; i < Integer.parseInt(quantity); i++) {
-					// Reading all cart item rows
+				case DECREASE: {
+
+					// Getting initial quantities of that item
+					initialQty = getCartItemQuantity(lineItem);
+
+					//Check if the item qty is displayed in dropdown
+					if(initialQty==-1){
+						RESULT.warning("Product with qty in dropdown","Quantity decrease operation should not be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
+						if(updateCartItemQuantity(lineItem)){
+							RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
+							return true;
+						}
+					}
+
+					// Decreasing the item quantities
+					for (int i = 0; i < Integer.parseInt(quantity); i++) {
+						// Reading all cart item rows
+						try
+						{
+							cartItemRows = webDriver.findElements(By.className(objMap
+									.getLocator("lblcartItemRows")));
+							for (int j = cartItemRows.size() - 1; j >= 0; j--) {
+								// Reading item name for one row
+								try
+								{
+									itemText = cartItemRows.get(j).findElement(
+											By.xpath(objMap.getLocator("lnkcartItemName")))
+											.getText();
+									if (itemText.equals(lineItem)) {
+										if (cartItemRows.get(j).findElements(
+												By.className(objMap.getLocator("btnqtyMinus")))
+												.size() > 0) {
+											// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
+											qtyBefore = getCartItemQuantity(lineItem);
+											cartItemRows.get(j).findElement(
+													By.className(objMap
+															.getLocator("btnqtyMinus")))
+															.click();
+											try {
+												SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+												qtyAfter = getCartItemQuantity(lineItem);
+												if (Double.compare(qtyBefore, qtyAfter) == 0) {
+													RESULT
+													.warning(
+															"Modify cart - Decrease Qty",
+															"Quantity should be decreased",
+															lineItem
+															+ " : quantity is no more decreasing.");
+													search=true;
+													break;
+												}
+											} catch (Exception e) {
+												RESULT.failed("Modify cart - Decrease Qty",
+														"Exception block caught",
+														"Exception caught : " + lineItem);
+											}
+											break;
+										} else {
+											RESULT
+											.warning(
+													"Modify cart - Decrease Qty",
+													lineItem
+													+ ": Item name matched. '-' button should be available for : "
+													+ itemText,
+													"Quantity failed to incremented as '-' button is not found for item : "
+													+ itemText);
+											search=true;
+											break;
+										}
+									}
+								}
+								catch(Exception e)
+								{
+									RESULT.warning("Cart Operation", "Item name should be available", "Item name is not available");
+								}
+
+							}//inner for loop
+							if(search){
+								break;
+							}
+						}
+						catch(Exception e)
+						{
+							RESULT.warning("Cart Operation : Decrease", "Item row should be available", "Item row is not available");
+						}
+
+					}
+					// Getting final quantities of that item
+					finalQty = getCartItemQuantity(lineItem);
+					// Compare results based on quantities
+					// If expected quantity decreased in the application then pass
+					if (Double.compare((initialQty - finalQty), Double
+							.parseDouble(quantity)) == 0) {
+						RESULT.passed("Modify cart - Decrease Qty", lineItem
+								+ " : Quantity should be decreased by " + quantity,
+								"Quantity decreased by " + (initialQty - finalQty));
+						return true;
+					}
+					// if quantity is decreased but only till certain limit because of
+					// cart constraint then warn user
+					else if (finalQty < initialQty) {
+						RESULT.warning("Modify cart - Decrease Qty", lineItem
+								+ " : Quantity should be decreased by" + quantity,
+								"Quantity decreased by " + (initialQty - finalQty));
+						return true;
+					}
+					// If quantity is not increased at all
+					else {
+						RESULT.failed("Modify cart - Decrease Qty", lineItem
+								+ " : Quantity should be decreased",
+								"Failed to decrease quantity. \nInitial qty:"
+								+ initialQty + "\nFinal qty:" + finalQty);
+						return false;
+					}
+				}
+				case DELETE: {
+					// Getting initial number of line items
 					try
 					{
+
 						cartItemRows = webDriver.findElements(By.className(objMap
 								.getLocator("lblcartItemRows")));
-
 						for (int j = 0; j < cartItemRows.size(); j++) {
 							// Reading item name for one row
-							try{
+							try
+							{
 								itemText = cartItemRows.get(j).findElement(
 										By.xpath(objMap.getLocator("lnkcartItemName")))
 										.getText();
-
-
 								if (itemText.equals(lineItem)) {
-									if (cartItemRows.get(j).findElements(
-											By.className(objMap.getLocator("btnqtyPlus")))
-											.size() > 0) {
-										// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
-										qtyBefore = getCartItemQuantity(lineItem);
-										cartItemRows.get(j).findElement(
-												By.className(objMap
-														.getLocator("btnqtyPlus"))).click();
-										try {
-											SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-											qtyAfter = getCartItemQuantity(lineItem);
-											if (Double.compare(qtyBefore, qtyAfter) == 0) {
-												RESULT.warning(
-														"Modify cart - Increase Qty",
-														"Quantity should be increased",
-														lineItem
-														+ " : quantity is not more increasing.");
-												break outer;
-											}
-										} catch (Exception e) {
-											RESULT.failed("Modify cart - Increase Qty",
-													"Exception block caught",
-													"Exception caught for product:"
-													+ lineItem);
-										}
-										break;
-									} else {
-										RESULT.warning(
-												"Modify cart - Increase Qty",
-												lineItem
-												+ ": Item name matched. '+' button should be available for : "
-												+ itemText,
-												"Quantity failed to incremented as '+' button is not found for item : "
-												+ itemText);
-									}
+									initialLineItems += 1;
 								}
 							}
 							catch(Exception e)
 							{
-								RESULT.warning("Cart Operation", "Item name should be available", "Item name is not available");
+								RESULT.failed("Cart Operation :DELETE", "Item Text should be available",
+										"Item text is available and the exception caught is "+e.getMessage());
 							}
 
-
 						}
-					}
-					catch(Exception e)
-					{
-						RESULT.warning("Cart Operation : Increase","Item rows should be available","Item rows is not available");
-					}
-				}
-				// Getting final quantities of that item
-				finalQty = getCartItemQuantity(lineItem);
-				// Compare results based on quantities
-				// If given quantity increased in the application then pass
-				if (Double.compare((finalQty - initialQty), Double
-						.parseDouble(quantity)) == 0) {
-					RESULT.passed("Modify cart - Increase Qty", lineItem
-							+ " : Quantity should be incremented by " + quantity,
-							"Quantity increased by " + (finalQty - initialQty));
-					return true;
-				}
-				// if quantity is increased but only till certain limit because of
-				// cart constraint then warn user
-				else if (finalQty > initialQty) {
-					RESULT.warning("Modify cart - Increase Qty", lineItem
-							+ " : Quantity should be incremented by" + quantity,
-							"Quantity increased by " + (finalQty - initialQty));
-					return true;
-				}
-				// If quantity is not increased at all
-				else {
-					RESULT.failed("Modify cart - Increase Qty", lineItem
-							+ " : Quantity should be incremented",
-							"Failed to increase quantity. \nInitial qty:"
-							+ initialQty + "\nFinal qty:" + finalQty);
-					return false;
-				}
-			}
 
-			case DECREASE: {
 
-				// Getting initial quantities of that item
-				initialQty = getCartItemQuantity(lineItem);
-
-				//Check if the item qty is displayed in dropdown
-				if(initialQty==-1){
-					RESULT.warning("Product with qty in dropdown","Quantity decrease operation should not be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
-					if(updateCartItemQuantity(lineItem)){
-						RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
-						return true;
-					}
-				}
-
-				// Decreasing the item quantities
-				outer: for (int i = 0; i < Integer.parseInt(quantity); i++) {
-					// Reading all cart item rows
-					try
-					{
-						cartItemRows = webDriver.findElements(By.className(objMap
-								.getLocator("lblcartItemRows")));
-						for (int j = cartItemRows.size() - 1; j >= 0; j--) {
+						// Deleting a line item from cart
+						for (int j = 0; j < cartItemRows.size(); j++) {
 							// Reading item name for one row
 							try
 							{
@@ -8867,461 +8976,353 @@ public class WebUIDriver extends BaseAppDriver {
 										.getText();
 								if (itemText.equals(lineItem)) {
 									if (cartItemRows.get(j).findElements(
-											By.className(objMap.getLocator("btnqtyMinus")))
-											.size() > 0) {
-										// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
-										qtyBefore = getCartItemQuantity(lineItem);
+											By.partialLinkText("Delete")).size() > 0) {
 										cartItemRows.get(j).findElement(
-												By.className(objMap
-														.getLocator("btnqtyMinus")))
-														.click();
+												By.partialLinkText("Delete")).click();
 										try {
-											SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-											qtyAfter = getCartItemQuantity(lineItem);
-											if (Double.compare(qtyBefore, qtyAfter) == 0) {
-												RESULT
-												.warning(
-														"Modify cart - Decrease Qty",
-														"Quantity should be decreased",
-														lineItem
-														+ " : quantity is not more decreasing.");
-												break outer;
-											}
+											SleepUtils.getInstance().sleep(TimeSlab.LOW);
+
 										} catch (Exception e) {
-											RESULT.failed("Modify cart - Decrease Qty",
+											RESULT.failed("Modify cart - Delete item",
 													"Exception block caught",
-													"Exception caught : " + lineItem);
+													"Exception caught for product:" + lineItem);
 										}
 										break;
 									} else {
 										RESULT
 										.warning(
-												"Modify cart - Decrease Qty",
+												"Modify cart - Delete item",
 												lineItem
-												+ ": Item name matched. '-' button should be available for : "
+												+ ": Item name matched. 'Delete' link should be available for : "
 												+ itemText,
-												"Quantity failed to incremented as '-' button is not found for item : "
+												"Quantity failed to delete as 'Delete' link is not found for item : "
 												+ itemText);
+										break;
 									}
 								}
 							}
 							catch(Exception e)
 							{
-								RESULT.warning("Cart Operation", "Item name should be available", "Item name is not available");
-							}
 
+								RESULT.failed("Cart Operation :DELETE", "Item name should be available",
+										"Item name is available and the exception caught is "+e.getMessage());
+							}
+						}
+						// Getting number of line items after delete of a line item
+						cartItemRows = webDriver.findElements(By.className(objMap
+								.getLocator("lblcartItemRows")));
+						for (int j = 0; j < cartItemRows.size(); j++) {
+							// Reading item name for one row
+							itemText = cartItemRows.get(j).findElement(
+									By.xpath(objMap.getLocator("lnkcartItemName")))
+									.getText();
+							if (itemText.equals(lineItem)) {
+								finalLineItems += 1;
+							}
 						}
 					}
 					catch(Exception e)
 					{
-						RESULT.warning("Cart Operation : Decrease", "Item row should be available", "Item row is not available");
+						RESULT.failed("Cart Operation : DELETE", "Item row should be available",
+								"Item row is successful and the exception caught is  "+e.getMessage());
 					}
-
-				}
-				// Getting final quantities of that item
-				finalQty = getCartItemQuantity(lineItem);
-				// Compare results based on quantities
-				// If expected quantity decreased in the application then pass
-				if (Double.compare((initialQty - finalQty), Double
-						.parseDouble(quantity)) == 0) {
-					RESULT.passed("Modify cart - Decrease Qty", lineItem
-							+ " : Quantity should be decreased by " + quantity,
-							"Quantity decreased by " + (initialQty - finalQty));
-					return true;
-				}
-				// if quantity is decreased but only till certain limit because of
-				// cart constraint then warn user
-				else if (finalQty < initialQty) {
-					RESULT.warning("Modify cart - Decrease Qty", lineItem
-							+ " : Quantity should be decreased by" + quantity,
-							"Quantity decreased by " + (initialQty - finalQty));
-					return true;
-				}
-				// If quantity is not increased at all
-				else {
-					RESULT.failed("Modify cart - Decrease Qty", lineItem
-							+ " : Quantity should be decreased",
-							"Failed to decrease quantity. \nInitial qty:"
-							+ initialQty + "\nFinal qty:" + finalQty);
-					return false;
-				}
-			}
-			case DELETE: {
-				// Getting initial number of line items
-				try
-				{
-
-					cartItemRows = webDriver.findElements(By.className(objMap
-							.getLocator("lblcartItemRows")));
-					for (int j = 0; j < cartItemRows.size(); j++) {
-						// Reading item name for one row
-						try
-						{
-							itemText = cartItemRows.get(j).findElement(
-									By.xpath(objMap.getLocator("lnkcartItemName")))
-									.getText();
-							if (itemText.equals(lineItem)) {
-								initialLineItems += 1;
-							}
-						}
-						catch(Exception e)
-						{
-							RESULT.failed("Cart Operation :DELETE", "Item Text should be available",
-									"Item text is available and the exception caught is "+e.getMessage());
-						}
-
-					}
-
-
-					// Deleting a line item from cart
-					for (int j = 0; j < cartItemRows.size(); j++) {
-						// Reading item name for one row
-						try
-						{
-							itemText = cartItemRows.get(j).findElement(
-									By.xpath(objMap.getLocator("lnkcartItemName")))
-									.getText();
-							if (itemText.equals(lineItem)) {
-								if (cartItemRows.get(j).findElements(
-										By.partialLinkText("Delete")).size() > 0) {
-									cartItemRows.get(j).findElement(
-											By.partialLinkText("Delete")).click();
-									try {
-										SleepUtils.getInstance().sleep(TimeSlab.LOW);
-
-									} catch (Exception e) {
-										RESULT.failed("Modify cart - Delete item",
-												"Exception block caught",
-												"Exception caught for product:" + lineItem);
-									}
-									break;
-								} else {
-									RESULT
-									.warning(
-											"Modify cart - Delete item",
-											lineItem
-											+ ": Item name matched. 'Delete' link should be available for : "
-											+ itemText,
-											"Quantity failed to incremented as 'Delete' link is not found for item : "
-											+ itemText);
-								}
-							}
-						}
-						catch(Exception e)
-						{
-
-							RESULT.failed("Cart Operation :DELETE", "Item name should be available",
-									"Item name is available and the exception caught is "+e.getMessage());
-						}
-					}
-					// Getting number of line items after delete of a line item
-					cartItemRows = webDriver.findElements(By.className(objMap
-							.getLocator("lblcartItemRows")));
-					for (int j = 0; j < cartItemRows.size(); j++) {
-						// Reading item name for one row
-						itemText = cartItemRows.get(j).findElement(
-								By.xpath(objMap.getLocator("lnkcartItemName")))
-								.getText();
-						if (itemText.equals(lineItem)) {
-							finalLineItems += 1;
-						}
-					}
-				}
-				catch(Exception e)
-				{
-					RESULT.failed("Cart Operation : DELETE", "Item row should be available",
-							"Item row is successful and the exception caught is  "+e.getMessage());
-				}
-				// Check if one line item is deleted from cart
-				if (initialLineItems == finalLineItems + 1) {
-					RESULT.passed("Modify cart - Delete line item", lineItem
-							+ " : should be deleted ", "Line item : " + lineItem
-							+ " is deleted.");
-					return true;
-				} else {
-					RESULT.failed("Modify cart - Delete line item", lineItem
-							+ " : should be deleted ", "Line item : " + lineItem
-							+ " is NOT deleted.");
-					return false;
-				}
-			}
-
-			case UPDATE: {
-				// Getting initial quantities of that item
-				initialQty = getCartItemQuantity(lineItem);
-
-				//Check if the item qty is displayed in dropdown
-				if(initialQty==-1){
-					RESULT.warning("Product with qty in dropdown","Quantity update operation should be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
-					if(updateCartItemQuantity(lineItem)){
-						RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
+					// Check if one line item is deleted from cart
+					if (initialLineItems == finalLineItems + 1) {
+						RESULT.passed("Modify cart - Delete line item", lineItem
+								+ " : should be deleted ", "Line item : " + lineItem
+								+ " is deleted.");
 						return true;
-					}
-				}
-
-				// Updating line item quantity
-				try
-				{
-					cartItemRows = webDriver.findElements(By.className(objMap
-							.getLocator("lblcartItemRows")));
-					for (int j = 0; j < cartItemRows.size(); j++) {
-						// Reading item name for one row
-						try
-						{
-							itemText = cartItemRows.get(j).findElement(
-									By.xpath(objMap.getLocator("lnkcartItemName")))
-									.getText();
-							if (itemText.equals(lineItem)) {
-								// Checking if textbox is displayed for item quantity
-								try {
-									if (cartItemRows.get(j).findElements(
-											By.className(objMap.getLocator("txtqty")))
-											.size() > 0) {
-										// Get quantity before updating
-										qty = Double.parseDouble(cartItemRows.get(j)
-												.findElement(
-														By.className(objMap
-																.getLocator("txtqty")))
-																.getAttribute("value"));
-										cartItemRows.get(j).findElement(
-												By.className(objMap.getLocator("txtqty")))
-												.click();
-										// Pressing control + A keys to select all the
-										// digits in quantity field
-										String selectAll = Keys.chord(Keys.CONTROL, "a");
-										cartItemRows.get(j).findElement(
-												By.className(objMap.getLocator("txtqty")))
-												.sendKeys(selectAll);
-										cartItemRows.get(j).findElement(
-												By.className(objMap.getLocator("txtqty")))
-												.sendKeys(Keys.DELETE);
-										cartItemRows.get(j).findElement(
-												By.className(objMap.getLocator("txtqty")))
-												.sendKeys(quantity);
-										SleepUtils.getInstance().sleep(TimeSlab.LOW);
-										break;
-									}
-									else {
-										RESULT
-										.failed("Modify cart - Update qty",
-												"Item quantity should be updated",
-										"Item qty is not updated as quantity textbox/dropdown is not found!!");
-										return false;
-									}
-								} catch (Exception e) {
-									RESULT.failed("Modify cart - Update Qty",
-											"Exception block caught",
-											"Exception caught for product:" + lineItem);
-								}
-							}
-						}
-						catch(Exception e)
-						{
-							RESULT.failed("Cart Operation : UPDATE","Item name should be available","Item name is unavailable");
-						}
-
-					}
-				}
-				catch(Exception e)
-				{
-					RESULT.failed("Cart Operation : UPDATE","Item row should be available","Item row is unavailable");
-				}
-
-				// Getting final quantities of that item
-				finalQty = getCartItemQuantity(lineItem);
-				// Compare results based on quantities
-				// If given quantity updated in the application then pass
-				if (finalQty == initialQty - qty + Double.parseDouble(quantity)) {
-					RESULT.passed("Modify cart - update Qty", lineItem
-							+ " : Quantity should be updated to value :  "
-							+ quantity, " Quantity updated for item :" + lineItem);
-					return true;
-				}
-				// if quantity is updated but at certain limit because of cart
-				// constraint then warn user
-				else if (finalQty != initialQty) {
-					RESULT.warning(
-							"Modify cart - Update Qty",
-							lineItem
-							+ " : Quantity should be updated to value: "
-							+ quantity,
-							"Quantity updated and adjusted automatically. Total item quantity in cart for item : "
-							+ lineItem + " is: " + finalQty);
-					return true;
-				} else {
-					RESULT.failed("Modify cart - Update Qty",
-							"Item quantity should be updated",
-					"Item quantity is not updated");
-					return false;
-				}
-			}
-
-			case EMPTYCART: {
-				// check if user wants to delete all items in cart
-				WebElement EmptyAll;
-				try
-				{	
-					try
-					{
-						EmptyAll = uiDriver.getwebDriverLocator(objMap
-								.getLocator("lnkemptyAll"));
-						// click on delete all
-						EmptyAll.click();
-					}
-					catch(Exception e)
-					{
-						RESULT.failed("Cart Operation : EMPTY ALL","Empty All link should be available","Empty All link is not available");
+					} else {
+						RESULT.failed("Modify cart - Delete line item", lineItem
+								+ " : should be deleted ", "Line item : " + lineItem
+								+ " is NOT deleted.");
 						return false;
 					}
-					// popup for confirmation to delete all
+				}
+
+				case UPDATE: {
+					// Getting initial quantities of that item
+					initialQty = getCartItemQuantity(lineItem);
+
+					//Check if the item qty is displayed in dropdown
+					if(initialQty==-1){
+						RESULT.warning("Product with qty in dropdown","Quantity update operation should be perform with qty in dropdown.","Hence performing update operation on item : "+lineItem);
+						if(updateCartItemQuantity(lineItem)){
+							RESULT.passed("Update operation on dropdown", "Different value should be selected", "Dropdown updation successful");
+							return true;
+						}
+					}
+
+					// Updating line item quantity
 					try
 					{
-						if (emptyCartAcceptDecline.equalsIgnoreCase("true")) {
-							if(uiDriver.popup_isAlertPresent(10)){
-								uiDriver.popup_ClickOkOnAlert();
+						cartItemRows = webDriver.findElements(By.className(objMap
+								.getLocator("lblcartItemRows")));
+						for (int j = 0; j < cartItemRows.size(); j++) {
+							// Reading item name for one row
+							try
+							{
+								itemText = cartItemRows.get(j).findElement(
+										By.xpath(objMap.getLocator("lnkcartItemName")))
+										.getText();
+								if (itemText.equals(lineItem)) {
+									// Checking if textbox is displayed for item quantity
+									try {
+										if (cartItemRows.get(j).findElements(
+												By.className(objMap.getLocator("txtqty")))
+												.size() > 0) {
+											// Get quantity before updating
+											qty = Double.parseDouble(cartItemRows.get(j)
+													.findElement(
+															By.className(objMap
+																	.getLocator("txtqty")))
+																	.getAttribute("value"));
+											cartItemRows.get(j).findElement(
+													By.className(objMap.getLocator("txtqty")))
+													.click();
+											// Pressing control + A keys to select all the
+											// digits in quantity field
+											String selectAll = Keys.chord(Keys.CONTROL, "a");
+											cartItemRows.get(j).findElement(
+													By.className(objMap.getLocator("txtqty")))
+													.sendKeys(selectAll);
+											cartItemRows.get(j).findElement(
+													By.className(objMap.getLocator("txtqty")))
+													.sendKeys(Keys.DELETE);
+											cartItemRows.get(j).findElement(
+													By.className(objMap.getLocator("txtqty")))
+													.sendKeys(quantity);
+											SleepUtils.getInstance().sleep(TimeSlab.LOW);
+											break;
+										}
+										else {
+											RESULT
+											.failed("Modify cart - Update qty",
+													"Item quantity should be updated",
+											"Item qty is not updated as quantity textbox is not found!!");
+											return false;
+										}
+									} catch (Exception e) {
+										RESULT.failed("Modify cart - Update Qty",
+												"Exception block caught",
+												"Exception caught for product:" + lineItem);
+										return false;
+									}
+								}
+							}
+							catch(Exception e)
+							{
+								RESULT.failed("Cart Operation : UPDATE","Item name should be available","Item name is unavailable");
 							}
 
-							/*  uiDriver .getwebDriverLocator(objMap.getLocator("btnupdate"
-							  )) .click(); // update cart with changes made*/							 
-							System.out.println(uiDriver.getwebDriverLocator(
-									objMap.getLocator("txtSubTotal")).getText());
-							if (uiDriver.getwebDriverLocator(
-									objMap.getLocator("txtSubTotal")).getText().contains(
-									"$0.00")) {
-								RESULT.passed("Empty Cart",
-										"All items available in order should get deleted",
-								"All items in current order successfylly deleted");
-								return true;
-							} else {
-								RESULT.failed("Empty Cart",
-										"All items available in order should get deleted",
-								"All items in cart could not get deleted");
-								return false;
-							}
-						} else {
-							uiDriver.popup_ClickcancelOnAlert();
-							if (uiDriver.isElementpresentweb(EmptyAll)) {
-								RESULT
-								.passed(
-										"Empty Cart",
-										"All items available in order should not get deleted",
-								"All items in current order has not been deleted");
-								return true;
-							} else {
-								RESULT
-								.failed(
-										"Empty Cart",
-										"All items available in order should not get deleted",
-								"All items got deleted");
-								return false;
-							}
 						}
 					}
 					catch(Exception e)
 					{
-						RESULT.failed("Cart Operation : EMPTY ALL", "Pop up confirmation for Delete should be available",
-						"Pop up confirmation for Delete is not available");
+						RESULT.failed("Cart Operation : UPDATE","Item row should be available..","Item row is unavailable");
 					}
 
+					// Getting final quantities of that item
+					finalQty = getCartItemQuantity(lineItem);
+					// Compare results based on quantities
+					// If given quantity updated in the application then pass
+					if (finalQty == initialQty - qty + Double.parseDouble(quantity)) {
+						RESULT.passed("Modify cart - update Qty", lineItem
+								+ " : Quantity should be updated to value :  "
+								+ quantity, " Quantity updated for item :" + lineItem);
+						return true;
+					}
+					// if quantity is updated but at certain limit because of cart
+					// constraint then warn user
+					else if (finalQty != initialQty) {
+						RESULT.warning(
+								"Modify cart - Update Qty",
+								lineItem
+								+ " : Quantity should be updated to value: "
+								+ quantity,
+								"Quantity updated and adjusted automatically. Total item quantity in cart for item : "
+								+ lineItem + " is: " + finalQty);
+						return true;
+					} else {
+						RESULT.failed("Modify cart - Update Qty",
+								"Item quantity should be updated",
+						"Item quantity is not updated");
+						return false;
+					}
 				}
-				catch(Exception e)
-				{
-					RESULT.failed("Cart Operation : EMPTY ALL","Cart should be emptied successfully","Cart is not emptied successfully");
+
+				case EMPTYCART: {
+					// check if user wants to delete all items in cart
+					WebElement EmptyAll;
+					try
+					{	
+						try
+						{
+							EmptyAll = uiDriver.getwebDriverLocator(objMap
+									.getLocator("lnkemptyAll"));
+							// click on delete all
+							EmptyAll.click();
+						}
+						catch(Exception e)
+						{
+							RESULT.failed("Cart Operation : EMPTY ALL","Empty All link should be available","Empty All link is not available");
+							return false;
+						}
+						// popup for confirmation to delete all
+						try
+						{
+							if (emptyCartAcceptDecline.equalsIgnoreCase("true")) {
+								if(uiDriver.popup_isAlertPresent(10)){
+									uiDriver.popup_ClickOkOnAlert();
+								}
+
+								/*  uiDriver .getwebDriverLocator(objMap.getLocator("btnupdate"
+								  )) .click(); // update cart with changes made*/							 
+								System.out.println(uiDriver.getwebDriverLocator(
+										objMap.getLocator("txtSubTotal")).getText());
+								if (uiDriver.getwebDriverLocator(
+										objMap.getLocator("txtSubTotal")).getText().contains(
+										"$0.00")) {
+									RESULT.passed("Empty Cart",
+											"All items available in order should get deleted",
+									"All items in current order successfylly deleted");
+									return true;
+								} else {
+									RESULT.failed("Empty Cart",
+											"All items available in order should get deleted",
+									"All items in cart could not get deleted");
+									return false;
+								}
+							} else {
+								uiDriver.popup_ClickcancelOnAlert();
+								if (uiDriver.isElementpresentweb(EmptyAll)) {
+									RESULT
+									.passed(
+											"Empty Cart",
+											"All items available in order should not get deleted",
+									"All items in current order has not been deleted");
+									return true;
+								} else {
+									RESULT
+									.failed(
+											"Empty Cart",
+											"All items available in order should not get deleted",
+									"All items got deleted");
+									return false;
+								}
+							}
+						}
+						catch(Exception e)
+						{
+							RESULT.failed("Cart Operation : EMPTY ALL", "Pop up confirmation for Delete should be available",
+							"Pop up confirmation for Delete is not available");
+						}
+
+					}
+					catch(Exception e)
+					{
+						RESULT.failed("Cart Operation : EMPTY ALL","Cart should be emptied successfully","Cart is not emptied successfully");
+					}
+
+
+				}
+				default: {
+					RESULT
+					.failed(
+							"Operation check",
+							"Operation should one of these (INCREASE,DECREASE,DELETE,UPDATE,EMPTYCART)",
+					"Correct operation not found");
+					return false;
 				}
 
-
-			}
-			default: {
-				RESULT
-				.failed(
-						"Operation check",
-						"Operation should one of these (INCREASE,DECREASE,DELETE,UPDATE,EMPTYCART)",
-				"Correct operation not found");
-				return false;
-			}
-
-			}
-		}
-		catch(Exception e)
-		{
-			RESULT.failed("Cart Operation Exception", "Cart operation should be successfully performed",
-			"Cart operation is not performed");
-			return false;
-		}
-
-	}
-
-	public void FD_modifyCart(String itemName, String operation,
-			String quantity, String emptyCartAcceptDecline,
-			String flexibilityFlag) throws InterruptedException, FindFailed {
-
-		try {
-			boolean found = false;
-			String lineItem, itemText;
-			List<WebElement> cartItemRows, lineItems;
-			// Getting the line items complete row
-			// Getting only product names list from cart
-			try
-			{
-				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("lnkcartItemNames"))));
-				lineItems = webDriver.findElements(By.xpath(objMap
-						.getLocator("lnkcartItemNames")));
+				}
 			}
 			catch(Exception e)
 			{
-				RESULT.failed("Modify Cart", "Items should be available","No item is available");
-				return;
+				RESULT.failed("Cart Operation Exception", "Cart operation should be successfully performed",
+				"Cart operation is not performed");
+				return false;
 			}
 
-			// Iterating through all the list elements
-			for (int i = 0; i < lineItems.size(); i++) {
-				if (lineItems.get(i).getText().contains(itemName)) {
-					lineItem = lineItems.get(i).getText();
-					found = cartOperation(lineItem, quantity, operation,
-							emptyCartAcceptDecline);
-					if (found) {
-						break;
-					}
-				}
-			}
-			if (found == false
-					&& (flexibilityFlag.equalsIgnoreCase("yes") || flexibilityFlag
-							.isEmpty())) {
-				RESULT.warning("Product availability check",
-						"Product text should be availble in cart",
-				"Product text not found. Hence performing operaion on any other product");
-				// Getting all the product rows from cart
-				cartItemRows = webDriver.findElements(By.className(objMap
-						.getLocator("lblcartItemRows")));
-				// Iterating through list for any other product based on
-				// flexibility flag settings
-				for (int i = 0; i < cartItemRows.size(); i++) {
-					itemText = cartItemRows.get(i).findElement(
-							By.xpath(objMap.getLocator("lnkcartItemName")))
-							.getText();
-					found = cartOperation(itemText, quantity, operation,
-							emptyCartAcceptDecline);
-					if (found) {
-						RESULT.passed("Modify cart",
-								"Modify cart performed on another product: "
-								+ itemText,
-								"Cart operation performed for: " + itemText);
-						break;
-					}
-				}
-			}
-			if (found == false && flexibilityFlag.equalsIgnoreCase("no")) {
-				RESULT
-				.passed(
-						"Modify cart",
-						"Product match required and user should be flexible to perform operation on some other product",
-				"Product match not found and flexibility flag is set to 'no'");
-			}
-		} catch (Exception e) {
-			RESULT.failed("Modify Cart Exception", "Cart should be modified successfully",
-					"Cart is not modified and exception caught is " + e.getMessage());
 		}
-	}
+
+		public void FD_modifyCart(String itemName, String operation,
+				String quantity, String emptyCartAcceptDecline,
+				String flexibilityFlag) throws InterruptedException, FindFailed {
+
+			try {
+				boolean found = false;
+				String lineItem, itemText;
+				List<WebElement> cartItemRows, lineItems;
+				// Getting the line items complete row
+				// Getting only product names list from cart
+				try
+				{
+					wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("lnkcartItemNames"))));
+					lineItems = webDriver.findElements(By.xpath(objMap
+							.getLocator("lnkcartItemNames")));
+				}
+				catch(Exception e)
+				{
+					try{
+						wait.until(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(objMap.getLocator("lnkcartItemNames")))));
+						lineItems = webDriver.findElements(By.xpath(objMap
+								.getLocator("lnkcartItemNames")));
+					}catch(Exception e1){
+					RESULT.failed("Modify Cart", "Items should be available","No item is available");
+					return;
+					}
+				}
+
+				// Iterating through all the list elements
+				for (int i = 0; i < lineItems.size(); i++) {
+					if (lineItems.get(i).getText().contains(itemName)) {
+						lineItem = lineItems.get(i).getText();
+						found = cartOperation(lineItem, quantity, operation,
+								emptyCartAcceptDecline);
+						if (found) {
+							break;
+						}
+					}
+				}
+				if (found == false
+						&& (flexibilityFlag.equalsIgnoreCase("yes") || flexibilityFlag
+								.isEmpty())) {
+					RESULT.warning("Product availability check",
+							"Product text should be availble in cart",
+					"Product text not found. Hence performing operaion on any other product");
+					// Getting all the product rows from cart
+					cartItemRows = webDriver.findElements(By.className(objMap
+							.getLocator("lblcartItemRows")));
+					// Iterating through list for any other product based on
+					// flexibility flag settings
+					for (int i = 0; i < cartItemRows.size(); i++) {
+						itemText = cartItemRows.get(i).findElement(
+								By.xpath(objMap.getLocator("lnkcartItemName")))
+								.getText();
+						found = cartOperation(itemText, quantity, operation,
+								emptyCartAcceptDecline);
+						if (found) {
+							RESULT.passed("Modify cart",
+									"Modify cart performed on another product: "
+									+ itemText,
+									"Cart operation performed for: " + itemText);
+							break;
+						}
+					}
+				}
+				if (found == false && flexibilityFlag.equalsIgnoreCase("no")) {
+					RESULT
+					.warning(
+							"Modify cart",
+							"Product match required and user should be flexible to perform operation on some other product",
+					"Product match not found and flexibility flag is set to 'no'");
+				}
+			} catch (Exception e) {
+				RESULT.failed("Modify Cart Exception", "Cart should be modified successfully",
+						"Cart is not modified and exception caught is " + e.getMessage());
+			}
+		}
 
 	public double getCartItemQuantityCRM(String LineItem) {
 		double ItemQty = 0.0;
@@ -10170,7 +10171,7 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 
 			} else {
-				RESULT.failed("Modify Order : Order Number",
+				RESULT.warning("Modify Order : " + OrderNo,
 						"Order number should be available",
 				"Order number is not available");
 			}
@@ -10204,12 +10205,20 @@ public class WebUIDriver extends BaseAppDriver {
 				System.out.println("status:" + OrderStatus);
 				if (OrderStatus.equalsIgnoreCase("submitted")) {
 					uiDriver.click("lnkcancelOrderCRM");
+					waitForPageLoad();
 					if (EmailNotification.equalsIgnoreCase("yes")) {
 						uiDriver.click("chkemailNotification");
+						waitForPageLoad();
 					}
 					uiDriver.setValue("drpreason", Reason);
 					uiDriver.setValue("txtnotes", Notes);
+					try{
 					uiDriver.click("btncancelOrderCRM");
+					waitForPageLoad();
+					RESULT.passed("Cancel order", "Cancel order button should be visible", "Cancel order button not found");
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
 					if(uiDriver.popup_isAlertPresent(10)){
 						uiDriver.popup_ClickOkOnAlert();
 					}
@@ -10277,10 +10286,11 @@ public class WebUIDriver extends BaseAppDriver {
 							"Navigation to Order page failed due to " + e.getMessage());
 					return;
 				}
-				
+				CRMWindow = webDriver.getWindowHandle();
 				String OrderStatus=webDriver.findElement(By.xpath(objMap.getLocator("txtorderStatusCRM"))).getText();
 				if(OrderStatus.equalsIgnoreCase("submitted")){
 					uiDriver.click("lnkmodifyOrder");
+					uiDriver.waitForPageLoad();
 					//get window handlers as list
 					List<String> browserTabs = new ArrayList<String> (webDriver.getWindowHandles());
 					//switch to new tab
@@ -10329,8 +10339,8 @@ public class WebUIDriver extends BaseAppDriver {
 							"Given argument is other than Operation Arguments. Give correct argument");
 						}
 					}
-					webDriver.close();
-					webDriver.switchTo().window(browserTabs.get(0));
+					/*webDriver.close();
+					webDriver.switchTo().window(browserTabs.get(0));*/
 				}else {
 					RESULT.failed("Modify Order",
 							"Order should modified as per specified by user",
@@ -10383,9 +10393,9 @@ public class WebUIDriver extends BaseAppDriver {
 					System.out.println("Sorry! you have already Delivery Pass");
 					RESULT.warning("Add Deliverypass",
 							"User should already have a Deliverypass",
-							"User already have a Deliverypass");
+							"User is having Deliverypass");
 				}else {
-					// signUP for DeliveryPass
+					//signUP for DeliveryPass
 					uiDriver.click("lnkdeliverypass_signup");
 					waitForPageLoad();
 					if (webDriver.findElements(
@@ -10633,7 +10643,26 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 
 				try
-				{	// result based on the title of the page and search result
+				{	
+					// search result for partial search i.e if searched wine123 will give result for wine
+					try{
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By
+								.xpath(objMap.getLocator("strverifyDifferentResult"))));
+						String str_products_diaplyed = uiDriver.getwebDriverLocator(
+								objMap.getLocator("strverifyDifferentResult")).getText();					
+						if (str_products_diaplyed.startsWith("0")) {
+							RESULT.warning("Searching product using search field",
+									"Partial product search should be successful",
+									str_products_diaplyed.split("Did you mean")[0]);
+						}
+					}catch(Exception e){
+						RESULT.failed("Searching product using search field",
+								"Product search result count string should be displayed",
+								"Product search result count string is not displayed");
+						return;
+					}
+					
+					// result based on the title of the page and search result
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By
 							.xpath(objMap.getLocator("strverifyNoSearchResult"))));
 					if (uiDriver.getwebDriverLocator(
@@ -10646,7 +10675,6 @@ public class WebUIDriver extends BaseAppDriver {
 					} else {
 						if (webDriver.getTitle().toLowerCase().contains(
 								category.replaceAll("'", "").toLowerCase())) {
-							System.out.println(RESULT);
 							RESULT.passed("Searching product using search field",
 									"Product search should be successful",
 							"Product search is successfully");
@@ -11049,8 +11077,7 @@ public class WebUIDriver extends BaseAppDriver {
 							.equalsIgnoreCase("CHROME")
 							|| CompositeAppDriver.startUp.equalsIgnoreCase("IE")) {
 						jse.executeScript("arguments[0].click()", product);
-					} else if (CompositeAppDriver.startUp
-							.equalsIgnoreCase("SAFARI")) {
+					} else {
 						product.click();
 					}
 				} catch (Exception e) {
@@ -11290,6 +11317,17 @@ public class WebUIDriver extends BaseAppDriver {
 		uiDriver.setValue("txtCRMUID", UserID);
 		uiDriver.setValue("txtCRMPassword", Password);
 		//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+		if(webDriver.findElements(By.className(objMap.getLocator("btnCRMLogin"))).size()>0
+				&& uiDriver.isDisplayed("btnCRMLogin"))
+		{
+			RESULT.passed("Log in to CRM application", "Log in button should be available and displayed", 
+			"Log in button is available and displayed");
+		}else
+		{
+			RESULT.failed("Log in to CRM application", "Log in button for CRM application should be available and displayed", 
+					"Log in button for CRM application is not available or not displayed");
+			return;
+		}
 		uiDriver.click("btnCRMLogin");
 		try{
 			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("lnkhome"))));
@@ -11498,6 +11536,15 @@ public class WebUIDriver extends BaseAppDriver {
 			System.out.println(Date1);
 			String EmailCRM1 = "Test" + Date1 + "@gmail.com";
 			uiDriver.setValue("txtemail_CRM", EmailCRM1);
+			
+			// for safari add the hidden repeat email using javascript to add attribute
+			if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")){
+				JavascriptExecutor jse = (JavascriptExecutor)webDriver;
+				jse.executeScript("document.getElementsByName('repeat_email')[0].setAttribute('type', 'text');");
+				webDriver.findElement(By.xpath(objMap.getLocator("txtrepeatEmail_CRM"))).clear();
+				webDriver.findElement(By.xpath(objMap.getLocator("txtrepeatEmail_CRM"))).sendKeys(EmailCRM1);
+			}
+			
 			uiDriver.getwebDriverLocator(objMap.getLocator("txtpass_CRM"))
 			.clear();
 			uiDriver.setValue("txtpass_CRM", PassCRM);
@@ -12019,7 +12066,9 @@ public class WebUIDriver extends BaseAppDriver {
 					uiDriver.setValue("txtCardCity", CardCity);
 					uiDriver.setValue("txtCardZip", CardZip);
 					uiDriver.click("btnCRM_SaveBtn");
-					SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+					//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By
+							.linkText(objMap.getLocator("btnCRM_SaveBtn"))));
 					if (webDriver.getTitle().contains("Edit")) {
 						RESULT
 						.failed(
@@ -12449,8 +12498,10 @@ public class WebUIDriver extends BaseAppDriver {
 		{
 			try
 			{
+				//wait for new case link
 				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By
 						.linkText(objMap.getLocator("lnknewcase"))));
+				//click on New Case link
 				uiDriver.click("lnknewcase");
 			}
 			catch(Exception e)
@@ -12460,6 +12511,7 @@ public class WebUIDriver extends BaseAppDriver {
 			}
 			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By
 					.name(objMap.getLocator("drpqueue"))));
+			//verify uer is redirected to case creation page
 			if (webDriver.getTitle().contains("/ FreshDirect CRM : New Case /")) {
 				RESULT
 				.passed("New Case", "Should able to create New Case",
@@ -12469,7 +12521,7 @@ public class WebUIDriver extends BaseAppDriver {
 				RESULT.failed("New Case", "Should able to create New Case",
 				"Failed to open screen for creating New case");
 			}
-
+			// insert data to create a case
 			// uiDriver.setValue("drpassigned", Assigned);
 			uiDriver.setValue("drpqueue", Queue);
 			uiDriver.setValue("drppriority", Priority);
@@ -12637,12 +12689,12 @@ public class WebUIDriver extends BaseAppDriver {
 					else {
 						RESULT.done("SignUP in to FreshDirect",
 								"User should be able to click on CheckAddress button successfully",
-						"User has clicked on CheckAddress button successfully");
+						"User has clicked on CheckAddress button successfully with user "+Email1);
 					}
 				} else {
 					RESULT.done("SignUP in to FreshDirect",
 							"User should be able to click on SignUP button successfully",
-					"User has clicked on signUP button successfully");
+					"User has clicked on signUP button successfully with user "+Email1);
 				}
 			}
 		}
@@ -13799,11 +13851,11 @@ public class WebUIDriver extends BaseAppDriver {
 			if (webDriver.findElements(
 					By.cssSelector(objMap.getLocator("btnENGLISH"))).size() > 0) {
 				if (lang.equals("es-ES")) {
-					RESULT.passed("viewSourceLang",
+					RESULT.passed("Verify Source Language",
 							"The lang='es-ES'should be available in source HTML",
 					"The lang='es-ES' is available in source HTML");
 				} else {
-					RESULT.failed("viewSourceLang",
+					RESULT.failed("Verify Source Language",
 							"The lang='es-ES' should be available in source HTML",
 					"The lang='es-ES' is not available in source HTML");
 				}
@@ -13813,11 +13865,11 @@ public class WebUIDriver extends BaseAppDriver {
 				if (lang.equals("en-US")) {
 					RESULT
 					.passed(
-							"viewSourceLang",
+							"Verify Source Language",
 							"The lang='en-US' should be available in source HTML",
 					"The lang='en-US' in the tag is available in source HTML");
 				} else {
-					RESULT.failed("viewSourceLang",
+					RESULT.failed("Verify Source Language",
 							"The lang='en-US' should be available in source HTML",
 					"The lang='en-US' is not available in source HTML");
 				}
@@ -13836,34 +13888,127 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_passwordValidation(String password)
 	throws InterruptedException {
-
 		try{
-
 			String password_Pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\S+$).{0,}";
 			String password_Symbol = "~`!@#$%^&*() _+=-][}{';:/><";
-
 			final int MIN_PASSWORD_LENGTH = 6;
 			final int MAX_PASSWORD_LENGTH = 20;
-			int Upper = 0, Lower = 0, Digit = 0, Symbol = 0;
-			int score = 0, length = 0;
+			int score = 0, length = 0, Symbol=0;
 			boolean upperCase = false, lowerCase = false, digits = false, nonAlpha = false;
-
+			boolean ActUpper = false, ActLower = false, ActDigit = false, ActSymbol = false, ActLength = false;
+			boolean ExpUpper = false, ExpLower = false, ExpDigit = false, ExpSymbol = false, ExpLength = false;
 			length = password.toString().length();
 			length = password.trim().length();
+			
+			// Hint box validation.
+			// Check PWD for only Whitespace or Null value.
+			password = password.trim();
+			if ((password != null) && (password.length() > 0)) {
 
+				char[] aC = password.toCharArray();
+				for (char i : aC) {
+					// 1 or more Capital letters hint line scratch Out
+					// validation.
+					if (Character.isUpperCase(i)) {
+						ActUpper=true ;
+						if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtCapitalValidation")))) {
+							ExpUpper=true;
+							/*RESULT.passed("Validating Password hint ScratchOut",
+									"1 or more capital letters hint line should Scratchout",
+							"1 or more Capital letters is scratchedOut successfully");
+						} else if (!uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtCapitalValidation")))&& Upper == 1) {
+							RESULT.failed("Validating Password hint ScratchOut",
+									"1 or more capital letters hint line should Scratchout",
+							"Password hint validation is Failed: 1 or more capital letters line is not Scratchedout");*/
+						}
+						// 1 or more letters hint line scratch Out validation.
+					} else if (Character.isLowerCase(i)) {
+						 ActLower=true;
+						if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtLetterValidation")))) {
+							ExpLower=true;
+							/*RESULT.passed("Validating Password hint ScratchOut",
+									"1 or more letters hint line should Scratchout",
+							"1 or more letters is scratchedOut successfully");
+						} else if (!uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtLetterValidation")))&& Lower == 1) {
+							RESULT.failed("Validating Password hint ScratchOut",
+									"1 or more letters hint line should Scratchout",
+							"Password hint validation is Failed: 1 or more letters line is not Scratchedout");*/
+						}
+						// 1 or more numbers hint line scratch Out validation.
+					} else if (Character.isDigit(i)) {
+						ActDigit=true;
+						if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtNumValidation")))) {
+							ExpDigit=true;
+							/*RESULT.passed("Validating Password hint ScratchOut",
+									"1 or more numbers hint line should Scratchout",
+							"1 or more numbers is scratchedOut successfully");
+						} else if (!uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtNumValidation")))&& Digit == 1) {
+							RESULT.failed("Validating Password hint ScratchOut",
+									"1 or more numbers hint line should Scratchout",
+							"Password hint validation is Failed: 1 or more numbers line is not Scratchedout");*/
+						}
+						// 1 or more special characters hint line scratch Out
+						// validation.
+					} else if (password_Symbol.indexOf(String.valueOf(i)) >= 0) {
+						Symbol++; ActSymbol=true;
+						if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtSplCharValidation")))) {
+							ExpSymbol=true;
+							/*RESULT.passed("Validating Password hint ScratchOut",
+									"1  or more special characters hint line should Scratchout",
+							"1 or more special characters is scratchedOut successfully");
+						} else if (!uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtSplCharValidation"))) && Symbol == 1) {
+							RESULT.failed("Validating Password hint ScratchOut",
+									"1 or more special characters hint line should Scratchout",
+							"Password hint validation is Failed: 1 or more special characters line is not Scratchedout");*/
+						}
+					}
+				}
+				// 6 or more characters hint line scratch Out validation.
+				if ((length >= MIN_PASSWORD_LENGTH)
+						&& (length <= MAX_PASSWORD_LENGTH)) {
+					ActLength=true;
+					if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtLengthValidation")))) {
+						ExpLength=true;
+						/*RESULT.passed("Validating Password hint ScratchOut",
+								"6  or more characters hint line should Scratchout",
+						"6 or more characters is scratchedOut successfully");
+					} else if (!uiDriver.isElementpresentweb(getwebDriverLocator(objMap.getLocator("txtLengthValidation"))) && Len == 1) {
+						RESULT.failed("Validating Password hint ScratchOut",
+								"6 or more characters hint line should Scratchout",
+						"Password hint validation is Failed: 6 or more characters line is not Scratchedout");*/
+					}
+				}
+				if (ExpUpper==ActUpper && ActLower==ExpLower && ActDigit==ExpDigit && ActSymbol==ExpSymbol && ActLength==ExpLength) {
+					RESULT.passed("Password hint Validation",
+							"Password hint Validation should be successful for :"+password,
+					"Password hint Validation is successful for :"+password);
+				} else {
+					RESULT.failed("Password hint Validation",
+							"Password hint Validation should be successful for :"+password,
+							"Password hint Validation is failed for :"+password);
+				}
+			} else {
+				RESULT.failed(
+						"Validating Password",
+						"password validation should be done successfully",
+				"Password validation failed: field is blank or only Whitespace");
+			}
+			
 			// Calculate Score for PWD strength
 			// Add +0 to score if PWD length < 6.
 			if (length < 6) {
 				score = 0;
 			}
-			// Add +10 to score if PWD length is >5 && <12.
-			if (length > 5 && length < 12) {
+			// Add +10 to score if PWD length is >6.
+			else if (length > 6) {
 				score += 10;
 			}
-			// Add +15 to score if PWD length is >11.
-			else if (length > 11) {
+			// Add +10 to score if PWD length is <12.
+			else if (length < 12) {
+				score += 10;
+			}else 
 				score += 15;
-			}
+			
 			// Add +5 to score if PWD Contains letter (a-z).
 			lowerCase = password.matches(".*[a-z]+.*");
 			if (lowerCase) {
@@ -13891,10 +14036,9 @@ public class WebUIDriver extends BaseAppDriver {
 			if (!whiteSpace) {
 				nonAlpha = password.matches("(.)*(\\W)(.)*");
 				if (nonAlpha) {
-					score += (nonAlpha) ? 15 : 10;
+					score += (Symbol >1) ? 15 : 10;
 				}
 			}
-
 			// Add +35 to score if PWD Contains all 4. ie digits, nonword
 			// characters, upperCase && lowerCase characters.
 			if (upperCase && lowerCase && digits && nonAlpha) {
@@ -13906,198 +14050,57 @@ public class WebUIDriver extends BaseAppDriver {
 			if (whiteSpacelength == 0) {
 				score = 0;
 			}
-
 			// Validate for weak strength if Score is <15.
 			if (score < 15) {
-				if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap
-						.getLocator("txtPwdWeak")))) {
+				if (uiDriver.isDisplayed(("txtPwdWeak"))) {
 					RESULT.passed("Validating Strength of a Password",
 							"Password Strength should be WEAK",
-					"Password Strength validatation is successful");
-				} else if (!uiDriver
-						.isElementpresentweb(getwebDriverLocator(objMap
-								.getLocator("txtPwdWeak")))) {
+					"Password Strength WEAK validation is successful");
+				} else if (!uiDriver.isDisplayed("txtPwdWeak")) {
 					RESULT.failed("Validating Strength of a Password",
 							"Password Strength should be WEAK",
-					"Password Strength validatation is Failed");
+					"Password Strength WEAK validation is Failed");
 				}
 				// Validate for Average strength if Score is >=15 && <=20.
-			} else if (score >= 15 && score <= 20) {
-				if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap
-						.getLocator("txtPwdAvg")))) {
+			} else if (score < 20) {
+				if (uiDriver.isDisplayed("txtPwdAvg")) {
 					RESULT.passed("Validating Strength of a Password",
 							"Password Strength should be Average",
-					"Password Strength validatation is successful");
-				} else if (!uiDriver
-						.isElementpresentweb(getwebDriverLocator(objMap
-								.getLocator("txtPwdAvg")))) {
+					"Password Strength Average validation is successful");
+				} else if (!uiDriver.isDisplayed("txtPwdAvg")) {
 					RESULT.failed("Validating Strength of a Password",
 							"Password Strength should be Average",
-					"Password Strength validatation is Failed");
+					"Password Strength Average validation is Failed");
 				}
 			}
 			// Validate for Strong strength if Score is >20 && <=35.
-			else if (score > 20 && score <= 35) {
-				if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap
-						.getLocator("txtPwdStrong")))) {
+			else if (score < 35) {
+				if (uiDriver.isDisplayed("txtPwdStrong")) {
 					RESULT.passed("Validating Strength of a Password",
 							"Password Strength should be Strong",
-					"Password Strength validatation is successful");
-				} else if (!uiDriver
-						.isElementpresentweb(getwebDriverLocator(objMap
-								.getLocator("txtPwdStrong")))) {
+					"Password Strength Strong validation is successful");
+				} else if (!uiDriver.isDisplayed("txtPwdStrong")) {
 					RESULT.failed("Validating Strength of a Password",
 							"Password Strength should be Strong",
-					"Password Strength validatation is Failed");
+					"Password Strength Strong validation is Failed");
 				}
 				// Validate for Very strong strength if Score is >35.
-			} else if (score > 35) {
-				if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap
-						.getLocator("txtPwdVryStrong")))) {
+			} else if (score > 34) {
+				if (uiDriver.isDisplayed("txtPwdVryStrong")) {
 					RESULT.passed("Validating Strength of a Password",
 							"Password Strength should be Very Strong",
-					"Password Strength validatation is successful");
+					"Password Strength Very Strong validation is successful");
 				} else if (uiDriver
-						.isElementpresentweb(getwebDriverLocator(objMap
-								.getLocator("txtPwdVryStrong")))) {
+						.isDisplayed("txtPwdVryStrong")) {
 					RESULT.failed("Validating Strength of a Password",
 							"Password Strength should be Very Strong",
-					"Password Strength validatation is Failed");
+					"Password Strength Very Strong validation is Failed");
 				}
 			}
-
-			// Hint box validation.
-			// Check PWD for only Whitespace or Null value.
-			password = password.trim();
-			if ((password != null) && (password.length() > 0)) {
-
-				char[] aC = password.toCharArray();
-				for (char i : aC) {
-					// 1 or more Capital letters hint line scratch Out
-					// validation.
-					if (Character.isUpperCase(i)) {
-						Upper++;
-						if (uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtCapitalValidation")))
-										&& Upper == 1) {
-							RESULT
-							.passed(
-									"Validating Password hint ScratchOut",
-									"1 or more capital letters hint line should Scratchout",
-							"1 or more Capital letters is scratchedOut successfully");
-						} else if (!uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtCapitalValidation")))) {
-							RESULT
-							.failed(
-									"Validating Password hint ScratchOut",
-									"1 or more capital letters hint line should Scratchout",
-							"Password hint validatation is Failed: 1 or more capital letters line is not Scratchedout");
-						}
-						// 1 or more letters hint line scratch Out validation.
-					} else if (Character.isLowerCase(i)) {
-						Lower++;
-						if (uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtLetterValidation")))
-										&& Lower == 1) {
-							RESULT
-							.passed(
-									"Validating Password hint ScratchOut",
-									"1 or more letters hint line should Scratchout",
-							"1 or more letters is scratchedOut successfully");
-						} else if (!uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtLetterValidation")))) {
-							RESULT
-							.failed(
-									"Validating Password hint ScratchOut",
-									"1 or more letters hint line should Scratchout",
-							"Password hint validatation is Failed: 1 or more letters line is not Scratchedout");
-						}
-						// 1 or more numbers hint line scratch Out validation.
-					} else if (Character.isDigit(i)) {
-						Digit++;
-						if (uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtNumValidation")))
-										&& Digit == 1) {
-							RESULT
-							.passed(
-									"Validating Password hint ScratchOut",
-									"1 or more numbers hint line should Scratchout",
-							"1 or more numbers is scratchedOut successfully");
-						} else if (!uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtNumValidation")))) {
-							RESULT
-							.failed(
-									"Validating Password hint ScratchOut",
-									"1 or more numbers hint line should Scratchout",
-							"Password hint validatation is Failed: 1 or more numbers line is not Scratchedout");
-						}
-						// 1 or more special characters hint line scratch Out
-						// validation.
-					} else if (password_Symbol.indexOf(String.valueOf(i)) >= 0) {
-						Symbol++;
-						if (uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtSplCharValidation")))
-										&& Symbol == 1) {
-							RESULT
-							.passed(
-									"Validating Password hint ScratchOut",
-									"1  or more special characters hint line should Scratchout",
-							"1 or more special characters is scratchedOut successfully");
-						} else if (!uiDriver
-								.isElementpresentweb(getwebDriverLocator(objMap
-										.getLocator("txtSplCharValidation")))) {
-							RESULT
-							.failed(
-									"Validating Password hint ScratchOut",
-									"1 or more special characters hint line should Scratchout",
-							"Password hint validatation is Failed: 1 or more special characters line is not Scratchedout");
-						}
-					} /*
-					 * else { System.out.println(i +
-					 * " is an invalid character in the password."); }
-					 */
-				}
-
-				// 6 or more characters hint line scratch Out validation.
-				if ((length >= MIN_PASSWORD_LENGTH)
-						&& (length <= MAX_PASSWORD_LENGTH)) {
-					if (uiDriver.isElementpresentweb(getwebDriverLocator(objMap
-							.getLocator("txtLengthValidation")))) {
-						RESULT
-						.passed(
-								"Validating Password hint ScratchOut",
-								"6  or more characters hint line should Scratchout",
-						"6 or more characters is scratchedOut successfully");
-					} else if (!uiDriver
-							.isElementpresentweb(getwebDriverLocator(objMap
-									.getLocator("txtLengthValidation")))) {
-						RESULT
-						.failed(
-								"Validating Password hint ScratchOut",
-								"6 or more characters hint line should Scratchout",
-						"Password hint validatation is Failed: 6 or more characters line is not Scratchedout");
-					}
-				}
-
-			} else {
-				RESULT.failed(
-						"Validating Password",
-						"password validatation should be done successfully",
-				"Password validation failed: field is blank or only Whitespace");
-			}
-
-
 		}catch(Exception e){
 			RESULT.failed(
 					"Password Validation Function",
-					"password validatation should be done successfully",
+					"password validation should be done successfully",
 			"Password validation failed");
 		}
 	}
@@ -14113,131 +14116,103 @@ public class WebUIDriver extends BaseAppDriver {
 		case HOME: {
 			try {
 				uiDriver.click("lnkhome");
+				waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
 				uiDriver.click("lnknewCustomer");
-				wait.until(ExpectedConditions
-						.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-								.getLocator("txthomeZipcodeCRM"))));
-				if (webDriver.findElements(
-						By.xpath(objMap.getLocator("txthomeZipcodeCRM")))
-						.size() > 0) {
+				waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("txthomeZipcodeCRM"))));
+				if (webDriver.findElements(By.xpath(objMap.getLocator("txthomeZipcodeCRM"))).size() > 0) {
 					uiDriver.setValue("txthomeZipcodeCRM", "11001");
 					uiDriver.click("btnhomeSubmitCRM");
-					wait.until(ExpectedConditions
-							.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-									.getLocator("strdetailsHomeCRM"))));
-					if (webDriver.findElements(
-							By.xpath(objMap.getLocator("strdetailsHomeCRM")))
-							.size() > 0) {
-						uiDriver.setValue("txtnewCustPwdCRM", password);
-						uiDriver.FD_passwordValidation(password);
-						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strdetailsHomeCRM"))));
+					if (webDriver.findElements(By.xpath(objMap.getLocator("strdetailsHomeCRM"))).size() > 0) {
+						String PWD[] = password.split("\n");
+						for (int i = 0; i < PWD.length; i++) {
+							uiDriver.setValue("txtnewCustPwdCRM",PWD[i]);
+							String Pwd=PWD[i];
+							uiDriver.FD_passwordValidation(Pwd);
+						}
 					}
-					// webDriver.findElement(By.xpath(objMap.getLocator("btnsignupClose"))).click();
-				}/*
-				 * else{ RESULT.failed("Home Zipcode",
-				 * "Home Zipcode should be displayed",
-				 * "Home zipcode box is notdiplayed"); }
-				 */
+				}
 			} catch (Exception e) {
-
-				RESULT.warning(
-						"PWD validation at Create new cust(Home) page",
-						"Error in PWD validation at Create new cust(Home) page",
-				"Error occurred in PWD validation at Create new cust(Home) page");
+				RESULT.warning("PWD validation at Create new cust(Home) page",
+									"Error in PWD validation at Create new cust(Home) page",
+										"Error occurred in PWD validation at Create new cust(Home) page");
 			}
-
 		}
 		break;
 		case CORP: {
 			try {
 				uiDriver.click("lnkhome");
+				waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
 				uiDriver.click("lnknewCustomer");
-				wait.until(ExpectedConditions
-						.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-								.getLocator("txtcorpZipcodeCRM"))));
-				if (webDriver.findElements(
-						By.xpath(objMap.getLocator("txtcorpZipcodeCRM")))
-						.size() > 0) {
+				waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("txtcorpZipcodeCRM"))));
+				if (webDriver.findElements(By.xpath(objMap.getLocator("txtcorpZipcodeCRM"))).size() > 0) {
 					uiDriver.setValue("txtcorpZipcodeCRM", "11001");
 					uiDriver.click("btncorpSubmitCRM");
-					wait.until(ExpectedConditions
-							.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-									.getLocator("strdetailsCorpCRM"))));
-					if (webDriver.findElements(
-							By.xpath(objMap.getLocator("strdetailsCorpCRM")))
-							.size() > 0) {
-						uiDriver.setValue("txtnewCustPwdCRM", password);
-						uiDriver.FD_passwordValidation(password);
-						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strdetailsCorpCRM"))));
+					if (webDriver.findElements(By.xpath(objMap.getLocator("strdetailsCorpCRM"))).size() > 0) {
+						String PWD[] = password.split("\n");
+						for (int i = 0; i < PWD.length; i++) {
+							uiDriver.setValue("txtnewCustPwdCRM",PWD[i]);
+							String Pwd=PWD[i];
+							uiDriver.FD_passwordValidation(Pwd);
+						}
 					}
 				}
 			} catch (Exception e) {
-
-				RESULT
-				.warning(
-						"PWD validation at Create new cust(Corp) page",
-						"Error in PWD validation at Create new cust(Corp) page",
-				"Error occurred in PWD validation at Create new cust(Corp) page");
+				RESULT.warning("PWD validation at Create new cust(Corp) page",
+									"Error in PWD validation at Create new cust(Corp) page",
+										"Error occurred in PWD validation at Create new cust(Corp) page");
 			}
 		}
 		break;
 		case WEB: {
 			try {
 				uiDriver.click("lnkhome");
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
 				uiDriver.click("lnknewCustomer");
-				wait.until(ExpectedConditions
-						.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-								.getLocator("txtwebZipcodeCRM"))));
-				if (webDriver.findElements(
-						By.xpath(objMap.getLocator("txtwebZipcodeCRM"))).size() > 0) {
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("txtwebZipcodeCRM"))));
+				if (webDriver.findElements(By.xpath(objMap.getLocator("txtwebZipcodeCRM"))).size() > 0) {
 					uiDriver.setValue("txtwebZipcodeCRM", "11001");
 					uiDriver.click("btnwebSubmitCRM");
-					wait.until(ExpectedConditions
-							.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-									.getLocator("strdetailsWebCRM"))));
-					if (webDriver.findElements(
-							By.xpath(objMap.getLocator("strdetailsWebCRM")))
-							.size() > 0) {
-						uiDriver.setValue("txtnewCustPwdCRM", password);
-						uiDriver.FD_passwordValidation(password);
-						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strdetailsWebCRM"))));
+					if (webDriver.findElements(By.xpath(objMap.getLocator("strdetailsWebCRM"))).size() > 0) {
+						String PWD[] = password.split("\n");
+						for (int i = 0; i < PWD.length; i++) {
+							uiDriver.setValue("txtnewCustPwdCRM",PWD[i]);
+							String Pwd=PWD[i];
+							uiDriver.FD_passwordValidation(Pwd);
+						}
 					}
 				}
 			} catch (Exception e) {
-
-				RESULT
-				.warning(
-						"PWD validation at Create new cust(Web) page",
-						"Error in PWD validation at Create new cust(Web) page",
-				"Error occurred in PWD validation at Create new cust(Web) page");
+				RESULT.warning("PWD validation at Create new cust(Web) page",
+									"Error in PWD validation at Create new cust(Web) page",
+										"Error occurred in PWD validation at Create new cust(Web) page");
 			}
 		}
 		break;
 		case MODIFY: {
 			try {
 				uiDriver.click("lnkAccountDetails");
-				wait.until(ExpectedConditions
-						.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-								.getLocator("btnun&PwdEdit"))));
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("btnun&PwdEdit"))));
 				uiDriver.click("btnun&PwdEdit");
-				wait.until(ExpectedConditions
-						.visibilityOfAllElementsLocatedBy(By.xpath(objMap
-								.getLocator("streditUN&PWD"))));
-				if (webDriver.findElements(
-						By.xpath(objMap.getLocator("streditUN&PWD"))).size() > 0) {
-					uiDriver.setValue("txteditCustPwdCRM", password);
-					uiDriver.FD_passwordValidation(password);
-					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("streditUN&PWD"))));
+				if (webDriver.findElements(By.xpath(objMap.getLocator("streditUN&PWD"))).size() > 0) {
+					String PWD[] = password.split("\n");
+					for (int i = 0; i < PWD.length; i++) {
+						uiDriver.setValue("txteditCustPwdCRM",PWD[i]);
+						String Pwd=PWD[i];
+						uiDriver.FD_passwordValidation(Pwd);
+					}
 				}
-
 			} catch (Exception e) {
-
-				RESULT
-				.warning(
-						"PWD validation at Modify customer page",
-						"Error in PWD validation at Modify customer page",
-				"Error occurred in PWD validation at Modify customer page");
-
+				RESULT.warning("PWD validation at Modify customer page",
+									"Error in PWD validation at Modify customer page",
+										"Error occurred in PWD validation at Modify customer page");
 			}
 		}
 		}
@@ -14388,10 +14363,10 @@ public class WebUIDriver extends BaseAppDriver {
 			case SelectPickup:
 
 				List<WebElement> addLst3 = webDriver.findElements(By
-						.xpath(objMap.getLocator("AddressPathPickup")));
+						.xpath(objMap.getLocator("lstselectPickup")));
 				int iSize1 = addLst3.size();
 				List<WebElement> precedingSiblings1 = webDriver.findElements(By
-						.xpath(objMap.getLocator("RadioPathPickup")));
+						.xpath(objMap.getLocator("lstselectPickupRadio")));
 				int jSize1 = precedingSiblings1.size();
 
 				String myadd3 = SelectAddress;
@@ -14410,7 +14385,7 @@ public class WebUIDriver extends BaseAppDriver {
 								.getAttribute("value"));
 						System.out.println("Delivery Address selected!!!");
 						RESULT.passed("Select Pickup address",
-								"User should be able add new delivery address",
+								"User should be able select pickup address",
 								gotadd3 + " Address selected Sucessfully!!!!");
 						break;
 					}
