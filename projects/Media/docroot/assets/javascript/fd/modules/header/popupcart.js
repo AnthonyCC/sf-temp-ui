@@ -33,11 +33,12 @@ var FreshDirect = FreshDirect || {};
   var $locabar_popupcart_count = $('.locabar-popupcart-count');
 
   var cartContext;
+  var focusedElementId;
 
   var requestCounter = 0;
 
   var partials={
-    quantity:'<div class="qtyinput small" data-component="quantitybox" data-min="{{qMin}}" data-max="{{qMax}}" data-step="{{qInc}}"><button class="quantity_minus" data-component="quantitybox.dec">-</button><input class="qty" type="text" value="{{quantity}}" data-component="quantitybox.value"><button class="quantity_plus" data-component="quantitybox.inc">+</button></div>',
+    quantity:'<div class="qtyinput small" data-component="quantitybox" data-min="{{qMin}}" data-max="{{qMax}}" data-step="{{qInc}}"><button id="popucart_qty_minus_{{id}}" class="quantity_minus" data-component="quantitybox.dec">-</button><input id="popucart_qty_{{id}}" class="qty" type="text" value="{{quantity}}" data-component="quantitybox.value"><button id="popucart_qty_plus_{{id}}" class="quantity_plus" data-component="quantitybox.inc">+</button></div>',
     salesunit:'<option value="{{id}}" {{#selected}}selected="selected"{{/selected}}>{{name}}</option>',
     section:'<tr class="section"><th colspan="4"><div class="title">{{title}}</div></th></tr>{{#cartLines}}{{>cartline}}{{/cartLines}}',
     remove:'<div class="remove"><button class="remove">remove</button></div>',
@@ -174,6 +175,12 @@ var FreshDirect = FreshDirect || {};
 
     $cart.removeClass('loading');
     $checkoutButton.removeClass('loading');
+
+    if (focusedElementId) {
+      try {
+        document.getElementById(focusedElementId).focus();
+      } catch (e) {}
+    }
   }
 
   var errorHandler = function(jqXHR) {
@@ -250,6 +257,7 @@ var FreshDirect = FreshDirect || {};
     var data = cartContext.collectData();
     var ajaxData = createAjaxRequest(data);
     var ajax = Bacon.fromPromise($.ajax(ajaxData)); 
+    focusedElementId = document.activeElement && document.activeElement.id;
 
     /* if there is a value, then eval the coremetrics scripts */
     ajax.onValue(coremetricsEval);

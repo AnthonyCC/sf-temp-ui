@@ -5,6 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $ = fd.libs.$;
+  var focusedElementId;
   var DISPATCHER = fd.common.dispatcher;
   var errorMessages={
       "401": '<div class="unauthorized">Session expired, please refresh!</div>',
@@ -37,9 +38,12 @@ var FreshDirect = FreshDirect || {};
   var successHandler = function( data ){
     try{
       Object.keys( data ).forEach( _signalWidgets, data );
-    } catch(e){
-      // console.log(e);
-    }
+    } catch(e) {}
+    try {
+      if (focusedElementId) {
+        document.getElementById(focusedElementId).focus();
+      }
+    } catch(e) {}
   };
 
   var errorHandler = function( e ){
@@ -64,6 +68,8 @@ var FreshDirect = FreshDirect || {};
     },
     callback:{
       value:function( config ) {
+        focusedElementId = document.activeElement && document.activeElement.id;
+        console.log('focused: '+focusedElementId);
 
         var ajax = Bacon.fromPromise($.ajax({
                 type:config.method || 'GET',

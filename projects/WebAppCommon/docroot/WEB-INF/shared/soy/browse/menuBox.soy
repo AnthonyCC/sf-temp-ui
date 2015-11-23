@@ -172,11 +172,11 @@
 {template .menuItem private="true" autoescape="false"}
   {if $menuBox.selectionType == 'LINK'}
     {if $item.urlParameter == 'all'}
-      <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" data-allproducts="{$menuBox.id}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><a href="/browse.jsp?id={$menuBox.id}&amp;all=true">{$item.name}</a></li>
+      <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" data-allproducts="{$menuBox.id}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><a id="MBI_{$menuBox.id}_{$item.urlParameter}" href="/browse.jsp?id={$menuBox.id}&amp;all=true">{$item.name}</a></li>
     {else}
-      <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><a href="/browse.jsp?id={$item.urlParameter}">{$item.name}</a></li>
+      <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><a id="MBI_{$menuBox.id}_{$item.urlParameter}" href="/browse.jsp?id={$item.urlParameter}">{$item.name}</a></li>
     {/if}
   {else}
-    <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><label><input type="{$menuBox.selectionType != 'MULTI' ? 'radio' : 'checkbox'}" name="menuBox_{$menuBox.id}" value="{$item.urlParameter}" {if $item.selected}checked{/if} {if not $item.active}disabled{/if}/><span><span>{$item.name}</span> {if $item.hitCount}({$item.hitCount}){/if}</span></label></li>
+    <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><label><input id="MBI_{$menuBox.id}_{$item.urlParameter}" type="{$menuBox.selectionType != 'MULTI' ? 'radio' : 'checkbox'}" name="menuBox_{$menuBox.id}" value="{$item.urlParameter}" {if $item.selected}checked{/if} {if not $item.active}disabled{/if}/><span><span>{$item.name}</span> {if $item.hitCount}({$item.hitCount}){/if}</span></label></li>
   {/if}
 {/template}

@@ -7,6 +7,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var requestCounter = 0;
+  var focusedElementId;
 
   var cartcontent = Object.create(WIDGET,{
     signal:{
@@ -137,6 +138,9 @@ var FreshDirect = FreshDirect || {};
         var ajaxStream = bouncedDataStream.flatMapLatest(function(){
           var serializedData = cartcontent.serialize();
           var ajax = Bacon.fromPromise($.ajax(cartcontent.createRequestConfig(serializedData)));
+
+          focusedElementId = document.activeElement && document.activeElement.id;
+
           return ajax;
         });
 
@@ -158,13 +162,19 @@ var FreshDirect = FreshDirect || {};
           }
 
           cartcontent.render(ajaxData);
-          
+
           if (ajaxData.coremetrics) {
             fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
           }
-          
+
           fd.common.dispatcher.signal('cartHeader', ajaxData);
           fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
+
+          if (focusedElementId) {
+            try {
+              document.getElementById(focusedElementId).focus();
+            } catch (e) {}
+          }
 
           fd.expressco.checkout.coFlowChecker.checkFlow();
           try {

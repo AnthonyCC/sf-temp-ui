@@ -265,7 +265,7 @@
     {else}
       {if $qu}
         <form action="#" fdform="cartline_change_{$id}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
-          {call common.quantitybox}{param quantity:$qu /}{/call}
+          {call common.quantitybox}{param quantity:$qu /}{param uid: 'cartline_change_'+$id /}{/call}
         </form>
       {/if}
       {if $su}{call common.salesunit}{param options:$su /}{/call}{/if}
