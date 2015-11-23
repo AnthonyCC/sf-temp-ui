@@ -104,12 +104,12 @@ public class CompositeAppDriver extends BaseAppDriver {
 				for (Map<String, Object> map : list) {
 					String plugin=(String) map.get("plugin");
 					Map<String,Object> parameters =new HashMap<String, Object>();
-					if(!((startUp.equals("SAFARI")) || startUp=="SAFARI"))
+					/*if(!((startUp.equals("SAFARI")) || startUp=="SAFARI"))
 				    {
 					uiDriver.isProcessRunningAndKill("chromedriver.exe *32");
 					uiDriver.isProcessRunningAndKill("chromedriver.exe");
 					uiDriver.isProcessRunningAndKill("IEDriverServer.exe");
-					}
+					}*/
 					if(plugin.equals("Selenium")){
 						switch (BrowserType.valueOf(startUp)) {
 						case IE:
@@ -127,7 +127,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 							break;
 
 						case FIREFOX:
-							FirefoxProfile profile = new FirefoxProfile();
+							FirefoxProfile profile = new FirefoxProfile(new File("C:\\Automation\\Mozilla Firefox"));
 							profile.setPreference("reader.parse-on-load.enabled",false);
 							profile.setPreference("security.mixed_content.block_active_content", false);
 							profile.setPreference("security.mixed_content.block_display_content", true);
@@ -189,27 +189,20 @@ public class CompositeAppDriver extends BaseAppDriver {
 			TestResultLogger resultLogger) {
 		HashMap<String, ModuleDriver> moduleDrivers = new HashMap<String, ModuleDriver>();
 		//moduleDrivers.put("DemoInsurance", new DemoInsuranceDriver(resultLogger));
-	moduleDrivers.put("General", new GeneralDriver(resultLogger));
+	    moduleDrivers.put("General", new GeneralDriver(resultLogger));
 		moduleDrivers.put("ReorderStorefront", new ReorderStorefrontDriver(resultLogger));
 		moduleDrivers.put("ShoppingList", new ShoppingListDriver(resultLogger));
 		moduleDrivers.put("Cart", new CartDriver(resultLogger));
 		moduleDrivers.put("OrderStorefront", new OrderStorefrontDriver(resultLogger));
-		moduleDrivers.put("DeliveryPass", new DeliveryPassDriver(resultLogger));
-		moduleDrivers.put("StandingOrder", new StandingOrderDriver(resultLogger));
 		moduleDrivers.put("ModifyOrderStorefront", new ModifyOrderStorefrontDriver(resultLogger));
-		moduleDrivers.put("OrderCRM", new OrderCRMDriver(resultLogger));
 		moduleDrivers.put("AccountDetailsCRM", new AccountDetailsCRMDriver(resultLogger));
 		moduleDrivers.put("Case", new CaseDriver(resultLogger));
 		moduleDrivers.put("Header", new HeaderDriver(resultLogger));
 		moduleDrivers.put("AccountDetailsCRM", new AccountDetailsCRMDriver(resultLogger));
-		moduleDrivers.put("GiftCard", new GiftCardDriver(resultLogger));
-		moduleDrivers.put("ReserveTimeslot", new ReserveTimeslotDriver(resultLogger));
 		moduleDrivers.put("Promotions", new PromotionsDriver(resultLogger));
-		moduleDrivers.put("OrderStorefront_old", new OrderStorefront_oldDriver(resultLogger));
-		moduleDrivers.put("Notification", new NotificationDriver(resultLogger));
 		moduleDrivers.put("YourAccount", new YourAccountDriver(resultLogger));		
 		moduleDrivers.put("Cart", new CartDriver(resultLogger));
-		moduleDrivers.put("ModifyOrderCRM", new ModifyOrderCRMDriver(resultLogger));
+		
 		
 		return moduleDrivers;
 	}

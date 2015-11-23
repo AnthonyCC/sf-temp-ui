@@ -49,8 +49,7 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 		catch(Exception e)
 		{
 			RESULT.warning("Reorder Your Top Item Invocation", "Reorder Your Top Item invocation should be successful", "Reorder Your Top Item invocation fails ");
-		}
-		
+		}		
 	}
 
 	public void YourListFilter(DataRow input, DataRow output)
@@ -58,16 +57,15 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 		try {
 			uiDriver.FD_reorderYourList(input.get("YourList"), input.get("Department"),input.get("SpecialPref"), 
 					input.get("FlexibilityFlag"));
-		} catch (Exception e) {
-						
+		} catch (Exception e) {						
 			RESULT.warning("Reorder Your List Invocation", "Reorder Your List invocation should be successful", "Reorder Your List invocation fails ");
 		}
-
 	}
 
 	public void YourlistManageList(DataRow input, DataRow output)
 			throws InterruptedException, FindFailed, TimeoutException {
 		boolean manage_flag=false;
+		int rename_flag=0;
 		try {
 			//Navigate to reoder page through Reorder tab on homepage
 			if (!(webDriver.findElements(By.xpath(objMap.getLocator("tabyourList"))).size() > 0))  {
@@ -131,12 +129,18 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 								if (webDriver.findElement(By.className(objMap.getLocator("strsettingsDefaultList"))).getText().equals(input.get("SettingValue")))
 								{
 									RESULT.passed("List default ", input.get("SettingValue")+" list should be changed to default", input.get("SettingValue")+" is made default");
-									uiDriver.click("btnmanageListSaveChanges");
+									uiDriver.click("btnmanageListSaveChanges2");
 									break;
 								}
 								else
 								{
-									RESULT.failed("List default ", input.get("SettingValue")+" list should be changed to default", input.get("SettingValue")+" is made default");
+									RESULT.failed("List default ", input.get("SettingValue")+" list should be changed to default", input.get("SettingValue")+" is made not default");
+									if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+										uiDriver.getwebDriverLocator(objMap.getLocator("btnmanageListPopupClose")).sendKeys(" ");
+										}else{
+											uiDriver.click("btnmanageListPopupClose");
+										}
+									uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("manageShoppingListsPopup")));
 									break;
 
 								}
@@ -157,12 +161,18 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 								if (webDriver.findElement(By.className(objMap.getLocator("strsettingsDeleteList"))).getText().equals(input.get("SettingValue")))
 								{
 									RESULT.passed("List delete ", input.get("SettingValue")+" list should be deleted", input.get("SettingValue")+" is deleted");
-									uiDriver.click("btnmanageListSaveChanges");
+									uiDriver.click("btnmanageListSaveChanges2");
 									break;
 								}
 								else
 								{
-									RESULT.failed("List delete ", input.get("SettingValue")+" list should be deleted", input.get("SettingValue")+" is deleted");
+									RESULT.failed("List delete ", input.get("SettingValue")+" list should be deleted", input.get("SettingValue")+" is not deleted");
+									if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+										uiDriver.getwebDriverLocator(objMap.getLocator("btnmanageListPopupClose")).sendKeys(" ");
+										}else{
+											uiDriver.click("btnmanageListPopupClose");
+										}
+									uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("manageShoppingListsPopup")));
 									break;
 
 								}
@@ -182,24 +192,75 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 							//wait.until(ExpectedConditions.stalenessOf(slist_ite.findElement(By.className(objMap.getLocator("txtmanageListRename")))));
 							try
 							{
+								List<WebElement> shoppinglist = webDriver.findElements(By.xpath(objMap.getLocator("lstreorderShoppingLists")));
+								if (!shoppinglist.isEmpty()) {
+									for (int i = 0; i < shoppinglist.size(); i++)
+									{
+										String listName = shoppinglist.get(i).getText();
+										listName=listName.split(" \\(")[0];
+										if (listName.equals(input.get("RenameValue")) && !(input.get("SettingValue").equals(input.get("RenameValue")))) 
+										{
+											rename_flag = 1;
+										}
+									}
+								}
 								slist_ite.findElement(By.xpath(objMap.getLocator("txtmanageListRename"))).clear();
 								slist_ite.findElement(By.xpath(objMap.getLocator("txtmanageListRename"))).sendKeys(input.get("RenameValue"));
 								uiDriver.click("btnmanageListSaveChanges");
-								if (webDriver.findElement(By.className(objMap.getLocator("strrenameOldName"))).getText().equals(input.get("SettingValue"))
+								if(rename_flag==1)
+								{
+									if(webDriver.findElements(By.xpath(objMap.getLocator("strrenameError"))).size() > 0)
+									{
+										RESULT.warning("Manage list : Rename", 
+												"Oops! That name is taken! error message should get displayed as rename value of list already exist", 
+												"Oops! That name is taken! error message is displayed");
+										uiDriver.click("btnmanageListPopupClose");
+									}
+									else
+									{
+										RESULT.failed("Manage list : Rename", 
+												"Oops! That name is taken! error message should get displayed", 
+												"Oops! That name is taken! error message is not displayed");
+									}
+								}
+								else if(input.get("SettingValue").equals(input.get("RenameValue")))
+									{
+										RESULT.warning("Manage list : Rename", 
+												"List value and Rename value are same", 
+												"List value and Rename value are same");
+										uiDriver.click("btnmanageListPopupClose");
+									}								
+							   else if (webDriver.findElement(By.className(objMap.getLocator("strrenameOldName"))).getText().equals(input.get("SettingValue"))
 										&& webDriver.findElement(By.className(objMap.getLocator("strrenameNewName"))).getText().equals(input.get("RenameValue"))) {
+								   if(rename_flag==1)
+								   {
+									   RESULT.failed("Manage list : Rename", 
+												"Oops! That name is taken! error message should get displayed", 
+												"Oops! That name is taken! error message is not displayed");
+								   }
+								   else
+								   {
 									RESULT.passed("Shopping list renaming",
 													"List should be reanmed to "+ input.get("RenameValue")
 													, "List "
 													+ input.get("SettingValue")
 													+ "is renamed to "
 													+ input.get("RenameValue"));
-									uiDriver.click("btnmanageListSaveChanges");
-									
-									break;
-								} else {
+								   }
+									uiDriver.click("btnmanageListSaveChanges2");									
+									break;								 									
+								}else {
 									RESULT.failed("Shopping list renaming",
 											"List should be reanmed to "+ input.get("RenameValue"),
 											"List renaming unsuccessful");
+									
+									if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+										uiDriver.getwebDriverLocator(objMap.getLocator("btnmanageListPopupClose")).sendKeys(" ");
+										}else{
+											uiDriver.click("btnmanageListPopupClose");
+										}
+									uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("manageShoppingListsPopup")));
+									break;
 								}
 
 								
@@ -207,6 +268,13 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 							catch(Exception e)
 							{
 								RESULT.failed("Manage list : Rename", input.get("SettingValue")+" list should be successfully renamed to "+ input.get("RenameValue"), input.get("SettingValue")+" list is not renamed successfully");
+								if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+									uiDriver.getwebDriverLocator(objMap.getLocator("btnmanageListPopupClose")).sendKeys(" ");
+									}else{
+										uiDriver.click("btnmanageListPopupClose");
+									}
+								uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("manageShoppingListsPopup")));
+								return;
 							}
 						
 							break;
@@ -222,7 +290,11 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 				
 				if(manage_flag==false)
 				{
-					uiDriver.click("btnmanageListPopupClose");
+					if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+						uiDriver.getwebDriverLocator(objMap.getLocator("btnmanageListPopupClose")).sendKeys(" ");
+						}else{
+							uiDriver.click("btnmanageListPopupClose");
+						}
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("manageShoppingListsPopup")));
 					RESULT.warning("Reorder Your List : Manage List", input.get("SettingValue")+" list name should be existing in the list",input.get("SettingValue")+ " list name is not available");
 				}

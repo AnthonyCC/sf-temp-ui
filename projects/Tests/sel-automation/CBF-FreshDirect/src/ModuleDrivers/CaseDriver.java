@@ -12,8 +12,7 @@ import cbf.utils.DataRow;
 public class CaseDriver extends BaseModuleDriver {
 	// This will wait for the page to load for 300 seconds (i.e. 300000 Millie
 	// seconds)
-	public static String PageLoadTime = "300000";
-	WebDriverWait wait = new WebDriverWait(webDriver, 30);
+
 	public CaseDriver(TestResultLogger resultLogger) {
 		super(resultLogger);
 		// TODO Auto-generated constructor stub
@@ -29,7 +28,7 @@ public class CaseDriver extends BaseModuleDriver {
 						"Navigated to SearchCustomer page successfully");
 			} else {
 				uiDriver.click("lnkhome");
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
 				if (webDriver.getTitle().contains("/ FreshDirect CRM : Home /")) {
 					RESULT.passed("SearchCustomer",
 							"Should be navigated to SearchCustomer page",
@@ -50,7 +49,8 @@ public class CaseDriver extends BaseModuleDriver {
 			uiDriver.waitForPageLoad();
 //			SleepUtils.getInstance().sleep(TimeSlab.HIGH);
 		//	SleepUtils.getInstance().sleep(TimeSlab.HIGH);
-			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnsearch_Customer"))));
+			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("txtemail_CRM"))));
+			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnksummary"))));
 			if (webDriver.getTitle().contains("/ FreshDirect CRM : Account Details /")) {
 				RESULT.passed("CustomerSearch", "Should open Account Details Page",
 						"Customer searched successfully!!");
@@ -80,7 +80,7 @@ public class CaseDriver extends BaseModuleDriver {
 						"Navigated to Search Order page successfully");
 			}else {
 				uiDriver.click("lnkhome");
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
 				if (webDriver.getTitle().contains("/ FreshDirect CRM : Home /")) {
 					RESULT.passed("Search Order",
 							"Should be navigated to Search Order page",
@@ -126,6 +126,7 @@ public class CaseDriver extends BaseModuleDriver {
 		{
 			if (uiDriver.isDisplayed("lnkcase")) {
 				uiDriver.click("lnkcase");
+				uiDriver.waitForPageLoad();
 			} else {
 				
 				RESULT.failed("Create Case ", "Case should be visible", "Case tab is not visible");

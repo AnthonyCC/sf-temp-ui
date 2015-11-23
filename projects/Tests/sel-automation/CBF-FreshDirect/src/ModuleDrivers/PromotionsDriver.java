@@ -2,32 +2,14 @@ package ModuleDrivers;
 
 import java.awt.AWTException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.openqa.selenium.interactions.Actions;
 import org.sikuli.script.FindFailed;
-
-import com.ibm.db2.jcc.am.w;
-import org.openqa.selenium.TimeoutException;
-
-
-import ui.RobotPowered;
-import ui.WebUIDriver;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
-import cbf.engine.TestResult.ResultType;
-import cbf.harness.Harness;
-import cbf.utils.Configuration;
 import cbf.utils.DataRow;
 import cbf.utils.SleepUtils;
 import cbf.utils.SleepUtils.TimeSlab;
@@ -698,7 +680,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 		SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 		
 			// paste the product name as it is with formatting from the web page
-			String product = webDriver.findElement(By.partialLinkText(uiDriver.productFullName)).getText();
+			String product = webDriver.findElement(By.partialLinkText(uiDriver.productFullName.replace("\n", " "))).getText();
 			RESULT.passed("Coupon product after logging in again", "Coupon product should be available in cart after logging in again", 
 					"Coupon product:"+ product+" is available in cart after logging in again");
 		} 

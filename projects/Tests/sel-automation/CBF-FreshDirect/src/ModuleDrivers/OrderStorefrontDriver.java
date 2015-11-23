@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.sikuli.script.FindFailed;
 
+
 import ui.WebUIDriver;
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -28,7 +29,8 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/*
 	 * Component for checkout and Your Cart page
 	 */
-	public void Checkout(DataRow input, DataRow output) throws FindFailed,
+	
+	public void CartVerify(DataRow input, DataRow output) throws FindFailed,
 	InterruptedException{
 		try 
 		{
@@ -37,8 +39,37 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			{
 				uiDriver.FD_viewCart();
 			}
+			}
+		catch (Exception e) {
+			RESULT.failed("Verify Products in cart",
+					"User should be able to Verify Products in cart successfully",
+					"Unable to Verify cart Products and exception caught is "+e.getMessage());
 			
-			String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("strsubttl1")).getText();
+		}
+	}
+
+	public void Checkout(DataRow input, DataRow output) throws FindFailed,
+	InterruptedException{
+		try 
+		{
+			//uiDriver.waitForPageLoad();
+			if (!webDriver.getTitle().contains("View Cart")) 
+			{
+//				WebElement btnYourcart = uiDriver.getwebDriverLocator(objMap.getLocator("btnyourCart"));					
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					uiDriver.getwebDriverLocator(objMap.getLocator("btnyourCart")).sendKeys("\n");
+				}
+				else
+				{
+					uiDriver.click("btnyourCart");
+				}
+				uiDriver.waitForPageLoad();
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txtSubTotal"))));
+				//uiDriver.FD_viewCart();
+			}
+			
+			String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("txtSubTotal")).getText();
 			cartSubtotal = cartSubtotal.replaceAll(",", "");
 			
 			// for $50 check
@@ -58,6 +89,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btncheckOut"))).size()>0)
 			{
+				RESULT.passed("Checkout", "Checkout button should be available", "Checkout button is available");
 				uiDriver.click("btncheckOut");
 //				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				uiDriver.waitForPageLoad();
@@ -218,7 +250,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			
 		}
 	}
-
+	
  /* Component to handle Delivery Address selection
 	 */
 	public void DeliveryAddress(DataRow input, DataRow output)
@@ -254,15 +286,16 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						if(webDriver.findElements(
 								By.xpath(objMap.getLocator("btnchangeDeliveryAddress"))).size() > 0 && 
 								webDriver.findElement(By.xpath(objMap.getLocator("btnchangeDeliveryAddress"))).isDisplayed())
+						{											
 						uiDriver.click("btnchangeDeliveryAddress");
+						}
 						else
 						{
 							RESULT.failed("Delivery Address ", "Change Delivery address link should be available",
 									"Change Delivery address link is not available or visible");
 							return;
 						}
-					}
-				
+					}				
 					RESULT.passed("DeliveryAddress",
 							"User should be able to navigate on Delivery Address page",
 							"User is navigating to Delivery Address Page");
@@ -294,7 +327,21 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 					// wait for the invisibility of the done button
 					
 					try{
-						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
+						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));		
+						String selectedAddress = webDriver.findElement(By.xpath(objMap.getLocator("strselectedAddress"))).getText();
+						if(selectedAddress.contains(uiDriver.address) && input.get("AddSelectDeleteEdit").equalsIgnoreCase("select"))
+						{
+							RESULT.passed(
+									"Address selection",
+									uiDriver.address+ " Address should get selected",
+									selectedAddress +" Address selected successfully!!!");
+						}
+						else if(input.get("AddSelectDeleteEdit").equalsIgnoreCase("select")){
+							RESULT.failed("Address selection",
+									uiDriver.address+ " Address should get selected",
+									"Specified address selection is unsucessful");
+							return;
+						}
 					}catch(TimeoutException e){
 						RESULT.warning("Delivery address done click",
 								"Delivery address done button should get clicked and become invisible",
@@ -305,7 +352,8 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				else
 				{
 					RESULT.warning("Delivery Address", "Application should be on Express Checkout page",
-							"Appication is not on Express Checkout page");
+							"Application is not on Express Checkout page");
+					return;
 				}
 			}
 			catch(Exception e)
@@ -350,6 +398,21 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 										
 						uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
 						uiDriver.click("btndoneDelAddress");
+						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
+						String selectedAddress = webDriver.findElement(By.xpath(objMap.getLocator("strselectedAddress"))).getText();
+						if(selectedAddress.contains(uiDriver.address) && input.get("AddSelectDeleteEdit").equalsIgnoreCase("select"))
+						{
+							RESULT.passed(
+									"Address selection",
+									uiDriver.address+ " Address should get selected",
+									selectedAddress +" Address selected successfully!!!");
+						}
+						else if(input.get("AddSelectDeleteEdit").equalsIgnoreCase("select")){
+							RESULT.failed("Address selection",
+									uiDriver.address+ " Address should get selected",
+									"Specified address selection is unsucessful");
+							return;
+						}
 						SleepUtils.getInstance().sleep(TimeSlab.LOW);
 					}
 				}
@@ -387,7 +450,6 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 					uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
 					uiDriver.click("btndoneDelAddress");
 					SleepUtils.getInstance().sleep(TimeSlab.LOW);
-
 				}while(i<selectLst.size());
 				}
 			}catch (Exception e) {
@@ -395,7 +457,6 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			}
 			//		uiDriver.wait.until(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(objMap.getLocator("btnchangeDeliveryAddress")))));				
 			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
-
 		}catch(Exception e){
 			RESULT.failed("Delivery Address Component",
 					"User should be able to "+ input.get("AddSelectDeleteEdit")+ " delivery address",
@@ -416,6 +477,13 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		String TimeSlot1=null;
 		String TimeSlot2=null;
 		try {
+			
+			if (!webDriver.getTitle().equals(input.get("PageName"))) {
+				RESULT.warning("Time Slot", "Application should be on Express Checkout page",
+				"Application is not on Express Checkout page");
+				return;
+			}
+			
 			webDriver.navigate().refresh();
 			//			WebUIDriver.selenium.waitForPageToLoad(uiDriver.PageLoadTime);
 			if (webDriver.findElements(By.xpath(objMap.getLocator("btnChangeTimeSlot"))).size() > 0) 
@@ -450,18 +518,18 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 					TimeSlot = TimeSlot1 + "-" + TimeSlot2;
 					System.out.println("Selected time:" + TimeSlot);
 					System.out.println("Selected day:"+DeliveryDay);
-					if (WebUIDriver.reserve_flag == true)
+					if (uiDriver.reserve_flag == true)
 					 {
 						if (TimeSlot.toLowerCase().contains(uiDriver.verify_time.toLowerCase())&& 
 								DeliveryDay.toLowerCase().contains(uiDriver.verify_day.toLowerCase())) {
-							RESULT.passed("Select Time Slot","Reserved Time Slot Should be selected",
-									"Already Selected time slot is same as reserved time");
-							WebUIDriver.reserve_flag=false;
+							RESULT.passed("Select Time Slot","Reserved Time Slot "+uiDriver.verify_time+uiDriver.verify_day+ "Should be selected",
+									"Already Selected time slot "+TimeSlot+" is same as reserved time");
+							uiDriver.reserve_flag=false;
 							return;
 						}
 						else
-							RESULT.failed("Select Time Slot","Reserved Time Slot Shoud be selected",
-							"Already Selected time slot is not same as reserved time");
+							RESULT.failed("Select Time Slot","Reserved Time Slot "+uiDriver.verify_time+uiDriver.verify_day+ "Shoud be selected",
+							"Already Selected time slot "+TimeSlot+" is not same as reserved time");
 					}
 					else
 					{
@@ -522,6 +590,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 								{
 									if (input.get("RestrictionHandle").equalsIgnoreCase("Remove") || input.get("RestrictionHandle").isEmpty()) {
 										uiDriver.click("btnremoveProceed");
+										uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnremoveProceed"))));
 										RESULT.passed("Alcohol Restriction",
 												"Alcohol Restriciton popup should be displayed",
 										"Alcohol Restriciton popup is displayed and Alcohol item removed and proceeded");
@@ -529,6 +598,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 									if (input.get("RestrictionHandle").equalsIgnoreCase("Change")) 
 									{
 										uiDriver.click("btnchangeTimeSlotAlcohol");
+										uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btnchangeTimeSlotAlcohol"))));
 										RESULT.passed("Alcohol Restriction",
 												"Alcohol Restriciton popup should be displayed",
 												"Alcohol Restriciton popup is displayed and Address changed");
@@ -575,11 +645,10 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 									return;
 								}
 							}
-
 						}						
 					}
 				}else {  
-					if (WebUIDriver.reserve_flag == true)
+					if (uiDriver.reserve_flag == true)
 					 {
 						RESULT.failed("Select Timeslot button", "Select time slot button should not be available for already reserved time slot", 
 								"Select Time slot button available for already Reserved time slot");
@@ -698,6 +767,13 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	public void PaymentOptions(DataRow input, DataRow output)
 	throws FindFailed, InterruptedException {
 		try {
+			
+			if (!webDriver.getTitle().equals(input.get("PageName"))) {
+				RESULT.warning("Payment Option", "Application should be on Express Checkout page",
+				"Application is not on Express Checkout page");
+				return;
+			}
+			
 			String selectedCard;
 			if (webDriver.findElements(By.xpath(objMap.getLocator("btnchangePaymnt"))).size()>0)
 			{
@@ -712,7 +788,14 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 							input.get("CardDetail")+"is already selected");
 				}else{
 				uiDriver.click("btnchangePaymnt");
-				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btncancelPayment"))));
+				try{
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("lstpayment"))));
+				}catch(Exception e){
+					RESULT.failed("Payment selection frame",
+							"Payment selection frame should get available",
+							"Payment selection frame is not available");
+					return;
+				}
 //				if(webDriver.findElement(By.xpath("//li[@data-drawer-id='payment']/button[contains(text(),'Cancel')]")).isEnabled()){
 //					RESULT.done("Change Payment","Change button should be clicked successfully",
 //							"Change button is clicked successfully");
@@ -741,7 +824,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						System.out.println(selectedCard);
 						
 //						String match1=input.get("CardDetail").split("Billing address")[0].replaceAll("\\n", "");
-						if(selectedCard.contains(uiDriver.match)&&input.get("AddEditDeleteSelect").equalsIgnoreCase("select"))
+						if(selectedCard.replace("Name on card", "Name").contains(uiDriver.match.replace("Name on card", "Name"))&&input.get("AddEditDeleteSelect").equalsIgnoreCase("select"))
 						{
 							RESULT.passed(
 									"Selection of Credit/EBT card/checking account",
@@ -775,7 +858,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				}
 				else
 				{	
-					RESULT.failed("Change Payment button","User should be able to click on change button", "Change button is not displayed");
+					RESULT.warning("Change Payment button","User should be able to click on change button", "Change button is not displayed");
 					return;
 				}
 //			}
@@ -798,6 +881,13 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	public void PlaceOrder(DataRow input, DataRow output)
 	throws FindFailed, InterruptedException {
 		try{
+			
+			if (!webDriver.getTitle().equalsIgnoreCase("Checkout")) {
+				RESULT.warning("Payment Option", "Application should be on Express Checkout page",
+				"Application is not on Express Checkout page");
+				return;
+			}
+			
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			uiDriver.FD_returnProducts();
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);

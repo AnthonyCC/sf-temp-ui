@@ -98,9 +98,11 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 			uiDriver.setValue("txtdisplayName", Date1);
 			// click on Save Button
 			uiDriver.click("lnkSave");
+			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By
+					.linkText(objMap.getLocator("lnkSave"))));
 			uiDriver.waitForPageLoad();
 			
-			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+			SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 			
 			// verifying updated details of customer
 			if (webDriver.findElements(By.xpath(objMap.getLocator("strbasicInfo"))).size() > 0){

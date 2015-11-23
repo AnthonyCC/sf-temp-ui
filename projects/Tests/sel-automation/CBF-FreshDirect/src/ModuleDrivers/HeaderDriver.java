@@ -26,6 +26,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -34,7 +35,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.sikuli.script.FindFailed;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.ibm.db2.jcc.am.we;
 
 import ui.RobotPowered;
 import cbf.engine.BaseModuleDriver;
@@ -42,6 +42,7 @@ import cbf.engine.TestResultLogger;
 import cbf.utils.DBUtils;
 import cbf.utils.DataRow;
 import cbf.utils.SleepUtils;
+
 import cbf.utils.SleepUtils.TimeSlab;
 
 
@@ -144,7 +145,7 @@ public class HeaderDriver extends BaseModuleDriver
 			{				 
 				//Verify Zipcode for No Coverage
 				list =connect.runQueryOr("devint","select ZIPCODE from DLV.ZIPCODE where COS_COVERAGE<=0.1 and HOME_COVERAGE<=0.1");
-				zipcode=list.get((int) Math.round(Math.ceil(Math.random()*list.size()))).values().toString();
+				zipcode=list.get((int) Math.round(Math.ceil(Math.random()*(list.size()-1)))).values().toString();
 				webDriver.findElement(By.id(objMap.getLocator("strnewZipCode"))).sendKeys(zipcode);
 			}
 			catch(Exception e)
@@ -154,6 +155,11 @@ public class HeaderDriver extends BaseModuleDriver
 			
 			uiDriver.click("btngoBtn");
 			uiDriver.waitForPageLoad();
+			try{
+				(new WebDriverWait(webDriver,20)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}catch(Exception e){
+				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}
 			
 			//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			
@@ -244,10 +250,11 @@ public class HeaderDriver extends BaseModuleDriver
 			}
 			
 			// Verify Zipcode for Partial Coverage
-			try{
-			List<Map> list1 = connect.runQueryOr("devint","select ZIPCODE from DLV.ZIPCODE where COS_COVERAGE between 0.1 and 0.9 and HOME_COVERAGE between 0.1 and 0.9");
-			String zipcode1=list1.get((int) Math.round(Math.ceil(Math.random()*list1.size()))).values().toString();
-			webDriver.findElement(By.id(objMap.getLocator("strnewZipCode"))).sendKeys(zipcode1);
+			zipcode = null;
+			try{			
+			List<Map> list1 = connect.runQueryOr("devint","select ZIPCODE from DLV.ZIPCODE where COS_COVERAGE >0.1 and COS_COVERAGE< 0.9 and HOME_COVERAGE> 0.1 and HOME_COVERAGE<0.9");
+			zipcode=list1.get((int) Math.round(Math.ceil(Math.random()*(list1.size()-1)))).values().toString();
+			webDriver.findElement(By.id(objMap.getLocator("strnewZipCode"))).sendKeys(zipcode);
 			}
 			catch(Exception e)
 			{
@@ -256,7 +263,12 @@ public class HeaderDriver extends BaseModuleDriver
 			uiDriver.click("btngoBtn");
 			uiDriver.waitForPageLoad();
 			
-			SleepUtils.getInstance().sleep(TimeSlab.LOW);
+			try{
+				(new WebDriverWait(webDriver,20)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}catch(Exception e){
+				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}
+		
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btnclosePopupNeedInfo"))).size()>0 && 
 					webDriver.findElement(By.xpath(objMap.getLocator("btnclosePopupNeedInfo"))).isDisplayed())
 			{
@@ -311,7 +323,7 @@ public class HeaderDriver extends BaseModuleDriver
 			// Verify Zipcode for Full Coverage
 			try{
 			List<Map> list2 = connect.runQueryOr("devint","select ZIPCODE from DLV.ZIPCODE where COS_COVERAGE>=0.9 and HOME_COVERAGE>=0.9");
-			String zipcode2=list2.get((int) Math.round(Math.ceil(Math.random()*list2.size()))).values().toString();
+			String zipcode2=list2.get((int) Math.round(Math.ceil(Math.random()*(list2.size()-1)))).values().toString();
 			webDriver.findElement(By.id(objMap.getLocator("strnewZipCode"))).sendKeys(zipcode2);
 			}
 			catch(Exception e)
@@ -320,8 +332,13 @@ public class HeaderDriver extends BaseModuleDriver
 			}
 			uiDriver.click("btngoBtn");
 			uiDriver.waitForPageLoad();
+
+			try{
+				(new WebDriverWait(webDriver,20)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}catch(Exception e){
+				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(objMap.getLocator("btngoBtn"))));
+			}
 			
-			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			if(webDriver.findElements(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).size()>0 && 
 					webDriver.findElement(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).getText().equals("Office delivery?"))
 			{
@@ -729,6 +746,8 @@ public class HeaderDriver extends BaseModuleDriver
 						uiDriver.setValue("txtemailAddress", input.get("userID"));
 						uiDriver.setValue("txtpass", input.get("password"));
 						uiDriver.click("btnloginGoBtn");
+						uiDriver.waitForPageLoad();
+						
 					}
 					catch(Exception e)
 					{
@@ -740,6 +759,7 @@ public class HeaderDriver extends BaseModuleDriver
 					//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					try
 					{
+						uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("stryourAcctPage"))));
 						if(webDriver.findElement(By.xpath(objMap.getLocator("stryourAcctPage"))).getText().contains("Welcome to Your Account"))
 						{
 							RESULT.passed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
@@ -748,7 +768,7 @@ public class HeaderDriver extends BaseModuleDriver
 						}
 						else
 						{
-							RESULT.passed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
+							RESULT.failed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
 									"User should be redirected to Your Account page",
 									"Unable to navigate to Your Account page");	
 						}
@@ -984,6 +1004,7 @@ public class HeaderDriver extends BaseModuleDriver
 				//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 				try
 				{
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("strreorder"))));
 					if(webDriver.findElement(By.xpath(objMap.getLocator("strreorder"))).getText().equals("Reorder"))
 					{
 
@@ -1491,8 +1512,8 @@ public class HeaderDriver extends BaseModuleDriver
 					}else{
 						webDriver.findElement(By.linkText(categories[i])).click();
 						uiDriver.waitForPageLoad();
-						if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
-							uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.linkText(categories[i])))));
+						//if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+						//	uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.linkText(categories[i])))));
 					}		
 					//SleepUtils.getInstance().sleep(TimeSlab.HIGH);
 					//uiDriver.waitForPageLoad();
@@ -1641,6 +1662,7 @@ public class HeaderDriver extends BaseModuleDriver
 		try 
 		{
 			try{
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div[@class='top-nav']/ul/li")));
 			}catch(Exception e){
 				RESULT.failed("Top Navigation", "Top Navigation bar should be available",
@@ -1672,7 +1694,7 @@ public class HeaderDriver extends BaseModuleDriver
 						if(k==1){
 							item[1]=item[1].replace("T", "t");
 						}
-						String sub_dept_xpath = "//a[text() = '"+item[k]+"']";
+						String sub_dept_xpath = "//span/a[text() = '"+item[k]+"']";
 
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 
@@ -1683,8 +1705,8 @@ public class HeaderDriver extends BaseModuleDriver
 						webDriver.findElement(By.xpath(sub_dept_xpath)).click();	
 						uiDriver.waitForPageLoad();
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-						if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
-							uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(sub_dept_xpath)))));						
+						//if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
+						//	uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(sub_dept_xpath)))));						
 						uiDriver.waitForPageLoad();
 						//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 						if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
@@ -1872,8 +1894,9 @@ public class HeaderDriver extends BaseModuleDriver
 						else
 						{
 							RESULT.failed("Your account link", "Your account link should redirect to your account page", 
-							"Your account link could not redirect to your account page");
+							"Your account link could not redirect to your account page");											
 						}
+						//webDriver.navigate().refresh();
 					}
 					else
 					{
@@ -1889,12 +1912,10 @@ public class HeaderDriver extends BaseModuleDriver
 								arr1[i].substring(3).toUpperCase()+" :link redirected to respective page");
 						if(!(arr1[i].equals("lnkHome")))
 							webDriver.navigate().back();
-						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+						uiDriver.waitForPageLoad();
 					}
-
 					//					}
-				}catch (Exception e) {
-					
+				}catch (Exception e) {					
 					RESULT.failed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr1[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
 				}
 //			}catch (Exception e) {
@@ -1910,6 +1931,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 			try{
 				webDriver.navigate().refresh();
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				uiDriver.clickFromData(arr2[i]);
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 

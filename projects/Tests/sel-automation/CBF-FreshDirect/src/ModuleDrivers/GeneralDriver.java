@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
@@ -19,6 +20,7 @@ import cbf.utils.SleepUtils.TimeSlab;
 
 public class GeneralDriver extends BaseModuleDriver {
 
+	WebDriverWait wait = new WebDriverWait(webDriver, 60);
 	public GeneralDriver(TestResultLogger resultLogger) {
 		super(resultLogger);
 		// TODO Auto-generated constructor stub
@@ -42,15 +44,15 @@ public class GeneralDriver extends BaseModuleDriver {
 					"Should open the Application",
 			"Application opened sucessfully!");
 			try{
-			if(webDriver.findElements(By.xpath(objMap.getLocator("lnkclickHere"))).size() > 0)
-			{
-				uiDriver.click("lnkclickHere");	
-				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkclickHere"))));	
-			}	
+				if(webDriver.findElements(By.xpath(objMap.getLocator("lnkclickHere"))).size() > 0)
+				{
+					uiDriver.click("lnkclickHere");	
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkclickHere"))));	
+				}	
 			}
 			catch (Exception e) {
-			RESULT.warning("New user login", "Media section should be visible", "Media section is not visible");
-				
+				RESULT.warning("New user login", "Media section should be visible", "Media section is not visible");
+
 			}
 		} else {
 			RESULT.log("Launching the Application", ResultType.FAILED,
@@ -64,13 +66,19 @@ public class GeneralDriver extends BaseModuleDriver {
 		try {
 			uiDriver.launchApplication(input.get("url"));
 			try{
-			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnCRMLogin"))));
+				uiDriver.waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnCRMLogin"))));
 			}catch(Exception e){
-				RESULT.failed("Launching the CRM Application",
-						"CRM should be launched successfully and Login button should be available",
-				"CRM launching failed as login button is not available");				
+				try{
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("lnklogout_CRM"))));
+				}catch (Exception e1) {
+					RESULT.failed("Launching the CRM Application",
+							"CRM should be launched successfully and Login button should be available",
+					"CRM launching failed as login button is not available");		
+				}	
 			}
-			if (webDriver.getTitle().equals("/ FreshDirect CRM : Login /")) {
+			if (webDriver.findElements(By.xpath(objMap.getLocator("lnklogout_CRM"))).size()>0 || 
+					webDriver.findElements(By.className(objMap.getLocator("btnCRMLogin"))).size()>0) {
 				RESULT.passed("Launching the CRM Application",
 						"Should open the Application",
 				"Application opened sucessfully!");
@@ -89,8 +97,8 @@ public class GeneralDriver extends BaseModuleDriver {
 	// Log in to the Storefront
 	@SuppressWarnings("deprecation")
 	public void Login(DataRow input, DataRow output) throws InterruptedException
-	 {
-		
+	{
+
 		if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)
 		{
 			if (uiDriver.isDisplayed("btnlogout")) 
@@ -111,7 +119,7 @@ public class GeneralDriver extends BaseModuleDriver {
 			if (uiDriver.isDisplayed("btnlogout")) {
 				RESULT.passed("Login", 
 						"Should be Logged in Successfully ",
-				"Logged in successfully with  username  " +input.get("userID") +" and  Password " +input.get("password") );
+						"Logged in successfully with  username  " +input.get("userID") +" and  Password " +input.get("password") );
 			} else {
 				RESULT.failed("User login", 
 						uiDriver.fd_username +" should be logged in successfully",
@@ -122,10 +130,10 @@ public class GeneralDriver extends BaseModuleDriver {
 		{
 			RESULT.failed("Login ","Log out button should be available","Log out button is not available");
 		}
-		
+
 		// set the alcohol alert flag to false as user logged in and its new session 
 		uiDriver.item_alcohol_accepted = false;
-		
+
 		//Merge Cart block
 		try {
 			if (webDriver.findElements(By.xpath(objMap.getLocator("strmergeCart1"))).size()>0) {
@@ -174,7 +182,7 @@ public class GeneralDriver extends BaseModuleDriver {
 		} catch (Exception e) {
 			RESULT.failed("Merge cart", "Cart should be successfully merged", "Cart is unable to merge successfully");
 		}
-	
+
 	}
 
 	// Logout from the Storefront
@@ -218,7 +226,7 @@ public class GeneralDriver extends BaseModuleDriver {
 		{
 			RESULT.failed("Logout component", "Log out component should be successful", "Log out is not successful");
 		}
-		
+
 	}
 
 	// Log in to the CRM Application
@@ -226,9 +234,35 @@ public class GeneralDriver extends BaseModuleDriver {
 	throws InterruptedException, FindFailed {
 		try{
 			try{
-				uiDriver.FD_loginCRM(input.get("UserID"), input.get("Password"));
-			}catch(Exception e){
-				RESULT.failed("Login CRM function", "Login CRM function should be successful", "Login CRM is failed");
+				if (webDriver.findElements(By.xpath(objMap.getLocator("lnklogout_CRM"))).size()>0 && 
+						uiDriver.isDisplayed("lnklogout_CRM"))
+				{
+					// click on logout link
+					uiDriver.click("lnklogout_CRM");
+					uiDriver.waitForPageLoad();
+					// verify logout button disappears or not
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnklogout_CRM"))));
+
+				}
+			}catch (Exception e) {
+				RESULT.failed("CRM Log out for Fresh Log in", "User should be logged out successfully", 
+				"Log out unsuccessful");
+				return;
+			}
+			if(webDriver.findElements(By.className(objMap.getLocator("btnCRMLogin"))).size()>0
+					&& uiDriver.isDisplayed("btnCRMLogin"))
+			{
+				try{
+					uiDriver.FD_loginCRM(input.get("UserID"), input.get("Password"));
+				}catch (Exception e) {
+					RESULT.failed("CRM Log in", "User should be logged in successfully", 
+					"Log in unsuccessful");
+					return;
+				}
+
+			}else
+			{
+				RESULT.failed("CRM Log in", "Log in button should be available", "Log in button is not available on page");
 				return;
 			}
 			// click on home if the landing page is not home
@@ -238,22 +272,26 @@ public class GeneralDriver extends BaseModuleDriver {
 				uiDriver.waitForPageLoad();
 				try{
 					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnknewCustomer"))));
-				    }catch(Exception e)
-				    {
-				    	RESULT.failed("CRM Homepage","Homepage Should be displayed","Homepage is not displayed");
-						}
+				}catch(Exception e)
+				{
+					RESULT.failed("CRM Homepage","Homepage Should be displayed","Homepage is not displayed");
+				}
 				//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
-			}
-			
-			if (webDriver.getTitle().contains(input.get("pageName"))) {
+				if (webDriver.getTitle().contains(input.get("pageName"))) {
+					RESULT.passed("LoginCRM", 
+							"Should be Logged in Successfully",
+					"Logged in successfully");
+				} else {
+					RESULT.failed("LoginCRM", 
+							"Should be Logged in Successfully",
+					"Failed to Log in");
+				}
+			}else{
 				RESULT.passed("LoginCRM", 
 						"Should be Logged in Successfully",
 				"Logged in successfully");
-			} else {
-				RESULT.failed("LoginCRM", 
-						"Should be Logged in Successfully",
-				"Failed to Log in");
 			}
+
 		}catch(Exception e){
 			RESULT.failed("Login CRM component", "Login CRM component should be successful", "Login CRM is failed");
 		}
@@ -290,7 +328,7 @@ public class GeneralDriver extends BaseModuleDriver {
 
 	public void YourAccount(DataRow input, DataRow output)
 	throws InterruptedException, FindFailed {
-		
+
 		try
 		{
 			try
@@ -305,7 +343,7 @@ public class GeneralDriver extends BaseModuleDriver {
 				RESULT.failed("Your Account ", "Your account link should be successfully clicked", "Your Account link is not clicked successfully");
 			}
 			//click on Your Account link
-			
+
 			//Verifying user is logged in or not
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btngoAnonymous"))).size()>0)
 			{
@@ -320,8 +358,8 @@ public class GeneralDriver extends BaseModuleDriver {
 				RESULT.warning("Your Account : Link credit wait",
 						"Account credit link should be available", "Account credit link is not available");
 			}
-			
-//			SleepUtils.getInstance().sleep(TimeSlab.HIGH);
+
+			//			SleepUtils.getInstance().sleep(TimeSlab.HIGH);
 			//verifying Your Account page
 			if(webDriver.findElements(By.xpath(objMap.getLocator("lnkyourOrders"))).size() > 0)
 			{
@@ -360,7 +398,7 @@ public class GeneralDriver extends BaseModuleDriver {
 					RESULT.passed("Reserve a time slot for VIP customer", "VIP Customer should not be able to reserve a time slot",
 					"Reserve a delivery time link is not available for VIP customer");
 				}
-				
+
 			}*/
 			//Go to particular desired link
 			uiDriver.clickFromData("lnk"+input.get("select_link"));
@@ -372,9 +410,10 @@ public class GeneralDriver extends BaseModuleDriver {
 			}
 			catch(Exception e)
 			{
-				RESULT.failed("Your Account ", "Your account page should be successfully navigated", "Your account page is not available");
+				RESULT.failed("Navigation to link lnk"+input.get("select_link"), " page should not be navigated to lnk"+input.get("select_link")+"page", "lnk"+input.get("select_link")+" page is not available");
+				return;
 			}
-			
+
 			//verifying particular page 
 			if (webDriver.findElements(By.xpath(objMap.getLocator("lnkreorderPastOrder"))).size() <1) {
 				RESULT.passed(input.get("select_link")+" :link",
@@ -389,7 +428,7 @@ public class GeneralDriver extends BaseModuleDriver {
 		catch(Exception e)
 		{
 			RESULT.failed("Your Account Exception","Your account check should be successful ",
-					"Your Account check is not successful");
+			"Your Account check is not successful");
 		}
 	}
 
@@ -437,8 +476,8 @@ public class GeneralDriver extends BaseModuleDriver {
 			}
 			else if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()<0 && webDriver.findElements(By.className(objMap.getLocator("btnlogin"))).size()<0)
 			{
-					uiDriver.click("imgfd_Logo");
-					Logout(input, output);
+				uiDriver.click("imgfd_Logo");
+				Logout(input, output);
 			}
 			uiDriver.FD_SignUP(input.get("Firstname"), input.get("Lastname"),
 					input.get("ZipCode"), input.get("ServiceType"), input
@@ -450,7 +489,7 @@ public class GeneralDriver extends BaseModuleDriver {
 					input.get("CompanyState"), input.get("CompanyZipcode"));
 			uiDriver.waitForPageLoad();
 			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogout"))));
-			if (uiDriver.isDisplayed("btnlogout")) {
+			if (uiDriver.isDisplayed("btnlogout") && webDriver.getCurrentUrl().contains("freshdirect.com/index.jsp")) {
 				RESULT.passed("SignUp",
 						"User should be successfully logged in to the Application and navigated to Home Page",
 				"Logged in successfully in to the Application and navigated to Home Page");
@@ -460,23 +499,31 @@ public class GeneralDriver extends BaseModuleDriver {
 				"Unable to Login to the Application");
 				return;
 			}
-		
+
 		} catch (Exception e) {
 			RESULT.failed("SignUp",
 					"User should be successfully logged in to the Application and navigated to Home Page",
-					"Unable to SignUp successfully");
+			"Unable to SignUp successfully");
 		}
 	}
 
 	public void LanguageDetection(DataRow input, DataRow output)
 	throws InterruptedException, TimeoutException, FindFailed {
 		try {
-			uiDriver.FD_viewSourceLang();
-			if(uiDriver.isDisplayed("lnkhelpLink")){
+			if(uiDriver.isDisplayed("lnkprivacyPolicy")){
+				/*//Click on Help link
 				uiDriver.click("lnkhelpLink");
+				uiDriver.waitForPageLoad();*/
+				//Click on Pricacy Policy link at bottom of page
 				uiDriver.click("lnkprivacyPolicy");
+				uiDriver.waitForPageLoad();
+				//Verify language
+				uiDriver.FD_viewSourceLang();
+				//Click on ESPANOL to change the language
 				uiDriver.click("btnENESPANOL");
-				SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+				uiDriver.waitForPageLoad();
+				//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+				//Verify language
 				uiDriver.FD_viewSourceLang();
 			}	
 			else
@@ -486,7 +533,7 @@ public class GeneralDriver extends BaseModuleDriver {
 			}
 		} catch (Exception e) {
 			RESULT.failed("Language detection exception", "Language detection should be successful",
-					"Language detection is not successful");
+			"Language detection is not successful");
 			return;
 		}
 	}
@@ -508,15 +555,34 @@ public class GeneralDriver extends BaseModuleDriver {
 		try {
 			if(webDriver.findElements(By.className(objMap.getLocator("btnsignup"))).size()>0){
 				uiDriver.click("btnsignup");
-				webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup")));
-				uiDriver.setValue("txtpassWord1",input.get("password"));
-				String Pwd=input.get("password");
-				uiDriver.FD_passwordValidation(Pwd);
+				uiDriver.waitForPageLoad();
+
+				try{
+					uiDriver.wait.until(ExpectedConditions.visibilityOf(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup"))));
+					webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup")));
+				}catch (Exception e) {
+					RESULT.failed("SignUp Page", "SignUp Page should be available", "SignUp Page is not available");
+					return;
+				}
+
+				try{
+					uiDriver.wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.name(objMap.getLocator("txtpassWord1")))));
+				}catch (Exception e) {
+					RESULT.failed("SignUp Page password field", "SignUp Page password field should be available", "SignUp Page password field is not available");
+					return;
+				}				
+
+
+				String PWD[] = input.get("password").split("\n");
+				for (int i = 0; i < PWD.length; i++) {
+					uiDriver.setValue("txtpassWord1",PWD[i]);
+					String Pwd=PWD[i];
+					uiDriver.FD_passwordValidation(Pwd);
+				}
+
 				webDriver.switchTo().defaultContent();
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				webDriver.findElement(By.xpath(objMap.getLocator("btnsignupClose"))).click();
-			}else{
-				RESULT.failed("SignUp button", "SignUp button should be available", "SignUp button is not available");
+				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);		
 				return;
 			}
 		} catch (Exception e) {
@@ -525,43 +591,19 @@ public class GeneralDriver extends BaseModuleDriver {
 		}
 		try {
 			if(webDriver.findElements(By.xpath(objMap.getLocator("txtaccountPref"))).size()>0){
-				uiDriver.setValue("txtAccPrefPwd",input.get("password"));
-				String Pwd1=input.get("password");
-				uiDriver.FD_passwordValidation(Pwd1);
-
-			}else{
-				RESULT.failed("Password Field button", "Password Field should be available", "Password Field is not available");
+				String PWD[] = input.get("password").split("\n");
+				for (int i = 0; i < PWD.length; i++) {
+					uiDriver.setValue("txtAccPrefPwd",PWD[i]);
+					String Pwd=PWD[i];
+					uiDriver.FD_passwordValidation(Pwd);
+				}
 				return;
 			}
 		} catch (Exception e) {
 			RESULT.warning("Account pref Page", "Account pref Page should be available", "Account pref Page is not available");
-		}
-	}
-
-	public void FDLogo(DataRow input, DataRow output){
-		try {
-			if(webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0)
-			{
-				uiDriver.click("imgfd_Logo");
-				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("imgmediaSection"))));
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-				RESULT.passed("FD Logo", "User should be navigated to Home Page", "User has navigated to Home Page successfully!!!");
-			}					
-			else if(webDriver.findElements(By.className(objMap.getLocator("imgfdLogoCheckout"))).size()>0)
-			{
-				uiDriver.click("imgfdLogoCheckout");
-				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("imgmediaSection"))));
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-				RESULT.passed("FD Logo", "User should be navigated to Home Page", "User has navigated to Home Page successfully!!!");
-			}
-			else
-			{
-				RESULT.failed("FD Logo", "User should be navigated to Home Page", "Unable to navigate to Home Page");
-			}
-		} catch (Exception e) {
-			RESULT.failed("FreshDirect Logo", "Fresh Direct logo should be clicked successfully",
-					"Fresh Direct logo could not be clicked successfully");
 			return;
 		}
-	}	
+		RESULT.failed("Page not found error","Signup/Your acc pref page should be present","Signup/Your acc pref page is present");
+	}
+
 }
