@@ -10,6 +10,8 @@
 
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	String nextSuccesspage = (String)session.getAttribute("nextSuccesspage");
+
 	String successPage = "index.jsp";
 	String navPage = NVL.apply(request.getParameter("successPage"), "");
 	if(!"".equals(navPage)) {
@@ -98,16 +100,24 @@
 		String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
 		String socialNavPage = NVL.apply(request.getParameter("socialnetwork"), "");
-		String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");	
+		String zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");
+		
 		String posn = "right";
 
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
 
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<%if(nextSuccesspage==null) {%>
 			<script language="javascript">
 				window.top.location="/index.jsp";
 			</script>
+			<%}else {%>
+			<script language="javascript">
+			
+				window.top.location="<%=nextSuccesspage%>";
+			</script>
+			<%} %>
 					
 		<%		 
 		} else if(session.getAttribute("TCAGREE_COMPLETE") != null){
@@ -115,8 +125,15 @@
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
-			
+
+			if(typeof window.top.Modalbox.hide() === "undefined"){
+				//$jq('#MB_overlay').css('display','none');
+				//$jq('#MB_window').css('opacity','0');
+				this.top.close();
+			}else{
+				
 				window.top.Modalbox.hide();
+			}
 				
 			</script>
 					
@@ -137,6 +154,8 @@
 
 				<input type="hidden" name="socialNavPage" value="<%= socialNavPage %>" />
 				<input type="hidden" name="successPage" value="<%= successPage %>" />
+				<input type="hidden" name="nextSuccesspage" value="<%= nextSuccesspage %>" />
+				
 				<input type="hidden" name="litetcaccept" value="true" />
 				
 				<table border="0" cellpadding="0" cellspacing="0">
@@ -165,6 +184,7 @@
 		<% } %>
 	<% } %>
 	</center>
+
 </body>
 </html>
 

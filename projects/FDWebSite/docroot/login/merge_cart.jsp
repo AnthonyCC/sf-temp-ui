@@ -4,6 +4,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+
 <% //expanded page dimensions
 final int W_MERGE_CART_TOTAL = 970;
 final int W_MERGE_CART_RADIO = 30;
@@ -13,13 +18,7 @@ final int W_MERGE_CART_PADDING_RIGHT = 10;
 Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
 %>
-<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
-			<script type="text/javascript">
-			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); } else {
-			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');}
-			
-			</script>
-<%}%>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
 <fd:MergeCartController successPage='<%= request.getParameter("successPage") %>'>
@@ -39,7 +38,13 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 	<tmpl:put name='title' direct='true'>Merge Cart</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ System.out.println("555555555555"+fdTcAgree);%>
+			<script type="text/javascript">
+			
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>')
 
+			</script>
+<%}%>
 <!-- STARTS FROM HERE -->
 <form name="mergecart" action="merge_cart.jsp" method="post">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_MERGE_CART_TOTAL%>">

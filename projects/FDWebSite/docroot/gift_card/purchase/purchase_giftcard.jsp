@@ -16,7 +16,10 @@
 final int W_PURCHASE_GIFTCARD_TOTAL = 970;
 %>
 
-<%request.setAttribute("listPos", "CategoryNote");%>
+<%
+request.setAttribute("listPos", "CategoryNote");
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
+%>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
@@ -70,6 +73,22 @@ sessionuser.setGCSignupError(false);
 sessionuser.setGcFraudReason("");
 } 
 %>
+
+
+
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+			<script type="text/javascript">
+			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
+				
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); 
+				} else {
+					
+				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+			}
+			
+			</script>
+<%}%>
+
 <%
 if(sessionuser.isAddressVerificationError()) {
        

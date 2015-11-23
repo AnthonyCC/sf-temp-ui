@@ -20,8 +20,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="fd-features" prefix="features" %>
 
+
+
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_1_CHOOSE_TOTAL = 970;
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
@@ -69,6 +72,12 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 
 <% //check unattended %>
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
+
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+
 <% 
 if (user.getLevel()==FDUserI.RECOGNIZED) {
     response.sendRedirect(response.encodeRedirectURL("/login/login.jsp?successPage=/checkout/step_1_choose.jsp"));
@@ -96,6 +105,9 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 		padding: 0px;
 	}
 </style>
+
+
+
 <%  
 String actionName = "setDeliveryAddress";
 String successPage = "/checkout/step_2_select.jsp";
@@ -115,6 +127,8 @@ while (e.hasMoreElements()) {
 } 
 
 %>
+
+
 <%-- this action should be kept in sync with LocationHandlerTag.doSelectAddressAction() --%>
 <fd:CheckoutController actionName='<%=actionName%>' result="result" successPage="<%=successPage%>">
 	<%
@@ -140,7 +154,7 @@ while (e.hasMoreElements()) {
 	FDCartModel cart = user.getShoppingCart(); /* cart required for i_cart_delivery_fee.jspf include */
 	
 	%>
- 
+
 	<form method="POST" name="step1Form" id="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
 		<div class="gcResendBox" style="display:none"><!--  -->
 			<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
@@ -180,6 +194,17 @@ while (e.hasMoreElements()) {
 	
 	<%-- Start Header --%>
 <%@ include file="/includes/i_modifyorder.jspf"  %>
+
+	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+				<script type="text/javascript">
+
+				$jq(document).on('ready',  function() {
+					
+					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+						
+				});
+				</script>
+	<%}%>
 <tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header.jsp") %>'>
 <% if(modifyOrderMode) { %>
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
@@ -286,5 +311,8 @@ while (e.hasMoreElements()) {
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 </fd:CheckoutController>
+
+<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+
 </tmpl:put>
 </tmpl:insert>

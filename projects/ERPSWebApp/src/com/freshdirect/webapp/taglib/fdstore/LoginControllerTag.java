@@ -149,13 +149,14 @@ public class LoginControllerTag extends AbstractControllerTag {
 				}
 			}else{
 			 if(user !=null&&!user.getTcAcknowledge()){
-					if (updatedSuccessPage.indexOf("quickshop/index.jsp")!=-1 || updatedSuccessPage.indexOf("your_account/manage_account.jsp")!=-1||updatedSuccessPage.indexOf("step_1_choose.jsp")!=-1) {
-						
+					if (FDStoreProperties.isSocialLoginEnabled()) {
+						 this.setSuccessPage("/registration/tcaccept_lite.jsp");
+						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
 						session.setAttribute("fdTcAgree", false);
-					}else if(updatedSuccessPage.indexOf("request_product.jsp")!=-1 ){
-						this.setSuccessPage(updatedSuccessPage);
-					}else{	
-					 this.setSuccessPage("/registration/tcaccept_lite.jsp");
+					}
+					else{	
+					//	session.setAttribute("nextSuccesspage", updatedSuccessPage);
+						session.setAttribute("fdTcAgree", false);
 					}
 			 }
 			}

@@ -124,6 +124,7 @@ var FreshDirect = FreshDirect || {};
         });
       },
       hide: function () {
+    	  $('.fd-dialog').dialog("destroy").remove();
       }
     };
   }

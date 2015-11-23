@@ -67,8 +67,13 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 
 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 			<script type="text/javascript">
-			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); } else {
-			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');}
+			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
+				
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 400, height: 400, opacity: .5}); 
+				} else {
+					
+				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+			}
 			
 			</script>
 <%}%>
