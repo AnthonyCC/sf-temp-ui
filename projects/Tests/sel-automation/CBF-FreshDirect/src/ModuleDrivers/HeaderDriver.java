@@ -1004,7 +1004,7 @@ public class HeaderDriver extends BaseModuleDriver
 				//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("strreorder"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strreorder"))));
 					if(webDriver.findElement(By.xpath(objMap.getLocator("strreorder"))).getText().equals("Reorder"))
 					{
 
