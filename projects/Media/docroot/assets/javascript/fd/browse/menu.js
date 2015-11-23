@@ -146,7 +146,7 @@ var FreshDirect = FreshDirect || {};
         $(".selected", itemlist).removeClass('selected');
         $('input[type="radio"]', menubox).attr('checked', null);
         $('[data-urlparameter="'+id+'"]', menubox).addClass('selected');
-        $('[data-urlparameter="'+id+'"] input', menubox).attr('checked', $('input', clicked).attr('checked'));
+        $('[data-urlparameter="'+id+'"] input', menubox).attr('checked', $('input', clicked).prop('checked'));
         clicked.addClass('selected');
 
         if (menubox.data('filter') === 'id') {
