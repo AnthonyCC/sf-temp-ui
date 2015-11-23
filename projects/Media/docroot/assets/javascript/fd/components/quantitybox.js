@@ -111,11 +111,11 @@ var FreshDirect = FreshDirect || {};
     $input = getInput($this);
 
     // increase / decrease quantity w/ up / down arrows
-    if (e.keyCode === 38) {
+    if (e.keyCode === fd.utils.keyCode.UP) {
       // up
       newVal = incQty($this, 1);
       $input.val(newVal);
-    } else if (e.keyCode === 40) {
+    } else if (e.keyCode === fd.utils.keyCode.DOWN) {
       // down
       newVal = incQty($this, -1);
       $input.val(newVal);

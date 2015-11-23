@@ -267,6 +267,11 @@ var FreshDirect = FreshDirect || {};
   // meaningful keyCode mappings
   utils.keyCode = {
     ENTER: 13,
-    SPACE: 32
+    SPACE: 32,
+    ESC: 27,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40
   };
 }(FreshDirect));

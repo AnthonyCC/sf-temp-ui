@@ -48,7 +48,7 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
         value: function () {
-          if (this.popup) { 
+          if (this.popup) {
             this.popup.hide();
             this.popup.clearDelay();
           }
@@ -78,6 +78,13 @@ var FreshDirect = FreshDirect || {};
   menupopup.render();
 
   $(document).on('mouseover', menupopup.trigger, menupopup.open.bind(menupopup));
+  $(document).on('keydown', menupopup.trigger, function (e) {
+    if (e.keyCode === fd.utils.keyCode.SPACE) {
+      menupopup.open(e);
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  });
   $(document).on('mouseout', menupopup.trigger, function () {
     if (menupopup.popup) {
       menupopup.popup.clearDelay();

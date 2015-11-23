@@ -33,7 +33,17 @@ ul.customselect,
   white-space: nowrap;
 }
 
-#FDCustomSelect li:hover span {
+#FDCustomSelect li button {
+  font-weight: normal;
+  color: inherit;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+#FDCustomSelect li button:focus,
+#FDCustomSelect li:hover button {
   text-decoration: underline;
 }
 

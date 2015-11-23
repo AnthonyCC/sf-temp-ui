@@ -26,6 +26,7 @@ td {
 a:link { color : #336600; text-decoration: none }
 a:visited { color : #336600;  text-decoration: none }
 a:active { color : #FF9900;  text-decoration: underline }
+a:focus { color : #336600;  text-decoration: underline }
 a:hover { color : #336600;  text-decoration: underline }
 
 .fd-red-text {

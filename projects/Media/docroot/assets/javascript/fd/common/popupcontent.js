@@ -1,10 +1,10 @@
-/*global jQuery*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-  
+  "use strict";
+
   var $=fd.libs.$;
-  
+
   /**
    * Popup content
    *
@@ -19,6 +19,7 @@ var FreshDirect = FreshDirect || {};
     this.$alignTo = this.config.aligntoselector && $(this.config.aligntoselector) ||
                     this.config.alignTo || $trigger;
 
+    this.tabIndices = [];
     this.$overlay = null;
     this.$ghost = null;
     this.$placeholder = null;
@@ -98,17 +99,23 @@ var FreshDirect = FreshDirect || {};
       }
 
 
-    $(window).on('resize',$.proxy(function(e){
-      var clicked;
-      if(this.shown){
-        clicked = this.clicked;
-        this.hide(null, true);
-        this.show();
-        this.clicked = clicked;
-      }
-    },this));
+      $(window).on('resize',$.proxy(function(e){
+        var clicked;
+        if(this.shown){
+          clicked = this.clicked;
+          this.hide(null, true);
+          this.show();
+          this.clicked = clicked;
+        }
+      },this));
 
-  },this));
+      this.$el.on('keydown', function (e) {
+        if (e.keyCode === fd.utils.keyCode.ESC) {
+          this.hide();
+        }
+      }.bind(this));
+
+    }, this));
 
   };
 
@@ -213,7 +220,7 @@ var FreshDirect = FreshDirect || {};
           } catch (e) {}
         }
       },500);
-      
+
       // focus first focusable element
       setTimeout(function () {
         this.focus();
@@ -222,15 +229,64 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.focus = function () {
-    var $el;
+    var $el = this.$el;
 
-    $el = this.$el.find('form').first();
+    // store old tabindices & reset
+    this.tabIndices = [];
+    $('[tabindex]').each(function (i, tiel) {
+      var $tiel = $(tiel),
+          ti = $tiel.prop('tabindex');
 
-    if ($el.size() === 0) {
-      $el = this.$el;
+      if (+ti !== -1) {
+        this.tabIndices.push({
+          $el: $tiel,
+          ti: ti
+        });
+      }
+    }.bind(this));
+    $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
+      var $tiel = $(tiel);
+
+      $tiel.attr('tabindex', '-1');
+    });
+
+    // set new tabindices for popup
+    $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
+      var $tiel = $(tiel);
+
+      $tiel.attr('tabindex', i+1);
+    });
+
+    // focus first element
+    if ($el.find('form').size() > 0) {
+      $el = $el.find('form').first();
     }
 
-    $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').first().focus();
+    $el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
+  };
+
+  PopupContent.prototype.unfocus = function () {
+    var $el = this.$el;
+
+    // remove -1 tabindices from document
+    $('[tabindex="-1"]').each(function (i, tiel) {
+      var $tiel = $(tiel);
+
+      $tiel.attr('tabindex', null);
+    });
+
+    // set new tabindices in the popup to -1
+    $el.find('[tabindex]').each(function (i, tiel) {
+      var $tiel = $(tiel);
+
+      $tiel.attr('tabindex', '-1');
+    });
+
+    // reset old tabindices
+    this.tabIndices.forEach(function (tiel) {
+      tiel.$el.attr('tabindex', tiel.ti);
+    });
+
   };
 
   PopupContent.prototype.hide = function (e, noCallback) {
@@ -262,6 +318,10 @@ var FreshDirect = FreshDirect || {};
       this.config.hidecallback();
     }
     this.clearHideDelay();
+
+    setTimeout(function () {
+      this.unfocus();
+    }.bind(this), 10);
   };
 
   PopupContent.prototype.reposition = function (ignoreCustomFunction) {

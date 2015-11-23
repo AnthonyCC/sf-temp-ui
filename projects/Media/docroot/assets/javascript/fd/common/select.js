@@ -11,7 +11,8 @@ var FreshDirect = FreshDirect || {};
     this.update();
 
     this.widget.on('mouseover', '.selectButton', this.open.bind(this));
-    this.widget.on('mouseout', '.selectButton', function (e) { this.popup.clearDelay(); }.bind(this));
+    this.widget.on('keydown', '.selectButton', this.open.bind(this));
+    this.widget.on('mouseout', '.selectButton', function () { this.popup.clearDelay(); }.bind(this));
     this.bindClick();
 
     this.el.on('change', this.update.bind(this));
@@ -92,10 +93,10 @@ var FreshDirect = FreshDirect || {};
       if (selected.val() === $option.val()) {
         cssClass += ' selected';
       }
-      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><span>'+$option.html()+'</span></li>';
+      popupcontent += '<li class="'+cssClass+'" data-value="'+$option.val()+'"><button type="button">'+$option.html()+'</button></li>';
     });
     popupcontent += '</ul>';
-    
+
     widget.find('.popupcontent').html(popupcontent);
     el.hide();
   };
@@ -118,7 +119,7 @@ var FreshDirect = FreshDirect || {};
   Select.selectize = function (root) {
     var root = root || $(document.body),
         els = root.find('select.customselect'),
-        select, i;
+        select;
 
     els.each(function (i, el) {
       if (!$(el).attr('data-selectized')) {
