@@ -668,6 +668,8 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()){
+        	
+        	// For updating the cart with the updated delivery fee value according to the reserved time slot
         	if(user!=null && user.getFDSessionUser()!=null) {
         	user.getFDSessionUser().updateUserState();
         	}
