@@ -6,9 +6,10 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
-  var keyCode = fd.utils.keyCode;
+  var toggleAccordionARIA = fd.components.pdp.toggleAccordionARIA;
+  var nutritionPopup, nutritionAccordion;
 
-  var nutritionPopup = Object.create(POPUPWIDGET,{
+  nutritionPopup = Object.create(POPUPWIDGET,{
     template:{
       value:common.fixedPopup
     },
@@ -48,21 +49,43 @@ var FreshDirect = FreshDirect || {};
         nutritionPopup.popup.show($('body'),false);
         nutritionPopup.noscroll();
       }
+    },
+    close: {
+      value: function (e) {
+        if (nutritionPopup.popup && nutritionPopup.popup.shown) {
+          nutritionPopup.popup.hide(e);
+          nutritionAccordion.close();
+        }
+      }
     }
   });
 
   nutritionPopup.render();
 
-  $(document).on('click','.nutropen',function(e){
-    e.preventDefault();
-    nutritionPopup.open();
-  });
-
-  $(document).on('keypress','.pdp-accordion-nutrition', function(e){
-    e.preventDefault();
-    if(e.which === keyCode.ENTER || e.which === keyCode.SPACE){
+  nutritionAccordion = {
+    SELECTOR:'.pdp-accordion-nutrition',
+    OPENER:'.pdp-accordion-nutrition>label',
+    CONTENT:'.pdp-accordion-nutrition>div',
+    CHECKBOX:'.pdp-accordion-nutrition>input[type="checkbox"]',
+    open: function(){
+      $(nutritionAccordion.CHECKBOX).prop('checked', true);
       nutritionPopup.open();
+      if(toggleAccordionARIA){
+        toggleAccordionARIA($(nutritionAccordion.OPENER), $(nutritionAccordion.CONTENT), false);
+      }
+    },
+    close: function(){
+      $(nutritionAccordion.CHECKBOX).prop('checked', false);
+      nutritionPopup.close();
+      if(toggleAccordionARIA){
+        toggleAccordionARIA($(nutritionAccordion.OPENER), $(nutritionAccordion.CONTENT), true);
+      }
     }
+  };
+
+  $(document).on('change','.pdp-accordion-nutrition', function(e){
+    e.preventDefault();
+    $(e.target).prop('checked') ? nutritionAccordion.open() : nutritionAccordion.close();
   });
 
   fd.modules.common.utils.register("components", "nutritionPopup", nutritionPopup, fd);

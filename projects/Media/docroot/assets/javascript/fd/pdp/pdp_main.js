@@ -9,6 +9,7 @@ var FreshDirect = FreshDirect || {};
   fd.components.Subtotal.update($('[data-component="product"][data-cmeventsource="pdp_main"]'));
 
   var productId=$('#BVRRContainer').data('productid');
+  var setUpPdpAccordions, toggleAccordionARIA;
 
   if(window.$BV){
     window.$BV.ui('rr', 'show_reviews', { productId: productId });
@@ -30,47 +31,42 @@ var FreshDirect = FreshDirect || {};
     $(this).is(":checked") && FreshDirect.pdp.coremetrics && FreshDirect.pdp.coremetrics();
   });
 
-
-  var setUpPdpAccordions = function(){
+  setUpPdpAccordions = function(){
     $(".pdp-accordion-item").each(function(){
-      var content = $(this).find("div");
-      var accordionOpener = $(this).find("label");
-      var isContentOpen = content.height() ? true : false;
+      $(this).attr('tabindex', '0');
+
+      var accordionContent = $(this).children("div");
+      var accordionOpener = $(this).children("label");
       var newContentId = $(this).find('input[type="checkbox"]').attr('id') + '-accordion-content';
 
       accordionOpener.attr('aria-controls', newContentId);
-      content.attr('id', newContentId);
+      accordionContent.attr('id', newContentId);
 
-      accordionOpener.attr('aria-expanded', isContentOpen+"");
-      content.attr('aria-hidden', !isContentOpen+"");
+      toggleAccordionARIA(accordionOpener, accordionContent, !accordionContent.height());
     });
   };
 
-  var toggleAccordionARIA = function($accordionOpener, $content){
-      var isContentOpen = $content.height() ? true : false;
-      // reverse aria attributes
-      $accordionOpener.attr('aria-expanded', !isContentOpen+"");
-      $content.attr('aria-hidden', isContentOpen+"");
+  toggleAccordionARIA = function($accordionOpener, $content, isHidden){
+      $content.attr('aria-hidden', isHidden+"");
+      $accordionOpener.attr('aria-expanded', !isHidden+"");
+      console.log($accordionOpener[0]);
+      console.log($content[0]);
   };
-
-  $(".pdp-accordion-item").each(function(){
-    $(this).attr('tabindex', '0');
-  });
 
   $(".pdp-accordion-item").on('keypress', function(e){
     var target = $(e.currentTarget),
         cb = target.find('input[type="checkbox"]');
     if(e.which === keyCode.ENTER || e.which === keyCode.SPACE){
-      cb.prop('checked', !cb.prop('checked'));
-      toggleAccordionARIA($(this).find("label"), $(this).find("div"));
+      cb.prop('checked', !cb.prop('checked')).trigger('change');
     }
   });
 
   $(".pdp-accordion-item").on('change', function(){
-      toggleAccordionARIA($(this).find("label"), $(this).find("div"));
+      var content = $(this).children("div");
+      toggleAccordionARIA($(this).children("label"), content, !!content.height());
   });
 
   $(document).ready(setUpPdpAccordions);
 
-  fd.modules.common.utils.register("components", "pdp", {}, fd);
+  fd.modules.common.utils.register("components", "pdp", { toggleAccordionARIA: toggleAccordionARIA }, fd);
 }(FreshDirect));
