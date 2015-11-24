@@ -53,6 +53,7 @@ public class PaymentService {
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
+	private static final String EWALLET_TXN_ID_ATTRIBUTE_NAME = "transactionId";
 
     private PaymentService() {
     }
@@ -262,6 +263,12 @@ public class PaymentService {
 		if(session_card != null && selectedWalletCardId != null && session_card.equals(MP_EWALLET_CARD)){
 			for (ErpPaymentMethodI paymentMethod: paymentMethods) {
 				if(paymentMethod.getPK().getId().equals(selectedWalletCardId)){
+					String trxnId = "";
+					Object trxnIdObj = request.getSession().getAttribute(EWALLET_TXN_ID_ATTRIBUTE_NAME);
+					if (trxnIdObj != null && trxnIdObj instanceof String) {
+						trxnId = (String)trxnIdObj;
+						paymentMethod.seteWalletTrxnId(trxnId);
+					}
 					user.getShoppingCart().setPaymentMethod(paymentMethod);
 					break;
 				}

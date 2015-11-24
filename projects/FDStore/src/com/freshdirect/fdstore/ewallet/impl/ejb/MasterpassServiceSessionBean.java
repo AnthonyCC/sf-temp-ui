@@ -288,7 +288,9 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		                if (!paymentMethods.isEmpty() && paymentMethods.size() > 1) {
 		                	sortPaymentMethodsByIdReserved(paymentMethods);
 		                }
-	            		ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
+		                ErpPaymentMethodI lastAddedPM = paymentMethods.get(0);
+		                lastAddedPM.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
+	            		ewalletResponseData.setPaymentMethod(lastAddedPM);
 					}else{
 						searchedPM.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
 						FDCustomerManager.updatePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
