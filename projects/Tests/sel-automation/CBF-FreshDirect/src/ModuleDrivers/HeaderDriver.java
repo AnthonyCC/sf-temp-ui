@@ -729,6 +729,7 @@ public class HeaderDriver extends BaseModuleDriver
 				uiDriver.waitForPageLoad();
 				try
 				{
+					uiDriver.waitForPageLoad();
 					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.name(objMap.getLocator("btnloginGoBtn"))));
 				}
 				catch(TimeoutException e)
@@ -923,7 +924,7 @@ public class HeaderDriver extends BaseModuleDriver
 				}
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strreorder"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strreorder"))));
 				}
 				catch(TimeoutException e)
 				{
