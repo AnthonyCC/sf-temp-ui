@@ -668,6 +668,9 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()){
+        	if(user!=null && user.getFDSessionUser()!=null) {
+        	user.getFDSessionUser().updateUserState();
+        	}
         	responseMessage = Message.createSuccessMessage("Delivery slot reserved successfully.");
         } else {
         	 responseMessage = getErrorMessage(result, request);
