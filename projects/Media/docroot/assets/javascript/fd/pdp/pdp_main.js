@@ -37,12 +37,13 @@ var FreshDirect = FreshDirect || {};
 
       var accordionContent = $(this).children("div");
       var accordionOpener = $(this).children("label");
-      var newContentId = $(this).find('input[type="checkbox"]').attr('id') + '-accordion-content';
+      var checkbox = $(this).find('input[type="checkbox"]');
+      var newContentId = checkbox.attr('id') + '-accordion-content';
 
       accordionOpener.attr('aria-controls', newContentId);
       accordionContent.attr('id', newContentId);
 
-      toggleAccordionARIA(accordionOpener, accordionContent, !accordionContent.height());
+      toggleAccordionARIA(accordionOpener, accordionContent, !checkbox.prop('checked'));
     });
   };
 
@@ -51,7 +52,7 @@ var FreshDirect = FreshDirect || {};
       $accordionOpener.attr('aria-expanded', !isHidden+"");
   };
 
-  $(".pdp-accordion-item").on('keypress keydown', function(e){
+  $(".pdp-accordion-item").on('keydown', function(e){
     var target = $(e.currentTarget),
         cb = target.find('input[type="checkbox"]');
     if(e.which === keyCode.ENTER || e.which === keyCode.SPACE){
@@ -60,8 +61,8 @@ var FreshDirect = FreshDirect || {};
   });
 
   $(".pdp-accordion-item").on('change', function(){
-      var content = $(this).children("div");
-      toggleAccordionARIA($(this).children("label"), content, !!content.height());
+      var checkbox = $(this).find('input[type="checkbox"]');
+      toggleAccordionARIA($(this).children("label"), $(this).children("div"), !checkbox.prop('checked'));
   });
 
   $(document).ready(setUpPdpAccordions);

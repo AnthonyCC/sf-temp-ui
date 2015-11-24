@@ -6,10 +6,8 @@ var FreshDirect = FreshDirect || {};
 
   var $ = fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
-  var toggleAccordionARIA = fd.components.pdp.toggleAccordionARIA;
-  var nutritionPopup, nutritionAccordion;
 
-  nutritionPopup = Object.create(POPUPWIDGET,{
+  var nutritionPopup = Object.create(POPUPWIDGET,{
     template:{
       value:common.fixedPopup
     },
@@ -54,7 +52,7 @@ var FreshDirect = FreshDirect || {};
       value: function (e) {
         if (nutritionPopup.popup && nutritionPopup.popup.shown) {
           nutritionPopup.popup.hide(e);
-          nutritionAccordion.close();
+          $('.pdp-accordion-nutrition>input[type="checkbox"]').prop('checked', false).trigger('change');
         }
       }
     }
@@ -62,30 +60,9 @@ var FreshDirect = FreshDirect || {};
 
   nutritionPopup.render();
 
-  nutritionAccordion = {
-    SELECTOR:'.pdp-accordion-nutrition',
-    OPENER:'.pdp-accordion-nutrition>label',
-    CONTENT:'.pdp-accordion-nutrition>div',
-    CHECKBOX:'.pdp-accordion-nutrition>input[type="checkbox"]',
-    open: function(){
-      $(nutritionAccordion.CHECKBOX).prop('checked', true);
-      nutritionPopup.open();
-      if(toggleAccordionARIA){
-        toggleAccordionARIA($(nutritionAccordion.OPENER), $(nutritionAccordion.CONTENT), false);
-      }
-    },
-    close: function(){
-      $(nutritionAccordion.CHECKBOX).prop('checked', false);
-      nutritionPopup.close();
-      if(toggleAccordionARIA){
-        toggleAccordionARIA($(nutritionAccordion.OPENER), $(nutritionAccordion.CONTENT), true);
-      }
-    }
-  };
-
   $(document).on('change','.pdp-accordion-nutrition', function(e){
     e.preventDefault();
-    $(e.target).prop('checked') ? nutritionAccordion.open() : nutritionAccordion.close();
+    $(e.target).prop('checked') ? nutritionPopup.open() : nutritionPopup.close();
   });
 
   fd.modules.common.utils.register("components", "nutritionPopup", nutritionPopup, fd);
