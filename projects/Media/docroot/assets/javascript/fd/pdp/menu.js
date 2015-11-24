@@ -41,7 +41,7 @@ var FreshDirect = FreshDirect || {};
           result.requestFilterParams = filters;
         }
 
-        if ($('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked')) {
+        if ($('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked')) {
           result.all = true;
         }
 

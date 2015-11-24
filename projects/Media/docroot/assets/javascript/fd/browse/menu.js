@@ -45,7 +45,7 @@ var FreshDirect = FreshDirect || {};
           result.requestFilterParams = filters;
         }
 
-        if ($('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked') || $('[data-component="menubox"][data-allselected]').size() > 0) {
+        if ($('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked') || $('[data-component="menubox"][data-allselected]').size() > 0) {
           result.all = true;
         }
 

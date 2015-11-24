@@ -89,10 +89,8 @@ var FreshDirect = FreshDirect || {};
               id = $('.name', el).attr('data-listid'),
               oldname = $('.name', el).attr('data-listname'),
               name = $('.name input', el).val(),
-              //def = !!$('.default input', el).attr('checked'),
               def = $(' .default input', el).is(':checked'),
-             // del = !!$('.delete input', el).attr('checked'),
-              del =  $(' .delete input', el).is(':checked'),
+              del = $(' .delete input', el).is(':checked'),
               validator;
 
           if (QSVersion === '2_0') {

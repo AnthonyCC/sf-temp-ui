@@ -89,9 +89,14 @@ body{
   color: #5c7440;
 }
 
+.globalnav_top .topnavitem a:focus,
 .globalnav_top .topnavitem a:hover{
 	color: #3d571e;
 	text-decoration: none;
+}
+
+.globalnav_top .topnavitem a:focus {
+  outline: 2px solid rgba(136,167,92,.4);
 }
 
 .globalnav_top #topnavitem_reorder a{
@@ -1149,6 +1154,7 @@ ul.subdepartments {
   line-height: 20px;
 }
 
+.dropdown-column li a:focus,
 .dropdown-column li a:hover {
   color: #000;
   background-color: #e3ecd5;
