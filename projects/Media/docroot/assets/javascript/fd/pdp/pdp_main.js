@@ -49,8 +49,6 @@ var FreshDirect = FreshDirect || {};
   toggleAccordionARIA = function($accordionOpener, $content, isHidden){
       $content.attr('aria-hidden', isHidden+"");
       $accordionOpener.attr('aria-expanded', !isHidden+"");
-      console.log($accordionOpener[0]);
-      console.log($content[0]);
   };
 
   $(".pdp-accordion-item").on('keypress keydown', function(e){
