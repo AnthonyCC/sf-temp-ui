@@ -536,6 +536,11 @@
   cursor:pointer;
 }
 
+label[for="dontupdatecartlines"] {
+  position: absolute;
+  left: -9999px;
+}
+
 .questions__empty{
   color:#7d7d7d;
 }

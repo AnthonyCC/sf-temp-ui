@@ -124,7 +124,11 @@ var FreshDirect = FreshDirect || {};
       value: function(){
         var deleteStream = $(cartcontent.placeholder).asEventStream('cartline-delete');
         var updateStream = $(cartcontent.placeholder).asEventStream('cartcontent-update');
-        var changeStream = $(cartcontent.placeholder).asEventStream('quantity-change');
+        var changeStream = $(cartcontent.placeholder).asEventStream('quantity-change').filter(function () {
+          var $el = $('input[name="dontupdatecartlines"]:checked');
+
+          return $el.size() === 0;
+        });
 
         var dataStream = deleteStream.merge(updateStream).merge(changeStream);
         var bouncedDataStream = dataStream.debounce(500);
@@ -293,6 +297,10 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', cartcontent.placeholder + ' [data-component="updatecart"]',
     cartcontent.update.bind(cartcontent));
+
+  $(document).on('click', '[data-component="update-cart"]', function () {
+    $(cartcontent.placeholder).trigger('cartcontent-update');
+  });
 
   fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
 }(FreshDirect));

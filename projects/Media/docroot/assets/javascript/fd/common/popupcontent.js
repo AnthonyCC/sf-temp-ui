@@ -20,6 +20,7 @@ var FreshDirect = FreshDirect || {};
                     this.config.alignTo || $trigger;
 
     this.tabIndices = [];
+    this.lastFocused = null;
     this.$overlay = null;
     this.$ghost = null;
     this.$placeholder = null;
@@ -182,6 +183,8 @@ var FreshDirect = FreshDirect || {};
   PopupContent.prototype.show = function ($trigger, align) {
     var screenOffset, boundingRect;
 
+    this.lastFocused = document.activeElement;
+
     if (this.delay) { this.clearDelay(); }
 
     if ($trigger) {
@@ -233,6 +236,7 @@ var FreshDirect = FreshDirect || {};
 
     // store old tabindices & reset
     this.tabIndices = [];
+
     $('[tabindex]').each(function (i, tiel) {
       var $tiel = $(tiel),
           ti = $tiel.prop('tabindex');
@@ -286,6 +290,13 @@ var FreshDirect = FreshDirect || {};
     this.tabIndices.forEach(function (tiel) {
       tiel.$el.attr('tabindex', tiel.ti);
     });
+
+    if (this.lastFocused) {
+      try {
+        this.lastFocused.focus();
+        this.lastFocused = null;
+      } catch (e) {}
+    }
 
   };
 
