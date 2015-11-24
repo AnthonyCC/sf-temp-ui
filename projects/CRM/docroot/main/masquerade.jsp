@@ -32,15 +32,17 @@
 	<%
 		try {
 			String eStoreId = request.getParameter("estore");
+			
+			if(eStoreId==null||"All".equalsIgnoreCase(eStoreId) ){
 			if ("All".equalsIgnoreCase(eStoreId) || "All".equalsIgnoreCase(globalContextStore)) { //fallback
 				eStoreId = "FD";
 			}
 			if (eStoreId == null) {
 				eStoreId = globalContextStore;
 			}
-			
+			}
 			final String url = CrmMasqueradeUtil.generateLaunchURL(agent, request, user, eStoreId); 
-			
+	
 			response.sendRedirect( url );
 			%><%= url %><%
 		} catch ( Exception ex ) {
