@@ -53,7 +53,7 @@ var FreshDirect = FreshDirect || {};
       console.log($content[0]);
   };
 
-  $(".pdp-accordion-item").on('keypress', function(e){
+  $(".pdp-accordion-item").on('keypress keydown', function(e){
     var target = $(e.currentTarget),
         cb = target.find('input[type="checkbox"]');
     if(e.which === keyCode.ENTER || e.which === keyCode.SPACE){
