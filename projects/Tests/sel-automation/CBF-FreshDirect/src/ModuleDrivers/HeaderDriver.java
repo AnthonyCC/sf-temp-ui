@@ -729,6 +729,7 @@ public class HeaderDriver extends BaseModuleDriver
 				uiDriver.waitForPageLoad();
 				try
 				{
+					uiDriver.waitForPageLoad();
 					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.name(objMap.getLocator("btnloginGoBtn"))));
 				}
 				catch(TimeoutException e)
@@ -923,7 +924,7 @@ public class HeaderDriver extends BaseModuleDriver
 				}
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strreorder"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strreorder"))));
 				}
 				catch(TimeoutException e)
 				{
@@ -1004,7 +1005,7 @@ public class HeaderDriver extends BaseModuleDriver
 				//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("strreorder"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strreorder"))));
 					if(webDriver.findElement(By.xpath(objMap.getLocator("strreorder"))).getText().equals("Reorder"))
 					{
 
@@ -1879,7 +1880,7 @@ public class HeaderDriver extends BaseModuleDriver
 					if(arr1[i].equals("lnkyourAccount"))
 					{
 						//uiDriver.selenium.waitForPageToLoad(PageLoadTime);
-						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkpresidentAnonymous"))));
+						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText(objMap.getLocator("lnkyourAccount"))));
 						//Verifying user is logged in or not
 						if(webDriver.findElements(By.xpath(objMap.getLocator("btngoAnonymous"))).size()>0)
 						{
@@ -1950,9 +1951,25 @@ public class HeaderDriver extends BaseModuleDriver
 				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator(path2[i]))));
 				//uiDriver.DrawHighlight(path2[i], webDriver);
 				}catch(Exception e){
+					if(webDriver.findElements(By.xpath(objMap.getLocator(path2[i]))).size()>0 && 
+							webDriver.findElement(By.xpath(objMap.getLocator(path2[i]))).isDisplayed())
+					{
+						RESULT.passed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link redirected to respective page");
+					}
+					else
+					{
+						RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
+					}
+					//RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
+	 			}
+				if(webDriver.findElements(By.xpath(objMap.getLocator(path2[i]))).size()>0)
+				{
+					RESULT.passed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link redirected to respective page");
+				}
+				else
+				{
 					RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
 				}
-				RESULT.passed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link redirected to respective page");
 			}catch (Exception e) {
 				RESULT.failed(arr2[i].substring(3).toUpperCase() + "with new windows", arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link failed");
 			}
