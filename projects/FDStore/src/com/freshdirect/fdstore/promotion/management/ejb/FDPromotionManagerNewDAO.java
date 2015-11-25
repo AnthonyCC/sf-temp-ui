@@ -3722,8 +3722,8 @@ public class FDPromotionManagerNewDAO {
 	
 	private static String INSERT_PROMO_CUST_STRATEGY_FOR_BATCH = "INSERT INTO cust.promo_cust_strategy " +
 		"(id, promotion_id, order_range_start, order_range_end, cohort,dp_types, dp_status, dp_exp_start, dp_exp_end," +
-			"ordertype_home, ordertype_pickup, ordertype_corporate, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type) " + 
-		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,? from cust.promotion_new where batch_id = ?";
+			"ordertype_home, ordertype_pickup, ordertype_corporate, ordertype_fdx, payment_type, prior_echeck_use,DELIVERY_DAY_TYPE,echeck_match_type) " + 
+		"select cust.SYSTEM_SEQ.nextval, id, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,? from cust.promotion_new where batch_id = ?";
 	
 	private static void storeCustomerStrategyForBatch(Connection conn, String batchId,
 			FDPromotionNewModel promotion) throws SQLException {
