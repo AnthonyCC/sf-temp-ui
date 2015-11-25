@@ -11,8 +11,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.sikuli.script.FindFailed;
 
-
-import ui.WebUIDriver;
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
 import cbf.utils.DataRow;
@@ -773,9 +771,17 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				"Application is not on Express Checkout page");
 				return;
 			}
+			try{
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnchangePaymnt"))));
+			}
+			catch(Exception e){
+				RESULT.warning("Change Payment button","User should be able to click on change button", "Change button is not displayed");
+				return;
+			}
 			
 			String selectedCard;
-			if (webDriver.findElements(By.xpath(objMap.getLocator("btnchangePaymnt"))).size()>0)
+			if (webDriver.findElements(By.xpath(objMap.getLocator("btnchangePaymnt"))).size()>0  &&
+					webDriver.findElement(By.xpath(objMap.getLocator("btnchangePaymnt"))).isDisplayed())
 			{
 				selectedCard=webDriver.findElement(By.xpath(objMap.getLocator("strselectedPayment"))).getText().replaceAll("\\n", "");
 //				System.out.println(selectedCard);
@@ -820,6 +826,16 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						//						return;
 						//					}
 						//					else 
+						if(uiDriver.getwebDriverLocator(objMap.getLocator("btnchangePaymnt")).isDisplayed())
+							RESULT.passed("Done Payment","Done button should get clicked successfully",
+									"Done button clicked successfully");
+						else{
+								RESULT.failed("Done Payment","Done button should get clicked successfully",
+										"Done button click is unsuccessfully");
+							return;
+						}
+						
+						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						selectedCard=webDriver.findElement(By.xpath(objMap.getLocator("strselectedPayment"))).getText().replaceAll("\\n", "");
 						System.out.println(selectedCard);
 						
@@ -837,14 +853,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 									"Specified Payment option: Select is unsucessful");
 							return;
 						}
-						if(uiDriver.getwebDriverLocator(objMap.getLocator("btnchangePaymnt")).isDisplayed())
-							RESULT.passed("Done Payment","Done button should get clicked successfully",
-									"Done button clicked successfully");
-						else{
-								RESULT.failed("Done Payment","Done button should get clicked successfully",
-										"Done button click is unsuccessfully");
-							return;
-							}
+						
 
 					}
 					catch(Exception e)
