@@ -140,6 +140,8 @@ String noContactPhone = ""; //
 
 String displayName = "";
 
+String confirmationMsg = "";		// used in 'i_confirmation_messages.jspf'
+
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -382,11 +384,9 @@ if (request.getParameter("employeeId") != null) {
 %>
 <%// CONFIRMATION MESSAGE %>
 <%if(result.isSuccess() && "POST".equalsIgnoreCase(request.getMethod())){
-
-	String confirmationMsg = "";		// used in 'i_confirmation_messages.jspf'
 	
-	if(request.getAttribute("SocialNetworkProvider") != null){
-		confirmationMsg = "Social network " + request.getAttribute("SocialNetworkProvider") + " has been disconnected.";
+	if(request.getAttribute("NewlyDisconnectedSocialNetworkProvider") != null){
+		confirmationMsg = "Social network " + request.getAttribute("NewlyDisconnectedSocialNetworkProvider") + " has been disconnected.";
 	} else {
 		confirmationMsg = "Your changes have been saved.";     
 	}	
@@ -396,9 +396,23 @@ if (request.getParameter("employeeId") != null) {
 		confirmationMsg = confirmationMsg +"<br><br>" + MessageFormat.format(SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]{user.getCustomerServiceContact()});
 	}
     */
-%>
-<%@ include file="/includes/i_confirmation_messages.jspf"%>
+
+
+} else if(session.getAttribute("NewlyLinkedSocialNetworkProvider") != null){
+	
+	confirmationMsg = "Your FD account is now linked to your " + session.getAttribute("NewlyLinkedSocialNetworkProvider") + " account.";
+	session.setAttribute("NewlyLinkedSocialNetworkProvider", null);
+		
+} %>
+
+
+
+<%	if(confirmationMsg != null && !confirmationMsg.equalsIgnoreCase("")) {%>
+
+	<%@ include file="/includes/i_confirmation_messages.jspf"%>
+	
 <%	} %>
+
 
 <%
 String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EMAIL_FORMAT.getCode(),

@@ -98,6 +98,7 @@ public class SocialAccountService implements AccountService {
 	    	
 	    	userToken = socialUserProfile.get("userToken");
 			socialUserId = socialUserProfile.get("email"); 
+			providerName  = socialUserProfile.get("provider"); 
 			
 			if(socialUserId == null || socialUserId.length() == 0)
 			{
@@ -132,7 +133,7 @@ public class SocialAccountService implements AccountService {
 					if( sessionUserId !=null && socialUserId.equalsIgnoreCase(sessionUserId) &&
 						(sessionUserLevel == FDUserI.SIGNED_IN)){
 						
-		    			socialLoginAccountLinked = socialLoginAccountLinked + "?socialnetwork=" + socialUserProfile.get("provider");	
+						socialLoginAccountLinked = socialLoginAccountLinked + "?NewlyLinkedSocialNetworkProvider=" + socialUserProfile.get("provider");	
 						return socialLoginAccountLinked;	
 					}	
 					
@@ -246,7 +247,7 @@ public class SocialAccountService implements AccountService {
 			    		
 			    		if(sessionUserLevel == FDUserI.SIGNED_IN){							
 			    			// Account Preference page
-			    			socialLoginAccountLinked = socialLoginAccountLinked + "?socialnetwork=" + socialUserProfile.get("provider");	
+			    			socialLoginAccountLinked = socialLoginAccountLinked + "?NewlyLinkedSocialNetworkProvider=" + socialUserProfile.get("provider");	
 							return socialLoginAccountLinked;							
 						}else{							
 				    		// Auto login
@@ -305,7 +306,7 @@ public class SocialAccountService implements AccountService {
 							}	
 				    		
 			    			// Account Preference page
-			    			socialLoginAccountLinked = socialLoginAccountLinked + "?socialnetwork=" + socialUserProfile.get("provider");	
+				    		socialLoginAccountLinked = socialLoginAccountLinked + "?NewlyLinkedSocialNetworkProvider=" + socialUserProfile.get("provider");	
 							return socialLoginAccountLinked;							
 						}						
 						

@@ -949,7 +949,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//FDSocialManager.unlinkSocialAccountWithUser( socialEmail, userToken);  
 				//ExternalAccountManager.unlinkExternalAccountWithUser(socialEmail, userToken, socialNetworkProvider);
 				ExternalAccountManager.unlinkExternalAccountWithUser(customerId, socialNetworkProvider);
-				request.setAttribute("SocialNetworkProvider", socialNetworkProvider);
+				request.setAttribute("NewlyDisconnectedSocialNetworkProvider", socialNetworkProvider);
 			} catch (FDResourceException e1) {
 				LOGGER.error("Error in disconnecting social account:" + e1.getMessage());
 				result.addError(new ActionError("Error in disconnecting social account:" + socialEmail));
