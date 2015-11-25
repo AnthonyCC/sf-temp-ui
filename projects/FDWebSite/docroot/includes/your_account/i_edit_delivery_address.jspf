@@ -41,13 +41,32 @@ for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.ha
 
 String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
+
+<%
+	if (!(user.isVoucherHolder())) {
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2"
+	WIDTH="<%=W_YA_EDIT_DELIVERY_ADDR%>">
+	<TR VALIGN="TOP">
+		<TD><span class="text13">If you need to enter a different address:</span> <a href="<%=response
+						.encodeURL("/your_account/add_delivery_address.jsp")%>"><img
+				src="/media_stat/images/buttons/add_new_address.gif"
+				alt="Add a new address" WIDTH="106" HEIGHT="16" VSPACE="3"
+				HSPACE="4" ALIGN="middle" border="0"></a></TD>
+	</TR>
+</TABLE>
+
+<%
+	}
+%>
+
+<%-- <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
 <TR VALIGN="TOP">
     <TD>
         <span class="text13">If you need to enter a different address:</span> <a href="<%=response.encodeURL("/your_account/add_delivery_address.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a new address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a>
     </TD>
 </TR>
-</TABLE>
+</TABLE> --%>
 <br>
 <%
 // BEGINING D E P O T   L O C A T I O N S

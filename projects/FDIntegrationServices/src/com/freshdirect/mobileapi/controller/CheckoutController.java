@@ -13,11 +13,13 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -28,6 +30,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.util.TimeslotLogic;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -65,6 +68,7 @@ import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
@@ -413,6 +417,24 @@ public class CheckoutController extends BaseController {
         DeliveryAddresses responseMessage = new DeliveryAddresses((new Checkout(user)).getPreselectedDeliveryAddressId(), ShipToAddress
                 .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.CORP), Depot.getPickupDepots());
+        
+		if (user.isVoucherHolder()) {
+			List<com.freshdirect.mobileapi.controller.data.response.ShipToAddress> latestAddress = new ArrayList<com.freshdirect.mobileapi.controller.data.response.ShipToAddress>();
+
+			for (com.freshdirect.mobileapi.controller.data.response.ShipToAddress shipToAddress : responseMessage
+					.getResidentialAddresses()) {
+				if (shipToAddress.getId().equals(
+						responseMessage.getPreSelectedId())) {
+					latestAddress.add(shipToAddress);
+					break;
+				}
+			}
+			responseMessage.setResidentialAddresses(latestAddress);
+			responseMessage.getDepot().clear();
+
+		}
+
+        
         responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
         responseMessage.setCorporateDeliveryMinimum(user.getMinCorpOrderAmount());
@@ -936,6 +958,9 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()) {
+        	if(user.isVoucherHolder()){
+        		throw new FDActionNotAllowedException("This account is not eligible to add/edit/delete delivery address.");
+			}
             responseMessage = Message.createSuccessMessage("Delivery Address deleted successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
@@ -1055,6 +1080,9 @@ public class CheckoutController extends BaseController {
 
         Message responseMessage = null;
         if (result.isSuccess()) {
+        	if(user.isVoucherHolder()){
+        		throw new FDActionNotAllowedException("This account is not eligible to add/edit/delete delivery address.");
+			}
             responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);

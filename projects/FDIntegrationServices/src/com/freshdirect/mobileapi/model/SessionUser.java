@@ -682,4 +682,19 @@ public class SessionUser {
 	public boolean getTcAcknowledge(){
 		return sessionUser.getTcAcknowledge();
 	}
+	
+	
+	public boolean isVHInDelivery() throws FDResourceException {
+		return this.sessionUser.isVHInDelivery();
+		
+	}
+
+	
+	public boolean isVHOutOfDelivery() throws FDResourceException {
+		return this.sessionUser.isVHOutOfDelivery();
+	}
+	
+	public boolean isVoucherHolder() throws FDResourceException {
+		return this.isVHInDelivery() || this.isVHOutOfDelivery();
+	}
 }

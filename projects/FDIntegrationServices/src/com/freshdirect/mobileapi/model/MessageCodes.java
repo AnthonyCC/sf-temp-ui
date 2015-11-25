@@ -42,6 +42,9 @@ public interface MessageCodes {
 
     //Login Errors
     public static final String ERR_AUTHENTICATION = "ERR_AUTHENTICATION";
+    
+    //Voucher Redemption Error
+    public static final String VOUCHER_AUTHENTICATION = "VOUCHER_AUTHENTICATION";
 
     public static final String ERR_CHECKOUT_AUTHENTICATION_REQUIRED = "ERR_CHECKOUT_AUTHENTICATION_REQUIRED";
 

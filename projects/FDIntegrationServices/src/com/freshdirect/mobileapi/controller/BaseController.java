@@ -26,6 +26,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -273,7 +274,10 @@ public abstract class BaseController extends AbstractController implements Messa
             } catch (IllegalArgumentException e) {
                 Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
                 setResponseMessage(model, responseMessage, user);
-            } catch (Throwable e) {
+            }catch (FDActionNotAllowedException e) {
+                Message responseMessage = getErrorMessage(VOUCHER_AUTHENTICATION, "This account is not eligible to add/edit/delete the delivery address.");
+                setResponseMessage(model, responseMessage, user);
+            }  catch (Throwable e) {
 				uncaughtException = e;
 			} finally {
 				if (fakedUserForRequest.get().booleanValue()) {

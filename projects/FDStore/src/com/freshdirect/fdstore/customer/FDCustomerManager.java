@@ -308,19 +308,20 @@ public class FDCustomerManager {
 
 	public static FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		//The method was changed as part of task PERF-22.
-		return recognize(identity, null, null, null);
+		return recognize(identity, null, null,null);
 	}
+	
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		
 		return recognize(identity, null, null, ctx);
 	}
-
+	
 	public static FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, null, eStoreId, null);
+		return recognize(identity, null, eStoreId,null);
 	}
 
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source) throws FDAuthenticationException, FDResourceException {
-		return recognize(identity, source, null, null);
+		return recognize(identity, source, null,null);
 	}
 	/*
 	 * This new method was added as part of task PERF-22. This method
@@ -329,13 +330,18 @@ public class FDCustomerManager {
 	 * object should be loaded before the FDSessionUser object is created
 	 * where it is actually set.
 	 */
-	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity, eStoreId);
+			
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
+
+			if(user.isVoucherHolder() && (EnumEStoreId.FDX.getContentId()).equals(user.getUserContext().getStoreContext().getEStoreId().getContentId())){
+				throw new FDAuthenticationException("voucherredemption");
+			}
 			populateShoppingCart(user);
 
 			return user;

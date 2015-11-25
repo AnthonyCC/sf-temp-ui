@@ -220,5 +220,6 @@ public interface SystemMessageList {
     public static final String MSG_SOCIAL_INVALID_USERTOKEN="Invalid User Token";
     public static final String MSG_SOCIAL_PROFILE_NOT_FOUND="Social profile not found";
     
+    public static final String MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED = "This email is not valid for FoodKick orders.  Please register a new account to place a FoodKick order.";
     
 }

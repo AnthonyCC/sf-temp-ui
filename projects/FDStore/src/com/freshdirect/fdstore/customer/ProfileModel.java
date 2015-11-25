@@ -100,4 +100,13 @@ public class ProfileModel extends ModelSupport {
 	public boolean allowApplyGC() {
 		return null == (getAttribute("allow_apply_gc")) || "true".equalsIgnoreCase(getAttribute("allow_apply_gc"));
 	}
+
+	public boolean isVHInDelivery() {
+		return "1".equalsIgnoreCase(getAttribute("VoucherHolderInDeliveryZone"));
+	}
+
+	public boolean isVHOutOfDelivery() {
+		return "1".equalsIgnoreCase(getAttribute("VoucherHolderOutOfDeliveryZone"));
+	}
+	
 }

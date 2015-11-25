@@ -537,10 +537,17 @@ public class UserUtil {
 	            		MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
         	} else {
+               	if("voucherredemption".equals(fdae.getMessage())){
+        	       	actionResult.addError(new ActionError("authentication", 
+            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED, 
+            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
+        	} else {
         		actionResult.addError(new ActionError("authentication", 
 	            		MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, 
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-        	}
+        	} 
+          }
+
         }
         return updatedSuccessPage;		
 	}

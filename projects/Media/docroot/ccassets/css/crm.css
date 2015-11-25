@@ -827,7 +827,16 @@ padding-right: 6px;
 font-size: 10pt;
 color: #000000;
 }
-
+.cust_header_voucher {
+background-color: #FF1A0A;
+border: 1px #FF0000 solid;
+width: 100%;
+padding: 0px;
+padding-left: 6px;
+padding-right: 6px;
+font-size: 10pt;
+color: #000000;
+}
 .cust_title {
 font-size: 13pt;
 color: #000000;

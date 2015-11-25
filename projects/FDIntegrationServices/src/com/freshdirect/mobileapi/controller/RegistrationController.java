@@ -17,6 +17,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -99,7 +100,7 @@ public class RegistrationController extends BaseController implements SystemMess
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws FDException, ServiceException,
-			NoSessionException, JsonException {
+			NoSessionException, JsonException, FDActionNotAllowedException {
 		if (ACTION_REGISTER_FROM_IPHONE.equals(action)) {
 			RegisterMessage requestMessage = parseRequestObject(request,
 					response, RegisterMessage.class);
@@ -482,6 +483,11 @@ public class RegistrationController extends BaseController implements SystemMess
 	
 	        Message responseMessage = null;
 	        if (result.isSuccess()) {
+	        	
+	        	if(user.isVoucherHolder()){
+	        		throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
+				}
+	        	
 	        	ErpAddressModel eam = (ErpAddressModel)resultBundle.getExtraData(RegistrationControllerTagWrapper.KEY_RETURNED_SAVED_ADDRESS);
 		        
 		        List<ErpAddressModel> addresses = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getShipToAddresses();
@@ -521,6 +527,10 @@ public class RegistrationController extends BaseController implements SystemMess
 	
 	        Message responseMessage = null;
 	        if (result.isSuccess()) {
+	        	if(user.isVoucherHolder()){
+	        		throw new FDActionNotAllowedException("This account is not enabled to change delivery address.");
+				}
+	        	
 	            responseMessage = Message.createSuccessMessage("Delivery Address updated successfully.");
 	        } else {
 	            responseMessage = getErrorMessage(result, request);

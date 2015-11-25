@@ -69,10 +69,20 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%}%>
 		<%}%>               
 	
-		<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+	<%
+	if (!(user.isVHInDelivery() || user.isVHOutOfDelivery())) {
+	%>
+	<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+	
+	<%} %>
+	
 		<%if (showDeleteButtons) {  %>
+			
+			<%
+				if (!(user.isVHInDelivery() || user.isVHOutOfDelivery())) {
+			%>		
 			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);" ALT="DELETE" BORDER="0">
-		<% } %>
+		<% } %> <%} %>
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 		</div>
 	</TD>

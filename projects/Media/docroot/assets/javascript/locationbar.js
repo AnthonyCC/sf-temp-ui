@@ -260,6 +260,20 @@
 	    				}
 	    			} else if(data.message == "CaptchaRedirect") {
     					window.location = '/login/login.jsp';
+	    			} else if (data.message !== null && data.errorMessages !== null) {
+	    				
+	    				var errMsgs = '';
+	    				if ($.isPlainObject(data.errorMessages)) {
+	    					if (data.errorMessages.hasOwnProperty(data.message)) {
+	    						errMsgs = data.errorMessages[data.message];
+	    					}
+	    				} else {
+	    					errMsgs = data.errorMessages;
+	    				}
+	    				if (errMsgs !== '') {
+	    					$('#login_cont_formContent .errorMsg').html(errMsgs);
+	    					$('#login_cont_formContent .errorMsg').show();
+	    				}
     				} else{
 	    				$('#login_cont_formContent .errorMsg').show();
 	    			}

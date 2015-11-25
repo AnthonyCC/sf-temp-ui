@@ -460,16 +460,51 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <input type="hidden" name="actionName" value="changeUserID">
 	<tr>
 		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* E-mail Address</label></td>
+		
+		
+		<% 
+			if((user.isVHInDelivery() || user.isVHOutOfDelivery())){	
+		%> 
+		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
+		
+		<% } else { %>
+		
 		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
+		<%} %>
+		
 		<td colspan="2">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+		
+		
+		<% 
+			if(!(user.isVHInDelivery() || user.isVHOutOfDelivery())){	
+		%>
+			<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td>	
+		<%	} %>
+		
+		
+	<!-- 	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td> -->
 	</tr>
 	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 	<tr>
 		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat E-mail Address</label></td>
+		
+		
+		<% 
+			if((user.isVHInDelivery() || user.isVHOutOfDelivery())){	
+		%> 
+		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" readonly="readonly"  name="repeat_email"></td>
+		
+		<% } else { %>
+		
 		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" name="repeat_email"></td>
+		<%} %>
+		
+		
+		
+		
+		
 		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td></td>
 	</tr>

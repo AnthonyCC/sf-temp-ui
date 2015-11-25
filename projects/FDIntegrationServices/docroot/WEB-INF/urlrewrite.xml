@@ -814,6 +814,11 @@
 		<to last="true">/account.do?action=getorders&amp;ver=$1</to>
 	</rule>
 	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/profile/add/</from>
+		<to last="true">/account.do?action=addProfile&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Delivery Pass Accept Terms and Conditions -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/dpacceptterms/</from>

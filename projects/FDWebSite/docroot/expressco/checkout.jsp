@@ -9,7 +9,7 @@
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" id="user" />
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
 <potato:cartData />
@@ -113,8 +113,16 @@
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
-
+  
+<!-- This change is for Voucher Redemption. We are hiding the change control for these particular voucher users -->
   <tmpl:put name="extraCss">
+  	<% if (user.isVoucherHolder()) { %>
+	  	<style>
+	  		[data-drawer-id="address"]>button {
+		    	display: none !important;
+			}
+	  	</style>
+  	<% } %>
     <fd:css href="/assets/css/timeslots.css" media="all" />
   </tmpl:put>
 

@@ -12,9 +12,25 @@
 <%@ page import="com.freshdirect.framework.core.PrimaryKey" %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%>
-
 <%@ taglib uri="crm" prefix="crm" %>
+<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+<<script type="text/javascript">
 
+function voucherPopup(dialogId) {
+		$jq(function() {
+			$jq("#"+dialogId).dialog({
+				title : "Voucher Redemption",
+				modal: true,
+				buttons : {
+					Close : function() {
+						$jq(this).dialog('close');
+					}
+				}
+			});
+		});
+	}
+</script>
 <%
     String pageURI = request.getRequestURI();
     FDUserI user = CrmSession.getUser(session);
@@ -29,10 +45,13 @@
     }
     int validOrderCount=user.getAdjustedValidOrderCount() ;
     String label =  profile.isChefsTable() ? "chefs_club" : profile.isVIPCustomer() ? "vip" : validOrderCount >= 2 && validOrderCount <= 4 ? "newbie" : "" ;
+    String headerClass="cust_header";
+    headerClass=info.isActive() ? headerClass : headerClass+"_inactive";
+    headerClass=user.isVHInDelivery() || user.isVHOutOfDelivery() ? headerClass+"_voucher":headerClass;
 %>
 <table width="100%" cellpadding="0" cellspacing="0" class="cust_header_shell">
 <tr><td>
-    <div class="cust_header<%= info.isActive() ? "" : "_inactive" %>" <%= !"".equals(label) ? "style=\"padding-left:0px; padding-top:0px; padding-bottom:0px;\"" : "" %>>
+    <div class="<%=headerClass%>" <%= !"".equals(label) ? "style=\"padding-left:0px; padding-top:0px; padding-bottom:0px;\"" : "" %>>
         <table width="100%" cellpadding="0" cellspacing="0" class="cust_text">
             <tr valign="middle">
                 <% if("chefs_club".equals(label)){ %>
@@ -51,7 +70,7 @@
                     info.getCellPhone() != null ? "Cell #: " + info.getCellPhone().getPhone() : " Unknown #: None provided";
                 %>
 				<td><div class="<%=label%>" style="float:left"> <span class="<%=!"".equals(label)? label+"_":""%>cust_title"><%= info.getFirstName() %> <%= info.getMiddleName() %> <%= info.getLastName() %></span> (ID: <%= user.getIdentity().getErpCustomerPK() %> | Type: <%=profile.getHouseholdType()%> | <%=displayPhone%> | <a href="mailto:<%=info.getEmail()%>" class="<%=label%>_link" name="email_link" onmouseover="return overlib('<%=info.getEmail()%>', AUTOSTATUS, WRAP, REF,'email_link',REFP,'LL');"
- onmouseout="nd();">Email</a>)&nbsp;</div><div style="float:left">
+ 				onmouseout="nd();">Email</a>)&nbsp;</div><div style="float:left">
                 <span class="<%=!"".equals(label)? label+"_":""%>cust_title">&nbsp;</span><span class="cust_header_field">Order<%= user.getAdjustedValidOrderCount() > 1 ? "s" : "" %>:</span> <b><%= user.getAdjustedValidOrderCount() %></b>
                 &nbsp;<span class="cust_header_field">Phone:</span> <b><%= user.getValidPhoneOrderCount() %></b>
                 &nbsp;<span class="cust_header_field">Web:</span> <b><%= user.getAdjustedValidOrderCount() - user.getValidPhoneOrderCount() %></b>
@@ -81,6 +100,20 @@
                     <% if (availCredit > 0.0) { %>
 						<%= promoValue > 0 || user.isFraudulent() ? " | " : "" %><span class="cust_header_field">Available store credit</span> <b><%= JspMethods.formatPrice(availCredit) %></b>
 					<% } %>
+					 <% if (user.isVHInDelivery() && !user.isVHPopupDisplay()) { %>
+						 <b> Customer Has VoucherHolderInDeliveryZone</b>
+						 	<div id="voucherIn" style="display: none;color:red">
+    							You are about to edit the Customer who has Voucher Holder In Delivery Zone
+							</div>
+							<script type="text/javascript">voucherPopup("voucherIn");</script>
+					 <%  user.setVHPopupDisplay(true);} %>
+					 <% if (user.isVHOutOfDelivery() && !user.isVHPopupDisplay()) { %>
+						 <b> Customer Has VoucherHolderOutOfDeliveryZone</b>
+							<div id="voucherOut" style="display: none;color:red">
+    							Your are about to edit the Customer who has Voucher Holder Out Of Delivery Zone
+							</div>
+						<script type="text/javascript">voucherPopup("voucherOut");</script>
+					<% user.setVHPopupDisplay(true); } %>
                 
                 <% } else { %>
                     > <b>Account Deactivated</b> <

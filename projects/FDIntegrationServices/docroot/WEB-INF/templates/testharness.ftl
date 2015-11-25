@@ -427,7 +427,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/account/orders/");
   	$("#payload").val("");
   	
-  } else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
+  } else if (loaddata == "AddProfile") {
+  	$("#url").val("/saptest12@freshdirect.com/account/profile/add/");
+  	$("#payload").val('{ "name" : "", "value" : "", notes : ""}');
+  	
+  }else if (loaddata == "AcceptDeliveryPassTermsAndConditions") {
   	$("#url").val("/saptest12@freshdirect.com/account/dpacceptterms/");
   	$("#payload").val("");
   	
@@ -1226,6 +1230,8 @@ function doStuff() {
   <option value="GetMobilePreferences">ACCOUNT - Get Mobile Preferences</option>
   <option value="SetEmailPreferences">ACCOUNT - Set Email Preferences</option>
   <option value="GetEmailPreferences">ACCOUNT - Get Email Preferences</option>
+  <option value="AddProfile">ACCOUNT - Add Profile</option>
+  
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
   <option value="ConfiguredValues">Configured Values</option>

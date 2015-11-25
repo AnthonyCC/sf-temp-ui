@@ -1816,4 +1816,32 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public Date getFirstOrderDate() throws FDResourceException{
 		return this.user.getFirstOrderDate();
 	}
+
+	@Override
+	public boolean isVHInDelivery() throws FDResourceException {
+		return this.user.isVHInDelivery();
+		
+	}
+
+	@Override
+	public boolean isVHOutOfDelivery() throws FDResourceException {
+		return this.user.isVHOutOfDelivery();
+	}
+	
+	public boolean isVoucherHolder() throws FDResourceException {
+		return this.isVHInDelivery() || this.isVHOutOfDelivery();
+	}
+
+	@Override
+	public boolean isVHPopupDisplay() {
+		// TODO Auto-generated method stub
+		return user.isVHPopupDisplay();
+	}
+
+	@Override
+	public void setVHPopupDisplay(boolean flag) {
+		user.setVHPopupDisplay(flag);
+	}
+	
+	
 }

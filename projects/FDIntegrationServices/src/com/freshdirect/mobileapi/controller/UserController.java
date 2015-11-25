@@ -20,6 +20,7 @@ import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -68,7 +69,7 @@ public class UserController extends BaseController {
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws FDException, ServiceException,
-			NoSessionException, JsonException {
+			NoSessionException, JsonException, FDResourceException {
 		
 		LOGGER.debug("Action to use: " + action);
 		
@@ -118,6 +119,11 @@ public class UserController extends BaseController {
 			{
 				responseObject.setResult(ResultCode.USERIDALREADYTAKEN);
 			}
+			catch (FDActionNotAllowedException e)
+			{
+				responseObject.setResult(ResultCode.INVALID_PASSWORD_ERROR);
+			}
+
 			
 			ObjectMapper om = new ObjectMapper();
 			String jsonresponse;
@@ -211,7 +217,7 @@ public class UserController extends BaseController {
     }
     
     private void performUserAccountUpdate( HttpSession Session, UserAccountUpdateRequest UAU, SessionUser user )
-    		throws FDAuthenticationException, FDResourceException, ErpInvalidPasswordException, ErpDuplicateUserIdException
+    		throws FDAuthenticationException, FDResourceException, ErpInvalidPasswordException, ErpDuplicateUserIdException, FDActionNotAllowedException
     {
     	String oldUserID = UAU.getOldUserName();
     	String newUserID = UAU.getNewUserName();
@@ -250,6 +256,9 @@ public class UserController extends BaseController {
 
 		//Update the user's email
 		if(newUserID!=null && !newUserID.isEmpty() ){
+			if(currentUser.isVoucherHolder()){
+				throw new FDActionNotAllowedException("This account is not enabled to change username.");
+			}
 			FDCustomerManager.updateUserId(info, newUserID);
 		} else {
 			LOGGER.info("UserId not being Changed ");

@@ -294,6 +294,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private Date tcAcknowledgeDate=null;
 	private boolean tcAcknowledge=false;
 	
+	private boolean vHPopupDisplay=false;
+	
 	public Date getTcAcknowledgeDate() {
 		return tcAcknowledgeDate;
 	}
@@ -618,6 +620,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.promoVariantMap = null;
 		this.isSOEligible = null;
 		this.hasEBTAlert = null;
+		this.vHPopupDisplay=false;
 		
     }
     /*
@@ -919,6 +922,34 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 	}
 
+	public boolean isVoucherHolder() throws FDResourceException {
+		return isVHInDelivery() || isVHOutOfDelivery();
+	}
+	
+	public boolean isVHInDelivery() throws FDResourceException {
+	    if (this.identity == null) {
+			return false;
+		}
+		FDCustomerModel customer = this.getFDCustomer();
+		if (customer == null || customer.getProfile() == null) {
+			return false;
+		} else {
+			return customer.getProfile().isVHInDelivery();
+		}
+	}
+	
+	public boolean isVHOutOfDelivery() throws FDResourceException {
+	    if (this.identity == null) {
+			return false;
+		}
+		FDCustomerModel customer = this.getFDCustomer();
+		if (customer == null || customer.getProfile() == null) {
+			return false;
+		} else {
+			return customer.getProfile().isVHOutOfDelivery();
+		}
+	}
+	
 	public String getChefsTableInduction() throws FDResourceException {
 
 		FDCustomerModel customer = this.getFDCustomer();
@@ -3110,6 +3141,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
 	public void setCrmMode(boolean flag) {
 		crmMode = flag;
+	}
+
+	@Override
+	public boolean isVHPopupDisplay() {
+		// TODO Auto-generated method stub
+		return this.vHPopupDisplay;
+	}
+
+	@Override
+	public void setVHPopupDisplay(boolean flag) {
+           this.vHPopupDisplay=flag;
 	}
 	
 }

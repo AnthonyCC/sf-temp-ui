@@ -19,6 +19,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -27,12 +28,15 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AckRequest;
@@ -72,6 +76,8 @@ import com.freshdirect.webapp.util.LocatorUtil;
 public class LoginController extends BaseController  implements SystemMessageList {
 
 	public static final String ACTION_LOGIN = "login";
+	
+	public static final String ACTION_LOGIN_EX = "loginXE";
 
 	public static final String ACTION_LOGOUT = "logout";
 
@@ -130,7 +136,21 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			} catch (NoSessionException e) {
 				// Do nothing
 			}
-			model = login(model, requestMessage, request, response);
+			model = login(model, requestMessage, request, response, false);
+		}if (ACTION_LOGIN_EX.equals(action)) {
+			Login requestMessage = parseRequestObject(request, response,
+					Login.class);
+			try {
+				// Check to see if user session exists
+				SessionUser sessionUser = getUserFromSession(request, response);
+				if(sessionUser.isLoggedIn()){
+					logout(model, user, request, response);
+				}
+				
+			} catch (NoSessionException e) {
+				// Do nothing
+			}
+			model = login(model, requestMessage, request, response, true);
 		} else if (ACTION_PING.equals(action)) {
 			model = ping(model, request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
@@ -356,7 +376,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	 * @throws JsonException
 	 */
 	private ModelAndView login(ModelAndView model, Login requestMessage,
-			HttpServletRequest request, HttpServletResponse response)
+			HttpServletRequest request, HttpServletResponse response, boolean externalLogin)
 			throws FDException, NoSessionException, JsonException {
 		String username = requestMessage.getUsername();
 		String password = requestMessage.getPassword();
@@ -371,11 +391,20 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					response);*/
 			//instead of above Call Make a call to UserUtil.loginUser
 			ActionResult actionResult = new ActionResult();
-			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE, false);
-			if(actionResult.getErrors()!=null && !actionResult.getErrors().isEmpty()){
-				throw new FDAuthenticationException();
+			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE, externalLogin);
+
+						
+			if(actionResult.isFailure()){
+				ActionError actionError=actionResult.getError("authentication");
+				if(null!=actionError && SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED.equalsIgnoreCase(
+						actionError.getDescription())){
+					throw new FDAuthenticationException("voucherredemption");
+
+				} else {
+					throw new FDAuthenticationException();
+				}
+				
 			}
-			
 			LOGGER.debug("Current cart object : "+request.getSession().getAttribute(SessionName.CURRENT_CART));
 			
 			FDCartModel currentCart = (FDCartModel)request.getSession().getAttribute(SessionName.CURRENT_CART);
@@ -407,6 +436,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
 						MessageFormat.format(SystemMessageList.MSG_DEACTIVATED,
 								new Object[] { UserUtil
 										.getCustomerServiceContact(request) }));
+			} else if("voucherredemption".equals(ex.getMessage())){
+	     		responseMessage = getErrorMessage(VOUCHER_AUTHENTICATION, 
+	            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED, 
+	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
 			} else {
 				List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(username);
 				if(providers!=null && providers.size()!=0){

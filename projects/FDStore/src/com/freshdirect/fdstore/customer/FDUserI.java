@@ -53,6 +53,9 @@ public interface FDUserI extends java.io.Serializable {
     public final static double MINIMUM_ORDER_AMOUNT = 30.00;
     public final static double FDX_MINIMUM_ORDER_AMOUNT = 20.00;
     public final static double MIN_CORP_ORDER_AMOUNT = 50.00;
+   //TODO : need to check with Tiru
+    public final static double FDX_MIN_ORDER_AMOUNT = 30.00;
+
     public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
     public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text
     public final static double CORP_DELIVERY_FEE_MONDAY = 14.99;  // Used for site text
@@ -202,6 +205,12 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isChefsTable() throws FDResourceException;
 
 	public String getChefsTableInduction() throws FDResourceException;
+	
+	public boolean isVHInDelivery() throws FDResourceException;
+	
+	public boolean isVHOutOfDelivery() throws FDResourceException;
+	
+	public boolean isVoucherHolder() throws FDResourceException;
 
 	public String getWinback() throws FDResourceException;
 
@@ -627,4 +636,9 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isCrmMode();
 	public void setCrmMode(boolean flag);
 	public boolean getTcAcknowledge();
+	
+	public boolean isVHPopupDisplay();
+	public void setVHPopupDisplay(boolean flag);
+	
+
 }

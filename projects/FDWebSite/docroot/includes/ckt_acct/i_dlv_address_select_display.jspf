@@ -87,6 +87,11 @@ if (__shipToAddresses.size() > 0) {
 			}
 		}
 		
+		if(__user.isVoucherHolder()){
+				if(!checkedAddress){
+			continue;
+		}
+		}
 		
 		// render table
 		if((itemCounter % 4)==0) {
@@ -165,18 +170,11 @@ if (__shipToAddresses.size() > 0) {
 						<%}%>
 				<%}%>
 				</font>
-				
-				<%if(parentOrderid!=null){ %>
-				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>" onclick="return false" ><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
-				<%if (showDeleteButtons) {%>
-					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0" disabled="disabled">
-				<% } 
-				}else{%>		
+				<% if(parentOrderid==null || !__user.isVoucherHolder()) { %>
 				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
 				<%if (showDeleteButtons) {%>
 					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0">
-					<% }
-				}%>
+				<% } %> <%} %>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
 			</TD>
 			<%itemCounter++;

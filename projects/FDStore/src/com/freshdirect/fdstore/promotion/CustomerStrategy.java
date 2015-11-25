@@ -13,6 +13,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BINCache;
@@ -136,6 +137,16 @@ public class CustomerStrategy implements PromotionStrategyI {
 			}
 		}
 		
+		// Voucher redemption promotion :  should not allow promotion for new customer who has profile as 
+		// Voucher holder in or out delivery zone
+		try {
+			if(  (context.getAdjustedValidOrderCount() ==0)
+					&& (context.getUser().isVHInDelivery() || context.getUser().isVHOutOfDelivery())){
+				 return DENY;
+			}
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
 
 		
 		return ALLOW;

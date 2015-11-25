@@ -14,10 +14,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
@@ -54,6 +56,8 @@ public class AccountController extends BaseController {
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
 
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
+    
+    private static final String ACTION_ADD_PROFILE = "addProfile";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
@@ -83,6 +87,12 @@ public class AccountController extends BaseController {
             FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
             										, user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
             setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
+        }else if(ACTION_ADD_PROFILE.equals(action)){
+        	AddProfileRequest requestMessage = parseRequestObject(request, response, AddProfileRequest.class);
+			String notePrefix = "Add Profile Attribute: " + requestMessage.getName() + " = " + requestMessage.getValue() + ", Note: ";
+			FDActionInfo info =	AccountActivityUtil.getActionInfo(request.getSession(), notePrefix + requestMessage.getNotes());
+			FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
+			setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
         }
         return model;
     }
