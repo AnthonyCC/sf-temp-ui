@@ -935,8 +935,11 @@ div.popupcontentghost button.selected.category.popup.leftnav-category-popup-butt
 
 /* Left Nav - Make buttons active links */
 #leftnav .menuBox[data-selectiontype=LINK] button.selected.category.popup.leftnav-category-popup-button.cssbutton.green:hover,
+#leftnav .menuBox[data-selectiontype=LINK] button.selected.category.popup.leftnav-category-popup-button.cssbutton.green:focus,
 div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover:hover,
-section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span{
+div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover:focus,
+section.main .leftnav .menuBox li.selected:focus input[type="radio"] + span,
+section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 	color: #FFFFFF;
 	text-decoration: underline;
 }
