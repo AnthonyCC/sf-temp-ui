@@ -4446,8 +4446,6 @@ public class WebUIDriver extends BaseAppDriver {
 				if (SaveCancelButton.equalsIgnoreCase("save")) {
 					uiDriver.click("CRM_SaveBtn");
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("CRM_SaveBtn"))));
-					System.out.println("Address added Sucessfully!!!!");
-					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					List<WebElement> Listafter = webDriver.findElements(By
 							.name(objMap.getLocator("CRM_selectAddressList")));
 					int aSize = Listafter.size();
@@ -4455,6 +4453,12 @@ public class WebUIDriver extends BaseAppDriver {
 						RESULT.passed("ChooseAction",
 								"Delivery Address should be added to the list",
 						"Delivery Address added successfully!!");
+					}
+					else
+					{
+						RESULT.failed("ChooseAction",
+								"Delivery Address should be added to the list",
+						"Valid details might not have entered");
 					}
 				}
 
@@ -4701,18 +4705,25 @@ public class WebUIDriver extends BaseAppDriver {
 						String SaveCancelButton1 = CRMSaveCancelBtn;
 						if (SaveCancelButton1.equalsIgnoreCase("save")) {
 							uiDriver.click("CRM_SaveBtn");
-							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+							try{
+							uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("CRM_SaveBtn"))));
 							if (webDriver.getTitle().equals("/ FreshDirect CRM : Account Details /")) {
-								System.out.println("Address edited Sucessfully!!!!");
 								RESULT.passed("Edit Address",
 										"Address should be edited",
 								"Address edited successfully!!");
-							}else{
+							}	
+							else
+							{
 								RESULT.failed("Edit Address",
 										"Address should be edited",
 								"ADdress is not edited, Please Enter valid details");
 							}
-							break;
+						}
+						catch (Exception e) {
+							RESULT.failed("Edit Address",
+									"Address should be edited",
+							"ADdress is not edited, Please Enter valid details");
+						}
 						}
 
 						else if (SaveCancelButton1.equalsIgnoreCase("cancel")) {
@@ -5297,7 +5308,7 @@ public class WebUIDriver extends BaseAppDriver {
 		try{
 
 			uiDriver.waitForPageLoad();
-
+			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			// check if the unavailable popup is available then perform the operatiuon
 			if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarning"))).size() > 0  
 					&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).isDisplayed()) {
@@ -5318,14 +5329,80 @@ public class WebUIDriver extends BaseAppDriver {
 								.invisibilityOfElementLocated(By.xpath(objMap
 										.getLocator("btncontinuePopUp"))));
 						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+						// to verify order total for checkout
 						if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() > 0 
-								&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).isDisplayed() ) {
-							RESULT.warning(
-									"Unvailability popup",
-									"Order should be placed and review page should be displayed.",
-									"ATTENTION: "
-									+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
-						return;
+								&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).isDisplayed() )
+						{
+//							RESULT.warning(
+//									"Unvailability popup",
+//									"Order should be placed and review page should be displayed.",
+//									"ATTENTION: "
+//									+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
+//						return;
+							
+							try{
+						    String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("txtSubTotal")).getText();
+							cartSubtotal = cartSubtotal.replaceAll(",", "");
+							
+							// for $50 check
+							List<WebElement> addLst = webDriver.findElement(By.xpath(objMap.getLocator("strofficeDelivery"))).findElements(By.tagName("option"));
+							
+							int iSize = addLst.size();
+							int a = 0;
+							for (int i = 0; i < iSize; i++) {
+								try {
+									if (addLst.get(i).getAttribute("selected").equalsIgnoreCase("true")) {
+										a++;
+										break;
+									}
+								} catch (NullPointerException e) {
+									continue;
+								}
+							}
+							
+							if(Double.parseDouble(cartSubtotal.replace("$", "")) < Double.parseDouble("30"))
+							{
+								if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() >0)
+								{
+									RESULT.warning("Checkout verification",
+											"User should get warning message for minimum cart requirement",
+											"ATTENTION: "
+											+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
+									return;
+								}
+								else
+								{
+									RESULT.failed(
+											"Checkout verification",
+											"User should get warning message for minimum cart requirement",
+									"No warning message is displayed for  minimum cart requirement");
+									return;
+								}
+							}
+							
+							else if (Double.parseDouble(cartSubtotal.replace("$", "")) < Double.parseDouble("50")
+									&& Double.parseDouble(cartSubtotal.replace("$", "")) > Double.parseDouble("30")&& a>0)
+							{
+								if(webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText().contains("$50.00") && a>0) 
+								{
+									RESULT.warning("Checkout verification",
+											"User should get warning message for minimum cart requirement",
+											"ATTENTION: "
+											+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
+									return;
+								}		
+								else
+								{
+									RESULT.failed(
+											"Checkout verification",
+											"User should get warning message for minimum cart requirement",
+									"No warning message is displayed for  minimum cart requirement");
+									return;
+								}
+							}							
+							}catch(Exception e){
+								RESULT.failed("Order subtotal", "Order subtotal should be get", "Order subtotal is not get due to" + e);
+							}	
 						}						
 					}else{
 						RESULT.failed("Items unavailability pop up", "Continue button should be available", "Continue button is not available");
@@ -5491,26 +5568,34 @@ public class WebUIDriver extends BaseAppDriver {
 						try 
 						{
 							uiDriver.waitForPageLoad();
-							wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges")))));
+							webDriver.findElement(By.xpath(objMap
+									.getLocator("strverifyWarning")));
+							//wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges")))));
 							// handle the save chnages button after place order
 							// click
-							if (webDriver.findElements(By.xpath(objMap.getLocator("btnsaveChanges"))).size() > 0) 
-							{
-								FD_returnProducts();
-								uiDriver.getwebDriverLocator(objMap.getLocator("btnplaceOrder")).click();
-								uiDriver.waitForPageLoad();
-								//**********************Calculate order total to track defect whether any 30$ or 50$ or 750$ check should come or not***********
-								if(webDriver.findElements(By.className(objMap.getLocator("strinternalError"))).size()>0)
-								{
-									RESULT.warning(
-											"Internal Error",
-											"Internal Error",
-											"Order is not submitted,due to Error "
-											+ webDriver.findElement(By.className(objMap.getLocator("strinternalError"))).getText());
-									return;
-								}
-
+							//if (webDriver.findElements(By.xpath(objMap.getLocator("btnsaveChanges"))).size() > 0) 
+							//{
+							// handle unavailablity pop-up 
+							uiDriver.FD_unavailablePopUp();
+							//return if we are not on checkout page
+							if (!webDriver.getTitle().equalsIgnoreCase("Checkout")) {								
+								return;
 							}
+							FD_returnProducts();							
+							uiDriver.getwebDriverLocator(objMap.getLocator("btnplaceOrder")).click();
+							uiDriver.waitForPageLoad();
+							//**********************Calculate order total to track defect whether any 30$ or 50$ or 750$ check should come or not***********
+							if(webDriver.findElements(By.className(objMap.getLocator("strinternalError"))).size()>0)
+							{
+								RESULT.warning(
+										"Internal Error",
+										"Internal Error",
+										"Order is not submitted,due to Error "
+										+ webDriver.findElement(By.className(objMap.getLocator("strinternalError"))).getText());
+								return;
+							}
+
+							//}
 						} catch (Exception e)
 						{
 
@@ -5954,36 +6039,59 @@ public class WebUIDriver extends BaseAppDriver {
 					product_to_verify_qty[i] = product_quantity_text;
 					System.out.println(product_text + product_quantity_text);
 				}
+				
 
+				
 				for (int i = 0; i < products_to_verify.size(); i++) {
-					for (int j = 0; j < verify_products.length; j++) {
-						if (product_to_verify_name[i].contains(verify_products[j])){
-							if(verify_products_quantity[j].equals(product_to_verify_qty[i])) {
-								RESULT.passed("Submit Order", "Expected product: "
-										+ verify_products[j] + " and Quantity: "
-										+ verify_products_quantity[j],
-										"Actual product: " + product_to_verify_name[i]
-										                                            + " and Quantity: "
-										                                            + product_to_verify_qty[i]);
-								break;
-							}else{
-								RESULT.failed("Submit Order", "Expected product: "
-										+ verify_products[j] + " and Quantity: "
-										+ verify_products_quantity[j],
-										"Actual product: " + product_to_verify_name[i]
-										                                            + " and Quantity: "
-										                                            + product_to_verify_qty[i]);
-							}	
-						}if(!Arrays.asList(product_to_verify_name).contains(verify_products[j])){
-							RESULT.failed("Submit Order", "Expected product: "
-									+ verify_products[j] + " and Quantity: "
-									+ verify_products_quantity[j],
-									"Actual product: " + product_to_verify_name[i]
-									                                            + " and Quantity: "
-									                                            + product_to_verify_qty[i]);
-						}
+					if ((verify_products[i].contains(product_to_verify_name[i]) || product_to_verify_name[i].contains(verify_products[i]))
+							&& verify_products_quantity[i].equals(product_to_verify_qty[i])) 
+					{
+						RESULT.passed("Place Order", "Expected product: "
+								+ verify_products[i] + " and Quantity: "
+								+ verify_products_quantity[i],
+								"Actual product: " + product_to_verify_name[i]
+								                                            + " and Quantity: "
+								                                            + product_to_verify_qty[i]);
+					} else {
+						RESULT.failed("Place Order", "Expected product: "
+								+ verify_products[i] + " and Quantity: "
+								+ verify_products_quantity[i],
+								"Actual product: " + product_to_verify_name[i]
+								                                            + " and Quantity: "
+								                                            + product_to_verify_qty[i]);
 					}
-				}
+				}	
+				
+//				for (int i = 0; i < products_to_verify.size(); i++) {
+//					for (int j = 0; j < verify_products.length; j++) {
+//						if (product_to_verify_name[i].contains(verify_products[j])){
+//							if(verify_products_quantity[j].equals(product_to_verify_qty[i])) {
+//								RESULT.passed("Submit Order", "Expected product: "
+//										+ verify_products[j] + " and Quantity: "
+//										+ verify_products_quantity[j],
+//										"Actual product: " + product_to_verify_name[i]
+//										                                            + " and Quantity: "
+//										                                            + product_to_verify_qty[i]);
+//								break;
+//							}else{
+//								RESULT.failed("Submit Order", "Expected product: "
+//										+ verify_products[j] + " and Quantity: "
+//										+ verify_products_quantity[j],
+//										"Actual product: " + product_to_verify_name[i]
+//										                                            + " and Quantity: "
+//										                                            + product_to_verify_qty[i]);
+//							}	
+//						}
+//						if(!Arrays.asList(product_to_verify_name).contains(verify_products[j])){
+//							RESULT.failed("Submit Order", "Expected product: "
+//									+ verify_products[j] + " and Quantity: "
+//									+ verify_products_quantity[j],
+//									"Actual product: " + product_to_verify_name[i]
+//									                                            + " and Quantity: "
+//									                                            + product_to_verify_qty[i]);
+//						}
+//					}
+//				}
 
 			} else {
 				RESULT
@@ -7412,11 +7520,11 @@ public class WebUIDriver extends BaseAppDriver {
 					By.xpath(objMap.getLocator("tabyourTopItems"))).size() > 0) {
 				
 				//refresh for IE
-				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) {
+				//if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) {
 					webDriver.navigate().refresh();
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By
 							.xpath(objMap.getLocator("tabyourTopItems"))));
-				}
+				//}
 				
 				// update the reorder_page flag
 				reorder_page = true;
@@ -8743,9 +8851,18 @@ public class WebUIDriver extends BaseAppDriver {
 												.size() > 0) {
 											// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
 											qtyBefore = getCartItemQuantity(lineItem);
+											if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+											{
+												cartItemRows.get(j).findElement(
+														By.className(objMap
+																.getLocator("btnqtyPlus"))).sendKeys("\n");
+											}
+											else
+											{
 											cartItemRows.get(j).findElement(
 													By.className(objMap
-															.getLocator("btnqtyPlus"))).click();
+															.getLocator("btnqtyPlus"))).click();	
+											}
 											try {
 												SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 												qtyAfter = getCartItemQuantity(lineItem);
@@ -8858,10 +8975,20 @@ public class WebUIDriver extends BaseAppDriver {
 												.size() > 0) {
 											// qtyBefore=cartItemRows.get(j).findElement(By.className("qty")).getAttribute("value");
 											qtyBefore = getCartItemQuantity(lineItem);
+											if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+											{
+												cartItemRows.get(j).findElement(
+														By.className(objMap
+																.getLocator("btnqtyMinus")))
+																.sendKeys("\n");
+											}
+											else
+											{
 											cartItemRows.get(j).findElement(
 													By.className(objMap
 															.getLocator("btnqtyMinus")))
 															.click();
+											}
 											try {
 												SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 												qtyAfter = getCartItemQuantity(lineItem);
@@ -9838,7 +9965,7 @@ public class WebUIDriver extends BaseAppDriver {
 						.getLocator("lnkcartItemNamesCRM")));
 			}
 			catch(Exception e){
-				RESULT.failed("Modify Cart", "Items should be available","No item is available");
+				RESULT.failed("Modify Cart", "Items should be available","No item is available or user is on incorrect page");
 				return;
 			}
 			// Iterating through all the list elements
@@ -10208,16 +10335,15 @@ public class WebUIDriver extends BaseAppDriver {
 					waitForPageLoad();
 					if (EmailNotification.equalsIgnoreCase("yes")) {
 						uiDriver.click("chkemailNotification");
-						waitForPageLoad();
+//						waitForPageLoad();
 					}
 					uiDriver.setValue("drpreason", Reason);
 					uiDriver.setValue("txtnotes", Notes);
 					try{
 					uiDriver.click("btncancelOrderCRM");
-					waitForPageLoad();
-					RESULT.passed("Cancel order", "Cancel order button should be visible", "Cancel order button not found");
+//					waitForPageLoad();
 					}catch (Exception e) {
-						e.printStackTrace();
+						RESULT.failed("Cancel order", "Cancel order button should be visible", "Cancel order button not found");
 					}
 					if(uiDriver.popup_isAlertPresent(10)){
 						uiDriver.popup_ClickOkOnAlert();
@@ -10228,7 +10354,7 @@ public class WebUIDriver extends BaseAppDriver {
 							By.xpath(objMap.getLocator("txtorderStatusCRM")))
 							.getText();
 					
-					if (OrderStatus.contains("Cancelled")) {
+					if (OrderStatus.contains("Canceled")) {
 						RESULT.passed("Cancel Order CRM",
 								"Order should get cancelled successfully",
 								"Desired order cancelled successfully: Order #"
@@ -10289,7 +10415,9 @@ public class WebUIDriver extends BaseAppDriver {
 				CRMWindow = webDriver.getWindowHandle();
 				String OrderStatus=webDriver.findElement(By.xpath(objMap.getLocator("txtorderStatusCRM"))).getText();
 				if(OrderStatus.equalsIgnoreCase("submitted")){
-					uiDriver.click("lnkmodifyOrder");
+//					uiDriver.click("lnkmodifyOrder");
+					webDriver.findElement(By.linkText(objMap.getLocator("lnkmodifyOrder"))).click();
+					SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 					uiDriver.waitForPageLoad();
 					//get window handlers as list
 					List<String> browserTabs = new ArrayList<String> (webDriver.getWindowHandles());
@@ -10299,8 +10427,19 @@ public class WebUIDriver extends BaseAppDriver {
 						webDriver.manage().window().maximize();
 					}
 					uiDriver.waitForPageLoad();
+					if(webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0)
+					{
+						RESULT.passed("Modify Order in CRM", "User should be nevigated to storefront application", 
+								"Nevigation to storefront is successfull");
+					}
+					else
+					{
+						RESULT.failed("Modify Order in CRM", "User should be nevigated to storefront application", 
+						"Nevigation to storefront is unsuccessfull");
+						return;
+					}
 					String Operate = Operation.toUpperCase();
-					// Item names and values for Operation would be comma
+					// Item names and values for Operation would be colon
 					// separated so split those values and call modify_cart
 					// function
 					String Items[] = ItemName.split(":");
@@ -10398,6 +10537,13 @@ public class WebUIDriver extends BaseAppDriver {
 					//signUP for DeliveryPass
 					uiDriver.click("lnkdeliverypass_signup");
 					waitForPageLoad();
+					
+					try{
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnadd_cart"))));
+					}catch(Exception e){
+						RESULT.failed("Delivery Pass Options Add", "Delivery Pass PDP should get displayed",
+						"Delivery Pass PDP is not available after waiting for 180 seconds");
+					}
 					if (webDriver.findElements(
 							By.className(objMap.getLocator("strcart_info"))).size() > 0) {
 						String cart_info = uiDriver.getwebDriverLocator(
@@ -12068,7 +12214,7 @@ public class WebUIDriver extends BaseAppDriver {
 					uiDriver.click("btnCRM_SaveBtn");
 					//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By
-							.linkText(objMap.getLocator("btnCRM_SaveBtn"))));
+							.className(objMap.getLocator("btnCRM_SaveBtn"))));
 					if (webDriver.getTitle().contains("Edit")) {
 						RESULT
 						.failed(
