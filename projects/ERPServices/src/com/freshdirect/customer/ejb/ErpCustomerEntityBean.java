@@ -333,6 +333,13 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		// store children
 		if (this.shipToAddress.isModified()) {
 			this.shipToAddress.store( conn );
+			
+			// update names for ExpressSignup Customer
+			if(shipToAddress.size() ==1 && !isCustomerNameUpdatedForExpressSignupCustomer()){				
+				Iterator<ErpAddressPersistentBean> i = this.shipToAddress.iterator();
+				ErpAddressModel address = (ErpAddressModel)((ErpAddressPersistentBean)i.next()).getModel();
+				this.customerInfo.updateCustomerNames( conn, address.getFirstName(), null, address.getLastName() );				
+			}
 		}
 		LOGGER.info("Before calling store ******************* ");
 		if(this.paymentMethodList.isModified()){
@@ -618,6 +625,22 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return found;
 	}
 
+	
+	private boolean isCustomerNameUpdatedForExpressSignupCustomer(){
+		
+		String fName = this.customerInfo.getFirstName();
+		String lName = this.customerInfo.getLastName();
+		String email = this.customerInfo.getEmail();
+		
+		if(fName != null && lName != null && email != null ){			
+			if(fName.equalsIgnoreCase(lName) &&  fName.equalsIgnoreCase(email.substring(0, email.indexOf("@")))  ){				
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public boolean isActive() {
 		return this.active;
 	}

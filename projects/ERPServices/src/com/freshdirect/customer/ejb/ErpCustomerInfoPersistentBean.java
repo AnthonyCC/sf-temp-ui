@@ -37,6 +37,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 	private String title;
 	private String firstName;
+
+
 	private String middleName;
 	private String lastName;
 	
@@ -915,6 +917,23 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.setPK(null); // make it anonymous
 	}
 
+	public void updateCustomerNames(Connection conn, String fName, String mName, String lName) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.CUSTOMERINFO SET FIRST_NAME=?, MIDDLE_NAME=?, LAST_NAME=? WHERE CUSTOMER_ID=?");
+
+		ps.setString(1, fName);
+		ps.setString(2, mName);
+		ps.setString(3, lName);
+		ps.setString(4, this.getPK().getId());
+		
+        if (ps.executeUpdate() != 1) {
+			throw new SQLException("Row not updated");
+		}
+		ps.close();
+		this.unsetModified();
+	}	
+	
+	
 	public PrimaryKey getPK() {
 		return this.getParentPK();
 	}
@@ -958,5 +977,29 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	public void setSecondEmailAddress(String secondEmailAddress) {
 		this.secondEmailAddress = secondEmailAddress;
 	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}	
 
 }
