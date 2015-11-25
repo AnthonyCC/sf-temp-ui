@@ -11,7 +11,7 @@ var FreshDirect = FreshDirect || {};
     this.update();
 
     this.widget.on('mouseover', '.selectButton', this.open.bind(this));
-    this.widget.on('keydown', '.selectButton', this.open.bind(this));
+    this.widget.on('keydown', '.selectButton', function () { this.open(); this.popup.clicked = true; }.bind(this));
     this.widget.on('mouseout', '.selectButton', function () { this.popup.clearDelay(); }.bind(this));
     this.bindClick();
 
