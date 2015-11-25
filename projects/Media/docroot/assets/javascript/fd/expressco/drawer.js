@@ -30,14 +30,22 @@ var FreshDirect = FreshDirect || {};
     },
     activate: {
       value: function (id) {
+        this.originalFocused = document.activeElement;
+
         if ($('[data-drawer-id="'+id+'"][data-drawer-locked]').size() === 0) {
           $(document.body).attr('data-drawer-active', id);
+          $('[data-drawer-content="'+id+'"]').focus();
         }
       }
     },
     reset: {
       value: function () {
         $(document.body).attr('data-drawer-active', null);
+        if (this.originalFocused) {
+          try {
+            this.originalFocused.focus();
+          } catch (e) {}
+        }
       }
     },
     changeClick: {
@@ -85,6 +93,11 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', drawer.changeTrigger, drawer.changeClick.bind(drawer));
   $(document).on('click', drawer.cancelTrigger, drawer.reset.bind(drawer));
+  $(document).on('keydown', '[data-drawer-content]', function (e) {
+    if (e.keyCode === fd.utils.keyCode.ESC) {
+      drawer.reset();
+    }
+  });
   $(document).on('click', function (e) {
     var $el = $(e.target);
 
