@@ -228,18 +228,26 @@ public class FDEmailFactory {
 		return email;
 	}
 
+	public String getForgotPasswordLink(FDCustomerInfo customer, String requestId, EnumEStoreId eStoreId) {
+		String passwordLink = ErpServicesProperties.getForgotPasswordPage(); //default FD
+		
+		if (eStoreId.equals(EnumEStoreId.FDX)) {
+			passwordLink = ErpServicesProperties.getForgotPasswordPageFDX(); //change to FDX
+		}
+		
+		passwordLink += ((passwordLink.indexOf('?') == -1) ? "?" : "&") + "email=" + customer.getEmailAddress() + "&link=" + requestId; 
+		
+		return passwordLink;
+	}
+	
 	public XMLEmailI createForgotPasswordEmail(FDCustomerInfo customer, String requestId, Date expiration, List ccList, EnumEStoreId eStoreId) {
 		LOGGER.debug("createForgotPasswordEmail() EStoreID:"+eStoreId);
 		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
 		FDForgotPasswordEmail email = null;
-
-		String passwordLink =
-			ErpServicesProperties.getForgotPasswordPage() + "?email=" + customer.getEmailAddress() + "&link=" + requestId;
+		String passwordLink = getForgotPasswordLink(customer, requestId, eStoreId);
 		
 		if (isFdxOrder) {
 			LOGGER.debug("createForgotPasswordEmail() EStoreID (in isFdxOrder):"+eStoreId);
-			passwordLink =
-				ErpServicesProperties.getForgotPasswordPageFDX() + "?email=" + customer.getEmailAddress() + "&link=" + requestId;
 			
 			email = new FDForgotPasswordEmail(customer, passwordLink, expiration);
 

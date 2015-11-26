@@ -741,13 +741,16 @@ section.forgot_password_section {
       font-weight: bold; }
   section.forgot_password_section table.retrieve_pw_table tr td {
     display: block; }
-    section.forgot_password_section table.retrieve_pw_table tr td.bodyCopy {
-      text-align: left;
-      text-transform: uppercase;
-      font-weight: bold;
-      color: #44454D;
-      letter-spacing: 1px;
-      padding-bottom: 8px; }
+  section.forgot_password_section .bodyCopy {
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #44454D;
+    letter-spacing: 1px;
+    padding-bottom: 8px; }
+  section.forgot_password_section span.bodyCopy {
+    display: inline-block;
+    padding-top: 20px; }
   section.forgot_password_section input.text9, section.forgot_password_section input.text11 {
     border: none;
     height: 59px;
@@ -765,6 +768,33 @@ section.forgot_password_section {
     section.forgot_password_section .nextbutton button {
       letter-spacing: 2px;
       font-size: 1em; }
+
+section.section_plain_copy {
+  margin: 150px 5% 100px 5%; }
+  section.section_plain_copy h1 {
+    margin: auto;
+    text-align: center;
+    font-size: 2.1em; }
+  section.section_plain_copy h2 {
+    color: #732282;
+    margin-bottom: 10px;
+    margin-top: 40px; }
+  section.section_plain_copy h1, section.section_plain_copy h2, section.section_plain_copy h3, section.section_plain_copy strong {
+    font-family: "GraphikApp-Semibold";
+    font-weight: bold; }
+  section.section_plain_copy h3 {
+    margin-top: 25px;
+    margin-bottom: 5px; }
+  section.section_plain_copy p {
+    margin: 1px;
+    padding: 1px;
+    font-family: "GraphikApp-Regular"; }
+  section.section_plain_copy#section_about_us {
+    margin-bottom: 0px; }
+    section.section_plain_copy#section_about_us p {
+      margin-top: 25px; }
+    section.section_plain_copy#section_about_us img {
+      margin-top: 50px; }
 
 footer {
   background-color: #2D2E37;

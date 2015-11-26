@@ -1129,17 +1129,22 @@ section.forgot_password_section{
 	table.retrieve_pw_table{
 		tr td{
 			display:block;
-
-			&.bodyCopy{
-				text-align:left;
-				text-transform:uppercase;
-				font-weight:bold;
-				color: #44454D;
-				
-				letter-spacing: 1px;
-				padding-bottom: 8px;
-			}
 		}
+	}
+	
+	.bodyCopy{
+		text-align:left;
+		text-transform:uppercase;
+		font-weight:bold;
+		color: #44454D;
+		
+		letter-spacing: 1px;
+		padding-bottom: 8px;
+	}
+	
+	span.bodyCopy{
+		display:inline-block;
+		padding-top: 20px;
 	}
 	
 	input.text9, input.text11{
@@ -1166,6 +1171,51 @@ section.forgot_password_section{
 		button{
 			letter-spacing: 2px;
 			font-size: 1em;
+		}
+	}
+}
+
+section.section_plain_copy{
+	margin: 150px 5% 100px 5%;
+	
+	h1{
+		margin:auto;
+		text-align: center;
+		font-size:2.1em;
+	}
+	
+	h2{
+		color: $main_purple;
+		margin-bottom: 10px;
+		margin-top: 40px;
+	}
+	
+	h1, h2, h3, strong{
+		font-family: '#{$GraphikApp_s_n}';
+		font-weight:bold;
+	}
+	
+	h3{
+		margin-top: 25px;
+		margin-bottom: 5px;
+	}
+	
+	p{
+		margin:1px;
+		padding:1px;
+		
+		font-family: '#{$GraphikApp_r_n}';
+	}
+	
+	&#section_about_us{
+		margin-bottom: 0px;
+		
+		p{
+			margin-top:25px;
+		}
+		
+		img{
+			margin-top:50px;
 		}
 	}
 }

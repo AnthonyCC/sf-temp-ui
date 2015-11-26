@@ -1,192 +1,196 @@
 <%@ page trimDirectiveWhitespaces="true" %>
-<%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.FDSessionUser.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*'%>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory'%>
-<%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
-<%@ taglib uri="/WEB-INF/shared/tld/c.tld" prefix="c" %>
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ include file="includes/fk_core_settings.jspf" %>
-<%!
-public String result = "";
-public String errorMsg = "";
-
-public String[] checkReminderForm = {"email_not_expired", "invalid_email", "email"};
-public FDSessionUser user;
-
-public String svg_src(String svg_f){
-	return IMAGES_DIR + "/s.jsp?f=" + svg_f;
-}
-
-public String svg_obj(String svg_f){
-	return "<object data=\""+ SVG_SRC + svg_f +"\" type=\"image/svg+xml\"><img src=\""+ SVG_SRC + svg_f +"\" /></object>";
-}
-
-public String svg_bg(String svg_f){
-	return "background-image:url(" + SVG_SRC + svg_f + ")";
-}
-%><%
-String emailAddress = request.getParameter("emailAddress");
-
-//expanded page dimensions (for forget password sections)
-final int W_FORGET_PASSWORD_TOTAL = 700;
-final int W_FORGET_PASSWORD_CONFIRMATION_TOTAL = 700;
-String previousPage;
-
-//this is to help the forgot password form understand whether it is freshdirect or foodkick.  there is different copy for both scenarios
-EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-boolean isFdxOrder = estoreId.getContentId().equals( EnumEStoreId.FDX.toString() );
-
-//transfer normal JSP/Java variable to be usable by JSTL tag. yes, we don't have to deal with this type of annoying crap in angularjs, but whatever
-pageContext.setAttribute("isFdxOrder", isFdxOrder);
-
-//whether or not this is the main page
-String url_prefix = "";
-if( request.getParameter("p") != null ){
-	url_prefix = "index.jsp";
-}
-%>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>A fresh kick <c:out value="${param.f}" /></title>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<!--[if lt IE 9]>
-		   <script src="<%=JS_DIR %>/modernizr-custom.js"></script>
-		   <script src="<%=JS_DIR %>/fk_ie8.js"></script>
-		<![endif]-->
-		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
-		<script src="ad_server_opt.js.jsp"></script>
-	</head>
-	<body>
-		<header></header>
-		<nav>
-			<ul>
-				<li class="mobile mobile_dropdown_master">
-					<a href="#" class="mobile_link">
-						<img src="<%=SVG_SRC %>hamburger_helper.svg" />
-					</a>
-					<ul class="dropdown mobile_dropdown">
-						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-						<li><a href="<%=url_prefix %>#Whats_Good">What's Good</a></li>
-						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
-						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
-					</ul>
-				</li>
+<tmpl:insert template='includes/fklayout_tmpl.jsp'>
+	<tmpl:put name='title'>A fresh kick</tmpl:put>
+	<tmpl:put name='content'>
+		<a name="slideshow" id="slideshow"></a>
+		<section id="section_slideshow" class="main_section">
+			<div id="carousel_1"></div>
 			
-				<li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-				<li class="standard_link"><a href="<%=url_prefix %>#Whats_Good">From The Feed</a></li>
-				<li class="logo_link">
-					<a href="<%=url_prefix %>#slideshow">
-						<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
-					</a>
-				</li>
-				<!--  <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
-				<li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
-			</ul>
-		</nav>
-		<c:choose>
-			<c:when test="${param.p == 'forget_password'}">
-				<section id="forgot_password_section" class="forgot_password_section">
-					<fd:CheckLoginStatus guestAllowed='true' recognizedAllowed='true' id='user' />
-					<fd:ForgotPasswordController results="result" successPage='<%=FKAPP_DIR %>/?p=forget_password_confirmation' password="password">	
-						<%@ include file="/login/includes/forget_password.jspf" %>
-					</fd:ForgotPasswordController>
-				</section>
-			</c:when>
-			<c:when test="${param.p=='forget_password_confirmation'}">
-				<section id="forgot_password_confirmation_section" class="forgot_password_section">
-					<%@ include file="/login/includes/forget_password_confirmation.jspf" %>
-				</section>
-			</c:when>
-			<c:when test="${param.p == 'retrieve_password'}">
-				<fd:CheckLoginStatus id="user" />
-				<% String fName = user.getFirstName(); %>
-				<section id="forgot_password_retrieve_section" class="forgot_password_section">
-					<fd:ForgotPasswordController results="result" successPage='<%=FKAPP_DIR %>/?p=forget_password_confirmation' password="password">	
-						<%@ include file="/login/includes/retrieve_password.jspf" %>	
-					</fd:ForgotPasswordController>
-				</section>
-			</c:when>
-			<c:otherwise>
-				<%@ include file="includes/index_main.jspf" %>
-			</c:otherwise>
-		</c:choose>
-		<footer>
-			 <section id="footer_disclaimer">
-			 *This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
-must (a) exceed minimum purchase requirements before taxes & fees, (b) be within eligible <span>delivery areas</span>, and (c) have a delivery window greater than one (1) hour. Delivery is subject to
-availability. No promotion code necessary and the Offer will automatically apply starting with your first purchase and will continue for 30 days. This is a limited time Offer. All standard customer
-terms and conditions apply. FoodKick reserves the right to cancel or modify this Offer at any time. Offer is nontransferable. Void where prohibited. All right reserved, Fresh Direct, LLC.
-			</section> 
-			
-			<div class="stripes"><button class="download_button white">Download the APP</button></div>
-			<section id="footer_subsection">
-				<section>
-					<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
-					<div>&copy;FRESH DIRECT, LLC</div>
-				</section>
-				<section>
-					<h4>Contact</h4>
-					<hr/>
-					<p>
-						Have a question?<br/>
-						<a href="mailto:hello@foodkick.com">hello@foodkick.com</a>
-					</p>
-					<p>
-						Press Inquiries<br/>
-						<a href="mailto:press@foodkick.com">press@foodkick.com</a>
-					</p>
-					<p>
-						Want to Partner?<br/>
-						<a href="mailto:partnership@foodkick.com">partnership@foodkick.com</a>
-					</p>
-				</section>
-				<section>
-					<h4>Info</h4>
-					<hr/>
-					<p>
-						<a href="#">About Us</a><br/>
-						<a href="#">FAQ</a>
-					</p>
-				</section>
-				<section class="last">
-					<h4>Hang With Us</h4>
-					<hr/>
-					<ul>
-						<li><a style="<%=svg_bg("footer/twitter.svg") %>;" href="http://www.twitter.com/FreshDirect">&nbsp;</a></li>
-						<li><a style="<%=svg_bg("footer/instagram.svg") %>;" href="http://www.instagram.com">&nbsp;</a></li>
-						<li><a style="<%=svg_bg("footer/facebook.svg") %>;" href="http://www.facebook.com/FreshDirect">&nbsp;</a></li>
-						<li class="last"><a style="<%=svg_bg("footer/snapchat.svg") %>;" href="https://www.snapchat.com/">&nbsp;</a></li>
-					</ul>
+			<button class="download_button purple">Download the APP</button>
+			<button class="appstore_button">
+				<%--svg_obj("appstore.svg") --%>
+				<img src="<%=SVG_SRC %>appstore.svg" />
+			</button>
+		</section> <!-- end of section 'section_1'  -->
+		
+		<a name="Get_Foodkick" id="Get_Foodkick"></a>
+		<section id="section_Get_Foodkick" class="main_section">
+			<h1>Hey Brooklyn <span class="plus_span">+</span> LIC, the party starts now!</h1>
+		
+			<section>
+				<article>
+					<h2>Let's make this thing happen with</h2>
+					<h1>30 days of <br/> FREE delivery.</h1>
 					
-					<img src="<%=IMAGES_DIR %>/footer/tiles.jpg" />
-				</section>
+					<button class="download_button purple">Download the APP</button>
+				</article>
+				
+				<figure>
+				<img src="<%=SVG_SRC %>section_3/arrow.svg" class="svg_arrow" />
+				</figure>
+				<article>
+					<form action="/api/locationhandler.jsp" method="post" id="ziphandler">
+						<p>We're expanding fast. Check your ZIP to see if we're in your hood.</p>
+					
+						<%-- 
+						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
+						--%>
+						
+						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
+						
+						<button type="submit">Check</button>
+					</form>
+					<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
+						<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
+					
+						<%-- 
+						<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
+						--%>
+						
+						<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
+						
+						<input type="email" name="email_lh" id="email_lh" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+						
+						<button type="submit">Submit</button>
+						<br/>
+						By hitting submit, you agree to receive FoodKick emails.
+					</form>
+					
+					<div id="we_deliver_to_you" style="display:none">
+						<p class="ucwords">We deliver in your area!</p>
+						<button class="download_button purple">Download the APP</button>
+					</div>
+					
+					<div id="form_congratulations" style="display:none">
+						<p class="ucwords">Thank you for your submission!</p>
+						We will contact you when Foodkick DOES deliver to your area!
+					</div>
+				</article>
 			</section>
-		</footer>
-	</body>
-
-	<%-- 
-	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-	--%>
+			<%--svg_obj("section_3/form_bg_full.svg") --%>
+		</section>
+		
+		<a name="How_it_works" id="How_it_works"></a>
+		<section id="section_How_it_works" class="main_section">
+			<h1>This is the part where we tell you how fast and easy it is.</h1>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/clock.svg") --%> <img src="<%=SVG_SRC %>section_2/clock.svg" /></div>
+					<figcaption>
+						<h4>OPEN THE APP FOR DELIVERY TIME</h4>
+						that works for you
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/bowl_bottle_fruit.svg") --%> <img src="<%=SVG_SRC %>section_2/bowl_bottle_fruit.svg" /> </div>
+					<figcaption>
+						<h4>GET WHAT YOU NEED FOR TODAY AND TOMORROW</h4>
+						like meals, fresh ingredients, beer and wine, and even household supplies
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article>
+				<figure>
+					<div><%--svg_obj("section_2/check.svg") --%> <img src="<%=SVG_SRC %>section_2/check.svg" /></div>
+					<figcaption>
+						<h4>GET BACK TO WHAT YOU WERE DOING</h4>
+						Place your order and we'll do the rest while you post on Instagram, text about dinner later or check your email
+					</figcaption>
+				</figure>
+			</article>
+			
+			<article class="last">
+				<figure>
+					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" /></div>
+					<figcaption>
+						<h4>HAVE AN AMAZING FOOD EXPERIENCE</h4>
+						An amazing meal will be waiting for you to dig into and enjoy!
+					</figcaption>
+				</figure>
+			</article>
+			
+			<button class="download_button purple">Download the APP</button>
+		</section>
+		
+		<a name="Whats_Good" id="Whats_Good"></a>
+		<section id="section_Whats_Good" class="main_section">
+			<div class="container">
+				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good"></div>
+			</div>
+			
+			<div class="container">
+				<div id="carousel_Whats_Good_scenes" class="carousel_Whats_Good"></div>
+			</div>
+		</section>
+		
+		<a name="FOODKICK" id="FOODKICK"></a>
+		<section id="section_FOODKICK" class="main_section">
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/1.jpg" /> <span class="author_name">@THEBAKER</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/1.jpg" />
+				<figcaption>
+					<p class="likes">31 likes</p>
+					<span class="caption_text">Loving this view</span>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#clintonhill</span>
+					<span class="hash">#gingersnapseason</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/2.jpg" /> <span class="author_name">@MOSTESSHOSTESS</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/2.jpg" />
+				<figcaption>
+					<p class="likes">2 likes</p>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#dinnerparty</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/3.jpg" /> <span class="author_name">@JHOLT</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/3.jpg" />
+				<figcaption>
+					<p class="likes">45 likes</p>
+					<span class="caption_text">@rjacoby Look what you're missing!!</span>
+					<span class="hash">#myfoodkick</span>
+					<span class="hash">#betterlucknexttime</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/4.jpg" /> <span class="author_name">@BKFOODIE</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/4.jpg" />
+				<figcaption>
+					<p class="likes">18 likes</p>
+					<span class="caption_text">Nothing better than a homecooked meal with friends</span>
+					<span class="hash">#myfoodkick</span>
+				</figcaption>
+			</figure>
+			<figure>
+				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/5.jpg" /> <span class="author_name">@GYROSUPERHERO</span></p>
+				<img src="<%=IMAGES_DIR %>/section_5/main/5.jpg" />
+				<figcaption>
+					<p class="likes">6 likes</p>
+					<span class="hash">#wheresthechampagne</span>
+					<span class="hash">#ojmakesitbreakfast</span>
+					<span class="hash">#myfoodkick</span>
+				</figcaption>
+			</figure>
+		</section>
+	</tmpl:put>
 	
-	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
-	<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
-	<script src="<%=JS_DIR %>/foodkick.js"></script>
-	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
-	<script type="text/javascript">
-		window.IMAGES_DIR = "<%=IMAGES_DIR%>";
-		OAS_AD('HPFeatureTop');
-		OAS_AD('HPTab2');
-		OAS_AD('HPTab3');
-	</script>
-</html>
+	<tmpl:put name='special_js'>
+		<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
+		<script type="text/javascript">
+			window.IMAGES_DIR = "<%=IMAGES_DIR%>";
+			OAS_AD('FKTop');
+			OAS_AD('FKMiddle1');
+			OAS_AD('FKMiddle2');
+		</script>
+	</tmpl:put>
+</tmpl:insert>
