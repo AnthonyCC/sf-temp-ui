@@ -26,7 +26,7 @@ a:active { color: #f90;}
 h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #111; }
 
 h1 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; }
-h2 { font-size: 2em; margin-bottom: 0.75em; }
+h2 { font-size: 1.8em; margin-bottom: 0.75em; }
 h3 { font-size: 1.5em; line-height: 1; margin-bottom: 1em; }
 h4 { font-size: 1.2em; line-height: 1.25; margin-bottom: 1.25em; }
 h5 { font-size: 1em; font-weight: bold; margin-bottom: 1.5em; }
@@ -105,3 +105,33 @@ input.ph_active { color: #aaa; }
 
 .bold { font-weight:bold }
 
+/* Welcome section related 
+-------------------------------------------------------------- */
+#welcome-section-container{
+	margin-top: 10px;
+}
+
+.welcome-msg-title-big {
+	font-size: 1.7em;
+}
+
+.welcome-msg-title-small {
+	font-size: 1.5em;
+	margin-bottom: 15px;
+}
+
+.fl-left {
+	float: left;
+	text-align: left;
+}
+
+.fl-right {
+	float: right;
+}
+
+.inline{
+	display: inline-block;
+}
+.small-text {
+	font-size: 1.2em;
+}

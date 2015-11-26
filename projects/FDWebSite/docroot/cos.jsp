@@ -109,9 +109,12 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
           }
         %>
 		<div id="categories">
+			<h2 class="homepage-categories-header">
+				<span>food, drinks & supplies for your office</span>
+			</h2>
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >
-				<span class="category figure"><a class="category-name caption" href="<%= FDURLUtil.getCategoryURI(cat,trkCode) %>"><fd:IncludeImage image="<%= cat.getCategoryPhoto() %>"/><br><%= cat.getFullName() %></a></span>
+				<span class="category figure"><a class="category-name caption" href="<%= FDURLUtil.getCategoryURI(cat,trkCode) %>"><fd:IncludeImage image="<%= cat.getCategoryPhoto() %>" alt="<%= cat.getFullName() %>" /><br><%= cat.getFullName() %></a></span>
 			</logic:equal>
 			</logic:iterate>	   			
 		</div>

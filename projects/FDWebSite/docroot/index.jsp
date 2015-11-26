@@ -131,7 +131,10 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 	   			request.setAttribute("trk",trkCode);
 	   			if (validOrderCount<=3){
 %>
-		   			<div id="most-popular" class="">
+		   			<div id="most-popular">
+		   				<h2 class="homepage-categories-header">
+		   					<span>most popular products</span>
+		   				</h2>
 		   				<potato:recommender siteFeature="FAVORITES" name="deals" maxItems="24" cmEventSource="BROWSE"  sendVariant="true" />
 		   				<soy:render template="common.ymalCarousel" data="${deals}" />
 		   			</div>

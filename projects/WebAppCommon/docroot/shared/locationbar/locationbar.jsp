@@ -24,6 +24,10 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 %>
 
+ <!-- Adding Skip to Navigation : Start-->
+    <a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+    <!-- Adding Skip to Navigation : End-->
+
 <tmpl:insert template="/shared/locationbar/locationbar_layout.jsp">
 <%if (masqueradeContext!=null) {
 	String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
@@ -77,7 +81,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 	} else { //non-recognized user
 		String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span> <span id="newzip"><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
+		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span><span id="newzip"><label for="newziptext"></label><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
 	}
 %>
 <tmpl:put name="zipdisplay"><tmpl:get name="zipcode" /> <tmpl:get name="address" /></tmpl:put>
