@@ -143,6 +143,73 @@ if(user != null) {
 			<% } %>
 			
 			<div class="nav">
+				<%-- nav links next to search field --%>
+				
+				
+					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+						<label for="topSearchField">Search</label>
+						<%
+							{
+							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
+							%>
+							                        <input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+							<%
+							}
+						%>
+						<input type="submit" id="topInputFindButton" value="Go">
+					</form>
+			
+
+				    
+				     <div class="topnavitem" id="topnavitem_yourAccount">
+					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+					        	<a href="#" tabindex="0" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
+					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
+					        <% } else {	%>
+					        	<a href="/your_account/manage_account.jsp">Your Account</a>
+					        <% } %>
+						<% } else {	%> 	 
+						     	<a href="/your_account/manage_account.jsp">Your Account</a>
+					    <% } %>				        
+				    </div> 
+				     <div class="topnavitem" id="topnavitem_reorder">
+					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
+					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
+					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+					        <% } else {	%>
+					        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
+					        <% } %>
+				        <% } else {	%>
+				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
+				        <% } %>				                    
+				    </div>
+			        <%
+			        	String dlvInfoLink = "";
+			            if (user.isPickupOnly()) {
+			                dlvInfoLink = "/help/delivery_lic_pickup";
+			            } else if (user.isDepotUser()) {
+			                dlvInfoLink = "/help/delivery_info_depot";
+			            } else if (user.getAdjustedValidOrderCount() >= 1) {
+			                dlvInfoLink = "/your_account/delivery_info_avail_slots";
+			            } else {
+			                dlvInfoLink = "/help/delivery_info";
+			                    if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+			                        dlvInfoLink += "_cos";
+			                    }
+			            }
+			        %> 
+				    <div class="topnavitem" id="topnavitem_deliveryInfo">
+				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
+				    </div>
+				    <div class="topnavitem" id="topnavitem_help">
+				        <a href="/help/index.jsp?trk=gnav">Help</a>
+				    </div> 
+				   
+				   
 				<fd:GetCart id="cart">
 					<div id="sidecartbuttons">
 						<div class="buttons">
@@ -166,70 +233,6 @@ if(user != null) {
       					<a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
 			    	</div>
 			    </fd:GetCart>
-				
-				<%-- nav links next to search field --%>
-			    
-				    <div class="topnavitem" id="topnavitem_help">
-				        <a href="/help/index.jsp?trk=gnav">Help</a>
-				    </div>  
-			        <%
-			        	String dlvInfoLink = "";
-			            if (user.isPickupOnly()) {
-			                dlvInfoLink = "/help/delivery_lic_pickup";
-			            } else if (user.isDepotUser()) {
-			                dlvInfoLink = "/help/delivery_info_depot";
-			            } else if (user.getAdjustedValidOrderCount() >= 1) {
-			                dlvInfoLink = "/your_account/delivery_info_avail_slots";
-			            } else {
-			                dlvInfoLink = "/help/delivery_info";
-			                    if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
-			                        dlvInfoLink += "_cos";
-			                    }
-			            }
-			        %> 
-				    <div class="topnavitem" id="topnavitem_deliveryInfo">
-				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
-				    </div>
-				    <div class="topnavitem" id="topnavitem_reorder">
-					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
-					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
-					        <% } else {	%>
-					        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-					        <% } %>
-				        <% } else {	%>
-				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-				        <% } %>				                    
-				    </div>
-				    <div class="topnavitem" id="topnavitem_yourAccount">
-					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
-					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
-					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
-					        <% } else {	%>
-					        	<a href="/your_account/manage_account.jsp">Your Account</a>
-					        <% } %>
-						<% } else {	%> 	 
-						     	<a href="/your_account/manage_account.jsp">Your Account</a>
-					    <% } %>				        
-				    </div>
-				<div>
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-						<label><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" alt="SEARCH" align="bottom" border="0"></a></label>
-						<%
-							{
-							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
-							%>
-							                        <input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
-							<%
-							}
-						%>
-						<input type="submit" id="topInputFindButton" value="Go">
-					</form>
-				</div>
 			</div>
 		<% } %>
     

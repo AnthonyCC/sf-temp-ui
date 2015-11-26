@@ -60,6 +60,7 @@ body{
 }
 
 .globalnav_top .nav .searchform {
+  float: left;
   margin: 0;
   padding: 0;
   margin-top: 5px;
@@ -81,7 +82,7 @@ body{
 
 
 .globalnav_top .topnavitem a{
-  float: right;
+  float: left;
   margin: 9px 0 0 0px;
   font-family: Verdana;
   font-size: 14px;
@@ -1040,7 +1041,9 @@ ul.subdepartments {
 }
 
 .top-item:hover > .department[data-component="globalnav-popup-body"],
-.submenuitem:hover > .department[data-component="globalnav-popup-body"]{
+.top-item:focus > .department[data-component="globalnav-popup-body"],
+.submenuitem:hover > .department[data-component="globalnav-popup-body"],
+.submenuitem:focus > .department[data-component="globalnav-popup-body"] {
 	visibility:visible;
 	transition-delay: 0.3s;
 	z-index:13;
@@ -1048,7 +1051,8 @@ ul.subdepartments {
 }
 
 .touched >  [data-component="globalnav-popup-body"],
-.top-item-w-sub:hover >  [data-component="globalnav-popup-body"] {
+.top-item-w-sub:hover >  [data-component="globalnav-popup-body"],
+.top-item-w-sub:focus >  [data-component="globalnav-popup-body"] {
 	visibility:visible;
   opacity: 1;
 	transition-delay: 0.3s;

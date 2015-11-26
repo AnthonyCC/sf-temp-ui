@@ -14,15 +14,27 @@ var FreshDirect = FreshDirect || {};
           $popupcontent = $menuitem.find('[data-component="globalnav-popup-body"]'),
           $container = $('[data-component="globalnav-menu"]'),
           left = $menuitem.offset().left - $container.offset().left,
-          center, width, id;
-
+          id = $menuitem.data('id'),
+          arialabelvalue = 'globalnav-popup-body-' + id,
+          center, width;
+      
+      $menuitem.attr({
+    	  'aria-haspopup': true,
+    	  'aria-labelledby': arialabelvalue,
+    	  'tabIndex': 0
+      });
+      
       if (left > $container.width() / 2) {
         $menuitem.addClass('alignPopupRight');
       }
 
       if ($popupcontent.size() === 0) {
-        id = $menuitem.data('id');
         $popupcontent = $('[data-component="globalnav-popups"] [data-id="'+id+'"]').first();
+        $popupcontent.attr({
+        	'aria-label': arialabelvalue,
+        	'aria-hidden': true
+        });
+        
         if ($popupcontent.size() > 0) {
           $popupcontent.insertAfter($menuitem.children('span').first());
           if ($popupcontent.attr('data-popup-type') === 'superdepartment') {
@@ -59,6 +71,8 @@ var FreshDirect = FreshDirect || {};
     if (left > $container.width() / 2) {
       $menuitem.addClass('alignPopupRight');
     }
+    
+    $popupcontent.attr('aria-hidden', false);
 
     if ($popupcontent.size() === 0) {
       id = $menuitem.data('id');
@@ -78,21 +92,38 @@ var FreshDirect = FreshDirect || {};
         'padding-left': Math.max(0, Math.min(center - width / 2, 960 - width))
       });
     }
+    $menuitem.on('mouseleave', function (e) {
+  	  $popupcontent.attr('aria-hidden', true);
+    })
   });
-
-  $('[data-component="globalnav-item"],[data-component="globalnav-submenu-item"]').on("touchstart", function (e) {
-    var $t = $(this);
+  
+  
+ 
+  
+  $('[data-component="globalnav-item"],[data-component="globalnav-submenu-item"]').on("touchstart, focusin", function (e) {
+    var $t = $(this),
+    	$openedPopup = $t.children('[data-component="globalnav-popup-body"]'),
+    	$previousOpenedPopup = $t.siblings('li').children('[data-component="globalnav-popup-body"]');
+    	
 
     if (!$t.hasClass('touched')) {
       e.preventDefault();
-      $t.parent().find('.touched').removeClass('touched');
+      if ($openedPopup.attr('aria-hidden') === 'true') {
+    	  $openedPopup.attr('aria-hidden', false);
+      }
+       
+      if ($previousOpenedPopup.attr('aria-hidden') === 'false') {
+    	 $previousOpenedPopup.attr('aria-hidden', true);
+      }
+     
+      $t.parent().find('.touched').removeClass('touched');  
       $t.addClass('touched');
     }
   });
-
-  $(document).on('touchstart', function (e) {
-    var $gnavparent = $(e.target).parents('[data-component="globalnav-menu"]');
-
+  
+  $(document).on('touchstart, focusin', function (e) {
+    var $gnavparent = $(e.target).parents('[data-component="globalnav-menu"]'); 
+  
     if ($gnavparent.size() === 0) {
       $('[data-component="globalnav-menu"]').find('.touched').removeClass('touched');
     }
