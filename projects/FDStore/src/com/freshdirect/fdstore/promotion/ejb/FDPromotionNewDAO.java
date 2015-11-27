@@ -1509,7 +1509,7 @@ public class FDPromotionNewDAO {
 		while (rs.next()) {
 			populateCartStrategy(rs, cartStrategy);
 		}
-		cartStrategy.setDcpdData(dcpdData);		
+	//	cartStrategy.setDcpdData(dcpdData);		
 		
 		return cartStrategy;
 	}

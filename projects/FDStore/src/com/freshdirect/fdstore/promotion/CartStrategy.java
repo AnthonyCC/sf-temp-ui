@@ -78,6 +78,10 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 									nonQualifiedSku++;
 								}
 							}
+							else{
+								break;
+							}
+							
 							if(combinationSku.size() > 0){
 							if(qualifiedSku > 0 && qualifiedCombinationSku > 0 && (qualifiedSku + qualifiedCombinationSku) >= minSkuQuantity) {
 								allowORdeny = PromotionStrategyI.ALLOW;
