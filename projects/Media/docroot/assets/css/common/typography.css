@@ -109,6 +109,7 @@ input.ph_active { color: #aaa; }
 -------------------------------------------------------------- */
 #welcome-section-container{
 	margin-top: 10px;
+	text-align: left;
 }
 
 .welcome-msg-title-big {
@@ -120,8 +121,7 @@ input.ph_active { color: #aaa; }
 	margin-bottom: 15px;
 }
 
-.fl-left {
-	float: left;
+.text-left {
 	text-align: left;
 }
 

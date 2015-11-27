@@ -13,7 +13,7 @@
 %>
 <div id="welcome-section-container">
 	<% if (user.getLevel() < FDUserI.RECOGNIZED) { %>
-		<div class="fl-left">
+		<div class="text-left inline">
 		     <% if(user.isDepotUser()){
 		               String depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName(); %>
 		               <h1 class="welcome-msg-title-small bold">Welcome to FreshDirect <%=depotName%> Depot.</h1>
@@ -21,18 +21,18 @@
 		               <h1 class="welcome-msg-title-big bold">Welcome to FreshDirect!</h1>
 		     <%}%>
 		</div>
-		<div class="fl-right">
+		<div class="fl-right inline">
 			<span class="small-text">
 				Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Delivery & Pickup Info</a>.
 			</span>
 		</div>
 	<% } else if (validOrderCount == 0) { %>
-		<div class="fl-left">
+		<div class="text-left inline">
 			<h1 class="welcome-msg-title-small bold">Welcome <%=custFirstName%>. Thank you for signing up!</h1>
 			<a href="/logout.jsp?logoutPage=site_access">(If you're not <%=custFirstName%>, click here!)</a>
 		</div>		
 	<% } else {  //orders %>
-		<div class="fl-left">
+		<div class="text-left inline">
 			<% if (null == segmentMessage || !segmentMessage.isLocation1()) { 
 				if (user.isEligibleForSignupPromotion()) { //has promo 
 					SignupDiscountRule rule = user.getSignupDiscountRule(); %>
@@ -50,7 +50,7 @@
 				<% } %>
 		</div>
 				<% if (user.isChefsTable()) { // Chef's Table member %>
-					<div class="fl-right small-text bold">
+					<div class="fl-right inline small-text bold">
 						<span>Thanks for being one of our best customers!</span>
 						<a href="/your_account/manage_account.jsp">Click here for Chef's Table offers.</a>
 					</div>
@@ -63,11 +63,11 @@
 			//-------USING SEGMENT MESSAGE IN GetSegmentMessageTag--------------------------------------
 			//------------------------------------------------------------------------------------------------------------------ 	
 			} else if (segmentMessage != null && segmentMessage.isLocation1()) {  %>
-				<div class="fl-left">
+				<div class="text-left">
 					<h1 class="welcome-msg-title-small bold"><%= segmentMessage.getGreeting()%><%=custFirstName%>!</h1>
 					<a href="/logout.jsp?logoutPage=site_access">(If you're not <%=custFirstName%>, click here!)</a>
 				</div>
-				<div class="fl-right small-text bold"> <!-- mi van??? -->
+				<div class="fl-right inline small-text bold"> <!-- mi van??? -->
 					<span><%=segmentMessage.getMessage()%></span>
 					<span><%=segmentMessage.getMessageLink()%></span>
 				</div>
