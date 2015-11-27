@@ -1119,7 +1119,8 @@ public class FDDeliveryManager {
 
 		try{
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeleteReservationsResponse result = logisticsService.cancelReservations(LogisticsDataEncoder.encodeReservationByCriteriaRequest(resvCriteria));
+			DeleteReservationsResponse result = logisticsService.cancelReservations(LogisticsDataEncoder
+					.encodeReservationByCriteriaRequest(resvCriteria, initiator, notes));
 			LogisticsDataDecoder.decodeResult(result);
 			return result.getUpdateCount();
 		}catch(FDLogisticsServiceException e){

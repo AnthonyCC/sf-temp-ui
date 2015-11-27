@@ -18,6 +18,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
@@ -107,7 +108,7 @@ public interface ILogisticsService {
 	Result logSessionEvent(SessionEvent event) throws FDLogisticsServiceException;
 	Result logLateIssueOrder(LateIssueOrder lateIssueOrder) throws FDLogisticsServiceException;
 
-	DeleteReservationsResponse cancelReservations(SearchRequest request) throws FDLogisticsServiceException;
+	DeleteReservationsResponse cancelReservations(ReservationSearchRequest request) throws FDLogisticsServiceException;
 	
 	Result addSubscription(SubscriptionRequest request) throws FDLogisticsServiceException;
 

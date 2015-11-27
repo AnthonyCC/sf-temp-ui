@@ -25,6 +25,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
 import com.freshdirect.logistics.controller.data.request.SubscriptionRequest;
@@ -222,6 +223,22 @@ public class LogisticsDataEncoder {
 		      Map.Entry entry = (Map.Entry)it.next();
 		      request.setCriteriaMap(entry.getKey(), entry.getValue());
 		}
+		return request;
+	}
+	
+	public static ReservationSearchRequest encodeReservationByCriteriaRequest(
+			GenericSearchCriteria resvCriteria, String initiator, String notes) {
+		ReservationSearchRequest request = new ReservationSearchRequest();
+		request.setSearchType(EnumSearchType.RESERVATION_SEARCH.getName());
+		Iterator it = resvCriteria.getCriteriaMap().entrySet().iterator();
+		while (it.hasNext()) {
+		      Map.Entry entry = (Map.Entry)it.next();
+		      request.setCriteriaMap(entry.getKey(), entry.getValue());
+		}
+		
+		request.setInitiator(initiator);
+		request.setNotes(notes);
+		
 		return request;
 	}
 

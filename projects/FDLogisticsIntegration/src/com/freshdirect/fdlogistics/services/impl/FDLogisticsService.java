@@ -28,6 +28,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.GeoLocationRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
@@ -499,7 +500,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	}
 
 	@Override
-	public DeleteReservationsResponse cancelReservations(SearchRequest request)
+	public DeleteReservationsResponse cancelReservations(ReservationSearchRequest request)
 			throws FDLogisticsServiceException {
 		
 		String inputJson = buildRequest(request);
