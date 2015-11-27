@@ -78,6 +78,7 @@ public class SinglePageCheckoutFacade {
     private static final String EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL = "/expressco/view_cart.jsp";
     private static final String CART_DATA_JSON_KEY = "cartData";
     private static final String BILLING_REFERENCE_INFO_JSON_KEY = "billingReferenceInfo";
+    private static final String FORM_META_DATA_JSON_KEY = "formMetaData";
     private static final String MASTERPASS_EWALLET_TYPE = "MP";
 //    private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
 //	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
@@ -170,6 +171,7 @@ public class SinglePageCheckoutFacade {
                             availabilityService.selectWarningType(user)));
                     result.put(BILLING_REFERENCE_INFO_JSON_KEY, CartDataService.defaultService().populateBillingReferenceInfo(session, user));
                     result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
+                    result.put(FORM_META_DATA_JSON_KEY, FormMetaDataService.defaultService().populateFormMetaData(user));
                 }
                 break;
             case ADD_PAYMENT_METHOD:

@@ -65,7 +65,7 @@ var FreshDirect = FreshDirect || {};
         e && e.preventDefault();
 
         data = data || {};
-        data.metadata = data.metadata || fd.expressco.data.formMetaData;
+        data.metadata = data.metadata || fd.metaData || fd.expressco.data.formMetaData;
 
         this.refreshBody(data);
         this.popup.show($t);
