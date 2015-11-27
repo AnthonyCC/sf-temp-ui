@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
-<%@ page import="com.freshdirect.fdstore.util.TimeslotContext"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ taglib uri="template" prefix="tmpl"%>
 <%@ taglib uri="logic" prefix="logic"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>

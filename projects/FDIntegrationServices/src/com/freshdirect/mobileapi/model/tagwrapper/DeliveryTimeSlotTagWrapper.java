@@ -4,7 +4,7 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.util.TimeslotContext;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag;

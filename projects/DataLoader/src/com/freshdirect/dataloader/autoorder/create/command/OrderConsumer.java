@@ -62,6 +62,7 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 
 
 public class OrderConsumer implements IConsumer {
@@ -183,7 +184,7 @@ public class OrderConsumer implements IConsumer {
 					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
 			
 			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, event, TimeslotLogic.encodeCustomer(address, null), 
-					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()))
+					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()), TimeslotContext.CHECKOUT_TIMESLOTS)
 					.getTimeslotList().get(0).getTimeslots();
 				
 			FDTimeslot slot = null;

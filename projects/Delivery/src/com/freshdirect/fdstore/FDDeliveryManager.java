@@ -92,6 +92,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
 
 /**
@@ -530,24 +531,24 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, OrderContext context) throws FDResourceException {
+			Customer customer, OrderContext context, TimeslotContext timeslotContext) throws FDResourceException {
 		
-		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context);
+		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context, timeslotContext);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context) throws FDResourceException{
+			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext) throws FDResourceException{
 		return getTimeslotsForDateRangeAndZone(dateranges, event,
-			 customer, null, forceOrder, deliveryInfo, context);
+			 customer, null, forceOrder, deliveryInfo, context, timeslotContext);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
 			Customer customer, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo,
-			OrderContext context) throws FDResourceException {
+			OrderContext context, TimeslotContext timeslotContext) throws FDResourceException {
 		try {			
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryTimeslots response = logisticsService.getTimeslots(LogisticsDataEncoder.encodeTimeslotRequest(dateranges, event,
-					 customer, forceOrder, deliveryInfo, context));
+					 customer, forceOrder, deliveryInfo, context, timeslotContext));
 			FDDeliveryTimeslots result = LogisticsDataDecoder.decodeDeliveryTimeslots(response);
 			return result;
 			

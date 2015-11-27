@@ -951,16 +951,17 @@ public class CheckoutController extends BaseController {
     private ModelAndView deleteDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        Message responseMessage = null;
+        if (user.isVoucherHolder()) {
+			responseMessage = Message.createSuccessMessage(ACTION_DELETE_DELIVERY_ADDRESS);
+			throw new FDActionNotAllowedException(
+					"This account is not enabled to change delivery address.");
+		}
+        
         ResultBundle resultBundle = checkout.deleteDeliveryAddress(reqestMessage.getShipToAddressId());
         ActionResult result = resultBundle.getActionResult();
-
         propogateSetSessionValues(request.getSession(), resultBundle);
-
-        Message responseMessage = null;
         if (result.isSuccess()) {
-        	if(user.isVoucherHolder()){
-        		throw new FDActionNotAllowedException("This account is not eligible to add/edit/delete delivery address.");
-			}
             responseMessage = Message.createSuccessMessage("Delivery Address deleted successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
@@ -1073,17 +1074,18 @@ public class CheckoutController extends BaseController {
     private ModelAndView addAndSetDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        Message responseMessage = null;
+        if (user.isVoucherHolder()) {
+			responseMessage = Message.createSuccessMessage(ACTION_ADD_AND_SET_DELIVERY_ADDRESS);
+			throw new FDActionNotAllowedException(
+					"This account is not enabled to change delivery address.");
+		}
+        
         ResultBundle resultBundle = checkout.addAndSetDeliveryAddress(reqestMessage);
         ActionResult result = resultBundle.getActionResult();
-
         propogateSetSessionValues(request.getSession(), resultBundle);
-
-        Message responseMessage = null;
         if (result.isSuccess()) {
-        	if(user.isVoucherHolder()){
-        		throw new FDActionNotAllowedException("This account is not eligible to add/edit/delete delivery address.");
-			}
-            responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
+        	 responseMessage = Message.createSuccessMessage("Delivery Address added successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
         }

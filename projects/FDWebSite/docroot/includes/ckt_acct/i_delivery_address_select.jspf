@@ -99,7 +99,7 @@ if(isNormalCheckout && yuzer.isDepotUser()){
 <%// BEGINING C O R P ADDRESSES
 	boolean showingCorporateAddress = false;
 	List<ErpAddressModel> shipToAddresses = (List<ErpAddressModel>) addresses.get(EnumServiceType.CORPORATE);
-	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+	if (shipToAddresses != null && !shipToAddresses.isEmpty() && !(yuzer.isVoucherHolder())) {
 		showingCorporateAddress = true;
 		
 		%>

@@ -102,6 +102,7 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -406,7 +407,7 @@ public class StandingOrderUtil {
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
 				(ranges, event, TimeslotLogic.encodeCustomer(contactAddress, customerUser), 
-						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR))
+						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR), TimeslotContext.CHECKOUT_TIMESLOTS)
 				.getTimeslotList().get(0);
 		
 		List<FDTimeslot> timeslots = timeslotList.getTimeslots();

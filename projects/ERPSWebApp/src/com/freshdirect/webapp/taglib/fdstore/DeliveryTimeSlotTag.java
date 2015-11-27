@@ -53,7 +53,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.DlvTimeslotStats;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.fdstore.util.RestrictionUtil;
-import com.freshdirect.fdstore.util.TimeslotContext;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateRange;
@@ -410,7 +410,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			// Fetch time slots
 			deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
 					ranges, event, TimeslotLogic.encodeCustomer(address, user), 
-					TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE));
+					TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), timeSlotContext);
 			
 			FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
 			
@@ -476,7 +476,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		FDDeliveryTimeslots deliveryTimeslots = FDDeliveryManager.getInstance().
 					getTimeslotsForDateRangeAndZone(dateRanges, event, TimeslotLogic.encodeCustomer(address, user), forceOrder, deliveryInfo, 
-							TimeslotLogic.getOrderContext(user));
+							TimeslotLogic.getOrderContext(user), timeSlotContext);
 			
 		for(FDTimeslotList timeslotList : deliveryTimeslots.getTimeslotList()) {	
 			

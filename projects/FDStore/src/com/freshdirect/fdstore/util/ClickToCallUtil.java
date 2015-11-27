@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.TimeslotContext;
 
 public class ClickToCallUtil {
 
@@ -209,7 +210,7 @@ public class ClickToCallUtil {
 				ranges.add(new DateRange(begCal.getTime(), endCal.getTime()));
 				
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
-						(ranges, event, TimeslotLogic.encodeCustomer((ContactAddressModel)address, user), TimeslotLogic.getDefaultOrderContext(user.getFDCustomer().getErpCustomerPK()))
+						(ranges, event, TimeslotLogic.encodeCustomer((ContactAddressModel)address, user), TimeslotLogic.getDefaultOrderContext(user.getFDCustomer().getErpCustomerPK()), TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)
 						.getTimeslotList().get(0).getTimeslots();
 				
 				if(null == timeSlots || timeSlots.size()==0){
