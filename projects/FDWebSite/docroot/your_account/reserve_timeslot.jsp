@@ -16,7 +16,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
-<%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri="template" prefix="tmpl" %>
