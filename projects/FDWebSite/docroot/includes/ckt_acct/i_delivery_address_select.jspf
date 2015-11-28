@@ -66,7 +66,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 				<%
 			}%>
-			<% if(parentOrderId==null || !yuzer.isVoucherHolder()) {%>
+			<% if(parentOrderId==null || (!yuzer.isVoucherHolder() && yuzer.getMasqueradeContext()== null)) {%>
 			
 			<font class="text13">If you need to enter a different address: <a href="<%=response.encodeURL( isInYourAccount?"/your_account/add_delivery_address.jsp" : "/checkout/step_1_enter.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" alt="Add a New Address" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a></font>
 			
@@ -99,7 +99,7 @@ if(isNormalCheckout && yuzer.isDepotUser()){
 <%// BEGINING C O R P ADDRESSES
 	boolean showingCorporateAddress = false;
 	List<ErpAddressModel> shipToAddresses = (List<ErpAddressModel>) addresses.get(EnumServiceType.CORPORATE);
-	if (shipToAddresses != null && !shipToAddresses.isEmpty() && !(yuzer.isVoucherHolder())) {
+	if (shipToAddresses != null && !shipToAddresses.isEmpty() && yuzer.getMasqueradeContext() == null && !(yuzer.isVoucherHolder())) {
 		showingCorporateAddress = true;
 		
 		%>
@@ -159,7 +159,7 @@ if(isNormalCheckout && yuzer.isDepotUser()){
 // PICKUP   L O C A T I O N S
 if(isNormalCheckout && yuzer.isPickupUser()){
 %>
-<% if(!yuzer.isVoucherHolder()) {%>
+<% if(!yuzer.isVoucherHolder() && yuzer.getMasqueradeContext() == null) {%>
 			
     <%@ include file="/includes/i_pickup_depot_locations.jspf"%>
     <%} %>
