@@ -87,7 +87,7 @@ if (__shipToAddresses.size() > 0) {
 			}
 		}
 		
-		if(__user.isVoucherHolder() && user.getMaqueradeContext == null){
+		if(__user.isVoucherHolder() && user.getMaqueradeContext() == null){
 				if(!checkedAddress){
 				
 			continue;
@@ -171,7 +171,7 @@ if (__shipToAddresses.size() > 0) {
 						<%}%>
 				<%}%>
 				</font>
-				<% if(parentOrderid==null || (!__user.isVoucherHolder() && user.getMaqueradeContext == null)) { %>
+				<% if(parentOrderid==null || (!__user.isVoucherHolder() && user.getMaqueradeContext() == null)) { %>
 				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
 				<%if (showDeleteButtons) {%>
 					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0">
