@@ -43,7 +43,7 @@ String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
 %>
 
 <%
-	if (!(user.isVoucherHolder()) && user.getMasqueradeContext() == null) { 
+	if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) { 
 %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2"
 	WIDTH="<%=W_YA_EDIT_DELIVERY_ADDR%>">
@@ -85,7 +85,7 @@ if(user.isDepotUser()){
 		<%// BEGINING C O R P ADDRESSES
 			boolean showingCorporateAddress = false;
 			List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
-			if (shipToAddresses != null && !shipToAddresses.isEmpty() && !(user.isVoucherHolder()) && user.getMasqueradeContext() == null) {
+			if (shipToAddresses != null && !shipToAddresses.isEmpty() && !(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
 				showingCorporateAddress = true;
 				%>
 				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >

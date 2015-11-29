@@ -870,8 +870,10 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), locationId );
 			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), null );
 		} else {
-			FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
-			FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), null );
+			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
+				FDCustomerManager.setDefaultShipToAddressPK( user.getIdentity(), address.getPK().getId() );
+				FDCustomerManager.setDefaultDepotLocationPK( user.getIdentity(), null );
+			}
 		}
 		
 	}

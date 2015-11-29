@@ -488,7 +488,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel)address).getLocationId());
 		}else{
 			//get the address pk and set the default address
-			FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
+			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
+				FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
+			}
 			
 		}
 		
