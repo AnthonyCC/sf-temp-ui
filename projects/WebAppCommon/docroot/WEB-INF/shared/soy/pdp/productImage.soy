@@ -3,10 +3,11 @@
 /**
  * @param productZoomImage
  * @param? largeImage
+ * @param? altDescription
  */
 {template .productImage}
 <div class="main-image">
-{if $productZoomImage}<img itemprop="image" src="{$productZoomImage}" alt="Product Image" data-thumbnails-main data-large-url="{$largeImage ?: ''}">{/if}
+{if $productZoomImage}<img itemprop="image" src="{$productZoomImage}" alt="Product Image{$altDescription ? ' - '+$altDescription : ''}" data-thumbnails-main data-large-url="{$largeImage ?: ''}">{/if}
 
 <div class="hd" style="display:none" data-thumbnails-hd>
 </div>
@@ -24,6 +25,7 @@
 	  {call .productImage}
 	    {param productZoomImage:$images[0].url /}
 	    {param largeImage:$images[0].largeUrl /}
+	    {param altDescription:$images[0].altDescription /}
 	  {/call}
   {/if}	  
 {/template}

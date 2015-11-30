@@ -16,11 +16,10 @@
 	        {/if}
 
 	        {if $thumb.largeUrl}
-	          <img src="{$thumb.url}" data-thumbnails-trigger data-large-url="{$thumb.largeUrl}" />
+	          <img src="{$thumb.url}" alt="{$thumb.altDescription ? $thumb.altDescription : ''}" data-thumbnails-trigger data-large-url="{$thumb.largeUrl}" />
 	        {else}
-	          <img src="{$thumb.url}" data-thumbnails-trigger />
-            {/if}
-	
+	          <img src="{$thumb.url}" alt="{$thumb.altDescription ? $thumb.altDescription : ''}" data-thumbnails-trigger />
+          {/if}
 	      {/if}
 	    {/foreach}
 	   </p>
