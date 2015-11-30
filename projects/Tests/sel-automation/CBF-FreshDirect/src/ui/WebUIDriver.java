@@ -118,6 +118,7 @@ public class WebUIDriver extends BaseAppDriver {
 	verify_subtotal;
 	public static String fd_username;
 	public String verify_products[];
+	public String verify_products_unit[];
 	public String verify_products_quantity[];
 	public String Zipcode;
 	public String UserID = null;
@@ -5505,6 +5506,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// intitialize the global arrays
 			verify_products = new String[availableProducts.size()];
 			verify_products_quantity = new String[availableProducts.size()];
+			verify_products_unit = new String[availableProducts.size()];
 
 			// go through the list to get product name its respective quantity
 			// int count = 0;
@@ -5519,8 +5521,14 @@ public class WebUIDriver extends BaseAppDriver {
 							By.xpath(objMap
 									.getLocator("strverifyProductQty")))
 									.getText();
+					String product_unit_text = availableProducts.get(i)
+					.findElement(
+							By.xpath(objMap
+									.getLocator("strverifyProductUnit")))
+									.getText();
 					verify_products[i] = product_text.replace("(new)", "");
 					verify_products_quantity[i] = product_quantity_text;
+					verify_products_unit[i] = product_unit_text;
 				}
 			}
 			else
@@ -5720,7 +5728,8 @@ public class WebUIDriver extends BaseAppDriver {
 
 					String product_to_verify_name[] = new String[products_to_verify.size()];
 					String product_to_verify_qty[] = new String[products_to_verify.size()];
-
+					String product_to_verify_unit[] = new String[products_to_verify.size()];
+					
 					// go through the list to get product name its respective
 					// quantity
 					if(products_to_verify.size()>0)
@@ -5731,8 +5740,10 @@ public class WebUIDriver extends BaseAppDriver {
 							{
 								String product_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductName"))).getText();
 								String product_quantity_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductQty"))).getText();
+								String product_unit_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductUnit"))).getText();
 								product_to_verify_name[i] = product_text;
 								product_to_verify_qty[i] = product_quantity_text;
+								product_to_verify_unit[i]= product_unit_text;
 							}
 							catch(Exception e)
 							{
@@ -5741,7 +5752,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 						}
 						for (int i = 0; i < products_to_verify.size(); i++) {
-							if ((verify_products[i].contains(product_to_verify_name[i]) || product_to_verify_name[i].contains(verify_products[i]))
+							if ((verify_products[i].equals(product_to_verify_name[i]))
 									&& verify_products_quantity[i].equals(product_to_verify_qty[i])) 
 							{
 								RESULT.passed("Place Order", "Expected product: "
@@ -5757,6 +5768,18 @@ public class WebUIDriver extends BaseAppDriver {
 										"Actual product: " + product_to_verify_name[i]
 										                                            + " and Quantity: "
 										                                            + product_to_verify_qty[i]);
+							}
+							//Check for Product unit which is mentioned below product name on Xpress checkout page
+							if (verify_products_unit[i].equals(product_to_verify_unit[i]))
+							{
+								RESULT.passed("Place Order", "Expected product unit: "
+										+ verify_products_unit[i],
+										"Actual product unit: " + product_to_verify_unit[i]);
+										                                           									                                            
+							} else {
+								RESULT.warning("Place Order", "Expected product unit: "
+										+ verify_products_unit[i],
+										"Actual product unit: " + product_to_verify_unit[i]);
 							}
 						}
 					}
