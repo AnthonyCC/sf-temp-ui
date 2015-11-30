@@ -1722,6 +1722,20 @@ font-size: 9pt;
 		.list_content .resubOrd-facility { width: 50px; }
 		.list_content .resubOrd-spacer-auto { width: auto; }
 	/* resubmit orders */
+	/* resubmit customer */
+		.list_header .resubcust-spacer { width: 20px; }
+		.list_header .resubcust-email { width: 495px; }
+		.list_header .resubcust-custName { width: 350px; }
+		.list_header .resubcust-spacer-auto { width: auto; }
+
+		
+		.list_content .resubcust-spacer { width: 10px; }
+		.list_content .resubcust-email { width: 510px; }
+		.list_content .resubcust-custName { width: 350px; }
+		.list_content .resubcust-spacer-auto { width: auto; }
+
+	/* resubmit orders */
+	
 
 /* SUPERVISOR */
 

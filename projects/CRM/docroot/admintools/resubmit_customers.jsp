@@ -53,22 +53,27 @@
 		</div>
 
 		<% if (nsmCustomers.size() > 0) { %>
-			<table width="100%" cellspacing="0" border="0" style="empty-cells: show">
+		<div class="list_header">
+			<table width="100%" cellspacing="0" border="0" >
 				<tr bgcolor="#333366" class="list_header_text">
-					<td align="left">&nbsp;</td>
-					<td align="left">User ID</td>
-					<td align="left">First Name</td>
-					<td align="left">Last Name</td>
+					<td class="resubcust-spacer"  >&nbsp;</td>
+					<td class="resubcust-email" >&nbsp;User ID</td>
+					<td class="resubcust-custName" >First Name</td>
+					<td class="resubcust-custName" >Last Name</td>
+					<td class="resubcust-spacer-auto" >&nbsp;</td>
 				</tr>
 			</table>
+			</div>
 			<div id="result" class="list_content" style="height:76%;">
 				<table width="100%" cellspacing="0" border="0" style="empty-cells: show" id="resubmit_customers">
+
 				<logic:iterate id="customerInfo" collection="<%= nsmCustomers %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
 				<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
-					<td class="border_bottom">&nbsp;</td>
-					<td class="border_bottom"><input name="customerId" type="checkbox" onClick="countChecked(this);" value="<%=customerInfo.getIdentity().getErpCustomerPK()%>"><a href="/main/account_details.jsp?erpCustId=<%=customerInfo.getIdentity().getErpCustomerPK()%>"><%=customerInfo.getEmail()%></a>&nbsp;</td>
-					<td class="border_bottom"><%=customerInfo.getFirstName()%>&nbsp;</td>
-					<td class="border_bottom"><%=customerInfo.getLastName()%>&nbsp;</td>
+					<td class="resubcust-spacer border_bottom" >&nbsp;</td>
+					<td class="resubcust-email border_bottom" ><input name="customerId" type="checkbox" onClick="countChecked(this);" value="<%=customerInfo.getIdentity().getErpCustomerPK()%>"><a href="/main/account_details.jsp?erpCustId=<%=customerInfo.getIdentity().getErpCustomerPK()%>"><%=customerInfo.getEmail()%></a>&nbsp;</td>
+					<td class="resubcust-custName border_bottom" ><%=customerInfo.getFirstName()%>&nbsp;</td>
+					<td class="resubcust-custName border_bottom" ><%=customerInfo.getLastName()%>&nbsp;</td>
+					<td class="resubcust-spacer-auto border_bottom" >&nbsp;</td>
 				</tr>
 				</logic:iterate>
 				</table>
