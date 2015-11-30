@@ -83,7 +83,7 @@ public class TestResult {
 		 * @return true/false
 		 */
 		public boolean isPassed() {
-			return level <= PASSED.level;
+			return level <= WARNING.level;
 		}
 
 		private ResultType(String n, int l) {
