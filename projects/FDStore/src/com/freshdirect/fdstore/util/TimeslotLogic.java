@@ -254,8 +254,9 @@ public class TimeslotLogic {
 		
 		//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
 		Date currentTime = DateUtil.getCurrentTime();
-		if(DateUtil.getDiffInMinutes(_ts.getEndDateTime(), _ts.getStartDateTime()) <=60 
-				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime(), currentTime) <=60){
+		/*if(DateUtil.getDiffInMinutes(_ts.getEndDateTime(), _ts.getStartDateTime()) <=60 
+				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime(), currentTime) <=60){*/
+		if(DateUtil.getDiffInMinutes(currentTime , _ts.getEndDateTime()) <=60){
 			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER1);
 			if(tierDlvFeeMap.containsKey(EnumDeliveryFeeTier.TIER1) 
 					&& tierDlvFeeMap.get(EnumDeliveryFeeTier.TIER1).getBasePrice()>0){
@@ -277,8 +278,9 @@ public class TimeslotLogic {
 		
 		//TODO stubbing out the delivery and promo delivery fee for timeslots. replace once actual implementation is done. 
 		Date currentTime = DateUtil.getCurrentTime();
-		if(DateUtil.getDiffInMinutes(_ts.getEndDateTime() , _ts.getStartDateTime()) <=60 
-				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime() , currentTime) <=60){
+/*		if(DateUtil.getDiffInMinutes(_ts.getEndDateTime() , _ts.getStartDateTime()) <=60 
+				&& DateUtil.getDiffInMinutes(_ts.getStartDateTime() , currentTime) <=60){*/
+		if(DateUtil.getDiffInMinutes(currentTime , _ts.getEndDateTime()) <=60){
 			_ts.setDlvfeeTier(EnumDeliveryFeeTier.TIER1);
 			setTieredDeliveryFee(user, _ts);
 		}else{
