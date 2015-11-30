@@ -403,6 +403,11 @@ if (request.getParameter("employeeId") != null) {
 	confirmationMsg = "Your FD account is now linked to your " + session.getAttribute("NewlyLinkedSocialNetworkProvider") + " account.";
 	session.setAttribute("NewlyLinkedSocialNetworkProvider", null);
 		
+}  else if(session.getAttribute("AlreadyConnectedSocialAccount") != null){
+	
+	confirmationMsg = "Looks like this social account is already linked to <bold>" + session.getAttribute("AlreadyConnectedSocialAccount") + " </bold>.\n\n\n Please connect with another account.";
+	session.setAttribute("AlreadyConnectedSocialAccount", null);
+		
 } %>
 
 
