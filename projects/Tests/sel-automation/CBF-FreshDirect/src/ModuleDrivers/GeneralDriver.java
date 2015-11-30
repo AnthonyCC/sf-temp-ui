@@ -151,6 +151,8 @@ public class GeneralDriver extends BaseModuleDriver {
 								uiDriver.DrawHighlight("btncontinueMerge", webDriver);
 								webDriver.findElement(By.name(objMap.getLocator("btnmergeCartContinue"))).click();
 								uiDriver.waitForPageLoad();
+								uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("btnmergeCartContinue"))));
+								uiDriver.waitForPageLoad();
 								if(webDriver.findElement(By.xpath(objMap.getLocator("btnyourCart"))).isEnabled()){
 									RESULT.passed("Select merge & continue", 
 											"Should select Merge & continue", "Merge selected & Clicked on continue");
@@ -201,7 +203,14 @@ public class GeneralDriver extends BaseModuleDriver {
 			// verify logout button is there or not
 			if (uiDriver.isDisplayed("btnlogout")) {
 				// click on logout button
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					uiDriver.getwebDriverLocator(objMap.getLocator("btnlogout")).sendKeys("\n");
+				}				
+				else
+				{
 				uiDriver.click("btnlogout");
+				}
 				// verify login button appears or not
 				try{
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("btnlogout"))));

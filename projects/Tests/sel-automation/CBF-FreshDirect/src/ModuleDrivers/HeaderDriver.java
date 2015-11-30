@@ -746,8 +746,9 @@ public class HeaderDriver extends BaseModuleDriver
 					{
 						uiDriver.setValue("txtemailAddress", input.get("userID"));
 						uiDriver.setValue("txtpass", input.get("password"));
-						uiDriver.click("btnloginGoBtn");
+						webDriver.findElement(By.name(objMap.getLocator("btnloginGoBtn"))).click();						
 						uiDriver.waitForPageLoad();
+						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("btnloginGoBtn"))));
 						
 					}
 					catch(Exception e)
@@ -760,7 +761,7 @@ public class HeaderDriver extends BaseModuleDriver
 					//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					try
 					{
-						uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("stryourAcctPage"))));
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("stryourAcctPage"))));
 						if(webDriver.findElement(By.xpath(objMap.getLocator("stryourAcctPage"))).getText().contains("Welcome to Your Account"))
 						{
 							RESULT.passed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
@@ -1629,8 +1630,9 @@ public class HeaderDriver extends BaseModuleDriver
 						List<String> browserTabs = new ArrayList<String> (webDriver.getWindowHandles());
 						System.out.println("tabs size : "+browserTabs.size());	        		
 						//switch to new tab
-						webDriver.switchTo().window(browserTabs.get(1));
+						webDriver.switchTo().window(browserTabs.get(1));	
 						uiDriver.waitForPageLoad();
+						webDriver.manage().window().maximize();	
 						we=uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='title-area']/h1/a")));
 						//WebUIDriver.selenium.waitForPageToLoad(PageLoadTime);
 						if(webDriver.getCurrentUrl().contains("blog.freshdirect.com")){
@@ -1676,12 +1678,9 @@ public class HeaderDriver extends BaseModuleDriver
 			int Cat_Size=catList.size();
 			//Traversing through each category having sub-category
 			for (int i = 0; i < Cat_Size; i++) {
-
 				if (webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]//div[@class='subdepartments_cont']//li/span")).size() > 0) {
 					//hover on each categories having sub-category
-
 					uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]")));
-
 					SleepUtils.getInstance().sleep(TimeSlab.YIELD);					
 					List<WebElement> Sub_items=webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]//div[@class='subdepartments_cont']//li/span"));
 					//Getting sub-categories text
@@ -1696,9 +1695,7 @@ public class HeaderDriver extends BaseModuleDriver
 							item[1]=item[1].replace("T", "t");
 						}
 						String sub_dept_xpath = "//span/a[text() = '"+item[k]+"']";
-
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-
 						uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]")));
 						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						//uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(sub_dept_xpath)));
@@ -1707,8 +1704,7 @@ public class HeaderDriver extends BaseModuleDriver
 						uiDriver.waitForPageLoad();
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						//if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
-						//	uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(sub_dept_xpath)))));						
-						uiDriver.waitForPageLoad();
+						//uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(sub_dept_xpath)))));						
 						//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 						if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
 							uiDriver.wait.until(ExpectedConditions.refreshed(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("txtItemBreadCrumb")))));
@@ -1873,14 +1869,12 @@ public class HeaderDriver extends BaseModuleDriver
 		//click on links from footer and verify that it redirects to respective page
 		for(int i=0;i<arr1.length;i++)
 		{
-			//try{
-				
 				try{
 					uiDriver.clickFromData(arr1[i]);
 					if(arr1[i].equals("lnkyourAccount"))
 					{
 						//uiDriver.selenium.waitForPageToLoad(PageLoadTime);
-						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText(objMap.getLocator("lnkyourAccount"))));
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btngoAnonymous"))));
 						//Verifying user is logged in or not
 						if(webDriver.findElements(By.xpath(objMap.getLocator("btngoAnonymous"))).size()>0)
 						{
@@ -1897,54 +1891,52 @@ public class HeaderDriver extends BaseModuleDriver
 							RESULT.failed("Your account link", "Your account link should redirect to your account page", 
 							"Your account link could not redirect to your account page");											
 						}
-						//webDriver.navigate().refresh();
 					}
 					else
 					{
 						try{
 						uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator(path1[i]))));
-						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-						//uiDriver.DrawHighlight(path1[i], webDriver);
 						}catch(Exception e){
 							RESULT.passed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page",
 									arr1[i].substring(3).toUpperCase()+" :link is not redirected to respective page");
 						}
 						RESULT.passed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page",
 								arr1[i].substring(3).toUpperCase()+" :link redirected to respective page");
-						if(!(arr1[i].equals("lnkHome")))
-							webDriver.navigate().back();
-						uiDriver.waitForPageLoad();
+						if(!(arr1[i].equals("lnkHome"))){
+							if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+								webDriver.get(input.get("pageURL"));
+							else
+								webDriver.navigate().back();
+							
+							uiDriver.waitForPageLoad();
+						}
+							
 					}
-					//					}
 				}catch (Exception e) {					
 					RESULT.failed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr1[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
 				}
-//			}catch (Exception e) {
-//		
-//				RESULT.failed(arr1[i], arr1[i]+" should pass", arr1[i]+"Failed");
-//				RESULT.failed("Footer check","Footer check should be validated","Footer check is not validated");
-//			}
 		}
 
 		//for links where link opens a new tab in browser 
 		for(int i=0;i<arr2.length;i++)
 		{
-
 			try{
 				webDriver.navigate().refresh();
+				uiDriver.waitForPageLoad();
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				uiDriver.clickFromData(arr2[i]);
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-
+				SleepUtils.getInstance().sleep(TimeSlab.LOW);
 				Set<String> handles =  webDriver.getWindowHandles();
 				for(String windowHandle  : handles)
 				{
 					if(!windowHandle.equals(winHandleBefore))
 					{
 						webDriver.switchTo().window(windowHandle);
+						uiDriver.waitForPageLoad();
 					}
 				}
-				webDriver.manage().window().maximize();
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				webDriver.manage().window().maximize();				
 				System.out.println(webDriver.getTitle());
 				//uiDriver.selenium.waitForPageToLoad(PageLoadTime);
 				try{
