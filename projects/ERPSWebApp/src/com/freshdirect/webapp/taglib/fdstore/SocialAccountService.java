@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -339,12 +340,14 @@ public class SocialAccountService implements AccountService {
 						 *  For express registration, 
 						 *  	default "user type" to 'Home_USER'
 						 *  	default "delivery status" to 'DONOT_DELIVER'
-						 *  	default "available services" to empty
+						 *  	default "available services" to 'PICKUP'
 						 */
 						int regType = AccountUtil.HOME_USER;
 									
 						EnumDeliveryStatus dlvStatus = EnumDeliveryStatus.DONOT_DELIVER;   
-						Set<EnumServiceType> availableServices = Collections.<EnumServiceType>emptySet(); 
+						//Set<EnumServiceType> availableServices = Collections.<EnumServiceType>emptySet(); 
+						Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
+						availableServices.add(EnumServiceType.PICKUP);
 						
 						
 						// Set RegistrationAction which will do the major work										
@@ -495,7 +498,14 @@ public class SocialAccountService implements AccountService {
 		//HttpSession session = pageContext.getSession();
 		//HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
-		AddressModel address = new AddressModel();   //========================================================
+		AddressModel address = new AddressModel();   
+		// set default address for sociallogin-only user
+		address.setAddress1("23-30 borden ave");
+		address.setCity("Long Island City");
+		address.setState("NY");
+		address.setCountry("US");
+		address.setZipCode("11101");
+		
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
 
 			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
@@ -516,7 +526,7 @@ public class SocialAccountService implements AccountService {
 				
 
 				//user.setAddress(this.address);
-				user.setAddress(address); //=========================================
+				user.setAddress(address); 
 				user.setSelectedServiceType(serviceType);
 				//Added the following line for zone pricing to keep user service type up-to-date.
 				user.setZPServiceType(serviceType);
@@ -536,7 +546,7 @@ public class SocialAccountService implements AccountService {
 				//
 				if (user.getLevel() < FDUser.RECOGNIZED) {
 					//user.setAddress(this.address);
-					user.setAddress(address);//=================================================================
+					user.setAddress(address);
 					user.setSelectedServiceType(serviceType);
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(serviceType);

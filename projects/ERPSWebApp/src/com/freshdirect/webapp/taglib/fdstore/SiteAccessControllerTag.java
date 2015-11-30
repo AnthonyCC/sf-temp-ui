@@ -414,14 +414,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					 *  For express registration, 
 					 *  	default "user type" to 'Home_USER'
 					 *  	default "delivery status" to 'DONOT_DELIVER'
-					 *  	default "available services" to empty
+					 *  	default "available services" to 'PICKUP'
 					 */
 					int regType = AccountUtil.HOME_USER;
 					if(EnumServiceType.CORPORATE.getName().equals(this.serviceType)) {
 						regType = AccountUtil.CORP_USER;
 					}					
 					EnumDeliveryStatus dlvStatus = EnumDeliveryStatus.DONOT_DELIVER;   
-					Set<EnumServiceType> availableServices = Collections.<EnumServiceType>emptySet(); 
+					//Set<EnumServiceType> availableServices = Collections.<EnumServiceType>emptySet();
+					Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
+					availableServices.add(EnumServiceType.PICKUP);
 					
 					
 					// Set RegistrationAction which will do the major work										
@@ -435,6 +437,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 					
 					if (result.isSuccess()) {
+						
+							// set default address for express registration user
+							if(this.address == null){
+								address = new AddressModel();  
+								address.setAddress1("23-30 borden ave");
+								address.setCity("Long Island City");
+								address.setState("NY");
+								address.setCountry("US");
+								address.setZipCode("11101");
+							}
 						
 							// Create a user for express registration user
 							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {

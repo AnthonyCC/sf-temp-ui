@@ -274,7 +274,8 @@ public class DeliveryAddressService {
                 }
 			}
 
-			if (user.isPickupUser()) {
+			boolean isPickupUser = user.isPickupUser();
+			if (isPickupUser) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
 				for (final FDDeliveryDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
 					for (Object deliveryLocationModel : pickupDeliveryDepotModel.getLocations()) {
