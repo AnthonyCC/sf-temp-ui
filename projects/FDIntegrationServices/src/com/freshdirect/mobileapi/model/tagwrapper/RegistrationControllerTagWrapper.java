@@ -159,7 +159,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue("userToken",registerMessage.getUserToken());
         addRequestValue("provider",registerMessage.getProvider());
         addRequestValue(REQ_PARAM_SOURCE,registerMessage.getSource());
-        
+        addRequestValue(EnumUserInfoName.DLV_HOME_PHONE.getCode(), registerMessage.getDlvhomephone());
         addRequestValue("terms", "Y");
         //addRequestValue("partialDelivery", registerMessage.isPartialDelivery() ? "Y" : "");
         

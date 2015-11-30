@@ -463,7 +463,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		
 		<% 
-			if((user.isVHInDelivery() || user.isVHOutOfDelivery())){	
+			if((user.isVoucherHolder() && user.getMasqueradeContext()== null)){	
 		%> 
 		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" readonly="readonly" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
 		
@@ -478,7 +478,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		
 		<% 
-			if (!(user.isVoucherHolder()) && user.getMasqueradeContext()== null) {
+			if (!(user.isVoucherHolder() && user.getMasqueradeContext()== null)) {
 		%>
 			<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td>	
 		<%	} %>
@@ -492,7 +492,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		
 		
 		<% 
-			if (!(user.isVoucherHolder()) && user.getMasqueradeContext() == null){	
+			if ((user.isVoucherHolder() && user.getMasqueradeContext() == null)){	
 		%> 
 		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" readonly="readonly"  name="repeat_email"></td>
 		

@@ -355,6 +355,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		registerMessage.setState(requestMessage.getState());
 		registerMessage.setZipCode(requestMessage.getZipCode());
 		registerMessage.setWorkPhone(requestMessage.getWorkPhone());
+		registerMessage.setDlvhomephone(requestMessage.getDlvhomephone());
 		
 		ExternalAccountLinkRequest linkRequest = new ExternalAccountLinkRequest(requestMessage.getEmail(), requestMessage.getPassword(), 
 				requestMessage.getUserToken(), requestMessage.getUserToken(), requestMessage.getProvider(), requestMessage.getSource());
