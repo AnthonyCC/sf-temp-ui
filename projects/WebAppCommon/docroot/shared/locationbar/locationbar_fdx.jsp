@@ -84,16 +84,15 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		</tmpl:put>
 	<% } %>
 
-<%-- alerts icon --%>
-	<tmpl:put name="alerts"><div class="locabar-section locabar-alerts-section" style="display: none;">
-			<div id="locabar_alerts_trigger" class="cursor-pointer">
-				<div class="section-warning-small" id="locabar-alerts-open">
-					<div id="locabar-alerts-count" class="locabar-circle-cont alerts-count" data-count="0">0</div>
+<%-- messages icon --%>
+	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
+			<div id="locabar_messages_trigger" class="cursor-pointer">
+				<div class="section-warning-small" id="locabar-messages-open">
+					<div id="locabar-messages-count" class="locabar-circle-cont messages-count" data-count="0">0</div>
 				</div>
 			</div>
 			
-			<%-- TEST ALERTS
-			--%>
+			<%-- TEST messages
 			
 				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
 				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
@@ -105,6 +104,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 						$jq('#test3').messages('add','test3');
 					});
 				</script>
+				
+			--%>
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
@@ -205,7 +206,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
 				<div class="text">Change zip code.</div>
-				<span id="newzip"><input type="text" id="newziptext" class="placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="cssbutton orange orange-imp cssbutton-flat">Go</button></span>
+				<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
 			</tmpl:put><%
 			
 
@@ -234,7 +235,36 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 								</div>
 							</form>
 						<% } %>
-				</div></tmpl:put><%
+				</div></tmpl:put>
+				<tmpl:put name="location_out_of_area_alert">
+					<div id="sitemessage" class="alerts invisible" data-type="sitemessage">
+						<div id="nodeliver-form">
+							<div style="display: inline-block; margin-right: 30px;" class="section-warning">
+								<div style="margin: 0 0 1em 10px; line-height: 14px;" class="text13 bold">
+									<div>FreshDirect is not available in</div>
+									<div><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= selectedAddress.getZipCode() %></div>
+								</div>
+							</div>
+							<div style="display: inline-block; margin-right: 30px;" >
+								<div class="text13">Change your Zip Code.</div>
+								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
+							</div>
+							<div class="nodeliver-form" style="display: inline-block;" >
+								<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
+									<form class="n">
+										<div class="text13"><label class="n">Let us notify you when service expands in your area.</label></div>
+										<div>
+											<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
+										</div>
+									</form>
+								<% } %>
+							</div>
+						</div>
+						<div id="nodeliver-thanks" class="invisible" data-type="sitemessage">
+							<div class="nodeliver-form"><b>Thanks for your email!</b> We will notify you once we start delivering your area.</div>
+						</div>
+					</div>
+				</tmpl:put><%
 			}
 		}
 		
@@ -328,7 +358,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				}
 			}
 			
-		%><div class="locabar-section locabar-user-section">
+		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
 			<div style="display: inline-block; position: relative;" id="locabar_user_trigger" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
@@ -412,9 +442,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 			</div>
 		</div></tmpl:put>
 		
-<%-- OUT OF AREA MSGS --%>
+<%-- OUT OF AREA ALERT --%>
 	<% if (user != null && user.getLevel() == FDUserI.GUEST) { %>
-		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /> </tmpl:put>
 	<% } %>
 </tmpl:insert>
 

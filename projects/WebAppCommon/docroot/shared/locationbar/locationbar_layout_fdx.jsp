@@ -20,11 +20,11 @@
 	
 	<%-- fright sections --%>
 	<div class="locabar-right-sections">
-		<tmpl:get name="alerts" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
+		<tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 	</div>
 </div>
 
-<div id="location-messages" class="invisible"><tmpl:get name="location_message" /></div>
+<div id="location-alerts" class=""><tmpl:get name="location_out_of_area_alert" /></div>
 <div id="unrecognized" class="invisible" data-type="sitemessage">
 	<div class="unrecognized error-message">
 		<p>
@@ -34,6 +34,22 @@
 	</div>
 </div>
 
+
+<%-- TEST alerts
+
+	<div class="alerts invisible" id="alert2" data-type="alert2" data-addto="#alert2_cont">
+		this is a test alert - closer
+	</div>
+	<div class="alerts invisible" id="alert3" data-type="alert3" data-addto="#alert4,#alert6_cont,#alert5_cont" data-closehandleraddto="#alert3_testcontainer">alert3</div>
+	<div id="alert4">test other content</div>
+	
+	<div class="alert-cont" id="alert3_testcontainer">
+		<div id="alert5_cont" class="alert">alert5_cont</div>
+		<div id="alert6_cont" class="alert">alert6_cont</div>
+		<div class="alerts invisible" id="alert1" data-type="alert1">this is a test alert - no close</div>
+	</div>
+
+--%>
 <fd:css href="/assets/css/common/locationbar_fdx.css" />
 <fd:javascript src="/assets/javascript/locationbar.js" />
 <fd:javascript src="/assets/javascript/locationbar_fdx.js" />

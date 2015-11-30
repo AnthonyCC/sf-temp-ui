@@ -1,10 +1,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
 %><%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" 
 %><%@ taglib uri="fd-data-potatoes" prefix="potato" 
+%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
+%><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='logic' prefix='logic' %>
 <% 
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	String uri = request.getRequestURI().toLowerCase();
+    boolean onCartPage = (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp"));
+
+	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
+	String hasEcouponsClass="";
+    if(user.isEligibleForCoupons()) hasEcouponsClass="hasecoupons";
 %>
 
 <%-- OAS --%>
@@ -58,24 +66,38 @@ if(user != null) {
 		%><div id="OAS_SystemMessage">
   			<script type="text/javascript">OAS_AD('SystemMessage');</script>
   		</div>
-	<% } %>
+	<% } else { %>
+    	<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+	    <logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+	        <table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
+	            <tr align="center">
+	                <td>
+	                    <font class="text12rbold"><%=ann.getHeader()%></font><br>
+	                    <%=ann.getCopy()%>
+	                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+	                </td>
+	            </tr>
+	            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	        </table><br>
+	    </logic:iterate></fd:GetSiteAnnouncements></div><%
+	} %>
 
 	<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
 	<% if (!cutoffInfoDisplayed) { %>
-    	<div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
-		<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+    	<div class="message invisible" data-type="platterwarning">platt<%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
+		<div class="message invisible" data-type="reservationwarning">resv<%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
 	}
 	%>  
 
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
     
 <!-- GLOBALNAV TOP -->
-	<div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
+	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hsaFDX" : "" %>">
 		
 		<% if (useFdxGlobalNav) { %>
 			
-			<div class="nav">
-				<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" border="0" /></a>
+			<div class="nav<%= " "+hasEcouponsClass %>">
+				<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
 				<%
 					int searchBaseWidth = 535;
 					//uncomment this to make search resize when the sign up button isn't shown
@@ -142,7 +164,7 @@ if(user != null) {
 				<a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 			<% } %>
 			
-			<div class="nav">
+			<div class="nav<%= " "+hasEcouponsClass %>">
 				<%-- nav links next to search field --%>
 				
 				
@@ -240,26 +262,31 @@ if(user != null) {
 	</div>
 <% } else { %>
 	<div class="container">
-	    <a href="/index.jsp" data-swapimage="/media/images/navigation/global_nav/fd_logo_on.png" border="0" data-swapimagename="FD_LOGO"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+		<% if (useFdxGlobalNav) { %>
+			<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
+	    <% } else { %>
+	    	<a href="/index.jsp" data-swapimage="/media/images/navigation/global_nav/fd_logo_on.png" border="0" data-swapimagename="FD_LOGO"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	    <% } %>
 	</div>
 <% } %>  
 
+<% if (!onCartPage) { %>
+	<!-- GLOBALNAV -->
+	<potato:globalnav/>
 	
-<!-- GLOBALNAV -->
-<potato:globalnav/>
-
-<script>
-globalNav=<fd:ToJSON object="${globalnav}" noHeaders="true"/>
-</script>
-
-<div class="container global">
-    <nav class="gnav" data-component="globalnav">
-        <c:if test="${not empty globalnav.media}">
-            <fd:IncludeMedia name="${globalnav.media}"></fd:IncludeMedia>
-        </c:if>
-    </nav>
-    <soy:render template="common.globalnavPopups" data="${globalnav}" />
-</div>
+	<script>
+	globalNav=<fd:ToJSON object="${globalnav}" noHeaders="true"/>
+	</script>
+	
+	<div class="container global<%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
+	    <nav class="gnav" data-component="globalnav">
+	        <c:if test="${not empty globalnav.media}">
+	            <fd:IncludeMedia name="${globalnav.media}"></fd:IncludeMedia>
+	        </c:if>
+	    </nav>
+	    <soy:render template="common.globalnavPopups" data="${globalnav}" />
+	</div>
+<% } %>
 
 <!-- Changes for Skip to Content Fix -->
 <div id="skip_to_content"></div>

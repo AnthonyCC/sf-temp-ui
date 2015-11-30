@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.location;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.logistics.controller.data.PickupLocationData;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
@@ -141,6 +143,10 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		try {
 			FDDeliveryServiceSelectionResult result = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FDX);
 			Set<EnumServiceType> availServices = result.getAvailableServices();
+			
+			//remove pickup
+			availServices.remove(EnumServiceType.PICKUP);
+			
 			if (!availServices.isEmpty()) { return true; }
 		} catch (FDResourceException e) {
 			LOGGER.debug(e);

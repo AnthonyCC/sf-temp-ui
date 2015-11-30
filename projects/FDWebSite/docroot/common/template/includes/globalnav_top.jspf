@@ -13,6 +13,8 @@
 <% //expanded page dimensions
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
+    String uri = request.getRequestURI().toLowerCase();
+    boolean onCartPage = (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp"));
 %>
 
 <%@ include file="/shared/template/includes/yui.jspf" %>
@@ -48,7 +50,7 @@ if(user != null) {
 	
 	request.setAttribute("listPos", "SystemMessage");
 	%><% 
-	if (FDStoreProperties.isAdServerEnabled()) { 
+	if (FDStoreProperties.isAdServerEnabled()) {
   %><div id="OAS_SystemMessage">
   <script type="text/javascript">OAS_AD('SystemMessage');</script>
   </div><% 
@@ -74,7 +76,6 @@ if(user != null) {
     %><div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
       <div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
 }
-    String uri = request.getRequestURI().toLowerCase();
 %>  
   <div class="message invisible" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
   
@@ -83,7 +84,7 @@ if(user != null) {
     <!-- Adding Skip to Navigation : End-->
      
   
-  <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
+  <div class="container globalnav_top <%= (onCartPage) ? "disableCart" : "" %>">
   <%
     if(user.isDepotUser()){%>
         <a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>

@@ -8,7 +8,7 @@
 <!-- jwr:script src="/locabar.js"  useRandomParam="false" / -->
 
 <% 
-	System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 
+	//System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 
 	if (session.getAttribute("DELIVERYADDRESS_COMPLETE") != null) {%>	
 			
 	<script>

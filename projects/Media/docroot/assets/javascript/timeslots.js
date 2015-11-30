@@ -2454,7 +2454,7 @@ var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
 				var url = '/overlays/variable_minnotmet_popup.jsp?amt='+attributes[0];
 				$jq(document).ready(function() {
 					vmo_overlayDialog = doOverlayDialog(url);
-					$jq('#choosenewtimeslot').live('click', function(e) { e.preventDefault(); vmo_overlayDialog.dialog('close'); });
+					$jq('#choosenewtimeslot').on('click', function(e) { e.preventDefault(); vmo_overlayDialog.dialog('close'); });
 
 				});
 			} else{

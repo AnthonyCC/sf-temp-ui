@@ -11,7 +11,7 @@
 <div id="messages">
 	<ul class="content"></ul>
 	<hr class="shadow">
-	<div class="handler close-handler" id="locabar-alerts-close"></div>
+	<div class="handler close-handler" id="locabar-messages-close"></div>
 	<br />
 </div>
 <fd:javascript src="/assets/javascript/messages.js"/>

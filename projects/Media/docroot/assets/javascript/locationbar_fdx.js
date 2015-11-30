@@ -160,8 +160,8 @@ $jq('#locabar_user_trigger').on('click', function(e) {
 	}
 });
 
-$jq("#locabar_alerts_trigger").on('click', function() {
-	$jq('#messages').messages('open');
+$jq("#locabar_messages_trigger").on('click', function() {
+	$jq('#messages').messages('openMessages');
 });
 
 $jq('#login_cont_formContent').on('hide', function() {
@@ -172,3 +172,9 @@ $jq(window).on('resize', function(event) {
 	centerLoginModal();
 });
 
+$jq('#location-alerts').on('alertOpen', function() {
+	$jq('#locabar_addresses').hide();
+});
+$jq('#location-alerts').on('alertClose', function() {
+	$jq('#locabar_addresses').show();
+});

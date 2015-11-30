@@ -31,9 +31,12 @@
 		});
 	};
 	
-  var sendZip = function (e) {
-		var text = $('#newziptext').val(),
-			innerHTML;
+	var sendZip = function (e) {
+		var text, innerHTML;
+
+		text = $('#newziptext,.newziptext').map(function() {
+			return $(this).val() || null;
+		}).toArray().join(',');
 		
 		if(!/(^\d{5}$)/.test(text) || parseInt(text,10)===0 ) {
 			$('#unrecognized').clone().html(function(index,oldHTML){
@@ -50,26 +53,26 @@
 				error:errorHandler
 			});
 		}
-  };
+	};
 
-  function updateAlertCount() {
-		var $alerts_count = $('.alerts-count');
+	function updateMessagesCount() {
+		var $messages_count = $('.messages-count');
 		var curCount = 0;
 		
-		$alerts_count.data('count', ($alerts_count.data('count') || $alerts_count.attr('data-count') || curCount));
+		$messages_count.data('count', ($messages_count.data('count') || $messages_count.attr('data-count') || curCount));
 
-		curCount = $alerts_count.data('count');
+		curCount = $messages_count.data('count');
 		
 		curCount++;
 		
-		$alerts_count.data('count', curCount);
-		$alerts_count.html(curCount);
+		$messages_count.data('count', curCount);
+		$messages_count.html(curCount);
 
-		if (curCount) {
-			$('.locabar-alerts-section').show();
+		if (curCount > 0) {
+			$('.locabar-messages-section').show();
 		}
-  }
-  
+	}
+
 	$document.on('messageAdded',function(e){
 		var $target = $(e.target);
 		if($target.hasClass('moreinfo')) {
@@ -83,7 +86,7 @@
 				$('.partial-delivery-moreinfo').removeClass('cos');
 			}
 		}
-		updateAlertCount();
+		updateMessagesCount();
 	});
 	
 	$document.on('click','.ui-widget-overlay',function(e){
@@ -92,24 +95,24 @@
 		};
 	});
 
-	$document.on('click','#newzipgo',sendZip);
+	$document.on('click', '#newzipgo', sendZip);
 
-  $document.on('keyup', '#newziptext', function (e) {
-    // send form on enter
-    if (e.keyCode === 13) {
-      sendZip();
-    }
-  });
+	$document.on('keyup', '#newziptext', function (e) {
+		// send form on enter
+		if (e.keyCode === 13) {
+			sendZip();
+		}
+	});
 
-  var keys=[8,12,13,33,34,35,36,37,38,39,40,46,97];
-  $document.on('keydown', '#newziptext', function (e) {
-  	var kc = e.keyCode;
-  	if( (kc<48 || kc>57) && keys.inArray(kc)===false && (kc<96 || kc>105) ) {
-  		e.preventDefault();
-  	}
-  });
-  
-  
+	var keys=[8,12,13,33,34,35,36,37,38,39,40,46,97];
+	$document.on('keydown', '#newziptext', function (e) {
+		var kc = e.keyCode;
+		if( (kc<48 || kc>57) && keys.inArray(kc)===false && (kc<96 || kc>105) ) {
+			e.preventDefault();
+		}
+	});
+
+
 	$document.on('click','.delivery-popuplink',function(e){
 		popup('/help/delivery_zones.jsp','large');
 		e.preventDefault();
@@ -324,10 +327,12 @@
 	});
 	
 }(jQuery));
+
 function goButtonFocus(e){
-	 var TABKEY = 9;
-    if(e.keyCode == TABKEY) {
-   	 document.getElementById("newzipgo").focus();
-    }
+	var TABKEY = 9;
+	if(e.keyCode == TABKEY) {
+		$jq("#newzipgo").focus();
+}
+
 }
 
