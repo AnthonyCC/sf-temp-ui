@@ -82,6 +82,7 @@ if( request.getParameter("p") != null ){
 						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
 						<li><a href="<%=url_prefix %>#Whats_Good">What's Good</a></li>
 						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
+						<li><a href="about_us.jsp">About Us</a></li>
 						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 					</ul>
 				</li>
@@ -94,6 +95,7 @@ if( request.getParameter("p") != null ){
 					</a>
 				</li>
 				<!--  <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
+				<li class="standard_link"><a href="about_us.jsp">About Us</a></li>
 				<li class="standard_link"><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 			</ul>
 		</nav>
