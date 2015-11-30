@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -4664,5 +4665,25 @@ public class FDCustomerManager {
 	
 	return parentOrderAddressId;
 	}
+
+	public static boolean getParentOrderCount(String OrderId) throws FDResourceException {
+
+		lookupManagerHome();
+		boolean getParentOrderCount;
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			getParentOrderCount =sb.ParentOrdercheck(OrderId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	
+	return getParentOrderCount;
+	}
+	
 	
 }

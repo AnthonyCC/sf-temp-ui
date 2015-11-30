@@ -7976,5 +7976,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	
+	public boolean ParentOrdercheck(String orderId)throws FDResourceException{
+		LOGGER.info("parentOrderId for Add on order... "+orderId);
+			Connection conn = null;
+			boolean ParentOrdercheck=false;
+	try
+		{
+			conn = getConnection();
+			int parentOrderId= FDUserDAO.getParentOrderCount(orderId, conn);
+			if(parentOrderId<=5){
+				ParentOrdercheck=true;
+				}
+		} catch (SQLException sqle) {
+			LOGGER.info("parentOrderId  FAILED... "+orderId);
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		return ParentOrdercheck ;
+	}
+	
 }
 

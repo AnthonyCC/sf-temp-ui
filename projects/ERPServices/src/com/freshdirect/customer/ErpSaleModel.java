@@ -57,7 +57,6 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private String standingOrderId;
 	private Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
 	private EnumEStoreId eStoreId;
-	private int addOnOrderCountOfParent;
 	
 	/**
 	 * @return Returns the deliveryPassId.
@@ -111,7 +110,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param standingOrderId ID of StandingOrder that created this sale
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List<ErpTransactionModel> transactions, List<ErpComplaintModel> complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId, int addOnOrderCountOfParent) {
+		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -126,7 +125,6 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.standingOrderId = standingOrderId;
 		this.hasSignature = hasSignature;
 		this.eStoreId = eStoreId;
-		this.addOnOrderCountOfParent=addOnOrderCountOfParent;
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -1018,9 +1016,6 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return sapOrderNumber;
 	}
 	
-	public int getAddOnOrderCountOfParent() {
-		return addOnOrderCountOfParent;
-	}
 	
 
 	public Collection<ErpTransactionModel> getTransactions() {

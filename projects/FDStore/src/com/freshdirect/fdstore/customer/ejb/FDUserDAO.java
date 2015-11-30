@@ -1300,4 +1300,23 @@ public class FDUserDAO {
 			return addressList;
 	}
 	
+	
+	public static int getParentOrderCount(String orderId, Connection conn)throws SQLException{
+		
+		int addOnOrderCountOfParent=0;
+		PreparedStatement pstmt=null;
+				pstmt = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
+							" SA.ACTION_TYPE IN ('CRO','MOD') AND S.TYPE = 'REG' AND SA.ID = PI.SALESACTION_ID AND  PI.ON_FD_ACCOUNT='O' AND PI.REFERENCED_ORDER = ? GROUP BY PI.ON_FD_ACCOUNT "); 
+				pstmt.setString(1, orderId);
+				ResultSet rs = pstmt.executeQuery();
+				
+				if(rs.next()){	
+					addOnOrderCountOfParent=rs.getInt(1);
+				 }
+			rs.close();
+			pstmt.close();
+		return addOnOrderCountOfParent;
+		
+		}
+	
 }

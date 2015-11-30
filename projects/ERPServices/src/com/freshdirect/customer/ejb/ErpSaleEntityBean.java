@@ -102,7 +102,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null, 0);
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null);
 		complaints = new ErpComplaintList();
 	}
 
@@ -558,31 +558,6 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				pstmt.close();
 		}
 		
-		int addOnOrderCountOfParent=0;
-		if(EnumEStoreId.FDX.equals(eStoreId)) {
-			try
-			{
-				
-				pstmt = conn.prepareStatement("select count(1) from CUST.SALE S, CUST.SALESACTION SA, CUST.PAYMENTINFO PI where S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE AND" +
-						" SA.ACTION_TYPE IN ('CRO','MOD') AND S.TYPE = 'REG' AND SA.ID = PI.SALESACTION_ID AND  PI.ON_FD_ACCOUNT='O' AND PI.REFERENCED_ORDER = s.id and s.id=? GROUP BY PI.ON_FD_ACCOUNT "); 
-				pstmt.setString(1, getPK().getId());
-				resultSet = pstmt.executeQuery();
-				
-				if(resultSet.next()){	
-					addOnOrderCountOfParent=resultSet.getInt(1);
-				 }
-			}
-			catch(Exception e)
-			{
-				LOGGER.debug("Exception while fetching the addOnOrderCountOfParent");
-			}
-			finally{
-				if(resultSet!=null)
-					resultSet.close();
-				if(pstmt!=null)
-					pstmt.close();
-			}
-		}
 
 		// load children
 
@@ -599,7 +574,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId, addOnOrderCountOfParent);
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId);
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);
