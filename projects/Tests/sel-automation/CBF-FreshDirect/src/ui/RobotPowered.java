@@ -3,6 +3,7 @@ package ui;
 import java.awt.AWTException;
 import java.awt.Robot;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,17 +11,15 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.Locatable;
 
 import ModuleDrivers.CompositeAppDriver;
-
-import cbf.harness.Harness;
-import cbf.utils.Configuration;
 import cbf.utils.SleepUtils;
 import cbf.utils.SleepUtils.TimeSlab;
-
+import  ui.ObjectMap;
 public class RobotPowered {
 
 	private final Robot mouseObject;
 	private final WebDriver driver;
 	private final JavascriptExecutor executor;
+	private final ObjectMap objMap;
 	Actions actions;
 	//Configuration GCONFIG;
 
@@ -29,6 +28,7 @@ public class RobotPowered {
 		this.driver = driver;
 		this.executor = (JavascriptExecutor) driver;
 		actions = new Actions(driver);
+		objMap = new ObjectMap();
 		//GCONFIG = Harness.GCONFIG;
 	}
 	
@@ -69,9 +69,17 @@ public class RobotPowered {
 					+ browserFurnitureOffsetY + webElementY);
 
 			// Move the mouse to the calculated X/Y coordinates
-			mouseObject.mouseMove(xPosition-1, yPosition);	        
-			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-			mouseObject.mouseMove(xPosition, yPosition);	
+			if(driver.findElements(By.id(objMap.getLocator("strstorefrontMsg"))).size()>0 && driver.findElement(By.id("topwarningbar")).isDisplayed())
+						{
+							mouseObject.mouseMove(xPosition-1, yPosition-23);
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+							mouseObject.mouseMove(xPosition, yPosition-23);	
+							System.out.println("masqreading");
+						}else{
+							mouseObject.mouseMove(xPosition-1, yPosition);	
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+							mouseObject.mouseMove(xPosition, yPosition);	
+						}
 			mouseObject.waitForIdle();
 		} else {
 			actions.moveToElement(element).build().perform();

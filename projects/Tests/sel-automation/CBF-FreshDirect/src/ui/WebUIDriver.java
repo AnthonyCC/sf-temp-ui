@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2241,7 +2242,14 @@ public class WebUIDriver extends BaseAppDriver {
 				uiDriver.setValue("txtuserID", UID);
 				uiDriver.setValue("txtpass", PASS);
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					uiDriver.getwebDriverLocator(objMap.getLocator("btnsignin")).sendKeys("\n");
+				}
+				else
+				{
 				uiDriver.click("btnsignin");
+				}
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			}
 			catch(Exception e)
@@ -4633,14 +4641,14 @@ public class WebUIDriver extends BaseAppDriver {
 						.xpath(objMap.getLocator("CRM_EditAddressPath")));
 				int e1Size = EditLst.size();
 
-				String myadd2 = CRMSelectAddress;
+				String myadd2 = Normalizer.normalize(CRMSelectAddress, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 				System.out.println("given:" + myadd2);
 				System.out.println(eSize);
 				System.out.println(e1Size);
 
 				for (int i = 0; i < eSize; i++) {
 
-					String gotadd2 = addLst2.get(i).getText();
+					String gotadd2 = Normalizer.normalize(addLst2.get(i).getText(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 					System.out.println("Address:" + gotadd2);
 					if (gotadd2.startsWith(myadd2)) {
 						System.out.println(gotadd2);
@@ -5568,8 +5576,8 @@ public class WebUIDriver extends BaseAppDriver {
 						try 
 						{
 							uiDriver.waitForPageLoad();
-							webDriver.findElement(By.xpath(objMap
-									.getLocator("strverifyWarning")));
+							(new WebDriverWait(webDriver, 40)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strverifyWarning"))));
+						
 							//wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges")))));
 							// handle the save chnages button after place order
 							// click
@@ -7522,6 +7530,7 @@ public class WebUIDriver extends BaseAppDriver {
 				//refresh for IE
 				//if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) {
 					webDriver.navigate().refresh();
+					waitForPageLoad();
 					wait.until(ExpectedConditions.visibilityOfElementLocated(By
 							.xpath(objMap.getLocator("tabyourTopItems"))));
 				//}
@@ -10354,7 +10363,7 @@ public class WebUIDriver extends BaseAppDriver {
 							By.xpath(objMap.getLocator("txtorderStatusCRM")))
 							.getText();
 					
-					if (OrderStatus.contains("Canceled")) {
+					if (OrderStatus.contains("Cancel")) {
 						RESULT.passed("Cancel Order CRM",
 								"Order should get cancelled successfully",
 								"Desired order cancelled successfully: Order #"
@@ -10363,7 +10372,7 @@ public class WebUIDriver extends BaseAppDriver {
 						RESULT.failed("Cancel Order CRM",
 								"Order should get cancelled successfully",
 								"Desired order could not get cancelled: Order #"
-								+ OrderNo);
+								+ OrderNo+" in status: "+OrderStatus);
 						return;
 					}
 
@@ -10383,7 +10392,7 @@ public class WebUIDriver extends BaseAppDriver {
 					return;
 				}
 			} else {
-				RESULT.failed("Cancel Order CRM",
+				RESULT.warning("Cancel Order CRM",
 						"Order should get cancelled successfully",
 						"Desired order is not present in your order list: Order #"
 						+ OrderNo);
@@ -10414,27 +10423,38 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 				CRMWindow = webDriver.getWindowHandle();
 				String OrderStatus=webDriver.findElement(By.xpath(objMap.getLocator("txtorderStatusCRM"))).getText();
+				System.out.println(OrderStatus+": Status");
 				if(OrderStatus.equalsIgnoreCase("submitted")){
 //					uiDriver.click("lnkmodifyOrder");
+					String winHandleBefore=webDriver.getWindowHandle();
 					webDriver.findElement(By.linkText(objMap.getLocator("lnkmodifyOrder"))).click();
-					SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
-					uiDriver.waitForPageLoad();
+					//close CRM tab after navigating to storefront
+					try{
+						webDriver.switchTo().window(winHandleBefore).close();
+//						webDriver.switchTo().window(winHandleafter);
+					}catch (Exception e) {
+						RESULT.failed("CRM tab close","CRM tab should be closed ","CRM tab is not closed");
+					}
 					//get window handlers as list
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					List<String> browserTabs = new ArrayList<String> (webDriver.getWindowHandles());
+					System.out.println(browserTabs.size()+": tab size after close");
 					//switch to new tab
-					webDriver.switchTo().window(browserTabs.get(1));
+					webDriver.switchTo().window(browserTabs.get(0));
+					System.out.println(webDriver.getCurrentUrl());
+					uiDriver.waitForPageLoad();
 					if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
 						webDriver.manage().window().maximize();
 					}
-					uiDriver.waitForPageLoad();
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(objMap.getLocator("imgfd_Logo"))));
 					if(webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0)
 					{
-						RESULT.passed("Modify Order in CRM", "User should be nevigated to storefront application", 
+						RESULT.passed("Modify Order in CRM", "User should be navigated to storefront application", 
 								"Nevigation to storefront is successfull");
 					}
 					else
 					{
-						RESULT.failed("Modify Order in CRM", "User should be nevigated to storefront application", 
+						RESULT.failed("Modify Order in CRM", "User should be navigated to storefront application", 
 						"Nevigation to storefront is unsuccessfull");
 						return;
 					}
@@ -10488,7 +10508,7 @@ public class WebUIDriver extends BaseAppDriver {
 							+ " which is other than submitted");
 				}return;
 			}else
-			{	RESULT.failed("Modify Order CRM",
+			{	RESULT.warning("Modify Order CRM",
 					"Order should get modify successfully",
 					"Desired order is not present in your order list: Order #"+ OrderNo);
 			return;
@@ -10526,6 +10546,7 @@ public class WebUIDriver extends BaseAppDriver {
 		case ADD: 
 			try{
 				int count;
+				
 				String DeliverypassDetail = uiDriver.getwebDriverLocator(
 						objMap.getLocator("strdeliverypassDetail")).getText();
 				if (DeliverypassDetail.contains("Six-Month DeliveryPass")) {
@@ -10846,7 +10867,7 @@ public class WebUIDriver extends BaseAppDriver {
 				// click on the Fruit tab directly
 				try {
 					webDriver.findElement(By.xpath(objMap.getLocator(dept)))
-					.click();
+					.click();					
 				} catch (NoSuchElementException e) {
 					RESULT
 					.failed(
@@ -10858,11 +10879,20 @@ public class WebUIDriver extends BaseAppDriver {
 							+ dept
 							+ " is not available in Global navigation bar");
 					return;
+				}				
+				waitForPageLoad();				
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+//					wait.until(ExpectedConditions.visibilityOfElementLocated(By
+//							.xpath(objMap.getLocator("strShopBy"))));
+//					robot.moveMouseToCoordinates(0, 0);
+					((JavascriptExecutor) webDriver).executeScript("scroll(0, -250);");					
 				}
-				waitForPageLoad();
-
+				else
+				{
 				robot.moveToElement(webDriver.findElement(By.name(objMap
 						.getLocator("imgfd_Logo"))));
+				}
 				// click on sub-departement if sub-departement is available
 				if (!sub_dept.endsWith(dept)
 						&& sub_dept.replace(" ", "").length() > 0) {
@@ -10907,6 +10937,7 @@ public class WebUIDriver extends BaseAppDriver {
 							+ category.split("&")[0] + "')]";
 					}
 					try
+					
 					{
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By
 								.xpath(category_xapth)));
@@ -12648,7 +12679,14 @@ public class WebUIDriver extends BaseAppDriver {
 				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By
 						.linkText(objMap.getLocator("lnknewcase"))));
 				//click on New Case link
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					uiDriver.getwebDriverLocator(objMap.getLocator("lnknewcase")).sendKeys("\n");
+				}
+				else
+				{
 				uiDriver.click("lnknewcase");
+				}
 			}
 			catch(Exception e)
 			{
@@ -14385,6 +14423,7 @@ public class WebUIDriver extends BaseAppDriver {
 				webDriver.findElement(
 						By.xpath(objMap.getLocator("btnaddAddress"))).click();
 				uiDriver.waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txtaddNewAddress"))));
 				// uiDriver.click("btnaddAddress");
 				uiDriver.setValue("txtfirstName", FirstNameTb);
 				uiDriver.setValue("txtlastNameYourAccount", LastNameTb);
@@ -14404,33 +14443,35 @@ public class WebUIDriver extends BaseAppDriver {
 				uiDriver.setValue("txtcity", City);
 				uiDriver.setValue("txtstate", State);
 				webDriver.findElement(By.name("zipcode")).sendKeys(ZipCode);
-				// uiDriver.setValue("txtzipCode", ZipCode);
+				//uiDriver.setValue("txtzipCode", ZipCode);
 				uiDriver.setValue("txtcontact", Contact);
 				uiDriver.setValue("txtext1", Ext1);
 				uiDriver.setValue("txtaltContact", AltContact);
 				uiDriver.setValue("txtext2", Ext2);
 				uiDriver.setValue("txtdelInstructions", SpclDelInstructions);
 				//Give atleast one options as Yes
-				if(None.equalsIgnoreCase("yes"))
+				if(None.equalsIgnoreCase("yes")){
 					uiDriver.click("None");
-				else if (DoormanDelivery.equalsIgnoreCase("yes")) {
+				}else if (DoormanDelivery.equalsIgnoreCase("yes")) {
 					uiDriver.click("DoormanDelivery");
 				}else if (NeighbourDelivery.equalsIgnoreCase("yes")) {
 					uiDriver.click("radneighbourDeliveryOld");
-
 					uiDriver.setValue("txtalternateFName", AltFirstName);
 					uiDriver.setValue("txtalternateLName", AltLastName);
 					uiDriver.setValue("txtalternateAptName", AltApt);
 					uiDriver.setValue("txtalternatePhone", AltPhone);
 					uiDriver.setValue("txtalternaltPhone", AltExtn);
 				}
+				RESULT.done("Address fields",
+								"All the given data shoud be entered in relevant Address fields",
+									"All the data entered in relevant Address fields");
 				// click on save changes button
-				uiDriver.click("btnedit");
+				uiDriver.click("btnsaveAddress");
 				uiDriver.waitForPageLoad();
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnaddAddress"))));
 				try{
 					//check if add new delivery address button is available (if available it means address addition successfull
-					if (webDriver.findElements(
-							By.xpath(objMap.getLocator("btnaddAddress"))).size() > 0) {
+					if (webDriver.findElements(By.xpath(objMap.getLocator("btnaddAddress"))).size() > 0) {
 						RESULT.passed("Add Delivery address",
 								"Delivery address addition should be successful through Your Account link",
 						"Delivery address addition is successful through Your Account link");
@@ -14438,9 +14479,7 @@ public class WebUIDriver extends BaseAppDriver {
 					}
 					else {
 						//invalid data error (added by AT)
-						String Error_Msg1 = webDriver.findElement(
-								By.xpath(objMap.getLocator("strerrorAddress")))
-								.getText();
+						String Error_Msg1 = webDriver.findElement(By.xpath(objMap.getLocator("strerrorAddress"))).getText();
 						System.out.println(Error_Msg1);
 						RESULT.failed("Add Delivery address",
 								"User should be able add new delivery address",
@@ -14615,7 +14654,7 @@ public class WebUIDriver extends BaseAppDriver {
 						//						addLst2.get(i).findElement(By.xpath("//img[@alt='EDIT']")).click();
 						editLst2.get(i).click();
 						uiDriver.waitForPageLoad();
-
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txteditAddress"))));
 						uiDriver.setValue("txtfirstName", FirstNameTb);
 						uiDriver.setValue("txtlastNameYourAccount", LastNameTb);
 						String Servicetype1 = ServiceType;
@@ -14633,7 +14672,8 @@ public class WebUIDriver extends BaseAppDriver {
 						uiDriver.setValue("txtaddLine2", AddLine2);
 						uiDriver.setValue("txtcity", City);
 						uiDriver.setValue("txtstate", State);
-						uiDriver.setValue("txtzipCodeOld", ZipCode);
+						webDriver.findElement(By.name("zipcode")).sendKeys(ZipCode);
+						//uiDriver.setValue("txtzipCode", ZipCode);
 						uiDriver.setValue("txtcontact", Contact);
 						uiDriver.setValue("txtext1", Ext1);
 						uiDriver.setValue("txtaltContact", AltContact);
@@ -14652,13 +14692,14 @@ public class WebUIDriver extends BaseAppDriver {
 							uiDriver.setValue("AltPhone", AltPhone);
 							uiDriver.setValue("AltExtn", AltExtn);
 						}
-						uiDriver.click("btnedit");
+						RESULT.done("Address fields",
+								"All the given data shoud be entered in relevant Address fields",
+									"All the data entered in relevant Address fields");
+						uiDriver.click("btnsaveAddress");
 						uiDriver.waitForPageLoad();
-
+						wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnaddAddress"))));
 						System.out.println("Address edited successfully!!!");
-						if (webDriver.getTitle().equals("FreshDirect - Checkout - Choose Delivery Address")||webDriver
-								.getTitle()
-								.contains("Delivery Service")) {
+						if (webDriver.findElements(By.xpath(objMap.getLocator("btnaddAddress"))).size() > 0) {
 							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 							RESULT.passed("Edit Delivery address",
 									"User should be able edit delivery address",
@@ -14956,22 +14997,34 @@ public class WebUIDriver extends BaseAppDriver {
 						uiDriver.setValue("CardState", CardState);
 						uiDriver.setValue("CardZip", CardZip);
 						uiDriver.click("SaveChanges");
+						try
+						{
+							uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("SaveChanges"))));							
+						}
+						catch(Exception e)
+						{
+							RESULT
+							.failed(
+									"Edit existing Credit or EBT card",
+									"Credit or EBT card should get added with given details",
+							"one or more given detail is incorrect or error in updating payment detail");
+						}						
 						if (webDriver.getTitle().contains("Edit Credit Card")) {
-							// System.out.println("Error");
 							RESULT
 							.failed(
 									"Edit existing Credit or EBT card",
 									"Credit or EBT card should get added with given details",
 							"one or more given detail is incorrect");
-						} else {
-							// System.out.println("caRD EDITED");
+						}
+						 else {
+							 						 
 							RESULT
 							.passed(
 									"Edit existing Credit or EBT card",
 									"Credit or EBT card should get updated with given details",
 							"Credit or EBT card updated with given details");
 						}
-					} 
+						}
 					//check if no details matched with given one
 					if (b == 0) {
 						RESULT
