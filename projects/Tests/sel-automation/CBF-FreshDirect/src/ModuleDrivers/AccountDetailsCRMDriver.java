@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import ui.WebUIDriver;
 
@@ -28,7 +28,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 		// TODO Auto-generated constructor stub
 	}
 	public void ClickAccountDetail(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		// click on account details
 		try
 		{
@@ -55,7 +55,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 	 * Component function for the update detail for a particular customer
 	 */
 	public void UpdateBasicInfo(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			// Click on Edit button
 			List<WebElement> EditLst = webDriver.findElements(By
@@ -157,7 +157,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 	 * customer
 	 */
 	public void UpdateAddressInfo(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			// call to the CRM_DeliveryAddress reusable function
 			uiDriver.FD_AccDetailsDelAdd_CRM(input
@@ -233,7 +233,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 	 * customer
 	 */
 	public void UpdateLoginInfo(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			//uiDriver.click("lnkEdit_Password");
 			List<WebElement> EditLst = webDriver.findElements(By
@@ -302,7 +302,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 	 * customer
 	 */
 	public void AddPaymentInfo(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try {
 			// call to the CRM_PaymentOptions reusable function
 			uiDriver.FD_payment_CRM(input.get("Chooseoptn"), input
@@ -431,7 +431,7 @@ public class AccountDetailsCRMDriver extends BaseModuleDriver {
 	}
 
 	public void EditPaymentInfo(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try {
 
 			uiDriver.FD_payment_CRM(input.get("Chooseoptn"), input

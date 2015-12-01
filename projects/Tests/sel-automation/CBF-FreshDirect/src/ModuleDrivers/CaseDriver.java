@@ -3,7 +3,7 @@ package ModuleDrivers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -19,7 +19,7 @@ public class CaseDriver extends BaseModuleDriver {
 	}
 
 	public void SearchCustomer(DataRow input, DataRow output)
-			throws FindFailed, InterruptedException {
+			throws  InterruptedException {
 		try
 		{
 			if (webDriver.getTitle().contains("/ FreshDirect CRM : Home /")) {
@@ -70,7 +70,7 @@ public class CaseDriver extends BaseModuleDriver {
 
 	}
 
-	public void SearchOrder(DataRow input, DataRow output) throws FindFailed,
+	public void SearchOrder(DataRow input, DataRow output) throws 
 			InterruptedException {
 		try
 		{
@@ -120,7 +120,7 @@ public class CaseDriver extends BaseModuleDriver {
 	}
 
 	public void CreateCase(DataRow input, DataRow output)
-			throws InterruptedException, FindFailed {
+			throws InterruptedException {
 	
 		try
 		{

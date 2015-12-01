@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -26,7 +26,7 @@ public class CartDriver extends BaseModuleDriver {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void AddItemtoCart(DataRow input, DataRow output) throws FindFailed,
+	public void AddItemtoCart(DataRow input, DataRow output) throws 
 			InterruptedException {
 
 		try {
@@ -44,7 +44,7 @@ public class CartDriver extends BaseModuleDriver {
 	}
 
 	public void AddAllitemstoCart(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		// quantity variables for the result
 		int initialqty;
 		int added_qty = 0;
@@ -169,7 +169,7 @@ public class CartDriver extends BaseModuleDriver {
 	}
 
 	public void AddYMALOrCarousal(DataRow input, DataRow output)
-			throws FindFailed, InterruptedException {
+			throws InterruptedException {
 		String Item;
 		try{
 			Item = webDriver.findElement(

@@ -5,8 +5,8 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.python.core.exceptions;
-import org.sikuli.script.FindFailed;
+//import org.python.core.exceptions;
+//import org.sikuli.script.FindFailed;
 
 import com.sun.java.swing.plaf.windows.resources.windows;
 
@@ -219,7 +219,7 @@ public class OrderCRMDriver extends BaseModuleDriver {
 		uiDriver.click("btnContinueChkoutAddress");
 	}
 	 */
-	public void Checkout(DataRow input, DataRow output) throws FindFailed,
+	public void Checkout(DataRow input, DataRow output) throws 
 	InterruptedException {
 		try{
 			if(uiDriver.isDisplayed("lnksummary"))

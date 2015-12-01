@@ -9,7 +9,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import ui.WebUIDriver;
 import cbf.engine.BaseModuleDriver;
@@ -28,7 +28,7 @@ public class NotificationDriver extends BaseModuleDriver{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void EmailURLLaunch(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public void EmailURLLaunch(DataRow input,DataRow output)throws InterruptedException {
 		try{
 			uiDriver.launchApplication(input.get("url"));
 			//wait for page to load
@@ -54,7 +54,7 @@ public class NotificationDriver extends BaseModuleDriver{
 	}
 
 
-	public void EmailLogin(DataRow input,DataRow output)throws InterruptedException, FindFailed 
+	public void EmailLogin(DataRow input,DataRow output)throws InterruptedException 
 	{
 		try{
 			uiDriver.FD_loginEmailNotification(input.get("Username"),input.get("Password"));
@@ -74,7 +74,7 @@ public class NotificationDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void EmailLogout(DataRow input,DataRow output)throws InterruptedException, FindFailed 
+	public void EmailLogout(DataRow input,DataRow output)throws InterruptedException 
 	{
 		try{
 			webDriver.switchTo().defaultContent();

@@ -9,7 +9,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -28,7 +28,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component for checkout and Your Cart page
 	 */
 
-	public void CartVerify(DataRow input, DataRow output) throws FindFailed,
+	public void CartVerify(DataRow input, DataRow output) throws 
 	InterruptedException{
 		try 
 		{
@@ -46,7 +46,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		}
 	}
 
-	public void Checkout(DataRow input, DataRow output) throws FindFailed,
+	public void Checkout(DataRow input, DataRow output) throws 
 	InterruptedException{
 		try 
 		{
@@ -252,7 +252,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/* Component to handle Delivery Address selection
 	 */
 	public void DeliveryAddress(DataRow input, DataRow output)
-	throws FindFailed, InterruptedException {
+	throws  InterruptedException {
 
 		try{
 			// flag to decide for changing the address
@@ -468,7 +468,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to handle Time slot selection
 	 */
 	@SuppressWarnings("null")
-	public void TimeSlot(DataRow input, DataRow output) throws FindFailed,
+	public void TimeSlot(DataRow input, DataRow output) throws 
 	InterruptedException {
 		String DeliveryDay=null;
 		String TimeSlot=null;
@@ -766,7 +766,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to handle payment methods
 	 */
 	public void PaymentOptions(DataRow input, DataRow output)
-	throws FindFailed, InterruptedException {
+	throws  InterruptedException {
 		try {
 
 			if (!webDriver.getTitle().equals(input.get("PageName"))) {
@@ -891,7 +891,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to review and submit order
 	 */
 	public void PlaceOrder(DataRow input, DataRow output)
-	throws FindFailed, InterruptedException {
+	throws  InterruptedException {
 		try{
 
 			if (!webDriver.getTitle().equalsIgnoreCase("Checkout")) {
@@ -913,7 +913,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/*
 	 * Component to search a product 
 	 */
-	public void SearchProduct(DataRow input, DataRow output) throws FindFailed,
+	public void SearchProduct(DataRow input, DataRow output) throws 
 	InterruptedException, TimeoutException {
 		//uiDriver.click("imgfd_Logo");		
 		try
@@ -984,7 +984,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/*
 	 * Component for Available Delivery timeslot in Delivery Info
 	 */
-	public void DeliveryInfo(DataRow input, DataRow output) throws FindFailed,
+	public void DeliveryInfo(DataRow input, DataRow output) throws 
 	InterruptedException {
 		//		if(!(webDriver.findElements(By.linkText(objMap.getLocator("lnkdeliveryInfoLink"))).size()>0))
 		//		{
@@ -1153,7 +1153,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		}
 	}
 
-	public void TDSValidation(DataRow input, DataRow output) throws FindFailed, InterruptedException{
+	public void TDSValidation(DataRow input, DataRow output) throws  InterruptedException{
 		try { 
 			uiDriver.click("btnyourCart");
 			try{

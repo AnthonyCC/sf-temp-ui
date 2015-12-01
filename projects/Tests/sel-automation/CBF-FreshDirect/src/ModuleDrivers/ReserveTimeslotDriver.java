@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -26,7 +26,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 	}
 
 	public void ReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{	
 			uiDriver.FD_chooseReserveTimeSlot(input.get("Address"), input
 					.get("ReserveType"), input.get("Day"), input.get("Time"), input
@@ -39,7 +39,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 
 	@SuppressWarnings("deprecation")
 	public void CancelReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		//wait for drop down of address
 		try{
 			uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By
@@ -112,7 +112,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 
 	}
 	public void ModifyReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			Select add_ddl = new Select(uiDriver.getwebDriverLocator(objMap
 					.getLocator("drpreserveAddress")));

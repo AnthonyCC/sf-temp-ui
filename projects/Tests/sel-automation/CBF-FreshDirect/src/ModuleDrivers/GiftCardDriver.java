@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import com.sun.org.apache.bcel.internal.generic.Select;
 
@@ -25,7 +25,7 @@ public class GiftCardDriver extends BaseModuleDriver{
 		RESULT = resultLogger;
 	}
 	//customize or donate a gift card
-	public void PurchaseDonateGiftcard(DataRow input,DataRow output)throws InterruptedException, FindFailed
+	public void PurchaseDonateGiftcard(DataRow input,DataRow output)throws InterruptedException
 	{
 		try{
 			uiDriver.waitForPageLoad();
@@ -247,7 +247,7 @@ public class GiftCardDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void VerifyGIftcardPayment(DataRow input,DataRow output)throws InterruptedException, FindFailed
+	public void VerifyGIftcardPayment(DataRow input,DataRow output)throws InterruptedException
 	{
 		try{
 			// click on submit button

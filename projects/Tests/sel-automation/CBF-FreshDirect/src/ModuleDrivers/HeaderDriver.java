@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
@@ -80,7 +80,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify zip code selection field displayed on page header.*/	
 
-	public void ZipCode(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void ZipCode(DataRow input, DataRow output) throws InterruptedException
 	{	
 		try{	
 			
@@ -394,7 +394,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'SIGN UP' button displayed on page header.*/		
 
-	public void SignUpButton(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void SignUpButton(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -460,7 +460,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'LOG IN' button displayed on page header.*/		
 
-	public void LoginButton(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void LoginButton(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{			
@@ -510,7 +510,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Fresh Direct' logo displayed on web page header.*/
 
-	public void FreshDirectLogo(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void FreshDirectLogo(DataRow input, DataRow output) throws InterruptedException
 	{
 		
 		try
@@ -588,7 +588,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify search field on web page header.*/		
 
-	public void SearchField(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void SearchField(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -645,7 +645,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your Account' link in web page header when logged-in customer clicks on the link */
 
-	public void YourAcc_Loggedin(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void YourAcc_Loggedin(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -705,7 +705,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your Account' link in web page header when anonymous customer clicks on the link */
 
-	public void YourAcc_Anonymous(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void YourAcc_Anonymous(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -816,7 +816,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'LOGOUT' button displayed on page header after user login. */
 
-	public void LogoutButton(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void LogoutButton(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{			
@@ -880,7 +880,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Reorder' link displayed on page header and adding product to cart for an anonymous customer. */
 
-	public void Reorder_Anonymous(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void Reorder_Anonymous(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -979,7 +979,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Reorder' link displayed on page header and adding product to cart. */
 
-	public void Reorder_Loggedin(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void Reorder_Loggedin(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{				
@@ -1048,7 +1048,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Delivery Info' link displayed on page header. */
 
-	public void DeliveryInfo(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void DeliveryInfo(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -1115,7 +1115,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Help' link displayed on page header. */
 
-	public void HelpLink(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void HelpLink(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -1187,7 +1187,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your cart' button displayed on page header.*/
 
-	public void YourCartButton(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void YourCartButton(DataRow input, DataRow output) throws InterruptedException
 	{
 		try
 		{
@@ -1230,7 +1230,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify Social buttons displayed on Product Details Page */
 
-	public void SocialButton(DataRow input, DataRow output) throws InterruptedException, FindFailed
+	public void SocialButton(DataRow input, DataRow output) throws InterruptedException
 	{
 		int flag = 0;
 		WebElement product = null;
@@ -1471,7 +1471,7 @@ public class HeaderDriver extends BaseModuleDriver
 	}
 
 
-	public void TopNavigation(DataRow input, DataRow output)throws InterruptedException, FindFailed
+	public void TopNavigation(DataRow input, DataRow output)throws InterruptedException
 	{		
 		List<WebElement> catList,wbList;
 		String brdcrmb;
@@ -1553,7 +1553,7 @@ public class HeaderDriver extends BaseModuleDriver
 		}
 
 	}
-	public void BottomNavigation(DataRow input, DataRow output)throws InterruptedException, FindFailed
+	public void BottomNavigation(DataRow input, DataRow output)throws InterruptedException
 	{
 		try{
 			List<WebElement> catList;
@@ -1660,7 +1660,7 @@ public class HeaderDriver extends BaseModuleDriver
 		}
 	}
 
-	public void TopSubItems(DataRow input, DataRow output) throws InterruptedException, FindFailed {
+	public void TopSubItems(DataRow input, DataRow output) throws InterruptedException {
 
 		try 
 		{
@@ -1739,7 +1739,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Zipcode and Header Dropdown check */
 
-	public void HeaderDropdown(DataRow input, DataRow output)throws InterruptedException, FindFailed
+	public void HeaderDropdown(DataRow input, DataRow output)throws InterruptedException
 	{		
 		try{
 		//Verify Zipcode

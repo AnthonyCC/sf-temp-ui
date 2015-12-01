@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import ui.WebUIDriver;
 

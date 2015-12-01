@@ -8,7 +8,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.;
 import ui.ObjectMap;
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -24,7 +24,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void DeliveryAddress(DataRow input, DataRow output) throws FindFailed, InterruptedException
+	public void DeliveryAddress(DataRow input, DataRow output) throws InterruptedException
 	{  
 
 		try{ 
@@ -69,7 +69,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}	
 	}
 
-	public void TimeSlot(DataRow input,DataRow output) throws FindFailed, InterruptedException{
+	public void TimeSlot(DataRow input,DataRow output) throws  InterruptedException{
 		try{
 			//user will be on delivery address page. so go to select time slot page
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btnchooseTimeSlot"))).size()>0)
@@ -127,7 +127,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void PaymentOptions(DataRow input, DataRow output) throws FindFailed, InterruptedException
+	public void PaymentOptions(DataRow input, DataRow output) throws  InterruptedException
 	{
 		try{
 			boolean gift=false;
@@ -252,7 +252,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void ReviewSubmitOrder(DataRow input, DataRow output) throws FindFailed, InterruptedException
+	public void ReviewSubmitOrder(DataRow input, DataRow output) throws InterruptedException
 	{
 		try{
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);

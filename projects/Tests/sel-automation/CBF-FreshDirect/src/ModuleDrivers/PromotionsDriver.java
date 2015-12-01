@@ -6,7 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -20,7 +20,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 		super(resultLogger);
 	}
 	//verify user is able to place order using promotional offers on home page[TestCase#1,2,3,4,5]
-	/*public void PromotionalOffers(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	/*public void PromotionalOffers(DataRow input,DataRow output)throws InterruptedException {
 		//verify if promotional offers section is there or not if yes it should contain links[TestCase#1]
 		if(uiDriver.getwebDriverLocator(objMap.getLocator("lstpromoOffers")).isDisplayed())
 		{
@@ -92,7 +92,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 	}
 
 	Verify promotional media images are available on home page media ad section and place order using those products[TestCase#6,7,8,9,10]
-	public void MediaAddSection(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public void MediaAddSection(DataRow input,DataRow output)throws InterruptedException {
 		try{
 			//Verify promotional media images are available on home page media ad image section.[TC#6]
 			if(uiDriver.isElementPresent(By.xpath(objMap.getLocator("mediaAd"))))
@@ -142,7 +142,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 	}
 
 	//Go to deals and add product from any of available sub category[TestCase#11,12,13]
-	public void PromotionsDeals(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public void PromotionsDeals(DataRow input,DataRow output)throws InterruptedException {
 
 		//check if all options of promotions are available or not.[Testcase#11] 
 		String promoSubCat=uiDriver.getwebDriverLocator(objMap.getLocator("lstpromoSubCat")).getText();
@@ -198,7 +198,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 	}
 
 	//Verify Promotional offers relevance in the category defined in Sub global navigation header[TestCase#14]
-	public void PromotionalCategories(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public void PromotionalCategories(DataRow input,DataRow output)throws InterruptedException {
 		//President's pick
 		uiDriver.DrawHighlight("lnkpresidentsPicks", webDriver);
 		uiDriver.click("lnkpresidentsPicks");
@@ -305,7 +305,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 	}
 
 	//verify more shop and save option available or not[TestCase#15]
-	public void MoreWaysToShopAndSave(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public void MoreWaysToShopAndSave(DataRow input,DataRow output)throws InterruptedException {
 		try{
 			//			uiDriver.click("imghomePage");
 			if(uiDriver.getwebDriverLocator(objMap.getLocator("imgshopAndSave")).isDisplayed())
@@ -359,11 +359,11 @@ public class PromotionsDriver extends BaseModuleDriver{
 		}
 	}
 */
-	//	public void PromotionsCoupons(DataRow input,DataRow output)throws InterruptedException, FindFailed{
+	//	public void PromotionsCoupons(DataRow input,DataRow output)throws InterruptedException{
 	//		uiDriver.FD_viewCart();
 	//	}
 	//Go to coupons and add product from any of available sub category[TestCase#16,17]
-	public void PromotionsCoupons(DataRow input,DataRow output)throws InterruptedException, FindFailed, AWTException{
+	public void PromotionsCoupons(DataRow input,DataRow output)throws InterruptedException, AWTException{
 		//Configuration GCONFIG = Harness.GCONFIG;
 		try{
 			uiDriver.click("lnkcoupons");
@@ -412,7 +412,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 		}
 	}
 	
-	public int CouponItemQty(DataRow input,DataRow output)throws InterruptedException, FindFailed {
+	public int CouponItemQty(DataRow input,DataRow output)throws InterruptedException {
 		try {
 			uiDriver.FD_couponItemQty(input.get("Product"));
 			System.out.println("Minimum cart qty for "+input.get("Product")+"is :"+uiDriver.FD_couponItemQty(input.get("Product")));
@@ -423,7 +423,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 		return uiDriver.FD_couponItemQty(input.get("Product"));
 	}
 	
-	public void VerifyCouponApplied(DataRow input,DataRow output)throws InterruptedException, FindFailed{
+	public void VerifyCouponApplied(DataRow input,DataRow output)throws InterruptedException{
 		//go to view cart page and check if coupon has been applied or not for added item
 		//check if check box for application of coupon is checked or not
 				try{
@@ -657,7 +657,7 @@ public class PromotionsDriver extends BaseModuleDriver{
 				}
 	}
 	//		}
-	public void VerifyCart(DataRow input,DataRow output)throws InterruptedException, FindFailed{
+	public void VerifyCart(DataRow input,DataRow output)throws InterruptedException{
 		/*String intial=input.get("Quant");
 	String finalQuant[]=uiDriver.getwebDriverLocator(objMap.getLocator("strcartQuantity")).getText().split(" ");
 	if(Integer.parseInt(intial)==Integer.parseInt(finalQuant[0]))
