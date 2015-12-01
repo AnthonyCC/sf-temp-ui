@@ -306,6 +306,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         LOGGER.debug( "logMasqueradeLogout()" );
     	try {
     		EnumEStoreId eStore=this.getUserContext().getStoreContext()!=null?this.getUserContext().getStoreContext().getEStoreId():EnumEStoreId.FD;
+    		FDActionInfo.setMasqueradeAgentTL(this.getMasqueradeContext()==null ? null : this.getMasqueradeContext().getAgentId());
     		FDActionInfo ai = new FDActionInfo(eStore, EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT, this.getPrimaryKey());
     		ActivityLog.getInstance().logActivity( ai.createActivity() );
     	} catch ( FDResourceException ex ) {
