@@ -141,9 +141,9 @@ if(user != null) {
 				<div class="topnavitem" id="topnavitem_reorder">
 					<% if (FDStoreProperties.isSocialLoginEnabled()) { %>
 				    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
+				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/quickshop/index.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
 				    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/quickshop/index.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
 				        <% } else {	%>
 				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
 				        <% } %>
@@ -186,9 +186,9 @@ if(user != null) {
 				     <div class="topnavitem" id="topnavitem_yourAccount">
 					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
 					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" tabindex="0" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})">Your Account</a>
+					        	<a href="#" tabindex="0" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/your_account/manage_account.jsp', opacity: .5})">Your Account</a>
 					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">Your Account</a>        	
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/your_account/manage_account.jsp', opacity: .5})">Your Account</a>        	
 					        <% } else {	%>
 					        	<a href="/your_account/manage_account.jsp">Your Account</a>
 					        <% } %>
@@ -199,9 +199,9 @@ if(user != null) {
 				     <div class="topnavitem" id="topnavitem_reorder">
 					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
 					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/quickshop/index.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
 					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
+					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/quickshop/index.jsp', opacity: .5})"><div id="reorder-icon"></div>Reorder</a>        	
 					        <% } else {	%>
 					        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
 					        <% } %>

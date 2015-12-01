@@ -66,6 +66,12 @@
 		userFromSession = user.getUserId();*/
 	String userid= request.getParameter("userid");
 	String triedToConnect= request.getParameter("triedToConnect");		
+	
+    // determine the preSuccessPage from previous workflow
+    String preSuccessPage = (String)request.getParameter("preSuccessPage");
+    if(preSuccessPage != null && preSuccessPage.length()>0 )
+    	session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage); 
+    
 %>
 
 <fd:LoginController successPage="<%= successPage %>" mergePage="/login/merge_cart.jsp" result='result'>

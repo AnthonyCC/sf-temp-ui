@@ -37,6 +37,12 @@
       String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
       CmRegistrationTag.setRegistrationLocation(session,"signup social");
+      
+      // determine the preSuccessPage from previous workflow
+      String preSuccessPage = (String)request.getParameter("preSuccessPage");
+      if(preSuccessPage != null && preSuccessPage.length()>0 )
+      	session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage); 
+      
 %>
 
 <fd:SiteAccessController action='expressSignup' successPage='<%= successPage %>' moreInfoPage='' failureHomePage='<%= failurePage %>' result='result'>	
