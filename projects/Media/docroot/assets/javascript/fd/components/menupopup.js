@@ -57,7 +57,7 @@ var FreshDirect = FreshDirect || {};
         }
     },
     open: {
-      value: function (e) {
+      value: function (e, stay) {
         var $t = $(e.currentTarget),
             bt = function () {
               return $t.siblings('.popupMenuContent').html();
@@ -67,6 +67,10 @@ var FreshDirect = FreshDirect || {};
         if (bt) {
           this.refreshBody({}, bt, header);
           this.popup.showWithDelay($t, null);
+
+          if (stay) {
+            this.popup.clicked = true;
+          }
 
           // replace popup input names
           $('#'+this.popupId+' input').each(function (i, el) { el.name = 'popup_'+el.name; });
@@ -80,7 +84,7 @@ var FreshDirect = FreshDirect || {};
   $(document).on('mouseover', menupopup.trigger, menupopup.open.bind(menupopup));
   $(document).on('keydown', menupopup.trigger, function (e) {
     if (e.keyCode === fd.utils.keyCode.SPACE) {
-      menupopup.open(e);
+      menupopup.open(e, true);
       e.stopPropagation();
       e.preventDefault();
     }
