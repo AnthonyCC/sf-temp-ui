@@ -18,7 +18,7 @@ package cbf.engine;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
-import org.sikuli.script.Screen;
+//import org.sikuli.script.Screen;
 
 import ui.ObjectMap;
 //import ui.SikuliUIDriver;
