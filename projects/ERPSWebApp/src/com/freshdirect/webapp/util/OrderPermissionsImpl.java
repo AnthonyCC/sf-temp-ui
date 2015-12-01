@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.util;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 
@@ -125,8 +127,16 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		return EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)?true:false;
 	}
 	
-	public boolean isAddOnOrder() {
-		 return EnumSaleStatus.INPROCESS.equals(status)?true:false;
-			}
+	public boolean isDispatched(String OrderId) {
+		boolean isDispatched=false;
+		try {
+			isDispatched = FDDeliveryManager.getInstance().isDispatched(OrderId);
+			return !isDispatched || EnumSaleStatus.INPROCESS.equals(status);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isDispatched;
+	}
 }	
 

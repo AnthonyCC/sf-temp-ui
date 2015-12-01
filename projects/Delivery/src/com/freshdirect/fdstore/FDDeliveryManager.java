@@ -1249,4 +1249,25 @@ public class FDDeliveryManager {
 	
 	}
 	
+	
+public boolean isDispatched(String orderId) throws FDResourceException {
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result result = logisticsService.isDispatched(LogisticsDataEncoder.encodeDispatchtOrderRequest(orderId));
+			LogisticsDataDecoder.decodeResult(result);
+			if(EnumApplicationException.FinderException.getValue() == result.getErrorCode()){
+				return false;
+			}
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 }

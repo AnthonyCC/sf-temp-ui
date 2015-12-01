@@ -317,4 +317,10 @@ public class LogisticsDataEncoder {
 		request.setOrderId(orderId);
 		return request;
 	}
+	
+	public static CreateOrderRequest encodeDispatchtOrderRequest(String orderId) {
+		CreateOrderRequest request = new CreateOrderRequest();
+		request.setOrderId(orderId);
+		return request;
+	}
 }

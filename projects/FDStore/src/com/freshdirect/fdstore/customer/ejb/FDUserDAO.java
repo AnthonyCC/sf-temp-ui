@@ -1301,7 +1301,7 @@ public class FDUserDAO {
 	}
 	
 	
-	public static int getParentOrderCount(String orderId, Connection conn)throws SQLException{
+	public static int getAddonOrdersCount(String orderId, Connection conn)throws SQLException{
 		
 		int addOnOrderCountOfParent=0;
 		PreparedStatement pstmt=null;

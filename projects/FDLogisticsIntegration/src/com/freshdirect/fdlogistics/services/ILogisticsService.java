@@ -138,4 +138,7 @@ public interface ILogisticsService {
 	DeliveryReservations getReservationById(String rsvId)throws FDLogisticsServiceException;
 
 	DeliveryZones getAllActiveZones() throws FDLogisticsServiceException;
+
+	Result isDispatched(CreateOrderRequest request) throws FDLogisticsServiceException;
+	
 }

@@ -862,7 +862,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public String getParentOrderAddressId(String parentOrderAddressId)throws FDResourceException, RemoteException;
 	
-	public boolean ParentOrdercheck(String orderId)throws FDResourceException, RemoteException;
+	public boolean getAddonOrderCount(String orderId)throws FDResourceException, RemoteException;
 	
 }
 

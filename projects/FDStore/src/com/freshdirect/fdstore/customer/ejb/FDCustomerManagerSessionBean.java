@@ -7976,24 +7976,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	
-	public boolean ParentOrdercheck(String orderId)throws FDResourceException{
-		LOGGER.info("parentOrderId for Add on order... "+orderId);
+	public boolean getAddonOrderCount(String orderId)throws FDResourceException{
+		LOGGER.info("addOnOrderCount checking for this orderID... "+orderId);
 			Connection conn = null;
-			boolean ParentOrdercheck=false;
+			boolean addOnOrderCount=false;
 	try
 		{
 			conn = getConnection();
-			int parentOrderId= FDUserDAO.getParentOrderCount(orderId, conn);
-			if(parentOrderId<=5){
-				ParentOrdercheck=true;
+			int addOnOrderCountOfParent= FDUserDAO.getAddonOrdersCount(orderId, conn);
+			if(addOnOrderCountOfParent<=5){
+				addOnOrderCount=true;
 				}
 		} catch (SQLException sqle) {
-			LOGGER.info("parentOrderId  FAILED... "+orderId);
+			LOGGER.info("addOnOrderCountOfParent  FAILED... "+orderId);
 			throw new FDResourceException(sqle);
 		} finally {
 			close(conn);
 		}
-		return ParentOrdercheck ;
+		return addOnOrderCount ;
 	}
 	
 }

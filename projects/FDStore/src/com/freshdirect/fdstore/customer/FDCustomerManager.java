@@ -86,10 +86,15 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.erp.ejb.ErpEWalletSB;
+import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.services.ILogisticsService;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -135,6 +140,7 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
@@ -4666,13 +4672,13 @@ public class FDCustomerManager {
 	return parentOrderAddressId;
 	}
 
-	public static boolean getParentOrderCount(String OrderId) throws FDResourceException {
+	public static boolean getAddonOrderCount(String OrderId) throws FDResourceException {
 
 		lookupManagerHome();
-		boolean getParentOrderCount;
+		boolean addOnOrderCount;
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			getParentOrderCount =sb.ParentOrdercheck(OrderId);
+			addOnOrderCount =sb.getAddonOrderCount(OrderId);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4682,8 +4688,9 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	
-	return getParentOrderCount;
+	return addOnOrderCount;
 	}
+	
 	
 	
 }
