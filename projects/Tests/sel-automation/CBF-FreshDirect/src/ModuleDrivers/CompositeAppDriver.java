@@ -34,7 +34,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.sikuli.script.Screen;
 
-import com.sun.corba.se.spi.copyobject.ReflectiveCopyException;import ui.SikuliUIDriver;
+import com.sun.corba.se.spi.copyobject.ReflectiveCopyException;
+//import ui.SikuliUIDriver;
 import ui.WebUIDriver;
 import cbf.engine.BaseAppDriver;
 import cbf.engine.ModuleDriver;
@@ -100,7 +101,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 		if (!obj.toString().equals("{}")) {
 			ArrayList<Map<String, Object>> list = (ArrayList<Map<String, Object>>) obj;
 			
-			if (webDriver == null && sikuliUIDriver == null) {
+			if (webDriver == null) {
 				for (Map<String, Object> map : list) {
 					String plugin=(String) map.get("plugin");
 					Map<String,Object> parameters =new HashMap<String, Object>();
@@ -164,14 +165,14 @@ public class CompositeAppDriver extends BaseAppDriver {
 						uiDriver = (WebUIDriver) PluginManager.getPlugin((String) map.get("plugin"),(Map<String, Object>) map.get("parameters"));
 						webDriver.manage().window().maximize(); // To maximize the window
 					
-					}else if(plugin.equals("Sikuli")){
+					}/*else if(plugin.equals("Sikuli")){
 						sikuli=  new Screen();
 						//sikuliUIDriver = new SikuliUIDriver(sikuli);
 					
 						parameters.put("sikuli", sikuli);
 						map.put("parameters", parameters);
 						sikuliUIDriver = (SikuliUIDriver) PluginManager.getPlugin((String) map.get("plugin"),(Map<String, Object>) map.get("parameters"));
-					}			
+					}			*/
 				}	
 			}			
 		}
@@ -194,22 +195,22 @@ public class CompositeAppDriver extends BaseAppDriver {
 		moduleDrivers.put("ShoppingList", new ShoppingListDriver(resultLogger));
 		moduleDrivers.put("Cart", new CartDriver(resultLogger));
 		moduleDrivers.put("OrderStorefront", new OrderStorefrontDriver(resultLogger));
-		moduleDrivers.put("DeliveryPass", new DeliveryPassDriver(resultLogger));
-		moduleDrivers.put("StandingOrder", new StandingOrderDriver(resultLogger));
+		//moduleDrivers.put("DeliveryPass", new DeliveryPassDriver(resultLogger));
+		//moduleDrivers.put("StandingOrder", new StandingOrderDriver(resultLogger));
 		moduleDrivers.put("ModifyOrderStorefront", new ModifyOrderStorefrontDriver(resultLogger));
-		moduleDrivers.put("OrderCRM", new OrderCRMDriver(resultLogger));
+		//moduleDrivers.put("OrderCRM", new OrderCRMDriver(resultLogger));
 		moduleDrivers.put("AccountDetailsCRM", new AccountDetailsCRMDriver(resultLogger));
 		moduleDrivers.put("Case", new CaseDriver(resultLogger));
 		moduleDrivers.put("Header", new HeaderDriver(resultLogger));
 		moduleDrivers.put("AccountDetailsCRM", new AccountDetailsCRMDriver(resultLogger));
-		moduleDrivers.put("GiftCard", new GiftCardDriver(resultLogger));
-		moduleDrivers.put("ReserveTimeslot", new ReserveTimeslotDriver(resultLogger));
+		//moduleDrivers.put("GiftCard", new GiftCardDriver(resultLogger));
+		//moduleDrivers.put("ReserveTimeslot", new ReserveTimeslotDriver(resultLogger));
 		moduleDrivers.put("Promotions", new PromotionsDriver(resultLogger));
-		moduleDrivers.put("OrderStorefront_old", new OrderStorefront_oldDriver(resultLogger));
-		moduleDrivers.put("Notification", new NotificationDriver(resultLogger));
+		//moduleDrivers.put("OrderStorefront_old", new OrderStorefront_oldDriver(resultLogger));
+		//moduleDrivers.put("Notification", new NotificationDriver(resultLogger));
 		moduleDrivers.put("YourAccount", new YourAccountDriver(resultLogger));		
 		moduleDrivers.put("Cart", new CartDriver(resultLogger));
-		moduleDrivers.put("ModifyOrderCRM", new ModifyOrderCRMDriver(resultLogger));
+		//moduleDrivers.put("ModifyOrderCRM", new ModifyOrderCRMDriver(resultLogger));
 		
 		return moduleDrivers;
 	}
