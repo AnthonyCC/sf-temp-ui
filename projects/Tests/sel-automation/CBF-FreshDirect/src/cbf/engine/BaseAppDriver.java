@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.sikuli.script.Screen;
 
 import ui.ObjectMap;
-import ui.SikuliUIDriver;
+//import ui.SikuliUIDriver;
 import ui.WebUIDriver;
 import ModuleDrivers.CompositeAppDriver;
 import cbf.utils.DataRow;
@@ -36,8 +36,8 @@ public class BaseAppDriver implements AppDriver {
 	public static WebUIDriver uiDriver;
 	public static ObjectMap objMap;
 	public static WebDriver webDriver;
-	public static Screen sikuli;
-	public static SikuliUIDriver sikuliUIDriver;
+	//public static Screen sikuli;
+	//public static SikuliUIDriver sikuliUIDriver;
 
 	protected Map<String, ModuleDriver> moduleDrivers;
 

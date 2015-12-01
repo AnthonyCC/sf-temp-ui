@@ -23,7 +23,7 @@ import org.openqa.selenium.WebDriver;
 import org.sikuli.script.Screen;
 
 import ui.ObjectMap;
-import ui.SikuliUIDriver;
+//import ui.SikuliUIDriver;
 import ui.WebUIDriver;
 import cbf.utils.DataRow;
 import cbf.utils.FrameworkException;
@@ -42,8 +42,8 @@ public class BaseModuleDriver implements ModuleDriver {
 	public static WebUIDriver uiDriver;
 	public static ObjectMap objMap;
 	public static WebDriver webDriver;
-	public static Screen sikuli;
-	public static SikuliUIDriver sikuliUIDriver;
+	//public static Screen sikuli;
+	//public static SikuliUIDriver sikuliUIDriver;
 //	public static String Environment="dev1";
 
 	/**
@@ -56,8 +56,8 @@ public class BaseModuleDriver implements ModuleDriver {
 		objMap = BaseAppDriver.objMap;
 		uiDriver=BaseAppDriver.uiDriver;
 		webDriver=BaseAppDriver.webDriver;
-		sikuli= BaseAppDriver.sikuli;
-		sikuliUIDriver = BaseAppDriver.sikuliUIDriver;
+		/*sikuli= BaseAppDriver.sikuli;
+		sikuliUIDriver = BaseAppDriver.sikuliUIDriver;*/
 	}
 
 	/**
