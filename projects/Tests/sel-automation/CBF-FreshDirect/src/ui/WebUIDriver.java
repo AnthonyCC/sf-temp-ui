@@ -118,8 +118,8 @@ public class WebUIDriver extends BaseAppDriver {
 	verify_subtotal;
 	public static String fd_username;
 	public String verify_products[];
-	public String verify_products_unit[];
 	public String verify_products_quantity[];
+	public String verify_products_unit[];
 	public String Zipcode;
 	public String UserID = null;
 	public String Password = null;
@@ -5556,7 +5556,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 *            : Time selected for the order delivery return void
 	 * 
 	 **/
-	public void FD_placeOrder(String day, String time) {
+		public void FD_placeOrder(String day, String time) {
 		try {
 			String t_verify_subtotal = null;
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -5912,7 +5912,12 @@ public class WebUIDriver extends BaseAppDriver {
 			return;
 		}
 	}
-
+		/**
+		 *Function Name: FD_minimumCartVerification Purpose: To verify minimum cart requirement based on delivery address selected in header dropdown
+		 * their respective quantity to be verified in FD_submitOrder 
+		 * Created By: Shraddha Shah
+		 * Created Date: Modified By: Modified Date:
+		 **/
 	public void FD_minimumCartVerification(String locator, String minPrice,
 			String addressType) {
 		List<WebElement> addLst = webDriver.findElement(
@@ -7616,6 +7621,10 @@ public class WebUIDriver extends BaseAppDriver {
 
 			// product out of stock check
 			try {
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				}
 				product = handleOutOfStock(reorder_page,
 						reorder_grid_or_list, flexibility);
 				if (product == null)
@@ -10600,11 +10609,33 @@ public class WebUIDriver extends BaseAppDriver {
 						}else {
 							// adding DeliveryPass To cart
 							uiDriver.click("btnadd_cart");
+							waitForPageLoad();
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+							//handle the  craete new/modify order pop-up
+							orderCreationPopup("new");
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+							try{
+							wait.until(ExpectedConditions
+									.visibilityOfElementLocated(By.linkText((objMap
+											.getLocator("btncontShopping")))));	
+							String Qty=webDriver.findElement(By.xpath(objMap.getLocator("straddedQuantity"))).getText().split(":")[1];
+						//	System.out.println(Qty+"    "+Double.parseDouble(Qty.trim()));
+							if(Double.parseDouble(Qty.trim())==1.0)
+							{
 							RESULT.passed("Add Deliverypass",
 									"User should be able to add Deliverypass",
 							" Deliverypass added Sucessfully ");
-							waitForPageLoad();
-							orderCreationPopup("new");
+							}else{
+								RESULT.failed("Delivery Pass Options Add", "Add Delivery Pass to cart should be sucessfull",
+										"Add Delivery Pass to cart is unsucessful due to ");	
+							}
+							}
+							catch(Exception e){
+								e.printStackTrace();
+								RESULT.failed("Delivery Pass Options Add", "Add Delivery Pass to cart should be sucessfull",
+								"Add Delivery Pass to cart is unsucessful due to "+e);
+							}
+
 						}
 					}else{
 						RESULT.failed("Delivery Pass Options Add", "Add to cart button message should be available",
@@ -11692,14 +11723,29 @@ public class WebUIDriver extends BaseAppDriver {
 			} else if (Customer_type1.equals("CORP ORDER")) {
 				uiDriver.setValue("txtcorpZip", Zip);
 				uiDriver.click("btncorpSubmit");
-				SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+				{
+					waitForPageLoad();
+				}
+				else
+				{
+					SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+				}
 				if (webDriver.getTitle().contains("More Information Required")) {
 					uiDriver.setValue("txtCRM_StreetAdd", Add1);
 					uiDriver.setValue("txtCRM_AptName", AptName);
 					uiDriver.setValue("txtCRM_City", City);
 					uiDriver.setValue("txtCRM_State1", State);
 					uiDriver.setValue("txtCRM_ZipCode", ZipCRM);
-					uiDriver.click("btnCRM_ADD_Check");
+					if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+					{
+						webDriver.findElement(By.name(objMap.getLocator("btnCRM_ADD_Check"))).sendKeys("\n");
+					}
+					else
+					{
+						uiDriver.click("btnCRM_ADD_Check");
+					}
+					uiDriver.waitForPageLoad();
 				}
 			}else{
 				RESULT.warning("Customer type for create new customer page", "Customer type for create new customer page should be provided as per the allowed values [HOME DELIVERY,WEB ORDERS,CORP ORDER]", 

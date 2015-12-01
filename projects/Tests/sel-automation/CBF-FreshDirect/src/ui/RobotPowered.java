@@ -70,16 +70,18 @@ public class RobotPowered {
 
 			// Move the mouse to the calculated X/Y coordinates
 			if(driver.findElements(By.id(objMap.getLocator("strstorefrontMsg"))).size()>0 && driver.findElement(By.id("topwarningbar")).isDisplayed())
-						{
-							mouseObject.mouseMove(xPosition-1, yPosition-23);
-							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-							mouseObject.mouseMove(xPosition, yPosition-23);	
-							System.out.println("masqreading");
-						}else{
-							mouseObject.mouseMove(xPosition-1, yPosition);	
-							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-							mouseObject.mouseMove(xPosition, yPosition);	
-						}
+			{
+				int sub_webElementY = Math.round(driver.findElement(By.id("topwarningbar")).getSize().height / 3);
+				
+				mouseObject.mouseMove(xPosition-1, yPosition-sub_webElementY);
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				mouseObject.mouseMove(xPosition, yPosition-sub_webElementY);	
+				
+			}else{
+				mouseObject.mouseMove(xPosition-1, yPosition);	
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				mouseObject.mouseMove(xPosition, yPosition);	
+			}
 			mouseObject.waitForIdle();
 		} else {
 			actions.moveToElement(element).build().perform();
