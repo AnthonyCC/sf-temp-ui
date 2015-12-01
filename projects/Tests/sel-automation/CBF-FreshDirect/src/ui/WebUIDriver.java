@@ -59,7 +59,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.sikuli.script.FindFailed;
+//import org.sikuli.script.;
 
 import ModuleDrivers.CompositeAppDriver;
 import ModuleDrivers.OrderStorefrontDriver;
@@ -2294,7 +2294,7 @@ public class WebUIDriver extends BaseAppDriver {
 	};
 
 	public void FD_reorderYourList(String YourList, String Department,
-			String SpecialPref, String FlexibilityFlag) throws FindFailed,
+			String SpecialPref, String FlexibilityFlag) throws 
 			InterruptedException, TimeoutException {
 		int i = 0, flag = 0;
 
@@ -2628,7 +2628,7 @@ public class WebUIDriver extends BaseAppDriver {
 	};
 
 	public void FD_reorderYourTopItems(String Filter, String DepartmentOrItem,
-			String SpecialPref, String FlexibilityFlag) throws FindFailed,
+			String SpecialPref, String FlexibilityFlag) throws 
 			InterruptedException, TimeoutException {
 		int i = 0;
 		int flag = 0;
@@ -2908,7 +2908,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_reorderPastOrder(String filter, String Timeframe,
 			String Department, String SpecialPreference,
-			String FlexibilityFlag, String Product) throws FindFailed,
+			String FlexibilityFlag, String Product) throws 
 			InterruptedException, TimeoutException {
 		int i = 0;
 		int flag = 0;
@@ -3664,7 +3664,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String AltPhone, String AltExtn, String UnattendedDelivery,
 			String UnattendedDelInstructions, String CompanyName,
 			String SaveCancelBtn, String SelectAddress, String FlexibilityFlag)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			// variables for address operations
 			String ChoosedOpt = AddSelectDeleteEdit;
@@ -4395,7 +4395,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String CRMDoormanRadioBtn, String CRMNeighborRadioBtn,
 			String CRMAltFirstName, String CRMAltLastName, String CRMAltApt,
 			String CRMAltPhn, String CRMSaveCancelBtn, String CRMSelectAddress)
-	throws InterruptedException, FindFailed
+	throws InterruptedException
 
 	{
 		try {
@@ -6173,7 +6173,7 @@ public class WebUIDriver extends BaseAppDriver {
 	// DoormanDelivery, NeighbourDelivery, AltFirstName,
 	// AltLastName, AltApt, AltPhone, AltExtn, None,
 	// SelectAddress);
-	// } catch (FindFailed e) {
+	// } catch ( e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// } catch (InterruptedException e) {
@@ -6202,7 +6202,7 @@ public class WebUIDriver extends BaseAppDriver {
 	// DoormanDelivery, NeighbourDelivery, AltFirstName,
 	// AltLastName, AltApt, AltPhone, AltExtn, None,
 	// SelectAddress);
-	// } catch (FindFailed e) {
+	// } catch ( e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// } catch (InterruptedException e) {
@@ -9416,7 +9416,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 		public void FD_modifyCart(String itemName, String operation,
 				String quantity, String emptyCartAcceptDecline,
-				String flexibilityFlag) throws InterruptedException, FindFailed {
+				String flexibilityFlag) throws InterruptedException {
 
 			try {
 				boolean found = false;
@@ -9992,7 +9992,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_modifyCartCRM(String ItemName, String Operation,
 			String Quantity, String DeleteAllAcceptDecline,
-			String FlexibilityFlag) throws InterruptedException, FindFailed {
+			String FlexibilityFlag) throws InterruptedException {
 
 		try {
 			boolean found = false;
@@ -10060,8 +10060,8 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @return void
 	 */
 
-	public void FD_cancelOrder(String OrderNo) throws InterruptedException,
-	FindFailed {
+	public void FD_cancelOrder(String OrderNo) throws InterruptedException
+	 {
 		try {
 			// checking particular order nuumber is present
 			if (webDriver.findElements(By.linkText(OrderNo)).size()>0 && 
@@ -10210,7 +10210,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_modifyOrder(String OrderNo, String ItemName,
 			String Quantity, String Operation, String EmptyCartAcceptDecline,
-			String FlexibilityFlag) throws InterruptedException, FindFailed {
+			String FlexibilityFlag) throws InterruptedException {
 		try {
 			if (webDriver.findElements(By.linkText(OrderNo)).size()>0 && 
 					uiDriver.isElementPresent(By.linkText(OrderNo))) {
@@ -10350,8 +10350,8 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_cancelOrderCRM(String OrderNo, String EmailNotification,
-			String Reason, String Notes) throws InterruptedException,
-			FindFailed {
+			String Reason, String Notes) throws InterruptedException
+			 {
 		try {
 			uiDriver.click("lnkorders");
 			uiDriver.waitForPageLoad();
@@ -10438,8 +10438,8 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_modifyOrderCRM(String OrderNo, String ItemName,String Quantity, String Operation, String DeleteAllAcceptDecline, 
-			String FlexibilityFlag) throws InterruptedException,
-			FindFailed {
+			String FlexibilityFlag) throws InterruptedException
+	{
 		try{
 			uiDriver.click("lnkorders");
 			uiDriver.waitForPageLoad();
@@ -11286,7 +11286,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @return void
 	 */
 	public void FD_addList(WebElement product, String listflag_new_exist,
-			String listname, String FlexibilityFlag) throws FindFailed,
+			String listname, String FlexibilityFlag) throws 
 			InterruptedException {
 
 
@@ -11544,7 +11544,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 */
 
 	public void FD_loginCRM(String UserID, String Password)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		uiDriver.setValue("txtCRMUID", UserID);
 		uiDriver.setValue("txtCRMPassword", Password);
 		//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -11572,7 +11572,7 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_loginEmailNotification(String UserID, String Password)
-	throws InterruptedException, FindFailed {
+	throws InterruptedException {
 		try{
 			uiDriver.setValue("txtuserNameEmail", UserID);
 			uiDriver.setValue("txtpasswordEmail", Password);
@@ -12414,7 +12414,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String CRM_NeighborRadioBtn, String CRM_AltFirstName,
 			String CRM_AltLastName, String CRM_AltApt, String CRM_AltPhn,
 			String CRM_SaveCancelBtn, String CRM_SelectAddress)
-	throws InterruptedException, FindFailed
+	throws InterruptedException
 
 	{
 		try {
@@ -12981,8 +12981,8 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @param filtername
 	 *            : Define filte name for filter the products
 	 **/
-	public void FD_filters(String filtername) throws InterruptedException,
-	FindFailed {
+	public void FD_filters(String filtername) throws InterruptedException
+	 {
 		try {
 			//Actions builder = new Actions(webDriver);
 			String item_name1 = null;
@@ -14480,7 +14480,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String DoormanDelivery, String NeighbourDelivery,
 			String AltFirstName, String AltLastName, String AltApt,
 			String AltPhone, String AltExtn, String None, String SelectAddress,
-			String FlexibilityFlag) throws InterruptedException, FindFailed
+			String FlexibilityFlag) throws InterruptedException
 
 			{
 		try {
