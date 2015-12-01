@@ -367,7 +367,15 @@ public class SocialAccountService implements AccountService {
 								 if(FDStoreProperties.isLocalDeployment()){
 									 newURL = newURL + ":" + request.getServerPort();
 								 }								 
-								 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());																								
+								 
+								 // determine whether social-login is triggered from workflow or other source
+								 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+								 if( preSuccessPage != null){
+									 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+									 return  newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length());
+								 } else {
+									 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+								 }								 
 							}
 						} catch (Exception ex) {
 							LOGGER.error("Error performing action expresssignup", ex);
