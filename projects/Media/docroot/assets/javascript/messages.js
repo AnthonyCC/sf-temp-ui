@@ -507,7 +507,7 @@ SESSIONSTORAGE:
 
 			return result;
 		},
-		addAlert(_id, _alertOpts) {
+		addAlert: function(_id, _alertOpts) {
 			var opened = false, update, alertData = {}, updateIdArr = [], openIdArr = [];
 
 			var result = this.each(function(i,e){

@@ -294,6 +294,8 @@
 		width: 12px;
 		margin: 6px;
 		z-index: 99;
+		position: absolute;
+		left: auto;
 	}
 	#messages.open .close-handler:before, #messages.open .close-handler:after {
 		content: '';

@@ -8,7 +8,7 @@
 <% 
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	String uri = request.getRequestURI().toLowerCase();
-    boolean onCartPage = (uri.contains("/checkout/") /*|| uri.contains("view_cart.jsp")*/ || uri.contains("merge_cart.jsp"));
+    boolean onCartPage = (uri.contains("/checkout/") /*|| uri.contains("view_cart.jsp")|| uri.contains("merge_cart.jsp")*/ );
 
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 	String hasEcouponsClass="";
