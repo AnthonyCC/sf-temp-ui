@@ -432,7 +432,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 						   	</div>
 						   	<div class="footer"><span class="subtotal">Subtotal: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
 						   	<div class="footer-buttons">
-								<span class="close"></span>
+								<span class="close"></span><br />
 								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
 								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
 							</div>

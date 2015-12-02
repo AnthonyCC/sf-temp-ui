@@ -132,13 +132,13 @@
 		font-weight: bold;
 	}
 	#popupcart tr.cartline:hover .quantity .qtyinput.small button {
-		display: initial;
+		display: inline-block;
 	}
 	#popupcart tr.cartline .quantity .qtyinput.small button {
 		display: none;
 	}
 	#popupcart tr.cartline:hover button.remove {
-		display: initial;
+		display: inline-block;
 	}
 	#popupcart tr.cartline button.remove {
 		display: none;
@@ -179,6 +179,7 @@
 	#popupcart a.cart {
 		color: #6aa970;
 		width: 150px;
+		right: 200px;
 	}
 	
 	#popupcart a.cart:hover {
