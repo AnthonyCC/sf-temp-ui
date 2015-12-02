@@ -107,47 +107,42 @@ FIELD_NAMES.add(0, "email");
 				</table>
 								
 			</form>
-			
-			<!-- jquery validations start here  -->
 
-			</div> <!-- form_fields ends here -->		
+			</div>
 
-
-
-		<!-- ********************************************************* -->	
-		
 		 <script type="text/javascript" language="javascript">
-			
-		 $jq('#lost_password').validate(
-		 { 	
-			 errorElement: "div",
-			 rules:{
-		             email:{
-		             required:true,
-		             email:true,
-		             },          
-		 		},
-		 		messages:{
-		            email:{
-		            required:"Required",
-		            email:"Incomplete e-mail Address",
-		            },
-		            
-		         },
-
-			     errorPlacement: function(error, element) {
-			         error.insertBefore(element);
-			     },  
-		   
-		 	}
 		 
+		 $jq.validator.addMethod("customemail", 
+				 function validateEmail(email) {
+			    	var re = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
+			    	return re.test(email);
+				} 
 		 );
-		</script> <!-- front end validations end here -->	
-		
-		<!-- ********************************************************* -->	
-
-
-	</div>
+			
+		 $jq('#lost_password').validate({ 	
+			errorElement: "div",
+			rules:{
+		    	email:{
+		        	required:true,
+					email:true,
+					customemail:true
+				},          
+		 	},
+		 	messages:{
+				email:{
+					required:"Required",
+					email:"Incomplete e-mail Address",
+					customemail:"Incomplete e-mail Address"
+				},
+			},
+	        onkeyup: false,
+			errorPlacement: function(error, element) {
+				error.insertBefore(element);
+			},  
+		   
+		 });
+		</script>
+		</div>
 	</center>
 	</fd:ForgotPasswordController>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>

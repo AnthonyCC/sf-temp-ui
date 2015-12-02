@@ -344,9 +344,9 @@
  	}
  );
 		 		 
-</script> <!-- front end validations end here -->	
+</script>
 
-		</div><!--  form-side ends here -->
+</div>
 				
 <div class="social-login-headerscr-social">
 	<div class="social-login-line-separator"></div>
@@ -396,7 +396,7 @@
 			}, 100);
 		});
 	</script>
-</div> <!-- social login ends here -->
+</div>
 
 
 				<div class="clear"></div>
@@ -409,13 +409,13 @@
 					</div>
 					<div class="bottom-links">
 						Already have an account? 
-						<a href="#" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">
+						<a href="/social/login.jsp" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">
 							Sign In
 						</a>
 					</div>
 				</div>
 				
-				<!-- signup-style ends here -->
+			
 				<%
 					if (result.isFailure()) {
 									/*
@@ -434,7 +434,7 @@
 				<%
 					}
 				%>
-
+		</div>
 	</center>
 	<%	
 		/*
