@@ -874,6 +874,11 @@ footer {
       footer section#footer_subsection section hr {
         margin-bottom: 35px; }
 
+.fk_anchor {
+  top: -60px;
+  display: block;
+  position: relative; }
+
 /* special styled elements (sitewide) */
 @media (min-width: 30em) {
   .mobile {

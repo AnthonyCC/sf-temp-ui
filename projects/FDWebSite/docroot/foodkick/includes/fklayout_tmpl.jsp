@@ -51,14 +51,15 @@ pageContext.setAttribute("FKAPP_DIR", FKAPP_DIR);
 
 //whether or not this is the main page
 String url_prefix = "";
-if( request.getParameter("p") != null ){
+//if( request.getParameter("p") != null ){
+if( !request.getRequestURI().contains("/index.jsp") ){
 	url_prefix = "index.jsp";
 }
 %>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>A fresh kick <c:out value="${param.f}" />  <tmpl:get name='header'/></title>
+		<title> <tmpl:get name='title'/> </title>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -69,6 +70,7 @@ if( request.getParameter("p") != null ){
 		<![endif]-->
 		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
+		<tmpl:get name='header'/>
 	</head>
 	<body>
 		<header></header>
@@ -88,7 +90,7 @@ if( request.getParameter("p") != null ){
 				</li>
 			
 				<li class="standard_link"><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-				<li class="standard_link"><a href="<%=url_prefix %>#Whats_Good">From The Feed</a></li>
+				<li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
 				<li class="logo_link">
 					<a href="<%=url_prefix %>#slideshow">
 						<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />

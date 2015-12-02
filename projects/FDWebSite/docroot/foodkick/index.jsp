@@ -4,7 +4,7 @@
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
 	<tmpl:put name='title'>A fresh kick</tmpl:put>
 	<tmpl:put name='content'>
-		<a name="slideshow" id="slideshow"></a>
+		<a name="slideshow" id="slideshow" class="fk_anchor"></a>
 		<section id="section_slideshow" class="main_section">
 			<div id="carousel_1"></div>
 			
@@ -15,7 +15,7 @@
 			</button>
 		</section> <!-- end of section 'section_1'  -->
 		
-		<a name="Get_Foodkick" id="Get_Foodkick"></a>
+		<a name="Get_Foodkick" id="Get_Foodkick" class="fk_anchor"></a>
 		<section id="section_Get_Foodkick" class="main_section">
 			<h1>Hey Brooklyn <span class="plus_span">+</span> LIC, the party starts now!</h1>
 		
@@ -72,7 +72,7 @@
 			<%--svg_obj("section_3/form_bg_full.svg") --%>
 		</section>
 		
-		<a name="How_it_works" id="How_it_works"></a>
+		<a name="How_it_works" id="How_it_works" class="fk_anchor"></a>
 		<section id="section_How_it_works" class="main_section">
 			<h1>This is the part where we tell you how fast and easy it is.</h1>
 			
@@ -115,11 +115,10 @@
 					</figcaption>
 				</figure>
 			</article>
-			
 			<button class="download_button purple">Download the APP</button>
 		</section>
 		
-		<a name="Whats_Good" id="Whats_Good"></a>
+		<a name="Featured_Food" id="Featured_Food" class="fk_anchor"></a>
 		<section id="section_Whats_Good" class="main_section">
 			<div class="container">
 				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good"></div>
@@ -130,7 +129,7 @@
 			</div>
 		</section>
 		
-		<a name="FOODKICK" id="FOODKICK"></a>
+		<a name="FOODKICK" id="FOODKICK" class="fk_anchor"></a>
 		<section id="section_FOODKICK" class="main_section">
 			<figure>
 				<p class="author"><img src="<%=IMAGES_DIR %>/section_5/author_icon/1.jpg" /> <span class="author_name">@THEBAKER</span></p>

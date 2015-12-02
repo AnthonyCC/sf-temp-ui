@@ -1332,6 +1332,12 @@ footer{
 	}
 }
 
+.fk_anchor{
+	top: -60px;
+    display: block;
+    position: relative;
+}
+
 /* special styled elements (sitewide) */
 .mobile{
 	@include breakpoint_mixin(medium){
