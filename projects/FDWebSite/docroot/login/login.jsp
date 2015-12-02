@@ -13,6 +13,10 @@ String template = "/common/template/no_nav.jsp";
 boolean isPopup = false;
 String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
 	if (sPage != null) {
+		
+	    // determine the preSuccessPage from previous workflow
+	    session.setAttribute(SessionName.PREV_SUCCESS_PAGE, sPage); 		
+		
 		if (sPage.indexOf("type=popup") != -1){
 			template = "/common/template/large_pop.jsp";
 			isPopup = true;
