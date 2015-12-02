@@ -5379,7 +5379,7 @@ public class WebUIDriver extends BaseAppDriver {
 							{
 								if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() >0)
 								{
-									RESULT.warning("Checkout verification",
+									RESULT.passed("Checkout verification",
 											"User should get warning message for minimum cart requirement",
 											"ATTENTION: "
 											+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
@@ -5400,7 +5400,7 @@ public class WebUIDriver extends BaseAppDriver {
 							{
 								if(webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText().contains("$50.00") && a>0) 
 								{
-									RESULT.warning("Checkout verification",
+									RESULT.passed("Checkout verification",
 											"User should get warning message for minimum cart requirement",
 											"ATTENTION: "
 											+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
@@ -9422,7 +9422,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 		public void FD_modifyCart(String itemName, String operation,
 				String quantity, String emptyCartAcceptDecline,
-				String flexibilityFlag) throws InterruptedException, FindFailed {
+				String flexibilityFlag) throws InterruptedException {
 
 			try {
 				boolean found = false;
@@ -12995,8 +12995,8 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @param filtername
 	 *            : Define filte name for filter the products
 	 **/
-	public void FD_filters(String filtername) throws InterruptedException,
-	FindFailed {
+	public void FD_filters(String filtername) throws InterruptedException
+	{
 		try {
 			//Actions builder = new Actions(webDriver);
 			String item_name1 = null;
