@@ -93,6 +93,7 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 	protected void buildOrderHeader(BapiSalesOrderCreate bapi,final EnumSaleType saleType) {
 		final Date currentDate = new Date();
 		final PaymentMethodI cc = order.getCustomer().getPaymentMethod();
+		String referenceOrder=null;
 
 		bapi.setOrderHeaderIn(new BapiSalesOrderCreate.OrderHeaderIn() {
 			public String getSalesOrg() {
@@ -227,6 +228,14 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		String goGreen = StringUtils.rightPad(order.getCustomer().isGoGreen() ? "GREEN" : " ", 5);
 		String gcAmount = StringUtils.rightPad(String.valueOf(order.getGcAmount()), 10);
 		
+		if(order.isAddOnOrder())
+			referenceOrder=order.getReferenceOrderId();
+		
+		if(referenceOrder==null)
+			referenceOrder = StringUtils.rightPad(NVL.apply(referenceOrder, "").trim(), 20);
+		
+			String emptyStr31Chars = StringUtils.rightPad("", 31); 
+		
 		// 10 spaces + 5 (flag) + 5 (GREEN) + 65 spaces + 20 chars
 		bapi.addExtension("BAPE_VBAK", StringUtils.repeat(" ", 10)
 			+ recipeFlag
@@ -237,7 +246,8 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 			+ billingRef  // offset 86 --> 105
 			+ StringUtils.repeat(" ", 20) // offset 106 - 125
 			+ StringUtils.left(NVL.apply(order.getDeliveryRegionId(), "").trim(), 20)  // offset 126  --> 145
-			);
+			+ emptyStr31Chars
+			+ referenceOrder);
 
 	}
 	

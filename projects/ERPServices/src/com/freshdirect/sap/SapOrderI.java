@@ -129,5 +129,11 @@ public interface SapOrderI extends Serializable {
 	public String getSalesOrg();
 	
 	public String getDistributionChannel();
+	
+	public boolean isAddOnOrder();
+	
+	public String getReferenceOrderId();
+	
+	
 }
 

@@ -603,5 +603,18 @@ public class SapOrderAdapter implements SapOrderI {
 	public String getDistributionChannel() {
 		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo().getDistChannel();
 	}
+	
+	public boolean isAddOnOrder(){
+		EnumPaymentType pt = this.erpOrder.getPaymentMethod().getPaymentType();
+		return pt.equals(EnumPaymentType.ADD_ON_ORDER);
+		
+	}
+	
+	public String getReferenceOrderId(){
+		
+		return  this.erpOrder.getPaymentMethod().getReferencedOrder();
+		
+	}
+	
 
 }
