@@ -270,7 +270,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.unfocus = function () {
-    var $el = this.$el;
+    var $el = this.$el, rect;
 
     // remove -1 tabindices from document
     $('[tabindex="-1"]').each(function (i, tiel) {
@@ -293,7 +293,12 @@ var FreshDirect = FreshDirect || {};
 
     if (this.lastFocused) {
       try {
-        this.lastFocused.focus();
+        rect = this.lastFocused.getBoundingClientRect();
+        if (rect.top > 0 && rect.bottom < window.innerHeight && rect.left > 0 && rect.right < window.innerWidth) {
+          this.lastFocused.focus();
+        } else if (this.$trigger) {
+          this.$trigger.focus();
+        }
         this.lastFocused = null;
       } catch (e) {}
     }
