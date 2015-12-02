@@ -603,6 +603,8 @@ SESSIONSTORAGE:
 	});
 
 	$(document).messages('init');
-	$('.message.invisible').messages('add');
-	$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
+	$(document).on('ready', function() {
+		$('.message.invisible').messages('add');
+		$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
+	});
 })(FreshDirect);
