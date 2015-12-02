@@ -133,7 +133,7 @@
 				<tr>
 					<td colspan="6">													
 						<img src="/media_stat/images/navigation/social_accounts/ConnectFacebook.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK"
-											 onclick="window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'resizable')"	> 							 							 
+								onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" >							 							 
 					</td>
 				</tr>			
 		<%	} %>	
@@ -159,7 +159,7 @@
 				<tr>
 					<td colspan="6">													 
 						<img src="/media_stat/images/navigation/social_accounts/ConnectGoogle.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE"
-											 onclick="window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'resizable')"	> 							 
+								onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" >
 					</td>
 				</tr>			
 		<%	} %>		
