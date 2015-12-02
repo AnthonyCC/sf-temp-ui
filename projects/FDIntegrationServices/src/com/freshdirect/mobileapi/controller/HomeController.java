@@ -197,9 +197,17 @@ public class HomeController extends BaseController {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		if(pageRequest != null){
-			if(pageRequest.getRequestedDate() == null){
+			if(pageRequest.isPreview()){ 
+				//Refresh the feed if it is for preview
+				List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
+				if(pages != null && !pages.isEmpty()){
+					pageResponse.setPage(pages.get(0));
+				}			
+			} else if(pageRequest.getRequestedDate() == null){
+				//Refresh the feed if it has the date in the request
 				pageResponse.setPage(CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageType()));
 			} else {
+				//Get the feed from cache if it doesn't have request date / if it is not for preview
 				List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
 				if(pages != null && !pages.isEmpty()){
 					pageResponse.setPage(pages.get(0));

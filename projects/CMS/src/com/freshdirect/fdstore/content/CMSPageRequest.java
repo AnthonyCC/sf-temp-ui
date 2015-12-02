@@ -7,6 +7,7 @@ public class CMSPageRequest {
 	private Date requestedDate;
 	private boolean ignoreSchedule;
 	private boolean preview;
+	private String feedId;
 	
 	public String getPageType() {
 		return pageType;
@@ -39,4 +40,14 @@ public class CMSPageRequest {
 	public void setPreview(boolean preview) {
 		this.preview = preview;
 	}
+
+	public String getFeedId() {
+		return feedId;
+	}
+
+	public void setFeedId(String feedId) {
+		this.feedId = feedId;
+	}
+	
+	
 }

@@ -153,13 +153,23 @@ public class CMSContentFactory {
 		if(contentNodesMap != null && !contentNodesMap.isEmpty()){
 			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
 				ContentNodeI contentNode = contentNodeEntry.getValue();
-				CMSWebPageModel page = getCMSPage(contentNode, pageRequest);
+				
+				CMSWebPageModel page = null;				
+				if(pageRequest.isPreview() && pageRequest.getFeedId()!=null) {
+					// if it is for preview and feed id is not null, check the id first and the get the relevant feed page
+					if(contentNode.getKey().getId().toString().equals(pageRequest.getFeedId())) {
+					page = getCMSPage(contentNode, pageRequest);
+					}
+				} else {
+					page = getCMSPage(contentNode, pageRequest);
+				}
 				if(page != null){
 					boolean addToResponse = true;
-					//Return all the pages if page name is null in request.
-					if(pageRequest.getPageType() != null && ! pageRequest.getPageType().equals(page.getType())){
+					if(pageRequest.getPageType() != null && ! pageRequest.getPageType().equals(page.getType()) && !pageRequest.isPreview()){
+						//if page type is not null and if it is matching the page type from the request and if it is not preview don't return the response.
 						addToResponse = false;
 					} else {
+						//Return all the pages if page type is null in request.
 						addToResponse = true;
 					}
 					if(addToResponse){
@@ -203,7 +213,7 @@ public class CMSContentFactory {
 			return null;
 		}
 	}
-	
+		
 	public final List<CMSSectionModel> getPageSections(ContentNodeI pageNode, CMSPageRequest request){
 		List<CMSSectionModel> sections = new ArrayList<CMSSectionModel>();
 		List<CMSScheduleModel> schedules = null;
@@ -514,7 +524,9 @@ public class CMSContentFactory {
 		} else {
 			//If no schedule present, page shouldn't be available but sections should be available.
 			if(isFeedLevel && (!request.isPreview())) {
-			isMatchingSchedule = false;
+				isMatchingSchedule = false;
+			} else if(isFeedLevel && request.isPreview() && request.getRequestedDate()!=null){
+				isMatchingSchedule = false;
 			} else {
 				isMatchingSchedule = true;
 			}
