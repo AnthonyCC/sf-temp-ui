@@ -59,7 +59,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.;
+import org.sikuli.script.FindFailed;
 
 import ModuleDrivers.CompositeAppDriver;
 import ModuleDrivers.OrderStorefrontDriver;
@@ -190,8 +190,10 @@ public class WebUIDriver extends BaseAppDriver {
 		}
 		catch(TimeoutException e)
 		{
-			RESULT.failed("Wait for page to load exception ", "Page should be loaded and status should be COMPLETE within 180 seconds",
-			"Page is not loaded in 180 seconds and status is not COMPLETE");
+			if (!CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")){
+				RESULT.failed("Wait for page to load exception ", "Page should be loaded and status should be COMPLETE within 180 seconds",
+				"Page is not loaded in 180 seconds and status is not COMPLETE");
+			}
 		}
 
 	}
@@ -2294,7 +2296,7 @@ public class WebUIDriver extends BaseAppDriver {
 	};
 
 	public void FD_reorderYourList(String YourList, String Department,
-			String SpecialPref, String FlexibilityFlag) throws 
+			String SpecialPref, String FlexibilityFlag) throws FindFailed,
 			InterruptedException, TimeoutException {
 		int i = 0, flag = 0;
 
@@ -2628,7 +2630,7 @@ public class WebUIDriver extends BaseAppDriver {
 	};
 
 	public void FD_reorderYourTopItems(String Filter, String DepartmentOrItem,
-			String SpecialPref, String FlexibilityFlag) throws 
+			String SpecialPref, String FlexibilityFlag) throws FindFailed,
 			InterruptedException, TimeoutException {
 		int i = 0;
 		int flag = 0;
@@ -2908,7 +2910,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_reorderPastOrder(String filter, String Timeframe,
 			String Department, String SpecialPreference,
-			String FlexibilityFlag, String Product) throws 
+			String FlexibilityFlag, String Product) throws FindFailed,
 			InterruptedException, TimeoutException {
 		int i = 0;
 		int flag = 0;
@@ -3664,7 +3666,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String AltPhone, String AltExtn, String UnattendedDelivery,
 			String UnattendedDelInstructions, String CompanyName,
 			String SaveCancelBtn, String SelectAddress, String FlexibilityFlag)
-	throws InterruptedException {
+	throws InterruptedException, FindFailed {
 		try{
 			// variables for address operations
 			String ChoosedOpt = AddSelectDeleteEdit;
@@ -3987,7 +3989,11 @@ public class WebUIDriver extends BaseAppDriver {
 					}
 					//selecting first address by default if Flexibility Flag = Yes
 					if (a == 0) {
-						if (FlexibilityFlag.equalsIgnoreCase("Yes")) {
+						if (FlexibilityFlag.equalsIgnoreCase("Yes") || FlexibilityFlag.isEmpty()) {
+							RESULT.warning(
+									"Delievry Address selection",
+									myaddnew + " Address should get selected",
+									myaddnew + " Given address is not available in the list and by default first address sholud get selected");
 							uiDriver.click("raddefaultAddress");
 							List<WebElement> addLst1 = webDriver.findElements(By.xpath(objMap.getLocator("lstselectingAddress")));
 							address = addLst1.get(0).getText();
@@ -4395,7 +4401,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String CRMDoormanRadioBtn, String CRMNeighborRadioBtn,
 			String CRMAltFirstName, String CRMAltLastName, String CRMAltApt,
 			String CRMAltPhn, String CRMSaveCancelBtn, String CRMSelectAddress)
-	throws InterruptedException
+	throws InterruptedException, FindFailed
 
 	{
 		try {
@@ -6173,7 +6179,7 @@ public class WebUIDriver extends BaseAppDriver {
 	// DoormanDelivery, NeighbourDelivery, AltFirstName,
 	// AltLastName, AltApt, AltPhone, AltExtn, None,
 	// SelectAddress);
-	// } catch ( e) {
+	// } catch (FindFailed e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// } catch (InterruptedException e) {
@@ -6202,7 +6208,7 @@ public class WebUIDriver extends BaseAppDriver {
 	// DoormanDelivery, NeighbourDelivery, AltFirstName,
 	// AltLastName, AltApt, AltPhone, AltExtn, None,
 	// SelectAddress);
-	// } catch ( e) {
+	// } catch (FindFailed e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// } catch (InterruptedException e) {
@@ -9416,7 +9422,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 		public void FD_modifyCart(String itemName, String operation,
 				String quantity, String emptyCartAcceptDecline,
-				String flexibilityFlag) throws InterruptedException {
+				String flexibilityFlag) throws InterruptedException, FindFailed {
 
 			try {
 				boolean found = false;
@@ -9830,8 +9836,12 @@ public class WebUIDriver extends BaseAppDriver {
 											CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).click();
 											// Pressing control + A keys to select all the
 											// digits in quantity field
-											String SelectAll = Keys.chord(Keys.CONTROL, "a");
-											CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).sendKeys(SelectAll);
+											if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")){
+												CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).clear();
+											}else{
+												String SelectAll = Keys.chord(Keys.CONTROL, "a");
+												CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).sendKeys(SelectAll);
+											}
 											if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
 												CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).sendKeys(Keys.ARROW_LEFT);
 												CartItemRows.get(j).findElement(By.className(objMap.getLocator("txtqty"))).sendKeys(Keys.ARROW_LEFT);
@@ -9992,7 +10002,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_modifyCartCRM(String ItemName, String Operation,
 			String Quantity, String DeleteAllAcceptDecline,
-			String FlexibilityFlag) throws InterruptedException {
+			String FlexibilityFlag) throws InterruptedException, FindFailed {
 
 		try {
 			boolean found = false;
@@ -10060,8 +10070,8 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @return void
 	 */
 
-	public void FD_cancelOrder(String OrderNo) throws InterruptedException
-	 {
+	public void FD_cancelOrder(String OrderNo) throws InterruptedException,
+	FindFailed {
 		try {
 			// checking particular order nuumber is present
 			if (webDriver.findElements(By.linkText(OrderNo)).size()>0 && 
@@ -10210,7 +10220,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 	public void FD_modifyOrder(String OrderNo, String ItemName,
 			String Quantity, String Operation, String EmptyCartAcceptDecline,
-			String FlexibilityFlag) throws InterruptedException {
+			String FlexibilityFlag) throws InterruptedException, FindFailed {
 		try {
 			if (webDriver.findElements(By.linkText(OrderNo)).size()>0 && 
 					uiDriver.isElementPresent(By.linkText(OrderNo))) {
@@ -10350,8 +10360,8 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_cancelOrderCRM(String OrderNo, String EmailNotification,
-			String Reason, String Notes) throws InterruptedException
-			 {
+			String Reason, String Notes) throws InterruptedException,
+			FindFailed {
 		try {
 			uiDriver.click("lnkorders");
 			uiDriver.waitForPageLoad();
@@ -10438,8 +10448,8 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_modifyOrderCRM(String OrderNo, String ItemName,String Quantity, String Operation, String DeleteAllAcceptDecline, 
-			String FlexibilityFlag) throws InterruptedException
-	{
+			String FlexibilityFlag) throws InterruptedException,
+			FindFailed {
 		try{
 			uiDriver.click("lnkorders");
 			uiDriver.waitForPageLoad();
@@ -10455,13 +10465,13 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 				CRMWindow = webDriver.getWindowHandle();
 				String OrderStatus=webDriver.findElement(By.xpath(objMap.getLocator("txtorderStatusCRM"))).getText();
-				System.out.println(OrderStatus+": Status");
 				if(OrderStatus.equalsIgnoreCase("submitted")){
 //					uiDriver.click("lnkmodifyOrder");
 					String winHandleBefore=webDriver.getWindowHandle();
 					webDriver.findElement(By.linkText(objMap.getLocator("lnkmodifyOrder"))).click();
 					//close CRM tab after navigating to storefront
 					try{
+						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						webDriver.switchTo().window(winHandleBefore).close();
 //						webDriver.switchTo().window(winHandleafter);
 					}catch (Exception e) {
@@ -10473,8 +10483,12 @@ public class WebUIDriver extends BaseAppDriver {
 					System.out.println(browserTabs.size()+": tab size after close");
 					//switch to new tab
 					webDriver.switchTo().window(browserTabs.get(0));
-					System.out.println(webDriver.getCurrentUrl());
+					
+					if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+						SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+					
 					uiDriver.waitForPageLoad();
+					
 					if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
 						webDriver.manage().window().maximize();
 					}
@@ -11286,7 +11300,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @return void
 	 */
 	public void FD_addList(WebElement product, String listflag_new_exist,
-			String listname, String FlexibilityFlag) throws 
+			String listname, String FlexibilityFlag) throws FindFailed,
 			InterruptedException {
 
 
@@ -11544,7 +11558,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 */
 
 	public void FD_loginCRM(String UserID, String Password)
-	throws InterruptedException {
+	throws InterruptedException, FindFailed {
 		uiDriver.setValue("txtCRMUID", UserID);
 		uiDriver.setValue("txtCRMPassword", Password);
 		//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -11572,7 +11586,7 @@ public class WebUIDriver extends BaseAppDriver {
 	}
 
 	public void FD_loginEmailNotification(String UserID, String Password)
-	throws InterruptedException {
+	throws InterruptedException, FindFailed {
 		try{
 			uiDriver.setValue("txtuserNameEmail", UserID);
 			uiDriver.setValue("txtpasswordEmail", Password);
@@ -12414,7 +12428,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String CRM_NeighborRadioBtn, String CRM_AltFirstName,
 			String CRM_AltLastName, String CRM_AltApt, String CRM_AltPhn,
 			String CRM_SaveCancelBtn, String CRM_SelectAddress)
-	throws InterruptedException
+	throws InterruptedException, FindFailed
 
 	{
 		try {
@@ -12981,8 +12995,8 @@ public class WebUIDriver extends BaseAppDriver {
 	 * @param filtername
 	 *            : Define filte name for filter the products
 	 **/
-	public void FD_filters(String filtername) throws InterruptedException
-	 {
+	public void FD_filters(String filtername) throws InterruptedException,
+	FindFailed {
 		try {
 			//Actions builder = new Actions(webDriver);
 			String item_name1 = null;
@@ -14480,7 +14494,7 @@ public class WebUIDriver extends BaseAppDriver {
 			String DoormanDelivery, String NeighbourDelivery,
 			String AltFirstName, String AltLastName, String AltApt,
 			String AltPhone, String AltExtn, String None, String SelectAddress,
-			String FlexibilityFlag) throws InterruptedException
+			String FlexibilityFlag) throws InterruptedException, FindFailed
 
 			{
 		try {

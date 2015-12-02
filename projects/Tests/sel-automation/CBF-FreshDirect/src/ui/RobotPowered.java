@@ -31,7 +31,7 @@ public class RobotPowered {
 		objMap = new ObjectMap();
 		//GCONFIG = Harness.GCONFIG;
 	}
-	
+
 
 	public void moveToElement(WebElement element) {
 
@@ -44,9 +44,9 @@ public class RobotPowered {
 
 			// Get dimensions of the window displaying the web page
 			int pageWidth = Integer.parseInt(executor.executeScript(
-					"return document.documentElement.clientWidth").toString());
+			"return document.documentElement.clientWidth").toString());
 			int pageHeight = Integer.parseInt(executor.executeScript(
-					"return document.documentElement.clientHeight").toString());
+			"return document.documentElement.clientHeight").toString());
 
 			// Calculate the space the browser is using for toolbars
 			int browserFurnitureOffsetX = browserWidth - pageWidth;
@@ -55,11 +55,11 @@ public class RobotPowered {
 			// Get the coordinates of the WebElement on the page and calculate
 			// the centre point
 			int webElementX = ((Locatable) element).getCoordinates()
-					.inViewPort().x
-					+ Math.round(element.getSize().width / 2);
+			.inViewPort().x
+			+ Math.round(element.getSize().width / 2);
 			int webElementY = ((Locatable) element).getCoordinates()
-					.inViewPort().y
-					+ Math.round(element.getSize().height / 2);
+			.inViewPort().y
+			+ Math.round(element.getSize().height / 2);
 
 			// Calculate the correct X/Y coordinates based upon the browser
 			// furniture offset and the position of the browser on the desktop
@@ -71,12 +71,20 @@ public class RobotPowered {
 			// Move the mouse to the calculated X/Y coordinates
 			if(driver.findElements(By.id(objMap.getLocator("strstorefrontMsg"))).size()>0 && driver.findElement(By.id("topwarningbar")).isDisplayed())
 			{
-				int sub_webElementY = Math.round(driver.findElement(By.id("topwarningbar")).getSize().height / 3);
-				
-				mouseObject.mouseMove(xPosition-1, yPosition-sub_webElementY);
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-				mouseObject.mouseMove(xPosition, yPosition-sub_webElementY);	
-				
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) 
+				{
+					mouseObject.mouseMove(xPosition-1, yPosition-23);
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					mouseObject.mouseMove(xPosition, yPosition-23);	
+				}
+				else
+				{
+					int sub_webElementY = Math.round(driver.findElement(By.id("topwarningbar")).getSize().height / 3);				
+					mouseObject.mouseMove(xPosition-1, yPosition-sub_webElementY);
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					mouseObject.mouseMove(xPosition, yPosition-sub_webElementY);	
+				}
+
 			}else{
 				mouseObject.mouseMove(xPosition-1, yPosition);	
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -89,26 +97,26 @@ public class RobotPowered {
 	}
 
 	public void moveMouseToCoordinates(int xCoordinates, int yCoordinates) {
-		  //Get Browser dimensions
-		  int browserWidth = driver.manage().window().getSize().width;
-		  int browserHeight = driver.manage().window().getSize().height;
-		 
-		  //Get dimensions of the window displaying the web page
-		  int pageWidth = Integer.parseInt(executor.executeScript("return document.documentElement.clientWidth").toString());
-		  int pageHeight = Integer.parseInt(executor.executeScript("return document.documentElement.clientHeight").toString());
-		 
-		  //Calculate the space the browser is using for toolbars
-		  int browserFurnitureOffsetX = browserWidth - pageWidth;
-		  int browserFurnitureOffsetY = browserHeight - pageHeight;
-		 
-		  //Calculate the correct X/Y coordinates based upon the browser furniture offset and the position of the browser on the desktop
-		  int xPosition = driver.manage().window().getPosition().x + browserFurnitureOffsetX + xCoordinates;
-		  int yPosition = driver.manage().window().getPosition().y + browserFurnitureOffsetY + yCoordinates;
-		 
-		  //Move the mouse to the calculated X/Y coordinates
-		  mouseObject.mouseMove(xPosition, yPosition);
-		  mouseObject.waitForIdle();
-		}
+		//Get Browser dimensions
+		int browserWidth = driver.manage().window().getSize().width;
+		int browserHeight = driver.manage().window().getSize().height;
+
+		//Get dimensions of the window displaying the web page
+		int pageWidth = Integer.parseInt(executor.executeScript("return document.documentElement.clientWidth").toString());
+		int pageHeight = Integer.parseInt(executor.executeScript("return document.documentElement.clientHeight").toString());
+
+		//Calculate the space the browser is using for toolbars
+		int browserFurnitureOffsetX = browserWidth - pageWidth;
+		int browserFurnitureOffsetY = browserHeight - pageHeight;
+
+		//Calculate the correct X/Y coordinates based upon the browser furniture offset and the position of the browser on the desktop
+		int xPosition = driver.manage().window().getPosition().x + browserFurnitureOffsetX + xCoordinates;
+		int yPosition = driver.manage().window().getPosition().y + browserFurnitureOffsetY + yCoordinates;
+
+		//Move the mouse to the calculated X/Y coordinates
+		mouseObject.mouseMove(xPosition, yPosition);
+		mouseObject.waitForIdle();
+	}
 	public void scrollToElement(WebElement elem, WebDriver driver) {
 		((JavascriptExecutor) driver).executeScript(
 				"arguments[0].scrollIntoView(true);", elem);
