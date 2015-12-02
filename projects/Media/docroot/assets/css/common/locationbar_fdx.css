@@ -661,6 +661,7 @@
 		visibility: hidden;
 		opacity: 0;
 		transform: translate(0, -20px);
+		-moz-transform: translate(0, 0); /* firefox adds negatives, disable for now */
 	}
 	#locabar_addresses_trigger:hover #locabar_addresses,
 	#locabar_popupcart_trigger:hover #locabar_popupcart,
