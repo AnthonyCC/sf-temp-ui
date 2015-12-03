@@ -42,7 +42,10 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
-
+<%
+		FDSessionUser fdSessionUser = (FDSessionUser) user;
+		MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+%>
 <fd:FDShoppingCart id='cart' result="result" filterCoupons="true">
 <tmpl:put name="changeDeliveryDate-button">
 	<% if ( cart.getExpCouponDeliveryDate() != null && !"".equals(cart.getExpCouponDeliveryDate()) ) {
