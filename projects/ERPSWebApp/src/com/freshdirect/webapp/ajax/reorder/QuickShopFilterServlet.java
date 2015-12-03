@@ -12,14 +12,15 @@ import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
-import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
+import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
+import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopPastOrdersCustomMenu;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopReturnValue;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
@@ -79,11 +80,13 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
 		QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService().transformMenuIntoPastOrdersCustom(responseData.getMenu(), requestData.getYourLastOrderId());
 		responseData.setOrders(transformMenuIntoPastOrdersCustom);
-		addCoremetricsTags(nav, result, responseData);
+		// [APPDEV-4558]
+		if (CmContextUtility.isCoremetricsAvailable(user)) {
+			addCoremetricsTags(nav, result, responseData);
+		}
 		return responseData;
 	}
 
-	// TODO: overview for top items coremetrics configuration
 	private void addCoremetricsTags(FilteringNavigator nav, FilteringFlowResult<QuickShopLineItemWrapper> result, QuickShopReturnValue responseData) {
 		// Generate coremetrics 'element' tags for the menu - selected filters
 		generateCoremetricsElementTags(responseData, result.getMenu(), "quickshop | past_orders");

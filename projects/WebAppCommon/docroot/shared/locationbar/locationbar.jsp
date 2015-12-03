@@ -38,7 +38,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		<%if (makeGoodFromOrderId!=null) {%>
 			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
 			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
-			<a class="imgButtonOrange" href="/cancelmakegood.jsp">Cancel MakeGood</a>
+			<a class="imgButtonRed" href="/cancelmakegood.jsp">Cancel MakeGood</a>
 		<%}%>
 	</div>
 </tmpl:put>

@@ -20,16 +20,16 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 public class ComplaintUtil {
 	private static Object lock = new Object();
     
-    private static Map complaintReasons				= new HashMap();
-    private static Map complaintReasons_noCartsReq	= new HashMap();
+    private static Map<String, List<ErpComplaintReason>> complaintReasons				= new HashMap<String, List<ErpComplaintReason>>();
+    private static Map<String, List<ErpComplaintReason>> complaintReasons_noCartsReq	= new HashMap<String, List<ErpComplaintReason>>();
 
     private static long lastUpdate = 0;
     private static long lastUpdate_noCartsReq = 0;
 
     private static final long refreshPeriod = 1000 * 60 * 10; // 10 minutes
     
-    private static Map getReasonMap(boolean excludeCartonReq) throws FDResourceException {
-    	Map ret = null;
+    private static Map<String, List<ErpComplaintReason>> getReasonMap(boolean excludeCartonReq) throws FDResourceException {
+    	Map<String, List<ErpComplaintReason>> ret = null;
         synchronized (lock) {
         	if (excludeCartonReq) {
             	if (System.currentTimeMillis() - lastUpdate_noCartsReq > refreshPeriod) {
@@ -50,31 +50,31 @@ public class ComplaintUtil {
 
 
     // @return List<ErpComplaintReason>
-    public static List getReasonsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
-        List reasons = (List) getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
+    public static List<ErpComplaintReason> getReasonsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
+    	List<ErpComplaintReason> reasons = getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
         return reasons != null ? reasons : Collections.EMPTY_LIST;
     }
 
     // @return List<ErpComplaintReason>
     // @deprecated use getReasonsForDepartment(String dept, boolean excludeCartReq) instead with 'false' 
-    public static List getReasonsForDepartment(String dept) throws FDResourceException {
+    public static List<ErpComplaintReason> getReasonsForDepartment(String dept) throws FDResourceException {
     	return getReasonsForDepartment(dept, false);
     }
 
     // @return Set<String>
-    public static Set getReasonTextsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
-        List reasons = (List) getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
+    public static Set<String> getReasonTextsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
+    	List<ErpComplaintReason> reasons = getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
 
         if (reasons != null && reasons.size() > 0) {
-        	Set rTexts = new HashSet(reasons.size());
+        	Set<String> rTexts = new HashSet<String>(reasons.size());
         	
-        	for (Iterator it=reasons.iterator(); it.hasNext();) {
-        		rTexts.add( ((ErpComplaintReason)it.next()).getReason() );
+        	for (final ErpComplaintReason reason : reasons) {
+        		rTexts.add( reason.getReason() );
         	}
         	return rTexts;
         }
 
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
 
@@ -87,25 +87,25 @@ public class ComplaintUtil {
      * @throws FDResourceException
      */
     // @return Set<String>
-    public static Set getReasonsForDepartments(Collection depts, boolean excludeCartReq) throws FDResourceException {
-    	Iterator it=depts.iterator();
+    public static Set<String> getReasonsForDepartments(Collection<String> depts, boolean excludeCartReq) throws FDResourceException {
+    	Iterator<String> it=depts.iterator();
     	
     	// Case k=0
     	if (!it.hasNext())
-    		return Collections.EMPTY_SET;
+    		return Collections.emptySet();
     	
     	String deptName = (String) it.next();
-    	Set reasons = getReasonTextsForDepartment(deptName, excludeCartReq);
+    	Set<String> reasons = getReasonTextsForDepartment(deptName, excludeCartReq);
 
     	// Case k=1
     	if (!it.hasNext())
     		return reasons;
 
     	// Case k>1
-    	Set r0 = reasons; // convert list to set
+    	Set<String> r0 = reasons; // convert list to set
     	while (it.hasNext()) {
         	deptName = (String) it.next();
-        	Set r1 = getReasonTextsForDepartment(deptName, excludeCartReq);
+        	Set<String> r1 = getReasonTextsForDepartment(deptName, excludeCartReq);
         	
         	r0.retainAll(r1); // intersect r0 and r1
     	}
@@ -120,25 +120,25 @@ public class ComplaintUtil {
      * @return
      * @throws FDResourceException
      */
-    public static List<ErpComplaintReason> getReasonsListForDepartments(Collection depts, boolean excludeCartReq) throws FDResourceException {
-    	Iterator it=depts.iterator();
+    public static List<ErpComplaintReason> getReasonsListForDepartments(Collection<String> depts, boolean excludeCartReq) throws FDResourceException {
+    	Iterator<String> it=depts.iterator();
     	
     	// Case k=0
     	if (!it.hasNext())
-    		return Collections.EMPTY_LIST;
+    		return Collections.emptyList();
     	
     	String deptName = (String) it.next();
-    	List reasons = getReasonsForDepartment(deptName, excludeCartReq);
+    	List<ErpComplaintReason> reasons = getReasonsForDepartment(deptName, excludeCartReq);
 
     	// Case k=1
     	if (!it.hasNext())
     		return reasons;
 
     	// Case k>1
-    	List r0 = new ArrayList(reasons); // convert list to set
+    	List<ErpComplaintReason> r0 = new ArrayList<ErpComplaintReason>(reasons); // convert list to set
     	while (it.hasNext()) {
         	deptName = (String) it.next();
-        	List r1 = getReasonsForDepartment(deptName, excludeCartReq);
+        	List<ErpComplaintReason> r1 = getReasonsForDepartment(deptName, excludeCartReq);
         	
         	r0.retainAll(r1); // intersect r0 and r1
     	}
@@ -147,12 +147,11 @@ public class ComplaintUtil {
     }
 
     public static ErpComplaintReason getReasonById(String id) throws FDResourceException {
-        Map allReasons = getReasonMap(false);
-        for (Iterator dIter = allReasons.keySet().iterator(); dIter.hasNext(); ) {
-            String dept = (String) dIter.next();
-            List deptReasons = (List) allReasons.get(dept);
-            for (Iterator rIter = deptReasons.iterator(); rIter.hasNext(); ) {
-                ErpComplaintReason reason = (ErpComplaintReason) rIter.next();
+    	Map<String, List<ErpComplaintReason>> allReasons = getReasonMap(false);
+        for (Iterator<String> dIter = allReasons.keySet().iterator(); dIter.hasNext(); ) {
+            String dept = dIter.next();
+            List<ErpComplaintReason> deptReasons = allReasons.get(dept);
+            for (final ErpComplaintReason reason : deptReasons) {
                 if (reason.getId().equals(id)) {
                     return reason;
                 }
@@ -162,10 +161,8 @@ public class ComplaintUtil {
     }
     
     public static ErpComplaintReason getReasonByDeptAndText(String dept,String reasonText) throws FDResourceException {
-        List allReasons = getReasonsForDepartment(dept);
-        for (Iterator rIter = allReasons.iterator(); rIter.hasNext(); ) {
-//            String lDept = (String) rIter.next();
-            ErpComplaintReason reason = (ErpComplaintReason) rIter.next();
+    	List<ErpComplaintReason> allReasons = getReasonsForDepartment(dept);
+    	for (final ErpComplaintReason reason : allReasons) {
             if (reason.getReason().equals(reasonText)) {
                 return reason;
             }
@@ -227,16 +224,15 @@ public class ComplaintUtil {
 	 * Builds a HashMap of ComplaintDeptInfo objects that hold total amounts spent in
 	 * each department in the current order.
 	 */
-	public HashMap getOrderInfo(FDOrderI order) {
+	public Map<String, ComplaintDeptInfo> getOrderInfo(FDOrderI order) {
 		//
 		// Calculate the boundary amounts that credits may not exceed
 		//
-		HashMap map = new HashMap();
+		Map<String, ComplaintDeptInfo> map = new HashMap<String, ComplaintDeptInfo>();
 		String lastDept = null;
-		Collection lines = null;
-		lines = order.getOrderLines();
+		Collection<FDCartLineI> lines = order.getOrderLines();
 
-		for (Iterator it = lines.iterator(); it.hasNext(); ) {
+		for (Iterator<FDCartLineI> it = lines.iterator(); it.hasNext(); ) {
 			FDCartLineI line = (FDCartLineI) it.next();
 			if ( lastDept==null || !lastDept.equalsIgnoreCase( line.getDepartmentDesc() ) ) {
 				lastDept = standardizeDepartment(line.getDepartmentDesc());

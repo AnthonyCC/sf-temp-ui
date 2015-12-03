@@ -19,7 +19,8 @@ public class PaymentData {
 	private String bankAccountType;
 	private String bankName;
 	private String abaRouteNumber;
-	
+    private String referencedOrderId;
+    private String paymentTypeDescription;
 	private String eWalletID;
 	private String vendorEWalletID;
 	private String mpLogoURL;
@@ -160,9 +161,25 @@ public class PaymentData {
 		this.zip = zip;
 	}
 
-	/**
-	 * @return the eWalletID
-	 */
+    public String getReferencedOrderId() {
+        return referencedOrderId;
+    }
+
+    public void setReferencedOrderId(String referencedOrderId) {
+        this.referencedOrderId = referencedOrderId;
+    }
+
+    public String getPaymentTypeDescription() {
+        return paymentTypeDescription;
+    }
+
+    public void setPaymentTypeDescription(String paymentTypeDescription) {
+        this.paymentTypeDescription = paymentTypeDescription;
+    }
+
+    /**
+     * @return the eWalletID
+     */
 	public String geteWalletID() {
 		return eWalletID;
 	}

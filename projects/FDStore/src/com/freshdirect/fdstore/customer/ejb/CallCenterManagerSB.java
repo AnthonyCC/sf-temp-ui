@@ -8,19 +8,36 @@
  */
 package com.freshdirect.fdstore.customer.ejb;
 
-import javax.ejb.EJBObject;
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.*;
+import javax.ejb.EJBObject;
+
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmVSCampaignModel;
-import com.freshdirect.customer.*;
-
-import com.freshdirect.fdstore.content.meal.*;
+import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ErpComplaintReason;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpRedeliveryModel;
+import com.freshdirect.customer.ErpReturnOrderModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.VSReasonCodes;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.meal.MealModel;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
+import com.freshdirect.fdstore.customer.FDComplaintInfo;
+import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
+import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 
 /**
@@ -31,13 +48,13 @@ import com.freshdirect.framework.util.GenericSearchCriteria;
  */
 public interface CallCenterManagerSB extends EJBObject {
 
-	public Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException, RemoteException;
+	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException, RemoteException;
 	
-	public Map getComplaintCodes() throws FDResourceException, RemoteException;
+	public Map<String,String> getComplaintCodes() throws FDResourceException, RemoteException;
 
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException; 
 	
-	public List getPendingComplaintOrders(String reasonCode) throws FDResourceException, RemoteException;
+	public List<FDComplaintInfo> getPendingComplaintOrders(String reasonCode) throws FDResourceException, RemoteException;
     
     public List getSignupPromoAVSExceptions() throws FDResourceException, RemoteException;
 

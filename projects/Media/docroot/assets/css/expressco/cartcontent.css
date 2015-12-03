@@ -834,4 +834,34 @@ label[for="dontupdatecartlines"] {
 }
 
 
+.total-masq{
+  font-size:14px;
+}
 
+.total-masq p{
+  margin:1em 0;
+}
+
+.masq-input{
+  line-height:32px;
+  height:32px;
+  padding:0 5px;
+  background-color:#fff;
+  border:1px solid #aaa;
+  width:250px;
+  box-sizing:content-box;
+}
+
+.cartline-complaint-reason-select{
+  display:block;
+  margin:10px 0;
+}
+
+.cartsection__cartline.invalid.reason [data-component="complaintreason"]{
+  border:1px solid red;
+}
+
+.cartsection__cartline.invalid.reason .cartline-complaint-reason-select:after{
+  content:" Please select one ";
+  color:red;
+}

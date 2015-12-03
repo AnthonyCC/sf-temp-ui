@@ -249,10 +249,10 @@ boolean hasCase = false;
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/main/delivery_center_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Delivery Center</a></div>
 				<% } %>
 				<%	
-				if(isRegularOrder && orderPermissions.isDispatched(nav_orderId) && !(addOnOrder) && !(makeGood) && nav_order.getEStoreId()!=null && EnumEStoreId.FDX.name().equalsIgnoreCase(nav_order.getEStoreId().toString()) && FDCustomerManager.getAddonOrderCount(nav_orderId)){%>
+				if(isRegularOrder && orderPermissions.isDispatched(nav_orderId) && FDCustomerManager.getAddonOrderCount(nav_orderId) && !addOnOrder && !makeGood && ( EnumEStoreId.FDX == nav_order.getEStoreId() || request.getParameterMap().keySet().contains("devNoFdx") )) {%>
 				    <div class="cust_sub_nav" style="width: 120px;">
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>
-				    		<a href="/main/masquerade.jsp?parentOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
+				    		<a href="/main/masquerade.jsp?destination=addon&parentOrderId=<%=nav_orderId%>&estore=<%=nav_order.getEStoreId() %>" target="_blank" class="cust_sub_nav_text">
 				    	<%}%>
 				    		Add On Order
 				    	<%if(hasCustomerCase && CrmSecurityManager.hasAccessToPage(agentRole1,"masquerade.jsp")){%>

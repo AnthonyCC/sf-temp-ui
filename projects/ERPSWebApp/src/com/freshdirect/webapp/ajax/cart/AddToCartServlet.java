@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -267,7 +268,11 @@ public class AddToCartServlet extends BaseJsonServlet {
                     model.getAttributesMaps().put(8, esrc.externalSource);
 
                     // add to response data
-                    responseData.addCoremetrics(model.toStringList());
+                    
+    				// [APPDEV-4558]
+    				if (CmContextUtility.isCoremetricsAvailable(user)) {
+                    	responseData.addCoremetrics(model.toStringList());
+                    }
                 }
 
                 if (!reqData.isIgnoreRedirect()) {

@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -9,7 +10,10 @@
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" id="user" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<%
+MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+%>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
 <potato:cartData />
@@ -52,6 +56,20 @@
   </tmpl:put>
   
   <tmpl:put name="globalnav">
+  	<%-- MASQUERADE HEADER STARTS HERE --%>
+  	<% if (masqueradeContext != null) {
+  		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
+  	%>
+	<div id="topwarningbar">
+		You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
+		<%if (makeGoodFromOrderId!=null) {%>
+			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
+			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
+			<a class="imgButtonRed" href="/cancelmakegood.jsp">Cancel MakeGood</a>
+		<%}%>
+	</div>
+  	<% } %>
+  	<%-- MASQUERADE HEADER ENDS HERE --%>
     <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
   </tmpl:put>
 

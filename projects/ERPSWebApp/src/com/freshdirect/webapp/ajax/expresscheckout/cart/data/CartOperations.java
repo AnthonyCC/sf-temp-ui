@@ -14,8 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpClientCode;
@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
@@ -67,6 +68,7 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
+import com.freshdirect.webapp.crm.CrmMasqueradeUtil;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -176,10 +178,19 @@ public class CartOperations {
 				cartLine.setCoremetricsPageId( reqData.getCoremetricsPageId() );
 				cartLine.setCoremetricsVirtualCategory( reqData.getCoremetricsVirtualCategory() );
 
+				// CRM Masq + MakeGood
+				final MasqueradeContext ctx = user.getMasqueradeContext();
+				if (ctx != null && ctx.isMakeGood()) {
+					CrmMasqueradeUtil.assignCartonNumberToCartLine(ctx, cartLine);
+				}
+
 				cartLinesToAdd.add(cartLine);
-				
-				populateCoremetricsShopTag( responseData, cartLine );
-				
+
+				// [APPDEV-4558]
+				if (CmContextUtility.isCoremetricsAvailable(user)) {
+					populateCoremetricsShopTag( responseData, cartLine );
+				}
+
 			}
 								
 			// add collected cartlines to cart
@@ -201,7 +212,6 @@ public class CartOperations {
 	}
 
 	public static void populateCoremetricsShopTag( ICoremetricsResponse responseData, FDCartLineI cartLine ) {
-		// 		COREMETRICS SHOP5
 		try {
 			
 			cartLine.refreshConfiguration();
@@ -749,21 +759,13 @@ public class CartOperations {
 			return null;
 		}
 
-		// TODO: add 'agree to terms' warning/error		
-//		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
-//		if (prodNode.hasTerms() && !"true".equals(request.getParameter("consented" + suffix))) {
-//			LOGGER.debug("ADDING ERROR, since consented" + suffix + "=" + request.getParameter("consented" + suffix));
-//			if (!"yes".equalsIgnoreCase(request.getParameter("agreeToTerms"))) {
-//				result .addError(new ActionError("agreeToTerms", "Product terms"));
-//			}
-//		}
 
 		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									ZONE & GROUP PRICING
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		String pricingZoneId = user.getPricingZoneId();
+		// String pricingZoneId = user.getPricingZoneId();
 		
 		// TODO : anything to do for group pricing ?
 		
@@ -935,6 +937,12 @@ public class CartOperations {
 
 		if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
 			return "Quantity must be an increment of " + formatter.format( prodNode.getQuantityIncrement() );
+		}
+
+		if (user != null && user.getMasqueradeContext() != null) {
+			// [APPDEV-4486] In CRM Masquerade mode only min qt is checked.
+			//               So basically we're done here.
+			return null;
 		}
 
 		if (originalQuantity

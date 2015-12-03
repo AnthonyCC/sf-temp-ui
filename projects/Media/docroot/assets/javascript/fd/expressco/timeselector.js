@@ -19,10 +19,14 @@ var FreshDirect = FreshDirect || {};
       value: expressco.timeselectorpreview
     },
     createRequestConfig : {
-      value: function(){
+      value: function(data){
         var t = (new Date()).getTime();
+        var requestURI = '/expressco/timeslots.jsp?thxie='+t;
+        if(data && data.forceorder){
+          requestURI += '&forceorder=true';
+        }
 
-        return { url: '/expressco/timeslots.jsp?thxie='+t, type: 'GET', dataType:'html' };
+        return { url: requestURI, type: 'GET', dataType:'html' };
       }
     },
     expandDefaultColumn: {
@@ -56,40 +60,43 @@ var FreshDirect = FreshDirect || {};
       }
     },
     renderContent:{
-      value:function(){
-        var ajax = Bacon.fromPromise($.ajax(timeslot.createRequestConfig()));
-
-        // remove old content
+      value:function(drawerTemplateData){
         $(timeslot.contentHolder()).html('');
+        $(timeslot.contentHolder()).html(timeslot.contentTemplate(drawerTemplateData));
+      }
+    },
+    getActualTimeSlotJsp:{
+      value:function(requestConfig){
+        var ajax = Bacon.fromPromise($.ajax(requestConfig));
+        var drawerContent = timeslot.contentHolder() + ' [data-component="timeselectorcontent"]';
 
         ajax.onError(function(){
-          $(timeslot.contentHolder()).
-            html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
-
+          $(drawerContent).html('<p class="error">Something went wrong. Please refresh the page to continue.</p>');
           return false;
         });
 
         ajax.onValue(function(ajaxData){
-          var note;
-
-          $(timeslot.contentHolder()).html(timeslot.contentTemplate());
-          $(timeslot.contentHolder() + ' [data-component="timeselectorcontent"]').html(ajaxData);
-
-          // init timeslot selector behaviour
-
-          if(FreshDirect.fdTSDisplay){
-            window.fdTSDisplay = new FreshDirect.fdTSDisplay("fdTSDisplay");
-          }
-
-          timeslot.expandDefaultColumn(window.fdTSDisplay);
-
-          note = $(timeslot.contentHolder()).find('.timeslot-note');
-
-          if (note.size()) {
-            $('.timeslot-note').remove();
-            note.insertBefore($('#ec-drawer'));
-          }
+          $(drawerContent).html(ajaxData);
+          timeslot.initTimeSlot();
         });
+      }
+    },
+    initTimeSlot:{
+      value:function(){
+        var note;
+
+        if(FreshDirect.fdTSDisplay){
+          window.fdTSDisplay = new FreshDirect.fdTSDisplay("fdTSDisplay");
+        }
+
+        timeslot.expandDefaultColumn(window.fdTSDisplay);
+
+        note = $(timeslot.contentHolder()).find('.timeslot-note');
+
+        if (note.size()) {
+          $('.timeslot-note').remove();
+          note.insertBefore($('#ec-drawer'));
+        }
       }
     },
     renderPreview:{
@@ -99,8 +106,9 @@ var FreshDirect = FreshDirect || {};
     },
     callback:{
       value:function( value ) {
-        timeslot.renderContent();
+        timeslot.renderContent(value);
         timeslot.renderPreview(value);
+        timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
       }
     },
     serialize:{
@@ -128,6 +136,11 @@ var FreshDirect = FreshDirect || {};
   timeslot.listen();
 
   $(document).on('click', timeslot.contentHolder() + " [data-component='timeslotchangebutton']", timeslot.serialize.bind(timeslot));
+
+  $(document).on('change', "[data-component='forceorder']", function(e){
+    var checked = $(e.currentTarget).prop('checked');
+    timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: checked }));
+  });
 
   // timeslot related forms
   fd.modules.common.forms.register({

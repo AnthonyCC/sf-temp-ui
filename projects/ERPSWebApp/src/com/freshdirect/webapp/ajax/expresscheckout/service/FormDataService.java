@@ -20,10 +20,14 @@ public class FormDataService {
 		return INSTANCE;
 	}
 
-	public String get(FormDataRequest data, String key) {
-		return (String) (data.getFormData() != null ? data.getFormData().get(key) : null);
+    public String get(FormDataRequest data, String key) {
+        return (String) (data.getFormData() != null ? data.getFormData().get(key) : null);
 	}
 	
+    public Boolean getBoolean(FormDataRequest data, String key) {
+        return (Boolean) (data.getFormData() != null ? data.getFormData().get(key) : null);
+    }
+
 	public Map<String, String> getSimpleMap(FormDataRequest data) {
 		Map<String, String> result = new HashMap<String, String>();
 		for (String key : data.getFormData().keySet()) {

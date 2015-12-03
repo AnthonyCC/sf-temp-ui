@@ -15,7 +15,7 @@
 <%@ taglib uri="crm" prefix="crm" %>
 <jwr:script src="/fdmodules.js"  useRandomParam="false" />
 <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
-<<script type="text/javascript">
+<script type="text/javascript">
 
 function voucherPopup(dialogId) {
 		$jq(function() {

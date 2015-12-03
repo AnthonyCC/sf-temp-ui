@@ -8,6 +8,7 @@ var FreshDirect = FreshDirect || {};
   var DISPATCHER = fd.common.dispatcher;
   var WIDGET = fd.modules.common.widget;
   var FORMS = fd.modules.common.forms;
+  var $ = fd.libs.$;
 
   // main viewcart form
   FORMS.register({
@@ -33,6 +34,11 @@ var FreshDirect = FreshDirect || {};
     },
     failure:function(id, data){
       id && FORMS.get(id).releaseLockWhenNotRedirecting(id, data);
+      if(data.reasonFailures){
+        data.reasonFailures.forEach(function(cartline){
+          $("[data-component='cartline'][data-cartlineid='" + cartline + "']").addClass('invalid').addClass('reason');
+        });
+      }
     },
     releaseLockWhenNotRedirecting:function(id, data){
       var hasRedirectUrl = data && data.redirectUrl && data.redirectUrl.length;

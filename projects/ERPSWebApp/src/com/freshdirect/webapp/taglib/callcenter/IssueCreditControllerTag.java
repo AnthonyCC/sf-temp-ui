@@ -11,12 +11,9 @@ package com.freshdirect.webapp.taglib.callcenter;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,16 +25,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthorizationException;
-import com.freshdirect.crm.CrmCaseAction;
-import com.freshdirect.crm.CrmCaseActionType;
-import com.freshdirect.crm.CrmCaseInfo;
 import com.freshdirect.crm.CrmCaseModel;
-import com.freshdirect.crm.CrmCaseOrigin;
-import com.freshdirect.crm.CrmCasePriority;
-import com.freshdirect.crm.CrmCaseState;
-import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmManager;
-import com.freshdirect.crm.CrmMessageBuffer;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
 import com.freshdirect.customer.EnumComplaintStatus;
@@ -58,7 +47,6 @@ import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.util.JspMethods;
 
 /**
  *
@@ -66,6 +54,7 @@ import com.freshdirect.webapp.util.JspMethods;
  * @author $Author:Mike Rose$
  */
 public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
+	private static final long serialVersionUID = 4692752809595873560L;
 
 	private static Category LOGGER = LoggerFactory.getInstance(IssueCreditControllerTag.class);
 
@@ -286,8 +275,8 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 			return;
 		}
 		
-		for(Iterator i = complaintModel.getComplaintLines().iterator(); i.hasNext(); ){
-			ErpComplaintLineModel complaintLine = (ErpComplaintLineModel) i.next();
+		for(Iterator<ErpComplaintLineModel> i = complaintModel.getComplaintLines().iterator(); i.hasNext(); ){
+			ErpComplaintLineModel complaintLine = i.next();
 			if(EnumComplaintLineMethod.CASH_BACK.equals(complaintLine.getMethod()) && MathUtil.roundDecimal(complaintLine.getAmount()) == 0.0){
 				result.addError(new ActionError("invalid_complaint", "Cannont issue cashback for $0"));
 				return;
@@ -300,14 +289,14 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 		// Compare the total value of the complaint against the amount already approved as Customer Credit
 		//
 		double previousComplaintTotal = 0;
-		Collection previousComplaints = this.order.getComplaints();
+		Collection<ErpComplaintModel> previousComplaints = this.order.getComplaints();
 
-		HashMap allDeptsMap = complaintUtil.getOrderInfo(this.order);
+		Map<String, ComplaintDeptInfo> allDeptsMap = complaintUtil.getOrderInfo(this.order);
 		//
 		// Get total for previous APPROVED complaints
 		//
-		for (Iterator it = previousComplaints.iterator(); it.hasNext();) {
-			ErpComplaintModel complaint = (ErpComplaintModel) it.next();
+		for (Iterator<ErpComplaintModel> it = previousComplaints.iterator(); it.hasNext();) {
+			ErpComplaintModel complaint = it.next();
 			if (complaint.getStatus().equals(EnumComplaintStatus.APPROVED))
 				previousComplaintTotal += complaint.getAmount();
 		}

@@ -1,22 +1,102 @@
 package com.freshdirect.webapp.crm;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartonDetail;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.security.ticket.MasqueradeParams;
 import com.freshdirect.security.ticket.MasqueradePurposeBuilder;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.security.ticket.TicketService;
+import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
+import com.freshdirect.webapp.ajax.expresscheckout.csr.servlet.CustomerServiceRepresentativeServlet;
+import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
+import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.crm.security.MenuManager;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CrmMasqueradeUtil {
+	private static final Logger LOGGER = LoggerFactory.getInstance( CrmMasqueradeUtil.class );
+	
+	
+	/**
+	 * Build masquerade context
+	 * 
+	 * @param identity user identity
+	 * @param params
+	 * @param agentId CRM Agent ID
+	 * @return
+	 *
+	 * @throws FDResourceException
+	 */
+	public static MasqueradeContext build(final FDIdentity identity, final MasqueradeParams params, final String agentId) throws FDResourceException {
+    	// masquerade
+    	// FIXME context builing should be extracted to a builder class
+    	MasqueradeContext ctx = new MasqueradeContext();
+    	ctx.setAgentId(agentId);
+    	ctx.setHasCustomerCase(params.hasCustomerCase);
+    	ctx.setForceOrderAvailable(params.forceOrderAvailable);
+    	ctx.setAutoApprovalLimit(params.autoApprovalLimit);
+    	ctx.setAutoApproveAuthorized(params.autoApproveAuthorized);
+
+    	// Make-Good Order: collect order line IDs
+    	if (params.makeGoodFromOrderId!=null) {
+    		final FDOrderI _order = FDCustomerManager.getOrder(identity, params.makeGoodFromOrderId);
+    		
+			ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
+			Set<String> makeGoodAllowedOrderLineIds = new HashSet<String>();
+			ctx.setMakeGoodAllowedOrderLineIds(makeGoodAllowedOrderLineIds);    	
+			
+			for (FDCartLineI mgOrderLine : _order.getOrderLines()){
+				makeGoodAllowedOrderLineIds.add(mgOrderLine.getOrderLineId());
+	    	}
+			
+			// extract carton numbers for order lines
+			CrmMasqueradeUtil.buildCartonNumberMap(ctx, _order.getCartonContents());
+		} else if (params.parentOrderId!=null) {
+    		ctx.setParentOrderId(params.parentOrderId);
+		}
+
+    	return ctx;
+	}
+	
+	
 	public static String generateLaunchURL(CrmAgentModel agent, HttpServletRequest request, FDUserI user, String eStoreId) throws FDResourceException, IllegalArgumentException {
 		EnumEStoreId storeId = eStoreId != null ? EnumEStoreId.valueOf(eStoreId) : EnumEStoreId.FD;
 		if (storeId == null) {
@@ -99,8 +179,10 @@ public class CrmMasqueradeUtil {
 				redirectUri = "/gift_card/purchase/landing.jsp";
 			} else if ("gc_bulk".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/gift_card/purchase/add_bulk_giftcard.jsp";
+			} else if ("checkout".equalsIgnoreCase(params.destination)) {
+				redirectUri = "/expressco/view_cart.jsp";
 			} else if ("timeslots".equalsIgnoreCase(params.destination)) {
-				redirectUri = "/help/delivery_info.jsp";
+				redirectUri = "/your_account/delivery_info_avail_slots.jsp";
 			} else if ("top_faqs".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/agent/admintools/top_faqs.jsp";
 			} else if ("coupon_savings_history".equalsIgnoreCase(params.destination)) {
@@ -109,11 +191,25 @@ public class CrmMasqueradeUtil {
 				redirectUri = "/agent/ppicks_email_products.jsp";
 			} else if ("dp_search_results".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/srch.jsp?pageType=search&searchParams=delivery+pass";
+			} else if ("addon".equalsIgnoreCase(params.destination)) {
+				redirectUri = "/";
 			}
 		}
 		// Legacy cases
 		else if (params.makeGoodFromOrderId != null) {
-			redirectUri = "/quickshop/shop_from_order.jsp?orderId="+params.makeGoodFromOrderId;
+
+			final String payload = createPastOrderUrlPayload(params.makeGoodFromOrderId);
+			
+			if (payload != null) {
+				try {
+					String data = URLEncoder.encode(payload, "UTF-8");
+					redirectUri = "/quickshop/qs_past_orders.jsp#"+data;
+				} catch (UnsupportedEncodingException e) {
+					redirectUri = "/quickshop/qs_past_orders.jsp";
+				}
+			} else {
+				redirectUri = "/quickshop/qs_past_orders.jsp";
+			}
 		} else {
 			if (params.shopFromOrderId != null) {
 				redirectUri = "/quickshop/shop_from_order.jsp?orderId="+params.shopFromOrderId;
@@ -126,6 +222,29 @@ public class CrmMasqueradeUtil {
 			}
 		}
 		return redirectUri;
+	}
+	
+	public static String createPastOrderUrlPayload(final String makeGoodFromOrderId) {
+		
+		// Assumed, Quickshop 2.0 / REORDER feature is active
+		List<Object> orderIdList = new ArrayList<Object>( Arrays.asList(new String[]{ makeGoodFromOrderId }) );
+
+		QuickShopListRequestObject potato = new QuickShopListRequestObject();
+		potato.setOrderIdList( (List<Object>)orderIdList );
+		potato.setTab( EnumQuickShopTab.PAST_ORDERS );
+		potato.setActivePage( 0 );
+
+		StringWriter writer = new StringWriter();
+		try {
+			new ObjectMapper().writeValue( writer, potato );
+
+			return writer.toString();
+		} catch (JsonGenerationException e) {
+		} catch (JsonMappingException e) {
+		} catch (IOException e) {
+		}
+		
+		return null;
 	}
 	
 
@@ -155,5 +274,130 @@ public class CrmMasqueradeUtil {
 		params.parentOrderId = request.getParameter("parentOrderId");
 
 		return params;
+	}
+	
+	
+	
+	public static void postInit(final MasqueradeContext ctx, final HttpSession session) {
+		final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+
+    	if (ctx.isMakeGood()) {
+        	// Make-Good Order: create complaint structure in session required for XC checkout
+			user.getShoppingCart().clearOrderLines();
+
+			try {
+				FDOrderI referenceOrder = FDCustomerManager.getOrderForCRM(user.getIdentity(), ctx.getMakeGoodFromOrderId());
+				prepareMakeGoodContext(ctx, session, referenceOrder.getOrderLines() );
+			} catch (FDResourceException e) {
+				LOGGER.error(e);
+			}
+		}
+
+    	// preset certain CSR fields
+    	CustomerServiceRepresentativeService.defaultService().presetCustomerServiceRepresentativeInfo(user);
+	}
+	
+	
+	public static void prepareMakeGoodContext( final MasqueradeContext ctx, final HttpSession session, final List<FDCartLineI> cartLines) throws FDResourceException {
+		// List<ErpComplaintReason> selReason = ComplaintUtil.getReasonsForDepartment("Makegood");
+		final Set<String> lineIds = ctx.getMakeGoodAllowedOrderLineIds();
+		
+        String orderLineReason[]	=  new String[lineIds.size()];
+        String orderLineId[]		= new String[lineIds.size()];
+
+        // populate order line reasons with a default value, say with the first in line
+    	final String selReasonId = "nil" /* selReason.get(0).getId() */;
+        for (int i=0; i<orderLineReason.length; i++) {
+			orderLineReason[i] = selReasonId;
+        }
+        orderLineId = lineIds.toArray(orderLineId);
+
+        // decorate cart lines with carton numbers
+        //   this trick is required in order to get complaint lines accompanied with carton numbers.
+        //   note, that action results below will show a lot of errors, but discard them for now
+        if (ctx.getCartonInfo() != null) {
+        	assignCartonNumberToCartItems(cartLines, ctx.getCartonInfo());
+        }
+
+		try {
+	        ActionResult result = new ActionResult();
+			MakeGoodOrderUtility.handleMakeGood(orderLineReason, orderLineId, session, cartLines, result);
+			
+			if (!result.isSuccess()) {
+				for (final ActionError err : result.getErrors()) {
+					LOGGER.error("[" + err.getType() + "]: " + err.getDescription());
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error(e);
+		}
+	}
+	
+	
+	/**
+	 * Build carton number map
+	 * 
+	 * @param ctx
+	 * @param cartonInfoList
+	 * @param makeGoodAllowedOrderLineIds
+	 */
+	public static void buildCartonNumberMap(MasqueradeContext ctx, List<FDCartonInfo> cartonInfoList) {
+		// List<FDCartonInfo> cartonInfoList = _order.getCartonContents();
+		if (ctx != null && ctx.isMakeGood() && cartonInfoList != null) {
+			final Collection<String> makeGoodAllowedOrderLineIds = ctx.getMakeGoodAllowedOrderLineIds();
+			
+			Map<String,String> ol2cn = new HashMap<String,String>();
+			
+			for (final FDCartonInfo cInfo : cartonInfoList) {
+				final String cn = cInfo.getCartonInfo().getCartonNumber();
+				for ( FDCartonDetail cDetail : cInfo.getCartonDetails() ) {
+					if (cDetail.getCartLine() != null) {
+						final String anOrderLineId = cDetail.getCartLine().getOrderLineId();
+						
+						if (makeGoodAllowedOrderLineIds.contains( anOrderLineId ) ) {
+							ol2cn.put(anOrderLineId, cn);
+						}
+					}
+				}
+			}
+			ctx.setCartonInfo(ol2cn);
+		}
+		
+	}
+	
+    /**
+     * Utility method that assigns carton numbers to each cart lines
+     * 
+     * @param cartLines
+     * @param cartonInfo Map of OrderLineId -> Carton Numbers
+     */
+    public static void assignCartonNumberToCartItems(Collection<FDCartLineI> cartLines, Map<String,String> cartonInfo) {
+        for (final FDCartLineI cartLine : cartLines) {
+        	assign(cartonInfo, cartLine);
+        }
+    }
+
+	protected static boolean assign(Map<String, String> cartonInfo, final FDCartLineI cartLine) {
+		if (cartLine.getOrderLineId() != null && cartonInfo.get(cartLine.getOrderLineId()) != null ) {
+			cartLine.setCartonNumber( cartonInfo.get(cartLine.getOrderLineId()) );
+			LOGGER.debug("Carton Number " + cartLine.getCartonNumber() + " has been assigned to cart line (R_ID: " + cartLine.getRandomId()  + ")");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * MAKE GOOD MODE
+	 * CartonNumber -> CartLine
+	 * 
+	 * @param ctx
+	 * @param cartLine
+	 */
+	public static void assignCartonNumberToCartLine(MasqueradeContext ctx, FDCartLineI cartLine) {
+		if (! (ctx != null && ctx.isMakeGood() && ctx.getCartonInfo() != null && cartLine != null) ) {
+			return;
+		}
+
+		assign(ctx.getCartonInfo(), cartLine);
 	}
 }

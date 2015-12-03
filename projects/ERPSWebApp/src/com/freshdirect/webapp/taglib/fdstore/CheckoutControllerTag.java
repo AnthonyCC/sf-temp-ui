@@ -1,9 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,14 +12,10 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpComplaintException;
-import com.freshdirect.customer.ErpComplaintLineModel;
-import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -54,11 +48,12 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.checkout.TimeslotManipulator;
-import com.freshdirect.webapp.crm.security.CrmSecurityManager;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
-import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -153,7 +148,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	@Override
 	protected boolean performAction( HttpServletRequest request, ActionResult result ) throws JspException {
 		String action = this.getActionName();
-		HttpSession session = request.getSession();
+		final HttpSession session = request.getSession();
 		boolean saveCart = false;
 
 		final String app = (String)pageContext.getSession().getAttribute( SessionName.APPLICATION );
@@ -238,43 +233,49 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					this.setSuccessPage( backToViewCart );
 					return true;
 				}
-				String outcome = performSubmitOrder(result);
 				
-				// add logic to process make good order complaint.
+                if (currentUser.getMasqueradeContext() != null) {
+                    currentUser.getMasqueradeContext().setCsrWaivedDeliveryCharge("true".equals(request.getParameter("waive_delivery_fee")));
+                    currentUser.getMasqueradeContext().setCsrWaivedDeliveryPremium("true".equals(request.getParameter("waive_delivery_premium_fee")));
+                    currentUser.getMasqueradeContext().setSilentMode("on".equals(request.getParameter("silent_mode")));
+                    cart.setCustomerServiceMessage(request.getParameter("csr_message"));
+                    if ("true".equals(request.getParameter("waive_phone_fee"))) {
+                        cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR");
+                    }
+                }
+				
+				String outcome = performSubmitOrder(result);
+
 				MasqueradeContext masqueradeContext = currentUser.getMasqueradeContext();
 				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
-				
+
+				// add logic to process make good order complaint.
 				if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) || masqueradeMakeGoodOrderId!=null ) {
-					ErpComplaintModel complaintModel = (ErpComplaintModel)session.getAttribute( SessionName.MAKEGOOD_COMPLAINT );
-					String makeGoodOrderId = (String)session.getAttribute( SessionName.RECENT_ORDER_NUMBER );
-					if (makeGoodOrderId == null){
-						makeGoodOrderId = masqueradeMakeGoodOrderId;
-					}
-					
-					complaintModel.setMakegood_sale_id( makeGoodOrderId );
-					try {
-						addMakeGoodComplaint( result, complaintModel );
-					} catch ( Exception e ) {
-						LOGGER.error( "Add 0 credit complaint failed for make good order:" + makeGoodOrderId, e );
-						// create case here
-					}
-					
-					if ( !outcome.equalsIgnoreCase( Action.ERROR ) ) { //only clear these if there's no error on submit
-						session.removeAttribute( "makeGoodOrder" );
-						session.removeAttribute( "referencedOrder" );
-						session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
-						
-						if (masqueradeContext!=null){
-							masqueradeContext.clearMakeGoodContext();
-						}
-					}
+					MakeGoodOrderUtility.processComplaint(masqueradeContext,
+						new SessionParamGetter(session),
+						new PostAction() {
+							@Override
+							public void handle(MasqueradeContext masqueradeContext) {
+								session.removeAttribute( "makeGoodOrder" );
+								session.removeAttribute( "referencedOrder" );
+								session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
+								
+								if (masqueradeContext!=null){
+									masqueradeContext.clearMakeGoodContext();
+								}
+							}
+						},
+						outcome);
 				}
 				currentUser.setSuspendShowPendingOrderOverlay(false);
 				currentUser.setShowPendingOrderOverlay(true);
 				
 				//prepare and store model for Coremetrics report
-				CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
-				CmShop9Tag.buildPendingModels(session, cart);
+				//   EXCEPT for make-good sessions!
+				if ( masqueradeMakeGoodOrderId == null ) {
+					CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
+					CmShop9Tag.buildPendingModels(session, cart);
+				}
 
 				
 				saveCart = true;
@@ -625,6 +626,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage);
 		}
 
+	
 	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage) throws Exception {
 		SubmitOrderAction soa = new SubmitOrderAction();
 		configureAction( soa, result, session, request, response);
@@ -691,37 +693,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		return (user == null) ? null : user.getIdentity();
 	}
 	
-	//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
-
-	private void addMakeGoodComplaint( ActionResult result, ErpComplaintModel complaintModel ) throws FDResourceException, ErpComplaintException {
-
-		final NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
-
-		LOGGER.debug( "Creating credits for the following departments:" );
-		LOGGER.debug( "  Method\t\tDepartment\t\t\tAmount\t\t\tReason\t\t\tCarton Number" );
-		LOGGER.debug( "  ------\t\t----------\t\t\t------\t\t\t------\t\t\t------" );
-		
-		for ( ErpComplaintLineModel line : complaintModel.getComplaintLines() ) {
-			LOGGER.debug( line.getMethod().getStatusCode() + "\t\t" + line.getDepartmentCode() + "\t\t\t" + currencyFormatter.format( line.getAmount() ) + "\t\t\t" + line.getReason().getReason() + "\t\t\t" + line.getCartonNumber() );			
-		}
-		
-		LOGGER.debug( "  Credit Notes: " + complaintModel.getDescription() );
-		HttpSession session = pageContext.getSession();
-		FDIdentity identity = getUser().getIdentity();
-		MasqueradeContext masqueradeContext = getUser().getMasqueradeContext();
-
-		if (masqueradeContext==null){
-			String orderId = (String)session.getAttribute( "referencedOrder" );
-			CrmAgentModel agentModel =CrmSession.getCurrentAgent(session);
-			CrmAgentRole agentRole = agentModel.getRole();
-			boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
-			Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
-			FDCustomerManager.addComplaint( complaintModel, orderId, identity,autoApproveAuthorized,limit );
-
-		} else {
-			FDCustomerManager.addComplaint( complaintModel, masqueradeContext.getMakeGoodFromOrderId(), identity, masqueradeContext.isAutoApproveAuthorized(), masqueradeContext.getAutoApprovalLimit());
-		}
-	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl

@@ -266,6 +266,8 @@
 * @param? zip
 * @param? eWalletID
 * @param? mpLogoURL
+* @param? referencedOrderId
+* @param? paymentTypeDescription
 */
 {template .paymentmethod autoescape="false"}
 <div class='drawer__item'>
@@ -303,24 +305,32 @@
     </div>
     {/if}
     {if $eWalletID != '1'}
-	    {if $address1 or $address2}
-	    <div class="drawer__item__section">
-	      <p class='section__title'>Billing address</p>
-	      <div class='section__body'>
-	        {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
-	        {if $address2}<p>{$address2}</p>{/if}
-	        <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
-	      </div>
+	  {if $address1 or $address2}
+	  <div class="drawer__item__section">
+	    <p class='section__title'>Billing address</p>
+	    <div class='section__body'>
+	      {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
+	      {if $address2}<p>{$address2}</p>{/if}
+	      <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
 	    </div>
-	    {/if}
-	    {if $bestNumber}
-	    <div class="drawer__item__section">
-	      <p class='section__title'>Best # for billing inquiries:</p>
-	      <div class='section__body'>
-	        <p>{$bestNumber}</p>
-	      </div>
+	  </div>
+	  {/if}
+	  {if $bestNumber}
+	  <div class="drawer__item__section">
+	    <p class='section__title'>Best # for billing inquiries:</p>
+	    <div class='section__body'>
+	      <p>{$bestNumber}</p>
 	    </div>
-	    {/if}
+	  </div>
+	  {/if}
+	  {if $referencedOrderId and $paymentTypeDescription}
+      <div class="drawer__previewitem__section">
+        <p class='section__title'>Payment: <span style="color:red">{$paymentTypeDescription}</span></p>
+        <div class='section__body'>
+          <p>Referenced order: {$referencedOrderId}</p>
+        </div>
+      </div>
+      {/if}
 	{/if}
   </div><!--/ drawer__itemright -->
   </label>
@@ -436,6 +446,8 @@
 * @param? zip
 * @param? eWalletID
 * @param? mpLogoURL
+* @param? referencedOrderId
+* @param? paymentTypeDescription
 */
 {template .paymentmethodpreviewitemNew autoescape="false"}
 <div class='drawer__previewitem'>
@@ -486,6 +498,14 @@
       <p>{$bestNumber}</p>
     </div>
   </div>
+  {/if}
+  {if $referencedOrderId and $paymentTypeDescription}
+    <div class="drawer__previewitem__section">
+      <p class='section__title'>Payment: <span style="color:red">{$paymentTypeDescription}</span></p>
+      <div class='section__body'>
+        <p>Referenced order: {$referencedOrderId}</p>
+      </div>
+    </div>
   {/if}
 </div>
 {/template}

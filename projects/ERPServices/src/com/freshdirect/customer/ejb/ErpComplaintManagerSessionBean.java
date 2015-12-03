@@ -8,15 +8,19 @@
  */
 package com.freshdirect.customer.ejb;
 
-import java.rmi.RemoteException;
-import java.sql.*;
-import java.util.*;
-import javax.ejb.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.log4j.*;
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpComplaintReason;
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -24,6 +28,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author$
  */
 public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
+	private static final long serialVersionUID = -4023575003708712037L;
 
 	private static Category LOGGER = LoggerFactory.getInstance( ErpComplaintManagerSessionBean.class );
 
@@ -38,7 +43,7 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
         return "com.freshdirect.customer.ejb.ErpComplaintHome";
     }
 
-    public Map getReasons(boolean excludeCartonReq) {
+    public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -57,7 +62,7 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
 	}
     
     /* get complaint codes */
-    public Map getComplaintCodes() {
+    public Map<String,String> getComplaintCodes() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -75,7 +80,7 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Collection getPendingComplaintSaleIds() {
+	public Collection<String> getPendingComplaintSaleIds() {
 		Connection conn = null;
 		try {
 			conn = getConnection();

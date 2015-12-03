@@ -18,6 +18,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -129,21 +130,11 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 	}
 	
 	public void checkContext() throws CmContextException {
-		// --- [CM-FDX] No CM reporting in FDX store front ---
-		final CmContext ctx = CmContext.getContext();
-		if ( ! ctx.isEnabled() ) {
+		final HttpSession session = getSession();
+		final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		final boolean allowOverride = insertTagInCaseOfCrmContext();
+		if ( !CmContextUtility.isCoremetricsAvailable(user, allowOverride) ) {
 			throw new CmContextException("CM events are disabled");
-		}
-		// --- [CM-FDX] No CM reporting in FDX store front ---
-
-		HttpSession session = getSession();
-		CrmAgentModel agent = (CrmAgentModel) CrmSession.getCurrentAgent(session)/*session.getAttribute(AGENT_SESSION_NAME)*/;
-		
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		MasqueradeContext masqueradeContext = (user == null) ? null : user.getMasqueradeContext();
-		
-		if((agent!=null || masqueradeContext!=null) && !insertTagInCaseOfCrmContext()){
-			throw new CmContextException("Context is CRM! No Coremetrics action needed.");
 		}
 	}
 	

@@ -26,7 +26,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.fdstore.EnumEStoreId;
 
 public class CrmSession {
 
@@ -101,9 +100,9 @@ public class CrmSession {
 		session.setAttribute(CRM_SEARCH_TEMPLATE, template);
 	}
 
-	public static List findCases(HttpSession session, CrmCaseTemplate template) throws FDResourceException {
+	public static List<CrmCaseModel> findCases(HttpSession session, CrmCaseTemplate template) throws FDResourceException {
 		if (template.isBlank()) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		
 		CrmCaseTemplate lastTemplate = (CrmCaseTemplate) session.getAttribute(CRM_LAST_FIND_TEMPLATE);
@@ -111,9 +110,9 @@ public class CrmSession {
 		long now = System.currentTimeMillis();
 		Long lastCheck = (Long) session.getAttribute(CRM_LAST_FIND_TIMESTAMP);
 
-		List results;
+		List<CrmCaseModel> results;
 		if (template.equals(lastTemplate) && lastCheck != null && (now - lastCheck.longValue() < LAST_FIND_EXPIRATION)) {
-			results = (List) session.getAttribute(CRM_LAST_FIND_RESULTS);
+			results = (List<CrmCaseModel>) session.getAttribute(CRM_LAST_FIND_RESULTS);
 		} else {
 			results = CrmManager.getInstance().findCases(template);
 			session.setAttribute(CRM_LAST_FIND_TIMESTAMP, new Long(now));
@@ -193,13 +192,10 @@ public class CrmSession {
 	public static String getGlobalcontextStore(HttpSession session) {
 		String curStore = (String) session.getAttribute(CRM_GLOBALCONTEXT_STORE);
 		
-		if (curStore == null || "".equals(curStore)) {
+		if (curStore == null) {
 			CrmAgentModel curAgent = (CrmAgentModel) session.getAttribute(CRM_AGENT);
-			if (curAgent.isFDX()) {
-				curStore =  EnumEStoreId.valueOfContentId(EnumEStoreId.FDX.getContentId()).toString();
-			} else {
-				curStore = EnumEStoreId.valueOfContentId(EnumEStoreId.FD.getContentId()).toString();
-			}
+			curStore = curAgent.isFDX() ? EnumEStoreId.FDX.name() : EnumEStoreId.FD.name();
+
 			setGlobalcontextStore(session, curStore);
 		}
 		

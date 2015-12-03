@@ -321,10 +321,8 @@ int idx = 0;
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">
 				Delivery Fee<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:
-				<%if (!cart.isChargeWaived(EnumChargeType.DELIVERY) && !isReceiptPage && user.getMasqueradeContext()!=null&& parentOrderId==null) {%>				
-				Force Waive <input type="checkbox" value="true" <%=((FDCartModel)cart).isCsrWaivedDeliveryCharge()?"checked":"" %> name="waive_delivery_fee" id="waive_delivery_fee_id"><%}%>
-				<%if (!cart.isChargeWaived(EnumChargeType.DELIVERY) && !isReceiptPage && user.getMasqueradeContext()!=null&& parentOrderId!=null) {%>				
-				Force Waive <input type="checkbox" value="true" checked="checked"  name="waive_delivery_fee"><%}%> 
+				<%if (!cart.isChargeWaived(EnumChargeType.DELIVERY) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
+				Force Waive <input type="checkbox" value="true" <%=(user.getMasqueradeContext() != null ? user.getMasqueradeContext().isCsrWaivedDeliveryCharge() : false)?"checked":"" %> name="waive_delivery_fee"><%}%>
 			</td>
 			<td align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
 			<td></td>
@@ -337,7 +335,7 @@ int idx = 0;
 			<td colspan="3" align="right">
 				Delivery Premium (Hamptons)<%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:
 				<%if (!cart.isChargeWaived(EnumChargeType.DLVPREMIUM) && !isReceiptPage && user.getMasqueradeContext()!=null) {%>
-					Force Waive <input type="checkbox" value="true" <%=((FDCartModel)cart).isCsrWaivedDeliveryPremium()?"checked":"" %> name="waive_delivery_premium_fee">
+					Force Waive <input type="checkbox" value="true" <%=(user.getMasqueradeContext() != null ? user.getMasqueradeContext().isCsrWaivedDeliveryPremium() : false)?"checked":"" %> name="waive_delivery_premium_fee">
 				<%}%>
 			</td>
 			<td align="right"><%= (cart.isChargeWaived(EnumChargeType.DLVPREMIUM))?"$0.0":JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)) %></td>

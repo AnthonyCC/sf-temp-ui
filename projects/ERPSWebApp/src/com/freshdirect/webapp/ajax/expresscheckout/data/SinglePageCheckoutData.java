@@ -110,5 +110,4 @@ public class SinglePageCheckoutData {
 	public void setHeaderData(HeaderData headerData) {
 		this.headerData = headerData;
 	}
-
 }

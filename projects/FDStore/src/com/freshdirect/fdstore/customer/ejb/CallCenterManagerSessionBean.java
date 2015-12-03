@@ -28,16 +28,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
-
-import oracle.sql.ARRAY;
-import oracle.sql.ArrayDescriptor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
@@ -128,7 +124,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.analytics.model.LateIssueOrder;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -147,6 +142,9 @@ import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
 import com.freshdirect.payment.gateway.impl.Paymentech;
 import com.freshdirect.payment.gateway.impl.RequestFactory;
 
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+
 /**
  *
  *
@@ -154,12 +152,13 @@ import com.freshdirect.payment.gateway.impl.RequestFactory;
  * @author $Author:Mike Rose$
  */
 public class CallCenterManagerSessionBean extends SessionBeanSupport {
+	private static final long serialVersionUID = -3900228735015308987L;
 
 	private final static Category LOGGER = LoggerFactory.getInstance(CallCenterManagerSessionBean.class);
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
-	public Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
+	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		try {
 			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
 			return complaintSB.getReasons(excludeCartonReq);
@@ -170,7 +169,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map getComplaintCodes() throws FDResourceException {
+	public Map<String,String> getComplaintCodes() throws FDResourceException {
 		try {
 			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
 			return complaintSB.getComplaintCodes();
@@ -213,15 +212,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return sb.toString();
 	}
 
-	private static final Comparator COMPLAINTINFO_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			FDComplaintInfo info1 = (FDComplaintInfo) o1;
-			FDComplaintInfo info2 = (FDComplaintInfo) o2;
+	private static final Comparator<FDComplaintInfo> COMPLAINTINFO_COMPARATOR = new Comparator<FDComplaintInfo>() {
+		public int compare(FDComplaintInfo info1, FDComplaintInfo info2) {
 			return info1.getDeliveryDate().compareTo(info2.getDeliveryDate());
 		}
 	};
 
-	public List getPendingComplaintOrders(String reasonCode) throws FDResourceException {
+	public List<FDComplaintInfo> getPendingComplaintOrders(String reasonCode) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -236,7 +233,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 
 			ResultSet rs = ps.executeQuery();
-			Map infoMap = new HashMap();
+			Map<String,FDComplaintInfo> infoMap = new HashMap<String,FDComplaintInfo>();
 			StringBuffer saleIds = new StringBuffer();
 
 			int idCount = 0; // !!! this is just to work around the limitation of 1000 in clause in SQL
@@ -259,7 +256,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 			if (infoMap.isEmpty()) {
-				return Collections.EMPTY_LIST;
+				return Collections.emptyList();
 			}
 
 			ps = conn.prepareStatement(this.substitute(PEN_COMPLAINT_QUERY_2, '?', saleIds.toString()));
@@ -286,7 +283,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 
-			List complaintInfos = new ArrayList(infoMap.values());
+			List<FDComplaintInfo> complaintInfos = new ArrayList<FDComplaintInfo>(infoMap.values());
 			Collections.sort(complaintInfos, COMPLAINTINFO_COMPARATOR);
 			return complaintInfos;
 

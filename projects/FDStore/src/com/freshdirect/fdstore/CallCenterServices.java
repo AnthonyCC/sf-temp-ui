@@ -9,16 +9,12 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -46,6 +42,7 @@ import com.freshdirect.customer.VSReasonCodes;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria;
+import com.freshdirect.fdstore.customer.FDComplaintInfo;
 import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -68,7 +65,7 @@ public class CallCenterServices {
 	private static CallCenterManagerHome callCenterHome = null;
 
 
-	public static Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
+	public static Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
@@ -85,7 +82,7 @@ public class CallCenterServices {
 	}
 	
 	//get complaint codes
-	public static Map getComplaintCodes() throws FDResourceException {
+	public static Map<String,String> getComplaintCodes() throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
@@ -101,7 +98,7 @@ public class CallCenterServices {
 		}
 	}
 
-	public static List getPendingComplaintOrders(String reasonCode) throws FDResourceException {
+	public static List<FDComplaintInfo> getPendingComplaintOrders(String reasonCode) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}

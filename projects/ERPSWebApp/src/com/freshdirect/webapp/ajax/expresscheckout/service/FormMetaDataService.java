@@ -137,4 +137,5 @@ public class FormMetaDataService {
 	public boolean populateEbtCheck(FDUserI user) {
 		return user.isEbtAccepted();
 	}
+	
 }

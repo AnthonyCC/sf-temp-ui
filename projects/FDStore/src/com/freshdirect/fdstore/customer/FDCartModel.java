@@ -44,14 +44,13 @@ import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
@@ -72,7 +71,6 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FeeCalculator;
-import com.freshdirect.fdstore.rules.TierDeliveryFeeCalculator;
 import com.freshdirect.fdstore.rules.TieredPrice;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.ModelSupport;
@@ -225,8 +223,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	private ErpAddressModel deliveryAddress;
 
-	private boolean csrWaivedDeliveryCharge = false;
-
 	private ErpPaymentMethodI paymentMethod;
 
 	private FDDeliveryZoneInfo zoneInfo;
@@ -238,8 +234,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private String expCouponDeliveryDate = null;
 	
-	
-
 	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
 	
 	//
@@ -273,7 +267,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private ExtendDPDiscountModel dlvPassExtn;
 	
 	private Map<String,Integer> skuCount = new HashMap<String,Integer>();
-	private boolean csrWaivedDeliveryPremium = false;
 	
 	private List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
 	private Set<String> recentlyAppliedCoupons = new HashSet<String>();
@@ -792,7 +785,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			ErpChargeLineModel curr = i.next();
 			if (chargeType.equals(curr.getType())) {
 				if (charge != null) {
-					throw new RuntimeException("Multiple charges present of type " + chargeType);
+					// throw new RuntimeException("Multiple charges present of type " + chargeType);
 				}
 				charge = curr;
 			}
@@ -954,23 +947,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		
 			
 	}
-
-	public boolean isCsrWaivedDeliveryCharge() {
-		return csrWaivedDeliveryCharge;
-	}
-
-	public void setCsrWaivedDeliveryCharge(boolean b) {
-		csrWaivedDeliveryCharge = b;
-	}
-
-	public boolean isCsrWaivedDeliveryPremium() {
-		return csrWaivedDeliveryPremium;
-	}
-
-	public void setCsrWaivedDeliveryPremium(boolean b) {
-		csrWaivedDeliveryPremium = b;
-	}
-
 	
 	public boolean isAddressMismatch() {
 		if (this.deliveryAddress == null || this.paymentMethod == null) {
@@ -1094,6 +1070,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		//this.setChargeAmount(EnumChargeType.DELIVERY, zoneInfo == null ? 0.0 : zoneInfo.getDeliveryCharges());
 	}
 
+	
+	
 	public String getCustomerServiceMessage() {
 		return this.customerServiceMessage;
 	}

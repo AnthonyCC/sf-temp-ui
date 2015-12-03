@@ -81,6 +81,7 @@ import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -185,7 +186,7 @@ public class FDOrderAdapter implements FDOrderI {
 				}
 				
 				deliveryReservation = new FDReservation(
-					null,
+					new PrimaryKey(info.getDeliveryReservationId()),
 					t,
 					info.getDeliveryCutoffTime(),
 					EnumReservationType.STANDARD_RESERVATION,
@@ -1145,6 +1146,7 @@ public class FDOrderAdapter implements FDOrderI {
 	 * @see com.freshdirect.fdstore.customer.FDOrderI#getCartonContents()
 	 */
 	// List<FDCartonInfo>
+	@Override
 	public List<FDCartonInfo> getCartonContents() {
 		return cartonInfo;
 	}

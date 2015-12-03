@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
@@ -183,8 +184,11 @@ public class CartOperations {
 
 				cartLinesToAdd.add(cartLine);
 				
-				populateCoremetricsShopTag( responseData, cartLine );
-				
+				// [APPDEV-4558]
+				if (CmContextUtility.isCoremetricsAvailable(user)) {
+					populateCoremetricsShopTag( responseData, cartLine );
+				}
+
 			}
 								
 			// add collected cartlines to cart

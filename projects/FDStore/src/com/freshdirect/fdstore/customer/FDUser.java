@@ -561,8 +561,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		// evaluate special dlv charge override
 		WaiveDeliveryCharge.apply(this);
 		
-		if(this.getShoppingCart().isCsrWaivedDeliveryPremium())
-			this.getShoppingCart().setChargeWaived(EnumChargeType.DLVPREMIUM, true, "DELIVERY");
 		this.promotionEligibility = new FDPromotionEligibility();
 		// apply promotions
 		this.promotionEligibility =FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this), promotionEligibility);

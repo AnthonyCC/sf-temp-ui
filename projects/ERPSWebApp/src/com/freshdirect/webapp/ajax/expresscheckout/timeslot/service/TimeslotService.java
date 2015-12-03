@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -18,8 +20,10 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -35,8 +39,9 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class TimeslotService {
 
-    private static final TimeslotService INSTANCE = new TimeslotService();
     private static final Logger LOG = LoggerFactory.getInstance(TimeslotService.class);
+    private static final String DEFAULT_TIMESLOT_ID = "timeslotId";
+    private static final TimeslotService INSTANCE = new TimeslotService();
 
     private TimeslotService() {
     }
@@ -48,43 +53,39 @@ public class TimeslotService {
     /**
      * Load cart timeslot
      * 
-     * @param user Customer object
-     * @param cart Cart content
-     * @param matchTimeslotAndDlvAddress enforce same-zone check of timeslot and delivery address
+     * @param user Customer object @param cart Cart content @param matchTimeslotAndDlvAddress enforce same-zone check of timeslot and delivery address
      * 
      * @return
      */
-    public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart, boolean matchTimeslotAndDlvAddress) {
+    public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart) {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
         if (reservation != null) {
-        	if (matchTimeslotAndDlvAddress) {
-            	// Deal with case when timeslot zone does not match
-            	// the zone of selected address assigned to cart
-            	
-	        	// pick timeslot address
-	        	String timeslotAddressId = reservation.getAddressId();
-	        	// pick delivery address
-	        	String dlvAddressId = null;
-	        	if (cart != null && cart.getDeliveryAddress() != null) {
-	        		dlvAddressId = cart.getDeliveryAddress().getId();
-	        	}
-	
-	        	// Make the comparison, abort load if mismatch detected
-	        	if ( !(timeslotAddressId != null && dlvAddressId != null
-	        			&& timeslotAddressId.equals(dlvAddressId))) {
-	        		// timeslot has different address than the selected
-	        		LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID="
-	        				+ reservation.getTimeslotId() + ")");
-	
-	        		return timeslotData;
-	        	}
-        	}
+            if (!(cart instanceof FDOrderI)) {
+                // Deal with case when timeslot zone does not match
+                // the zone of selected address assigned to cart
+
+                // pick timeslot address
+                String timeslotAddressId = reservation.getAddressId();
+                // pick delivery address
+                String dlvAddressId = null;
+                if (cart != null && cart.getDeliveryAddress() != null) {
+                    dlvAddressId = cart.getDeliveryAddress().getId();
+                }
+
+                // Make the comparison, abort load if mismatch detected
+                if (!(timeslotAddressId != null && dlvAddressId != null && timeslotAddressId.equals(dlvAddressId))) {
+                    // timeslot has different address than the selected
+                    LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID=" + reservation.getTimeslotId() + ")");
+
+                    return timeslotData;
+                }
+            }
 
             Date startTime = reservation.getStartTime();
             Calendar startTimeCalendar = DateUtil.toCalendar(startTime);
             String dayNames[] = new DateFormatSymbols().getWeekdays();
-            timeslotData.setId(reservation.getTimeslotId());
+            timeslotData.setId(NVL.apply(reservation.getTimeslotId(), DEFAULT_TIMESLOT_ID));
             timeslotData.setYear(String.valueOf(startTimeCalendar.get(Calendar.YEAR)));
             timeslotData.setMonth(String.valueOf(startTimeCalendar.get(Calendar.MONTH) + 1));
             timeslotData.setDayOfMonth(String.valueOf(startTimeCalendar.get(Calendar.DAY_OF_MONTH)));
@@ -92,24 +93,20 @@ public class TimeslotService {
             timeslotData.setTimePeriod(format(startTime, reservation.getEndTime()));
         }
         timeslotData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("timeslot"));
+        timeslotData.setShowForceOrder(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderAvailable() && !user.getMasqueradeContext().isAddOnOrderEnabled());
+        timeslotData.setForceOrderEnabled(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderEnabled());
         return timeslotData;
     }
 
-
-    /**
-     * Convenience method 
-     * 
-     * @param user Customer object
-     * @return
-     */
-    public FormTimeslotData loadCartTimeslot(FDUserI user) {
-    	return user != null ? loadCartTimeslot(user, user.getShoppingCart(), true) : null;
-    }
-
-    
-    public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, HttpSession session) throws FDResourceException {
+    public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {
         String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
         try {
+            if (user.getMasqueradeContext() != null) {
+                user.getMasqueradeContext().setForceOrderEnabled(deliveryTimeSlotId.startsWith("f_"));
+                if (user.getOrderHistory().getPhoneOrderCount() >= 3) {
+                    user.getShoppingCart().setChargeAmount(EnumChargeType.PHONE, Double.parseDouble(ErpServicesProperties.getPhoneHandlingFee()));
+                }
+            }
             return reserveDeliveryTimeslot(deliveryTimeSlotId, session);
         } catch (ReservationException e) {
             LOG.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", deliveryTimeSlotId), e);

@@ -99,14 +99,12 @@ public class ReceiptBoxService {
             if (order.isChargeWaived(EnumChargeType.DELIVERY)) {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
                 data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_CHARGE_NAME);
                 data.setText(DELIVERY_CHARGE_WAIVED_NAME);
                 data.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
                 receiptBox.add(data);
             } else {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
                 data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_CHARGE_NAME);
                 data.setText(DELIVERY_CHARGE_NAME);
                 data.setValue(JspMethods.formatPrice(order.getChargeAmount(EnumChargeType.DELIVERY)));
                 if (order.isChargeTaxable(EnumChargeType.DELIVERY)) {
@@ -119,14 +117,12 @@ public class ReceiptBoxService {
             if (order.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
                 data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_CHARGE_NAME);
                 data.setText(DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME);
                 data.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
                 receiptBox.add(data);
             } else {
                 CartSubTotalFieldData data = new CartSubTotalFieldData();
                 data.setId(DELIVERY_CHARGE_ID);
-                data.setText(DELIVERY_CHARGE_NAME);
                 data.setText(DELIVERY_PREMIUM_HAMPTONS_NAME);
                 data.setValue(JspMethods.formatPrice(order.getChargeAmount(EnumChargeType.DLVPREMIUM)));
                 if (order.isChargeTaxable(EnumChargeType.DLVPREMIUM)) {

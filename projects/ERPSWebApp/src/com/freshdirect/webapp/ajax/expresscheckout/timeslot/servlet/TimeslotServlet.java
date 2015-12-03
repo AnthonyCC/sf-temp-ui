@@ -33,7 +33,7 @@ public class TimeslotServlet extends BaseJsonServlet {
 			ValidationResult validationResult = new ValidationResult();
 			FormDataResponse responseData = FormDataService.defaultService().prepareFormDataResponse(timeslotRequestData, validationResult);
 			try {
-				List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, request.getSession());
+				List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, user, request.getSession());
 				validationResult.getErrors().addAll(timeslotReservationErrors);
 			} catch (FDResourceException e) {
 				validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserve timeslot due to technical difficulty."));

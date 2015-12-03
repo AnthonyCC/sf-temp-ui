@@ -333,7 +333,7 @@ function loadSignature(order)
 					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
 				<% } %>
 				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() > 0) ){ %>
-					<% if(_FDXValue.equals(_order.getEStoreId().getContentId())) {%>
+					<% if(EnumEStoreId.FDX == _order.getEStoreId()) {%>
 						<br>
 						<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Package Contents</a><br/>					
 						</br>

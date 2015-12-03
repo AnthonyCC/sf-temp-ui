@@ -368,6 +368,14 @@
 	   <url-pattern>/api/expresscheckout/gogreen</url-pattern>
 	</servlet-mapping>
 	<servlet>
+	   <servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.csr.servlet.CustomerServiceRepresentativeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>CustomerServiceRepresentativeServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/csr</url-pattern>
+	</servlet-mapping>
+	<servlet>
 	   <servlet-name>PromotionServlet</servlet-name>
 	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.promotion.servlet.PromotionServlet</servlet-class>
 	</servlet>

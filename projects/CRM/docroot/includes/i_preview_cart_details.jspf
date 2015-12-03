@@ -294,7 +294,7 @@
 		<%}else{%>
 			<td colspan="2">Delivery Fee: &nbsp;&nbsp; 
 			<%if (isSubmitOrderStep ) {%>
-            	Force Waive <input type="checkbox" value="true" <%=((FDCartModel)order).isCsrWaivedDeliveryCharge()?"checked":"" %> name="waive_delivery_fee">
+            	Force Waive <input type="checkbox" value="true" <%=(user.getMasqueradeContext() != null ? user.getMasqueradeContext().isCsrWaivedDeliveryCharge() : false) ?"checked":"" %> name="waive_delivery_fee">
 			<%}%>
             </td>
 			<td align="right">

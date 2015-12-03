@@ -77,8 +77,8 @@
 				%>
 				<select id="globalContext-Store"  <%= (crmRole.isRoleFDX(crmRole)) ? "disabled" : ""%>>
 					<option <%= ((globalContextStore).equalsIgnoreCase("All"))?"selected":"" %> value="All">All</option>
-					<option <%= ((globalContextStore).equals(_FDValue))?"selected":"" %> value="<%= _FDValue %>"><%= _FDValue %></option>
-					<option <%= ((globalContextStore).equals(_FDXValue))?"selected":"" %> value="<%= _FDXValue %>"><%= _FDXValue %></option>
+					<option <%= ((globalContextStore).equals(EnumEStoreId.FD.name()))?"selected":"" %> value="<%= EnumEStoreId.FD.name() %>"><%= EnumEStoreId.FD.name() %></option>
+					<option <%= ((globalContextStore).equals(EnumEStoreId.FDX.name()))?"selected":"" %> value="<%= EnumEStoreId.FDX.name() %>"><%= EnumEStoreId.FDX.name() %></option>
 				</select>
 				
 				Facility:&nbsp;

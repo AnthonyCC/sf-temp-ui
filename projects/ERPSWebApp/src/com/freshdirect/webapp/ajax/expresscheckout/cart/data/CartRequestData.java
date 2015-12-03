@@ -35,7 +35,9 @@ public class CartRequestData implements Serializable {
 		
 		public static final String CHANGE_QUANTITY = "cqu"; 
 		public static final String CHANGE_SALESUNIT = "csu"; 
-		public static final String REMOVE = "rmv"; 
+		public static final String REMOVE = "rmv";
+		// make-good order case
+		public static final String CHANGE_COMPLAINT_REASON = "ccr";
 		
 		private String type;
 		private Object data;

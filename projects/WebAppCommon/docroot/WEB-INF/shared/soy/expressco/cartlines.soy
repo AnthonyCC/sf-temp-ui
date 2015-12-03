@@ -11,6 +11,7 @@
  * @param? promotionApplied
  * @param? couponMessage subtotal
  * @param populateDCPDPromoDiscount
+ * @param? customerServiceRepresentative
  * @param? beforeCheckoutAction
  */
 {template .viewcartlines autoescape="false"}
@@ -22,6 +23,7 @@
    {call .cartsection data="$section"}
     {param cartlineType: 'YOUR_CART' /}
     {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
+    {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
 </div>
@@ -34,6 +36,7 @@
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
   {param billingReferenceInfo: false /}
+  {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
     {param buttonText: 'Checkout' /}
@@ -51,12 +54,14 @@
  * @param? billingReferenceInfo billing reference info
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
+ * @param? customerServiceRepresentative
  */
 {template .checkoutlines autoescape="false"}
 <div class='cartcontent'>
   {foreach $section in $cartSections}
    {call .cartsection data="$section"}
     {param cartlineType: 'CHECKOUT' /}
+    {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
 </div>
@@ -68,6 +73,7 @@
   {param billingReferenceInfo: $billingReferenceInfo /}
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+  {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
     {param buttonText: 'Place Order' /}
@@ -168,14 +174,16 @@
  * @param info Cartsection additional info
  * @param cartlineType Cartsection type: wine or fallback
  * @param populateDCPDPromoDiscount
+ * @param customerServiceRepresentative
  */
 {template .cartsection autoescape="false"}
 <div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
   <h2 class='cartsection__title'>{if $info.recipe}Recipe: <span class="cartsection__title-noweight">{$title}</span>{else}{$title}{/if}{if $info.recipe and $cartlineType == 'YOUR_CART'}<span data-component="removeRecipeButton"><img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete all recipe ingredients</span>{/if}</h2>
   {foreach $cartline in $cartLines}
     {delcall expressco.cartline data="$cartline" variant="$cartlineType"}
-		{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
-    {/delcall} 
+      {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
+      {param customerServiceRepresentative: $customerServiceRepresentative /}
+    {/delcall}
   {/foreach}
 
   {if $info.subTotal}
@@ -212,6 +220,8 @@
  * @param? mealBundle
  * @param? productId
  * @param? categoryId
+ * @param? customerServiceRepresentative
+ * @param? complaintReason masquerade mode make good order reason text
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -252,6 +262,16 @@
       </div>
       {/if}
       {if isNonnull($populateDCPDPromoDiscount[$id])}<br><div class="promoMessage">{$populateDCPDPromoDiscount[$id]}</div>{/if}
+      {if $customerServiceRepresentative and $customerServiceRepresentative.complaintReasons}
+      <label class="cartline-complaint-reason-select">Make Good reason:
+      <select data-component="complaintreason">
+      	<option value="nil" {if not $complaintReason}selected{/if}>- Choose reason -</option>
+        {foreach $option in $customerServiceRepresentative.complaintReasons}
+          <option value="{$option.id}" {if $complaintReason and $complaintReason.id == $option.id}selected{/if}>{$option.reason}</option>
+        {/foreach}
+      </select>
+      </label>
+      {/if}
     </div>
   </div>
   <div class='cartline-delete cartline-box'>
@@ -319,6 +339,7 @@
  * @param? hasDepositValue Boolean
  * @param? hasScaledPricing Boolean
  * @param? freeSamplePromoProduct Boolean free sample product
+ * @param? complaintReason masquerade mode make good order reason text
  */
 {deltemplate expressco.cartline autoescape="false" variant="'CHECKOUT'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -354,7 +375,7 @@
           <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
           {/if}
         {/if}
-      {/if}  
+      {/if}
       {if $coupon and $couponClipped}
       <div class="cartline-coupon">
         {call common.ecoupon}
@@ -366,6 +387,7 @@
         {/call}
       </div>
       {/if}
+      {if $complaintReason and $complaintReason.reason}<p class='cartline-complaint'>Make Good reason: {$complaintReason.reason}</p>{/if}
     </div>
   </div>
   <div class='cartline-delete cartline-box'>
@@ -409,6 +431,7 @@
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
+ * @param? customerServiceRepresentative Customer service representative data
  */
 {template .total autoescape="false"}
 <div class='total'>
@@ -456,11 +479,29 @@
     </div>
     {/if}
     {if $userRecognized}
-    <div class='total__gogreen'>
-      <form fdform="gogreen" action="#">
-        <p class="gogreen-text"><label for="gogreen"><input id="gogreen" fdform-button="submitgogreen" fdform-prevent="manual" name="goGreen" type="checkbox" value="Y" {if $goGreen}checked{/if} /><strong>Go Green. Go Paperless.</strong> Get email receipts and save a tree.</label></p>
-      </form>
-    </div>
+      <div class='total__gogreen'>
+        <form fdform="gogreen" action="#">
+          <p class="gogreen-text"><label for="gogreen"><input id="gogreen" fdform-button="submitgogreen" fdform-prevent="manual" name="goGreen" type="checkbox" value="Y" {if $goGreen}checked{/if} /><strong>Go Green. Go Paperless.</strong> Get email receipts and save a tree.</label></p>
+        </form>
+      </div>
+      {if $customerServiceRepresentative}
+      <div class="total-masq">
+        <form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" action="#">
+          {if $customerServiceRepresentative.deliveryCharge > 0}
+            <p><label for="deliveryForceWaived">Delivery Fee: Force Waive <input type="checkbox" name="dlvForceWaive" {if $customerServiceRepresentative.deliveryForceWaived}checked{/if}></label></p>
+          {/if}
+          {if $customerServiceRepresentative.deliveryChargePremium > 0}
+            <p><label for="deliveryForceWaivedPremium">Delivery Fee: Force Waive Premium <input type="checkbox" name="dlvForceWaivePremium" {if $customerServiceRepresentative.isPremiumDeliveryForceWaived}checked{/if}></label></p>
+          {/if}
+          {if $customerServiceRepresentative.phoneCharge > 0}
+            <p><label for="phoneHandlingChargeWaived">Waive Phone Handling Charge (${$customerServiceRepresentative.phoneCharge}) <input type="checkbox" name="waivePhoneHandlingCharge" {if $customerServiceRepresentative.phoneHandlingChargeWaived}checked{/if}></label></p>
+          {/if}
+          <p><label for="emailInvoiceSendingSkipped">Don't send e-mail invoice <input type="checkbox" name="silentMode" {if $customerServiceRepresentative.emailInvoiceSendingSkipped}checked{/if}></label></p>
+          <p><label for="customerInvoiceMessage">Customer Invoice Message <input class="masq-input" type="text" name="customerInvoiceMessage" {if $customerServiceRepresentative.customerInvoiceMessage}value="{$customerServiceRepresentative.customerInvoiceMessage}"{/if}></label></p>
+          <p><button class="cssbutton green" fdform-button="submitcsrfields">apply</button></p>
+        </form>
+      </div>
+      {/if}
     {/if}
   </div>
   <div class='total__subtotal total-right'>

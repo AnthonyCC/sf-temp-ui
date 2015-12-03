@@ -22,6 +22,6 @@
 /* END setup changing global context. use this everywhere */
 
 /* helper variables */
-	String _FDValue = EnumEStoreId.valueOfContentId(EnumEStoreId.FD.getContentId()).toString();
-	String _FDXValue = EnumEStoreId.valueOfContentId(EnumEStoreId.FDX.getContentId()).toString();
+	String _FDValue = EnumEStoreId.FD.name();
+	String _FDXValue = EnumEStoreId.FDX.name();
 %>

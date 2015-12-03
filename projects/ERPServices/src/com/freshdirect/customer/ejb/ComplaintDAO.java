@@ -56,16 +56,16 @@ public class ComplaintDAO implements java.io.Serializable {
 		"  and cdc.obsolete is null " +
 		"order by cd.code, cdc.priority, cc.name";
 	
-	public Map getReasons(Connection conn, boolean excludeCartonReq) throws SQLException {
+	public Map<String, List<ErpComplaintReason>> getReasons(Connection conn, boolean excludeCartonReq) throws SQLException {
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(excludeCartonReq ? reasonCodeQuery_noCartReq : reasonCodeQuery);
-		Map results = new HashMap();
+		Map<String, List<ErpComplaintReason>> results = new HashMap<String, List<ErpComplaintReason>>();
 		while (rs.next()) {
             ErpComplaintReason ecr = new ErpComplaintReason(rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4),
             		rs.getInt(5), rs.getString(6), EnumComplaintDlvIssueType.getEnum(rs.getString(6)) );
-            List reasons = (List) results.get(ecr.getDepartmentCode());
+            List<ErpComplaintReason> reasons = (List<ErpComplaintReason>) results.get(ecr.getDepartmentCode());
             if (reasons == null) {
-                reasons = new ArrayList();
+                reasons = new ArrayList<ErpComplaintReason>();
                 results.put(ecr.getDepartmentCode(), reasons);
                 
             }
@@ -79,10 +79,10 @@ public class ComplaintDAO implements java.io.Serializable {
 	/* get all complaint codes */
 	private static String complaintCodeQuery = "select code, name from cust.complaint_code";
 	
-	public Map getComplaintCodes(Connection conn) throws SQLException {
+	public Map<String,String> getComplaintCodes(Connection conn) throws SQLException {
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(complaintCodeQuery);
-		Map results = new HashMap();
+		Map<String,String> results = new HashMap<String,String>();
 		while (rs.next()) {
             results.put(rs.getString(1), rs.getString(2));   
 		}
@@ -92,12 +92,12 @@ public class ComplaintDAO implements java.io.Serializable {
 	}
 
 
-	public Collection getPendingComplaintSaleIds(Connection conn) throws SQLException {
+	public Collection<String> getPendingComplaintSaleIds(Connection conn) throws SQLException {
 		String sql = "SELECT SALE_ID FROM CUST.COMPLAINT WHERE STATUS = 'PEN'";
 
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
-		List results = new ArrayList();
+		List<String> results = new ArrayList<String>();
 		while (rs.next()) {
 			results.add( rs.getString("SALE_ID") );
 		}

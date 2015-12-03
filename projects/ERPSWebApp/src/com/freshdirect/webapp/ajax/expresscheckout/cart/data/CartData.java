@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
 import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 
 /**
@@ -89,7 +91,9 @@ public class CartData extends AbstractCoremetricsResponse {
     private ProductSamplesCarousel productSamplesTab;
 
     private BillingReferenceInfo billingReferenceInfo;
-
+    
+    private CustomerServiceRepresentativeData csr;
+    
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -486,6 +490,14 @@ public class CartData extends AbstractCoremetricsResponse {
         private String productId;
         private String categoryId;
 
+        /**
+         * Reason given for the given cart line item
+         * (make-good specific attribute)
+         */
+        private ErpComplaintReason complaintReason;
+
+        private String originalOrderLineId;
+        
         public int getId() {
             return id;
         }
@@ -709,6 +721,27 @@ public class CartData extends AbstractCoremetricsResponse {
             public void setDescription(String description) {
                 this.description = description;
             }
+        }
+        
+        /**
+         * Return complaint reason if available
+         * (make-good only attribute)
+         * @return
+         */
+        public ErpComplaintReason getComplaintReason() {
+			return complaintReason;
+		}
+        
+        public void setComplaintReason(ErpComplaintReason complaintReason) {
+			this.complaintReason = complaintReason;
+		}
+
+        public String getOriginalOrderLineId() {
+            return originalOrderLineId;
+        }
+
+        public void setOriginalOrderLineId(String originalOrderLineId) {
+            this.originalOrderLineId = originalOrderLineId;
         }
     }
 
@@ -964,6 +997,16 @@ public class CartData extends AbstractCoremetricsResponse {
 
     public void setBillingReferenceInfo(BillingReferenceInfo billingReferenceInfo) {
         this.billingReferenceInfo = billingReferenceInfo;
+    }
+
+    
+    public CustomerServiceRepresentativeData getCustomerServiceRepresentative() {
+        return csr;
+    }
+
+    
+    public void setCustomerServiceRepresentative(CustomerServiceRepresentativeData csr) {
+        this.csr = csr;
     }
 
 }

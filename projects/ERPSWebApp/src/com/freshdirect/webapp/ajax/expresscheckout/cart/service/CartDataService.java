@@ -25,6 +25,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.ErpComplaintLineModel;
+import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -35,6 +38,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -64,6 +68,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartRequestData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ItemCount;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ModifyCartData;
+import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
@@ -74,6 +79,7 @@ import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleSe
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
+import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.JspMethods;
@@ -88,11 +94,11 @@ public class CartDataService {
     private static final String VIEW_CART_HEADER_MESSAGE_JSON_KEY = "viewCartHeaderMessage";
     private static final String WARNING_MESSAGE_JSON_KEY = "warningMessage";
     private static final String RECIPE_PREFIX_PATTERN = "\\s*(R|r)ecipe\\s*:\\s*";
-    
+
     private static final Logger LOG = LoggerFactory.getInstance(CartDataService.class);
 
     private static final CartDataService INSTANCE = new CartDataService();
-    
+
     public static CartDataService defaultService() {
         return INSTANCE;
     }
@@ -163,7 +169,16 @@ public class CartDataService {
 
     public FormDataResponse validateOrderMinimumOnStartCheckout(FDUserI user, FormDataRequest request) throws FDResourceException {
         FormDataResponse result = createStartCheckoutResponseData(request);
-        String orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
+
+        // APPDEV-4552 - no minimum check in masquerade mode
+        final boolean isInCrmMasqMode = (user != null && user.getMasqueradeContext() != null);
+
+        String orderMinimumWarningMessageKey = null;
+
+        if (!isInCrmMasqMode) {
+            orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
+        }
+
         if (orderMinimumWarningMessageKey != null) {
             Map<String, Object> headerMessageMap = new HashMap<String, Object>();
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
@@ -233,11 +248,11 @@ public class CartDataService {
             cal.setTime(modifyCart.getOriginalOrder().getDatePlaced());
             cal.add(Calendar.DAY_OF_MONTH, 8);
             Date weekFromOrderDate = cal.getTime();
-            
+
             Date cutoffTime = modifyCart.getOriginalOrder().getDeliveryReservation().getCutoffTime();
-            
+
             cutoffTime = ShoppingCartUtil.getCutoffByContext(cutoffTime, mUser);
-            
+
             modifyCartData.setCutoffTime(printDate(cutoffTime));
             modifyCartData.setOneWeekLater(printDate(weekFromOrderDate));
         }
@@ -298,6 +313,7 @@ public class CartDataService {
 
     public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Integer> recentIds, ProductModel productNode,
             FDUserI user) {
+
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
         populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
         item.setMealBundle(HolidayMealBundleService.defaultService().isProductModelLayoutTypeHolidayMealBundle(productNode));
@@ -312,6 +328,7 @@ public class CartDataService {
             CartData.Quantity q = cartLineSoldByQuantity(cartLine, productNode, user, item);
             itemCount.setValue(itemCount.getValue() + q.getQuantity());
         }
+
         return item;
     }
 
@@ -368,6 +385,25 @@ public class CartDataService {
         }
     }
 
+    /**
+     * Associate make-good complaint to CartData.Item
+     * 
+     * @param item
+     * @param cartLine
+     * @param complaintModel
+     */
+    private void populateCartDataItemWithMakeGoodAttributes(final CartData.Item item, final FDCartLineI cartLine, final ErpComplaintModel complaintModel) {
+        if (complaintModel != null) {
+            // match complaint line with orderline id of cart item
+            ErpComplaintLineModel line = complaintModel.getComplaintLine(cartLine.getOrderLineId());
+            if (line != null) {
+                item.setComplaintReason(line.getReason());
+            } else {
+                // LOG.error("No matching complaint line for cart line " + cartLine.getOrderLineId() + " of order " + order.getErpSalesId());
+            }
+        }
+    }
+
     private List<CartData.Section> populateCartDataSections(Map<SectionInfo, List<CartData.Item>> sectionMap, Map<String, String> sectionHeaderImgMap) {
         List<CartData.Section> sections = new ArrayList<CartData.Section>();
         for (SectionInfo info : sectionMap.keySet()) {
@@ -384,9 +420,9 @@ public class CartDataService {
 
     private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
         try {
-        	Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
-        	Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
-        	List<String> usedDcpdDiscounts = new ArrayList<String>();
+            Map<Integer, String> dcpdCartlineMessage = new HashMap<Integer, String>();
+            Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
+            List<String> usedDcpdDiscounts = new ArrayList<String>();
             List<FDCartLineI> cartLines = loadCartOrderLines(userId, cart);
             Map<SectionInfo, List<CartData.Item>> sectionMap = new HashMap<SectionInfo, List<CartData.Item>>();
             Map<String, String> sectionHeaderImgMap = new HashMap<String, String>();
@@ -394,6 +430,13 @@ public class CartDataService {
             Map<String, SectionInfo> sectionInfos = new HashMap<String, SectionInfo>();
             boolean isWineInCart = false;
             boolean hasEstimatedPriceItemInCart = false;
+
+            final HttpSession session = request.getSession();
+            final boolean isMakeGoodMode = user != null && user.getMasqueradeContext() != null && user.getMasqueradeContext().getMakeGoodFromOrderId() != null; // ==
+            // SessionName.MAKEGOOD_COMPLAINT
+            // NOTE variable below only makes sense in make-good order mode, otherwise it is null
+            final ErpComplaintModel complaintModel = (ErpComplaintModel) session.getAttribute("fd.cc.makegoodComplaint"); // == SessionName.MAKEGOOD_COMPLAINT
+
             int sessionUserLevel = 0;
             for (FDCartLineI cartLine : cartLines) {
                 ProductModel productNode = cartLine.lookupProduct();
@@ -412,7 +455,7 @@ public class CartDataService {
                     sectionInfoKey = "wineSectionKey";
                 } else {
                     sectionInfoKey = cartLine.getDepartmentDesc();
-                    if (cartLine.isEstimatedPrice()){
+                    if (cartLine.isEstimatedPrice()) {
                         hasEstimatedPriceItemInCart = true;
                     }
                 }
@@ -437,10 +480,15 @@ public class CartDataService {
                 List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
                 loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
                 CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
+
+                if (isMakeGoodMode) {
+                    populateCartDataItemWithMakeGoodAttributes(item, cartLine, complaintModel);
+                }
+
                 sectionList.add(item);
                 String dcpdMessage = populateDCPDPromoDiscount(user, request, cartLine, dcpdMinPromo, usedDcpdDiscounts);
-                if(null != dcpdMessage && !"".equals(dcpdMessage)){
-                dcpdCartlineMessage.put(item.getId(), dcpdMessage);
+                if (null != dcpdMessage && !"".equals(dcpdMessage)) {
+                    dcpdCartlineMessage.put(item.getId(), dcpdMessage);
                 }
             }
             cartData.setPopulateDCPDPromoDiscount(dcpdCartlineMessage);
@@ -470,7 +518,6 @@ public class CartDataService {
                 cartData.setUserCorporate(user.isCorporateUser());
                 cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
             }
-            HttpSession session = request.getSession();
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);
             cartData.setModifyCartData(isModifyOrderMode(session));
@@ -478,7 +525,8 @@ public class CartDataService {
             cartData.setErrorMessage(null);
             cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
-            cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));            
+            cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+            cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
@@ -492,43 +540,43 @@ public class CartDataService {
         return billingReferenceInfo;
     }
 
-    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo, List<String> usedDcpdDiscounts) {    	
-		String dcpdMinMessage = "";
-		String promoKey = "";		
-			
-		if(null!=dcpdMinPromo && dcpdMinPromo.size()>0){
-		for(Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();){			
-			promoKey = iter.next();
-		
-			if(!usedDcpdDiscounts.contains(promoKey)){
-				FDMinDCPDTotalPromoData dcpdPromoModel = dcpdMinPromo.get(promoKey);
-				List<FDCartLineI> dcpdCartLines = dcpdPromoModel.getDcpdCartLines();
-			
-					for(FDCartLineI dcpdCartLine:dcpdCartLines){
-						if(cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())){
-							StringBuffer sb = new StringBuffer();
-							sb.append(" Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
-							
-							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
-							if(null==id || "".equals(id)){
-								sb.append(" promotional products");
-							}
-							else{
-							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"> promotional products</a>");
-							}
-							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
-							dcpdMinMessage = sb.toString();						
-							usedDcpdDiscounts.add(promoKey);
-							break;
-						}
-					}
-				}
-			}
-		}
-		return dcpdMinMessage;
-	}
+    private String populateDCPDPromoDiscount(FDUserI user, HttpServletRequest request, FDCartLineI cartLine, Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo,
+            List<String> usedDcpdDiscounts) {
+        String dcpdMinMessage = "";
+        String promoKey = "";
 
-	private ProductData populateCouponInfo(FDCartLineI cartLine, FDUserI user) {
+        if (null != dcpdMinPromo && dcpdMinPromo.size() > 0) {
+            for (Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();) {
+                promoKey = iter.next();
+
+                if (!usedDcpdDiscounts.contains(promoKey)) {
+                    FDMinDCPDTotalPromoData dcpdPromoModel = dcpdMinPromo.get(promoKey);
+                    List<FDCartLineI> dcpdCartLines = dcpdPromoModel.getDcpdCartLines();
+
+                    for (FDCartLineI dcpdCartLine : dcpdCartLines) {
+                        if (cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())) {
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(" Spend $" + Math.round(100 * (dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal())) / 100d + " more on");
+
+                            String id = (null != dcpdPromoModel.getContentKey()) ? dcpdPromoModel.getContentKey().getId() : "";
+                            if (null == id || "".equals(id)) {
+                                sb.append(" promotional products");
+                            } else {
+                                sb.append(" <a href=" + request.getContextPath() + "/browse.jsp?id=" + id + "> promotional products</a>");
+                            }
+                            sb.append(" to save $" + Math.round(100 * dcpdPromoModel.getHeaderDiscAmount()) / 100d);
+                            dcpdMinMessage = sb.toString();
+                            usedDcpdDiscounts.add(promoKey);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return dcpdMinMessage;
+    }
+
+    private ProductData populateCouponInfo(FDCartLineI cartLine, FDUserI user) {
         ProductData productData = new ProductData();
         ProductDetailPopulator.postProcessPopulate(user, productData, cartLine.getSkuCode(), true, cartLine);
         return productData;
@@ -549,8 +597,8 @@ public class CartDataService {
                 if (user.isCouponsSystemAvailable()) {
                     couponMessage = "One or more coupons have not been applied to your order. See indicator(s) in red below. <a href=\"#\" onclick=\"doOverlayDialog('/media/editorial/ecoupons/coupons_info.html'); return false;\">More coupon info.</a>";
                 } else {
-                	if(FDCouponProperties.isDisplayMessageCouponsNotAvailable())
-                    couponMessage = SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE;
+                    if (FDCouponProperties.isDisplayMessageCouponsNotAvailable())
+                        couponMessage = SystemMessageList.MSG_COUPONS_SYSTEM_NOT_AVAILABLE;
                 }
                 break;
             }
@@ -645,13 +693,14 @@ public class CartDataService {
         }
     }
 
-    private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo, boolean hasEstimatedPriceItemInCart, String subTotalText) {
+    private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo, boolean hasEstimatedPriceItemInCart,
+            String subTotalText) {
         sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalWithoutWineAndSpirit(cart)));
         sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueWithoutWineAndSpirit(cart)));
         sectionInfo.setSubTotalText(subTotalText);
         sectionInfo.setHasEstimatedPrice(hasEstimatedPriceItemInCart);
     }
-    
+
     private String printDate(Date date) {
         return new SimpleDateFormat("'<b>'h:mm a'</b> on <b>'EEEEE, MM/dd/yyyy'</b>'").format(date);
     }
@@ -681,8 +730,48 @@ public class CartDataService {
                     continue;
                 }
                 String changeType = change.getType();
-                updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType);
-                CartOperations.populateCoremetricsShopTag(cartData, cartLine);
+
+                if (CartRequestData.Change.CHANGE_COMPLAINT_REASON.equals(changeType)) {
+                	// SPECIAL CASE: complaints are stored in a different structure
+	            	final String reasonId = (String) change.getData();
+
+	            	final ErpComplaintModel complaintModel = (ErpComplaintModel) request.getSession().getAttribute("fd.cc.makegoodComplaint");
+	            	if (complaintModel == null) {
+	                    LOG.error("Missing complaint data infrastructure, not found in session");
+	            		continue;
+	            	}
+
+	                final ErpComplaintLineModel line = complaintModel.getComplaintLine(cartLine.getOrderLineId());
+	                if (line == null) {
+	                    LOG.error("Failed to get complaint line for order line ID " + cartLine.getOrderLineId());
+	                	continue;
+	                }
+	                
+	                // set or clear selection
+	            	if (reasonId == null || "".equals(reasonId)) {
+            			line.setReason(null);
+	            	} else {
+	            		boolean isSet = false;
+		            	// go through the available reasons
+	                	for (ErpComplaintReason selReason : ComplaintUtil.getReasonsForDepartment("Makegood")) {
+	                		if (reasonId.equals( selReason.getId())) {
+	                			line.setReason(selReason);
+	                			isSet = true;
+	        	            	break;
+	                		}
+	                	}
+	                	if (!isSet) {
+                			line.setReason(null);
+	                	}
+	            	}
+                } else {
+                	updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType);
+                }
+                
+				// [APPDEV-4558] check if CM reporting is enabled
+                if (CmContextUtility.isCoremetricsAvailable(user)) {
+                	CartOperations.populateCoremetricsShopTag(cartData, cartLine);
+                }
             }
         } catch (Exception e) {
             LOG.error("Error while modifying cart for user " + userId, e);

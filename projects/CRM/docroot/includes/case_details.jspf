@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.crm.CrmCasePriority' %>
 <%@ page import='com.freshdirect.crm.CrmCaseQueue' %>
 <%@ page import='com.freshdirect.crm.CrmCaseSubject' %>
+<%@ page import="com.freshdirect.fdstore.EnumEStoreId"%>
 <%@ page import='com.freshdirect.fdstore.customer.FDOrderI' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
@@ -618,7 +619,7 @@ if (order != null) {
 	if (cartons.size() > 0) {
 %>
 					<div id="cartons" style="float-left; padding: 0 1em;">
-						<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+						<% if( EnumEStoreId.FDX != order.getEStoreId() ) {%>
 						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info<span class="casedisp_Err_invis" id="cartonsErr">*</span></div>
 						<% } else { %>
 						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Bag Info<span class="casedisp_Err_invis" id="cartonsErr">*</span></div>
@@ -629,7 +630,7 @@ if (order != null) {
 						<table style="width: 100%" cellspacing="0" cellpadding="0">
 							<tr>
 								<th>&nbsp;</th>
-								<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+								<% if( EnumEStoreId.FDX != order.getEStoreId()) {%>
 									<th style="text-align: left; border-bottom: 1px solid black;">Carton Number</th>
 									<th style="text-align: left; border-bottom: 1px solid black;">Type</th>
 								<% } else { %>
@@ -644,7 +645,7 @@ if (order != null) {
 							<tr>
 								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %> <%= autoCaseComplaintId != null ? "disabled=\"1\"" : "" %>></td>
 								<td style="font-weight: bold;"><a style="text-decoration: none;" href="#" onclick="showCartonInfo('<%= ci.getCartonInfo().getCartonNumber() %>');return false;"><%= ci.getCartonInfo().getCartonNumber() %></a></td>
-								<% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+								<% if( EnumEStoreId.FDX != order.getEStoreId() ) {%>
 								<td style="font-weight: bold;"><%= ci.getCartonInfo().getCartonType() %></td>
 								<% } %>
 							</tr>

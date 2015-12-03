@@ -64,7 +64,7 @@
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr valign="top">
   <% if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
-  <% if(!_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+  <% if( EnumEStoreId.FDX != order.getEStoreId() ) {%>
 	  <th align="left" width="150px">Quantity</th>
 	  <th align="left">Product</th>
 	  <th align="left" width="90px">Final Weight</th>
@@ -80,7 +80,7 @@
 			<% if(bShowForm) { %>
 				<FORM ACTION="<%= successPage %>&cartonNumber=<%=carton.getCartonInfo().getCartonNumber()%>" METHOD="POST" NAME="carton_<%= counter %>">
 			<% } //bShowForm%>
-			<% if(_FDXValue.equals(order.getEStoreId().getContentId())) {%>
+			<% if( EnumEStoreId.FDX == order.getEStoreId() ) {%>
 				<table width="100%" class="order" cellspacing="0" cellpadding="0">
 				
 					<tr valign="top" class="list_odd_row">

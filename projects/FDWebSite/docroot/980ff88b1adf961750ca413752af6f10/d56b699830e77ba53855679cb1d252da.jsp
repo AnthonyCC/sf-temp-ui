@@ -1,3 +1,11 @@
+<%@page import="com.freshdirect.customer.EnumChargeType"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.webapp.crm.CrmMasqueradeUtil"%>
 <%@page import="com.freshdirect.security.ticket.MasqueradeParams"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
@@ -94,44 +102,20 @@
 		out.print("Customer not found.");	
 	}
 	FDUser loginUser =null;
+
+
 	try {
 		
-		loginUser = FDCustomerManager.recognize( identity );
     	// masquerade
-    	// FIXME context builing should be extracted to a builder class
-    	MasqueradeContext ctx = new MasqueradeContext();
-    	ctx.setAgentId(agentId);
-    	ctx.setHasCustomerCase(params.hasCustomerCase);
-    	ctx.setForceOrderAvailable(params.forceOrderAvailable);
-    	ctx.setAutoApprovalLimit(params.autoApprovalLimit);
-    	ctx.setAutoApproveAuthorized(params.autoApproveAuthorized);
-		
-    	if (params.makeGoodFromOrderId!=null) {
-    		final FDOrderI _order = FDCustomerManager.getOrder(loginUser.getIdentity(), params.makeGoodFromOrderId);
-    		
-			ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
-			Set<String> makeGoodAllowedOrderLineIds = new HashSet<String>();
-			ctx.setMakeGoodAllowedOrderLineIds(makeGoodAllowedOrderLineIds);    	
-			
-			for (FDCartLineI mgOrderLine : _order.getOrderLines()){
-				makeGoodAllowedOrderLineIds.add(mgOrderLine.getOrderLineId());
-	    	}
-		}
-    	
-    	if (params.parentOrderId!=null) {
-    		final FDOrderI _order = FDCustomerManager.getOrder(loginUser.getIdentity(), params.parentOrderId);
-    		ctx.setParentOrderId(params.parentOrderId);
-		}
+    	MasqueradeContext ctx = CrmMasqueradeUtil.build(identity, params, agentId);
+
+    	// recognize user and set masquerade mode here
     	loginUser = FDCustomerManager.recognize(identity, ctx);
-    	// set masqueraded context for customer
-    	loginUser.setMasqueradeContext(ctx);
-    	if (params.makeGoodFromOrderId!=null) {
-			loginUser.getShoppingCart().clearOrderLines();
-		}
-    	
-    	
     	UserUtil.createSessionUser(request, response, loginUser);
-	
+
+    	
+		CrmMasqueradeUtil.postInit(ctx, session);    	
+    	
 	} catch ( FDAuthenticationException ex ) {
 		LOGGER.error(ex);
 		out.print("Authentication failed.");
@@ -142,7 +126,7 @@
 		return;
 	}
 	
-	// Masquerade
+	// Log Masquerade
 	LOGGER.info("session ID: " + session.getId());
 	LOGGER.info("masquerade agent: " + agentId);
 	LOGGER.info("customer ID: " + customerId);

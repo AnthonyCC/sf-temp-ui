@@ -10,6 +10,7 @@
       {call .drawerheader}
         {param title: $drawer.title /}
         {param id: $drawer.id /}
+        {param enabled: $drawer.enabled /}
         {param onOpenCoremetrics: $drawer.onOpenCoremetrics /}
       {/call}
     {/foreach}
@@ -36,13 +37,16 @@
 /**
  * @param title
  * @param id
+ * @param enabled
  * @param? onOpenCoremetrics
  */
 {template .drawerheader autoescape="false"}
 <li id="{$id}-tab" role="tab" tabindex="0" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
   <h2>{$title}</h2>
-  <button class="change cssbutton green" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change</button>
-  <button class="cancel cssbutton red">Cancel</button>
+  {if $enabled}
+    <button class="change cssbutton green" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change</button>
+    <button class="cancel cssbutton red">Cancel</button>
+  {/if}
 </li>
 {/template}
 

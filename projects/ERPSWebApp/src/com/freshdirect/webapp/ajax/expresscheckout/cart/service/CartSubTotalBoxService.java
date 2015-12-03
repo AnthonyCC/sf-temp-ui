@@ -53,6 +53,7 @@ public class CartSubTotalBoxService {
     private static final String FUEL_SURCHARGE_WAIVED_NAME = "Fuel Surcharge (waived)";
     private static final String TOTAL_TAX_WAIVED_NAME = "Total Tax (waived)";
     private static final String DELIVERY_FEE_NAME = "Delivery Fee";
+    private static final String DELIVERY_CHARGE_WAIVED_NAME = "Delivery Charge (waived)";
     private static final String DELIVERY_FEE_ID = "deliveryfee";
     private static final String DEPOSIT_NAME = "State Bottle Deposit";
     private static final String DEPOSIT_ID = "statebottledeposit";
@@ -107,41 +108,45 @@ public class CartSubTotalBoxService {
     }
 
     public void populateDeliveryFeeToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, FDUserI user, CartData cartData) {
-    	final double epsilon = 0.0000001;
-    	boolean isDlvPassApplied = false;
+        final double epsilon = 0.0000001;
+        boolean isDlvPassApplied = false;
         if (cart instanceof FDCartModel) {
             isDlvPassApplied = ((FDCartModel) cart).isDlvPassApplied();
         } else if (cart instanceof FDOrderAdapter) {
             isDlvPassApplied = ((FDOrderAdapter) cart).isDlvPassApplied();
         }
 
-        CartSubTotalFieldData data = new CartSubTotalFieldData();
         boolean deliveryPassPopupNeeded = false;
-        data.setId(DELIVERY_FEE_ID);
-        data.setText(DELIVERY_FEE_NAME);
-        final String deliveryPassValue;
+        String deliveryPassName = DELIVERY_FEE_NAME;
+        String deliveryPassValue = ZERO_POINT_ZERO_ZERO_VALUE;
         if (isDlvPassApplied) {
             deliveryPassValue = DeliveryPassUtil.getDlvPassAppliedMessage(user);
-        } else {
-            deliveryPassValue = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
-            deliveryPassPopupNeeded = true;
-            
-            boolean isTaxableItemInCart = false;
-            for (FDCartLineI lineItem : cart.getOrderLines()) {
-                if (lineItem.getTaxRate() > epsilon) {
-                    isTaxableItemInCart = true;
-                    break;
-                }
+        } else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
+            if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
+                deliveryPassName = DELIVERY_CHARGE_WAIVED_NAME;
+                deliveryPassPopupNeeded = true;
+            } else {
+                deliveryPassValue = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
+                deliveryPassPopupNeeded = true;
             }
-            
-            if (isTaxableItemInCart) {
-                data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
+        }
+        boolean isTaxableItemInCart = false;
+        for (FDCartLineI lineItem : cart.getOrderLines()) {
+            if (lineItem.getTaxRate() > epsilon) {
+                isTaxableItemInCart = true;
+                break;
             }
         }
 
+        CartSubTotalFieldData data = new CartSubTotalFieldData();
         cartData.setDeliveryCharge(deliveryPassValue);
+        data.setId(DELIVERY_FEE_ID);
+        data.setText(deliveryPassName);
         data.setValue(deliveryPassValue);
         data.getOther().put("deliveryPassPopupNeeded", deliveryPassPopupNeeded);
+        if (isTaxableItemInCart) {
+            data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
+        }
 
         subTotalBox.add(data);
     }

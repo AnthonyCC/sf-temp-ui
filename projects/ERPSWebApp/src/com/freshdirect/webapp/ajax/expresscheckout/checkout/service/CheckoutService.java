@@ -10,10 +10,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.CmContextUtility;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
@@ -43,6 +45,9 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
+import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
@@ -87,11 +92,15 @@ public class CheckoutService {
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
-			PageViewTagModel pvTagModel = new PageViewTagModel();
-			pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( CustomCategory.CHECKOUT.toString()));
-			pvTagModel.setPageId("unavailability");
-			PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
-			atpFailureData.addCoremetrics(pvTagModel.toStringList());
+            
+            if (CmContextUtility.isCoremetricsAvailable(user)) {
+				PageViewTagModel pvTagModel = new PageViewTagModel();
+				pvTagModel.setCategoryId( CmContext.getContext().prefixedCategoryId( CustomCategory.CHECKOUT.toString()));
+				pvTagModel.setPageId("unavailability");
+				PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
+				atpFailureData.addCoremetrics(pvTagModel.toStringList());
+            }
+			
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
             }
@@ -107,7 +116,7 @@ public class CheckoutService {
 		return RestrictionService.defaultService().verifyEbtPaymentRestriction(user);
 	}
 
-	public FormDataResponse submitOrder(FDUserI user, FormDataRequest requestData, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public FormDataResponse submitOrder(final FDUserI user, FormDataRequest requestData, final HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
         String billingReference = FormDataService.defaultService().get(requestData, "billingReference");
@@ -134,11 +143,34 @@ public class CheckoutService {
 				if (cart.isAvailabilityChecked()) {
                     outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
                             null, null, null);
+                    // makegood phase
+    				MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+    				String masqueradeMakeGoodOrderId = masqueradeContext==null ? null : masqueradeContext.getMakeGoodFromOrderId();
+    				if ( masqueradeMakeGoodOrderId!=null ) {
+    					MakeGoodOrderUtility.processComplaint(masqueradeContext,
+							new SessionParamGetter(session),
+							new PostAction() {
+								@Override
+								public void handle(MasqueradeContext masqueradeContext) {
+									session.removeAttribute( "makeGoodOrder" );
+									session.removeAttribute( "referencedOrder" );
+									session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
+									
+									if (masqueradeContext!=null){
+										masqueradeContext.clearMakeGoodContext();
+									}
+								}
+							},
+							outcome);
+    				}
 					user.setSuspendShowPendingOrderOverlay(false);
 					user.setShowPendingOrderOverlay(true);
 					// prepare and store model for Coremetrics report
-					CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
-					CmShop9Tag.buildPendingModels(session, cart);
+					//   EXCEPT for make-good sessions!
+					if ( masqueradeMakeGoodOrderId == null ) {
+						CmConversionEventTag.buildPendingOrderModifiedModels(session, cart);
+						CmShop9Tag.buildPendingModels(session, cart);
+					}
 					((FDSessionUser) user).saveCart(true);
 				}
 				if (Action.SUCCESS.equalsIgnoreCase(outcome)) {

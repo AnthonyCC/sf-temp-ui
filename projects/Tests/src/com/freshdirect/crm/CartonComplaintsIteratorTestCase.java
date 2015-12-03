@@ -3,8 +3,6 @@ package com.freshdirect.crm;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
@@ -12,6 +10,8 @@ import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.webapp.util.CartonComplaintsIterator;
+
+import junit.framework.TestCase;
 
 public class CartonComplaintsIteratorTestCase extends TestCase {
 	private int olCounter;
@@ -234,7 +234,7 @@ public class CartonComplaintsIteratorTestCase extends TestCase {
 	// 1st level
 	private FDCartonInfo createCartonInfo(String orderNumber, String cartNum) {
 		final ErpCartonInfo erpCartonInfo = new ErpCartonInfo(orderNumber, "SAP123", cartNum, ErpCartonInfo.CARTON_TYPE_REGULAR);
-		final FDCartonInfo inf = new FDCartonInfo(erpCartonInfo, new ArrayList());
+		final FDCartonInfo inf = new FDCartonInfo(erpCartonInfo, new ArrayList<FDCartonDetail>());
 
 		return inf;
 	}
@@ -245,7 +245,7 @@ public class CartonComplaintsIteratorTestCase extends TestCase {
 class TestOrderAdapter extends FDOrderAdapter {
 	private static final long serialVersionUID = 1L;
 
-	public TestOrderAdapter(List cartonContents) {
+	public TestOrderAdapter(List<FDCartonInfo> cartonContents) {
 		this.cartonInfo = cartonContents;
 	}
 }

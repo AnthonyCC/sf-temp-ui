@@ -315,6 +315,8 @@ public class PaymentService {
             if (payment.getBankAccountType() != null) {
                 paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
             }
+            paymentData.setReferencedOrderId(payment.getReferencedOrder());
+            paymentData.setPaymentTypeDescription(payment.getPaymentType().getDescription());
 			paymentData.seteWalletID(payment.geteWalletID());
         	paymentData.setVendorEWalletID(payment.getVendorEWalletID());
         	paymentData.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());

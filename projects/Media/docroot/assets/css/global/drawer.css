@@ -175,3 +175,10 @@
 [data-drawer-content-prerender] {
   display: none;
 }
+
+.timeslot-force-order{
+  font-size: 1.5em;
+  line-height: 1.5em;
+  margin: 15px 0;
+  display: block;
+}

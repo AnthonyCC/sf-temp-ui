@@ -7,7 +7,6 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.customer.ErpCartonInfo;
@@ -15,20 +14,19 @@ import com.freshdirect.customer.ErpCartonInfo;
 /**
  * @author htai
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class FDCartonInfo implements Serializable {
+	private static final long serialVersionUID = -170713885086126982L;
 
 	private ErpCartonInfo cartonInfo;
-	private List cartonDetails;
+	private List<FDCartonDetail> cartonDetails;
 
-	public FDCartonInfo(ErpCartonInfo cartonInfo, List cartonDetails) {
+	public FDCartonInfo(ErpCartonInfo cartonInfo, List<FDCartonDetail> cartonDetails) {
 		this.cartonInfo = cartonInfo;
 		this.cartonDetails = cartonDetails;
 	}
 
-	public List getCartonDetails() {
+	public List<FDCartonDetail> getCartonDetails() {
 		return this.cartonDetails;
 	}
 
@@ -40,8 +38,7 @@ public class FDCartonInfo implements Serializable {
 		if (cartonDetails == null)
 			return null;
 
-		for (Iterator j = cartonDetails.iterator(); j.hasNext();) {
-			FDCartonDetail detail = (FDCartonDetail) j.next();
+		for (FDCartonDetail detail : cartonDetails) {
 			if (detail.getCartonDetail().getOrderLineNumber().equals(orderlineNumber))
 				return detail;
 		}

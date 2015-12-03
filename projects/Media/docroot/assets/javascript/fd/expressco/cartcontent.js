@@ -43,15 +43,28 @@ var FreshDirect = FreshDirect || {};
             changeCounter = 0;
 
         $(this.placeholder + ' [data-component="cartline"].modified').each(function(){
-          var cartlineId=$(this).data('cartlineid'),
-              value=$('select',this).val();
-          if(value) {
-            data[cartlineId]={type:'csu',data:value};
-            changeCounter++;
-          } else {
-            value=$('[data-component="quantitybox"]',this).quantityBox('value');
-            if(value !== undefined) {
-              data[cartlineId]={type:'cqu',data:value};
+          var cartlineId = $(this).data('cartlineid'),
+              changedComponent = $(this).data('changed'),
+              componentType = {
+                salesunit: 'csu',
+                complaintreason: 'ccr',
+                quantitybox: 'cqu'
+              },
+              changeType, changeValue, changedEl;
+
+          if(changedComponent){
+            changedEl = $('[data-component="' + changedComponent + '"]', this);
+            changeType = componentType[changedComponent];
+
+            if(changedComponent === 'quantitybox'){
+              changeValue = changedEl.quantityBox('value');
+            }
+            else{
+              changeValue = changedEl.val();
+            }
+
+            if(cartlineId && changeType && changeValue){
+              data[cartlineId] = { type: changeType, data: changeValue };
               changeCounter++;
             }
           }
@@ -86,7 +99,7 @@ var FreshDirect = FreshDirect || {};
       value:function(e){
         e.preventDefault();
         e.stopPropagation();
-        $(e.target).closest('[data-component="cartline"]').addClass('modified');
+        $(e.target).closest('[data-component="cartline"]').addClass('modified').attr('data-changed', $(e.target).data('component'));
         $(cartcontent.placeholder).trigger('quantity-change');
       }
     },

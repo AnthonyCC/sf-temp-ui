@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumWebServiceType;
-import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -435,15 +434,21 @@ public class SubmitOrderAction extends WebActionSupport {
 	
 	protected String doExecute() throws FDResourceException {
 
-		HttpSession session = this.getWebActionContext().getSession();
-		HttpServletRequest request = this.getWebActionContext().getRequest();
+		final HttpSession session = this.getWebActionContext().getSession();
+		final HttpServletRequest request = this.getWebActionContext().getRequest();
 
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		FDCartModel cart = user.getShoppingCart();
-		FDReservation reservation = cart.getDeliveryReservation();
+		final FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		final FDCartModel cart = user.getShoppingCart();
+		final FDReservation reservation = cart.getDeliveryReservation();
 
 		final EnumCheckoutMode mode = user.getCheckoutMode();
 		
+		final EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null
+				|| CrmSession.getCurrentAgent(session)!=null
+				|| user.getMasqueradeContext()!=null
+					? EnumTransactionSource.CUSTOMER_REP
+					: EnumTransactionSource.WEBSITE;
+
 		// potential double-submission, how else would the user end up here...
 		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
 			return SUCCESS;
@@ -483,63 +488,33 @@ public class SubmitOrderAction extends WebActionSupport {
 					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK());
 			}
 		}
-		ErpAddressModel address = cart.getDeliveryAddress();
-		if(address instanceof ErpDepotAddressModel){
-			FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel)address).getLocationId());
-		}else{
-			//get the address pk and set the default address
-			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
-				FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
-			}
-			
-		}
-		
-		//
-		// Marketing message
-		//
-		cart.setMarketingMessage("Thanks for your order! Did you know you can shop your top items and past orders to reorder in minutes? We automatically store all your orders, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
-		
-		// !!! HACK: For the first order, "Welcome!" gets prepended to the dlv. instructions in SapOrderAdapter.getDeliveryInstructions()
-		if (user.getAdjustedValidOrderCount()==0) {
-			cart.setMarketingMessage("Welcome! "+cart.getMarketingMessage());
-		}
+        if (!(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled())) {
+            ErpAddressModel address = cart.getDeliveryAddress();
+            if (address instanceof ErpDepotAddressModel) {
+                FDCustomerManager.setDefaultDepotLocationPK(user.getIdentity(), ((ErpDepotAddressModel) address).getLocationId());
+            } else {
+                // get the address pk and set the default address
+				if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null)){
+					FDCustomerManager.setDefaultShipToAddressPK(user.getIdentity(), address.getPK().getId());
+				}
+            }
+        }
 		
 		boolean sendEmail = true;
-		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null || user.getMasqueradeContext()!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
-		
+
 		if (EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
+			// override silent mode when CRM agent submits order
+			sendEmail = !((user.getMasqueradeContext() != null) ? user.getMasqueradeContext().isSilentMode() : false);
+		} else {
 			//
-			// Check for delivery surcharge waiver (CALLCENTER)
+			// Marketing message
 			//
-			boolean csrWaivedDeliveryCharge = "true".equalsIgnoreCase(request.getParameter("waive_delivery_fee")); 
-			LOGGER.debug("Delivery fee waive requested by CSR: "+ csrWaivedDeliveryCharge);
-			cart.setCsrWaivedDeliveryCharge(csrWaivedDeliveryCharge);
-				
-			// Check for delviery premium waiver (CALLCENTER)
-			boolean csrWaivedDeliveryPremium =  "true".equalsIgnoreCase(request.getParameter("waive_delivery_premium_fee"));
-			cart.setCsrWaivedDeliveryPremium(csrWaivedDeliveryPremium);
+			cart.setMarketingMessage("Thanks for your order! Did you know you can shop your top items and past orders to reorder in minutes? We automatically store all your orders, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
 			
-			
-			//
-			// Check for phone handling charge waiver (CALLCENTER)
-			//
-			cart.setChargeWaived(EnumChargeType.PHONE, "true".equalsIgnoreCase(request.getParameter("waive_phone_fee")), "CSR");
-			
-			//
-			// Check for CSR message (CALLCENTER)
-			//
-			String csrMessage = request.getParameter("csr_message");
-			if ( csrMessage != null && !"".equalsIgnoreCase(csrMessage.trim()) ) {
-				cart.setCustomerServiceMessage( csrMessage );
-			} else {
-				cart.setCustomerServiceMessage("");
+			// !!! HACK: For the first order, "Welcome!" gets prepended to the dlv. instructions in SapOrderAdapter.getDeliveryInstructions()
+			if (user.getAdjustedValidOrderCount()==0) {
+				cart.setMarketingMessage("Welcome! "+cart.getMarketingMessage());
 			}
-			
-			//
-			// check for silent order placement (CALLCENTER)
-			//
-			sendEmail = request.getParameter("silent_mode") == null;
-			
 		}
 
 		/*
@@ -558,41 +533,12 @@ public class SubmitOrderAction extends WebActionSupport {
 
 		// recalculate promotion
 		user.updateUserState();		
-		//Check if current applied promotions are still available to the user. The max redemption count 
-		// has not been reached.
-		//No need to have the following check, as we are showing a popup message in this scenario.
-		/*boolean ignorePromoErrors = request.getParameter("ignorePromoErrors") != null ? true : false;
-		if(!ignorePromoErrors) {
-			for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
-				String promoCode = it.next();
-				if(!promoCode.equals((null!=user.getRedeemedPromotion()?user.getRedeemedPromotion().getPromotionCode():""))){
-					int errorCode = user.getPromoErrorCode(promoCode);
-					if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
-						this.addError("redemption_exceeded", SystemMessageList.MSG_REDEMPTION_EXCEEDED);
-						return ERROR;	
-					}
-				}
-			}
-		}*/
+
 		// recalculate credit since promotion is reapplied order amonuts might have changed
 		
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
-		//Commenting the below section, as we are completely migrated to new payment gateway and don't need to clear the profile id's anymore.
-		/*if(!fdUser.isPaymentechEnabled()) {
-			ErpPaymentMethodI pm=cart.getPaymentMethod();
-			pm.setProfileID(null);//Explicitly clear the profile ID;
-		}else if (cart instanceof FDModifyCartModel){
-
-				FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
-				FDOrderAdapter order = modifyCart.getOriginalOrder();
-				ErpPaymentMethodI pymtMethod=order.getPaymentMethod();
-				if(StringUtils.isEmpty(pymtMethod.getProfileID())) {
-					ErpPaymentMethodI pm=cart.getPaymentMethod();
-					pm.setProfileID(null);//Explicitly clear the profile ID;
-				}
-		}*/
 
 
 		/**

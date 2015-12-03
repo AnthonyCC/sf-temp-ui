@@ -14,10 +14,9 @@ import com.freshdirect.customer.ErpCartonDetails;
 /**
  * @author htai
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 public class FDCartonDetail implements Serializable {
+	private static final long serialVersionUID = 1301122350475006179L;
 
 	private FDCartonInfo cartonInfo;
 	private ErpCartonDetails cartonDetail;

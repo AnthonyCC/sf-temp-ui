@@ -56,7 +56,7 @@ boolean isClassicView = "dept".equalsIgnoreCase(request.getParameter("view"));
         // it is already decided so ignore / override URL parameter value
     	isClassicView = order.getComplaintGroupingFashion() == FDOrderAdapter.IC_GROUP_BY_DEPTS;
     }
-    boolean isFdxOrder = (order.getEStoreId().toString()).equals(_FDXValue);
+    boolean isFdxOrder = EnumEStoreId.FDX == order.getEStoreId() ;
     if ( isFdxOrder ) {
     	isClassicView = true;
     }

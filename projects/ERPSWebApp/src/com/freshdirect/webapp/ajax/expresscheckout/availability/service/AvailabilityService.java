@@ -95,7 +95,13 @@ public class AvailabilityService {
     }
 
     public String selectAlcoholicOrderMinimumType(FDUserI user) throws FDResourceException {
+        // APPDEV-4552 - no minimum check in masquerade mode
+        if (user != null && user.getMasqueradeContext() != null) {
+        	return null;
+        }
+        
         String warningType = null;
+        
         if (!user.isOrderMinimumMet()) {
             warningType = GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY;
         }

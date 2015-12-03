@@ -6,6 +6,7 @@ public class DrawerData {
 
 	private String id;
 	private String title;
+	private boolean enabled;
 	private List<String> onOpenCoremetrics;
 
 	/**
@@ -38,7 +39,15 @@ public class DrawerData {
 		this.title = title;
 	}
 
-	public List<String> getOnOpenCoremetrics() {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<String> getOnOpenCoremetrics() {
 		return onOpenCoremetrics;
 	}
 

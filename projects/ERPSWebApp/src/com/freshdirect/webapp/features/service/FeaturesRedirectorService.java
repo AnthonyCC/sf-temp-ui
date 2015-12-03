@@ -22,7 +22,7 @@ public class FeaturesRedirectorService {
 			boolean standingOrderModeActive = user.getCheckoutMode() != null && user.getCheckoutMode().isStandingOrderMode();
 			switch (feature) {
 			case checkout2_0:
-				if (!standingOrderModeActive && user.getMasqueradeContext() == null) {
+				if (!standingOrderModeActive) {
 					if ("/view_cart.jsp".equals(originalUrl)) {
 						redirectUrl = "/expressco/view_cart.jsp";
 					} else if ("/checkout/view_cart.jsp".equals(originalUrl)) {

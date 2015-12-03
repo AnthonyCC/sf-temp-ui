@@ -69,7 +69,7 @@ public class FormMetaData {
 		this.enableEbtCheck = enableEbtCheck;
 	}
 
-	public String getPaymentPromoOAS() {
+    public String getPaymentPromoOAS() {
 		return paymentPromoOAS;
 	}
 

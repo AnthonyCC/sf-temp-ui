@@ -135,7 +135,7 @@ public interface FDOrderI extends FDCartI {
 	
 	public String getSapOrderId();
 
-	public List getCartonContents();
+	public List<FDCartonInfo> getCartonContents();
 	
 	public Map<String, Integer> getCartonMetrics();
 
