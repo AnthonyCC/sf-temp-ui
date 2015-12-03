@@ -40,6 +40,10 @@ boolean hasFdxServices = LocationHandlerTag.hasFdxService(selectedAddress.getZip
 boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCode());
 %>
 
+<!-- Adding Skip to Navigation : Start-->
+	<a href="#skip_to_content" class="hidefromView">Skip to Content</a>
+<!-- Adding Skip to Navigation : End-->
+
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
 
 <%-- new login form --%>
