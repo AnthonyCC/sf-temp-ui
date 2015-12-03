@@ -34,6 +34,10 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/checkout");
         request.setAttribute("listPos", "ReceiptTop,ReceiptBotLeft,ReceiptBotRight,SystemMessage,CategoryNote");
+
+		FDSessionUser fdSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+		MasqueradeContext masqueradeContext = fdSessionUser.getMasqueradeContext();
+
 %>
 
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
