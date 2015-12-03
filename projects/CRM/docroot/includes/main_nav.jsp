@@ -1,4 +1,4 @@
-<%@	page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+-<%@	page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@	page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@	page import='com.freshdirect.fdstore.FDStoreProperties'	%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
@@ -77,8 +77,8 @@
 				%>
 				<select id="globalContext-Store"  <%= (crmRole.isRoleFDX(crmRole)) ? "disabled" : ""%>>
 					<option <%= ((globalContextStore).equalsIgnoreCase("All"))?"selected":"" %> value="All">All</option>
-					<option <%= ((globalContextStore).equals(EnumEStoreId.FD.name()))?"selected":"" %> value="<%= EnumEStoreId.FD.name() %>"><%= EnumEStoreId.FD.name() %></option>
-					<option <%= ((globalContextStore).equals(EnumEStoreId.FDX.name()))?"selected":"" %> value="<%= EnumEStoreId.FDX.name() %>"><%= EnumEStoreId.FDX.name() %></option>
+					<option <%= ((globalContextStore).equals(EnumEStoreId.FD.name()))?"selected":"" %> value="<%= EnumEStoreId.FD.name() %>"><%= EnumEStoreId.FD.toString() %></option>
+					<option <%= ((globalContextStore).equals(EnumEStoreId.FDX.name()))?"selected":"" %> value="<%= EnumEStoreId.FDX.name() %>"><%= EnumEStoreId.FDX.toString() %></option>
 				</select>
 				
 				Facility:&nbsp;
