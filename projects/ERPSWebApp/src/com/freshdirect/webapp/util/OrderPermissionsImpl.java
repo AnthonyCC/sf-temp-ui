@@ -131,7 +131,7 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		boolean isDispatched=false;
 		try {
 			isDispatched = FDDeliveryManager.getInstance().isDispatched(OrderId);
-			return !isDispatched || EnumSaleStatus.INPROCESS.equals(status) || EnumSaleStatus.ENROUTE.equals(status);
+			return !isDispatched && (EnumSaleStatus.INPROCESS.equals(status) || EnumSaleStatus.ENROUTE.equals(status));
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
