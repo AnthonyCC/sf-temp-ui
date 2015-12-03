@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -32,6 +33,23 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
+	
+	<% 
+		FDSessionUser fdSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+		MasqueradeContext masqueradeContext = fdSessionUser.getMasqueradeContext();
+		if (masqueradeContext != null) {
+			String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
+	%>
+	<div id="topwarningbar">
+		You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
+		<%if (makeGoodFromOrderId!=null) {%>
+			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
+			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
+			<a class="imgButtonOrange" href="/cancelmakegood.jsp">Cancel MakeGood</a>
+		<%}%>
+	</div>
+	<% } %>
+
 	<%
 		boolean _modifyOrderMode = false; 	
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);

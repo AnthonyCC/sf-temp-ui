@@ -48,8 +48,6 @@ final int W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL = 970;
 
 if (isSmaller) detailWidth="630";
 
-	FDSessionUser fdSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-		MasqueradeContext masqueradeContext = fdSessionUser.getMasqueradeContext();
 		String parentOrderId=null;
 	if (masqueradeContext!=null) {
 		parentOrderId = masqueradeContext.getParentOrderId();		 
