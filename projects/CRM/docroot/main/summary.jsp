@@ -231,8 +231,8 @@ if(null != orderId){
 						<option <%= ((globalContextStore).equals("FD"))?"selected":"" %> value="FD">FD</option>
 						<option <%= ((globalContextStore).equals("FDX"))?"selected":"" %> value="FDX">FDX</option>
 					</select>
-					<a href="masquerade.jsp" target="_blank" class="summary_masqLink">Checkout</a>
-					<a href="masquerade.jsp?destination=timeslots" target="_blank" class="summary_masqLink">View Time Slots</a>
+					<a href="/main/masquerade.jsp" target="_blank" class="summary_masqLink">Checkout</a>
+					<a href="/main/masquerade.jsp?destination=timeslots" target="_blank" class="summary_masqLink">View Time Slots</a>
 					<script type="text/javascript">
 						/* open these in new window, automatically add estore val,
 						 * take everything else from the anchor tag

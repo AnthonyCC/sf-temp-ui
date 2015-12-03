@@ -20,6 +20,7 @@
 	<%
 		boolean isPost = "POST".equalsIgnoreCase(request.getMethod());
 	%>
+	<%@ include file="/includes/i_globalcontext.jspf" %>
 	<jsp:include page="/includes/admintools_nav.jsp" />
 
 	<crm:CrmReverseAuthOrders id="orders" result="result">
@@ -71,24 +72,43 @@
 			</table>
 			<div id="result" class="list_content" style="height:76%;">
 				<table width="100%" cellspacing="0" border="0" style="empty-cells: show" id="resubmit_orders">
+				<%
+					int displayedLines = 0;
+				%>
 				<logic:iterate id="orderInfo" collection="<%= orders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
-					<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
-						<td class="border_bottom">&nbsp;</td>
-						<td class="border_bottom">
-							<input name="resubmitSaleId" type="checkbox" onClick="countChecked(this);" value="<%=orderInfo.getSaleId()%>">
-							<% if (orderInfo.getSaleId().indexOf("X")!=-1) {%>
-								<a href="/main/order_details.jsp?orderId=<%=orderInfo.getSaleId()%>"><%=orderInfo.getSaleId()%></a>&nbsp;
-							<% } else { %>
-								<%=orderInfo.getSaleId()%>
-							<% } %>	
-						</td>
-						<td class="border_bottom"><%=orderInfo.geteStore()%></td>
-						<td class="border_bottom"><%=orderInfo.getLastCroModDate()%></td>
-						<td class="border_bottom"><%=orderInfo.getOrderStatus()%></td>
-						<td class="border_bottom"><%=orderInfo.getAmount()%></td>
-						<td class="border_bottom"><%=orderInfo.getFirstName()+" "+orderInfo.getLastName()%>&nbsp;</td>
-					</tr>
+					<%
+						/* this page does not match FD eStore */
+						String eStoreString = orderInfo.geteStore();
+						if (eStoreString.equals("FreshDirect")) {
+							eStoreString = "FD";
+						}
+					%>
+					<% if ( 
+						((globalContextStore).equalsIgnoreCase("All") || (globalContextStore).equals(eStoreString)) &&
+						((globalContextFacility).equalsIgnoreCase("All") || (globalContextFacility).equals(orderInfo.getFacility()))
+					) { %>
+						<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
+							<td class="border_bottom">&nbsp;</td>
+							<td class="border_bottom">
+								<input name="resubmitSaleId" type="checkbox" onClick="countChecked(this);" value="<%=orderInfo.getSaleId()%>">
+								<% if (orderInfo.getSaleId().indexOf("X")!=-1) {%>
+									<a href="/main/order_details.jsp?orderId=<%=orderInfo.getSaleId()%>"><%=orderInfo.getSaleId()%></a>&nbsp;
+								<% } else { %>
+									<%=orderInfo.getSaleId()%>
+								<% } %>	
+							</td>
+							<td class="border_bottom"><%=orderInfo.geteStore()%></td>
+							<td class="border_bottom"><%=orderInfo.getLastCroModDate()%></td>
+							<td class="border_bottom"><%=orderInfo.getOrderStatus()%></td>
+							<td class="border_bottom"><%=orderInfo.getAmount()%></td>
+							<td class="border_bottom"><%=orderInfo.getFirstName()+" "+orderInfo.getLastName()%>&nbsp;</td>
+						</tr>
+						<% displayedLines++;  %>
+					<% } %>
 				</logic:iterate>
+				<% if (displayedLines == 0) { %>
+					<tr><td colspan="10" align="center"><strong>There were no orders to reverse authorize.</strong></td></tr>
+				<% } %>
 				</table>
 			</div>
 		<% } %>

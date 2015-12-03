@@ -81,12 +81,6 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 		
 		<fd:ErrorHandler result='<%=result%>' name='dlv_address_geocode' id='errorMsg'><span class="error"><%=errorMsg%></span><br></fd:ErrorHandler>
 	
-		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'>
-			<%
-			addressOK = false; 
-			geocodeOK = false;
-			%>
-		</fd:ErrorHandler>
 		<% if (addressOK) { %>
 		<span class="correct"><b>ADDRESS_OK</b></span><br>
 		<% } %>
@@ -107,9 +101,9 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 </table>
 <% } %>
 <input type="hidden" name="action" value="geocode">
-			<table cellpadding="0" cellspacing="2" class="home_search_module_field" border="0" width="98%">
+			<table cellpadding="0" cellspacing="2" class="home_search_module_field" border="0" width="100%">
 	<tr>
-				    <td width="80"></td>
+				    <td width="90"></td>
 				    <td width="140"></td>
 				    <td width="75"></td>
 				    <td width="30"></td>
@@ -127,7 +121,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	</fd:ErrorHandler>
 	
 	<tr>
-				    <td>&nbsp;&nbsp;Addr.&nbsp;Line 2</td>
+				    <td>&nbsp;&nbsp;Addr.&nbsp;Line&nbsp;2</td>
 		<td colspan="4"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= dlvAddress.getAddress2() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 
 	</tr>
