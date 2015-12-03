@@ -1254,7 +1254,7 @@ public boolean isDispatched(String orderId) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			Result result = logisticsService.isDispatched(LogisticsDataEncoder.encodeDispatchtOrderRequest(orderId));
+			Result result = logisticsService.isDispatched(orderId);
 			LogisticsDataDecoder.decodeResult(result);
 			if(EnumApplicationException.FinderException.getValue() == result.getErrorCode()){
 				return false;
