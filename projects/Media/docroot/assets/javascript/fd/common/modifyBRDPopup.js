@@ -33,6 +33,12 @@ var FreshDirect = FreshDirect || {};
 
         this.render(data);
         this.data = data;
+
+        // focus on open
+        try {
+          fd.common.transactionalPopup.close();
+          $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
+        } catch (e) {}
       }
     },
 
@@ -87,6 +93,11 @@ var FreshDirect = FreshDirect || {};
       value:function( data ) {
         this.render(data);
         this.data = data;
+        // focus on open
+        try {
+          fd.common.transactionalPopup.close();
+          $(this.placeholder).find('button, a[href], input').not(':hidden').first().focus();
+        } catch (e) {}
       }
     },
 
