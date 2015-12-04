@@ -37,6 +37,7 @@ import com.freshdirect.fdlogistics.services.IOrderService;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -404,7 +405,7 @@ public class OMSController extends BaseController  {
 			
 			FDOrderI order = FDCustomerManager.getOrder(orderModel.getSaleId());
 			if(!EnumSaleStatus.CANCELED.equals(order.getOrderStatus())){
-				FDIdentity identity = new FDIdentity(order.getCustomerId(), null);		
+				FDIdentity identity = new FDIdentity(order.getCustomerId(), FDCustomerFactory.getFDCustomerIdFromErpId(order.getCustomerId()));		
 				orderModel.setIdentity(identity);
 				FDActionInfo actionInfo = getActionInfo(agent);
 				// Set it to actionInfo object to write to the activity log.
