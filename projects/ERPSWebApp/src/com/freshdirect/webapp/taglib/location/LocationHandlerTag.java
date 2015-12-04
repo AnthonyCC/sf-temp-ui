@@ -118,7 +118,8 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		DeliveryAddressManipulator m = new DeliveryAddressManipulator(ctx, result, "setDeliveryAddress");
 		m.setLocationHandlerMode(true);
 		try {
-			m.performSetDeliveryAddress("");
+			if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null))
+				m.performSetDeliveryAddress("");
 		} catch (RedirectToPage e) {
 			LOGGER.debug(e); //do not do redirect, determine success based on result instead
 		}

@@ -91,10 +91,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	}
 
 	public void performSetDeliveryAddress(String noContactPhonePage) throws FDResourceException, JspException, RedirectToPage {
-		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
-		if(!(user.isVoucherHolder() && user.getMasqueradeContext() == null))
-			return;
-					
 		String addressOrLocation = request.getParameter( "selectAddressList" );
 
 		if ( addressOrLocation != null && addressOrLocation.startsWith( "field_" ) ) {
@@ -106,6 +102,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			return;
 		}
 
+		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
 		
 		if ( addressOrLocation.startsWith( "DEPOT_" ) ) {
 			String locationId = addressOrLocation.substring( "DEPOT_".length() );
