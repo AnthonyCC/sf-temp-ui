@@ -32,7 +32,14 @@ public class FDStandingOrderInfo implements Serializable  {
 	private Date failedOn;
 	private String paymentMethod;
 	private String soName;
+	private String zone;
 	
+	public String getZone() {
+		return zone;
+	}
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
 	public String getUserId() {
 		return userId;
 	}

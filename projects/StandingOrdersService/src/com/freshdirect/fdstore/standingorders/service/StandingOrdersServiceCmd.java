@@ -20,6 +20,7 @@ import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 
@@ -133,6 +134,46 @@ public class StandingOrdersServiceCmd {
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
 		}
 	}
+	
+
+	public static void runManualJob( String orders, boolean sendReportEmail, ServletContext context) {	
+		
+		// At the beginning, set "IS_SO_JOB_RUNNING" to "true" to avoid "Simultaneous executions of the Standing Order Job"
+		context.setAttribute("IS_SO_JOB_RUNNING", "true");
+		
+		StandingOrdersJobConfig jobConfig = new StandingOrdersJobConfig();
+	
+		List<String> soIdList = null;
+		
+		try{
+						
+			if(null !=orders && !orders.trim().equalsIgnoreCase("")){
+				
+				String[] order = orders.split(",");
+				
+				Set<String> soSet = new HashSet<String>(Arrays.asList(order));
+				soIdList = new ArrayList<String>(soSet);				
+			}
+										
+			jobConfig.setSendReportEmail(sendReportEmail); 
+						
+						
+			SOResult.ResultList result = placeStandingOrders(soIdList, jobConfig);			
+				
+			if (jobConfig.isSendReportEmail()) {
+				sendReportMail(result);
+			}
+			
+			// At the end, remove "IS_SO_JOB_RUNNING" to make "Standing Order Job" available
+			context.removeAttribute("IS_SO_JOB_RUNNING");
+			
+
+		} catch (Exception e) {
+			LOGGER.error("StandingOrdersServiceCmd failed with Exception...",e);
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
+		}
+	}
+	
 
 	private static boolean isResultHasData(SOResult.ResultList result) {
 		
@@ -356,10 +397,23 @@ public class StandingOrdersServiceCmd {
 			Date date = Calendar.getInstance().getTime();
 			String subject=FDStoreProperties.getStandingOrderReportEmailSubject()+ (date != null ? " "+dateFormatter.format(date) : " date error");
 			
+			
+			/*
+			 * Sections are presented as:
+			 * 		summary totals 
+			 *  	mechanical failures 
+			 *  	remaining failures
+			 *  	remaining skipped/passed
+			 *  
+			 */
+			
+			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("<html>").append("<body>");
 
 			buffer.append( "<h1>Cron report:</h1>" );
+			
+			/*
 			buffer.append( "<h2>Summary of this run of the background service:</h2>" );
 
 			buffer.append( "  success : " ).append( result.getSuccessCount() ).append("<br/>");
@@ -370,7 +424,108 @@ public class StandingOrdersServiceCmd {
 				buffer.append("<br/>");
 				buffer.append( "  <span style=\"color:orange;\">WARNING: Standing Order Coremetrics tracking is temporarily suspended due to 3 consecutive errors.</span> " ).append("<br/>");
 			}
+			*/
 
+
+			FDStandingOrderInfoList soFailedList = (FDStandingOrderInfoList)soManager.getFailedStandingOrdersCustInfo();
+			FDStandingOrderInfoList soMechanicalFailedList = (FDStandingOrderInfoList)soManager.getMechanicalFailedStandingOrdersCustInfo();			
+			
+			if(null != soMechanicalFailedList){
+				
+				List<FDStandingOrderInfo> soMecFailedInfoList = soMechanicalFailedList.getStandingOrdersInfo();
+				buffer.append("<h2>Mechanical Failures: "+soMecFailedInfoList.size()+"</h2><br/><br/>");
+				if(!soMecFailedInfoList.isEmpty()){
+					buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+					buffer.append("<tr>")
+					.append("<th>").append("Standing Order #").append("</th>")
+					.append("<th>").append("Standing Order Name").append("</th>")
+					.append("<th>").append("Customer").append("</th>")
+					.append("<th>").append("Customer Id").append("</th>")
+					.append("<th>").append("Company").append("</th>")
+					.append("<th>").append("Order Date").append("</th>")		
+					.append("<th nowrap=\"nowrap\">").append("Delivery Time").append("</th>")
+					.append("<th>").append("Zone").append("</th>")
+					.append("<th>").append("Address").append("</th>")
+					.append("<th>").append("Business Phone").append("</th>")
+					.append("<th>").append("Cell Phone").append("</th>")
+					.append("</tr>");
+					
+					for (Iterator<FDStandingOrderInfo> iterator = soMecFailedInfoList.iterator(); iterator.hasNext();) {
+						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
+						
+						buffer.append("<tr>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")	
+						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getZone()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")								
+						.append("</tr>");					
+					}
+					buffer.append("</table>");
+					buffer.append("<br/><br/><br/>");
+				}
+			}
+			
+			
+			//buffer.append( "<h1>Database report:</h1>" );
+			
+
+			if(null != soFailedList){
+				List<FDStandingOrderInfo> soFailedInfoList = soFailedList.getStandingOrdersInfo();
+				buffer.append("<h2>Failed Standing Orders: "+soFailedInfoList.size()+"</h2><br/><br/>");
+				
+				if(!soFailedInfoList.isEmpty()){
+					buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+					buffer.append("<tr>")
+					.append("<th nowrap=\"nowrap\">").append("Standing Order #").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Standing Order Name").append("</th>")
+					.append("<th nowrap=\"nowrap\" >").append("Customer").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Customer Id").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Company").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Next Order Delivery Date").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Delivery Time").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Order Frequency (In Weeks)").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Error").append("</th>")			
+					.append("<th nowrap=\"nowrap\">").append("Failed On").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Address").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Business Phone").append("</th>")
+					.append("<th nowrap=\"nowrap\">").append("Cell Phone").append("</th>")				
+					.append("<th nowrap=\"nowrap\">").append("Payment Method").append("</th>").append("</tr>");
+					
+					for (Iterator<FDStandingOrderInfo> iterator = soFailedInfoList.iterator(); iterator
+							.hasNext();) {
+						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
+						
+						buffer.append("<tr>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getErrorHeader()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getFailedOn()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")				
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getPaymentMethod()).append("</td>")					
+						.append("</tr>");					
+					}
+					buffer.append("</table>");
+					buffer.append("<br/><br/><br/>");
+				}
+			}
+						
+			
+			
 			if ( resultList != null ) {
 				
 				buffer.append( "<h2>Details of this run of the background service:</h2>" );
@@ -422,95 +577,8 @@ public class StandingOrdersServiceCmd {
 			}
 		
 			
-			buffer.append( "<h1>Database report:</h1>" );
-			
-			FDStandingOrderInfoList soFailedList = (FDStandingOrderInfoList)soManager.getFailedStandingOrdersCustInfo();
-			FDStandingOrderInfoList soMechanicalFailedList = (FDStandingOrderInfoList)soManager.getMechanicalFailedStandingOrdersCustInfo();
-			if(null != soFailedList){
-				List<FDStandingOrderInfo> soFailedInfoList = soFailedList.getStandingOrdersInfo();
-				buffer.append("<h2>Failed Standing Orders: "+soFailedInfoList.size()+"</h2><br/><br/>");
-				
-				if(!soFailedInfoList.isEmpty()){
-					buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
-					buffer.append("<tr>")
-					.append("<th nowrap=\"nowrap\">").append("Standing Order #").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Standing Order Name").append("</th>")
-					.append("<th nowrap=\"nowrap\" >").append("Customer").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Customer Id").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Company").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Next Order Delivery Date").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Delivery Time").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Order Frequency (In Weeks)").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Error").append("</th>")			
-					.append("<th nowrap=\"nowrap\">").append("Failed On").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Address").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Business Phone").append("</th>")
-					.append("<th nowrap=\"nowrap\">").append("Cell Phone").append("</th>")				
-					.append("<th nowrap=\"nowrap\">").append("Payment Method").append("</th>").append("</tr>");
-					
-					for (Iterator<FDStandingOrderInfo> iterator = soFailedInfoList.iterator(); iterator
-							.hasNext();) {
-						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
-						
-						buffer.append("<tr>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getErrorHeader()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getFailedOn()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")				
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getPaymentMethod()).append("</td>")					
-						.append("</tr>");					
-					}
-					buffer.append("</table>");
-					buffer.append("<br/><br/><br/>");
-				}
-			}
-			
-			if(null != soMechanicalFailedList){
-				
-				List<FDStandingOrderInfo> soMecFailedInfoList = soMechanicalFailedList.getStandingOrdersInfo();
-				buffer.append("<h2>Mechanical Failures: "+soMecFailedInfoList.size()+"</h2><br/><br/>");
-				if(!soMecFailedInfoList.isEmpty()){
-					buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
-					buffer.append("<tr>")
-					.append("<th>").append("Standing Order #").append("</th>")
-					.append("<th>").append("Standing Order Name").append("</th>")
-					.append("<th>").append("Customer").append("</th>")
-					.append("<th>").append("Customer Id").append("</th>")
-					.append("<th>").append("Company").append("</th>")
-					.append("<th>").append("Order Date").append("</th>")				
-					.append("<th>").append("Address").append("</th>")
-					.append("<th>").append("Business Phone").append("</th>")
-					.append("<th>").append("Cell Phone").append("</th>")
-					.append("</tr>");
-					
-					for (Iterator<FDStandingOrderInfo> iterator = soMecFailedInfoList.iterator(); iterator.hasNext();) {
-						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
-						
-						buffer.append("<tr>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")					
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")								
-						.append("</tr>");					
-					}
-					buffer.append("</table>");
-					buffer.append("<br/><br/><br/>");
-				}
-			}
+
+
 			
 			buffer.append("</body>").append("</html>");
 
