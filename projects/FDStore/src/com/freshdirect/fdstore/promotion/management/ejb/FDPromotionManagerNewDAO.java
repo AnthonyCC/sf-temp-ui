@@ -3970,11 +3970,12 @@ public class FDPromotionManagerNewDAO {
 		if(null != custStrategies && !custStrategies.isEmpty()){
 			FDPromoCustStrategyModel promoCustModel = (FDPromoCustStrategyModel)custStrategies.get(0);
 			removeCustStrategy(conn, promotion.getBatchId());
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE)" + 
-														 " select cust.SYSTEM_SEQ.nextval, id, ?,?,?,?,? from cust.promotion_new where batch_id = ?");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO cust.PROMO_CUST_STRATEGY (id, promotion_id, ORDERTYPE_HOME,ORDERTYPE_CORPORATE,ORDERTYPE_PICKUP,ORDERTYPE_FDX,EXCLUDE_SAMEDAY_DELIVERY,DELIVERY_DAY_TYPE)" + 
+														 " select cust.SYSTEM_SEQ.nextval, id, ?,?,?,?,?,? from cust.promotion_new where batch_id = ?");
 			ps.setString(i++, promoCustModel.isOrderTypeHome()?"X":"");
 			ps.setString(i++, promoCustModel.isOrderTypeCorporate()?"X":"");
 			ps.setString(i++, promoCustModel.isOrderTypePickup()?"X":"");
+			ps.setString(i++, promoCustModel.isOrderTypeFDX()?"X":"");
 			ps.setString(i++, promoCustModel.isExcludeSameDayDlv()?"Y":"N");
 			if(null !=promoCustModel.getDeliveryDayType()){
 				ps.setString(i++,promoCustModel.getDeliveryDayType().getName());
