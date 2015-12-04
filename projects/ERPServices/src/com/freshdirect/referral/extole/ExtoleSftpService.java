@@ -110,10 +110,7 @@ public class ExtoleSftpService {
 	 */
 	private static String buildFileName(String baseFileName) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-		// Date date = Calendar.getInstance().getTime();
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -1);
-		Date date = calendar.getTime();
+		Date date = Calendar.getInstance().getTime();
 		String fileName = baseFileName + df.format(date) + ".csv";
 
 		return fileName;

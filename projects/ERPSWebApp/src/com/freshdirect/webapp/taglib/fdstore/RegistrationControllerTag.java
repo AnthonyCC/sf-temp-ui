@@ -149,7 +149,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					this.setSuccessPage(successPage);
 					this.setAjax(true);
 				}
-				
+				}
 			} else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				lastSavedAddressModel = m.performAddDeliveryAddress();
@@ -242,7 +242,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			}			
 			
 
-		} }catch (Exception ex) {
+		 }catch (Exception ex) {
 			LOGGER.error("Error performing action " + actionName, ex);
 			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}

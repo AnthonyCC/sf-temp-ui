@@ -212,14 +212,18 @@ public class FDExtoleManagerDAO implements Serializable {
 				ps.setInt(i++, earnedReward.getRewardValue());
 				ps.setString(i++, earnedReward.getRewardDetail());
 
-				int rowsaffected = ps.executeUpdate();
-				if (rowsaffected != 1) {			
+				try {
+					int rowsaffected = ps.executeUpdate();
+					if (rowsaffected != 1) {			
+						LOGGER.warn("Could not insert this record for:" +earnedReward.getAdvocateEmail()+","+earnedReward.getFriendEmail());
+					}
+				} catch (SQLException e) {
 					LOGGER.warn("Could not insert this record for:" +earnedReward.getAdvocateEmail()+","+earnedReward.getFriendEmail());
 				}
 			}
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.warn("Error occured while inserting into CUST.RAF_CREDIT :"+ e.getMessage());
+			throw e;
 		}
 	}
 
