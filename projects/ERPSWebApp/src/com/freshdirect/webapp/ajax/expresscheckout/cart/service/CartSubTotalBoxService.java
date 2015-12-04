@@ -109,9 +109,12 @@ public class CartSubTotalBoxService {
 
     public void populateDeliveryFeeToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, FDUserI user, CartData cartData) {
         final double epsilon = 0.0000001;
+        
         boolean isDlvPassApplied = false;
+        boolean isDlvPromotionApplied = false;
         if (cart instanceof FDCartModel) {
             isDlvPassApplied = ((FDCartModel) cart).isDlvPassApplied();
+            isDlvPromotionApplied = ((FDCartModel) cart).isDlvPromotionApplied();
         } else if (cart instanceof FDOrderAdapter) {
             isDlvPassApplied = ((FDOrderAdapter) cart).isDlvPassApplied();
         }
@@ -119,7 +122,10 @@ public class CartSubTotalBoxService {
         boolean deliveryPassPopupNeeded = false;
         String deliveryPassName = DELIVERY_FEE_NAME;
         String deliveryPassValue = ZERO_POINT_ZERO_ZERO_VALUE;
-        if (isDlvPassApplied) {
+        if (isDlvPromotionApplied) {
+            deliveryPassName = DELIVERY_CHARGE_WAIVED_NAME;
+            deliveryPassPopupNeeded = true; // FIXME not sure ...
+        } else if (isDlvPassApplied) {
             deliveryPassValue = DeliveryPassUtil.getDlvPassAppliedMessage(user);
         } else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
             if (cart.isChargeWaived(EnumChargeType.DELIVERY)) {
