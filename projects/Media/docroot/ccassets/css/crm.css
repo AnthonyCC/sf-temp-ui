@@ -1735,7 +1735,32 @@ font-size: 9pt;
 		.list_content .resubcust-spacer-auto { width: auto; }
 
 	/* resubmit orders */
-	
+	/* CRM auths_view */
+		.list_header .authView-Timestamp { width: 178px; }		
+		.list_header .authView-Order { width: 100px; }					
+		.list_header .authView-CardHoldName { width: 300px; }
+		.list_header .authView-Card { width: 80px; }
+		.list_header .authView-Amount { width: 50px; }					
+		.list_header .authView-Merchant { width: 100px; }
+		.list_header .authView-Approval { width: 100px; }
+		.list_header .authView-Auth { width: 240px; }
+		.list_header .authView-Zip { width: 70px; }
+		.list_header .authView-CVV { width: 70px; }
+		.list_header .authView-Address { width: 300px; }
+		
+		.list_content .authView-Timestamp { width: 178px; }		
+		.list_content .authView-Order { width: 100px; }					
+		.list_content .authView-CardHoldName { width: 300px; }
+		.list_content .authView-Card { width: 80px; }
+		.list_content .authView-Amount { width: 50px; }					
+		.list_content .authView-Merchant { width: 100px; }
+		.list_content .authView-Approval { width: 100px; }
+		.list_content .authView-Auth { width: 240px; }
+		.list_content .authView-Zip { width: 70px; }
+		.list_content .authView-CVV { width: 70px; }
+		.list_content .authView-Address { width: 300px; }
+		
+	/* CRM auths_view */
 
 /* SUPERVISOR */
 

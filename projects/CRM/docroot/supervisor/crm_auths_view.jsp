@@ -160,19 +160,19 @@ function isNumber(n) {
 		<div class="list_header">
 			<table>
 				<tr bgcolor="#333366" class="list_header_text">
-					
-					<td align="left" width="10%">Timestamp</td>					
-					<td align="left" width="10%">Order</a></td>						
-					<td align="left" width="15%">Card holder Name</td>
-					<td align="left" width="5%">Card </td>
-					<td align="right" width="5%">Amount</td>					
-					<td align="left" width="10%">Merchant</td>	
-					<td align="left" width="5%">Approval Code</td>
-					<td align="left" width="10%">Auth Response</td>
-					<td align="left" width="5%">Zip Match</td>
-					<td align="left" width="5%">CVV Match</td>
-					<td align="left" width="20%">Address</td>					
-					
+					<td class="resubcust-spacer"  >&nbsp;</td>
+					<td class="authView-Timestamp" >Timestamp</td>					
+					<td class="authView-Order">Order</a></td>						
+					<td class="authView-CardHoldName">Card holder Name</td>
+					<td class="authView-Card">Card </td>
+					<td class="authView-Amount">Amount</td>					
+					<td class="authView-Merchant">Merchant</td>	
+					<td class="authView-Approval">Approval Code</td>
+					<td class="authView-Auth">Auth Response</td>
+					<td class="authView-Zip">Zip Match</td>
+					<td class="authView-CVV">CVV Match</td>
+					<td class="authView-Address">Address</td>					
+					<td class="resubcust-spacer-auto" >&nbsp;</td>
 				</tr>				
 			</table>
 		</div>
@@ -192,17 +192,20 @@ function isNumber(n) {
 				<%} else {%>
 				<tr <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
 				<%}%>
-					<td class="border_bottom" width="10%" align="left"><%=authInfo.getTransactionTime()%></td>						
-					<td class="border_bottom" width="10%" align="left"><% if(isValidOrder) {%><%=authInfo.getOrder()%> <%} else {%><%=authInfo.getOrder()%><%}%></td>
-					<td class="border_bottom" width="15%"><%=authInfo.getCustomerName()%></td>
-					<td class="border_bottom" width="5%"><%=authInfo.getCardType()%></td>
-					<td class="border_bottom" width="5%" align="right"><%=authInfo.getAmount()%></td>
-					<td class="border_bottom" width="10%"><%=authInfo.getMerchantId()%></td>
-					<td class="border_bottom" width="5%"><%=authInfo.getApprovalCode()%></td>
-					<td class="border_bottom" width="10%"><%=authInfo.getAuthResponse()%></td>
-					<td class="border_bottom" width="5%"><%=authInfo.getZipCheckReponse()%></td>
-					<td class="border_bottom" width="5%"><%=authInfo.getCvvResponseCode()%></td>
-					<td class="border_bottom" width="20%"><%=authInfo.getAddress()%></td>
+					<td class="resubcust-spacer border_bottom"  >&nbsp;</td>
+					<td class="authView-Timestamp border_bottom" ><%=authInfo.getTransactionTime()%></td>						
+					<td class="authView-Order border_bottom" ><% if(isValidOrder) {%><%=authInfo.getOrder()%> <%} else {%><%=authInfo.getOrder()%><%}%></td>
+					<td class="authView-CardHoldName border_bottom" ><%=authInfo.getCustomerName()%></td>
+					<td class="authView-Card border_bottom" ><%=authInfo.getCardType()%></td>
+					<td class="authView-Amount border_bottom" ><%=authInfo.getAmount()%></td>
+					<td class="authView-Merchant border_bottom" ><%=authInfo.getMerchantId()%></td>
+					<td class="authView-Approval border_bottom" ><%=authInfo.getApprovalCode()%></td>
+					<td class="authView-Auth border_bottom" ><%=authInfo.getAuthResponse()%></td>
+					<td class="authView-Zip border_bottom" ><%=authInfo.getZipCheckReponse()%></td>
+					<td class="authView-CVV border_bottom" ><%=authInfo.getCvvResponseCode()%></td>
+					<td class="authView-Address border_bottom" ><%=authInfo.getAddress()%></td>
+					<td class="resubcust-spacer-auto border_bottom" >&nbsp;</td>
+										
 				</tr>
 			</logic:iterate>
 			<%}%>
