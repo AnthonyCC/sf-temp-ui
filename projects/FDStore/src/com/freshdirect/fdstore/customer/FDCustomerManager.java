@@ -346,7 +346,7 @@ public class FDCustomerManager {
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
 
-			if(user.isVoucherHolder() && (EnumEStoreId.FDX.getContentId()).equals(user.getUserContext().getStoreContext().getEStoreId().getContentId())){
+			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
 			populateShoppingCart(user);
