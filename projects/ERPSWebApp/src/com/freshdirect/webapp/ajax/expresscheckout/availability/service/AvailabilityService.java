@@ -28,6 +28,7 @@ import com.freshdirect.webapp.util.JspMethods;
 public class AvailabilityService {
 
     private static final String DELIVERY_PASS_ONLY = "dlv_pass_only";
+    private static final String CART_IS_EMPTY = "cart_is_empty";
     private static final String DELIVERY_PASS_CANCELLED = "dlv_pass_cancelled";
     private static final String GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY = "generalUnderOrderMinimumMessageKey";
 
@@ -74,11 +75,12 @@ public class AvailabilityService {
         return errorMessage;
     }
 
-    public Map<String, String> populateWarningMessages(FDUserI user) throws FDResourceException {
+    public Map<String, String> populateWarningMessages(FDUserI user) {
         Map<String, String> warningMessages = new HashMap<String, String>();
         warningMessages.put(GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY, SystemMessageList.MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE);
         warningMessages.put(DELIVERY_PASS_ONLY, SystemMessageList.MSG_CONTAINS_DLV_PASS_ONLY);
         warningMessages.put(DELIVERY_PASS_CANCELLED, SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
+        warningMessages.put(CART_IS_EMPTY, SystemMessageList.MSG_CHECKOUT_CART_EMPTY);
         return warningMessages;
     }
 
@@ -119,6 +121,8 @@ public class AvailabilityService {
             warningType = DELIVERY_PASS_CANCELLED;
         } else if (!user.isOrderMinimumMet() && deliveryAddress != null && user.getMasqueradeContext() == null) {
             warningType = GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY;
+        } else if (user.getShoppingCart().getOrderLines().isEmpty()){
+            warningType = CART_IS_EMPTY;
         }
         return warningType;
     }

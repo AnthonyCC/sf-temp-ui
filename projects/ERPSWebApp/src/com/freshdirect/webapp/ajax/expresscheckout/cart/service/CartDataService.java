@@ -169,16 +169,7 @@ public class CartDataService {
 
     public FormDataResponse validateOrderMinimumOnStartCheckout(FDUserI user, FormDataRequest request) throws FDResourceException {
         FormDataResponse result = createStartCheckoutResponseData(request);
-
-        // APPDEV-4552 - no minimum check in masquerade mode
-        final boolean isInCrmMasqMode = (user != null && user.getMasqueradeContext() != null);
-
-        String orderMinimumWarningMessageKey = null;
-
-        if (!isInCrmMasqMode) {
-            orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
-        }
-
+        String  orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
         if (orderMinimumWarningMessageKey != null) {
             Map<String, Object> headerMessageMap = new HashMap<String, Object>();
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
