@@ -38,9 +38,9 @@
 						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
 						--%>
 						
-						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
+						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required autocomplete="off" />
 						
-						<button type="submit">Check</button>
+						<button type="submit" autocomplete="off">Check</button>
 					</form>
 					<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
 						<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
@@ -59,8 +59,24 @@
 					</form>
 					
 					<div id="we_deliver_to_you" style="display:none">
+						<!--  
 						<p class="ucwords">We deliver in your area!</p>
 						<button class="download_button purple">Download the APP</button>
+						-->
+						
+						
+						<h2>
+							<img src="<%=IMAGES_DIR %>/section_3/smiley.png" /> <br/>
+							You're in luck! <br/>
+							We're in your hood. <br/>
+							Download the app today.
+						</h2>
+						<br/>
+						<a href="#Get_Foodkick" onClick="reset_zip_forms();">
+							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
+						</a>
+						<br/>
+						Try another hood.
 					</div>
 					
 					<div id="form_congratulations" style="display:none">

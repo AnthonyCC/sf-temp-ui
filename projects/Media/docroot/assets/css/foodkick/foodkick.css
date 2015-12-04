@@ -226,7 +226,7 @@ section#section_slideshow {
         width: 100%;
         /*height:auto;*/
         height: 100%;
-        mix-blend-mode: multiply; }
+        /*mix-blend-mode: multiply;*/ }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
       top: -75px; }
       section#section_slideshow #carousel_1 .slidesjs-pagination a {
@@ -350,6 +350,10 @@ section#section_Get_Foodkick {
         @media (min-width: 30em) {
           section#section_Get_Foodkick section figure img.svg_arrow {
             display: inline; } }
+  section#section_Get_Foodkick #we_deliver_to_you h2 {
+    color: #732282;
+    font-family: "GraphikApp-Regular";
+    font-size: 24pt; }
   section#section_Get_Foodkick article {
     margin-left: 10%;
     width: 80%;
@@ -442,6 +446,8 @@ section#section_Get_Foodkick {
         @media (min-width: 1000px) {
           section#section_Get_Foodkick article form input {
             width: inherit; } }
+        section#section_Get_Foodkick article form input.placeholder {
+          color: rgba(0, 0, 0, 0.5); }
       section#section_Get_Foodkick article form button {
         /*clear:both;*/
         font-size: 1.5em;

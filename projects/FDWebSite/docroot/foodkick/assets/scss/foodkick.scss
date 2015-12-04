@@ -443,7 +443,7 @@ section#section_slideshow{
 				/*height:auto;*/
 				height:100%;
 				
-				mix-blend-mode: multiply;
+				/*mix-blend-mode: multiply;*/
 			}
 		}
 		
@@ -607,6 +607,14 @@ section#section_Get_Foodkick{
 		}
 	}
 	
+	#we_deliver_to_you{
+		h2{
+			color: $main_purple;
+			font-family: '#{$GraphikApp_r_n}';
+			font-size:24pt;
+		}
+	}
+	
 	article{
 		margin-left: 10%;
 		width: 80%;
@@ -721,6 +729,10 @@ section#section_Get_Foodkick{
 				
 				@include breakpoint_mixin(1000px){
 					width:inherit;
+				}
+				
+				&.placeholder{
+					color: $form_t_color_p;
 				}
 			}
 			

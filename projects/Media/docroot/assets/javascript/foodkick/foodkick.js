@@ -173,20 +173,54 @@ function numbersOnly(src){
 }
 
 function form_enableDisable(formId, eORd){
+	console.log("troll wars");
+	
 	var eORd = (typeof eORd !== 'undefined')? eORd : false;
+	
+	//the submit button for the form
+	var theButton = $(formId).find("button").first();
 
 	if(eORd == false){
 		$(formId).css("opacity", "0.5");
 		
 		$(formId).find("input").prop('disabled', true).css("cursor", "not-allowed");
-		$(formId).find("button").prop('disabled', true).css("cursor", "not-allowed").attr("text2", $(formId).text().trim()).text("please wait...");
+		theButton.prop('disabled', true).css("cursor", "not-allowed").attr("text2", theButton.text().trim());
+		theButton.text("please wait...");
 	}else{
-		$(formId).css("opacity", "1");
+		$(formId).css("opacity", "1").css("display", "block");
 		
 		$(formId).find("input").prop('disabled', false).css("cursor", "default");
-		$(formId).find("button").prop('disabled', false).css("cursor", "default").text( $(formId).attr("text2") );
+		theButton.prop('disabled', false).css("cursor", "default").text( theButton.attr("text2") );
 	}
 }
+
+function reset_zip_forms(){
+	form_enableDisable('#ziphandler', true);
+	$('#we_deliver_to_you').css('display', 'none');
+	
+	$("#zipcode_zh").val("").text("");
+}
+
+function form_inputs_enable_lite(formId){
+	$(formId).find("input").prop('disabled', false);
+	$(formId).find("button").prop('disabled', false);
+}
+
+function PageShowHandler(){
+	form_inputs_enable_lite("#ziphandler", true);
+	
+	window.addEventListener('unload', UnloadHandler, false);
+}
+
+function UnloadHandler(){
+	form_inputs_enable_lite("#ziphandler", true);
+	
+	//enable button here
+	window.removeEventListener('unload', UnloadHandler, false);
+}
+
+window.addEventListener('pageshow', PageShowHandler, false);
+window.addEventListener('unload', UnloadHandler, false);
 
 $(function(){
 	elements_size_adjuster();
@@ -228,7 +262,7 @@ $(function(){
 	
 	//step 2a, if there is no zip code from function above, the form that this submits to is then seen and submits to have this code activate below
 	$('form#locationhandler').submit(function(event){
-		form_enableDisable( $(this).attr("id") );
+		form_enableDisable( "#" + $(this).attr("id") );
 		
 		var param_obj = new Object();
 		param_obj.zip_text = $("#zipcode_lh").val();
@@ -238,4 +272,19 @@ $(function(){
 		
 		event.preventDefault();
 	});
+	
+	//lets make placeholders for fields work in IE 9 and maybe below
+	$('[placeholder]').focus(function() {
+		var input = $(this);
+		if (input.val() == input.attr('placeholder')) {
+			input.val('');
+			input.removeClass('placeholder');
+		}
+	}).blur(function() {
+		var input = $(this);
+		if (input.val() == '' || input.val() == input.attr('placeholder')) {
+			input.addClass('placeholder');
+			input.val(input.attr('placeholder'));
+		}
+	}).blur();
 });

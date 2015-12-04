@@ -170,7 +170,15 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 
 				UserUtil.createSessionUser(request, response, user);
 
-				doRedirect(URI_HOME);
+				//doRedirect(URI_HOME);
+
+				if (this.successPage != null) {
+					doRedirect(this.successPage);
+				} else {
+					doRedirect(URI_HOME);
+				}
+				
+				
 
 			} catch (ErpInvalidPasswordException ex) {
 				LOGGER.warn("new password too short", ex);
