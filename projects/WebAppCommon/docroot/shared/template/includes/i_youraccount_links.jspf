@@ -57,7 +57,7 @@
 		folderMap.put("Your Shopping Lists","/quickshop/all_lists.jsp");
 		folderMap.put("Your Profile","/your_account/customer_profile_summary.jsp");
 
-		try {
+		/* try {
 
 			if(user_youract!=null && user_youract.isReferralProgramAvailable()) {
 				FDIdentity customerIdentity = null;
@@ -72,7 +72,7 @@
 		} catch (Exception e) {
 			LOGGER.debug("Error in getting RAF link");
 			e.printStackTrace();
-		}
+		} */
 
 		folderMap.put("Account Credits","/your_account/credits.jsp");
 	}
