@@ -79,7 +79,7 @@
       {/switch}
     {/let}
     <span class="{if $item.counter < 1}noitem{/if} {$info}">
-      <label><input id="order_{$item.filteringUrlValue}" type="checkbox" name="orderListId" value="{$item.filteringUrlValue}" {($item.selected) ? 'checked="checked"' : ''}>
+      <label><input id="order_{$item.filteringUrlValue}" type="checkbox" name="orderListId" value="{$item.filteringUrlValue}" {($item.selected) ? 'checked=checked' : ''}>
       <span>{$item.name}</span> ({$item.counter})</label>
     </span>			
   </li>
