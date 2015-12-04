@@ -35,6 +35,9 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 			
 		    String promoCode = promo.getPromotionCode();
 		    if(promoCode == null) promoCode = "n/a";
+		    
+		    String rafPromoCode = promo.getRafPromoCode();
+		    if(rafPromoCode == null) rafPromoCode = "n/a";
 			
 			PromoNewRow p = new PromoNewRow();
 			p.id = promo.getPK().getId();
@@ -52,6 +55,7 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 		    p.createdBy = null !=promo.getCreatedBy()?promo.getCreatedBy():"";
 		    p.modifiedBy = null !=promo.getModifiedBy()?promo.getModifiedBy():"";
 		    p.createdModifiedBy = p.createdBy+"-"+p.modifiedBy;
+		    //p.rafPromoCode = rafPromoCode;
 		    
 		    p.setChef(promo.isForChef());
 		    p.setCos(promo.isForCOS());

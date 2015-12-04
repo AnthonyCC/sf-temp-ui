@@ -18,6 +18,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpPaymentModel;
 import com.freshdirect.customer.ErpAbstractSettlementModel;
+import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -151,7 +152,12 @@ public class ErpAbstractSettlementPersistentBean extends ErpPaymentPersistentBea
 				ps = null;
 			}
 		}
-		
+		//RAF Approve transaction, for a settled order. 
+		if(this.model instanceof ErpSettlementModel && null !=((ErpSettlementModel)this.model).getRafTransModel()){
+			ErpRafTransactionPersistentBean rtPB = new ErpRafTransactionPersistentBean(((ErpSettlementModel)this.model).getRafTransModel());
+			rtPB.setParentPK(this.getPK());
+			rtPB.create( conn );
+		}
 		this.unsetModified();
 		return this.getPK();
 	}

@@ -28,6 +28,8 @@
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
+	
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
 
   <%-- HTML5 support for IE8 --%>
   <!--[if lt IE 9]>

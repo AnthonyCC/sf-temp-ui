@@ -110,7 +110,7 @@ public class OrderConsumer implements IConsumer {
 
 		try {
 			FDActionInfo actionInfo = new FDActionInfo(cart.getEStoreId()==null?EnumEStoreId.FD:cart.getEStoreId(),EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT, null);			
-			FDCustomerManager.placeOrder(actionInfo, cart,new HashSet<String>(), false, rating, EnumDlvPassStatus.NONE);
+			FDCustomerManager.placeOrder(actionInfo, cart,new HashSet<String>(), false, rating, EnumDlvPassStatus.NONE,false);
 			// Huhh... this is a bit strange ...
 		} catch (FDResourceException fdre) {
 			fdre.printStackTrace();

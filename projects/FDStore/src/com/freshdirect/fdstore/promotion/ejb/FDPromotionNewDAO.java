@@ -462,6 +462,12 @@ public class FDPromotionNewDAO {
 		//TODO This needs to replaced by Customer strategy 	
 		//decorateOrderTypestrategy(rs, promo);
 		
+		String rafPromoCode=rs.getString("RAF_PROMO_CODE");
+		
+		
+	//	String rafPromoCode=rs.getString("RAF_PROMO_CODE");
+		
+		
 		GeographyStrategy geoStrategy = loadGeographyStrategy(conn, promoId);
 		if (geoStrategy != null) {
 			promo.addStrategy(geoStrategy);
@@ -1573,22 +1579,20 @@ public class FDPromotionNewDAO {
 		}
 	}
 	
+    
+	public static final String GET_REF_PROMO = "SELECT p.* "
+			+ "FROM  CUST.PROMOTION_NEW p, "
+			+ "CUST.FDCUSTOMER fc, "
+			+ "CUST.CUSTOMER c "
+			+ "where fc.ERP_CUSTOMER_ID = ? "
+			+ "and     fc.ERP_CUSTOMER_ID = c.ID "
+			+ "and     fc.RAF_PROMO_CODE=p.RAF_PROMO_CODE and p.referral_promo='Y' "
+			+ "and     fc.raf_promo_code is not null "
+			+ "and     p.status in ('LIVE') "
+			+ "and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) "
+			+ "and     p.redemption_code is  null "
+			+ "order by p.modify_date desc";
 	
-	public static final String GET_REF_PROMO =  "SELECT p.* " +  
-				"FROM CUST.PROMOTION_NEW p, " +
-				    "CUST.FDCUSTOMER fc, " +
-				    "CUST.REFERRAL_PRGM rp, " + 
-				    "CUST.REFERRAL_CUSTOMER_LIST rcl " + 
-				"where FC.ERP_CUSTOMER_ID = ? " +
-				"and     FC.REFERER_CUSTOMER_ID = RCL.ERP_CUSTOMER_ID " +
-				"and     RCL.REFERAL_PRGM_ID = RP.ID " +
-				"and     RP.EXPIRATION_DATE > trunc(sysdate) " + 
-				"and     RP.PROMOTION_ID = P.ID " +
-				"and     p.status = 'LIVE' " +
-				"and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) " +  
-				"and     p.redemption_code is null " +
-				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')" +
-				"order by p.modify_date desc";
 	
 	public static final String GET_DEFAULT_REF_PROMO = "SELECT p.* " +
 				"FROM CUST.PROMOTION_NEW p, " +
@@ -1606,7 +1610,7 @@ public class FDPromotionNewDAO {
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
 
 	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
-		LOGGER.debug("Query is "+GET_REF_PROMO);
+	//	LOGGER.debug("Query is "+GET_REF_PROMO);
 		PreparedStatement ps = conn.prepareStatement(GET_REF_PROMO);
 		ps.setString(1, customerId);
 		ResultSet rs = ps.executeQuery();
@@ -1618,7 +1622,7 @@ public class FDPromotionNewDAO {
 			promotions.add(promotion);
 		}
 		
-		if(promotions.size() == 0) {
+		/*if(promotions.size() == 0) {
 			//see if there is a default promo available
 			LOGGER.debug("Query is "+GET_DEFAULT_REF_PROMO);
 			ps = conn.prepareStatement(GET_DEFAULT_REF_PROMO);
@@ -1630,7 +1634,7 @@ public class FDPromotionNewDAO {
 				promotion.addStrategy(new ReferAFriendStrategy());
 				promotions.add(promotion);
 			}
-		}
+		}*/
 		rs.close();
 		ps.close();
 		return promotions;

@@ -37,6 +37,8 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     private java.util.Date passwordRequestExpiration;
     private FDCustomerEStoreModel customerEStoreModel;
     private FDCustomerEStoreModel customerSmsPreferenceModel;
+    private String rafClickId;
+    private String rafPromoCode;
     
 	/**
      * Default constructor.
@@ -169,12 +171,7 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		
 	}
 
-	@Override
-	public void setPymtVerifyAttempts(int pymtVerifyAttempts)
-			throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	public boolean isEligibleForDDPP() {
 		String eligibleAttr = this.profile.getAttribute("DDPP_ELIGIBLE");
@@ -206,6 +203,15 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		this.customerEStoreModel = customerEStoreModel;
 	}
 	
+	public String getRafClickId() {
+		return rafClickId;
+	}
+
+	public void setRafClickId(String rafClickId) {
+		this.rafClickId = rafClickId;
+	}
+
+	
 	public FDCustomerEStoreModel getCustomerSmsPreferenceModel() {
 		return customerSmsPreferenceModel;
 	}
@@ -213,6 +219,21 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 	public void setCustomerSmsPreferenceModel(
 			FDCustomerEStoreModel customerSmsPreferenceModel) {
 		this.customerSmsPreferenceModel = customerSmsPreferenceModel;
+	}
+
+	@Override
+	public void setPymtVerifyAttempts(int pymtVerifyAttempts)
+			throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
 	}
 
 

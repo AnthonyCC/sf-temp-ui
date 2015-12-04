@@ -227,7 +227,7 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         altEmail = request.getParameter("alt_email");
         password = request.getParameter("password");
         repeatPassword = request.getParameter("repeat_password");
-        passwordHint = request.getParameter("password_hint");
+        /*passwordHint = request.getParameter("password_hint");*/
         receiveEmail = request.getParameter("receive_email")==null?false:true;
         htmlEmail = request.getParameter("isSendHTMLEmail")==null?false:true;
         depotCode = request.getParameter("depotCode");
@@ -301,9 +301,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         if(homephone==null || homephone.length()<10) {
             result.addError(new ActionError("homephone", "Invalid or missing home phone number"));
         }
-        if(passwordHint==null || passwordHint.length() < 1) {
+       /* if(passwordHint==null || passwordHint.length() < 1) {
             result.addError(new ActionError("password_hint", "Invalid or missing password hint"));
-        }
+        }*/
         
         //TODO Logistics ReIntegration Task - Depot Logic is not required.
         /*if (user.isDepotUser()) {
@@ -478,9 +478,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
             HttpSession session = pageContext.getSession();
             session.setAttribute(SessionName.USER, user);
         }
-        if (result.isSuccess())
+       /* if (result.isSuccess())
             FDCustomerManager.updatePasswordHint(getIdentity(), passwordHint);
-
+*/
     } // method updateAllCustomerInfo
 
 

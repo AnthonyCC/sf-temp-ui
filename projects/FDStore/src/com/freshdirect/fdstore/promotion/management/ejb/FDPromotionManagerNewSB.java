@@ -97,6 +97,10 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public boolean isRedemptionCodeExists(String redemptionCode, String promotionId)throws FDResourceException,RemoteException;
 	
+	public boolean isRafPromoCodeExists(String rafPromoCode)throws FDResourceException,RemoteException;
+	
+	public boolean isRafPromoCodeExists(String rafPromoCode, String promotionId)throws FDResourceException,RemoteException;
+	
 	public void storePromotionStatus(FDPromotionNewModel promotion,EnumPromotionStatus status)throws FDResourceException,RemoteException;
 	
 	public void storePromotionHoldStatus(FDPromotionNewModel promotion)throws FDResourceException,RemoteException;

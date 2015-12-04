@@ -364,6 +364,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     /**
      * Place an order (send msg to SAP, persist order).
+     * @param isFriendReferred 
      *
      * @param identity the customer's identity reference
      * @return String sale id
@@ -377,7 +378,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status)
+		EnumDlvPassStatus status, boolean isFriendReferred)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,

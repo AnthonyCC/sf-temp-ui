@@ -796,7 +796,27 @@ public class FDStoreProperties {
 	private final static String PROP_FDX_LOCATIONBAR = "fdstore.fdxlocationbar.enabled";
 	private final static String PROP_FDX_LOCATIONBAR_FDXTAB = "fdstore.fdxlocationbar.fdxtab.enabled";
     
+    /*APPDEV-4216 Refer a Friend- Extole Integration*/
+    
+    public final static String PROP_FDEXTOLEMGR_HOME                            = "freshdirect.fdstore.FDExtoleManager";
+    public final static String PROP_EXTOLE_SFTP_HOST		                    = "extole.sftp.host";
+	public final static String PROP_EXTOLE_SFTP_USERNAME		                = "extole.sftp.username";
+	public final static String PROP_EXTOLE_SFTP_FILE_DOWNLOADER_REMOTE_WORKDIR	= "extole.sftp.remotedirectory";
+	public final static String PROP_EXTOLE_SFTP_FILE_DOWNLOADER_LOCAL_WORKDIR	= "extole.sftp.localdirectory";
+	
+	public static final String PROP_SCHEME_HTTPS                                = "scheme.https";
+	public static final String PROP_EXTOLE_BASE_URL                             = "prop.base.url";
+	
+	public static final String PROP_EXTOLE_ENDPOINT_CREATE_CONVERSION           = "extole.endpoint.create.conversion";
+	public static final String PROP_EXTOLE_ENDPOINT_APPROVE_CONVERSION          = "extole.endpoint.approve.conversion";
+	
+	public static final String PROP_EXTOLE_API_KEY                              = "extole.api.key";
+	public static final String PROP_EXTOLE_API_SECRET                           = "extole.api.secret";
+	public static final String PROP_EXTOLE_BASE_FILE_NAME						= "extole.base.file.name";
+		
+	    
     static {
+       	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY,
@@ -1422,6 +1442,7 @@ public class FDStoreProperties {
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 		
+		
 		defaults.put(PROP_EH_CACHE_ENABLED, "true");		
 		
 		defaults.put(PROP_FD_TC_ENABLED, "false");
@@ -1573,6 +1594,24 @@ public class FDStoreProperties {
         
         defaults.put(PROP_FDX_LOCATIONBAR, "false");
         defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
+        
+        
+        // Extole related
+        
+        defaults.put(PROP_FDEXTOLEMGR_HOME, "freshdirect.fdstore.FDExtoleManager");
+    	defaults.put(PROP_EXTOLE_SFTP_HOST,"sftp.extole.com");
+    	defaults.put(PROP_EXTOLE_SFTP_USERNAME, "c553175139");
+    	defaults.put(PROP_EXTOLE_SFTP_FILE_DOWNLOADER_REMOTE_WORKDIR, "/dropbox");
+    	defaults.put(PROP_EXTOLE_SFTP_FILE_DOWNLOADER_LOCAL_WORKDIR, "/opt/fdlog/referralcredits");
+    	defaults.put(PROP_SCHEME_HTTPS,"https" );
+    	defaults.put(PROP_EXTOLE_BASE_URL, "api.extole.com");
+    	defaults.put(PROP_EXTOLE_ENDPOINT_CREATE_CONVERSION, "/v3/events/convert");
+    	defaults.put(PROP_EXTOLE_ENDPOINT_APPROVE_CONVERSION, "/v3/events/approve");
+    	defaults.put(PROP_EXTOLE_API_KEY,"553175139-1");
+    	defaults.put(PROP_EXTOLE_API_SECRET, "53bfce3a534749c09ff79860833fddb0");
+    	defaults.put(PROP_EXTOLE_BASE_FILE_NAME, "FreshDirect_EarnedRewards_");
+        
+        
         
 		refresh();
     }
@@ -3789,8 +3828,12 @@ public class FDStoreProperties {
 	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT));
 	   	} catch(NumberFormatException e){
 	   		return 60;
-	   	}
-	}
+    }
+   	}
+	 public static String getFDExtoleManagerHome() {
+	        return get(PROP_FDEXTOLEMGR_HOME);
+	    }
+
 	
 	// Recaptcha getter methods
 	 public static String getRecaptchaPublicKey() {
@@ -3970,5 +4013,50 @@ public class FDStoreProperties {
 
 	public static String getFdxAppUrl_Apple() {
         return get( PROP_FDX_APP_APPLE_URL );
+	}
+
+	public static String getPropExtoleSftpHost() {
+		return get(PROP_EXTOLE_SFTP_HOST);
+	}
+
+	public static String getPropExtoleSftpUsername() {
+		return get(PROP_EXTOLE_SFTP_USERNAME);
+	}
+
+	public static String getPropExtoleSftpFileDownloaderRemoteWorkdir() {
+		return get(PROP_EXTOLE_SFTP_FILE_DOWNLOADER_REMOTE_WORKDIR);
+	}
+
+	public static String getPropBaseUrl() {
+		return get(PROP_EXTOLE_BASE_URL);
+	}
+
+	public static String getPropEndpointCreateConversion() {
+		return get(PROP_EXTOLE_ENDPOINT_CREATE_CONVERSION);
+	}
+
+	public static String getPropEndpointApproveConversion() {
+		return get(PROP_EXTOLE_ENDPOINT_APPROVE_CONVERSION);
+	}
+
+	public static String getPropExtoleApiKey() {
+		return get(PROP_EXTOLE_API_KEY);
+	}
+
+	public static String getPropExtoleApiSecret() {
+		return get(PROP_EXTOLE_API_SECRET);
+	}
+
+
+	public static String getPropSchemeHttps() {
+		return get(PROP_SCHEME_HTTPS);
+	}
+
+	public static String getPropExtoleSftpFileDownloaderLocalWorkdir() {
+		return get(PROP_EXTOLE_SFTP_FILE_DOWNLOADER_LOCAL_WORKDIR);
+	}
+
+	public static String getPropBaseFileName() {
+		return get(PROP_EXTOLE_BASE_FILE_NAME);
 	}
 }

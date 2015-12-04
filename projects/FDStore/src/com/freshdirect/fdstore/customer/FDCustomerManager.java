@@ -284,8 +284,9 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
+			
 			populateShoppingCart(user);
-
+			
 			return user;
 
 		} catch (CreateException ce) {
@@ -1647,7 +1648,7 @@ public class FDCustomerManager {
 
 	public static String placeOrder(
 		FDActionInfo info, FDCartModel cart, Set<String> appliedPromos,
-		boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status)
+		boolean sendEmail, CustomerRatingI cra, EnumDlvPassStatus status, boolean isFriendReferred)
 	throws FDResourceException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException, ReservationException,
 		FDPaymentInadequateException, ErpTransactionException, DeliveryPassException {
 
@@ -1672,8 +1673,7 @@ public class FDCustomerManager {
 					sendEmail,
 					cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status
-				);
+					status,isFriendReferred);
 
 			LOGGER.info(">>> Reservation "+cart.getDeliveryReservation().getPK().getId()+" "+" Order "+ orderId);
 

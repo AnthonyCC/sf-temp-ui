@@ -64,6 +64,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private int pymtVerifyAttempts;
 	private FDCustomerEStorePersistentBean customerEStore;
 	private FDCustomerSmsPreferencePersistentBean customerSmsPreferences;
+	private String rafClickId;
+	private String rafPromoCode;
 	/**
 	 * Copy into model.
 	 *
@@ -83,6 +85,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setDepotCode(this.depotCode);
 		model.setPasswordRequestExpiration(this.passwordRequestExpiration);
 		model.setCustomerEStoreModel((FDCustomerEStoreModel)this.customerEStore.getModel());
+		model.setRafClickId(this.rafClickId);
+		model.setRafPromoCode(this.rafPromoCode);
 		model.setCustomerSmsPreferenceModel((FDCustomerEStoreModel)this.customerSmsPreferences.getModel());
 		return model;
 	}
@@ -102,6 +106,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.passwordHint = m.getPasswordHint();
 		this.depotCode = m.getDepotCode();
 		this.customerEStore.setFromModel(m.getCustomerEStoreModel());
+		this.rafClickId = m.getRafClickId();
+		this.rafPromoCode = m.getRafPromoCode();
 		this.customerSmsPreferences.setFromModel(m.getCustomerSmsPreferenceModel());
 		this.setModified();
 	}
@@ -297,7 +303,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER (ID, ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE) values (?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER (ID, ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, RAF_CLICK_ID, RAF_PROMO_CODE) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
 		ps.setString(2, this.erpCustomerPK);
 		ps.setInt(3, this.loginCount);
@@ -308,9 +314,11 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		}
 		ps.setString(5, this.defaultShipToAddressPK);
 		ps.setString(6, this.defaultPaymentMethodPK);
-		ps.setString(7, this.passwordHint);
-		ps.setString(8, this.defaultDepotLocationPK);
-		ps.setString(9, this.depotCode);
+	//	ps.setString(7, this.passwordHint); removed this column
+		ps.setString(7, this.defaultDepotLocationPK);
+		ps.setString(8, this.depotCode);
+		ps.setString(9, this.rafClickId);
+		ps.setString(10, this.rafPromoCode);
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -369,7 +377,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		// rs.wasNull()
 		this.passwordRequestId = rs.getString("PASSREQ_ID");
 		this.passwordRequestAttempts = rs.getInt("PASSREQ_ATTEMPTS");
-		this.passwordHint = rs.getString("PASSWORD_HINT");
+		//this.passwordHint = rs.getString("PASSWORD_HINT");
 		this.defaultDepotLocationPK = rs.getString("DEFAULT_DEPOT_LOCATION");
 		this.depotCode = rs.getString("DEPOT_CODE");
 		this.setPymtVerifyAttempts(rs.getInt("PYMT_VERIFY_ATTEMPTS"));
@@ -637,5 +645,35 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		 
 		this.pymtVerifyAttempts=0;
 		this.setModified();
+	}
+
+	/**
+	 * @return the rafClickId
+	 */
+	public String getRafClickId() {
+		return rafClickId;
+	}
+
+	/**
+	 * @param rafClickId the rafClickId to set
+	 */
+	public void setRafClickId(String rafClickId) {
+		this.rafClickId = rafClickId;
+	}
+
+	/**
+	 * @return the rafPromoCode
+	 */
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+
+	/**
+	 * @param rafPromoCode the rafPromoCode to set
+	 */
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
 	}	
+
+
 }

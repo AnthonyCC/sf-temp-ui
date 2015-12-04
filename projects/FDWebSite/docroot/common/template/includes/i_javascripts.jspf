@@ -37,6 +37,8 @@
 	
 	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
 	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
+	
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
 
   <%-- HTML5 support for IE8 --%>
   <!--[if lt IE 9]>

@@ -49,6 +49,8 @@ public class ReferralPromotionModel extends ModelSupport {
 	private String referralCreditEmailText;
 	private String userListFileHolder;
 	private String siteAccessImageFile;
+	private String advocateEmail;
+	private String friendEmail;
 	
 	public String getFbFile() {
 		return fbFile;
@@ -260,6 +262,30 @@ public class ReferralPromotionModel extends ModelSupport {
 	}
 	public String getInviteEmailOfferText() {
 		return inviteEmailOfferText;
+	}
+	/**
+	 * @return the advocateEmail
+	 */
+	public String getAdvocateEmail() {
+		return advocateEmail;
+	}
+	/**
+	 * @param advocateEmail the advocateEmail to set
+	 */
+	public void setAdvocateEmail(String advocateEmail) {
+		this.advocateEmail = advocateEmail;
+	}
+	/**
+	 * @return the friendEmail
+	 */
+	public String getFriendEmail() {
+		return friendEmail;
+	}
+	/**
+	 * @param friendEmail the friendEmail to set
+	 */
+	public void setFriendEmail(String friendEmail) {
+		this.friendEmail = friendEmail;
 	}
 	
 	

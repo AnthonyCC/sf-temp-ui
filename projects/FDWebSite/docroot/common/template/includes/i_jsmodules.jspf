@@ -20,7 +20,7 @@
 		}
 	});
 	</script>
-	<%@ include file="/common/template/includes/extol_tags.jspf" %>
+	
 <% 
 	session.setAttribute("DELIVERYADDRESS_COMPLETE",null);
 	} 

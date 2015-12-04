@@ -558,11 +558,17 @@ public class SubmitOrderAction extends WebActionSupport {
 			standingOrder.setupDelivery(cart.getDeliveryReservation());
 		}
 
-
+      
 
 		try {
 			String orderNumber = null;
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+		   
+			boolean isFriendReferred=false;
+			if(user.getRafClickId()!=null  && user.getOrderHistory().getSettledOrderCount()<1 
+					&&user.getRafPromoCode()!=null){
+				isFriendReferred=true;
+			}
 			
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
@@ -608,7 +614,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
 				info.setSource(transactionSource);
 				
-				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status );
+				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status ,isFriendReferred);
 			}
 
 

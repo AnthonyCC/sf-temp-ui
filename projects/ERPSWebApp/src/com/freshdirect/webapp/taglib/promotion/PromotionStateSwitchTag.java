@@ -276,6 +276,9 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");
 					valid = false;
 				}
+				if(FDPromotionNewManager.isRafPromoCodeExists(promotion.getRafPromoCode(),promotion.getId())){
+					result.addError(true, "rafPromoCodeDuplicate", " An active promotion exists with the same RAF promo code, please update to save changes.");				
+				}
 			}			
 		}
 		return valid;

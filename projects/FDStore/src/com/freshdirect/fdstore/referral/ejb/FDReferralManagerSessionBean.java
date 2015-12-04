@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
@@ -1349,7 +1350,7 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
+
 	public String getReferralLink(String customerId)throws FDResourceException, RemoteException {
 		Connection conn = null;
 		try {
@@ -1505,6 +1506,29 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
+	public List<ReferralPromotionModel>  getSettledTransaction() throws FDResourceException, RemoteException{
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return FDReferAFriendDAO.getSettledTransaction(conn);
+		} catch (SQLException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}	
+	public  Map<String,String> updateSetteledRewardTransaction(List<ReferralPromotionModel> models) throws FDResourceException, RemoteException{
+		Connection conn=null;
+		try{
+			conn = this.getConnection();
+			return FDReferAFriendDAO.updateSetteledRewardTransaction(conn, models);
+		}catch (SQLException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
 
 }

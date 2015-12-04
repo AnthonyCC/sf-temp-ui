@@ -150,6 +150,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
      * Get how the current order looks like. Returns the last create or change order transaction.
      */
 	public ErpAbstractOrderModel getCurrentOrder() throws RemoteException;
+	
+	public ErpAbstractOrderModel getFirstOrderTransaction() throws RemoteException;
 
 	public List<ErpAuthorizationModel> getApprovedAuthorizations() throws ErpTransactionException, RemoteException;
 	

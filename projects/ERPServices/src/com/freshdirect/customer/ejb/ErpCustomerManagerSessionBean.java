@@ -116,6 +116,7 @@ import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderLineI;
 import com.freshdirect.sap.command.SapPostReturnCommand;
@@ -1093,7 +1094,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException("This settlement is not for this sale");
 			}
 			*/
-
+			ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
+			if(null != order && null !=order.getRafTransModel()){
+				model.setRafTransModel(RafUtil.getApproveTransModel());
+			}
 			eb.addSettlement(model);
 
 			LOGGER.info("Add settlement - done. saleId=" + saleId + " authId=" + authId);

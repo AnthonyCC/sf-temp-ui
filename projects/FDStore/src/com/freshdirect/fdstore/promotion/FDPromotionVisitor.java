@@ -158,20 +158,21 @@ public class FDPromotionVisitor {
          }
          
        //Evaluate the referral promotions
-         if(context.getUser().getReferralCustomerId() != null) {
+         if(context.getUser().getRafPromoCode() != null) {
         	 if(apply_raf_promo) {
 	        	 //User did not use any redemption code, so its ok to check the eligibility of the referral promotion
 		         Collection<PromotionI> referralPromotions = context.getUser().getReferralPromoList();         
 		         for (Iterator<PromotionI> i = referralPromotions.iterator(); i.hasNext();) {        	 
 		             PromotionI autopromotion  = (PromotionI) i.next(); 
 		             String promoCode = autopromotion.getPromotionCode();
-		             LOGGER.debug("---------------------------------------------------Referral promotion: " + promoCode);
+		             LOGGER.debug("---------------------Referral promotion: " + promoCode);
 		             boolean e = autopromotion.evaluate(context);
 		             eligibilities.setEligibility(promoCode, e);
 		             if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
 		         }
         	 }
          }
+         
          
          long endTime = System.currentTimeMillis();
          return eligibilities;

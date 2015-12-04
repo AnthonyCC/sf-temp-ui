@@ -1516,6 +1516,7 @@
 			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
 			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
+			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 		
 		</path>
 

@@ -608,6 +608,39 @@ public class FDPromotionNewManager {
 		}
 	}
 	
+	public static boolean isRafPromoCodeExists(String rafPromoCode)throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRafPromoCodeExists(rafPromoCode);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static boolean isRafPromoCodeExists(String rafPromoCode, String promotionId)throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			return sb.isRafPromoCodeExists(rafPromoCode, promotionId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
+	
+	
 	public static boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException{
 		lookupManagerHome();
 

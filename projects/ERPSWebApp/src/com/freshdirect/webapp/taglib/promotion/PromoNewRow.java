@@ -20,6 +20,7 @@ public class PromoNewRow {
 	String createdBy;
 	String modifiedBy;
 	String createdModifiedBy;
+	String rafPromoCode;
 	
 	boolean chef;
 	boolean cos;
@@ -178,6 +179,20 @@ public class PromoNewRow {
 
 	public void setMktg(boolean mktg) {
 		this.mktg = mktg;
+	}
+
+	/**
+	 * @return the rafPromoCode
+	 */
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+
+	/**
+	 * @param rafPromoCode the rafPromoCode to set
+	 */
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
 	}
 
 	

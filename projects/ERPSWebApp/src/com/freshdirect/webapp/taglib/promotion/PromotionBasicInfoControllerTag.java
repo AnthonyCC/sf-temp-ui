@@ -139,6 +139,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		this.promotion.setDescription(NVL.apply(request.getParameter("promo_description"), "").trim());
 		this.promotion.setRedemptionCode(NVL.apply(request.getParameter("redemption_code"), "").trim());
 		this.promotion.setTsaPromoCode(NVL.apply(request.getParameter("tsapromo_code"), "").trim());
+		this.promotion.setRafPromoCode(NVL.apply(request.getParameter("raf_promo_code"), "").trim());
 		this.promotion.setOfferDesc(NVL.apply(request.getParameter("offer_description"), "").trim());
 		this.promotion.setAudienceDesc(NVL.apply(request.getParameter("audience_description"), "").trim());
 		this.promotion.setTerms(NVL.apply(request.getParameter("terms"), "").trim());		
@@ -369,6 +370,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 	}
 	
 	private void validatePromotion(HttpServletRequest request,ActionResult result) throws FDResourceException{
+		boolean isRafPromoCodeError=false;
 		if(null == promotion.getName() ||"".equals(promotion.getName())){
 			result.addError(true, "nameEmpty", " Name is required.");
 		}
@@ -383,9 +385,26 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			}else  if(promotion.isReferralPromo()) {
 				//promotion should be an automatic promotion for referral program
 				result.addError(true, "automaticpromo", " Referral Promotion should be automatic. Please clear the Redemption code.");
+				isRafPromoCodeError=true;
 			}
 		}
 		
+		if(null != promotion.getRafPromoCode() && !"".equals(promotion.getRafPromoCode())){			 
+			if(null == promotion.getId() && FDPromotionNewManager.isRafPromoCodeExists(promotion.getRafPromoCode())){
+				result.addError(true, "rafPromoCodeDuplicate", " An active promotion exists with the same RAF promo code, please update to save changes.");
+			}else if(FDPromotionNewManager.isRafPromoCodeExists(promotion.getRafPromoCode(),promotion.getId())){
+				result.addError(true, "rafPromoCodeDuplicate", " An active promotion exists with the same RAF promo code, please update to save changes.");				
+			}else  if(promotion.isReferralPromo() && null != promotion.getRedemptionCode() && !"".equals(promotion.getRedemptionCode()) && !isRafPromoCodeError) {
+				//promotion should be an automatic promotion for referral program
+				result.addError(true, "automaticpromo1", " Referral Promotion should be automatic. Please clear the Redemption Code.");
+			}
+			/*else  if(promotion.isReferralPromo() && !isRafPromoCodeError) {
+				//promotion should be an automatic promotion for referral program
+				result.addError(true, "automaticpromo1", " Referral Promotion should be automatic. Please clear the Redemption Code.");
+			}*/
+		}
+		
+				
 		if(null != promotion.getTsaPromoCode() && !"".equals(promotion.getTsaPromoCode())){			 
 			if(null == promotion.getId() && FDPromotionNewManager.isTSAPromoCodeExists(promotion.getTsaPromoCode())){
 				result.addError(true, "tsaCodeDuplicate", " An active promotion exists with the same TSA promo code, please update to save changes.");

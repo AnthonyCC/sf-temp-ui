@@ -136,6 +136,13 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
+				this.pageContext.getSession().removeAttribute("LITESIGNUP_COMPLETE");
+			//	if(session.getAttribute("REFERRALNAME") != null ){
+				if(session.getAttribute("CLICKID") != null ) {
+					if(!"done".equals(request.getParameter("submission"))) {
+						actionResult.addError(new ActionError("Dummy","Dummy"));
+						return true;
+					}
 				
 				String successPage = AccountServiceFactory.getService(source).register(user, this.pageContext, actionResult, this.registrationType);
 				if(successPage!=null){
@@ -235,7 +242,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			}			
 			
 
-		} catch (Exception ex) {
+		} }catch (Exception ex) {
 			LOGGER.error("Error performing action " + actionName, ex);
 			actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 		}

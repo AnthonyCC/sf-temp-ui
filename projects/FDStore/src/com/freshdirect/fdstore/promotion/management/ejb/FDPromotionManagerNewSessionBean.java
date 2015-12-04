@@ -849,6 +849,33 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean isRafPromoCodeExists(String rafPromoCode)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.isRafPromoCodeExists(conn, rafPromoCode);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
+	
+	public boolean isRafPromoCodeExists(String rafPromoCode, String promotionId)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.isRafPromoCodeExists(conn, rafPromoCode, promotionId);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+                    close(conn);
+		}
+	}
+
+	
 	public boolean isTSAPromoCodeExists(String tsaPromoCode)throws FDResourceException{
 		Connection conn = null;
 		try {

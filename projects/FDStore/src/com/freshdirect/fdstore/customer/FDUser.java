@@ -289,6 +289,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private Date firstOrderDate = null;
 	
 	private boolean crmMode;
+	private String rafClickId;
+	private String rafPromoCode;
 	
 	/* APPDEV-4381 */
 	private Date tcAcknowledgeDate=null;
@@ -512,7 +514,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setReferralPromoList() {
 		// load referral promotion only to refer a friend target customers
-		if(this.getIdentity() != null && this.getReferralCustomerId() != null)
+		if(this.getIdentity() != null && this.getRafPromoCode() != null)
 			try {
 				referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
 			} catch (FDResourceException e) {
@@ -3151,5 +3153,35 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setVHPopupDisplay(boolean flag) {
            this.vHPopupDisplay=flag;
 	}
+	
+
+	/**
+	 * @return the rafClickId
+	 */
+	public String getRafClickId() {
+		return rafClickId;
+	}
+
+	/**
+	 * @param rafClickId the rafClickId to set
+	 */
+	public void setRafClickId(String rafClickId) {
+		this.rafClickId = rafClickId;
+	}
+
+	/**
+	 * @return the rafPromoCode
+	 */
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+
+	/**
+	 * @param rafPromoCode the rafPromoCode to set
+	 */
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
+	}
+
 	
 }

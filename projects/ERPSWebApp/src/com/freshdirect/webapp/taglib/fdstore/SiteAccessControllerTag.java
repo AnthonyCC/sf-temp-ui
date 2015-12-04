@@ -1037,7 +1037,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			boolean isReferralRegistration = "true".equals(request.getParameter("referralRegistration"))?true:false;
 			if(isReferralRegistration) {
 				if(page.equals(this.successPage)) {
-					this.moreInfoPage = "/registration/referee_signup2.jsp";
+				//	this.moreInfoPage = "/registration/referee_signup2.jsp";
+					this.moreInfoPage = "/registration/invite_signup2.jsp";
 					//we need to offer user to signup for referral registration
 					if (this.moreInfoPage != null && this.moreInfoPage.indexOf('?') < 0) {
 						this.moreInfoPage += "?serviceType=" + this.serviceType.getName();

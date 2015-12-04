@@ -545,6 +545,8 @@ public class FDPromotionManagerNewDAO {
 		
 		promotion.setRollingExpDayFrom1stOrder("Y".equalsIgnoreCase(rs.getString("ROLLING_FROM_FIRST_ORDER"))?true:false);
 		promotion.setSapConditionType(rs.getString("SAP_CONDITION_TYPE"));
+		promotion.setRafPromoCode(rs.getString("RAF_PROMO_CODE"));
+		
 		return promotion;
 	}
 
@@ -747,8 +749,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id, DCPD_MIN_SUBTOTAL,ROLLING_FROM_FIRST_ORDER,SAP_CONDITION_TYPE)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id, DCPD_MIN_SUBTOTAL,ROLLING_FROM_FIRST_ORDER,SAP_CONDITION_TYPE, RAF_PROMO_CODE)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -817,6 +819,11 @@ public class FDPromotionManagerNewDAO {
 		
 		ps.setString(i++, promotion.isRollingExpDayFrom1stOrder()?"Y":"N");
 		ps.setString(i++, promotion.getSapConditionType());
+		if (!"".equals(promotion.getRafPromoCode())) {
+			ps.setString(i++, promotion.getRafPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -1445,7 +1452,7 @@ public class FDPromotionManagerNewDAO {
 				+ " SET"
 				+ " CODE = ?, NAME = ?, DESCRIPTION = ?, MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, REDEMPTION_CODE = ?,"
 				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, ROLLING_EXPIRATION_DAYS = ?, STATUS = ?, OFFER_DESC = ?, AUDIENCE_DESC = ?, TERMS = ?,REDEEM_CNT = ?,HASSKUQUANTITY = ?, PERISHABLEONLY = ? ,NEEDDRYGOODS =?,NEEDCUSTOMERLIST =?, "
-				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?, referral_promo =?, tsa_promo_code=?"
+				+ " RULE_BASED = ?,FAVORITES_ONLY = ?, COMBINE_OFFER = ?, MODIFIED_BY =?, MODIFY_DATE =?, DONOT_APPLY_FRAUD=?, INCL_FUEL_SURCHARGE=?, referral_promo =?, tsa_promo_code=?, RAF_PROMO_CODE=?"
 				+ " WHERE ID = ?");
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -1472,7 +1479,11 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
-		
+		if (!"".equals(promotion.getRafPromoCode())) {
+			ps.setString(i++, promotion.getRafPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -3079,6 +3090,39 @@ public class FDPromotionManagerNewDAO {
 		return isDuplicate;
 	}
 	
+	public static boolean isRafPromoCodeExists(Connection conn, String rafPromoCode) throws SQLException{
+		boolean isDuplicate = false;
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and upper(raf_promo_code) = upper(?)");
+		ps.setString(1, rafPromoCode);
+		ResultSet rs = ps.executeQuery();
+		int count =0;
+		if(rs.next()){
+			count = rs.getInt(1);
+			if(count>0){
+				isDuplicate = true;
+			}
+		}
+		return isDuplicate;
+	}
+	
+	public static boolean isRafPromoCodeExists(Connection conn, String rafPromoCode, String promotionId) throws SQLException{
+		boolean isDuplicate = false;
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and id <> ? and upper(raf_promo_code) = upper(?)");
+		ps.setString(1, promotionId);
+		ps.setString(2, rafPromoCode);
+		ResultSet rs = ps.executeQuery();
+		int count =0;
+		if(rs.next()){
+			count = rs.getInt(1);
+			if(count>0){
+				isDuplicate = true;
+			}
+		}
+		rs.close();
+		ps.close();
+		return isDuplicate;
+	}
+	
 	public static boolean isTSAPromoCodeExists(Connection conn, String tsaPromoCode) throws SQLException{
 		boolean isDuplicate = false;
 		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and upper(tsa_promo_code) = upper(?)");
@@ -3183,7 +3227,7 @@ public class FDPromotionManagerNewDAO {
 						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
 						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
 						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?, INCL_FUEL_SURCHARGE=?, SKU_LIMIT=?, referral_promo=?, tsa_promo_code=?, MAX_PERCENTAGE_DISCOUNT=?, radius=?, ROLLING_FROM_FIRST_ORDER=?,"
-						+ " SAP_CONDITION_TYPE=? WHERE ID = ?");
+						+ " SAP_CONDITION_TYPE=?, RAF_PROMO_CODE=? WHERE ID = ?");
 
 		int i = 1;
 		i = setupPreparedStatement(ps, promotion, i);
@@ -3230,6 +3274,11 @@ public class FDPromotionManagerNewDAO {
 		ps.setString(i++, promotion.isRollingExpDayFrom1stOrder()?"Y":"N");
 		ps.setString(i++, promotion.getSapConditionType());
 		
+		if (!"".equals(promotion.getRafPromoCode())) {
+			ps.setString(i++, promotion.getRafPromoCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		ps.setString(i++, promotion.getPK().getId());
 		// Execute update
 		if (ps.executeUpdate() != 1) {

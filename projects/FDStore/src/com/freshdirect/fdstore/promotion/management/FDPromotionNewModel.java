@@ -111,12 +111,10 @@ public class FDPromotionNewModel extends ModelSupport {
 	private boolean batchPromo = false;
 	private String DcpdMinSubtotal;
 	private String sapConditionType;
+	private String rafPromoCode;
 
-
-	/*
-	 * Number of successful publishes
-	 */
 	private int publishes = 0;
+	
 
 	public FDPromotionNewModel() {
 		super();
@@ -1265,6 +1263,19 @@ public class FDPromotionNewModel extends ModelSupport {
 		DcpdMinSubtotal = dcpdMinSubtotal;
 	}
 
+	/**
+	 * @return the rafPromoCode
+	 */
+	public String getRafPromoCode() {
+		return rafPromoCode;
+	}
+
+	/**
+	 * @param rafPromoCode the rafPromoCode to set
+	 */
+	public void setRafPromoCode(String rafPromoCode) {
+		this.rafPromoCode = rafPromoCode;
+	}
 	/**
 	 * @return the isRollingExpDayFrom1stOrder
 	 */

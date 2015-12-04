@@ -56,6 +56,13 @@
 					<td class="alignL"><input type="text" id="tsapromo_code" name="tsapromo_code" class="w150px" value="<%= promotion.getTsaPromoCode() %>" maxlength="16" /> <span class="grayIta8pt">This code is to share on third party banners</span>
 					<span id="hidethis4" style="<%=(promotion.isBatchPromo())?"display:;color:green;":"display:none;color:green;" %>"><br/>(APCCode will be append with random String, eg:apc_%random generated string%, apc_WEF1234)</span></td>
 				</tr>
+				<tr>
+					<td class="promo_detail_label">RAF Promo Code:</td>
+					<td class="alignL"><input type="text" id="raf_promo_code" name="raf_promo_code" class="w150px" value="<%= promotion.getRafPromoCode() %>" maxlength="16" /> <span class="grayIta8pt">This code is used for sharing on Extole</span>
+				
+				</tr>
+				
+				
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>

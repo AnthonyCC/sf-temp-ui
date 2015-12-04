@@ -118,7 +118,9 @@
 				<fd:ErrorHandler result="<%=result%>" name="redemptionCodeDuplicate" id="errorMsg">
 					 <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
-				
+				<fd:ErrorHandler result="<%=result%>" name="rafPromoCodeDuplicate" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
 			</div>
 			<%-- Promotion details, customer requirements--%>
 			<div class="padLR4">

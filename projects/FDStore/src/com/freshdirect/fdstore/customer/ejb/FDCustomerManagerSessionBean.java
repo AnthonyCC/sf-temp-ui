@@ -174,6 +174,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
+
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
@@ -238,11 +239,16 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.referral.extole.EnumRafTransactionStatus;
+import com.freshdirect.referral.extole.EnumRafTransactionType;
+import com.freshdirect.referral.extole.RafUtil;
+import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+
 
 /**
  * @version $Revision:78$
@@ -1924,7 +1930,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public String placeOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String reservationId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status)
+			CrmAgentRole agentRole, EnumDlvPassStatus status,boolean isFriendReferred)
 			throws FDResourceException,
 			ErpFraudException,
 			ErpAuthorizationException,
@@ -1981,6 +1987,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			transModel.setTranTime(date);
 			createOrder.setCouponTransModel(transModel);
 		}
+		
+		//add code for RAF flow and validation to check to see if we have atleast 1 settled order 
+		//also logic to insert only referred records to raf trans table
+		
+		
+	  if(isFriendReferred){
+		  FDRafTransModel rafTransModel = RafUtil.getPurchaseTransModel();
+		  createOrder.setRafTransModel(rafTransModel);
+	  }
+		
 		try {
 
 			try {

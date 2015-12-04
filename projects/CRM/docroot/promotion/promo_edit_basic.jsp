@@ -50,6 +50,9 @@
 					<fd:ErrorHandler result="<%=result%>" name="redemptionCodeDuplicate" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="rafPromoCodeDuplicate" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="offerDescEmpty" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
@@ -75,6 +78,9 @@
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="automaticpromo" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="automaticpromo1" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="tsaCodeDuplicate" id="errorMsg">

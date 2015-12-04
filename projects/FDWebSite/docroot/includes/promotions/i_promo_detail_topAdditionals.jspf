@@ -29,6 +29,11 @@
 					<td class="promo_detail_label">Auto-apply (apc) code:</td>
 					<td class="alignL"><%= (null == promotion.getTsaPromoCode() ||"".equals(promotion.getTsaPromoCode()))?" ": promotion.getTsaPromoCode() %></td>
 				</tr>
+				<tr>
+					<td class="promo_detail_label">RAF Promo Code:</td>
+					<td class="alignL"><%= (null == promotion.getRafPromoCode() ||"".equals(promotion.getRafPromoCode()))?"None - Automatic": promotion.getRafPromoCode() %></td>
+				</tr>
+								
 				<% if ( promotion.getTerms() != null && !"".equals(promotion.getTerms()) ) { %>
 					<tr>
 						<td class="promo_detail_label">Terms &amp; Conditions:</td>

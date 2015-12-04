@@ -23,6 +23,7 @@
 		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
 	<% /* Google Analytics Pixel */ %>
 	
+<%@ include file="/common/template/includes/extol_tags.jspf" %>
 	
   <%-- Feature version switcher --%>
   <features:potato />
@@ -40,8 +41,8 @@
   
   }());
   </script>
-
-	<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+<%--      <%@ include file="common/template/includes/extol_tags.jspf" %>
+ --%>	<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
 	<%--<jwr:script src="/fdproto.js" useRandomParam="false" />--%>
   <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
     <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />

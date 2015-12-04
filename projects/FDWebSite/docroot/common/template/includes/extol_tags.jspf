@@ -3,64 +3,69 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%
-FDUserI user_e = (FDUserI)session.getAttribute(SessionName.USER);
-
-//customer basics
-String custFirstName = user_e.getFirstName();
-String custLastName = user_e.getLastName();
-int user_getLevel = user_e.getLevel();
-
-//only empty strings so far, become full with data if user is actually logged in
-String custEmail = "";
-String custId = "";
-
-//existing signed up customers
-boolean isSignedCustomer = false;
-
-//brand new existing customers
-boolean justSignedUp = false;
-
-//how much have they actually paid for so far?
-int validOrderCount = 0;
-
-//if there is a promo going on and is this user eligible?  not currently used yet
-boolean mainPromo = false;
-
-//if this is someone actually on the CUSTOMER table, with valid email, etc.
-if( user_e.getLevel() != 0 ){
-	FDIdentity identity_e  = user_e.getIdentity();
-	ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
-	custEmail = cm_e.getEmail();
+//start local block
+{
+FDUserI user_e1 = (FDUserI)session.getAttribute(SessionName.USER);
+if (user_e1 != null) { 
+	//customer basics
+	String exCustFirstName = user_e1.getFirstName();
+	String custLastName = user_e1.getLastName();
+	int user_getLevel = user_e1.getLevel();
 	
-	//numerical id
-	custId = identity_e.getErpCustomerPK();
+	//only empty strings so far, become full with data if user is actually logged in
+	String custEmail = "";
+	String custId = "";
 	
-	//definitely logged in
-	isSignedCustomer = true;
+	//existing signed up customers
+	boolean isSignedCustomer = false;
 	
-	//again, how much did they order?
-	validOrderCount = user_e.getAdjustedValidOrderCount();
-
-	//session object needed to determine whether this user had just signed up
-	FDSessionUser sessionUser_e = (FDSessionUser)session.getAttribute(SessionName.USER);
-	justSignedUp = sessionUser_e.hasJustSignedUp(false);
+	//brand new existing customers
+	boolean justSignedUp = false;
 	
-	mainPromo = user_e.getLevel() < FDUserI.RECOGNIZED && user_e.isEligibleForSignupPromotion();
-}
+	//how much have they actually paid for so far?
+	int exValidOrderCount = 0;
+	
+	//if there is a promo going on and is this user eligible?  not currently used yet
+	boolean exMainPromo = false;
+	
+	//if this is someone actually on the CUSTOMER table, with valid email, etc.
+	if( user_e1.getLevel() != 0 ){
+		FDIdentity identity_e  = user_e1.getIdentity();
+		ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+		custEmail = cm_e.getEmail();
+		
+		//numerical id
+		custId = identity_e.getErpCustomerPK();
+		
+		//definitely logged in
+		isSignedCustomer = true;
+		
+		//again, how much did they order?
+		exValidOrderCount = user_e1.getAdjustedValidOrderCount();
+	
+		//session object needed to determine whether this user had just signed up
+		FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
+		justSignedUp = sessionuser_e1.hasJustSignedUp(false);
+		
+		exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
+	}
+	%>
+	<script>
+	//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
+	var globalExtoleVars = {
+		"custId": "<%=custId%>",
+		"custFirstName": "<%=exCustFirstName%>",
+		"custLastName": "<%=custLastName%>",
+		"custEmail": "<%=custEmail%>",
+		"isSignedCustomer": <%=isSignedCustomer%>,
+		"validOrderCount": <%=exValidOrderCount%>,
+		"justSignedUp": <%=justSignedUp%>,
+		"mainPromo": <%=exMainPromo%>
+	};
+	</script>
+	<script src="//tags.extole.com/553175139/core.js"></script>
+	<script src="/assets/javascript/extole_tags_generator.js"></script>
+	
+<% } // end if
+} //end local block
 %>
-
-<script>
-//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
-var globalExtoleVars = {
-	"custId": "<%=custId%>",
-	"custFirstName": "<%=custFirstName%>",
-	"custLastName": "<%=custLastName%>",
-	"custEmail": "<%=custEmail%>",
-	"isSignedCustomer": <%=isSignedCustomer%>,
-	"validOrderCount": <%=validOrderCount%>,
-	"justSignedUp": <%=justSignedUp%>,
-	"mainPromo": <%=mainPromo%>
-};
-</script>
-<script src="//tags.extole.com/553175139/core.js"></script>
-<script src="/assets/javascript/extole_tags_generator.js"></script>

@@ -12,10 +12,12 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.referral.extole.model.FDRafTransModel;
 
 /**
  * @stereotype fd-model
@@ -71,6 +73,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	private int currentDlvPassExtendDays;
 	
 	private ErpCouponTransactionModel couponTransModel;
+	
+	private FDRafTransModel rafTransModel;
 	
 	private EnumEStoreId eStoreId;
 	
@@ -527,6 +531,20 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		this.eStoreId = eStoreId;
 	}
 	
+	/**
+	 * @return the rafTransModel
+	 */
+	public FDRafTransModel getRafTransModel() {
+		return rafTransModel;
+	}
+
+	/**
+	 * @param rafTransModel the rafTransModel to set
+	 */
+	public void setRafTransModel(FDRafTransModel rafTransModel) {
+		this.rafTransModel = rafTransModel;
+	}
+
 	public double getTip() {
 		ErpChargeLineModel charge = getCharge(EnumChargeType.TIP);
 		return charge==null ? 0.0 : charge.getTotalAmount();

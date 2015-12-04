@@ -27,6 +27,7 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAbstractSettlementModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpChargeSettlementModel;
@@ -57,6 +58,7 @@ import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
+import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -85,6 +87,10 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			}
 			
 			if((EnumSaleStatus.PAYMENT_PENDING.equals(status) ||EnumSaleStatus.SETTLEMENT_FAILED.equals(status)) && !found){
+				ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
+				if(null != order && null !=order.getRafTransModel()){
+					model.setRafTransModel(RafUtil.getApproveTransModel());
+				}
 				eb.addSettlement(model);
 			}
 			

@@ -641,4 +641,12 @@ public interface FDUserI extends java.io.Serializable {
 	public void setVHPopupDisplay(boolean flag);
 	
 
+	
+	public void setRafPromoCode(String rafPromoCode);
+	public String getRafPromoCode();
+	public void setRafClickId(String rafClickId);
+	public String getRafClickId(); 
+	
+	
+	
 }

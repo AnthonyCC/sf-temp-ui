@@ -282,6 +282,19 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lastOrder;
 	}
+	
+	public ErpAbstractOrderModel getFirstOrderTransaction() {
+		
+		ErpAbstractOrderModel createOrder = null;
+		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
+		Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
+		for ( ErpTransactionModel m : txs ) {
+			if (m instanceof ErpCreateOrderModel) {
+				createOrder = (ErpCreateOrderModel) m;
+			}
+		}
+		return createOrder;
+	}
 
 	public void submitFailed(String message) throws ErpTransactionException {
 		assertStatus(

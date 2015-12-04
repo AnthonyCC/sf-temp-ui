@@ -865,8 +865,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				
 			}
 			
-	}
-
+		}
+				
+			
 	private void postValidate(FDPromotionNewModel promotion,ActionResult result) throws FDResourceException{
 
 				if(null == promotion.getStartDate()){
@@ -915,6 +916,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				}
 				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
 					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
+				}
+				
+				if(FDPromotionNewManager.isRafPromoCodeExists (promotion.getRafPromoCode(),promotion.getId())){
+					result.addError(true, "rafPromoCodeDuplicate", " An active promotion exists with the same RAF promo code, please change the RAF promo code.");				
 				}
 
 				if("X".equals(promotion.getRadius())) {

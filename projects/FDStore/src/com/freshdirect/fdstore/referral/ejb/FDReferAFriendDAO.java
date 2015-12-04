@@ -963,12 +963,19 @@ public class FDReferAFriendDAO {
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		try {
-			ps = conn.prepareStatement( "select count(*) from " + 
+			/*ps = conn.prepareStatement( "select count(*) from " + 
 										"cust.customer c, " +
 										"cust.fdcustomer fc " +
 										"where upper(c.user_id) = upper(?) " +
 										"and c.id = fc.erp_customer_id " +
 										"and FC.REFERER_CUSTOMER_ID is not null");
+*/		ps = conn.prepareStatement( "select count(*) from " + 
+		"cust.customer c, " +
+		"cust.fdcustomer fc " +
+		"where upper(c.user_id) = upper(?) " +
+		"and c.id = fc.erp_customer_id " +
+		"and FC.RAF_CLICK_ID is not null");
+			
 			ps.setString(1, email);
 			rset = ps.executeQuery();
 			while(rset.next()) {
@@ -1017,5 +1024,76 @@ public class FDReferAFriendDAO {
 				ps.close();
 		}
 		return null;
+	}
+	
+	// TODO : need to add the condition to select only active referred amount
+
+	private static final String GET_SETTELED_TRANSACTION = "SELECT (SELECT C.ID FROM  CUST.CUSTOMER  C WHERE C.USER_ID=RC.ADVOCATE_EMAIL) AS ADVOCATE_USER_ID,"
+			+ " (SELECT TC.ID FROM  CUST.CUSTOMER  TC WHERE TC.USER_ID=RC.FRIEND_EMAIL) AS FRIEND_USER_ID,"
+			+ " RC.ADVOCATE_EMAIL,RC.FRIEND_EMAIL,RC.REWARD_VALUE,RC.STATUS,RC.REWARD_TYPE,RC.REWARD_SET_NAME,RC.REWARD_DETAIL"
+			+ " FROM CUST.RAF_CREDIT RC  WHERE RC.STATUS in ('P','F') ";
+
+	public static List<ReferralPromotionModel> getSettledTransaction(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<ReferralPromotionModel> list = new ArrayList<ReferralPromotionModel>();
+		// ReferralPromotionModel defaultRefPromo =
+		// getReferralDefaultPromotionDetails(conn);
+		try {
+			ps = conn.prepareStatement(GET_SETTELED_TRANSACTION);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				if(null!=rs.getString("ADVOCATE_USER_ID")){
+				ReferralPromotionModel rpm = new ReferralPromotionModel();
+				// rpm.setPromotion_id(rs.getString("PROMOTION_ID"));
+				// rpm.setSaleId(rs.getString("saleid"));
+				rpm.setCustomerId(rs.getString("FRIEND_USER_ID"));
+				rpm.setRefCustomerId(rs.getString("ADVOCATE_USER_ID"));
+				rpm.setFDCustomerId(rs.getString("FRIEND_USER_ID"));
+			//	System.out.println("now, is this null?" + rs.getString("ADVOCATE_USER_ID"));
+
+				rpm.setReferral_fee(Integer.valueOf(rs.getString("REWARD_VALUE")));
+				// rpm.setReferral_prgm_id(refDetails.getReferral_prgm_id());
+				// rpm.setReferralCreditEmailSubject(refDetails.getReferralCreditEmailSubject());
+				// rpm.setReferralCreditEmailText(refDetails.getReferralCreditEmailText());
+				rpm.setFriendEmail(rs.getString("FRIEND_EMAIL"));
+				rpm.setAdvocateEmail(rs.getString("ADVOCATE_EMAIL"));
+
+				list.add(rpm);
+			}
+			}
+		} finally {
+			if (ps != null)
+				ps.close();
+			if (rs != null)
+				rs.close();
+		}
+		return list;
+	}
+
+	// UPDATING THE STATUS BACK TO COMPLATED ONCE REWARD IS BEING GIVEN TO ADVOCATE
+	private static final String UPDATE_SETTELED_REWARD = " UPDATE CUST.RAF_CREDIT SET STATUS='S',MODIFIED_TIME=SYSDATE WHERE"
+			+ " FRIEND_EMAIL=? AND ADVOCATE_EMAIL=?";
+
+	public static Map<String, String> updateSetteledRewardTransaction(Connection conn, List<ReferralPromotionModel> models)
+			throws SQLException {
+		Map<String, String> updatedTrasactionMap = new HashMap<String, String>();
+		PreparedStatement ps = null;
+
+		try {
+			ps = conn.prepareStatement(UPDATE_SETTELED_REWARD);
+			for (ReferralPromotionModel model : models) {
+				ps.setString(1, model.getFriendEmail());
+				ps.setString(2, model.getAdvocateEmail());
+				ps.addBatch();
+				updatedTrasactionMap.put(model.getFriendEmail(), model.getAdvocateEmail());
+			}
+			ps.executeBatch();
+		} finally {
+			if (ps != null)
+				ps.close();
+
+		}
+		return updatedTrasactionMap;
 	}
 }

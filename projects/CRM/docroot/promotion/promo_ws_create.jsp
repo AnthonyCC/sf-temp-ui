@@ -278,6 +278,9 @@ function numbersonly(myfield, e, dec)
 				<fd:ErrorHandler result='<%= result %>' name='redemptionCodeDuplicate' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="rafPromoCodeDuplicate" id="errorMsg">
+				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%= result %>' name='windowTypeEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>

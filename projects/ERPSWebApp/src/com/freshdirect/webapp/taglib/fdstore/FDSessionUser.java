@@ -1781,7 +1781,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	@Override
 	public void resetUserContext() {
 		this.user.resetUserContext();
+
+	}
+	public void setRafPromoCode(String rafPromoCode) {
+		this.user.setRafPromoCode(rafPromoCode);
 		
+	}
+
+
+	public String getRafPromoCode() {
+		
+		return this.user.getRafPromoCode();
+	}
+
+
+	public void setRafClickId(String rafClickId) {
+		
+		this.user.setRafClickId(rafClickId);
+	}
+
+	public String getRafClickId() {
+		// TODO Auto-generated method stub
+		return this.user.getRafClickId();
 	}
 
 	@Override

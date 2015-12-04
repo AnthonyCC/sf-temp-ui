@@ -1250,6 +1250,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return model.getCurrentOrder();
 	}
 
+	public ErpAbstractOrderModel getFirstOrderTransaction(){
+		return model.getFirstOrderTransaction();
+	}
+	
 	public List<ErpAuthorizationModel> getAuthorizations() {
 		return model.getAuthorizations();
 	}

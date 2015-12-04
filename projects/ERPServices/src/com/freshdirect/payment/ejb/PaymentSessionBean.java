@@ -26,6 +26,7 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
@@ -51,6 +52,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.referral.extole.RafUtil;
 ;
 
 public class PaymentSessionBean extends SessionBeanSupport{
@@ -198,7 +200,12 @@ public class PaymentSessionBean extends SessionBeanSupport{
 					utx.begin();
 					eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
 					ErpCaptureModel capture = (ErpCaptureModel) i.next();
-					eb.addSettlement(this.getFDSettlement(capture));
+					ErpSettlementModel settlementModel = this.getFDSettlement(capture);
+					ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
+					if(null != order && null !=order.getRafTransModel()){
+						settlementModel.setRafTransModel(RafUtil.getApproveTransModel());
+					}
+					eb.addSettlement(settlementModel);
 					utx.commit();
 				}
 			}
@@ -674,7 +681,12 @@ public class PaymentSessionBean extends SessionBeanSupport{
 					utx.begin();
 					eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
 					ErpCaptureModel capture = (ErpCaptureModel) i.next();
-					eb.addSettlement(this.getEBTSettlement(capture));
+					ErpSettlementModel settlementModel = this.getEBTSettlement(capture);
+					ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
+					if(null != order && null !=order.getRafTransModel()){
+						settlementModel.setRafTransModel(RafUtil.getApproveTransModel());
+					}
+					eb.addSettlement(settlementModel);
 					utx.commit();
 				}
 			}

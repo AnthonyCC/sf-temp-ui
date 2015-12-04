@@ -135,16 +135,22 @@ public class ExternalAccountService implements AccountService {
 		String result = ra.executeEx();
 		if((Action.SUCCESS).equals(result)) {
 			//if referral information is available, record it.
-			if(pageContext.getSession().getAttribute("REFERRALNAME") != null) {
+		
+				if(pageContext.getSession().getAttribute("CLICKID") != null){
 				try {
 					//user = (FDSessionUser) session.getAttribute(USER);
 					LOGGER.debug(user.getIdentity().getErpCustomerPK());
 					LOGGER.debug(user.getUserId());
-					LOGGER.debug((String) pageContext.getSession().getAttribute("REFERRALNAME"));
-					LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("REFERRALNAME"));
+					String rafPromoCode=(String) pageContext.getSession().getAttribute("COUPONCODE");
+					String rafClickId=(String)pageContext.getSession().getAttribute("CLICKID");
+					LOGGER.debug(rafClickId);
+					LOGGER.debug(rafPromoCode);
+					LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("CLICKID"));
 					String customerId = user.getIdentity().getErpCustomerPK();
-					String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+					String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("CLICKID"), user.getRafClickId());
 					user.setReferralCustomerId(referralCustomerId);
+					user.setRafPromoCode(rafPromoCode);
+					user.setRafClickId(rafClickId);
 					session.setAttribute(SessionName.USER, user);
 					//Record the referee signup in referral activitylog
 					ErpActivityRecord rec = new ErpActivityRecord();
@@ -154,10 +160,8 @@ public class ExternalAccountService implements AccountService {
 					rec.setCustomerId(referralCustomerId);
 					rec.setDate(new Date());
 					rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
-					new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
-					//this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
-					//this.setSuccessPage("/registration/referee_signup2.jsp");
-					successPage = "/registration/referee_signup2.jsp";
+		//			new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+					successPage="/registration/invite_signup2.jsp";
 					//this.setAjax(true);
 					CmRegistrationTag.setPendingRegistrationEvent(session);
 				} catch (Exception e) {

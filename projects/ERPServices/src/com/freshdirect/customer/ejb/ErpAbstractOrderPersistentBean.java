@@ -26,6 +26,7 @@ import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.referral.extole.model.FDRafTransModel;
 
 /**
  * ErpAbstractOrder persistent bean.
@@ -182,6 +183,14 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 			ctPB.setParentPK(this.getPK());
 			ctPB.create( conn );
 		}
+		
+		//RAF related
+		if(null !=this.model.getRafTransModel()){
+			ErpRafTransactionPersistentBean rtPB = new ErpRafTransactionPersistentBean(this.model.getRafTransModel());
+			rtPB.setParentPK(this.getPK());
+			rtPB.create( conn );
+		}
+		
 		this.unsetModified();
 		return this.getPK();
 	}
@@ -279,6 +288,11 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 			Discount d = new Discount(rs.getString("PROMOTION_CAMPAIGN"), promotionType, rs.getDouble("PROMOTION_AMT"));
 			this.model.addDiscount(new ErpDiscountLineModel(d));
 		}
+		
+		RafTransList rafTransList = new RafTransList();
+		rafTransList.setParentPK(this.getPK());
+		rafTransList.load(conn);
+		this.model.setRafTransModel(null !=rafTransList.getModelList() && rafTransList.getModelList().size() > 0 ? ((FDRafTransModel)rafTransList.getModelList().get(0)):null);
 
 		this.unsetModified();
 	}
@@ -392,6 +406,12 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	private static class AppliedGiftCardList extends DependentPersistentBeanList {
 	    public void load(Connection conn) throws SQLException {
 			this.set(ErpAppliedGiftCardPersistentBean.findByParent(conn, (PrimaryKey) AppliedGiftCardList.this.getParentPK()));
+	    }
+	}
+	
+	private static class RafTransList extends DependentPersistentBeanList {
+	    public void load(Connection conn) throws SQLException {
+			this.set(ErpRafTransactionPersistentBean.findByParent(conn, (PrimaryKey) RafTransList.this.getParentPK()));
 	    }
 	}
 }
