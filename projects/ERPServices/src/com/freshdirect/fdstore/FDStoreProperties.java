@@ -814,6 +814,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_API_SECRET                           = "extole.api.secret";
 	public static final String PROP_EXTOLE_BASE_FILE_NAME						= "extole.base.file.name";
 	public static final String PROP_EXTOLE_SFTP_PRIVATE_KEY						= "extole.sftp.private.key";
+	public static final String PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED           = "crm.referral.history.page.enabled";
 		
 	    
     static {
@@ -1612,6 +1613,7 @@ public class FDStoreProperties {
     	defaults.put(PROP_EXTOLE_API_SECRET, "53bfce3a534749c09ff79860833fddb0");
     	defaults.put(PROP_EXTOLE_BASE_FILE_NAME, "FreshDirect_EarnedRewards_");
     	defaults.put(PROP_EXTOLE_SFTP_PRIVATE_KEY, "/fddata/storefront/fdconf/int01/FreshDirect/config/security/extole_sftp.key");
+    	defaults.put(PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED,"false");
         
         
         
@@ -4060,5 +4062,9 @@ public class FDStoreProperties {
 
 	public static String getPropBaseFileName() {
 		return get(PROP_EXTOLE_BASE_FILE_NAME);
+	}
+	
+	public static boolean isCRMReferralHistoryEnabled(){
+		return Boolean.parseBoolean(get(PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED));
 	}
 }

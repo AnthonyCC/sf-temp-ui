@@ -58,7 +58,7 @@ public class FDReferAFriendDAO {
 			+ "CUST.PROMOTION_NEW p "
 			+ "where trunc(RP.EXPIRATION_DATE) > trunc(sysdate) "
 			+ "and    RP.PROMOTION_ID = P.ID "
-			/*+ "and    P.STATUS = 'LIVE' "*/
+			+ "and    P.STATUS = 'LIVE' "
 			+ "and    trunc(sysdate) between P.START_DATE and P.EXPIRATION_DATE "
 			+ "and    RP.DEFAULT_PROMO = 'Y' "
 			+ "and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";

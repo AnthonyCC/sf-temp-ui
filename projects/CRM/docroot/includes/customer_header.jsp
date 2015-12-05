@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.SignupDiscountRule" %> 
 <%@ page import="com.freshdirect.crm.CrmCustomerHeaderInfo" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%>
 <%@ taglib uri="crm" prefix="crm" %>
@@ -155,7 +156,7 @@ function voucherPopup(dialogId) {
 		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"activity_log.jsp")){ %>
         <a href="<%= response.encodeURL("/main/activity_log.jsp") %>" class="<%= pageURI.indexOf("activity_log") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Activity Log</a>
 		<% } %>
-		<% if(CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"referral_history.jsp")){ %>
+		<% if(FDStoreProperties.isCRMReferralHistoryEnabled() && CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"referral_history.jsp")){ %>
         <a href="<%= response.encodeURL("/main/referral_history.jsp") %>" class="<%= pageURI.indexOf("referral_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Referrals</a>
         <% } %>
 		<%	if (CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"profile_list.jsp")) {		%>
