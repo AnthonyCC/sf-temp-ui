@@ -358,6 +358,10 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		return StringUtil.concatWithDelimiters(new String[]{address.getAddress1(), address.getAddress2(), address.getCity(), address.getState()}, new String[]{" ", ", ", ", "});
 	}
 	
+	public static String formatAddressTextWithZip(AddressModel address){
+		return StringUtil.concatWithDelimiters(new String[]{address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getZipCode()}, new String[]{" ", ", ", ", ", " "});
+	}
+	
 	public static String formatAddressShortText(AddressModel address){
 		return StringUtil.concatWithDelimiters(new String[]{address.getCity(), address.getState()}, new String[]{", "});
 	}

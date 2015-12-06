@@ -756,6 +756,7 @@
 #selectAddressList-menu {
 	border: none;
 	background: none;
+	width: auto;
 }
 
 #selectAddressList-menu .ui-selectmenu-optgroup,

@@ -159,7 +159,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 			if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
-						<select id="selectAddressList" name="selectAddressList"><%
+						<select id="selectAddressList" name="selectAddressList" style="width: 300px;"><%
 							if(allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
@@ -177,7 +177,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
 											%>
 											 value="<%=homeAddress.getPK().getId()%>">
-											 	<%=LocationHandlerTag.formatAddressText(homeAddress)%>
+											 	<%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%>
 										</option>
 										<% if ( selectedAddress.equals(homeAddress) ) { 
 											foundSelectedAddress = true;
@@ -203,7 +203,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
 											%>
 											 value="<%=corporateAddress.getPK().getId()%>">
-											 	<%=LocationHandlerTag.formatAddressText(corporateAddress)%>
+											 	<%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%>
 										</option>
 										<% if ( selectedAddress.equals(corporateAddress) ) { 
 											foundSelectedAddress = true;
@@ -221,7 +221,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 											: " data-class=\"address-icon\" data-style=\"background-image: none;\""
 										%>
 										 value="DEPOT_<%= pickupDepot.getId() %>">
-										 	<%= LocationHandlerTag.formatAddressText(pickupDepot.getAddress()) %>
+										 	<%= LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress()) %>
 									</option>
 									<% 
 										if ( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ) {
@@ -236,7 +236,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					</div>
 				</tmpl:put><%
 			} else { //only one address
-				%><tmpl:put name="address"><span class="text"><%=LocationHandlerTag.formatAddressText(selectedAddress)%></span></tmpl:put><%	
+				%><tmpl:put name="address"><span class="text"><%=LocationHandlerTag.formatAddressTextWithZip(selectedAddress)%></span></tmpl:put><%	
 			}
 	
 		} else { //non-signed in user
@@ -329,7 +329,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 							<%
 							/* it's possible to not have the selected address in the address list, so check that as well */
 							if (user!=null && user.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
-								<%= LocationHandlerTag.formatAddressText(selectedAddress) %>
+								<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>
 							<% } else { %>
 								<%= selectedAddress.getCity() %> (<%= selectedAddress.getZipCode() %>)
 							<% } %>
@@ -374,7 +374,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 											<%= (reservationDate+" @ "+reservationTime).toUpperCase() %> 
 											<a href="/your_account/reserve_timeslot.jsp" class="locabar_addresses-reservation-existing-change">Change</a>
 										</div>
-										<div class="locabar_addresses-reservation-existing-address"><%= (userReservervationAddressModel != null) ? LocationHandlerTag.formatAddressText(userReservervationAddressModel) : "null" %></div>
+										<div class="locabar_addresses-reservation-existing-address"><%= (userReservervationAddressModel != null) ? LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel) : "null" %></div>
 									</div>
 								</div>
 							<% } %>
@@ -387,11 +387,11 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
 				FreshDirect.locabar.selectedAddress = {
 					type: '<%= foundSelectedAddressType %>',
-					address: '<%= LocationHandlerTag.formatAddressText(selectedAddress) %>'
+					address: '<%= LocationHandlerTag.formatAddressTextWithZip(selectedAddress) %>'
 				};
 				FreshDirect.locabar.reservation = { address: null, time: null };
 				<% if (userReservervationAddressModel != null) { %>
-					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressText(userReservervationAddressModel) %>';
+					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressTextWithZip(userReservervationAddressModel) %>';
 					FreshDirect.locabar.reservation.time = '<%= (reservationDate+" @ "+reservationTime).toUpperCase() %>';
 				<% } %>
 			</script></tmpl:put>
