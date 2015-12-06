@@ -99,10 +99,11 @@ $jq('#selectAddressList').iconselectmenu({
 			url: '/api/locationhandler.jsp',
 			data: {
 				action: 'selectAddress',
-				selectAddressList: key				
+				selectAddressList: key
 			},
 			success: function(data){
 				window.location.reload();
+				//console.log('locationhandler success');
 			},
 			error: function(data){
 				/* this needs fixing */

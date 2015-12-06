@@ -1798,6 +1798,7 @@ div.control, div.slotRow, div.time {
 	.ui-dialog .ui-dialog-titlebar-close {
 		padding: 0px;
 		top:11px;
+		border: none;
 	}
 	.ui-dialog .ui-widget-header .ui-icon {
 		background: transparent url('/media/editorial/site_access/images/round_x.gif') no-repeat;
@@ -1811,6 +1812,16 @@ div.control, div.slotRow, div.time {
 		background: #fff url('../../../common/jquery-ui_base/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x;
 		filter:Alpha(Opacity=80); 
 		opacity: 0.8;
+	}
+	#uimodal-output {
+	    background: #fff none;
+	}
+	.ui-dialog-titlebar {
+	    min-height: 10px;
+		color: #333;
+	}
+	.ui-widget-content {
+    	background: #fff none;
 	}
 	
 	#toptoolbar {

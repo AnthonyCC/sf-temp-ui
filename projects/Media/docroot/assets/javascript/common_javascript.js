@@ -442,10 +442,13 @@ function updateYourCartPanel() {}
  *		
  *		Note: When using sort by Int, mixed (Str/Int) options will sort numbers first.
  *		      Sets containing Strings that LOOK like Ints (like "5ive") will treat those as Ints.
+ *
+ *		pass a third param as boolean to sort case-sensitive (false by default)
  */
-	function sortByText(sortId, asIntVar) {
+	function sortByText(sortId, asIntVar, caseSensitiveVar) {
 		var specId = sortId || '';
 		var asInt = asIntVar || false;
+		var caseSensitive = caseSensitiveVar || false;
 			
 		//alphabetize
 		var selectArr = [];
@@ -490,7 +493,13 @@ function updateYourCartPanel() {}
 				intArr.sort(function(a,b){return a-b});
 			}
 			if (strArr.length > 1) {
-				strArr.sort();
+				if (caseSensitive) {
+					strArr.sort();
+				} else {
+					strArr.sort(function (a, b) {
+						return a.toString().toLowerCase().localeCompare(b.toString().toLowerCase());
+					});
+				}
 			}
 				
 
@@ -1283,7 +1292,7 @@ function doOverlayWindow(olURL, titleVar) {
 			openHeight: -1,
 			openWidth: -1,
 			closeText: 'hide',
-			position: 'center',
+			position: { my: "center", at: "center", of: window },
 			zIndex:10001,
 			resizable: false,
 			draggable: false,

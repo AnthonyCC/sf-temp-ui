@@ -123,10 +123,12 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		String zipAddDisplayString = "Change Zip Code";
 		boolean isEligibleForPreReservation = false;
 		FDReservation userReservervation = null;
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MM/dd/yy");
+		SimpleDateFormat dateFormatterNoYear = new SimpleDateFormat("EEE MM/dd");
 		String reservationDate = "";
 		String reservationTime = "";
 		boolean foundSelectedAddress = false;
+		String foundSelectedAddressType = "";
+		AddressModel userReservervationAddressModel = null; //matched by id, may still end up null
 		
 	
 		if (user!=null && user.getLevel() != FDUserI.GUEST) {
@@ -139,7 +141,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				userReservervation = user.getReservation();
 				
 				if (userReservervation != null) {
-					reservationDate = dateFormatter.format(userReservervation.getStartTime());
+					reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
 					reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
 					
 					zipAddDisplayString = (reservationDate+" @ "+reservationTime).toUpperCase();
@@ -151,6 +153,9 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 			List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
 			List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 			
+			String addressClass = "address-icon";
+			
+			
 			if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
@@ -158,30 +163,52 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 							if(allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
+										<%
+											addressClass = "address-icon";
+												
+											if (userReservervation != null && (userReservervation.getAddressId()).equals(homeAddress.getPK().getId()) ) {
+												userReservervationAddressModel = homeAddress;
+												addressClass += " reservation-icon";
+											}
+										%>
 										<option 
 											<%= ( selectedAddress.equals(homeAddress) )
-												? " data-class=\"address-icon\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
-												: " data-class=\"address-icon\" data-style=\"background-image: none;\""
+												? " data-class=\""+addressClass+"\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
+												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
 											%>
 											 value="<%=homeAddress.getPK().getId()%>">
 											 	<%=LocationHandlerTag.formatAddressText(homeAddress)%>
 										</option>
-										<% if ( selectedAddress.equals(homeAddress) ) { foundSelectedAddress = true; } %>
+										<% if ( selectedAddress.equals(homeAddress) ) { 
+											foundSelectedAddress = true;
+											foundSelectedAddressType = "HOME";
+										} %>
 									</logic:iterate>
 								</optgroup>
 							<%}
 							if(allCorporateAddresses.size()>0){%>
 								<optgroup label="Office Delivery">
 									<logic:iterate id="corporateAddress" collection="<%=allCorporateAddresses%>" type="com.freshdirect.common.address.AddressModel">
+										<%
+											addressClass = "address-icon";
+											
+											if (userReservervation != null && (userReservervation.getAddressId()).equals(corporateAddress.getPK().getId()) ) {
+												userReservervationAddressModel = corporateAddress;
+												addressClass += " reservation-icon";
+											}
+										%>
 										<option 
 											<%= ( selectedAddress.equals(corporateAddress) )
-												? " data-class=\"address-icon\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
-												: " data-class=\"address-icon\" data-style=\"background-image: none;\""
+												? " data-class=\""+addressClass+"\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
+												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
 											%>
 											 value="<%=corporateAddress.getPK().getId()%>">
 											 	<%=LocationHandlerTag.formatAddressText(corporateAddress)%>
 										</option>
-										<% if ( selectedAddress.equals(corporateAddress) ) { foundSelectedAddress = true; } %>
+										<% if ( selectedAddress.equals(corporateAddress) ) { 
+											foundSelectedAddress = true;
+											foundSelectedAddressType = "COS";											
+										} %>
 									</logic:iterate>
 								</optgroup>
 							<%}
@@ -196,7 +223,12 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 										 value="DEPOT_<%= pickupDepot.getId() %>">
 										 	<%= LocationHandlerTag.formatAddressText(pickupDepot.getAddress()) %>
 									</option>
-									<% if ( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ) { foundSelectedAddress = true; } %>
+									<% 
+										if ( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ) {
+											foundSelectedAddress = true;
+											foundSelectedAddressType = "PICKUP";
+										}
+									%>
 								</logic:iterate>
 							</optgroup>
 							<%}
@@ -327,14 +359,23 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"></a>
 						</div>
 						<% if (isEligibleForPreReservation) { %>
-							<% if (userReservervation == null) { %>
+							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals(selectedAddress.getId()) ) { %>
 								<div class="locabar_addresses-reservation-none">
-									<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat">Make a Reservation</a>
+									<% if (foundSelectedAddress && foundSelectedAddressType == "PICKUP") { %>
+										<span class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make-disabled">Make a Reservation</span>
+									<% } else { %>
+										<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">Make a Reservation</a>
+									<% } %>
 								</div>
 							<% } else { %>
 								<div class="locabar_addresses-reservation-existing">
-									<span id="locabar_addresses-reservation-existing-value"><%= (reservationDate+" @ "+reservationTime).toUpperCase() %></span>
-									<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat fright">Change</a>
+									<div id="locabar_addresses-reservation-existing-value">
+										<div class="locabar_addresses-reservation-existing-time">
+											<%= (reservationDate+" @ "+reservationTime).toUpperCase() %> 
+											<a href="/your_account/reserve_timeslot.jsp" class="locabar_addresses-reservation-existing-change">Change</a>
+										</div>
+										<div class="locabar_addresses-reservation-existing-address"><%= (userReservervationAddressModel != null) ? LocationHandlerTag.formatAddressText(userReservervationAddressModel) : "null" %></div>
+									</div>
 								</div>
 							<% } %>
 						<% } %>
@@ -344,6 +385,15 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		</div><script>
 				FreshDirect.locabar.hasFdServices = <%=hasFdServices %>;
 				FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
+				FreshDirect.locabar.selectedAddress = {
+					type: '<%= foundSelectedAddressType %>',
+					address: '<%= LocationHandlerTag.formatAddressText(selectedAddress) %>'
+				};
+				FreshDirect.locabar.reservation = { address: null, time: null };
+				<% if (userReservervationAddressModel != null) { %>
+					FreshDirect.locabar.reservation.address = '<%= LocationHandlerTag.formatAddressText(userReservervationAddressModel) %>';
+					FreshDirect.locabar.reservation.time = '<%= (reservationDate+" @ "+reservationTime).toUpperCase() %>';
+				<% } %>
 			</script></tmpl:put>
 	
 <%-- SIGN IN area --%>

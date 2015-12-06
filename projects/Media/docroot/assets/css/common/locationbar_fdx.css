@@ -526,7 +526,7 @@
 	margin: 16px;
 }
 .locabar-addresses-section .locabar-addresses-addzip {
-	max-width: 160px;
+	max-width: 200px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -809,6 +809,11 @@
 .locabar_addresses-reservation-none {
 	text-align: center;
 }
+.locabar_addresses-reservation-make-disabled {
+	opacity: 0.5;
+	background: #dc862d !important;
+	cursor: default;
+}
 .locabar_addresses-reservation-none .cssbutton {
 	padding-left: 30px !important;
 	padding-right: 30px !important;
@@ -816,9 +821,17 @@
 .locabar_addresses-reservation-existing {
 	font-weight: bold;
 	font-size: 13px;
-	height: 30px;
-	line-height: 30px;
 	padding: 0 10px;
+}
+#locabar_addresses-reservation-existing-value {
+	margin-bottom: 20px;
+}
+.locabar_addresses-reservation-existing-address {
+	display: none;
+}
+.locabar_addresses-reservation-existing-change {
+	float: right;
+	color: #e89138 !important;
 }
 #selectAddressList-button {
 	visibility: hidden;
