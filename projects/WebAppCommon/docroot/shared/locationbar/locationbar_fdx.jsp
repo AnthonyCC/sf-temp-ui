@@ -453,7 +453,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				<div class="bold cursor-pointer">
 					<div class="locabar-cart-count-cont">
 						<div class="locabar-cart"></div>
-						<div class="locabar-circle-cont locabar-popupcart-count">25</div>
+						<div class="locabar-circle-cont locabar-popupcart-count">0</div>
 					</div>
 					
 					<div style="display: inline-block;">
