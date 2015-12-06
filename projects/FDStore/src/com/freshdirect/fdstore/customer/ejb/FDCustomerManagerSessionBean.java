@@ -116,7 +116,6 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -4880,7 +4879,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			while (rs.next()) {
 				lst.add(rs.getString("CATEGORY"));
 			}
-
+			
+			Collections.sort(lst);
+			
 			return lst;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);

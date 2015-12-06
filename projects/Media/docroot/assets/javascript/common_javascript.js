@@ -444,11 +444,13 @@ function updateYourCartPanel() {}
  *		      Sets containing Strings that LOOK like Ints (like "5ive") will treat those as Ints.
  *
  *		pass a third param as boolean to sort case-sensitive (false by default)
+ *		pass a fourth param as int to reset selected index after sort (0 by default, -1 to not reset)
  */
-	function sortByText(sortId, asIntVar, caseSensitiveVar) {
+	function sortByText(sortId, asIntVar, caseSensitiveVar, resetSelIndexVar) {
 		var specId = sortId || '';
 		var asInt = asIntVar || false;
 		var caseSensitive = caseSensitiveVar || false;
+		var resetSelIndex = resetSelIndexVar = typeof resetSelIndexVar !== 'undefined' ?  resetSelIndexVar : 0;
 			
 		//alphabetize
 		var selectArr = [];
@@ -479,7 +481,7 @@ function updateYourCartPanel() {}
 						}
 					} else {
 						strArr[strArr.length] = { 
-							option : selectArr[i].options[j], 
+							option : selectArr[i].options[j],
 							toString : function() { 
 								// Return the text of the option, not the value 
 								return this.option.text;
@@ -520,7 +522,9 @@ function updateYourCartPanel() {}
 				n++;
 			}
 
-			selectArr[i].selectedIndex = 0;
+			if (resetSelIndex >= 0) {
+				selectArr[i].selectedIndex = resetSelIndex;
+			}
 		}
 
 		return true;
