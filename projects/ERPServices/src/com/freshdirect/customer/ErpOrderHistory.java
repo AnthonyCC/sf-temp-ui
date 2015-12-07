@@ -141,4 +141,9 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return buf.toString();
 	}
 
+	@Override
+	public int getValidMasterPassOrderCount() {
+		return ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpRegSaleInfos);
+	}
+
 }

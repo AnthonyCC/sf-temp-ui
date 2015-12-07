@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
@@ -63,6 +64,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final String plantId;
 	private final String salesOrg;
 	private final String distributionChanel;
+	private final EnumEwalletType ewalletType;
 	
 	public ErpSaleInfo(
 		String saleId,
@@ -96,7 +98,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		EnumEStoreId eStore,
 		String plantId,
 		String salesOrg,
-		String distributionChanel
+		String distributionChanel,
+		EnumEwalletType ewalletType
 			) {
 
 		super(saleId, erpCustomerId,status);
@@ -131,6 +134,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.plantId=plantId;
 		this.salesOrg=salesOrg;
 		this.distributionChanel=distributionChanel;
+		this.ewalletType = ewalletType;
 	}
 
 	public EnumEStoreId geteStore() {
@@ -260,6 +264,10 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	
 	public boolean isSoHolidayMovement(){
 		return soHolidayMovement;
+	}
+
+	public EnumEwalletType getEwalletType() {
+		return ewalletType;
 	}
 
 	@Override

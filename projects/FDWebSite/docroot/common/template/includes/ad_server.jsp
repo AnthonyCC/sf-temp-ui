@@ -481,6 +481,9 @@
   				    				
   				    			}
   				    			
+  				    			queryString.addParam("mpoc",
+			    					user.getOrderHistory().getValidMasterPassOrderCount());
+  				    			
   				    		}
   				    		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
   				    				: (String) request.getAttribute("sitePage");

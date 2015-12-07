@@ -40,6 +40,10 @@
 								<td>Debit Card</td>
 							</tr>
 							<tr>
+								<td><input type="checkbox" id="masterPass" name="masterPass" <%= (paymentType.indexOf("MasterPass")>-1)?"checked":"" %>/></td>
+								<td>MasterPass</td>
+							</tr>
+							<tr>
 								<td class="vTop"><input type="checkbox" id="eCheck" name="eCheck" value="eCheck" <%= (paymentType.indexOf("ECheck")>-1)?"checked":"" %>/></td>
 								<td>
 									eCheck<br />

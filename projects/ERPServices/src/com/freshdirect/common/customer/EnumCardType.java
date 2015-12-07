@@ -40,6 +40,7 @@ public class EnumCardType extends ValuedEnum {
 	public final static EnumCardType EBT = new EnumCardType(5, "EBT", "EBT", "007", "E", "EBT", "ET", EnumPaymentMethodType.EBT);
 	
 	public final static EnumCardType DEBIT = new EnumCardType(7, "DEBIT", "DEBIT", "008", "D", "Debit", "DC", EnumPaymentMethodType.DEBITCARD);
+	public final static EnumCardType MASTERPASS = new EnumCardType(7, "MP", "MP", "009", "P", "MasterPass", "MP", EnumPaymentMethodType.MASTERPASS);
 
 	private EnumCardType(int id, String fdName, String sapName, String paylinxId, String settlementCode, String displayName, String paymentechCode, EnumPaymentMethodType type) {
 		super(fdName, id);

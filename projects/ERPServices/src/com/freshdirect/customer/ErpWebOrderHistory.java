@@ -31,6 +31,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_PHONE_ORDER_COUNT = "validPhoneOrderCount";
 	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
 	private static final String UNSETTLED_EBT_ORDER_COUNT = "UnsettledEBTOrderCount";
+	private static final String VALID_MASTERPASS_ORDER_COUNT = "validMasterPassOrderCount";
 	/**
 	 * 
 	 * @param erpSaleInfos
@@ -54,6 +55,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(SETTLED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos)));
+		orderHistoryInfo.put(VALID_MASTERPASS_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpSaleInfos)));
 	}
 
 	public int getDeliveredOrderCount(){
@@ -168,5 +170,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	public int getUnSettledEBTOrderCount(String currSaleId){
 		//TODO: Need to fix this, if somebody wants to use it.
 		return 0;
+	}
+
+	@Override
+	public int getValidMasterPassOrderCount() {
+		return ((Integer)orderHistoryInfo.get(VALID_MASTERPASS_ORDER_COUNT)).intValue();
 	}
 }

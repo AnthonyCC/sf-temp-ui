@@ -15,6 +15,7 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BINCache;
 import com.freshdirect.payment.gateway.BillingInfo;
@@ -116,6 +117,18 @@ public class CustomerStrategy implements PromotionStrategyI {
 						}
 						
 					} else {
+						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+						return DENY;
+					}
+					
+				} else if(paymentTypes.contains(EnumCardType.MASTERPASS)) {
+					if(null !=cart.getPaymentMethod().geteWalletID()){
+						 EnumEwalletType eWalletType = EnumEwalletType.getEnum(cart.getPaymentMethod().geteWalletID());
+						 if(null ==eWalletType || !eWalletType.getName().equals(EnumCardType.MASTERPASS.getFdName())){
+							 context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+							 return DENY;
+						 }
+					}else{
 						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 						return DENY;
 					}

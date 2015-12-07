@@ -53,4 +53,6 @@ public interface OrderHistoryI extends Serializable {
 	public int getUnSettledEBTOrderCount();
 	
 	public int getUnSettledEBTOrderCount(String currSaleId);
+	
+	public int getValidMasterPassOrderCount();
 }

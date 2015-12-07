@@ -578,7 +578,7 @@ public class GiftCardPersistanceDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL"));			
+					rs.getString("DISTRIBUTION_CHANNEL"),null);			
 			saleList.add(info);
 		} 
 		
@@ -668,7 +668,8 @@ public class GiftCardPersistanceDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL"));			
+					rs.getString("DISTRIBUTION_CHANNEL"),
+					null);			
 			saleList.add(info);
 		} 
 		
@@ -723,7 +724,8 @@ public class GiftCardPersistanceDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL"));			
+					rs.getString("DISTRIBUTION_CHANNEL"),
+					null);			
 			saleList.add(info);
 		} 
 

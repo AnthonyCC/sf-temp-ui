@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.FDConfiguredProductFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -56,7 +57,7 @@ public class ErpSaleInfoDAO {
 	"  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,   "+
 	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='APP' and c.sale_id=cre.id),0) as credit_approved,  "+
 	"  NVL((select /*+ use_nl(c s) */sum(c.amount) from cust.complaint c where c.status='PEN' and c.sale_id=cre.id),0) as credit_pending, del.zone,NVL(E_STORE,'FreshDirect') E_STORE,  "+
-	"  NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID"+
+	"  NVL(SALES_ORG,'1000') SALES_ORG, NVL(DISTRIBUTION_CHANNEL,'1000') DISTRIBUTION_CHANNEL, NVL(PLANT_ID,'1000') PLANT_ID, del.ewallet_id "+
 	"  from  "+
 	"    ( select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id, s.so_holiday_movement, "+
 	"     sa.action_date, sa.source, sa.initiator, sa.requested_date,s.E_STORE         from    "+
@@ -77,7 +78,7 @@ public class ErpSaleInfoDAO {
 	"      "+
 	"     ( "+
 	"     select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime,  "+
-	"      di.delivery_type, di.zone,pi.payment_method_type,pi.referenced_order,DI.SALES_ORG, DI.DISTRIBUTION_CHANNEL, DI.PLANT_ID  from  "+
+	"      di.delivery_type, di.zone,pi.payment_method_type,pi.ewallet_id,pi.referenced_order,DI.SALES_ORG, DI.DISTRIBUTION_CHANNEL, DI.PLANT_ID  from  "+
 	"       cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.paymentinfo pi        where  "+
 	"        pi.salesaction_id=sa.id and s.id = sa.sale_id  and    sa.id = di.salesaction_id        "+
 	"        and    sa.action_type in ('CRO', 'MOD')         and    sa.customer_id = s.customer_id  "+
@@ -136,7 +137,8 @@ public class ErpSaleInfoDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL")
+					rs.getString("DISTRIBUTION_CHANNEL"),
+					null !=rs.getString("EWALLET_ID")?EnumEwalletType.getEnum(Integer.parseInt(rs.getString("EWALLET_ID"))):null
 				));
 		}
 		rs.close();
@@ -202,7 +204,8 @@ public class ErpSaleInfoDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL")
+					rs.getString("DISTRIBUTION_CHANNEL"),
+					null
 					));
 		}
 		rs.close();
@@ -648,7 +651,8 @@ public class ErpSaleInfoDAO {
 					EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 					rs.getString("PLANT_ID"),
 					rs.getString("SALES_ORG"),
-					rs.getString("DISTRIBUTION_CHANNEL")
+					rs.getString("DISTRIBUTION_CHANNEL"),
+					null
 					));
 		}
 		rs.close();
@@ -768,7 +772,8 @@ public class ErpSaleInfoDAO {
 						EnumEStoreId.valueOfContentId(rs.getString("E_STORE")),
 						"1000",
 						"1000",
-						"1000");
+						"1000",
+						null);
 						list.add(erpSaleInfo);
 			}
 		}

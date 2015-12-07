@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 
@@ -90,6 +91,21 @@ public class ErpOrderHistoryUtil {
 		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
 			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
 			if (!saleInfo.getStatus().isCanceled() && EnumPaymentMethodType.ECHECK.equals(saleInfo.getPaymentMethodType())){
+				ret++;
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * 
+	 * @param erpSaleInfos
+	 */
+	public static int getValidMasterPassOrderCount(Collection erpSaleInfos){
+		int ret = 0;
+		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
+			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+			if (null !=saleInfo.getEwalletType() && !saleInfo.getStatus().isCanceled() && EnumEwalletType.MP.equals(saleInfo.getEwalletType())){
 				ret++;
 			}
 		}
