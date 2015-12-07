@@ -5527,18 +5527,14 @@ public class WebUIDriver extends BaseAppDriver {
 							By.xpath(objMap
 									.getLocator("strverifyProductQty")))
 									.getText();
-					if(availableProducts.get(i).findElements(By.xpath(objMap.getLocator("strverifyProductUnit"))).size()>0)
-					{
-						String product_unit_text = availableProducts.get(i)
+					String product_unit_text = availableProducts.get(i)
 					.findElement(
 							By.xpath(objMap
 									.getLocator("strverifyProductUnit")))
 									.getText();
-						verify_products_unit[i] = product_unit_text;
-					}
 					verify_products[i] = product_text.replace("(new)", "");
 					verify_products_quantity[i] = product_quantity_text;
-					
+					verify_products_unit[i] = product_unit_text;
 				}
 			}
 			else
@@ -5750,15 +5746,10 @@ public class WebUIDriver extends BaseAppDriver {
 							{
 								String product_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductName"))).getText();
 								String product_quantity_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductQty"))).getText();
-								if(products_to_verify.get(i).findElements(By.xpath(objMap.getLocator("strverifyProductUnit"))).size()>0)
-								{
-									String product_unit_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductUnit"))).getText();
-									product_to_verify_unit[i]= product_unit_text;
-								}
-									
+								String product_unit_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductUnit"))).getText();
 								product_to_verify_name[i] = product_text;
 								product_to_verify_qty[i] = product_quantity_text;
-								
+								product_to_verify_unit[i]= product_unit_text;
 							}
 							catch(Exception e)
 							{
@@ -10398,8 +10389,9 @@ public class WebUIDriver extends BaseAppDriver {
 					uiDriver.setValue("drpreason", Reason);
 					uiDriver.setValue("txtnotes", Notes);
 					try{
-					uiDriver.click("btncancelOrderCRM");
-//					waitForPageLoad();
+						SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+						uiDriver.click("btncancelOrderCRM");
+						//waitForPageLoad();
 					}catch (Exception e) {
 						RESULT.failed("Cancel order", "Cancel order button should be visible", "Cancel order button not found");
 					}
@@ -10602,7 +10594,8 @@ public class WebUIDriver extends BaseAppDriver {
 				
 				String DeliverypassDetail = uiDriver.getwebDriverLocator(
 						objMap.getLocator("strdeliverypassDetail")).getText();
-				if (DeliverypassDetail.contains("Six-Month DeliveryPass")) {
+				if (DeliverypassDetail.contains("Six-Month DeliveryPass")||
+						DeliverypassDetail.contains("One-Year DeliveryPass")) {
 					System.out.println("Sorry! you have already Delivery Pass");
 					RESULT.warning("Add Deliverypass",
 							"User should already have a Deliverypass",
@@ -10678,7 +10671,8 @@ public class WebUIDriver extends BaseAppDriver {
 						.getLocator("strdeliverypassDetail"));
 				String Verification = uiDriver.getwebDriverLocator(
 						objMap.getLocator("strdeliverypassDetail")).getText();
-				if (Verification.contains("Six-Month DeliveryPass")) {
+				if (Verification.contains("Six-Month DeliveryPass")||
+						Verification.contains("One-Year DeliveryPass")) {
 					System.out.println("Verification Done");
 					RESULT
 					.passed(
