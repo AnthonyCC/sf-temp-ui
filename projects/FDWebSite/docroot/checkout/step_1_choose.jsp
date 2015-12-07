@@ -28,7 +28,9 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<fd:EnableXCForCSR>
 <features:redirect featureName="checkout2_0" />
+</fd:EnableXCForCSR>
 <%
 
 // redirect to Survey if this is the second order && first order is delivered

@@ -24,7 +24,9 @@ final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 <fd:CheckLoginStatus id="user" />
+<fd:EnableXCForCSR>
 <features:redirect featureName="checkout2_0" />
+</fd:EnableXCForCSR>
 <%
 String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 //--------OAS Page Variables-----------------------

@@ -31,7 +31,9 @@ final int W_VIEWCART_LP = 215;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus id="user" />
+<fd:EnableXCForCSR>
 <features:redirect featureName="checkout2_0" />
+</fd:EnableXCForCSR>
 <potato:pendingExternalAtcItem/>
 <%
 String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();

@@ -5711,6 +5711,13 @@
         </attribute>
     </tag>
 
+
+	<tag>
+		<name>EnableXCForCSR</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.EnableExpressCheckoutPagesTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>
