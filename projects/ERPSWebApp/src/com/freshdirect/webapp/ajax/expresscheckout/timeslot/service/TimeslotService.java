@@ -11,8 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -103,9 +101,6 @@ public class TimeslotService {
         try {
             if (user.getMasqueradeContext() != null) {
                 user.getMasqueradeContext().setForceOrderEnabled(deliveryTimeSlotId.startsWith("f_"));
-                if (user.getOrderHistory().getPhoneOrderCount() >= 3) {
-                    user.getShoppingCart().setChargeAmount(EnumChargeType.PHONE, Double.parseDouble(ErpServicesProperties.getPhoneHandlingFee()));
-                }
             }
             return reserveDeliveryTimeslot(deliveryTimeSlotId, session);
         } catch (ReservationException e) {

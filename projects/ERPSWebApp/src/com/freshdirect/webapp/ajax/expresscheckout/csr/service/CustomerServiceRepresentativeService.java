@@ -34,68 +34,50 @@ public class CustomerServiceRepresentativeService {
         return INSTANCE;
     }
 
-
     /**
-     * Pre-set CSR fields according to masquerading mode
-     * Fields are the following:
+     * Pre-set CSR fields according to masquerading mode Fields are the following:
      * 
-     * - delivery force waive (boolean)
-     * - delivery force waive premium (boolean)
-     * - waive phone handling charge (boolean)
-     * - silent mode (boolean)
-     * - customer service message (string) 
+     * - delivery force waive (boolean) - delivery force waive premium (boolean) - waive phone handling charge (boolean) - silent mode (boolean) - customer service message (string)
      * 
      * @param user
      */
     public void presetCustomerServiceRepresentativeInfo(FDUserI user) {
-    	if (user == null || user.getMasqueradeContext() == null) {
-    		return;
-    	}
-    	
-    	final MasqueradeContext ctx = user.getMasqueradeContext();
-    	final FDCartModel cart = user.getShoppingCart();
-    	
-    	// final boolean isMakeGoodMode = ctx.isMakeGood();
-    	final boolean isAddOnMode = ctx.getParentOrderId() != null;
-    	
+        if (user == null || user.getMasqueradeContext() == null) {
+            return;
+        }
 
-    	final OrderHistoryI history = getSafeOrderHistory(user);
-    	final boolean isPhoneChargeActive = history != null ? history.getPhoneOrderCount() >= 3 : false;
+        final MasqueradeContext ctx = user.getMasqueradeContext();
+        final FDCartModel cart = user.getShoppingCart();
 
-    	/**
-    	 * Turn on the following CSR flags for the FDX Add-On order
-    	 */
-    	if (isAddOnMode) {
-    		// waive phone charge := on / checked (if active)
-			if (isPhoneChargeActive) {
-			    cart.setChargeAmount(EnumChargeType.PHONE, getSafePhoneHandlingFee());
-	            cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR");
-			}
-			
-			// waive delivery fee
-			ctx.setCsrWaivedDeliveryCharge( true );
-    	}
+        final OrderHistoryI history = getSafeOrderHistory(user);
+        final boolean isPhoneChargeActive = history != null ? history.getPhoneOrderCount() >= 3 : false;
+
+        /**
+         * Turn on the following CSR flags for the FDX Add-On order
+         */
+        if (isPhoneChargeActive) {
+            cart.setChargeAmount(EnumChargeType.PHONE, ErpServicesProperties.getPhoneHandlingFee());
+        }
+        
+        if (ctx.isAddOnOrderEnabled()) {
+            // waive phone charge := on / checked (if active)
+            if (isPhoneChargeActive) {
+                cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR");
+            }
+
+            // waive delivery fee
+            ctx.setCsrWaivedDeliveryCharge(true);
+        }
     }
-    
+
     private OrderHistoryI getSafeOrderHistory(FDUserI user) {
-    	try {
-			return user.getOrderHistory();
-		} catch (FDResourceException e) {
-			return null;
-		}
+        try {
+            return user.getOrderHistory();
+        } catch (FDResourceException e) {
+            return null;
+        }
     }
 
-
-    private Double getSafePhoneHandlingFee() {
-    	try {
-    		return Double.parseDouble(ErpServicesProperties.getPhoneHandlingFee());
-		} catch (NumberFormatException e) {
-			// default value as double
-			return Double.valueOf(9.99);
-		}
-    }
- 
-    
     public void updateCustomerServiceRepresentativeInfo(FormDataRequest csrRequest, FDUserI user) {
         MasqueradeContext masqueradeContext = user.getMasqueradeContext();
         if (masqueradeContext != null) {

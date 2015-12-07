@@ -550,8 +550,8 @@ public class ErpServicesProperties {
 		return Double.parseDouble(config.getProperty(PROP_CASE_SHORTSHIP_PERCENTAGE));	
 	}
 
-	public static String getPhoneHandlingFee() {
-		return config.getProperty(PROP_FEE_PHONE);
+	public static double getPhoneHandlingFee() {
+		return Double.parseDouble(config.getProperty(PROP_FEE_PHONE));
 	}
 
 	public static String getDeclinedCreditCardFee() {
