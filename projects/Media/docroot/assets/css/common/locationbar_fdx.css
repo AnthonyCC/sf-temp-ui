@@ -503,9 +503,7 @@
 	font-weight: bold;
 }
 #locabar_user .footer-item {
-	padding: 10px;
 	font-weight: bold;
-	display: inline-block;
 }
 .locabar-user-greeting-cont {
 	line-height: 14px;
@@ -517,6 +515,9 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+}
+#locabar_user .locabar-user-signout {
+	padding-bottom: 20px;
 }
 
 #locabar_addresses .nodeliver-form {
