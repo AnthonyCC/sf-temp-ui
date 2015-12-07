@@ -291,7 +291,11 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 							if(frqItem.getFrequency()==soOrderInfo.getFrequency()){						
 						%>	<%= frqItem.getTitle()%></td>
 						<% break; }  } %>						
-						<td class="border_bottom" width="6%"><%= FDTimeslot.getDisplayString(true,soOrderInfo.getStartTime(),soOrderInfo.getEndTime()) %>&nbsp;</td>
+						<% if (( soOrderInfo.getStartTime() != null) && (soOrderInfo.getEndTime() !=null)){ %>
+							<td class="border_bottom" width="6%"><%= FDTimeslot.getDisplayString(true,soOrderInfo.getStartTime(),soOrderInfo.getEndTime()) %>&nbsp;</td>
+						<%} else {%>						
+							<td class="border_bottom" width="6%">N/A&nbsp;</td>
+						<%}%>
 						<td class="border_bottom" width="6%"><%=DateUtil.formatDate(soOrderInfo.getNextDate())%></td>	
 						<td class="border_bottom" width="6%"><%=DateUtil.formatDayOfWeek(soOrderInfo.getNextDate())%></td>	
 						<td class="border_bottom" width="21%"><%=soOrderInfo.getErrorHeader()%></td>

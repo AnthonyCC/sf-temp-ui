@@ -17,14 +17,19 @@ import javax.ejb.CreateException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -37,9 +42,12 @@ import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -323,6 +331,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			
 			FDStandingOrderInfoList ret = dao.getMechanicalFailedStandingOrdersCustInfo(conn);
 			
+			addZoneInfoToStandingOrder(ret);
+			
 			return ret;
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in getMechanicalFailedStandingOrdersCustInfo() : " + e.getMessage(), e );
@@ -332,6 +342,55 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	
+	private void addZoneInfoToStandingOrder(FDStandingOrderInfoList ret){
+		
+		List<FDStandingOrderInfo> standingOrdersInfo = ret.getStandingOrdersInfo();
+		
+		for(FDStandingOrderInfo soInfo : standingOrdersInfo ){
+			
+			try {
+				// retrieve standing order id
+				String soId = soInfo.getSoID();
+				
+				// load Standing Order
+				FDStandingOrder so = load( new PrimaryKey( soId ) );
+								
+				// retrieve address from Standign Order
+				AddressModel deliveryAddressModel = FDCustomerManager.getAddress( so.getCustomerIdentity(), so.getAddressId() );
+				
+				// retrieve FDUser
+				FDUserI customerUser = so.getUser();
+				
+				Date startDateTime = soInfo.getStartTime(); // ======
+				FDDeliveryZoneInfo zoneInfo = null;
+				
+				try {
+					// zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), (reservation!=null)?reservation.getRegionSvcType():null);
+					zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, startDateTime, customerUser.getHistoricOrderSize(), null);
+				} catch (FDInvalidAddressException e) {
+					LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
+				}
+				
+				// add zone to Standing Order
+				if(zoneInfo != null){
+					soInfo.setZone(zoneInfo.getZoneId());
+				}
+				
+				
+			} catch (FDResourceException re) {
+				LOGGER.error( "Could not retrieve standing order! - FDResourceException", re );
+
+			} catch (FDAuthenticationException re) {
+				LOGGER.error( "Could not authenticate user while retrieve standing order! - FDAuthenticationException", re );
+
+			}
+			
+		}
+		
+	}		
+	
 	
 	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates() throws FDResourceException{
 		Connection conn = null;
