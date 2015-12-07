@@ -18,7 +18,7 @@
 		<%} else {%>
 			<%if((uri_resWarning.endsWith("view_cart.jsp") || uri_resWarning.indexOf("/order/") > -1 || uri_resWarning.indexOf("/checkout/") > -1) && diff > 60){%>
 				<b><font color="#CC0000">Customer has a reserved delivery time for <%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></font></b>
-						(<a href="/customer_account/reserve_timeslot.jsp?addressId=<%=rsv.getAddressId()%>&from=<%=uri_resWarning.indexOf("/order/") > -1?"order":"checkout"%><%=uri_resWarning.indexOf("/checkout_review_items") > -1?"_review":""%>"><b>Edit</b></a>)
+						(<a href="/your_account/reserve_timeslot.jsp?addressId=<%=rsv.getAddressId()%>"><b>Edit</b></a>)
 			<%}else if(diff > 20 && diff <= 60){%>
 					<b><font color="#CC0000">Customer's Delivery Reservation Expires in <%=diff%> Minutes</font>.</b>
 						Reservation <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b>.

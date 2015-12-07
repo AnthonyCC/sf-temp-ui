@@ -3,6 +3,7 @@
 %><%@ taglib uri="fd-data-potatoes" prefix="potato" 
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
+%><%@page import="com.freshdirect.common.context.MasqueradeContext"
 %><%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <% 
@@ -13,6 +14,7 @@
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 	String hasEcouponsClass="";
     if(user.isEligibleForCoupons()) hasEcouponsClass="hasecoupons";
+    MasqueradeContext masqueradeContext_globalnav_sr = user.getMasqueradeContext();
 %>
 
 <%-- OAS --%>
@@ -85,7 +87,9 @@ if(user != null) {
 	<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
 	<% if (!cutoffInfoDisplayed) { %>
     	<div class="message invisible" data-type="platterwarning"><%@ include file="/common/template/includes/i_platter_warning.jspf"%></div>
-		<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+		<% if (masqueradeContext_globalnav_sr != null) { %>
+			<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
+		}
 	}
 	%>  
 
