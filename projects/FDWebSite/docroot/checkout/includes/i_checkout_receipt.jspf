@@ -63,6 +63,11 @@ boolean isHomeOrder = EnumDeliveryType.HOME.equals( cart.getDeliveryType() );
 		FDDeliveryDepotModel dm =  com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
 		String depotCode = dm!=null ? dm.getDepotCode() : null;
 	}
+	
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = cart.getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 
 // INCLUDE STANDING ORDER HEADER
 if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL ) { %>

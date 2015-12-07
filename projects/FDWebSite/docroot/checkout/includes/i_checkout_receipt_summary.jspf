@@ -97,6 +97,11 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 			}
 		}
     }
+	
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = cart.getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 
 	// INCLUDE STANDING ORDER HEADER
 	if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL) { %>
