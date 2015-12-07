@@ -186,15 +186,15 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 
 	}
 
-	public void downloadAndSaveRewards() throws FDResourceException,
+	public void downloadAndSaveRewards(String fileName) throws FDResourceException,
 			FileNotFoundException, ExtoleServiceException, ParseException {
-		String fileName = null;
+
 
 		// 1. Download the extole result file from extole server
-		if (!ExtoleSftpService.isFileExists()) {
+		if (null == fileName && !ExtoleSftpService.isFileExists()) {
 			fileName = ExtoleSftpService.downloadFile();
 		}
-
+		LOGGER.info(" Referral Rewards file to be parsed:" + fileName);
 		// 2.Parse this downloaded file and save into RAF_CREDIT table
 		List<FDRafCreditModel> fdEarnedRewardsList = ExtoleEarnedRewardsParser
 				.parseCsvFile(fileName);

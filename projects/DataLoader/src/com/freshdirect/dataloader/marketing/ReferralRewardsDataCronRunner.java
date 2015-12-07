@@ -39,7 +39,11 @@ public class ReferralRewardsDataCronRunner {
 	public static void main(String args[]) {
 
 		try {
-			FDExtoleManager.downloadAndSaveRewards();
+			String fileName = null;
+			if(null != args && args.length >0){
+				fileName = args[0];
+			}
+			FDExtoleManager.downloadAndSaveRewards(fileName);
 			LOGGER.info("Finished ReferralRewardsDataCronRunner");
 
 		} catch (FileNotFoundException e) {

@@ -55,7 +55,7 @@
 		<pathelement location="${thirdparty.home}/commons-net-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/commons-fileupload-1.2.jar"/>
 		<pathelement location="${thirdparty.home}/commons-beanutils-1.7.0.jar"/>		
-		<pathelement location="${thirdparty.home}/commons-codec-1.3.jar"/>
+		<pathelement location="${thirdparty.home}/commons-codec-1.9.jar"/>
 		<pathelement location="${thirdparty.home}/dom4j-1.6.1.jar"/>
 		<pathelement location="${thirdparty.home}/jaxen-1.1-beta-4.jar"/>
 		<pathelement location="${thirdparty.home}/jakarta-oro-2.0.5.jar"/>
@@ -1170,7 +1170,7 @@
 					<!-- include name="commons-*.jar"/-->
 					<!-- explicitly specify common jar -->
 					<include name="commons-beanutils-1.6.1.jar"/>
-					<include name="commons-codec-1.3.jar"/>
+					<include name="commons-codec-1.9.jar"/>
 					<include name="commons-collections-3.1.jar"/>
 					<include name="commons-dbcp-1.2.1.jar"/>
 					<include name="commons-digester-1.5.jar"/>
@@ -1316,7 +1316,7 @@
 					<!-- include name="commons-*.jar"/-->
 					<!-- explicitly specify common jar -->
 					<include name="commons-beanutils-1.7.0.jar"/>
-					<include name="commons-codec-1.3.jar"/>
+					<include name="commons-codec-1.9.jar"/>
 					<include name="commons-collections-3.1.jar"/>
 					<include name="commons-dbcp-1.2.1.jar"/>
 					<include name="commons-digester-1.5.jar"/>

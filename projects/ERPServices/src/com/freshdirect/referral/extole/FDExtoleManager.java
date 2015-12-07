@@ -154,14 +154,14 @@ public class FDExtoleManager {
 
 	}
 
-	public static void downloadAndSaveRewards() throws ExtoleServiceException,
+	public static void downloadAndSaveRewards(String fileName) throws ExtoleServiceException,
 			IOException, FDResourceException, ParseException {
 
 		lookupManagerHome();
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.downloadAndSaveRewards();
+			sb.downloadAndSaveRewards(fileName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

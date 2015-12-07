@@ -32,6 +32,6 @@ public interface FDExtoleManagerSB extends EJBObject {
 	public void approveConversion() throws ExtoleServiceException, IOException,
 			FDResourceException, RemoteException;
 
-	public void downloadAndSaveRewards() throws ExtoleServiceException,
+	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException,
 			IOException, FDResourceException, RemoteException, ParseException;
 }

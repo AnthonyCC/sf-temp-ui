@@ -85,9 +85,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExtoleServiceException(e.getMessage());
-		} finally {
-			response.close();
-		}
+		} 
 		return parseResponse(jsonResponse);
 	}
 
@@ -123,9 +121,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExtoleServiceException(e.getMessage());
-		} finally {
-			response.close();
-		}
+		} 
 		return parseResponse(jsonResponse);
 
 	}
