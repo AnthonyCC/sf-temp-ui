@@ -430,6 +430,13 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					user.getShoppingCart().setDeliveryAddress(null);
 				} 
 			}
+			// APPDEV-4627
+	    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
+	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
+	    	} else {
+	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
+	    	}
+	    	// end APPDEV-4627
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
@@ -449,6 +456,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 						MessageCodes.MSG_AUTHENTICATION_FAILED);
 				}
 			}
+			request.getSession().setAttribute(SessionName.APPLICATION,null);
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;
