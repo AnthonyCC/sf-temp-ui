@@ -119,14 +119,15 @@
 	});
 	
 	$document.on('click','#location-submit',function(e){
-		var email = $('#location-email').val(),
-				$form = $('.nodeliver-form form'),
-				pattern=/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
-				       
+		var email = $('#location-email,.location-email-text').map(function() {
+			return $(this).val() || null;
+		}).toArray().join(',');
+
+		var $form = $('.nodeliver-form form'),
+			pattern=/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
 		
 		if(email.match(pattern)) {
 			$form.attr('class','p');
-			
 			
 			$.ajax({
 				url:'/api/locationhandler.jsp',
@@ -139,9 +140,10 @@
 
 					if (FreshDirect.locabar.isFdx === true) {
 						$('label.n',$form).html('<b>Thanks for your email!</b> We will notify you once we start delivering to your area.');
-						$('#location-email').val('');
+						$('#location-email,.location-email-text').val('');
+					} else {
+						playScripts($(data));
 					}
-					playScripts($(data));
 				},
 				error:function(){
 					$form.attr('class','e');

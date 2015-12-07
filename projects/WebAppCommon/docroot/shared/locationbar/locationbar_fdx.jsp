@@ -288,16 +288,13 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
-										<div class="text13"><label class="n">Let us notify you when service expands in your area.</label></div>
+										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Let us notify you when service expands in your area.</label></div>
 										<div>
-											<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
+											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 										</div>
 									</form>
 								<% } %>
 							</div>
-						</div>
-						<div id="nodeliver-thanks" class="invisible" data-type="sitemessage">
-							<div class="nodeliver-form"><b>Thanks for your email!</b> We will notify you once we start delivering your area.</div>
 						</div>
 					</div>
 				</tmpl:put><%
