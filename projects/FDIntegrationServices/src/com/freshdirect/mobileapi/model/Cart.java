@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -1115,6 +1116,12 @@ public class Cart {
 					if(cart instanceof FDCartModel){
 						FDCartModel tmp = (FDCartModel)cart;
 						mobileNumber = tmp.getOrderMobileNumber() != null ? tmp.getOrderMobileNumber().getPhone() : null;
+					} else if(cart instanceof FDOrderAdapter) {
+						//setting the order level mobile number on order receipt
+						FDOrderAdapter fdOrderAdapter = (FDOrderAdapter)cart;
+						if(fdOrderAdapter!=null && fdOrderAdapter.getDeliveryInfo()!=null && fdOrderAdapter.getDeliveryInfo().getOrderMobileNumber()!=null &&  fdOrderAdapter.getDeliveryInfo().getOrderMobileNumber().getPhone()!=null){
+							mobileNumber = fdOrderAdapter.getDeliveryInfo().getOrderMobileNumber().getPhone();
+						}
 					}
 
 					if(mobileNumber == null){
