@@ -7,8 +7,20 @@
 {
 	FDUserI user_e1 = (FDUserI)session.getAttribute(SessionName.USER);
 	
+	//NEW: prohibited pages.  right now, this includes 'view_cart.jsp' AND checkout
+	String servletPath=request.getServletPath();
+	String[] noExtoleList = {"view_cart.jsp", "checkout.jsp"};
+	
+	boolean isValidPage = true;
+
+	for(int i = 0; i < noExtoleList.length; i++){
+		if( servletPath.toLowerCase().contains(noExtoleList[i].toLowerCase()) ){
+			isValidPage = false;
+		}
+	}
+	
 	//PASS 1 of 3.  Basic customer vars only defined here.
-	if(user_e1 != null){
+	if( (user_e1 != null) && (isValidPage == true) ){
 		int user_getLevel = user_e1.getLevel();
 	
 		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
@@ -28,9 +40,9 @@
 			//definitely logged in
 			boolean isSignedCustomer = true;
 			
+			//lets find out if they ordered something
 			boolean exValidOrderCount = false;
 			
-			//lets find out if they ordered something
 			try{
 				exValidOrderCount = user_e1.isReferralProgramAvailable();
 			} catch (Exception e){
@@ -42,7 +54,7 @@
 			boolean justSignedUp = sessionuser_e1.hasJustSignedUp(false);
 			
 			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
-			
+
 			//if they have actually ordered something.  PASS 3 of 3
 			if(exValidOrderCount == true){
 			%>
