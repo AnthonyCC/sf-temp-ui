@@ -5,67 +5,65 @@
 <%
 //start local block
 {
-FDUserI user_e1 = (FDUserI)session.getAttribute(SessionName.USER);
-if (user_e1 != null) { 
-	//customer basics
-	String exCustFirstName = user_e1.getFirstName();
-	String custLastName = user_e1.getLastName();
-	int user_getLevel = user_e1.getLevel();
+	FDUserI user_e1 = (FDUserI)session.getAttribute(SessionName.USER);
 	
-	//only empty strings so far, become full with data if user is actually logged in
-	String custEmail = "";
-	String custId = "";
+	//PASS 1 of 3.  Basic customer vars only defined here.
+	if(user_e1 != null){
+		int user_getLevel = user_e1.getLevel();
 	
-	//existing signed up customers
-	boolean isSignedCustomer = false;
-	
-	//brand new existing customers
-	boolean justSignedUp = false;
-	
-	//how much have they actually paid for so far?
-	int exValidOrderCount = 0;
-	
-	//if there is a promo going on and is this user eligible?  not currently used yet
-	boolean exMainPromo = false;
-	
-	//if this is someone actually on the CUSTOMER table, with valid email, etc.
-	if( user_e1.getLevel() != 0 ){
-		FDIdentity identity_e  = user_e1.getIdentity();
-		ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
-		custEmail = cm_e.getEmail();
+		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
+		if( user_e1.getLevel() != 0 ){
+			//customer basics
+			String exCustFirstName = user_e1.getFirstName();
+			String custLastName = user_e1.getLastName();
+			
+			//more advanced customer stuff
+			FDIdentity identity_e  = user_e1.getIdentity();
+			ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+			String custEmail = cm_e.getEmail();
+			
+			//numerical id
+			String custId = identity_e.getErpCustomerPK();
+			
+			//definitely logged in
+			boolean isSignedCustomer = true;
+			
+			boolean exValidOrderCount = false;
+			
+			//lets find out if they ordered something
+			try{
+				exValidOrderCount = user_e1.isReferralProgramAvailable();
+			} catch (Exception e){
+				out.println("An exception occurred: " + e.getMessage());
+			}
 		
-		//numerical id
-		custId = identity_e.getErpCustomerPK();
-		
-		//definitely logged in
-		isSignedCustomer = true;
-		
-		//again, how much did they order?
-		exValidOrderCount = user_e1.getAdjustedValidOrderCount();
-	
-		//session object needed to determine whether this user had just signed up
-		FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
-		justSignedUp = sessionuser_e1.hasJustSignedUp(false);
-		
-		exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
-	}
-	%>
-	<script>
-	//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
-	var globalExtoleVars = {
-		"custId": "<%=custId%>",
-		"custFirstName": "<%=exCustFirstName%>",
-		"custLastName": "<%=custLastName%>",
-		"custEmail": "<%=custEmail%>",
-		"isSignedCustomer": <%=isSignedCustomer%>,
-		"validOrderCount": <%=exValidOrderCount%>,
-		"justSignedUp": <%=justSignedUp%>,
-		"mainPromo": <%=exMainPromo%>
-	};
-	</script>
-	<script src="//tags.extole.com/553175139/core.js"></script>
-	<script src="/assets/javascript/extole_tags_generator.js"></script>
-	
-<% } // end if
+			//session object needed to determine whether this user had just signed up
+			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
+			boolean justSignedUp = sessionuser_e1.hasJustSignedUp(false);
+			
+			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
+			
+			//if they have actually ordered something.  PASS 3 of 3
+			if(exValidOrderCount == true){
+			%>
+			<script>
+			//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
+			var globalExtoleVars = {
+				"custId": "<%=custId%>",
+				"custFirstName": "<%=exCustFirstName%>",
+				"custLastName": "<%=custLastName%>",
+				"custEmail": "<%=custEmail%>",
+				"isSignedCustomer": <%=isSignedCustomer%>,
+				"validOrderCount": <%=exValidOrderCount%>,
+				"justSignedUp": <%=justSignedUp%>,
+				"mainPromo": <%=exMainPromo%>
+			};
+			</script>
+			<script src="//tags.extole.com/553175139/core.js"></script>
+			<script src="/assets/javascript/extole_tags_generator.js"></script>
+			<%
+			}//end if(exValidOrderCount == true)
+		} // end if( user_e1.getLevel() != 0 )
+	} // end if (user_e1 != null) 
 } //end local block
 %>
