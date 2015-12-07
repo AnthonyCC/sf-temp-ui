@@ -5784,13 +5784,22 @@ public class WebUIDriver extends BaseAppDriver {
 										                                            + product_to_verify_qty[i]);
 							}
 							//Check for Product unit which is mentioned below product name on Xpress checkout page
-							if (verify_products_unit[i].equals(product_to_verify_unit[i]) || verify_products_unit[i]==(product_to_verify_unit[i]))
+							if(verify_products_unit[i]!= null && product_to_verify_unit[i]!= null)
 							{
-								RESULT.passed("Place Order", "Expected product unit: "
-										+ verify_products_unit[i],
-										"Actual product unit: " + product_to_verify_unit[i]);
-										                                           									                                            
-							} else {
+								if (verify_products_unit[i].equals(product_to_verify_unit[i]))
+								{
+									RESULT.passed("Place Order", "Expected product unit: "
+											+ verify_products_unit[i],
+											"Actual product unit: " + product_to_verify_unit[i]);
+
+								} else {
+									RESULT.warning("Place Order", "Expected product unit: "
+											+ verify_products_unit[i],
+											"Actual product unit: " + product_to_verify_unit[i]);
+								}
+							}
+							else
+							{
 								RESULT.warning("Place Order", "Expected product unit: "
 										+ verify_products_unit[i],
 										"Actual product unit: " + product_to_verify_unit[i]);
