@@ -5527,14 +5527,18 @@ public class WebUIDriver extends BaseAppDriver {
 							By.xpath(objMap
 									.getLocator("strverifyProductQty")))
 									.getText();
-					String product_unit_text = availableProducts.get(i)
+					if(availableProducts.get(i).findElements(By.xpath(objMap.getLocator("strverifyProductUnit"))).size()>0)
+					{
+						String product_unit_text = availableProducts.get(i)
 					.findElement(
 							By.xpath(objMap
 									.getLocator("strverifyProductUnit")))
 									.getText();
+						verify_products_unit[i] = product_unit_text;
+					}
 					verify_products[i] = product_text.replace("(new)", "");
 					verify_products_quantity[i] = product_quantity_text;
-					verify_products_unit[i] = product_unit_text;
+					
 				}
 			}
 			else
@@ -5746,10 +5750,14 @@ public class WebUIDriver extends BaseAppDriver {
 							{
 								String product_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductName"))).getText();
 								String product_quantity_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductQty"))).getText();
-								String product_unit_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductUnit"))).getText();
+								if(products_to_verify.get(i).findElements(By.xpath(objMap.getLocator("strverifyProductUnit"))).size()>0)
+								{
+									String product_unit_text = products_to_verify.get(i).findElement(By.xpath(objMap.getLocator("strverifyProductUnit"))).getText();
+									product_to_verify_unit[i]= product_unit_text;
+								}
 								product_to_verify_name[i] = product_text;
 								product_to_verify_qty[i] = product_quantity_text;
-								product_to_verify_unit[i]= product_unit_text;
+								
 							}
 							catch(Exception e)
 							{
@@ -5776,7 +5784,7 @@ public class WebUIDriver extends BaseAppDriver {
 										                                            + product_to_verify_qty[i]);
 							}
 							//Check for Product unit which is mentioned below product name on Xpress checkout page
-							if (verify_products_unit[i].equals(product_to_verify_unit[i]))
+							if (verify_products_unit[i].equals(product_to_verify_unit[i]) || verify_products_unit[i]==(product_to_verify_unit[i]))
 							{
 								RESULT.passed("Place Order", "Expected product unit: "
 										+ verify_products_unit[i],
