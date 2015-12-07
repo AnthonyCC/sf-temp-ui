@@ -14,6 +14,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
 %>
@@ -63,6 +64,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	
 		succPage = buf.toString();
 	}
+	
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = cart.getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
+	
 %>
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="<%= succPage %>">
 <%

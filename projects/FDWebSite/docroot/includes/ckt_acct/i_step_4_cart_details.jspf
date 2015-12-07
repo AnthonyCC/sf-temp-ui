@@ -305,6 +305,19 @@ int idx = 0;
 	</tr>
 <%
 	request.setAttribute("cartSubtotal", JspMethods.formatPrice(cart.getSubTotal())); //for sem use
+	%>
+
+	<% if (isFdxOrder) { %>
+	<tr>
+	    <td colspan="3" align="right">E-Tip :</td>
+	    <td align="right"><%=JspMethods.formatPrice(cart.getTip()) %></td>
+	    <td colspan="7"></td>
+	</tr>
+	<% } %>
+	
+	
+	
+	<%
 	if(!isEBTPayment){
 	if (cart.isDlvPassApplied()) {
 %>	
