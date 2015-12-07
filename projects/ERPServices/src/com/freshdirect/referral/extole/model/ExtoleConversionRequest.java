@@ -3,8 +3,6 @@ package com.freshdirect.referral.extole.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.freshdirect.referral.extole.EnumRafTransactionType;
-
 
 public class ExtoleConversionRequest implements Serializable {
 

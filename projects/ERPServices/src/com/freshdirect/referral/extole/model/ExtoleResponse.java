@@ -3,7 +3,6 @@ package com.freshdirect.referral.extole.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.freshdirect.referral.extole.EnumRafTransactionStatus;
 
 public class ExtoleResponse implements Serializable{
 

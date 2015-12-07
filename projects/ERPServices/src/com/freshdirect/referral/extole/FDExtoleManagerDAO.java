@@ -3,22 +3,17 @@ package com.freshdirect.referral.extole;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
-import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -31,8 +26,6 @@ public class FDExtoleManagerDAO implements Serializable {
 	 * Extole DAO Class
 	 */
 	private static final long serialVersionUID = -7951921765149419771L;
-	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
-	private static final DateFormat TIME_FORMATTER = new SimpleDateFormat("MM/dd/yyyy hh:MM a");
 
 	private static Category LOGGER = LoggerFactory
 			.getInstance(FDExtoleManagerDAO.class);
@@ -183,8 +176,6 @@ public class FDExtoleManagerDAO implements Serializable {
 							+ "   FRIEND_FIRST_NAME,FRIEND_LAST_NAME,FRIEND_EMAIL,FRIEND_PARTNER_UID,"
 							+ "   REWARD_TYPE,REWARD_DATE,REWARD_SET_NAME,REWARD_SET_ID,REWARD_VALUE,REWARD_DETAIL) "
 							+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-			int version = getNextId(conn);
 
 			FDRafCreditModel earnedReward = null;
 			for (Iterator<FDRafCreditModel> iterator = rewards.iterator(); iterator
