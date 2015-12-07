@@ -82,7 +82,7 @@ var FreshDirect = FreshDirect || {};
   menupopup.render();
 
   $(document).on('mouseover', menupopup.trigger, menupopup.open.bind(menupopup));
-  $(document).on('keydown', menupopup.trigger, function (e) {
+  $(document).on('keyup', menupopup.trigger, function (e) {
     if (e.keyCode === fd.utils.keyCode.SPACE) {
       menupopup.open(e, true);
       e.stopPropagation();
