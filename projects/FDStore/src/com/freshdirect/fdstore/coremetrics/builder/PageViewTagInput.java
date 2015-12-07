@@ -52,29 +52,25 @@ public class PageViewTagInput implements Serializable {
 		obj.page = NVL.apply(request.getParameter("page"), request.getParameter("pageType"));
 
 		if ("pres_picks".equalsIgnoreCase(obj.page)) {
-			processPreqPicks((Map<String, Object>) request.getParameterMap(), obj);
+			processPresPicks(obj, request.getParameter("categoryFilterGroup"), request.getParameter("departmentFilterGroup"));
 		}
 
 		return obj;
 	}
 
-	private static void processPreqPicks(Map<String, Object> paramMap, PageViewTagInput obj) {
-		// parse data for pres_picks
-		String param;
+	private static void processPresPicks(PageViewTagInput obj, String categoryFilterGroup, String departmentFilterGroup) {
 		
 		// category level
-		param = (String) paramMap.get("categoryFilterGroup");
-		if (param != null && param.length() > 0 && !"clearall".equals(param)) {
+		if (categoryFilterGroup != null && categoryFilterGroup.length() > 0 && !"clearall".equals(categoryFilterGroup)) {
 			obj.ppParentType = "Category";
-			obj.ppParentType = param;
+			obj.ppParentType = categoryFilterGroup;
 			return;
 		}
 		
 		// dept level
-		param = (String) paramMap.get("departmentFilterGroup");
-		if (param != null && param.length() > 0 && !"clearall".equals(param)) {
+		if (departmentFilterGroup != null && departmentFilterGroup.length() > 0 && !"clearall".equals(departmentFilterGroup)) {
 			obj.ppParentType = "Department";
-			obj.ppParentType = param;
+			obj.ppParentType = departmentFilterGroup;
 			return;
 		}
 		
@@ -100,7 +96,9 @@ public class PageViewTagInput implements Serializable {
 		}
 
 		if ("pres_picks".equalsIgnoreCase(obj.page)) {
-			processPreqPicks(valueMap, obj);
+            String categoryFilterGroup = (String) valueMap.get("categoryFilterGroup");
+            String departmentFilterGroup = (String) valueMap.get("departmentFilterGroup");
+            processPresPicks(obj, categoryFilterGroup, departmentFilterGroup);
 		}
 
 		return obj;
