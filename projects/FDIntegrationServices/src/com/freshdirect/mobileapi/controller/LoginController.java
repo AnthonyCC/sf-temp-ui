@@ -390,6 +390,15 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			/*createUserSession(User.login(username, password), source, request,
 					response);*/
 			//instead of above Call Make a call to UserUtil.loginUser
+			
+			// APPDEV-4627
+	    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
+	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
+	    	} else {
+	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
+	    	}
+	    	// end APPDEV-4627
+	    	
 			ActionResult actionResult = new ActionResult();
 			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE, externalLogin);
 
@@ -430,13 +439,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					user.getShoppingCart().setDeliveryAddress(null);
 				} 
 			}
-			// APPDEV-4627
-	    	if(source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
-	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.getTransactionSource(source).getCode());
-	    	} else {
-	    		request.getSession().setAttribute(SessionName.APPLICATION, EnumTransactionSource.IPHONE_WEBSITE.getCode());
-	    	}
-	    	// end APPDEV-4627
+
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
