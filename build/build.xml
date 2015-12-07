@@ -1791,6 +1791,7 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
+			<pathelement path="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
