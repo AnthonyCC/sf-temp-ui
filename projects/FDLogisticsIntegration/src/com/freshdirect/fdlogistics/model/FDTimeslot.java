@@ -73,6 +73,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.minDurationForModStart = minDurationForModStart;
 		this.minDurationForModification = minDurationForModification;
 		this.regionSvcType = regionSvcType;
+		this.originalCutoffDateTime = originalCutoffDateTime;
 	}
 
 	
