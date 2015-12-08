@@ -14,6 +14,9 @@
     <ejb>DataLoaderEJB-WL.jar</ejb>
   </module>
   <module>
+    <ejb>StandingOrdersService.jar</ejb>
+  </module>
+  <module>
     <web>
       <web-uri>CRM.war</web-uri>
       <context-root>/</context-root>
