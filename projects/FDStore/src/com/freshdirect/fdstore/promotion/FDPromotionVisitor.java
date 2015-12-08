@@ -158,7 +158,7 @@ public class FDPromotionVisitor {
          }
          
        //Evaluate the referral promotions
-         if(context.getUser().getRafPromoCode() != null) {
+         if(FDStoreProperties.isExtoleRafEnabled() ? context.getUser().getRafPromoCode() != null : context.getUser().getReferralCustomerId() != null) {
         	 if(apply_raf_promo) {
 	        	 //User did not use any redemption code, so its ok to check the eligibility of the referral promotion
 		         Collection<PromotionI> referralPromotions = context.getUser().getReferralPromoList();         

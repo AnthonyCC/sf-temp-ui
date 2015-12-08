@@ -41,8 +41,12 @@
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>
 		<% if(session.getAttribute("DISPLAY") != null || "doNothing".equals(action)) { %>
-<%-- 				<jsp:include page="/registration/referee_signup2.jsp" flush="false"/> --%>
-					<jsp:include page="/registration/invite_signup2.jsp" flush="false"/>
+			<% if(!FDStoreProperties.isExtoleRafEnabled()) { %>
+				<jsp:include page="/registration/referee_signup2.jsp" flush="false"/> 
+			<% } else { %>
+	<%-- 				<jsp:include page="/registration/referee_signup2.jsp" flush="false"/> --%>
+						<jsp:include page="/registration/invite_signup2.jsp" flush="false"/>
+			<% } %>
 		<% } else {
 			
 			String fldAddress1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "");

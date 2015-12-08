@@ -815,6 +815,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_BASE_FILE_NAME						= "extole.base.file.name";
 	public static final String PROP_EXTOLE_SFTP_PRIVATE_KEY						= "extole.sftp.private.key";
 	public static final String PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED           = "crm.referral.history.page.enabled";
+	public static final String PROP_EXTOLE_RAF_ENABLED 							= "fdstore.extole.raf.enabled";
 
 	// [APPDEV-4650]
 	public static final String PROP_ENABLE_XC_FOR_CRM_AGENTS					= "crm.xc.enabled";
@@ -1618,7 +1619,7 @@ public class FDStoreProperties {
     	defaults.put(PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED,"false");
         
     	defaults.put(PROP_ENABLE_XC_FOR_CRM_AGENTS, "true");
-        
+    	defaults.put(PROP_EXTOLE_RAF_ENABLED, "true");
 		refresh();
     }
 
@@ -4070,6 +4071,9 @@ public class FDStoreProperties {
 		return Boolean.parseBoolean(get(PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED));
 	}
 
+	public static boolean isExtoleRafEnabled(){
+		return Boolean.parseBoolean(get(PROP_EXTOLE_RAF_ENABLED));
+	}
 
 	/**
 	 * If true, CSR agents are allowed to use new XC pages in masquerade mode.

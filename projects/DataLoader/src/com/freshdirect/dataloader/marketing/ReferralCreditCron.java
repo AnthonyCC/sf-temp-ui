@@ -111,153 +111,175 @@ public class ReferralCreditCron {
 		ActivityLogHome aHome = (ActivityLogHome) ctx
 				.lookup("freshdirect.customer.ActivityLog");
 		ActivityLogSB logSB = aHome.create();
-		// MailerGatewayHome mHome = (MailerGatewayHome)
-		// ctx.lookup("freshdirect.mail.MailerGateway");
-		// MailerGatewaySB mailer = mHome.create();
-		// ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup(
-		// FDStoreProperties.getErpCustomerHome() );
-		LOGGER.info("Starting up now");
-		// ReferralCreditCron cron = new ReferralCreditCron();
-
-		// List<ReferralPromotionModel> sales = sb.getSettledSales();
-		List<ReferralPromotionModel> sales = sb.getSettledTransaction();
-		LOGGER.info("Got sales list:" + sales);
-
-		Iterator<ReferralPromotionModel> salesIter = sales.iterator();
-		CrmAgentModel agent = new CrmAgentModel("system", "admin", "system",
-				"User", true, CrmAgentRole.getEnum("ADM"), false);
-		agent.setLdapId("system");
-		List<ReferralPromotionModel> models = new ArrayList<ReferralPromotionModel>();
-		while (salesIter.hasNext()) {
+		if(FDStoreProperties.isExtoleRafEnabled()){
+			
+			
+			// MailerGatewayHome mHome = (MailerGatewayHome)
+			// ctx.lookup("freshdirect.mail.MailerGateway");
+			// MailerGatewaySB mailer = mHome.create();
+			// ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup(
+			// FDStoreProperties.getErpCustomerHome() );
+			LOGGER.info("Starting up now");
+			// ReferralCreditCron cron = new ReferralCreditCron();
+	
+			// List<ReferralPromotionModel> sales = sb.getSettledSales();
+			List<ReferralPromotionModel> sales = sb.getSettledTransaction();
+			LOGGER.info("Got sales list:" + sales);
+	
+			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
+			CrmAgentModel agent = new CrmAgentModel("system", "admin", "system",
+					"User", true, CrmAgentRole.getEnum("ADM"), false);
+			agent.setLdapId("system");
+			List<ReferralPromotionModel> models = new ArrayList<ReferralPromotionModel>();
+			while (salesIter.hasNext()) {
+				try {
+					ReferralPromotionModel model = (ReferralPromotionModel) salesIter
+							.next();
+					String referral_customer_id = model.getRefCustomerId();
+					String referral_max_sale_id = sb
+							.getLatestSTLSale(referral_customer_id);
+					System.out.println("referral_customer_id:"
+							+ referral_customer_id);
+					System.out.println("referral_max_sale_id:"
+							+ referral_max_sale_id);
+					// System.out.println("cust_sale_id:" + model.getSaleId());
+					System.out.println("cust_id:" + model.getCustomerId());
+	
+					if (referral_max_sale_id != null
+							&& referral_max_sale_id.length() != 0) {
+						// Create FDORderI object
+						FDOrderI order = fdsb.getOrder(referral_max_sale_id);
+	
+						LOGGER.info("got FDOrder:" + order.toString());
+	
+						// Create complaint
+						ErpComplaintModel complaintModel = new ErpComplaintModel();
+	
+						// Create complain line
+						List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
+						ErpComplaintLineModel line = new ErpComplaintLineModel();
+						// Set up the Complaint Line Model with proper info
+						line.setType(EnumComplaintLineType.REFERRAL);
+						line.setQuantity(0);
+						line.setAmount(model.getReferral_fee());
+						List list = (List) complaintReasons.get("RAF");
+						if (list == null)
+							list = Collections.EMPTY_LIST;
+						// List list = ComplaintUtil.getReasonsForDepartment("RAF");
+						if (list.size() > 0)
+							line.setReason((ErpComplaintReason) list.get(0));
+						line.setMethod(EnumComplaintLineMethod.STORE_CREDIT);
+	
+						lines.add(line);
+						complaintModel.addComplaintLines(lines);
+						complaintModel.setType(EnumComplaintType
+								.getEnum(complaintModel.getComplaintMethod()));
+	
+						// set complaint details
+						complaintModel.setCreatedBy(agent.getUserId());
+						complaintModel.setDescription("Referral credit testing1");
+						complaintModel.setCreateDate(new java.util.Date());
+						complaintModel.setStatus(EnumComplaintStatus.PENDING);
+						// email options - don;t send for now
+						complaintModel
+								.setEmailOption(EnumSendCreditEmail.DONT_SEND);
+	
+						LOGGER.info("Almost done with complaint:"
+								+ (complaintModel.describe()));
+	
+						// addcomplaint
+						boolean autoApproveAuthorized = true;
+						PrimaryKey cPk = fdsb.addComplaint(complaintModel,
+								referral_max_sale_id, referral_customer_id,
+								model.getFDCustomerId(), autoApproveAuthorized,
+								Double.parseDouble(model.getReferral_fee() + ""));
+	
+						// save the credit in customer invites
+						// Commenting this since we don't need to keep track of the
+						// transaction
+						// sb.saveCustomerCredit(referral_customer_id,
+						// model.getCustomerId(), model.getReferral_fee(),
+						// model.getSaleId(), cPk.getId(),
+						// model.getReferral_prgm_id());
+	
+						// send email to referral
+						// Commenting this logic since extole will take care of
+						// sending email
+	
+						/*
+						 * String subject = model.getReferralCreditEmailSubject();
+						 * String message = model.getReferralCreditEmailText();
+						 * ErpCustomerEB eb = ecHome.findByPrimaryKey(new
+						 * PrimaryKey( referral_customer_id )); ErpCustomerInfoModel
+						 * referralCm = eb.getCustomerInfo(); ErpCustomerEB eb1 =
+						 * ecHome.findByPrimaryKey(new PrimaryKey(
+						 * model.getCustomerId() )); ErpCustomerInfoModel refereeCm
+						 * = eb1.getCustomerInfo();
+						 * 
+						 * message = message.replace("<first name>",
+						 * refereeCm.getFirstName()); message =
+						 * message.replace("<last name>", refereeCm.getLastName());
+						 * 
+						 * FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new
+						 * FDIdentity(referral_customer_id,
+						 * model.getFDCustomerId())); String depotCode =
+						 * fdCustInfo.getDepotCode(); String fromEmail =
+						 * FDStoreProperties.getCustomerServiceEmail();
+						 * 
+						 * // Most of the customers dont have the depot code
+						 * populated. Removing this logic for now as logistics is
+						 * not going to provide depot API if(depotCode != null) {
+						 * fromEmail =
+						 * FDDeliveryManager.getInstance().getCustomerServiceEmail
+						 * (depotCode); }
+						 * 
+						 * FDReferAFriendCreditEmail xemail =
+						 * (FDReferAFriendCreditEmail)
+						 * FDEmailFactory.getInstance().createReferAFriendCreditEmail
+						 * (referralCm.getFirstName(), message);
+						 * xemail.setSubject(subject); xemail.setFromAddress(new
+						 * EmailAddress("FreshDirect", fromEmail));
+						 * xemail.setRecipient(referralCm.getEmail());
+						 * mailer.enqueueEmail(xemail);
+						 */
+	
+						// record the event in activity log
+						ErpActivityRecord rec = new ErpActivityRecord();
+						rec.setActivityType(EnumAccountActivityType.REFERRAL_CREDIT);
+						rec.setSource(EnumTransactionSource.SYSTEM);
+						rec.setInitiator("SYSTEM");
+						rec.setChangeOrderId(referral_max_sale_id);
+						rec.setCustomerId(referral_customer_id);
+						rec.setDate(new Date());
+						rec.setNote("$" + model.getReferral_fee() + ", "
+								+ model.getCustomerId());
+						logSB.logActivity(rec);
+					}
+					models.add(model);
+					// Ignore the exceptions and proceed with the next record.
+				} catch (FDResourceException e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+				} catch (NumberFormatException e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+				} catch (RemoteException e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+				} catch (ErpComplaintException e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
+					email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+				} /*
+				 * catch (FinderException e) { LOGGER.error(e); }
+				 */
+			}
+			// Update the Reward Transaction status
 			try {
-				ReferralPromotionModel model = (ReferralPromotionModel) salesIter
-						.next();
-				String referral_customer_id = model.getRefCustomerId();
-				String referral_max_sale_id = sb
-						.getLatestSTLSale(referral_customer_id);
-				System.out.println("referral_customer_id:"
-						+ referral_customer_id);
-				System.out.println("referral_max_sale_id:"
-						+ referral_max_sale_id);
-				// System.out.println("cust_sale_id:" + model.getSaleId());
-				System.out.println("cust_id:" + model.getCustomerId());
-
-				if (referral_max_sale_id != null
-						&& referral_max_sale_id.length() != 0) {
-					// Create FDORderI object
-					FDOrderI order = fdsb.getOrder(referral_max_sale_id);
-
-					LOGGER.info("got FDOrder:" + order.toString());
-
-					// Create complaint
-					ErpComplaintModel complaintModel = new ErpComplaintModel();
-
-					// Create complain line
-					List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
-					ErpComplaintLineModel line = new ErpComplaintLineModel();
-					// Set up the Complaint Line Model with proper info
-					line.setType(EnumComplaintLineType.REFERRAL);
-					line.setQuantity(0);
-					line.setAmount(model.getReferral_fee());
-					List list = (List) complaintReasons.get("RAF");
-					if (list == null)
-						list = Collections.EMPTY_LIST;
-					// List list = ComplaintUtil.getReasonsForDepartment("RAF");
-					if (list.size() > 0)
-						line.setReason((ErpComplaintReason) list.get(0));
-					line.setMethod(EnumComplaintLineMethod.STORE_CREDIT);
-
-					lines.add(line);
-					complaintModel.addComplaintLines(lines);
-					complaintModel.setType(EnumComplaintType
-							.getEnum(complaintModel.getComplaintMethod()));
-
-					// set complaint details
-					complaintModel.setCreatedBy(agent.getUserId());
-					complaintModel.setDescription("Referral credit testing1");
-					complaintModel.setCreateDate(new java.util.Date());
-					complaintModel.setStatus(EnumComplaintStatus.PENDING);
-					// email options - don;t send for now
-					complaintModel
-							.setEmailOption(EnumSendCreditEmail.DONT_SEND);
-
-					LOGGER.info("Almost done with complaint:"
-							+ (complaintModel.describe()));
-
-					// addcomplaint
-					boolean autoApproveAuthorized = true;
-					PrimaryKey cPk = fdsb.addComplaint(complaintModel,
-							referral_max_sale_id, referral_customer_id,
-							model.getFDCustomerId(), autoApproveAuthorized,
-							Double.parseDouble(model.getReferral_fee() + ""));
-
-					// save the credit in customer invites
-					// Commenting this since we don't need to keep track of the
-					// transaction
-					// sb.saveCustomerCredit(referral_customer_id,
-					// model.getCustomerId(), model.getReferral_fee(),
-					// model.getSaleId(), cPk.getId(),
-					// model.getReferral_prgm_id());
-
-					// send email to referral
-					// Commenting this logic since extole will take care of
-					// sending email
-
-					/*
-					 * String subject = model.getReferralCreditEmailSubject();
-					 * String message = model.getReferralCreditEmailText();
-					 * ErpCustomerEB eb = ecHome.findByPrimaryKey(new
-					 * PrimaryKey( referral_customer_id )); ErpCustomerInfoModel
-					 * referralCm = eb.getCustomerInfo(); ErpCustomerEB eb1 =
-					 * ecHome.findByPrimaryKey(new PrimaryKey(
-					 * model.getCustomerId() )); ErpCustomerInfoModel refereeCm
-					 * = eb1.getCustomerInfo();
-					 * 
-					 * message = message.replace("<first name>",
-					 * refereeCm.getFirstName()); message =
-					 * message.replace("<last name>", refereeCm.getLastName());
-					 * 
-					 * FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new
-					 * FDIdentity(referral_customer_id,
-					 * model.getFDCustomerId())); String depotCode =
-					 * fdCustInfo.getDepotCode(); String fromEmail =
-					 * FDStoreProperties.getCustomerServiceEmail();
-					 * 
-					 * // Most of the customers dont have the depot code
-					 * populated. Removing this logic for now as logistics is
-					 * not going to provide depot API if(depotCode != null) {
-					 * fromEmail =
-					 * FDDeliveryManager.getInstance().getCustomerServiceEmail
-					 * (depotCode); }
-					 * 
-					 * FDReferAFriendCreditEmail xemail =
-					 * (FDReferAFriendCreditEmail)
-					 * FDEmailFactory.getInstance().createReferAFriendCreditEmail
-					 * (referralCm.getFirstName(), message);
-					 * xemail.setSubject(subject); xemail.setFromAddress(new
-					 * EmailAddress("FreshDirect", fromEmail));
-					 * xemail.setRecipient(referralCm.getEmail());
-					 * mailer.enqueueEmail(xemail);
-					 */
-
-					// record the event in activity log
-					ErpActivityRecord rec = new ErpActivityRecord();
-					rec.setActivityType(EnumAccountActivityType.REFERRAL_CREDIT);
-					rec.setSource(EnumTransactionSource.SYSTEM);
-					rec.setInitiator("SYSTEM");
-					rec.setChangeOrderId(referral_max_sale_id);
-					rec.setCustomerId(referral_customer_id);
-					rec.setDate(new Date());
-					rec.setNote("$" + model.getReferral_fee() + ", "
-							+ model.getCustomerId());
-					logSB.logActivity(rec);
-				}
-				models.add(model);
-				// Ignore the exceptions and proceed with the next record.
-			} catch (FDResourceException e) {
-				StringWriter sw = new StringWriter();
-				e.printStackTrace(new PrintWriter(sw));
-				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+				sb.updateSetteledRewardTransaction(models);
 			} catch (NumberFormatException e) {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
@@ -266,25 +288,126 @@ public class ReferralCreditCron {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
 				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-			} catch (ErpComplaintException e) {
-				StringWriter sw = new StringWriter();
-				e.printStackTrace(new PrintWriter(sw));
-				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-			} /*
-			 * catch (FinderException e) { LOGGER.error(e); }
-			 */
-		}
-		// Update the Reward Transaction status
-		try {
-			sb.updateSetteledRewardTransaction(models);
-		} catch (NumberFormatException e) {
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (RemoteException e) {
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+			}
+		} else{ //Legacy Referral Program Credits
+
+	        MailerGatewayHome mHome = (MailerGatewayHome) ctx.lookup("freshdirect.mail.MailerGateway");
+	        MailerGatewaySB mailer = mHome.create();
+	        ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
+	        LOGGER.info("Starting up now");
+			ReferralCreditCron cron = new ReferralCreditCron();
+			List<ReferralPromotionModel> sales = sb.getSettledSales();
+			
+			LOGGER.info("Got sales list:" + sales);
+			
+			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
+			CrmAgentModel agent = new CrmAgentModel("system", "admin", "system", "User", true, CrmAgentRole.getEnum("ADM"), false);
+			agent.setLdapId("system");
+			while(salesIter.hasNext()) {
+				try {
+					ReferralPromotionModel model = (ReferralPromotionModel) salesIter.next();
+					String referral_customer_id = model.getRefCustomerId();
+					String referral_max_sale_id = sb.getLatestSTLSale(referral_customer_id);
+					System.out.println("referral_customer_id:" + referral_customer_id);
+					System.out.println("referral_max_sale_id:" + referral_max_sale_id);
+					System.out.println("cust_sale_id:" + model.getSaleId());
+					System.out.println("cust_id:" + model.getCustomerId());
+					
+					if(referral_max_sale_id != null && referral_max_sale_id.length() != 0) {
+						//Create FDORderI object
+						FDOrderI order = fdsb.getOrder(referral_max_sale_id);
+						
+						LOGGER.info("got FDOrder:" + order.toString());
+						
+						//Create complaint
+						ErpComplaintModel complaintModel = new ErpComplaintModel();
+						
+						//Create complin line
+						List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
+						ErpComplaintLineModel line = new ErpComplaintLineModel();
+					    // Set up the Complaint Line Model with proper info	        
+					    line.setType(EnumComplaintLineType.REFERRAL);
+					    line.setQuantity(0);
+					    line.setAmount(model.getReferral_fee());
+					    List list = (List) complaintReasons.get("RAF");
+					    if(list == null)
+					    	list = Collections.EMPTY_LIST;
+					    //List list = ComplaintUtil.getReasonsForDepartment("RAF");
+					    if(list.size() > 0)
+					        line.setReason( (ErpComplaintReason) list.get(0));
+					    line.setMethod( EnumComplaintLineMethod.STORE_CREDIT );
+					    
+					    lines.add(line);
+					    complaintModel.addComplaintLines(lines);
+					    complaintModel.setType(EnumComplaintType.getEnum(complaintModel.getComplaintMethod()));
+					    
+					    //set complaint details
+					    complaintModel.setCreatedBy(agent.getUserId());
+					    complaintModel.setDescription("Referral credit testing1");
+					    complaintModel.setCreateDate(new java.util.Date());
+					    complaintModel.setStatus(EnumComplaintStatus.PENDING);
+					    //email options - don;t send for now
+					    complaintModel.setEmailOption(EnumSendCreditEmail.DONT_SEND);
+					    
+					    LOGGER.info("Almost done with complaint:"+ (complaintModel.describe()));
+					    
+					    //addcomplaint
+					    boolean autoApproveAuthorized = true;
+					    PrimaryKey cPk = fdsb.addComplaint(complaintModel, referral_max_sale_id,referral_customer_id,model.getFDCustomerId(),autoApproveAuthorized,Double.parseDouble(model.getReferral_fee()+""));
+					    
+					    //save the credit in customer invites
+					    sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+					    
+					    //send email to referral
+					    String subject = model.getReferralCreditEmailSubject();
+					    String message = model.getReferralCreditEmailText();
+					    ErpCustomerEB eb = ecHome.findByPrimaryKey(new PrimaryKey( referral_customer_id ));
+					    ErpCustomerInfoModel referralCm = eb.getCustomerInfo();
+					    ErpCustomerEB eb1 = ecHome.findByPrimaryKey(new PrimaryKey( model.getCustomerId() ));
+					    ErpCustomerInfoModel refereeCm = eb1.getCustomerInfo();
+
+					    message = message.replace("<first name>", refereeCm.getFirstName());
+					    message = message.replace("<last name>", refereeCm.getLastName());
+					    
+					    FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
+					    String depotCode = fdCustInfo.getDepotCode();
+					    String fromEmail = FDStoreProperties.getCustomerServiceEmail();
+					    
+					    // Most of the customers dont have the depot code populated. Removing this logic for now as logistics is not going to provide depot API
+					    if(depotCode != null) {
+					    	fromEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(depotCode);
+					    }
+					    
+					    FDReferAFriendCreditEmail xemail = (FDReferAFriendCreditEmail) FDEmailFactory.getInstance().createReferAFriendCreditEmail(referralCm.getFirstName(), message);
+					    xemail.setSubject(subject);
+					    xemail.setFromAddress(new EmailAddress("FreshDirect", fromEmail));
+					    xemail.setRecipient(referralCm.getEmail());
+					    mailer.enqueueEmail(xemail);
+					    
+					    //record the event in activity log
+					    ErpActivityRecord rec = new ErpActivityRecord();
+						rec.setActivityType(EnumAccountActivityType.REFERRAL_CREDIT);
+						rec.setSource(EnumTransactionSource.SYSTEM);
+						rec.setInitiator("SYSTEM");
+						rec.setChangeOrderId(model.getSaleId());
+						rec.setCustomerId(referral_customer_id);
+						rec.setDate(new Date());
+						rec.setNote("$" + model.getReferral_fee() + ", " + model.getCustomerId());
+						logSB.logActivity(rec);
+					}
+					//Ignore the exceptions and proceed with the next record.
+				} catch (FDResourceException e) {
+					LOGGER.error(e);
+				} catch (NumberFormatException e) {
+					LOGGER.error(e);
+				} catch (RemoteException e) {
+					LOGGER.error(e);
+				} catch (ErpComplaintException e) {
+					LOGGER.error(e);
+				} catch (FinderException e) {
+					LOGGER.error(e);
+				}
+			}
 		}
 
 	}

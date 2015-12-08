@@ -16,6 +16,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -136,7 +137,7 @@ public class ExternalAccountService implements AccountService {
 		if((Action.SUCCESS).equals(result)) {
 			//if referral information is available, record it.
 		
-				if(pageContext.getSession().getAttribute("CLICKID") != null){
+				if(FDStoreProperties.isExtoleRafEnabled() && pageContext.getSession().getAttribute("CLICKID") != null){
 				try {
 					//user = (FDSessionUser) session.getAttribute(USER);
 					LOGGER.debug(user.getIdentity().getErpCustomerPK());
@@ -167,6 +168,34 @@ public class ExternalAccountService implements AccountService {
 				} catch (Exception e) {
 					LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
 				}
+			} else if(!FDStoreProperties.isExtoleRafEnabled() && pageContext.getSession().getAttribute("REFERRALNAME") != null){
+					try {
+						//user = (FDSessionUser) session.getAttribute(USER);
+						LOGGER.debug(user.getIdentity().getErpCustomerPK());
+						LOGGER.debug(user.getUserId());
+						LOGGER.debug((String) pageContext.getSession().getAttribute("REFERRALNAME"));
+						LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("REFERRALNAME"));
+						String customerId = user.getIdentity().getErpCustomerPK();
+						String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());
+						user.setReferralCustomerId(referralCustomerId);
+						session.setAttribute(SessionName.USER, user);
+						//Record the referee signup in referral activitylog
+						ErpActivityRecord rec = new ErpActivityRecord();
+						rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
+						rec.setSource(EnumTransactionSource.WEBSITE);
+						rec.setInitiator("CUSTOMER");
+						rec.setCustomerId(referralCustomerId);
+						rec.setDate(new Date());
+						rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
+						new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+						//this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
+						//this.setSuccessPage("/registration/referee_signup2.jsp");
+						successPage = "/registration/referee_signup2.jsp";
+						//this.setAjax(true);
+						CmRegistrationTag.setPendingRegistrationEvent(session);
+					} catch (Exception e) {
+						LOGGER.error("Exception when trying to update FDCustomer with referral ID",e);
+					}
 			} else {
 				if("true".equals(pageContext.getRequest().getParameter("LITESIGNUP"))) {
 					successPage = "/registration/signup_lite.jsp";

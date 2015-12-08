@@ -565,7 +565,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 		   
 			boolean isFriendReferred=false;
-			if(user.getRafClickId()!=null  && user.getOrderHistory().getSettledOrderCount()<1 
+			if(FDStoreProperties.isExtoleRafEnabled() && user.getRafClickId()!=null  && user.getOrderHistory().getSettledOrderCount()<1 
 					&&user.getRafPromoCode()!=null){
 				isFriendReferred=true;
 			}

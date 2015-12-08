@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%
 //start local block
 {
@@ -20,7 +21,7 @@
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.
-	if( (user_e1 != null) && (isValidPage == true) ){
+	if( FDStoreProperties.isExtoleRafEnabled() && (user_e1 != null) && (isValidPage == true) ){
 		int user_getLevel = user_e1.getLevel();
 	
 		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3

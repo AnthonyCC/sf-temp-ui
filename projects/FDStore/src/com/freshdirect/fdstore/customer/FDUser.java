@@ -514,7 +514,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setReferralPromoList() {
 		// load referral promotion only to refer a friend target customers
-		if(this.getIdentity() != null && this.getRafPromoCode() != null)
+		if(this.getIdentity() != null && FDStoreProperties.isExtoleRafEnabled() ? this.getRafPromoCode() != null : this.getReferralCustomerId() != null)
 			try {
 				referralPromoList = FDPromotionNewManager.getReferralPromotions(this.getIdentity().getErpCustomerPK());
 			} catch (FDResourceException e) {

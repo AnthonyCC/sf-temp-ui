@@ -1580,7 +1580,23 @@ public class FDPromotionNewDAO {
 	}
 	
     
-	public static final String GET_REF_PROMO = "SELECT p.* "
+	public static final String GET_REF_PROMO =  "SELECT p.* " +  
+			"FROM CUST.PROMOTION_NEW p, " +
+			    "CUST.FDCUSTOMER fc, " +
+			    "CUST.REFERRAL_PRGM rp, " + 
+			    "CUST.REFERRAL_CUSTOMER_LIST rcl " + 
+			"where FC.ERP_CUSTOMER_ID = ? " +
+			"and     FC.REFERER_CUSTOMER_ID = RCL.ERP_CUSTOMER_ID " +
+			"and     RCL.REFERAL_PRGM_ID = RP.ID " +
+			"and     RP.EXPIRATION_DATE > trunc(sysdate) " + 
+			"and     RP.PROMOTION_ID = P.ID " +
+			"and     p.status = 'LIVE' " +
+			"and    (p.expiration_date > (sysdate-7) or p.expiration_date is null) " +  
+			"and     p.redemption_code is null " +
+			"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')" +
+			"order by p.modify_date desc";
+	
+	public static final String GET_REF_EXTOLE_PROMO = "SELECT p.* "
 			+ "FROM  CUST.PROMOTION_NEW p, "
 			+ "CUST.FDCUSTOMER fc, "
 			+ "CUST.CUSTOMER c "
@@ -1610,8 +1626,12 @@ public class FDPromotionNewDAO {
 				"and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
 
 	public static List<PromotionI> getReferralPromotions(String customerId, Connection conn) throws SQLException {
-	//	LOGGER.debug("Query is "+GET_REF_PROMO);
-		PreparedStatement ps = conn.prepareStatement(GET_REF_PROMO);
+		LOGGER.debug("Query is "+GET_REF_PROMO);
+		String query = GET_REF_PROMO;
+		if(FDStoreProperties.isExtoleRafEnabled()){
+			query = GET_REF_EXTOLE_PROMO;
+		}
+		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, customerId);
 		ResultSet rs = ps.executeQuery();
 		List<PromotionI> promotions =  new ArrayList<PromotionI>();
@@ -1622,7 +1642,7 @@ public class FDPromotionNewDAO {
 			promotions.add(promotion);
 		}
 		
-		/*if(promotions.size() == 0) {
+		if(!FDStoreProperties.isExtoleRafEnabled() && promotions.size() == 0) {
 			//see if there is a default promo available
 			LOGGER.debug("Query is "+GET_DEFAULT_REF_PROMO);
 			ps = conn.prepareStatement(GET_DEFAULT_REF_PROMO);
@@ -1634,7 +1654,7 @@ public class FDPromotionNewDAO {
 				promotion.addStrategy(new ReferAFriendStrategy());
 				promotions.add(promotion);
 			}
-		}*/
+		}
 		rs.close();
 		ps.close();
 		return promotions;
