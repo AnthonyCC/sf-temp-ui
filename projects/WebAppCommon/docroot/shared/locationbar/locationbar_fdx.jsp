@@ -438,7 +438,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					<hr class="line-divider" />
 					<div class="section-cont locabar-user-signout">
 						<div class="footer-item"><%= ((user != null) ? ("Not " + user.getFirstName() + "?") : "") %>
-							<div class="fright"><a href="#" class="locabar-logout">Sign out</a></div>
+							<a href="#" class="locabar-logout">Sign out</a>
 						</div>
 					</div>
 				</div>

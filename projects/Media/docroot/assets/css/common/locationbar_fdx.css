@@ -534,6 +534,9 @@
 #locabar_user .locabar-user-signout {
 	padding-bottom: 20px;
 }
+#locabar_user .locabar-user-signout .locabar-logout {
+	float: right;
+}
 
 #locabar_addresses .nodeliver-form {
 	margin-top: 1em;
