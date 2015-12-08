@@ -36,7 +36,7 @@ public class ExtoleSftpService {
 	private static final String EXTOLE_BASE_FILE_NAME = FDStoreProperties
 			.get(FDStoreProperties.PROP_EXTOLE_BASE_FILE_NAME);
 
-	public static String downloadFile() {
+	public static String downloadFile() throws ExtoleServiceException {
 
 		Session session = null;
 		Channel channel = null;
@@ -74,11 +74,13 @@ public class ExtoleSftpService {
 
 				LOGGER.info("Successfully downloaded the file");
 			} catch (SftpException e) {
-				e.printStackTrace();
+				LOGGER.error("Exception in ExtoleSftpService: "+ e.getMessage());
+				throw new ExtoleServiceException(e);
 			}
 
 		} catch (JSchException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception in ExtoleSftpService: "+ e.getMessage());
+			throw new ExtoleServiceException(e);
 		} finally {
 
 			if (null != channelSftp && channelSftp.isConnected()) {
