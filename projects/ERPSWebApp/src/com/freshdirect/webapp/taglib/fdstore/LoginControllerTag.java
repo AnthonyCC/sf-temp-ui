@@ -109,14 +109,14 @@ public class LoginControllerTag extends AbstractControllerTag {
         }
 	    
 	    /* merging social account code ends here */
-        
+		String newURL = request.getScheme() + "://" + request.getServerName();
+		if(FDStoreProperties.isLocalDeployment()){
+			newURL = newURL + ":" + request.getServerPort();
+		}
 	    if(updatedSuccessPage != null && updatedSuccessPage.length() > 0) {
 	    	if ( user != null && FDStoreProperties.isSocialLoginEnabled() ) {
 	    		
-	    		String newURL = request.getScheme() + "://" + request.getServerName();
-	    		if(FDStoreProperties.isLocalDeployment()){
-	    			newURL = newURL + ":" + request.getServerPort();
-	    		}
+
 	    		
 				 // determine whether login is trigger from workflow
 				 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
@@ -150,7 +150,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 			}else{
 			 if(user !=null&&!user.getTcAcknowledge()){
 					if (FDStoreProperties.isSocialLoginEnabled()) {
-						 this.setSuccessPage("/registration/tcaccept_lite.jsp");
+						 this.setSuccessPage(newURL+"/registration/tcaccept_lite.jsp");
 						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
 						session.setAttribute("fdTcAgree", false);
 					}

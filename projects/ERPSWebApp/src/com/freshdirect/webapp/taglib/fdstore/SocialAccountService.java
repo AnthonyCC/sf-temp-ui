@@ -148,20 +148,21 @@ public class SocialAccountService implements AccountService {
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
+						 String newURL = request.getScheme() + "://" + request.getServerName() ;
+						 if(FDStoreProperties.isLocalDeployment()){
+							 newURL = newURL + ":" + request.getServerPort();
+						 }
+						 
 				    	try {						
 							 // APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		
 							 if(!user.getTcAcknowledge()){
 								 if(FDStoreProperties.isTCEnabled()){
-								 response.sendRedirect("/registration/tcaccept_lite.jsp");
+								 response.sendRedirect(newURL+"/registration/tcaccept_lite.jsp");
 								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-									 String newURL = request.getScheme() + "://" + request.getServerName() ;
-									 if(FDStoreProperties.isLocalDeployment()){
-										 newURL = newURL + ":" + request.getServerPort();
-									 }						
 									 
 									 // determine whether socialsignin is trigger from workflow
 									 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
@@ -176,11 +177,6 @@ public class SocialAccountService implements AccountService {
 							 else {
 								 
 								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 
-								 String newURL = request.getScheme() + "://" + request.getServerName() ;
-								 if(FDStoreProperties.isLocalDeployment()){
-									 newURL = newURL + ":" + request.getServerPort();
-								 }		
 								 
 								// determine whether socialsignin is trigger from workflow
 								 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
@@ -257,7 +253,11 @@ public class SocialAccountService implements AccountService {
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
 				    			 if(FDStoreProperties.isTCEnabled()){
-								 return "/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
+				    				 String newURL = request.getScheme() + "://" + request.getServerName() ;
+									 if(FDStoreProperties.isLocalDeployment()){
+										 newURL = newURL + ":" + request.getServerPort();
+									 }	
+								 return newURL+"/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
 				    			 }else{
 									 String newURL = request.getScheme() + "://" + request.getServerName() ;
 									 if(FDStoreProperties.isLocalDeployment()){
