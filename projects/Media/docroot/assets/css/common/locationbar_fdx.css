@@ -547,6 +547,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 	display: inline-block;
+	line-height: 15px;
 }
 #locabar_addresses .locabar_addresses-dlvadd-edit:hover, #locabar_addresses .locabar_addresses-ts-info:hover {
 	background-color: #4fa157;
