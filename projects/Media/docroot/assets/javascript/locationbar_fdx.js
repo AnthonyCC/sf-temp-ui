@@ -161,12 +161,15 @@ $jq('#locabar_user_trigger').on('click', function(e) {
 	}
 });
 
-$jq("#locabar_messages_trigger").on('click', function() {
+$jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');
 });
 
 $jq('#login_cont_formContent').on('hide', function() {
 	$jq('#fs_overlay').hide();
+});
+$jq('#login_cont_formContent_close').on('click', function() {
+	$jq('#login_cont_formContent').hide().trigger('hide');
 });
 
 $jq(window).on('resize', function(event) {

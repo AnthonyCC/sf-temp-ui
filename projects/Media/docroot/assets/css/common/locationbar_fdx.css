@@ -267,6 +267,20 @@
 		text-align: left;
 		float: none;
 	}
+	#login_cont_formContent.locabar_login #login_cont_formContent_close {
+		top: 0;
+		bottom: initial;
+		left: initial;
+		right: 0;
+		background-image:  url('/media/layout/nav/globalnav/fdx/close-x.png');
+		height: 12px;
+		width: 12px;
+		margin: 6px;
+		z-index: 99;
+		position: absolute;
+		left: auto;
+		cursor: pointer;
+	}
 	#messages {
 		width: 970px;
 		position: relative;

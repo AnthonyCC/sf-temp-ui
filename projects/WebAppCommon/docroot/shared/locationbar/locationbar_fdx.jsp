@@ -50,6 +50,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	
 	<tmpl:put name="fdx_login_form">
     	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
+    		<div class="handler close-handler" id="login_cont_formContent_close"></div>
     		<div class="logo"><img src="/media/layout/nav/globalnav/fdx/logo.png"  alt="FreshDirect" border="0" /></div>
     		<div class="sign-in">Sign in</div>
     		<form id="login_cont_formContentForm">
