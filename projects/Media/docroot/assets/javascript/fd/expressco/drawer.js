@@ -40,12 +40,12 @@ var FreshDirect = FreshDirect || {};
     },
     reset: {
       value: function () {
-        $(document.body).attr('data-drawer-active', null);
-        if (this.originalFocused) {
+        if (this.originalFocused && $(document.body).attr('data-drawer-active')) {
           try {
             this.originalFocused.focus();
           } catch (e) {}
         }
+        $(document.body).attr('data-drawer-active', null);
       }
     },
     changeClick: {

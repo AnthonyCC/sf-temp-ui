@@ -488,17 +488,17 @@
       <div class="total-masq">
         <form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" action="#">
           {if $customerServiceRepresentative.deliveryCharge > 0}
-            <p><label for="deliveryForceWaived">Delivery Fee: Force Waive <input type="checkbox" name="dlvForceWaive" {if $customerServiceRepresentative.deliveryForceWaived}checked{/if}></label></p>
+            <p><label for="deliveryForceWaived">Delivery Fee: Force Waive <input id="deliveryForceWaived" type="checkbox" name="dlvForceWaive" {if $customerServiceRepresentative.deliveryForceWaived}checked{/if}></label></p>
           {/if}
           {if $customerServiceRepresentative.deliveryChargePremium > 0}
-            <p><label for="deliveryForceWaivedPremium">Delivery Fee: Force Waive Premium <input type="checkbox" name="dlvForceWaivePremium" {if $customerServiceRepresentative.isPremiumDeliveryForceWaived}checked{/if}></label></p>
+            <p><label for="deliveryForceWaivedPremium">Delivery Fee: Force Waive Premium <input id="deliveryForceWaivedPremium" type="checkbox" name="dlvForceWaivePremium" {if $customerServiceRepresentative.isPremiumDeliveryForceWaived}checked{/if}></label></p>
           {/if}
           {if $customerServiceRepresentative.phoneCharge > 0}
-            <p><label for="phoneHandlingChargeWaived">Waive Phone Handling Charge (${$customerServiceRepresentative.phoneCharge}) <input type="checkbox" name="waivePhoneHandlingCharge" {if $customerServiceRepresentative.phoneHandlingChargeWaived}checked{/if}></label></p>
+            <p><label for="phoneHandlingChargeWaived">Waive Phone Handling Charge (${$customerServiceRepresentative.phoneCharge}) <input id="phoneHandlingChargeWaived" type="checkbox" name="waivePhoneHandlingCharge" {if $customerServiceRepresentative.phoneHandlingChargeWaived}checked{/if}></label></p>
           {/if}
-          <p><label for="emailInvoiceSendingSkipped">Don't send e-mail invoice <input type="checkbox" name="silentMode" {if $customerServiceRepresentative.emailInvoiceSendingSkipped}checked{/if}></label></p>
-          <p><label for="customerInvoiceMessage">Customer Invoice Message <input class="masq-input" type="text" name="customerInvoiceMessage" {if $customerServiceRepresentative.customerInvoiceMessage}value="{$customerServiceRepresentative.customerInvoiceMessage}"{/if}></label></p>
-          <p><button class="cssbutton green" fdform-button="submitcsrfields">apply</button></p>
+          <p><label for="emailInvoiceSendingSkipped">Don't send e-mail invoice <input id="emailInvoiceSendingSkipped" type="checkbox" name="silentMode" {if $customerServiceRepresentative.emailInvoiceSendingSkipped}checked{/if}></label></p>
+          <p><label for="customerInvoiceMessage">Customer Invoice Message <input id="customerInvoiceMessage" class="masq-input" type="text" name="customerInvoiceMessage" {if $customerServiceRepresentative.customerInvoiceMessage}value="{$customerServiceRepresentative.customerInvoiceMessage}"{/if}></label></p>
+          <p><button class="cssbutton green" fdform-button="submit">apply</button></p>
         </form>
       </div>
       {/if}
