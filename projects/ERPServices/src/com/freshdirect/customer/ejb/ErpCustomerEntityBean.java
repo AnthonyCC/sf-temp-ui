@@ -335,10 +335,15 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 			this.shipToAddress.store( conn );
 			
 			// update names for ExpressSignup Customer
-			if(shipToAddress.size() ==1 && !isCustomerNameUpdatedForExpressSignupCustomer()){				
-				Iterator<ErpAddressPersistentBean> i = this.shipToAddress.iterator();
-				ErpAddressModel address = (ErpAddressModel)((ErpAddressPersistentBean)i.next()).getModel();
-				this.customerInfo.updateCustomerNames( conn, address.getFirstName(), null, address.getLastName() );				
+			if(shipToAddress.size() >0 && !isCustomerNameUpdatedForExpressSignupCustomer()){								
+				for(Iterator<ErpAddressPersistentBean> i = this.shipToAddress.iterator(); i.hasNext();){
+					ErpAddressModel address = (ErpAddressModel)((ErpAddressPersistentBean)i.next()).getModel();
+					if(address != null && address.getFirstName() != null && address.getLastName() != null){
+						if(!(address.getFirstName().equalsIgnoreCase(address.getLastName()))){
+							this.customerInfo.updateCustomerNames( conn, address.getFirstName(), null, address.getLastName() );	
+						}
+					}					
+				}															
 			}
 		}
 		LOGGER.info("Before calling store ******************* ");
