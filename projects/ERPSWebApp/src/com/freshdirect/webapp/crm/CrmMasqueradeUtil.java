@@ -264,7 +264,10 @@ public class CrmMasqueradeUtil {
 		
 		params.userId = user.getUserId();
 
-		params.hasCustomerCase = CrmSession.hasCustomerCase(request.getSession());
+		if(CrmAgentRole.COS_CODE.equalsIgnoreCase(CrmSession.getCurrentAgent(request.getSession()).getRole().getCode()))
+			params.hasCustomerCase=true;
+		else
+			params.hasCustomerCase = CrmSession.hasCustomerCase(request.getSession()); 
 		
 		params.forceOrderAvailable = CrmSecurityManager.hasAccessToPage(agentRole.getLdapRoleName(),"forceorder");
 		params.makeGoodFromOrderId = request.getParameter("makeGoodFromOrderId");

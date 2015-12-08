@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="template" prefix="tmpl" %>
@@ -219,7 +220,13 @@ if(null != orderId){
 <%-- === Masquerade! === --%>
 <crm:GetCurrentAgent id="agent">
 <%
-	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+boolean hasCustomerCase = false;
+
+	if(CrmAgentRole.COS_CODE.equalsIgnoreCase((agent.getRole().getCode())))
+		hasCustomerCase = true;
+	else
+		hasCustomerCase = CrmSession.hasCustomerCase(session);
+
 %>
 <% if (CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"masquerade.jsp")) { %>
 	<div class="section-borderTB whiteBg">

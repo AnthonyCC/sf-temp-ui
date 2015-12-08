@@ -1,5 +1,6 @@
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%
 	String snav_pageURI = request.getRequestURI();
 	boolean summary_gc = snav_pageURI.indexOf("giftcard/index.jsp") > -1 || snav_pageURI.indexOf("gift_card/giftcard_summary.jsp") > -1;
@@ -31,7 +32,14 @@ if(!bulk_purchase_gc){
 	boolean giftcard_generate = snav_pageURI.indexOf("generate_new_giftcard.jsp") > -1;
 	boolean bt_giftcard = snav_pageURI.indexOf("bt_giftcard.jsp") > -1;
 	boolean check_balance = snav_pageURI.indexOf("check_balance") > -1;
-	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+	
+	boolean hasCustomerCase= false;
+	
+	if(CrmAgentRole.COS_CODE.equalsIgnoreCase(CrmSession.getCurrentAgent(session).getRole().getCode()))
+			hasCustomerCase=true;
+	else
+		 hasCustomerCase = CrmSession.hasCustomerCase(session); 
+
 %>
 
 <div class="cust_nav_gc" style="height: 28px;">

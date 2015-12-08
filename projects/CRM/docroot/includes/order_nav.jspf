@@ -22,11 +22,17 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 <%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter"%>
+ <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ taglib uri='crm' prefix='crm' %>
 
 <%
 String pageURI = request.getRequestURI();
-boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+
+boolean hasCustomerCase= false;
+	if(CrmAgentRole.COS_CODE.equalsIgnoreCase(CrmSession.getCurrentAgent(session).getRole().getCode()))
+	   hasCustomerCase=true;
+   else
+	   hasCustomerCase = CrmSession.hasCustomerCase(session); 
 
 boolean o_details = pageURI.indexOf("order_details") > -1;
 boolean o_transactions = pageURI.indexOf("order_transaction_details") > -1;
