@@ -449,7 +449,7 @@
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow.png');
 	background-repeat: no-repeat;
 	height: 7px;
-	width: 10px;
+	width: 11px;
 }
 .locabar-tab-fdx {
 	display: inline-block;
@@ -529,6 +529,7 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+	height: 15px;
 }
 #locabar_user .locabar-user-signout {
 	padding-bottom: 20px;
