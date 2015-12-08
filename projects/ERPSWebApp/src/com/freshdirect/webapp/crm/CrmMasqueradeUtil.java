@@ -27,6 +27,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
@@ -180,7 +181,9 @@ public class CrmMasqueradeUtil {
 			} else if ("gc_bulk".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/gift_card/purchase/add_bulk_giftcard.jsp";
 			} else if ("checkout".equalsIgnoreCase(params.destination)) {
-				redirectUri = "/expressco/view_cart.jsp";
+				final boolean canUseXCpages = FDStoreProperties.isExpressCheckoutEnabledForCSR();
+
+				redirectUri = canUseXCpages ? "/expressco/view_cart.jsp" : "/checkout/view_cart.jsp";
 			} else if ("timeslots".equalsIgnoreCase(params.destination)) {
 				redirectUri = "/your_account/delivery_info_avail_slots.jsp";
 			} else if ("top_faqs".equalsIgnoreCase(params.destination)) {
