@@ -136,19 +136,19 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
 
 			} else if ("registerEx".equalsIgnoreCase(actionName)) {
-				this.pageContext.getSession().removeAttribute("LITESIGNUP_COMPLETE");
+			/*	this.pageContext.getSession().removeAttribute("LITESIGNUP_COMPLETE");
 			//	if(session.getAttribute("REFERRALNAME") != null ){
 				if(session.getAttribute("CLICKID") != null ) {
 					if(!"done".equals(request.getParameter("submission"))) {
 						actionResult.addError(new ActionError("Dummy","Dummy"));
 						return true;
-					}
+					}*/
 				
 				String successPage = AccountServiceFactory.getService(source).register(user, this.pageContext, actionResult, this.registrationType);
 				if(successPage!=null){
 					this.setSuccessPage(successPage);
 					this.setAjax(true);
-				}
+				/*}*/
 				}
 			} else if ("addDeliveryAddressEx".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);

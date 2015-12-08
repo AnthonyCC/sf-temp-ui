@@ -87,4 +87,6 @@ public interface SessionName {
     public static final String ORDER_AUTHORIZATION_FAILURE_MESSAGE = "authFailMessage";
     public static final String ORDER_AUTHORIZATION_CUTOFF_FAILURE_REDIRECT_URL = "authCutoffFailRedirectUrl";
     public static final String ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL = "orderSubmittedFlagForSemPixel";
+    public static final String CLICK_ID = "CLICKID";
+    public static final String COUPONCODE = "COUPONCODE";
 }

@@ -84,6 +84,10 @@ public interface SessionParamName {
      public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
      
      public final static String CURRENT_CART = SessionName.CURRENT_CART; // used to hang on the user's anonymous cart for merge_cart
+     
+     public final static String CLICK_ID = SessionName.CLICK_ID;
+     
+     public final static String COUPON_CODE = SessionName.COUPONCODE;
     
 
 
