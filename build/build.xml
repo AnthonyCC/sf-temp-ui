@@ -2254,6 +2254,7 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="StandingOrdersService.jar"/>
 				<include name="CRM.war"/>
 			</ejbs>
 			<libraries>
