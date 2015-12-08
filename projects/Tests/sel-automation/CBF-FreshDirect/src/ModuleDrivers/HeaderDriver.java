@@ -32,7 +32,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-//import org.sikuli.script.FindFailed;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 
@@ -80,7 +79,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify zip code selection field displayed on page header.*/	
 
-	public void ZipCode(DataRow input, DataRow output) throws InterruptedException
+	public void ZipCode(DataRow input, DataRow output) throws InterruptedException 
 	{	
 		try{	
 			
@@ -394,7 +393,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'SIGN UP' button displayed on page header.*/		
 
-	public void SignUpButton(DataRow input, DataRow output) throws InterruptedException
+	public void SignUpButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -460,7 +459,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'LOG IN' button displayed on page header.*/		
 
-	public void LoginButton(DataRow input, DataRow output) throws InterruptedException
+	public void LoginButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{			
@@ -510,7 +509,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Fresh Direct' logo displayed on web page header.*/
 
-	public void FreshDirectLogo(DataRow input, DataRow output) throws InterruptedException
+	public void FreshDirectLogo(DataRow input, DataRow output) throws InterruptedException 
 	{
 		
 		try
@@ -588,7 +587,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify search field on web page header.*/		
 
-	public void SearchField(DataRow input, DataRow output) throws InterruptedException
+	public void SearchField(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -645,7 +644,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your Account' link in web page header when logged-in customer clicks on the link */
 
-	public void YourAcc_Loggedin(DataRow input, DataRow output) throws InterruptedException
+	public void YourAcc_Loggedin(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -705,7 +704,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your Account' link in web page header when anonymous customer clicks on the link */
 
-	public void YourAcc_Anonymous(DataRow input, DataRow output) throws InterruptedException
+	public void YourAcc_Anonymous(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -816,7 +815,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'LOGOUT' button displayed on page header after user login. */
 
-	public void LogoutButton(DataRow input, DataRow output) throws InterruptedException
+	public void LogoutButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{			
@@ -880,7 +879,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Reorder' link displayed on page header and adding product to cart for an anonymous customer. */
 
-	public void Reorder_Anonymous(DataRow input, DataRow output) throws InterruptedException
+	public void Reorder_Anonymous(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -979,7 +978,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Reorder' link displayed on page header and adding product to cart. */
 
-	public void Reorder_Loggedin(DataRow input, DataRow output) throws InterruptedException
+	public void Reorder_Loggedin(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{				
@@ -1048,7 +1047,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Delivery Info' link displayed on page header. */
 
-	public void DeliveryInfo(DataRow input, DataRow output) throws InterruptedException
+	public void DeliveryInfo(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -1115,7 +1114,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Help' link displayed on page header. */
 
-	public void HelpLink(DataRow input, DataRow output) throws InterruptedException
+	public void HelpLink(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -1187,7 +1186,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify 'Your cart' button displayed on page header.*/
 
-	public void YourCartButton(DataRow input, DataRow output) throws InterruptedException
+	public void YourCartButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
 		{
@@ -1230,7 +1229,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Verify Social buttons displayed on Product Details Page */
 
-	public void SocialButton(DataRow input, DataRow output) throws InterruptedException
+	public void SocialButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		int flag = 0;
 		WebElement product = null;
@@ -1471,7 +1470,7 @@ public class HeaderDriver extends BaseModuleDriver
 	}
 
 
-	public void TopNavigation(DataRow input, DataRow output)throws InterruptedException
+	public void TopNavigation(DataRow input, DataRow output)throws InterruptedException 
 	{		
 		List<WebElement> catList,wbList;
 		String brdcrmb;
@@ -1553,7 +1552,7 @@ public class HeaderDriver extends BaseModuleDriver
 		}
 
 	}
-	public void BottomNavigation(DataRow input, DataRow output)throws InterruptedException
+	public void BottomNavigation(DataRow input, DataRow output)throws InterruptedException 
 	{
 		try{
 			List<WebElement> catList;
@@ -1660,7 +1659,7 @@ public class HeaderDriver extends BaseModuleDriver
 		}
 	}
 
-	public void TopSubItems(DataRow input, DataRow output) throws InterruptedException {
+	public void TopSubItems(DataRow input, DataRow output) throws InterruptedException  {
 
 		try 
 		{
@@ -1700,7 +1699,9 @@ public class HeaderDriver extends BaseModuleDriver
 						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						//uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(sub_dept_xpath)));
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-						webDriver.findElement(By.xpath(sub_dept_xpath)).click();	
+						webDriver.findElement(By.xpath(sub_dept_xpath)).click();
+						if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						uiDriver.waitForPageLoad();
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						//if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
@@ -1729,8 +1730,7 @@ public class HeaderDriver extends BaseModuleDriver
 					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("imgmediaSection"))));
 				}	
 			}
-		} catch (Exception e) {
-			
+		} catch (Exception e) {			
 			RESULT.failed("Top Sub Items Exception", "Top sub items validation should be successful",
 					"Top sub items validation is not successful");
 		}
@@ -1739,7 +1739,7 @@ public class HeaderDriver extends BaseModuleDriver
 
 	/* Zipcode and Header Dropdown check */
 
-	public void HeaderDropdown(DataRow input, DataRow output)throws InterruptedException
+	public void HeaderDropdown(DataRow input, DataRow output)throws InterruptedException 
 	{		
 		try{
 		//Verify Zipcode
@@ -1854,16 +1854,16 @@ public class HeaderDriver extends BaseModuleDriver
 	public void FooterCheck(DataRow input,DataRow output) throws InterruptedException
 	{
 		//locators for links  
-		String arr1[]={"lnkaboutUs","lnkfoodSafety","lnkcareers","lnkatTheOffice","lnkrecipes","lnkgiftCards",
+		String arr1[]={"lnkaboutUs","lnkfoodSafety","lnkatTheOffice","lnkrecipes","lnkgiftCards",
 				"lnknewProducts","imgourMobiApp","imgatTheOfc","lnkyourAccount","lnkHome","lnkhelpFAQ",
 				"lnkcontactUs","lnkprivacyPolicy","lnkcustAgreemnt","lnknoteOnAOLUser"};
 		//locators for verification of page
-		String path1[]={"straboutUs","strfoodSafety","strcareers","stratTheOfc","strrecipes","strgiftCard",
+		String path1[]={"straboutUs","strfoodSafety","stratTheOfc","strrecipes","strgiftCard",
 				"strnewProducts","strourMobiApp","stratTheOfc","stryourAccount","strHome","strhelpFAQ",
 				"strcontactUs","strprivacyPolicy","strcustAgreemnt","strnoteOnAOLUser"};
 
-		String arr2[]={"lnkblog","imgfb","imgtwitter","imgpinterest","imggooglePlus","imgyouTube"};
-		String path2[]={"strblog","strfB","strtwitter","imgverifyPinterest","imgverifyGooglePlus","imgverifyYouTube"};
+		String arr2[]={"lnkcareers","lnkblog","imgfb","imgtwitter","imgpinterest","imggooglePlus","imgyouTube"};
+		String path2[]={"strcareers","strblog","strfB","strtwitter","imgverifyPinterest","imgverifyGooglePlus","imgverifyYouTube"};
 		String winHandleBefore = webDriver.getWindowHandle();
 		
 		//click on links from footer and verify that it redirects to respective page
@@ -1897,8 +1897,8 @@ public class HeaderDriver extends BaseModuleDriver
 						try{
 						uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator(path1[i]))));
 						}catch(Exception e){
-							RESULT.passed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page",
-									arr1[i].substring(3).toUpperCase()+" :link is not redirected to respective page");
+							RESULT.failed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page",
+									arr1[i].substring(3).toUpperCase()+" :link is not redirected to respective page due to exception:"+e.getMessage());
 						}
 						RESULT.passed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page",
 								arr1[i].substring(3).toUpperCase()+" :link redirected to respective page");
@@ -1913,7 +1913,7 @@ public class HeaderDriver extends BaseModuleDriver
 							
 					}
 				}catch (Exception e) {					
-					RESULT.failed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr1[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
+					RESULT.failed(arr1[i].substring(3).toUpperCase(), arr1[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr1[i].substring(3).toUpperCase()+" :link could not redirected to respective page due to exception:"+e.getMessage());
 				}
 		}
 
@@ -1941,7 +1941,15 @@ public class HeaderDriver extends BaseModuleDriver
 				//uiDriver.selenium.waitForPageToLoad(PageLoadTime);
 				try{
 				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator(path2[i]))));
-				//uiDriver.DrawHighlight(path2[i], webDriver);
+				if(webDriver.findElements(By.xpath(objMap.getLocator(path2[i]))).size()>0 && 
+						webDriver.findElement(By.xpath(objMap.getLocator(path2[i]))).isDisplayed())
+				{
+					RESULT.passed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link redirected to respective page");
+				}
+				else
+				{
+					RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
+				}
 				}catch(Exception e){
 					if(webDriver.findElements(By.xpath(objMap.getLocator(path2[i]))).size()>0 && 
 							webDriver.findElement(By.xpath(objMap.getLocator(path2[i]))).isDisplayed())
@@ -1950,18 +1958,11 @@ public class HeaderDriver extends BaseModuleDriver
 					}
 					else
 					{
-						RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
+						RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page due to exception:"+e.getMessage());
 					}
 					//RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
 	 			}
-				if(webDriver.findElements(By.xpath(objMap.getLocator(path2[i]))).size()>0)
-				{
-					RESULT.passed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link redirected to respective page");
-				}
-				else
-				{
-					RESULT.failed(arr2[i].substring(3).toUpperCase(), arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link could not redirected to respective page");
-				}
+				
 			}catch (Exception e) {
 				RESULT.failed(arr2[i].substring(3).toUpperCase() + "with new windows", arr2[i].substring(3).toUpperCase()+" :link should redirect to respective page", arr2[i].substring(3).toUpperCase()+" :link failed");
 			}

@@ -218,6 +218,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 				}
 			}
+			webDriver.manage().deleteAllCookies();
 			webDriver.get(sURL);
 		}catch(Exception e){
 			RESULT.failed("Launch Application Function","Launch Application Function should be successfully",
@@ -2244,7 +2245,7 @@ public class WebUIDriver extends BaseAppDriver {
 				uiDriver.click("btnlogin");
 				uiDriver.setValue("txtuserID", UID);
 				uiDriver.setValue("txtpass", PASS);
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
 				{
 					uiDriver.getwebDriverLocator(objMap.getLocator("btnsignin")).sendKeys("\n");
@@ -2253,7 +2254,7 @@ public class WebUIDriver extends BaseAppDriver {
 				{
 				uiDriver.click("btnsignin");
 				}
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			}
 			catch(Exception e)
 			{
@@ -5343,6 +5344,7 @@ public class WebUIDriver extends BaseAppDriver {
 						wait.until(ExpectedConditions
 								.invisibilityOfElementLocated(By.xpath(objMap
 										.getLocator("btncontinuePopUp"))));
+						uiDriver.waitForPageLoad();
 						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						// to verify order total for checkout
 						if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() > 0 
@@ -5450,40 +5452,40 @@ public class WebUIDriver extends BaseAppDriver {
 			uiDriver.waitForPageLoad();
 			// check if the warning is available for the products
 			/*if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarning"))).size() > 0  
-					&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).isDisplayed()) {
-				RESULT.warning(
-						"Place Order",
-						"Few items should be lesser than the available cart items.",
-						"Message: "+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).getText());
+				&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).isDisplayed()) {
+			RESULT.warning(
+					"Place Order",
+					"Few items should be lesser than the available cart items.",
+					"Message: "+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).getText());
 
-				try {
-					// verify save changes button is enabled
-					if (webDriver.findElements(By.xpath(objMap.getLocator("btnsaveChanges"))).size() > 0 
-							&& webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges"))).isDisplayed()) 
-					{
-						uiDriver.getwebDriverLocator(
-								objMap.getLocator("btnsaveChanges")).click();
-						wait.until(ExpectedConditions
-								.invisibilityOfElementLocated(By.xpath(objMap
-										.getLocator("btnsaveChanges"))));
+			try {
+				// verify save changes button is enabled
+				if (webDriver.findElements(By.xpath(objMap.getLocator("btnsaveChanges"))).size() > 0 
+						&& webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges"))).isDisplayed()) 
+				{
+					uiDriver.getwebDriverLocator(
+							objMap.getLocator("btnsaveChanges")).click();
+					wait.until(ExpectedConditions
+							.invisibilityOfElementLocated(By.xpath(objMap
+									.getLocator("btnsaveChanges"))));
 
-						// ******** After click on save changes button calculate total and predict the error message instead of if>>and handle********
-						if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() > 0 
-								&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).isDisplayed() ) {
-							RESULT.warning(
-									"Place Order",
-									"Order should be placed and review page should be displayed.",
-									"ATTENTION: "
-									+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
-						}
+					// ******** After click on save changes button calculate total and predict the error message instead of if>>and handle********
+					if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).size() > 0 
+							&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).isDisplayed() ) {
+						RESULT.warning(
+								"Place Order",
+								"Order should be placed and review page should be displayed.",
+								"ATTENTION: "
+								+ webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarningOnPlaced"))).getText());
 					}
-				} catch (Exception e) {
-					RESULT.failed("Item unavailability exception",
-							"Some items in the product shows unavailability and save changes button should be clicked",
-							"Some items in the product shows unavailability and save changes button is not clicked");
-					return;
 				}
-			}*/
+			} catch (Exception e) {
+				RESULT.failed("Item unavailability exception",
+						"Some items in the product shows unavailability and save changes button should be clicked",
+						"Some items in the product shows unavailability and save changes button is not clicked");
+				return;
+			}
+		}*/
 
 			// Extract Zip code
 			try
@@ -5530,15 +5532,15 @@ public class WebUIDriver extends BaseAppDriver {
 					if(availableProducts.get(i).findElements(By.xpath(objMap.getLocator("strverifyProductUnit"))).size()>0)
 					{
 						String product_unit_text = availableProducts.get(i)
-					.findElement(
-							By.xpath(objMap
-									.getLocator("strverifyProductUnit")))
-									.getText();
+						.findElement(
+								By.xpath(objMap
+										.getLocator("strverifyProductUnit")))
+										.getText();
 						verify_products_unit[i] = product_unit_text;
 					}
 					verify_products[i] = product_text.replace("(new)", "");
 					verify_products_quantity[i] = product_quantity_text;
-					
+
 				}
 			}
 			else
@@ -5566,7 +5568,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 *            : Time selected for the order delivery return void
 	 * 
 	 **/
-		public void FD_placeOrder(String day, String time) {
+	public void FD_placeOrder(String day, String time) {
 		try {
 			String t_verify_subtotal = null;
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -5595,7 +5597,7 @@ public class WebUIDriver extends BaseAppDriver {
 						{
 							uiDriver.waitForPageLoad();
 							(new WebDriverWait(webDriver, 40)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strverifyWarning"))));
-						
+
 							//wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges")))));
 							// handle the save chnages button after place order
 							// click
@@ -5739,7 +5741,7 @@ public class WebUIDriver extends BaseAppDriver {
 					String product_to_verify_name[] = new String[products_to_verify.size()];
 					String product_to_verify_qty[] = new String[products_to_verify.size()];
 					String product_to_verify_unit[] = new String[products_to_verify.size()];
-					
+
 					// go through the list to get product name its respective
 					// quantity
 					if(products_to_verify.size()>0)
@@ -5757,7 +5759,7 @@ public class WebUIDriver extends BaseAppDriver {
 								}
 								product_to_verify_name[i] = product_text;
 								product_to_verify_qty[i] = product_quantity_text;
-								
+
 							}
 							catch(Exception e)
 							{
@@ -11278,7 +11280,7 @@ public class WebUIDriver extends BaseAppDriver {
 				// || webDriver.getTitle().toLowerCase().contains(
 				// dept.toLowerCase().split("&")[0])) {
 				if (breadcrumbs_text.toLowerCase().contains(
-						category.toLowerCase())) {
+						category.replaceAll(".", "").toLowerCase())) {
 					RESULT.passed("Searching product using hover",
 							"Product search should be successfully",
 					"Product search is successfully");
@@ -11613,6 +11615,10 @@ public class WebUIDriver extends BaseAppDriver {
 			uiDriver.click("btnloginEmail");
 			//		selenium.waitForPageToLoad(PageLoadTime);
 			waitForPageLoad();
+			if(CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+			{
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+			}
 		}catch(Exception e){
 			RESULT.failed("Login to SquirrelMail function","Login should not be successful",
 			"Login unsuccessful with userid");
@@ -12345,6 +12351,7 @@ public class WebUIDriver extends BaseAppDriver {
 					uiDriver.setValue("txtCardCity", CardCity);
 					uiDriver.setValue("txtCardZip", CardZip);
 					uiDriver.click("btnCRM_SaveBtn");
+					waitForPageLoad();
 					//SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By
 							.className(objMap.getLocator("btnCRM_SaveBtn"))));
@@ -12893,6 +12900,8 @@ public class WebUIDriver extends BaseAppDriver {
 		try {
 			uiDriver.click("btnsignup");
 			try{
+				if(CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("frameiframeSignup"))));
 				webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup")));
 			}catch(Exception e){
@@ -13072,6 +13081,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 				try
 				{
+					wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(atoz)));
 					Direction = webDriver.findElement(By.xpath(atoz)).getAttribute(
 					"data-direction");
 				}
