@@ -496,8 +496,12 @@ public class CartDataService {
             }            
             if (FDStoreProperties.isSocialLoginEnabled()) {            	            
 	            if(sessionUserLevel == FDUserI.GUEST) {
+	            	//session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
+	            	session.setAttribute(SessionName.PREV_SUCCESS_PAGE,"/expressco/checkout.jsp");
 	            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5}); return false;\"");
 	            } else if(sessionUserLevel == FDUserI.RECOGNIZED) {
+	            	//session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
+	            	session.setAttribute(SessionName.PREV_SUCCESS_PAGE,"/expressco/checkout.jsp");
 	            	cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5}); return false;\"");
 	            } 
             }
