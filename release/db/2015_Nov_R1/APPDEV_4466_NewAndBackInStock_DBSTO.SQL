@@ -341,15 +341,6 @@ SELECT sku_code,
 
 COMMENT ON MATERIALIZED VIEW ERPS.BACK_IN_STOCK_PRODUCTS_V1 IS 'snapshot table for snapshot ERPS.BACK_IN_STOCK_PRODUCTS_V1';
 
--- Procedure
-CREATE OR REPLACE procedure ERPS.refresh_new_and_back
-is
-begin
-    DBMS_MVIEW.REFRESH('erps.new_products_v1');
-    DBMS_MVIEW.REFRESH('erps.back_in_stock_products_v1');
-end;
-/
-
 --Indexes
 
 CREATE  INDEX ERPS.BACK_IN_STOCK_V1_INDEX1 ON ERPS.BACK_IN_STOCK_PRODUCTS_V1
