@@ -99,9 +99,6 @@ public class TimeslotService {
     public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {
         String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
         try {
-            if (user.getMasqueradeContext() != null) {
-                user.getMasqueradeContext().setForceOrderEnabled(deliveryTimeSlotId.startsWith("f_"));
-            }
             return reserveDeliveryTimeslot(deliveryTimeSlotId, session);
         } catch (ReservationException e) {
             LOG.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", deliveryTimeSlotId), e);

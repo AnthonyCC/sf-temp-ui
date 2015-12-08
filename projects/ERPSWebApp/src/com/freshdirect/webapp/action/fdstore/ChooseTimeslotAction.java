@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -64,7 +65,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		FDCartModel cart = user.getShoppingCart();
 		boolean isForced=false;
 		
-		if(user.getMasqueradeContext()!=null && user.getMasqueradeContext().getParentOrderId()!=null) {
+		final MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+		if(masqueradeContext!=null && masqueradeContext.getParentOrderId()!=null) {
 			 isForced = true;
 		}
 		
@@ -73,7 +75,13 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		} else if(cart.getDeliveryAddress() == null) {
 			actionResult.addError(new ActionError("deliveryAddress", "You must select a address."));
 		} else {
-			if(deliveryTimeSlotId.startsWith("f_")) {
+			final boolean hasForcePrefix = deliveryTimeSlotId.startsWith("f_");
+			if (masqueradeContext != null) {
+				// update masq context
+				masqueradeContext.setForceOrderEnabled(hasForcePrefix);
+			}
+
+			if(hasForcePrefix) {
 				deliveryTimeSlotId = deliveryTimeSlotId.replaceAll("f_", "");
 				isForced = true;
 			}
@@ -102,7 +110,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				zoneId = cart.getZoneInfo().getZoneId();
 			
 			String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
-			if(user.getMasqueradeContext()!=null){
+			if(masqueradeContext!=null){
 					applicationId = "CSR";
 			}
 			TimeslotEvent event = new TimeslotEvent(applicationId, 
