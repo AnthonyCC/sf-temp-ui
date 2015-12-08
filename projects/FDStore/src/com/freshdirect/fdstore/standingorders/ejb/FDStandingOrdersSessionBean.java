@@ -363,7 +363,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				// retrieve FDUser
 				FDUserI customerUser = so.getUser();
 				
-				Date startDateTime = soInfo.getStartTime(); // ======
+				//Date startDateTime = soInfo.getStartTime(); 
+				Date startDateTime = soInfo.getNextDate();
 				FDDeliveryZoneInfo zoneInfo = null;
 				
 				try {
