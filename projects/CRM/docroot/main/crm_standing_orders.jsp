@@ -296,8 +296,16 @@ function setAllCheckBoxes(FormName, FieldName, CheckValue)
 						<%} else {%>						
 							<td class="border_bottom" width="6%">N/A&nbsp;</td>
 						<%}%>
-						<td class="border_bottom" width="6%"><%=DateUtil.formatDate(soOrderInfo.getNextDate())%></td>	
-						<td class="border_bottom" width="6%"><%=DateUtil.formatDayOfWeek(soOrderInfo.getNextDate())%></td>	
+						<% if (soOrderInfo.getNextDate() != null){ %>
+							<td class="border_bottom" width="6%"><%=DateUtil.formatDate(soOrderInfo.getNextDate())%></td>
+						<%} else {%>
+							<td class="border_bottom" width="6%">N/A&nbsp;</td>
+						<%}%>				
+						<% if (soOrderInfo.getNextDate() != null){ %>
+							<td class="border_bottom" width="6%"><%=DateUtil.formatDayOfWeek(soOrderInfo.getNextDate())%></td>
+						<%} else {%>
+							<td class="border_bottom" width="6%">N/A&nbsp;</td>
+						<%}%>																						
 						<td class="border_bottom" width="21%"><%=soOrderInfo.getErrorHeader()%></td>
 					</tr>
 				</logic:iterate>
