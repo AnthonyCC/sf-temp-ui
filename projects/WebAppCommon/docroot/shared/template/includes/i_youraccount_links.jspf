@@ -59,7 +59,7 @@
 
 		try {
 
-			if(!FDStoreProperties.isExtoleRafEnabled() && !=null && user_youract.isReferralProgramAvailable()) {
+			if(!FDStoreProperties.isExtoleRafEnabled() && user_youract !=null && user_youract.isReferralProgramAvailable()) {
 				FDIdentity customerIdentity = null;
 				if (user_youract!=null && user_youract.getLevel() == 2){
 					customerIdentity = user_youract.getIdentity();
