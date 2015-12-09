@@ -1273,6 +1273,7 @@
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+					<include name="opencsv-1.8.jar"/>
 						
 					<lib/>
 				</zipfileset>
@@ -2145,7 +2146,6 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 			</lib>
