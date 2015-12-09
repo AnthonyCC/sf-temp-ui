@@ -68,7 +68,9 @@
 				if(rpModel != null) {
 					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
 				}
-			}	
+			}else if(FDStoreProperties.isExtoleRafEnabled()){
+				folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
+			}
 		} catch (Exception e) {
 			LOGGER.debug("Error in getting RAF link");
 			e.printStackTrace();
