@@ -272,9 +272,11 @@ public abstract class BaseController extends AbstractController implements Messa
 //                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
 //                setResponseMessage(model, responseMessage, user);
             } catch (IllegalArgumentException e) {
-                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
+                //Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
+                String printedTrace = traceFor(e);
+				Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
                 setResponseMessage(model, responseMessage, user);
-            }catch (FDActionNotAllowedException e) {
+            } catch (FDActionNotAllowedException e) {
                 Message responseMessage = getErrorMessage(VOUCHER_AUTHENTICATION, "This account is not eligible to add/edit/delete the delivery address.");
                 setResponseMessage(model, responseMessage, user);
             }  catch (Throwable e) {
@@ -362,7 +364,7 @@ public abstract class BaseController extends AbstractController implements Messa
                     responseMessage.addNoticeMessages(oasService.getMessages());
             	}
             } catch (ServiceException e) {
-                LOGGER.warn("ServiceException while trying to get oas messages. not stopping execution.", e);
+                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
             }
             model.addObject("data", getJsonString(responseMessage));
 
