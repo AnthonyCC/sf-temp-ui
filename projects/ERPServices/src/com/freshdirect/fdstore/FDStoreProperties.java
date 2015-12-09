@@ -816,6 +816,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_SFTP_PRIVATE_KEY						= "extole.sftp.private.key";
 	public static final String PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED           = "crm.referral.history.page.enabled";
 	public static final String PROP_EXTOLE_RAF_ENABLED 							= "fdstore.extole.raf.enabled";
+	public static final String PROP_EXTOLE_MICROSITE_URL						= "fdstore.extole.microsite.url";
 
 	// [APPDEV-4650]
 	public static final String PROP_ENABLE_XC_FOR_CRM_AGENTS					= "crm.xc.enabled";
@@ -1620,6 +1621,7 @@ public class FDStoreProperties {
         
     	defaults.put(PROP_ENABLE_XC_FOR_CRM_AGENTS, "true");
     	defaults.put(PROP_EXTOLE_RAF_ENABLED, "true");
+    	defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/");
 		refresh();
     }
 
@@ -4085,4 +4087,10 @@ public class FDStoreProperties {
 	public static boolean isExpressCheckoutEnabledForCSR() {
 		return Boolean.parseBoolean(get(PROP_ENABLE_XC_FOR_CRM_AGENTS));
 	}
+	
+	public static String getPropExtoleMicrositeUrl() {
+		return get(PROP_EXTOLE_MICROSITE_URL);
+	}
+	
+	
 }

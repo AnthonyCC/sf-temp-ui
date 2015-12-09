@@ -23,7 +23,7 @@
 	final int W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL = 970;
 %>
 <%
-	String successPage = "/your_account/brownie_points.jsp";
+	String successPage = FDStoreProperties.isExtoleRafEnabled()? FDStoreProperties.getPropExtoleMicrositeUrl():"/your_account/brownie_points.jsp";
 	String redirectPage = "/login/login.jsp?successPage=" + successPage;
 %>
 
