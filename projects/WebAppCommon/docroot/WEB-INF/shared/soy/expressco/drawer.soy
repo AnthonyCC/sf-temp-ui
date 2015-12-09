@@ -44,8 +44,8 @@
 <li id="{$id}-tab" role="tab" tabindex="0" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
   <h2>{$title}</h2>
   {if $enabled}
-    <button class="change cssbutton green" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change</button>
-    <button class="cancel cssbutton red">Cancel</button>
+    <button class="change cssbutton green" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change<span class="offscreen">{$title}</span></button>
+    <button class="cancel cssbutton red">Cancel<span class="offscreen">{$title} Change</span></button>
   {/if}
 </li>
 {/template}

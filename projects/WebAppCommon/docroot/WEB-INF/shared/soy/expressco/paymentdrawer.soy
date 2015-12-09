@@ -212,7 +212,7 @@
   <form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
     <input type="hidden" name="action" value="selectPaymentMethod" />
     <div class="drawer__header">
-      <button class="cssbutton orange" data-component="paymentchangebutton">Done</button>
+      <button class="cssbutton orange" data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
     </div>
     <div fdform-error-container></div>
     {foreach $payment in $payments}
@@ -220,7 +220,7 @@
     {/foreach}
     <div class="drawer__item drawer__item-addaction">
       <div class="addaction__center">
-        <button aria-haspopup="true" class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
+        <button aria-haspopup="true" class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add <span class="offscreen">Payment </span>Method</button>
         {if $metadata and $metadata.paymentPromoOAS}
         <p class="addaction__desc">
           <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
@@ -336,8 +336,8 @@
   </label>
   {if $eWalletID != '1'}
   <div class="drawer__item__action">
-    <button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete</button>
-    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit</button>
+    <button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
+    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
   </div>
   {/if}
 </div><!--/ drawer__item -->

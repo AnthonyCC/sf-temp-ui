@@ -32,7 +32,8 @@
   transition: max-height .2s linear .2s;
 }
 
-[data-component="drawer"] .drawer-header button.cancel {
+[data-component="drawer"] .drawer-header button.cancel, 
+[data-component="drawer"] .drawer-header button.cancel span.offscreen {
   display: none;
 }
 
@@ -125,14 +126,20 @@
 /* active drawers */
 [data-drawer-active="address"]  [data-drawer-id="address"]  button.cancel,
 [data-drawer-active="timeslot"] [data-drawer-id="timeslot"] button.cancel,
-[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.cancel {
+[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.cancel,
+[data-drawer-active="address"]  [data-drawer-id="address"]  button.cancel span.offscreen,
+[data-drawer-active="timeslot"] [data-drawer-id="timeslot"] button.cancel span.offscreen,
+[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.cancel span.offscreen {
   display: block;
 }
 
 .drawer-header [data-drawer-locked] button,
 [data-drawer-active="address"]  [data-drawer-id="address"]  button.change,
 [data-drawer-active="timeslot"] [data-drawer-id="timeslot"] button.change,
-[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.change {
+[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.change,
+[data-drawer-active="address"]  [data-drawer-id="address"]  button.change span.offscreen,
+[data-drawer-active="timeslot"] [data-drawer-id="timeslot"] button.change span.offscreen,
+[data-drawer-active="payment"]  [data-drawer-id="payment"]  button.change span.offscreen {
   display: none;
 }
 

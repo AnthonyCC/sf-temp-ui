@@ -5,7 +5,7 @@
 {template .timeselectorcontent autoescape="false"}
 <div class="drawer__content">
   <div class="drawer__header">
-    <button class="cssbutton orange" data-component="timeslotchangebutton">Done</button>
+    <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
   </div>
   <div data-component="timeselectorcontent">
   </div>
@@ -38,7 +38,7 @@
 {else}
 <div class='drawer__previewitem'>
   <div class="drawer__previewitem__button__section">
-    <button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a Time</button>
+    <button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a<span class="offscreen">Delivery</span>Time</button>
   </div>
   {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 </div>

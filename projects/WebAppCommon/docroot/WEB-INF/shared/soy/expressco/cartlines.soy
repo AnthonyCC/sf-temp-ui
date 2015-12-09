@@ -276,7 +276,7 @@
   </div>
   <div class='cartline-delete cartline-box'>
     <a class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
-      <img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete</a>
+      <img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete<span class="offscreen"> {$descr}</span></a>
   </div>
   <div class='cartline-quantity cartline-box'>
     {if $freeSamplePromoProduct}
@@ -443,7 +443,7 @@
           <div>
             <input type="text" class="promotion-input" name="promotionCode" placeholder="Enter here" />
             <input type="hidden" name="action" value="applyPromotion" />
-            <button class="cssbutton green">apply</button>
+            <button class="cssbutton green">apply<span class="offscreen">promotion code</span></button>
           </div>
         </form>
       </div>
@@ -454,7 +454,7 @@
           <div>
             <input type="text" class="promotion-input" name="givexNum" placeholder="Enter here" />
             <input type="hidden" name="action" value="applyGiftCard" />
-            <button class="cssbutton green">apply</button>
+            <button class="cssbutton green">apply<span class="offscreen">new gift card</span></button>
           </div>
         </form>
       </div>
