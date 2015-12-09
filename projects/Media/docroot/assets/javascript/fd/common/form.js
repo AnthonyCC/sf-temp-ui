@@ -104,7 +104,9 @@ var FreshDirect = FreshDirect || {};
     if (errors.length) {
       this.showErrors(form, errors);
     } else {
-      this.validateFieldAjax($el, form);
+      setTimeout(function () {
+        this.validateFieldAjax($el, form);
+      }.bind(this), 10);
     }
 
     return errors;

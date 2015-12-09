@@ -68,7 +68,7 @@ var FreshDirect = FreshDirect || {};
     },
     callback:{
       value:function( config ) {
-        focusedElementId = document.activeElement && document.activeElement.id;
+        focusedElementId = config.dontfocus ? null : document.activeElement && document.activeElement.id;
         console.log('focused: '+focusedElementId);
 
         var ajax = Bacon.fromPromise($.ajax({
