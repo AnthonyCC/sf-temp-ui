@@ -204,11 +204,15 @@ public class StandingOrdersServiceCmd {
 			sb.persistUnavDetailsToDB(result);
 			}
 			
-			LOGGER.info( "Finished placing orders." );
-			LOGGER.info( "  success : " + result.getSuccessCount() );
-			LOGGER.info( "  failed  : " + result.getFailedCount() );
-			LOGGER.info( "  skipped : " + result.getSkippedCount() );
-			LOGGER.info( "  total   : " + result.getTotalCount() );
+			if(result != null){
+				LOGGER.info( "Finished placing orders." );
+				LOGGER.info( "  success : " + result.getSuccessCount() );
+				LOGGER.info( "  failed  : " + result.getFailedCount() );
+				LOGGER.info( "  skipped : " + result.getSkippedCount() );
+				LOGGER.info( "  total   : " + result.getTotalCount() );
+			}else{
+				LOGGER.info( "Finished placing orders - Empty Result" );
+			}
 			
 			return result;
 			
