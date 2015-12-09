@@ -1620,7 +1620,7 @@ public class FDStoreProperties {
     	defaults.put(PROP_CRM_REFERRAL_HISTORY_PAGE_ENABLED,"false");
         
     	defaults.put(PROP_ENABLE_XC_FOR_CRM_AGENTS, "true");
-    	defaults.put(PROP_EXTOLE_RAF_ENABLED, "true");
+    	defaults.put(PROP_EXTOLE_RAF_ENABLED, "false");
     	defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/");
 		refresh();
     }
