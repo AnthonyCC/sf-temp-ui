@@ -210,7 +210,7 @@ your account information, this is the place to do it.<br></td>
 				View your history of received and purchased FreshDirect Gift Cards.
 				<br><br>
 		<% } %>
-		<%-- <% if(user.isReferralProgramAvailable()) { 
+		<% if(!FDStoreProperties.isExtoleRafEnabled() && user !=null && user.isReferralProgramAvailable()) { 
 			FDIdentity customerIdentity = null;
 			if (user!=null && user.getLevel() == 2){
 				customerIdentity = user.getIdentity();
@@ -224,8 +224,13 @@ your account information, this is the place to do it.<br></td>
 		<br>
 		Invite your friends and earn $$$ credits.
 		<br><br>
-		<% } } %>
- --%>		<font class="text13bold">
+		<% } else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
+		 <font class="text13bold">
+		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
+		<br>
+		Invite your friends and earn $$$ credits.
+		<br><br>
+		<% } } %>	<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		View your credit balance and credit history.
