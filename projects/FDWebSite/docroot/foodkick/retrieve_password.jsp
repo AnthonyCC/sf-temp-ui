@@ -41,7 +41,7 @@ if( request.getParameter("p") != null ){
 }
 %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>A fresh kick</tmpl:put>
+	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Create New Password</tmpl:put>
 	<tmpl:put name='content'>
 		<fd:CheckLoginStatus id="user" />
 		<% String fName = user.getFirstName(); %>

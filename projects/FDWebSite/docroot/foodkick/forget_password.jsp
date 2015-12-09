@@ -41,7 +41,7 @@ if( request.getParameter("p") != null ){
 }
 %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>A fresh kick</tmpl:put>
+	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Forgot Password</tmpl:put>
 	<tmpl:put name='content'>
 		<section id="forgot_password_section" class="forgot_password_section">
 			<fd:CheckLoginStatus guestAllowed='true' recognizedAllowed='true' id='user' />

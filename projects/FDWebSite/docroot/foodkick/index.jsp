@@ -2,7 +2,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ include file="includes/fk_core_settings.jspf" %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
-	<tmpl:put name='title'>A fresh kick</tmpl:put>
+	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put>
 	<tmpl:put name='content'>
 		<a name="slideshow" id="slideshow" class="fk_anchor"></a>
 		<section id="section_slideshow" class="main_section">
