@@ -128,7 +128,7 @@
 	<%@ include file="/shared/template/includes/i_body_start.jspf"%>
 </head>
 
-<body>
+<body style="height: auto;">
 	<center>
 
 	<%
@@ -188,14 +188,12 @@
 			<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
 					<script type="text/javascript">
 					$jq(function(){
-					
 						$jq("#email_img").addClass("show_bg_arrow");
 						$jq("#email").addClass("error");						
 						document.getElementById("email").style.display='block';
 			        	document.getElementById("password1").style.display='block';
 			        	document.getElementById("signupbtn").style.display='block';
 			        	document.getElementById("emailbtn").style.display='none';
-  
 					});
 </script>
 		<% } %>	
