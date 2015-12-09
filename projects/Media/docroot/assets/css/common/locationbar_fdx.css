@@ -938,3 +938,9 @@ option.address-icon {
 .hasFDX [data-component="globalnav"] a[data-highlight="on"] {
 	background-color: #4fa157;
 }
+.hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"] {
+	background-color: #e1eee2;
+}
+.hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"]:hover {
+	background-color: #cce2ce;
+}
