@@ -33,6 +33,7 @@ public class ExtoleEarnedRewardsParser {
 			throws FileNotFoundException, ParseException {
 		List<FDRafCreditModel> fdEarnedRewardsList = null;
 
+		LOGGER.info("Starting parsing of referral rewards file : " + fileName);
 		// Mapping columns from csv file to the database columns
 		
 		Map<String, String> columnMapping = new HashMap<String, String>();
@@ -68,7 +69,9 @@ public class ExtoleEarnedRewardsParser {
 		Reader reader = new FileReader(fileName);
 		CsvToBean csvToBean = new CsvToBean();
 		fdEarnedRewardsList = csvToBean.parse(strategy, reader);
-
+		
+		LOGGER.info("Finished parsing of referral rewards file : " + fileName);
+		
 		return processData(fdEarnedRewardsList);
 
 	}
@@ -93,6 +96,8 @@ public class ExtoleEarnedRewardsParser {
 			try {
 				reward.setRewardValue(Integer.parseInt(reward.getRewardValueString()));
 			} catch (NumberFormatException nfe) {
+			// The reward value cannot be null. It should be a whole number. 
+			//	If it is null, we are setting it to zero
 				reward.setRewardValue(0);
 			}
 					

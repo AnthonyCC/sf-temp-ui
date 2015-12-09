@@ -128,13 +128,14 @@ public class FDExtoleManagerDAO implements Serializable {
 
 	// modified the query to include clickid as we need that to send to extole
 
-	private static final String SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION = " SELECT RFT.ID AS TRANS_ID , RFT.EXTOLE_EVENT_ID AS EVENT_ID ,"
-			+ " RFT.TRANS_TYPE AS EVENT_TYPE , S.ID AS PARTNER_CONVERSION_ID , FDC.RAF_CLICK_ID AS CLICK_ID "
-			+ " FROM CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT,  CUST.FDCUSTOMER FDC "
-			+ " WHERE  S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') AND  SA.SALE_ID=S.ID AND   SA.ID = RFT.SALESACTION_ID AND S.CUSTOMER_ID=FDC.ERP_CUSTOMER_ID "
-			+ " AND RFT.TRANS_STATUS IN('P','F') AND  RFT.TRANS_TYPE='approve' AND SA.ACTION_TYPE ='STL' "
-			+ " AND   RFT.TRANS_TIME > SYSDATE-30";
-
+	private static final String SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION ="SELECT RFT.ID AS TRANS_ID , RFT.EXTOLE_EVENT_ID AS EVENT_ID , " +
+"RFT.TRANS_TYPE AS EVENT_TYPE , S.CUSTOMER_ID AS PARTNER_USER_ID , FDC.RAF_CLICK_ID AS CLICK_ID " + 
+"FROM CUST.SALE S, CUST.SALESACTION SA, CUST.RAF_TRANS RFT,  CUST.FDCUSTOMER FDC " + 
+"WHERE  S.TYPE='REG' AND S.STATUS NOT IN ('CAN','MOC') AND   SA.CUSTOMER_ID = S.CUSTOMER_ID " +
+"AND  SA.SALE_ID=S.ID AND   SA.ID = RFT.SALESACTION_ID AND S.CUSTOMER_ID=FDC.ERP_CUSTOMER_ID " +
+"AND RFT.TRANS_STATUS IN('P','F') AND  RFT.TRANS_TYPE='approve' AND SA.ACTION_TYPE ='STL' " +
+"AND   RFT.TRANS_TIME > SYSDATE-30";
+	
 	/*
 	 * This method is for sending Approve Conversion Request to Extole
 	 */
@@ -151,8 +152,7 @@ public class FDExtoleManagerDAO implements Serializable {
 				requestModel.setRafTransId(rs.getString("TRANS_ID"));
 				// requestModel.setEventid(rs.getString("EVENT_ID"));
 				requestModel.setEventStatus(rs.getString("EVENT_TYPE"));
-				requestModel.setPartnerConversionId(rs
-						.getString("PARTNER_CONVERSION_ID"));
+				requestModel.setPartnerConversionId(rs.getString("PARTNER_USER_ID"));
 				requestModel.setClickId(rs.getString("CLICK_ID"));
 				requestModel.setCouponCode("RAF_PROMO_CODE");
 

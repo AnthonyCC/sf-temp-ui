@@ -58,7 +58,7 @@ public class ExtoleSftpService {
 			channel.connect();
 
 			channelSftp = (ChannelSftp) channel;
-			LOGGER.info(channelSftp.isConnected());
+			
 			LOGGER.info("SFTP: SFTP Channel connected..");
 
 			LOGGER.info("Downloading Rewards file");
@@ -84,16 +84,16 @@ public class ExtoleSftpService {
 		} finally {
 
 			if (null != channelSftp && channelSftp.isConnected()) {
-				LOGGER.debug("SFTP: disconnecting sftp channel");
+				LOGGER.info("SFTP: disconnecting sftp channel");
 				channelSftp.disconnect();
 			}
 			if (null != channel) {
-				LOGGER.debug("SFTP: disconnecting channel");
+				LOGGER.info("SFTP: disconnecting channel");
 				channel.disconnect();
 			}
 
 			if (null != session && session.isConnected()) {
-				LOGGER.debug("SFTP: disconnecting session");
+				LOGGER.info("SFTP: disconnecting session");
 				session.disconnect();
 			}
 
@@ -120,10 +120,10 @@ public class ExtoleSftpService {
 		File resultFile = new File(SFTP_LOCAL_WORKING_DIR, fileName);
 
 		if (resultFile.exists()) {
-			LOGGER.info("The file" + fileName + " already exists");
+			LOGGER.info("The file " + fileName + " already exists in " + SFTP_LOCAL_WORKING_DIR);
 			return true;
 		} else
-			LOGGER.info("The file" + fileName + " does not exist in");
+			LOGGER.info("The file " + fileName + " does not exists in " + SFTP_LOCAL_WORKING_DIR);
 		return false;
 
 	}
