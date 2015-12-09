@@ -178,7 +178,7 @@ public class StandingOrdersServiceCmd {
 	private static boolean isResultHasData(SOResult.ResultList result) {
 		
 		boolean hasData = true;
-		if(result.getResultsList().size() > 0){
+		if(result != null && result.getResultsList().size() > 0){
 			if(result.getResultsList().size() == 1){
 				if(result.getResultsList().get(0).isError() || result.getResultsList().get(0).getStatus() == Status.SKIPPED || result.getResultsList().get(0).getInternalMessage() != null){
 					hasData = false;
