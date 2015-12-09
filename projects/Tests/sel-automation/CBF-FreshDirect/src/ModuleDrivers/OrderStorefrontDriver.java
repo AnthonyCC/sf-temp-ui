@@ -9,7 +9,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -28,7 +27,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component for checkout and Your Cart page
 	 */
 
-	public void CartVerify(DataRow input, DataRow output) throws 
+	public void CartVerify(DataRow input, DataRow output) throws  
 	InterruptedException{
 		try 
 		{
@@ -46,7 +45,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		}
 	}
 
-	public void Checkout(DataRow input, DataRow output) throws 
+	public void Checkout(DataRow input, DataRow output) throws  
 	InterruptedException{
 		try 
 		{
@@ -69,6 +68,26 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 
 			String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("txtSubTotal")).getText();
 			cartSubtotal = cartSubtotal.replaceAll(",", "");
+			if(input.get("DeliverypassFlag").equalsIgnoreCase("YES")){
+				try{
+				String Deliveryfee = uiDriver.getwebDriverLocator(objMap.getLocator("strDeliveryFee")).getText();
+				if(Deliveryfee.equalsIgnoreCase("FREE with DeliveryPass")){
+					RESULT.passed("DeliveryPass Verification",
+							"Delivery Fee should contain 'Free with Deliverypass' Text",
+							"Delivery Fee contains 'Free with Deliverypass' Text");	
+				}else{
+					RESULT.failed("DeliveryPass Verification",
+							"Delivery Fee should contain 'Free with Deliverypass' Text",
+							"Delivery Fee does not contain 'Free with Deliverypass' Text");
+				}
+				}catch(Exception e){
+					RESULT.failed("DeliveryPass string",
+							"Deliverypass string shoulb be available",
+							"Deliverypass string is not available and exception caught is " +e.getMessage());
+					return;
+				}
+				
+			}
 
 			// for $50 check
 			List<WebElement> addLst = webDriver.findElement(By.xpath(objMap.getLocator("strofficeDelivery"))).findElements(By.tagName("option"));
@@ -91,6 +110,8 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				RESULT.passed("Checkout", "Checkout button should be available", "Checkout button is available");
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
 				{
+					String checkout = uiDriver.getwebDriverLocator(objMap.getLocator("btncheckOut")).getText();
+					System.out.println(checkout);
 					uiDriver.getwebDriverLocator(objMap.getLocator("btncheckOut")).sendKeys("\n");
 				}
 				else
@@ -252,7 +273,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/* Component to handle Delivery Address selection
 	 */
 	public void DeliveryAddress(DataRow input, DataRow output)
-	throws  InterruptedException {
+	throws   InterruptedException {
 
 		try{
 			// flag to decide for changing the address
@@ -468,7 +489,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to handle Time slot selection
 	 */
 	@SuppressWarnings("null")
-	public void TimeSlot(DataRow input, DataRow output) throws 
+	public void TimeSlot(DataRow input, DataRow output) throws  
 	InterruptedException {
 		String DeliveryDay=null;
 		String TimeSlot=null;
@@ -766,7 +787,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to handle payment methods
 	 */
 	public void PaymentOptions(DataRow input, DataRow output)
-	throws  InterruptedException {
+	throws   InterruptedException {
 		try {
 
 			if (!webDriver.getTitle().equals(input.get("PageName"))) {
@@ -891,7 +912,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	 * Component to review and submit order
 	 */
 	public void PlaceOrder(DataRow input, DataRow output)
-	throws  InterruptedException {
+	throws   InterruptedException {
 		try{
 
 			if (!webDriver.getTitle().equalsIgnoreCase("Checkout")) {
@@ -913,7 +934,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/*
 	 * Component to search a product 
 	 */
-	public void SearchProduct(DataRow input, DataRow output) throws 
+	public void SearchProduct(DataRow input, DataRow output) throws  
 	InterruptedException, TimeoutException {
 		//uiDriver.click("imgfd_Logo");		
 		try
@@ -984,7 +1005,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 	/*
 	 * Component for Available Delivery timeslot in Delivery Info
 	 */
-	public void DeliveryInfo(DataRow input, DataRow output) throws 
+	public void DeliveryInfo(DataRow input, DataRow output) throws  
 	InterruptedException {
 		//		if(!(webDriver.findElements(By.linkText(objMap.getLocator("lnkdeliveryInfoLink"))).size()>0))
 		//		{
@@ -1153,7 +1174,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		}
 	}
 
-	public void TDSValidation(DataRow input, DataRow output) throws  InterruptedException{
+	public void TDSValidation(DataRow input, DataRow output) throws   InterruptedException{
 		try { 
 			uiDriver.click("btnyourCart");
 			try{

@@ -2706,8 +2706,17 @@ public class WebUIDriver extends BaseAppDriver {
 						product_text = departmentList.get(i).getText();
 
 						if (product_text.contains(DepartmentOrItem)) {
-
+							if(CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+							{
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);	
+							WebElement department = departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName")));
+							JavascriptExecutor executor = (JavascriptExecutor)webDriver;
+							executor.executeScript("arguments[0].click();", department);
+							}
+							else
+							{
 							departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName"))).click();
+							}							
 							count=0;
 							try {
 								//wait for breadcrum to load
@@ -3048,7 +3057,11 @@ public class WebUIDriver extends BaseAppDriver {
 											if (product_text.contains(Timeframes[p]))
 											{
 												if (li_ite.findElement(By.xpath("span/label/input")).isEnabled()) {
-													li_ite.findElement(By.xpath("span/label/input")).click();
+													if(CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+													li_ite.findElement(By.xpath("span/label/input")).sendKeys(Keys.SPACE);;
+													}else{
+														li_ite.findElement(By.xpath("span/label/input")).click();	
+													}
 													if (li_ite.findElement(By.xpath("span/label/input")).isSelected()) 
 													{
 														flag = 1;
@@ -3223,8 +3236,17 @@ public class WebUIDriver extends BaseAppDriver {
 						System.out.println(product_text);
 						if (product_text.contains(Department)) {
 							System.out.println(departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName"))).getText());
+							if(CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+							{
+							SleepUtils.getInstance().sleep(TimeSlab.YIELD);	
+							WebElement department = departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName")));
+							JavascriptExecutor executor = (JavascriptExecutor)webDriver;
+							executor.executeScript("arguments[0].click();", department);
+							}
+							else
+							{
 							departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName"))).click();
-
+							}
 							try {
 								// do {
 								SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -3263,7 +3285,17 @@ public class WebUIDriver extends BaseAppDriver {
 						 */
 						product_text = product_text.split(" \\(")[0];
 						System.out.println(product_text);
+						if(CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
+						{
+						SleepUtils.getInstance().sleep(TimeSlab.YIELD);	
+						WebElement department = departmentList.get(i).findElement(By.xpath(objMap.getLocator("lstdepartmentName")));
+						JavascriptExecutor executor = (JavascriptExecutor)webDriver;
+						executor.executeScript("arguments[0].click();", department);
+						}
+						else
+						{
 						departmentList.get(1).findElement(By.xpath(objMap.getLocator("lstdepartmentName"))).click();
+						}
 						try {
 							// do {
 							SleepUtils.getInstance().sleep(TimeSlab.YIELD);
