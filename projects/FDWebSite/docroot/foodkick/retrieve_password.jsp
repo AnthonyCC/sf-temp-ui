@@ -46,7 +46,7 @@ if( request.getParameter("p") != null ){
 		<fd:CheckLoginStatus id="user" />
 		<% String fName = user.getFirstName(); %>
 		<section id="forgot_password_retrieve_section" class="forgot_password_section">
-			<fd:ForgotPasswordController results="result" successPage='${FKAPP_DIR}/forget_password_confirmation.jsp' password="password">	
+			<fd:ForgotPasswordController results="result" successPage='${FKAPP_DIR}/forget_password_changed.jsp' password="password">	
 				<%@ include file="/login/includes/retrieve_password.jspf" %>	
 			</fd:ForgotPasswordController>
 		</section>

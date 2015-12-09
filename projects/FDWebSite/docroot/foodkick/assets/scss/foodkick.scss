@@ -13,6 +13,11 @@ $GraphikApp_s_n: "GraphikApp-Semibold";
 $TiemposRegular_n: "tiempo_regular";
 $TiemposBold_n: "TiemposHeadlineApp-Bold";
 
+//COLORS
+//$form_t_color: white;
+$form_t_color: black;
+$form_t_color_p: rgba($form_t_color, 0.5);
+
 
 //MIXINS, mostly used for cross browser stuff or other complex features
 
@@ -684,10 +689,6 @@ section#section_Get_Foodkick{
 		form{
 			text-align:center;
 			
-			//$form_t_color: white;
-			$form_t_color: black;
-			$form_t_color_p: rgba($form_t_color, 0.5);
-			
 			input{
 				height:1.75em;
 				font-size:1.5em;
@@ -718,6 +719,10 @@ section#section_Get_Foodkick{
 					@include inp_ph_mixin(){
 						color: $form_t_color_p;
 					};
+					
+					&.placeholder{
+						color: red;
+					}
 				}
 				
 				@include breakpoint_mixin(large){
@@ -1091,12 +1096,12 @@ section#section_FOODKICK{
 section.forgot_password_section{
 	text-align:center;
 	vertical-align:middle;
-	margin-top:150px;
+	margin-top: 175px;
+	margin-left: 25%;
+	margin-bottom: 5%;
 	
 	background-color: #F1F1F1;
 	width: 50%;
-	margin-left: 25%;
-	margin-bottom: 5%;
     min-width: 305px;
     
     color: #3E3F49;
@@ -1136,6 +1141,10 @@ section.forgot_password_section{
 		.text13bold{
 			font-weight:bold;
 		}
+		
+		img{
+			display:none;
+		}
 	}
 	
 	table.retrieve_pw_table{
@@ -1166,10 +1175,6 @@ section.forgot_password_section{
 		margin-bottom: 20px;
 	}
 	
-	img{
-		display:none;
-	}
-	
 	.valid_msg{
 		color:#91949D;
 		font-size: 0.75em;
@@ -1183,6 +1188,24 @@ section.forgot_password_section{
 		button{
 			letter-spacing: 2px;
 			font-size: 1em;
+		}
+	}
+	
+	&#section_forget_password_changed{	
+		padding-top: 8%;
+		padding-bottom: 11%;
+	
+		img{
+			width: 71px;
+			/*margin-right: 15px;
+			float: left;
+			margin-left: calc(45% - 120px);*/
+		}
+		
+		span{
+			/*float: left;*/
+			padding-top:25px;
+			display:block;
 		}
 	}
 }
@@ -1355,6 +1378,12 @@ footer{
 	@include breakpoint_mixin(medium){
 		display:none;
 	}
+}
+
+.placeholder{
+	//@include opacity_mixin(0.5);
+	
+	color: $form_t_color_p;
 }
 
 .ucwords{

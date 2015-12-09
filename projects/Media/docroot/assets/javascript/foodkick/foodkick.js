@@ -4,6 +4,10 @@ function isIE(){
 	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
+function isIE9OrBelow(){
+	return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10;
+}
+
 //for the sticky header
 function scroll_header_fix(){
 	if( $(this).scrollTop() > ($(window).height() / 2) ){
@@ -224,6 +228,7 @@ window.addEventListener('unload', UnloadHandler, false);
 
 $(function(){
 	elements_size_adjuster();
+	scroll_header_fix();
 	
 	$(window).resize(function(){
 		scroll_header_fix();
@@ -277,14 +282,26 @@ $(function(){
 	$('[placeholder]').focus(function() {
 		var input = $(this);
 		if (input.val() == input.attr('placeholder')) {
-			input.val('');
-			input.removeClass('placeholder');
+			
+			if( isIE9OrBelow() ){
+				input.val('');
+				input.removeClass('placeholder');
+			}
 		}
 	}).blur(function() {
 		var input = $(this);
 		if (input.val() == '' || input.val() == input.attr('placeholder')) {
-			input.addClass('placeholder');
-			input.val(input.attr('placeholder'));
+
+			if( isIE9OrBelow() ){
+				input.addClass('placeholder');
+				input.val(input.attr('placeholder'));
+				
+				//alert( input.attr("type") );
+				
+				if( input.attr("type") == "password" ){
+					input.attr("type", "text");
+				}
+			}
 		}
 	}).blur();
 });

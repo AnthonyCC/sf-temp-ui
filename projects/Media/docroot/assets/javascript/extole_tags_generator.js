@@ -150,6 +150,18 @@ Placed inside '(function() {' block and a setInterval checker for jQuery existen
 				}else{setAndAppendExtoleObject("PURCHASE",null);}
 				
 			}
+			
+			
+			//for duplicating that orange button in the popout, APPBUG-4079
+			if( $jq("#cta2").length > -1 ){
+				$jq('a[href$="brownie_points.jsp"]').each(function(){
+					$jq(this).click(function(e){
+						e.preventDefault();
+						
+						$jq( "#cta2" ).trigger( "click" );
+					})
+				})
+			}
 		}
 	}, 100);
 })();

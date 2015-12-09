@@ -436,7 +436,9 @@ section#section_Get_Foodkick {
             section#section_Get_Foodkick article form input::-moz-placeholder {
               color: rgba(0, 0, 0, 0.5); }
             section#section_Get_Foodkick article form input:-ms-input-placeholder {
-              color: rgba(0, 0, 0, 0.5); } }
+              color: rgba(0, 0, 0, 0.5); }
+            section#section_Get_Foodkick article form input.placeholder {
+              color: red; } }
         @media (min-width: 50em) {
           section#section_Get_Foodkick article form input {
             padding-left: 5px;
@@ -716,11 +718,11 @@ section#section_FOODKICK {
 section.forgot_password_section {
   text-align: center;
   vertical-align: middle;
-  margin-top: 150px;
-  background-color: #F1F1F1;
-  width: 50%;
+  margin-top: 175px;
   margin-left: 25%;
   margin-bottom: 5%;
+  background-color: #F1F1F1;
+  width: 50%;
   min-width: 305px;
   color: #3E3F49;
   padding-bottom: 50px; }
@@ -745,6 +747,8 @@ section.forgot_password_section {
       padding-top: 10px; }
     section.forgot_password_section table .text13bold {
       font-weight: bold; }
+    section.forgot_password_section table img {
+      display: none; }
   section.forgot_password_section table.retrieve_pw_table tr td {
     display: block; }
   section.forgot_password_section .bodyCopy {
@@ -762,8 +766,6 @@ section.forgot_password_section {
     height: 59px;
     width: 100%;
     margin-bottom: 20px; }
-  section.forgot_password_section img {
-    display: none; }
   section.forgot_password_section .valid_msg {
     color: #91949D;
     font-size: 0.75em; }
@@ -774,6 +776,18 @@ section.forgot_password_section {
     section.forgot_password_section .nextbutton button {
       letter-spacing: 2px;
       font-size: 1em; }
+  section.forgot_password_section#section_forget_password_changed {
+    padding-top: 8%;
+    padding-bottom: 11%; }
+    section.forgot_password_section#section_forget_password_changed img {
+      width: 71px;
+      /*margin-right: 15px;
+      float: left;
+      margin-left: calc(45% - 120px);*/ }
+    section.forgot_password_section#section_forget_password_changed span {
+      /*float: left;*/
+      padding-top: 25px;
+      display: block; }
 
 section.section_plain_copy {
   margin: 150px 5% 100px 5%; }
@@ -889,6 +903,9 @@ footer {
 @media (min-width: 30em) {
   .mobile {
     display: none; } }
+
+.placeholder {
+  color: rgba(0, 0, 0, 0.5); }
 
 .ucwords {
   text-transform: uppercase; }
