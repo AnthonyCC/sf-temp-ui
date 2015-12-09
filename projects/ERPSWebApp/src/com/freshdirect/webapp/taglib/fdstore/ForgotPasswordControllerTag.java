@@ -13,7 +13,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -29,7 +31,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(ForgotPasswordControllerTag.class);
 
-	private final static String URI_LINK_EXPIRED = "/login/link_expired.jsp";
+	private static String URI_LINK_EXPIRED = "/login/link_expired.jsp";
 	private final static String URI_HOME = "/index.jsp";
 
 	private final static String MSG_INVALID_EMAIL =
@@ -73,6 +75,14 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 
 		this.email = request.getParameter("email");
 		String link = request.getParameter("link");
+		
+		//is this an FDX store or not?  If so, send to the foodkick expired link page
+		EnumEStoreId eStoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())); 
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+		
+		if( isFdxOrder ){
+			URI_LINK_EXPIRED = "/foodkick/link_expired.jsp";
+		}
 
 		LOGGER.debug("email= " + email + " link= " + link + " passStep= " + passStep);
 

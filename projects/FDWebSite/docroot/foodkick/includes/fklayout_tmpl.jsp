@@ -115,7 +115,7 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 			<div class="stripes"><button class="download_button white">Download the APP</button></div>
 			<section id="footer_subsection">
 				<section>
-					<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
+					<img src="<%=SVG_SRC %>freshkick_logo_recommended_white.svg" />
 					<div>&copy;FRESH DIRECT, LLC</div>
 				</section>
 				<section>

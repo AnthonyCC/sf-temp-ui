@@ -1255,6 +1255,32 @@ section.section_plain_copy{
 	}
 }
 
+section#section_forget_password_link_expired{
+	min-height:800px;
+	background-image: url(#{$IMG_DIR}/link_expired_bg_tiny.png);
+	background-repeat:no-repeat;
+	background-position: bottom;
+	background-color: white;
+    width: 100%;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    height: 100%;
+    padding: 0px;
+    margin-top: 75px;
+	
+	h3{
+		font-family: '#{$GraphikApp_r_n}';
+		font-size:1.75em;
+		font-weight:bold;
+		border:none;
+		margin-bottom: 6px;
+	}
+	
+	button.purple{
+		margin-top: 36px;
+	}
+}
+
 footer{
 	background-color:#2D2E37;
 	margin-top:20px;
@@ -1367,6 +1393,52 @@ footer{
 	}
 }
 
+button.download_button{
+	width: 170px;
+	height: 45px;
+	border:none;
+	text-transform:uppercase;
+	font-weight:bold;
+	cursor: pointer;
+	
+	&.purple{
+		background-color:$main_purple;
+		color:white;
+		
+		&:hover{
+			background-color:#A3D;
+		}
+	}
+	
+	&.white{
+		background-color:#EEE;
+		color:#2D2E37;
+		font-family: '#{$GraphikApp_s_n}';
+		
+		&:hover{
+			background-color:#FFF;
+			color:black;
+		}
+	}
+
+	@include breakpoint_mixin(large){
+		width:277px;
+		height:80px;
+	}
+}
+
+button.appstore_button{
+	width: 120px;
+    height: 40px;
+	background-color:transparent;
+	border:none;
+
+	@include breakpoint_mixin(large){
+		width: 220px;
+		height: 70px;
+	}
+}
+
 .fk_anchor{
 	top: -60px;
     display: block;
@@ -1427,50 +1499,4 @@ footer{
 }
 .hidden_content{
 	display:none;
-}
-
-button.download_button{
-	width: 170px;
-	height: 45px;
-	border:none;
-	text-transform:uppercase;
-	font-weight:bold;
-	cursor: pointer;
-	
-	&.purple{
-		background-color:$main_purple;
-		color:white;
-		
-		&:hover{
-			background-color:#A3D;
-		}
-	}
-	
-	&.white{
-		background-color:#EEE;
-		color:#2D2E37;
-		font-family: '#{$GraphikApp_s_n}';
-		
-		&:hover{
-			background-color:#FFF;
-			color:black;
-		}
-	}
-
-	@include breakpoint_mixin(large){
-		width:277px;
-		height:80px;
-	}
-}
-
-button.appstore_button{
-	width: 120px;
-    height: 40px;
-	background-color:transparent;
-	border:none;
-
-	@include breakpoint_mixin(large){
-		width: 220px;
-		height: 70px;
-	}
 }

@@ -816,6 +816,27 @@ section.section_plain_copy {
     section.section_plain_copy#section_about_us img {
       margin-top: 50px; }
 
+section#section_forget_password_link_expired {
+  min-height: 800px;
+  background-image: url(/media_stat/foodkick/link_expired_bg_tiny.png);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-color: white;
+  width: 100%;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  height: 100%;
+  padding: 0px;
+  margin-top: 75px; }
+  section#section_forget_password_link_expired h3 {
+    font-family: "GraphikApp-Regular";
+    font-size: 1.75em;
+    font-weight: bold;
+    border: none;
+    margin-bottom: 6px; }
+  section#section_forget_password_link_expired button.purple {
+    margin-top: 36px; }
+
 footer {
   background-color: #2D2E37;
   margin-top: 20px;
@@ -894,6 +915,40 @@ footer {
       footer section#footer_subsection section hr {
         margin-bottom: 35px; }
 
+button.download_button {
+  width: 170px;
+  height: 45px;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer; }
+  button.download_button.purple {
+    background-color: #732282;
+    color: white; }
+    button.download_button.purple:hover {
+      background-color: #A3D; }
+  button.download_button.white {
+    background-color: #EEE;
+    color: #2D2E37;
+    font-family: "GraphikApp-Semibold"; }
+    button.download_button.white:hover {
+      background-color: #FFF;
+      color: black; }
+  @media (min-width: 50em) {
+    button.download_button {
+      width: 277px;
+      height: 80px; } }
+
+button.appstore_button {
+  width: 120px;
+  height: 40px;
+  background-color: transparent;
+  border: none; }
+  @media (min-width: 50em) {
+    button.appstore_button {
+      width: 220px;
+      height: 70px; } }
+
 .fk_anchor {
   top: -60px;
   display: block;
@@ -945,39 +1000,5 @@ footer {
 
 .hidden_content {
   display: none; }
-
-button.download_button {
-  width: 170px;
-  height: 45px;
-  border: none;
-  text-transform: uppercase;
-  font-weight: bold;
-  cursor: pointer; }
-  button.download_button.purple {
-    background-color: #732282;
-    color: white; }
-    button.download_button.purple:hover {
-      background-color: #A3D; }
-  button.download_button.white {
-    background-color: #EEE;
-    color: #2D2E37;
-    font-family: "GraphikApp-Semibold"; }
-    button.download_button.white:hover {
-      background-color: #FFF;
-      color: black; }
-  @media (min-width: 50em) {
-    button.download_button {
-      width: 277px;
-      height: 80px; } }
-
-button.appstore_button {
-  width: 120px;
-  height: 40px;
-  background-color: transparent;
-  border: none; }
-  @media (min-width: 50em) {
-    button.appstore_button {
-      width: 220px;
-      height: 70px; } }
 
 /*# sourceMappingURL=foodkick.css.map */
