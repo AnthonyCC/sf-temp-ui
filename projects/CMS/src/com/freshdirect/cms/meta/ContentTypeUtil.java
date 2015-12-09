@@ -119,7 +119,7 @@ public class ContentTypeUtil {
 				try {
 					return dateFormat.parse(str);
 				} catch (ParseException e) {
-					throw new IllegalArgumentException(e.toString());
+					throw new IllegalArgumentException(e.toString()+" - Value - "+value);
 				}
 			} else if (EnumAttributeType.WYSIWYG.equals(type)){
 				return str;

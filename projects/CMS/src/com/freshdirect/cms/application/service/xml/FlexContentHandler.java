@@ -295,7 +295,15 @@ public class FlexContentHandler extends CmsNodeHandler {
 
 		public Object parseValue() {
 			String s = value.toString();
+			if((name.equalsIgnoreCase("StartDate") || name.equalsIgnoreCase("EndDate")) && (s.equalsIgnoreCase("") || s == null) ) {	
+				System.out.println("node ==================="+node);
+				System.out.println("node key==================="+node.getKey());
 
+			}
+			if((s.equalsIgnoreCase("") || s == null) ) {	
+				System.out.println("node ==================="+node);
+				System.out.println("node key==================="+node.getKey());
+			}
 			AttributeDefI def = node.getDefinition().getAttributeDef(name);
 			if (def == null) {
 				LOGGER.warn("No definition for attribute " + name + " on node " + node);
