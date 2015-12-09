@@ -8001,7 +8001,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		{
 			conn = getConnection();
 			int addOnOrderCountOfParent= FDUserDAO.getAddonOrdersCount(orderId, conn);
-			if(addOnOrderCountOfParent<=5){
+			if(addOnOrderCountOfParent<=4){
 				addOnOrderCount=true;
 				}
 		} catch (SQLException sqle) {
