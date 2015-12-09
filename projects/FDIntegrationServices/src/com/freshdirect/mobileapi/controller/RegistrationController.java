@@ -362,6 +362,17 @@ public class RegistrationController extends BaseController implements SystemMess
 		
 		ResultBundle resultBundle = tagWrapper.registerSocial(requestMessage);	
 		
+		if (resultBundle != null) {
+			if (resultBundle.getActionResult() != null
+					&& resultBundle.getActionResult().getErrors() != null
+					&& resultBundle.getActionResult().getErrors().size() != 0) {
+				ActionResult result = resultBundle.getActionResult();
+				responseMessage = getErrorMessage(result, request);
+				setResponseMessage(model, responseMessage, user);
+				return model;
+			}
+		}	
+		
 		FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
 		FDIdentity identity  = fduser.getIdentity();
 		

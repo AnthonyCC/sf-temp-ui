@@ -599,6 +599,12 @@ public class RegistrationAction extends WebActionSupport {
 		}
 			
 		
+		if(!(StringUtils.isEmpty(request.getParameter("source")) || request.getParameter("source").equals(EnumExternalLoginSource.SOCIAL.value()))){
+			AccountUtil.validatePassword(actionResult, 
+					NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim(),
+					NVL.apply(request.getParameter(EnumUserInfoName.PASSWORD.getCode()), "").trim());
+		}
+		
 
 		//EnumServiceType serviceType = addInfo.getAddressType();
 		
