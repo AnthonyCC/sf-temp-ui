@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.FindFailed;
+
 
 import ui.WebUIDriver;
 
@@ -35,7 +35,7 @@ public class ModifyOrderStorefrontDriver extends BaseModuleDriver {
 	 * Account> Your Order
 	 */
 	public void ModifyCancelOrder(DataRow input, DataRow output)
-	throws InterruptedException {
+	throws InterruptedException  {
 		try{
 			String Modify_Cancel=input.get("ModifyCancel").toUpperCase();
 		if(Modify_Cancel.equals("CANCEL")){
@@ -67,7 +67,7 @@ public class ModifyOrderStorefrontDriver extends BaseModuleDriver {
 
 
 	public void SubmitOrderModify(DataRow input, DataRow output)
-			throws InterruptedException {
+			throws InterruptedException  {
 		// try {
 		// wait for the modify order element to be visible condition
 		try
@@ -95,7 +95,7 @@ public class ModifyOrderStorefrontDriver extends BaseModuleDriver {
 	}
 
 	public void ModifyCart(DataRow input, DataRow output)
-			throws InterruptedException {
+			throws InterruptedException  {
 
 		// call to the modify cart reusable function
 		uiDriver.waitForPageLoad();
@@ -116,7 +116,7 @@ public class ModifyOrderStorefrontDriver extends BaseModuleDriver {
 	}
 
 	
-	public void ClickViewCart(DataRow input, DataRow output) throws 
+	public void ClickViewCart(DataRow input, DataRow output) throws  
 			InterruptedException {
 		try {
 

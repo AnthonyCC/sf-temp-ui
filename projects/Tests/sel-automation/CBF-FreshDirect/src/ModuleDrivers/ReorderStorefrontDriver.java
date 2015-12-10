@@ -10,7 +10,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.FindFailed;
 import org.openqa.selenium.TimeoutException;
 
 import cbf.engine.BaseModuleDriver;
@@ -33,6 +32,7 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 		{
 			uiDriver.FD_reorderPastOrder(input.get("ReorderFilter"), input
 					.get("Timeframe"),input.get("Department"),input.get("SpecialPreference"),input.get("Product"),input.get("FlexibilityFlag"));
+			webDriver.navigate().refresh();
 		}
 		catch(Exception e)
 		{
@@ -41,7 +41,7 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 	}
 
 	public void YourTopItemFilter(DataRow input, DataRow output)
-			throws InterruptedException, TimeoutException {
+			throws InterruptedException,   TimeoutException {
 		try
 		{
 			uiDriver.FD_reorderYourTopItems(input.get("Filter"), input.get("DepartmentOrItem"), input.get("SpecialPref"), input.get("FlexibilityFlag"));
@@ -53,7 +53,7 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 	}
 
 	public void YourListFilter(DataRow input, DataRow output)
-			throws InterruptedException, TimeoutException {
+			throws InterruptedException,   TimeoutException {
 		try {
 			uiDriver.FD_reorderYourList(input.get("YourList"), input.get("Department"),input.get("SpecialPref"), 
 					input.get("FlexibilityFlag"));
@@ -63,7 +63,7 @@ public class ReorderStorefrontDriver extends BaseModuleDriver {
 	}
 
 	public void YourlistManageList(DataRow input, DataRow output)
-			throws InterruptedException, TimeoutException {
+			throws InterruptedException,   TimeoutException {
 		boolean manage_flag=false;
 		int rename_flag=0;
 		try {

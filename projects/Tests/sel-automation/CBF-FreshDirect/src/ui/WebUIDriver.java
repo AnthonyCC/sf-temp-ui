@@ -4027,10 +4027,11 @@ public class WebUIDriver extends BaseAppDriver {
 									"Delievry Address selection",
 									myaddnew + " Address should get selected",
 									myaddnew + " Given address is not available in the list and by default first address sholud get selected");
-							uiDriver.click("raddefaultAddress");
 							List<WebElement> addLst1 = webDriver.findElements(By.xpath(objMap.getLocator("lstselectingAddress")));
 							address = addLst1.get(0).getText();
-							System.out.println(address);
+							SleepUtils.getInstance().sleep(TimeSlab.LOW);
+							System.out.println("ff=YES and address: "+address);
+							uiDriver.click("raddefaultAddress");
 							SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);							
 						} else {
 							String Error_Msg = "Address did not match";
@@ -8217,6 +8218,7 @@ public class WebUIDriver extends BaseAppDriver {
 		//for the successful adding of quantity for normal reorder using grid
 		else{
 			//hover to item for verification
+			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			robot.moveToElement(product);
 			//for the successful adding of quantity
 			if (webDriver.findElements(By.cssSelector(objMap.getLocator("stritemInCartSuccess"))).size() > 0) {
@@ -9546,6 +9548,7 @@ public class WebUIDriver extends BaseAppDriver {
 			} catch (Exception e) {
 				RESULT.failed("Modify Cart Exception", "Cart should be modified successfully",
 						"Cart is not modified and exception caught is " + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 

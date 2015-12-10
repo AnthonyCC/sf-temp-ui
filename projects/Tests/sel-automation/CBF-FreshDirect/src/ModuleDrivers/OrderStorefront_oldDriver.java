@@ -8,7 +8,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.;
 import ui.ObjectMap;
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -24,7 +23,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void DeliveryAddress(DataRow input, DataRow output) throws InterruptedException
+	public void DeliveryAddress(DataRow input, DataRow output) throws   InterruptedException
 	{  
 
 		try{ 
@@ -69,7 +68,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}	
 	}
 
-	public void TimeSlot(DataRow input,DataRow output) throws  InterruptedException{
+	public void TimeSlot(DataRow input,DataRow output) throws   InterruptedException{
 		try{
 			//user will be on delivery address page. so go to select time slot page
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btnchooseTimeSlot"))).size()>0)
@@ -127,7 +126,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void PaymentOptions(DataRow input, DataRow output) throws  InterruptedException
+	public void PaymentOptions(DataRow input, DataRow output) throws   InterruptedException
 	{
 		try{
 			boolean gift=false;
@@ -136,10 +135,14 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 					webDriver.findElement(By.cssSelector(objMap.getLocator("btnpaymentBtnNew"))).isDisplayed())
 			{
 				uiDriver.click("btnpaymentBtnNew");
-				uiDriver.waitForPageLoad();
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) {
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.linkText("CHOOSE TIME")));
+				}			
 //				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(objMap.getLocator("btnpaymentBtnNew"))));
 				uiDriver.waitForPageLoad();
-				//			SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")) 
+					SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 			}else if(webDriver.findElements(By.id(objMap.getLocator("btnGiftCsubmit"))).size()>0 && 
 					webDriver.findElement(By.id(objMap.getLocator("btnGiftCsubmit"))).isDisplayed())
 			{
@@ -252,7 +255,7 @@ public class OrderStorefront_oldDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void ReviewSubmitOrder(DataRow input, DataRow output) throws InterruptedException
+	public void ReviewSubmitOrder(DataRow input, DataRow output) throws   InterruptedException
 	{
 		try{
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);

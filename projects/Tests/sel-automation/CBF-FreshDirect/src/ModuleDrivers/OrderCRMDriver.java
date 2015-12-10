@@ -5,8 +5,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-//import org.python.core.exceptions;
-//import org.sikuli.script.FindFailed;
+import org.python.core.exceptions;
 
 import com.sun.java.swing.plaf.windows.resources.windows;
 
@@ -219,7 +218,7 @@ public class OrderCRMDriver extends BaseModuleDriver {
 		uiDriver.click("btnContinueChkoutAddress");
 	}
 	 */
-	public void Checkout(DataRow input, DataRow output) throws 
+	public void Checkout(DataRow input, DataRow output) throws  
 	InterruptedException {
 		try{
 			if(uiDriver.isDisplayed("lnksummary"))
@@ -244,11 +243,11 @@ public class OrderCRMDriver extends BaseModuleDriver {
 					winHandleafter=webDriver.getWindowHandle();
 					try{
 						webDriver.switchTo().window(winHandleBefore).close();
-//						webDriver.switchTo().window(winHandleafter);
+						//						webDriver.switchTo().window(winHandleafter);
 					}catch (Exception e) {
 						RESULT.failed("CRM tab close","CRM tab should be closed ","CRM tab is not closed");
 					}
-					
+
 					//uiDriver.waitForPageLoad();
 					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					List<String> browserTabs = new ArrayList<String> (webDriver.getWindowHandles());
@@ -259,11 +258,16 @@ public class OrderCRMDriver extends BaseModuleDriver {
 					//uiDriver.selenium.waitForPageToLoad("3000");
 					SleepUtils.getInstance().sleep(TimeSlab.LOW);
 					if (!CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")){
-					webDriver.manage().window().maximize();	
-					uiDriver.waitForPageLoad();
+						webDriver.manage().window().maximize();	
+						uiDriver.waitForPageLoad();
 					}
 					try{
-						uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.name(objMap.getLocator("imgfd_Logo"))));
+						if(CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI")){
+							SleepUtils.getInstance().sleep(TimeSlab.HIGH);
+							SleepUtils.getInstance().sleep(TimeSlab.HIGH);
+						}else{
+							uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(objMap.getLocator("imgfd_Logo"))));
+						}						
 					}catch (Exception e) {
 						RESULT.failed("Checkout", "User should be on storefront", "Nevigation to storefront failed");
 					}

@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-//import org.sikuli.script.FindFailed;
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -26,7 +25,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 	}
 
 	public void ReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException {
+	throws InterruptedException  {
 		try{	
 			uiDriver.FD_chooseReserveTimeSlot(input.get("Address"), input
 					.get("ReserveType"), input.get("Day"), input.get("Time"), input
@@ -39,7 +38,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 
 	@SuppressWarnings("deprecation")
 	public void CancelReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException {
+	throws InterruptedException  {
 		//wait for drop down of address
 		try{
 			uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By
@@ -112,7 +111,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 
 	}
 	public void ModifyReserveDeliveryTime(DataRow input, DataRow output)
-	throws InterruptedException {
+	throws InterruptedException  {
 		try{
 			Select add_ddl = new Select(uiDriver.getwebDriverLocator(objMap
 					.getLocator("drpreserveAddress")));
@@ -153,6 +152,8 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 				}
 				//Modify the time slot
 				uiDriver.FD_chooseTimeslot(input.get("Day1"),input.get("Time1"), input.get("FlexibilityFlag") );
+	
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				
 				//select type of reservation
 				if (input.get("ReserveType").equalsIgnoreCase("This week")) {				
@@ -169,6 +170,7 @@ public class ReserveTimeslotDriver extends BaseModuleDriver {
 				webDriver.findElement(By.xpath(objMap.getLocator("btnsaveReserveTime"))).click();
 				uiDriver.waitForPageLoad();
 				try{
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("strreserveSuccessMsg"))));
 					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strreserveSuccessMsg"))));
 					uiDriver.robot.scrollToElement(webDriver.findElement(By.xpath(objMap.getLocator("strreserveSuccessMsg"))), webDriver);
 			}catch (Exception e) {

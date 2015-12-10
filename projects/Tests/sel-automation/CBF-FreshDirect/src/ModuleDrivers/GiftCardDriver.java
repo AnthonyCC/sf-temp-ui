@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-//import org.sikuli.script.FindFailed;
 
 import com.sun.org.apache.bcel.internal.generic.Select;
 
@@ -25,7 +24,7 @@ public class GiftCardDriver extends BaseModuleDriver{
 		RESULT = resultLogger;
 	}
 	//customize or donate a gift card
-	public void PurchaseDonateGiftcard(DataRow input,DataRow output)throws InterruptedException
+	public void PurchaseDonateGiftcard(DataRow input,DataRow output)throws InterruptedException 
 	{
 		try{
 			uiDriver.waitForPageLoad();
@@ -247,13 +246,15 @@ public class GiftCardDriver extends BaseModuleDriver{
 		}
 	}
 
-	public void VerifyGIftcardPayment(DataRow input,DataRow output)throws InterruptedException
+	public void VerifyGIftcardPayment(DataRow input,DataRow output)throws InterruptedException 
 	{
 		try{
 			// click on submit button
 			uiDriver.getwebDriverLocator(objMap.getLocator("btnGiftCsubmit")).click();
 			uiDriver.waitForPageLoad();
 			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id(objMap.getLocator("btnGiftCsubmit"))));
+			if(CompositeAppDriver.startUp.equalsIgnoreCase("SAFARI"))
+				SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 			//fetch success message for purchase or donate gift card
 			if(uiDriver.isElementPresent(By.xpath(objMap.getLocator("strGiftSubMsgDonat"))))
 			{

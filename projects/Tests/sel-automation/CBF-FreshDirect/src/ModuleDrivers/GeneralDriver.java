@@ -8,7 +8,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.FindFailed;
+
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -48,6 +48,7 @@ public class GeneralDriver extends BaseModuleDriver {
 				{
 					uiDriver.click("lnkclickHere");	
 					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkclickHere"))));	
+					uiDriver.waitForPageLoad();
 				}	
 			}
 			catch (Exception e) {
@@ -206,6 +207,7 @@ public class GeneralDriver extends BaseModuleDriver {
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
 				{
 					uiDriver.getwebDriverLocator(objMap.getLocator("btnlogout")).sendKeys("\n");
+					uiDriver.waitForPageLoad();
 				}				
 				else
 				{
@@ -475,7 +477,7 @@ public class GeneralDriver extends BaseModuleDriver {
 	}
 
 	public void SignUp(DataRow input, DataRow output)
-	throws InterruptedException, TimeoutException {
+	throws InterruptedException, TimeoutException  {
 		try {
 			if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)
 			{
@@ -517,7 +519,7 @@ public class GeneralDriver extends BaseModuleDriver {
 	}
 
 	public void LanguageDetection(DataRow input, DataRow output)
-	throws InterruptedException, TimeoutException {
+	throws InterruptedException, TimeoutException  {
 		try {
 			if(uiDriver.isDisplayed("lnkprivacyPolicy")){
 				/*//Click on Help link
@@ -551,12 +553,11 @@ public class GeneralDriver extends BaseModuleDriver {
 	{
 		try {
 			uiDriver.FD_filters(input.get("FilterName"));
-		}
-		 catch (InterruptedException e) {
+		}catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			RESULT.failed("Product Filters Find failed exception: ", "Product filters should be successful", "Product filters is not successful");
 		}
-}
+	}
 
 	public void PasswordValidation(DataRow input, DataRow output){
 		try {
@@ -567,13 +568,14 @@ public class GeneralDriver extends BaseModuleDriver {
 				try{
 					uiDriver.wait.until(ExpectedConditions.visibilityOf(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup"))));
 					webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframeSignup")));
+					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				}catch (Exception e) {
 					RESULT.failed("SignUp Page", "SignUp Page should be available", "SignUp Page is not available");
 					return;
 				}
 
 				try{
-					uiDriver.wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.name(objMap.getLocator("txtpassWord1")))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(objMap.getLocator("txtpassWord1"))));
 				}catch (Exception e) {
 					RESULT.failed("SignUp Page password field", "SignUp Page password field should be available", "SignUp Page password field is not available");
 					return;

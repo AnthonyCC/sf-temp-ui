@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.FindFailed;
+
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
@@ -44,7 +44,7 @@ public class CartDriver extends BaseModuleDriver {
 	}
 
 	public void AddAllitemstoCart(DataRow input, DataRow output)
-	throws InterruptedException {
+	throws InterruptedException  {
 		// quantity variables for the result
 		int initialqty;
 		int added_qty = 0;

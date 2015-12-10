@@ -32,10 +32,10 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
-//import org.sikuli.script.Screen;
+import org.openqa.selenium.safari.SafariOptions;
+
 
 import com.sun.corba.se.spi.copyobject.ReflectiveCopyException;
-//import ui.SikuliUIDriver;
 import ui.WebUIDriver;
 import cbf.engine.BaseAppDriver;
 import cbf.engine.ModuleDriver;
@@ -118,6 +118,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 							System.setProperty(property, browserDriver);									             
 				            DesiredCapabilities cap1 = DesiredCapabilities.internetExplorer();
 				            cap1.setCapability("requireWindowFocus", true);
+				            cap1.setCapability("InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION", true);
 				            //cap1.setCapability("enablePersistentHover", true);
 				            //cap1.setCapability("nativeEvents", false);   
 				            cap1.setCapability("javascriptEnabled", true);	
@@ -137,7 +138,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 							break;
 		
 						case CHROME:
-							browserDriver=browserDriver+"/chromedriver.exe";
+							browserDriver=browserDriver+"/chromedriver_2_20.exe";
 							System.setProperty(property, browserDriver);
 							ChromeOptions options = new ChromeOptions();
 							options.addArguments("--test-type");
@@ -149,7 +150,12 @@ public class CompositeAppDriver extends BaseAppDriver {
 							cap.setPlatform(Platform.MAC);
 							cap.setJavascriptEnabled(true);
 							System.setProperty("webdriver.safari.noinstall", "true");
-							webDriver=new SafariDriver();
+							
+							// for clean session
+							SafariOptions safari_options = new SafariOptions();
+							safari_options.setUseCleanSession(true);
+							
+							webDriver=new SafariDriver(safari_options);
 							break;
 						}
 						Capabilities cap = ((RemoteWebDriver) webDriver).getCapabilities();
@@ -165,14 +171,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 						uiDriver = (WebUIDriver) PluginManager.getPlugin((String) map.get("plugin"),(Map<String, Object>) map.get("parameters"));
 						webDriver.manage().window().maximize(); // To maximize the window
 					
-					}/*else if(plugin.equals("Sikuli")){
-						sikuli=  new Screen();
-						//sikuliUIDriver = new SikuliUIDriver(sikuli);
-					
-						parameters.put("sikuli", sikuli);
-						map.put("parameters", parameters);
-						sikuliUIDriver = (SikuliUIDriver) PluginManager.getPlugin((String) map.get("plugin"),(Map<String, Object>) map.get("parameters"));
-					}			*/
+					}			
 				}	
 			}			
 		}
@@ -195,7 +194,7 @@ public class CompositeAppDriver extends BaseAppDriver {
 		moduleDrivers.put("ShoppingList", new ShoppingListDriver(resultLogger));
 		moduleDrivers.put("Cart", new CartDriver(resultLogger));
 		moduleDrivers.put("OrderStorefront", new OrderStorefrontDriver(resultLogger));
-		//moduleDrivers.put("DeliveryPass", new DeliveryPassDriver(resultLogger));
+		moduleDrivers.put("DeliveryPass", new DeliveryPassDriver(resultLogger));
 		moduleDrivers.put("StandingOrder", new StandingOrderDriver(resultLogger));
 		moduleDrivers.put("ModifyOrderStorefront", new ModifyOrderStorefrontDriver(resultLogger));
 		moduleDrivers.put("OrderCRM", new OrderCRMDriver(resultLogger));

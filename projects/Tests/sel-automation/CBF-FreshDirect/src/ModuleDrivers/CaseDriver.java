@@ -3,11 +3,13 @@ package ModuleDrivers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-//import org.sikuli.script.FindFailed;
+
 
 import cbf.engine.BaseModuleDriver;
 import cbf.engine.TestResultLogger;
 import cbf.utils.DataRow;
+import cbf.utils.SleepUtils;
+import cbf.utils.SleepUtils.TimeSlab;
 
 public class CaseDriver extends BaseModuleDriver {
 	// This will wait for the page to load for 300 seconds (i.e. 300000 Millie
@@ -47,8 +49,6 @@ public class CaseDriver extends BaseModuleDriver {
 			uiDriver.setValue("txtCustomerID_customerserch", input.get("CustomerID"));
 			uiDriver.click("btnsearch_Customer");
 			uiDriver.waitForPageLoad();
-//			SleepUtils.getInstance().sleep(TimeSlab.HIGH);
-		//	SleepUtils.getInstance().sleep(TimeSlab.HIGH);
 			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("txtemail_CRM"))));
 			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("lnksummary"))));
 			if (webDriver.getTitle().contains("/ FreshDirect CRM : Account Details /")) {
@@ -70,7 +70,7 @@ public class CaseDriver extends BaseModuleDriver {
 
 	}
 
-	public void SearchOrder(DataRow input, DataRow output) throws 
+	public void SearchOrder(DataRow input, DataRow output) throws  
 			InterruptedException {
 		try
 		{

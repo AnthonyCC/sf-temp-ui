@@ -47,7 +47,10 @@ public class RobotPowered {
 			"return document.documentElement.clientWidth").toString());
 			int pageHeight = Integer.parseInt(executor.executeScript(
 			"return document.documentElement.clientHeight").toString());
-
+			// To handle hover after masquered, will chnage based on screen size
+			if(pageHeight<655)
+				pageHeight=655;
+			
 			// Calculate the space the browser is using for toolbars
 			int browserFurnitureOffsetX = browserWidth - pageWidth;
 			int browserFurnitureOffsetY = browserHeight - pageHeight;
@@ -79,7 +82,7 @@ public class RobotPowered {
 				}
 				else
 				{
-					int sub_webElementY = Math.round(driver.findElement(By.id("topwarningbar")).getSize().height / 3);				
+					int sub_webElementY = Math.round(driver.findElement(By.id("topwarningbar")).getSize().height / 2);				
 					mouseObject.mouseMove(xPosition-1, yPosition-sub_webElementY);
 					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 					mouseObject.mouseMove(xPosition, yPosition-sub_webElementY);	
