@@ -31,6 +31,7 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.UserSocialProfile;
+import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLinkRequest;
@@ -607,7 +608,8 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 					: names[names.length - 1];
 			String provider = (String) socialUser.get("provider");
 			String userToken = (String) socialUser.get("userToken");
-			RegisterMessageFdxRequest requestMessageRegister = new RegisterMessageFdxRequest();
+			//RegisterMessageFdxRequest requestMessageRegister = new RegisterMessageFdxRequest();
+			ExternalAccountRegisterRequest requestMessageRegister = new ExternalAccountRegisterRequest();
 			requestMessageRegister.setEmail(email);
 			requestMessageRegister.setFirstName(firstName);
 			requestMessageRegister.setLastName(lastName);
@@ -618,7 +620,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			requestMessageRegister.setSecurityQuestion("");
 			RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(
 					user.getFDSessionUser());
-			RegisterMessage registerMessage = new RegisterMessage();
+			/*RegisterMessage registerMessage = new RegisterMessage();
 			registerMessage.setFirstName(requestMessageRegister
 					.getFirstName());
 			registerMessage.setLastName(requestMessageRegister
@@ -635,9 +637,9 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			registerMessage.setServiceType(requestMessageRegister
 					.getServiceType());
 			registerMessage.setWorkPhone(requestMessageRegister
-					.getWorkPhone());
+					.getWorkPhone());*/
 			resultBundleOne = tagWrapper
-					.register(registerMessage);			
+					.registerSocial(requestMessageRegister);	
 			
 		}
 	
