@@ -76,15 +76,15 @@
 		<servlet-name>UserDataServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.oauth.provider.UserDataServlet</servlet-class>
 	</servlet>
-<!-- 	<servlet>
+	<servlet>
 		<servlet-name>referralregistration</servlet-name>
 		<jsp-file>/registration/referee_signup.jsp</jsp-file>
 	</servlet>
- -->
- 	<servlet>
-		<servlet-name>referralregistration</servlet-name>
-		<jsp-file>/registration/invite_signup.jsp</jsp-file>
-	</servlet> 
+ 
+<!--  	<servlet> -->
+<!-- 		<servlet-name>referralregistration</servlet-name> -->
+<!-- 		<jsp-file>/registration/invite_signup.jsp</jsp-file> -->
+<!-- 	</servlet>  -->
 	<servlet>
 		<servlet-name>SoyToJsServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.soy.SoyToJsServlet</servlet-class>
