@@ -605,7 +605,7 @@ public class CMSContentFactory {
 	public Map<ContentKey, ContentNodeI> loadNodesFromXMLString(String content) {
 		StringReader reader = new StringReader(content);
 		try {
-			CmsNodeHandler handler = new FlexContentHandler();
+			CmsNodeHandler handler = new FlexContentHandler(true);
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			factory.setValidating(false);

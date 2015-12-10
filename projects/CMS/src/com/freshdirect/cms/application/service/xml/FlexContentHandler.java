@@ -52,8 +52,13 @@ public class FlexContentHandler extends CmsNodeHandler {
 
 	private final Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
 	private final Stack<Object> stack = new Stack<Object>();
+	private boolean isRealTimePublish = false;
 
 	public FlexContentHandler() {
+	}
+
+	public FlexContentHandler(boolean isRealTimePublish) {
+		this.isRealTimePublish = isRealTimePublish;
 	}
 
 	/**
@@ -142,7 +147,18 @@ public class FlexContentHandler extends CmsNodeHandler {
 			id = "flex_" + ID_GENERATOR++;
 		}
 		ContentKey key = new ContentKey(type, id);
-		return createNode(key);
+		ContentNodeI contentNode = createNode(key);
+		//in case of real time publish we need to clear the attributes value for setting up the new values
+		if (isRealTimePublish && contentNode!=null && contentNode.getAttributes()!=null) {			
+			for (Map.Entry entry : contentNode.getAttributes().entrySet()) {
+				if(entry!=null && entry.getKey()!=null) {
+				contentNode.setAttributeValue(entry.getKey().toString(), null);
+				}
+			}
+			return contentNode;
+		} else {
+			return contentNode;
+		}
 	}
 
 	private Slot parseSlot(String localName) {
