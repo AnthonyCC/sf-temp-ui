@@ -228,7 +228,14 @@ section#section_slideshow {
         height: 100%;
         /*mix-blend-mode: multiply;*/ }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
-      top: -75px; }
+      /*top:-75px;*/
+      top: calc(50vw);
+      position: absolute;
+      padding-left: 0px; }
+      @media (min-width: 30em) {
+        section#section_slideshow #carousel_1 .slidesjs-pagination {
+          position: relative;
+          top: -75px; } }
       section#section_slideshow #carousel_1 .slidesjs-pagination a {
         background-color: rgba(255, 255, 255, 0.5);
         -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.5);
@@ -260,8 +267,10 @@ section#section_slideshow {
           section#section_slideshow #carousel_1 figcaption h1 {
             font-size: 42pt; } }
   section#section_slideshow button.download_button {
-    position: relative;
-    top: -120px;
+    /*position: relative;
+    top: -120px;*/
+    position: absolute;
+    top: 40vw;
     left: calc(50% - 60px);
     z-index: 10;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
@@ -271,7 +280,8 @@ section#section_slideshow {
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='rgba(0, 0, 0, 0.2)'); }
     @media (min-width: 30em) {
       section#section_slideshow button.download_button {
-        top: -180px; } }
+        top: -180px;
+        position: relative; } }
     @media (min-width: 50em) {
       section#section_slideshow button.download_button {
         left: calc(50% - 120px);
@@ -280,13 +290,17 @@ section#section_slideshow {
       section#section_slideshow button.download_button {
         top: -300px; } }
   section#section_slideshow button.appstore_button {
-    position: relative;
-    left: calc(100% - 300px);
-    top: -40px;
+    /*position: relative;*/
+    /*top: -40px;*/
+    position: absolute;
+    top: 60vw;
+    left: calc(100% - 125px);
     z-index: 10; }
     @media (min-width: 30em) {
       section#section_slideshow button.appstore_button {
-        top: -120px; } }
+        top: -120px;
+        position: relative;
+        left: calc(100% - 300px); } }
     @media (min-width: 50em) {
       section#section_slideshow button.appstore_button {
         left: calc(100% - 505px); } }
@@ -299,7 +313,7 @@ section#section_slideshow {
 section#section_Get_Foodkick {
   /*width:100%;*/
   min-height: inherit;
-  margin-top: -20px;
+  margin-top: -65px;
   padding: 25px 0px;
   border-bottom: 20px solid #333;
   /*img, & object{*/ }
@@ -307,7 +321,8 @@ section#section_Get_Foodkick {
     section#section_Get_Foodkick {
       min-height: inherit;
       /*padding: 25px 0px 25px 12%;*/
-      padding-top: 0px; } }
+      padding-top: 0px;
+      margin-top: -20px; } }
   section#section_Get_Foodkick h1 {
     font-size: 2.5em;
     margin-bottom: 2px; }

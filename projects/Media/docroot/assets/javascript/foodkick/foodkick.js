@@ -265,7 +265,7 @@ $(function(){
 			}, 900, 'swing', function () {
 				window.location.hash = target;
 				
-				//hide this dumb iphone menu when it is scrolling someplace
+				//hide this dumb iphone menu when it is done scrolling someplace for a hash link
 				$(".mobile_dropdown").css("display", "none");
 				
 				//signal to the hamburger button that it should not think of itself as being hovered over

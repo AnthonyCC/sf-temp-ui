@@ -453,7 +453,16 @@ section#section_slideshow{
 		}
 		
 		.slidesjs-pagination{
-			top:-75px;
+			/*top:-75px;*/
+			
+			top: calc(50vw);
+			position: absolute;
+			padding-left: 0px;
+			
+			@include breakpoint_mixin(medium){
+				position: relative;
+				top:-75px;
+			}
 			
 			a{
 				background-color: rgba(#FFF, 0.5);
@@ -496,8 +505,11 @@ section#section_slideshow{
 	}
 	
 	button.download_button{
-		position: relative;
-		top: -120px;
+		/*position: relative;
+		top: -120px;*/
+		
+		position: absolute;
+		top: 40vw;
 	    left: calc(50% - 60px);
 	    
 	    z-index: 10;
@@ -505,6 +517,7 @@ section#section_slideshow{
 	    
 	    @include breakpoint_mixin(medium){
 	    	top: -180px;
+	    	position: relative;
 	    }
 	    
 	    @include breakpoint_mixin(large){
@@ -518,13 +531,17 @@ section#section_slideshow{
 	}
 	
 	button.appstore_button{
-	    position: relative;
-		left: calc(100% - 300px);
-		top: -40px;
+	    /*position: relative;*/
+		/*top: -40px;*/
+		position: absolute;
+		top: 60vw;
+		left: calc(100% - 125px);
 	    z-index: 10;
 	    
 	    @include breakpoint_mixin(medium){
 	    	top: -120px;
+	    	position: relative;
+	    	left: calc(100% - 300px);
 	    }
 
 		@include breakpoint_mixin(large){
@@ -542,7 +559,7 @@ section#section_Get_Foodkick{
 	/*width:100%;*/
 	min-height: inherit;
 	
-	margin-top:-20px;
+	margin-top:-65px;
 	padding: 25px 0px;
 	border-bottom: 20px solid #333;
 	
@@ -550,6 +567,7 @@ section#section_Get_Foodkick{
 		min-height:inherit;
 		/*padding: 25px 0px 25px 12%;*/
 		padding-top:0px;
+		margin-top:-20px;
 	}
 	
 	h1{
