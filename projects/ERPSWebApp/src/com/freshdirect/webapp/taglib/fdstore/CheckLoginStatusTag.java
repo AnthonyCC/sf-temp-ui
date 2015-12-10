@@ -199,6 +199,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         		guestAllowed &&
                 (
                 	(request.getRequestURI().indexOf("forget_password_main_confirmation.jsp") != -1) ||
+                	/*(request.getRequestURI().indexOf("/foodkick/") != -1) ||*/ 
                 	/* fix product info page used in erpsy daisy */
                 	( request.getParameter("sku2url") != null && !"".equalsIgnoreCase(request.getParameter("sku2url")) )
                 ) &&

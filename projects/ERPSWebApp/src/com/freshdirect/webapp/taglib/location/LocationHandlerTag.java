@@ -77,7 +77,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			request = (HttpServletRequest) ctx.getRequest();
 			user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
 			
-			if (user==null){
+			if (user==null && !"ifDeliveryZone".equalsIgnoreCase(action)){
 				ctx.setAttribute(SERVER_ERROR_ATTR, "Server error occured. Sorry for your inconvinience, please refresh this page.");
 			
 			} else {
