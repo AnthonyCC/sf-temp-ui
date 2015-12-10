@@ -490,7 +490,7 @@ public class SinglePageCheckoutFacade {
                 }
             }
             
-            formPaymentData.setMpEwalletStatus(getMasterpassEwalletStatus(MASTERPASS_EWALLET_TYPE));
+            formPaymentData.setMpEwalletStatus(getMasterpassEwalletStatus(user, MASTERPASS_EWALLET_TYPE));
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
             
             // Express Checkout Code
@@ -521,8 +521,8 @@ public class SinglePageCheckoutFacade {
      * @param eWalletType
      * @return
      */
-    private boolean getMasterpassEwalletStatus(String eWalletType){
-    	return FDCustomerManager.getEwalletStatusByType(eWalletType);
+    private boolean getMasterpassEwalletStatus(FDUserI user, String eWalletType) {
+        return FDCustomerManager.getEwalletStatusByType(eWalletType) && user.getMasqueradeContext() == null;
     }
     
     /*private ErpCustEWalletModel getCustomerEWallet(FDUserI user) throws FDResourceException{
