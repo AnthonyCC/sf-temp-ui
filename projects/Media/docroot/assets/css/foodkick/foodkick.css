@@ -916,14 +916,15 @@ footer {
           clear: both;
           margin: 30px 30px 0px 30px; }
       footer section#footer_subsection section.last ul {
-        width: 250px;
+        width: 100%;
         padding-left: 0px;
         display: table; }
         footer section#footer_subsection section.last ul li {
           list-style-type: none;
-          padding-right: 45px;
+          /*padding-right:45px;*/
           display: table-cell;
           /*width:calc(25% - 15px);*/
+          width: 33%;
           height: 30px;
           vertical-align: top; }
           footer section#footer_subsection section.last ul li a {
@@ -942,6 +943,8 @@ footer {
               -moz-opacity: 1;
               -khtml-opacity: 1;
               opacity: 1; }
+      footer section#footer_subsection section.last img {
+        width: 100%; }
       footer section#footer_subsection section a {
         color: white;
         text-decoration: none; }

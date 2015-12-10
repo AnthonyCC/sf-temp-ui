@@ -957,6 +957,7 @@ section#section_Whats_Good{
 				padding-bottom: 10px;
 			}
 		}
+		
 		#carousel_Whats_Good_foodkick:before{
 			content:"Now on foodkick";
 		}
@@ -1403,15 +1404,16 @@ footer{
 			
 			&.last{
 				ul{
-					width:250px;
+					width:100%;
 					padding-left: 0px;
 					display:table;
 					
 					li{
 						list-style-type: none;
-						padding-right:45px;
+						/*padding-right:45px;*/
 						display:table-cell;
 						/*width:calc(25% - 15px);*/
+						width:33%;
 						height:30px;
 						vertical-align:top;
 						
@@ -1428,6 +1430,10 @@ footer{
 							}
 						}
 					}
+				}
+				
+				img{
+					width:100%;
 				}
 			}
 			
