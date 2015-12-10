@@ -77,12 +77,12 @@ if( !request.getRequestURI().contains("/index.jsp") ){
 		<nav>
 			<ul>
 				<li class="mobile mobile_dropdown_master">
-					<a href="#" class="mobile_link">
+					<a href="#" class="mobile_link" id="mobile_link_home">
 						<img src="<%=SVG_SRC %>hamburger_helper.svg" />
 					</a>
 					<ul class="dropdown mobile_dropdown">
 						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
-						<li><a href="<%=url_prefix %>#Whats_Good">What's Good</a></li>
+						<li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
 						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
 						<li><a href="about_us.jsp">About Us</a></li>
 						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>

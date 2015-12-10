@@ -258,12 +258,34 @@ $(function(){
 
 		if($target.length > 0){
 			$('html, body').stop().animate({
-				'scrollTop': $target.offset().top
+				'scrollTop': $target.offset().top,
+				'start': function(){
+					console.log("this animation started");
+				}
 			}, 900, 'swing', function () {
 				window.location.hash = target;
+				
+				//hide this dumb iphone menu when it is scrolling someplace
+				$(".mobile_dropdown").css("display", "none");
+				
+				//signal to the hamburger button that it should not think of itself as being hovered over
+				$('#mobile_link_home').trigger('mouseleave');
+				
+				$('#mobile_link_home').bind(
+	                "mouseenter",
+	                function( event ){
+	                    //now remove that style attribute of big purple so that it can be seen again when hamburger helper is clicked again
+	                	$(".mobile_dropdown").removeAttr("style");
+	                }
+	            );
 			});
 		}
 	});
+	
+	//fix an issue in mobile devices where that big purple menu does not go away
+	$(".mobile_dropdown").mouseout( function(){
+		console.log("MONKEY!");
+	} );
 	
 	//this is just for step 1, to verify if the zip code is within a delivery zone
 	$('form#ziphandler').submit(function(event){
