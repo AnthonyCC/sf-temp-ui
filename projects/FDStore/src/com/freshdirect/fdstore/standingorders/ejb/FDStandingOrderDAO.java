@@ -312,7 +312,7 @@ public class FDStandingOrderDAO {
 		try {
 			ps = conn.prepareStatement(LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO);
 			ps.setString(1, so.getId());
-			ps.setDate(2, new java.sql.Date(so.getNextDeliveryDate().getTime()));
+			ps.setDate(2, so.getNextDeliveryDate()==null? null : new java.sql.Date(so.getNextDeliveryDate().getTime()));
 			rs = ps.executeQuery();
 			if(rs.next()){
 				FDStandingOrderAltDeliveryDate soAltDeliveryInfo = populateAltDeliveryInfo(rs);

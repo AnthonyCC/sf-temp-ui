@@ -28,6 +28,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -325,15 +326,14 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	
 	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo() throws FDResourceException {
 		Connection conn = null;
+		FDStandingOrderInfoList ret = null;
+		
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			FDStandingOrderInfoList ret = dao.getMechanicalFailedStandingOrdersCustInfo(conn);
-			
-			addZoneInfoToStandingOrder(ret);
-			
-			return ret;
+			ret = dao.getMechanicalFailedStandingOrdersCustInfo(conn);
+
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in getMechanicalFailedStandingOrdersCustInfo() : " + e.getMessage(), e );
 			e.printStackTrace();
@@ -341,6 +341,17 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
+
+		// Add Zone info to Standing Order
+		if(ret !=null ){
+			
+			boolean isLocalDeployment = FDStoreProperties.isLocalDeployment();
+			if(!isLocalDeployment){
+				addZoneInfoToStandingOrder(ret);
+			}
+		}
+		
+		return ret;
 	}
 	
 	
