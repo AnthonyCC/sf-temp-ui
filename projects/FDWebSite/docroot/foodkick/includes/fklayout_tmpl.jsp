@@ -104,6 +104,7 @@ if( !request.getRequestURI().contains("/index.jsp") ){
 
 		<tmpl:get name='content'/>
 
+		<a name="footer_anchor" id="footer_anchor"></a>
 		<footer>
 			 <section id="footer_disclaimer">
 			 *This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
@@ -127,7 +128,7 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 					</p>
 					<p>
 						Press Inquiries<br/>
-						<a href="mailto:press@foodkick.com">press@foodkick.com</a>
+						<a href="mailto:pr@foodkick.com">pr@foodkick.com</a>
 					</p>
 					<p>
 						Want to Partner?<br/>
@@ -147,9 +148,9 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 					<hr/>
 					<ul>
 						<li><a style="<%=svg_bg("footer/twitter.svg") %>;" href="http://www.twitter.com/FreshDirect">&nbsp;</a></li>
-						<li><a style="<%=svg_bg("footer/instagram.svg") %>;" href="http://www.instagram.com">&nbsp;</a></li>
+						<li><a style="<%=svg_bg("footer/instagram.svg") %>;" href="https://instagram.com/foodkick/">&nbsp;</a></li>
 						<li><a style="<%=svg_bg("footer/facebook.svg") %>;" href="http://www.facebook.com/FreshDirect">&nbsp;</a></li>
-						<li class="last"><a style="<%=svg_bg("footer/snapchat.svg") %>;" href="https://www.snapchat.com/">&nbsp;</a></li>
+						<li class="last"><a style="<%=svg_bg("footer/snapchat.svg") %>;" href="#footer_anchor">&nbsp;</a></li>
 					</ul>
 					
 					<img src="<%=IMAGES_DIR %>/footer/tiles.jpg" />

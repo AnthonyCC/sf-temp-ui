@@ -93,6 +93,15 @@ function prepare_slideshow(ss_obj){
 		//add the complete new slide to what will be the slide show
 		$("#" + ss_obj.html_id ).append( "<figure><figcaption>"+ss_obj.slides[i].caption+"</figcaption>"+temp_innerslide_fullcontent+"</figure>" );
 	}//end for loop
+	
+	
+	
+	//if there is only one slide, well, our problem is more tedious, but solvable
+	if( ss_obj.slides.length == 1 ){
+		$("#" + ss_obj.html_id ).html(  '<div class="slidesjs-container slidesjs-single"><div class="slidesjs-control">'+ $("#" + ss_obj.html_id ).html() +'</div></div>'  );
+		
+		return;
+	}
 
 	//now actually generate the slideshow, stuff before was merely preperation html material
 	$("#" + ss_obj.html_id ).slidesjs({

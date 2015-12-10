@@ -889,17 +889,55 @@ section#section_How_it_works{
 
 section#section_Whats_Good{
 	margin-bottom:30px;
-	height:48vw;
+	height:194vw;
 	display:none;
+	
+	@include breakpoint_mixin(50em){
+		height:48vw;
+	}
 	
 	.container{
 		/*width:600px;*/
 		width: 100%;
-		height:inherit;
+		/*height:inherit;*/
 		
 		@include breakpoint_mixin(large){
 			width: 50%;
 			float:left;
+		}
+		
+		.slidesjs-container.slidesjs-single{
+			overflow: hidden;
+			position: relative;
+			width: 100%;
+			height: calc(100% + 30px);
+			
+			.slidesjs-control{
+				/*margin-top: 5px;*/
+			}
+			
+			ul {
+				padding-left: 10px;
+				
+				li{
+					
+		
+					@include breakpoint_mixin(medium){
+						background-image: url(#{$IMG_DIR}/section_4/list_check.png);
+						
+						list-style-type: none;
+						min-height: 25px;
+						background-repeat:no-repeat;
+						padding-left: 30px;
+						font-size: 1em;
+						padding-bottom: 0.75em;
+					}
+					
+					@include breakpoint_mixin(large){
+						font-size: 1.5em;
+					}
+				}
+			}
 		}
 		
 		.carousel_Whats_Good:before{
@@ -928,6 +966,15 @@ section#section_Whats_Good{
 		
 		#carousel_Whats_Good_foodkick{
 			display:none;
+			
+			figcaption{
+				bottom: initial;
+				left: 3%;
+				top: 7%;
+				width: 45%;
+				height: 80%;
+				padding: 25px;
+			}
 		}
 		#carousel_Whats_Good_scenes{
 			display:none;
@@ -965,7 +1012,7 @@ section#section_Whats_Good{
 				position: absolute;
 				width: 75%;
 				height: 42%;
-				bottom: 0px;
+				bottom: 12px;
 				left: calc(20% - 23px);
 				padding: 0px;
 				background-color: rgba(white, 0.66);
@@ -974,9 +1021,10 @@ section#section_Whats_Good{
 					margin-top:10px;
 					margin-bottom: 0px;
 					/*font-size: 21pt;*/
-					text-align: center;
+					//text-align: center;
 					
 					font-size: 1.25em;
+					margin-left: 3%;
 					
 					@include breakpoint_mixin(medium){
 						margin-top:1%;
@@ -987,7 +1035,7 @@ section#section_Whats_Good{
 						margin-top:2%;
 						/*font-size: 1.75em;*/
 						
-						font-size: 1.5vw;
+						font-size: 2.25vw;
 					}
 				}
 				
@@ -1256,7 +1304,7 @@ section.section_plain_copy{
 }
 
 section#section_forget_password_link_expired{
-	min-height:800px;
+	min-height:750px;
 	background-image: url(#{$IMG_DIR}/link_expired_bg_tiny.png);
 	background-repeat:no-repeat;
 	background-position: bottom;
@@ -1266,7 +1314,9 @@ section#section_forget_password_link_expired{
     margin-bottom: 0px;
     height: 100%;
     padding: 0px;
-    margin-top: 75px;
+    margin-top: 55px;
+	position: relative;
+	top: 20px;
 	
 	h3{
 		font-family: '#{$GraphikApp_r_n}';
