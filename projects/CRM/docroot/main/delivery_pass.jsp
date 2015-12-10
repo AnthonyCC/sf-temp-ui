@@ -16,6 +16,7 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
+ <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -115,7 +116,13 @@
 
 <%
 	FDUserI	user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+	
+boolean hasCustomerCase= false;
+	if(CrmAgentRole.COS_CODE.equalsIgnoreCase(CrmSession.getCurrentAgent(session).getRole().getCode()))
+   		hasCustomerCase=true;
+	else
+  	 hasCustomerCase = CrmSession.hasCustomerCase(session); 
+
 %>
 <% boolean editable = false; %>
 <crm:GetLockedCase id="cm">
