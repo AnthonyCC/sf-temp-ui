@@ -134,7 +134,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
   
 <!-- This change is for Voucher Redemption. We are hiding the change control for these particular voucher users -->
   <tmpl:put name="extraCss">
-  	<% if (user.isVoucherHolder()) { %>
+  	<% if (user.isVoucherHolder() && null == masqueradeContext) { %>
 	  	<style>
 	  		[data-drawer-id="address"]>button {
 		    	display: none !important;
