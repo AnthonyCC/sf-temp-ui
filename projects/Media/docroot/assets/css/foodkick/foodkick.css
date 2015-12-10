@@ -749,14 +749,18 @@ section#section_FOODKICK {
 section.forgot_password_section {
   text-align: center;
   vertical-align: middle;
-  margin-top: 175px;
-  margin-left: 25%;
+  margin-top: 85px;
+  margin-left: 10%;
   margin-bottom: 5%;
   background-color: #F1F1F1;
   width: 50%;
   min-width: 305px;
   color: #3E3F49;
   padding-bottom: 50px; }
+  @media (min-width: 30em) {
+    section.forgot_password_section {
+      margin-left: 25%;
+      margin-top: 175px; } }
   section.forgot_password_section h1, section.forgot_password_section h2, section.forgot_password_section h3 {
     display: inline-block;
     font-family: "TiemposHeadlineApp-Bold";
@@ -768,8 +772,10 @@ section.forgot_password_section {
   section.forgot_password_section table {
     margin: auto;
     text-align: left;
-    width: 90%;
-    min-width: 310px; }
+    width: 90%; }
+    @media (min-width: 30em) {
+      section.forgot_password_section table {
+        min-width: 310px; } }
     section.forgot_password_section table .bodyCopy {
       white-space: nowrap; }
     section.forgot_password_section table .text9 {

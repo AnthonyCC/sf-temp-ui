@@ -1145,8 +1145,8 @@ section#section_FOODKICK{
 section.forgot_password_section{
 	text-align:center;
 	vertical-align:middle;
-	margin-top: 175px;
-	margin-left: 25%;
+	margin-top: 85px;
+	margin-left: 10%;
 	margin-bottom: 5%;
 	
 	background-color: #F1F1F1;
@@ -1156,6 +1156,11 @@ section.forgot_password_section{
     color: #3E3F49;
     
     padding-bottom: 50px;
+    
+	@include breakpoint_mixin(medium){
+		margin-left: 25%;
+		margin-top: 175px;
+	}
 	
 	h1,h2,h3{
 		display:inline-block;
@@ -1173,7 +1178,10 @@ section.forgot_password_section{
 		text-align:left;
 		
 		width: 90%;
-		min-width: 310px;
+		
+		@include breakpoint_mixin(medium){
+			min-width: 310px;
+		}
 
 		.bodyCopy{
 			white-space:nowrap;
