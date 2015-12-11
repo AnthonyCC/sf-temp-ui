@@ -246,7 +246,16 @@
 					<td colspan="1" align="right" width="75"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"><xsl:value-of select="format-number(order/subTotal, '$###,##0.00', 'USD')"/></td>
 					<td colspan="1" style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"><xsl:if test="order/estimatedPrice = 'true'">*</xsl:if></td>
 				</tr>
-			
+				<xsl:if test="number(order/tip) &gt; 0">
+					<tr valign="top" class="orderSummary">
+						<td colspan="1" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Tip :</td>
+						<td colspan="1" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">
+							<xsl:value-of select="format-number(order/tip, '$###,##0.00', 'USD')"/>							
+						</td>
+						<td colspan="1" style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"></td>
+					</tr>
+				</xsl:if>
+
 				<xsl:if test="number(order/deliverySurcharge) &gt; 0">
 					<tr valign="top" class="orderSummary">
 						<td colspan="1" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Delivery Fee<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>:</td>
