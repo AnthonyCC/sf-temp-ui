@@ -173,7 +173,14 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 			userToken = socialUser.get("userToken");
 			socialEmail = (String) socialUser.get("email");
 			socialAccountProvider = (String) socialUser.get("provider");
-			if(userToken!=null && (!userToken.equalsIgnoreCase(""))) {
+			if(socialEmail == null || socialEmail.equalsIgnoreCase("")) {
+				responseMessage = new SocialResponse();
+				// no email address found for social login
+				((SocialResponse) responseMessage).setResultMessage(MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND);
+				((SocialResponse) responseMessage).setResultAction("CANCELED");
+				setResponseMessage(model, responseMessage, user);
+				return model;
+			}else if(userToken!=null && (!userToken.equalsIgnoreCase(""))) {
 				requestMessage.setUserToken(userToken);
 			} else {
 				responseMessage = new SocialResponse();

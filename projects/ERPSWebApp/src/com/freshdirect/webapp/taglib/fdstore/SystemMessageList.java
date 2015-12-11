@@ -220,6 +220,7 @@ public interface SystemMessageList {
     public static final String MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN ="User Name & Password do not match. Please try again or sign in with {0}";
     public static final String MSG_SOCIAL_INVALID_USERTOKEN="Invalid User Token";
     public static final String MSG_SOCIAL_PROFILE_NOT_FOUND="Social profile not found";
+    public static final String MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND="Social account needs to have an email address for Signup/Login";
     
     public static final String MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED = "This email is not valid for FoodKick orders.  Please register a new account to place a FoodKick order.";
     
