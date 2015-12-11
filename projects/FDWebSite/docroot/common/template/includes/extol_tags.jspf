@@ -25,7 +25,7 @@
 		int user_getLevel = user_e1.getLevel();
 	
 		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
-		if( user_e1.getLevel() != 0 ){
+		if( user_e1.getLevel() == FDUserI.SIGNED_IN ){
 			//customer basics
 			String exCustFirstName = user_e1.getFirstName();
 			String custLastName = user_e1.getLastName();
