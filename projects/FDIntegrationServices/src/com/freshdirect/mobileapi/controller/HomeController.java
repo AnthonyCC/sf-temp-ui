@@ -15,6 +15,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.fdstore.content.CMSPageRequest;
@@ -222,12 +223,35 @@ public class HomeController extends BaseController {
 	
 	private void setMediaPath(WebPageResponse pageResponse) {
 		String mediaPath = MobileApiProperties.getMediaPath();
+		String mediaPathFDStore = FDStoreProperties.getMediaPath();
+		String mediaStr = "/media/";
 		if (pageResponse != null && pageResponse.getPage() != null
 				&& pageResponse.getPage().getSections() != null) {
 			for (CMSSectionModel section : pageResponse.getPage().getSections()) {
 				if (section.getImageBanner() != null
 						&& section.getImageBanner().getImage() != null
 						&& section.getImageBanner().getImage().getPath() != null) {
+					
+					if (section.getImageBanner().getImage().getPath()
+							.contains(mediaPathFDStore)) {
+						section.getImageBanner()
+								.getImage()
+								.setPath(
+										section.getImageBanner()
+												.getImage()
+												.getPath()
+												.substring(
+														section.getImageBanner()
+																.getImage()
+																.getPath()
+																.indexOf(
+																		mediaStr),
+														section.getImageBanner()
+																.getImage()
+																.getPath()
+																.length()));
+					}
+					
 					if(!section.getImageBanner()
 							.getImage().getPath().contains(mediaPath)) {
 					section.getImageBanner()
@@ -244,6 +268,27 @@ public class HomeController extends BaseController {
 								&& picklist.getImage() != null
 								&& picklist.getImage().getImage() != null
 								&& picklist.getImage().getImage().getPath() != null) {
+							
+							if (picklist.getImage().getImage().getPath()
+									.contains(mediaPathFDStore)) {
+								section.getImageBanner()
+										.getImage()
+										.setPath(
+												picklist.getImage()
+														.getImage()
+														.getPath()
+														.substring(
+																picklist.getImage()
+																		.getImage()
+																		.getPath()
+																		.indexOf(
+																				mediaStr),
+																				picklist.getImage()
+																		.getImage()
+																		.getPath()
+																		.length()));
+							}
+							
 							if(!picklist.getImage()
 									.getImage().getPath().contains(mediaPath)) {
 							picklist.getImage()
