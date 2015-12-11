@@ -344,7 +344,7 @@
 			<span class="bottom-links">
    			 <b>Already have a password? 
    			  <a href="#"
-							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', width: 500, height: 350}) ">
+							 onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', height: 580, opacity: .5}) ">
 							 Log in
 			  </a>
    			 

@@ -295,7 +295,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		<div class="bottom-contents">
 			<div class="bottom-links">
 				New to FreshDirect?
-				<a href="/social/signup_lite.jsp" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', opacity: .5});">
+				<a href="/social/signup_lite.jsp" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5});">
 					Create Account
 				</a>
 			</div>
