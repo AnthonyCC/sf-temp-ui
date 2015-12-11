@@ -104,7 +104,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	        <div id="form_feilds">
 	            <form name="fd_login" id="fd_login" method="post" >
 	            	<table border="0" cellpadding="5" cellspacing="8">
-		                <% if (!result.isSuccess()) { out.println( "<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please try again.</font></td></tr>");%>
+		                <% if (!result.isSuccess()) { out.println( "<tr><td>&nbsp;</td><td><font color='red' size='2px'>An account with this e-mail already exists.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please Sign in with your e-mail or social account.</font></td></tr>");%>
 	    	                <script type="text/javascript">
 	        	            	$jq(function() {
 	            	            	$jq('#email_img').addClass('show_bg_arrow');
