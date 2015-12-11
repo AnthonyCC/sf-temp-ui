@@ -365,7 +365,8 @@
     <%}%>
 </tr>
 <tr><td colspan="<%= __cld_hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
-<% if (isFdxOrder) { %>
+
+<%-- <% if (isFdxOrder) { %>
 	<tr>
 	    <td colspan="3"></td>
 	    <td colspan="2">E-Tip <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
@@ -375,7 +376,7 @@
 	        <td colspan="3"></td>
 	    <% } %>
 	</tr>
-<% } %>
+<% } %> --%>
 
 <tr valign="top">
     <td colspan="3"></td>

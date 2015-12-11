@@ -260,7 +260,17 @@
 		</tr>
 	<%  } %> --%>
 	</fd:GetOrder>
-            
+        <% if (isFdxOrder) { %>
+			<tr>
+			    <td colspan="3"></td>
+			    <td colspan="2">E-Tip :</td>
+			    <td colspan="2" align="right"><%=JspMethods.formatPrice(order.getTip()) %></td>
+			    <td colspan="4"></td>
+			    <% if (hasInvoice) { %>
+			        <td colspan="3"></td>
+			    <% } %>
+			</tr>
+		<% } %>	    
          <%
        	    String displayString = "";
 	    StringBuffer value = new StringBuffer();
@@ -350,7 +360,7 @@
 		</tr>
 		<%  } %>
 		
-			
+
 		<%if(order.getTaxValue() > 0){%>
 			</tr>
 				<td colspan="3"></td>
