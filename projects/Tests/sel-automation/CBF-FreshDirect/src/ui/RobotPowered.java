@@ -72,7 +72,7 @@ public class RobotPowered {
 					+ browserFurnitureOffsetY + webElementY);
 
 			// Move the mouse to the calculated X/Y coordinates
-			if(driver.findElements(By.id(objMap.getLocator("strstorefrontMsg"))).size()>0 && driver.findElement(By.id("topwarningbar")).isDisplayed())
+			/*if(driver.findElements(By.id(objMap.getLocator("strstorefrontMsg"))).size()>0 && driver.findElement(By.id("topwarningbar")).isDisplayed())
 			{
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")) 
 				{
@@ -88,11 +88,11 @@ public class RobotPowered {
 					mouseObject.mouseMove(xPosition, yPosition-sub_webElementY);	
 				}
 
-			}else{
+			}else{*/
 				mouseObject.mouseMove(xPosition-1, yPosition);	
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				mouseObject.mouseMove(xPosition, yPosition);	
-			}
+			//}
 			mouseObject.waitForIdle();
 		} else {
 			actions.moveToElement(element).build().perform();

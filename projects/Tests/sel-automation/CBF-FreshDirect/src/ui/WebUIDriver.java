@@ -7679,10 +7679,11 @@ public class WebUIDriver extends BaseAppDriver {
 
 			// product out of stock check
 			try {
-				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
-				{
-					SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				// to handle element out of DOM issue
+				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE")){
+					SleepUtils.getInstance().sleep(TimeSlab.LOW);
 				}
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				product = handleOutOfStock(reorder_page,
 						reorder_grid_or_list, flexibility);
 				if (product == null)
