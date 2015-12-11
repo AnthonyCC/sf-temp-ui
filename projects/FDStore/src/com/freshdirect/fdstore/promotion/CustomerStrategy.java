@@ -123,7 +123,13 @@ public class CustomerStrategy implements PromotionStrategyI {
 					
 				} else if(paymentTypes.contains(EnumCardType.MASTERPASS)) {
 					if(null !=cart.getPaymentMethod().geteWalletID()){
-						 EnumEwalletType eWalletType = EnumEwalletType.getEnum(cart.getPaymentMethod().geteWalletID());
+						Integer eWalletId = null;
+						try {
+							eWalletId = Integer.parseInt(cart.getPaymentMethod().geteWalletID());
+						} catch (NumberFormatException e) {
+							//Ignore
+						}
+						 EnumEwalletType eWalletType = (null != eWalletId? EnumEwalletType.getEnum(eWalletId): null);
 						 if(null ==eWalletType || !eWalletType.getName().equals(EnumCardType.MASTERPASS.getFdName())){
 							 context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 							 return DENY;
