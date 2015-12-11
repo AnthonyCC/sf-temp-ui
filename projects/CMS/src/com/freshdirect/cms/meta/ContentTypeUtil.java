@@ -27,7 +27,7 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
  */
 public class ContentTypeUtil {
 
-	public static final DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	//public static final DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	public static final DateFormat	timeFormat = new SimpleDateFormat("HH:mm");
 
 	private ContentTypeUtil() {
@@ -117,6 +117,7 @@ public class ContentTypeUtil {
 				return ContentKey.decode(str);
 			} else if (EnumAttributeType.DATE.equals(type)) {
 				try {
+					DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					return dateFormat.parse(str);
 				} catch (ParseException e) {
 					throw new IllegalArgumentException(e.toString()+" - Value - "+value);
@@ -198,6 +199,7 @@ public class ContentTypeUtil {
      */
     public static String attributeToString(AttributeDefI atrDef, Object value) {
         if (EnumAttributeType.DATE.equals(atrDef.getAttributeType())) {
+			DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             return dateFormat.format((Date) value);
         } else if (EnumAttributeType.TIME.equals(atrDef.getAttributeType())) {
             return timeFormat.format((Date) value);
