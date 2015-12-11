@@ -80,6 +80,12 @@ if(orderId==null){
         // get order line info
         //
         boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED) ||cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZATION_FAILED);
+    	
+        boolean isFdxOrder = false;
+    	EnumEStoreId EStoreIdEnum = null;
+    	EStoreIdEnum = cart.getEStoreId();
+    	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
+        
 	%>
 	<!-- error message handling here -->
 

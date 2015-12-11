@@ -130,6 +130,7 @@
 	String lastDept = null;
 	double tax = 0.0;
 	double deposit = 0.0;
+	double tip = order.getTip();
 
 	if (!view.isDisplayDepartment()) {
 		%>

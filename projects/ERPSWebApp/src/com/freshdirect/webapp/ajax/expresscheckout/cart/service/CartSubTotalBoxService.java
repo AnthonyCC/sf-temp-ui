@@ -60,6 +60,7 @@ public class CartSubTotalBoxService {
     private static final String TOTAL_TAX_NAME = "Total Tax";
     private static final String TOTALTAX_ID = "totaltax";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
+    private static final String TIP = "Tip";
 
     private CartSubTotalBoxService() {
     }
@@ -361,6 +362,21 @@ public class CartSubTotalBoxService {
             subTotalBox.add(data);
         }
     }
+    
+	public void populateTipToBox(List<CartSubTotalFieldData> subTotalBox,
+			FDCartI cart) {
+		 double tips = cart.getTip();
+
+		 if("FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
+			 if (0 < tips) {
+		CartSubTotalFieldData data = new CartSubTotalFieldData();
+		data.setId(TIP);
+		data.setText(TIP);
+		data.setValue(JspMethods.formatPrice(tips));
+		subTotalBox.add(data);
+			 }
+		 }
+	}
 
     private boolean hasCartLineGroupDiscount(FDCartLineI cartLine) {
         return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;
