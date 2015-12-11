@@ -440,13 +440,26 @@
 		 */
 		if (pageContext.getSession().getAttribute("EXPRESS_REGISTRATION_COMPLETE") != null) {			
 			session.setAttribute("EXPRESS_REGISTRATION_COMPLETE",null);
+			
+			String preSuccessPageFromSession = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+			
+			if(preSuccessPageFromSession == null) {
 	%>
-			<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
-			<script language="javascript">
-				//window.top.location = '/index.jsp';   // close popup and return to index page
-				window.location = '/social/AccountCreateSuccess.jsp';  // forward to this page
-			</script>				
+				<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
+				<script language="javascript">
+					//window.top.location = '/index.jsp';   // close popup and return to index page
+					window.location = '/social/AccountCreateSuccess.jsp';  // forward to this page
+				</script>				
 	<%
+			} else {				
+				session.setAttribute(SessionName.PREV_SUCCESS_PAGE,null);			
+	%>
+				<div style="width: 500px;"><img src="/media_stat/images/navigation/spinner.gif" class="fleft" /></div>		
+				<script language="javascript">
+					window.top.location = '<%= preSuccessPageFromSession %>';   // close popup and return to  preSuccessPageFromSession 
+				</script>				
+	<%	
+			}
 		} 
 	%>
 
