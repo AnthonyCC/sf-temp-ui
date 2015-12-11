@@ -406,8 +406,32 @@ public class Checkout {
     public ResultBundle setCheckoutOrderMobileNumberEx(String orderMobileNumber)throws FDException{
    	 CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = null;
+        boolean isCustomAdded=false;
+
         if ((result == null) || (result.getActionResult().isSuccess())) 
        	 result = tagWrapper.setCheckoutOrderMobileNumber(this.sessionUser, orderMobileNumber);
+        
+        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        ActionResult customActionResult = new ActionResult();
+        if(result.getActionResult().isFailure()){
+	         Collection<ActionError> errors = result.getActionResult().getErrors();
+	         for(ActionError error : errors){
+	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
+	         		continue;
+	         	} else {
+	         		customActionResult.addError(error);
+	         	}
+	         }
+	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
+	         for(ActionWarning warning : warnings){
+	        	 customActionResult.addWarning(warning);
+	         }
+	         isCustomAdded=true;
+        }
+        if(isCustomAdded){
+       	 result.setActionResult(customActionResult);
+        } 
+       
          return result;
    }
 
