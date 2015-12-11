@@ -27,8 +27,8 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
  */
 public class ContentTypeUtil {
 
-	//public static final DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	public static final DateFormat	timeFormat = new SimpleDateFormat("HH:mm");
+	public static final String	dateFormatStr = "yyyy-MM-dd";
+	public static final String	timeFormatStr = "HH:mm";
 
 	private ContentTypeUtil() {
 	}
@@ -117,7 +117,7 @@ public class ContentTypeUtil {
 				return ContentKey.decode(str);
 			} else if (EnumAttributeType.DATE.equals(type)) {
 				try {
-					DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					DateFormat	dateFormat = new SimpleDateFormat(dateFormatStr);
 					return dateFormat.parse(str);
 				} catch (ParseException e) {
 					throw new IllegalArgumentException(e.toString()+" - Value - "+value);
@@ -126,6 +126,7 @@ public class ContentTypeUtil {
 				return str;
 			} else if (EnumAttributeType.TIME.equals(type)){
 				try{
+					DateFormat	timeFormat = new SimpleDateFormat(timeFormatStr);
 					return timeFormat.parse(str);
 				} catch (ParseException e){
 					throw new IllegalArgumentException(e.toString());
@@ -199,9 +200,10 @@ public class ContentTypeUtil {
      */
     public static String attributeToString(AttributeDefI atrDef, Object value) {
         if (EnumAttributeType.DATE.equals(atrDef.getAttributeType())) {
-			DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat	dateFormat = new SimpleDateFormat(dateFormatStr);
             return dateFormat.format((Date) value);
         } else if (EnumAttributeType.TIME.equals(atrDef.getAttributeType())) {
+			DateFormat	timeFormat = new SimpleDateFormat(timeFormatStr);
             return timeFormat.format((Date) value);
         }
         return String.valueOf(value);
