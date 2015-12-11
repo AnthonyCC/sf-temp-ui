@@ -30,6 +30,7 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -911,11 +912,23 @@ public class BrowseUtil {
 	    			
 	    		}
     			products = new ArrayList<String>(productList.size());	    		
-	    		
+	    		StringBuilder sb = new StringBuilder();
+	    		for(ProductModel pm: productList){
+	    			sb.append(pm.getFullName()).append(" - " );
+	    		}
+//	    		LOG.debug("PRE  SORT BY NAME: " + sb.toString());
+	    		sortProductsBy(user, productList, "NAME");
+//	    		sb = new StringBuilder();
+//	    		for(ProductModel pm: productList){
+//	    			sb.append(pm.getFullName()).append(" - " );
+//	    		}
+//	    		LOG.debug("POST SORT BY NAME: " + sb.toString());
 	    		if(requestMessage.getSortBy() != null && !requestMessage.getSortBy().isEmpty()){
 	    			sortProductsBy(user, productList, requestMessage.getSortBy());
 	    		}
+	    			    		
 	    		for(ProductModel pm : productList){
+//	    			LOG.debug("ProductName: " + pm.getFullName());
 	    			products.add(pm.getContentName());
 	    		}		    	
 	    	}
@@ -1616,7 +1629,7 @@ public class BrowseUtil {
             	if(tmp == null){
                 	list.add(new SortStrategyElement(element));	 
             	} else {
-                	list.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NUTRITION, sortBy, false));
+                	list.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NUTRITION, ErpNutritionType.getType(sortBy).getDisplayName(), false));
             	}
             	
         	} else {
