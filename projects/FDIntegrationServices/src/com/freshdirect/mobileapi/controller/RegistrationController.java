@@ -479,6 +479,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		((LoggedIn) responseMessage).setSelectedServiceType(user.getSelectedServiceType() != null ? user.getSelectedServiceType().toString() : "");
 		((LoggedIn) responseMessage).setCohort(user.getCohort());
 		((LoggedIn) responseMessage).setTotalOrderCount(user.getTotalOrderCount());
+		((LoggedIn) responseMessage).setTcAcknowledge(user.getTcAcknowledge());
 		
 		return responseMessage;
 	}

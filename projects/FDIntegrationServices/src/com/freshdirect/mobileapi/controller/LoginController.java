@@ -189,6 +189,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class); 
 				
 			model = udateAck(model, request, response, user, requestMessage);
+			user.setTcAcknowledge(true);
+			
 		}  else if (ACTION_SESSION_ADD_ANONYMOUS_ADDRESS.equals(action)) {
 			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class); 
 			try {

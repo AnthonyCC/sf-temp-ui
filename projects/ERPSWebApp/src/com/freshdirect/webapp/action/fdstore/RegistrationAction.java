@@ -211,6 +211,7 @@ public class RegistrationAction extends WebActionSupport {
 					//Added the following line for zone pricing to keep user service type up-to-date.
 					user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
 					user.updateUserState();
+					user.setTcAcknowledge(true);
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
@@ -691,6 +692,7 @@ public class RegistrationAction extends WebActionSupport {
 				// changes done by gopal
 				customerInfo.setReferralProgId(user.getLastRefProgId());
 				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
+				customerInfo.setFdTcAgree("X");
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				ErpAddressModel erpAddress = null;
@@ -752,6 +754,8 @@ public class RegistrationAction extends WebActionSupport {
 				fdCustomer.setRafPromoCode((String) session.getAttribute("COUPONCODE"));
 	
 				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
+				
+				
 	
 			try {
 					LOGGER.info("Entering final Registration.");
@@ -779,6 +783,8 @@ public class RegistrationAction extends WebActionSupport {
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
 					user.getUser().setDlvPassInfo(dlvpassInfo);
 					user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
+					//APPDEV-4381 : leagal terms
+					user.setTcAcknowledge(true);
 					session.setAttribute(SessionName.USER, user);
 					
 					// Code for merging social network this the newly registered

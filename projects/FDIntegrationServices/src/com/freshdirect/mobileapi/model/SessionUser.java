@@ -683,6 +683,10 @@ public class SessionUser {
 		return sessionUser.getTcAcknowledge();
 	}
 	
+	public void setTcAcknowledge(boolean ack){
+		this.sessionUser.setTcAcknowledge(ack);
+	}
+	
 	
 	public boolean isVHInDelivery() throws FDResourceException {
 		return this.sessionUser.isVHInDelivery();

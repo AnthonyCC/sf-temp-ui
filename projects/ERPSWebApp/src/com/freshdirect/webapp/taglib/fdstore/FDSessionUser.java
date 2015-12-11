@@ -1833,6 +1833,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		
 		return this.user.getTcAcknowledge();
 	}
+	
+	public void  setTcAcknowledge(boolean acknowledge) {
+		
+		this.user.setTcAcknowledge(acknowledge);
+	}
 
 
 	public Date getFirstOrderDate() throws FDResourceException{
