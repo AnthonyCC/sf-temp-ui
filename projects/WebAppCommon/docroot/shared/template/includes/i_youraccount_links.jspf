@@ -68,8 +68,8 @@
 				if(rpModel != null) {
 					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
 				}
-			}else if(FDStoreProperties.isExtoleRafEnabled()){
-				folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
+			}else if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
+				folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeUrl());
 			}
 		} catch (Exception e) {
 			LOGGER.debug("Error in getting RAF link");

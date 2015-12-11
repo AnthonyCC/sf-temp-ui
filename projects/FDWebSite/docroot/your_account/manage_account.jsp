@@ -224,13 +224,13 @@ your account information, this is the place to do it.<br></td>
 		<br>
 		Invite your friends and earn $$$ credits.
 		<br><br>
-		<% } else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
+		<% } }else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
 		 <font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
+		<a href="<%=response.encodeURL(FDStoreProperties.getPropExtoleMicrositeUrl())%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		Invite your friends and earn $$$ credits.
 		<br><br>
-		<% } } %>	<font class="text13bold">
+		<% }  %>	<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/credits.jsp")%>">Account Credits</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		View your credit balance and credit history.

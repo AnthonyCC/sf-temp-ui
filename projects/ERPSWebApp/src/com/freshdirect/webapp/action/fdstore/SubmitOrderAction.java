@@ -566,7 +566,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		   
 			boolean isFriendReferred=false;
 			if(FDStoreProperties.isExtoleRafEnabled() && user.getRafClickId()!=null  && user.getOrderHistory().getSettledOrderCount()<1 
-					&&user.getRafPromoCode()!=null){
+					&&user.getRafPromoCode()!=null && !user.isReferralPromotionFraud()){
 				isFriendReferred=true;
 			}
 			
