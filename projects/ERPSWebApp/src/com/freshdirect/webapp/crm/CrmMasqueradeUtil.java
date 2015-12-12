@@ -7,10 +7,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +40,6 @@ import com.freshdirect.security.ticket.MasqueradePurposeBuilder;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.security.ticket.TicketService;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
-import com.freshdirect.webapp.ajax.expresscheckout.csr.servlet.CustomerServiceRepresentativeServlet;
 import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
@@ -56,46 +52,42 @@ public class CrmMasqueradeUtil {
 	private static final Logger LOGGER = LoggerFactory.getInstance( CrmMasqueradeUtil.class );
 	
 	
-	/**
-	 * Build masquerade context
-	 * 
-	 * @param identity user identity
-	 * @param params
-	 * @param agentId CRM Agent ID
-	 * @return
-	 *
-	 * @throws FDResourceException
-	 */
-	public static MasqueradeContext build(final FDIdentity identity, final MasqueradeParams params, final String agentId) throws FDResourceException {
-    	// masquerade
-    	// FIXME context builing should be extracted to a builder class
-    	MasqueradeContext ctx = new MasqueradeContext();
-    	ctx.setAgentId(agentId);
-    	ctx.setHasCustomerCase(params.hasCustomerCase);
-    	ctx.setForceOrderAvailable(params.forceOrderAvailable);
-    	ctx.setAutoApprovalLimit(params.autoApprovalLimit);
-    	ctx.setAutoApproveAuthorized(params.autoApproveAuthorized);
+    /**
+     * Build masquerade context
+     * 
+     * @param identity user identity @param params @param agentId CRM Agent ID @return
+     *
+     * @throws FDResourceException
+     */
+    public static MasqueradeContext build(final FDIdentity identity, final MasqueradeParams params, final String agentId) throws FDResourceException {
+        // masquerade
+        // FIXME context builing should be extracted to a builder class
+        MasqueradeContext ctx = new MasqueradeContext();
+        ctx.setAgentId(agentId);
+        ctx.setHasCustomerCase(params.hasCustomerCase);
+        ctx.setForceOrderAvailable(params.forceOrderAvailable);
+        ctx.setAutoApprovalLimit(params.autoApprovalLimit);
+        ctx.setAutoApproveAuthorized(params.autoApproveAuthorized);
+        ctx.setCsrWaivedDeliveryCharge(false);
+        ctx.setCsrWaivedDeliveryPremium(false);
+        ctx.setSilentMode(false);
 
-    	// Make-Good Order: collect order line IDs
-    	if (params.makeGoodFromOrderId!=null) {
-    		final FDOrderI _order = FDCustomerManager.getOrder(identity, params.makeGoodFromOrderId);
-    		
-			ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
-			Set<String> makeGoodAllowedOrderLineIds = new HashSet<String>();
-			ctx.setMakeGoodAllowedOrderLineIds(makeGoodAllowedOrderLineIds);    	
-			
-			for (FDCartLineI mgOrderLine : _order.getOrderLines()){
-				makeGoodAllowedOrderLineIds.add(mgOrderLine.getOrderLineId());
-	    	}
-			
-			// extract carton numbers for order lines
-			CrmMasqueradeUtil.buildCartonNumberMap(ctx, _order.getCartonContents());
-		} else if (params.parentOrderId!=null) {
-    		ctx.setParentOrderId(params.parentOrderId);
-		}
+        // Make-Good Order: collect order line IDs
+        if (params.makeGoodFromOrderId != null) {
+            final FDOrderI order = FDCustomerManager.getOrder(identity, params.makeGoodFromOrderId);
+            ctx.setMakeGoodFromOrderId(params.makeGoodFromOrderId);
+            for (FDCartLineI mgOrderLine : order.getOrderLines()) {
+                ctx.addMakeGoodOrderLineIdQuantity(mgOrderLine.getOrderLineId(), mgOrderLine.getQuantity());
+            }
 
-    	return ctx;
-	}
+            // extract carton numbers for order lines
+            CrmMasqueradeUtil.buildCartonNumberMap(ctx, order.getCartonContents());
+        } else if (params.parentOrderId != null) {
+            ctx.setParentOrderId(params.parentOrderId);
+        }
+
+        return ctx;
+    }
 	
 	
 	public static String generateLaunchURL(CrmAgentModel agent, HttpServletRequest request, FDUserI user, String eStoreId) throws FDResourceException, IllegalArgumentException {
@@ -305,8 +297,7 @@ public class CrmMasqueradeUtil {
 	
 	
 	public static void prepareMakeGoodContext( final MasqueradeContext ctx, final HttpSession session, final List<FDCartLineI> cartLines) throws FDResourceException {
-		// List<ErpComplaintReason> selReason = ComplaintUtil.getReasonsForDepartment("Makegood");
-		final Set<String> lineIds = ctx.getMakeGoodAllowedOrderLineIds();
+		final Set<String> lineIds = ctx.getMakeGoodOrderLineIdQuantities();
 		
         String orderLineReason[]	=  new String[lineIds.size()];
         String orderLineId[]		= new String[lineIds.size()];
@@ -321,8 +312,8 @@ public class CrmMasqueradeUtil {
         // decorate cart lines with carton numbers
         //   this trick is required in order to get complaint lines accompanied with carton numbers.
         //   note, that action results below will show a lot of errors, but discard them for now
-        if (ctx.getCartonInfo() != null) {
-        	assignCartonNumberToCartItems(cartLines, ctx.getCartonInfo());
+        if (!ctx.isEmptyMakeGoodOrderLineIdCartonNumbers()) {
+        	assignCartonNumberToCartItems(ctx, cartLines);
         }
 
 		try {
@@ -340,70 +331,53 @@ public class CrmMasqueradeUtil {
 	}
 	
 	
-	/**
-	 * Build carton number map
-	 * 
-	 * @param ctx
-	 * @param cartonInfoList
-	 * @param makeGoodAllowedOrderLineIds
-	 */
-	public static void buildCartonNumberMap(MasqueradeContext ctx, List<FDCartonInfo> cartonInfoList) {
-		// List<FDCartonInfo> cartonInfoList = _order.getCartonContents();
-		if (ctx != null && ctx.isMakeGood() && cartonInfoList != null) {
-			final Collection<String> makeGoodAllowedOrderLineIds = ctx.getMakeGoodAllowedOrderLineIds();
-			
-			Map<String,String> ol2cn = new HashMap<String,String>();
-			
-			for (final FDCartonInfo cInfo : cartonInfoList) {
-				final String cn = cInfo.getCartonInfo().getCartonNumber();
-				for ( FDCartonDetail cDetail : cInfo.getCartonDetails() ) {
-					if (cDetail.getCartLine() != null) {
-						final String anOrderLineId = cDetail.getCartLine().getOrderLineId();
-						
-						if (makeGoodAllowedOrderLineIds.contains( anOrderLineId ) ) {
-							ol2cn.put(anOrderLineId, cn);
-						}
-					}
-				}
-			}
-			ctx.setCartonInfo(ol2cn);
-		}
-		
-	}
+    /**
+     * Build carton number map
+     * 
+     * @param masqueradeContext @param cartonInfos
+     */
+    public static void buildCartonNumberMap(MasqueradeContext context, List<FDCartonInfo> cartonInfos) {
+        if (context != null && context.isMakeGood() && cartonInfos != null) {
+
+            for (final FDCartonInfo cartonInfo : cartonInfos) {
+                final String cartonNumber = cartonInfo.getCartonInfo().getCartonNumber();
+                for (FDCartonDetail cartonDetail : cartonInfo.getCartonDetails()) {
+                    if (cartonDetail.getCartLine() != null) {
+                        final String orderLineId = cartonDetail.getCartLine().getOrderLineId();
+                        if (context.containsMakeGoodOrderLineIdQuantity(orderLineId)) {
+                            context.addMakeGoodOrderLineIdCartonNumber(orderLineId, cartonNumber);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 	
     /**
      * Utility method that assigns carton numbers to each cart lines
      * 
-     * @param cartLines
-     * @param cartonInfo Map of OrderLineId -> Carton Numbers
+     * @param masqueradeContext @param cartLines
      */
-    public static void assignCartonNumberToCartItems(Collection<FDCartLineI> cartLines, Map<String,String> cartonInfo) {
+    public static void assignCartonNumberToCartItems(MasqueradeContext context, Collection<FDCartLineI> cartLines) {
         for (final FDCartLineI cartLine : cartLines) {
-        	assign(cartonInfo, cartLine);
+            assignCartonNumberToCartLine(context, cartLine);
         }
     }
 
-	protected static boolean assign(Map<String, String> cartonInfo, final FDCartLineI cartLine) {
-		if (cartLine.getOrderLineId() != null && cartonInfo.get(cartLine.getOrderLineId()) != null ) {
-			cartLine.setCartonNumber( cartonInfo.get(cartLine.getOrderLineId()) );
-			LOGGER.debug("Carton Number " + cartLine.getCartonNumber() + " has been assigned to cart line (R_ID: " + cartLine.getRandomId()  + ")");
-			return true;
-		}
-		return false;
-	}
+    /**
+     * MAKE GOOD MODE CartonNumber -> CartLine
+     * 
+     * @param masqueradeContext @param cartLine
+     */
+    public static void assignCartonNumberToCartLine(MasqueradeContext context, FDCartLineI cartLine) {
+        if (!(context != null && context.isMakeGood() && !context.isEmptyMakeGoodOrderLineIdCartonNumbers() && cartLine != null)) {
+            return;
+        }
 
-	/**
-	 * MAKE GOOD MODE
-	 * CartonNumber -> CartLine
-	 * 
-	 * @param ctx
-	 * @param cartLine
-	 */
-	public static void assignCartonNumberToCartLine(MasqueradeContext ctx, FDCartLineI cartLine) {
-		if (! (ctx != null && ctx.isMakeGood() && ctx.getCartonInfo() != null && cartLine != null) ) {
-			return;
-		}
-
-		assign(ctx.getCartonInfo(), cartLine);
-	}
+        if (cartLine.getOrderLineId() != null && context.getMakeGoodOrderLineIdCartonNumbers(cartLine.getOrderLineId()) != null) {
+            cartLine.setCartonNumber(context.getMakeGoodOrderLineIdCartonNumbers(cartLine.getOrderLineId()));
+            LOGGER.debug("Carton Number " + cartLine.getCartonNumber() + " has been assigned to cart line (R_ID: " + cartLine.getRandomId() + ")");
+        }
+    }
 }

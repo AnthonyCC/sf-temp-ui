@@ -2383,37 +2383,24 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
 	@Override
 	public SessionEvent getSessionEvent() {
-		// TODO Auto-generated method stub
 		return event;
 	}
 
 	@Override
 	public void setSessionEvent(SessionEvent event) {
-		// TODO Auto-generated method stub
 		this.event = event;
 	}
 	
-	//mergePendingOrder (APPDEV-2031)
-	
-	public boolean getShowPendingOrderOverlay() {
-
-		boolean showOverlay = false;
-		boolean addOnOrder = false;
-			MasqueradeContext curContext = getMasqueradeContext();
-			if(curContext!=null)
-				addOnOrder=curContext.getParentOrderId()!=null?true:false;
-			
-			Set<String> mgOLs = null;
-			if (curContext != null) {
-				mgOLs = curContext.getMakeGoodAllowedOrderLineIds();
-			}
-			if(!addOnOrder){
-			showOverlay = FDStoreProperties.isPendingOrderPopupEnabled()
-					&& (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay))
-					&& (curContext == null || (curContext != null && mgOLs == null) );
-			}
-		return showOverlay;
-	}
+    public boolean getShowPendingOrderOverlay() {
+        boolean showOverlay = false;
+        boolean isAddOnOrder = getMasqueradeContext() != null && getMasqueradeContext().isAddOnOrderEnabled();
+        if (!isAddOnOrder) {
+            showOverlay = FDStoreProperties.isPendingOrderPopupEnabled()
+                    && (FDStoreProperties.isPendingOrderPopupMocked() || (this.showPendingOrderOverlay && !this.suspendShowPendingOrderOverlay))
+                    && (getMasqueradeContext() == null || (getMasqueradeContext() != null && getMasqueradeContext().isEmptyMakeGoodOrderLineIdQuantities()));
+        }
+        return showOverlay;
+    }
 
 	public void setShowPendingOrderOverlay(boolean showPendingOrderOverlay) {
 		this.showPendingOrderOverlay = showPendingOrderOverlay;
@@ -2612,26 +2599,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return this.getFDCustomer().isEligibleForDDPP();
 	}
 	
-		@Override
-	public boolean isPopUpPendingOrderOverlay() {
-		boolean showOverlay = false;
-		try {
-			MasqueradeContext curContext = getMasqueradeContext();
-			Set<String> mgOLs = null;
-			if (curContext != null) {
-				mgOLs = curContext.getMakeGoodAllowedOrderLineIds();
-			}
-			showOverlay = getShowPendingOrderOverlay() && getLevel() >= RECOGNIZED
-					&& (curContext == null || (curContext != null && mgOLs == null) )
-					&& (hasPendingOrder() || FDStoreProperties.isPendingOrderPopupMocked());
-		} catch (FDResourceException e) {
-			LOGGER.debug("a really unexpected and really unnecessarily delegated exception", e);
-			//return false;
-		}
-		return showOverlay;
-	}
-	
-	
+    @Override
+    public boolean isPopUpPendingOrderOverlay() {
+        boolean showOverlay = false;
+        try {
+            showOverlay = getShowPendingOrderOverlay() && getLevel() >= RECOGNIZED && (getMasqueradeContext() == null || (getMasqueradeContext() != null && getMasqueradeContext().isEmptyMakeGoodOrderLineIdQuantities()))
+                    && (hasPendingOrder() || FDStoreProperties.isPendingOrderPopupMocked());
+        } catch (FDResourceException e) {
+            LOGGER.debug("a really unexpected and really unnecessarily delegated exception", e);
+        }
+        return showOverlay;
+    }
 	
 	public EnumGiftCardType getGiftCardType() {
 		return giftCardType;

@@ -1,8 +1,11 @@
 package com.freshdirect.common.context;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import com.freshdirect.customer.ErpReturnOrderModel;
 
 public class MasqueradeContext implements Serializable {
 
@@ -13,16 +16,20 @@ public class MasqueradeContext implements Serializable {
 	private boolean forceOrderAvailable;
 	private boolean forceOrderEnabled;
 	private String makeGoodFromOrderId;
-	private Set<String> makeGoodAllowedOrderLineIds;
-	// map of orderline -> carton number
-	private Map<String, String> cartonInfo;
+	private Map<String,Double> makeGoodOrderLineIdQuantities;
+	private Map<String, String> makeGoodOrderLineIdCartonNumbers;
 	private boolean autoApproveAuthorized;
 	private Double autoApprovalLimit;
 	private String parentOrderId;
-	private boolean csrWaivedDeliveryCharge = false;
-	private boolean csrWaivedDeliveryPremium = false;
-	private boolean silentMode = false;
+	private boolean csrWaivedDeliveryCharge;
+	private boolean csrWaivedDeliveryPremium;
+	private boolean silentMode;
 
+	public MasqueradeContext(){
+	    makeGoodOrderLineIdQuantities = new HashMap<String,Double>();
+	    makeGoodOrderLineIdCartonNumbers = new HashMap<String,String>();
+	}
+	
 	public boolean isAddOnOrderEnabled(){
 	    return parentOrderId != null;
 	}
@@ -35,24 +42,22 @@ public class MasqueradeContext implements Serializable {
 		this.parentOrderId = parentOrderId;
 	}
 
+    public String validateAddToCart(String orderLineId) {
+        String errorMessage = null;
+        if (!isEmptyMakeGoodOrderLineIdQuantities() && (orderLineId == null || !containsMakeGoodOrderLineIdQuantity(orderLineId))) {
+            errorMessage = "MakeGood - Product not allowed";
+        }
+         return errorMessage;
+    }
 
-	public String validateAddToCart(String orderLineId){
-		if (makeGoodAllowedOrderLineIds!=null && (orderLineId==null || !makeGoodAllowedOrderLineIds.contains(orderLineId))){
-			return "MakeGood - Product not allowed";
-		} else {
-			return null; // no error message
-		}
-	}
-
-	public void clearMakeGoodContext() {
-		makeGoodAllowedOrderLineIds = null;
-		makeGoodFromOrderId = null;
-		cartonInfo = null;
-	}
+    public void clearMakeGoodContext() {
+        clearMakeGoodOrderLineIdQuantities();
+        clearMakeGoodOrderLineIdCartonNumbers();
+        makeGoodFromOrderId = null;
+    }
 
 	public boolean isMakeGood() {
-		return makeGoodAllowedOrderLineIds != null
-				|| makeGoodFromOrderId != null /* && cartonInfo != null */;
+		return !isEmptyMakeGoodOrderLineIdQuantities() || !isEmptyMakeGoodOrderLineIdCartonNumbers() || makeGoodFromOrderId != null;
 	}
 
 	public String getAgentId() {
@@ -99,21 +104,53 @@ public class MasqueradeContext implements Serializable {
 		this.makeGoodFromOrderId = makeGoodFromOrderId;
 	}
 
-	public Set<String> getMakeGoodAllowedOrderLineIds() {
-		return makeGoodAllowedOrderLineIds;
+    public void clearMakeGoodOrderLineIdQuantities() {
+        makeGoodOrderLineIdQuantities.clear();
+    }
+
+	public Set<String> getMakeGoodOrderLineIdQuantities() {
+		return makeGoodOrderLineIdQuantities.keySet();
 	}
 
-	public void setMakeGoodAllowedOrderLineIds(Set<String> makeGoodAllowedOrderLineIds) {
-		this.makeGoodAllowedOrderLineIds = makeGoodAllowedOrderLineIds;
+	public void addMakeGoodOrderLineIdQuantity(String orderLineId, Double quantity) {
+		makeGoodOrderLineIdQuantities.put(orderLineId, quantity);
 	}
+	
+    public boolean containsMakeGoodOrderLineIdQuantity(String orderLineId) {
+        return makeGoodOrderLineIdQuantities.containsKey(orderLineId);
+    }
+    
+    public boolean isEmptyMakeGoodOrderLineIdQuantities() {
+        return makeGoodOrderLineIdQuantities.isEmpty();
+    }
+    
+    public Double getMakeGoodOrderLineIdQuantity(String orderLineId) {
+        return makeGoodOrderLineIdQuantities.get(orderLineId);
+    }
+    
+    public void clearMakeGoodOrderLineIdCartonNumbers() {
+        makeGoodOrderLineIdCartonNumbers.clear();
+    }
 
-	public void setCartonInfo(Map<String, String> cartonInfo) {
-		this.cartonInfo = cartonInfo;
-	}
+    public Set<String> getMakeGoodOrderLineIdCartonNumbers() {
+        return makeGoodOrderLineIdCartonNumbers.keySet();
+    }
 
-	public Map<String, String> getCartonInfo() {
-		return cartonInfo;
-	}
+    public void addMakeGoodOrderLineIdCartonNumber(String orderLineId, String cartonNumber) {
+        makeGoodOrderLineIdCartonNumbers.put(orderLineId, cartonNumber);
+    }
+    
+    public boolean containsMakeGoodOrderLineIdCartonNumber(String orderLineId) {
+        return makeGoodOrderLineIdCartonNumbers.containsKey(orderLineId);
+    }
+    
+    public boolean isEmptyMakeGoodOrderLineIdCartonNumbers() {
+        return makeGoodOrderLineIdCartonNumbers.isEmpty();
+    }
+    
+    public String getMakeGoodOrderLineIdCartonNumbers(String orderLineId) {
+        return makeGoodOrderLineIdCartonNumbers.get(orderLineId);
+    }
 
 	public boolean isAutoApproveAuthorized() {
 		return autoApproveAuthorized;
