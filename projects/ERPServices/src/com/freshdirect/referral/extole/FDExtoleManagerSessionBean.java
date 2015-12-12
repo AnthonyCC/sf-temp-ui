@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,7 +44,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			close(conn);
 		}
 		return conversionReq;
-
 	}
 
 	public List<ExtoleConversionRequest> getExtoleApproveConversionRequest()
@@ -50,8 +52,7 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		List<ExtoleConversionRequest> approveReq = null;
 		try {
 			conn = getConnection();
-			approveReq = FDExtoleManagerDAO
-					.getExtoleApproveConversionTransactions(conn);
+			approveReq = FDExtoleManagerDAO.getExtoleApproveConversionTransactions(conn);
 		} catch (SQLException e) {
 			LOGGER.info("Exception in getExtoleApproveConversionRequest(): "+ e);
 			this.getSessionContext().setRollbackOnly();
@@ -61,7 +62,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			close(conn);
 		}
 		return approveReq;
-
 	}
 
 	public void updateConversionRequest(ExtoleResponse convResponse)
@@ -71,7 +71,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDExtoleManagerDAO.updateRafExtoleTransactions(conn, convResponse);
-
 		} catch (SQLException e) {
 			LOGGER.info("Exception in updateConversionRequest(): " + e);
 			this.getSessionContext().setRollbackOnly();
@@ -80,7 +79,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-
 	}
 
 	/**
@@ -96,7 +94,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDExtoleManagerDAO.saveExtoleRewards(conn, rewards);
-
 		} catch (SQLException e) {
 			LOGGER.info("Exception in saveExtoleRewardsFile(): " + e);
 			this.getSessionContext().setRollbackOnly();
@@ -105,7 +102,6 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-
 	}
 
 	public void createConversion() throws ExtoleServiceException, IOException,
@@ -122,12 +118,10 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 				response = extoleService.createConversion(request);
 				response.setRafTransId(request.getRafTransId());
 				if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
-					response.setStatus(EnumRafTransactionStatus.SUCCESS
-							.getValue());
+					response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
 				}
 				if (FAILURE.equalsIgnoreCase(response.getCode())) {
-					response.setStatus(EnumRafTransactionStatus.FAILURE
-							.getValue());
+					response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
 				}
 				/*
 				 * if(response.getStatus().equalsIgnoreCase("success")){
@@ -140,15 +134,11 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 
 				updateConversionRequest(response);
 			} catch (Exception e) {
-				LOGGER.error("Exception in create conversion request for clickId :"
-						+ request.getClickId()
-						+ "Error message : "
-						+ e.getMessage());
+				LOGGER.error("Exception in create conversion request for clickId :"	+ request.getClickId()
+						+ "Error message : " + e.getMessage());
 				throw new ExtoleServiceException(
-						"Exception in create conversion request for clickId :"
-								+ request.getClickId() + "Error message : "
-								+ e.getMessage(), e);
-
+						"Exception in create conversion request for clickId :" + request.getClickId()
+						+ "Error message : " + e.getMessage(), e);
 			}
 		}
 
@@ -167,39 +157,43 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 				response = extoleService.approveConversion(request);
 				response.setRafTransId(request.getRafTransId());
 				if (response.getStatus().equalsIgnoreCase("success")) {
-					response.setStatus(EnumRafTransactionStatus.SUCCESS
-							.getValue());
+					response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
 				} else if (response.getStatus().equalsIgnoreCase("failure")) {
-					response.setStatus(EnumRafTransactionStatus.FAILURE
-							.getValue());
+					response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
 				}
 
 				updateConversionRequest(response);
 			} catch (Exception e) {
-				LOGGER.error("Exception in approve conversion request for clickId :"
-						+ request.getClickId()
-						+ "Error message : "
-						+ e.getMessage());
+				LOGGER.error("Exception in approve conversion request for clickId :" + request.getClickId()
+						+ "Error message : " + e.getMessage());
 			}
-
 		}
-
 	}
 
-	public void downloadAndSaveRewards(String fileName) throws FDResourceException,
-			FileNotFoundException, ExtoleServiceException, ParseException {
+	public void downloadAndSaveRewards(String fileName)	throws FDResourceException, FileNotFoundException,
+			ExtoleServiceException, ParseException {
 
+		String downloadedFile = null;
 
-		// 1. Download the extole result file from extole server
-		if (null == fileName && !ExtoleSftpService.isFileExists()) {
-			fileName = ExtoleSftpService.downloadFile();
+		// Check for the FileName and build it
+		if (null == fileName) {
+			fileName = ExtoleSftpService.buildFileName();
 		}
-		LOGGER.info(" Referral Rewards file to be parsed:" + fileName);
-		// 2.Parse this downloaded file and save into RAF_CREDIT table
-		List<FDRafCreditModel> fdEarnedRewardsList = ExtoleEarnedRewardsParser
-				.parseCsvFile(fileName);
 
-		// 3. Save the parsed file records into the database
+		// 1. Download the extole reward file from extole server based on fileName
+		if (!ExtoleSftpService.isFileExists(fileName)) {
+			downloadedFile = ExtoleSftpService.downloadFile(fileName);
+		} else {
+			downloadedFile = ExtoleSftpService.getLocalWorkingDir() + "/"+ fileName;
+		}
+		
+		LOGGER.info(" Referral Rewards file to be parsed:" + downloadedFile);
+
+		// 2.Parse the downloadedFile
+		List<FDRafCreditModel> fdEarnedRewardsList = ExtoleEarnedRewardsParser
+				.parseCsvFile(downloadedFile);
+		
+		// 3. Save the parsed file records into cust.raf_credit
 		saveExtoleRewardsFile(fdEarnedRewardsList);
 	}
 }

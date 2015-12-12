@@ -172,7 +172,7 @@ public class FDExtoleManagerDAO implements Serializable {
 
 		try {
 			PreparedStatement ps = null;
-
+			
 			ps = conn
 					.prepareStatement("INSERT INTO CUST.RAF_CREDIT "
 							+ "(ID,ADVOCATE_CUSTOMER_ID,STATUS,CREATION_TIME,MODIFIED_TIME,"
@@ -180,12 +180,9 @@ public class FDExtoleManagerDAO implements Serializable {
 							+ "   FRIEND_FIRST_NAME,FRIEND_LAST_NAME,FRIEND_EMAIL,FRIEND_PARTNER_UID,"
 							+ "   REWARD_TYPE,REWARD_DATE,REWARD_SET_NAME,REWARD_SET_ID,REWARD_VALUE,REWARD_DETAIL) "
 							+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-
-			int version = getNextId(conn);
-
+			
 			FDRafCreditModel earnedReward = null;
-			for (Iterator<FDRafCreditModel> iterator = rewards.iterator(); iterator
-					.hasNext();) {
+			for (Iterator<FDRafCreditModel> iterator = rewards.iterator(); iterator	.hasNext();) {
 				earnedReward = (FDRafCreditModel) iterator.next();
 				int i = 1;
 				earnedReward.setId(String.valueOf(getNextId(conn)));
@@ -193,8 +190,8 @@ public class FDExtoleManagerDAO implements Serializable {
 				ps.setString(i++, earnedReward.getAdvocateCustomerId());
 		 		ps.setString(i++, earnedReward.getStatus().getValue()); 
 			  	ps.setTimestamp(i++, new Timestamp(earnedReward.getCreationTime().getTime()));
-				ps.setDate(i++, (Date) earnedReward.getModifiedTime());
-				ps.setString(i++, earnedReward.getAdvocateFirstName());
+			  	ps.setTimestamp(i++, new Timestamp(earnedReward.getModifiedTime().getTime()));
+			 	ps.setString(i++, earnedReward.getAdvocateFirstName());
 				ps.setString(i++, earnedReward.getAdvocateLastName());
 				ps.setString(i++, earnedReward.getAdvocateEmail());
 				ps.setString(i++, earnedReward.getAdvocatePartnerUid());
@@ -203,19 +200,23 @@ public class FDExtoleManagerDAO implements Serializable {
 				ps.setString(i++, earnedReward.getFriendEmail());
 				ps.setString(i++, earnedReward.getFriendPartnerUid());
 				ps.setString(i++, earnedReward.getRewardType());
+				if(null != earnedReward.getRewardDate()){
 				ps.setDate(i++,	new Date(earnedReward.getRewardDate().getTime()));
+				} else {
+				ps.setNull(i++, Types.TIMESTAMP);	
+				}
 				ps.setString(i++, earnedReward.getRewardSetName());
 				ps.setString(i++, earnedReward.getRewardSetId());
-				ps.setInt(i++, earnedReward.getRewardValue());
+				ps.setDouble(i++, earnedReward.getRewardValue());
 				ps.setString(i++, earnedReward.getRewardDetail());
 
 				try {
 					int rowsaffected = ps.executeUpdate();
 					if (rowsaffected != 1) {			
-						LOGGER.warn("Could not insert this record for:" +earnedReward.getAdvocateEmail()+","+earnedReward.getFriendEmail());
+						LOGGER.warn(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail());
 					}
 				} catch (SQLException e) {
-					LOGGER.warn("Could not insert this record for:" +earnedReward.getAdvocateEmail()+","+earnedReward.getFriendEmail());
+					LOGGER.error(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail(), e);
 				}
 			}
 			ps.close();

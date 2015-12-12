@@ -54,7 +54,7 @@ public class FDRafCreditModel implements Serializable{
 	
 	private String rewardSetId;
 		
-	private int rewardValue;
+	private double rewardValue;
 		
 	private String rewardDetail;
 	
@@ -287,11 +287,11 @@ public class FDRafCreditModel implements Serializable{
 		this.rewardSetName = rewardSetName;
 	}
 
-	public int getRewardValue() {
+	public double getRewardValue() {
 		return rewardValue;
 	}
 
-	public void setRewardValue(int rewardValue) {
+	public void setRewardValue(double rewardValue) {
 		this.rewardValue = rewardValue;
 	}
 

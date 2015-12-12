@@ -226,7 +226,7 @@ your account information, this is the place to do it.<br></td>
 		<br><br>
 		<% } }else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
 		 <font class="text13bold">
-		<a href="<%=response.encodeURL(FDStoreProperties.getPropExtoleMicrositeUrl())%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
+		<a href="<%=response.encodeURL(FDStoreProperties.getPropExtoleMicrositeUrl())%>" target="_blank">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		Invite your friends and earn $$$ credits.
 		<br><br>

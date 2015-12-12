@@ -27,15 +27,15 @@ public class ExtoleEarnedRewardsParser {
 	private static final Logger LOGGER = LoggerFactory
 			.getInstance(ExtoleEarnedRewardsParser.class);
 
-	private static final String DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm";
-
+	//2015-12-09 15:11:03
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss"; 
+	
 	public static List<FDRafCreditModel> parseCsvFile(String fileName)
 			throws FileNotFoundException, ParseException {
 		List<FDRafCreditModel> fdEarnedRewardsList = null;
-
-		LOGGER.info("Starting parsing of referral rewards file : " + fileName);
-		// Mapping columns from csv file to the database columns
+		LOGGER.info("Starting parsing of " + fileName + " referral rewards file ");
 		
+		// Mapping columns from csv file to the database columns
 		Map<String, String> columnMapping = new HashMap<String, String>();
 		columnMapping.put("Advocate First Name", "advocateFirstName");
 		columnMapping.put("Advocate Last Name", "advocateLastName");
@@ -70,10 +70,10 @@ public class ExtoleEarnedRewardsParser {
 		CsvToBean csvToBean = new CsvToBean();
 		fdEarnedRewardsList = csvToBean.parse(strategy, reader);
 		
-		LOGGER.info("Finished parsing of referral rewards file : " + fileName);
+		List<FDRafCreditModel> parsedRewardList=processData(fdEarnedRewardsList);
 		
-		return processData(fdEarnedRewardsList);
-
+		LOGGER.info(" Finished parsing of " + fileName + " referral rewards file ");
+		return parsedRewardList;
 	}
 
 	/**
@@ -86,24 +86,30 @@ public class ExtoleEarnedRewardsParser {
 	
 	private static List<FDRafCreditModel> processData(List<FDRafCreditModel> rewards)
 			throws ParseException {
+		
 		Iterator<FDRafCreditModel> iterator = rewards.iterator();
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
 		while (iterator.hasNext()) {
 			FDRafCreditModel reward = iterator.next();
-			reward.setRewardDate(sdf.parse(reward.getRewardDateString()));
+			LOGGER.info(reward.getRewardDateString());
+
+			try {
+				reward.setRewardDate(sdf.parse(reward.getRewardDateString()));
+			} catch (ParseException e) {
+				LOGGER.error("Could not parse the reward date : " + reward.getRewardDateString() + " for " + reward.getAdvocateEmail(), e);
+			}
+
 			reward.setStatus(EnumRafTransactionStatus.PENDING);
 			reward.setCreationTime(Calendar.getInstance().getTime());
+			reward.setModifiedTime(Calendar.getInstance().getTime());
 			try {
-				reward.setRewardValue(Integer.parseInt(reward.getRewardValueString()));
+				reward.setRewardValue(Double.parseDouble(reward.getRewardValueString()));
 			} catch (NumberFormatException nfe) {
-			// The reward value cannot be null. It should be a whole number. 
-			//	If it is null, we are setting it to zero
+				LOGGER.warn("Could not set the reward value : " + reward.getRewardValueString() + " for " + reward.getAdvocateEmail(), nfe);
+				// The reward value cannot be null. It should be a whole number. If it is null, we are setting it to zero
 				reward.setRewardValue(0);
-			}
-					
+			}		
 		}
-
 		return rewards;
 	}
-
 }

@@ -4,10 +4,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.jcraft.jsch.Channel;
@@ -17,6 +20,10 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+/**
+ * @author bpillutla
+ * 
+ */
 public class ExtoleSftpService {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -24,7 +31,7 @@ public class ExtoleSftpService {
 
 	private final static JSch jsch = new JSch();
 
-	private static final String SFTP_PRIVATE_KEY = FDStoreProperties.get(FDStoreProperties.PROP_EXTOLE_SFTP_PRIVATE_KEY);//"C:/Extole Keys/extole_sftp.key";
+	private static final String SFTP_PRIVATE_KEY = "C:/Extole Keys/extole_sftp.key";
 	private static final String SFTP_HOST = FDStoreProperties
 			.get(FDStoreProperties.PROP_EXTOLE_SFTP_HOST);
 	private static final String SFTP_USERNAME = FDStoreProperties
@@ -36,7 +43,18 @@ public class ExtoleSftpService {
 	private static final String EXTOLE_BASE_FILE_NAME = FDStoreProperties
 			.get(FDStoreProperties.PROP_EXTOLE_BASE_FILE_NAME);
 
-	public static String downloadFile() throws ExtoleServiceException {
+	public static String getLocalWorkingDir() {
+		return SFTP_LOCAL_WORKING_DIR;
+	}
+
+	/**
+	 * Download the given file from Extole into our opt/fdlog/referralCredits  
+	 * folder and return the destination of the downloaded file
+	 * 
+	 * @param fileName
+	 * @return file destination
+	 */
+	public static String downloadFile(String fileName) {
 
 		Session session = null;
 		Channel channel = null;
@@ -52,51 +70,41 @@ public class ExtoleSftpService {
 			config.put("StrictHostKeyChecking", "no");
 			session.setConfig(config);
 			session.connect();
-			LOGGER.info("SFTP: Session created on host " + SFTP_HOST);
-
+			LOGGER.info(" Extole SFTP: Session created on host " + SFTP_HOST);
 			channel = session.openChannel("sftp");
 			channel.connect();
-
 			channelSftp = (ChannelSftp) channel;
-			
-			LOGGER.info("SFTP: SFTP Channel connected..");
-
-			LOGGER.info("Downloading Rewards file");
-
+			LOGGER.info(" Extole SFTP Channel connected ");
+			LOGGER.info(" Downloading " + fileName + " Rewards file " + " from " + SFTP_REMOTE_WORKING_DIR);
 			try {
+				source = SFTP_REMOTE_WORKING_DIR + "/" + fileName;
+				destination = SFTP_LOCAL_WORKING_DIR + "/" + fileName;
 
-				source = SFTP_REMOTE_WORKING_DIR + "/"
-						+ buildFileName(EXTOLE_BASE_FILE_NAME);
-				destination = SFTP_LOCAL_WORKING_DIR + "/"
-						+ buildFileName(EXTOLE_BASE_FILE_NAME);
-				channelSftp.get(source, destination,
-						new ExtoleSftpDownloadProgressMonitor());
-
-				LOGGER.info("Successfully downloaded the file");
+				/*
+				 * source = SFTP_REMOTE_WORKING_DIR + "/" + buildFileName();
+				 * destination = SFTP_LOCAL_WORKING_DIR + "/" + buildFileName();
+				 */
+				channelSftp.get(source, destination, new ExtoleSftpDownloadProgressMonitor());
+				LOGGER.info(" Successfully downloaded : " + fileName + " Rewards File ");
 			} catch (SftpException e) {
-				LOGGER.error("Exception in ExtoleSftpService: "+ e.getMessage());
-				throw new ExtoleServiceException(e);
+				LOGGER.error(e.getMessage());
 			}
 
 		} catch (JSchException e) {
-			LOGGER.error("Exception in ExtoleSftpService: "+ e.getMessage());
-			throw new ExtoleServiceException(e);
+			LOGGER.error(e.getMessage());
 		} finally {
-
 			if (null != channelSftp && channelSftp.isConnected()) {
-				LOGGER.info("SFTP: disconnecting sftp channel");
+				LOGGER.info(" Extole SFTP: disconnecting sftp channel");
 				channelSftp.disconnect();
 			}
 			if (null != channel) {
-				LOGGER.info("SFTP: disconnecting channel");
+				LOGGER.info(" Extole SFTP: disconnecting channel");
 				channel.disconnect();
 			}
-
 			if (null != session && session.isConnected()) {
-				LOGGER.info("SFTP: disconnecting session");
+				LOGGER.info("Extole SFTP: disconnecting session");
 				session.disconnect();
 			}
-
 		}
 		return destination;
 	}
@@ -105,27 +113,27 @@ public class ExtoleSftpService {
 	 * append todays date to the base file name
 	 * 
 	 * @param baseFileName
-	 * @return
+	 * @return fileName
 	 */
-	private static String buildFileName(String baseFileName) {
+	public static String buildFileName() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		Date date = Calendar.getInstance().getTime();
-		String fileName = baseFileName + df.format(date) + ".csv";
-
+		String fileName = EXTOLE_BASE_FILE_NAME + df.format(date) + ".csv";
 		return fileName;
 	}
 
-	public static boolean isFileExists() {
-		String fileName = buildFileName(EXTOLE_BASE_FILE_NAME);
+	/**
+	 * Check if the fileName exists in local working directory
+	 * @param fileName
+	 * @return
+	 */
+	public static boolean isFileExists(String fileName) {
 		File resultFile = new File(SFTP_LOCAL_WORKING_DIR, fileName);
-
 		if (resultFile.exists()) {
-			LOGGER.info("The file " + fileName + " already exists in " + SFTP_LOCAL_WORKING_DIR);
+			LOGGER.info(" The file " + fileName + " already exists in " + SFTP_LOCAL_WORKING_DIR);
 			return true;
 		} else
-			LOGGER.info("The file " + fileName + " does not exists in " + SFTP_LOCAL_WORKING_DIR);
+			LOGGER.info(" The file " + fileName + " does not exists in " + SFTP_LOCAL_WORKING_DIR);
 		return false;
-
 	}
-
 }

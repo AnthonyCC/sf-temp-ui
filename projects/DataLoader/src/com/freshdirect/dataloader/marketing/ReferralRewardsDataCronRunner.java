@@ -44,7 +44,7 @@ public class ReferralRewardsDataCronRunner {
 				fileName = args[0];
 			}
 			FDExtoleManager.downloadAndSaveRewards(fileName);
-			LOGGER.info("Finished ReferralRewardsDataCronRunner");
+			LOGGER.info(" Finished ReferralRewardsDataCronRunner ");
 
 		} catch (FileNotFoundException e) {
 			// throw new ExtoleServiceException(e);
@@ -88,20 +88,15 @@ public class ReferralRewardsDataCronRunner {
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat(
 					"EEE, MMM d, yyyy");
-			String subject = "ReferralRewardsDataCronRunner:	"
-					+ (processDate != null ? dateFormatter.format(processDate)
-							: " date error");
-
+			String subject = " ReferralRewardsDataCronRunner : " + (processDate != null ? dateFormatter.format(processDate)
+							: " date error ");
 			StringBuffer buff = new StringBuffer();
-
 			buff.append("<html>").append("<body>");
-
 			if (exceptionMsg != null) {
 				buff.append("Exception is :").append("\n");
 				buff.append(exceptionMsg);
 			}
 			buff.append("</body>").append("</html>");
-
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
 					ErpServicesProperties.getCronFailureMailTo(),
@@ -111,7 +106,5 @@ public class ReferralRewardsDataCronRunner {
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending ReferralRewardsDataCronRunner report email: ",e);
 		}
-
 	}
-
 }
