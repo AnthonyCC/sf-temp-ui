@@ -9,7 +9,7 @@
 	<br/><br/>
 	
 	<h4 align="center">
-		We were unable to connect your social account with FreshDirect. Please <a href="mailto:service@freshdirect.com">contact customer service</a> if you need further assistance.
+		We are unable to connect your social account with FreshDirect. Please <a href="mailto:service@freshdirect.com">contact customer service</a> if you need further assistance.
 	</h4>
 	
 	<br/><br/>
