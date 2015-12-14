@@ -721,7 +721,7 @@ section#section_Get_Foodkick{
 				margin-right: auto;
 				
 				text-align:center;
-				width: 100%;
+				max-width: calc(100% - 10px);
 				display:block;
 				
 				
@@ -731,7 +731,7 @@ section#section_Get_Foodkick{
 					/*margin-left: 0px;*/
 					margin-bottom:0em;
 					
-					height:1.1em;
+					min-height:1.1em;
 					font-size:0.7em;
 					
 					@include inp_ph_mixin(){
