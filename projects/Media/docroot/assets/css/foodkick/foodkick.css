@@ -434,7 +434,9 @@ section#section_Get_Foodkick {
         margin-left: auto;
         margin-right: auto;
         text-align: center;
-        max-width: calc(100% - 10px);
+        max-width: calc(90% - 10px);
+        width: initial;
+        min-width: initial;
         display: block; }
         @media (min-width: 30em) {
           section#section_Get_Foodkick article form input {

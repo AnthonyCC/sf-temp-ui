@@ -721,9 +721,10 @@ section#section_Get_Foodkick{
 				margin-right: auto;
 				
 				text-align:center;
-				max-width: calc(100% - 10px);
+				max-width: calc(90% - 10px);
+				width:initial;
+				min-width:initial;
 				display:block;
-				
 				
 				@include breakpoint_mixin(medium){
 					padding-left:15px;
