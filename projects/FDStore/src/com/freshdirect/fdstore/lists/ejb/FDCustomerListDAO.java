@@ -66,7 +66,7 @@ class FDCustomerListDAO {
 			ps.setTimestamp(4, ts);
 			ps.setString(5, list.getRecipeId());
 			ps.setString(6, list.getRecipeName());
-			ps.setString(7, list.geteStoreType());
+			ps.setString(7, null !=list.geteStoreType()?list.geteStoreType():"FreshDirect");
 
 			ps.setString(8, list.getId());
 
