@@ -7,4 +7,42 @@ public final String JS_DIR = ASSETS_DIR + "/javascript/foodkick";
 //public final String IMAGES_DIR = ASSETS_DIR + "/svg_and_images";
 public final String IMAGES_DIR = "/media_stat/foodkick";
 public final String SVG_SRC = "s.jsp?f=";
+
+
+/*
+IOS (iPhone and iPad) APP LINKS
+*/
+
+public final String IOSAPPSTORE_LINK = "https://itunes.apple.com/us/genre/ios/id36?mt=8";
+
+//temporary download app link (MUST REPLACE WHEN IOS APP GOES LIVE):
+public final String FK_IOSAPP_DLINK = "https://itunes.apple.com/us/genre/ios/id36?mt=8";
+
+/*
+below links will function on IOS devices only.  And also only after they have already installed the foodkick app.
+*/
+
+//open app link:
+public final String FK_IOSAPP_OPEN = "foodkick://open";
+
+//Product page:
+public final String FK_IOSAPP_PRODUCT_PAGE = "foodkick://product?id=";   //(can be any product page, like foodkick://product?id=fru_apl_fji_4pk)
+
+//Category page:
+public final String FK_IOSAPP_CATEGORY_PAGE = "foodkick://category?id=";  //(can be any category page, like foodkick://category?id=wls)
+
+//Order Details:
+public final String FK_IOSAPP_ORDERDETAILS_PAGE = "foodkick://orderdetails?id=";  //(can be any order, like foodkick://orderdetails?id=2374523)
+
+//Home page:
+public final String FK_IOSAPP_HOME = "foodkick://home";
+
+//Shop page:
+public final String FK_IOSAPP_SHOP = "foodkick://shop";
+
+//Me page:
+public final String FK_IOSAPP_ME = "foodkick://me";
+
+//Bag page:
+public final String FK_IOSAPP_BAG = "foodkick://bag";
 %>
