@@ -200,7 +200,9 @@ public class HomeController extends BaseController {
 		if(pageRequest != null){
 			if(pageRequest.isPreview()){ 
 				//Refresh the feed if it is for preview
-				List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
+				
+				CMSContentFactory cmsContentFactory = new CMSContentFactory();
+				List<CMSWebPageModel> pages = cmsContentFactory.getCMSPageByParameters(pageRequest);
 				if(pages != null && !pages.isEmpty()){
 					pageResponse.setPage(pages.get(0));
 				}			
