@@ -825,7 +825,8 @@ section#section_How_it_works{
 	
 	article{
 		min-height:220px;
-		mix-blend-mode: darken;
+		/*mix-blend-mode: darken;*/
+		text-align:center;
 		
 		@include breakpoint_mixin(medium){
 			display:inline-block;
@@ -841,6 +842,8 @@ section#section_How_it_works{
 	}
 	
 	figure{
+		margin:0px;
+		
 		div{
 			margin-bottom: 30px;
 			height: 109px;
