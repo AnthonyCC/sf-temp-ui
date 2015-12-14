@@ -937,16 +937,19 @@ footer {
     footer section#footer_subsection, footer section#footer_subsection * {
       font-family: "GraphikApp-Semibold"; }
     footer section#footer_subsection section {
-      margin-left: 40px;
+      margin-left: 20px;
       margin-right: 40px;
       margin-bottom: 60px;
       text-align: left;
       vertical-align: top; }
       @media (min-width: 30em) {
         footer section#footer_subsection section {
-          width: calc(20% - 15px);
-          margin-left: 15px;
+          width: calc(25% - 15px);
           display: inline-block; } }
+      @media (min-width: 50em) {
+        footer section#footer_subsection section {
+          width: calc(20% - 15px);
+          margin-left: 40px; } }
       footer section#footer_subsection section:first-of-type {
         text-align: center; }
         footer section#footer_subsection section:first-of-type img, footer section#footer_subsection section:first-of-type object {

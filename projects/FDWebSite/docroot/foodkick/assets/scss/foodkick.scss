@@ -1421,16 +1421,23 @@ footer{
 		}
 	
 		section{
-			margin-left:40px;
+			//margin-left:40px;
+			margin-left:20px;
 			margin-right:40px;
 			margin-bottom: 60px;
 			text-align:left;
 			vertical-align: top;
 			
 			@include breakpoint_mixin(medium){
-				width:calc(20% - 15px);
-				margin-left:15px;
+				//width:calc(20% - 15px);
+				width:calc(25% - 15px);
+				//margin-left:15px;
 				display:inline-block;
+			}
+			
+			@include breakpoint_mixin(large){
+				width:calc(20% - 15px);
+				margin-left:40px;
 			}
 			
 			&:first-of-type{
