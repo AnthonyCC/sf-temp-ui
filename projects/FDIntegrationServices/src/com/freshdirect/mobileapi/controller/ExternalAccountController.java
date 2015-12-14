@@ -17,6 +17,7 @@ import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -203,6 +204,8 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 		 userId = ExternalAccountManager.getUserIdForUserToken(userToken);
 		
 		try {
+			
+
 
 			
 			if(context.equalsIgnoreCase("CREATE") || context.equalsIgnoreCase("SIGNIN")) {
@@ -212,6 +215,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 					userLogin(userId, session, request, response);
 					responseMessage = setCurrentCartToTheUser(user, request, response);
 					((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+					checkTermsCond(getUserFromSession(request, response),responseMessage);
 					if (context.equalsIgnoreCase("CREATE")) {
 						((LoggedIn) responseMessage)
 						.setResultMessage(MSG_SOCIAL_ACCOUNT_EXIST_SIGNIN);
@@ -247,6 +251,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+						checkTermsCond(user,responseMessage);
 					} else if (isFDAccountExist == 1){ 
 						// FD Account and Non matching Social link
 						//if(user!=null & user.getFDSessionUser()!=null && user.getFDSessionUser().getUserId()!=null) {
@@ -273,6 +278,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 						((LoggedIn) responseMessage)
 						.setResultMessage(MessageFormat.format(MSG_SOCIAL_EXISTING_LINK_SIGNIN, socialAccountProvider));
 						((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+						checkTermsCond(user,responseMessage);
 					} else {
 						//No FD Account and No matching Social link
 						if(context.equalsIgnoreCase("SIGNIN")){
@@ -307,6 +313,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 										request, response);
 								((LoggedIn) responseMessage).setResultMessage(MSG_SOCIAL_ACCOUNT_CREATED);
 								((LoggedIn) responseMessage).setResultAction("SIGNEDIN");
+								checkTermsCond(user,responseMessage);
 
 							}
 						}
@@ -588,6 +595,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 
 			if (user != null) {
 				user.setJustLoggedIn(true);
+				user.setTcAcknowledge(loginUser.getTcAcknowledge());
 			}
 
 			
@@ -663,5 +671,20 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 				.createSuccessMessage("User logged out successfully.");
 		setResponseMessage(model, responseMessage, user);
 		return model;
+	}
+	
+	private void checkTermsCond(SessionUser user, Message responseMessage){
+		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
+			try {
+				FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, "FD");
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			((LoggedIn) responseMessage).setTcAcknowledge(true);
+		}else{
+		((LoggedIn) responseMessage).setTcAcknowledge(user
+				.getTcAcknowledge());
+		}
 	}
 }
