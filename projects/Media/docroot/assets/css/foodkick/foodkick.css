@@ -517,7 +517,8 @@ section#section_How_it_works {
         font-size: 24pt; } }
   section#section_How_it_works article {
     min-height: 220px;
-    mix-blend-mode: darken; }
+    /*mix-blend-mode: darken;*/
+    text-align: center; }
     @media (min-width: 30em) {
       section#section_How_it_works article {
         display: inline-block;
@@ -525,51 +526,53 @@ section#section_How_it_works {
         vertical-align: top; } }
     section#section_How_it_works article:last-of-type figcaption:before {
       display: none; }
-  section#section_How_it_works figure div {
-    margin-bottom: 30px;
-    height: 109px;
-    vertical-align: bottom;
-    display: table-cell; }
-    section#section_How_it_works figure div::after {
-      content: " ";
-      min-width: 250px;
-      border-bottom: #722A81 solid 4px;
-      display: block; }
-      @media (min-width: 30em) {
-        section#section_How_it_works figure div::after {
-          min-width: 305px; } }
-  section#section_How_it_works figure img, section#section_How_it_works figure object {
-    position: relative;
-    top: 9px; }
-  section#section_How_it_works figure figcaption {
-    color: #732282;
-    min-width: 250px;
-    float: left; }
-    @media (min-width: 30em) {
-      section#section_How_it_works figure figcaption {
-        min-width: 305px; }
-        section#section_How_it_works figure figcaption:before {
-          content: ">";
-          display: block;
-          float: right;
-          font-size: 48px;
-          height: 200px;
-          margin-right: 20px;
-          -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-          filter: alpha(opacity=50);
-          -moz-opacity: 0.5;
-          -khtml-opacity: 0.5;
-          opacity: 0.5;
-          font-family: none;
-          transform: scaleY(2);
-          height: 48px;
-          margin-bottom: 80px;
-          margin-left: 10px;
-          margin-top: 18px; } }
-    section#section_How_it_works figure figcaption h4 {
+  section#section_How_it_works figure {
+    margin: 0px; }
+    section#section_How_it_works figure div {
+      margin-bottom: 30px;
+      height: 109px;
+      vertical-align: bottom;
+      display: table-cell; }
+      section#section_How_it_works figure div::after {
+        content: " ";
+        min-width: 250px;
+        border-bottom: #722A81 solid 4px;
+        display: block; }
+        @media (min-width: 30em) {
+          section#section_How_it_works figure div::after {
+            min-width: 305px; } }
+    section#section_How_it_works figure img, section#section_How_it_works figure object {
+      position: relative;
+      top: 9px; }
+    section#section_How_it_works figure figcaption {
       color: #732282;
-      font-family: "GraphikApp-Semibold";
-      margin-bottom: 4px; }
+      min-width: 250px;
+      float: left; }
+      @media (min-width: 30em) {
+        section#section_How_it_works figure figcaption {
+          min-width: 305px; }
+          section#section_How_it_works figure figcaption:before {
+            content: ">";
+            display: block;
+            float: right;
+            font-size: 48px;
+            height: 200px;
+            margin-right: 20px;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+            filter: alpha(opacity=50);
+            -moz-opacity: 0.5;
+            -khtml-opacity: 0.5;
+            opacity: 0.5;
+            font-family: none;
+            transform: scaleY(2);
+            height: 48px;
+            margin-bottom: 80px;
+            margin-left: 10px;
+            margin-top: 18px; } }
+      section#section_How_it_works figure figcaption h4 {
+        color: #732282;
+        font-family: "GraphikApp-Semibold";
+        margin-bottom: 4px; }
   section#section_How_it_works .download_button {
     margin-top: 35px;
     display: block;
