@@ -141,13 +141,35 @@
 		
 		<a name="Featured_Food" id="Featured_Food" class="fk_anchor"></a>
 		<section id="section_Whats_Good" class="main_section">
+			 
 			<div class="container">
-				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good"></div>
+				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good">
+					<script>
+					OAS_AD('FKMiddle1');
+					</script>
+				</div>
 			</div>
 			
 			<div class="container">
-				<div id="carousel_Whats_Good_scenes" class="carousel_Whats_Good"></div>
+				<div id="carousel_Whats_Good_scenes" class="carousel_Whats_Good">
+					<script>
+					OAS_AD('FKMiddle2');
+					</script>
+				</div>
 			</div>
+			
+			<!--  
+			<div class="container">
+				<script>
+				OAS_AD('FKMiddle1');
+				</script>
+			</div>
+			<div class="container">
+				<script>
+				OAS_AD('FKMiddle2');
+				</script>
+			</div>
+			-->
 		</section>
 		
 		<a name="FOODKICK" id="FOODKICK" class="fk_anchor"></a>
@@ -216,8 +238,8 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 		<script type="text/javascript">
 			window.IMAGES_DIR = "<%=IMAGES_DIR%>";
 			OAS_AD('FKTop');
-			OAS_AD('FKMiddle1');
-			OAS_AD('FKMiddle2');
+			//OAS_AD('FKMiddle1');
+			//OAS_AD('FKMiddle2');
 		</script>
 	</tmpl:put>
 </tmpl:insert>

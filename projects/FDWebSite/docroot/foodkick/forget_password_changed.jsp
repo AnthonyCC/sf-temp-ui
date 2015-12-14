@@ -15,7 +15,7 @@ if(userAgent.matches(".*iPhone.*") || userAgent.matches(".*iPad.*")){
 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Changed your password</tmpl:put>
 	<tmpl:put name='content'>
 		<section id="section_forget_password_changed" class="forgot_password_section">
-			<img src="<%=SVG_SRC %>checkmark.svg" class="" /> <span>Your password has been reset.</span><br/>
+			<img src="<%=IMAGES_DIR %>/checkmark.png" class="" width="100%" height="100%" /> <span>Your password has been resetted.</span><br/>
 			<%=open_app_button %>
 		</section>
 	</tmpl:put>

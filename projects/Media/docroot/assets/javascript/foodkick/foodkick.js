@@ -8,6 +8,39 @@ function isIE9OrBelow(){
 	return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10;
 }
 
+//used not only for desktop Safari, but also for iPad and iPhone
+function isSafari(){
+	return (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1);
+}
+
+//find out what Android version is present. Versions below 4.4.4 are what we are looking for for form validation capability (below 4.4.4 is not fully supported)
+function getAndroidVersion(ua){
+	ua = (ua || navigator.userAgent).toLowerCase(); 
+	var match = ua.match(/android\s([0-9\.]*)/);
+	return match ? match[1] : false;
+};
+//parseFloat(getAndroidVersion());
+
+//detects basic support for whether the calling page has form validation support.
+function hasFormValidation() {  
+	return (typeof document.createElement( 'input' ).checkValidity == 'function'); 
+};
+
+function canValidateFields() {    
+    var result = typeof document.createElement( 'input' ).checkValidity == 'function';
+    if (result) {
+        for (var i = 0; i < arguments.length; i++) {
+            var element = document.getElementById(arguments[i]);
+            if (!element.checkValidity() && (!element.validationMessage || element.validationMessage === null || element.validationMessage === '')) {
+                return false;
+            }
+        }
+    }
+    return result;
+}
+
+//document.getElementById( 'validation' ).innerHTML = hasFormValidation();
+
 //for the sticky header
 function scroll_header_fix(){
 	if( $(this).scrollTop() > ($(window).height() / 2) ){
@@ -161,12 +194,15 @@ function zonenotification_zip_and_email(param_obj){
 function zonenotification_zip(zip_text){
 	$.ajax({
 		url:'/api/locationhandler.jsp',
+		async:false,
 		data:{
 			action:'ifDeliveryZone',
 			zipcode: zip_text
 		}
 	}).done(function(data){
 		$("#zipcode_lh").val( $("#zipcode_zh").val() );
+		
+		//alert( "JOKEY data.trim() = " + data.trim() );
 		
 		$("#ziphandler").fadeOut();
 		
@@ -186,8 +222,6 @@ function numbersOnly(src){
 }
 
 function form_enableDisable(formId, eORd){
-	console.log("troll wars");
-	
 	var eORd = (typeof eORd !== 'undefined')? eORd : false;
 	
 	//the submit button for the form
@@ -265,27 +299,22 @@ $(function(){
 			}, 900, 'swing', function () {
 				window.location.hash = target;
 				
-				//hide this dumb iphone menu when it is done scrolling someplace for a hash link
+				//hide this dumb iphone menu when it is done scrolling someplace for a hash link.  needed in mobile
 				$(".mobile_dropdown").css("display", "none");
 				
-				//signal to the hamburger button that it should not think of itself as being hovered over
+				//signal to the hamburger button that it should not think of itself as being hovered over.  needed in mobile
 				$('#mobile_link_home').trigger('mouseleave');
 				
 				$('#mobile_link_home').bind(
 	                "mouseenter",
 	                function( event ){
-	                    //now remove that style attribute of big purple so that it can be seen again when hamburger helper is clicked again
+	                    //now remove that style attribute of big purple so that it can be seen again when hamburger helper is clicked again.  needed in mobile
 	                	$(".mobile_dropdown").removeAttr("style");
 	                }
 	            );
 			});
 		}
 	});
-	
-	//fix an issue in mobile devices where that big purple menu does not go away
-	$(".mobile_dropdown").mouseout( function(){
-		console.log("MONKEY!");
-	} );
 	
 	//this is just for step 1, to verify if the zip code is within a delivery zone
 	$('form#ziphandler').submit(function(event){
@@ -298,15 +327,101 @@ $(function(){
 	
 	//step 2a, if there is no zip code from function above, the form that this submits to is then seen and submits to have this code activate below
 	$('form#locationhandler').submit(function(event){
-		form_enableDisable( "#" + $(this).attr("id") );
+		/*form_enableDisable( "#" + $(this).attr("id") );
 		
 		var param_obj = new Object();
 		param_obj.zip_text = $("#zipcode_lh").val();
 		param_obj.email_text = $("#email_lh").val();
 		
-		zonenotification_zip_and_email(param_obj);
+		zonenotification_zip_and_email(param_obj);*/
+		
+		
+		$(this).validate(
+				 {
+			 		 rules:{
+			             email:{
+				             required:true,
+				             email:true,
+				             customemail:true
+			            }
+			 		},
+			 		messages:{
+			            email:{
+			            	required:"Required",
+			            	email:"Incomplete e-mail Address",
+			                customemail:"Incomplete e-mail Address"
+			            }
+			         },
+			         highlight: function(element, errorClass, validClass) {
+			          $(element).addClass(errorClass).removeClass(validClass);
+			             $(element.form).find("span[id=" + element.id + "_img]").addClass('show_bg_arrow');
+			           },
+			           unhighlight: function(element, errorClass, validClass) {
+			          $(element).removeClass(errorClass).addClass(validClass);
+			             $(element.form).find("span[id=" + element.id + "_img]").removeClass('show_bg_arrow');
+			             
+			           },
+			         onkeyup: false,
+			 		 errorElement: "div",
+
+			     errorPlacement: function(error, element) {
+			         error.insertBefore(element);
+			     }, 
+			 	}
+			 );
+		
 		
 		event.preventDefault();
+		
+		console.log("fear and loathing in the starcade");
+		
+		/*
+		//fix an issue with email validation on certain browsers
+		if(
+			isIE9OrBelow() ||
+			isSafari() ||
+			( getAndroidVersion() && (getAndroidVersion() < "4.4.4") ) ||
+			( hasFormValidation() == false )
+		){
+			console.log("NO HTML5 VALIDATION FOR YOU");
+			
+			//this should take care of any loose end browsers
+			$('form#locationhandler').validate(
+				 {
+			 		 rules:{
+			             email:{
+				             required:true,
+				             email:true,
+				             customemail:true
+			            }
+			 		},
+			 		messages:{
+			            email:{
+			            	required:"Required",
+			            	email:"Incomplete e-mail Address",
+			                customemail:"Incomplete e-mail Address"
+			            }
+			         },
+			         highlight: function(element, errorClass, validClass) {
+			          $(element).addClass(errorClass).removeClass(validClass);
+			             $(element.form).find("span[id=" + element.id + "_img]").addClass('show_bg_arrow');
+			           },
+			           unhighlight: function(element, errorClass, validClass) {
+			          $(element).removeClass(errorClass).addClass(validClass);
+			             $(element.form).find("span[id=" + element.id + "_img]").removeClass('show_bg_arrow');
+			             
+			           },
+			         onkeyup: false,
+			 		 errorElement: "div",
+
+			     errorPlacement: function(error, element) {
+			         error.insertBefore(element);
+			     }, 
+			 	}
+			);//end validate method
+		}
+		
+		*/
 	});
 	
 	//lets make placeholders for fields work in IE 9 and maybe below

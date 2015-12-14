@@ -271,7 +271,7 @@ section#section_slideshow {
     top: -120px;*/
     position: absolute;
     top: 40vw;
-    left: calc(50% - 60px);
+    left: calc(50% - 90px);
     z-index: 10;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
@@ -532,7 +532,11 @@ section#section_How_it_works {
       margin-bottom: 30px;
       height: 109px;
       vertical-align: bottom;
-      display: table-cell; }
+      display: table-cell;
+      width: 100vw; }
+      @media (min-width: 30em) {
+        section#section_How_it_works figure div {
+          width: initial; } }
       section#section_How_it_works figure div::after {
         content: " ";
         min-width: 250px;
@@ -546,11 +550,11 @@ section#section_How_it_works {
       top: 9px; }
     section#section_How_it_works figure figcaption {
       color: #732282;
-      min-width: 250px;
-      float: left; }
+      min-width: 250px; }
       @media (min-width: 30em) {
         section#section_How_it_works figure figcaption {
-          min-width: 305px; }
+          min-width: 305px;
+          float: left; }
           section#section_How_it_works figure figcaption:before {
             content: ">";
             display: block;
@@ -583,14 +587,39 @@ section#section_How_it_works {
 section#section_Whats_Good {
   margin-bottom: 30px;
   height: 194vw;
-  display: none; }
+  /*display:none;*/ }
   @media (min-width: 50em) {
     section#section_Whats_Good {
       height: 48vw; } }
   section#section_Whats_Good .container {
     /*width:600px;*/
     width: 100%;
-    /*height:inherit;*/ }
+    /*height:inherit;*/
+    /*
+    .carousel_Whats_Good:before{
+    	background-color:rgba(black, 0.5);
+    	color:white;
+    	text-transform:uppercase;
+    	position:absolute;
+    	z-index: 11;
+    	width: 100%;
+    	text-align: center;
+    	padding-top: 5px;
+    	padding-bottom: 5px;
+    	
+    	@include breakpoint_mixin(large){
+    		width: 50%;
+    		padding-top: 10px;
+    		padding-bottom: 10px;
+    	}
+    }
+    
+    #carousel_Whats_Good_foodkick:before{
+    	content:"Now on foodkick";
+    }
+    #carousel_Whats_Good_scenes:before{
+    	content:"Behind the scenes";
+    }*/ }
     @media (min-width: 50em) {
       section#section_Whats_Good .container {
         width: 50%;
@@ -616,27 +645,10 @@ section#section_Whats_Good {
         @media (min-width: 50em) {
           section#section_Whats_Good .container .slidesjs-container.slidesjs-single ul li {
             font-size: 1em; } }
-    section#section_Whats_Good .container .carousel_Whats_Good:before {
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      text-transform: uppercase;
-      position: absolute;
-      z-index: 11;
-      width: 100%;
-      text-align: center;
-      padding-top: 5px;
-      padding-bottom: 5px; }
-      @media (min-width: 50em) {
-        section#section_Whats_Good .container .carousel_Whats_Good:before {
-          width: 50%;
-          padding-top: 10px;
-          padding-bottom: 10px; } }
-    section#section_Whats_Good .container #carousel_Whats_Good_foodkick:before {
-      content: "Now on foodkick"; }
-    section#section_Whats_Good .container #carousel_Whats_Good_scenes:before {
-      content: "Behind the scenes"; }
+    section#section_Whats_Good .container .carousel_Whats_Good img {
+      width: 100%; }
     section#section_Whats_Good .container #carousel_Whats_Good_foodkick {
-      display: none; }
+      /*display:none;*/ }
       section#section_Whats_Good .container #carousel_Whats_Good_foodkick figcaption {
         bottom: initial;
         left: 3%;
@@ -645,7 +657,7 @@ section#section_Whats_Good {
         height: 80%;
         padding: 25px; }
     section#section_Whats_Good .container #carousel_Whats_Good_scenes {
-      display: none; }
+      /* display:none; */ }
     section#section_Whats_Good .container figure {
       margin: 0px; }
       section#section_Whats_Good .container figure h4 {
@@ -820,7 +832,9 @@ section.forgot_password_section {
     border: none;
     height: 59px;
     width: 100%;
-    margin-bottom: 20px; }
+    margin-bottom: 20px;
+    font-style: normal;
+    padding-left: 15px; }
   section.forgot_password_section .valid_msg {
     color: #91949D;
     font-size: 0.75em; }
@@ -939,7 +953,9 @@ footer {
           width: 150px;
           height: 100px;
           clear: both;
-          margin: 30px 30px 0px 30px; }
+          /*margin:30px 30px 0px 30px;*/ }
+        footer section#footer_subsection section:first-of-type div {
+          white-space: nowrap; }
       footer section#footer_subsection section.last ul {
         width: 100%;
         padding-left: 0px;
