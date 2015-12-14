@@ -31,7 +31,8 @@ public class ExtoleSftpService {
 
 	private final static JSch jsch = new JSch();
 
-	private static final String SFTP_PRIVATE_KEY = "C:/Extole Keys/extole_sftp.key";
+	private static final String SFTP_PRIVATE_KEY = FDStoreProperties
+			.get(FDStoreProperties.PROP_EXTOLE_SFTP_PRIVATE_KEY);//"C:/Extole Keys/extole_sftp.key";
 	private static final String SFTP_HOST = FDStoreProperties
 			.get(FDStoreProperties.PROP_EXTOLE_SFTP_HOST);
 	private static final String SFTP_USERNAME = FDStoreProperties
