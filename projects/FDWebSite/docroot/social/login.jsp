@@ -42,7 +42,7 @@
 		    }
 		});
 	});
-	</script >
+</script >
 	
 
 </head>

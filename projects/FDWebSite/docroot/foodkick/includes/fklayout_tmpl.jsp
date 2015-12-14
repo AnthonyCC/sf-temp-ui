@@ -106,11 +106,8 @@ if( !request.getRequestURI().contains("/index.jsp") ){
 
 		<a name="footer_anchor" id="footer_anchor"></a>
 		<footer>
-			 <section id="footer_disclaimer">
-			 *This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
-must (a) exceed minimum purchase requirements before taxes & fees, (b) be within eligible <span>delivery areas</span>, and (c) have a delivery window greater than one (1) hour. Delivery is subject to
-availability. No promotion code necessary and the Offer will automatically apply starting with your first purchase and will continue for 30 days. This is a limited time Offer. All standard customer
-terms and conditions apply. FoodKick reserves the right to cancel or modify this Offer at any time. Offer is nontransferable. Void where prohibited. All right reserved, Fresh Direct, LLC.
+			<section id="footer_disclaimer">
+			 	<tmpl:get name='special_disclaimer'/>
 			</section> 
 			
 			<div class="stripes"><button class="download_button white" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button></div>

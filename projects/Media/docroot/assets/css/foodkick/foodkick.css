@@ -836,6 +836,7 @@ section.forgot_password_section {
     padding-bottom: 11%; }
     section.forgot_password_section#section_forget_password_changed img {
       width: 71px;
+      height: auto;
       /*margin-right: 15px;
       float: left;
       margin-left: calc(45% - 120px);*/ }

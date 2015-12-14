@@ -8,8 +8,8 @@
 		<section id="section_slideshow" class="main_section">
 			<div id="carousel_1"></div>
 			
-			<button class="download_button purple">Download the APP</button>
-			<button class="appstore_button">
+			<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
+			<button class="appstore_button" onclick="location.href='<%=IOSAPPSTORE_LINK %>'">
 				<%--svg_obj("appstore.svg") --%>
 				<img src="<%=SVG_SRC %>appstore.svg" />
 			</button>
@@ -24,11 +24,13 @@
 					<h2>Let's make this thing happen with</h2>
 					<h1>30 days of <br/> FREE delivery.</h1>
 					
-					<button class="download_button purple">Download the APP</button>
+					<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
+					
+					<%-- HTML5 Form Validation: <span id="validation"></span> --%>
 				</article>
 				
 				<figure>
-				<img src="<%=SVG_SRC %>section_3/arrow.svg" class="svg_arrow" />
+					<img src="<%=SVG_SRC %>section_3/arrow.svg" class="svg_arrow" />
 				</figure>
 				<article>
 					<form action="/api/locationhandler.jsp" method="post" id="ziphandler">
@@ -51,8 +53,11 @@
 						
 						<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
 						
-						<input type="email" name="email_lh" id="email_lh" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+						<input type="email" data-msg="Please fill this field" name="email_lh" id="email_lh" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
 						
+						<!--  
+						<button type="submit" onclick="return canValidateFields();">Submit</button>
+						-->
 						<button type="submit">Submit</button>
 						<br/>
 						By hitting submit, you agree to receive FoodKick emails.
@@ -131,7 +136,7 @@
 					</figcaption>
 				</figure>
 			</article>
-			<button class="download_button purple">Download the APP</button>
+			<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
 		</section>
 		
 		<a name="Featured_Food" id="Featured_Food" class="fk_anchor"></a>
@@ -197,6 +202,13 @@
 				</figcaption>
 			</figure>
 		</section>
+	</tmpl:put>
+	
+	<tmpl:put name='special_disclaimer'>
+		*This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
+must (a) exceed minimum purchase requirements before taxes & fees, (b) be within eligible <span>delivery areas</span>, and (c) have a delivery window greater than one (1) hour. Delivery is subject to
+availability. No promotion code necessary and the Offer will automatically apply starting with your first purchase and will continue for 30 days. This is a limited time Offer. All standard customer
+terms and conditions apply. FoodKick reserves the right to cancel or modify this Offer at any time. Offer is nontransferable. Void where prohibited. All right reserved, Fresh Direct, LLC.
 	</tmpl:put>
 	
 	<tmpl:put name='special_js'>
