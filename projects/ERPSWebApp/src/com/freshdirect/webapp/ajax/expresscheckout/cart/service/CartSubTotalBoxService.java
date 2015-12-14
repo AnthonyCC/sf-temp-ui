@@ -137,6 +137,11 @@ public class CartSubTotalBoxService {
                 deliveryPassPopupNeeded = true;
             }
         }
+        
+        if("FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
+        	deliveryPassPopupNeeded=false;
+        }
+        
         boolean isTaxableItemInCart = false;
         for (FDCartLineI lineItem : cart.getOrderLines()) {
             if (lineItem.getTaxRate() > epsilon) {
