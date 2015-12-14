@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -320,6 +321,40 @@ public class ExternalAccountDAO {
 	
 		return false;
 	}
+	
+	
+	public static boolean isSocialLoginOnlyUser(Connection conn, String customer_id)  {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.CUSTOMER WHERE USER_ID=?");
+			ps.setString(1, customer_id);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				//String rc = rs.getString("SOCIAL_LOGIN_ONLY");
+				String dummyPassword = "^0X!3X!X!1^";
+				String dummyPasswordHash = MD5Hasher.hash(dummyPassword);
+				String passwordHash = rs.getString("PASSWORDHASH");
+				if(passwordHash != null && passwordHash.equalsIgnoreCase(dummyPasswordHash)) 
+					return true;
+			}
+		} catch (SQLException ex) {
+			LOGGER.error(ex.getMessage());
+		} finally {
+			try {
+
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+
+				LOGGER.error(e.getMessage());
+			}
+		}
+		return false;
+	}
+	
 
 	public static List<String> getConnectedProvidersByUserId(String userId,
 			Connection con) {

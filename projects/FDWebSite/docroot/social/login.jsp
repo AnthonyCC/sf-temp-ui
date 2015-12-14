@@ -1,6 +1,7 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
+<%@ page import="java.text.MessageFormat"%>
 <%@ page import="java.util.List"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
@@ -104,7 +105,25 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	        <div id="form_feilds">
 	            <form name="fd_login" id="fd_login" method="post" >
 	            	<table border="0" cellpadding="5" cellspacing="8">
-		                <% if (!result.isSuccess()) { out.println( "<tr><td>&nbsp;</td><td><font color='red' size='2px'>An account with this e-mail already exists.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please Sign in with your e-mail or social account.</font></td></tr>");%>
+		                <% if (!result.isSuccess()) { 
+		                	
+		                	String errorMsg = "<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please try again.</font></td></tr>";
+		            		//String authMsg = MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, new Object[] { UserUtil.getCustomerServiceContact(request)});		            		
+		            		//boolean invalidUserNamePass = result.getFirstError().getDescription().equalsIgnoreCase(authMsg);		            		
+		            		//if(invalidUserNamePass){
+		            		//	errorMsg = "<tr><td>&nbsp;</td><td><font color='red' size='2px'>Email and password do not match.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please try again.</font></td></tr>";
+		            		//}		            				                	
+		                	
+		                	String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");
+		            						            				
+		                    if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
+		                    	session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
+		                    	errorMsg = "<tr><td>&nbsp;</td><td><font color='red' size='2px'>An account with this e-mail already exists.</font></td></tr><tr><td></td><td><font color='red' size='2px'>Please Sign in with your e-mail or social account.</font></td></tr>";		                    	
+		                    }
+		                    
+		                	out.println(errorMsg);
+		                	
+		                %>
 	    	                <script type="text/javascript">
 	        	            	$jq(function() {
 	            	            	$jq('#email_img').addClass('show_bg_arrow');

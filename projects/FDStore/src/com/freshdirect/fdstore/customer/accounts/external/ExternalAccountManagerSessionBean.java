@@ -208,5 +208,27 @@ public class ExternalAccountManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean isSocialLoginOnlyUser(String customer_id)
+	{
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return ExternalAccountDAO.isSocialLoginOnlyUser(conn, customer_id);
+			
+		} catch (SQLException e) {
+			LOGGER.error(e.getMessage());
+		} finally{
+			try {
+				if(null != conn){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.error(e.getMessage());
+			}
+		}
+		return false;
+	
+	}	
+	
 	
 }

@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -399,6 +400,15 @@ public class UserUtil {
 		}
 		
 		try {
+			
+			if (!externalLogin) {
+				if(ExternalAccountManager.isSocialLoginOnlyUser(userId)){
+					session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", "true");
+					actionResult.addError(new ActionError("IS_SOCIAL_LOGIN_USER_VALIDATION"));
+					return updatedSuccessPage;
+				}
+			}
+			
 			FDIdentity identity = null;
 			if(externalLogin){
 				identity = FDCustomerManager.login(userId);

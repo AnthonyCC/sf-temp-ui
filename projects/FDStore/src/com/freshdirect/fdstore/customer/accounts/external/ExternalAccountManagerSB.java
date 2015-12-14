@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer.accounts.external;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.util.List;
 
 import javax.ejb.EJBObject;
@@ -24,6 +25,8 @@ public interface ExternalAccountManagerSB extends EJBObject  {
 	public void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws RemoteException;
 	
 	public void unlinkExternalAccountWithUser(String email, String provider) throws RemoteException;
+	
+	public boolean isSocialLoginOnlyUser(String customer_id) throws RemoteException; 
 
 	public List<String> getConnectedProvidersByUserId(String userId) throws RemoteException;
 	
