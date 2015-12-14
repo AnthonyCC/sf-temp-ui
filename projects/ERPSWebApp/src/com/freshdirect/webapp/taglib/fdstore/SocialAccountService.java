@@ -91,6 +91,7 @@ public class SocialAccountService implements AccountService {
 		HashMap<String, String> userLinkAccPendingProp = null;
 		
 		String socialUserId="";
+		String emailVerified="";
 	    
 	    if(socialUserProfile != null)
 	    {
@@ -99,13 +100,21 @@ public class SocialAccountService implements AccountService {
 	    	
 	    	userToken = socialUserProfile.get("userToken");
 			socialUserId = socialUserProfile.get("email"); 
+			emailVerified = socialUserProfile.get("emailVerified"); 
 			providerName  = socialUserProfile.get("provider"); 
 			
-			if(socialUserId == null || socialUserId.length() == 0)
+			// handle not verified email
+			if(socialUserId == null || socialUserId.length() == 0 || 
+			   emailVerified == null || emailVerified.length()== 0 || emailVerified.equalsIgnoreCase("N"))
 			{
+				 String newURL = request.getScheme() + "://" + request.getServerName() ;
+				 if(FDStoreProperties.isLocalDeployment()){
+					 newURL = newURL + ":" + request.getServerPort();
+				 }
+				 
 				// User email not found. User will not be able to create account with this social.
 				// The Social Provider did not return user email or user email missing.
-				return socialCustomMessage; 				
+				return newURL + socialCustomMessage; 				
 			}
 	    	
 
