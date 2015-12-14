@@ -113,7 +113,7 @@ availability. No promotion code necessary and the Offer will automatically apply
 terms and conditions apply. FoodKick reserves the right to cancel or modify this Offer at any time. Offer is nontransferable. Void where prohibited. All right reserved, Fresh Direct, LLC.
 			</section> 
 			
-			<div class="stripes"><button class="download_button white">Download the APP</button></div>
+			<div class="stripes"><button class="download_button white" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button></div>
 			<section id="footer_subsection">
 				<section>
 					<img src="<%=SVG_SRC %>freshkick_logo_recommended_white.svg" />
@@ -132,7 +132,7 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 					</p>
 					<p>
 						Want to Partner?<br/>
-						<a href="mailto:partnership@foodkick.com">partnership@foodkick.com</a>
+						<a href="mailto:partnerships@foodkick.com">partnerships@foodkick.com</a>
 					</p>
 				</section>
 				<section>
