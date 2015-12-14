@@ -941,8 +941,6 @@ section#section_Whats_Good{
 				padding-left: 10px;
 				
 				li{
-					
-		
 					@include breakpoint_mixin(medium){
 						background-image: url(#{$IMG_DIR}/section_4/list_check.png);
 						
@@ -955,7 +953,7 @@ section#section_Whats_Good{
 					}
 					
 					@include breakpoint_mixin(large){
-						font-size: 1.5em;
+						font-size: 1em;
 					}
 				}
 			}

@@ -615,7 +615,7 @@ section#section_Whats_Good {
             padding-bottom: 0.75em; } }
         @media (min-width: 50em) {
           section#section_Whats_Good .container .slidesjs-container.slidesjs-single ul li {
-            font-size: 1.5em; } }
+            font-size: 1em; } }
     section#section_Whats_Good .container .carousel_Whats_Good:before {
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
