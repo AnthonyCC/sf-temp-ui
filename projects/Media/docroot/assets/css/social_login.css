@@ -86,11 +86,24 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#c2c2c2',GradientType=0 ); 
 }
 
-#sulCont .error{
+#sulCont .error,
+#sulCont .error-message,
+#sulCont .errMsg .text11rbold{
   text-align:left;
-  font-size:12px;
+  font-size: 12px;
   font-family:"Verdana", Georgia, Serif;
-  color: #FF0000;
+  font-weight: normal;
+  color: #FF0000;  
+}
+
+#sulCont .errMsg,
+#sulCont .error-message{
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+#sulCont .errMsg{
+	width: 292px;
 }
 
 #sulCont span.error_img {
@@ -243,7 +256,7 @@ input[type="socialButton"] {
 	text-decoration: underline;
 }
 #sulCont .bottom-contents .bottom-links{
-	padding: 20px 0;
+	padding: 20px 0 0;
     font-size: 14px;
     line-height: 16px;
 }
@@ -314,3 +327,4 @@ input[type="socialButton"] {
 	left: 50%;
 	margin-left: -25px;
 }
+
