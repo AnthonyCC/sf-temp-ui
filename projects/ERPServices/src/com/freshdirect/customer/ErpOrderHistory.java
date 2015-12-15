@@ -3,6 +3,8 @@ package com.freshdirect.customer;
 import java.util.Collection;
 import java.util.Date;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+
 /**
  * @author skrishnasamy
  * @version 1.0
@@ -35,6 +37,11 @@ public class ErpOrderHistory implements OrderHistoryI {
 	@Override
 	public Date getFirstOrderDate() {
 		return ErpOrderHistoryUtil.getFirstOrderDate(erpRegSaleInfos);
+	}
+	
+	@Override
+	public Date getFirstOrderDateByStore(EnumEStoreId estoreId) {
+		return ErpOrderHistoryUtil.getFirstOrderDateByStore(erpRegSaleInfos, estoreId);
 	}
 
 	public Date getFirstNonPickupOrderDate(){

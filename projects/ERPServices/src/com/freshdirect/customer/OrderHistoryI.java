@@ -3,6 +3,8 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+
 /**
  * @author skrishnasamy
  * @version 1.0
@@ -13,6 +15,8 @@ public interface OrderHistoryI extends Serializable {
 	public int getDeliveredOrderCount();
 
 	public Date getFirstOrderDate();
+	
+	public Date getFirstOrderDateByStore(EnumEStoreId estoreId) ;
 
 	public Date getFirstNonPickupOrderDate();
 	

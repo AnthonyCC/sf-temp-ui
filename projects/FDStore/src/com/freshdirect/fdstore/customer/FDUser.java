@@ -287,6 +287,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean isGlobalNavTutorialSeen = false;
 	private List<ProductReference> productSamples;
 	private Date firstOrderDate = null;
+	private Date firstOrderDateByStore = null;
 	
 	private boolean crmMode;
 	private String rafClickId;
@@ -3159,6 +3160,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 */
 	public void setRafPromoCode(String rafPromoCode) {
 		this.rafPromoCode = rafPromoCode;
+	}
+
+	@Override
+	public Date getFirstOrderDateByStore(EnumEStoreId eStoreId)
+			throws FDResourceException {
+		if(null == firstOrderDateByStore){
+    		OrderHistoryI orderHistory = this.getOrderHistory();
+    		if(null != orderHistory){
+    			firstOrderDateByStore = orderHistory.getFirstOrderDateByStore(eStoreId);
+    		}
+    	}
+    	return firstOrderDateByStore;
 	}
 
 	

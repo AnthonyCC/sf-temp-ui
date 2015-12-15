@@ -1869,6 +1869,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setVHPopupDisplay(boolean flag) {
 		user.setVHPopupDisplay(flag);
 	}
+
+	@Override
+	public Date getFirstOrderDateByStore(EnumEStoreId eStoreId)
+			throws FDResourceException {
+		return user.getFirstOrderDateByStore(eStoreId);
+	}
 	
 	
 }

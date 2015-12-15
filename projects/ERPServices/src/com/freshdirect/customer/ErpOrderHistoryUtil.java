@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -158,6 +159,17 @@ public class ErpOrderHistoryUtil {
 		return date;
 	}
 
+	public static Date getFirstOrderDateByStore(Collection erpSaleInfos, EnumEStoreId estoreId){
+		Date date = null;
+		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
+			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+			Date createDate = saleInfo.getCreateDate();
+			if ((null == estoreId || estoreId.equals(saleInfo.geteStore())) && (date==null || createDate.before(date))) {
+				date = createDate;
+			}
+		}
+		return date;
+	}
 	
 	/**
 	 * 

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.Date;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -51,8 +52,9 @@ public class AudienceStrategy implements PromotionStrategyI {
 	private boolean isBeforeExpirationDate(String promotionCode, PromotionContextI context) {
 		boolean isBeforeExpDate = true;
 		Date firstOrderDate = null;
+		EnumEStoreId eStoreId= context.getUser().getUserContext().getStoreContext().getEStoreId();
 		try {
-			firstOrderDate = context.getUser().getFirstOrderDate();
+			firstOrderDate = context.getUser().getFirstOrderDateByStore(eStoreId);
 		} catch (FDResourceException e) {
 			//ignore
 		}

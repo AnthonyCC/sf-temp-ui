@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+
 /**
  * @author skrishnasamy
  * @version 1.0
@@ -32,6 +34,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
 	private static final String UNSETTLED_EBT_ORDER_COUNT = "UnsettledEBTOrderCount";
 	private static final String VALID_MASTERPASS_ORDER_COUNT = "validMasterPassOrderCount";
+	private static final String FIRST_ORDER_DATE_FOR_FD = "firstOrderDateForFD";
+	private static final String FIRST_ORDER_DATE_FOR_FDX = "firstOrderDateForFDX";
 	/**
 	 * 
 	 * @param erpSaleInfos
@@ -41,6 +45,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(DELIVERED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getDeliveredOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(FIRST_ORDER_DATE, ErpOrderHistoryUtil.getFirstOrderDate(erpSaleInfos));
 		orderHistoryInfo.put(FIRST_NON_PICKUP_ORDER_DATE, ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpSaleInfos));
+		orderHistoryInfo.put(FIRST_ORDER_DATE_FOR_FD, ErpOrderHistoryUtil.getFirstOrderDateByStore(erpSaleInfos,EnumEStoreId.FD));
+		orderHistoryInfo.put(FIRST_ORDER_DATE_FOR_FDX, ErpOrderHistoryUtil.getFirstOrderDateByStore(erpSaleInfos,EnumEStoreId.FDX));
 		orderHistoryInfo.put(LAST_ORDER_CREATE_DATE, ErpOrderHistoryUtil.getLastOrderCreateDate(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_DELIVERY_DATE, ErpOrderHistoryUtil.getLastOrderDlvDate(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_ID, ErpOrderHistoryUtil.getLastOrderId(erpSaleInfos));
@@ -175,5 +181,16 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	@Override
 	public int getValidMasterPassOrderCount() {
 		return ((Integer)orderHistoryInfo.get(VALID_MASTERPASS_ORDER_COUNT)).intValue();
+	}
+
+	@Override
+	public Date getFirstOrderDateByStore(EnumEStoreId eStoreId) {
+		if(null !=eStoreId){
+			if(EnumEStoreId.FDX.equals(eStoreId))
+				return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE_FOR_FDX));
+			else
+				return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE_FOR_FD));
+		}
+		return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE));
 	}
 }
