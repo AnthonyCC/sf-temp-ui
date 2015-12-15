@@ -123,7 +123,8 @@
 				<tr>
 					<td colspan="6">
 						<img src="/media_stat/images/navigation/social_accounts/FacebookShort.png" width="42" height="22" border="0" alt="FACEBOOK SHORT"> You are connected to Facebook. 
-						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser)){	
+						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
+								(!isPasswordAddedForSocialUser && "facebook".equalsIgnoreCase(newlyLinkedSocialNetworkProvider))){	
 						%>						
 						<input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
 						<%	} %>
@@ -149,8 +150,9 @@
 				<tr>
 					<td colspan="6">
 						<img src="/media_stat/images/navigation/social_accounts/GoogleShort.png" width="42" height="22" border="0" alt="GOOGLE SHORT"> You are connected to Google. 
-						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser)){	
-						%>
+						<%  if(!((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser) ||
+								(!isPasswordAddedForSocialUser && "google".equalsIgnoreCase(newlyLinkedSocialNetworkProvider))){	
+						%>	
 						<input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT">
 						<%	} %>						
 					</td>

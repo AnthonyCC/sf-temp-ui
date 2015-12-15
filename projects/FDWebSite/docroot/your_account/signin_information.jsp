@@ -142,6 +142,8 @@ String displayName = "";
 
 String confirmationMsg = "";		// used in 'i_confirmation_messages.jspf'
 
+String newlyLinkedSocialNetworkProvider = "";
+
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
@@ -399,6 +401,8 @@ if (request.getParameter("employeeId") != null) {
 
 
 } else if(session.getAttribute("NewlyLinkedSocialNetworkProvider") != null){
+	
+	newlyLinkedSocialNetworkProvider = (String) session.getAttribute("NewlyLinkedSocialNetworkProvider");
 	
 	confirmationMsg = "Your FD account is now linked to your " + session.getAttribute("NewlyLinkedSocialNetworkProvider") + " account.";
 	session.setAttribute("NewlyLinkedSocialNetworkProvider", null);
