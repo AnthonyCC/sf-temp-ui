@@ -31,7 +31,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">RAF Promo Code:</td>
-					<td class="alignL"><%= (null == promotion.getRafPromoCode() ||"".equals(promotion.getRafPromoCode()))?"None - Automatic": promotion.getRafPromoCode() %></td>
+					<td class="alignL"><%= (null == promotion.getRafPromoCode() ||"".equals(promotion.getRafPromoCode()))?" ": promotion.getRafPromoCode() %></td>
 				</tr>
 								
 				<% if ( promotion.getTerms() != null && !"".equals(promotion.getTerms()) ) { %>
