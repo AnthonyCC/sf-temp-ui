@@ -652,7 +652,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		
 		LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:START] :"+date.getTime());
 		
-		FDDeliveryZoneInfo dlvResponse = AddressUtil.getZoneInfo( user, address, result, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
+		Date startDateTime = date.getTime();
+		FDCartModel cart =  user.getShoppingCart();
+		if(cart!=null && cart.getDeliveryReservation()!=null && cart.getDeliveryReservation().getStartTime()!=null){
+			startDateTime = cart.getDeliveryReservation().getStartTime();
+		}
+		
+		FDDeliveryZoneInfo dlvResponse = AddressUtil.getZoneInfo( user, address, result, startDateTime, user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;
