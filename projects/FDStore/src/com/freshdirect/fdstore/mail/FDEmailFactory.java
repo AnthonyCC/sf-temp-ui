@@ -72,6 +72,7 @@ public class FDEmailFactory {
 	public static final String FDX_ANNOUNCE_EMAIL = FDStoreProperties.getAnnounceEmailFDX();
 	public static final String FDX_ORDER_EMAIL = FDStoreProperties.getOrderEmailFDX();
 	public static final String FDX_ACTSERVICE_EMAIL = FDStoreProperties.getActServiceEmailFDX();
+	public static final String FDX_SIDEKICKS_EMAIL = FDStoreProperties.getSidekicksEmailFDX();
 
 
 	// default instance getter
@@ -215,15 +216,29 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
-		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDCSHours());
-		//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
-		
-		// get the xslpath from the email object in the complaint.
-		ErpCustomerEmailModel custEmailObj = complaint.getCustomerEmail();
-		email.setXslPath(custEmailObj.getHtmlXslPath(),custEmailObj.getPlainTextXslPath());
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		email.setSubject("We've issued your credits");
+	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId) {
+		FDConfirmCreditEmail email = null;
+		boolean isFdxOrder = eStoreId.equals(EnumEStoreId.FDX);
+
+		if (isFdxOrder) {
+			email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDXCSHours());
+			
+			email.setXslPath("h_credit_general_fdx.xsl", "h_credit_general_fdx.xsl"); //no text version
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_SIDEKICKS_EMAIL));
+			email.setFromEmail(FDX_SIDEKICKS_EMAIL); //add to email's data for footer text
+			email.setSubject("Store Credit Issued");
+			
+		} else {
+
+			email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDCSHours());
+			//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
+			
+			// get the xslpath from the email object in the complaint.
+			ErpCustomerEmailModel custEmailObj = complaint.getCustomerEmail();
+			email.setXslPath(custEmailObj.getHtmlXslPath(),custEmailObj.getPlainTextXslPath());
+			email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+			email.setSubject("We've issued your credits");
+		}
 
 		return email;
 	}

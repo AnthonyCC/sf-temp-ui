@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,15 +85,10 @@ import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.erp.ejb.ErpEWalletSB;
-import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdlogistics.services.ILogisticsService;
-import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
-import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
-import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -104,6 +98,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
@@ -140,7 +135,6 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
-import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
@@ -1926,7 +1920,8 @@ public class FDCustomerManager {
 
 
 	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) {
-		return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint);
+		EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+		return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId);
 	}
 
 

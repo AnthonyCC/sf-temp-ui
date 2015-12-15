@@ -85,6 +85,7 @@ public class FDStoreProperties {
     private final static String PROP_EMAIL_FDX_ANNOUNCE = "fdstore.email.fdx.announce";
     private final static String PROP_EMAIL_FDX_ORDER = "fdstore.email.fdx.order";
     private final static String PROP_EMAIL_FDX_ACTSERVICE = "fdstore.email.fdx.actservice";
+    private final static String PROP_EMAIL_FDX_SIDEKICKS = "fdstore.email.fdx.sidekicks";
     
     private final static String PROP_HOLIDAY_LOOKAHEAD_DAYS = "fdstore.holidayLookaheadDays";
     private final static String PROP_DLV_PROMO_EXP_DATE = "fdstore.dlvPromo.expDate";
@@ -890,6 +891,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EMAIL_FDX_ANNOUNCE, "announcements@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_ORDER, "order@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_ACTSERVICE, "accountservices@foodkick.com");
+        defaults.put(PROP_EMAIL_FDX_SIDEKICKS, "sidekicks@foodkick.com");
         
         defaults.put(PROP_CONTENTMANAGER_HOME,
             "freshdirect.content.ContentManager");
@@ -3966,6 +3968,10 @@ public class FDStoreProperties {
         return get(PROP_EMAIL_FDX_ACTSERVICE);
     }
     
+	public static String getSidekicksEmailFDX() {
+        return get(PROP_EMAIL_FDX_SIDEKICKS);
+	}
+    
     public static String getMiddleTierProviderURL() {
         return get(PROP_MIDDLETIER_PROVIDER_URL);
     }
@@ -4097,5 +4103,6 @@ public class FDStoreProperties {
 	public static String getPropExtoleMicrositeSubUrl() {
 		return get(PROP_EXTOLE_MICROSITE_SUB_URL);
 	}
+
 	
 }

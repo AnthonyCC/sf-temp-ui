@@ -173,7 +173,6 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
-
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
@@ -238,8 +237,6 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.referral.extole.EnumRafTransactionStatus;
-import com.freshdirect.referral.extole.EnumRafTransactionType;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
@@ -3398,16 +3395,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDCustomerInfo fdInfo = getCustomerInfo(new FDIdentity(
 						erpCustomerId, fdCustomerId));
 				FDOrderI order = getOrder(saleId);
+				EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 				if (null != order
 						&& EnumSaleType.GIFTCARD.equals(order.getOrderType())) {
 					modifyGiftCardComplaint(saleId, order, alteredComplaint);
 					this.doEmail(FDGiftCardEmailFactory.getInstance()
 							.createConfirmCreditEmail(fdInfo, saleId,
-									alteredComplaint));
+									alteredComplaint,estoreId));
 				} else {
 					this.doEmail(FDEmailFactory.getInstance()
 							.createConfirmCreditEmail(fdInfo, saleId,
-									alteredComplaint));
+									alteredComplaint,estoreId));
 				}
 				alteredComplaint.getCustomerEmail().setMailSent(true);
 				sb.updateEmailSentFlag(alteredComplaint.getCustomerEmail());
@@ -3500,9 +3498,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						&& !cem.isMailSent() && !complaintInfo.getComplaint()
 						.dontSendEmail());
 				if (sendMail && otherEmailConditions) {
+					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					this.doEmail(FDEmailFactory.getInstance()
 							.createConfirmCreditEmail(fdInfo, saleId,
-									complaintInfo.getComplaint()));
+									complaintInfo.getComplaint(), estoreId));
 					complaintInfo.getComplaint().getCustomerEmail()
 							.setMailSent(true);
 					sb.updateEmailSentFlag(complaintInfo.getComplaint()

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -153,7 +154,7 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 
 	@Override
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer,
-			String saleId, ErpComplaintModel complaint) {
+			String saleId, ErpComplaintModel complaint, EnumEStoreId eStoreId) {
 		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);
 		//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
 		
