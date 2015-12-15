@@ -84,6 +84,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ItemSelectionCheckResult;
@@ -1214,10 +1215,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
         final String paramQuantity = "quantity" + suffix;
 
+        FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
         //
         // get quantity
         //
         double quantity = 0;
+        double maximumQuantity = 0.0;
         try {
 
             String quan = request.getParameter(paramQuantity);
@@ -1232,14 +1235,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                 return null;
             }
             quantity = new Double(quan).doubleValue();
+            maximumQuantity = extractMaximumQuantity(user, originalOrderLineId, prodNode);
         } catch (NumberFormatException nfe) {
             result.addError(new ActionError(paramQuantity, MESSAGE_INVALID_QUANTITY));
         }
 
         double origQuantity = originalLine == null ? 0 : originalLine.getQuantity();
 
-        FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
-        String errorMessage = this.validateQuantity(user, prodNode, quantity, origQuantity);
+        String errorMessage = this.validateQuantity(prodNode, quantity, origQuantity, maximumQuantity);
         if (errorMessage != null) {
             result.addError(new ActionError(paramQuantity, errorMessage));
         }
@@ -1399,6 +1402,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         return theCartLine;
     }
 
+    private double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
+        double maximumQuantity = 0.0;
+        MasqueradeContext context = user.getMasqueradeContext();
+        if (context != null && context.isMakeGood() && context.containsMakeGoodOrderLineIdQuantity(lineId)) {
+            maximumQuantity = context.getMakeGoodOrderLineIdQuantity(lineId);
+        } else {
+            maximumQuantity = user.getQuantityMaximum(prodNode);
+        }
+        return maximumQuantity;
+    }
+
     private FDCartLineI processSimple(String suffix, ProductModel prodNode, FDProduct product, double quantity, FDSalesUnit salesUnit, String origCartLineId, String variantId,
             UserContext userCtx, FDGroup group) {
 
@@ -1522,8 +1536,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         return sum;
     }
 
-    private String validateQuantity(FDUserI user, ProductModel prodNode, double quantity, double adjustmentQuantity) {
-
+    private String validateQuantity(ProductModel prodNode, double quantity, double adjustmentQuantity, double maximumQuantity) {
         DecimalFormat formatter = new DecimalFormat("0.##");
         if (quantity < prodNode.getQuantityMinimum()) {
             return "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
@@ -1536,8 +1549,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         // For CCL Requests (other than cart events)
         // quantity limits do not apply
         if (!isCCLRequest() || isAddToCartRequest()) {
-            if (getCartlinesQuantity(prodNode) + cart.getTotalQuantity(prodNode) + quantity - adjustmentQuantity > user.getQuantityMaximum(prodNode)) {
-                return "Please note: there is a limit of " + formatter.format(user.getQuantityMaximum(prodNode)) + " per order of " + prodNode.getFullName();
+            if (getCartlinesQuantity(prodNode) + cart.getTotalQuantity(prodNode) + quantity - adjustmentQuantity > maximumQuantity) {
+                return "Please note: there is a limit of " + formatter.format(maximumQuantity) + " per order of " + prodNode.getFullName();
             }
         }
 

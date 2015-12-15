@@ -711,6 +711,7 @@ public class CartOperations {
 		
 		FDSalesUnit salesUnit = null;
 		double quantity = 0.0;
+		double maximumQuantity = 0.0;
 
 		String requestedUnit = item.getSalesUnit();
 		
@@ -739,11 +740,25 @@ public class CartOperations {
 			return null;
 		}
 		
+		maximumQuantity = extractMaximumQuantity(user, item.getLineId(), prodNode);
+		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									VALIDATION
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
-		String errorMessage = validateQuantity(user,cart,getCartlinesQuantity(prodNode,cartLinesToAdd),prodNode,quantity,0);
+        String errorMessage;
+
+        MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+        if (masqueradeContext != null) {
+            errorMessage = masqueradeContext.validateAddToCart(item.getLineId());
+            if (errorMessage != null) {
+                responseItem.setStatus(Status.ERROR);
+                responseItem.setMessage(errorMessage);
+                return null;
+            }
+        }
+
+        errorMessage = validateQuantity(cart, getCartlinesQuantity(prodNode, cartLinesToAdd), prodNode, quantity, 0, maximumQuantity);
 		
 		if (errorMessage != null) {
 			responseItem.setStatus( Status.ERROR );
@@ -926,34 +941,23 @@ public class CartOperations {
 	 * @param originalLineQuantity quantity of this cartline (for modify cartline scenario)
 	 * @return
 	 */
-	private static String validateQuantity( FDUserI user, FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity ) {
-		
-		DecimalFormat formatter = new DecimalFormat("0.##");
-		if (quantity < prodNode.getQuantityMinimum()) {
-			return "FreshDirect cannot deliver less than "
-					+ formatter.format( prodNode.getQuantityMinimum() ) + " "
-					+ prodNode.getFullName();
-		}
+    private static String validateQuantity(FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity, double maximumQuantity) {
+        String errorMessage = null;
+        DecimalFormat formatter = new DecimalFormat("0.##");
+        if (quantity < prodNode.getQuantityMinimum()) {
+            errorMessage = "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+        }
 
-		if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
-			return "Quantity must be an increment of " + formatter.format( prodNode.getQuantityIncrement() );
-		}
+        if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
+            errorMessage = "Quantity must be an increment of " + formatter.format(prodNode.getQuantityIncrement());
+        }
 
-		if (user != null && user.getMasqueradeContext() != null) {
-			// [APPDEV-4486] In CRM Masquerade mode only min qt is checked.
-			//               So basically we're done here.
-			return null;
-		}
+        if (originalQuantity + cart.getTotalQuantity(prodNode) + quantity - originalLineQuantity > maximumQuantity) {
+            errorMessage = "Please note: there is a limit of " + formatter.format(maximumQuantity) + " per order of " + prodNode.getFullName();
+        }
 
-		if (originalQuantity
-				+ cart.getTotalQuantity(prodNode) + quantity
-				- originalLineQuantity > user.getQuantityMaximum(prodNode)) {
-			return "Please note: there is a limit of " + formatter.format( user.getQuantityMaximum(prodNode) ) + 
-				   " per order of " + prodNode.getFullName();				
-		}
-
-		return null;
-	}
+        return errorMessage;
+    }
 
 	/**
 	 * Validates configuration, returns an error message string, or null if OK.
@@ -1047,5 +1051,16 @@ public class CartOperations {
 		
 		return quantity;
 	}
+
+    public static double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
+        double maximumQuantity = 0.0;
+        MasqueradeContext context = user.getMasqueradeContext();
+        if (context != null && context.isMakeGood() && context.containsMakeGoodOrderLineIdQuantity(lineId)) {
+            maximumQuantity = context.getMakeGoodOrderLineIdQuantity(lineId);
+        } else {
+            maximumQuantity = user.getQuantityMaximum(prodNode);
+        }
+        return maximumQuantity;
+    }
 
 }

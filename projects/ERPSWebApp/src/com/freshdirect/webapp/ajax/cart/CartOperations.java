@@ -761,7 +761,7 @@ public class CartOperations {
 			return null;
 		}
 		
-		maximumQuantity = extractMaximumQuantity(user, item, prodNode);
+		maximumQuantity = extractMaximumQuantity(user, item.getLineId(), prodNode);
 		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									VALIDATION
@@ -974,6 +974,7 @@ public class CartOperations {
 	 * @param prodNode
 	 * @param quantity
 	 * @param originalLineQuantity quantity of this cartline (for modify cartline scenario)
+	 * @param maximumQuantity
 	 * @return
 	 */
     private static String validateQuantity(FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity, double maximumQuantity) {
@@ -1086,11 +1087,11 @@ public class CartOperations {
 		return quantity;
 	}
 	
-    public static double extractMaximumQuantity(FDUserI user, AddToCartItem item, ProductModel prodNode) {
+    public static double extractMaximumQuantity(FDUserI user, String lineId, ProductModel prodNode) {
         double maximumQuantity = 0.0;
         MasqueradeContext context = user.getMasqueradeContext();
-        if (context != null && context.isMakeGood() && context.containsMakeGoodOrderLineIdQuantity(item.getLineId())) {
-            maximumQuantity = context.getMakeGoodOrderLineIdQuantity(item.getLineId());
+        if (context != null && context.isMakeGood() && context.containsMakeGoodOrderLineIdQuantity(lineId)) {
+            maximumQuantity = context.getMakeGoodOrderLineIdQuantity(lineId);
         } else {
             maximumQuantity = user.getQuantityMaximum(prodNode);
         }
