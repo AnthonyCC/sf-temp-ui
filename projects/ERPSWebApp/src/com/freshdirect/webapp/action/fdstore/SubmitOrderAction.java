@@ -779,15 +779,21 @@ public class SubmitOrderAction extends WebActionSupport {
 			if (EnumFraudReason.MAX_ORDER_TOTAL.equals(ex.getFraudReason())) {
 				
 				int order_amount = 750;
+				String msg = null;
 				
 				if(cart instanceof FDModifyCartModel) {
 					order_amount = Integer.parseInt(FDStoreProperties.getModifyOrderMaxTotal()); //1500;
 				}
 				
-				String msg = MessageFormat.format(
+		        if(cart.getEStoreId()!=null && cart.getEStoreId().getContentId()!=null && "FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
+		        	msg = MessageFormat.format(
+							SystemMessageList.MSG_CHECKOUT_AMOUNT_TOO_LARGE_FDX,
+							new Object[] {order_amount, UserUtil.getCustomerServiceContact(this.getWebActionContext().getRequest())});
+		        } else {
+				msg = MessageFormat.format(
 						SystemMessageList.MSG_CHECKOUT_AMOUNT_TOO_LARGE,
 						new Object[] {order_amount, UserUtil.getCustomerServiceContact(this.getWebActionContext().getRequest())});
-
+		        }
 				this.addError("order_amount_fraud", msg);
 				
 			} else if (EnumFraudReason.MAX_MAKEGOOD.equals(ex.getFraudReason())) {
