@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -66,7 +67,7 @@ class FDCustomerListDAO {
 			ps.setTimestamp(4, ts);
 			ps.setString(5, list.getRecipeId());
 			ps.setString(6, list.getRecipeName());
-			ps.setString(7, null !=list.geteStoreType()?list.geteStoreType():"FreshDirect");
+			ps.setString(7, null !=list.geteStoreType()?list.geteStoreType():ContentFactory.getInstance().getStoreKey().getId());
 
 			ps.setString(8, list.getId());
 
