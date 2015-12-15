@@ -224,7 +224,7 @@ public class FDEmailFactory {
 			email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDXCSHours());
 			
 			email.setXslPath("h_credit_general_fdx.xsl", "h_credit_general_fdx.xsl"); //no text version
-			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_SIDEKICKS_EMAIL));
+			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ACTSERVICE_EMAIL));
 			email.setFromEmail(FDX_SIDEKICKS_EMAIL); //add to email's data for footer text
 			email.setSubject("Store Credit Issued");
 			
