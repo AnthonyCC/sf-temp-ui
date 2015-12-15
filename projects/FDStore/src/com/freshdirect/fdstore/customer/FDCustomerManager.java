@@ -3212,10 +3212,36 @@ public class FDCustomerManager {
 		}
 		return lastOrderId;
 	}
+	
+
+	public static String getLastOrderId(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
+		String lastOrderId = null;
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
+			lastOrderId = customerManagerSessionBean.getLastOrderID(identity, eStoreId);
+		} catch (CreateException exception) {
+			invalidateManagerHome();
+			throw new FDResourceException(exception, "Error creating session bean");
+		} catch (RemoteException exception) {
+			invalidateManagerHome();
+			throw new FDResourceException(exception, "Error talking session bean");
+		}
+		return lastOrderId;
+	}
 
 	public static FDOrderI getLastOrder(FDIdentity identity) throws FDResourceException {
 		FDOrderI lastOrder = null;
 		String lastOrderId = getLastOrderId(identity);
+		if (lastOrderId != null) {
+			lastOrder = getOrder(lastOrderId);
+		}
+		return lastOrder;
+	}
+
+	public static FDOrderI getLastOrder(FDIdentity identity, EnumEStoreId eStoreId) throws FDResourceException {
+		FDOrderI lastOrder = null;
+		String lastOrderId = getLastOrderId(identity, eStoreId);
 		if (lastOrderId != null) {
 			lastOrder = getOrder(lastOrderId);
 		}

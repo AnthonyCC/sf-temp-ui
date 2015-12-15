@@ -148,7 +148,7 @@ public class PaymentService {
     }
 
     private void sortPaymentMethods(FDUserI user, List<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
-        FDOrderI lastOrder = FDCustomerManager.getLastOrder(user.getIdentity());
+        FDOrderI lastOrder = FDCustomerManager.getLastOrder(user.getIdentity(), user.getUserContext().getStoreContext().getEStoreId());
         ErpPaymentMethodI lastUsedPaymentMethod = null;
         if (lastOrder != null) {
             lastUsedPaymentMethod = lastOrder.getPaymentMethod();
