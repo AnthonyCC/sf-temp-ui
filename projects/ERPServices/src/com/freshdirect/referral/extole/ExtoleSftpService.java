@@ -49,13 +49,13 @@ public class ExtoleSftpService {
 	}
 
 	/**
-	 * Download the given file from Extole into our opt/fdlog/referralCredits  
+	 * Download the given file from Extole into opt/fdlog/referralCredits  
 	 * folder and return the destination of the downloaded file
 	 * 
 	 * @param fileName
 	 * @return file destination
 	 */
-	public static String downloadFile(String fileName) {
+	public static String downloadFile(String fileName) throws ExtoleServiceException {
 
 		Session session = null;
 		Channel channel = null;
@@ -88,11 +88,13 @@ public class ExtoleSftpService {
 				channelSftp.get(source, destination, new ExtoleSftpDownloadProgressMonitor());
 				LOGGER.info(" Successfully downloaded : " + fileName + " Rewards File ");
 			} catch (SftpException e) {
-				LOGGER.error(e.getMessage());
+				LOGGER.error("Error whille file download ",e);
+				throw new ExtoleServiceException(e);
 			}
 
 		} catch (JSchException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error while connecting to Extole ",e);
+			throw new ExtoleServiceException(e);
 		} finally {
 			if (null != channelSftp && channelSftp.isConnected()) {
 				LOGGER.info(" Extole SFTP: disconnecting sftp channel");
