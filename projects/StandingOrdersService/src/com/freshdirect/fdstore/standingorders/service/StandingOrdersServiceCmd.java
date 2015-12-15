@@ -464,9 +464,13 @@ public class StandingOrdersServiceCmd {
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")	
-						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getZone()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>");
+						if ( soInfo.getStartTime() != null && soInfo.getEndTime() !=null){
+							buffer.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>");
+						}else{
+							buffer.append("<td nowrap=\"nowrap\">").append("N/A&nbsp;").append("</td>");
+						}
+						buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getZone()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")								
