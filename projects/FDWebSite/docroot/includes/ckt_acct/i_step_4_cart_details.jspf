@@ -309,7 +309,7 @@ int idx = 0;
 
 	<% if (isFdxOrder) { %>
 	<tr>
-	    <td colspan="3" align="right">E-Tip :</td>
+	    <td colspan="3" align="right">Tip :</td>
 	    <td align="right"><%=JspMethods.formatPrice(cart.getTip()) %></td>
 	    <td colspan="7"></td>
 	</tr>

@@ -92,7 +92,7 @@ if(cart.hasInvoice()) {
 
 	<% if (isFdxOrder) { %>
 	<tr class="orderSummary" align="right">
-		<td colspan="3" align="right">E-Tip :</td>
+		<td colspan="3" align="right">Tip :</td>
 		<td align="right"><%=currencyFormatter.format(cart.getTip())%></td>
 		<td colspan="3"></td>
 	</tr>
