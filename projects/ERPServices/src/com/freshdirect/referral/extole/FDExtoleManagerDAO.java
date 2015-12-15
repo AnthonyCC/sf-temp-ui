@@ -50,7 +50,7 @@ public class FDExtoleManagerDAO implements Serializable {
 			+ "AND SA.ID = RFT.SALESACTION_ID  AND  SA.CUSTOMER_ID=CIF.CUSTOMER_ID "
 			+ "AND SA.CUSTOMER_ID=FDC.ERP_CUSTOMER_ID "
 			+ "AND RFT.TRANS_STATUS IN('P','F') AND RFT.TRANS_TYPE ='purchase' "
-			+ "AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.ACTION_DATE=S.CROMOD_DATE AND RFT.TRANS_TIME > SYSDATE-30";
+			+ "AND SA.ACTION_TYPE = 'CRO' AND RFT.TRANS_TIME > SYSDATE-30";
 
 	/*
 	 * This method is for sending Create Conversion Request to Extole based on
