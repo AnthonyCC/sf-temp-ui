@@ -443,13 +443,10 @@ public class SubmitOrderAction extends WebActionSupport {
 
 		final EnumCheckoutMode mode = user.getCheckoutMode();
 		
-		final EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null
-				|| CrmSession.getCurrentAgent(session)!=null
-				|| user.getMasqueradeContext()!=null
-					? EnumTransactionSource.CUSTOMER_REP
-					: EnumTransactionSource.WEBSITE;
-
-		// potential double-submission, how else would the user end up here...
+		final String userApplicaionSource = (String)session.getAttribute(SessionName.APPLICATION);
+		final EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null||user.getMasqueradeContext()!=null ? EnumTransactionSource.CUSTOMER_REP : userApplicaionSource!=null?EnumTransactionSource.getTransactionSource(userApplicaionSource):EnumTransactionSource.WEBSITE;
+	       
+		 	// potential double-submission, how else would the user end up here...
 		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
 			return SUCCESS;
 		}
