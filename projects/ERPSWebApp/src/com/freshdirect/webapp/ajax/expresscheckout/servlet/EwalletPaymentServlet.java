@@ -490,8 +490,8 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			if(productDesc != null && productDesc.length() > 99 ){
 				productDesc = productDesc.substring(0, 94) + "...";
 			}
-			if(StringEscapeUtils.escapeXml(productDesc).length() > 99){
-				String prodDes = StringEscapeUtils.escapeXml(productDesc);
+			String prodDes = StringEscapeUtils.escapeXml(productDesc);
+			if(null != prodDes && prodDes.length() > 99){				
 				productDesc = prodDes.substring(0, 94) + "...";
 			}
 			cartItem.append("<ShoppingCartItem>");
