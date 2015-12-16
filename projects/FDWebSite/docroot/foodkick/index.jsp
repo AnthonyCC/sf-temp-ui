@@ -109,7 +109,7 @@
 			
 			<article class="last">
 				<figure>
-					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" /></div>
+					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" style="top:7px;" /></div>
 					<figcaption>
 						<h4>HAVE AN AMAZING FOOD EXPERIENCE</h4>
 						An amazing meal will be waiting for you to dig into and enjoy!

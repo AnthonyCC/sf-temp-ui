@@ -14,7 +14,7 @@ function isSafari(){
 }
 
 //find out what Android version is present. Versions below 4.4.4 are what we are looking for for form validation capability (below 4.4.4 is not fully supported)
-function getAndroidVersion(ua){
+function getAndroidVersion(ua){ /* String */
 	ua = (ua || navigator.userAgent).toLowerCase(); 
 	var match = ua.match(/android\s([0-9\.]*)/);
 	return match ? match[1] : false;
@@ -22,11 +22,11 @@ function getAndroidVersion(ua){
 //parseFloat(getAndroidVersion());
 
 //detects basic support for whether the calling page has form validation support.
-function hasFormValidation() {  
+function hasFormValidation(){ /* void */
 	return (typeof document.createElement( 'input' ).checkValidity == 'function'); 
 };
 
-function canValidateFields() {    
+function canValidateFields(){ /* void */
     var result = typeof document.createElement( 'input' ).checkValidity == 'function';
     if (result) {
         for (var i = 0; i < arguments.length; i++) {
@@ -42,7 +42,7 @@ function canValidateFields() {
 //document.getElementById( 'validation' ).innerHTML = hasFormValidation();
 
 //for the sticky header
-function scroll_header_fix(){
+function scroll_header_fix(){ /* void */
 	if( $(this).scrollTop() > ($(window).height() / 2) ){
 		$('header, nav').addClass("sticky");
 	}else{
@@ -50,7 +50,7 @@ function scroll_header_fix(){
 	}
 }
 
-function prepare_slideshow(ss_obj){
+function prepare_slideshow(ss_obj){ /* Object */
 	//will contain the image or video url, or it will contain the html content provided from OAS, should the slide be of type 'html'
 	var if_content = "";
 	
@@ -127,8 +127,6 @@ function prepare_slideshow(ss_obj){
 		$("#" + ss_obj.html_id ).append( "<figure><figcaption>"+ss_obj.slides[i].caption+"</figcaption>"+temp_innerslide_fullcontent+"</figure>" );
 	}//end for loop
 	
-	
-	
 	//if there is only one slide, well, our problem is more tedious, but solvable
 	if( ss_obj.slides.length == 1 ){
 		$("#" + ss_obj.html_id ).html(  '<div class="slidesjs-container slidesjs-single"><div class="slidesjs-control">'+ $("#" + ss_obj.html_id ).html() +'</div></div>'  );
@@ -165,19 +163,19 @@ function prepare_slideshow(ss_obj){
 }
 
 //to make sure the carousel looks fairly proper when the browser window is resized
-function fullwindow_carousels_handler(){
+function fullwindow_carousels_handler(){ /* void */
 	//establish final height/width for the carousel
 	var carousel_height = $("#carousel_1").height();
 
 	$("#carousel_1 .slidesjs-container, #carousel_1 .slidesjs-control").css("height", carousel_height + "px");
 }
 
-function elements_size_adjuster(){
+function elements_size_adjuster(){ /* void */
 	fullwindow_carousels_handler();
 }
 
 //executed from when the first form of 2 possible is executed.  verifies whether zipcode entered is within FDX territory
-function zonenotification_zip(zip_text){
+function zonenotification_zip(zip_text){ /* String */
 	$.ajax({
 		url:'/api/locationhandler.jsp',
 		async:false,
@@ -202,7 +200,7 @@ function zonenotification_zip(zip_text){
 }
 
 //executed for second of 2 possible forms to add someone to the records
-function zonenotification_zip_and_email(param_obj){
+function zonenotification_zip_and_email(param_obj){ /* Object */
 	$.ajax({
 		url:'/api/locationhandler.jsp',
 		data:{
@@ -218,11 +216,11 @@ function zonenotification_zip_and_email(param_obj){
 }
 
 //for the zip code input tags
-function numbersOnly(src){
+function numbersOnly(src){ /* String */
 	src.value = src.value.replace(/[A-Za-z]/g, '');
 }
 
-function form_enableDisable(formId, eORd){
+function form_enableDisable(formId, eORd){ /*String, Boolean*/
 	var eORd = (typeof eORd !== 'undefined')? eORd : false;
 	
 	//the submit button for the form
@@ -249,7 +247,7 @@ function form_enableDisable(formId, eORd){
 	}
 }
 
-function button_enableDisable(buttonId, eORd){
+function button_enableDisable(buttonId, eORd){ /*String, Boolean*/
 	if( eORd == true ){ // if this button SHOULD be enabled...
 		$(buttonId).prop('disabled', false).removeClass("button_disabled"); // enables button
 	}else{ // or if not
@@ -270,6 +268,7 @@ function form_inputs_enable_lite(formId){
 	//$(formId).find("button").prop('disabled', false);
 }
 
+//following 2 functions below help with page resizing
 function PageShowHandler(){
 	form_inputs_enable_lite("#ziphandler", true);
 	
@@ -357,8 +356,6 @@ $(function(){
 		zonenotification_zip_and_email(param_obj);
 		
 		button_enableDisable('#submit_locationhandler', false);
-		
-		
 	});
 	
 	//this should take care of any loose end browsers that lack html5 form validation 
@@ -366,7 +363,7 @@ $(function(){
 		onkeyup: false,
 		errorElement: "div",
 
-		errorPlacement: function(error, element) {
+		errorPlacement: function(error, element){
 			error.insertBefore(element);
 		}
 	});

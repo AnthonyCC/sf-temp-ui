@@ -947,6 +947,7 @@ footer {
       @media (min-width: 30em) {
         footer section#footer_subsection section {
           width: calc(25% - 15px);
+          min-width: 180px;
           display: inline-block; } }
       @media (min-width: 50em) {
         footer section#footer_subsection section {

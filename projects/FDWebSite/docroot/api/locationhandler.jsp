@@ -51,6 +51,8 @@ if (request.getHeader("X-Requested-With") != null) {
 				
 				LOGGER.debug("karl's test with line 52, x.hasFdxService(zipcode_temp) = " + x.hasFdxService(zipcode_temp));
 				
+				return;
+				
 			} else if(!"setZipCode".equals(action) && !"selectAddress".equals(action) ) { // because reload happens
 				AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
 				%><span class="invisible addresstext"><%= LocationHandlerTag.formatAddressShortText(selectedAddress) %></span>
