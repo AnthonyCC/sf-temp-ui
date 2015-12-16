@@ -7,6 +7,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 <%@ page import="com.freshdirect.delivery.restriction.OneTimeRestriction"%>
 <%@ page import="com.freshdirect.delivery.restriction.RestrictionI"%>
+
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
 <% 
@@ -24,8 +25,8 @@
 %>
 <script>
 function openURL(inLocationURL) {
-
     self.parent.location.href = inLocationURL;
+
 
 }
 
@@ -66,20 +67,23 @@ function addBlockedDays() {
 			    inputField : "newBlkStartDate",
 			    ifFormat : "%Y-%m-%d",
 			    singleClick: true,
-			    button : "trigger_blkStartDate" 
+			    button : "trigger_blkStartDate",
+			    position : [233,480]
 			    }
 			    );
+			    
+
 			    			 
 			</script><fd:ErrorHandler result='<%=actResult%>' name='newBlkStartDate' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>                			
 		</td>
         <td>End Date : </td>
 		<td>
                 <input type="hidden" name="blkEndDate" id="blkEndDate" value="<%=blkEndDate%>">
-                <input type="text" name="newBlkEndDate" id="newBlkEndDate" size="10" value="<%=blkEndDate%>" disabled="true" onchange="setDate2(this);"> &nbsp;<a href="#" id="trigger_blkEndDate" style="font-size: 9px;">>></a>
+                <input type="text" name="newBlkEndDate" id="newBlkEndDate" size="10" value="<%=blkEndDate%>" disabled="true" onchange="setDate2(this);"> &nbsp;<a href="#" id="trigger_blkEndDate" style="font-size: 9px;">>> </a>
  		        <script language="javascript">
 			    function setDate2(field){
 			    document.getElementById("blkEndDate").value=field.value;
-
+			    
 			    }
 
 
@@ -90,7 +94,9 @@ function addBlockedDays() {
 			    inputField : "newBlkEndDate",
 			    ifFormat : "%Y-%m-%d",
 			    singleClick: true,
-			    button : "trigger_blkEndDate" 
+			    button : "trigger_blkEndDate",
+			    position :  [633,480]
+			    
 			    }
 			    );
 			    
@@ -106,7 +112,6 @@ function addBlockedDays() {
                    document.getElementById("newBlkEndDate").value = fd;
 			    	  document.getElementById("blkMessage").value = "";
 			    }
-			    			
                 
 			  
 					//document.getElementById("actionName").value = actionName;
@@ -127,4 +132,5 @@ function addBlockedDays() {
 			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearBlkDayAll();">
 		</td>
     </tr>
+
 </table>

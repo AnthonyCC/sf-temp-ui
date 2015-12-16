@@ -52,7 +52,8 @@
 	   <%@ include file="/includes/i_error_messages.jspf" %>
 	</fd:ErrorHandler>
 <form name="delRestrictions" id="delRestrictions" method='POST' onsubmit="javascript:doSearch();">
-<%@ include file="/includes/admintools/i_del_restriction_search.jspf"%>
+ <%@ include file="/includes/admintools/i_del_restriction_search.jspf"%>
+ 
 <input type="hidden" name="restrictionId" value="">
  <%
            String successMsg=(String)request.getAttribute("successMsg");
@@ -77,45 +78,19 @@
 	</td>
 	</tr>
 	<tr><td colspan="2">
-	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:420;">
+	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:250;">
 		<%@ include file="/includes/admintools/restrictions_list.jspf"%>
 	</div>
 	</td></tr>
-    <tr colspan="2">
-	<td>
-		<span class="header_text"><b>Add Blocked Day</b> Restrict Order Placement/deliveries for a specific day. Use for Christmas, New Years, picnic and other required plant closures</span>
-	</td>
-	</tr>
-	<tr><td colspan="2">
-	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:180;">
-		<%@ include file="/includes/admintools/add_blocked_day.jspf"%>
-	</div>
-	</td></tr>
-    <!-- tr colspan="2">
-	<td>
-		<span class="header_text"><b>Update Restriction Short Cut</b></span>
-	</td>
-	</tr>
-	<tr><td colspan="2">
-    <span class="header_text"><b>Plater Cutoffs</b> Modify kitchen/catering website cutoff for given day of week </span>
-	</td></tr>
-    <tr><td colspan="2">
-      <A HREF="javascript:void(0)" onclick="window.open('/admintools/platterForm.jsp?actionType=getPlatterRestriction','getPlatterRestriction','width=350,height=400,menubar=no,status=no')">View/Edit</a>
-	</td></tr>
-	<tr><td colspan="2"><A HREF="javascript:void(0)" onclick="window.open('/admintools/platterRestrictionForm.jsp','','width=350,height=400,menubar=no,status=no')">Create One-time Restriction</a></td></tr>
-   <!-- <tr><td colspan="2">
-    <span class="header_text"><b>Holiday Pre-order</b> Reverse Restrictions on annual receuuring holiday , items only available on specific days
-	</td></tr>
-    <tr><td colspan="2">
-      <a href="">View/Edit</a>
-	</td></tr>  -->
-    <!-- tr><td colspan="2">
-    <span class="header_text"><b>Kosher Holiday Schedule</b> Update Jewish holiday Dates
-	</td></tr>
-    <tr><td colspan="2">
-      <A HREF="javascript:void(0)" onclick="window.open('/admintools/kosherForm.jsp?actionType=getKosherRestriction','getKosherRestriction','width=450,height=400,menubar=no,status=no')">View/Edit</a>
-	</td></tr> -->
+  
 </table>
+	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:20;">
+	<span class="header_text"><b>Add Blocked Day</b> Restrict Order Placement/deliveries for a specific day. Use for Christmas, New Years, picnic and other required plant closures</span>
+	</div>
+	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:380;">
+	<%@ include file="/includes/admintools/add_blocked_day.jspf"%>
+	</div>
+
 </form>
 </crm:GenericLocator>
 </crm:AdminToolsController>
