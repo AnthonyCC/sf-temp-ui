@@ -176,6 +176,32 @@ function elements_size_adjuster(){
 	fullwindow_carousels_handler();
 }
 
+//executed from when the first form of 2 possible is executed.  verifies whether zipcode entered is within FDX territory
+function zonenotification_zip(zip_text){
+	$.ajax({
+		url:'/api/locationhandler.jsp',
+		async:false,
+		data:{
+			action:'ifDeliveryZone',
+			noMobile: 'FALSE',
+			zipcode: zip_text
+		}
+	}).done(function(data){
+		$("#zipcode_lh").val( $("#zipcode_zh").val() );
+		
+		$("#ziphandler").fadeOut();
+		
+		var form_next = "#locationhandler";
+		
+		if(data.trim() == "true"){
+			form_next = "#we_deliver_to_you";
+		}
+		
+		$(form_next).fadeIn();
+	});
+}
+
+//executed for second of 2 possible forms to add someone to the records
 function zonenotification_zip_and_email(param_obj){
 	$.ajax({
 		url:'/api/locationhandler.jsp',
@@ -191,31 +217,6 @@ function zonenotification_zip_and_email(param_obj){
 	});
 }
 
-function zonenotification_zip(zip_text){
-	$.ajax({
-		url:'/api/locationhandler.jsp',
-		async:false,
-		data:{
-			action:'ifDeliveryZone',
-			zipcode: zip_text
-		}
-	}).done(function(data){
-		$("#zipcode_lh").val( $("#zipcode_zh").val() );
-		
-		//alert( "JOKEY data.trim() = " + data.trim() );
-		
-		$("#ziphandler").fadeOut();
-		
-		var form_next = "#locationhandler";
-		
-		if(data.trim() == "true"){
-			form_next = "#we_deliver_to_you";
-		}
-		
-		$(form_next).fadeIn();
-	});
-}
-
 //for the zip code input tags
 function numbersOnly(src){
 	src.value = src.value.replace(/[A-Za-z]/g, '');
@@ -226,21 +227,37 @@ function form_enableDisable(formId, eORd){
 	
 	//the submit button for the form
 	var theButton = $(formId).find("button").first();
+	var theButton_id = theButton.attr("id");
 
 	if(eORd == false){
 		$(formId).css("opacity", "0.5");
 		
 		$(formId).find("input").prop('disabled', true).css("cursor", "not-allowed");
-		theButton.prop('disabled', true).css("cursor", "not-allowed").attr("text2", theButton.text().trim());
+		//theButton.prop('disabled', true).css("cursor", "not-allowed").attr("text2", theButton.text().trim());
+		theButton.attr("text2", theButton.text().trim());
+		button_enableDisable( "#"+theButton_id, false);
 		theButton.text("please wait...");
 	}else{
+		//make form fully and normally opaque
 		$(formId).css("opacity", "1").css("display", "block");
 		
+		//re-enable the form elements
 		$(formId).find("input").prop('disabled', false).css("cursor", "default");
-		theButton.prop('disabled', false).css("cursor", "default").text( theButton.attr("text2") );
+		//theButton.prop('disabled', false).css("cursor", "default").text( theButton.attr("text2") );
+		button_enableDisable( "#"+theButton_id, true);
+		theButton.text( theButton.attr("text2") );
 	}
 }
 
+function button_enableDisable(buttonId, eORd){
+	if( eORd == true ){ // if this button SHOULD be enabled...
+		$(buttonId).prop('disabled', false).removeClass("button_disabled"); // enables button
+	}else{ // or if not
+		$(buttonId).prop('disabled', 'disabled').addClass("button_disabled");  // disables button
+	}
+}
+
+//reset the zipcode / email form flow
 function reset_zip_forms(){
 	form_enableDisable('#ziphandler', true);
 	$('#we_deliver_to_you').css('display', 'none');
@@ -250,7 +267,7 @@ function reset_zip_forms(){
 
 function form_inputs_enable_lite(formId){
 	$(formId).find("input").prop('disabled', false);
-	$(formId).find("button").prop('disabled', false);
+	//$(formId).find("button").prop('disabled', false);
 }
 
 function PageShowHandler(){
@@ -318,131 +335,82 @@ $(function(){
 	
 	//this is just for step 1, to verify if the zip code is within a delivery zone
 	$('form#ziphandler').submit(function(event){
+		//stop this form from submitting the normal way.  Ajax is to be used
+		event.preventDefault();
+		
+		//disable this form
 		form_enableDisable( "#" + $(this).attr("id") );
 		
 		zonenotification_zip( $("#zipcode_zh").val().trim() );
-		
-		event.preventDefault();
 	});
 	
 	//step 2a, if there is no zip code from function above, the form that this submits to is then seen and submits to have this code activate below
 	$('form#locationhandler').submit(function(event){
-		/*form_enableDisable( "#" + $(this).attr("id") );
+		event.preventDefault();
+		
+		form_enableDisable( "#" + $(this).attr("id") );
 		
 		var param_obj = new Object();
 		param_obj.zip_text = $("#zipcode_lh").val();
 		param_obj.email_text = $("#email_lh").val();
 		
-		zonenotification_zip_and_email(param_obj);*/
+		zonenotification_zip_and_email(param_obj);
+		
+		button_enableDisable('#submit_locationhandler', false);
 		
 		
-		$(this).validate(
-				 {
-			 		 rules:{
-			             email:{
-				             required:true,
-				             email:true,
-				             customemail:true
-			            }
-			 		},
-			 		messages:{
-			            email:{
-			            	required:"Required",
-			            	email:"Incomplete e-mail Address",
-			                customemail:"Incomplete e-mail Address"
-			            }
-			         },
-			         highlight: function(element, errorClass, validClass) {
-			          $(element).addClass(errorClass).removeClass(validClass);
-			             $(element.form).find("span[id=" + element.id + "_img]").addClass('show_bg_arrow');
-			           },
-			           unhighlight: function(element, errorClass, validClass) {
-			          $(element).removeClass(errorClass).addClass(validClass);
-			             $(element.form).find("span[id=" + element.id + "_img]").removeClass('show_bg_arrow');
-			             
-			           },
-			         onkeyup: false,
-			 		 errorElement: "div",
-
-			     errorPlacement: function(error, element) {
-			         error.insertBefore(element);
-			     }, 
-			 	}
-			 );
-		
-		
-		event.preventDefault();
-		
-		console.log("fear and loathing in the starcade");
-		
-		/*
-		//fix an issue with email validation on certain browsers
-		if(
-			isIE9OrBelow() ||
-			isSafari() ||
-			( getAndroidVersion() && (getAndroidVersion() < "4.4.4") ) ||
-			( hasFormValidation() == false )
-		){
-			console.log("NO HTML5 VALIDATION FOR YOU");
-			
-			//this should take care of any loose end browsers
-			$('form#locationhandler').validate(
-				 {
-			 		 rules:{
-			             email:{
-				             required:true,
-				             email:true,
-				             customemail:true
-			            }
-			 		},
-			 		messages:{
-			            email:{
-			            	required:"Required",
-			            	email:"Incomplete e-mail Address",
-			                customemail:"Incomplete e-mail Address"
-			            }
-			         },
-			         highlight: function(element, errorClass, validClass) {
-			          $(element).addClass(errorClass).removeClass(validClass);
-			             $(element.form).find("span[id=" + element.id + "_img]").addClass('show_bg_arrow');
-			           },
-			           unhighlight: function(element, errorClass, validClass) {
-			          $(element).removeClass(errorClass).addClass(validClass);
-			             $(element.form).find("span[id=" + element.id + "_img]").removeClass('show_bg_arrow');
-			             
-			           },
-			         onkeyup: false,
-			 		 errorElement: "div",
-
-			     errorPlacement: function(error, element) {
-			         error.insertBefore(element);
-			     }, 
-			 	}
-			);//end validate method
-		}
-		
-		*/
 	});
 	
+	//this should take care of any loose end browsers that lack html5 form validation 
+	$('form#ziphandler, form#locationhandler').validate({
+		onkeyup: false,
+		errorElement: "div",
+
+		errorPlacement: function(error, element) {
+			error.insertBefore(element);
+		}
+	});
+	
+	//assisting above validation
+	jQuery.validator.addMethod("zipcode", function(value, element){
+		return this.optional(element) || /\d{5}-\d{4}$|^\d{5}$/.test(value)
+	}, "The specified US ZIP Code is invalid");
+	
+	//assisting above validation for email addresses.  this is much better than the default email pattern that is used by the validate plugin
+	jQuery.validator.addMethod("custom_email", function(value, element){
+		return this.optional(element) || /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value)
+	}, "The specified e-mail is invalid");
+	
+	//enable the submit button when everything is good, relating to above validation
+	//$('form#ziphandler input, form#locationhandler input').on('keyup blur', function(){ // fires on every keyup & blur
+	$('form#ziphandler input, form#locationhandler input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
+		var button_id = $(this).siblings("button").first().attr("id");
+
+		if( $(this).val().length > 0 ){
+			if( $(this).valid() ){ // checks form for validity
+				button_enableDisable( "#"+button_id, true);
+			}else{
+				button_enableDisable( "#"+button_id, false);
+			}
+		}
+	});	
+	
 	//lets make placeholders for fields work in IE 9 and maybe below
-	$('[placeholder]').focus(function() {
+	$('[placeholder]').focus(function(){
 		var input = $(this);
 		if (input.val() == input.attr('placeholder')) {
-			
 			if( isIE9OrBelow() ){
 				input.val('');
 				input.removeClass('placeholder');
 			}
 		}
-	}).blur(function() {
+	}).blur(function(){
 		var input = $(this);
 		if (input.val() == '' || input.val() == input.attr('placeholder')) {
 
 			if( isIE9OrBelow() ){
 				input.addClass('placeholder');
 				input.val(input.attr('placeholder'));
-				
-				//alert( input.attr("type") );
 				
 				if( input.attr("type") == "password" ){
 					input.attr("type", "text");

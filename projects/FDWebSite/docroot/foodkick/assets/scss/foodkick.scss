@@ -1550,6 +1550,22 @@ button.appstore_button{
 	}
 }
 
+button.button_disabled{
+	@include opacity_mixin(0.5);
+	color:#666;
+	cursor: not-allowed;
+}
+
+form{
+	.error{
+		color:#cb2929!important;
+	}
+	
+	input.error{
+		border-color: rgb(203, 41, 41)!important;
+	}
+}
+
 .fk_anchor{
 	top: -60px;
     display: block;

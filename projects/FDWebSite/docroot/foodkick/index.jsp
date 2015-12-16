@@ -25,8 +25,6 @@
 					<h1>30 days of <br/> FREE delivery.</h1>
 					
 					<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
-					
-					<%-- HTML5 Form Validation: <span id="validation"></span> --%>
 				</article>
 				
 				<figure>
@@ -35,41 +33,24 @@
 				<article>
 					<form action="/api/locationhandler.jsp" method="post" id="ziphandler">
 						<p>We're expanding fast. Check your ZIP to see if we're in your hood.</p>
-					
-						<%-- 
-						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
-						--%>
+
+						<input type="text" name="zipcode" id="zipcode_zh" class="required zipcode" data-msg="invalid zipcode" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required autocomplete="off" />
 						
-						<input type="text" name="zipcode" id="zipcode_zh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required autocomplete="off" />
-						
-						<button type="submit" autocomplete="off">Check</button>
+						<button id="submit_ziphandler" type="submit" autocomplete="off" class="button_disabled" disabled>Check</button>
 					</form>
 					<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
 						<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
-					
-						<%-- 
-						<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="10" pattern="\d{5}-?(\d{4})?" min="00001" max="99999" title="USA Zipcode format, like '12345' OR '12345-8910'" onkeyup="numbersOnly(this);" required />
-						--%>
+
+						<input type="text" name="zipcode_lh" id="zipcode_lh" class="required zipcode" data-msg="invalid zipcode" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
 						
-						<input type="text" name="zipcode_lh" id="zipcode_lh" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
-						
-						<input type="email" data-msg="Please fill this field" name="email_lh" id="email_lh" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
-						
-						<!--  
-						<button type="submit" onclick="return canValidateFields();">Submit</button>
-						-->
-						<button type="submit">Submit</button>
+						<input type="email" type="email" name="email_lh" id="email_lh" class="required custom_email" data-msg="invalid email" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+
+						<button id="submit_locationhandler" type="submit" class="button_disabled" disabled>Submit</button>
 						<br/>
 						By hitting submit, you agree to receive FoodKick emails.
 					</form>
 					
 					<div id="we_deliver_to_you" style="display:none">
-						<!--  
-						<p class="ucwords">We deliver in your area!</p>
-						<button class="download_button purple">Download the APP</button>
-						-->
-						
-						
 						<h2>
 							<img src="<%=IMAGES_DIR %>/section_3/smiley.png" /> <br/>
 							You're in luck! <br/>
@@ -90,7 +71,6 @@
 					</div>
 				</article>
 			</section>
-			<%--svg_obj("section_3/form_bg_full.svg") --%>
 		</section>
 		
 		<a name="How_it_works" id="How_it_works" class="fk_anchor"></a>
