@@ -162,7 +162,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 																											// 1
 																											// -
 																											// Taxable)
-		tableMetaDataList.add(new TableMetaData("WESCH", JCoMetaData.TYPE_CHAR, 17, 0, "Number of Days Fresh"));
+		tableMetaDataList.add(new TableMetaData("WESCH", JCoMetaData.TYPE_CHAR, 3, 0, "Number of Days Fresh"));
 		tableMetaDataList.add(new TableMetaData("FERTH", JCoMetaData.TYPE_CHAR, 18, 0, "Avalara Tax ID"));
 		tableMetaDataList.add(new TableMetaData("VAREX", JCoMetaData.TYPE_CHAR, 1, 0, "Variant config indicator"));
 
