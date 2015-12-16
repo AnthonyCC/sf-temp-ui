@@ -692,11 +692,16 @@ public class EwalletService {
 					} catch (Exception e) {
 						LOGGER.error("Error while creating Shopping Cart for EWallet service provider",e);
 					}
-		
+					
+					if(productDesc != null && productDesc.length() > 99 ){
+						productDesc = productDesc.substring(0, 94) + "...";
+					}
+					if(StringEscapeUtils.escapeXml(productDesc).length() > 99){
+						String prodDes = StringEscapeUtils.escapeXml(productDesc);
+						productDesc = prodDes.substring(0, 94) + "...";
+					}
 					cartItem.append("<ShoppingCartItem>");
-					cartItem.append("<Description>"
-							+ StringEscapeUtils.escapeXml(productDesc)
-							+ "</Description>");
+					cartItem.append("<Description>"+productDesc+ "</Description>");
 					cartItem.append("<Quantity>" + quantity + "</Quantity>");
 					cartItem.append("<Value>"
 							+ (new Double(cartLine.getPrice() * 100)).longValue()
