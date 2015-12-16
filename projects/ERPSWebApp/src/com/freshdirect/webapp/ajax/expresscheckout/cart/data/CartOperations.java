@@ -305,7 +305,7 @@ public class CartOperations {
 			// ====================
 			
 			double min = product.getQuantityMinimum();
-			double max = user.getQuantityMaximum( product );
+			double max = extractMaximumQuantity(user, cartLine.getOrderLineId(), product);
 			double inc = product.getQuantityIncrement();
 			double oldQ = cartLine.getQuantity();
 			
