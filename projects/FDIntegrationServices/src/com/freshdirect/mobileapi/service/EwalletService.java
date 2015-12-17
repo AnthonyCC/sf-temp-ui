@@ -643,8 +643,8 @@ public class EwalletService {
 						StringEscapeUtils.escapeXml(productDesc + " ("
 								+ cartLine.getConfigurationDesc() + ")");
 					}
-					if (productDesc != null && productDesc.length() >= 80) {
-						productDesc = productDesc.substring(0, 80) + "...";
+					if (productDesc != null && productDesc.length() >= 70) {
+						productDesc = productDesc.substring(0, 70) + "...";
 					}
 					productDesc = productDesc + "(" + cartLine.getUnitPrice() + ")";
 		
@@ -671,14 +671,12 @@ public class EwalletService {
 									.substring(qtyStr.indexOf(".") + 1);
 							if (fractionPart != null && fractionPart.length() > 0) {
 								if (Integer.parseInt(fractionPart) > 0) {
-									productDesc = productDesc + " (Qty: " + qtyStr
-											+ ")";
+//									productDesc = productDesc + " (Qty: " + qtyStr+ ")"; // Causing issue in PROD because of 100 max Limit of Product Description from MP
 									quantity = "0";
 								} else {
 									if (saleUnitDescr != null
 											&& saleUnitDescr.length() > 0) {
-										productDesc = productDesc + " (Qty: "
-												+ saleUnitDescr + ")";
+//										productDesc = productDesc + " (Qty: "+ saleUnitDescr + ")";	// Causing issue in PROD because of 100 max Limit of Product Description from MP
 										quantity = "0";
 									} else {
 										quantity = ""
@@ -693,13 +691,11 @@ public class EwalletService {
 						LOGGER.error("Error while creating Shopping Cart for EWallet service provider",e);
 					}
 					
-					if(productDesc != null && productDesc.length() > 99 ){
-						productDesc = productDesc.substring(0, 94) + "...";
-					}
 					String prodDes = StringEscapeUtils.escapeXml(productDesc);
-					if(null != prodDes && prodDes.length() > 99){				
-						productDesc = prodDes.substring(0, 94) + "...";
-					}
+		            if(null != prodDes && prodDes.length() > 99){
+		            	productDesc = productDesc.substring(0, productDesc.length() - 20) + "...";
+		            	productDesc = StringEscapeUtils.escapeXml(productDesc);
+		            }
 					cartItem.append("<ShoppingCartItem>");
 					cartItem.append("<Description>"+productDesc+ "</Description>");
 					cartItem.append("<Quantity>" + quantity + "</Quantity>");
