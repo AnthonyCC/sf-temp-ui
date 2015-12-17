@@ -431,7 +431,7 @@ class SalesOrderHelper {
 				companyName,
 				SalesOrderHelper.getSimplifiedStreet(address),
 				address.getCity(),
-				address.getZipCode(),
+				"US".equalsIgnoreCase(address.getCountry())? address.getZipCode().substring(0,5):address.getZipCode(),
 				state,
 				address.getCountry(),
 				String.valueOf(address.getPhone()));
