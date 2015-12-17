@@ -176,6 +176,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 				uriBuilder.setParameter(ETL_PARAM_EVENT_DATE,
 						conversion.getEventDate());
 			}
+			//Coupon code & Click Ids are not needed as per Extole.
 			/*if (conversion.getCouponCode() != null) {
 				uriBuilder.setParameter(ETL_PARAM_COUPON_CODE,
 						conversion.getCouponCode());
