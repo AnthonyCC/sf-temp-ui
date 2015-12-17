@@ -445,6 +445,7 @@ public class SocialAccountService implements AccountService {
 					user.setReferralCustomerId(referralCustomerId);
 					user.setRafPromoCode(rafPromoCode);
 					user.setRafClickId(rafClickId);
+					user.setRafFriendSignedUp(true);
 					session.setAttribute(SessionName.USER, user);
 					//Record the referee signup in referral activitylog
 					ErpActivityRecord rec = new ErpActivityRecord();

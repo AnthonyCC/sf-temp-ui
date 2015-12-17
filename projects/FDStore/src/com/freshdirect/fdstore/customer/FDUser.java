@@ -3018,6 +3018,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setJustSignedUp(boolean val) {
 	}
 	
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public boolean isRafFriendSignedUp(boolean clear) {
+		return false;
+	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public void setRafFriendSignedUp(boolean val) {
+	}
 
 	public boolean isGlobalNavTutorialSeen() {
 		return isGlobalNavTutorialSeen;

@@ -141,6 +141,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean justLoggedIn = false;
     /* set in RegistrationControllerTag see getter for notes */
     private boolean justSignedUp = false;
+    private boolean rafFriendSignedUp = false;
     
     private Set<ContentKey> checkoutUnavailableProductKeys; //set of items which failed the ATP test
     
@@ -1874,6 +1875,19 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public Date getFirstOrderDateByStore(EnumEStoreId eStoreId)
 			throws FDResourceException {
 		return user.getFirstOrderDateByStore(eStoreId);
+	}
+
+	public boolean isRafFriendSignedUp(boolean clear) {
+		boolean preClear = rafFriendSignedUp;
+		
+		if (clear) {
+			this.setRafFriendSignedUp(false);
+		}
+		return preClear;
+	}
+
+	public void setRafFriendSignedUp(boolean rafFriendSignedUp) {
+		this.rafFriendSignedUp = rafFriendSignedUp;
 	}
 	
 	
