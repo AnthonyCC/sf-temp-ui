@@ -52,7 +52,7 @@
 		
 			//session object needed to determine whether this user had just signed up
 			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
-			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(false);
+			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(true);
 			
 			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
