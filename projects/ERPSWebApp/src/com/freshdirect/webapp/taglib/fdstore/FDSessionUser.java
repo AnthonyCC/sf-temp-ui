@@ -1877,6 +1877,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.getFirstOrderDateByStore(eStoreId);
 	}
 
+	public boolean isRafFriendSignedUp() {
+		return isRafFriendSignedUp(true);//clears the flag on the first fetch.
+	}
 	public boolean isRafFriendSignedUp(boolean clear) {
 		boolean preClear = rafFriendSignedUp;
 		

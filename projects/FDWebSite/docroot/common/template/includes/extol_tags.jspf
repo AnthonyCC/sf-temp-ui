@@ -52,12 +52,12 @@
 		
 			//session object needed to determine whether this user had just signed up
 			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
-			boolean justSignedUp = sessionuser_e1.hasJustSignedUp(false);
+			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(false);
 			
 			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
 			//if they have actually ordered something.  PASS 3 of 3
-			if(exValidOrderCount == true){
+			if(exValidOrderCount == true || justSignedUp){
 			%>
 			<script>
 			//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
@@ -70,6 +70,7 @@
 				"validOrderCount": <%=exValidOrderCount%>,
 				"justSignedUp": <%=justSignedUp%>,
 				"mainPromo": <%=exMainPromo%>
+				
 			};
 			</script>
 			<script src="//tags.extole.com/553175139/core.js"></script>

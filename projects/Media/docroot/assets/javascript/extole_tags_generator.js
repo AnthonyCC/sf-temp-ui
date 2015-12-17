@@ -8,14 +8,22 @@ function appendExtoleTag(obj, tag_type, id_placeafter, section){
 	extoleTag.type = tag_type;
 	extoleTag.text = JSON.stringify(obj);
 	
+	console.log("extoleTag.text = " + extoleTag.text);
+	
 	/*if there is an html id given in parameter 3, then place the extol tag after said element.
 	Otherwise, it goes to the end of the body tag.
 	(but it might be superceded by other elements placed by other active javascript).
 	*/
-	if(typeof id_placeafter !== undefined){
+	if(typeof id_placeafter !== undefined && ($jq("#"+id_placeafter).length > 0) ){
 		$jq("#"+id_placeafter).after(extoleTag);
+		
 	}else{
-		document.getElementsByTagName('body')[0].appendChild(extoleTag);
+		
+		//document.getElementsByTagName('body')[0].appendChild(extoleTag);
+		
+		$jq(document).ready(function(){				
+			$jq("body").append(extoleTag);
+		});
 	}
 	
 	console.log("Extole tag_type: " + tag_type + " placed, section = " + section);
