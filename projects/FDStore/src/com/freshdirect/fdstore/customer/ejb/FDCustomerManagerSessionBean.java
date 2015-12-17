@@ -27,6 +27,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
+import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -226,6 +227,7 @@ import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.mail.ErpEmailFactory;
+import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
@@ -8010,6 +8012,44 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 		return addOnOrderCount ;
+	}
+	
+	public void reSendInvoiceEmail(String orderId )throws FDResourceException{
+		
+			MailerGatewaySB mailBean;
+	try {
+			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(orderId));
+			
+			ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
+					saleModel = (ErpSaleModel)eb.getModel();
+			FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);
+			Collections.sort(fdOrder.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
+			
+			PrimaryKey customerPK = eb.getCustomerPk();
+			
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPK);
+			ErpCustomerInfoModel erpInfo = ((ErpCustomerModel)customerEB.getModel()).getCustomerInfo();
+			FDCustomerInfo fdInfo = new FDCustomerInfo(erpInfo.getFirstName(), erpInfo.getLastName());
+			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
+			fdInfo.setEmailAddress(erpInfo.getEmail());
+			fdInfo.setGoGreen(erpInfo.isGoGreen());
+			
+			mailBean = this.getMailerGatewayHome().create();
+			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new FDResourceException(e);
+		}
+		
+	}
+	
+	private MailerGatewayHome getMailerGatewayHome() {
+		try {
+			return (MailerGatewayHome) LOCATOR.getRemoteHome("freshdirect.mail.MailerGateway");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
 	}
 	
 }

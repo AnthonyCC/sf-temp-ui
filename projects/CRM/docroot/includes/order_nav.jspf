@@ -17,6 +17,7 @@
 <%@ page import="com.freshdirect.customer.EnumSaleType"%>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.*" %>
 
 <%@ page import="com.freshdirect.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
@@ -51,6 +52,8 @@ boolean o_delivery_center = pageURI.indexOf("delivery_center_details") > -1;
 String nav_orderId = request.getParameter("orderId");
 
 FDOrderI nav_order = CrmSession.getOrder(session, nav_orderId);
+FDOrderAdapter fdOrderAdapter = (FDOrderAdapter) nav_order;
+
 Date now = new Date();  
 boolean  isPastDelivery= now.after(nav_order.getDeliveryReservation().getStartTime());
 
@@ -131,7 +134,9 @@ boolean hasCase = false;
 			<% if(!isDonationOrder){ %>
 				<% if (o_details) { %>
 					Details <span class="order_detail">(<a href="javascript:pop('/main/order_details.jsp?orderId=<%= nav_orderId %>&for=print','600','680')" class="order_detail">Print Version</a>)</span>
-				<% } else if (o_transactions) { %>
+				<% } if (fdOrderAdapter!=null && fdOrderAdapter.hasInvoice()) { %>
+						<span>(<a href="javascript:reSendInvoiceEmail('<%=nav_orderId%>')">ReSend Invoice Email</a>)</span>
+					<% } else if (o_transactions) { %>
 					Transactions
 				<% } else if (o_reverse_credits) { %>
 					Reverse Credits
@@ -330,3 +335,14 @@ boolean hasCase = false;
 </div>
 </crm:GetCurrentAgent>
 </crm:ResubmitOrderController>
+<script>
+
+function reSendInvoiceEmail(order) {
+		 var ajaxRequest = new Ajax.Request('/api/ReSendEmail.jsp', {
+			method:       'get', 
+		    parameters:   {orderId: order}, 
+		    asynchronous: true,
+		});
+
+	}
+</script>
