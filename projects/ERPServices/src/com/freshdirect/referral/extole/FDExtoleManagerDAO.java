@@ -75,8 +75,8 @@ public class FDExtoleManagerDAO implements Serializable {
 				requestModel.setEmail(rs.getString("EMAIL"));
 				requestModel.setFirstName(rs.getString("FIRST_NAME"));
 				requestModel.setLastName(rs.getString("LAST_NAME"));
-				requestModel.setClickId(rs.getString("CLICK_ID"));
-				requestModel.setCouponCode("RAF_PROMO_CODE");
+			//	requestModel.setClickId(rs.getString("CLICK_ID"));
+			//	requestModel.setCouponCode("RAF_PROMO_CODE");
 
 				list.add(requestModel);
 			}
@@ -150,11 +150,11 @@ public class FDExtoleManagerDAO implements Serializable {
 			while (rs.next()) {
 				ExtoleConversionRequest requestModel = new ExtoleConversionRequest();
 				requestModel.setRafTransId(rs.getString("TRANS_ID"));
-				// requestModel.setEventid(rs.getString("EVENT_ID"));
+				//requestModel.setEventid(rs.getString("EVENT_ID"));
 				requestModel.setEventStatus(rs.getString("EVENT_TYPE"));
 				requestModel.setPartnerConversionId(rs.getString("PARTNER_USER_ID"));
-				requestModel.setClickId(rs.getString("CLICK_ID"));
-				requestModel.setCouponCode("RAF_PROMO_CODE");
+			//	requestModel.setClickId(rs.getString("CLICK_ID"));
+			//	requestModel.setCouponCode("RAF_PROMO_CODE");
 
 				list.add(requestModel);
 			}
