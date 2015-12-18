@@ -1919,9 +1919,14 @@ public class FDCustomerManager {
 
 
 
-	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) {
-		EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
-		return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId);
+	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) throws FDResourceException {
+		try {
+			FDOrderI order = getOrder(saleId);
+			EnumEStoreId estoreId = order.getEStoreId();
+			return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint,estoreId);
+		} catch (FDResourceException re) {
+			throw new FDResourceException(re.getMessage());
+		}
 	}
 
 

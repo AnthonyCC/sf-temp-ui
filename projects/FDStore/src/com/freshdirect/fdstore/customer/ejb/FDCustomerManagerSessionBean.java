@@ -3397,7 +3397,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDCustomerInfo fdInfo = getCustomerInfo(new FDIdentity(
 						erpCustomerId, fdCustomerId));
 				FDOrderI order = getOrder(saleId);
-				EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+				EnumEStoreId estoreId = order.getEStoreId();
 				if (null != order
 						&& EnumSaleType.GIFTCARD.equals(order.getOrderType())) {
 					modifyGiftCardComplaint(saleId, order, alteredComplaint);
