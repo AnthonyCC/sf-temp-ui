@@ -120,6 +120,8 @@ public class FDExtoleManagerDAO implements Serializable {
 			ps.executeQuery();
 			ps.close();
 
+		} catch (SQLException e) {
+			LOGGER.error("Exception while updating extole response in database " , e);
 		} finally {
 			if (ps != null)
 				ps.close();

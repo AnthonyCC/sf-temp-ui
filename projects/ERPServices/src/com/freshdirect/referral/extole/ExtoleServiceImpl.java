@@ -236,14 +236,15 @@ public class ExtoleServiceImpl implements ExtoleService {
 	private ExtoleResponse parseResponse(String jsonResponse)
 			throws ExtoleServiceException {
 		ExtoleResponse response = null;
-		ObjectMapper mapper = getObjectMapper();
-		try {
-			// response = mapper.readValue(jsonResponse, _class);
-			response = mapper.readValue(jsonResponse, ExtoleResponse.class);
-		} catch (Exception e) {
-			throw new ExtoleServiceException(e.getMessage());
-		}
-
+		if (null != jsonResponse) {
+			ObjectMapper mapper = getObjectMapper();
+			try {
+				// response = mapper.readValue(jsonResponse, _class);
+				response = mapper.readValue(jsonResponse, ExtoleResponse.class);
+			} catch (Exception e) {
+				throw new ExtoleServiceException(e.getMessage());
+			}
+		}	
 		return response;
 	}
 

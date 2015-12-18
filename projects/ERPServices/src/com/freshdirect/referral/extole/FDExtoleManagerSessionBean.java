@@ -116,13 +116,17 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		for (ExtoleConversionRequest request : conversionRequests) {
 			try {
 				response = extoleService.createConversion(request);
-				response.setRafTransId(request.getRafTransId());
-				if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
-					response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
+				if (null != response) {
+					response.setRafTransId(request.getRafTransId());
+					if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
+						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
+					}
+					if (FAILURE.equalsIgnoreCase(response.getCode())) {
+						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
+					}
+					updateConversionRequest(response);
 				}
-				if (FAILURE.equalsIgnoreCase(response.getCode())) {
-					response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
-				}
+
 				/*
 				 * if(response.getStatus().equalsIgnoreCase("success")){
 				 * response
@@ -132,17 +136,14 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 				 * .setStatus(EnumRafTransactionStatus.FAILURE.getValue()); }
 				 */
 
-				updateConversionRequest(response);
 			} catch (Exception e) {
-				LOGGER.error("Exception in create conversion request for clickId :"	+ request.getClickId()
-						+ "Error message : " + e.getMessage());
-				throw new ExtoleServiceException(
-						"Exception in create conversion request for clickId :" + request.getClickId()
-						+ "Error message : " + e.getMessage(), e);
+				LOGGER.error("Exception in create conversion request for : "
+						+ request.getPartnerConversionId(), e);
 			}
 		}
 
 	}
+
 
 	public void approveConversion() throws ExtoleServiceException, IOException,
 			FDResourceException {
@@ -155,17 +156,19 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 		for (ExtoleConversionRequest request : approveRequests) {
 			try {
 				response = extoleService.approveConversion(request);
-				response.setRafTransId(request.getRafTransId());
-				if (response.getStatus().equalsIgnoreCase("success")) {
-					response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
-				} else if (response.getStatus().equalsIgnoreCase("failure")) {
-					response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
+				if (null != response) {
+					response.setRafTransId(request.getRafTransId());
+					if (response.getStatus().equalsIgnoreCase("success")) {
+						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
+					} else if (response.getStatus().equalsIgnoreCase("failure")) {
+						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
+					}
+					updateConversionRequest(response);
 				}
-
-				updateConversionRequest(response);
+				
 			} catch (Exception e) {
-				LOGGER.error("Exception in approve conversion request for clickId :" + request.getClickId()
-						+ "Error message : " + e.getMessage());
+				LOGGER.error("Exception in approve conversion request for :"
+						+ request.getPartnerConversionId(),e);
 			}
 		}
 	}
