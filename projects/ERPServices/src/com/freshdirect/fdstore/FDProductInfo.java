@@ -203,8 +203,8 @@ public class FDProductInfo extends FDSku  {
 				plantEntries.add(entry);
 		}
 
-
-		return new ErpInventoryModel(inventoryModel.getSapId(),inventoryModel.getLastUpdated(),plantEntries);
+        return (plantEntries.size()==0)? null: new ErpInventoryModel(inventoryModel.getSapId(),inventoryModel.getLastUpdated(),plantEntries);
+		//return new ErpInventoryModel(inventoryModel.getSapId(),inventoryModel.getLastUpdated(),plantEntries);
 	}
 
 
@@ -230,7 +230,7 @@ public class FDProductInfo extends FDSku  {
 		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null)
 			return EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus());
-		return EnumAvailabilityStatus.TEMP_UNAV;//::FDX::-> Handle this in a better way.
+		return EnumAvailabilityStatus.DISCONTINUED;//::FDX::-> Handle this in a better way.
 	}
 
     /**
@@ -254,11 +254,12 @@ public class FDProductInfo extends FDSku  {
     }
 
     public boolean isDiscontinued(String salesOrg, String distributionChannel) {
+    	
     	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
 		if(sa!=null)
 			return EnumAvailabilityStatus.DISCONTINUED.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()))
 					|| "TEST".equalsIgnoreCase(sa.getUnavailabilityStatus());
-		return false;//::FDX::-> Handle this in a better way.
+		return true;//Consider no sales area information from SAP as discontinued status
     }
 
     public boolean isOutOfSeason(String salesOrg, String distributionChannel) {
@@ -292,7 +293,6 @@ public class FDProductInfo extends FDSku  {
 	 * @return unit of measure
 	 */
 	public String getDefaultPriceUnit() {
-
 		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getDefaultPriceUnit();
 	}
 
