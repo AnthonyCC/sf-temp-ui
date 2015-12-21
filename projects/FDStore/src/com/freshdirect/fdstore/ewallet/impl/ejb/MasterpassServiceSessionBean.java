@@ -1516,13 +1516,15 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		    		result.put(PaymentMethodName.CARD_EXP_YEAR, Integer.toString(cardData.getExpiryYear().intValue()));
 		    		
 		    		Address billingAddress = cardData.getBillingAddress();
+		    				    		
 		    		if (billingAddress != null) {
 			    		result.put("bil_country", (billingAddress.getCountry() != null ? billingAddress.getCountry() : ""));
 			    		result.put("bil_address1", (billingAddress.getLine1() != null ? billingAddress.getLine1() : ""));
 			    		result.put("bil_address2", (billingAddress.getLine2() != null ? billingAddress.getLine2() : ""));
 			    		result.put("bil_city", (billingAddress.getCity() != null ? billingAddress.getCity() : ""));
 			    		result.put("bil_state", getMPState(billingAddress.getCountrySubdivision()));
-			    		result.put("bil_zipcode", (billingAddress.getPostalCode() != null ? billingAddress.getPostalCode() : ""));
+			    		//result.put("bil_zipcode", (billingAddress.getPostalCode() != null ? billingAddress.getPostalCode() : ""));
+			    		result.put("bil_zipcode", formatZipCode(billingAddress));
 		    		}
 		    		
 		    		result.put(EnumUserInfoName.EWALLET_ID.getCode(), "1");
@@ -1542,8 +1544,25 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
     		
     		return result;
     	}
+    	private String formatZipCode(Address billingAddress) {
+    		String result = "";
+    		if (billingAddress != null) {
+    			result = billingAddress.getPostalCode();
+    			if("US".equalsIgnoreCase(billingAddress.getCountry())){
+    				if(result.length()>5)
+    				result = billingAddress.getPostalCode().substring(0,5);
+    			}else if("CA".equalsIgnoreCase(billingAddress.getCountry())){
+    				if(result.length()>6)
+    				result = billingAddress.getPostalCode().substring(0,6);
+    			}
+   
+    		}
+    		
+    		return result;
+    	}
 	}
-	 
+
+
 	 /**
 	  * This method will update the Long Access Token into database (Table : CUST.CUST_EWALLET)
 	 * @param custId
@@ -2240,7 +2259,9 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 						"<Source>HttpHeader.OAuth.ConsumerKey</Source>" +
 					"</Error>" +
 				"<Errors>");*/
+		
 	}
+	
 	
 	private List<EwalletPostBackModel> postBack(List<EwalletPostBackModel> postTrxns) {
 		MasterpassData mpData = new MasterpassData();
