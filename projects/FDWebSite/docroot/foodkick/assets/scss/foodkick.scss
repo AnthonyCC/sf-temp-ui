@@ -504,13 +504,14 @@ section#section_slideshow{
 		}
 	}
 	
-	button.download_button{
+	.download_button{
 		/*position: relative;
 		top: -120px;*/
 		
 		position: absolute;
 		top: 40vw;
 	    left: calc(50% - 90px);
+	    
 	    
 	    z-index: 10;
 	    @include box_shadow_mixin(3, 3, 4, rgba(#000, 0.2) );
@@ -1505,13 +1506,22 @@ footer{
 	}
 }
 
-button.download_button{
+.download_button{
 	width: 170px;
-	height: 45px;
+	/*height: 45px;*/
+	padding-top:20px;
+	padding-bottom:20px;
+	margin-top:25px;
+	margin-bottom:25px;
 	border:none;
 	text-transform:uppercase;
 	font-weight:bold;
 	cursor: pointer;
+	display:inline-block;
+	font-size:13.3px;
+	text-align: center;
+	text-decoration: none;
+	font-family: $GraphikApp_r_n;
 	
 	&.purple{
 		background-color:$main_purple;
@@ -1535,11 +1545,14 @@ button.download_button{
 
 	@include breakpoint_mixin(large){
 		width:277px;
-		height:80px;
+		/*height:80px;*/
+		
+		padding-top:32px;
+		padding-bottom:32px;
 	}
 }
 
-button.appstore_button{
+.appstore_button{
 	width: 120px;
     height: 40px;
 	background-color:transparent;

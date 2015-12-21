@@ -1,18 +1,13 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ page import='java.util.*' %>
+<%@ include file="fk_presenter_vars.jspf" %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.FDSessionUser.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory'%>
 <%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
-<%@ taglib uri="/WEB-INF/shared/tld/c.tld" prefix="c" %>
-<%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%@ include file="fk_core_settings.jspf" %>
 <%!
 public String result = "";
 public String errorMsg = "";
@@ -20,17 +15,6 @@ public String errorMsg = "";
 public String[] checkReminderForm = {"email_not_expired", "invalid_email", "email"};
 public FDSessionUser user;
 
-public String svg_src(String svg_f){
-	return IMAGES_DIR + "/s.jsp?f=" + svg_f;
-}
-
-public String svg_obj(String svg_f){
-	return "<object data=\""+ SVG_SRC + svg_f +"\" type=\"image/svg+xml\"><img src=\""+ SVG_SRC + svg_f +"\" /></object>";
-}
-
-public String svg_bg(String svg_f){
-	return "background-image:url(" + SVG_SRC + svg_f + ")";
-}
 %><%
 String emailAddress = request.getParameter("emailAddress");
 
@@ -110,7 +94,14 @@ if( !request.getRequestURI().contains("/index.jsp") ){
 			 	<tmpl:get name='special_disclaimer'/>
 			</section> 
 			
-			<div class="stripes"><button class="download_button white" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button></div>
+			<div class="stripes">
+				<%-- 
+				<button class="download_button white" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
+				--%>
+				
+				<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "white") %>
+			</div>
+				
 			<section id="footer_subsection">
 				<section>
 					<img src="<%=SVG_SRC %>freshkick_logo_recommended_white.svg" />

@@ -357,6 +357,8 @@ $(function(){
 		
 		button_enableDisable('#submit_locationhandler', false);
 	});
+
+	var formArray = new Array( );
 	
 	//this should take care of any loose end browsers that lack html5 form validation 
 	$('form#ziphandler, form#locationhandler').validate({
@@ -380,7 +382,7 @@ $(function(){
 	
 	//enable the submit button when everything is good, relating to above validation
 	//$('form#ziphandler input, form#locationhandler input').on('keyup blur', function(){ // fires on every keyup & blur
-	$('form#ziphandler input, form#locationhandler input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
+	$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
 		var button_id = $(this).siblings("button").first().attr("id");
 
 		if( $(this).val().length > 0 ){

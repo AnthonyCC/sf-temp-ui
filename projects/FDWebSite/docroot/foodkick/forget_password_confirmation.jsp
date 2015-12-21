@@ -1,15 +1,10 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ page import='java.util.*' %>
+<%@ include file="includes/fk_presenter_vars.jspf" %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.FDSessionUser.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*'%>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory'%>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="/WEB-INF/shared/tld/c.tld" prefix="c" %>
-<%@ include file="includes/fk_core_settings.jspf" %>
 <%!
 public String result = "";
 public String errorMsg = "";

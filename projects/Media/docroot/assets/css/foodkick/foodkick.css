@@ -266,7 +266,7 @@ section#section_slideshow {
         @media (min-width: 50em) {
           section#section_slideshow #carousel_1 figcaption h1 {
             font-size: 42pt; } }
-  section#section_slideshow button.download_button {
+  section#section_slideshow .download_button {
     /*position: relative;
     top: -120px;*/
     position: absolute;
@@ -279,15 +279,15 @@ section#section_slideshow {
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='rgba(0, 0, 0, 0.2)')";
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='rgba(0, 0, 0, 0.2)'); }
     @media (min-width: 30em) {
-      section#section_slideshow button.download_button {
+      section#section_slideshow .download_button {
         top: -180px;
         position: relative; } }
     @media (min-width: 50em) {
-      section#section_slideshow button.download_button {
+      section#section_slideshow .download_button {
         left: calc(50% - 120px);
         top: -165px; } }
     @media (min-width: 1000px) {
-      section#section_slideshow button.download_button {
+      section#section_slideshow .download_button {
         top: -300px; } }
   section#section_slideshow button.appstore_button {
     /*position: relative;*/
@@ -998,37 +998,48 @@ footer {
       footer section#footer_subsection section hr {
         margin-bottom: 35px; }
 
-button.download_button {
+.download_button {
   width: 170px;
-  height: 45px;
+  /*height: 45px;*/
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 25px;
+  margin-bottom: 25px;
   border: none;
   text-transform: uppercase;
   font-weight: bold;
-  cursor: pointer; }
-  button.download_button.purple {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13.3px;
+  text-align: center;
+  text-decoration: none;
+  font-family: "GraphikApp-Regular"; }
+  .download_button.purple {
     background-color: #732282;
     color: white; }
-    button.download_button.purple:hover {
+    .download_button.purple:hover {
       background-color: #A3D; }
-  button.download_button.white {
+  .download_button.white {
     background-color: #EEE;
     color: #2D2E37;
     font-family: "GraphikApp-Semibold"; }
-    button.download_button.white:hover {
+    .download_button.white:hover {
       background-color: #FFF;
       color: black; }
   @media (min-width: 50em) {
-    button.download_button {
+    .download_button {
       width: 277px;
-      height: 80px; } }
+      /*height:80px;*/
+      padding-top: 32px;
+      padding-bottom: 32px; } }
 
-button.appstore_button {
+.appstore_button {
   width: 120px;
   height: 40px;
   background-color: transparent;
   border: none; }
   @media (min-width: 50em) {
-    button.appstore_button {
+    .appstore_button {
       width: 220px;
       height: 70px; } }
 

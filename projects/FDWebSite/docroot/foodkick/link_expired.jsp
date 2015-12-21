@@ -1,7 +1,4 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri="freshdirect" prefix="fd" %>
-<%@ include file="includes/fk_core_settings.jspf" %>
+<%@ include file="includes/fk_presenter_vars.jspf" %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick: Link Expired</tmpl:put>
 	<tmpl:put name='content'>

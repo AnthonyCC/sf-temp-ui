@@ -1,14 +1,11 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ page import="java.util.*"%>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri="freshdirect" prefix="fd" %>
-<%@ include file="includes/fk_core_settings.jspf" %>
+<%@ include file="includes/fk_presenter_vars.jspf" %>
 <%
 String userAgent = request.getHeader("user-agent");
 String open_app_button = "";
 
 if(userAgent.matches(".*iPhone.*") || userAgent.matches(".*iPad.*")){
-	open_app_button = "<button class='download_button purple' onclick='location.href=" + FK_IOSAPP_OPEN + "'>Open APP</button>";
+	//open_app_button = "<button class='download_button purple' onclick='location.href=" + FK_IOSAPP_OPEN + "'>Open APP</button>";
+	open_app_button = iosapp_button(FK_IOSAPP_OPEN, "Open APP", "purple");
 }
 %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>

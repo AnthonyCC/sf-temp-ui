@@ -6,8 +6,6 @@ String fn = request.getParameter("f");
 if( fn.endsWith(".svg") ){
 	//String filePath = FKAPP_DIR + "/" + IMAGES_DIR + "/" + fn.replace("./", "");
 	String filePath = IMAGES_DIR + "/" + fn.replace("./", "");
-	
-	//out.println("foo " + filePath);
 
 	if(null != application.getResource( filePath )){
 %>

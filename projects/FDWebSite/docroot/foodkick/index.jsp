@@ -1,14 +1,12 @@
-<%@ page trimDirectiveWhitespaces="true" %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ include file="includes/fk_core_settings.jspf" %>
+<%@ include file="includes/fk_presenter_vars.jspf" %>
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put>
 	<tmpl:put name='content'>
 		<a name="slideshow" id="slideshow" class="fk_anchor"></a>
 		<section id="section_slideshow" class="main_section">
 			<div id="carousel_1"></div>
+			<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
 			
-			<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
 			<button class="appstore_button" onclick="location.href='<%=IOSAPPSTORE_LINK %>'">
 				<%--svg_obj("appstore.svg") --%>
 				<img src="<%=SVG_SRC %>appstore.svg" />
@@ -23,8 +21,8 @@
 				<article>
 					<h2>Let's make this thing happen with</h2>
 					<h1>30 days of <br/> FREE delivery.</h1>
-					
-					<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
+
+					<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
 				</article>
 				
 				<figure>
@@ -115,8 +113,8 @@
 						An amazing meal will be waiting for you to dig into and enjoy!
 					</figcaption>
 				</figure>
-			</article>
-			<button class="download_button purple" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
+			</article>	
+			<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
 		</section>
 		
 		<a name="Featured_Food" id="Featured_Food" class="fk_anchor"></a>
