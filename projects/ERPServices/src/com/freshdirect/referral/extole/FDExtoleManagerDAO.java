@@ -103,7 +103,7 @@ public class FDExtoleManagerDAO implements Serializable {
 		try {
 			ps.setString(1, convResponse.getStatus());
 			if (null != convResponse.getMessage()) {
-				ps.setString(2, convResponse.getMessage());
+				ps.setString(2, convResponse.getMessage().length() > 255? convResponse.getMessage().substring(0, 254):convResponse.getMessage());
 			} else {
 				ps.setNull(2, Types.VARCHAR);
 			}
