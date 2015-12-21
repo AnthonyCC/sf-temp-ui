@@ -172,7 +172,7 @@ public class ErpAddressModel extends ContactAddressModel {
 		this.setAltApartment(erpAddress.getAltApartment());
 		this.setAltPhone(erpAddress.getAltPhone());
 		this.altContactPhone = erpAddress.getAltContactPhone();
-
+		this.setScrubbedStreet((erpAddress.getAddressInfo()!=null)?erpAddress.getAddressInfo().getScrubbedStreet():null);
 		this.setUnattendedDeliveryFlag(erpAddress.getUnattendedDeliveryFlag());
 		this.setUnattendedDeliveryInstructions(erpAddress
 				.getUnattendedDeliveryInstructions());
