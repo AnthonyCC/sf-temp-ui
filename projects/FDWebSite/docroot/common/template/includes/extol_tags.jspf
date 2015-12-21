@@ -10,22 +10,29 @@
 	
 	//NEW: prohibited pages.  right now, this includes 'view_cart.jsp' AND checkout
 	String servletPath=request.getServletPath();
-	String[] noExtoleList = {"view_cart.jsp", "checkout.jsp"};
+	String[] extoleBlackList = {"view_cart.jsp", "checkout.jsp"};
 	
 	boolean isValidPage = true;
 
-	for(int i = 0; i < noExtoleList.length; i++){
-		if( servletPath.toLowerCase().contains(noExtoleList[i].toLowerCase()) ){
+	//if the user is ANYWHERE on a blacklist page, they can not see extole content
+	for(int i = 0; i < extoleBlackList.length; i++){
+		if( servletPath.toLowerCase().contains(extoleBlackList[i].toLowerCase()) ){
 			isValidPage = false;
 		}
 	}
 	
 	//PASS 1 of 3.  Basic customer vars only defined here.
-	if( FDStoreProperties.isExtoleRafEnabled() && (user_e1 != null) && (isValidPage == true) ){
+	if(
+	FDStoreProperties.isExtoleRafEnabled() &&
+		(
+			((user_e1 != null) && (isValidPage == true)) || servletPath.toLowerCase().contains("invite_signup.jsp")
+		)
+	){
+		
 		int user_getLevel = user_e1.getLevel();
 	
 		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
-		if( user_e1.getLevel() == FDUserI.SIGNED_IN ){
+		if( (user_e1.getLevel() == FDUserI.SIGNED_IN) || servletPath.toLowerCase().contains("invite_signup.jsp") ){
 			//customer basics
 			String exCustFirstName = user_e1.getFirstName();
 			String custLastName = user_e1.getLastName();
@@ -57,7 +64,7 @@
 			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
 			//if they have actually ordered something.  PASS 3 of 3
-			if(exValidOrderCount == true || justSignedUp){
+			if(exValidOrderCount == true || justSignedUp || servletPath.toLowerCase().contains("invite_signup.jsp") ){
 			%>
 			<script>
 			//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
@@ -70,13 +77,12 @@
 				"validOrderCount": <%=exValidOrderCount%>,
 				"justSignedUp": <%=justSignedUp%>,
 				"mainPromo": <%=exMainPromo%>
-				
 			};
 			</script>
 			<script src="//tags.extole.com/553175139/core.js"></script>
 			<script src="/assets/javascript/extole_tags_generator.js"></script>
 			<%
-			}//end if(exValidOrderCount == true)
+			} //end if(exValidOrderCount == true)
 		} // end if( user_e1.getLevel() != 0 )
 	} // end if (user_e1 != null) 
 } //end local block
