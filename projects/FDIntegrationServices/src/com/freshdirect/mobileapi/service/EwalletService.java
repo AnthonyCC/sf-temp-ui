@@ -697,7 +697,7 @@ public class EwalletService {
 		            	productDesc = StringEscapeUtils.escapeXml(productDesc);
 		            }
 					cartItem.append("<ShoppingCartItem>");
-					cartItem.append("<Description> </Description>");
+					cartItem.append("<Description>"+ productDesc+ "</Description>");
 					cartItem.append("<Quantity>" + quantity + "</Quantity>");
 					cartItem.append("<Value>"
 							+ (new Double(cartLine.getPrice() * 100)).longValue()

@@ -41,6 +41,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.xml.sax.Attributes;
@@ -93,6 +94,7 @@ import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutCard;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataRequest;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutDataResponse;
 import com.mastercard.mcwallet.sdk.xml.allservices.PrecheckoutShippingAddress;
+import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartItem;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartRequest;
 import com.mastercard.mcwallet.sdk.xml.allservices.ShoppingCartResponse;
 import com.mastercard.mcwallet.sdk.xml.switchapiservices.MerchantInitializationRequest;
@@ -1471,6 +1473,13 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			Unmarshaller unmarshaller = jaxb.createUnmarshaller();
 			JAXBElement<ShoppingCartRequest> je = (JAXBElement<ShoppingCartRequest>) unmarshaller.unmarshal(stream);
 			ShoppingCartRequest shoppingCartRequest = (ShoppingCartRequest) je.getValue();
+			
+			List<ShoppingCartItem> items = shoppingCartRequest.getShoppingCart().getShoppingCartItem();
+			for (ShoppingCartItem item: items) {
+				String escapedItemDescr = item.getDescription();
+				escapedItemDescr = MasterPassApplicationHelper.replaceSpecialCharsWithBlanks(escapedItemDescr);
+				item.setDescription(escapedItemDescr);
+			}
 			shoppingCartRequest.setOAuthToken(requestToken);
 			shoppingCartRequest.setOriginUrl(originUrl);
 			return shoppingCartRequest;
