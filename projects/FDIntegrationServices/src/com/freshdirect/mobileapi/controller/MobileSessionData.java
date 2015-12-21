@@ -5,11 +5,11 @@ public class MobileSessionData {
     private boolean checkoutAuthenticated;
 
     public MobileSessionData() {
-        checkoutAuthenticated = false;
+        checkoutAuthenticated = true;
     }
 
     public void reset() {
-        checkoutAuthenticated = false;
+        checkoutAuthenticated = true;
     }
 
     public boolean isCheckoutAuthenticated() {
