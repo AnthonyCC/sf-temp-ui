@@ -158,11 +158,18 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 				response = extoleService.approveConversion(request);
 				if (null != response) {
 					response.setRafTransId(request.getRafTransId());
+					if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
+						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
+					}
+					if (FAILURE.equalsIgnoreCase(response.getCode())) {
+						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
+					}
+					/*
 					if (response.getStatus().equalsIgnoreCase("success")) {
 						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
 					} else if (response.getStatus().equalsIgnoreCase("failure")) {
 						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
-					}
+					}*/
 					updateConversionRequest(response);
 				}
 				
