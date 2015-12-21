@@ -1546,7 +1546,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
     	}
     	private String formatZipCode(Address billingAddress) {
     		String result = "";
-    		if (billingAddress != null) {
+    		if (billingAddress != null && null !=billingAddress.getPostalCode()) {
     			result = billingAddress.getPostalCode();
     			if("US".equalsIgnoreCase(billingAddress.getCountry())){
     				if(result.length()>5)
