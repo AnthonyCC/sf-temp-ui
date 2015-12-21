@@ -20,6 +20,8 @@ public class CatalogInfo {
 		
 		private ZoneInfo pricingZone;
 		
+		
+		
 		public CatalogId(String eStore, String plantId, ZoneInfo pricingZone) {
 			this.eStore=eStore;
 			this.plantId=plantId;
@@ -41,7 +43,7 @@ public class CatalogInfo {
 		@Override
 		public String toString(){
 			return eStore+DELIMITER+plantId +DELIMITER+ pricingZone.getSalesOrg()
-					+DELIMITER+pricingZone.getDistributionChanel()+DELIMITER+pricingZone.getPricingZoneId();
+					+DELIMITER+pricingZone.getDistributionChanel()+DELIMITER+pricingZone.getPricingZoneId()+DELIMITER+pricingZone.getPricingIndicator();
 		}
 	}
 	

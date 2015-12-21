@@ -114,7 +114,7 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 		StringBuilder sb = new StringBuilder();
 		sb.append(salesOrg).append(delimter)
 		.append(distributionChanel).append(delimter)
-		.append(zoneId);
+		.append(zoneId).append(delimter).append(this.pricingIndicator);
 		if(parent == null)
 			return sb.toString();
 		
@@ -134,12 +134,15 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 		ZoneInfo zi = null;
 		if(toDistribute.length > 0){
 			
-			
-			zi = new ZoneInfo(toDistribute[2], toDistribute[0], toDistribute[1], 
-					toDistribute.length > 3 ? 
-							ZoneInfo.distributeIntoObject(
-									Arrays.copyOfRange(toDistribute, 3, toDistribute.length)) 
-									: null);
+			if(toDistribute.length ==3) {
+				zi = new ZoneInfo(toDistribute[2], toDistribute[0], toDistribute[1]);
+			} else {
+				zi = new ZoneInfo(toDistribute[2], toDistribute[0], toDistribute[1], PricingIndicator.valueOf(toDistribute[3]),
+						toDistribute.length > 4 ? 
+								ZoneInfo.distributeIntoObject(
+										Arrays.copyOfRange(toDistribute, 4, toDistribute.length)) 
+										: null);
+			}
 		}
 		
 		return zi;
