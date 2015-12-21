@@ -335,7 +335,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public FDCartModel(FDCartModel cart) {
-		setOrderLines(cart.orderLines);
+	
+		List<FDCartLineI> orderLinesCopied = new ArrayList<FDCartLineI>();
+		// For FDX - to avoid modifying the current cart when we check against the inventory - order line object is also cloned.
+		if(cart!=null && cart.getEStoreId()!=null && cart.getEStoreId().getContentId()!=null && "FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())) {
+		for(FDCartLineI orderLineItr : cart.orderLines) {
+			FDCartLineModel newLine = new FDCartLineModel(orderLineItr.getSku(), orderLineItr
+					.getProductRef().lookupProductModel(), orderLineItr.getConfiguration(), orderLineItr.getVariantId(), orderLineItr.getUserContext());
+			orderLinesCopied.add(newLine);
+		} 	
+		setOrderLines(orderLinesCopied);		
+		} else {
+			setOrderLines(cart.orderLines);
+		}
 		setCharges(cart.charges);
 		setDiscounts(cart.discounts);
 		setCustomerCredits(new ArrayList<ErpAppliedCreditModel>(cart.customerCredits));
