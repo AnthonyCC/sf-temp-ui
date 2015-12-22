@@ -8071,9 +8071,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(email,
 					zoneId, EnumServiceType.getEnum(serviceType));
 
-			// Send notification email with content managed in CMS.
-			this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(
-					email));
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		}
