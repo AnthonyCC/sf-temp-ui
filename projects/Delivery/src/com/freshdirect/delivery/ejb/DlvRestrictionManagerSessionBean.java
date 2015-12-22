@@ -11,6 +11,7 @@ import javax.ejb.EJBException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -46,6 +47,9 @@ public class DlvRestrictionManagerSessionBean  extends SessionBeanSupport {
 	public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) {
 		Connection conn = null;
 		try {
+			if(address instanceof ErpAddressModel && address.getAddressInfo()!=null){
+				((ErpAddressModel)address).setScrubbedStreet(address.getAddressInfo().getScrubbedStreet());
+			}
 			conn = this.getConnection();
 			return DlvRestrictionDAO.isAddressRestricted(conn, address);
 		} catch (SQLException ex) {
