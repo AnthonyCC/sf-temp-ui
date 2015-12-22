@@ -21,40 +21,50 @@
 		}
 	}
 	
-	//PASS 1 of 3.  Basic customer vars only defined here.
-	if(
-	FDStoreProperties.isExtoleRafEnabled() &&
-		(
-			((user_e1 != null) && (isValidPage == true)) || servletPath.toLowerCase().contains("invite_signup.jsp")
-		)
-	){
+	boolean isSignupPage = false;
+	
+	//if this is the invite signup page from the email, overrides
+	if( servletPath.toLowerCase().contains("invite_signup.jsp") ){
+		isSignupPage = true;
+	}
+	
+	//PASS 1 of 3.  Basic customer vars only defined here.	
+	if( FDStoreProperties.isExtoleRafEnabled() && (((user_e1 != null) && (isValidPage == true)) || isSignupPage == true) ){
 		
 		int user_getLevel = user_e1.getLevel();
 	
 		//if this is someone actually on the CUSTOMER table, with valid email, etc. PASS 2 of 3
-		if( (user_e1.getLevel() == FDUserI.SIGNED_IN) || servletPath.toLowerCase().contains("invite_signup.jsp") ){
+		if( (user_e1.getLevel() == FDUserI.SIGNED_IN) || isSignupPage == true ){
 			//customer basics
 			String exCustFirstName = user_e1.getFirstName();
 			String custLastName = user_e1.getLastName();
 			
-			//more advanced customer stuff
-			FDIdentity identity_e  = user_e1.getIdentity();
-			ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
-			String custEmail = cm_e.getEmail();
+			String custEmail = "";
+			String custId = "";
 			
-			//numerical id
-			String custId = identity_e.getErpCustomerPK();
-			
-			//definitely logged in
-			boolean isSignedCustomer = true;
+			boolean isSignedCustomer = false;
 			
 			//lets find out if they ordered something
 			boolean exValidOrderCount = false;
 			
-			try{
-				exValidOrderCount = user_e1.isReferralProgramAvailable();
-			} catch (Exception e){
-				out.println("An exception occurred: " + e.getMessage());
+			//more advanced customer stuff
+			FDIdentity identity_e  = user_e1.getIdentity();
+			if(null !=identity_e){
+				ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+				custEmail = cm_e.getEmail();
+				
+				//numerical id
+				custId = identity_e.getErpCustomerPK();
+				
+				//definitely logged in
+				isSignedCustomer = true;
+				
+				//since they are logged on in this case, lets see if they have an order
+				try{
+					exValidOrderCount = user_e1.isReferralProgramAvailable();
+				} catch (Exception e){
+					out.println("An exception occurred: " + e.getMessage());
+				}
 			}
 		
 			//session object needed to determine whether this user had just signed up
@@ -64,7 +74,7 @@
 			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
 			//if they have actually ordered something.  PASS 3 of 3
-			if(exValidOrderCount == true || justSignedUp || servletPath.toLowerCase().contains("invite_signup.jsp") ){
+			if(exValidOrderCount == true || justSignedUp || isSignupPage == true ){
 			%>
 			<script>
 			//defined outside of function 'setAndAppendExtoleObject' so that they could be used outside of it.
