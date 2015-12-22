@@ -45,9 +45,6 @@ request.setAttribute("noyui", true);
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 %>
 
-<%= "test<br/>" %>
-<%= request.getHeader("referer") %>
-
 <tmpl:insert template='/common/template/no_shell_optimized.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name="seoMetaTag" direct="true">
