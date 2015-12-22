@@ -433,8 +433,8 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			StringBuffer cartItem = new StringBuffer();
 			ProductModel productNode = cartLine.lookupProduct();
 
-			String productDesc = StringEscapeUtils.escapeXml(cartLine
-					.getDescription());
+			String productDesc = StringEscapeUtils.unescapeXml(cartLine.getDescription());
+			productDesc = StringEscapeUtils.escapeXml(productDesc);
 
 			if (cartLine.getConfigurationDesc() != null
 					&& !cartLine.getConfigurationDesc().isEmpty()) {
@@ -487,10 +487,16 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				LOGGER.error("Error while create Shopping Cart for EWallet service provider",e);
 			}
 			
-			String prodDes = StringEscapeUtils.escapeXml(productDesc);
-            if(null != prodDes && prodDes.length() > 99){
-            	productDesc = productDesc.substring(0, productDesc.length() - 20) + "...";
-            	productDesc = StringEscapeUtils.escapeXml(productDesc);
+        	int semi = productDesc.lastIndexOf(';');
+        	int amp = productDesc.lastIndexOf('&');
+        	if (semi != -1 && amp != -1 && semi < amp) {
+        		productDesc = productDesc.substring(0, amp);
+        	}
+
+            if(null != productDesc && productDesc.length() > 99){
+            	productDesc = productDesc.substring(0, productDesc.length() - 20);
+            	if (!productDesc.endsWith("..."))
+            		productDesc += "...";
             }
 			cartItem.append("<ShoppingCartItem>");
 			cartItem.append("<Description>"+ productDesc+ "</Description>");

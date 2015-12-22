@@ -1477,6 +1477,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			List<ShoppingCartItem> items = shoppingCartRequest.getShoppingCart().getShoppingCartItem();
 			for (ShoppingCartItem item: items) {
 				String escapedItemDescr = item.getDescription();
+				escapedItemDescr = StringEscapeUtils.escapeXml(escapedItemDescr);
 				escapedItemDescr = MasterPassApplicationHelper.replaceSpecialCharsWithBlanks(escapedItemDescr);
 				item.setDescription(escapedItemDescr);
 			}

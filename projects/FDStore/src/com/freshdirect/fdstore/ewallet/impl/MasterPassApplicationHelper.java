@@ -194,7 +194,6 @@ public class MasterPassApplicationHelper {
 	      { "thorn", new Integer(254) }, 
 	      { "yuml", new Integer(255) }, 
 	      { "euro", new Integer(8364) },
-	      { "amp", new Integer(38) },
 	  };
 	
 	  static {
@@ -207,18 +206,12 @@ public class MasterPassApplicationHelper {
 	    StringBuffer buf = new StringBuffer();
 
 	    int i;
-	    boolean amp = false;
+
 	    for (i = 0; i < s1.length(); ++i)
 	    {
 
-	      char ch = ' ';
-	      if (amp) {
-	    	  ch = '&';
-	    	  i--;
-	      } else {
-		      ch = s1.charAt(i);
-		      amp = false;
-	      }
+	      char ch = s1.charAt(i);
+
 	      if (ch == '&')
 	      {
 	        int semi = s1.indexOf(';', i + 1);
@@ -240,16 +233,11 @@ public class MasterPassApplicationHelper {
 	        if (iso == null)
 	        {
 	          buf.append("&" + entity + ";");
-	          amp = false;
-	        }
-	        else if (iso == 38) {
-	        	amp = true;
 	        }
 	        else
 	        {
 	          //Just for info that empty char is introduced.
 	          buf.append("");
-	          amp = false;
 	        }
 	        i = semi;
 	      }
