@@ -96,7 +96,12 @@ final class PaymentechFields implements java.io.Serializable{
 		OnlineReversalInd,
 		CheckDDA,
 		BCRtNum,
-		BankAccountType;
+		BankAccountType,
+		ECPAuthMethod,
+		BankPmtDelv,
+		DWWalletID,
+		DWSLI,
+		DigitalWalletType;
 		
 	}
 	

@@ -114,6 +114,12 @@
 	</path>
 
 	<path id="testing.classpath">
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/javassist-3.20.0-GA.jar"/>
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/easymock-3.4.jar"/>
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/junit-4.12.jar"/>
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/powermock-easymock-1.6.3-full.jar"/>
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/cglib-nodep-2.2.2.jar"/>
+		<pathelement location="${testing.home}/powermock-easymock-junit-1.6.3/objenesis-2.1.jar"/>
 		<pathelement location="${testing.home}/junit.jar"/>
 		<pathelement location="${testing.home}/junitperf.jar"/>
 		<pathelement location="${testing.home}/jrunittesthelper.jar"/>
@@ -135,6 +141,9 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/objenesis-1.0.jar"/>
+		<pathelement location="${thirdparty.home}/jsse.jar"/>
+		<pathelement location="${thirdparty.home}/regexp.jar"/>
+		<pathelement location="${thirdparty.home}/sunrsasign.jar"/>
 	</path>
 
 	<!--  EMMA  -->
@@ -504,13 +513,13 @@
 		        <mkdir dir="${lib_coverage}" />
 
 				<copy todir="${lib_coverage}">
-					<fileset dir="${dest.dir}" includes="Framework.jar" />
+					<fileset dir="${work.dir}" includes="Framework.jar" />
 					<fileset dir="${work.dir}" includes="ERPServices.jar" />
 					<fileset dir="${work.dir}" includes="Delivery.jar" />
 					<fileset dir="${work.dir}" includes="CMS.jar" />
 					<fileset dir="${work.dir}" includes="FDStore.jar" />
 					<fileset dir="${work.dir}" includes="DataLoader.jar" />
-					<fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
+					<fileset dir="${work.dir}" includes="ERPSWebApp.jar" />
 					<fileset dir="${work.dir}" includes="FDLogisticsIntegration.jar" />
 					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
 					<fileset dir="${work.dir}" includes="CoremetricsService.jar" />
@@ -528,10 +537,13 @@
 		            <classpath>
 		                <pathelement location="${work.dir}/Tests"/>
 		                <pathelement location="${properties.home}"/>
+												
+						<pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>						
 		                <path refid="j2ee.classpath"/>
 		                <path refid="oracle.classpath"/>
+				<path refid="testing.classpath" />		
 		                <path refid="common.classpath"/>
-				<path refid="testing.classpath" />
+				
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
@@ -2087,6 +2099,7 @@
 						<pathelement path="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
+						<pathelement path="${work.dir}/ERPServices"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
 						<pathelement path="${work.dir}/FDLogisticsIntegration.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>

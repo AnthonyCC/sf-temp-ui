@@ -77,6 +77,9 @@
 			<EmailAddressSubtype>[% EmailAddressSubtype= %]</EmailAddressSubtype>
 			<CustomerBrowserName>[% CustomerBrowserName= %]</CustomerBrowserName>
 			<ShippingMethod>[% ShippingMethod= %]</ShippingMethod>	
+            <EUDDBankBranchCode>[% EUDDBankBranchCode= %]</EUDDBankBranchCode>
+            <EUDDIBAN>[% EUDDIBAN= %]</EUDDIBAN>
+            <EUDDBIC>[% EUDDBIC= %]</EUDDBIC>
 		</BaseElements>
 		<FraudAnalysis>	
 			<FraudScoreIndicator>[% FraudScoreIndicator= %]</FraudScoreIndicator>

@@ -19,6 +19,12 @@ final class PaymentechConstants implements java.io.Serializable {
 	public static final String VOID_INDICATOR="N";
 	public static final String REVERSE_AUTH_INDICATOR="Y";
 	public static final String[] COUNTRY_CODES={"US","UK","GB","CA"};
+	public static final String MASTERPASS = "MasterPass";
+	public static final String MPWALLETID ="1";
+	public static final String DWSLI="4";
+	public static final String ECPAUTHMETHOD = "I";
+	public static final String BANKPMTDELV = "B";
+	
 	private PaymentechConstants() {
 	}
 

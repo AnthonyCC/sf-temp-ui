@@ -20,6 +20,7 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 	private Currency currency=Currency.USD;
 	private String ewalletId;
 	private String ewalletTxId;
+	private String vendorEWalletID;
 	
 	/* (non-Javadoc)
 	 * @see com.freshdirect.payment.gateway.PaymentMethod#setEwalletTxId(java.lang.String)
@@ -238,7 +239,16 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 		this.ewalletId = ewalletId;
 	}
 	
+	@Override
+	public String getVendorEWalletID() {
+		return vendorEWalletID;
+	}
 	
+	@Override
+	public void setVendorEWalletID(String vendorEWalletID) {
+		this.vendorEWalletID = vendorEWalletID;
+		
+	}
 	
 	
 }

@@ -261,9 +261,11 @@ public class GatewayAdapter {
 				billingInfo.setTax(tax);
 				billingInfo.setEwalletId(paymentMethod.geteWalletID());
 				billingInfo.setEwalletTxId(paymentMethod.geteWalletTrxnId());
+				billingInfo.setVendorEwalletId(paymentMethod.getVendorEWalletID());
 			} else {
 				billingInfo.setEwalletId(paymentMethod.geteWalletID());
 				billingInfo.setEwalletTxId(paymentMethod.geteWalletTrxnId());
+				billingInfo.setVendorEwalletId(paymentMethod.getVendorEWalletID());
 			}
 			request.setBillingInfo(billingInfo);
 		} else return null;
@@ -463,6 +465,7 @@ public class GatewayAdapter {
 			// Get EWallet ID
 			cc.setEwalletId(paymentMethod.geteWalletID());
 			cc.setEwalletTxId(paymentMethod.geteWalletTrxnId());
+			cc.setVendorEWalletID(paymentMethod.getVendorEWalletID());
 			return cc;
 		
 	}

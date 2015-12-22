@@ -313,6 +313,7 @@ class PaymentechHelper {
 			PaymentechRequestHelper.setCurrencyExponent(_request);
 			PaymentechRequestHelper.setAmount(request.getBillingInfo().getAmount(),_request);
 			PaymentechRequestHelper.setProfileID(request.getTransactionType(), _request, paymentMethod.getBillingProfileID());
+			PaymentechRequestHelper.setEWalletInfo(RequestIF.NEW_ORDER_TRANSACTION, _request, paymentMethod);
 			return _request;
 		}
 		
@@ -334,6 +335,7 @@ class PaymentechHelper {
 			PaymentechRequestHelper.setCurrencyExponent(_request);
 			PaymentechRequestHelper.setAmount(request.getBillingInfo().getAmount(),_request);
 			PaymentechRequestHelper.setProfileID(request.getTransactionType(), _request, paymentMethod.getBillingProfileID());
+			PaymentechRequestHelper.setEWalletInfo(RequestIF.NEW_ORDER_TRANSACTION, _request, paymentMethod);
 			return _request;
 		}
 		
@@ -412,10 +414,14 @@ class PaymentechHelper {
 				PaymentechRequestHelper.setCCInfo(RequestIF.NEW_ORDER_TRANSACTION,
 						                          _request,
 						                          creditCard);
-				if( CreditCardType.AMEX.equals(creditCard.getCreditCardType())||
+				/*if( CreditCardType.AMEX.equals(creditCard.getCreditCardType())||
 				    CreditCardType.DISCOVER.equals(creditCard.getCreditCardType())||
 				    CreditCardType.MASTERCARD.equals(creditCard.getCreditCardType())
-				  ) {
+				  )*/
+				// As requested by Chase, we have modified to $0 auth for MASTERCARD
+				if( CreditCardType.AMEX.equals(creditCard.getCreditCardType())||
+					    CreditCardType.DISCOVER.equals(creditCard.getCreditCardType())
+					  ){
 					amount=0.01;
 					request.getBillingInfo().setAmount(amount);
 				}
@@ -429,6 +435,8 @@ class PaymentechHelper {
 			}
 			PaymentechRequestHelper.setAmount(amount,_request);
 			PaymentechRequestHelper.setAddressInfo(RequestIF.NEW_ORDER_TRANSACTION,_request,paymentMethod);
+			PaymentechRequestHelper.setEWalletInfo(RequestIF.NEW_ORDER_TRANSACTION,_request,paymentMethod);
+			
    		return _request;
 		}
 		private static Response setException(ResponseImpl response, String exceptionMsg) {

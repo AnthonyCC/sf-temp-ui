@@ -17,8 +17,9 @@ class BillingInfoImpl implements BillingInfo{
 	private Merchant merchant;
 	private PaymentMethod pymtMethod;
 	private String ewalletId;
-	private String ewalletTxId;
+	private String ewalletTxId;	
 	private EnumEStoreId eStore;
+	private String vendorEwalletId;
 	/**
 	 * @return the ewalletTxId
 	 */
@@ -196,6 +197,16 @@ class BillingInfoImpl implements BillingInfo{
 	public EnumEStoreId getEStoreId() {
 		
 		return eStore;
+	}
+	@Override
+	public String getVendorEwalletId() {
+		return vendorEwalletId;
+	}
+
+	@Override
+	public void setVendorEwalletId(String vendorEwalletId) {
+		this.vendorEwalletId=vendorEwalletId;
+		
 	}
 
 }

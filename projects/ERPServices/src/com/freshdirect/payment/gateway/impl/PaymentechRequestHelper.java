@@ -16,7 +16,9 @@ import com.freshdirect.payment.gateway.Currency;
 import com.freshdirect.payment.gateway.ECheck;
 import com.freshdirect.payment.gateway.Merchant;
 import com.freshdirect.payment.gateway.PaymentMethod;
+import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.TransactionType;
+import com.freshdirect.payment.gateway.impl.PaymentechConstants.CardType;
 import com.paymentech.orbital.sdk.interfaces.RequestIF;
 import com.paymentech.orbital.sdk.request.FieldNotFoundException;
 
@@ -139,6 +141,11 @@ final class PaymentechRequestHelper {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.BankAccountType.name(),
 						              PaymentechConstants.BankAccountType.get(echeck.getBankAccountType()).getCode());// fix
 			}
+			request.setFieldValue(PaymentechFields.NewOrderRequest.ECPAuthMethod.name(),
+					  PaymentechConstants.ECPAUTHMETHOD);
+			request.setFieldValue(PaymentechFields.NewOrderRequest.BankPmtDelv.name(),
+					PaymentechConstants.BANKPMTDELV);
+			
 			if(!StringUtil.isEmpty(echeck.getRoutingNumber())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.BCRtNum.name(),
 						              echeck.getRoutingNumber());
@@ -326,6 +333,21 @@ final class PaymentechRequestHelper {
 	public static void setOnlineReverseIndicator(String  val,	RequestIF request) throws FieldNotFoundException {
 		request.setFieldValue(PaymentechFields.NewOrderRequest.OnlineReversalInd.name(), val);
 	}
+	
+	public static void setEWalletInfo(String transaction, RequestIF request, PaymentMethod paymentMethod) throws FieldNotFoundException {
+		if (PaymentMethodType.CREDIT_CARD.equals(paymentMethod.getType())) {	
+			CreditCard creditCard = (CreditCard) paymentMethod;						
+			if (creditCard.getEwalletId() != null && creditCard.getEwalletId().equals(PaymentechConstants.MPWALLETID) && creditCard.getCreditCardType().equals(CreditCardType.MASTERCARD)){
+				request.setFieldValue(PaymentechFields.NewOrderRequest.DWWalletID.name(),
+						creditCard.getVendorEWalletID());
+				request.setFieldValue(PaymentechFields.NewOrderRequest.DWSLI.name(),
+			               PaymentechConstants.DWSLI );
+				request.setFieldValue(PaymentechFields.NewOrderRequest.DigitalWalletType.name(),
+						PaymentechConstants.MASTERPASS);
+				}
+		}
+			
+		}
 	
 	public static void main(String[] a) {
 		Date d=Calendar.getInstance().getTime();

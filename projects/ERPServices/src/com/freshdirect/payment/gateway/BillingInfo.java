@@ -29,4 +29,6 @@ public interface BillingInfo extends java.io.Serializable {
 	public void setEwalletTxId(String ewalletId);
 	public void setEStoreId(EnumEStoreId eStore);
 	public EnumEStoreId getEStoreId();
+	public String getVendorEwalletId();
+	public void setVendorEwalletId(String vendorEwalletId);
 }
