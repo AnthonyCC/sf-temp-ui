@@ -177,21 +177,28 @@ function elements_size_adjuster(){ /* void */
 //executed from when the first form of 2 possible is executed.  verifies whether zipcode entered is within FDX territory
 function zonenotification_zip(zip_text){ /* String */
 	$.ajax({
-		url:'/api/locationhandler.jsp',
+		//url:'/api/locationhandler.jsp',
+		url:'/foodkick/ajax/fdx_zone.jsp',
 		async:false,
-		data:{
+		/*data:{
 			action:'ifDeliveryZone',
 			noMobile: 'FALSE',
 			zipcode: zip_text
+		}*/
+		data:{
+			zipCheck: zip_text
 		}
 	}).done(function(data){
+		alert(data);
+		
 		$("#zipcode_lh").val( $("#zipcode_zh").val() );
 		
 		$("#ziphandler").fadeOut();
 		
 		var form_next = "#locationhandler";
 		
-		if(data.trim() == "true"){
+		//if(data.trim() == "true"){
+		if(data.indexOf("FDX") > -1){
 			form_next = "#we_deliver_to_you";
 		}
 		
