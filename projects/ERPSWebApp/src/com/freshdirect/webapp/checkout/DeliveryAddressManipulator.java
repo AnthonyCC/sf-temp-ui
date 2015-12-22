@@ -408,6 +408,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		
 		erpAddress.setFrom(scrubbedAddress);
 		erpAddress.setCity(scrubbedAddress.getCity());
+		erpAddress.setScrubbedStreet(scrubbedAddress.getScrubbedStreet());
 		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
 
 		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
