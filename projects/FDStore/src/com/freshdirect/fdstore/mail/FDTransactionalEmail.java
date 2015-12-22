@@ -71,9 +71,11 @@ public class FDTransactionalEmail extends FDInfoEmail {
 				Map<String, Object> prodInfo = new HashMap<String, Object>();
 				Image prodImage = productNode.getProdImage();
 				
+				if(prodImage!=null) {
 				prodInfo.put("imageUri", prodImage.getPathWithPublishId());
 				prodInfo.put("imageH", prodImage.getHeight());
 				prodInfo.put("imageW", prodImage.getWidth());
+				}
 				
 				/* email needs separate brand name and product name */
 				String brandName = productNode.getPrimaryBrandName();
