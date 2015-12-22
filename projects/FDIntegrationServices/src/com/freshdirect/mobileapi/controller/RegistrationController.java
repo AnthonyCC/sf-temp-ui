@@ -197,6 +197,8 @@ public class RegistrationController extends BaseController implements SystemMess
 			}		
 		if(userIdentity == null){
 		
+		if(user == null)
+			 throw new NoSessionException("No session");
 		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());		
 		RegisterMessage registerMessage = new RegisterMessage();
 		registerMessage.setFirstName(requestMessage.getFirstName());
