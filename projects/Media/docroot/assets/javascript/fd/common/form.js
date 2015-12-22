@@ -639,6 +639,32 @@ var FreshDirect = FreshDirect || {};
     return errors;
   });
 
+//apartment validator
+  forms.registerValidator('[fdform-v-apartment]', function (field) {
+    var errors = [],
+        $field = $(field),
+        apt = $field.val();
+
+    if (apt.length > 20 ) {
+      errors = addError(errors, field, 'Please provide valid apartment!');
+    }
+
+    return errors;
+  });
+  
+//street addess 1 validator
+  forms.registerValidator('[fdform-v-address1]', function (field) {
+    var errors = [],
+        $field = $(field),
+        address1 = $field.val();
+
+    if (address1.length > 50 ) {
+      errors = addError(errors, field, 'Please provide valid street address!');
+    }
+
+    return errors;
+  });
+
   // default formatters
 
   // phone number formatter

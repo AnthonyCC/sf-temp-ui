@@ -37,8 +37,8 @@
     <input name="last_name" placeholder="Last Name" value="{if $data.last_name}{$data.last_name}{/if}" required/>
   </div>
   <div>
-    <input name="street_address" placeholder="Street Address" value="{if $data.street_address}{$data.street_address}{/if}" required/>
-    <input name="apartment" placeholder="Apt." value="{if $data.apartment}{$data.apartment}{/if}"/>
+    <input name="street_address" placeholder="Street Address" fdform-v-address1  value="{if $data.street_address}{$data.street_address}{/if}" required/>
+    <input name="apartment" placeholder="Apt." fdform-v-apartment value="{if $data.apartment}{$data.apartment}{/if}"/>
   </div>
   <div>
     <input name="street_address2" placeholder="Street Address Line 2" value="{if $data.street_address2}{$data.street_address2}{/if}" />

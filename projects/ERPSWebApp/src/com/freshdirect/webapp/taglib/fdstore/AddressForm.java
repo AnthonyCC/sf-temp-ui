@@ -226,7 +226,14 @@ public class AddressForm implements WebFormI { //, AddressName
         } else {
 			result.addError(!AddressUtil.validateState(state), EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
         }
-
+        if(apt.length()>20)
+    	{
+    		result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER));
+    	}
+    	if(street1.length()>50)
+    	{
+    		result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS));
+    	}
         result.addError(zipcode.length() < 5, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
         
         if(EnumServiceType.CORPORATE.equals(serviceType)){
