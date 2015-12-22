@@ -865,6 +865,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public boolean getAddonOrderCount(String orderId)throws FDResourceException, RemoteException;
 	public void reSendInvoiceEmail(String orderId)throws FDResourceException, RemoteException;
+
+	public boolean iPhoneCaptureEmail(String email, String zipCode,
+			String serviceType)throws FDResourceException, RemoteException;
 	
 }
 

@@ -8052,5 +8052,32 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public boolean iPhoneCaptureEmail(String email, String zoneId, String serviceType) throws FDResourceException {
+
+		if (null == email || "".equals(email)) {
+			return false;
+		}
+
+		try {
+			// Check if email format is correct. @ with . domain
+			if (!EmailUtil.isValidEmailAddress(email.trim())) {
+				LOGGER.info("invalid iphone capture email: " + email);
+				return false;
+			}
+	
+
+			LOGGER.info("valid iphone capture email: " + email);
+			// If unknown email, save it in dlv.zonenotification table
+			FDDeliveryManager.getInstance().saveFutureZoneNotification(email,
+					zoneId, EnumServiceType.getEnum(serviceType));
+
+			// Send notification email with content managed in CMS.
+			this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(
+					email));
+		} catch (Exception e) {
+			throw new FDResourceException(e);
+		}
+		return true; // success
+	}
 }
 

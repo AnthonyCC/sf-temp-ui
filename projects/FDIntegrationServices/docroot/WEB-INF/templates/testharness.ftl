@@ -687,6 +687,11 @@ function loadStuff() {
   	$("#url").val("/emailcapture/test@test.com");
   	$("#payload").val("");
   	
+  } else if (loaddata == "EmailCaptureEX") {
+  	$("#url").val("/emailcaptureEx/");
+  	var postdata = '{"serviceType" : "FDX", "zipCode" : "11101", "email" : "test@test.com"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "ConfiguredValues") {
   	$("#url").val("/configvalue/param1");
   	$("#payload").val("");
@@ -1234,6 +1239,7 @@ function doStuff() {
   
   <option value=""> ========== MISC ========== </option>
   <option value="EmailCapture">Email Capture</option>
+  <option value="EmailCaptureEX">Email Capture Ex</option>
   <option value="ConfiguredValues">Configured Values</option>
   <option value="Configuration">Configuration</option>
   <option value=""> ========== HELP ========== </option>

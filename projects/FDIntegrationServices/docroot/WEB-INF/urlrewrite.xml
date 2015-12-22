@@ -836,6 +836,12 @@
 		<from>^/v/([0-9]+)/emailcapture/(.*)</from>
 		<to last="true">/emailcapture.do?email=$2&amp;ver=$1</to>
 	</rule>
+	
+	<!-- Email capture ex-->
+	<rule>
+		<from>^/v/([0-9]+)/emailcaptureEx/(.*)</from>
+		<to last="true">/emailcapture.do?action=emailcaptureEx&amp;ver=$1</to>
+	</rule>
 
 	<!-- config -->
 	<rule>

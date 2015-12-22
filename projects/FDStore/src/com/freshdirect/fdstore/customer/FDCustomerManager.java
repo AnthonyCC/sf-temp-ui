@@ -4732,6 +4732,23 @@ public class FDCustomerManager {
 		}
 	
 	}
+
+		public static boolean iPhoneCaptureEmail(String email, String zipCode,
+				String serviceType) throws FDResourceException  {
+
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.iPhoneCaptureEmail(email, zipCode, serviceType);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		
+		}
 	
 	
 	
