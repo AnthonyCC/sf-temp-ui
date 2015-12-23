@@ -183,10 +183,10 @@ function numbersonly(myfield, e, dec)
 		
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
-	Date endDate =  DateUtil.addDays(today, 7); //Today + 1
+	Date defaulEndDate =  DateUtil.addDays(today, 7); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.defaultFormatDate(defaultDate);
 	startDate = (startDate != null) ? startDate : CCFormatter.defaultFormatDate(today);
-	endDate = (endDate != null) ? endDate : CCFormatter.defaultFormatDate(endDate);	
+	endDate = (endDate != null) ? endDate : CCFormatter.defaultFormatDate(defaulEndDate);	
 	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";	
 	discount = (discount != null) ? discount : "";
 	
@@ -733,7 +733,7 @@ function numbersonly(myfield, e, dec)
 						<select id="discount" name="discount" class="h10px w200px">
 							<option value="">Select Discount</option>
 		 					<logic:iterate id="discountAmt" collection="<%= discountList %>" type="java.lang.String" indexId="idx">
-		 					<% if((discount.equals("") && idx == 1) || discountAmt.equals(discount)) {%>
+		 					<% if((discount.equals("") && idx == 0) || discountAmt.equals(discount)) {%>
 								 <option value="<%= discountAmt %>" selected>$<%= discountAmt %></option>
 							<% } else { %>				
 								<option value="<%= discountAmt %>">$<%= discountAmt %></option>
