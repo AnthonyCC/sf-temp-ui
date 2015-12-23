@@ -1079,7 +1079,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
 		this.zoneInfo = zoneInfo;
-		System.out.println("SETTING ZONEINFO"+ zoneInfo);
+		LOGGER.info("SETTING ZONEINFO"+ zoneInfo);
 		//this.setChargeAmount(EnumChargeType.DELIVERY, zoneInfo == null ? 0.0 : zoneInfo.getDeliveryCharges());
 	}
 

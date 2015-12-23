@@ -213,7 +213,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				Calendar date = new GregorianCalendar();
 				date.add( Calendar.DATE, 7 );
 				FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getFDSessionUser().getHistoricOrderSize(), null);
-				if(user!=null && user.getShoppingCart()!=null) {
+				if(user!=null && user.getShoppingCart()!=null && zoneInfo!=null) {
 					user.getShoppingCart().setZoneInfo(zoneInfo);
 				}
 				
