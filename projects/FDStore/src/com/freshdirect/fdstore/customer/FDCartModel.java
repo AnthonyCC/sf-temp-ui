@@ -743,7 +743,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		total += MathUtil.roundDecimal(this.getSubTotal());		
 		total += MathUtil.roundDecimal(this.getTaxValue());
 		total += MathUtil.roundDecimal(this.getDepositValue());
-		total += MathUtil.roundDecimal(this.getTip());
 		// apply charges
 		for (Iterator<ErpChargeLineModel> i = this.charges.iterator(); i.hasNext();) {
 			total += MathUtil.roundDecimal(i.next().getTotalAmount());
