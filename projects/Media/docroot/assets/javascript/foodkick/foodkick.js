@@ -189,8 +189,6 @@ function zonenotification_zip(zip_text){ /* String */
 			zipCheck: zip_text
 		}
 	}).done(function(data){
-		alert(data);
-		
 		$("#zipcode_lh").val( $("#zipcode_zh").val() );
 		
 		$("#ziphandler").fadeOut();
