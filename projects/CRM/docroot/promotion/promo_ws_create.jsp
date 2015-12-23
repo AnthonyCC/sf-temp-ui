@@ -183,9 +183,10 @@ function numbersonly(myfield, e, dec)
 		
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
+	Date endDate =  DateUtil.addDays(today, 7); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.defaultFormatDate(defaultDate);
 	startDate = (startDate != null) ? startDate : CCFormatter.defaultFormatDate(today);
-	endDate = (endDate != null) ? endDate : CCFormatter.defaultFormatDate(defaultDate);	
+	endDate = (endDate != null) ? endDate : CCFormatter.defaultFormatDate(endDate);	
 	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";	
 	discount = (discount != null) ? discount : "";
 	
@@ -571,9 +572,9 @@ function numbersonly(myfield, e, dec)
 							<option value="">Select Zone</option>
 		 					<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.logistics.delivery.model.DlvZoneModel" indexId="idx">
 		 						<% if(zoneModel.getZoneDescriptor().getZoneCode().equals(selectedZoneId)) {%>
-								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>" selected><%= zoneModel.getCompanyCode()%> <%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>" selected><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 								 <% } else { %>
-								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getCompanyCode()%> <%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+								 <option value="<%= zoneModel.getCompanyCode()+"/"+zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 								 <% } %>
 							</logic:iterate>
 						</select>
@@ -732,7 +733,7 @@ function numbersonly(myfield, e, dec)
 						<select id="discount" name="discount" class="h10px w200px">
 							<option value="">Select Discount</option>
 		 					<logic:iterate id="discountAmt" collection="<%= discountList %>" type="java.lang.String" indexId="idx">
-		 					<% if(discountAmt.equals(discount)) {%>
+		 					<% if((discount.equals("") && idx == 1) || discountAmt.equals(discount)) {%>
 								 <option value="<%= discountAmt %>" selected>$<%= discountAmt %></option>
 							<% } else { %>				
 								<option value="<%= discountAmt %>">$<%= discountAmt %></option>
@@ -749,7 +750,8 @@ function numbersonly(myfield, e, dec)
 					<td class="alignL vTop padL8R16"><b>Delivery Day Type: </b>
 						<table class="tableCollapse" id="edit_dlvreq_addTypeParent" name="edit_dlvreq_addTypeParent" width="450px">
 							<tr>
-								<td><input type="radio" id="regular" value="R" name="deliveryDayType" <%= (null!=dlvOption && (EnumDeliveryOption.REGULAR.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.REGULAR.getDeliveryOption() %></td>
+								
+								<td><input type="radio" id="regular" value="R" name="deliveryDayType" <%= (dlvOption == null || (null!=dlvOption && (EnumDeliveryOption.REGULAR.equals(dlvOption))))?"checked":"" %>/> <%=EnumDeliveryOption.REGULAR.getDeliveryOption() %></td>
 								<td><input type="radio" id="sameday" value="S" name="deliveryDayType" <%= (null!=dlvOption && EnumDeliveryOption.SAMEDAY.equals(dlvOption))?"checked":"" %>/> <%=EnumDeliveryOption.SAMEDAY.getDeliveryOption() %></td>								
 								<td><input type="radio" id="so" value="SO" name="deliveryDayType" <%= (( EnumDeliveryOption.SO.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.SO.getDeliveryOption() %></td>
 								<td><input type="radio" id="all" value="A" name="deliveryDayType" <%= (( EnumDeliveryOption.ALL.equals(dlvOption)))?"checked":"" %>/> <%=EnumDeliveryOption.ALL.getDeliveryOption() %></td>
@@ -775,10 +777,10 @@ function numbersonly(myfield, e, dec)
 						 <% for(int i=0;i<cohorts.size();i++){
 								String checked = "";
 								if(cohortList.isEmpty() || cohortList.size() == 0) {
-									/*if(!cohorts.get(i).equals("C3") && !cohorts.get(i).equals("C4")) {
+									if(!cohorts.get(i).equals("C5") && !cohorts.get(i).equals("C10") && !cohorts.get(i).equals("C15")) {
 										checked = "checked";
-									}*/
-									checked = "checked";
+									}
+									
 								} else {
 									if(cohortList.contains(cohorts.get(i))) {
 										checked = "checked";
