@@ -3,7 +3,9 @@ package com.freshdirect.mobileapi.controller;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,10 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -205,6 +210,12 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				//FDX-1873 - Show timeslots for anonymous address
 				address.setCustomerAnonymousAddress(true);
 				user.setAddress(address);
+				Calendar date = new GregorianCalendar();
+				date.add( Calendar.DATE, 7 );
+				FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getFDSessionUser().getHistoricOrderSize(), null);
+				if(user!=null && user.getShoppingCart()!=null) {
+					user.getShoppingCart().setZoneInfo(zoneInfo);
+				}
 				
 				if(!isAddressSet(user,address)) {
 					Cart cart = user.getShoppingCart();
@@ -220,7 +231,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				        
 				} else {
 					//FDX-1873 - Show timeslots for anonymous address
-					user.getShoppingCart().setDeliveryAddress(null);		        	
+					user.getShoppingCart().setDeliveryAddress(null);
 		        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
 		        	
 		        	if(invalidLines.size()>0) {
@@ -245,6 +256,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				
 			} catch (NoSessionException e) {
 				 Message responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+	             setResponseMessage(model, responseMessage, user);
+			} catch (FDInvalidAddressException e) {
+				 Message responseMessage = getErrorMessage("Invalid Address", "Invalid address");
 	             setResponseMessage(model, responseMessage, user);
 			}
 		}
