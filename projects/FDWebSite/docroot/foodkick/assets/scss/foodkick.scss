@@ -123,7 +123,6 @@ $form_t_color_p: rgba($form_t_color, 0.5);
 	transform-origin: $origin;
 }
 
-
 //media query breakpoints
 @mixin breakpoint_mixin($point) {
 	@if $point == medium {
@@ -206,8 +205,8 @@ img[src$=".gif"], img[src$=".jpg"], img[src$=".png"] {
 }
 
 header{
-	background-color: rgba(76,0,90,0.75);
-	mix-blend-mode: darken;
+	background-color: rgba(76,0,90,0.9);
+	//mix-blend-mode: darken;
 	width: $full100;
 	height:57px;
 	
@@ -218,7 +217,11 @@ header{
 	@include transition_mixin(500ms);
 	
 	@include breakpoint_mixin(medium){
-		height:112px;
+		height:85px;
+	}
+	
+	@include breakpoint_mixin(large){
+		height:154px;
 	}
 	
 	&.sticky {
@@ -231,15 +234,23 @@ nav{
 	position:fixed;
 	z-index:52;
 	width: $full100;
-	text-align:center;
+	
 	
 	@include transition_mixin(500ms);
+	
+	@include breakpoint_mixin(medium){
+		text-align:center;
+	}
 	
 	/*generally the top level item within the 'nav' tag*/
 	ul{
 		list-style-type: none;
 		margin: 0px;
 		padding: 0px;
+		
+		@include breakpoint_mixin(large){
+			margin-top:42px;
+		}
 		
 		li{
 			display:inline-block;
@@ -257,8 +268,16 @@ nav{
 				}
 			}
 			
-			&.logo_link a{
-				color: transparent;
+			&.logo_link{
+				margin-left: calc(50% - 64px);
+				
+				@include breakpoint_mixin(medium){
+					margin-left: initial;
+				}
+				
+				a{
+					color: transparent;
+				}
 			}
 		}
 	}
@@ -334,11 +353,25 @@ nav{
 	&.sticky {
 		height: 57px;
 		padding-top:2px;
+		
+ 		ul{
+			@include breakpoint_mixin(large){
+				margin-top:0px;
+			}
+		}
     	
     	a{
     		img, & object{
     			width: 90px;
 				height: 45px;
+    		}
+    	}
+    	
+    	.logo_link{
+    		margin-left: calc(50% - 82px);
+    		
+    		@include breakpoint_mixin(medium){
+    			margin-left: initial;
     		}
     	}
 	}
@@ -403,32 +436,80 @@ nav{
 	}
 }/*end of 'nav' */
 
+#locationbar{
+	background-color: rgba(115, 34, 130, 0);
+	width:100%;
+	height:1px;
+	overflow:hidden;
+	position:absolute;
+	//display: none;
+	text-align:left;
+	
+	@include transition_mixin(500ms);
+	
+	@include breakpoint_mixin(medium){
+		height:42px;
+	}
+	
+	@include breakpoint_mixin(large){
+		background-color: rgba(115, 34, 130, 1);
+	}
+}
+
+.locabar-tab.locabar-tab-fdx-cont{
+	display: inline-block;
+	padding: 7px 5px 4px 5px;
+	margin-top: 6px;
+	background-color: rgba(white, 0.4);
+	color: #6AAA6D;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 23px;
+	margin-left:20px;
+	
+	&:hover{
+		background-color: rgba(white, 0.8);
+	}
+	
+	.locabar-tab-fdx {
+		background-image: url('/media/layout/nav/globalnav/fdx/logo_purple_small.png');
+		background-repeat: no-repeat;
+		height: 23px;
+		width: 100px;
+		display: inline-block;
+	}
+}
+
+.sticky #locationbar{
+	height:1px;
+}
+
 section#section_slideshow{
 	width:$full100;
 	/*height: 68vw;*/
 	max-height: 100vh;
-	
-	
-	
+
 	background-size: $full100;
 	background-repeat: no-repeat;
 	
 	/*display:none;*/
 	
 	@include breakpoint_mixin(medium){
-		/*height: 68vw;*/
+		height: 68vw;
 	}
 
 	#carousel_1 {
 		display:none;
-		text-align: center;
-
 		height: inherit;
 		max-height: inherit;
 		
+		@include breakpoint_mixin(medium){
+			text-align: center;
+		}
+		
 		.slidesjs-container {
 			margin-bottom:10px;
-			background-color:#B4A8A9;
+			background-color:black;
 			
 			/*
 			height: calc(100vw / 1.4769);
@@ -440,13 +521,13 @@ section#section_slideshow{
 		.slidesjs-slide{
 			margin:0px;
 			
-			background-color: #B4A8A9;
+			background-color: #222;
 			height:100%;
 			
 			img{
 				width:100%;
-				/*height:auto;*/
-				height:100%;
+				height:auto;
+				/*height:100%;*/
 				
 				/*mix-blend-mode: multiply;*/
 			}
@@ -455,6 +536,8 @@ section#section_slideshow{
 		.slidesjs-pagination{
 			/*top:-75px;*/
 			
+			left: calc(50% - 27px);
+			
 			top: calc(50vw);
 			position: absolute;
 			padding-left: 0px;
@@ -462,6 +545,12 @@ section#section_slideshow{
 			@include breakpoint_mixin(medium){
 				position: relative;
 				top:-75px;
+				
+				left: initial;
+			}
+			
+			@include breakpoint_mixin(large){
+				left: 25px;
 			}
 			
 			a{
@@ -509,8 +598,8 @@ section#section_slideshow{
 		top: -120px;*/
 		
 		position: absolute;
-		top: 40vw;
-	    left: calc(50% - 90px);
+		top: 30vw;
+	    left: calc(50% - 80px);
 	    
 	    
 	    z-index: 10;
@@ -537,12 +626,16 @@ section#section_slideshow{
 		position: absolute;
 		top: 60vw;
 		left: calc(100% - 125px);
-	    z-index: 10;
+		z-index: 10;
+	    
+		display:none;
 	    
 	    @include breakpoint_mixin(medium){
 	    	top: -120px;
 	    	position: relative;
 	    	left: calc(100% - 300px);
+	    	
+	    	display:initial;
 	    }
 
 		@include breakpoint_mixin(large){
@@ -572,7 +665,7 @@ section#section_Get_Foodkick{
 	}
 	
 	h1{
-		font-size:2.5em;
+		font-size:2em;
 		margin-bottom:2px;
 		
 		@include breakpoint_mixin(medium){
@@ -586,7 +679,6 @@ section#section_Get_Foodkick{
 		}
 		
 		span{
-			display:block;
 			margin:0px;
 			line-height:14px;
 			
@@ -708,6 +800,15 @@ section#section_Get_Foodkick{
 		form{
 			text-align:center;
 			
+			@include breakpoint_mixin(medium){
+				padding-right:20px;
+				padding-bottom: 50px;
+			}
+			@include breakpoint_mixin(large){
+				padding-right:initial;
+				padding-bottom:initial;
+			}
+			
 			input{
 				height:1.75em;
 				font-size:1.5em;
@@ -763,31 +864,31 @@ section#section_Get_Foodkick{
 			
 			button{
 				/*clear:both;*/
-				font-size:1.5em;
+				//font-size:1.5em;
 				/*height:5em;*/
 				margin:auto;
 				margin-top:15px;
 				display:block;
 				background-color:#262626;
 				border:none;
-				padding: 12px;
+				//padding: 12px;
 				color: white;
 				text-transform: uppercase;
-				width:8em;
+				//width:8em;
 				
 				@include breakpoint_mixin(medium){
 					margin-top:5px;
-					font-size:1em;
-					padding: 6px;
+					//font-size:1em;
+					//padding: 6px;
 				}
 				@include breakpoint_mixin(large){
-					font-size:1.25em;
-					padding: 9px;
+					//font-size:1.25em;
+					//padding: 9px;
 				}
 				@include breakpoint_mixin(1000px){
 					margin-top:15px;
-					font-size:1.5em;
-					padding: 12px;
+					//font-size:1.5em;
+					//padding: 12px;
 				}
 			}
 		}
@@ -876,9 +977,15 @@ section#section_How_it_works{
 		figcaption{
 			color: $main_purple;
 			min-width:250px;
-			
+			padding-left:20px;
+			padding-right:20px;
 			
 			@include breakpoint_mixin(medium){
+				padding-left:initial;
+				padding-right:initial;
+			}
+			
+			@include breakpoint_mixin(large){
 				min-width:305px;
 				float:left;
 				
@@ -1305,7 +1412,7 @@ section.forgot_password_section{
 }
 
 section.section_plain_copy{
-	margin: 150px 5% 100px 5%;
+	margin: 230px 5% 100px 5%;
 	
 	h1{
 		margin:auto;
@@ -1406,8 +1513,14 @@ footer{
 	section#footer_disclaimer{
 		text-transform: initial;
 		margin-bottom:20px;
-	    padding-left: 3%;
-	    padding-right: 3%;
+		padding-left: 3%;
+		padding-right: 3%;
+	    
+		font-size:0.66em;
+	    
+		@include breakpoint_mixin(medium){
+			font-size:initial;
+		}
 		
 		span{
 			color: #0BF;
@@ -1491,11 +1604,12 @@ footer{
 				
 				img{
 					width:100%;
+					display:none;
 				}
 			}
 			
 			a{
-				color:white;
+				color:#0BF;
 				text-decoration:none;
 			}
 			
@@ -1506,19 +1620,34 @@ footer{
 	}
 }
 
+form button, .download_button{
+	width: 137px;
+	padding:10px;
+	font-size:13.3px;
+	cursor: pointer;
+	
+	@include breakpoint_mixin(large){
+		width:277px;
+		padding-top:32px;
+		padding-bottom:32px;
+	}
+}
+
 .download_button{
-	width: 170px;
+	//width: 170px;
+
 	/*height: 45px;*/
-	padding-top:20px;
-	padding-bottom:20px;
+	/*padding-top:20px;
+	padding-bottom:20px;*/
+
 	margin-top:25px;
 	margin-bottom:25px;
 	border:none;
 	text-transform:uppercase;
 	font-weight:bold;
-	cursor: pointer;
+
 	display:inline-block;
-	font-size:13.3px;
+
 	text-align: center;
 	text-decoration: none;
 	font-family: $GraphikApp_r_n;
@@ -1535,7 +1664,7 @@ footer{
 	&.white{
 		background-color:#EEE;
 		color:#2D2E37;
-		font-family: '#{$GraphikApp_s_n}';
+		//font-family: '#{$GraphikApp_s_n}';
 		
 		&:hover{
 			background-color:#FFF;
@@ -1544,7 +1673,6 @@ footer{
 	}
 
 	@include breakpoint_mixin(large){
-		width:277px;
 		/*height:80px;*/
 		
 		padding-top:32px;

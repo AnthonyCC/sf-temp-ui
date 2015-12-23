@@ -19,7 +19,7 @@
 		
 			<section>
 				<article>
-					<h2>Let's make this thing happen with</h2>
+					<h2>Let&rsquo;s make this thing happen with</h2>
 					<h1>30 days of <br/> FREE delivery.</h1>
 
 					<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
@@ -119,7 +119,6 @@
 		
 		<a name="Featured_Food" id="Featured_Food" class="fk_anchor"></a>
 		<section id="section_Whats_Good" class="main_section">
-			 
 			<div class="container">
 				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good">
 					<script>
@@ -135,19 +134,6 @@
 					</script>
 				</div>
 			</div>
-			
-			<!--  
-			<div class="container">
-				<script>
-				OAS_AD('FKMiddle1');
-				</script>
-			</div>
-			<div class="container">
-				<script>
-				OAS_AD('FKMiddle2');
-				</script>
-			</div>
-			-->
 		</section>
 		
 		<a name="FOODKICK" id="FOODKICK" class="fk_anchor"></a>
@@ -203,7 +189,6 @@
 			</figure>
 		</section>
 	</tmpl:put>
-	
 	<tmpl:put name='special_disclaimer'>
 		*This Offer is for free delivery on qualifying orders for a thirty (30) day period. Offer applies to first-time customers only. Free delivery means <span>no delivery or service fees</span>. <span>Eligible orders</span>
 must (a) exceed minimum purchase requirements before taxes & fees, (b) be within eligible <span>delivery areas</span>, and (c) have a delivery window greater than one (1) hour. Delivery is subject to

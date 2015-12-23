@@ -3,6 +3,8 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   "use strict";
+  
+  alert("do you like testing with vinegar?");
 
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
@@ -46,12 +48,25 @@ var FreshDirect = FreshDirect || {};
         }
 
         if ($('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked') || $('[data-component="menubox"][data-allselected]').size() > 0) {
-          result.all = true;
+          console.log("barkhan phasers");
+
+          //console.log( $('[data-component="menuitem"][data-urlparameter="all"] input').prop('checked').val() );
+
+          //name="popup_menuBox_pfg_pan"
+
+          console.log( $( "input[name*='popup_menuBox_pfg_pan']" ).val() );
+
+          //result.all = true;
+          result.all = false;
         }
 
         if (!result.id && idboxes.size()) {
+          alert("razor gator");
+
           result.id = idboxes.last().data('id');
         }
+        
+        console.log( result );
 
         return result;
       }
@@ -60,6 +75,8 @@ var FreshDirect = FreshDirect || {};
       value:function(id){
         // set id
         this.id = id;
+
+        alert("I am the golden god, " + id);
 
         // reset 'all' setting
         $('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked', null);
@@ -73,12 +90,16 @@ var FreshDirect = FreshDirect || {};
     },
     resetFilters:{
       value:function(){
+        alert("blast in the future");
+
         $('[data-boxtype="FILTER"] input').attr('checked', null);
         if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
       }
     },
     removeFilter:{
       value:function(parent, id){
+        alert("removeFilter");
+
         $('[data-boxtype="FILTER"][data-filter="'+parent+'"] input[value="'+id+'"]').attr('checked', null);
       }
     },
@@ -89,9 +110,13 @@ var FreshDirect = FreshDirect || {};
             parent = clicked.parents('[data-component="menu"]'),
             menubox = clicked.parents('[data-component="menubox"]');
 
+        alert("can you handle the click?");
+
         if (clicked.hasClass('disabled')) {
           return;
         }
+        
+        alert("youre the one whose really a loser");
 
         // reset filters and sorter if top level category selected
         if (menubox.data('boxtype') === 'CATEGORY') {
@@ -133,6 +158,9 @@ var FreshDirect = FreshDirect || {};
             menubox = $('[data-component="menubox"][data-id="'+itemlist.data('menuitemlist')+'"]'),
             menu = menubox.parents('[data-component="menu"]'),
             id = clicked.data('urlparameter');
+
+        alert("ooooh, slow burn");
+
         if (clicked.hasClass('disabled')) {
           return;
         }

@@ -22,6 +22,10 @@
 	<body>
 		<header></header>
 		<nav>
+			<div id="locationbar">
+				<a href="/" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+			</div>
+		
 			<ul>
 				<li class="mobile mobile_dropdown_master">
 					<a href="#" class="mobile_link" id="mobile_link_home">
@@ -33,6 +37,10 @@
 						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->
 						<li><a href="about_us.jsp">About Us</a></li>
 						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
+						
+						<li>
+							<a href="/" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+						</li>
 					</ul>
 				</li>
 			
