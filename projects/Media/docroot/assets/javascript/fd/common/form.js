@@ -645,7 +645,7 @@ var FreshDirect = FreshDirect || {};
         $field = $(field),
         apt = $field.val();
 
-    if (apt.length > 20 ) {
+    if (apt!==null && apt!=="" && apt.length > 20 ) {
       errors = addError(errors, field, 'Please provide valid apartment!');
     }
 
@@ -658,12 +658,13 @@ var FreshDirect = FreshDirect || {};
         $field = $(field),
         address1 = $field.val();
 
-    if (address1.length > 50 ) {
+    if (address1!==null && address1!=="" && address1.length > 50 ) {
       errors = addError(errors, field, 'Please provide valid street address!');
     }
 
     return errors;
   });
+
 
   // default formatters
 

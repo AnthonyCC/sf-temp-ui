@@ -142,6 +142,15 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		result.addError("".equals(this.address.getAddress1()), EnumUserInfoName.DLV_ADDRESS_1.getCode(), "required");
 		result.addError("".equals(this.address.getCity()), EnumUserInfoName.DLV_CITY.getCode(), "required");
 		result.addError("".equals(this.address.getState()), EnumUserInfoName.DLV_STATE.getCode(), "required");
+		if(this.address.getApartment()!=null && this.address.getApartment()!="" && this.address.getApartment().length()>20)
+		{
+			result.addError(true, EnumUserInfoName.DLV_APARTMENT.getCode(), SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER);
+		}
+		
+		if(this.address.getAddress1()!=null && this.address.getAddress1()!="" && this.address.getAddress1().length()>50)
+		{
+			result.addError(true, EnumUserInfoName.DLV_APARTMENT.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
+		}
 		result.addError(
 			!AddressUtil.validateState(this.address.getState()),
 			EnumUserInfoName.DLV_STATE.getCode(),

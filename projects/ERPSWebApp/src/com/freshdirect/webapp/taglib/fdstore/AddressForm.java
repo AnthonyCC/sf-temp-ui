@@ -226,11 +226,11 @@ public class AddressForm implements WebFormI { //, AddressName
         } else {
 			result.addError(!AddressUtil.validateState(state), EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
         }
-        if(apt.length()>20)
+        if(apt!=null && apt!="" && apt.length()>20)
     	{
     		result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER));
     	}
-    	if(street1.length()>50)
+    	if(street1!=null && street1!="" && street1.length()>50)
     	{
     		result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS));
     	}
