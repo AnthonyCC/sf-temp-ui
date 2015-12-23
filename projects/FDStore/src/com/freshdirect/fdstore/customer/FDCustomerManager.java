@@ -4716,12 +4716,13 @@ public class FDCustomerManager {
 	
 	return addOnOrderCount;
 	}
-		public static void reSendInvoiceEmail(String OrderId) throws FDResourceException {
+		public static boolean reSendInvoiceEmail(String OrderId) throws FDResourceException {
 
 		lookupManagerHome();
+		
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.reSendInvoiceEmail(OrderId);
+			 return sb.reSendInvoiceEmail(OrderId);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();

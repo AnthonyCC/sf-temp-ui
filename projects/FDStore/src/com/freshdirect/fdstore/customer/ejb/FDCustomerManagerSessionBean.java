@@ -8014,9 +8014,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return addOnOrderCount ;
 	}
 	
-	public void reSendInvoiceEmail(String orderId )throws FDResourceException{
-		
+	public boolean reSendInvoiceEmail(String orderId )throws FDResourceException{
+		LOGGER.info("reSendInvoiceEmail checking for this orderID... "+orderId);
 			MailerGatewaySB mailBean;
+			boolean reSendInvoiceEmail=false;
 	try {
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(orderId));
 			
@@ -8033,15 +8034,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
-			
 			mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			reSendInvoiceEmail=true;
+		
 		}
+	
 		catch (Exception e) {
 			// TODO Auto-generated catch block
+			LOGGER.info("reSendInvoiceEmail  FAILED... "+orderId);
 			throw new FDResourceException(e);
 		}
-		
+		return reSendInvoiceEmail;
 	}
 	
 	private MailerGatewayHome getMailerGatewayHome() {

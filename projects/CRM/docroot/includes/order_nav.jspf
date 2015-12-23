@@ -24,6 +24,15 @@
 <%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
 <%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter"%>
  <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
+ 
+ <!--jQuery dependencies-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<!--ParamQuery Grid files-->
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/hot-sneaks/jquery-ui.css" />
+<link rel="stylesheet" href="/assets/javascript/paramquery-2.0.3/pqgrid.min.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/humanity/jquery-ui.css" />
+ 
 <%@ taglib uri='crm' prefix='crm' %>
 
 <%
@@ -135,7 +144,13 @@ boolean hasCase = false;
 				<% if (o_details) { %>
 					Details <span class="order_detail">(<a href="javascript:pop('/main/order_details.jsp?orderId=<%= nav_orderId %>&for=print','600','680')" class="order_detail">Print Version</a>)</span>
 				<% } if (fdOrderAdapter!=null && fdOrderAdapter.hasInvoice()) { %>
-						<span>(<a href="javascript:reSendInvoiceEmail('<%=nav_orderId%>')">ReSend Invoice Email</a>)</span>
+						<span>(<a href="javascript:reSendInvoiceEmail('<%=nav_orderId%>')">Resend Invoice Email</a>)</span>
+						<div hidden="true" id="reSendInvoice" style="display: none;color:red">
+    							Confirmation Resent
+							</div>
+							<div hidden="true" id="reSendInvoice_fail" style="display: none;color:red">
+    							Action Failed
+							</div>
 					<% } else if (o_transactions) { %>
 					Transactions
 				<% } else if (o_reverse_credits) { %>
@@ -337,12 +352,52 @@ boolean hasCase = false;
 </crm:ResubmitOrderController>
 <script>
 
-function reSendInvoiceEmail(order) {
-		 var ajaxRequest = new Ajax.Request('/api/ReSendEmail.jsp', {
-			method:       'get', 
-		    parameters:   {orderId: order}, 
-		    asynchronous: true,
-		});
 
-	}
+function reSendInvoiceEmail(order) {
+		$.ajax({
+		cache : false,
+		type : "POST",
+		url : "/api/ReSendEmail.jsp",
+		location : "local",
+		sorting : "local",
+		dataType : "JSON",
+		curPage : 1,
+		data : {
+			orderId : order,
+		},
+		
+		 complete : function(response) {
+			var res = response.result;
+			var data = jQuery.parseJSON(response.responseText);
+			
+			
+			 if(data.result != null && data.result=="Y"){
+				 reSendInvoiceEmailPopup("reSendInvoice");
+	        	}
+			 else{
+				 reSendInvoiceEmailPopup("reSendInvoice_fail");
+				 
+			 }
+			
+        	}
+		  
+
+	});
+	
+}
+
+function reSendInvoiceEmailPopup(dialogId) {
+	$jq(function() {
+		$jq("#"+dialogId).dialog({
+			title : "Resend Invoice Email",
+			modal: true,
+			buttons : {
+				Close : function() {
+					$jq(this).dialog('close');
+				}
+			}
+		});
+	});
+}
+	
 </script>
