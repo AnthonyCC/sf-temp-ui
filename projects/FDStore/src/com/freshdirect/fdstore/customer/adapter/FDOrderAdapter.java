@@ -18,6 +18,8 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -246,6 +248,11 @@ public class FDOrderAdapter implements FDOrderI {
 			cartLine.setCouponDiscount(ol.getCouponDiscount());
 			cartLine.setEStoreId(erpOrder.geteStoreId());
 			cartLine.getUserContext().setStoreContext(StoreContext.createStoreContext(erpOrder.geteStoreId()));
+			if(!ol.getSalesOrg().equals(dpi.getSalesOrg())) {
+				//--Hack for APPDEV-4726 FoodKick pricing errors in order receipt and order details				
+				ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), ol.getSalesOrg(), ol.getDistChannel()));
+				cartLine.getUserContext().setPricingContext(new PricingContext(z));
+			}
 			
 			//If gift card sku load the fixed frice into cartline.
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
