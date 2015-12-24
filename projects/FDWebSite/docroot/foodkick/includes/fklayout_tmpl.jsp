@@ -106,9 +106,9 @@
 					<h4>Hang With Us</h4>
 					<hr/>
 					<ul>
-						<li><a style="<%=svg_bg("footer/twitter.svg") %>;" href="http://www.twitter.com/FreshDirect">&nbsp;</a></li>
+						<li><a style="<%=svg_bg("footer/twitter.svg") %>;" href="https://twitter.com/FoodKick">&nbsp;</a></li>
 						<li><a style="<%=svg_bg("footer/instagram.svg") %>;" href="https://instagram.com/foodkick/">&nbsp;</a></li>
-						<li><a style="<%=svg_bg("footer/facebook.svg") %>;" href="http://www.facebook.com/FreshDirect">&nbsp;</a></li>
+						<li><a style="<%=svg_bg("footer/facebook.svg") %>;" href="https://www.facebook.com/FoodKick/">&nbsp;</a></li>
 						<li class="last"><a style="<%=svg_bg("footer/snapchat.svg") %>;" href="#footer_anchor">&nbsp;</a></li>
 					</ul>
 					
