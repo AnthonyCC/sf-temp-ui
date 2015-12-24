@@ -139,6 +139,6 @@ public interface ILogisticsService {
 
 	DeliveryZones getAllActiveZones() throws FDLogisticsServiceException;
 
-	Result isDispatched(String orderId) throws FDLogisticsServiceException;
+	Result isDispatched(String orderId, String companyCode) throws FDLogisticsServiceException;
 	
 }

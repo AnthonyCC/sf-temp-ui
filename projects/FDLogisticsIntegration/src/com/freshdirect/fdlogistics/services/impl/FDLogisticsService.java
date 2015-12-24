@@ -571,8 +571,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	}
 	
 	@Override
-	public Result isDispatched(String orderId) throws FDLogisticsServiceException{
-		Result response = getData(null, getEndPoint(STATUS_FDX_ORDER_DISPATCH_API+orderId), Result.class);
+	public Result isDispatched(String orderId, String companyCode) throws FDLogisticsServiceException{
+		Result response = getData(null, isDispatchedEndPoint(STATUS_FDX_ORDER_DISPATCH_API+orderId, companyCode), Result.class);
 		return response;
 	}
 	

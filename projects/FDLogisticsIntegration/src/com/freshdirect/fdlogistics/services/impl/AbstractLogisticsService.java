@@ -135,4 +135,11 @@ public abstract class AbstractLogisticsService {
 												+ FDStoreProperties.getLogisticsCompanyCode() 
 													+ path;
 	}
+	
+	public String isDispatchedEndPoint(String path, String companyCode){
+		return FDStoreProperties.getLogisticsAPIUrl()	+ API_CONTEXT 
+				+ companyCode
+					+ path;
+		
+	}
 }

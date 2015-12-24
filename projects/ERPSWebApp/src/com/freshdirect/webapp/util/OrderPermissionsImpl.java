@@ -127,10 +127,10 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 		return EnumSaleStatus.AUTHORIZATION_FAILED.equals(status)?true:false;
 	}
 	
-	public boolean isDispatched(String OrderId) {
+	public boolean isDispatched(String OrderId, String eStoreId) {
 		boolean isDispatched=false;
 		try {
-			isDispatched = FDDeliveryManager.getInstance().isDispatched(OrderId);
+			isDispatched = FDDeliveryManager.getInstance().isDispatched(OrderId, eStoreId);
 			return !isDispatched && (EnumSaleStatus.INPROCESS.equals(status) || EnumSaleStatus.ENROUTE.equals(status));
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block

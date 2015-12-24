@@ -1250,11 +1250,11 @@ public class FDDeliveryManager {
 	}
 	
 	
-public boolean isDispatched(String orderId) throws FDResourceException {
+public boolean isDispatched(String orderId, String eStoreId) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			Result result = logisticsService.isDispatched(orderId);
+			Result result = logisticsService.isDispatched(orderId, eStoreId.toLowerCase());
 			LogisticsDataDecoder.decodeResult(result);
 			if(EnumApplicationException.FinderException.getValue() == result.getErrorCode()){
 				return false;
