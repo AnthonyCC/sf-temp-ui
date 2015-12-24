@@ -875,6 +875,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	
 	protected void performChangeEmailPreference(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		boolean receiveNews = "yes".equalsIgnoreCase(request.getParameter("receive_mail"));
 		boolean plainTextEmail = request.getParameter("isSendPlainTextEmail") != null;
 		boolean sendOptinNewsletter = request.getParameter("isSendOptinNewsletter") != null;
@@ -900,6 +902,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		LOGGER.debug("Updating customer email preference");
 		FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+		//To persist store specific 'email optin'.
+		FDCustomerManager.storeEmailPreferenceFlag(identity.getFDCustomerPK(), receiveNews?"X":"", user.getUserContext().getStoreContext().getEStoreId());
 		LOGGER.debug("Customer email preference updated");
 
 	}

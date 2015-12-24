@@ -27,7 +27,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 		return new CrmCustomerInfo(
 			customer.getUserId(),
 			fdCustomer.getPasswordHint(),
-			customer.getCustomerInfo().isReceiveNewsletter(),
+			fdCustomer.getCustomerEStoreModel().getEmailOptIn(),//customer.getCustomerInfo().isReceiveNewsletter(),
 			customer.getCustomerInfo().isEmailPlaintext(),
 			customer.getCustomerInfo().isReceiveOptinNewsletter(),
 			fdCustomer.getCustomerSmsPreferenceModel().getMobileNumber(),
@@ -46,7 +46,8 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			fdCustomer.getCustomerSmsPreferenceModel().getFdxdeliveryNotification(),
 			fdCustomer.getCustomerSmsPreferenceModel().getFdxOffersNotification(),
 			fdCustomer.getCustomerSmsPreferenceModel().getFdxPartnerMessages(),
-			fdCustomer.getCustomerSmsPreferenceModel());
+			fdCustomer.getCustomerSmsPreferenceModel(),
+			fdCustomer.getCustomerEStoreModel().getFdxEmailOptIn());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
@@ -59,7 +60,8 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 		private String userId;
 		private String password;
 		private String passwordHint;
-		private boolean recieveNews;
+		private boolean recieveNews;//email optin for FD
+		private boolean receiveFdxNews;//email optin for FDX
 		private boolean textOnlyEmail;
 		private boolean receiveOptinNewsletter;
 		private PhoneNumber mobileNumber;
@@ -152,7 +154,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, String orderNotices, String orderExceptions,
 					String offers, String partnerMessages, boolean goGreen, String mobilePrefs,PhoneNumber fdxMobileNumber,
 					String fdxOrderNotices, String fdxOrderExceptions, String fdxOffers, boolean fdxDeliveryNotification,
-					boolean fdxOffersNotification, String fdxPartnerMessages, FDCustomerEStoreModel customerSmsPreferenceModel) {
+					boolean fdxOffersNotification, String fdxPartnerMessages, FDCustomerEStoreModel customerSmsPreferenceModel,boolean receiveFdxNews) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
@@ -176,6 +178,7 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 			this.mobilePrefs = mobilePrefs;
 			this.fdxPartnerMessages=fdxPartnerMessages;
 			this.customerSmsPreferenceModel=customerSmsPreferenceModel;
+			this.receiveFdxNews =receiveFdxNews;
 		}
 
 		public String getOrderNotices() {
@@ -289,6 +292,14 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag<CrmCustomerInfoI> {
 
 		public void setMobilePreference(String mobilePrefs) {
 			this.mobilePrefs = mobilePrefs;
+		}
+
+		public boolean isReceiveFdxNews() {
+			return receiveFdxNews;
+		}
+
+		public void setReceiveFdxNews(boolean receiveFdxNews) {
+			this.receiveFdxNews = receiveFdxNews;
 		}
 		
 	}

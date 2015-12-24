@@ -610,8 +610,15 @@ public class SubmitOrderAction extends WebActionSupport {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
 				info.setSource(transactionSource);
-				
+				boolean isFirstOrder = false;
+				if(user.getOrderHistory().getTotalOrderCount() <=0){
+					isFirstOrder= true;
+				}
 				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status ,isFriendReferred);
+			    //[APPDEV-4574]-Auto optin for emails, if its customer's first order.
+				if(isFirstOrder){
+					FDCustomerManager.storeEmailPreferenceFlag(user.getIdentity().getFDCustomerPK(), "X",user.getUserContext().getStoreContext().getEStoreId());
+				}
 			}
 
 

@@ -64,12 +64,13 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(this.getParentPK());
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC) values (?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN) values (?,?,?,?,?,?)");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, model.geteStoreId().getContentId());
 		ps.setString(3, model.getDefaultShipToAddressPK());
 		ps.setString(4, model.getDefaultPaymentMethodPK());
 		ps.setString(5, model.getDefaultDepotLocationPK());
+		ps.setString(6, model.getEmailOptIn()?"X":"");
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -87,7 +88,7 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public void load(Connection conn) throws SQLException {
 		EnumEStoreId eStoreId =getCustomerEStoreId();
-		PreparedStatement ps = conn.prepareStatement("SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, eStoreId.getContentId());
 		ResultSet rs = ps.executeQuery();
@@ -97,6 +98,18 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 			model.setDefaultShipToAddressPK(rs.getString("DEFAULT_SHIPTO"));
 			model.setDefaultPaymentMethodPK(rs.getString("DEFAULT_PAYMENT"));
 			model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));			
+			model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
+			if(EnumEStoreId.FDX.equals(eStoreId)){
+				model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
+			}else{
+				ps = conn.prepareStatement("SELECT EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+				ps.setString(1, this.getParentPK().getId());
+				ps.setString(2, EnumEStoreId.FDX.getContentId());
+				rs = ps.executeQuery();
+				if(rs.next()){
+					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
+				}
+			}
 		}
 		rs.close();
 		ps.close();

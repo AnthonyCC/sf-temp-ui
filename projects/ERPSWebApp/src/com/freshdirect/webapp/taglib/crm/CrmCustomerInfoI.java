@@ -73,5 +73,9 @@ public interface CrmCustomerInfoI {
 
 	public void setFdxOffersNotification(boolean fdxOffersNotification);
 	
+	public boolean isReceiveFdxNews() ;
+
+	public void setReceiveFdxNews(boolean receiveFdxNews) ;
+	
 	
 }

@@ -185,6 +185,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		
 		this.customerInfo.setPasswordHint(NVL.apply(request.getParameter("passwordHint"), "").trim());
 		this.customerInfo.setRecieveFdNews(request.getParameter("recieveFdNews") != null);
+		this.customerInfo.setReceiveFdxNews(request.getParameter("recieveFdxNews") != null);
 		this.customerInfo.setTextOnlyEmail(request.getParameter("textOnlyEmail") != null);
 		this.customerInfo.setReceiveOptinNewsletter(request.getParameter("receiveOptinNewsletter") != null);
 		this.customerInfo.setMobileNumber(new PhoneNumber(NVL.apply(request.getParameter("mobile_number"), "")));
@@ -241,8 +242,9 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		FDUserI user = this.getUser();		
 		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(user.getIdentity());
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
-		FDCustomerModel FDCustomerModel=FDCustomerFactory.getFDCustomer(user.getIdentity());
-		FDCustomerEStoreModel customerSmsPreferenceModel = FDCustomerModel.getCustomerSmsPreferenceModel();
+		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(user.getIdentity());
+		FDCustomerEStoreModel customerSmsPreferenceModel = fdCustomerModel.getCustomerSmsPreferenceModel();
+		FDCustomerEStoreModel fdCustomerEStoreModel = fdCustomerModel.getCustomerEStoreModel();
 		boolean beforeUpdateDelNotif = customerSmsPreferenceModel.getDeliveryNotification();
 		boolean beforeUpdateOfferNotif = customerSmsPreferenceModel.getDeliveryNotification();
 		String existingMobNum= customerSmsPreferenceModel.getMobileNumber()!=null?customerSmsPreferenceModel.getMobileNumber().getPhone():"N/A";
@@ -410,7 +412,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				throw new FDResourceException();
 			}
 		}
-		if (customerInfo.isRecieveFdNews() != info.isReceiveNewsletter()
+		if (customerInfo.isRecieveFdNews() != fdCustomerEStoreModel.getEmailOptIn()//info.isReceiveNewsletter()
 				|| customerInfo.isTextOnlyEmail() != info.isEmailPlaintext()
 				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
 				|| this.customerInfo.getMobileNumber() != null 
@@ -436,6 +438,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setGoGreen(this.customerInfo.isGoGreen());
 			FDCustomerManager.updateCustomerInfo(aInfo, info);
 			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
+			FDCustomerManager.storeEmailPreferenceFlag(user.getIdentity().getFDCustomerPK(), this.customerInfo.isRecieveFdNews()?"X":"", EnumEStoreId.FD);
 		}
 		
 		//FDX SMS Alert	
@@ -501,7 +504,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				throw new FDResourceException();
 			}
 		}
-		if (customerInfo.isRecieveFdNews() != info.isReceiveNewsletter()
+		if (customerInfo.isReceiveFdxNews() != fdCustomerEStoreModel.getFdxEmailOptIn()//info.isReceiveNewsletter()
 				|| customerInfo.isTextOnlyEmail() != info.isEmailPlaintext()
 				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
 				|| this.customerInfo.getFdxMobileNumber() != null 
@@ -529,6 +532,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					customerSmsPreferenceModel.getFdxOrderExceptions(), customerSmsPreferenceModel.getFdxOffers(), "N",	new Date(), EnumEStoreId.FDX.toString());
 			}
 			FDCustomerManager.setFdxSmsPreferences(customerSmsPreferenceModel, user.getIdentity().getErpCustomerPK());
+			FDCustomerManager.storeEmailPreferenceFlag(user.getIdentity().getFDCustomerPK(), this.customerInfo.isReceiveFdxNews()?"X":"", EnumEStoreId.FDX);
 		}
 		
 		

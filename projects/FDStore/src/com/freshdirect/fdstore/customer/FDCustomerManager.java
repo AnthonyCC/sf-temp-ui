@@ -4751,6 +4751,19 @@ public class FDCustomerManager {
 		
 		}
 	
-	
+			
+		public static void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)throws FDResourceException{
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				 sb.storeEmailPreferenceFlag(fdCustomerId,flag, eStoreId);
+			}catch (RemoteException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			} catch (CreateException e) {
+				invalidateManagerHome();
+				throw new FDResourceException(e, "Error creating session bean");
+			}
+		}
 	
 }

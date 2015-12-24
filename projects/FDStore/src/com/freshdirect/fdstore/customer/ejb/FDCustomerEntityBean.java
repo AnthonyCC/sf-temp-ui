@@ -337,6 +337,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		
 		this.customerEStore.setParentPK(this.getPK());
 		replaceCustomerEStoreModel();
+		setEmailPreferenceFlag(true);//[APPDEV-4574]-Default 'emil optin' is true for the store the customer is registering from.
 		this.customerEStore.create(conn);
 		this.customerSmsPreferences.setParentPK(this.getPK());
 		this.customerSmsPreferences.load(conn);
@@ -356,6 +357,14 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		customerEStoreModel.setDefaultShipToAddressPK(this.getDefaultShipToAddressPK());
 		customerEStoreModel.setDefaultPaymentMethodPK(this.getDefaultPaymentMethodPK());
 		customerEStoreModel.setDefaultDepotLocationPK(this.getDefaultDepotLocationPK());
+		customerEStore.setFromModel(customerEStoreModel);
+	}
+	
+	private void setEmailPreferenceFlag(boolean emailOptIn){
+		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
+		if(customerEStoreModel.geteStoreId()==null)
+			customerEStoreModel.seteStoreId(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
+		customerEStoreModel.setEmailOptIn(emailOptIn);
 		customerEStore.setFromModel(customerEStoreModel);
 	}
 

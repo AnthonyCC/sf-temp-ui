@@ -104,6 +104,9 @@
                         <td colspan="2"><input type="checkbox" name="recieveFdNews" <%=customerInfo.isRecieveFdNews() ? "checked" : "" %>> Please include me on FD emails/newsletters</td>
                     </tr>
                     <tr>
+                        <td colspan="2"><input type="checkbox" name="recieveFdxNews" <%=customerInfo.isReceiveFdxNews() ? "checked" : "" %>> Please include me on FDX emails/newsletters</td>
+                    </tr>
+                    <tr>
                         <td colspan="2"><input type="checkbox" name="textOnlyEmail" <%=customerInfo.isTextOnlyEmail() ? "checked" : "" %>> Please send me text-only email</td>
                     </tr>
                     <tr>

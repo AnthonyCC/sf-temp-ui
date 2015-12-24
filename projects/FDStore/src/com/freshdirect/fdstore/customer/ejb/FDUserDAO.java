@@ -918,6 +918,23 @@ public class FDUserDAO {
 		}
 	}
 	
+	public static void storeEmailPreferenceFlag(Connection conn, String fdCustomerId, String flag, EnumEStoreId eStoreId){
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.FDCUSTOMER_ESTORE set EMAIL_OPTIN=? where fdcustomer_id=? and e_store=?");
+			ps.setString(1, flag!=null?flag:null);
+			ps.setString(2, fdCustomerId);
+			ps.setString(3, eStoreId.getContentId());
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating email preferences(CUST.FDCUSTOMER_ESTORE.EMAIL_OPTIN)", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
 	
 	
 	public static void storeAllMobilePreferences(Connection conn, String customerId, String fdCustomerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser, EnumEStoreId eStoreid) {

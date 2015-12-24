@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel"%>
 <%@ page import="java.text.MessageFormat" %>
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*,com.freshdirect.delivery.sms.*,com.freshdirect.sms.*' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
@@ -150,6 +151,7 @@ ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());  
 
 FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+FDCustomerEStoreModel fdCustomerEStore = fdCustomer.getCustomerEStoreModel();
 String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
 lastName = cm.getLastName();
 firstName = cm.getFirstName();
@@ -225,14 +227,14 @@ if (request.getParameter("receive_mail")!=null) {
 if (request.getParameter("displayName")!=null) {
 	displayName = request.getParameter("displayName");
 }
-sendNewsLetter = cm.isReceiveNewsletter()?"yes":"no";
+sendNewsLetter = (null !=fdCustomerEStore && null !=fdCustomerEStore.getEmailOptIn() && fdCustomerEStore.getEmailOptIn())?"yes":"no";//cm.isReceiveNewsletter()?"yes":"no";
 
 sendPlainTextEmail= cm.isEmailPlaintext()?"yes":"no";
 if ("yes".equalsIgnoreCase(sendPlainTextEmail)) {
     sendPlainTextEmail = "checked";
 } else sendPlainTextEmail = "";
 
-sendNewsletter = cm.isReceiveNewsletter() ? "checked" : "";
+sendNewsletter = (null !=fdCustomerEStore && null !=fdCustomerEStore.getEmailOptIn() && fdCustomerEStore.getEmailOptIn())? "checked" : "";//cm.isReceiveNewsletter() ? "checked" : "";
 sendOptinNewsletter = cm.isReceiveOptinNewsletter() ? "checked" : "";
 
 if (request.getParameter(EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()) != null) {

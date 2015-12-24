@@ -8080,5 +8080,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return true; // success
 	}
+	
+	
+	public void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeEmailPreferenceFlag(conn,fdCustomerId,flag, eStoreId );
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		
+		
+	}
 }
 

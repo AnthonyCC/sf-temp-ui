@@ -42,6 +42,8 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean offersNotification;
 	private Boolean fdxOffersNotification;
 	private String crmStore;
+	private Boolean emailOptIn;
+	private Boolean fdxEmailOptIn;
 	
 	
 
@@ -264,6 +266,22 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	 */
 	public void seteStoreId(EnumEStoreId eStoreId) {
 		this.eStoreId = eStoreId;
+	}
+
+	public Boolean getEmailOptIn() {
+		return emailOptIn;
+	}
+
+	public void setEmailOptIn(Boolean emailOptIn) {
+		this.emailOptIn = emailOptIn;
+	}
+
+	public Boolean getFdxEmailOptIn() {
+		return fdxEmailOptIn;
+	}
+
+	public void setFdxEmailOptIn(Boolean fdxEmailOptIn) {
+		this.fdxEmailOptIn = fdxEmailOptIn;
 	}
 	
 	
