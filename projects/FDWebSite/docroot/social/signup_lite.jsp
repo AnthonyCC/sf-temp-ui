@@ -66,6 +66,16 @@
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
+<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+<script type="text/javascript">
+        jQuery(function($jq) { $jq('#password1').pwstrength(); });
+  	 </script>
+
+    <!--  Added for Password Strength Display -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+	<!--  Added for Password Strength Display -->
+
 <script type="text/javascript">
  
 		/* Replace #your_subdomain# by the subdomain of a Site in your OneAll account */    
@@ -120,6 +130,14 @@
 		});
 	
 	</script>
+	
+	<script type="text/javascript" language="javascript">
+	$jq(document).on("click","#password1", function(){
+
+			
+ });
+	</script>
+	
 
 
 
@@ -242,10 +260,42 @@
 						<td style="padding-top: 15px;">
 							<input type="text" name="prevent_autofill" id="prevent_autofill" value="" style="display:none;" />
 							<input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
-							<input class="padding-input-box text11ref inputUser required" type="password" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" autocomplete="off" autocomplete="false">
+							</td>
+					</tr>
+							<tr><td>&nbsp</td>
+					<!--  Added for Password Strength Display -->
+						<td>
+							<div class="container1">		
+							<div class="content-group password">
+							<div class="subgroup">
+								<div class="password-hinter">
+									<div class="password-instructions">
+										<ul>
+											<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
+											<li class="subhead"><strong>Make your password stronger with:</strong></li>
+											<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
+											<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
+											<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
+											<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
+										</ul>
+									</div>
+								</div><!-- // .password-hinter -->
+								<div>
+										<input class="padding-input-box text11ref inputUser required" type="password" data-indicator="pwindicator" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" autocomplete="off" autocomplete="false">
 							<div style="position: relative"><a class="show-password">Show</a></div>
+								</div>
+								<div id="pwindicator">
+									   <div class="bar"></div>
+									   <div class="label"></div>
+								</div>
+								
+							</div><!-- // .subgroup -->			
+							</div><!-- // .content-group -->
+							</div><!-- // .container -->
 						</td>
-					</tr>		
+						<!-- Added for Password Strength Display -->
+					</tr>			
+								
 					<tr>
 						<td></td>
 						<td style="padding-top: 15px;">
@@ -254,16 +304,7 @@
 							</a>
 						</td>
 					</tr>
-					<!-- 
-					<tr>
-								<td></td>
-								<td style="padding-top: 10px;"><a onclick="display();"
-									class="butText" style="font-weight: bold; font-size: 14px;">
-										<input type="submit1" id="emailbtn" maxlength="25" size="19"
-										value="Use E-mail">
-								</a></td>
-							</tr>	
-							 -->
+				
 				</table>
 			</form>							
 		</div>
@@ -287,7 +328,8 @@
 	    	return re.test(email);
 		} 
  );
-	
+ 
+ 
  $jq('#litesignup').validate(
  {
  	
