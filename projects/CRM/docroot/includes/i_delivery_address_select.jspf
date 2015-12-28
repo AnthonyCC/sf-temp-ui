@@ -75,6 +75,12 @@ boolean isDepotLocation = (dlvAddress instanceof ErpDepotAddressModel);
                     <td>Zip&nbsp;</td>
                     <td><%= dlvAddress.getZipCode() %></td>
                 </tr>
+            <%  if ((order.getDeliveryInfo() != null) && (order.getDeliveryInfo().getOrderMobileNumber()!=null) && (!"".equals(order.getDeliveryInfo().getOrderMobileNumber()))) { %>
+                <tr>
+                    <td>Mobile Number&nbsp;</td>
+                    <td><%= order.getDeliveryInfo().getOrderMobileNumber() %></td>
+                </tr>
+            <%  }%>
 				<%if(dlvAddress.getAltContactPhone() != null) {%>
 					<tr>
 						<td>Alt Contact#&nbsp;</td>
