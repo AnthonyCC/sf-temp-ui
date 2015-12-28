@@ -110,13 +110,9 @@ var FreshDirect = FreshDirect || {};
             parent = clicked.parents('[data-component="menu"]'),
             menubox = clicked.parents('[data-component="menubox"]');
 
-        alert("can you handle the click?");
-
         if (clicked.hasClass('disabled')) {
           return;
         }
-        
-        alert("youre the one whose really a loser");
 
         // reset filters and sorter if top level category selected
         if (menubox.data('boxtype') === 'CATEGORY') {
