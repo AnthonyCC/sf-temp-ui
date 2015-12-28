@@ -131,9 +131,9 @@ if(user != null) {
 						<%
 							if (FDStoreProperties.isLightSignupEnabled()) {
 								if ( FDStoreProperties.isSocialLoginEnabled() ) {
-									%><button class="signUpButton locationbar-social-create-account-button cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}) }">Sign up</button><% 
+									%><button class="signUpButton locationbar-social-create-account-button cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}) }">Create Account</button><% 
 							} else {
-								%><button class="signUpButton cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">Sign up</button><%
+								%><button class="signUpButton cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">Create Account</button><%
 								}
 							} else {
 								%><button class="signUpButton cssbutton orange cssbutton-flat" onclick="window.location='/registration/signup.jsp';">Sign up</button><%

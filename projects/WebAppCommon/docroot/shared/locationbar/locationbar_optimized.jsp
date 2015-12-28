@@ -78,7 +78,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) {
 		%>
-		<button id="lsuButton" class="signUpButton">signup</button>
+		<button id="lsuButton" class="signUpButton">create account</button>
 		<script type="text/javascript">
 			$jq('#lsuButton').click(function(e) {
 				e.preventDefault();
@@ -88,7 +88,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		</script>
 		<% 
 	} else { 
-		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">signup</button><% 
+		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">create account</button><% 
 	} 
 %></tmpl:put>
 <%

@@ -376,6 +376,10 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 									</div>
 								</div>
 							<% } %>
+						<% }else{ %>
+								<div class="locabar_addresses-reservation-none">
+									<a href="/help/delivery_info_check_slots.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">View Time Slots</a>
+								</div>
 						<% } %>
 					<% } %>
 				</div>
@@ -493,7 +497,9 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					</fd:GetCart>
 				</div>
 			</div>
-		</div></tmpl:put>
+		</div>
+		<div class="locabar-section side-spacer"></div>
+	</tmpl:put>
 		
 <%-- OUT OF AREA ALERT --%>
 	<% if (user != null && user.getLevel() == FDUserI.GUEST) { %>

@@ -8,7 +8,9 @@
 		font-size: 12px;
 		overflow: visible;
 		z-index: 100;
+		width:100%;
 		min-height: 42px;
+		margin-top: 0px;
 		font-family: Verdana;
 	}
 	#popupcart {
@@ -19,14 +21,21 @@
 		display: none;
 		visibility: hidden;
 	}
+	#newzip{
+		margin-top:7px;
+	}
 	#newziptext {
 		margin: 0;
-		height: 24px;
-		width: 130px;
-		padding: 3px 7px;
-		font-size: 12px;
+		height: 40px;
+		/*width: 130px;*/
+		width:216px;
+		padding: 3px 15px;
+		font-size: 16px;
 		background-color: #eee;
 		margin-right: 6px;
+		border:none;
+		font-size:16px;
+		font-weight:bold;
 	}
 	#newzipgo, #newzipgo:active, #newzipgo:hover,
 	.newzipgo, .newzipgo:active, .newzipgo:hover {
@@ -36,7 +45,7 @@
 	.newzipgo, .newzipgo:active {
 		text-indent: 0;
 		width: 88px;
-		height: 32px;
+		height: 46px;
 		font-size: 13px;
 		font-weight: bold;
 		color: #fff;
@@ -76,17 +85,20 @@
 	}
 	#popupcart .section th>div {
 		padding-left: 0;
-		color: #333;
-		font-size: 11px;
+		color: #595959;
+		font-size: 12px;
+		font-weight: bold;
+		text-transform: capitalize;
+		font-family: Arial Black, Arial, sans-serif;
 	}
 	#popupcart .header {
 		background-color: transparent;
-		color: #333;
+		color: #656565;
 		border-bottom: 1px solid #ccc;
 		border-radius: 0;
 	}
 	#popupcart .header .price {
-		color: #333;
+		color: #656565;
 	}
 	#popupcart table {
 		width: 100%;
@@ -110,7 +122,11 @@
 		width: 100%;
 		padding-right: 0;
 		border: none;
-		height: 1.8em;
+		height: 2.25em;
+		padding-top: 7px;
+		font-size: 16px;
+		font-weight: bold;
+		font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
 	}
 	#popupcart .footer .totalprice {
 		padding-right: 50px;
@@ -175,11 +191,13 @@
 		width: 150px;
 		display: inline-block;
 		position: initial;
+		
 	}
 	#popupcart a.cart {
 		color: #6aa970;
 		width: 150px;
 		right: 200px;
+		text-decoration:underline;
 	}
 	
 	#popupcart a.cart:hover {
@@ -208,19 +226,27 @@
 		margin: 5px 0 0 0px;
 	}
 	#topSearchField {
-		margin: 3px 0 0 0;
-		height: 26px;
+		margin: 0px 0 0 0;
+		height: 34px;
 		padding: 3px 7px;
-		background-color: #eee;
+		background-color: #efefef;
+		border:none;
 		margin-right: 6px;
 		clear: both;
+		font-weight:bold;
+		border-radius: 3px;
 	}
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
 	}
 	
+	.signUpButton{
+		height: 40px;
+		margin-top: -4px;
+	}
+	
 	#login_cont_formContent.locabar_login {
-		color: #333;
+		color: #656565;
 		border-radius: 0;
 		box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.35);
 		padding: 40px;
@@ -327,13 +353,13 @@
 }
 
  #topInputFindButton_fdx {
-	height: 34px;
-	width: 34px;
+	height: 40px;
+	width: 40px;
 	position: absolute;
 	right: 0;
 	display: inline-block;
 	background-position: center;
-	margin-top: 3px;
+	margin-top: 0px;
 	top: 0;
  }
 .locabar-search {
@@ -492,32 +518,38 @@
 #locabar_user {
 	background-color: #fff;
 	box-shadow: -1px 0px 4px 2px #aaa;
-	color: #333;
-	min-width: 250px;
+	color: #656565;
+	min-width: 220px;
 }
 #locabar_user .section-cont {
 	padding: 20px 30px 0 30px;
 }
 #locabar_user .line-divider {
-	background: #ccc;
-	color: #ccc;
+	background: #d2dad2;
+	color: #d2dad2;
 	clear: both;
 	float: none;
 	width: 100%;
-	height: 2px;
-	margin: 0.5em 0;
+	height: 1px;
+	margin: 1em 0 0 0;
 	border: none;
 }
 #locabar_user .section-line {
 	line-height: 2em;
 }
+#locabar_user .section-line, #locabar_user .section-line * {
+	color: #656565;	
+}
 #locabar_user .section-header {
 	display: block;
 	text-transform: uppercase;
 	font-weight: bold;
+	color: #656565;
+	margin-bottom:12px;
 }
 #locabar_user .footer-item {
 	font-weight: bold;
+	color: #656565;
 }
 .locabar-user-greeting-cont {
 	line-height: 14px;
@@ -536,6 +568,12 @@
 }
 #locabar_user .locabar-user-signout .locabar-logout {
 	float: right;
+	clear: both;
+    width: 100%;
+    text-align: right;
+	color:#67a96d;
+	padding-top: 5px;
+    padding-bottom: 10px;
 }
 
 #locabar_addresses .nodeliver-form {
@@ -571,12 +609,14 @@
 #locabar_addresses {
 	display: inline-block;
 	background-color: #fff;
-	padding: 20px 15px;
+	padding: 30px 15px 20px 15px;
 	margin: 10px 0 0 0;
-	box-shadow: -1px 0px 4px 2px #aaa;
-	color: #333;
-	font-size: 11px;
-	min-width: 240px;
+	/*box-shadow: -1px 0px 4px 2px #aaa;*/
+	box-shadow: 0px 2px 8px 4px rgba(0,0,0, 0.25);
+	color: #656565;
+	font-size: 14px!important;
+	min-width: 353px;
+	min-height: 156px;
 }
 #locabar_addresses_choices {
 	width: 300px;
@@ -638,10 +678,14 @@
 	margin-right: 15px;
 }
 
-
 #locabar_addresses .section-warning {
 	padding-left: 38px;
 	background-position: left 1em;
+}
+
+#locabar_addresses .text{
+	/*font-weight:bold;*/
+	font-size:14px;
 }
 
 #locabar_popupcart {
@@ -676,6 +720,10 @@
 
 .locabar-right-sections .locabar-section:hover {
 	background-color: #4fa157;
+}
+
+.side-spacer{
+	width: calc(50vw - 494px);
 }
 
 /* transitions */
@@ -828,6 +876,9 @@
 }
 .cssbutton.fdxgreen:hover {
 	background-color: #4fa157;
+}
+.cssbutton.orange{
+	background-color:#f9963f;
 }
 
 .locabar_addresses-reservation-none {

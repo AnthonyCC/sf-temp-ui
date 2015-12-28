@@ -108,9 +108,9 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) { 
-  %><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) } else { doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>') }">sign up</button><% 
+  %><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) } else { doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>') }">create account</button><% 
 	} else { 
-		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">sign up</button><% 
+		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">create account</button><% 
 	} 
 %></tmpl:put>
 
@@ -127,10 +127,10 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		if ( FDStoreProperties.isSocialLoginEnabled() ) {
 			%><button class="signUpButton locationbar-social-create-account-button" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}) }">Create Account</button><% 
 		} else {
-			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">sign up</button><%
+			%><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">create account</button><%
 		}
 	} else {
-		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">sign up</button><%
+		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">create account</button><%
 	} 
 %></tmpl:put>
 <%
