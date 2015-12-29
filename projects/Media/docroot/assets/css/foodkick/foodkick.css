@@ -288,6 +288,7 @@ section#section_slideshow {
       section#section_slideshow #carousel_1 .slidesjs-slide img {
         width: 100%;
         height: auto;
+        margin-top: 154px;
         /*height:100%;*/
         /*mix-blend-mode: multiply;*/ }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
