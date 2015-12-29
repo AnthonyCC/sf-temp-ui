@@ -269,6 +269,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/paymentmethod/add/");
   	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
   	
+  } else if (loaddata == "AddPaymentMethodEx") {
+  	$("#url").val("/saptest12@freshdirect.com/paymentmethod/addex/");
+  	$("#payload").val('{"cardExpMonth" : "", "cardExpYear" : "", "cardBrand" : "",  "accountNumber" : "123456700000", "abaRouteNumber" : "221982389", "bankName" : "AMC Bank", "accountNumberVerify" : "123456700000", "bankAccountType" : "C", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "EC", "csv":"","billingCtry":"US"}');
+  	
   } else if (loaddata == "AddAndSetPaymentMethod") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/addandset/");
   	$("#payload").val('{ "billingRef": "", "cardExpMonth" : "06", "cardExpYear" : "2012", "cardBrand" : "VISA",  "accountNumber" : "4184798082857938", "abaRouteNumber" : "", "bankName" : "AMC Bank", "accountNumberVerify" : "", "bankAccountType" : "", "accountHolder" : "Sairam","billAddress1" : "2100 Rachel Terrace", "billAddress2" : "", "billApt" : "14", "billCity" : "Pinebrook", "billState" : "NJ", "billZipCode" : "07058", "paymentMethodType" : "CC", "csv":"","billingCtry":"US"}');
@@ -1228,6 +1232,7 @@ function doStuff() {
   <option value="SaveDeliveryAddress">ACCOUNT - Save Delivery Address</option>
   <option value="DeleteDeliveryAddress">ACCOUNT - Delete Delivery Address</option>  
   <option value="AddPaymentMethod">ACCOUNT - Add Payment Method</option>
+  <option value="AddPaymentMethodEx">ACCOUNT - Add Payment Method Ex</option>
   <option value="EditPaymentMethod">ACCOUNT - Edit Payment Method</option>
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  

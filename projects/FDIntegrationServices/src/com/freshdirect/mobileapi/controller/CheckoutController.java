@@ -111,6 +111,8 @@ public class CheckoutController extends BaseController {
     
     private final static String ACTION_ADD_PAYMENT_METHOD = "addpaymentmethod";
     
+    private final static String ACTION_ADD_PAYMENT_METHOD_EX = "addpaymentmethodex";
+    
     private final static String ACTION_ADD_AND_SET_PAYMENT_METHOD = "addandsetpaymentmethod";
     
     private final static String ACTION_SAVE_PAYMENT_METHOD = "savepaymentmethod";
@@ -216,6 +218,9 @@ public class CheckoutController extends BaseController {
         }else if (ACTION_ADD_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = addPaymentMethod(model, user, requestMessage, request, response);
+        }else if (ACTION_ADD_PAYMENT_METHOD_EX.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = addPaymentMethodEx(model, user, requestMessage, request, response);
         }else if (ACTION_ADD_AND_SET_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = addAndSetPaymentMethod(model, user, requestMessage, request, response);
@@ -835,6 +840,27 @@ public class CheckoutController extends BaseController {
     		removeUserInSession(user, request, response);
     		responseMessage.addWarningMessage(WARN_SESSION_REMOVED, "true");
         }
+    }
+    
+    private ModelAndView addPaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.addPaymentMethodEx(reqestMessage);
+        
+        ActionResult result = resultBundle.getActionResult();
+        
+        propogateSetSessionValues(request.getSession(), resultBundle);
+                
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        verifyPaymentMethodFailure(request, response, user, responseMessage);
+        setResponseMessage(model, responseMessage, user);        
+        return model;
     }
     
     private ModelAndView addPaymentMethod(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
