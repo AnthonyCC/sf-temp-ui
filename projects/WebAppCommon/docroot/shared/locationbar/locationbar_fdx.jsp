@@ -378,7 +378,16 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 							<% } %>
 						<% }else{ %>
 								<div class="locabar_addresses-reservation-none">
-									<a href="/help/delivery_info_check_slots.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">View Time Slots</a>
+									<%
+									String temp_delivery_link = "";
+									if (user.getLevel() >= FDUserI.RECOGNIZED) {
+										temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+									} else {
+										temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+									}
+									///help/delivery_info_check_slots.jsp
+									%>
+									<a href="<%=temp_delivery_link %>" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">View Time Slots</a>
 								</div>
 						<% } %>
 					<% } %>
