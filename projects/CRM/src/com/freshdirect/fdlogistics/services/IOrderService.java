@@ -15,6 +15,7 @@ import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
+import com.freshdirect.logistics.delivery.model.RouteStop;
 
 public interface IOrderService {
 
@@ -60,5 +61,7 @@ public interface IOrderService {
 	public void saveCartonInfo(List<CartonInfo> data) throws FDLogisticsServiceException;
 
 	public List<CartonInfo> getCartonInfo(String orderId) throws FDLogisticsServiceException;
+
+	public void saveRouteStopInfo(List<RouteStop> data) throws FDLogisticsServiceException;
 
 }

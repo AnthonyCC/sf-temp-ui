@@ -38,6 +38,7 @@ import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
+import com.freshdirect.logistics.delivery.model.RouteStop;
 import com.freshdirect.logistics.framework.util.TimeOfDay;
 
 @Component
@@ -1031,5 +1032,32 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			}
 		});	
 	}
+	
+	private static final String SAVE_ROUTESTOPINFO = "UPDATE CUST.SALE SET TRUCK_NUMBER =LPAD(?, 6, '0'), STOP_SEQUENCE = LPAD(?, 5, '0') WHERE ID = ?";
+	
+	@Override
+	public void saveRouteStopInfo(final List<RouteStop> data) {
+		if (data == null || data.isEmpty()) {
+			return;
+		}
+		jdbcTemplate.batchUpdate(SAVE_ROUTESTOPINFO, new BatchPreparedStatementSetter() {
+			 
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				RouteStop routeInfo = data.get(i);
+				ps.setString(1, routeInfo.getRoute());
+				ps.setString(2, routeInfo.getStop());
+				ps.setString(3, routeInfo.getOrderId());
+			}
+		 
+			@Override
+			public int getBatchSize() {
+				return data.size();
+			}
+		});	
+	}
+
+	
 
 }
+ 

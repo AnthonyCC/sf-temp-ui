@@ -54,6 +54,7 @@ import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.CartonExportRequest;
 import com.freshdirect.logistics.controller.data.request.CreateSOIRequest;
 import com.freshdirect.logistics.controller.data.request.OrderSearchCriteria;
+import com.freshdirect.logistics.controller.data.request.RouteStopRequest;
 import com.freshdirect.logistics.controller.data.response.DeliveryExceptions;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
 import com.freshdirect.logistics.controller.data.response.DiscountTimeslot;
@@ -721,5 +722,17 @@ private static MailerGatewayHome mailerHome	= null;
 			return Result.createFailureMessage("failed to save carton info");
 		}
 	}
+	
+	
+	@RequestMapping(value = "/routeStop/export",  method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody Result saveRouteStopInfo(@RequestBody RouteStopRequest request) {
+		try {
+			orderService.saveRouteStopInfo(request.getData());
+			return Result.createSuccessMessage("saved carton info");
+		} catch (FDLogisticsServiceException e) {
+			return Result.createFailureMessage("failed to save carton info");
+		}
+	}
+	
 	
 }

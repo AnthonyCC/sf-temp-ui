@@ -23,6 +23,7 @@ import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
+import com.freshdirect.logistics.delivery.model.RouteStop;
 
 @Component
 public class OrderService implements IOrderService {
@@ -182,6 +183,14 @@ public class OrderService implements IOrderService {
 	public void saveCartonInfo(List<CartonInfo> data) throws FDLogisticsServiceException{
 		try {
 			orderDAO.saveCartonInfo(data);
+		} catch (Exception e) {
+			throw new FDLogisticsServiceException(e);
+		}
+	}
+	
+	public void saveRouteStopInfo(List<RouteStop> data) throws FDLogisticsServiceException{
+		try {
+			orderDAO.saveRouteStopInfo(data);
 		} catch (Exception e) {
 			throw new FDLogisticsServiceException(e);
 		}

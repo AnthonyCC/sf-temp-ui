@@ -1,4 +1,8 @@
-<%@ taglib uri='template' prefix='tmpl' %><%@ taglib uri='logic' prefix='logic' %><%@ taglib uri='freshdirect' prefix='fd' %><%
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ include file="/includes/i_globalcontext.jspf" %>
+<%
 
     Calendar today = Calendar.getInstance();
     int currmonth = today.get(Calendar.MONTH);
@@ -32,7 +36,7 @@
 			Date user_date1 = format1.parse(route_date1);
 			
 			if(route != null) {
-				routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format);
+				routeStopLines = CallCenterServices.getRouteStopReport(user_date1, wave, route, stop1, stop2, vs_format, globalContextStore, globalContextFacility);
 			} else {
 				route_error = true;
 			}

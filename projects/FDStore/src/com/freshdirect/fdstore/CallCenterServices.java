@@ -244,13 +244,13 @@ public class CallCenterServices {
 		}
 	}
 	
-	public static List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format) throws FDResourceException {
+	public static List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getRouteStopReport(date, wave, route, stop1, stop2, call_format);
+			return sb.getRouteStopReport(date, wave, route, stop1, stop2, call_format, store, facility);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

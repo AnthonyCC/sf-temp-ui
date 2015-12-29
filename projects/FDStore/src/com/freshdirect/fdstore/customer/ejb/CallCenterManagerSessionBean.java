@@ -1335,11 +1335,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private static final String ROUTE_STOP_QRY_WHERE_STOP = " and (s.stop_sequence between LPAD(?, 5, '0') and LPAD(?, 5, '0'))";
 
+	private static final String ROUTE_STOP_QRY_WHERE_FD = " and (s.e_store = 'FreshDirect')";
+	private static final String ROUTE_STOP_QRY_WHERE_FDX = " and (s.e_store = 'FDX')";
+	
+
 	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
 		+ " and s.CROMOD_DATE = sa.action_date "
 		+ ") order by wave_number, truck_number, stop_sequence";
 
-	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format) throws FDResourceException {
+	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
 
 		Connection conn = null;
 		try {
@@ -1364,6 +1368,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			if ((stop1 != null && !"".equals(stop1)) || (stop2 != null && !"".equals(stop2))) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_STOP;
+			}
+			
+			if(store!=null && EnumEStoreId.FD.name().equalsIgnoreCase(store)){
+				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_FD;
+			}else if(store!=null && EnumEStoreId.FDX.name().equalsIgnoreCase(store)){
+				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_FDX;
 			}
 
 			finalRouteStopQuery += ROUTE_STOP_QRY_END;

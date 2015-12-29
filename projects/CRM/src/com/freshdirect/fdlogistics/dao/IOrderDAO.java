@@ -14,6 +14,7 @@ import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
+import com.freshdirect.logistics.delivery.model.RouteStop;
 
 public interface IOrderDAO {
 
@@ -50,5 +51,7 @@ public interface IOrderDAO {
 	public void saveCartonInfo(List<CartonInfo> data);
 
 	public List<CartonInfo> getCartonInfo(String orderId);
+
+	public void saveRouteStopInfo(List<RouteStop> data);
 
 }
