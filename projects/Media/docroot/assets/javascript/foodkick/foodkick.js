@@ -387,16 +387,17 @@ $(function(){
 	
 	//enable the submit button when everything is good, relating to above validation
 	//$('form#ziphandler input, form#locationhandler input').on('keyup blur', function(){ // fires on every keyup & blur
-	$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
+	//$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
+	$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('keyup', function(){ // fires on every keyup & blur
 		var button_id = $(this).siblings("button").first().attr("id");
 
-		if( $(this).val().length > 0 ){
+		//if( $(this).val().length > 0 ){
 			if( $(this).valid() ){ // checks form for validity
 				button_enableDisable( "#"+button_id, true);
 			}else{
 				button_enableDisable( "#"+button_id, false);
 			}
-		}
+		//}
 	});	
 	
 	//lets make placeholders for fields work in IE 9 and maybe below
