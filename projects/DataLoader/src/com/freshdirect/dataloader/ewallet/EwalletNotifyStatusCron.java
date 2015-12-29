@@ -24,9 +24,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
 public class EwalletNotifyStatusCron {
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(EwalletNotifyStatusCron.class);
-	
-	
+		
 	static public Context getInitialContext() throws NamingException {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -35,15 +35,21 @@ public class EwalletNotifyStatusCron {
 	}
 	
 	public static void main(String[] args) {
-
+		int maxDays = 0;
 		printHelpMessage();
-		
+		if (args.length > 0) {
+			try {
+				maxDays = Integer.parseInt(args[0]);
+			} catch (Exception e) {
+				maxDays = 0;
+			}
+		}
 		try {
 			Context ctx=getInitialContext();
 			EwalletNotifyStatusHome ewalletHome=(EwalletNotifyStatusHome)ctx.lookup( "freshdirect.fdstore.EWalletNotify" ) ;
 			EwalletNotifyStatusSB sb = ewalletHome.create();
 
-			sb.loadTrxnsForPostBack();
+			sb.loadTrxnsForPostBack(maxDays);
 			sb.postTrxnsToEwallet();
 
 		} catch (RemoteException e) {

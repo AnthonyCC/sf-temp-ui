@@ -14,5 +14,5 @@ import javax.ejb.EJBObject;
 public interface EwalletNotifyStatusSB extends EJBObject {
 	//Batch
 	void postTrxnsToEwallet() throws RemoteException;
-	void loadTrxnsForPostBack() throws RemoteException;
+	void loadTrxnsForPostBack(int maxDays) throws RemoteException;
 }

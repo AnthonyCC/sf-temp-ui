@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
+import com.freshdirect.fdstore.ewallet.EwalletUtil;
 import com.freshdirect.fdstore.ewallet.PaymentData;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
@@ -106,7 +107,7 @@ public class EwalletService {
 		requestData.setMobileCallbackDomain(ewalletRequest.getCallBackUrl());
 		FDSessionUser fdSessionUser =user.getFDSessionUser();
 		// Prepare shopping cart for PostShopping Cart service call
-		prepareShoppingCartItems(fdSessionUser,requestData);
+		EwalletUtil.prepareShoppingCartItems(fdSessionUser,requestData, MobileApiProperties.getMediaPath());
 		if(requestData.getShoppingCartItems()!=null && requestData.getShoppingCartItems().length() >0 ){
 			 
 			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
@@ -217,7 +218,7 @@ public class EwalletService {
 		requestData.setMobileCallbackDomain(ewalletRequest.getCallBackUrl());
 		FDSessionUser fdSessionUser =user.getFDSessionUser();
 		// Prepare shopping cart for PostShopping Cart service call
-		prepareShoppingCartItems(fdSessionUser,requestData);
+		EwalletUtil.prepareShoppingCartItems(fdSessionUser,requestData, MobileApiProperties.getMediaPath());
 		if(requestData.getShoppingCartItems()!=null && requestData.getShoppingCartItems().length() >0 ){
 			 
 			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
@@ -616,104 +617,5 @@ public class EwalletService {
 		return ewalletResponse;
 	}
 	
-	
-	/**
-	 * Method prepares the ShoppingCart XML 
-	 * @param user
-	 */
-	private void prepareShoppingCartItems(FDUserI user,EwalletRequestData ewalletRequestData) {
-		FDCartModel fdCart = user.getShoppingCart();
-		if(fdCart!=null){
-			List<FDCartLineI> fdCartLines = fdCart.getOrderLines();
-			if(fdCartLines != null && fdCartLines.size()>0){
-				double totalPrice = 0;
-				// Will store all the Cart Items
-				StringBuffer cartItems = new StringBuffer();
-				String subTotalTag = "";
-				for (FDCartLineI cartLine : fdCartLines) {
-					StringBuffer cartItem = new StringBuffer();
-					ProductModel productNode = cartLine.lookupProduct();
-		
-					String productDesc = StringEscapeUtils.escapeXml(cartLine
-							.getDescription());
-		
-					if (cartLine.getConfigurationDesc() != null
-							&& !cartLine.getConfigurationDesc().isEmpty()) {
-		
-						StringEscapeUtils.escapeXml(productDesc + " ("
-								+ cartLine.getConfigurationDesc() + ")");
-					}
-					if (productDesc != null && productDesc.length() >= 70) {
-						productDesc = productDesc.substring(0, 70) + "...";
-					}
-					productDesc = productDesc + "(" + cartLine.getUnitPrice() + ")";
-		
-					String saleUnitCode = cartLine.getConfiguration().getSalesUnit();
-		
-					FDSalesUnit[] salesUnits = cartLine.lookupFDProduct().getSalesUnits();
-		
-					String saleUnitDescr = "";
-					for (FDSalesUnit saleUnit : salesUnits) {
-						if (saleUnit.getName().equals(saleUnitCode)) {
-							saleUnitDescr = saleUnit.getDescription();
-							break;
-						}
-					}
-					String quantity = "0";
-					try {
-						if (saleUnitCode.equalsIgnoreCase("EA")
-								|| saleUnitCode.equalsIgnoreCase("CS") || saleUnitCode.equalsIgnoreCase("BNC")) {
-							quantity = ""
-									+ (new Double(cartLine.getQuantity()).longValue());
-						} else {
-							String qtyStr = "" + cartLine.getQuantity();
-							String fractionPart = qtyStr
-									.substring(qtyStr.indexOf(".") + 1);
-							if (fractionPart != null && fractionPart.length() > 0) {
-								if (Integer.parseInt(fractionPart) > 0) {
-//									productDesc = productDesc + " (Qty: " + qtyStr+ ")"; // Causing issue in PROD because of 100 max Limit of Product Description from MP
-									quantity = "0";
-								} else {
-									if (saleUnitDescr != null
-											&& saleUnitDescr.length() > 0) {
-//										productDesc = productDesc + " (Qty: "+ saleUnitDescr + ")";	// Causing issue in PROD because of 100 max Limit of Product Description from MP
-										quantity = "0";
-									} else {
-										quantity = ""
-												+ (new Double(cartLine.getQuantity())
-														.longValue());
-									}
-		
-								}
-							}
-						}
-					} catch (Exception e) {
-						LOGGER.error("Error while creating Shopping Cart for EWallet service provider",e);
-					}
-					
-					String prodDes = StringEscapeUtils.escapeXml(productDesc);
-		            if(null != prodDes && prodDes.length() > 99){
-		            	productDesc = productDesc.substring(0, productDesc.length() - 20) + "...";
-		            	productDesc = StringEscapeUtils.escapeXml(productDesc);
-		            }
-					cartItem.append("<ShoppingCartItem>");
-					cartItem.append("<Description>"+ productDesc+ "</Description>");
-					cartItem.append("<Quantity>" + quantity + "</Quantity>");
-					cartItem.append("<Value>"
-							+ (new Double(cartLine.getPrice() * 100)).longValue()
-							+ "</Value>");
-					cartItem.append("<ImageURL>" + MobileApiProperties.getMediaPath()
-							+ StringEscapeUtils.escapeXml(productNode.getProdImage().getPathWithPublishId())
-							+ "</ImageURL>");
-					cartItem.append("</ShoppingCartItem>");
-					cartItems.append(cartItem);
-					totalPrice += cartLine.getPrice();
-				}
-				subTotalTag = "<Subtotal>" + new Double(totalPrice * 100).longValue()
-						+ "</Subtotal>";
-				ewalletRequestData.setShoppingCartItems(subTotalTag+ cartItems.toString());
-			}
-		}
-	}
 }
 

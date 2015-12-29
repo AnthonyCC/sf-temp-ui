@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
+import com.freshdirect.fdstore.ewallet.EwalletUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.EwalletBaseServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
@@ -161,7 +162,8 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     			}*/
     			case MASTERPASS_STANDARD_CHECKOUT: {
     				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT);
-    				prepareShoppingCartItems(user, ewalletRequestData);
+    				EwalletUtil.prepareShoppingCartItems(user, ewalletRequestData, ewalletRequestData.getAppBaseUrl()
+    						+ ewalletRequestData.getContextPath());
     				break;
     			}
     			case MASTERPASS_STANDARD_CHECKOUT_DATA: {
@@ -411,110 +413,5 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 
 		request.setAttribute("data", json);
 		return json;
-	}
-
-	/**
-	 * @param user
-	 * @param ewalletRequestData
-	 */
-	private void prepareShoppingCartItems(final FDUserI user,
-			EwalletRequestData ewalletRequestData) {
-
-		FDCartModel fdCart = user.getShoppingCart();
-
-		List<FDCartLineI> fdCartLines = fdCart.getOrderLines();
-
-		double totalPrice = 0;
-
-		// Will store all the Cart Items
-		StringBuffer cartItems = new StringBuffer();
-		String subTotalTag = "";
-		for (FDCartLineI cartLine : fdCartLines) {
-			StringBuffer cartItem = new StringBuffer();
-			ProductModel productNode = cartLine.lookupProduct();
-
-			String productDesc = StringEscapeUtils.unescapeXml(cartLine.getDescription());
-			productDesc = StringEscapeUtils.escapeXml(productDesc);
-
-			if (cartLine.getConfigurationDesc() != null
-					&& !cartLine.getConfigurationDesc().isEmpty()) {
-
-				StringEscapeUtils.escapeXml(productDesc + " ("
-						+ cartLine.getConfigurationDesc() + ")");
-
-			}
-
-			if (productDesc != null && productDesc.length() >= 70) {
-				productDesc = productDesc.substring(0, 70) + "...";
-			}
-
-			productDesc = productDesc + "(" + cartLine.getUnitPrice() + ")";
-
-			String saleUnitCode = cartLine.getConfiguration().getSalesUnit();
-
-			FDSalesUnit[] salesUnits = cartLine.lookupFDProduct()
-					.getSalesUnits();
-
-			String saleUnitDescr = "";
-			for (FDSalesUnit saleUnit : salesUnits) {
-				if (saleUnit.getName().equals(saleUnitCode)) {
-					saleUnitDescr = saleUnit.getDescription();
-					break;
-				}
-			}
-			String quantity = "0";
-			try {
-				if (saleUnitCode.equalsIgnoreCase("EA") || saleUnitCode.equalsIgnoreCase("CS") || saleUnitCode.equalsIgnoreCase("BNC")) {
-					quantity = ""+ (new Double(cartLine.getQuantity()).longValue());
-				} else {
-					String qtyStr = "" + cartLine.getQuantity();
-					String fractionPart = qtyStr.substring(qtyStr.indexOf(".") + 1);
-					if (fractionPart != null && fractionPart.length() > 0) {
-						if (Integer.parseInt(fractionPart) > 0) {
-//							productDesc = productDesc + " (Qty: " + qtyStr+ ")"; // Causing issue in PROD because of 100 max Limit of Product Description from MP
-							quantity = "0";
-						} else {
-							if (saleUnitDescr != null&& saleUnitDescr.length() > 0) {
-//								productDesc = productDesc + " (Qty: "+ saleUnitDescr + ")"; // Causing issue in PROD because of 100 max Limit of Product Description from MP
-								quantity = "0";
-							} else {
-								quantity = ""+ (new Double(cartLine.getQuantity()).longValue());
-							}
-						}
-					}
-				}
-			} catch (Exception e) {
-				LOGGER.error("Error while create Shopping Cart for EWallet service provider",e);
-			}
-			
-        	int semi = productDesc.lastIndexOf(';');
-        	int amp = productDesc.lastIndexOf('&');
-        	if (semi != -1 && amp != -1 && semi < amp) {
-        		productDesc = productDesc.substring(0, amp);
-        	}
-
-            if(null != productDesc && productDesc.length() > 99){
-            	productDesc = productDesc.substring(0, productDesc.length() - 20);
-            	if (!productDesc.endsWith("..."))
-            		productDesc += "...";
-            }
-			cartItem.append("<ShoppingCartItem>");
-			cartItem.append("<Description>"+ productDesc+ "</Description>");
-			cartItem.append("<Quantity>" + quantity + "</Quantity>");
-			cartItem.append("<Value>"
-					+ (new Double(cartLine.getPrice() * 100)).longValue()
-					+ "</Value>");
-			cartItem.append("<ImageURL>" + ewalletRequestData.getAppBaseUrl()
-					+ ewalletRequestData.getContextPath()
-					+ StringEscapeUtils.escapeXml(productNode.getProdImage().getPathWithPublishId())
-					+ "</ImageURL>");
-			cartItem.append("</ShoppingCartItem>");
-			cartItems.append(cartItem);
-			totalPrice += cartLine.getPrice();
-		}
-		subTotalTag = "<Subtotal>" + new Double(totalPrice * 100).longValue()
-				+ "</Subtotal>";
-		ewalletRequestData.setShoppingCartItems(subTotalTag
-				+ cartItems.toString());
 	}
 }

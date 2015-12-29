@@ -51,17 +51,16 @@ public class EwalletTxNotifyDAO {
 							"(select sa2.sale_id, pi.ewallet_id, pi.vendor_ewallet_id, max(pi.ewallet_tx_id) ewallet_trxn_id  " +
 								"from  CUST.salesaction sa2, CUST.paymentinfo_new pi " +
 								"where sa2.id = pi.salesaction_id and (sa2.action_type = 'CRO' or sa2.action_type = 'MOD') " +
-					                    "and sa2.action_date > (sysdate - ?) " +
 					                    "and pi.ewallet_tx_id is not null " +
 								"group by (sa2.sale_id, pi.ewallet_id, pi.vendor_ewallet_id )) ewi " +
 						"where s.id = sa.sale_id and sa.id = p.salesaction_id and sa.id = (select max(sa3.id) " +
 								"from CUST.salesaction sa3 " +
-								"where sa3.action_type = s.status and sa3.sale_id = s.id and sa3.action_date > (sysdate - ?) " +
+								"where sa3.action_type = s.status and sa3.sale_id = s.id " +
 								"group by (sa3.sale_id))   and s.id = ewi.sale_id and " +
 							"s.status in ('STL', 'STF') and  " +
 							"ewi.ewallet_trxn_id is not null and  " +
 							"s.status = sa.action_type and  " +
-							"sa.action_date > (sysdate - ?) and  " +
+							"sa.action_date >= (sysdate - ?) and  " +
 								"not exists (select 1  " +
 											"from cust.ewallet_txnotify h  " +
 											"where sa.id = h.salesaction_id))";
@@ -74,17 +73,17 @@ public class EwalletTxNotifyDAO {
 				    		"(SELECT sale_id, ewallet_id, vendor_ewallet_id, MAX(pi.ewallet_tx_id) ewallet_trxn_id, MAX(sa2.id) latest_cromod_sa_id " +
 				    			"FROM CUST.paymentinfo_new pi, CUST.salesaction sa2 " +
 				    			" WHERE pi.salesaction_id = sa2.id AND (sa2.action_type     = 'CRO' OR sa2.action_type       = 'MOD') " +
-				    					"AND sa2.action_date      > (sysdate - ?) AND pi.ewallet_tx_id   IS NOT NULL " +
-				    			"GROUP BY sale_id, ewallet_id, vendor_ewallet_id ) ewi, " +
-				    		"(SELECT i.id, MAX(j.id) max_order_sa_id " +
-				    			"FROM cust.sale i, cust.salesaction j, cust.payment n " +
-				    			"WHERE i.id = j.sale_id AND j.id = n.salesaction_id AND j.action_date > (sysdate -?) " +
-				    				" AND j.action_type     = 'AUT' " +
-				    				" AND n.response_code     != 'A' " +
-				    			"GROUP BY i.id ) m " +
-				   " WHERE s.id  = sa.sale_id AND sa.id = p.salesaction_id AND sa.id = m.max_order_sa_id AND (s.status = 'CAN' OR s.status = 'MOC') AND " +
+				    					"AND pi.ewallet_tx_id   IS NOT NULL " +
+				    			"GROUP BY sale_id, ewallet_id, vendor_ewallet_id ) ewi " +
+				   " WHERE s.id  = sa.sale_id AND sa.id = p.salesaction_id AND sa.id = (SELECT MAX(sa3.id) " +
+				   				"FROM cust.salesaction sa3, cust.payment p2 " +
+				   				"WHERE sa3.sale_id = s.id AND " +
+				   					"sa3.id = p2.salesaction_id AND " +
+				   					"sa3.action_type = 'AUT' AND " +
+				   					"p2.response_code != 'A') AND " +
+				   		"(s.status = 'CAN' OR s.status = 'MOC') AND " +
 				    	"sa.action_type = 'AUT' AND ewi.ewallet_trxn_id IS NOT NULL AND s.id = ewi.sale_id AND " +
-				    	"p.response_code != 'A' AND sa.action_date  > (sysdate - ?) AND " +
+				    	"p.response_code != 'A' AND sa.action_date  >= (sysdate - ?) AND " +
 						      "NOT EXISTS (SELECT 1 " +
 							      "FROM cust.ewallet_txnotify ewn " +
 							     " WHERE ewi.ewallet_trxn_id = ewn.transaction_id " +
@@ -97,7 +96,7 @@ public class EwalletTxNotifyDAO {
 									"select CUST.SYSTEM_SEQ.nextval, 'AUF', gl.ewallet_id, gl.ewallet_tx_id, gl.customer_id," +
 									"SUBSTR(gl.ORDER_ID,1,INSTRB(gl.ORDER_ID, 'X', 1, 1)-1) order_id, gl.id, 'Pending' " +
 									"from MIS.gateway_activity_log gl " +
-									"where gl.transaction_time > (sysdate - ?) and gl.transaction_type = 'AUTHORIZE' and " +
+									"where gl.transaction_time >= (sysdate - ?) and gl.transaction_type = 'AUTHORIZE' and " +
 									"gl.ewallet_tx_id is not null and " +
 									"gl.is_approved = 'N' and gl.status_code != 'ERROR'  and " +
 									" not exists ( select 1 " +
@@ -138,7 +137,7 @@ public class EwalletTxNotifyDAO {
 				"from cust.sale s, cust.salesaction sa, " +
 					"(select sale_id, max(id) max_salesaction_id " +
 						"from cust.salesaction " +
-						"where (action_type = 'CRO' or action_type = 'MOD') and action_date > (sysdate - ?) " +
+						"where (action_type = 'CRO' or action_type = 'MOD') " +
 						"group by sale_id) d " +
 				"where s.id = sa.sale_id and sa.id = max_salesaction_id and s.id in ( " +
 					"select ewtxn.order_id " +
@@ -148,7 +147,7 @@ public class EwalletTxNotifyDAO {
 					   		EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode() + "') and " +
 				   		"ewtxn.salesaction_id is not null and " +
 			   			"ewtxn.transaction_id is not null and " +
-				   		"ew.ewallet_type like ? ) ";
+				   		"ew.ewallet_type like ? )";
 	
 	private static final String GET_AUTHCODE_FOR_ORDER = "select s.id id, sa.id salesaction_id, auth_code " +
 			"from cust.sale s, cust.salesaction sa, cust.payment p " +
@@ -206,32 +205,44 @@ public class EwalletTxNotifyDAO {
 	private static final String UPDATE_NONGAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where salesaction_id in (";
 	private static final String UPDATE_GAL_SUCCESS_TXNS = "update cust.ewallet_txnotify set notify_status = 'Completed' where gateway_activity_log_id in (";
 	
-	//No of the days of history the queries above will run
-	private int noOfTrxnDays = ErpServicesProperties.geteWalletPostbackMaxDays();
-	
-	
 	public void prepareForPostBack(Connection conn) throws SQLException {
+		prepareForPostBack(conn, ErpServicesProperties.geteWalletPostbackMaxDays());
+	}
+	
+	public void prepareForPostBack(Connection conn, int maxDays) throws SQLException {
+		long time_method_start = System.currentTimeMillis();
+		long curr = System.currentTimeMillis(); 
+		LOGGER.debug("Method prepareForPostBack - Number of days being processed " + maxDays);
+		
 		PreparedStatement settlementPS = conn.prepareStatement( IDENTIFY_SETTLEMENT_TRXNS_FOR_POSTBACK );
-		settlementPS.setInt(1, noOfTrxnDays);
-		settlementPS.setInt(2, noOfTrxnDays);
-		settlementPS.setInt(3, noOfTrxnDays);
+		settlementPS.setInt(1, maxDays);
 		int noOfSettlementRecs = settlementPS.executeUpdate();
+		
 		LOGGER.info("Settlement records for Ewallet Postback today : " + noOfSettlementRecs);
+		LOGGER.debug("Time taken for the method prepareForPostBack - STL query (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+
 		PreparedStatement onlineAufPS = conn.prepareStatement( IDENTIFY_ONLINE_AUF_FOR_POSTBACK );
-		onlineAufPS.setInt(1, noOfTrxnDays);
+		onlineAufPS.setInt(1, maxDays);
 		int noOfOnlineAUFRecs = onlineAufPS.executeUpdate();
 		LOGGER.info("Online Auth Failure records for Ewallet Postback today (GAL) : " + noOfOnlineAUFRecs);
+		LOGGER.debug("Time taken for the method prepareForPostBack - Online AUF query (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		PreparedStatement offlineAufPS = conn.prepareStatement( IDENTIFY_OFFLINE_AUF_TRXNS_FOR_POSTBACK );
-		offlineAufPS.setInt(1, noOfTrxnDays);
-		offlineAufPS.setInt(2, noOfTrxnDays);
-		offlineAufPS.setInt(3, noOfTrxnDays);
+		offlineAufPS.setInt(1, maxDays);
+		//offlineAufPS.setInt(2, maxDays);
+		//offlineAufPS.setInt(3, maxDays);
 		int noOfOfflineAUFRecs = offlineAufPS.executeUpdate();
 		LOGGER.info("Offline Auth Failure records for Ewallet Postback today : " + noOfOfflineAUFRecs);
-		
+		LOGGER.debug("Time taken for the method prepareForPostBack - Offline AUF query (millis) " + (System.currentTimeMillis() - curr));
+		LOGGER.debug("Time taken for the method prepareForPostBack (millis) " + (System.currentTimeMillis() - time_method_start));
 	}
 	
 	public List<EwalletPostBackModel> getAllTrxnsForPostback( Connection conn, EnumEwalletType walletType ) throws SQLException {
-
+		long time_method_start = System.currentTimeMillis();
+		long curr = System.currentTimeMillis(); 
+		
 		List<EwalletPostBackModel> allTrxns = new ArrayList<EwalletPostBackModel>();
 		Map<String, EwalletPostBackModel> nonGALTrxnMap = new HashMap<String, EwalletPostBackModel>();
 		
@@ -240,6 +251,10 @@ public class EwalletTxNotifyDAO {
 		PreparedStatement nonGALTrxnsPS = conn.prepareStatement( GET_NONGAL_TRXNS_FOR_POSTBACK );
 		nonGALTrxnsPS.setString(1, walletType.getName());
 		ResultSet nonGALTrxnsRS = nonGALTrxnsPS.executeQuery();
+		
+		LOGGER.debug("Time taken for the method getAllTrxnsForPostback - Obtaining NONGAL Trxns (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		while (nonGALTrxnsRS.next()) {
 			String salesActionId = nonGALTrxnsRS.getString("salesaction_id");
 			EwalletPostBackModel pbItem = new EwalletPostBackModel();
@@ -256,9 +271,16 @@ public class EwalletTxNotifyDAO {
 			}
 		}
 	
+		LOGGER.debug("Time taken for the method getAllTrxnsForPostback - Populating NONGAL Trxns map (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_AUTHCODE_FOR_ORDER);
 		otherDataPS.setString(1, walletType.getName());
 		ResultSet otherDataRS = otherDataPS.executeQuery();
+		
+		LOGGER.debug("Time taken for the method getAllTrxnsForPostback - Obtaining Authcode (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		while (otherDataRS.next()) {
 			EwalletPostBackModel pbItem = nonGALTrxnMap.get(otherDataRS.getString("salesaction_id"));
 			if (pbItem == null) {
@@ -274,6 +296,9 @@ public class EwalletTxNotifyDAO {
 			}
 		}
 		
+		LOGGER.debug("Time taken for the method getAllTrxnsForPostback - Obtaining Authcode (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		for(EwalletPostBackModel trxn : nonGALTrxnMap.values()) {
 			trxn.setPurchaseDate(orderPurchDateMap.get(trxn.getOrderId()));
 			trxn.setCustomerId(orderCustomerIdMap.get(trxn.getOrderId()));
@@ -285,6 +310,8 @@ public class EwalletTxNotifyDAO {
 		}
 		
 		allTrxns.addAll(getGALTrxnsForPostback(conn, walletType));
+		
+		LOGGER.debug("Time taken for the method getAllTrxnsForPostback (millis) " + (System.currentTimeMillis() - time_method_start));
 		
 		return allTrxns;
 	}
@@ -439,6 +466,9 @@ public class EwalletTxNotifyDAO {
 	}
 	
 	private void loadCommonData(Connection conn, EnumEwalletType walletType) throws SQLException {
+		long time_method_start = System.currentTimeMillis();
+		long curr = System.currentTimeMillis();
+		
 		PreparedStatement otherDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_ORDER);
 		otherDataPS.setString(1, walletType.getName());
 		ResultSet otherDataRS = otherDataPS.executeQuery();
@@ -446,22 +476,33 @@ public class EwalletTxNotifyDAO {
 			orderAmountMap.put(otherDataRS.getString("id"), otherDataRS.getString("amount"));
 		}
 		
+		LOGGER.debug("Time taken for the method loadCommonData - Obtaining amount data (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		PreparedStatement otherAUFDataPS = conn.prepareStatement(GET_AMOUNT_DATA_FOR_STF_AUF_ORDER);
-		otherAUFDataPS.setInt(1, noOfTrxnDays * 10);
-		otherAUFDataPS.setString(2, walletType.getName());
+		//otherAUFDataPS.setInt(1, noOfTrxnDays * 10);
+		otherAUFDataPS.setString(1, walletType.getName());
 		ResultSet otherAUFDataRS = otherAUFDataPS.executeQuery();
 		while (otherAUFDataRS.next()) {
 			orderAmountMap.put(otherAUFDataRS.getString("id"), otherAUFDataRS.getString("amount"));
 		}
 		
+		LOGGER.debug("Time taken for the method loadCommonData - Obtaining amount data for failed trxns (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		PreparedStatement orderPurchPS = conn.prepareStatement(GET_OTHER_DATA_FOR_ORDER);
 		orderPurchPS.setString(1, walletType.getName());
 		ResultSet orderPurchRS = orderPurchPS.executeQuery();
 
+		LOGGER.debug("Time taken for the method loadCommonData - Obtaining other data, order date, for trxns (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		while (orderPurchRS.next()) {
 			orderPurchDateMap.put(orderPurchRS.getString("sale_id"), orderPurchRS.getTimestamp("action_date"));
 			orderCustomerIdMap.put(orderPurchRS.getString("sale_id"), orderPurchRS.getString("customer_id"));
 		}
+		
+		LOGGER.debug("Time taken for the method loadCommonData (millis) " + (System.currentTimeMillis() - time_method_start));
 	}
 	
 	//for unit testing purposes only

@@ -36,19 +36,20 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = -3040908271623920175L;
 	
 	@SuppressWarnings( "unused" )
-	private static Category LOGGER = LoggerFactory.getInstance(EwalletTxNotifyDAO.class);
+	private static Category LOGGER = LoggerFactory.getInstance(EwalletNotifyStatusSessionBean.class);
 	
 	//TODO get all wallet types and loop through for posting
 	private static final String MASTERPASS_EWALLET_TYPE="MP";
 	
-	
-	public void loadTrxnsForPostBack() throws RemoteException {
-		List<EwalletPostBackModel> trxns = new ArrayList<EwalletPostBackModel>();
+	public void loadTrxnsForPostBack(int maxDays) throws RemoteException {
 		Connection conn = null;
 		try {
+			if (maxDays <= 0) {
+				maxDays = ErpServicesProperties.geteWalletPostbackMaxDays();
+			}
 			conn = this.getConnection();
 			EwalletTxNotifyDAO dao = new EwalletTxNotifyDAO();
-			dao.prepareForPostBack(conn);
+			dao.prepareForPostBack(conn, maxDays);
 			conn.commit();
 		} catch(SQLException e) {
 			LOGGER.error("SQLException: ", e);
@@ -73,6 +74,8 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 	 * Facade for posting trxns to Ewallet provider
 	 */
 	public void postTrxnsToEwallet() throws RemoteException {
+		long time_method_start = System.currentTimeMillis();
+		long curr = System.currentTimeMillis();
 		
 		List<EwalletPostBackModel> trxns = new ArrayList<EwalletPostBackModel>();
 		Connection conn = null;
@@ -83,7 +86,9 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 			for (Iterator<EnumEwalletType> enumIter = EnumEwalletType.iterator(); enumIter.hasNext(); ) {
 				EnumEwalletType ewType = enumIter.next();
 				trxns = dao.getAllTrxnsForPostback(conn, ewType);
-
+				LOGGER.debug("Time taken for the loading all trxns (millis) " + (System.currentTimeMillis() - curr));
+				curr = System.currentTimeMillis();
+				
 				int chunkSize = ErpServicesProperties.geteWalletPostbackChunkSize();
 				
 				if (trxns.size() > 0) {
@@ -97,6 +102,10 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 								dao.updateTrxnStatus(conn, resp.getTrxns());
 								conn.commit();
 							}
+							
+							LOGGER.debug("Time taken for the method postTrxnsToEwallet - process chunk, incl. update (millis) " +
+														i + " is" + (System.currentTimeMillis() - curr));
+							curr = System.currentTimeMillis();
 						}
 					}
 					EwalletResponseData remaining = postTrxns(new ArrayList<EwalletPostBackModel>(trxns.subList(i*chunkSize, trxns.size())), 
@@ -106,6 +115,10 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 						dao.updateTrxnStatus(conn, remaining.getTrxns());
 						conn.commit();
 					}
+					
+					LOGGER.debug("Time taken for the method postTrxnsToEwallet - process chunk incl. update (millis) " +
+							i + " is" + (System.currentTimeMillis() - curr));
+					curr = System.currentTimeMillis();
 				} else {
 					LOGGER.info("No transactions are posted for today");
 				}
@@ -129,6 +142,7 @@ public class EwalletNotifyStatusSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cleaningup", e);
 			}
 		}
+		LOGGER.debug("Time taken for the method postTrxnsToEwallet (millis) " + (System.currentTimeMillis() - time_method_start));
 	}
 
     /**

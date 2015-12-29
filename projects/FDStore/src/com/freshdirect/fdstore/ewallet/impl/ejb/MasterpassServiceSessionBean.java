@@ -1479,6 +1479,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				String escapedItemDescr = item.getDescription();
 				escapedItemDescr = StringEscapeUtils.escapeXml(escapedItemDescr);
 				escapedItemDescr = MasterPassApplicationHelper.replaceSpecialCharsWithBlanks(escapedItemDescr);
+				escapedItemDescr = StringEscapeUtils.unescapeXml(escapedItemDescr);
 				item.setDescription(escapedItemDescr);
 			}
 			shoppingCartRequest.setOAuthToken(requestToken);
@@ -2274,6 +2275,8 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 	
 	
 	private List<EwalletPostBackModel> postBack(List<EwalletPostBackModel> postTrxns) {
+		long time_method_start = System.currentTimeMillis();
+		long curr = System.currentTimeMillis(); 
 		MasterpassData mpData = new MasterpassData();
 		mpData.setXmlVersion(mpData.getXmlVersion());
 		mpData.setAuthLevelBasic(mpData.getAuthLevelBasic());
@@ -2284,20 +2287,33 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		
 		MasterPassService svc = initiateMasterpassService(mpData);
 		
+		LOGGER.debug("Time taken for the method postBack - init MP service (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
+		
 		MerchantTransactions reqTrxns = transformTrxnsToMPInterface(postTrxns, mpData, ewalletKeyMap, isGALMap, trxnKeyMap);
+		
+		LOGGER.debug("Time taken for the method postBack - transform to MP interface (millis) " + (System.currentTimeMillis() - curr));
+		curr = System.currentTimeMillis();
 		
 		MerchantTransactions returnedTrxns = null;
 		try {
 			returnedTrxns = svc.postCheckoutTransaction(mpData.getPostbackurl(), reqTrxns);
-
+			LOGGER.debug("Time taken for the method postBack - external postback (millis) " + (System.currentTimeMillis() - curr));
+			curr = System.currentTimeMillis();
 			logMPPostbackEwalletRequestResponse(mpData, xmlToString(reqTrxns), xmlToString(returnedTrxns), MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_SUCCESS, postTrxns);
+			LOGGER.debug("Time taken for the method postBack - external postback success loggiing (millis) " + (System.currentTimeMillis() - curr));
+			curr = System.currentTimeMillis();
 		} catch (MasterPassServiceRuntimeException e) {
 
 			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.getMessage(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
+			LOGGER.debug("Time taken for the method postBack - external postback failure loggiing (millis) " + (System.currentTimeMillis() - curr));
+			curr = System.currentTimeMillis();
 			return transformErrorRespToEwalletInterface(e.getMessage(), trxnKeyMap);
 		} catch (MCOpenApiRuntimeException e) {
 
 			logMPPostbackEwalletRequestResponse(mpData,xmlToString(reqTrxns), e.getMessage(),MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_FAIL, postTrxns);
+			LOGGER.debug("Time taken for the method postBack - external postback failure loggiing 2 (millis) " + (System.currentTimeMillis() - curr));
+			curr = System.currentTimeMillis();
 			return transformErrorRespToEwalletInterface(e.getMessage(), trxnKeyMap);
 		}
 		
@@ -2305,7 +2321,9 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		if (returnedTrxns != null) {
 			result = transformRespToEwalletInterface(returnedTrxns, ewalletKeyMap, isGALMap);
 		}
-		
+		logMPPostbackEwalletRequestResponse(mpData, xmlToString(reqTrxns), xmlToString(returnedTrxns), MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_SUCCESS, postTrxns);
+		LOGGER.debug("Time taken for the method postBack - result transformation (millis) " + (System.currentTimeMillis() - curr));
+		LOGGER.debug("Time taken for the method postBack (millis) " + (System.currentTimeMillis() - time_method_start));
 		return result;
 	}
 	
