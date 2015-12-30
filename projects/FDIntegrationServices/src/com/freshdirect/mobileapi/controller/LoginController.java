@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -275,8 +276,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
             throw new NoSessionException("No session");
         }
 		try {
-		
-       boolean success= FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),requestMessage.isAcknowledge(), requestMessage.getAckType());
+
+       boolean success= FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),requestMessage.isAcknowledge(), EnumEStoreId.valueOfContentId("FD".equalsIgnoreCase(requestMessage.getAppSource())?"FreshDirect":requestMessage.getAppSource()).getContentId());
 		
        if(!success){
 		 responseMessage = getErrorMessage(ERR_AUTHENTICATION,MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
@@ -589,7 +590,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		((LoggedIn) responseMessage).setTotalOrderCount(user
 				.getTotalOrderCount());
 		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
-			FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, "FD");
+			FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
 			((LoggedIn) responseMessage).setTcAcknowledge(true);
 		}else{
 		((LoggedIn) responseMessage).setTcAcknowledge(user

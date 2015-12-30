@@ -83,11 +83,20 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
     id: "checkout",
     submit: function (e) {
+    	
+
       var formData = fd.modules.common.forms.serialize('checkout');
+
 
       e.preventDefault();
       e.stopPropagation();
-
+     
+      if(!fd.terms){
+      	  doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+      	  $('#cartcontent.checkout, .checkout-contentheader, [fdform="checkout"] button').attr('disabled', null);
+      	  return false;
+        }
+     
       formData.action = 'placeOrder';
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
@@ -112,6 +121,8 @@ var FreshDirect = FreshDirect || {};
         FORMS.releaseLockFormResubmit(FORMS.getEl(id));
       }
     }
+    
+    
   });
 
   fd.utils.registerModule('expressco', 'checkout', {

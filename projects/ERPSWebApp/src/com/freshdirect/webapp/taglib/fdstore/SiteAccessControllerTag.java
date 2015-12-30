@@ -25,6 +25,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -40,6 +41,7 @@ import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
@@ -324,10 +326,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					session.setAttribute("nextSuccesspage", request.getParameter("nextSuccesspage"));
 					session.setAttribute("LITESIGNUP_COMPLETE", "true");
 					}else{
-					session.setAttribute("fdTcAgree", true);
 					session.setAttribute("TCAGREE_COMPLETE", "true");
-					
 					}
+					session.setAttribute("fdTcAgree", true);
 				} else if ("checkByAddressEX".equalsIgnoreCase(action)) {
 					checkByAddress(request, result, false);
 				} else if ("doPrereg".equalsIgnoreCase(action)) {
@@ -628,7 +629,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private void setFDTcAccept(HttpServletRequest request, ActionResult result) {
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
 		try {
-			boolean success= FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
+			
+			boolean success= FDCustomerManager.updateAck(user.getIdentity(),true, EnumEStoreId.valueOfContentId(ContentFactory.getInstance().getStoreKey().getId()).getContentId());
 		} catch (FDResourceException e) {
 			LOGGER.error("Error performing action setFDTcAccept", e);
 			result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));

@@ -7947,7 +7947,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		boolean status = true;
 		try {
 			conn = getConnection();
-			status=FDUserDAO.storeFDTCAgreeDate(conn, identity.getErpCustomerPK(), new Date());
+			status=FDUserDAO.storeFDTCAgreeDate(conn, identity.getFDCustomerPK(), ackType);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

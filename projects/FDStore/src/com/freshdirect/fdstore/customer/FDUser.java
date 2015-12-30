@@ -305,14 +305,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setTcAcknowledgeDate(Date tcAcknowledgeDate) {
 		this.tcAcknowledgeDate = tcAcknowledgeDate;
+		
 	}
 
 	public boolean getTcAcknowledge() {
-		return tcAcknowledge;
+		return this.cachedFDCustomer.getCustomerEStoreModel().getTcAcknowledge();
 	}
 
 	public void setTcAcknowledge(boolean tcAcknowledge) {
-		this.tcAcknowledge = tcAcknowledge;
+		//this.tcAcknowledge = tcAcknowledge;
+		this.cachedFDCustomer.getCustomerEStoreModel().setTcAcknowledge(true);
 	}
 
 

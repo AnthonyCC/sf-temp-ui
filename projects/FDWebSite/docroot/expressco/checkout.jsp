@@ -9,6 +9,7 @@
 <%  //--------OAS Page Variables-----------------------
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
+  Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <%
@@ -23,6 +24,9 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
   <tmpl:put name="jsmodules">
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+    <script>
+    FreshDirect.terms = <%=fdTcAgree%>;
+    </script>
     <jwr:script src="/expressco.js" useRandomParam="false" />
 
     <script>
@@ -52,7 +56,11 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		};
 		asyncPixelWithTimeout();
 		</script>
-	 
+ 	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+		<script type="text/javascript">
+		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+		</script>
+	<%}%>
   </tmpl:put>
   
   <tmpl:put name="globalnav">

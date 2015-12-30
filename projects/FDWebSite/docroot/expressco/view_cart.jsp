@@ -7,6 +7,7 @@
 <%  //--------OAS Page Variables-----------------------
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/view_cart/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
+  Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
 <fd:CheckLoginStatus />
@@ -31,8 +32,14 @@
 		};
 		asyncPixelWithTimeout();
 		</script>	
+	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+		<script type="text/javascript">
+		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
+		</script>
+	<%}%>
   </tmpl:put>
 
+  
   <tmpl:put name="globalnav">
     <%@ include file="/common/template/includes/globalnav.jspf" %>
   </tmpl:put>

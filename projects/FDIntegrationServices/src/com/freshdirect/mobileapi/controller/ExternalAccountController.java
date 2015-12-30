@@ -15,9 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -676,7 +678,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 	private void checkTermsCond(SessionUser user, Message responseMessage){
 		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
 			try {
-				FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, "FD");
+				FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

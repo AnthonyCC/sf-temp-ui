@@ -17,8 +17,10 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
@@ -136,20 +138,26 @@ public class LoginControllerTag extends AbstractControllerTag {
 				fdLoginAttempt++;
 			}
 			
-			 
+			
+			
+			
+			
 			 // APPDEV-4381 TC Accept.
 			if(!FDStoreProperties.isTCEnabled()){
 				try {
+		
 					if(user !=null&&!user.getTcAcknowledge())
-					FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
+					FDCustomerManager.updateAck(user.getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
 					
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}else{
+
 			 if(user !=null&&!user.getTcAcknowledge()){
-					if (FDStoreProperties.isSocialLoginEnabled()) {
+				
+					if (FDStoreProperties.isSocialLoginEnabled()&&updatedSuccessPage.indexOf("purchase_giftcard.jsp")==-1 ) {
 						 this.setSuccessPage(newURL+"/registration/tcaccept_lite.jsp");
 						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
 						session.setAttribute("fdTcAgree", false);
@@ -158,8 +166,8 @@ public class LoginControllerTag extends AbstractControllerTag {
 					//	session.setAttribute("nextSuccesspage", updatedSuccessPage);
 						session.setAttribute("fdTcAgree", false);
 					}
-			 }
-			}
+			 }				
+		}
 	    	
         } else {
 			fdLoginAttempt++;

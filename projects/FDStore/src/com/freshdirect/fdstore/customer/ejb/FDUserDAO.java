@@ -425,7 +425,7 @@ public class FDUserDAO {
 			user.setReferralCustomerId(rs.getString("referer_customer_id"));
 			
 			user.setDefaultListId( rs.getString( "default_list_id" ) );
-			user.setTcAcknowledge(NVL.apply(rs.getString("fd_tc_agree"), "").equalsIgnoreCase("X")?true:false);
+			//user.setTcAcknowledge(NVL.apply(rs.getString("fd_tc_agree"), "").equalsIgnoreCase("X")?true:false);
 			user.setRafClickId(rs.getString("raf_click_id"));
 			user.setRafPromoCode(rs.getString("raf_promo_code"));
 			
@@ -1282,6 +1282,29 @@ public class FDUserDAO {
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating FD_TC_AGREE_DATE date", e);
+			status=false;
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+		return status;
+		
+	}
+	public static boolean storeFDTCAgreeDate(Connection conn,String fdCustomerPK, String ackType) {
+
+		boolean status = true;
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE set TC_AGREE_DATE=?, TC_AGREE=? WHERE FDCUSTOMER_ID=? AND  e_store=?");	
+			ps.setTimestamp(1, new Timestamp(new Date().getTime()));
+			ps.setString(2, "X");
+			ps.setString(3, fdCustomerPK);
+			ps.setString(4, ackType);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating FD_TC_AGREE IN FDCUSTOMER_ESTORE", e);
 			status=false;
 		} finally {
 			try {

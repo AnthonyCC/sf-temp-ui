@@ -17,6 +17,7 @@
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_4_SUBMIT_TOTAL = 970;
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 %>
 
 <%!
@@ -32,12 +33,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	final String actionName = abstractTimeslots ? "modifyStandingOrderTemplate" : "submitOrder";
 	boolean isEBTPayment = false;
 	
+	
 	if(null !=user){
 		user.setRefreshCouponWalletRequired(true);
 		user.setCouponEvaluationRequired(true);
 	}
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
+
 <tmpl:put name="seoMetaTag" direct="true">
 	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
 </tmpl:put>
@@ -96,6 +99,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
+	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+				<script type="text/javascript">
+				$jq(document).on('ready',  function() {
+					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+				});
+				</script>
+	<%}%>
 
 <div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >

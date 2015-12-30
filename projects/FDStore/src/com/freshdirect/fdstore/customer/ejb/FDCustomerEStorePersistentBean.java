@@ -88,7 +88,9 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public void load(Connection conn) throws SQLException {
 		EnumEStoreId eStoreId =getCustomerEStoreId();
-		PreparedStatement ps = conn.prepareStatement("SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+
+		PreparedStatement ps = conn.prepareStatement("SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, eStoreId.getContentId());
 		ResultSet rs = ps.executeQuery();
@@ -97,7 +99,8 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 			model.seteStoreId(eStoreId);
 			model.setDefaultShipToAddressPK(rs.getString("DEFAULT_SHIPTO"));
 			model.setDefaultPaymentMethodPK(rs.getString("DEFAULT_PAYMENT"));
-			model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));			
+			model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));		
+			model.setTcAcknowledge("X".equalsIgnoreCase(rs.getString("TC_AGREE")) ? true : false);
 			model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
 			if(EnumEStoreId.FDX.equals(eStoreId)){
 				model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);

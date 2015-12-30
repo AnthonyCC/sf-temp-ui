@@ -58,6 +58,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private String defaultShipToAddressPK;
 	private String defaultPaymentMethodPK;
 	private String defaultDepotLocationPK;
+	private boolean tcAcknowledgeToStore;
 	private FDProfilePersistentBean profile;
 	private String passwordHint;
 	private String depotCode;
@@ -407,6 +408,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			this.defaultShipToAddressPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultShipToAddressPK();
 			this.defaultPaymentMethodPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultPaymentMethodPK();
 			this.defaultDepotLocationPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultDepotLocationPK();
+			this.tcAcknowledgeToStore = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getTcAcknowledge();
 		}
 	}
 

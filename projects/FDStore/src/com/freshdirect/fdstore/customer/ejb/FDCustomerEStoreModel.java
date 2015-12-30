@@ -42,8 +42,10 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean offersNotification;
 	private Boolean fdxOffersNotification;
 	private String crmStore;
+	private Boolean tcAcknowledge;
 	private Boolean emailOptIn;
 	private Boolean fdxEmailOptIn;
+
 	
 	
 
@@ -268,6 +270,15 @@ public class FDCustomerEStoreModel extends ModelSupport{
 		this.eStoreId = eStoreId;
 	}
 
+	public Boolean getTcAcknowledge() {
+		return tcAcknowledge;
+	}
+
+	public void setTcAcknowledge(Boolean tcAcknowledge) {
+		this.tcAcknowledge = tcAcknowledge;
+	}
+
+
 	public Boolean getEmailOptIn() {
 		return emailOptIn;
 	}
@@ -283,6 +294,7 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	public void setFdxEmailOptIn(Boolean fdxEmailOptIn) {
 		this.fdxEmailOptIn = fdxEmailOptIn;
 	}
+
 	
 	
 

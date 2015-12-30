@@ -95,6 +95,11 @@
 
 
 	<center>
+		<script language="javascript">
+		if(typeof top.FreshDirect.terms !== "undefined"){
+				top.FreshDirect.terms=<%=((Boolean)session.getAttribute("fdTcAgree")).booleanValue()%>;
+		}
+		</script>
 
 	<%
 		String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
@@ -129,6 +134,7 @@
 			if(typeof window.top.Modalbox.hide() === "undefined"){
 				//$jq('#MB_overlay').css('display','none');
 				//$jq('#MB_window').css('opacity','0');
+				
 				this.top.close();
 			}else{
 				
