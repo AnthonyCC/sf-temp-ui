@@ -52,21 +52,11 @@ public class LoginServlet extends HttpServlet {
 			FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
 			
 			
-			if(!FDStoreProperties.isTCEnabled()){
-				try {
-					if(user !=null&&!user.getTcAcknowledge())
-					FDCustomerManager.updateAck(user.getIdentity(),true, "FD");
-					
-				} catch (FDResourceException e) {
-					
-					e.printStackTrace();
-				}
-			}else{
+			
 			 if(user !=null&&!user.getTcAcknowledge()){
 				 loginResponse.setMessage("TcAgreeFail");
 					
 			 }
-			}
 			
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {

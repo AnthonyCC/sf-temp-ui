@@ -589,13 +589,10 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		((LoggedIn) responseMessage).setCohort(user.getCohort());
 		((LoggedIn) responseMessage).setTotalOrderCount(user
 				.getTotalOrderCount());
-		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
-			FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
-			((LoggedIn) responseMessage).setTcAcknowledge(true);
-		}else{
+		
 		((LoggedIn) responseMessage).setTcAcknowledge(user
 				.getTcAcknowledge());
-		}
+		
 		// FDX-1873 - Show timeslots for anonymous address
 				boolean deliveryAddr = setDeliveryAddress(user);
 				((LoggedIn) responseMessage).setAnonymousAddressSetFromAcc(deliveryAddr);

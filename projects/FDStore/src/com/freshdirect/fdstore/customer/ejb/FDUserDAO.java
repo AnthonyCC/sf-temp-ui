@@ -1302,7 +1302,15 @@ public class FDUserDAO {
 			ps.setString(2, "X");
 			ps.setString(3, fdCustomerPK);
 			ps.setString(4, ackType);
-			ps.execute();
+			int count = ps.executeUpdate();
+			if(count <= 0){
+				ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, TC_AGREE_DATE, TC_AGREE) values (?,?,?,?)");
+				ps.setString(1, fdCustomerPK);
+				ps.setString(2, ackType);
+				ps.setTimestamp(3, new Timestamp(new Date().getTime()));
+				ps.setString(4, "X");
+				ps.execute();			
+			}
 		} catch (Exception e) {
 			LOGGER.error("Error updating FD_TC_AGREE IN FDCUSTOMER_ESTORE", e);
 			status=false;

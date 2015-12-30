@@ -676,17 +676,7 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 	}
 	
 	private void checkTermsCond(SessionUser user, Message responseMessage){
-		if(!FDStoreProperties.isTCEnabled()&&!user.getTcAcknowledge()){
-			try {
-				FDCustomerManager.updateAck(user.getFDSessionUser().getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			((LoggedIn) responseMessage).setTcAcknowledge(true);
-		}else{
 		((LoggedIn) responseMessage).setTcAcknowledge(user
 				.getTcAcknowledge());
-		}
 	}
 }

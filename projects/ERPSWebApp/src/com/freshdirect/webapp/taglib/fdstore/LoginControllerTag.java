@@ -143,17 +143,17 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			
 			 // APPDEV-4381 TC Accept.
-			if(!FDStoreProperties.isTCEnabled()){
-				try {
-		
-					if(user !=null&&!user.getTcAcknowledge())
-					FDCustomerManager.updateAck(user.getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
-					
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}else{
+//			if(!FDStoreProperties.isTCEnabled()){
+//				try {
+//		
+//					if(user !=null&&!user.getTcAcknowledge())
+//					FDCustomerManager.updateAck(user.getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
+//					
+//				} catch (FDResourceException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}else{
 
 			 if(user !=null&&!user.getTcAcknowledge()){
 				
@@ -167,7 +167,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 						session.setAttribute("fdTcAgree", false);
 					}
 			 }				
-		}
+//		}
 	    	
         } else {
 			fdLoginAttempt++;

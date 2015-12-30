@@ -309,6 +309,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public boolean getTcAcknowledge() {
+		if(!FDStoreProperties.isTCEnabled()){
+			return true;
+		}
 		return this.cachedFDCustomer.getCustomerEStoreModel().getTcAcknowledge();
 	}
 
