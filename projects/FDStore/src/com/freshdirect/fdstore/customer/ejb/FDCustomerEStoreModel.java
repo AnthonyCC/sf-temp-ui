@@ -42,9 +42,9 @@ public class FDCustomerEStoreModel extends ModelSupport{
 	private Boolean offersNotification;
 	private Boolean fdxOffersNotification;
 	private String crmStore;
+	private Boolean emailOptIn = false;
+	private Boolean fdxEmailOptIn = false;
 	private Boolean tcAcknowledge;
-	private Boolean emailOptIn;
-	private Boolean fdxEmailOptIn;
 
 	
 	
