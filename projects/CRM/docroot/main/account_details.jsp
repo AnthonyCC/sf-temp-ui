@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
@@ -64,6 +65,7 @@ function blinkIt() {
 <crm:GetCurrentAgent id="agent">
 
 <% ErpCustomerInfoModel custInfo = customer.getCustomerInfo();
+FDCustomerEStoreModel fdCustomerEStoreModel =fdCustomer.getCustomerEStoreModel();
 
 String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString();
 
@@ -318,8 +320,10 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                             <td><%=fdCustomer.getPasswordHint()%><br><span class="field_note">Town of birth or Mother's Maiden Name</span></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><hr class="gray1px"><b>Options:</b><%= !custInfo.isReceiveNewsletter() && !custInfo.isEmailPlaintext() ? " <span class=\"field_note\">Notification and email settings.</span>" : ""%>
-							<%= custInfo.isReceiveNewsletter() ? "<br>&nbsp;&nbsp;&nbsp;Included on FD emails/newsletters" : ""%>
+                            <!-- td colspan="2"><hr class="gray1px"><b>Options:</b><%= !custInfo.isReceiveNewsletter() && !custInfo.isEmailPlaintext() ? " <span class=\"field_note\">Notification and email settings.</span>" : ""%> -->
+                            <td colspan="2"><hr class="gray1px"><b>Options:</b><%= (!fdCustomerEStoreModel.getEmailOptIn() || !fdCustomerEStoreModel.getFdxEmailOptIn()) && !custInfo.isEmailPlaintext() ? " <span class=\"field_note\">Notification and email settings.</span>" : ""%>
+							<%= fdCustomerEStoreModel.getEmailOptIn() ? "<br>&nbsp;&nbsp;&nbsp;Included on FD emails/newsletters" : ""%>
+							<%= fdCustomerEStoreModel.getFdxEmailOptIn() ? "<br>&nbsp;&nbsp;&nbsp;Included on FDX emails/newsletters" : ""%>
 							<%= custInfo.isEmailPlaintext() ? "<br>&nbsp;&nbsp;&nbsp;Send TEXT-only email" : ""%>
 							<%= hasNewsletterSubscription ? "<br>&nbsp;&nbsp;&nbsp;Subscribed to President\'s Picks newsletters" : "" %>
 							</td>

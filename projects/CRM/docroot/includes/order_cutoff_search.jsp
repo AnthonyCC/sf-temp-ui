@@ -50,7 +50,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("cutoff
 							</SELECT>
 							<SELECT name="year" required="true">
 								<option value="">Year</option>
-								<% 	for (int i=2005; i<2016; i++) { %>
+								<% 	for (int i=2005; i<2017; i++) { %>
 								<option value="<%= i %>" <%= (i==year)?"SELECTED":"" %>><%= i %></option>
 								<%	} %>
 							</SELECT>
