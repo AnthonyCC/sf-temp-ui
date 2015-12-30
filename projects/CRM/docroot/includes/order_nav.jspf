@@ -26,8 +26,10 @@
  <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
  
  <!--jQuery dependencies-->
+ <!--  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+-->
 <!--ParamQuery Grid files-->
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/hot-sneaks/jquery-ui.css" />
 <link rel="stylesheet" href="/assets/javascript/paramquery-2.0.3/pqgrid.min.css" />
@@ -354,7 +356,7 @@ boolean hasCase = false;
 
 
 function reSendInvoiceEmail(order) {
-		$.ajax({
+		$jq.ajax({
 		cache : false,
 		type : "POST",
 		url : "/api/ReSendEmail.jsp",
