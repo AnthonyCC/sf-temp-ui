@@ -210,9 +210,12 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 			<select id="yeardropdown" name="year">
 			</select> 
             &nbsp;
+            <% if ((globalContextStore).equals("FDX")) { %><span style="display:none;"><% } %>
             Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
+            <% if ((globalContextStore).equals("FDX")) { %></span><% } %>
             &nbsp;
-            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            <%= ((globalContextStore).equals("FDX")) ? "Trip" : "Route" %>
+             <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
             &nbsp;
             Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
 			&nbsp;

@@ -10,6 +10,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ include file="/includes/i_globalcontext.jspf" %>
 
 <% 
 // remove current cust
