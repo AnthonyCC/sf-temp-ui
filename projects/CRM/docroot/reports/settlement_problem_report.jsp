@@ -27,15 +27,16 @@ String ed = request.getParameter("failure_end_day");
 String ey = request.getParameter("failure_end_year");  
 
 // seet start date default to 1 week prior --> this speeds up query
+Calendar cal = Calendar.getInstance();
 if (sm == null || sd == null || sy == null) {	
 	// set start date to 7 days prior (1 week)
-	Calendar cal = Calendar.getInstance();
 	cal.setTime(new Date());
 	cal.add(Calendar.DATE, -7);
 	sd = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 	sm = String.valueOf(cal.get(Calendar.MONTH)+1);
 	sy = String.valueOf(cal.get(Calendar.YEAR));	
 }
+int curryear  = cal.get(Calendar.YEAR);
 
 
 %>
@@ -73,7 +74,7 @@ if (sm == null || sd == null || sy == null) {
 	                <option value="">Year</option>
 	                            <%  
 								int failureStartYear = (sy != null && !"".equals(sy)) ? Integer.parseInt(sy) : -1;
-	                            for (int i=2005; i<2016; i++) { %>
+	                            for (int i=2005; i<= curryear+1; i++) { %>
 	                <option value="<%= i %>" <%= (i==failureStartYear)?"selected":"" %>><%= i %></option>
 	                            <%  } %>
 	            </select>&nbsp;&nbsp;
@@ -99,7 +100,7 @@ if (sm == null || sd == null || sy == null) {
 	                <option value="">Year</option>
 	                            <%  
 								int failureEndYear = (ey != null && !"".equals(ey)) ? Integer.parseInt(ey) : -1;
-	                            for (int i=2005; i<2016; i++) { %>
+	                            for (int i=2005; i<= curryear+1; i++) { %>
 	                <option value="<%= i %>" <%= (i==failureEndYear)?"selected":"" %>><%= i %></option>
 	                            <%  } %>
 	            </select>&nbsp;&nbsp;

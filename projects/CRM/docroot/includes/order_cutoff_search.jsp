@@ -14,6 +14,7 @@
     int month = today.get(Calendar.MONTH);
     int date  = today.get(Calendar.DATE);
     int year  = today.get(Calendar.YEAR);
+    int curryear  = today.get(Calendar.YEAR);
 %>
 <script>
 <!--
@@ -50,7 +51,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("cutoff
 							</SELECT>
 							<SELECT name="year" required="true">
 								<option value="">Year</option>
-								<% 	for (int i=2005; i<2017; i++) { %>
+								<% 	for (int i=2005; i<= curryear+1; i++) { %>
 								<option value="<%= i %>" <%= (i==year)?"SELECTED":"" %>><%= i %></option>
 								<%	} %>
 							</SELECT>

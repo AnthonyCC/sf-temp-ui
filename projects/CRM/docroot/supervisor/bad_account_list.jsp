@@ -113,6 +113,8 @@ private static int NOTE_MAX_LENGTH = 25;
 
 <%    
 JspTableSorter sort = new JspTableSorter(request);
+Calendar today = Calendar.getInstance();
+int curryear  = today.get(Calendar.YEAR);
 %>
 
 <form name="bad_account_list" method="post">
@@ -221,7 +223,7 @@ JspTableSorter sort = new JspTableSorter(request);
                             <%  
                             String cy = request.getParameter("create_year");  
 							int createYear = (cy != null && !"".equals(cy)) ? Integer.parseInt(cy) : -1;
-                            for (int i=2005; i<2016; i++) { %>
+                            for (int i=2005; i<= curryear+1; i++) { %>
                 <option value="<%= i %>" <%= (i==createYear)?"selected":"" %>><%= i %></option>
                             <%  } %>
             </select>&nbsp;&nbsp;
