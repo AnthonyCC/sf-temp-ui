@@ -169,7 +169,7 @@ public class Checkout {
     public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod) throws FDException {
         boolean isCustomAdded=false;
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.addPaymentMethod(paymentMethod);
+        ResultBundle result = tagWrapper.addPaymentMethodEx(paymentMethod);
         //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
         ActionResult customActionResult = new ActionResult();
         if(result.getActionResult().isFailure()){

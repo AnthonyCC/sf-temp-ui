@@ -255,6 +255,59 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         
         return new ResultBundle(executeTagLogic(), this);
     }
+    
+    public ResultBundle addPaymentMethodEx(PaymentMethodRequest paymentMethod) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CARD_EXP_MONTH, REQ_PARAM_CARD_EXP_YEAR, REQ_PARAM_CARD_BRAND,
+        		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
+        		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
+        		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
+        addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
+        addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER, paymentMethod.getAccountNumber());
+        addRequestValue(REQ_PARAM_ABA_ROUTE_NUMBER, paymentMethod.getAbaRouteNumber());
+        addRequestValue(REQ_PARAM_BANK_NAME, paymentMethod.getBankName());        
+        addRequestValue(REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, null);
+        //addRequestValue(REQ_PARAM_TERMS, paymentMethod.getTerms());
+        addRequestValue(REQ_PARAM_TERMS, "Y");
+        addRequestValue(REQ_PARAM_ACCOUNT_NUMBER_VERIFY, paymentMethod.getAccountNumberVerify());
+        addRequestValue(REQ_PARAM_BANK_ACCOUNT_TYPE, paymentMethod.getBankAccountType());        
+        addRequestValue(REQ_PARAM_ACCOUNT_HOLDER, paymentMethod.getAccountHolder());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_1, paymentMethod.getBillAddress1());
+        addRequestValue(REQ_PARAM_BIL_ADDRESS_2, paymentMethod.getBillAddress2());
+        addRequestValue(REQ_PARAM_BIL_APARTMENT, paymentMethod.getBillApt());        
+        addRequestValue(REQ_PARAM_BIL_CITY, paymentMethod.getBillCity());
+        addRequestValue(REQ_PARAM_BIL_STATE, paymentMethod.getBillState());
+        addRequestValue(REQ_PARAM_BIL_ZIPCODE, paymentMethod.getBillZipCode());        
+        addRequestValue(REQ_PARAM_PAYMENT_METHOD_TYPE, paymentMethod.getPaymentMethodType());
+        addRequestValue(REQ_PARAM_CSV, paymentMethod.getCsv());
+        addRequestValue(REQ_PARAM_BIL_COUNTRY, paymentMethod.getBillingCtry());
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, "false");
+        addRequestValue(REQ_PARAM_IS_PAYMENT_METHOD_DONATION, "false");
+        
+
+        getWrapTarget().setActionName(ACTION_ADD_PAYMENT_METHOD);
+        setMethodMode(true);
+        ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("addPaymentMethodEx[executeTagLogic] :"+ actionResult);
+        String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
+
+        if (actionResult == null) {
+            actionResult = new ActionResult();
+        }
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
+        	LOGGER.debug("addPaymentMethodEx[ERR_AGE_VERIFICATION] :"+ successPage);
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
+                    + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
+        }
+        
+        return new ResultBundle(actionResult, this);
+    }
 
     public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
@@ -443,7 +496,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
-        	LOGGER.debug("setCheckoutDeliveryAddress[ERR_AGE_VERIFICATION] :"+ successPage);
+        	LOGGER.debug("setorderMobileNumber[ERR_AGE_VERIFICATION] :"+ successPage);
             actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
                     + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
