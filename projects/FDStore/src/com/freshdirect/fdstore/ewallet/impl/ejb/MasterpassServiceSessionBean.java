@@ -2321,7 +2321,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 		if (returnedTrxns != null) {
 			result = transformRespToEwalletInterface(returnedTrxns, ewalletKeyMap, isGALMap);
 		}
-		logMPPostbackEwalletRequestResponse(mpData, xmlToString(reqTrxns), xmlToString(returnedTrxns), MASTERPASS_POSTBACK_TXN,MASTERPASS_TXN_SUCCESS, postTrxns);
+		
 		LOGGER.debug("Time taken for the method postBack - result transformation (millis) " + (System.currentTimeMillis() - curr));
 		LOGGER.debug("Time taken for the method postBack (millis) " + (System.currentTimeMillis() - time_method_start));
 		return result;
