@@ -1602,7 +1602,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
         defaults.put(PROP_FDX_APP_APPLE_URL, "https://www.itunes.com");
         
-        defaults.put(PROP_FDX_LOCATIONBAR, "false");
+        defaults.put(PROP_FDX_LOCATIONBAR, "true");
         defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
         
         
