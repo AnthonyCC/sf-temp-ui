@@ -243,7 +243,10 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
 				<div class="text">Change zip code.</div>
-				<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
+				<span id="newzip">
+					<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
+					<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
+				</span>
 			</tmpl:put><%
 			
 
