@@ -1812,7 +1812,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 			// We don't have an identity 
 			return null;
 		}
-		cachedGiftCards = null;
 		if (cachedGiftCards == null) {
 			try {
 				cachedGiftCards = FDCustomerManager.getGiftCards(identity);
