@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties %>
 <%!
 public final String FKAPP_DIR = "/foodkick";
 //public final String ASSETS_DIR = "assets";
@@ -13,10 +14,8 @@ public final String SVG_SRC = "s.jsp?f=";
 IOS (iPhone and iPad) APP LINKS
 */
 
-public final String IOSAPPSTORE_LINK = "https://itunes.apple.com/us/genre/ios/id36?mt=8";
-
 //temporary download app link (MUST REPLACE WHEN IOS APP GOES LIVE):
-public final String FK_IOSAPP_DLINK = "https://itunes.apple.com/us/genre/ios/id36?mt=8";
+public final String FK_IOSAPP_DLINK = FDStoreProperties.getFdxAppUrl_Apple();
 
 /*
 below links will function on IOS devices only.  And also only after they have already installed the foodkick app.

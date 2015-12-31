@@ -7,7 +7,7 @@
 			<div id="carousel_1"></div>
 			<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
 			
-			<button class="appstore_button" onclick="location.href='<%=IOSAPPSTORE_LINK %>'">
+			<button class="appstore_button" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">
 				<%--svg_obj("appstore.svg") --%>
 				<img src="<%=SVG_SRC %>appstore.svg" />
 			</button>
