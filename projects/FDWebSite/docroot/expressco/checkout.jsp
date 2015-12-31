@@ -25,7 +25,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
   <tmpl:put name="jsmodules">
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
     <script>
-    FreshDirect.terms = <%=fdTcAgree%>;
+    FreshDirect.terms = true;
     </script>
     <jwr:script src="/expressco.js" useRandomParam="false" />
 
@@ -58,6 +58,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 		</script>
  	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 		<script type="text/javascript">
+		FreshDirect.terms=<%=fdTcAgree.booleanValue()%>;
 		doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>');
 		</script>
 	<%}%>

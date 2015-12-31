@@ -11,6 +11,8 @@
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String nextSuccesspage = (String)session.getAttribute("nextSuccesspage");
+	
+	Boolean tcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
 	String successPage = "index.jsp";
 	String navPage = NVL.apply(request.getParameter("successPage"), "");
@@ -95,12 +97,13 @@
 
 
 	<center>
+	<% if (tcAgree!=null){ %>
 		<script language="javascript">
 		if(typeof top.FreshDirect.terms !== "undefined"){
-				top.FreshDirect.terms=<%=((Boolean)session.getAttribute("fdTcAgree")).booleanValue()%>;
+				top.FreshDirect.terms=<%=tcAgree.booleanValue()%>;
 		}
 		</script>
-
+	<%} %>
 	<%
 		String firstname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()), "");
 		String lastname = NVL.apply(request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()), "");
@@ -113,6 +116,11 @@
 
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
+			<script language="javascript">
+			if(typeof top.FreshDirect.terms !== "undefined"){
+					top.FreshDirect.terms=true;
+			}
+			</script>
 			<%if(nextSuccesspage==null) {%>
 			<script language="javascript">
 				window.top.location="/index.jsp";
@@ -130,7 +138,9 @@
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
-
+			if(typeof top.FreshDirect.terms !== "undefined"){
+				top.FreshDirect.terms=true;
+			}
 			if(typeof window.top.Modalbox.hide() === "undefined"){
 				//$jq('#MB_overlay').css('display','none');
 				//$jq('#MB_window').css('opacity','0');

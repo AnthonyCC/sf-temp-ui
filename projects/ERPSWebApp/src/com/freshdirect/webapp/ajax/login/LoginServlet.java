@@ -55,6 +55,7 @@ public class LoginServlet extends HttpServlet {
 			
 			 if(user !=null&&!user.getTcAcknowledge()){
 				 loginResponse.setMessage("TcAgreeFail");
+				 request.getSession().setAttribute("fdTcAgree", false);
 					
 			 }
 			

@@ -99,8 +99,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
+<script type="text/javascript">
+				FreshDirect.terms=true;
+</script>
+
 	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 				<script type="text/javascript">
+				FreshDirect.terms=<%=fdTcAgree.booleanValue()%>;
 				$jq(document).on('ready',  function() {
 					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 				});
