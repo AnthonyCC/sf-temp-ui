@@ -348,7 +348,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 				%>
 			
 				<div class="topnavitem" id="topnavitem_help">
-			    	<a href="/help/index.jsp?trk=gnav" style="margin-right: 0px;">Help</a>
+			    	<a href="/help/index.jsp?trk=gnav" style="margin-right: 10px;">Help</a>
 			    </div>    
 			    <div class="topnavitem" id="topnavitem_deliveryInfo">
 			    	<a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
