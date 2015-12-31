@@ -176,22 +176,19 @@ function elements_size_adjuster(){ /* void */
 
 //executed from when the first form of 2 possible is executed.  verifies whether zipcode entered is within FDX territory
 function zonenotification_zip(zip_text){ /* String */
+	var form_id = "#ziphandler";
+	var action_url = $(form_id).attr("action");
+	
 	$.ajax({
-		//url:'/api/locationhandler.jsp',
-		url:'/foodkick/ajax/fdx_zone.jsp',
+		url: action_url,
 		async:false,
-		/*data:{
-			action:'ifDeliveryZone',
-			noMobile: 'FALSE',
-			zipcode: zip_text
-		}*/
 		data:{
 			zipCheck: zip_text
 		}
 	}).done(function(data){
 		$("#zipcode_lh").val( $("#zipcode_zh").val() );
 		
-		$("#ziphandler").fadeOut();
+		$(form_id).fadeOut();
 		
 		var form_next = "#locationhandler";
 		
@@ -206,17 +203,22 @@ function zonenotification_zip(zip_text){ /* String */
 
 //executed for second of 2 possible forms to add someone to the records
 function zonenotification_zip_and_email(param_obj){ /* Object */
+	var form_id = "#locationhandler";
+	var action_url = $(form_id).attr("action");
+	
 	$.ajax({
-		url:'/api/locationhandler.jsp',
+		url: action_url,
 		data:{
 			action:'futureZoneNotificationFdx',
 			zipcode: param_obj.zip_text,
 			email: param_obj.email_text
 		}
 	}).done(function(data){
-		$("#locationhandler").fadeOut();
+		$(form_id).fadeOut();
 		
-		$("#form_congratulations").fadeIn();
+		var form_next = "#form_congratulations";
+		
+		$(form_next).fadeIn();
 	});
 }
 
@@ -368,10 +370,10 @@ $(function(){
 	//this should take care of any loose end browsers that lack html5 form validation 
 	$('form#ziphandler, form#locationhandler').validate({
 		onkeyup: false,
-		errorElement: "div",
+		errorElement: "label",
 
 		errorPlacement: function(error, element){
-			error.insertBefore(element);
+			error.insertAfter(element);
 		}
 	});
 	
@@ -389,15 +391,13 @@ $(function(){
 	//$('form#ziphandler input, form#locationhandler input').on('keyup blur', function(){ // fires on every keyup & blur
 	//$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
 	$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('keyup', function(){ // fires on every keyup & blur
-		var button_id = $(this).siblings("button").first().attr("id");
+		var button_id = $(this).parents("form").find('button[type="submit"]').attr("id");
 
-		//if( $(this).val().length > 0 ){
-			if( $(this).valid() ){ // checks form for validity
-				button_enableDisable( "#"+button_id, true);
-			}else{
-				button_enableDisable( "#"+button_id, false);
-			}
-		//}
+		if( $(this).valid() && ($(this).parents("form").find("input.error").length < 1) ){ // checks form for validity, including with sibling form elements
+			button_enableDisable( "#"+button_id, true);
+		}else{
+			button_enableDisable( "#"+button_id, false);
+		}
 	});	
 	
 	//lets make placeholders for fields work in IE 9 and maybe below

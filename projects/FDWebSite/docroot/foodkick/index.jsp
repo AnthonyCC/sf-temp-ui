@@ -29,19 +29,31 @@
 					<img src="<%=SVG_SRC %>section_3/arrow.svg" class="svg_arrow" />
 				</figure>
 				<article>
-					<form action="/api/locationhandler.jsp" method="post" id="ziphandler">
+					<form action="/foodkick/ajax/fdx_zone.jsp" method="post" id="ziphandler">
 						<p>We're expanding fast. Check your ZIP to see if we're in your hood.</p>
 
-						<input type="text" name="zipcode" id="zipcode_zh" class="required zipcode" data-msg="invalid zipcode" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required autocomplete="off" />
+						<div class="field_holders">
+							<input type="text" name="zipcode" id="zipcode_zh" class="required zipcode" data-msg="invalid zipcode"
+							placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'"
+							onkeyup="numbersOnly(this);" required autocomplete="off" />
+						</div>
 						
 						<button id="submit_ziphandler" type="submit" autocomplete="off" class="button_disabled" disabled>Check</button>
 					</form>
+					
 					<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
 						<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
 
-						<input type="text" name="zipcode_lh" id="zipcode_lh" class="required zipcode" data-msg="invalid zipcode" placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'" onkeyup="numbersOnly(this);" required />
+						<div class="field_holders">
+							<input type="text" name="zipcode_lh" id="zipcode_lh" class="required zipcode" data-msg="invalid zipcode"
+							placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'"
+							onkeyup="numbersOnly(this);" required />
+						</div>
 						
-						<input type="email" type="email" name="email_lh" id="email_lh" class="required custom_email" data-msg="invalid email" placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+						<div class="field_holders">
+							<input type="email" type="email" name="email_lh" id="email_lh" class="required custom_email" data-msg="invalid email"
+							placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+						</div>
 
 						<button id="submit_locationhandler" type="submit" class="button_disabled" disabled>Submit</button>
 						<br/>
