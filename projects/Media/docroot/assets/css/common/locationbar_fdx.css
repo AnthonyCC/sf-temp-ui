@@ -56,7 +56,8 @@
 	#location-email {
 		margin: 0;
 		height: 24px;
-		width: 130px;
+		/*width: 130px;*/
+		width: calc(100% - 115px);
 		padding: 3px 7px;
 		font-size: 12px;
 		background-color: #eee;
@@ -68,7 +69,8 @@
 	}
 	#location-submit, #location-submit:active {
 		width: 88px;
-		height: 32px;
+		height: 46px;
+		margin-top: 7px;
 		font-size: 13px;
 	}
 	#location-submit:hover {
@@ -235,9 +237,11 @@
 		clear: both;
 		font-weight:bold;
 		border-radius: 3px;
+		width:calc(100% - 40px);
 	}
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
+		width:100%;
 	}
 	
 	.signUpButton{
@@ -350,6 +354,7 @@
 	position: relative;
 	float: left;
 	padding-left: 10px;
+	width:450px;
 }
 
  #topInputFindButton_fdx {
@@ -620,10 +625,10 @@
 	min-height: 156px;
 }
 #locabar_addresses_choices {
-	width: 300px;
+	/*width: 300px;*/
 	overflow-y: auto;
 	overflow-x: hidden;
-	max-height: 500px;
+	max-height: 350px;
 }
 #locabar_addresses_choices .ui-selectmenu-open {
 	position: static;
@@ -961,12 +966,41 @@ option.address-icon {
 }
 #nodeliver-form {
 	padding: 20px;
+	display:table;
+	width:100%;
 }
+#nodeliver-form > div{
+	display:inline-block;
+	width:calc(33% - 30px);
+	vertical-align:bottom;
+}
+#nodeliver-form > div.section-warning{
+	margin-bottom: 6px;
+	width: 23%;
+}
+#nodeliver-form .nodeliver-form input.location-email-text{
+	border:none;
+	height:40px;
+	font-weight:bold;
+	font-size: 16px;
+	margin-top: 7px;
+}
+#nodeliver-form #newzip{
+	width: 100%;
+}
+#nodeliver-form #newzip #newziptext{
+	width: calc(100% - 125px);
+}
+
+#nodeliver-form form.n div.text13{
+	white-space:nowrap;
+}
+
 .alerts #newzip {
 	vertical-align: top;
 }
 .alerts #location-email {
-	width: 217px;
+	/*width: 217px;*/
 }
 
 .hasFDX .top-nav {

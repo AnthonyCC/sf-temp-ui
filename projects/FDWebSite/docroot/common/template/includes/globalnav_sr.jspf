@@ -111,13 +111,13 @@ if(user != null) {
 					}
 					*/
 				%>
-				<div class="searchform-cont" style="width: <%= searchBaseWidth %>px;">
+				<div class="searchform-cont">
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<%
 							{
 							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
 							%>
-								<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>" style="width: <%= searchBaseWidth-49 %>px" />
+								<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>" />
 							<%
 							}
 						%>
