@@ -37,13 +37,13 @@ body{
 	display: block;
 	float: left;
 	clear: left;
-	width: 159px;
+	/*width: 159px;*/
   /*margin-bottom: 6px;*/
 }
 
 .globalnav_top a.logo img{
 	display: block;
-	width: 159px;
+	/*width: 159px;*/
 	padding-bottom: 9px;
 }
 
