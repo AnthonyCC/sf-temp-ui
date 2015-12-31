@@ -473,7 +473,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 					
 					<div style="display: inline-block;">
 						<div class="locabar-cart-total">
-							<div>&nbsp;</div>
+							<!-- <div>&nbsp;</div> -->
 							<div class="locabar-popupcart-total">$0.00</div>
 							<div class="locabar-down-arrow"></div>
 						</div>

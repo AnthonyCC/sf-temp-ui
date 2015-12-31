@@ -82,8 +82,12 @@
 		border: none;
 	}
 	#popupcart .body {
-		margin-left: 15px;
-		margin-right: 15px;
+		/*margin-left: 15px;
+		margin-right: 15px;*/
+	}
+	#popupcart .body th, #popupcart .body td{
+		padding-left: 15px;
+		padding-right: 15px;
 	}
 	#popupcart .section th>div {
 		padding-left: 0;
@@ -437,6 +441,11 @@
 	border: 2px solid #6AAA6D;
 }
 
+.locabar-cart-count-cont .locabar-circle-cont{
+	top: 2px;
+	margin-left:-5px;
+}
+
 .locabar-popupcart-total {
 	display: inline-block;
 	font-weight: bold;
@@ -475,6 +484,8 @@
 	height: 20px;
 	width: 18px;
 	background-repeat: no-repeat;
+	top: 8px;
+    position: relative;
 }
 .locabar-down-arrow {
 	display: inline-block;
@@ -709,6 +720,7 @@
 .locabar-cart-count-cont {
 	display: inline-block;
 	width: 45px;
+	margin-right:5px;
 }
 
 #locabar_addresses_trigger, #locabar_popupcart_trigger, #locabar_user_trigger {
