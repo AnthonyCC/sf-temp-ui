@@ -323,7 +323,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 				<div style="display: inline-block;" class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
-						<div class="locabar-addresses-addzip">a test
+						<div class="locabar-addresses-addzip">
 							<%
 							/* it's possible to not have the selected address in the address list, so check that as well */
 							if (user!=null && user.getLevel() != FDUserI.GUEST && foundSelectedAddress) { %>
