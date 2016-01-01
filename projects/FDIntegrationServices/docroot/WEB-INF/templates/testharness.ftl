@@ -289,6 +289,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/delete/");
   	$("#payload").val('{ "paymentMethodId" : ""}');
   	
+  } else if (loaddata == "DeletePaymentMethodEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/deleteex/");
+  	$("#payload").val('{ "paymentMethodId" : ""}');
+  	
   } else if (loaddata == "AddDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/add/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "", "doorman":"false", "dlvServiceType" : "HOME"}');
@@ -325,6 +329,14 @@ function loadStuff() {
   	
   } else if (loaddata == "CheckoutDeleteDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/delete/");
+  	$("#payload").val('{ "shipToAddressId" : ""}');
+  	
+  } else if (loaddata == "DeleteDeliveryAddressEx") {
+  	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/deleteex/");
+  	$("#payload").val('{ "shipToAddressId" : ""}');
+  	
+  } else if (loaddata == "CheckoutDeleteDeliveryAddressEx") {
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/deleteex/");
   	$("#payload").val('{ "shipToAddressId" : ""}');
   	
   } else if (loaddata == "OrderDetail") {
@@ -1111,6 +1123,7 @@ function doStuff() {
   <option value="AddAndSetDeliveryAddress">CHECKOUT - Add and Set Delivery Address</option>
   <option value="CheckoutEditDeliveryAddress">CHECKOUT - Edit Delivery Address</option>
   <option value="CheckoutDeleteDeliveryAddress">CHECKOUT - Delete Delivery Address</option>
+  <option value="CheckoutDeleteDeliveryAddressEx">CHECKOUT - Delete Delivery Address Ex</option>
   <option value="CheckoutSetOrderLevelMobileNumberEx">CHECKOUT- Set Order Level Mobile Number Ex</option>
   <option value="CheckoutSetOrderLevelMobilePreferencesEx">CHECKOUT- Set Order Level Mobile Preferences Ex</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>
@@ -1128,6 +1141,7 @@ function doStuff() {
   <option value="EditPaymentMethod">CHECKOUT - Edit Payment Method</option>
   <option value="SavePaymentMethod">CHECKOUT - Save Payment Method</option>
   <option value="DeletePaymentMethod">CHECKOUT - Delete Payment Method</option>
+  <option value="DeletePaymentMethodEx">CHECKOUT - Delete Payment Method Ex</option>
   <option value="OrderDetail">CHECKOUT - Order Detail</option>
   <option value="ReviewOrderDetail">CHECKOUT - Review Order Detail</option>
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
@@ -1231,10 +1245,12 @@ function doStuff() {
   <option value="EditDeliveryAddress">ACCOUNT - Edit Delivery Address</option>
   <option value="SaveDeliveryAddress">ACCOUNT - Save Delivery Address</option>
   <option value="DeleteDeliveryAddress">ACCOUNT - Delete Delivery Address</option>  
+  <option value="DeleteDeliveryAddressEx">ACCOUNT - Delete Delivery Address Ex</option>  
   <option value="AddPaymentMethod">ACCOUNT - Add Payment Method</option>
   <option value="AddPaymentMethodEx">ACCOUNT - Add Payment Method Ex</option>
   <option value="EditPaymentMethod">ACCOUNT - Edit Payment Method</option>
   <option value="DeletePaymentMethod">ACCOUNT - Delete Payment Method</option>
+  <option value="DeletePaymentMethodEx">ACCOUNT - Delete Payment Method Ex</option>
   <option value="AcceptDeliveryPassTermsAndConditions">ACCOUNT - Accept DeliveryPass TermsAndConditions</option>  
   <option value="SetMobilePreferences">ACCOUNT - Set Mobile Preferences</option>
   <option value="GetMobilePreferences">ACCOUNT - Get Mobile Preferences</option>

@@ -217,6 +217,33 @@ public class Checkout {
         return result;
     }
 
+    public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.deletePaymentMethodEx(paymentMethodId);
+        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        boolean isCustomAdded=false;
+        ActionResult customActionResult = new ActionResult();
+        if(result.getActionResult().isFailure()){
+	         Collection<ActionError> errors = result.getActionResult().getErrors();
+	         for(ActionError error : errors){
+	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
+	         		continue;
+	         	} else {
+	         		customActionResult.addError(error);
+	         	}
+	         }
+	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
+	         for(ActionWarning warning : warnings){
+	        	 customActionResult.addWarning(warning);
+	         }
+	         isCustomAdded=true;
+        }
+        if(isCustomAdded){
+       	 result.setActionResult(customActionResult);
+        } 
+        return result;
+    }
+
     public ResultBundle addAndSetDeliveryAddress(DeliveryAddressRequest deliveryAddress) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addAndSetDeliveryAddress(deliveryAddress);
@@ -227,6 +254,33 @@ public class Checkout {
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddress(deleteShipToAddressId);
+        return result;
+    }
+    
+    public ResultBundle deleteDeliveryAddressEx(String deleteShipToAddressId) throws FDException {
+        CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
+        ResultBundle result = tagWrapper.deleteDeliveryAddressEx(deleteShipToAddressId);
+        //Creating new ActionResult with deliveryMinimum and age verification Errors removed if any.
+        boolean isCustomAdded=false;
+        ActionResult customActionResult = new ActionResult();
+        if(result.getActionResult().isFailure()){
+	         Collection<ActionError> errors = result.getActionResult().getErrors();
+	         for(ActionError error : errors){
+	         	if("order_minimum".equals(error.getType()) ||"ERR_AGE_VERIFICATION".equals(error.getType())){
+	         		continue;
+	         	} else {
+	         		customActionResult.addError(error);
+	         	}
+	         }
+	         Collection<ActionWarning> warnings =result.getActionResult().getWarnings();
+	         for(ActionWarning warning : warnings){
+	        	 customActionResult.addWarning(warning);
+	         }
+	         isCustomAdded=true;
+        }
+        if(isCustomAdded){
+       	 result.setActionResult(customActionResult);
+        } 
         return result;
     }
 

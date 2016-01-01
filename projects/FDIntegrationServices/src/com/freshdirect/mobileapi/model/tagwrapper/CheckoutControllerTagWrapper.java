@@ -412,6 +412,30 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return new ResultBundle(executeTagLogic(), this);
     }
 
+    public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
+        getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
+        setMethodMode(true);
+        ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("deletePaymentMethodEx[executeTagLogic] :"+ actionResult);
+        String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
+
+        if (actionResult == null) {
+            actionResult = new ActionResult();
+        }
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
+        	LOGGER.debug("deletePaymentMethodEx[ERR_AGE_VERIFICATION] :"+ successPage);
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
+                    + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
+        }
+        
+        return new ResultBundle(actionResult, this);    
+        }
     
     public ResultBundle reserveDeliveryTimeslot(String deliveryTimeslotId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_MAKE_GOOD_ORDER }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
@@ -514,7 +538,30 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return new ResultBundle(executeTagLogic(), this);
     }
     
-    
+    public ResultBundle deleteDeliveryAddressEx(String deleteShipToAddressId) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
+                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID}, new String[] {});//gets,sets
+        addRequestValue(REQ_PARAM_DELETE_SHIP_ADDRESS_ID, deleteShipToAddressId);
+        getWrapTarget().setActionName(ACTION_DELETE_DELIVERY_ADDRESS);
+        setMethodMode(true);
+        ActionResult actionResult = executeTagLogic();
+        LOGGER.debug("deleteDeliveryAddressEx[executeTagLogic] :"+ actionResult);
+        String successPage = ((CheckoutControllerTag) wrapTarget).getSuccessPage();
+
+        if (actionResult == null) {
+            actionResult = new ActionResult();
+        }
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
+        	LOGGER.debug("deleteDeliveryAddressEx[ERR_AGE_VERIFICATION] :"+ successPage);
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
+                    + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
+        }
+        
+        return new ResultBundle(actionResult, this);  
+        }
     
     /*
      * DUP: com.freshdirect.webapp.taglib.fdstore.AgeVerificationControllerTag

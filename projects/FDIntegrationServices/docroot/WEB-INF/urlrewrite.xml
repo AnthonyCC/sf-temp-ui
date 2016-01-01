@@ -385,6 +385,15 @@
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/delete/$</from>
 		<to last="true">/checkout.do?action=deletedeliveryaddress&amp;ver=$1</to>
 	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/deliveryaddress/deleteex/</from>
+		<to last="true">/checkout.do?action=deletedeliveryaddresesex&amp;ver=$1</to>
+	</rule>		
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/deleteex/$</from>
+		<to last="true">/checkout.do?action=deletedeliveryaddressex&amp;ver=$1</to>
+	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/getselectedeliverydaddress/</from>
 		<to last="true">/checkout.do?action=getselecteddeliveryaddress&amp;ver=$1</to>
@@ -474,6 +483,10 @@
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/delete/</from>
 		<to last="true">/checkout.do?action=deletepaymentmethod&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/deleteex/</from>
+		<to last="true">/checkout.do?action=deletepaymentmethodex&amp;ver=$1</to>
 	</rule>
 	<!-- Submit Order -->
 	<rule>

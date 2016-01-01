@@ -123,6 +123,10 @@ public class CheckoutController extends BaseController {
     
     private final static String ACTION_DELETE_DELIVERY_ADDRESS = "deletedeliveryaddress";
     
+    private final static String ACTION_DELETE_PAYMENT_METHOD_EX = "deletepaymentmethodex";
+    
+    private final static String ACTION_DELETE_DELIVERY_ADDRESS_EX = "deletedeliveryaddressex";
+    
     private final static String ACTION_ADD_AND_SET_DELIVERY_ADDRESS = "addandsetdeliveryaddress";
 
     private final static String ACTION_SUBMIT_ORDER = "submitorder";
@@ -233,9 +237,15 @@ public class CheckoutController extends BaseController {
         }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
         	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
             model = deletePaymentMethod(model, user, requestMessage, request);
+        }else if (ACTION_DELETE_PAYMENT_METHOD_EX.equals(action)) {
+        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+            model = deletePaymentMethodEx(model, user, requestMessage, request);
         }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
         	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
             model = deleteDeliveryAddress(model, user, requestMessage, request);
+        }else if (ACTION_DELETE_DELIVERY_ADDRESS_EX.equals(action)) {
+        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+            model = deleteDeliveryAddressEx(model, user, requestMessage, request);
         }else if (ACTION_GET_SELECTED_DELIVERY_ADDRESS.equals(action)) {
             model = getSelectedDeliveryAddress(model, user);
         }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
@@ -973,6 +983,25 @@ public class CheckoutController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
+    
+    private ModelAndView deletePaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        ResultBundle resultBundle = checkout.deletePaymentMethodEx(reqestMessage.getPaymentMethodId());
+        ActionResult result = resultBundle.getActionResult();
+
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        Message responseMessage = null;
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Payment method deleted successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
                 
     private ModelAndView deleteDeliveryAddress(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
@@ -985,6 +1014,29 @@ public class CheckoutController extends BaseController {
 		}
         
         ResultBundle resultBundle = checkout.deleteDeliveryAddress(reqestMessage.getShipToAddressId());
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Delivery Address deleted successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView deleteDeliveryAddressEx(ModelAndView model, SessionUser user, DeliveryAddressRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        Message responseMessage = null;
+        if (user.isVoucherHolder()) {
+			responseMessage = Message.createSuccessMessage(ACTION_DELETE_DELIVERY_ADDRESS);
+			throw new FDActionNotAllowedException(
+					"This account is not enabled to change delivery address.");
+		}
+        
+        ResultBundle resultBundle = checkout.deleteDeliveryAddressEx(reqestMessage.getShipToAddressId());
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
         if (result.isSuccess()) {
