@@ -146,6 +146,8 @@ com.freshdirect.fdstore.sempixel.SemPixelModel, java.net.URL, com.freshdirect.FD
 	out.println("<hr />");
 		
 	out.println("</pre>");
+	
+	out.println( "FDStoreProperties.getFdxAppUrl_Apple() = " + FDStoreProperties.getFdxAppUrl_Apple() );
 %>
 </body>
 </html>

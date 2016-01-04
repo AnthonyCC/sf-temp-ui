@@ -354,6 +354,11 @@ $(function(){
 	$('form#locationhandler').submit(function(event){
 		event.preventDefault();
 		
+		//if there are errors in this form, tell them to get out of here and fix it
+		if( $(this).find("input.error").length > 0 ){
+			return;
+		}
+		
 		form_enableDisable( "#" + $(this).attr("id") );
 		
 		var param_obj = new Object();
@@ -365,10 +370,9 @@ $(function(){
 		button_enableDisable('#submit_locationhandler', false);
 	});
 
-	var formArray = new Array( );
-	
+
 	//this should take care of any loose end browsers that lack html5 form validation 
-	$('form#ziphandler, form#locationhandler').validate({
+	$('form#locationhandler').validate({
 		onkeyup: false,
 		errorElement: "label",
 
@@ -377,10 +381,12 @@ $(function(){
 		}
 	});
 	
+	
 	//assisting above validation
 	jQuery.validator.addMethod("zipcode", function(value, element){
 		return this.optional(element) || /\d{5}-\d{4}$|^\d{5}$/.test(value)
 	}, "The specified US ZIP Code is invalid");
+	
 	
 	//assisting above validation for email addresses.  this is much better than the default email pattern that is used by the validate plugin
 	jQuery.validator.addMethod("custom_email", function(value, element){
@@ -390,7 +396,8 @@ $(function(){
 	//enable the submit button when everything is good, relating to above validation
 	//$('form#ziphandler input, form#locationhandler input').on('keyup blur', function(){ // fires on every keyup & blur
 	//$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur mouseleave', function(){ // fires on every blur and mouseleave
-	$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('keyup', function(){ // fires on every keyup & blur
+	//$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('keyup', function(){ // fires on every keyup & blur
+	/*$('form#ziphandler input, form#locationhandler input, #lost_password input, #update_change_password input').on('blur', function(){ 
 		var button_id = $(this).parents("form").find('button[type="submit"]').attr("id");
 
 		if( $(this).valid() && ($(this).parents("form").find("input.error").length < 1) ){ // checks form for validity, including with sibling form elements
@@ -398,7 +405,20 @@ $(function(){
 		}else{
 			button_enableDisable( "#"+button_id, false);
 		}
-	});	
+	});	*/
+
+	//do soft validation for the first form with the zip here
+	$('form#ziphandler input').on('keyup', function(){
+		var button_id = $(this).parents("form").find('button[type="submit"]').attr("id");
+		
+		var value = $(this).val();
+		
+		if( /^\d{5}$/.test(value) ){
+			button_enableDisable( "#"+button_id, true);
+		}else{
+			button_enableDisable( "#"+button_id, false);
+		}
+	});
 	
 	//lets make placeholders for fields work in IE 9 and maybe below
 	$('[placeholder]').focus(function(){

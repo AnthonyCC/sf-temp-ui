@@ -33,7 +33,13 @@
 						<p>We're expanding fast. Check your ZIP to see if we're in your hood.</p>
 
 						<div class="field_holders">
+							<!--
 							<input type="text" name="zipcode" id="zipcode_zh" class="required zipcode" data-msg="invalid zipcode"
+							placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'"
+							onkeyup="numbersOnly(this);" required autocomplete="off" />
+							-->
+							
+							<input type="text" name="zipcode" id="zipcode_zh"
 							placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'"
 							onkeyup="numbersOnly(this);" required autocomplete="off" />
 						</div>
@@ -55,7 +61,7 @@
 							placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
 						</div>
 
-						<button id="submit_locationhandler" type="submit" class="button_disabled" disabled>Submit</button>
+						<button id="submit_locationhandler" type="submit">Submit</button>
 						<br/>
 						By hitting submit, you agree to receive FoodKick emails.
 					</form>
