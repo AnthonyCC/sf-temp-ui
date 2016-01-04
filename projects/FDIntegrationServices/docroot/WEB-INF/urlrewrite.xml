@@ -388,7 +388,7 @@
 	
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliveryaddress/deleteex/</from>
-		<to last="true">/checkout.do?action=deletedeliveryaddresesex&amp;ver=$1</to>
+		<to last="true">/checkout.do?action=deletedeliveryaddressex&amp;ver=$1</to>
 	</rule>		
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/deleteex/$</from>
