@@ -128,7 +128,7 @@ FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
                     <% surveyQuestion = "text13rbold"; %>
             </fd:ErrorHandler>
 				<%=quesCount!=1?"<br>":""%>
-			    <div class="question"><a name="<%=question.getName()%>"></a><%=quesCount%>. <%=SurveyHtmlHelper.getQuestionText(question)%></div>
+			    <div class="question" tabindex="0"><a name="<%=question.getName()%>"></a><%=quesCount%>. <%=SurveyHtmlHelper.getQuestionText(question)%></div>
                     <% String container="q07_container";
                        if(EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())){
                             container="q06_container";

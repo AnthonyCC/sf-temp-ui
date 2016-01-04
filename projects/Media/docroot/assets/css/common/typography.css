@@ -105,6 +105,12 @@ input.ph_active { color: #aaa; }
 
 .bold { font-weight:bold }
 
+.no-margin { margin:0; }
+
+.no-decor,.no-decor:hover,.no-decor:active{ text-decoration:none; }
+
+.offscreen{ position:absolute; left: -99999px; }
+
 /* Welcome section related 
 -------------------------------------------------------------- */
 #welcome-section-container{
@@ -121,8 +127,26 @@ input.ph_active { color: #aaa; }
 	margin-bottom: 15px;
 }
 
+/* HELPER classes 
+-------------------------------------------------------------- */
 .text-left {
 	text-align: left;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.fl-left {
+	float: left;
 }
 
 .fl-right {
@@ -132,9 +156,15 @@ input.ph_active { color: #aaa; }
 .inline{
 	display: inline-block;
 }
+
+.block {
+	display: block;
+}
+
 .small-text {
 	font-size: 1.2em;
 }
+
 
 .offscreen {
 	position: absolute;

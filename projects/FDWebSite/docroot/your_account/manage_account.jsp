@@ -15,6 +15,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+
+<jwr:style src="/your_account.css" media="all"/>
 <% //expanded page dimensions
 final int W_YA_MANAGE_TOTAL = 970;
 final int W_YA_CSICON = 40;
@@ -98,16 +101,10 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	}
 %>
 </fd:OrderHistoryInfo>
-<table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td class="text13">
-			<font class="title18">Welcome to Your Account</font><br>If you need to make any changes or updates to
-your account information, this is the place to do it.<br></td>
-	</tr>
-</table>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_MANAGE_TOTAL %>" height="1" BORDER="0"><br>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><br><br>
+<div class="manage-account-heading">
+    <h1 tabindex="0" class="title18 text-left no-margin">Welcome to Your Account</h1>
+    <p class="text13 text-left no-margin">If you need to make any changes or updates to your account information, this is the place to do it.</p>
+</div>
 
 <table width="<%= W_YA_MANAGE_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 <tr>
@@ -307,19 +304,16 @@ your account information, this is the place to do it.<br></td>
 </td>
 </tr>
 </table>
-
-<br><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_MANAGE_TOTAL %>" height="1" BORDER="0"><br>
-<FONT CLASS="space4pix"><br><br></FONT>
-<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%= W_YA_MANAGE_TOTAL %>">
-<TR VALIGN="TOP">
-<TD width="<%= W_YA_CSICON %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
-<TD width="<%= W_YA_MANAGE_TOTAL - W_YA_CSICON %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<br>from <A HREF="/index.jsp"><b>Home Page</b></A><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0"></TD>
-</TR>
-</table>
-
-<br>
-
+<div class="continue-shopping text-left">
+  <a class="no-decor" href="/index.jsp">
+    <div class="col-left">
+      <button class="cssbutton green icon-arrow-left-before notext round"></button>
+    </div>
+    <div class="col-right">
+      <p><span class="continue-shopping-label">Continue Shopping</span></p>
+      <p>from <strong>Home Page</strong></p>
+    </div>
+  </a>
+</div>
  </tmpl:put>
 </tmpl:insert>

@@ -11,18 +11,21 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<jwr:style src="/your_account.css" media="all"/>
+
 <%
 String successPage = "/your_account/customer_profile_summary.jsp";
 String redirectPage = "/login/login.jsp?successPage=" + successPage;
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
-<% 
+<%
     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     FDIdentity customerIdentity = null;
     ErpCustomerInfoModel customerInfo = null;
     if (user!=null && user.getLevel() == 2){
         customerIdentity = user.getIdentity();
-        customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);	
+        customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);
     }
     response.setHeader("Pragma", "no-cache");
     response.setHeader("Cache-Control", "no-cache");
@@ -35,61 +38,31 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
 		<fd:SEOMetaTag pageId="customer_profile"></fd:SEOMetaTag>
 	</tmpl:put>
 <tmpl:put name='content' direct='true'>
-
-<script type="text/javascript">
-
-function clear(p) {
-    var x = p;
-
-    for(i=0; i<x.length; i++) {
-
-        x[i].checked= false;
-        x[i].disabled= false;
-        x[i].selectedIndex=0;
+  <script type="text/javascript">
+    function clearCustomerProfileForm(p) {
+        var x = p;
+        for(i=0; i<x.length; i++) {
+            x[i].checked= false;
+            x[i].disabled= false;
+            x[i].selectedIndex=0;
+        }
+        return false;
     }
-}
-
-function _submit(p) {
-   p.submit();
-}
-</script>
-<fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
-<div><fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" /></div>
-<form id="junk" name="request_product" method="POST">	
-<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center">
-    
-<input type="hidden" name="department" value="<%=department%>">
-<tr>
-	<td colspan="10" class="text12">
-    
-
-<% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getLabel());%>
-<%@ include file="/includes/your_account/i_customer_profile.jspf" %>
-    </td>
-</tr>
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
-	</tr>
-
-	<tr>
-		<td colspan="10" style="border-top:solid 1px #CCCCCC;"><br>
-			<a href="javascript:document.request_product.submit()"><img src="/media_stat/images/buttons/submit_profile.gif" width="166" height="20" border="0" alt="SUBMIT MY PROFILE"></a>
-			&nbsp;&nbsp;
- 			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/buttons/clear_form.gif" width="110" height="20" border="0" alt="CLEAR FORM"></a>
-			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
-	</td>
-</form>
-    </tr>
-</table>
-</fd:CustomerProfileSurveyTag>
-	</tmpl:put>
+  </script>
+  <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
+    <div class="customer-profile-media">
+      <fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" />
+    </div>
+    <form id="junk" name="request_product" method="POST">
+      <div class="customer-profile-content text-left">
+        <% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getLabel());%>
+        <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
+      </div>
+      <div class="customer-profile-actions text-left">
+        <button type="submit" class="cssbutton orange">SUBMIT MY PROFILE</button>
+        <button type="reset" onclick="clearCustomerProfileForm(document.request_product)" class="cssbutton green transparent">CLEAR FORM</button>
+      </div>
+    </form>
+  </fd:CustomerProfileSurveyTag>
+</tmpl:put>
 </tmpl:insert>

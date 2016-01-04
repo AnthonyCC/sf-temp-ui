@@ -274,6 +274,19 @@
   color:#999;
 }
 
+.portrait-item.unavailable .portrait-item-header:after{
+  content:"Unavailable";
+  display:block;
+  font-weight:bold;
+  font-size:16px;
+  color:#333;
+  opacity:.5;
+  filter: alpha(opacity=50);
+  font-family:Verdana,Geneva,sans-serif;
+  text-align:center;
+  margin:20px 0;
+}
+
 
 .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
   max-height: 70px;

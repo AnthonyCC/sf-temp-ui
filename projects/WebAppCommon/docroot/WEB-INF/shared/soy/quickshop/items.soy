@@ -310,9 +310,11 @@
         {if $item.taxAndDeposit}<i class="tax">{$item.taxAndDeposit}</i>{/if}
       </div>
     </div>
+    {if $item.available}
     <div class="availability">
       {call common.availabilityMessage}{param item:$item /}{/call}
     </div>
+    {/if}
   </div>
   <div class="itemlist-item-price">
     {if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}

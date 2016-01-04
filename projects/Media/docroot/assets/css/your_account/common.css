@@ -1,0 +1,27 @@
+.continue-shopping{
+  border-top: 1px solid #ff9933;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
+
+.continue-shopping .col-left,
+.continue-shopping .col-right{
+  display:inline-block;
+  vertical-align:top;
+  margin:0;
+}
+
+.continue-shopping .col-left{
+  padding-right:10px;
+}
+
+.continue-shopping .col-right p{
+  margin:0;
+}
+
+.continue-shopping-label{
+  color:#669933;
+  text-transform:uppercase;
+  font-weight:bold;
+}

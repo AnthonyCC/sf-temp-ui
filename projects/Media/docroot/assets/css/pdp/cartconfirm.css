@@ -11,6 +11,22 @@
 	min-height:215px;
 }
 
+.pdp-cc .span-4{
+  width:auto;
+}
+
+.pdp-cc .span-4 img{
+  margin-right:41px;
+}
+
+.pdp-cc .span-4 img[src$="empty.gif"]{
+  margin-right:0;
+}
+
+.pdp-cc .append-1{
+  padding:0;
+}
+
 .pdp-cc .cc-info {
 	position: relative;
 	min-height: 150px;

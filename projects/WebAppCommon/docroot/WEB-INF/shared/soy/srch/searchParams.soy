@@ -2,7 +2,6 @@
 /**
  * @param? searchParams
  * @param? pageType
- * @param? tabs
  */
 {template .searchParams autoescape="false"}
   {if $pageType == 'SEARCH'}
@@ -10,8 +9,6 @@
     <input class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off" value="{if $searchParams}{$searchParams}{/if}"/>
     <button class="cssbutton khaki searchbutton">search</button>
   </section>
-  {elseif not $tabs}
-    <section class="tabcontent"></section>
   {/if}
 {/template}
 

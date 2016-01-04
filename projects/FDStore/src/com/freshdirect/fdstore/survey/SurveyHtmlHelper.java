@@ -181,7 +181,7 @@ public class SurveyHtmlHelper {
                         
 				String data = "";
 				for (int i = 0; i < displayElements.size(); i++) {
-					data = (String) displayElements.get(i);
+					data = displayElements.get(i);
 					if (displayElements.size() <=4) {
 						response.append(getDivTag(getRowStyle(0), "", data));
 					} else {
@@ -259,24 +259,17 @@ public class SurveyHtmlHelper {
 		for(int i=0;i<answers.size();i++) {
 			answer=(FDSurveyAnswer)answers.get(i);
 			StringBuffer temp=new StringBuffer(200);
-			//temp.append("<div style=\"width: 110px;\" class=\"rb_image\" align=\"center\">");
+            String input = getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), previousAnswers.contains(answer.getName()), false, "");
 			temp.append("<td width=\"16%\" align=\"center\">\n");
 			temp.append(getDivTag(getImageTag(answer.getDescription())));
-			if(previousAnswers.contains(answer.getName())) {
-				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), true, false, ""));
-			} else {
-				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), false, false, ""));
-			}
-			//temp.append("</div>");
+            temp.append(wrapLabel(input + wrapOffscreen(answer.getName())));
 			temp.append("</td>");
 			colCount++;
-			//System.out.println("colCount "+colCount + " i="+i +" answers.size() "+answers.size());
 			if (colCount == 6 && i != answers.size()-1) {
 				temp.append("</tr>\n<tr>\n<td style=\"height:8px;\" colspan=\"6\">&nbsp;</td>\n</tr>\n");
 				temp.append("<tr>\n");
 				colCount = 0;
 			}
-			//response.append(getDivTag("q12_container","",temp.toString()));
 			response.append(temp.toString());
 		}
 		//
@@ -284,6 +277,14 @@ public class SurveyHtmlHelper {
 		//
 		return response.toString();
 	}
+
+    private static String wrapOffscreen(String content) {
+        return "<span class='offscreen'>" + content + "</span>";
+    }
+
+    private static String wrapLabel(String content) {
+        return "<label>" + content + "</label>";
+    }
 
     private static String getImageTag(String path) {
     	return "<img src=\""+path+"\"/>";
@@ -305,7 +306,8 @@ public class SurveyHtmlHelper {
 				String answerGroup=answerGroups.get(j).toString();
 				String value = answer.getName()+answerGroup;
 				boolean checked = previousAnswers.contains(answer.getName()+answerGroup) ? true: false;
-				temp.append(getDivTag("q08_cb","",getInputTag(FDSurveyConstants.MULTI_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+answerGroup, "", value, checked, false, "")));
+                String input = getInputTag(FDSurveyConstants.MULTI_SELECT_INPUT, question.getName() + FDSurveyConstants.NAME_SEPERATOR + answerGroup, "", value, checked, false, "");
+                temp.append(getDivTag("q08_cb", "", wrapLabel(input + wrapOffscreen(answer.getName() + " " + answerGroup))));
 			}
 			temp.append(getDivTag("cboth","","<!--  -->"));
 			response.append(getDivTag(getRowStyle(i + 1),"",temp.toString()));
@@ -331,7 +333,7 @@ public class SurveyHtmlHelper {
     	int colCount = 0;
     	int colTotalCount = 0;
     	// number of rows to be painted whole
-    	int rowCountWhole = (int) (answerGroups.size()/3);
+    	int rowCountWhole = answerGroups.size()/3;
     	String lastRow = rowCountWhole%2==0 ? "odd":"even";
     	int rowCount = 0;
     	int colToAdd = 3 - (answerGroups.size()%3);
@@ -414,7 +416,7 @@ public class SurveyHtmlHelper {
 				// multi response
 				if(group) {
 					// meals question style
-					response.append(getSelectTag(question,_group,previousAnswers,"50","--")+ "&nbsp;&nbsp;"+ getSpanTag(_group)+"<br/>");
+					response.append("<label>" + getSelectTag(question,_group,previousAnswers,"50","--")+ "&nbsp;&nbsp;"+ getSpanTag(_group)+"</label><br/>");
 					countGroup++;
 					if (countGroup-1 != answerGroups.size()) {
 						response.append("<br/>");
@@ -703,7 +705,7 @@ public class SurveyHtmlHelper {
 	                                        responseCount++;
 	                        }
 	                }
-	                return (int)((responseCount*100)/survey.getQuestions().size());
+	                return (responseCount*100)/survey.getQuestions().size();
 	        }
 
 }

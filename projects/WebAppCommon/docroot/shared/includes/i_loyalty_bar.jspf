@@ -1,66 +1,42 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 
-<% //expanded page dimensions
-final int W_LOYALTY_BAR = 970;
-final int W_LOYALTY_BAR_FP = 570;
-final int W_LOYALTY_BAR_LP = 400;
-%>
-<style>
-	.needHelpButton {
-		margin-right: -2px;
-	}
-	.needHelpButton {
-		font-size: 11px;
-	}
-	.csPhoneNumber {
-		font-weight: bold;
-		font-size: 11px;
-	}
-</style>
 <script type="text/javascript">
 	$jq(document).ready(function() {
 		$jq('.csPhoneNumber:first').each(function(i,e) {
 			$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
 			$jq(e).show();
 		});
-	});
-	
-	
+	});	
 </script>
-<table cellspacing="0" cellpadding="0" border="0" width="<%= W_LOYALTY_BAR %>" id="timeslotloyalityHeader" align="left">
-	<tr>
+<div id="timeslotloyalityHeader" <%= (user.isChefsTable() == true ? "class='black'":"") %>>
 	<%if(user.isChefsTable()) { %>
-		<td width="30"><img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0"></td>
-		<td width="<%= W_LOYALTY_BAR_FP - 20 %>" align="left" style="background:#333433; color: #fff">
-			<font style="font-weight:bold;font-size:11px;">		
+			<div class="inline bold small-text text-left">
 				<%= user.getFirstName() %> <%= user.getLastName() %>
-				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> </font><font style="font-weight:bold;">- Chef's Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
-			</font>
-		</td>
-	    <td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#333433; color: #fff" valign="middle">
-			<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
-				|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
-				|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
-				 <font style="font-weight:bold;font-size:11px;"><%= user.getTotalCTSlots() %> <%= (user.getTotalCTSlots() > 1 ? "timeslots" : "timeslot")%> just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a></font>
-			<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
-				<span class="csPhoneNumber" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span> <button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton" alt="">need help?</button>
-			<%}%>
-		</td>
-		<td width="10"><img src="/media/editorial/site_pages/ct/CT_header_right.gif" width="10" height="25" border="0"></td>
+				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> 
+			- Chef's Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
+			</div>
+
+	   		<div class="inline fl-right">
+				<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
+					|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
+					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
+					 <span class="bold large"><%= user.getTotalCTSlots() %> <%= (user.getTotalCTSlots() > 1 ? "timeslots" : "timeslot")%> 
+					 just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a></span>
+				<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
+					<span class="csPhoneNumber bold small-text" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span>
+					<button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton large">need help?</button>
+				<%}%>
+			</div>
 	<%}else{%>
-		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_left.gif" width="10" height="25" border="0"></td>
-    	<td width="<%= W_LOYALTY_BAR_FP %>" align="left" style="background:#999966; color: #fff">
-			<font style="font-weight:bold;font-size:11px;">		
-				Welcome to FreshDirect&nbsp;
+			<div class="inline bold small-text text-left">		
+				Welcome to FreshDirect
 				<%= user.getFirstName() %> <%= user.getLastName() %>
-			</font>
-		</td>
-    	<td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#999966; color: #fff">
+			</div>
 			<%if(!user.getCheckoutMode().isStandingOrderMode()){ %>
-				<span class="csPhoneNumber" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span> <button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton" alt="">need help?</button>
+				<div class="inline fl-right">
+					<span class="csPhoneNumber bold small-text" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span>
+					<button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton large">need help?</button>
+				</div>
 			<%} %>
-		</td>
-		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0"></td>
 	<%}%>
-	</tr>
-</table><div style="font-size: 0px; clear: both;"></div>
+</div>

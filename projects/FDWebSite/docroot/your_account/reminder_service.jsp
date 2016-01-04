@@ -6,9 +6,13 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_YA_REMINDER_SERVICE = 970;
 %>
+
+<jwr:style src="/your_account.css" media="all"/>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
@@ -25,13 +29,14 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text11">
-					<font class="title18">Reminder Service Preferences</font><br>
-					<% if (custInfo.getReminderFrequency() > 0) { %>You are currently signed up to receive an e-mail order reminder <b><%=custInfo.getReminderFrequency() == 7 ? "every week" : "every other week"%></b> on <b><%=dayNames[custInfo.getReminderDayOfWeek() - 1]%></b>.<br><%-- } --%>Change your options below.
+					<h1 tabindex="0" class="title18">Reminder Service Preferences</h1>
+					<% if (custInfo.getReminderFrequency() > 0) { %>
+            <p class="no-margin">You are currently signed up to receive an e-mail order reminder <b><%=custInfo.getReminderFrequency() == 7 ? "every week" : "every other week"%></b> on <b><%=dayNames[custInfo.getReminderDayOfWeek() - 1]%></b>.</p>
+            <p class="no-margin">Change your options below.</p>
 					<% } else { %>
 					If you ever worry that you'll forget to place your FreshDirect order in time, sign up for our handy, free e-mail reminder service. On the weekday of your choosing, first thing in the morning, you'll receive an e-mail reminding you to place your order for the next day. 
 					Just fill out the short form below and click "save changes."<br>You can cancel this free service at any time.
 					<% } %>
-					<br>
 				</td>
 			</tr>
 			<tr>
@@ -49,18 +54,26 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			</tr>
 			<tr>
 				<td colspan="2" align="center">
-					<br>
-					<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" tabindex="2" vspace="3" hspace="3" border="0" alt="cancel"></a><input type="image" tabindex="3" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="save changes" vspace="3" hspace="3" border="0">
-					<br><br>
-          <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_REMINDER_SERVICE %>" height="1" border="0"><br>
-					<font class="space4pix"><br><br></font>
+          <a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>" class="no-decor">
+            <button tabindex="-1" type="button" class="cssbutton green transparent">Cancel</button>
+          </a>
+          <button type="submit" name="update_user" class="cssbutton orange normal">Save Changes</button>
 				</td>
 			</tr>
 			<tr valign="top">
-				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
-        <td width="<%= W_YA_REMINDER_SERVICE - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a>
-					<br>from <font class="text11bold"><a href="/index.jsp">home page</a></font><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-				</td>
+        <td colspan="2">
+          <div class="continue-shopping text-left">
+            <a class="no-decor" href="/index.jsp">
+              <div class="col-left">
+                <button class="cssbutton green icon-arrow-left-before notext round"></button>
+              </div>
+              <div class="col-right">
+                <p><span class="continue-shopping-label">Continue Shopping</span></p>
+                <p>from <strong>Home Page</strong></p>
+              </div>
+            </a>
+          </div>
+        </td>
 			</tr>
 			</form>
 		</table>

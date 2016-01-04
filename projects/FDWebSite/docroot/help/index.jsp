@@ -14,11 +14,6 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<% //expanded page dimensions
-final int W_HELP_INDEX_TOTAL = 970;
-%>
-
-
 <fd:CheckLoginStatus />
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -115,142 +110,84 @@ final int W_HELP_INDEX_TOTAL = 970;
 				<%@ include file="/includes/i_error_messages.jspf" %>	
 			</fd:ErrorHandler>
 
-			<div style="width: <%=W_HELP_INDEX_TOTAL%>px; vertical-align: top; text-align: left;">
-				<div class="title16">
+			<div id="help-page">
+				<div class="welcome-msg-title-small bold">
 					Welcome to Help
 				</div>
-				<div>
+				<div class="bordered-bottom">
 					<% boolean loyaltyHelpContact = false; %>
 					<br /><%@ include file="/shared/help/i_loyalty_banner.jspf"%>
 				</div>
-				<div style="height: 30px; background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-x left center;"><!--  --></div>
-				
-				<div style="margin-bottom: 16px;">
-					<div style="margin-bottom: 8px;" class="text11bold">
-						<img src="/media_stat/images/template/help/search.gif" border="0" alt="Search" />
-					</div>
-					<div style="margin-bottom: 8px;">
-						<form method="post" name="contact_fd" id="contact_fd_faq">
-							<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
-							<input type="submit" name="searchFAQButton" style="cursor: pointer; width: 42px; height: 18px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/search/search_find_button.gif'); border: 0; text-indent: -9999px;">
-								<div style="display:none;">Find</div>
-							</input>
-							
-			
-							
-						</form>
-					</div>
-				</div>
+				<div class="help-aside fl-left">
+				<h2 class="help-heading bold uppercase">Search</h2>
+				<form method="post" name="contact_fd" id="contact_fd_faq">
+					<label for="search-faq"></label><input type="text" id="search-faq"class="search" value="" maxlength="100" name="searchFAQ" />
+					<button class="cssbutton orange" type="submit" name="searchFAQButton">find</button>	
+				</form>
+				<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><h2 class="help-heading bold uppercase">quick links</h2></a>
+				<p>Check below to find the fastest answers to our top customer concerns.</p>
+				<ul class="orangeDot bold">
+					<li><a href="/your_account/order_history.jsp">Check the status of your order</a></li>
+					<li><a href="/your_account/order_history.jsp">Change or cancel your order</a></li>
+					<li><a href="/search.jsp">Find a product</a></li>
+					<li><a href="/your_account/signin_information.jsp">Change your password</a></li>
+					<li><a href="/your_account/manage_account.jsp">Change delivery info</a></li>
+					<li><a href="/your_account/payment_information.jsp">Change credit card info</a></li>
+				</ul>
 
-				<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 8px;">
-							<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="Quick Links" /></a>
-						</div>
-						<div style="margin-bottom: 8px;">
-							Check below to find the fastest answers to our top customer concerns.
-						</div>
-						<div style="margin-bottom: 8px;" class="text11bold">
-							<ul class="orangeDot">
-								<li><a href="/your_account/order_history.jsp">Check the status of your order</a></li>
-								<li><a href="/your_account/order_history.jsp">Change or cancel your order</a></li>
-								<li><a href="/search.jsp">Find a product</a></li>
-								<li><a href="/your_account/signin_information.jsp">Change your password</a></li>
-								<li><a href="/your_account/manage_account.jsp">Change delivery info</a></li>
-								<li><a href="/your_account/payment_information.jsp">Change credit card info</a></li>
-							</ul>
-						</div>
-					</div>
-
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 8px;">
-							<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs" /></a>
-						</div>
-						<div style="margin-bottom: 8px;">
-							Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.
-						</div>
-						<%
-							List savedList=(List)pageContext.getAttribute("savedFaqs");
-
-							if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
-								<div style="margin-bottom: 8px;" class="text11bold">
-									<div style="margin-bottom: 4px;">
-										<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="Top Questions" />
-									</div>
-									<% if (null != faqSections) {
-										%>
-										<div style="margin-bottom: 8px;">
-											<ul class="orangeDot">
-											<%
-
-											StringTokenizer st = new StringTokenizer(faqSections,",");
-											while (st.hasMoreTokens()) {
-												String nextToken=st.nextToken().trim();
-												%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq"><%
-													if (null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())) { %>
-														<li><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></li>
-													<% } %>
-												</logic:iterate><%
-											}
-											%>
-											</ul>
-										</div>
-										<%
-									} %>
-								</div>
-							<% }
-						%>
-					</div>
-
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 8px;" class="text11bold">
-							<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="Learn More" />
-						</div>
-						<% if(null != faqSections) {
-							%>
-							<div style="margin-bottom: 8px;" class="text11bold">
-								<ul class="orangeDot">
-								<%
-								
-								StringTokenizer st = new StringTokenizer(faqSections,",");
-								
-								while (st.hasMoreTokens()) {
-									ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
-									if (null != contentNode) { %>
-										<li><a href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a></li>
-									<% }
-								}
-								%>
-								</ul>
-							</div>
-							<%
-						} %>
-					</div>
-
+				<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><h2 class="help-heading bold">FAQs</h2></a>
+				<p>Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.</p>
 					
-				</div>
+					<% List savedList=(List)pageContext.getAttribute("savedFaqs");
 
-				<form method="post" name="contact_fd" id="contact_fd_contact">
-					<div style="float: right; width: 64%; padding-left: 6px;" class="lineItems">
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;">
-								<a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="204" height="14" alt="CONTACT US"></a>
-							</div>
-							<div style="margin-bottom: 8px;">
-								FreshDirect Customer Service is standing by to answer your questions, seven days a week. <span style="font-weight: bold;">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
-							</div>
-						</div>
+					if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
+							<h3 class="help-subheading bold">Top Questions</h3>
+							<% if (null != faqSections) {
+								%>
+								<ul class="orangeDot bold">
+								<%
+								StringTokenizer st = new StringTokenizer(faqSections,",");
+								while (st.hasMoreTokens()) {
+									String nextToken=st.nextToken().trim();
+									%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq"><%
+										if (null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())) { %>
+											<li><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></li>
+										<% } %>
+									</logic:iterate><%
+								} %>
+								</ul>
+							<% } %>
+					<% } %>
+
+					<h3 class="help-subheading bold">Learn More</h3>
+					<% if(null != faqSections) { %>
+							<ul class="orangeDot bold">
+							<%
+							StringTokenizer st = new StringTokenizer(faqSections,",");
+							
+							while (st.hasMoreTokens()) {
+								ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
+								if (null != contentNode) { %>
+									<li><a href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a></li>
+								<% }
+							} %>
+							</ul>
+						<% } %>
+				</div>
+				<div class="fl-left help-main">
+					<form method="post" name="contact_fd" id="contact_fd_contact">
+								<a href='index.jsp'><h2 class="help-heading bold uppercase">contact freshdirect</h2></a>
+								<p class="small-text">FreshDirect Customer Service is standing by to answer your questions, seven days a week.
+								<span class="bold">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
+								</p>
 						
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 4px;">
-								<img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
-							</div>
-							<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
+						<div class="underline">
+							<h4 class="bold uppercase inline">1. enter your message</h4>
+							<span class="small"> * Required information</span>	
 						</div>
 	
 						<script type="text/javascript">
-	
-							var coremetricsGetHelpEmailFunctionMap = [
+								var coremetricsGetHelpEmailFunctionMap = [
 								<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 									<%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
 								</logic:iterate>
@@ -265,7 +202,6 @@ final int W_HELP_INDEX_TOTAL = 970;
 							var coremetricsGetHelpEmailStartLogged = 0; //init
 							function coremetricsGetHelpEmailStart(index) {
 								if (coremetricsGetHelpEmailStartLogged == 1) {
-									console.log(2);
 									coremetricsGetHelpEmailFunctionMap[index]();
 								}
 								coremetricsGetHelpEmailStartLogged++;
@@ -290,10 +226,10 @@ final int W_HELP_INDEX_TOTAL = 970;
 							});
 	
 						</script>
-	
-						<div style="margin-bottom: 16px;">
-							<div style="float: left; width: 12px;">*</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Subject:</div>
-							<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="">
+					<div class="from-elements-wrapper">
+						<div class="form-group">
+							<label for="contact_subject" class="bold inline text-right">* Subject:</label>
+							<select name="subject" id="contact_subject" onchange="">
 								<option value="">Select Subject:</option>
 								<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 									<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
@@ -305,11 +241,10 @@ final int W_HELP_INDEX_TOTAL = 970;
 									var subjectSelect = document.getElementById('contact_subject');	
 									coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
 								</script>
-								<div class="text11rbold">
+								<div class="bold error">
 									<%=errorMsg%>
 								</div>
 							</fd:ErrorHandler>
-						</div>
 	
 						<%
 							/* APPDEV-1744	Product Request - 2011 CS Project */
@@ -335,135 +270,125 @@ final int W_HELP_INDEX_TOTAL = 970;
 								params.put("faqContact", "true");
 						%>
 							<div id="prodReqContent" style="display: none;">
-								<div style="margin-bottom: 8px;">
 									<fd:IncludeMedia name="/media/editorial/faq/req_feedback.ftl" parameters="<%=params%>" withErrorReport="false"/>
-								</div>
-								<div style="height: 30px; background: transparent url('/media_stat/images/layout/999966.gif') repeat-x left center;"><!--  --></div>
 							</div>
 						<% } %>
-						
+						</div>
 						
 						<div id="prodReqNonContent">
-							<% if (identity != null) { %>
-								<fd:OrderHistoryInfo id='orderHistoryInfo'>
-									<%if (orderHistoryInfo.size() > 0) {%>
-										<div style="margin-bottom: 16px;">
-											<div style="float: left; width: 12px;">&nbsp;</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Order #:</div>
-											<select class="text12" name="salePK">
-												<option value="">Select Order:</option>
-												<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-													<% if (idx.intValue() == 5) break; %>
-													<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
-												</logic:iterate>
-											</select>
-											&nbsp;(optional)
-										</div>
-									<% } %>
-								</fd:OrderHistoryInfo>
-							<% } %>
-	
-							<div style="margin-bottom: 16px;">
-								<div style="margin-bottom: 8px;">
-									<div style="float: left; width: 12px; height: 30px;">&nbsp;</div><div style="float: left; width: 55px; height: 30px; padding-right: 10px;">&nbsp;</div>
-										* Please enter your message here:<br />
-										<textarea cols="40" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
-										<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
-											<div class="text11rbold">
-												<%=errorMsg%>
-											</div>
-										</fd:ErrorHandler>
-								</div>
+							<div class="form-group">
+								<% if (identity != null) { %>
+									<fd:OrderHistoryInfo id='orderHistoryInfo'>
+										<%if (orderHistoryInfo.size() > 0) {%>
+												<label for="order-field" class="bold inline text-right">Order #:</label>
+												<select name="salePK" id="order-field">
+													<option value="">Select Order:</option>
+													<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
+														<% if (idx.intValue() == 5) break; %>
+														<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
+													</logic:iterate>
+												</select>
+												<span class="small">(optional)</span>
+										<% } %>
+									</fd:OrderHistoryInfo>
+								<% } %>
 							</div>
-	
+							<div class="form-group">
+								<label for="msg-textarea" id="msg-textarea-label" class="bold inline">* Please enter your message here:</label>
+								<textarea id="msg-textarea" cols="40" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
+								<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
+									<div class="bold error">
+										<%=errorMsg%>
+									</div>
+								</fd:ErrorHandler>
+							</div>
+							</div>
+						</div>
 							<%-- info --%>
 							<%if (identity == null) { %>
-								<div style="margin-bottom: 16px;">
-									<div style="margin-bottom: 4px;">
-										<img src="/media_stat/images/template/help/enter_contact_info.gif" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
-									</div>
-									<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
-								</div>
-	
-								<div style="margin-bottom: 32px;">
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* E-mail Address/User Name:</label></div><input type="text" class="text11" name="email" size="34" value="<%=email%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* First Name:</label></div><input type="text" class="text11" name="first_name" size="21" value="<%=firstName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* Last Name:</label></div><input type="text" class="text11" name="last_name" size="21" value="<%=lastName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Home Phone #:</label></div><input type="text" class="text11" name="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Work Phone #:</label></div><input type="text" class="text11" name="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=workPhoneExt%>" maxlength="6" />
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Other Phone #:</label></div><input type="text" class="text11" name="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />&nbsp;<font class="text9">Ext.</font>&nbsp;<input type="text" class="text9" name="alt_phone_ext" size="4" value="<%=altPhoneExt%>" maxlength="6" />
-									</div>
-								</div>
+							<div class="underline">
+								<h4 class="bold inline uppercase">2. enter your contact information</h4>
+								<span class="bold small"> * Required information</span>
+							</div>
+							<div class="from-elements-wrapper">
+							<div class="form-group">	
+								<label for="email-field" class="bold inline">* E-mail Address/User Name:</label>
+								<input type="text" name="email" id="email-field" size="34" value="<%=email%>" />
+								<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+							</div>
+							<div class="form-group">
+								<label for="first-name-field" class="bold inline">* First Name:</label>
+								<input type="text" name="first_name" id="first-name-field" size="21" value="<%=firstName%>" />
+								<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+							</div>
+							<div class="form-group">
+								<label for="last-name-field" class="bold inline">* Last Name:</label>
+								<input type="text" name="last_name" id="last-name-field" size="21" value="<%=lastName%>" />
+								<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="bold error"><%=errorMsg%></span></fd:ErrorHandler>
+							</div>
+							<div class="form-group">
+								<label for="home-phone-field" class="bold inline">Home Phone #:</label>
+								<input type="text" name="home_phone" id="home-phone-field" size="21" value="<%=homePhone%>" maxlength="15" />
+								<label for="home-phone-ext-field">Ext.</label>
+								<input type="text" name="home_phone_ext" id="home-phone-ext-field" size="4" value="<%=homePhoneExt%>" maxlength="6" />
+							</div>
+							<div class="form-group">
+								<label for="work-phone-field" class="bold inline">Work Phone #:</label>
+								<input type="text" name="work_phone" id="work-phone-field" size="21" value="<%=workPhone%>" maxlength="15" />
+								<label for="work-phone-ext-field">Ext.</label>
+								<input type="text" id="work-phone-ext-field" name="work-phone-ext-field" size="4" value="<%=workPhoneExt%>" maxlength="6" />
+							</div>
+							<div class="form-group">
+								<label for="other-phone-field" class="bold inline">Other Phone #:</label>
+								<input type="text" name="alt_phone" id="other-phone-field" size="21" value="<%=altPhone%>" maxlength="15" />
+								<label for="other-phone-ext-field">Ext.</label>
+								<input type="text" name="alt_phone_ext" id="other-phone-ext-field"  size="4" value="<%=altPhoneExt%>" maxlength="6" />
+							</div>
+						</div>
 							<% }else{ %>
-								<div style="margin-bottom: 16px;">
-									<div style="margin-bottom: 4px;">
-										<img src="/media_stat/images/template/help/review_contact_info.gif"" width="248" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION" />
-									</div>
-									<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
+								<div class="underline">
+									<h4 class="bold inline uppercase">2. enter your contact information</h4>
 								</div>
-	
-								<div style="margin-bottom: 32px;">
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>E-mail Address/User Name:</label></div><%=email%>
-									</div>
-									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Name:</label></div><%=firstName%>&nbsp;<%=lastName%>
-									</div>
-									<div style="margin-bottom: 8px; text-align: center;" class="text10">
-										(If this information is incorrect, <a href='/your_account/signin_information.jsp'>click here</a>!)
-									</div>
+								<div class="form-group text-center small-text">
+									<span class="bold">E-mail Address/User Name:</span><span> <%=email%></span>
+								</div>
+								<div class="form-group text-center small-text">
+									<span class="bold">Name:</span><span> <%=firstName%> <%=lastName%></span>
+								</div>
+								<div class="form-group text-center small-text">
+									<a href='/your_account/signin_information.jsp'>(If this information is incorrect, click here!)</a>
 								</div>
 							<% } %>
 	
-							<div style="margin-bottom: 16px;">
-								<div style="width: 50%; text-align: right; float: left;"><a href="/help/index.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR" /></a></div>
-								<input type="submit" name="sendMessage" style="cursor: pointer; width: 90px; height: 16px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/help/send_message.gif'); border: 0; text-indent: -9999px;">
-									<div style="display:none;">Send Message</div>
-								</input>
+							<div class="text-center separator">
+								<button type="reset" class="cssbutton grey">clear</button>
+								<button type="submit" name="sendMessage" class="cssbutton orange">Send Message</button>
 							</div>
+						<div class="small-text separator">
+							<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
+							You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia %>" />
 						</div>
-	
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 16px;">
-								<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
-							</div>
-							<div>You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia %>" /></div>
-						</div>
-					</div>
-				
 				</form>
-
-				<div style="height: 30px; background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-x left center; clear: both;"><!--  --></div>
-				<div style="margin-bottom: 8px;">
-					<div style="width: 33%; text-align: center; float: left;">
-						<div style="font-weight: bold;"><a href="/help/terms_of_service.jsp">Customer Agreement</a></div>
+				</div>
+				<div class="bordered-box">
+					<div class="trisect inline text-center">
+						<div class="bold"><a href="/help/terms_of_service.jsp">Customer Agreement</a></div>
 						<div>
 							All the details about what to<br /> expect when you shop with us.
 						</div>
 					</div>
-					<div style="width: 33%; text-align: center; float: left;">
-						<div style="font-weight: bold;"><a href="/help/privacy_policy.jsp">Privacy Policy</a></div>
+					<div class="trisect inline text-center">
+						<div class="bold"><a href="/help/privacy_policy.jsp">Privacy Policy</a></div>
 						<div>
 							We keep your account secure and<br /> your information private.
 						</div>
 					</div>
-					<div style="width: 33%; text-align: center; float: left;">
-						<div style="font-weight: bold;"><a href="javascript:pop('/help/freshness.jsp',335,375)">Our Freshness Guarantee</a></div>
+					<div class="trisect inline text-center">
+						<div class="bold"><a href="javascript:pop('/help/freshness.jsp',335,375)">Our Freshness Guarantee</a></div>
 						<div>
 							100% satisfaction with every<br/> product, every time.
 						</div>
 					</div>
-					<div style="height: 1px; background: transparent url('/media_stat/images/layout/clear.gif') repeat-x left center; clear: both;"><!--  --></div>
 				</div>
 			</div>
 		</fd:ContactFdController>
