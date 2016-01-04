@@ -528,6 +528,8 @@ section#section_slideshow{
 				width:100%;
 				height:auto;
 				
+				margin-top: 56px;
+				
 				@include breakpoint_mixin(medium){
 					margin-top:84px;
 				}
