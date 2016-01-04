@@ -33,6 +33,7 @@ public class ReceiptService {
 		receiptBoxService.populateDepositValueToBox(receiptLines, order);
 		receiptBoxService.populateDeliveryChargeToBox(receiptLines, order, user);
 		receiptBoxService.populateFuelSurchargeToBox(receiptLines, order);
+		receiptBoxService.populateOrderTipToBox(receiptLines, order);
 		receiptBoxService.populateDiscountsToBox(receiptLines, order);
 		receiptBoxService.populateRedeemedSampleDescriptionToBox(receiptLines, order);
 		receiptBoxService.populateExtendDeliveyPassDiscountToBox(receiptLines, order);
