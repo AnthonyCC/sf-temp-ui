@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -64,13 +66,15 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	@Override
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(this.getParentPK());
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER_ESTORE (FDCUSTOMER_ID, E_STORE, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,EMAIL_OPTIN,TC_AGREE_DATE,TC_AGREE) values (?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, model.geteStoreId().getContentId());
 		ps.setString(3, model.getDefaultShipToAddressPK());
 		ps.setString(4, model.getDefaultPaymentMethodPK());
 		ps.setString(5, model.getDefaultDepotLocationPK());
 		ps.setString(6, model.getEmailOptIn()?"X":"");
+		ps.setTimestamp(7, new Timestamp(new Date().getTime()));
+		ps.setString(8, "X");
 
 		try {
 			if (ps.executeUpdate() != 1) {
