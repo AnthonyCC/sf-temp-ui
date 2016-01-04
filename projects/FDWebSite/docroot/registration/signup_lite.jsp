@@ -274,7 +274,7 @@
 					<tr><td style="padding-top: 4px;"><!-- --></td></tr>
 					<tr><td><div class="fright hline" id="" style="width:100%;"><!-- --></div></td></tr>
 					
-					<tr><td style="padding-top: 10px;"><span class="text11 bodyCopySULNote">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large',alt='')" style="font-weight:normal;">Terms of use</a></span></td></tr>
+					<tr><td style="padding-top: 10px;"><span class="text11 bodyCopySULNote">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> , <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a></span></td></tr>
 					
 					<tr>
 						<td style="padding-top: 10px;"><a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="Sign Up" src="/media_stat/images/buttons/signup.gif"></a></td>
