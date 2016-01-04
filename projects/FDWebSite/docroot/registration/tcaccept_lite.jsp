@@ -189,7 +189,7 @@
 					<tr><td colspan="2"><div class="fright hline" id="" style="width:100%;"></div></td></tr>
 					
 					<tr>
-					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">Continue</a></td>
+					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">I Agree</a></td>
 					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener()" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">View Terms Of Use</a></td>
 					</tr>
 				</table>
