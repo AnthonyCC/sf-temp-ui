@@ -15,7 +15,6 @@ final int W_DNAV_TOTAL = 970;
 <head>
     <tmpl:get name="seoMetaTag"/>
  <%--    <%@ include file="/common/template/includes/metatags.jspf" %> --%>
-	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	
 	<tmpl:get name='customhead'/>
 

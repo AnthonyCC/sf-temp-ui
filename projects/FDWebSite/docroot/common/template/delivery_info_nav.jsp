@@ -12,7 +12,6 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 <html>
 <head>
     <tmpl:get name="seoMetaTag"/> 
-	<meta http-equiv="X-UA-Compatible" content="IE=8" lang="en-US" />
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

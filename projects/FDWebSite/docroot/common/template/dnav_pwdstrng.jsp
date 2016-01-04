@@ -14,7 +14,6 @@ final int W_DNAV_TOTAL = 970;
 <html>
 <head>
 	<tmpl:get name="seoMetaTag"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<tmpl:get name='customhead'/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<fd:javascript src="/assets/javascript/timeslots.js" />
