@@ -91,7 +91,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 
 <%-- messages icon --%>
 	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
-			<div id="locabar_messages_trigger" class="cursor-pointer">
+			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers">
 				<div class="section-warning-small" id="locabar-messages-open">
 					<div id="locabar-messages-count" class="locabar-circle-cont messages-count" data-count="0">0</div>
 				</div>
@@ -322,7 +322,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 	        dlvInfoLink += ".jsp";
     	}
 	%>
-	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section"><div style="display: inline-block; position: relative;" id="locabar_addresses_trigger">
+	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
+		<div style="display: inline-block; position: relative;" id="locabar_addresses_trigger" class="locabar_triggers">
 				<div style="display: inline-block;" class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
@@ -427,7 +428,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 			}
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
-			<div style="display: inline-block; position: relative;" id="locabar_user_trigger" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
+			<div id="locabar_user_trigger" class="locabar_triggers" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
 					<div class="locabar-user-greeting-cont">
@@ -464,7 +465,7 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
-			<div id="locabar_popupcart_trigger">
+			<div id="locabar_popupcart_trigger" class="locabar_triggers">
 				<div class="bold cursor-pointer">
 					<div class="locabar-cart-count-cont">
 						<div class="locabar-cart"></div>

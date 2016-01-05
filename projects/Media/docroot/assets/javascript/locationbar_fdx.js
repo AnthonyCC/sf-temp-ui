@@ -9,22 +9,22 @@ function centerLoginModal() {
 $jq(document).on('ready', function() {
 	$jq('#popupcart').appendTo('#locabar_popupcart');
 	
-	$jq( '#locabar_popupcart' ).position({
+	/*$jq( '#locabar_popupcart' ).position({
 		my: 'right top',
 		at: 'right bottom+8',
 		of: '#locabar_popupcart_trigger'
-	});
+	});*/
 });
 
 /* right align this one arrow */
-$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
+/*$jq( '#locabar_popupcart .ui-arrow.ui-top' ).position({
 	my: 'right top',
 	at: 'right-20 top-16',
 	of: '#locabar_popupcart'
-});
+});*/
 
 /* align to triggers */
-$jq( '#locabar_addresses' ).position({
+/*$jq( '#locabar_addresses' ).position({
 	my: 'center top',
 	at: 'center bottom+8',
 	of: '#locabar_addresses_trigger'
@@ -33,7 +33,7 @@ $jq( '#locabar_user' ).position({
 	my: 'center top',
 	at: 'center bottom+8',
 	of: '#locabar_user_trigger'
-});
+});*/
 
 function showOverlay(zIndexVar) {
 	var zIndex = zIndexVar || 0;

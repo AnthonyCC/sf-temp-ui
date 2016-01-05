@@ -1,6 +1,7 @@
 /* overrides */
 	#toptoolbar {
 		z-index: 750;
+		height:42px;
 	}
 	#locationbar {
 		background-color: #6AAA6D;
@@ -182,6 +183,7 @@
 	}
 	#popupcart table .price {
 		font-weight: bold;
+		text-align: center;
 	}
 	#popupcart .header .quantity {
 		text-align: center;
@@ -203,7 +205,6 @@
 		color: #6aa970;
 		width: 150px;
 		right: 200px;
-		text-decoration:underline;
 	}
 	
 	#popupcart a.cart:hover {
@@ -241,7 +242,8 @@
 		clear: both;
 		font-weight:bold;
 		border-radius: 3px;
-		width:calc(100% - 40px);
+		/*width:calc(100% - 40px);*/
+		width: 450px!important;
 	}
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
@@ -357,19 +359,20 @@
 .searchform-cont {
 	position: relative;
 	float: left;
-	padding-left: 10px;
+	padding-left: 25px;
 	width:450px;
 }
 
  #topInputFindButton_fdx {
 	height: 40px;
-	width: 40px;
+	width: 50px;
 	position: absolute;
 	right: 0;
 	display: inline-block;
 	background-position: center;
 	margin-top: 0px;
 	top: 0;
+	right:-14px;
  }
 .locabar-search {
 	background-image: url('/media/layout/nav/globalnav/fdx/search-icon.png');
@@ -384,6 +387,8 @@
 }
 .posAbs {
 	position: absolute;
+	margin-top:10px;
+	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.2)!important;
 }
 .visible {
 	visibility: visible;
@@ -391,6 +396,9 @@
 }
 .cursor-pointer {
 	cursor: pointer;
+}
+.bold.cursor-pointer{
+	-webkit-font-smoothing: antialiased;
 }
 
 .top-arrow {
@@ -522,10 +530,17 @@
 	right: 0;
 }
 
+.locabar_triggers{
+	height:40px;
+}
 #locabar_user_trigger {
+	display: inline-block;
+	position: relative;
 }
 #locabar_user_trigger .locabar-down-arrow {
 	display: none;
+	float:right;
+	margin-top:5px;
 }
 #locabar_user_trigger[data-signedin="true"] .locabar-down-arrow,
 #locabar_user_trigger[data-recog="true"] .locabar-down-arrow {
@@ -534,9 +549,17 @@
 }
 #locabar_user {
 	background-color: #fff;
-	box-shadow: -1px 0px 4px 2px #aaa;
+
 	color: #656565;
 	min-width: 220px;
+	
+	margin-left:-90px;
+}
+#locabar_addresses, #locabar_user, #popupcart{
+	
+}
+#popupcart{
+	box-shadow: initial;
 }
 #locabar_user .section-cont {
 	padding: 20px 30px 0 30px;
@@ -627,9 +650,7 @@
 	display: inline-block;
 	background-color: #fff;
 	padding: 30px 15px 20px 15px;
-	margin: 10px 0 0 0;
-	/*box-shadow: -1px 0px 4px 2px #aaa;*/
-	box-shadow: 0px 2px 8px 4px rgba(0,0,0, 0.25);
+	margin: 15px 0 0 0;
 	color: #656565;
 	font-size: 14px!important;
 	min-width: 353px;
@@ -707,12 +728,18 @@
 
 #locabar_popupcart {
 	width: 500px;
-	box-shadow: -1px 0px 4px 2px #aaa;
+	left:85px;
+	margin-top: 23px;
 }
 #locabar_popupcart_trigger {
 	margin-right: 0;
 	padding-right: 20px;
 }
+
+#locabar_popupcart .ui-arrow.ui-top{
+	margin-left: 125px;
+}
+
 #locabar_popupcart_trigger .modifynote {
 	color: #333;
 }
