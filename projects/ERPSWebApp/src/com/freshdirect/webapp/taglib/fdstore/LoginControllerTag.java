@@ -121,13 +121,13 @@ public class LoginControllerTag extends AbstractControllerTag {
 
 	    		
 				 // determine whether login is trigger from workflow
-				 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
-				 if( preSuccessPage != null){
-					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
-					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length()), true);
-				 } else {
+//				 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+//				 if( preSuccessPage != null){
+//					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+//					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length()), true);
+//				 } else {
 					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()), true);
-				 }					 	    		
+//				 }					 	    		
 	    	} else {
 	    		this.setSuccessPage(updatedSuccessPage);
 	    	}

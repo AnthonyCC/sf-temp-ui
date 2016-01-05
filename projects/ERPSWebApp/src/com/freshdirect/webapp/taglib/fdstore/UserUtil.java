@@ -455,7 +455,14 @@ public class UserUtil {
                     if(successPage != null && !successPage.contains("/robin_hood") && !successPage.contains("/gift_card")
                     		&& mergePage != null && mergePage.trim().length() > 0){
 	                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
-	                    updatedSuccessPage =  mergePage + "?successPage=" + URLEncoder.encode( successPage ) ;
+	                    if (FDStoreProperties.isSocialLoginEnabled() ) {
+	       				 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+	       				 if( preSuccessPage != null){
+	       					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+	       					 successPage = preSuccessPage;
+	       				 	}	       				
+	                    }
+	                    	updatedSuccessPage =  mergePage + "?successPage=" + URLEncoder.encode( successPage ) ;
                     }
                     
                 } else if ((currentLines > 0) && (loginLines == 0)) {
