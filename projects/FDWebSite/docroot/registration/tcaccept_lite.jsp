@@ -163,14 +163,14 @@
 
 	%>
 			<script>
-			function popupOpener() {
-			    window.open("/registration/user_agreement.jsp", "_blank", "top=100, left=500, width=400, height=500");
+			function popupOpener(url) {
+			    window.open(url, "_blank", "top=100, left=500, width=400, height=500");
 			   
 			}
 			</script>
 
-		<div class="fright hline" id="" style="width:100%; float:left;"></div>
-		<div id="form_feilds" style="float:left;">
+		
+		<div id="form_feilds" style="float:auto;">
 			<form id="litetcaccept" name="litetcaccept" method="post"  style="padding: 0; margin: 0;">
 
 				<input type="hidden" name="socialNavPage" value="<%= socialNavPage %>" />
@@ -180,18 +180,25 @@
 				<input type="hidden" name="litetcaccept" value="true" />
 				
 				<table border="0" cellpadding="0" cellspacing="0">
-					<tr><td colspan="2" class="bodyCopySUL"><label style="padding-left: 20px;">Hello <%=user.getFirstName()+" "+user.getLastName() %>,</label>  </td></tr>
+					<tr><td class="bodyCopySUL" style="padding-top: 10px;"><label >Hello <%=user.getFirstName()+" "+user.getLastName() %>, Our Customer Agreement & Privacy Policy have changed</label>  </td></tr>
 					<br/>
-					<tr><td colspan="2" class="SystemMessage" style="padding-left: 20px;"><b>Our terms of service have changed</b>. By continuing to use our services, you agree to the recent modification to our terms of services.
-					 If you wish to view or print the new terms of services, tap or click "View Terms Of Use" button below.  </td></tr>
+					<tr><td class="SystemMessage" style="padding-top: 10px;" >By selecting "I Agree" you agree to the updates to our Customer Agreement and Privacy Policy. If you wish to view or print the new Customer Agreement or Privacy Policy, tap or click the "View Customer Agreement" or "View Privacy Policy" button below.
+					 </td></tr>
 					
-					<tr><td colspan="2" style="padding-top: 4px;"></td></tr>
-					<tr><td colspan="2"><div class="fright hline" id="" style="width:100%;"></div></td></tr>
-					
+					<tr><td style="padding-top: 4px;"></td></tr>
+					<tr><td style="padding-top: 4px;"></td></tr>
+					<tr><td style="padding-top: 4px;"></td></tr>
 					<tr>
-					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">I Agree</a></td>
-					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener()" style="display: inline-block; width: 134px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #00B800; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 5px; margin-left: 20px;">View Terms Of Use</a></td>
+					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener('/registration/user_agreement.jsp')" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; border:1px solid #009900; text-decoration: none; background-color: #ffffff; color: #009900; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>View Customer Agreement</b></a></td>
 					</tr>
+					<tr>
+					<td style="padding-top: 10px;"> <a href="#" onClick="popupOpener('/registration/privacy_policy.jsp')" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; border:1px solid #009900; text-decoration: none; background-color: #ffffff; color: #009900; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>View Privacy Policy</b></a></td>
+					</tr>
+					<tr>
+					<td style="padding-top: 10px;">	<a href="#" onclick="document.litetcaccept.submit();" style="display: inline-block; width: 300px;padding: 10px; margin-top: 0px; text-decoration: none; background-color: #009900; color: #ffffff; font-size: 13.33px; text-align: center; border-radius: 2px; margin-left: 20px;"><b>I Agree</b></a></td>
+					</tr>
+					
+
 				</table>
 			</form>
 		</div>

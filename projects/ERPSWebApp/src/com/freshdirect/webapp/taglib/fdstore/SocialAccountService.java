@@ -167,8 +167,7 @@ public class SocialAccountService implements AccountService {
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		
 							 if(!user.getTcAcknowledge()){
-								 if(FDStoreProperties.isTCEnabled()){
-								 response.sendRedirect(newURL+"/registration/tcaccept_lite.jsp");
+								  response.sendRedirect(newURL+"/registration/tcaccept_lite.jsp");
 								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
@@ -181,22 +180,9 @@ public class SocialAccountService implements AccountService {
 									 } else {
 										 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
 									 }
-								 }
-							 }
-							 else {
 								 
-								 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-								 
-								// determine whether socialsignin is trigger from workflow
-								 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
-								 if( preSuccessPage != null){
-									 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
-									 return  newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length());
-								 } else {
-									 return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()); 
-								 }								 
-							
 							 }
+
 						} catch (IOException e) {
 							LOGGER.error(e.getMessage());
 						}
@@ -261,7 +247,6 @@ public class SocialAccountService implements AccountService {
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
-				    			 if(FDStoreProperties.isTCEnabled()){
 				    				 String newURL = request.getScheme() + "://" + request.getServerName() ;
 									 if(FDStoreProperties.isLocalDeployment()){
 										 newURL = newURL + ":" + request.getServerPort();
@@ -275,19 +260,8 @@ public class SocialAccountService implements AccountService {
 						    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
 									return newURL + socialLoginRecognized;
 				    			 }
-							 }else {
-
-								 String newURL = request.getScheme() + "://" + request.getServerName() ;
-								 if(FDStoreProperties.isLocalDeployment()){
-									 newURL = newURL + ":" + request.getServerPort();
-								 }									 
-					    		socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
-								return newURL + socialLoginRecognized;
 							 }
-						}
-			    		
-
-							
+			    									
 					} else {
 						//NOT Existed in FD
 						
@@ -393,7 +367,6 @@ public class SocialAccountService implements AccountService {
 				
 					}
 				}
-
 				
 	    }
 		return null;
