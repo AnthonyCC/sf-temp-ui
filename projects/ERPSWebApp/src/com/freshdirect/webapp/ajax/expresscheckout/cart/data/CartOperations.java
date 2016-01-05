@@ -749,16 +749,22 @@ public class CartOperations {
         String errorMessage;
 
         MasqueradeContext masqueradeContext = user.getMasqueradeContext();
+        final boolean makeGoodMode;
         if (masqueradeContext != null) {
+        	makeGoodMode = masqueradeContext.isMakeGood();
             errorMessage = masqueradeContext.validateAddToCart(item.getLineId());
             if (errorMessage != null) {
                 responseItem.setStatus(Status.ERROR);
                 responseItem.setMessage(errorMessage);
                 return null;
             }
+        } else {
+        	makeGoodMode = false;
         }
 
-        errorMessage = validateQuantity(cart, getCartlinesQuantity(prodNode, cartLinesToAdd), prodNode, quantity, 0, maximumQuantity);
+
+        final double cartlinesQuantity = getCartlinesQuantity(prodNode, cartLinesToAdd);
+		errorMessage = validateQuantity(cart, cartlinesQuantity, prodNode, quantity, 0, maximumQuantity, makeGoodMode);
 		
 		if (errorMessage != null) {
 			responseItem.setStatus( Status.ERROR );
@@ -941,12 +947,36 @@ public class CartOperations {
 	 * @param originalLineQuantity quantity of this cartline (for modify cartline scenario)
 	 * @return
 	 */
-    private static String validateQuantity(FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity, double maximumQuantity) {
+    private static String validateQuantity(FDCartModel cart, double originalQuantity, ProductModel prodNode, double quantity, double originalLineQuantity, double maximumQuantity, final boolean isMakeGood) {
         String errorMessage = null;
         DecimalFormat formatter = new DecimalFormat("0.##");
-        if (quantity < prodNode.getQuantityMinimum()) {
-            errorMessage = "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+        
+        boolean weighable = false;
+        if (isMakeGood) {
+            // guess if product is weighable
+            try {
+                weighable = prodNode.getDefaultSku().getProduct().isSoldByLb();
+            } catch (FDResourceException e) {
+                LOG.error("Ooops, an error occured while guesssing product is weighable", e);
+            } catch (FDSkuNotFoundException e) {
+                LOG.error("Ooops, an error occured while guesssing product is weighable", e);
+            }
         }
+
+        // APPDEV-4685 : in make-good order mode allow adding less then minimum weight for weighable products
+        if (isMakeGood && weighable) {
+        	// sufficient to check quantity is not a negative number
+	        if (quantity <= 0) {
+	            errorMessage = "Quantity cannot must be a positive number for " + prodNode.getFullName();
+	        }
+        	
+        } else {
+            // do the normal minimum validation
+            if (quantity < prodNode.getQuantityMinimum()) {
+                errorMessage = "FreshDirect cannot deliver less than " + formatter.format(prodNode.getQuantityMinimum()) + " " + prodNode.getFullName();
+            }
+        }
+
 
         if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
             errorMessage = "Quantity must be an increment of " + formatter.format(prodNode.getQuantityIncrement());
@@ -1032,8 +1062,7 @@ public class CartOperations {
 	private static double getCartlinesQuantity(ProductModel product, List<FDCartLineI> cartLinesToAdd) {
 		String productId = product.getContentName();
 		double sum = 0;
-		for (Iterator<FDCartLineI> i = cartLinesToAdd.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
+		for (final FDCartLineI line : cartLinesToAdd) {
 			if (productId.equals(line.getProductName())) {
 				sum += line.getQuantity();
 			}

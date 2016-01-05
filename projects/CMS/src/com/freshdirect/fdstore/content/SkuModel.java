@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
@@ -18,11 +17,8 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
-import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
-import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -60,18 +56,22 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		return Collections.unmodifiableList(variationOptions);
 	}
 	
+	@Override
 	public boolean isDiscontinued() {
 		return this.getAvailability().isDiscontinued();
 	}
 	
+	@Override
 	public boolean isTempUnavailable() {
 		return this.getAvailability().isTempUnavailable();
 	}
 
+	@Override
 	public boolean isOutOfSeason() {
 		return this.getAvailability().isOutOfSeason();
 	}
 	
+	@Override
 	public boolean isUnavailable() {
 		/**
 		 * Availability cannot be cached, as plant might have switched.
@@ -84,11 +84,12 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		return this.getAvailability().isUnavailable();
 	}
 		
-	
+	@Override
 	public boolean isAvailableWithin(int days) {
 		return this.getAvailability().isAvailableWithin(days);
 	}
 	
+	@Override
 	public Date getEarliestAvailability() {
 		return this.getAvailability().getEarliestAvailability();
 	}
@@ -189,9 +190,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    public Date getEarliestAvailability() {
 	    	return null;
 	    }	
-	    public List<FDLimitedAvailabilityInfo> getLimitedAvailability(){
-	    	return null;
-	    }	
 	};
 	
 	/**
@@ -216,18 +214,22 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			this.plantId = plantId;
 		}
 		
+		@Override
 		public boolean isDiscontinued() {
 			return this.productInfo.isDiscontinued(salesArea,distrChannel) ||(this.productInfo.isLimitedQuantity(plantId) && isNotAvailableWithInHorizon()) ;//To treat limit quantity products as discontinued ones.
 		}
 
+		@Override
 		public boolean isTempUnavailable() {
 			return this.productInfo.isTempUnavailable(salesArea,distrChannel);
 		}
 
+		@Override
 		public boolean isOutOfSeason() {
 			return this.productInfo.isOutOfSeason(salesArea,distrChannel);
 		}
 
+		@Override
 		public boolean isUnavailable() {
 			if (this.isDiscontinued() || this.isTempUnavailable() || this.isOutOfSeason()) {
 				return true;
@@ -257,6 +259,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			return firstAvDate == null || !firstAvDate.before(endDate);
 		}
     
+		@Override
 		public Date getEarliestAvailability() {
 			if (this.isDiscontinued() || this.isTempUnavailable() || this.isOutOfSeason()) {
 				return null;
@@ -265,6 +268,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability);
 		}
 		
+		@Override
 		public boolean isAvailableWithin(int days) {
 			if (this.isDiscontinued() || this.isTempUnavailable() || this.isOutOfSeason()) {
 				return false;
