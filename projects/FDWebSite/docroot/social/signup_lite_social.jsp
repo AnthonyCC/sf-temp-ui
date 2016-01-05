@@ -339,7 +339,7 @@
 	
 	<div class="bottom-contents">
 		
-			<span class="text12">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> , <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a></span><br><br>
+			<span class="text12">By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a></span><br><br>
 			
 			<span class="bottom-links">
    			 <b>Already have a password? 

@@ -243,7 +243,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			&nbsp;<font color="#999999">|</font>
 			&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
 			&nbsp;<font color="#999999">|</font>
-			&nbsp;<a href="/help/platform_agreement.jsp">Platform Agreement</a>
+			&nbsp;<a href="/help/platform_agreement.jsp">Platform Terms of Use</a>
 		</td>
 	</tr>
 </table>
