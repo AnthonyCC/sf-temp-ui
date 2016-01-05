@@ -465,14 +465,14 @@ public class FDDeliveryManager {
 		return result;
 	}
 
-	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode) throws FDResourceException {
+	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode, String eStoreIdStr) throws FDResourceException {
 		try {
-			FDDeliveryServiceSelectionResult result = zipCheckCache.get(zipCode);
+			FDDeliveryServiceSelectionResult result = zipCheckCache.get(eStoreIdStr+":"+zipCode);
 			if (result == null) {
 				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 				DeliveryServices response = logisticsService.getDeliveryServices(LogisticsDataEncoder.encodeDeliveryZipCodeRequest(zipCode));
 				result = LogisticsDataDecoder.decodeDeliveryServices(response);
-				zipCheckCache.put(zipCode, result);
+				zipCheckCache.put(eStoreIdStr+":"+zipCode, result);
 			}
 			return result;
 		} catch (FDInvalidAddressException e) {
@@ -481,13 +481,19 @@ public class FDDeliveryManager {
 			throw new FDResourceException(e);
 		}
 		return null; 
+		
+	}
+
+	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode) throws FDResourceException {
+		return getDeliveryServicesByZipCode(zipCode, "FD");
 	}
 	
 	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode, EnumEStoreId eStoreId) throws FDResourceException {
-		FDDeliveryServiceSelectionResult result = getDeliveryServicesByZipCode(zipCode);
-		if(EnumEStoreId.FDX.equals(eStoreId)){
+		FDDeliveryServiceSelectionResult result = getDeliveryServicesByZipCode(zipCode, eStoreId.name());
+			
+		if(EnumEStoreId.FDX.equals(eStoreId)) {
 			result.addServiceStatus(EnumServiceType.HOME, result.getServiceStatus(EnumServiceType.FDX));
-			result.addServiceStatus(EnumServiceType.CORPORATE, result.getServiceStatus(EnumServiceType.FDX));
+			//result.addServiceStatus(EnumServiceType.CORPORATE, result.getServiceStatus(EnumServiceType.FDX));
 		}
 		return result;
 	}
