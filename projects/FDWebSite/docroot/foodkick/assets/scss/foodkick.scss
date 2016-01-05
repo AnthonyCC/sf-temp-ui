@@ -1717,7 +1717,11 @@ form{
 	}
 	
 	.field_holders{
-		height:68px;
+		height:80px;
+		
+		@include breakpoint_mixin(medium){
+			height:68px;
+		}
 	}
 }
 

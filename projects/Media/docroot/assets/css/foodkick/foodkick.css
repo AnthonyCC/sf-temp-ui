@@ -1139,7 +1139,10 @@ form input.error {
 form label.error {
   /*position:absolute;*/ }
 form .field_holders {
-  height: 68px; }
+  height: 80px; }
+  @media (min-width: 30em) {
+    form .field_holders {
+      height: 68px; } }
 
 .fk_anchor {
   top: -60px;
