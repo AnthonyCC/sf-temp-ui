@@ -5,7 +5,6 @@
 	
 		<script type="text/javascript">
 			cmCreatePageviewTag("HOMEPAGE: index.jsp","FDX_HOMEPAGE",null,null,"-_--_-HOMEPAGE: index.jsp-_--_--_--_-HOMEPAGE: index.jsp");
-			FreshDirect.Coremetrics.populateTrackingObject("HOMEPAGE: index.jsp","HOMEPAGE: index.jsp-_--_--_-","");
 		</script>
 		<a name="slideshow" id="slideshow" class="fk_anchor"></a>
 		<section id="section_slideshow" class="main_section">

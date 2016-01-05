@@ -17,7 +17,6 @@
 		<![endif]-->
 		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
-		<script type="text/javascript" src="/assets/javascript/coremetrics.js"></script>
 		<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
 		<script type="text/javascript">cmSetClientID("51640000|33000004",true,"data.coremetrics.com","freshdirect.com");</script>
 		<tmpl:get name='header'/>
