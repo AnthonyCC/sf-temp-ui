@@ -89,7 +89,8 @@
 				"mainPromo": <%=exMainPromo%>
 			};
 			</script>
-			<script src="//tags.extole.com/553175139/core.js"></script>
+			<!-- <script src="//tags.extole.com/553175139/core.js"></script>
+			EXTOLE LIBRARY IS NOW CALLED FROM BELOW FILE.  This is done because javascript, unlike java/jsp, recognizes when it is being called in an iframe -->
 			<script src="/assets/javascript/extole_tags_generator.js"></script>
 			<%
 			} //end if(exValidOrderCount == true)

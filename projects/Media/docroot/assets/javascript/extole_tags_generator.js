@@ -150,26 +150,40 @@ Placed inside '(function() {' block and a setInterval checker for jQuery existen
 		if( typeof($jq) == "function" ){
 			clearInterval(extoleInt);
 			
-			if( ( typeof(globalExtoleVars) == "object" ) && (globalExtoleVars.isSignedCustomer != false)){
-				if( (globalExtoleVars.justSignedUp != false) ){
-					console.log("lets register you, new customer");
-					
-					setAndAppendExtoleObject("REGISTER");
-				}else{setAndAppendExtoleObject("PURCHASE",null);}
+			//this is to prevent iframed popups (or any other iframed request) from having the RAF lower popup (APPBUG-4160)
+			if(top != self){
+				//hides the popups
+				$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
 				
+				console.log("i am an iframe");
+			}else{
+				console.log("i am a regular page");
 			}
 			
-			
-			//for duplicating that orange button in the popout, APPBUG-4079
-			if( $jq("#cta2").length > -1 ){
-				$jq('a[href$="brownie_points.jsp"]').each(function(){
-					$jq(this).click(function(e){
-						e.preventDefault();
-						
-						$jq( "#cta2" ).trigger( "click" );
-					})
-				})
-			}
+			$jq.ajax({
+				url: "//tags.extole.com/553175139/core.js", /*core 3rd party library url*/
+				dataType: "script",
+				success: function(){
+					if( ( typeof(globalExtoleVars) == "object" ) && (globalExtoleVars.isSignedCustomer != false)){
+						if( (globalExtoleVars.justSignedUp != false) ){
+							console.log("lets register you, new customer");
+							
+							setAndAppendExtoleObject("REGISTER");
+						}else{setAndAppendExtoleObject("PURCHASE",null);}
+					}//done just seeing if the Extole object was set up with a signed customer
+					
+					//for duplicating that orange button in the popout, APPBUG-4079
+					if( $jq("#cta2").length > -1 ){
+						$jq('a[href$="brownie_points.jsp"]').each(function(){
+							$jq(this).click(function(e){
+								e.preventDefault();
+								
+								$jq( "#cta2" ).trigger( "click" );
+							})
+						})
+					}
+				}//end success function for the 3rd party call
+			});//end initial call for 3rd party Extole library
 		}
 	}, 100);
 })();
