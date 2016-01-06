@@ -314,11 +314,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				}else if ("tcAgreed".equalsIgnoreCase(action)) {
 					setFDTcAccept(request, result);
 					HttpSession session = pageContext.getSession();
-					
-					String newURL = request.getScheme() + "://" + request.getServerName() ;
+					 String newURL = "";
 					 if(FDStoreProperties.isLocalDeployment()){
-						 newURL = newURL + ":" + request.getServerPort();
-					 }	
+						 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+					 }else{
+						 newURL = "https" + "://" + request.getServerName();
+					 }
 					if(null!=request.getParameter("socialNavPage")&&!"".equals(request.getParameter("socialNavPage"))){
 						socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + request.getParameter("socialNavPage");	
 						doRedirect(newURL+socialLoginRecognized);
