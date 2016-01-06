@@ -92,6 +92,7 @@ public class DlvTimeslotStats {
 		deliveryModel.setHasCapacity(hasCapacity);
 		deliveryModel.setKosherSlotAvailable(isKosherSlotAvailable);
 		deliveryModel.setGeoRestrictionmessages(messages);
+		deliveryModel.setComments(comments);
 		deliveryModel.setMaxDiscount(maxDiscount);
 		deliveryModel.setAlcoholRestrictedCount(alcoholSlots);
 		deliveryModel.setEcoFriendlyCount(ecoFriendlySlots);
@@ -134,8 +135,11 @@ public class DlvTimeslotStats {
 			this.getZonesMap().putAll(t.getZones());
 		}
 		if(t.getGeoRestrictionmessages()!=null && !t.getGeoRestrictionmessages().isEmpty()){
-			this.setMessages(t.getGeoRestrictionmessages());
+			this.getMessages().addAll(t.getGeoRestrictionmessages());
 		}
+		if(t.getComments()!=null && !t.getComments().isEmpty())
+			this.getComments().addAll(t.getComments());
+		
 		this.setSameDayCutoff(t.getSameDayCutoff());
 		this.setCtActive(this.isCtActive() || t.isCtActive());
 		this.setCtSlots(this.getCtSlots() + t.getCtSlots());
@@ -148,7 +152,11 @@ public class DlvTimeslotStats {
 	public void setMessages(List<String> messages) {
 		this.messages = messages;
 	}
-
+	
+	public void setComments(List<String> comments) {
+		this.comments = comments;
+	}
+	
 	public int getCtSlots() {
 		return ctSlots;
 	}

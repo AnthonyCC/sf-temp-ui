@@ -15,7 +15,7 @@
 		Map zones = deliveryModel.getZones();
 		boolean zoneCtActive = deliveryModel.isZoneCtActive();
 		List messages = deliveryModel.getGeoRestrictionmessages();
-
+		List comments = deliveryModel.getComments();
 		String selectedSlotId = deliveryModel.getTimeSlotId();
 		String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 		boolean hasPreReserved = deliveryModel.isPreReserved();

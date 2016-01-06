@@ -298,8 +298,6 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	}
 	
 	public void apply(FDDeliveryTimeslots t) {
-		if(t.getComments()!=null && !t.getComments().isEmpty())
-			this.getComments().addAll(t.getComments());
 		if(StringUtils.isNotBlank(t.getPreselectedTimeslotId())){
 			this.setPreReserveSlotId(t.getPreselectedTimeslotId());
 		}

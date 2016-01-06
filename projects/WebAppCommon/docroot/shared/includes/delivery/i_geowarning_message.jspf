@@ -17,7 +17,19 @@
     <td bgcolor="#FFFFFF" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
     <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/truck_delivery_warning.jpg" alt="Delivery Notice" width="211" height="34" border="0" style="margin:0 5px;"></td>
     <td class="text11gbold" width="100%" bgcolor="#FFF9D7">
-<%
+    
+    
+	<%
+
+	if(user.getMasqueradeContext()!=null && !comments.isEmpty())){
+		String _cmtsToDisplay = "";
+		Iterator _cmtsIter = comments.iterator();
+		while(_cmtsIter.hasNext()) {
+			String _message = (String)_cmtsIter.next();
+			messagesToDisplay.add(_message);
+		}
+	}else{
+
 	List messagesToDisplay = new ArrayList();
 	String appName = (String) session.getAttribute(SessionName.APPLICATION);
 	if(messages != null) {
@@ -28,9 +40,11 @@
 		}
 	}
 	if(messagesToDisplay != null && messagesToDisplay.size() > 0) { 
-%>
-	<div style="padding: 3px 5px 3px 5px"><%= messagesToDisplay.get(0) %></div>
-<%}%>
+	%>
+		<div style="padding: 3px 5px 3px 5px"><%= messagesToDisplay.get(0) %></div>
+	<%}%>
+
+
 	</td>
      <td bgcolor="#FFF9D7" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
     <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
