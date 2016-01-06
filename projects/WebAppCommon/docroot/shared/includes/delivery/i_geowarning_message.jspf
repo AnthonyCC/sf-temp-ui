@@ -21,7 +21,7 @@
     
 	<%
 	List messagesToDisplay = new ArrayList();
-	if(user.getMasqueradeContext()!=null && !comments.isEmpty())){
+	if(user.getMasqueradeContext()!=null && !comments.isEmpty()){
 		Iterator _cmtsIter = comments.iterator();
 		while(_cmtsIter.hasNext()) {
 			String _message = (String)_cmtsIter.next();

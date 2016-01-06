@@ -121,7 +121,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	Map zones = deliveryModel.getZones();
 	boolean zoneCtActive = deliveryModel.isZoneCtActive();
 	List messages = deliveryModel.getGeoRestrictionmessages();
-
+	List comments = deliveryModel.getComments();
 	String selectedSlotId = deliveryModel.getTimeSlotId();
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
@@ -247,7 +247,7 @@ zonePromoEnabled=true;
 <!--START MESSAGING SECTION-->
 
 <!-- GEO Restriction Message Added -->
-<% if(messages != null && messages.size() >= 1) { %>
+<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
 		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
 <% } %>
 
