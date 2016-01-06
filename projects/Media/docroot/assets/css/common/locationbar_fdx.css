@@ -1,7 +1,7 @@
 /* overrides */
 	#toptoolbar {
 		z-index: 750;
-		height:42px;
+		/*height:42px;*/
 	}
 	#locationbar {
 		background-color: #6AAA6D;
