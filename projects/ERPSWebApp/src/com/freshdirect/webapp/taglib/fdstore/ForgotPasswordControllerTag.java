@@ -15,6 +15,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -183,7 +184,13 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				//doRedirect(URI_HOME);
 
 				if (this.successPage != null) {
-					doRedirect(this.successPage);
+					 String newURL = "";
+					 if(FDStoreProperties.isLocalDeployment()){
+						 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+					 }else{
+						 newURL = "https" + "://" + request.getServerName();
+					 }
+					doRedirect(newURL+this.successPage);
 				} else {
 					doRedirect(URI_HOME);
 				}
@@ -214,11 +221,17 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		validateInput(result);
 		if (result.isSuccess()) {
 			try {
+				 String newURL = "";
+				 if(FDStoreProperties.isLocalDeployment()){
+					 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+				 }else{
+					 newURL = "https" + "://" + request.getServerName();
+				 }
 
 				LOGGER.debug("Email is going to: " + email);
 				FDCustomerManager.sendPasswordEmail(email, altEmail != null);
 				LOGGER.debug("Success, redirecting to: " + successPage);
-				this.doRedirect(this.successPage);
+				this.doRedirect(newURL+this.successPage);
 
 			} catch (FDResourceException ex) {
 				result.addError(new ActionError("invalid_email", MSG_INVALID_EMAIL));
