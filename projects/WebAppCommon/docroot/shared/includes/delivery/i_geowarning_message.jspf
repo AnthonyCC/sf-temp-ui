@@ -30,13 +30,14 @@
 		}
 	}else{
 
-	List messagesToDisplay = new ArrayList();
-	String appName = (String) session.getAttribute(SessionName.APPLICATION);
-	if(messages != null) {
-		Iterator _iteratorMsg = messages.iterator();
-		while(_iteratorMsg.hasNext()) {
-			String _message = (String)_iteratorMsg.next();
-			messagesToDisplay.add(_message);
+		List messagesToDisplay = new ArrayList();
+		String appName = (String) session.getAttribute(SessionName.APPLICATION);
+		if(messages != null) {
+			Iterator _iteratorMsg = messages.iterator();
+			while(_iteratorMsg.hasNext()) {
+				String _message = (String)_iteratorMsg.next();
+				messagesToDisplay.add(_message);
+			}
 		}
 	}
 	if(messagesToDisplay != null && messagesToDisplay.size() > 0) { 
