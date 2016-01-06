@@ -148,8 +148,8 @@ public class ExternalAccountService implements AccountService {
 					LOGGER.debug(rafPromoCode);
 					LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("CLICKID"));
 					String customerId = user.getIdentity().getErpCustomerPK();
-					String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("CLICKID"), user.getRafClickId());
-					user.setReferralCustomerId(referralCustomerId);
+				//	String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("CLICKID"), user.getRafClickId());
+				//	user.setReferralCustomerId(referralCustomerId);
 					user.setRafPromoCode(rafPromoCode);
 					user.setRafClickId(rafClickId);
 					user.setRafFriendSignedUp(true);
@@ -159,7 +159,7 @@ public class ExternalAccountService implements AccountService {
 					rec.setActivityType(EnumAccountActivityType.REFEREE_SIGNEDUP);
 					rec.setSource(EnumTransactionSource.WEBSITE);
 					rec.setInitiator("CUSTOMER");
-					rec.setCustomerId(referralCustomerId);
+				//	rec.setCustomerId(referralCustomerId);
 					rec.setDate(new Date());
 					rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">"+user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">ID #" + customerId + "</a>");
 		//			new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();

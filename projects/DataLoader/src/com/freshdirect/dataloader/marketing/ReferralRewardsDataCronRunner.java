@@ -46,40 +46,14 @@ public class ReferralRewardsDataCronRunner {
 			FDExtoleManager.downloadAndSaveRewards(fileName);
 			LOGGER.info(" Finished ReferralRewardsDataCronRunner ");
 
-		} catch (FileNotFoundException e) {
-			// throw new ExtoleServiceException(e);
+		}  catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg = sw.getBuffer().toString();
-			LOGGER.info(new StringBuilder(
-					"ReferralRewardsDataCronRunner failed with FileNotFoundException...")
+			LOGGER.error(new StringBuilder(
+					"ReferralRewardsDataCronRunner failed with Exception...")
 					.append(_msg).toString());
-			LOGGER.error(_msg);
-			if (_msg != null
-					&& _msg.indexOf("timed out while waiting to get an instance from the free pool") == -1)
-				email(Calendar.getInstance().getTime(), _msg);
-
-		} catch (ParseException pe) {
-			StringWriter sw = new StringWriter();
-			pe.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-
-		} catch (IOException ie) {
-			StringWriter sw = new StringWriter();
-			ie.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (FDResourceException fe) {
-			StringWriter sw = new StringWriter();
-			fe.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (ExtoleServiceException ee) {
-			StringWriter sw = new StringWriter();
-			ee.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
+			email(Calendar.getInstance().getTime(), _msg);
 			
 		}
 	}
@@ -104,7 +78,7 @@ public class ReferralRewardsDataCronRunner {
 					buff.toString(), true, "");
 
 		} catch (MessagingException e) {
-			LOGGER.warn("Error Sending ReferralRewardsDataCronRunner report email: ",e);
+			LOGGER.error("Error Sending ReferralRewardsDataCronRunner report email: ",e);
 		}
 	}
 }

@@ -72,7 +72,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 
 	@Override
 	public ExtoleResponse createConversion(ExtoleConversionRequest conversion)
-			throws ExtoleServiceException, IOException {
+			throws ExtoleServiceException {
 		String jsonResponse = null;
 		try {
 			URI uri = buildExtoleUrl(ENDPOINT_CREATE_CONVERSION, conversion);
@@ -94,8 +94,12 @@ public class ExtoleServiceImpl implements ExtoleService {
 			e.printStackTrace();
 			throw new ExtoleServiceException(e.getMessage());
 		} finally {
-			if(null!=response)
-			response.close();
+			try {
+				if(null!=response)
+				response.close();
+			} catch (Exception e) {
+				throw new ExtoleServiceException(e.getMessage());
+			}
 		}
 		return parseResponse(jsonResponse);
 	}
@@ -103,7 +107,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 	@Override
 	public ExtoleResponse approveConversion(
 			ExtoleConversionRequest approveConversion)
-			throws ExtoleServiceException, IOException {
+			throws ExtoleServiceException {
 		String jsonResponse = null;
 		try {
 			URI uri = buildExtoleUrl(ENDPOINT_APPROVE_CONVERSION,
@@ -133,8 +137,12 @@ public class ExtoleServiceImpl implements ExtoleService {
 			e.printStackTrace();
 			throw new ExtoleServiceException(e.getMessage());
 		} finally {
-			if(null!=response)
-			response.close();
+			try {
+				if(null!=response)
+				response.close();
+			} catch (Exception e) {
+				throw new ExtoleServiceException(e.getMessage());
+			}
 		}
 		return parseResponse(jsonResponse);
 

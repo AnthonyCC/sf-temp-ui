@@ -37,26 +37,14 @@ public class ReferralConversionCronRunner {
 
 		try {
 			FDExtoleManager.createConversion();
-		} catch (IOException ie) {
-			StringWriter sw = new StringWriter();
-			ie.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (FDResourceException fe) {
-			StringWriter sw = new StringWriter();
-			fe.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
-		} catch (ExtoleServiceException ee) {
-			StringWriter sw = new StringWriter();
-			ee.printStackTrace(new PrintWriter(sw));
-			email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg = sw.getBuffer().toString();
-			LOGGER.info(new StringBuilder(
+			LOGGER.error(new StringBuilder(
 					"ReferralConversionCronRunner- Create Conversion failed with Exception...")
 					.append(_msg).toString());
-			LOGGER.error(_msg);
+			
 			if (_msg != null)
 				email(Calendar.getInstance().getTime(), _msg);
 		}
@@ -67,10 +55,9 @@ public class ReferralConversionCronRunner {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg = sw.getBuffer().toString();
-			LOGGER.info(new StringBuilder(
+			LOGGER.error(new StringBuilder(
 					"ReferralConversionCronRunner - Approve Conversion failed with Exception...")
 					.append(_msg).toString());
-			LOGGER.error(_msg);
 			if (_msg != null)
 				email(Calendar.getInstance().getTime(), _msg);
 		}

@@ -36,9 +36,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			conversionReq = FDExtoleManagerDAO
 					.getExtoleCreateConversionTransactions(conn);
 		} catch (SQLException e) {
-			LOGGER.info("Exception in getExtoleCreateConversionRequest(): " + e);
+			LOGGER.error("Exception in getExtoleCreateConversionRequest(): " , e);
 			this.getSessionContext().setRollbackOnly();
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -54,9 +53,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			conn = getConnection();
 			approveReq = FDExtoleManagerDAO.getExtoleApproveConversionTransactions(conn);
 		} catch (SQLException e) {
-			LOGGER.info("Exception in getExtoleApproveConversionRequest(): "+ e);
+			LOGGER.error("Exception in getExtoleApproveConversionRequest(): ", e);
 			this.getSessionContext().setRollbackOnly();
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -72,9 +70,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			conn = getConnection();
 			FDExtoleManagerDAO.updateRafExtoleTransactions(conn, convResponse);
 		} catch (SQLException e) {
-			LOGGER.info("Exception in updateConversionRequest(): " + e);
+			LOGGER.error("Exception in updateConversionRequest(): ", e);
 			this.getSessionContext().setRollbackOnly();
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -95,9 +92,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 			conn = getConnection();
 			FDExtoleManagerDAO.saveExtoleRewards(conn, rewards);
 		} catch (SQLException e) {
-			LOGGER.info("Exception in saveExtoleRewardsFile(): " + e);
+			LOGGER.error("Exception in saveExtoleRewardsFile(): ", e);
 			this.getSessionContext().setRollbackOnly();
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -136,8 +132,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 				 * .setStatus(EnumRafTransactionStatus.FAILURE.getValue()); }
 				 */
 
-			} catch (Exception e) {
-				LOGGER.error("Exception in create conversion request for : "
+			} catch (ExtoleServiceException e) {
+				LOGGER.warn("Exception in create conversion request for : "
 						+ request.getPartnerConversionId(), e);
 			}
 		}
@@ -173,8 +169,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 					updateConversionRequest(response);
 				}
 				
-			} catch (Exception e) {
-				LOGGER.error("Exception in approve conversion request for :"
+			} catch (ExtoleServiceException e) {
+				LOGGER.warn("Exception in approve conversion request for :"
 						+ request.getPartnerConversionId(),e);
 			}
 		}
