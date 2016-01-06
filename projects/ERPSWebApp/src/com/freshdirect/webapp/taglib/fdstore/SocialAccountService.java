@@ -48,6 +48,7 @@ public class SocialAccountService implements AccountService {
 	private String expressSignUpRelay = "/social/signup_lite_relay.jsp";
 	//private String socialLoginMergePage ="/social/social_login_merge.jsp";
 	private String socialLoginRecognized ="/social/social_login_recognized.jsp";
+	private String termsConditions = "/registration/tcaccept_lite.jsp";
 	private String socialLoginAccountLinked ="/social/social_login_account_linked.jsp";
 	private String signinUnmatched = "/social/social_login_not_recognized.jsp";   
 	private String socialAccountAlreadyConnected = "/social/social_login_social_account_already_connected.jsp";   	
@@ -157,9 +158,11 @@ public class SocialAccountService implements AccountService {
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
-						 String newURL = request.getScheme() + "://" + request.getServerName() ;
+						 String newURL = "";
 						 if(FDStoreProperties.isLocalDeployment()){
-							 newURL = newURL + ":" + request.getServerPort();
+							 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+						 }else{
+							 newURL = "https" + "://" + request.getServerName();
 						 }
 						 
 				    	try {						
@@ -167,8 +170,8 @@ public class SocialAccountService implements AccountService {
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		
 							 if(!user.getTcAcknowledge()){
-								  response.sendRedirect(newURL+"/registration/tcaccept_lite.jsp");
-								 LOGGER.info("T&C Accept Page:/registration/tcaccept_lite.jsp ");
+								  response.sendRedirect(newURL+termsConditions);
+								 LOGGER.info("T&C Accept Page:"+termsConditions);
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 									 
@@ -247,11 +250,15 @@ public class SocialAccountService implements AccountService {
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
-				    				 String newURL = request.getScheme() + "://" + request.getServerName() ;
-									 if(FDStoreProperties.isLocalDeployment()){
-										 newURL = newURL + ":" + request.getServerPort();
-									 }	
-								 return newURL+"/registration/tcaccept_lite.jsp?socialnetwork=" + socialUserProfile.get("provider");
+								
+				    			 String newURL = "";
+								 if(FDStoreProperties.isLocalDeployment()){
+									 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+								 }else{
+									 newURL = "https" + "://" + request.getServerName();
+								 }
+									 termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
+								 return newURL + termsConditions;
 				    			 }else{
 									 String newURL = request.getScheme() + "://" + request.getServerName() ;
 									 if(FDStoreProperties.isLocalDeployment()){

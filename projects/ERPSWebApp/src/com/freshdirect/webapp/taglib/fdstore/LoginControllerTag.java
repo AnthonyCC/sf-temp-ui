@@ -143,20 +143,15 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			
 			 // APPDEV-4381 TC Accept.
-//			if(!FDStoreProperties.isTCEnabled()){
-//				try {
-//		
-//					if(user !=null&&!user.getTcAcknowledge())
-//					FDCustomerManager.updateAck(user.getIdentity(),true, EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())).getContentId());
-//					
-//				} catch (FDResourceException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}else{
 
 			 if(user !=null&&!user.getTcAcknowledge()){
-				
+				 
+				 if(FDStoreProperties.isLocalDeployment()){
+					 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+				 }else{
+					 newURL = "https" + "://" + request.getServerName();
+				 }
+		 
 					if (FDStoreProperties.isSocialLoginEnabled()&&updatedSuccessPage.indexOf("purchase_giftcard.jsp")==-1 ) {
 						 this.setSuccessPage(newURL+"/registration/tcaccept_lite.jsp");
 						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
@@ -167,7 +162,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 						session.setAttribute("fdTcAgree", false);
 					}
 			 }				
-//		}
+
 	    	
         } else {
 			fdLoginAttempt++;
