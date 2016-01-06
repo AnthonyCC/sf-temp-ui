@@ -38,6 +38,11 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 boolean hasFdxServices = LocationHandlerTag.hasFdxService(selectedAddress.getZipCode());
 boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCode());
+
+List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
+List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
+List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
+
 %>
 
 <!-- Adding Skip to Navigation : Start-->
@@ -150,14 +155,10 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 			}
 			
 			
-			List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
-			List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
-			List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
-			
 			String addressClass = "address-icon";
 			
 			
-			if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
+			if( disabled == null || !disabled) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
 						<select id="selectAddressList" name="selectAddressList" style="width: 300px;"><%
@@ -236,8 +237,8 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 						%></select>
 					</div>
 				</tmpl:put><%
-			} else { //only one address
-				%><tmpl:put name="address"><span class="text"><%=LocationHandlerTag.formatAddressTextWithZip(selectedAddress)%></span></tmpl:put><%	
+			} else { //no addresses
+				//do nothing i guess	
 			}
 	
 		} else { //non-signed in user
@@ -389,7 +390,11 @@ boolean hasFdServices = LocationHandlerTag.hasFdService(selectedAddress.getZipCo
 									} else {
 										temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 									}
-									///help/delivery_info_check_slots.jsp
+									//check if user has addresses besides pickup
+									if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+										//nope, change url
+										temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+									}
 									%>
 									<a href="<%=temp_delivery_link %>" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">View Time Slots</a>
 								</div>
