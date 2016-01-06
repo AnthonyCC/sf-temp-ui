@@ -20,17 +20,14 @@
     
     
 	<%
-
+	List messagesToDisplay = new ArrayList();
 	if(user.getMasqueradeContext()!=null && !comments.isEmpty())){
-		String _cmtsToDisplay = "";
 		Iterator _cmtsIter = comments.iterator();
 		while(_cmtsIter.hasNext()) {
 			String _message = (String)_cmtsIter.next();
 			messagesToDisplay.add(_message);
 		}
 	}else{
-
-		List messagesToDisplay = new ArrayList();
 		String appName = (String) session.getAttribute(SessionName.APPLICATION);
 		if(messages != null) {
 			Iterator _iteratorMsg = messages.iterator();
