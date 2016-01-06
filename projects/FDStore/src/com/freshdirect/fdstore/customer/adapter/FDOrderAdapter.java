@@ -248,7 +248,7 @@ public class FDOrderAdapter implements FDOrderI {
 			cartLine.setCouponDiscount(ol.getCouponDiscount());
 			cartLine.setEStoreId(erpOrder.geteStoreId());
 			cartLine.getUserContext().setStoreContext(StoreContext.createStoreContext(erpOrder.geteStoreId()));
-			if(dpi!=null && ol.getSalesOrg()!=null  && !ol.getSalesOrg().equals(dpi.getSalesOrg())) {
+			if(dpi!=null && !StringUtil.isEmpty(dpi.getSalesOrg()) && !StringUtil.isEmpty(ol.getSalesOrg())  && !ol.getSalesOrg().equals(dpi.getSalesOrg())) {
 				//--Hack for APPDEV-4726 FoodKick pricing errors in order receipt and order details				
 				ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), ol.getSalesOrg(), ol.getDistChannel()));
 				cartLine.getUserContext().setPricingContext(new PricingContext(z));
