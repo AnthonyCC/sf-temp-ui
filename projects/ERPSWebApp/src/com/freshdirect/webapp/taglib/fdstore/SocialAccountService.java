@@ -101,12 +101,12 @@ public class SocialAccountService implements AccountService {
 	    	
 	    	userToken = socialUserProfile.get("userToken");
 			socialUserId = socialUserProfile.get("email"); 
-			emailVerified = socialUserProfile.get("emailVerified"); 
+			//emailVerified = socialUserProfile.get("emailVerified"); 
 			providerName  = socialUserProfile.get("provider"); 
 			
 			// handle not verified email
-			if(socialUserId == null || socialUserId.length() == 0 || 
-			   emailVerified == null || emailVerified.length()== 0 || emailVerified.equalsIgnoreCase("N"))
+			if(socialUserId == null || socialUserId.length() == 0 /*|| 
+			   emailVerified == null || emailVerified.length()== 0 || emailVerified.equalsIgnoreCase("N")*/)
 			{
 				 String newURL = request.getScheme() + "://" + request.getServerName() ;
 				 if(FDStoreProperties.isLocalDeployment()){
