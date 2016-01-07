@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
         $('[data-filter]').filter(function (i, el) {
           return $(el).data('filter') !== "id";
         }).each(function (i, el) {
-          var selected = $('input', el).filter(function (i, el) { return el.checked; }).map(function (i, el) { return $(el).val(); });
+        var selected = $('input', el).filter(function (i, el) { return el.checked || el.getAttribute('checked'); }).map(function (i, el) { return $(el).val(); });
 
           if (selected && selected.length) {
             filters[$(el).data('filter')] = [].slice.apply(selected);
