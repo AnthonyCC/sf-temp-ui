@@ -731,12 +731,12 @@ public class RegistrationAction extends WebActionSupport {
 					 //Alternatively we can pass the actual city,state and zipcode to SAP.
 					 
 					//Lookup state and city by zipcode.
-					
-					StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
+					// Commenting this as this causes
+					/*StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
 					erpAddress.setCity(scinfo.getCity());
 					erpAddress.setState(scinfo.getState());
 					erpAddress.setCountry("US");
-					erpAddress.setZipCode(addInfo.getZipCode());
+					erpAddress.setZipCode(addInfo.getZipCode());*/
 					
 					erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
@@ -769,10 +769,11 @@ public class RegistrationAction extends WebActionSupport {
 						user.setZipCode(erpAddress.getZipCode());
 					}
 					if(address != null) {
+						EnumServiceType userServiceType = AddressUtil.getDeliveryServiceType(erpAddress);
 						//This is from partial zip check page from where we will have a valid address.
-						user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+						user.setSelectedServiceType(userServiceType);
 						//Added the following line for zone pricing to keep user service type up-to-date.
-						user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+						user.setZPServiceType(userServiceType);
 					} else {
 						//This is from regular zip Check oage.
 						user.setSelectedServiceType(serviceType);
