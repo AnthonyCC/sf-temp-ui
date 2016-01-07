@@ -403,6 +403,10 @@ public class FDProduct extends FDSku implements AttributesI {
 	public boolean isTaxable() {
 		return this.material.isTaxable();
 	}
+	
+	public String getTaxCode(){
+		return this.material.getTaxCode();
+	}
 
 	public boolean isPlatter(String plantID) {
 		return this.material.isPlatter(plantID);

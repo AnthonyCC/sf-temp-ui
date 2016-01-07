@@ -414,7 +414,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		transactions.add(chargeInvoiceModel);
 	}
 
-	public List<CrmSystemCaseInfo> reconcileSale() throws ErpTransactionException {
+	public List<CrmSystemCaseInfo> reconcileSale(Boolean isShorted) throws ErpTransactionException {
 
 		assertStatus(EnumSaleStatus.ENROUTE);
 
@@ -455,7 +455,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 						+ orderLine.getOrderLineNumber());
 			}
 
-			caseBuilder.reconcile(orderLine, invoiceLine);
+			caseBuilder.reconcile(orderLine, invoiceLine, isShorted);
 		}
 
 		return caseBuilder.getCases();

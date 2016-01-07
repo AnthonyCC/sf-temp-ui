@@ -249,6 +249,11 @@ class FDCustomerOrderInfoDAO {
 		if(!"".equals(value)){
 			builder.addString("fc.depot_code", value);
 		}
+		
+		value = NVL.apply(criteria.getSapId(), "").trim();
+		if(!"".equals(value)){
+			builder.addString("c.sap_id", value);
+		}
 		return customerSearch(conn, builder);
 	}
 	

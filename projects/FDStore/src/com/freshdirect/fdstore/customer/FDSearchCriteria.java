@@ -21,6 +21,7 @@ public class FDSearchCriteria implements Serializable {
 	protected String depotCode = null;
 	protected String gcNumber=null;
 	protected String certNumber=null;
+	protected String sapId = null;
 	
 	protected boolean quickSearch;
 
@@ -122,6 +123,16 @@ public class FDSearchCriteria implements Serializable {
 			this.depotCode = depotCode;
 		}
 	}
+	
+	public String getSapId() {
+		return this.sapId;
+	}
+
+	public void setSapId(String sapId) {
+		if(sapId != null && !"".equals(sapId.trim())){
+		this.sapId = sapId;
+		}
+	}
 
 	public boolean isBlank() {
 		return this.firstName == null
@@ -132,8 +143,8 @@ public class FDSearchCriteria implements Serializable {
 			&& this.depotCode == null 
 			&& this.certNumber == null
 			&& this.gcNumber == null
-			&& this.customerId == null;
-		
+			&& this.customerId == null
+			&& this.sapId == null;
 	}
 
 	public String getCriteria() throws FDResourceException {

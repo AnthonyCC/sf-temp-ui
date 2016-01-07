@@ -96,6 +96,9 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
+import com.freshdirect.fdstore.services.tax.TaxFactory;
+import com.freshdirect.fdstore.services.tax.TaxFactoryImpl;
 
 public class FDOrderAdapter implements FDOrderI {
 	
@@ -1600,4 +1603,12 @@ public class FDOrderAdapter implements FDOrderI {
 		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
 	}	
 
+	@Override
+	public double getAvalaraTaxValue(AvalaraContext avalaraContext) {
+		if(FDStoreProperties.getAvalaraTaxEnabled()){
+			TaxFactory taxFactory = new TaxFactoryImpl();
+			taxFactory.getTax(avalaraContext);
+		}		
+		return getTaxValue();
+	}
 }

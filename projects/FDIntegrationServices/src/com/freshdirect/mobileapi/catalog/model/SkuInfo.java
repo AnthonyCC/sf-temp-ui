@@ -92,6 +92,13 @@ public class SkuInfo {
 	public void setTaxable(boolean isTaxable) {
 		this.isTaxable = isTaxable;
 	}
+	
+	public String getTaxCode() {
+		return taxCode;
+	}
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
 	public String getAlcoholType() {
 		return alcoholType.name();
 	}
@@ -105,6 +112,7 @@ public class SkuInfo {
 		this.sustainabilityRating = sustainabilityRating;
 	}
 	private boolean isTaxable;
+	private String taxCode;
 	private AlcoholType alcoholType;
 	private String sustainabilityRating;
 	

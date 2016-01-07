@@ -17,6 +17,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.FDCustomerCoupon"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponStatus"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.fdstore.services.tax.AvalaraContext" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -55,6 +56,13 @@ if (isSmaller) detailWidth="630";
 <div style="width: <%=W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL%>px;">
 <%
 int idx = 0;
+double taxValue =0.0;
+if(!FDStoreProperties.getAvalaraTaxEnabled()){
+	taxValue = (Double)request.getAttribute("AVALARA_CONTEXT");
+}
+else{
+	taxValue = cart.getTaxValue();
+}
 %>
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
@@ -162,7 +170,9 @@ int idx = 0;
 		<%
 			String discountMsg = null;
 			String groupDiscountMsg = null;
-			if(cartLine.getDiscount() != null && !EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) {
+			boolean isFreeProd = false;
+			if(cartLine.getDiscount() != null){
+				if(!EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) {
 				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 				String skuMsg = "";
@@ -173,7 +183,11 @@ int idx = 0;
 						skuMsg = " on " + discount.getSkuLimit() + " items";
 				}
 				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+skuMsg+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
-			} else {
+				}
+				else{					
+						isFreeProd = true;
+				}
+			}else {
 				if(cartLine.getGroupQuantity() > 0) {
 					double savings = cartLine.getGroupScaleSavings();
 					if(savings > 0)
@@ -395,11 +409,11 @@ int idx = 0;
 	%>
 
 	<%
-	if (cart.getTaxValue() > 0) {
+	if (taxValue > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Total Tax:</td>
-			<td align="right"><%=JspMethods.formatPrice(cart.getTaxValue())%></td>
+			<td align="right"><%=JspMethods.formatPrice(taxValue)%></td>
 			<td colspan="7"></td>
 		</tr>
 		<%
@@ -518,7 +532,7 @@ int idx = 0;
 					  'affiliation': 'FreshDirect',   // Affiliation or store name
 					  'revenue': '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',               // Grand Total
 					  'shipping': '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',	// Shipping
-					  'tax': '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>'                     // Tax
+					  'tax': '<%= JspMethods.formatPrice(taxValue).replace("$", "") %>'                     // Tax
 				});
 				<%
 					/* Google Analytics data. */
@@ -563,7 +577,7 @@ int idx = 0;
 			           '<%= sem_orderNumber %>',           // order ID - required
 			           'FreshDirect', // affiliation or store name
 			           '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',          // total - required
-			           '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>',           // tax
+			           '<%= JspMethods.formatPrice(taxValue).replace("$", "") %>',           // tax
 			           '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',          // shipping
 			           '<%= dlvAddress.getCity() %>',       // city
 			           '<%= dlvAddress.getState() %>',     // state or province

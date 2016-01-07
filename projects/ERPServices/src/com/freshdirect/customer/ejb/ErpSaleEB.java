@@ -123,7 +123,7 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
     
     public void addChargeInvoice(ErpChargeInvoiceModel chargeInvoiceModel) throws ErpTransactionException, RemoteException;
 
-    public List<CrmSystemCaseInfo> reconcileSale() throws ErpTransactionException, RemoteException;
+    public List<CrmSystemCaseInfo> reconcileSale(Boolean isShorted) throws ErpTransactionException, RemoteException;
 
     public void addReturn(ErpReturnOrderModel returnModel) throws ErpTransactionException, RemoteException;
 

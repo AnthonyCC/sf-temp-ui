@@ -324,6 +324,16 @@ public class FDCartLineModel extends AbstractCartLine {
 		this.atcItemId = atcItemId;
 	}
 
+	@Override
+	public void setTaxCode(String taxCode) {
+		orderLine.setTaxCode(taxCode);		
+	}
+
+	@Override
+	public String getTaxCode() {
+		return orderLine.getTaxCode();
+	}
+
 	
 
 		

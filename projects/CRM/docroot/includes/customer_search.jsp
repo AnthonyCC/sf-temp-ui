@@ -75,6 +75,15 @@
 						<td colspan="1" align="right">Cust.ID</td>
 						<td colspan="1"><input type="text" name="customerId" id="cust_qs_id" title="Phone" value="<%= "null".equalsIgnoreCase(request.getParameter("customerId")) ? "" : request.getParameter("customerId") %>" class="input_text"></td>
 					</tr>
+					<%if(quickSearch) { %>
+						<tr>
+						<td> &nbsp</td>
+						<td colspan="2"> &nbsp</td>
+						<td colspan="1" align="right"> SAP.ID</td>
+						<td colspan="1"><input type="text" name="customerSAPId" id="cust_sap_id" title="sapId" value="<%= "null".equalsIgnoreCase(request.getParameter("customerId")) ? "" : request.getParameter("customerId") %>" class="input_text"></td>
+						</tr>
+					<%} %>
+					
 					<% if (!quickSearch) { %>
 						<tr>
 							<td>Order #</td>

@@ -411,6 +411,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 					materialModel.setDaysFresh(materialParam.getDaysFresh());
 					materialModel.setMaterialType(materialParam.getMaterialType());
 					materialModel.setTaxable(materialParam.getTaxable().booleanValue());
+					materialModel.setTaxCode(materialParam.getTaxId());
 
 					if (materialParam.getMaterialGroup() != null && !materialParam.getMaterialGroup().isEmpty()) {
 						materialModel.setAlcoholicContent(FDSapHelperUtils.convertToAlcoholContentType(materialParam
@@ -678,6 +679,7 @@ public class FDProductBaseJcoServer extends FdSapServer {
 
 			param.setMaterialID(FDSapHelperUtils.getString(materialTable.getString("MATNR")));
 			param.setMaterialDescription(FDSapHelperUtils.getString(materialTable.getString("MAKTX")));
+			param.setTaxId(FDSapHelperUtils.getString(materialTable.getString("FERTH")));
 
 			param.setSkuCode(FDSapHelperUtils.getString(materialTable.getString("BISMT")));
 

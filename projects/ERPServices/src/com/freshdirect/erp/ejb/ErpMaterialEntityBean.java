@@ -74,6 +74,9 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	/** skucode */
 	private String skuCode;
 	
+	/**Avalara tax code */
+	private String taxCode;
+	
 	/** days fresh */
 	private String daysFresh;
 	
@@ -179,7 +182,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	{
 		// build the material model
 		ErpMaterialModel model = new ErpMaterialModel(this.sapId, this.baseUnit, this.description, this.upc,
-				this.quantityCharacteristic, this.salesUnitCharacteristic, this.alcoholicContent, this.taxable, this.skuCode,
+				this.quantityCharacteristic, this.salesUnitCharacteristic, this.alcoholicContent, this.taxable, this.taxCode, this.skuCode,
 				this.daysFresh, this.approvedStatus, this.materialType, this.prices.getModelList(), this.salesUnits.getModelList(),
 				this.classes.getModelList(), this.displaySalesUnits.getModelList(), this.materialPlants.getModelList(),this.materialSalesAreas.getModelList());
 
@@ -205,6 +208,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.daysFresh = m.getDaysFresh();
 		this.materialType = m.getMaterialType();
 		this.approvedStatus = m.getApprovalStatus();
+		this.taxCode = m.getTaxCode();
 		this.setPricesFromModel(m.getPrices());
 		this.setSalesUnitsFromModel(m.getSalesUnits());
 		this.setClassesFromModel(m.getClasses());
@@ -350,7 +354,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 */
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
-		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
 		ps.setString(1, vpk.getId());
 		ps.setInt(2, vpk.getVersion());
 		
@@ -373,6 +377,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
       p.daysFresh = rs.getString(10);
       p.materialType = rs.getString(11);
       p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(12));
+      p.taxCode = rs.getString(13);
       
 		rs.close();
 		ps.close();
@@ -420,6 +425,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.skuCode =p.skuCode;
 		this.materialPlants=p.plantMaterials;
 		this.materialSalesAreas=p.materialSalesAreas;
+		this.taxCode = p.taxCode;
 
 	}
 
@@ -431,7 +437,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		try {
 			String id = this.getNextId(conn, "ERPS");
 
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL (ID, VERSION, SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO ERPS.MATERIAL (ID, VERSION, SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setString(1, id);
 			ps.setInt(2, version);
 			ps.setString(3, this.sapId);
@@ -446,6 +452,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 			ps.setString(12, this.daysFresh);
 			ps.setString(13, this.materialType);
 			ps.setString(14, null !=this.approvedStatus?this.approvedStatus.getStatusCode():"N");
+			ps.setString(15, this.taxCode);
 			
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("No database rows created!");
@@ -661,6 +668,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		String baseUnit;
 		String description;
 		String UPC;
+		String taxCode;
 		String quantityCharacteristic;
 		String salesUnitCharacteristic;
 		EnumAlcoholicContent alcoholicContent;
@@ -668,7 +676,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		String skuCode;
 		private String daysFresh;
 		private EnumProductApprovalStatus approvedStatus;
-		private String materialType;		
+		private String materialType;	
 		
      	MaterialPriceList prices = new MaterialPriceList();
 		SalesUnitList salesUnits = new SalesUnitList();

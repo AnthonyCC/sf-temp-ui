@@ -23,6 +23,7 @@ public class FDMaterial extends FDAttributeProxy {
 	private final String quantityCharacteristic;
 	private final EnumAlcoholicContent alcoholicContent;
 	private final boolean taxable;
+	private String taxCode;
 	private final String skuCode;
 	private Map<String, FDPlantMaterial> materialPlants;
 	private Map<SalesAreaInfo, FDMaterialSalesArea> materialSalesAreas;
@@ -59,7 +60,7 @@ public class FDMaterial extends FDAttributeProxy {
 			String salesUnitCharacteristic,
 			String quantityCharacteristic,
 			EnumAlcoholicContent alcoholicContent,
-			boolean taxable,String skuCode) {
+			boolean taxable,String skuCode, String taxCode) {
 			super(attributes);
 			this.materialNumber = materialNumber;
 			this.salesUnitCharacteristic = salesUnitCharacteristic;
@@ -67,7 +68,7 @@ public class FDMaterial extends FDAttributeProxy {
 			this.alcoholicContent = alcoholicContent;
 			this.taxable = taxable;
 			this.skuCode = skuCode;
-			
+			this.taxCode = taxCode;
 		}
 
 	public String getMaterialNumber() {
@@ -102,6 +103,14 @@ public class FDMaterial extends FDAttributeProxy {
 
 	
 	
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
 	/**
 	 * @return the skuCode
 	 */

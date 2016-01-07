@@ -2,6 +2,8 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.customer.ProfileModel"%>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import="com.freshdirect.customer.ErpCustomerModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.crm.CrmAgentModel"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
@@ -38,7 +40,8 @@ function voucherPopup(dialogId) {
 %>
 <crm:GetCurrentAgent id="currentAgent">
 <%  if (user != null && user.getIdentity() != null) { %>
-<% CrmCustomerHeaderInfo info = CrmSession.getCustomerHeaderInfo(session, user.getIdentity()); 
+<% 	ErpCustomerModel custModel = FDCustomerFactory.getErpCustomer(user.getIdentity());
+	CrmCustomerHeaderInfo info = CrmSession.getCustomerHeaderInfo(session, user.getIdentity()); 
     ProfileModel profile = user.getFDCustomer().getProfile();
     boolean newOrder = false;
     if (pageURI.indexOf("/order/") > -1 && pageURI.indexOf("reverse_credit") < 0 && pageURI.indexOf("order_modify") < 0 && pageURI.indexOf("cancel_order") < 0 && pageURI.indexOf("payment_exception") < 0 && pageURI.indexOf("charge_order") < 0) {
@@ -69,8 +72,9 @@ function voucherPopup(dialogId) {
                 String displayPhone = info.getHomePhone() != null ?  "Home #: "+info.getHomePhone().getPhone() : 
                     info.getBusinessPhone() != null ? "Business #: "+info.getBusinessPhone().getPhone() :
                     info.getCellPhone() != null ? "Cell #: " + info.getCellPhone().getPhone() : " Unknown #: None provided";
+                String sapId = null!=custModel?custModel.getSapId():"";
                 %>
-				<td><div class="<%=label%>" style="float:left"> <span class="<%=!"".equals(label)? label+"_":""%>cust_title"><%= info.getFirstName() %> <%= info.getMiddleName() %> <%= info.getLastName() %></span> (ID: <%= user.getIdentity().getErpCustomerPK() %> | Type: <%=profile.getHouseholdType()%> | <%=displayPhone%> | <a href="mailto:<%=info.getEmail()%>" class="<%=label%>_link" name="email_link" onmouseover="return overlib('<%=info.getEmail()%>', AUTOSTATUS, WRAP, REF,'email_link',REFP,'LL');"
+				<td><div class="<%=label%>" style="float:left"> <span class="<%=!"".equals(label)? label+"_":""%>cust_title"><%= info.getFirstName() %> <%= info.getMiddleName() %> <%= info.getLastName() %></span> (ID: <%= user.getIdentity().getErpCustomerPK() %> | SAP_ID: <%=sapId%> | Type: <%=profile.getHouseholdType()%> | <%=displayPhone%> | <a href="mailto:<%=info.getEmail()%>" class="<%=label%>_link" name="email_link" onmouseover="return overlib('<%=info.getEmail()%>', AUTOSTATUS, WRAP, REF,'email_link',REFP,'LL');"
  				onmouseout="nd();">Email</a>)&nbsp;</div><div style="float:left">
                 <span class="<%=!"".equals(label)? label+"_":""%>cust_title">&nbsp;</span><span class="cust_header_field">Order<%= user.getAdjustedValidOrderCount() > 1 ? "s" : "" %>:</span> <b><%= user.getAdjustedValidOrderCount() %></b>
                 &nbsp;<span class="cust_header_field">Phone:</span> <b><%= user.getValidPhoneOrderCount() %></b>

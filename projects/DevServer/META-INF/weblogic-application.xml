@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <weblogic-application xmlns="http://xmlns.oracle.com/weblogic/weblogic-application" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/javaee_5.xsd http://xmlns.oracle.com/weblogic/weblogic-application http://xmlns.oracle.com/weblogic/weblogic-application/1.3/weblogic-application.xsd">
-<!-- 
-  <listener>
+ 
+  <!--<listener>
     <listener-class>com.freshdirect.dataloader.payment.WLSInvoiceBatchServer</listener-class>
   </listener>
   <listener>
@@ -31,5 +31,8 @@
     <listener-class>com.freshdirect.dataloader.disablemod.WLSSapDisableOrderModification</listener-class>
   </listener>
    --> 
+   <listener>
+    <listener-class>com.freshdirect.dataloader.material.WLSSapGlobalMaterialServer</listener-class>
+  </listener>
 </weblogic-application>
 

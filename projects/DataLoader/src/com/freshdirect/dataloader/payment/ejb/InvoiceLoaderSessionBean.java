@@ -29,6 +29,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -56,6 +58,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 		throws ErpTransactionException {
 		
 		try {
+			Boolean isShorted = false;
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			
 			ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
@@ -124,11 +127,15 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			
 			ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
 			managerSB.addInvoice(invoice, saleId, shippingInfo);
-			managerSB.reconcileSale(saleId);
+			managerSB.reconcileSale(saleId, isShorted);
 			
 			// get salemodel w/ invoice	
 			saleModel = (ErpSaleModel)eb.getModel();
 			FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);
+			if(isShorted && FDStoreProperties.getAvalaraTaxEnabled()){
+				AvalaraContext avalaraContext = new AvalaraContext(fdOrder);
+				fdOrder.getAvalaraTaxValue(avalaraContext);
+			}
 			Collections.sort(fdOrder.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 			
 			PrimaryKey customerPK = eb.getCustomerPk();

@@ -498,7 +498,11 @@ asyncPixelWithTimeout();
             <%-- <td width="70" align="right">(<%= cartLine.getDiscountedUnitPrice() %>)</td> --%>
 			<td width="60" align="right"><span class="text10bold"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
             <% } %>
+            <%if (!FDStoreProperties.getAvalaraTaxEnabled()) { %>
 			<td width="10"><%= cartLine.isEstimatedPrice() && !isFreeProd ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
+			<% }else { %>
+			<td width="10"><%= cartLine.isEstimatedPrice() && !isFreeProd ? "*" : "" %><b><%=cartLine.hasTax() ? "" : ""%></b></td>
+			<%} %>
 			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A></td>
 			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
@@ -727,6 +731,7 @@ asyncPixelWithTimeout();
 		<td colspan="3">&nbsp;</td>
 	</tr>
 	<%
+	if (!FDStoreProperties.getAvalaraTaxEnabled()){
 	if (view.getTax() > 0) {
 		%>
 		<tr class="orderViewSummary">
@@ -735,6 +740,7 @@ asyncPixelWithTimeout();
 			<td colspan="4">&nbsp;</td>
 		</tr>
 		<%
+		}
 	}
 	if (view.getDepositValue() != 0) {
 		%>
@@ -776,6 +782,7 @@ asyncPixelWithTimeout();
 	</tr>
 
 <% if(!isEBTPayment){
+	if (!FDStoreProperties.getAvalaraTaxEnabled()){
 	if (cart.getTaxValue() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
@@ -784,8 +791,8 @@ asyncPixelWithTimeout();
 			<td colspan="2"></td>
 		</tr>
 <%
+		}
 	}
-
 	if (cart.getDepositValue() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
@@ -809,7 +816,12 @@ asyncPixelWithTimeout();
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Fee<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
 			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
-			<td><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
+			<td><b>
+			<% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
+			<%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
+			<% }else { %>
+			<%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "" : "" %></b></td>
+			<% } %>
 			<td></td>
 		</tr>
 		<%	} else if((int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ) { %>   
@@ -824,7 +836,12 @@ asyncPixelWithTimeout();
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Premium (Hamptons)<% if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%> (waived)<%}%>:</td>
 			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DLVPREMIUM)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM))%><%}%></td>
-			<td><b><%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+			<td><b>
+			<% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
+			<%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "&nbsp;T" : "" %></b></td>
+			<% }else { %>
+			<%=cart.isChargeTaxable(EnumChargeType.DLVPREMIUM) && !cart.isChargeWaived(EnumChargeType.DLVPREMIUM) ? "" : "" %></b></td>
+			<% } %>
 			<td></td>
 		</tr>
 		<%	}%>
@@ -858,7 +875,11 @@ asyncPixelWithTimeout();
 		<tr valign="top" class="orderSummary">
            	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
+		    <% if (!FDStoreProperties.getAvalaraTaxEnabled()){ %>
 		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
+		    <% }else { %>
+		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "" : "" %></b></td>
+		    <% } %>
 			<td></td>
 		</tr>
 <% }  %>
@@ -1180,6 +1201,7 @@ asyncPixelWithTimeout();
 		</div><div style="clear: both;"></div>
 		
 	</td></tr>
+	<tr><td align="right"><br /><%	if (FDStoreProperties.getAvalaraTaxEnabled()) {%><b>Order total will be recalculated before the order submit</b>&nbsp;&nbsp;&nbsp;&nbsp;<%	}	%><%	if (!FDStoreProperties.getAvalaraTaxEnabled()) {%><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;	<%	}	%><strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 	<tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 </table>
 </div>

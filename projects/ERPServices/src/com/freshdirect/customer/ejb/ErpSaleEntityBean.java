@@ -908,9 +908,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public List<CrmSystemCaseInfo> reconcileSale() throws ErpTransactionException {
+	public List<CrmSystemCaseInfo> reconcileSale(Boolean isShorted) throws ErpTransactionException {
 		try{
-			return model.reconcileSale();
+			return model.reconcileSale(isShorted);
 		}catch(ErpTransactionException e){
 			getEntityContext().setRollbackOnly();
 			throw e;

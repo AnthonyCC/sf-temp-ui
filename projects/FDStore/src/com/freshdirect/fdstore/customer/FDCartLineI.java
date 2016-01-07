@@ -30,6 +30,10 @@ public interface FDCartLineI extends FDProductSelectionI {
 
 	public Discount getDiscount();
 	
+	public void setTaxCode(String taxCode);
+	
+	public String getTaxCode();
+	
 	/**
 	 * Get configured price for this orderline (without promotion).
 	 *

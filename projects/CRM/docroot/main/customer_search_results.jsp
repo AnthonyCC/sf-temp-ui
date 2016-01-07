@@ -29,6 +29,7 @@
 	sc.setZipCode(NVL.apply(request.getParameter("zipCode"), "").trim());
 	sc.setDepotCode(NVL.apply(request.getParameter("depotCode"), "").trim());
     sc.setApartment(NVL.apply(request.getParameter("apartment"), "").trim());
+    sc.setSapId(NVL.apply(request.getParameter("customerSAPId"), "").trim());
 
 	// construct the search criteria string buffer
 	StringBuffer criteriaBuf = new StringBuffer();

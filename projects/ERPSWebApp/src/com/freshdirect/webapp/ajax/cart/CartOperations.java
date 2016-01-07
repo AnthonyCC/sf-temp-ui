@@ -829,6 +829,9 @@ public class CartOperations {
 		// add to cart id tracking
 		theCartLine.setAtcItemId(item.getAtcItemId());
 		
+		//add Avalara taxcode to cartItem
+		theCartLine.setTaxCode(product.getTaxCode());
+		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									RECIPE SOURCE
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

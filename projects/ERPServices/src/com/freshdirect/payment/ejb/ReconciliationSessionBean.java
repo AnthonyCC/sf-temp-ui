@@ -24,6 +24,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -47,6 +48,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.erp.model.NotificationModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -85,6 +87,11 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 					}
 				}
 			}
+
+			if(EnumSaleStatus.SETTLED.equals(status)){
+				NotificationModel notificationModel = new NotificationModel(new PrimaryKey(saleId), EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getCurrentOrder().getAmount());
+				getPostSettlementNotificationHome().create(notificationModel);
+			}
 			
 			if((EnumSaleStatus.PAYMENT_PENDING.equals(status) ||EnumSaleStatus.SETTLEMENT_FAILED.equals(status)) && !found){
 				ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
@@ -104,6 +111,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			throw new EJBException(re);
 		}catch(ErpTransactionException te){
 			throw new EJBException(te);
+		} catch (CreateException pe) {
+			throw new EJBException(pe);
 		}
 			
 	}
@@ -701,6 +710,14 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 	private ErpSaleHome getErpSaleHome() {
 		try {
 			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+	private PostSettlementNotificationHome getPostSettlementNotificationHome() {
+		try {
+			return (PostSettlementNotificationHome) LOCATOR.getRemoteHome("freshdirect.payment.Notification");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

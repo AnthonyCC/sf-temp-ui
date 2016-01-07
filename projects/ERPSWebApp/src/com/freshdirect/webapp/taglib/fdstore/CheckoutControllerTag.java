@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -32,6 +33,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -449,7 +451,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				currentUser.setShowPendingOrderOverlay(true);
 			}
 		}
-
+		if(this.getSuccessPage().equals("/checkout/step_4_submit.jsp") && FDStoreProperties.getAvalaraTaxEnabled()){
+			AvalaraContext avalaraContext = new AvalaraContext(cart);
+			avalaraContext.setCommit(false);
+			Double taxValue = cart.getAvalaraTaxValue(avalaraContext);
+			avalaraContext.setReturnTaxValue(taxValue);
+			request.setAttribute("AVALARA_CONTEXT", avalaraContext);
+		}
 		return true;
 	}
 	//Method to check EBT Restricted item, which redirected to the restricted item screen.

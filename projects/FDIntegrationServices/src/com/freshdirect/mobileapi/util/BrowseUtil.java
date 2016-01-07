@@ -1463,6 +1463,7 @@ public class BrowseUtil {
 					skuInfo.setRating(productInfo.getRating(plantID)!=null?productInfo.getRating(plantID).getStatusCode():"");
 					skuInfo.setSustainabilityRating(productInfo.getSustainabilityRating(plantID)!=null?productInfo.getSustainabilityRating(plantID).getStatusCode():"");
 					skuInfo.setTaxable(product.isTaxable());
+					skuInfo.setTaxCode(product.getTaxCode());
 					skuInfo.setSkuCode(sku.getSkuCode());
 					skuInfo.setProductId(prodModel.getContentName());
 					skuInfo.setBasePrice(pc.getWasPrice());

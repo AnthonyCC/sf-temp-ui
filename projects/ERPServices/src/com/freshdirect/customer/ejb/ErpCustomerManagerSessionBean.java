@@ -984,7 +984,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	                }
 	                
 	                addInvoice(invoice, saleId, shippingInfo);
-	                reconcileSale(saleId);
+	                reconcileSale(saleId, false);
 	                
 	        } catch (ErpTransactionException e) {
 	                throw e;
@@ -1035,10 +1035,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void reconcileSale(String saleId) throws ErpTransactionException {
+	public void reconcileSale(String saleId, Boolean isShorted) throws ErpTransactionException {
 		try {
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			List<CrmSystemCaseInfo> cases = eb.reconcileSale();
+			List<CrmSystemCaseInfo> cases = eb.reconcileSale(isShorted);
 			new ErpCreateCaseCommand(LOCATOR, cases).execute();
 
 		} catch (FinderException e) {

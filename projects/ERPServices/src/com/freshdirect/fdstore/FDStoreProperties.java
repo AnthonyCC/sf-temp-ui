@@ -19,6 +19,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
@@ -824,6 +825,13 @@ public class FDStoreProperties {
 	// [APPDEV-4650]
 	public static final String PROP_ENABLE_XC_FOR_CRM_AGENTS					= "crm.xc.enabled";
 
+    //Avalara Tax
+    private final static String PROP_AVALARA_TAX_ENABLED = "fdstore.tax.avalara.enabled";
+    private final static String PROP_AVALARA_BASE_URL = "fdstore.tax.avalara.base.url";
+    private final static String PROP_AVALARA_LICENSE_KEY ="fdstore.tax.avalara.license.key";
+    private final static String PROP_AVALARA_ACCOUNT_NUMBER ="fdstore.tax.avalara.account.number";
+	private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";    
+    
     static {
        	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1517,7 +1525,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_PRESIDENT_PICK_PAGING_ENABLED, "false");
         
-        defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "true");
+        defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "false");
 
         defaults.put(PROP_SITEMAP_ENABLED, "true");
         defaults.put(PROP_SITEMAP_PASSWORDS, "fd8848admin,GetMe2TheSitem@p");
@@ -4105,4 +4113,23 @@ public class FDStoreProperties {
 	}
 
 	
+    public static String getAvalaraBaseURL() {
+		return StringUtils.defaultString(get(PROP_AVALARA_BASE_URL));
+	}
+	
+	public static String getAvalaraAccountNumber() {
+		return StringUtils.defaultString(get(PROP_AVALARA_ACCOUNT_NUMBER));
+	}
+
+	public static String getAvalaraLicenseKey() {
+		return StringUtils.defaultString(get(PROP_AVALARA_LICENSE_KEY));
+	}
+	
+	public static boolean getAvalaraTaxEnabled() {
+		return BooleanUtils.toBoolean(get(PROP_AVALARA_TAX_ENABLED));
+	}
+
+	public static String getAvalaraCompanyCode() {
+		return StringUtils.defaultString(get(PROP_AVALARA_COMPANY_CODE),"0011");
+	}
 }

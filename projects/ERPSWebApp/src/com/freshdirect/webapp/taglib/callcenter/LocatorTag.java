@@ -114,6 +114,7 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		//is present then proceed with the search without validating other search parameters.
 		if (fdSearchCriteria.getEmail() != null
 				|| fdSearchCriteria.getCustomerId() != null
+				|| fdSearchCriteria.getSapId() != null
 				|| fdSearchCriteria.getApartment() != null
 				|| fdSearchCriteria.getZipCode() != null
 				|| fdSearchCriteria.getOrderNumber() != null) {

@@ -17,6 +17,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 
 public interface FDCartI extends java.io.Serializable {
 
@@ -154,6 +155,8 @@ public interface FDCartI extends java.io.Serializable {
 	public EnumEStoreId getEStoreId();
 
 	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo();
+	
+	double getAvalaraTaxValue(AvalaraContext avalaraContext);
 	
 
 }

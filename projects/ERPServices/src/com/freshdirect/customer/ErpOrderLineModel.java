@@ -46,6 +46,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private double price;
 	private boolean perishable;
     private double taxRate;
+    private String taxCode;
     private double depositValue;
     private boolean alcohol;
     private boolean wine;
@@ -313,8 +314,15 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.requestNotification = requestNotification;
 	}
 
-    
-    public String getVariantId() {
+    public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
+	public String getVariantId() {
     	return this.variantId;
     }
     

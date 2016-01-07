@@ -28,10 +28,11 @@ class ReconciliationCaseBuilder {
 		this.order = order;
 	}
 
-	public void reconcile(ErpOrderLineModel orderLine, ErpInvoiceLineModel invoiceLine) {
+	public void reconcile(ErpOrderLineModel orderLine, ErpInvoiceLineModel invoiceLine, Boolean isShorted) {
 		double reqQty = orderLine.getQuantity();
 		double actQty = invoiceLine.getQuantity();
 		if (reqQty > actQty) {
+			isShorted = true;
 			this.shortedAmount += orderLine.getPrice() - invoiceLine.getPrice();
 
 			this.details.append(orderLine.getDescription() + " was shortshipped.");

@@ -505,7 +505,32 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </ejb-reference-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.erp.Product</jndi-name>
-    </weblogic-enterprise-bean>
+    </weblogic-enterprise-bean>    
+     <weblogic-enterprise-bean>
+      <ejb-name>PostSettlementNotification</ejb-name>
+      <entity-descriptor>
+        <pool></pool>
+        <entity-cache>
+          <max-beans-in-cache>8000</max-beans-in-cache>
+          <read-timeout-seconds>0</read-timeout-seconds>
+          <concurrency-strategy>ReadOnly</concurrency-strategy>
+        </entity-cache>
+        <persistence>
+          <is-modified-method-name>
+          isModified</is-modified-method-name>
+          <delay-updates-until-end-of-tx>
+          true</delay-updates-until-end-of-tx>
+        </persistence>
+        <entity-clustering></entity-clustering>
+      </entity-descriptor>
+      <transaction-descriptor></transaction-descriptor>
+      <resource-description>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <jndi-name>fddatasource</jndi-name>
+      </resource-description>
+       <enable-call-by-reference>true</enable-call-by-reference>
+      <jndi-name>freshdirect.payment.Notification</jndi-name>
+    </weblogic-enterprise-bean>    
     <weblogic-enterprise-bean>
       <ejb-name>ErpMaterial</ejb-name>
       <entity-descriptor>
@@ -1375,6 +1400,19 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </method>
       <method>
         <ejb-name>ErpProduct</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>remove</method-name>
+      </method>
+    </transaction-isolation>
+    <transaction-isolation>
+      <isolation-level>TransactionReadCommitted</isolation-level>
+      <method>
+        <ejb-name>PostSettlementNotification</ejb-name>
+        <method-intf>Home</method-intf>
+        <method-name>create</method-name>
+      </method>
+      <method>
+        <ejb-name>PostSettlementNotification</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>remove</method-name>
       </method>

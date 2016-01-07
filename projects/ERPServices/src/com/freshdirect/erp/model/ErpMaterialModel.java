@@ -48,6 +48,8 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	/** Type of material */
 	private String materialType;
 	
+	private String taxCode;
+	
 	private double basePrice;
 	
 	private String basePricingUnit;
@@ -119,7 +121,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	 * @param materialSalesAreas
 	 */
 	public ErpMaterialModel(String sapId, String baseUnit, String description, String upc, String quantityCharacteristic,
-			String salesUnitCharacteristic, EnumAlcoholicContent alcoholicContent, boolean taxable, 
+			String salesUnitCharacteristic, EnumAlcoholicContent alcoholicContent, boolean taxable, String taxCode, 
 			String skuCode, String daysFresh, EnumProductApprovalStatus approvalStatus,
 			String materialType, List prices, List salesUnits, List classes, List displaySalesUnits, List materialPlants, List materialSalesAreas)
 	{
@@ -133,6 +135,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.setClasses(classes);
 		this.setAlcoholicContent(alcoholicContent);
 		this.setTaxable(taxable);
+		this.setTaxCode(taxCode);
 		this.setDisplaySalesUnits(displaySalesUnits);
 		this.setSkuCode(skuCode);
 		this.setDaysFresh(daysFresh);
@@ -225,6 +228,16 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	 */
 	public int numberOfPrices() {
 		return this.prices.size();
+	}
+
+	
+	
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
 	}
 
 	/**

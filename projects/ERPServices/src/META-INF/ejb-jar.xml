@@ -905,7 +905,22 @@ version="3.0">
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
       </resource-ref>
-    </entity>
+    </entity>       
+     <entity>
+      <ejb-name>PostSettlementNotification</ejb-name>
+      <home>com.freshdirect.payment.ejb.PostSettlementNotificationHome</home>
+      <remote>com.freshdirect.payment.ejb.PostSettlementNotificationEB</remote>
+      <ejb-class>com.freshdirect.payment.ejb.PostSettlementNotificationEntityBean</ejb-class>
+      <persistence-type>Bean</persistence-type>
+      <prim-key-class>
+      com.freshdirect.framework.core.PrimaryKey</prim-key-class>
+      <reentrant>false</reentrant>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </entity>    
     <entity>
       <ejb-name>ErpInventory</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpInventoryHome</home>
@@ -1463,6 +1478,16 @@ version="3.0">
       </method>
       <method>
         <ejb-name>ErpProduct</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>PostSettlementNotification</ejb-name>
+        <method-intf>Home</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <method>
+        <ejb-name>PostSettlementNotification</ejb-name>
         <method-intf>Remote</method-intf>
         <method-name>*</method-name>
       </method>

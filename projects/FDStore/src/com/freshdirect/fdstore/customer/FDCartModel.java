@@ -72,6 +72,9 @@ import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.fdstore.rules.TieredPrice;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
+import com.freshdirect.fdstore.services.tax.TaxFactory;
+import com.freshdirect.fdstore.services.tax.TaxFactoryImpl;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
@@ -715,6 +718,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public double getTaxValue() {
 		double taxValue = 0.0;
+	
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			taxValue += i.next().getTaxValue();
 		}
@@ -727,6 +731,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return taxValue;
 	}
 
+	public double getAvalaraTaxValue(AvalaraContext avalaraContext){
+		if(FDStoreProperties.getAvalaraTaxEnabled()){
+			TaxFactory taxFactory = new TaxFactoryImpl();
+			taxFactory.getTax(avalaraContext);
+		}		
+		return getTaxValue();
+	}
+	
 	public double getDepositValue() {
 		double depositValue = 0.0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
@@ -1449,11 +1461,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			taxationType = mi.getTaxationType();
 		}
 	
-		for( FDCartLineI cartline : orderLines ) {
-			cartline.setTaxRate(taxRate);
-			cartline.setDepositValue(depositRate);
-			cartline.setTaxationType(taxationType);
-		}
+		 for( FDCartLineI cartline : orderLines ) {
+             cartline.setDepositValue(depositRate);
+             if(!FDStoreProperties.getAvalaraTaxEnabled()){
+                   cartline.setTaxRate(taxRate);
+                   cartline.setTaxationType(taxationType);
+             }
+      }
 	}
 
 	public List<ErpDiscountLineModel> getDiscounts() {
