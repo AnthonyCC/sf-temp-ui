@@ -192,10 +192,12 @@ public class Pricing implements Serializable {
 	private MaterialPrice[] getBaseIndicatorMaterialPrice(MaterialPrice[] matPrice) {
 		MaterialPrice[] baseIndicatorMaterialPrice=new MaterialPrice[matPrice.length];
 		MaterialPrice mp=null;
-		for (int i=0;i<matPrice.length;i++) {
+		/*for (int i=0;i<matPrice.length;i++) {
 			mp=matPrice[i];
 			baseIndicatorMaterialPrice[i]=new MaterialPrice(mp.getOriginalPrice(),mp.getPricingUnit(),mp.getScaleLowerBound(),mp.getScaleUpperBound(),mp.getScaleUnit(),0);
-		}
+		}*///Don't consider scale prices as well.
+		mp=matPrice[0];
+		baseIndicatorMaterialPrice[0]=new MaterialPrice(mp.getOriginalPrice(),mp.getPricingUnit(),mp.getScaleLowerBound(),mp.getScaleUpperBound(),mp.getScaleUnit(),0);
 		return baseIndicatorMaterialPrice;
 		
 	}
