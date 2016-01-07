@@ -1232,6 +1232,11 @@ public class CheckoutController extends BaseController {
     	Checkout checkout = new Checkout(user);
     	
     	SubmitOrderExResult message = new SubmitOrderExResult();
+
+    	if(null !=user.getFDSessionUser().getGiftCardList()){
+    		user.getFDSessionUser().getShoppingCart().setSelectedGiftCards( user.getFDSessionUser().getGiftCardList().getSelectedGiftcards() );
+    	}
+		
     	if(user.getFDSessionUser().getShoppingCart().getPaymentMethod() ==null) {
     		checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), ""); 
     	}
