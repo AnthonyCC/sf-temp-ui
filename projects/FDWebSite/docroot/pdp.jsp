@@ -38,7 +38,7 @@ ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter
 // Handle no-product case
 if (productNode==null) {
     throw new JspException("Product not found in Content Management System");
-} else if (productNode.isDiscontinued()) {
+} else if (productNode.isDiscontinued() && !FDStoreProperties.getPreviewMode()) {
     throw new JspException("Product Discontinued :"+request.getParameter("productId"));
 }
 

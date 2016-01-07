@@ -51,6 +51,7 @@ public class HolidayMealBundleService {
 
     public HolidayMealBundleContainer populateHolidayMealBundleData(SkuModel skuModel, FDUserI user) throws FDSkuNotFoundException, FDResourceException, HttpErrorResponse {
         HolidayMealBundleContainer container = new HolidayMealBundleContainer();
+        if(skuModel==null) return container;
         ProductModel productModel = skuModel.getProductModel();
         if (productModel != null && productModel.getParentNode() != null && isProductModelLayoutTypeHolidayMealBundle(productModel)) {
             container.setMealIncludeDatas(populateIncludeMealDatas(skuModel));
