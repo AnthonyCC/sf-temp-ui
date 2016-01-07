@@ -1525,7 +1525,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_PRESIDENT_PICK_PAGING_ENABLED, "false");
         
-        defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "false");
+        defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "true");
 
         defaults.put(PROP_SITEMAP_ENABLED, "true");
         defaults.put(PROP_SITEMAP_PASSWORDS, "fd8848admin,GetMe2TheSitem@p");
