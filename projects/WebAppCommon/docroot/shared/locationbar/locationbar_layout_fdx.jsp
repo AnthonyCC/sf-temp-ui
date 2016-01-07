@@ -16,8 +16,6 @@
 	<tmpl:get name="tab_fdx" />
 	<tmpl:get name="tab_cos" />
 	
-	
-	
 	<%-- fright sections --%>
 	<div class="locabar-right-sections">
 		<tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />

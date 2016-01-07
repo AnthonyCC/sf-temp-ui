@@ -4,7 +4,9 @@
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@page import="com.freshdirect.common.context.MasqueradeContext"
-%><%@ taglib uri='freshdirect' prefix='fd' %>
+%>
+<%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <% 
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
@@ -155,8 +157,24 @@ if(user != null) {
 			        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
 			        <% } %>			                    
 				</div>
-			    
+
 				<div class="topnavitem" id="topnavitem_help">
+				<%
+				//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+					if(user.isCorporateUser()){
+						%><a href="/index.jsp">Home delivery?</a><%			
+					}else {
+						%><a href="/cos.jsp">Office delivery?</a><%			
+					}
+				//}
+				/*
+				we are currently having this always show here,
+				because the parent conditional seems to always be false on pages which use this file,
+				regardless of user status, even if incognito.
+				the mockups imply that one or the other should always show
+				*/
+				%>
+				
 			        <a href="/help/index.jsp?trk=gnav">Help</a>
 			    </div>
 			    <br style="clear: both;" />
@@ -232,7 +250,7 @@ if(user != null) {
 				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
 				    </div>
 				    <div class="topnavitem" id="topnavitem_help">
-				        <a href="/help/index.jsp?trk=gnav">Help</a>
+				        <a href="/help/index.jsp?trk=gnav">Help</a>test
 				    </div> 
 				   
 				   

@@ -81,6 +81,7 @@
 		border-radius: 0;
 		padding: 0;
 		border: none;
+		box-shadow: none!important;
 	}
 	#popupcart .body {
 		/*margin-left: 15px;
@@ -211,6 +212,11 @@
 		text-decoration: underline;
 	}
 	
+	.globalnav_top {
+		position: relative;
+		padding: 10px 0;
+		margin-top: 0;
+	}
 	.globalnav_top .topnavitem {
 		float: right;
 		margin: 9px 0 0 0px;
@@ -218,11 +224,6 @@
 		font-size: 14px;
 		font-weight: normal;
 		color: #5c7440;
-	}
-	.globalnav_top {
-		position: relative;
-		padding: 10px 0;
-		margin-top: 0;
 	}
 	.globalnav_top .nav {
 		bottom: initial;
@@ -232,22 +233,25 @@
 	.globalnav_top .topnavitem, .globalnav_top .topnavitem a {
 		margin: 5px 0 0 0px;
 	}
+	.container.globalnav_top.hsaFDX{
+		padding: 20px 0px;
+	}
 	#topSearchField {
 		margin: 0px 0 0 0;
 		height: 34px;
 		padding: 3px 7px;
 		background-color: #efefef;
 		border:none;
-		margin-right: 6px;
 		clear: both;
 		font-weight:bold;
 		border-radius: 3px;
-		/*width:calc(100% - 40px);*/
-		width: 450px!important;
+		width:calc(100% - 75px);
+		float:left;
+		/*width: 450px!important;*/
 	}
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
-		width:100%;
+		width:330px;
 	}
 	
 	.signUpButton{
@@ -265,6 +269,15 @@
 	#login_cont_formContent.locabar_login .logo {
 		text-align: center;
 	}
+	
+	/* Logo - wrong size */
+	.globalnav_top a.logo{
+		width:initial;
+	}
+	.globalnav_top a.logo img{
+		width: initial !important;
+	}
+	
 	#login_cont_formContent.locabar_login .sign-in {
 		text-align: center;
 		font-size: 24px;
@@ -357,22 +370,24 @@
 /* overrides */
 
 .searchform-cont {
-	position: relative;
+	/*position: relative;*/
 	float: left;
-	padding-left: 25px;
-	width:450px;
+	margin-left: 25px;
+	/*padding-left: 25px;
+	width:450px;*/
 }
 
  #topInputFindButton_fdx {
 	height: 40px;
 	width: 50px;
-	position: absolute;
+	/*position: absolute;
 	right: 0;
-	display: inline-block;
+	display: inline-block;*/
 	background-position: center;
 	margin-top: 0px;
-	top: 0;
-	right:-14px;
+	/*top: 0;
+	right:-14px;*/
+	float:left;
  }
 .locabar-search {
 	background-image: url('/media/layout/nav/globalnav/fdx/search-icon.png');
@@ -856,7 +871,7 @@
 	top: -20px;
 	width: 25px;
 	height: 25px;
-	box-shadow: 0px 1px 4px 2px #aaa;
+	box-shadow: none;
 	-webkit-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
@@ -1014,7 +1029,7 @@ option.address-icon {
 	vertical-align:bottom;
 }
 #nodeliver-form > div.section-warning{
-	margin-bottom: 6px;
+	margin-bottom: 29px;
 	width: 23%;
 }
 #nodeliver-form .nodeliver-form input.location-email-text{
@@ -1067,4 +1082,9 @@ option.address-icon {
 }
 .hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"]:hover {
 	background-color: #cce2ce;
+}
+
+.bottom-nav .bottom-nav-items .bottom-item a:hover{
+	background-color: #f6faf6!important;
+	color:#4fa157!important;
 }
