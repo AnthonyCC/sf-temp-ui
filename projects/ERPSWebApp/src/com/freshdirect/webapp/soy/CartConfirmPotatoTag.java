@@ -76,6 +76,7 @@ public class CartConfirmPotatoTag extends SimpleTagSupport {
 			Map<String, ?> potato = DataPotatoField.digCartConfirm( user, cartlineId );
 			subTotal = cart.getSubTotal();
 			//TODO check back url with business
+			if(potato!=null)
 			backUrl=(String)potato.get("backUrl");
 			
 			dataList.add(DataPotatoField.digCartConfirm( user, cartlineId ));

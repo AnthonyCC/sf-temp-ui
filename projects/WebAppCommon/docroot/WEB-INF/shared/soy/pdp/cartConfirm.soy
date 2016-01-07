@@ -65,7 +65,9 @@
 	
     <div class="span-11">
       {foreach $cartConfirmPotato in $cartConfirmPotatoes}
+       {if $cartConfirmPotato}
         {call .cartConfirm data="$cartConfirmPotato" /}
+       {/if} 
       {/foreach}
 
       <p class="cc-actions">
