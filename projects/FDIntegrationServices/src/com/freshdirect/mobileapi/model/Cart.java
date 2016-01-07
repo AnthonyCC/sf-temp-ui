@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -627,8 +626,7 @@ public class Cart {
             AffiliateCartDetail affiliateCartDetail = new AffiliateCartDetail();
 
             //Set Affiliate specific fields here.
-            //affiliateCartDetail.setName(view.getAffiliate().getName().toUpperCase());
-            affiliateCartDetail.setName((view.getAffiliate() != null && view.getAffiliate()!=null && view.getAffiliate().getCode().equals(ErpAffiliate.CODE_FDW)) ? "FD Wines & Spirits" :  view.getAffiliate().getName().toUpperCase());
+            affiliateCartDetail.setName(view.getAffiliate().getName().toUpperCase());
             affiliateCartDetail.setIsEstimatedPrice(view.isEstimatedPrice());
             affiliateCartDetail.setSubtotal(view.getSubtotal());
             affiliateCartDetail.setTax(view.getTax());
