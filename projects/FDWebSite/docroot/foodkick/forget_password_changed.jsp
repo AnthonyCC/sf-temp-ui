@@ -15,7 +15,7 @@ if(userAgent.matches(".*iPhone.*") || userAgent.matches(".*iPad.*")){
 			cmCreatePageviewTag("FORGETPASSCHANGED: forget_password_changed.jsp","FDX_FORGETPASSCHANGED",null,null,"-_--_-FORGETPASSCHANGED: forget_password_changed.jsp-_--_--_--_-FORGETPASSCHANGED: forget_password_changed.jsp");
 		</script>
 		<section id="section_forget_password_changed" class="forgot_password_section">
-			<img src="<%=IMAGES_DIR %>/checkmark.png" class="" width="100%" height="100%" /> <span>Your password has been resetted.</span><br/>
+			<img src="<%=IMAGES_DIR %>/checkmark.png" class="" width="100%" height="100%" /> <span>Your password has been reset.</span><br/>
 			<%=open_app_button %>
 		</section>
 	</tmpl:put>
