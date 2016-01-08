@@ -643,6 +643,7 @@
 	display: inline-block;
 	max-width: 73px; /* about 12 chars */
 	text-overflow: ellipsis;
+	text-transform: capitalize;
 	overflow: hidden;
 	white-space: nowrap;
 	height: 15px;
