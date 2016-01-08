@@ -227,7 +227,7 @@ public interface SystemMessageList {
     // SmartStreets 
     public final static String MSG_ADDRESS_NOT_UNIQUE = "We are not able to find your address, Please choose one of the suggested address below or modify your address.";
     public final static String MSG_ADDRESS_APT_WRONG = "We're sorry, but the address has an invalid Apt. number.<br>Please update the address or add new aprt. number.";
-    public final static String MSG_ADDRESS_APT_REQ = "We’re sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
+    public final static String MSG_ADDRESS_APT_REQ = "We're sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
 	public final static String MSG_APARTMENT_INVALID_MISSING	= "An Apt/Suite # is missing/invalid for this address.";
 	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "W're sorry, but you must have an address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please update your address or enter a new address.";
 }
