@@ -477,7 +477,19 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							Iterator<String> itr=folderMap.keySet().iterator();
 							while (itr.hasNext()) {
 								String str=itr.next();
-								%><div class="section-line"><a href="<%= folderMap.get(str)%>"><%= str %></a></div><%
+								%>
+							<!-- This is for the Global Navigation Microsite URL for Extole -->
+							<%	if (str == "Refer A Friend") {
+									%>
+								<div class="section-line"><a href="<%= FDStoreProperties.getPropExtoleMicrositeGlobalNavUrl() %>" target="_blank"><%= str %></a></div>
+									<%
+										} else {
+									%>
+								<div class="section-line"><a href="<%= folderMap.get(str)%>"><%= str %></a></div>
+										<%
+											}
+										%>
+							<%
 							}
 						%>
 					</div>

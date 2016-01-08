@@ -142,24 +142,18 @@ function showLoginDialog(successPage, useSocial) {
 	}
 }
 
-$jq('#locabar_user_trigger').on('click', function(e) {
-	
+$jq('#locabar_user_trigger').on('click', function(event) {
 	var $this = $jq(this);
-	if (!($this.data('signedin') || $this.data('recog'))) {
+	if (!($this.data('signedin') || $this.data('recog'))) { //not signed in, not recog
 		showLoginDialog($jq.QueryString["successPage"], $this.data('social'));
-	} else if (!$this.data('signedin') && $this.data('recog')) {
-		e.preventDefault();
-
-		var eTargetHref ='';
-		if (e.target.href) {
-			eTargetHref = (e.target.href).replace(e.target.origin, '');
-			
-			if(eTargetHref !== '') {
-				showLoginDialog(eTargetHref, $this.data('social'));
-			}
+	} else if (!$this.data('signedin') && $this.data('recog')) { //not signed in, recog
+		$e = $jq(event.target);
+		if (!$e.attr('target')) {
+			event.preventDefault();
+			showLoginDialog(($e.attr('href')).replace($e.attr('origin'), ''), $this.data('social'));
 		}
 	}
-});
+}); 
 
 $jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');

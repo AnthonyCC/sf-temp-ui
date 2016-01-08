@@ -820,6 +820,8 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_RAF_ENABLED 							= "fdstore.extole.raf.enabled";
 	public static final String PROP_EXTOLE_MICROSITE_URL						= "fdstore.extole.microsite.url";
 	public static final String PROP_EXTOLE_MICROSITE_SUB_URL					= "fdstore.extole.microsite.sub.url";
+	public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL				= "fdstore.extole.microsite.global.nav.url";
+	
 	
 
 	// [APPDEV-4650]
@@ -1635,6 +1637,8 @@ public class FDStoreProperties {
     	defaults.put(PROP_EXTOLE_RAF_ENABLED, "true");
     	defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/myaccountscre");
 		defaults.put(PROP_EXTOLE_MICROSITE_SUB_URL, "https://refer.freshdirect.com/myaccountsub");
+		defaults.put(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL, "https://refer.freshdirect.com/globalnav");
+		
 		refresh();
     }
 
@@ -4112,6 +4116,9 @@ public class FDStoreProperties {
 		return get(PROP_EXTOLE_MICROSITE_SUB_URL);
 	}
 
+	public static String getPropExtoleMicrositeGlobalNavUrl() {
+		return get(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL);
+	}
 	
     public static String getAvalaraBaseURL() {
 		return StringUtils.defaultString(get(PROP_AVALARA_BASE_URL));
