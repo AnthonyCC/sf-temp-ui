@@ -28,9 +28,6 @@
 	});
 </script >
 
-
-
-
 <%
 	String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
@@ -68,15 +65,12 @@
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-
-<center>
 <div id="sulCont" class="signup-style-social social-singin login-page">
-
 	<%
 		if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null) {
 		//Message to display from referral signup page.
 	%>
-		<table width="100%" cellspacing="0" cellpadding="0" border="0">
+	<table id="login_page_msg" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 			<td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
@@ -108,77 +102,77 @@
 	<br>
 	<% session.removeAttribute("MSG_FOR_LOGIN_PAGE");
 
-	}
+	}//end if(session.getAttribute("MSG_FOR_LOGIN_PAGE") != null)
 	%>
 	<%if(FDStoreProperties.isSocialLoginEnabled()){%>
-       
-        <form name="fd_login" id="fd_login" method="post" >
-        	<% if (!result.isSuccess()) {
-            	String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
-                String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");            				            				
-                if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
-                	session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
-                    errorMsg = "<div class='error-message'>An account with this e-mail already exists.</br>Please Sign in with your e-mail or social account.</div>";		                    	
-                }
-             	out.println(errorMsg);
-            %>             
-		        <script type="text/javascript">
-	    	    	$jq(function() {
-		        	    $jq('#email_img').addClass('show_bg_arrow');
-		                $jq('#email').addClass('error');
-		                $jq('#password_img').addClass('show_bg_arrow');
-		                $jq('#password').addClass('error');
-	                });
-	            </script>
-            <% } %>
-        	<table border="0" cellpadding="5" cellspacing="8">
-                
-                <tr>
-            	 	<td valign="bottom">
-                	    <!-- span id should be the input box id+"_img" -->
-                        <span class="error_img" id="email_img"></span>
-                    </td>
-                           <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
-                       <td>
-                        <input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
-                    </td>
-                </tr>
-                <tr>
-                <td valign="bottom">
-                   		<!-- span id should be the input box id+"_img" -->
-                        <span class="error_img" id="password_img"></span>
-                    </td>
-                    <td style="padding-top: 15px;">
-                        <input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
-                    </td>
-                </tr>
-                <tr>
-                	<td></td>
-                    <td style="padding-top: 15px;">
-               		   	<a onclick="document.fd_login.submit();" href="#" class="butText social-login-continue-button">
-                          	<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                   	<td></td>
-                    <td class="social-login-pass-forgot">
-                    	<a href="/social/forgot_password_pageversion.jsp">Forgot Password?</a>
-                    </td>
-                </tr>
-         	</table>
-        </form>
+	<form name="fd_login" id="fd_login" method="post" >
+		<%
+		if (!result.isSuccess()) {
+			String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
+			String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");            				            				
+			if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
+				session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
+			    errorMsg = "<div class='error-message'>An account with this e-mail already exists.</br>Please Sign in with your e-mail or social account.</div>";		                    	
+			}
+			out.println(errorMsg);
+		%>             
+	        <script type="text/javascript">
+    	    	$jq(function() {
+	        	    $jq('#email_img').addClass('show_bg_arrow');
+	                $jq('#email').addClass('error');
+	                $jq('#password_img').addClass('show_bg_arrow');
+	                $jq('#password').addClass('error');
+                });
+            </script>
+		<%
+		}//end if (!result.isSuccess())
+		%>
+		<table border="0" cellpadding="5" cellspacing="8"> 
+			<tr>
+				<td valign="bottom">
+					<!-- span id should be the input box id+"_img" -->
+					<span class="error_img" id="email_img"></span>
+				</td>
+				 <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
+				<td>
+					<input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
+				</td>
+			</tr>
+			<tr>
+				<td valign="bottom">
+					<!-- span id should be the input box id+"_img" -->
+					<span class="error_img" id="password_img"></span>
+				</td>
+				<td style="padding-top: 15px;">
+					<input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="padding-top: 15px;">
+					<a onclick="document.fd_login.submit();" href="#" class="butText social-login-continue-button">
+						<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td class="social-login-pass-forgot">
+					<a href="/social/forgot_password_pageversion.jsp">Forgot Password?</a>
+				</td>
+			</tr>
+		</table>
+	</form>
 
-		<script type="text/javascript" language="javascript">
+	<script type="text/javascript" language="javascript">
+	$jq.validator.addMethod("customemail", 
+		function validateEmail(email){
+			var re = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
+			return re.test(email);
+		}
+	);
 		
-		$jq.validator.addMethod("customemail", 
-				 function validateEmail(email) {
-			 		var re = /^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
-			 		return re.test(email);
-				} 
-		 );
-		
-		 $jq('#fd_login').validate(
+	$jq('#fd_login').validate(
 				 {
 			 		 rules:{
 			             email:{
@@ -229,29 +223,22 @@
 			         error.insertBefore(element);
 			     }, 
 			 	}
-			 );
-			 		 
-		</script>
+	); 		 
+	</script>
 	
-
 	<div class="social-login-headerscr-social">
 		<div class="social-login-line-separator"></div>
 		<span class="social-login-or-separator">or</span>
 		<div class="social-login-line-separator"></div>
 	</div>    
 
-
 	<% 
 		String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 		String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
-	%>	  
-	
+	%>
 	
 	<div id="social_login_demo" class="social-login-social">
-	
-	
 		<script type="text/javascript">
-
 			var oneall_subdomain = '<%=site_subdomain%>';
 		
 			/* Asynchronously load the library */
@@ -290,7 +277,6 @@
 				}, 100);
 			});
 		</script>
-	
 	</div> <!-- social login section ends here -->
 	
 	<%}else{ %>
@@ -315,7 +301,7 @@
 					<td width="30" rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0"><br></td>
 				</tr>
 				<tr valign="MIDDLE">
-					<td width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><label for="password">* Password&nbsp;</label></td>
+					<!--<td width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><label for="password">* Password&nbsp;</label></td>-->
 					<td><input name="password" size="14" style="width: 140px" type="password" required="true" tabindex="2" class="text11"></td>
 					<td>
 						<input type="image" src="/media_stat/images/template/homepages/go_round.gif"" width="18" height="18" name="check_access" border="0" alt="GO" hspace="4" tabindex="3">
@@ -325,7 +311,7 @@
 					</td>
 				</tr>
 				<tr valign="MIDDLE">
-					<td width="110"><img src="/media_stat/images/layout/clear.gif" WIDTH="110" HEIGHT="1" BORDER="0"></td>
+					<!--<td width="110"><img src="/media_stat/images/layout/clear.gif" WIDTH="110" HEIGHT="1" BORDER="0"></td>-->
 					<td colspan=3 class="text13">Passwords are case sensitive.</td>
 				</tr>
 				</table>
@@ -344,14 +330,9 @@
 		</div>
 	</div>
 	 -->
-
-
-
 </div>
 
-
 		<br>
-		
 			<!--  
 			<%if(uri.indexOf("quickshop")== -1){%>
 
@@ -377,15 +358,11 @@
 					<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
 					
 				<% }else{ %>
-					<font class="text13bold">New Customer?</FONT><BR>
-						<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<% } %>
+					<font class="text13bold new_cust">New Customer?</font><br class="new_cust"/>
+						<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a>.<% } %>
 			<%} else { %>        
-				<font class="text13bold">New Customer?</FONT><BR>
-				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<% } %>
+				<font class="text13bold new_cust">New Customer?</font><br class="new_cust" />
+				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13 new_cust">See if we deliver to your area</a>.<% } %>
 		
-		<br><br>
-
-</center>
-
-
+	<br><br>
 </fd:LoginController>

@@ -32,26 +32,23 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_LOGIN_TOTAL%>" align="center">
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
-        <tr>
-            <td width="<%=W_LOGIN_TOTAL-200%>">
-				<img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"></td>
-        	<td width="200" align="right"><font class="text9">* Required Information</font></td>
-		</tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
-		<tr><td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
-		<tr><td colspan="2">
-		<table border="0" cellspacing="0" cellpadding="0" align="center">
-		<tr>
-			<td width="110"><img src="/media_stat/images/layout/clear.gif" width="110" height="1" border="0" alt=""><BR></td>
-			<td class="text13">
-				<%@ include file="/includes/i_login_field.jspf" %>
-			</td>
-		</tr>
-		</table>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
+	<tr>
+		<td width="<%=W_LOGIN_TOTAL-200%>">
+			<img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">
 		</td>
-		</tr>
+       	<td width="200" align="right">
+       		<font class="text9">* Required Information</font>
+		</td>
+	</tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
+	<tr><td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt=""></td></tr>
+	<tr>
+		<td colspan="2">
+			<%@ include file="/includes/i_login_field.jspf" %>
+		</td>
+	</tr>
 </table>
 </tmpl:put>
 </tmpl:insert>
