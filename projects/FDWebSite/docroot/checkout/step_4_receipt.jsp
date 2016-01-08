@@ -329,7 +329,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			</td>
 		</tr>
 		<tr valign="bottom">
-			<td width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-450%>"><a href="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" /></a></td>
+			<td width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-450%>">
+				<a href="/index.jsp">
+					<!--  
+					<img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" />
+					-->
+					<img src="/media/layout/nav/globalnav/fdx/fd-logo_v2.png" width="216" height="44" border="0" alt="FreshDirect" />
+				</a>
+			</td>
 			<td width="450" align="right">
 			
 				<% String dlvInfoLink = ""; 
