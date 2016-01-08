@@ -157,6 +157,11 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			
 			String addressClass = "address-icon";
 			
+			//for APPDEV-4742
+			String ifSel_CheckImg = "none";
+			String ifSel_cssClass = "";
+			String ifSelected = "";
+			
 			
 			if( disabled == null || !disabled) {
 				%><tmpl:put name="address">
@@ -166,25 +171,30 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
-											addressClass = "address-icon";
-												
-											if (userReservervation != null && (userReservervation.getAddressId()).equals(homeAddress.getPK().getId()) ) {
-												userReservervationAddressModel = homeAddress;
-												addressClass += " reservation-icon";
-											}
-										%>
-										<option 
-											<%= ( selectedAddress.equals(homeAddress) )
-												? " data-class=\""+addressClass+"\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
-												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
-											%>
-											 value="<%=homeAddress.getPK().getId()%>">
-											 	<%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%>
-										</option>
-										<% if ( selectedAddress.equals(homeAddress) ) { 
+										addressClass = "address-icon";
+											
+										if (userReservervation != null && (userReservervation.getAddressId()).equals(homeAddress.getPK().getId()) ) {
+											userReservervationAddressModel = homeAddress;
+											addressClass += " reservation-icon";
+										}
+
+										//whether this home address has already been selected earlier in a previous page load
+										if( selectedAddress.equals(homeAddress) ){
+											ifSel_CheckImg = "url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;)";
+											ifSel_cssClass = "locabar-check-text";
+											ifSelected = " selected=\"selected\"";
+											
 											foundSelectedAddress = true;
 											foundSelectedAddressType = "HOME";
-										} %>
+										}else{
+											ifSel_CheckImg = "none";
+											ifSel_cssClass = "";
+											ifSelected = "";
+										}
+										%>
+										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
+											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%></p>
+										</option>
 									</logic:iterate>
 								</optgroup>
 							<%}
@@ -192,45 +202,58 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<optgroup label="Office Delivery">
 									<logic:iterate id="corporateAddress" collection="<%=allCorporateAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
-											addressClass = "address-icon";
+										addressClass = "address-icon";
+										
+										if (userReservervation != null && (userReservervation.getAddressId()).equals(corporateAddress.getPK().getId()) ) {
+											userReservervationAddressModel = corporateAddress;
+											addressClass += " reservation-icon";
+										}
+										
+										//whether this home address has already been selected earlier in a previous page load
+										if( selectedAddress.equals(corporateAddress) ){
+											ifSel_CheckImg = "url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;)";
+											ifSel_cssClass = "locabar-check-text";
+											ifSelected = " selected=\"selected\"";
 											
-											if (userReservervation != null && (userReservervation.getAddressId()).equals(corporateAddress.getPK().getId()) ) {
-												userReservervationAddressModel = corporateAddress;
-												addressClass += " reservation-icon";
-											}
-										%>
-										<option 
-											<%= ( selectedAddress.equals(corporateAddress) )
-												? " data-class=\""+addressClass+"\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
-												: " data-class=\""+addressClass+"\" data-style=\"background-image: none;\""
-											%>
-											 value="<%=corporateAddress.getPK().getId()%>">
-											 	<%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%>
-										</option>
-										<% if ( selectedAddress.equals(corporateAddress) ) { 
 											foundSelectedAddress = true;
-											foundSelectedAddressType = "COS";											
-										} %>
+											foundSelectedAddressType = "COS";
+										}else{
+											ifSel_CheckImg = "none";
+											ifSel_cssClass = "";
+											ifSelected = "";
+										}
+										%>
+										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=corporateAddress.getPK().getId()%>">
+											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%></p>
+										</option>
 									</logic:iterate>
 								</optgroup>
 							<%}
 							if(allPickupDepots.size()>0){%>
 							<optgroup label="Pickup">
 								<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
-									<option 
-										<%= ( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) )
-											? " data-class=\"address-icon\" data-style=\"background-image: url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;);\" selected=\"selected\""
-											: " data-class=\"address-icon\" data-style=\"background-image: none;\""
-										%>
-										 value="DEPOT_<%= pickupDepot.getId() %>">
-										 	<%= LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress()) %>
-									</option>
-									<% 
-										if ( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ) {
-											foundSelectedAddress = true;
-											foundSelectedAddressType = "PICKUP";
-										}
+									<%
+									addressClass = "address-icon";
+									
+									//whether this home address has already been selected earlier in a previous page load
+									if( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ){
+										ifSel_CheckImg = "url(&apos;/media/layout/nav/globalnav/fdx/locabar-check.png&apos;)";
+										ifSel_cssClass = "locabar-check-text";
+										ifSelected = " selected=\"selected\"";
+										
+										foundSelectedAddress = true;
+										foundSelectedAddressType = "PICKUP";
+									}else{
+										ifSel_CheckImg = "none";
+										ifSel_cssClass = "";
+										ifSelected = "";
+									}
 									%>
+									<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="DEPOT_<%= pickupDepot.getId() %>">
+										<p class="<%=ifSel_cssClass%>">
+											<%=LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress())%>
+										</p>
+									</option>
 								</logic:iterate>
 							</optgroup>
 							<%}
@@ -324,8 +347,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
     	}
 	%>
 	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
-		<div style="display: inline-block; position: relative;" id="locabar_addresses_trigger" class="locabar_triggers">
-				<div style="display: inline-block;" class="bold cursor-pointer">
+		<div id="locabar_addresses_trigger" class="locabar_triggers">
+				<div class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
 						<div class="locabar-addresses-addzip">
@@ -337,6 +360,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<%= selectedAddress.getCity() %> (<%= selectedAddress.getZipCode() %>)
 							<% } %>
 						</div>
+
 						<div>
 							<%= zipAddDisplayString %>
 							<div class="locabar-down-arrow"></div>
@@ -344,7 +368,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					</div>
 				</div>
 				
-				<div id="locabar_addresses" class="posAbs" >
+				<div id="locabar_addresses" class="posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>

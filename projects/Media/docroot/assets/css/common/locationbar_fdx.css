@@ -14,10 +14,6 @@
 		margin-top: 0px;
 		font-family: Verdana;
 	}
-	#popupcart {
-		display: block;
-		position: relative;
-	}
 	#sidecartbuttons {
 		display: none;
 		visibility: hidden;
@@ -78,10 +74,13 @@
 		background: #659941;
 	}
 	#popupcart {
+		display: block;
+		position: relative;
 		border-radius: 0;
 		padding: 0;
 		border: none;
 		box-shadow: none!important;
+		width:inherit!important;
 	}
 	#popupcart .body {
 		/*margin-left: 15px;
@@ -110,6 +109,9 @@
 	}
 	#popupcart table {
 		width: 100%;
+	}
+	#popupcart table .item{
+		width: 300px;
 	}
 	#popupcart tr.cartline:hover {
 		background-color: #f1f1f1;
@@ -188,6 +190,7 @@
 	}
 	#popupcart .header .quantity {
 		text-align: center;
+		margin-left: 330px;
 	}
 	#popupcart .section th>div.title {
 		margin-bottom: 6px;
@@ -238,17 +241,36 @@
 	}
 	#topSearchField {
 		margin: 0px 0 0 0;
-		height: 34px;
+		height: 32px;
 		padding: 3px 7px;
 		background-color: #efefef;
-		border:none;
 		clear: both;
 		font-weight:bold;
 		border-radius: 3px;
 		width:calc(100% - 75px);
 		float:left;
 		/*width: 450px!important;*/
+		color:#333;
+		border: 1px solid #efefef;
+	    border-top-right-radius: 0px;
+	    border-bottom-right-radius: 0px;
 	}
+	#topSearchField:focus {
+		border: 1px solid #6AAA6D;
+	}
+	::-webkit-input-placeholder {
+	    color:#333;
+	}
+	:-moz-placeholder {
+	    color:#333;
+	}
+	::-moz-placeholder {
+	    color:#333;
+	}
+	:-ms-input-placeholder {
+	    color:#333;
+	}
+	
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
 		width:330px;
@@ -388,6 +410,8 @@
 	/*top: 0;
 	right:-14px;*/
 	float:left;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
  }
 .locabar-search {
 	background-image: url('/media/layout/nav/globalnav/fdx/search-icon.png');
@@ -467,6 +491,7 @@
 .locabar-cart-count-cont .locabar-circle-cont{
 	top: 2px;
 	margin-left:-5px;
+	margin-top: 1px;
 }
 
 .locabar-popupcart-total {
@@ -489,6 +514,7 @@
 	display: inline-block;
 	position: absolute;
 	height: 100%;
+	-webkit-font-smoothing: antialiased;
 }
 .locabar-truck {
 	display: inline-block;
@@ -497,9 +523,13 @@
 	height: 22px;
 	width: 43px;
 	padding-right: 5px;
+	margin-bottom: 3px;
 }
 .locabar-cart-total {
 	display: inline-block;
+}
+.locabar-cart-total .locabar-down-arrow {
+    margin-bottom: 2px;
 }
 .locabar-cart {
 	display: inline-block;
@@ -507,7 +537,8 @@
 	height: 20px;
 	width: 18px;
 	background-repeat: no-repeat;
-	top: 8px;
+    top: 9px;
+    left: 2px;
     position: relative;
 }
 .locabar-down-arrow {
@@ -541,10 +572,6 @@
 	
 }
 
-#locabar_popupcart {
-	right: 0;
-}
-
 .locabar_triggers{
 	height:40px;
 }
@@ -573,9 +600,6 @@
 #locabar_addresses, #locabar_user, #popupcart{
 	
 }
-#popupcart{
-	box-shadow: initial;
-}
 #locabar_user .section-cont {
 	padding: 20px 30px 0 30px;
 }
@@ -592,6 +616,11 @@
 #locabar_user .section-line {
 	line-height: 2em;
 }
+.section-line a:hover {
+    color: #67a96d!important;
+    text-decoration: underline!important;
+}
+
 #locabar_user .section-line, #locabar_user .section-line * {
 	color: #656565;	
 }
@@ -617,6 +646,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 	height: 15px;
+	line-height: 15px;
 }
 #locabar_user .locabar-user-signout {
 	padding-bottom: 20px;
@@ -645,6 +675,11 @@
 	display: inline-block;
 	line-height: 15px;
 }
+@-moz-document url-prefix() { 
+	.locabar-addresses-section .locabar-addresses-addzip {
+		line-height: 12px;
+	}
+}
 #locabar_addresses .locabar_addresses-dlvadd-edit:hover, #locabar_addresses .locabar_addresses-ts-info:hover {
 	background-color: #4fa157;
 }
@@ -654,12 +689,23 @@
 	float: right;
 	padding: 0 6px;
 }
+.locabar_addresses-dlvadd-edit{
+	padding: 6px 10px!important;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
 #locabar_addresses .locabar_addresses-ts-info {
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-info.png');
 	background-repeat: no-repeat;
 	background-position: center center;
 	height: 22px;
 	width: 19px;
+	
+	padding: 6px 10px!important;
+	position: absolute;
+	right: 0px;
+	top: 0px;
 }
 #locabar_addresses {
 	display: inline-block;
@@ -670,6 +716,7 @@
 	font-size: 14px!important;
 	min-width: 353px;
 	min-height: 156px;
+	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.2)!important;
 }
 #locabar_addresses_choices {
 	/*width: 300px;*/
@@ -686,9 +733,11 @@
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
-	margin: 0 0 10px 0;
 	line-height: 22px;
-	padding-left: 6px;
+	font-size: 12px;
+    padding: 6px 16px!important;
+    margin: 0px!important;
+    position: relative;
 }
 
 .locabar-section .section-warning,
@@ -725,6 +774,7 @@
 	padding-left: 16px;
 	background-position: left bottom;
 	margin-left: 15px;
+	margin-right:10px;
 }
 #locabar_messages_trigger .section-warning-small-circle {
 	padding-left: 19px;
@@ -740,11 +790,10 @@
 	/*font-weight:bold;*/
 	font-size:14px;
 }
-
 #locabar_popupcart {
-	width: 500px;
 	left:85px;
 	margin-top: 23px;
+	width:575px;
 }
 #locabar_popupcart_trigger {
 	margin-right: 0;
@@ -755,6 +804,13 @@
 	margin-left: 125px;
 }
 
+@-moz-document url-prefix() { 
+	#locabar_popupcart .ui-arrow.ui-top{
+		margin-left: 485px!important;
+		left: initial !important;
+	}
+}
+
 #locabar_popupcart_trigger .modifynote {
 	color: #333;
 }
@@ -762,7 +818,12 @@
 .locabar-cart-count-cont {
 	display: inline-block;
 	width: 45px;
-	margin-right:5px;
+	margin-right:0px;
+}
+
+#locabar_addresses_trigger{
+	display: inline-block;
+	position: relative;
 }
 
 #locabar_addresses_trigger, #locabar_popupcart_trigger, #locabar_user_trigger {
@@ -784,6 +845,8 @@
 
 .side-spacer{
 	width: calc(50vw - 494px);
+	visibility: hidden;
+	opacity: 0;
 }
 
 /* transitions */
@@ -811,8 +874,17 @@
 	.disableCart #locabar_user_trigger[data-signedin="true"]:hover #locabar_user,
 	.disableCart #locabar_popupcart_trigger:hover #locabar_popupcart {
 		visibility: hidden;
-
 	}
+	
+	#locabar_addresses_trigger:hover #locabar_addresses{
+		top: 48px!important;
+    	margin-top: 0px!important;
+	}
+	
+	#locabar_addresses_trigger .locabar-down-arrow{
+		margin-bottom: 1px!important;
+	}
+	
 	.disableCart #locabar_addresses_trigger .locabar-down-arrow,
 	.disableCart #locabar_user_trigger[data-signedin="true"] .locabar-down-arrow,
 	.disableCart #locabar_popupcart_trigger .locabar-down-arrow {
@@ -836,6 +908,10 @@
 		visibility: hidden;
 	}
 	
+	.locabar-user-section .locabar-down-arrow{
+		margin-bottom: 4px!important;
+	}
+	
 /* transitions */
 
 	#locabar_addresses_trigger:hover .locabar-down-arrow,
@@ -844,7 +920,9 @@
 	{
 		background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow_hover.png');
 	}
-
+#locabar_addresses_trigger > div > div > div:last-child {
+    position: relative;
+}
 .ui-menu {
 	max-width: 350px;
 }
@@ -882,7 +960,7 @@
 	background-color: #fff;
 }
 #locabar_addresses_choices {
-	margin: 5px 0;
+	margin: 0px;
 }
 #selectAddressList-menu {
 	border: none;
@@ -894,28 +972,30 @@
 #selectAddressList-menu .ui-menu-item {
 	font-size: 11px;
 	font-family: Verdana, Arial, sans-serif;
+	padding: 6px 0px 6px 25px!important;
+	margin: 0 10px;
+}
+#selectAddressList-menu .ui-menu-item {
+    padding: 6px 0px 6px 25px!important;
 }
 #selectAddressList-menu .ui-selectmenu-optgroup {
 	text-transform: uppercase;
 	font-weight: bold;
 }
-#selectAddressList-menu .ui-menu-item {
-	margin: 0 10px;
-}
-#selectAddressList-menu .ui-state-focus {
+#selectAddressList-menu .ui-state-focus{
 	background-image: none;
 	background-color: transparent;
-	color: #333;
 	border: none;
-	font-weight: normal;
+}
+#selectAddressList-menu .ui-state-focus, #selectAddressList-menu .locabar-check-text {
+	font-weight: bold;
+	color: #67a96d;
 }
 #selectAddressList-menu .ui-state-focus:hover {
-	font-weight: normal;
 	border: none;
 	background-image: none;
 	background-color: transparent;
 	color: #4fa157;
-	font-weight: normal;
 	border: none;
 }
 .cssbutton-flat {
@@ -943,6 +1023,7 @@
 
 .locabar_addresses-reservation-none {
 	text-align: center;
+	margin-top: 10px!important;
 }
 .locabar_addresses-reservation-make-disabled {
 	opacity: 0.5;
@@ -950,8 +1031,10 @@
 	cursor: default;
 }
 .locabar_addresses-reservation-none .cssbutton {
-	padding-left: 30px !important;
-	padding-right: 30px !important;
+	font-size: 14px;
+    padding: 14px 20px!important;
+    margin-top: 10px;
+    margin-bottom:6px;
 }
 .locabar_addresses-reservation-existing {
 	font-weight: bold;
