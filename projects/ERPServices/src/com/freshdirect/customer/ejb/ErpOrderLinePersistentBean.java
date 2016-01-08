@@ -236,6 +236,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		}else{
 			ps.setNull(45, Types.VARCHAR);
 		}
+		ps.setString(46, model.getTaxCode());
 		
 		try {
 			if (ps.executeUpdate() != 1) {
