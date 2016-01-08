@@ -94,6 +94,14 @@
     <servlet-name>ReSendEmailConfirmationServlet</servlet-name>
     <servlet-class>com.freshdirect.webapp.util.ReSendEmailConfirmationServlet</servlet-class>
   </servlet>
+   <servlet>
+    <servlet-name>AddressScrubbingServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.util.AddressScrubbingServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ScrubbedCSVReportServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.util.ScrubbedCSVReportServlet</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>SignatureViewServlet</servlet-name>
     <servlet-class>com.freshdirect.webapp.util.SignatureViewServlet</servlet-class>
@@ -241,6 +249,14 @@
   <servlet-mapping>
     <servlet-name>SignatureServlet</servlet-name>
     <url-pattern>/api/signature.jsp</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>AddressScrubbingServlet</servlet-name>
+    <url-pattern>/addressscrubbing.jsp</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ScrubbedCSVReportServlet</servlet-name>
+    <url-pattern>/scrubbedCSVReport.jsp</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>SignatureViewServlet</servlet-name>

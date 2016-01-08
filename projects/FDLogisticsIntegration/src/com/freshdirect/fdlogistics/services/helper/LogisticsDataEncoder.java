@@ -19,6 +19,7 @@ import com.freshdirect.logistics.controller.data.Cart;
 import com.freshdirect.logistics.controller.data.DateRange;
 import com.freshdirect.logistics.controller.data.Order;
 import com.freshdirect.logistics.controller.data.request.AddressExceptionRequest;
+import com.freshdirect.logistics.controller.data.request.AddressScrubbingRequest;
 import com.freshdirect.logistics.controller.data.request.CancelReservationRequest;
 import com.freshdirect.logistics.controller.data.request.ConfirmReservationRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
@@ -37,6 +38,7 @@ import com.freshdirect.logistics.controller.data.request.ZoneRequest;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
@@ -322,5 +324,37 @@ public class LogisticsDataEncoder {
 		CreateOrderRequest request = new CreateOrderRequest();
 		request.setOrderId(orderId);
 		return request;
+	}
+	
+	/**
+	 * @param addressModels
+	 * @return
+	 */
+	public static AddressScrubbingRequest encodeAddressScrubbingRequest(List<AddressModel> addressModels){
+		
+		AddressScrubbingRequest addressScrubbingRequest = new AddressScrubbingRequest();
+		List<ScrubbedAddress> addresses = new ArrayList<ScrubbedAddress>();
+		for(AddressModel addressModel : addressModels){
+			ScrubbedAddress scrubbedAddress = new ScrubbedAddress();
+			
+			if(addressModel.getId() != null && !"".equals(addressModel.getId())){
+				scrubbedAddress.setId(addressModel.getId());
+			}
+			scrubbedAddress.setCity(addressModel.getCity());
+			if(addressModel.getZipCode() != null){
+				scrubbedAddress.setZipCode(addressModel.getZipCode());
+			}
+			scrubbedAddress.setAddress1(addressModel.getAddress1());
+			if( "".equals(addressModel.getAddress2())){
+				scrubbedAddress.setAddress2(addressModel.getAddress2());
+			}
+			if( "".equals(addressModel.getApartment())){
+				scrubbedAddress.setApartment(addressModel.getApartment());
+			}
+			scrubbedAddress.setState(addressModel.getState());
+			addresses.add(scrubbedAddress);
+		}
+		addressScrubbingRequest.setScrubAddress(addresses);
+		return addressScrubbingRequest;
 	}
 }

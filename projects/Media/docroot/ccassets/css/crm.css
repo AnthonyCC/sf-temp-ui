@@ -735,6 +735,32 @@ color: #CC0000;
 font-weight: bold;
 }
 
+.error1{
+display: inline-block;
+font-size: 10pt;
+color: #CB2848;
+font-weight: bold;
+border: 1px solid #E9A7B6;
+background-color: #F6DEE4;
+margin: 20px 20px 20px 24px; 
+padding: 6px 6px;
+
+}
+.error2{
+display: inline-block;
+font-size: 10pt;
+color: #CB2848;
+font-weight: bold;
+border: 1px solid #E9A7B6;
+background-color: #F6DEE4;
+margin: 20px 2px 20px 20px; 
+padding: 6px 50px 6px 6px;
+
+}
+.errMsg_hidden {
+    visibility: hidden;
+}
+
 .correct {
 font-size: 10pt;
 color: #009900;
@@ -827,16 +853,7 @@ padding-right: 6px;
 font-size: 10pt;
 color: #000000;
 }
-.cust_header_voucher {
-background-color: #FF1A0A;
-border: 1px #FF0000 solid;
-width: 100%;
-padding: 0px;
-padding-left: 6px;
-padding-right: 6px;
-font-size: 10pt;
-color: #000000;
-}
+
 .cust_title {
 font-size: 13pt;
 color: #000000;
@@ -2665,4 +2682,28 @@ div.content_scroll { clear: left; }
 	text-align: center;
 	font-weight: bold;
 	color: red;
+}
+/* ADDRESS MANAGEMENT CRM */
+.update {
+background-color: #000000;
+font-size: 8pt;
+color: #FFFFFF;
+border: 1px #999999 solid;
+padding: 2px;
+padding-left: 0px;
+padding-right: 0px;
+margin-left: 5px;
+margin-right: 5px;
+}
+
+.radioLeft
+{
+   float: left;
+   
+}
+
+.textBlock
+{
+    float: left;
+    width: 80%; 
 }

@@ -68,6 +68,9 @@
 			if (linksList.contains("coupon_savings_history.jsp")) {
 				%><a href="/main/masquerade.jsp?destination=coupon_savings_history" target="_blank" class="<%=pageURI.indexOf("/main/coupon_savings_history.jsp") > -1?"main_nav_on":"main_nav_link"%>">Coupon&nbsp;Savings<br />History</a><% 
 			}
+			if (linksList.contains("address_scrubbing_tool.jsp")) {
+				%><a href="/scrubbingtool/address_scrubbing_tool.jsp" class ="<%=pageURI.indexOf("/scrubbingtool/address_scrubbing_tool.jsp") > -1?"main_nav_on":"main_nav_link"%>" >Address <br /> Scrubbing&nbsp;Tool</a><% 
+			}
 			%><a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" title="Help" class="<%=pageURI.indexOf("/main/help.jsp") > -1?"main_nav_on":"main_nav_link"%> ui-icon-cc ui-icon-cc-help"><span>Help</span></a>
 		</td>
 		<td align="right" width="350">

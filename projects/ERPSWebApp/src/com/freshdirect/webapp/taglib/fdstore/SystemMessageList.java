@@ -97,8 +97,8 @@ public interface SystemMessageList {
 	public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP	= "An account already exists with this email address.  Please enter a different one or <a href=\"#\" onclick=\"window.top.location='/login/forget_password.jsp';\">click here</a> if you have forgotten your password.";
     //public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL	= "An account with the referenced e-mail address already exists. Please <a href=\"/social/login.jsp\">Sign in</a> .";
 	public final static String MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL	= "An account with this e-mail already exists. Please <a href=\"/social/login.jsp\">Sign in</a> with your e-mail or social account.";
-	public final static String MSG_INVALID_ADDRESS				= "Sorry, we're unable to recognize this address - please make sure it's entered correctly.";
-	public final static String MSG_OUTERSPACE_ADDRESS			= "We're sorry, but you must have a valid home address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please check your address or enter a new address.";
+	public final static String MSG_INVALID_ADDRESS				= "Sorry, we're unable to recognize this address - please make sure it's entered correctly";
+	public final static String MSG_OUTERSPACE_ADDRESS			= "We're sorry, but you must have a valid address. Please update your address or enter a new address.";
 
 	// cart
 	public final static String MSG_QUANTITY_REQUIRED			= "Please select a quantity before adding items to your cart.";
@@ -224,5 +224,10 @@ public interface SystemMessageList {
     public static final String MSG_SOCIAL_PROFILE_EMAIL_NOT_FOUND="Social account needs to have an email address for Signup/Login";
     
     public static final String MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED = "This email is not valid for FoodKick orders.  Please register a new account to place a FoodKick order.";
-    
+    // SmartStreets 
+    public final static String MSG_ADDRESS_NOT_UNIQUE = "We are not able to find your address, Please choose one of the suggested address below or modify your address.";
+    public final static String MSG_ADDRESS_APT_WRONG = "We're sorry, but the address has an invalid Apt. number.<br>Please update the address or add new aprt. number.";
+    public final static String MSG_ADDRESS_APT_REQ = "We’re sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
+	public final static String MSG_APARTMENT_INVALID_MISSING	= "An Apt/Suite # is missing/invalid for this address.";
+	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "W're sorry, but you must have an address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please update your address or enter a new address.";
 }

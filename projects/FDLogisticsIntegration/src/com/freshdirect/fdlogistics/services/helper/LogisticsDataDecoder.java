@@ -93,10 +93,12 @@ public class LogisticsDataDecoder {
 		AddressModel address = new AddressModel(model.getAddress1(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode());
 		address.setAddress2(model.getAddress2());
 		address.setServiceType(EnumServiceType.getEnum(model.getServiceType()));
-		address.setAddressInfo(new AddressInfo(model.getZoneCode(), model.getLongitude(), 
+		AddressInfo addressInfo = new AddressInfo(model.getZoneCode(), model.getLongitude(), 
 				model.getLatitude(), model.getScrubbedStreet(), 
 				com.freshdirect.common.address.EnumAddressType.getEnum(model.getAddressType()), 
-				model.getCounty(), model.getBuildingId(), model.getLocationId()));
+				model.getCounty(), model.getBuildingId(), model.getLocationId());
+		addressInfo.setSsScrubbedAddress(model.getSsScrubbedAddress());
+		address.setAddressInfo(addressInfo);
 		
 		if(StringUtils.isNotEmpty(model.getId())) address.setId(model.getId());
 		return address;
@@ -388,6 +390,7 @@ public class LogisticsDataDecoder {
 		address.setState(scrubbedAddress.getState());
 		address.setZipCode(scrubbedAddress.getZipCode());
 		address.setAddressInfo(scrubbedAddress.getAddressInfo());
+		address.setServiceType(scrubbedAddress.getServiceType());
 		return address;
 	}
 	private static List<FDDeliveryZoneInfo> decodeDeliveryZoneInfo(

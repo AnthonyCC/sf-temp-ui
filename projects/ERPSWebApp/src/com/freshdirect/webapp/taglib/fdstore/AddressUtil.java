@@ -105,7 +105,7 @@ public class AddressUtil {
         if (!EnumAddressVerificationResult.ADDRESS_OK.equals(response.getVerifyResult())) {
 
             result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(response.getVerifyResult()),
-				EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_OUTERSPACE_ADDRESS);
+				EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS);
 
             result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(response.getVerifyResult()),
 				EnumUserInfoName.DLV_ADDRESS_1.getCode() , SystemMessageList.MSG_INVALID_ADDRESS);

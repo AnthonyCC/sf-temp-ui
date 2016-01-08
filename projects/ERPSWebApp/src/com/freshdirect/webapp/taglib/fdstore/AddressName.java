@@ -63,5 +63,8 @@ public interface AddressName {
     public final static String BIL_ZIPCODE			= "bil_zipcode";
     public final static String BIL_COUNTRY			= "bil_country";
     
+    public final static String DLV_ADDRESS_SS     	= "address1SS";
+    public final static String DLV_APT_SS			= "aptSS";
+    
 }
 

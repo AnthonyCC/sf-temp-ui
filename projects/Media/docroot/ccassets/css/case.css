@@ -1,5 +1,7 @@
 /* CASE */
-
+body.ScrubBg {
+	background:#ffffff;
+}
 .case_header {
 position: relative;
 /*width: 100%;*/
@@ -545,3 +547,65 @@ padding-bottom: 5px;
 }
 
 /* end CASE DISPOSITION */
+
+.scrubb_btn_disable {
+    background: #d9fad7;
+    color: #000000;
+    border: 1px solid #d9fad7;
+    margin-left: 50px;
+}
+.scrubb_btn_enable {
+	background: #8cff92;
+    color: #000000;
+    border: 1px solid #4C9C75;
+    margin-left: 50px;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.choosFileText,.choosFileActionBtn {
+	float:left;
+	width:100%;
+}
+
+.cancelSrubbing_btn {
+    background: #c23c3e;
+    color: #FFFFFF;
+    border: 1px solid #c23c3e;
+    margin-left: 50px;
+    margin-top: 10px;
+}
+.greenClickHere {
+	color:#8cff92;
+}
+
+.choose_file {
+    background-color: #000000;
+    font-size: 10pt;
+    color: #FFFFFF;
+    border: 1px #999999 solid;
+    padding: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.scrubbingText {
+    padding: 1px;
+    font-size: 10pt;
+    font-weight: bold;
+    padding-left: 25px;
+}
+
+.scrub_error1{
+	display: inline-block; !important;
+	font-size: 10pt; !important;
+	color: #CB2848; !important;
+	font-weight: bold; !important;
+	border: 1px solid #E9A7B6; !important;
+	padding: 5px; !important;
+	background-color: #F6DEE4; !important;
+	padding: 0 3px; !important;
+	margin: 20px 0; !important;
+}

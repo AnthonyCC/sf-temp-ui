@@ -237,8 +237,8 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		   "ID ,CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP," +
 		   "COUNTRY, PHONE, PHONE_EXT, PHONE_TYPE, DELIVERY_INSTRUCTIONS, SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME," +
 		   "ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, LONGITUDE, LATITUDE, GEOLOC, SERVICE_TYPE," +
-		   "COMPANY_NAME, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR) " +
-        " values (?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?)";
+		   "COMPANY_NAME, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR,EXT_SCRUBBED_ADDRESS) " +
+        " values (?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -282,6 +282,12 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		
 		ps.setString(32, this.unattendedDeliveryFlag != null ? this.unattendedDeliveryFlag.toSQLValue() : null);
 		ps.setString(33, this.unattendedDeliveryInstructions);
+		if(this.addressInfo != null && this.addressInfo.getSsScrubbedAddress() != null){
+			ps.setString(34, this.addressInfo.getSsScrubbedAddress());
+		}
+		else{
+			ps.setNull(34, Types.VARCHAR);
+		}
 				
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -308,7 +314,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		"ALT_LAST_NAME, ALT_APARTMENT, '('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE," +
 		"ALT_PHONE_EXT, LONGITUDE, LATITUDE, SERVICE_TYPE, COMPANY_NAME," +
 		"'('||substr(ALT_CONTACT_PHONE,1,3)||') '||substr(ALT_CONTACT_PHONE,4,3)||'-'||substr(ALT_CONTACT_PHONE,7,4) AS ALT_CONTACT_PHONE," +
-		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID FROM CUST.ADDRESS WHERE ID=?";
+		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID,EXT_SCRUBBED_ADDRESS FROM CUST.ADDRESS WHERE ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_ADDRESS_QUERY);
@@ -327,8 +333,10 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.country = rs.getString("COUNTRY");
 			this.phone = this.convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT"), rs.getString("PHONE_TYPE") );
 			this.instructions = rs.getString("DELIVERY_INSTRUCTIONS");
-			if(this.addressInfo!=null)
-			this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+			if(this.addressInfo!=null){
+				this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+				this.addressInfo.setSsScrubbedAddress(rs.getString("EXT_SCRUBBED_ADDRESS"));
+			}
 			this.altDeliverySetting = EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST"));
 			this.altFirstName = rs.getString("ALT_FIRST_NAME");
 			this.altLastName = rs.getString("ALT_LAST_NAME");
@@ -366,7 +374,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			"ALT_PHONE_EXT = ?, LONGITUDE = ?, LATITUDE = ?," +
 			"GEOLOC=MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL), SERVICE_TYPE = ?," +
 			"COMPANY_NAME = ?, ALT_CONTACT_PHONE = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
-			"ALT_CONTACT_EXT = ?, ALT_CONTACT_TYPE = ?, UNATTENDED_FLAG = ?, UNATTENDED_INSTR = ? WHERE ID = ?";
+			"ALT_CONTACT_EXT = ?, ALT_CONTACT_TYPE = ?, UNATTENDED_FLAG = ?, UNATTENDED_INSTR = ?,EXT_SCRUBBED_ADDRESS = ? WHERE ID = ?";
 		
 	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(UPDATE_ADDRESS_QUERY);
@@ -410,8 +418,13 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(31, this.unattendedDeliveryFlag.toSQLValue());
 		ps.setString(32, this.unattendedDeliveryInstructions);
 		
-		ps.setString(33, this.getPK().getId());
 		
+		if(this.addressInfo != null && this.addressInfo.getSsScrubbedAddress() != null){
+			ps.setString(33, this.addressInfo.getSsScrubbedAddress());
+		}else{
+			ps.setNull(33, Types.VARCHAR);
+		}
+		ps.setString(34, this.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated");
 		}

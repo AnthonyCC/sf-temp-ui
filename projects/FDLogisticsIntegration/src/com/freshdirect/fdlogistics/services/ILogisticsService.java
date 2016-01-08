@@ -1,9 +1,11 @@
 package com.freshdirect.fdlogistics.services;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.logistics.analytics.model.LateIssueOrder;
@@ -12,6 +14,7 @@ import com.freshdirect.logistics.controller.data.Depots;
 import com.freshdirect.logistics.controller.data.OrderSizeRequest;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.AddressExceptionRequest;
+import com.freshdirect.logistics.controller.data.request.AddressScrubbingRequest;
 import com.freshdirect.logistics.controller.data.request.CancelReservationRequest;
 import com.freshdirect.logistics.controller.data.request.ConfirmReservationRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
@@ -31,6 +34,7 @@ import com.freshdirect.logistics.controller.data.request.ValidateReservationRequ
 import com.freshdirect.logistics.controller.data.request.ZoneRequest;
 import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.logistics.controller.data.response.AddressExceptionResponse;
+import com.freshdirect.logistics.controller.data.response.AddressScrubbingResponse;
 import com.freshdirect.logistics.controller.data.response.AddressVerificationResponse;
 import com.freshdirect.logistics.controller.data.response.DeleteReservationsResponse;
 import com.freshdirect.logistics.controller.data.response.DeliveryETA;
@@ -141,4 +145,6 @@ public interface ILogisticsService {
 
 	Result isDispatched(String orderId, String companyCode) throws FDLogisticsServiceException;
 	
+	
+	AddressScrubbingResponse scrubbAddresses(AddressScrubbingRequest request) throws FDLogisticsServiceException;
 }

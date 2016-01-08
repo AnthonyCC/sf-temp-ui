@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 
 /**
@@ -145,7 +146,139 @@ public class DeliveryAddressValidator {
 		return true;
 	}
 
+	/**
+	 * Validate the address. After validation, additional information will be available in
+	 * {@link #getScrubbedAddress()} and {@link #getServiceResult()}.
+	 * 
+	 * @param actionResult validation errors are recoreded here. (note: should not have prior validation errors)
+	 * @return false if there were any validation errors
+	 * @throws FDResourceException
+	 */
+	public boolean validateAddressWithoutGeoCode(ActionResult actionResult) throws FDResourceException {
+		
+		// [1] normalize (scrub) address
+		scrubbedAddress = doScrubAddress(address, actionResult);
+		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
 
+		if (actionResult.isFailure()){
+			return false;
+		}
+
+		// Rule: restrict corporate addresses from registering for home delivery
+		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
+			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			return false;
+		}
+
+		scrubbedAddress.setServiceType(address.getServiceType());
+		String geocodeResult = "";
+		try {
+			// [2] Check services for scrubbed address
+
+			serviceResult = doCheckAddress(scrubbedAddress);
+			if ( !isAddressDeliverable() ) {
+				// post validations
+				if ( !EnumServiceType.HOME.equals( address.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+
+					if ( EnumServiceType.CORPORATE.equals( address.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+						actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
+					} else {
+						actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
+					}
+					return false;
+				}// NOT(address type == HOME AND service status == DELIVER)
+				
+				if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
+						serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
+					return false;
+				}
+			}
+		} catch (FDInvalidAddressException iae) {
+			if (this.strictCheck) {
+				//check for just a missing Address1
+				if ((this.scrubbedAddress.getAddress1()).trim().equals("")) {
+					//return just that error
+					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+				}else{
+					//otherwise, possible bad geocode. return new geocode msg
+					actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+						MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE_EXTRA, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
+				}
+				return false;
+			}
+			/*else if (!"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) && serviceResult == null) {
+				actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+					MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
+				return false;
+			}*/
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Validate the address. After validation, additional information will be available in
+	 * {@link #getScrubbedAddress()} and {@link #getServiceResult()}.
+	 * 
+	 * @param actionResult validation errors are recoreded here. (note: should not have prior validation errors)
+	 * @return false if there were any validation errors
+	 * @throws FDResourceException
+	 */
+	public boolean validateScrubbedAddress(ActionResult actionResult,String geocodeResult) throws FDResourceException {
+		scrubbedAddress = this.address;
+		
+		if (actionResult.isFailure()){
+			return false;
+		}
+		// Rule: restrict corporate addresses from registering for home delivery
+		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
+			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
+			return false;
+		}
+		try {
+			// [1] Check services for scrubbed address
+
+			serviceResult = doCheckAddress(scrubbedAddress);
+			if ( !isAddressDeliverable() ) {
+				// post validations
+				if ( !EnumServiceType.HOME.equals( address.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+
+					if ( EnumServiceType.CORPORATE.equals( address.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+						actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
+					} else {
+						actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1SS.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS );
+					}
+					return false;
+				}// NOT(address type == HOME AND service status == DELIVER)
+				
+				if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
+						serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
+					return false;
+				}
+			}
+		} catch (FDInvalidAddressException iae) {
+			if (this.strictCheck) {
+				//check for just a missing Address1
+				if ((this.scrubbedAddress.getAddress1()).trim().equals("")) {
+					//return just that error
+					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+				}else{
+					//otherwise, possible bad geocode. return new geocode msg
+					actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+						MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE_EXTRA, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
+				}
+				return false;
+			}else if (!"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) && serviceResult == null) {
+				actionResult.addError(true, EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), 
+					MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public AddressModel getScrubbedAddress() {
 		return scrubbedAddress;
 	}

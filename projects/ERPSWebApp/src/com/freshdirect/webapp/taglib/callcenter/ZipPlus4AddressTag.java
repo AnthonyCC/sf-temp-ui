@@ -130,6 +130,9 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				//
 		try {
 		
+			if(EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)){
+				actionResult.addError(true, EnumAddressVerificationResult.APT_WRONG.getCode(),SystemMessageList.MSG_ADDRESS_APT_WRONG );
+			}
 		aptRanges = verifyResponse.getAptRanges();
 		
 		pageContext.setAttribute("aptRanges", aptRanges);
@@ -141,7 +144,14 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		pageContext.setAttribute("county", verifyResponse.getCounty());
 				
 		pageContext.setAttribute("availServices", verifyResponse.getAvailServices());
-			} 
+
+		if(verifyResponse.getAddress().getAddressInfo() != null && verifyResponse.getAddress().getAddressInfo().getSsScrubbedAddress() != null && !verifyResponse.getAddress().getAddressInfo().getSsScrubbedAddress().equals("")){
+			pageContext.setAttribute("dispAptRanges", new Boolean(false));
+		}else{
+			pageContext.setAttribute("dispAptRanges", new Boolean(true));
+		}
+		
+		} 
 		catch (Exception fdiae)
 			{
 					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);

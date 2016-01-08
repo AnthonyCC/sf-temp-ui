@@ -65,9 +65,11 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.controller.data.Depots;
 import com.freshdirect.logistics.controller.data.Result;
+import com.freshdirect.logistics.controller.data.request.AddressScrubbingRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
 import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.logistics.controller.data.response.AddressExceptionResponse;
+import com.freshdirect.logistics.controller.data.response.AddressScrubbingResponse;
 import com.freshdirect.logistics.controller.data.response.AddressVerificationResponse;
 import com.freshdirect.logistics.controller.data.response.DeleteReservationsResponse;
 import com.freshdirect.logistics.controller.data.response.DeliveryETA;
@@ -84,6 +86,7 @@ import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
@@ -401,6 +404,25 @@ public class FDDeliveryManager {
 			return LogisticsDataDecoder.decodeDeliveryZoneInfo(response);
 		
 		} catch (FDLogisticsServiceException ce) {
+			throw new FDResourceException(ce);
+		} 
+	}
+	
+	/**
+	 * @param addresses
+	 * @return
+	 * @throws FDResourceException
+	 * @throws FDInvalidAddressException
+	 */
+	public AddressScrubbingResponse getScrubbedAddress(List<ScrubbedAddress> addresses) throws FDResourceException, FDInvalidAddressException {
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			AddressScrubbingRequest request = new AddressScrubbingRequest();
+			request.setScrubAddress(addresses);
+			AddressScrubbingResponse response = logisticsService.scrubbAddresses(request);
+			return response;
+		
+		} catch (Exception ce) {
 			throw new FDResourceException(ce);
 		} 
 	}

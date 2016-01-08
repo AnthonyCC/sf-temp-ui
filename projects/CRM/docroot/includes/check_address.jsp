@@ -13,6 +13,40 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
+
+<SCRIPT LANGUAGE=JavaScript>
+var gRadioValue ='';
+	function setAddress(){
+		if(gRadioValue.length > 0 ){
+			var fulladdr = gRadioValue.split(",")
+			document.getElementById('address1').value = fulladdr[0];
+			if(fulladdr[1]!= 'null' && fulladdr[1].length>0){
+				document.getElementById('apt').value = fulladdr[1]
+			}
+			else{document.getElementById('apt').value=''}
+			if(fulladdr[2]!= 'null' && fulladdr[2].length>0){
+				document.getElementById('address2').value = fulladdr[2];
+			}
+			else{
+				document.getElementById('address2').value=''
+			}
+			document.getElementById('cityText').value = fulladdr[3];
+			document.getElementById('stateList').value = fulladdr[4];
+			document.getElementById('zipCode').value = fulladdr[5];
+		}
+		document.getElementById("address1").focus();
+	}
+	
+	function checkApartment(){
+		var aptnumber = document.getElementById('apt').value.trim();
+		if(aptnumber.length==0){
+			return false;
+		}
+		return true;
+	}
+	
+</SCRIPT> 
+
 <% 
 
 String actionName = ""; 
@@ -70,8 +104,12 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
                 <span class="error"><%=errorMsg%>
 		<% if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.ADDRESS_BAD.getCode())) {
 				geocodeOK = false;
-			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.APT_WRONG.getCode()) && !"".equals(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()))) {
-				addApartment = true;
+			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.APT_WRONG.getCode())) {
+				addApartment = true;%>
+				<fd:ErrorHandler result='<%=result%>' name='main_error' id='errorMsg'>
+				<span class="error"><%=errorMsg%></span>
+				</fd:ErrorHandler>
+			<%
 			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.getCode())){
 				suggestAddress = true;
 			}
@@ -109,25 +147,32 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 				    <td width="30"></td>
 				    <td width=""></td>
 				</tr>
+				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'>
+				<tr><td colspan="6"><span class="error2"><%=errorMsg%></span></td></tr>
+				</fd:ErrorHandler>
 				<tr>
+				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.SS_APT_WRONG.getCode() %>' id='errorMsg'>
+					<tr><td></td><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
+				</fd:ErrorHandler>
 				    <td>*&nbsp;Address</td>
-					<td colspan="2"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" value="<%= dlvAddress.getScrubbedStreet() == null || "".equals(dlvAddress.getScrubbedStreet()) ? dlvAddress.getAddress1() : dlvAddress.getScrubbedStreet() %>"></td>
+					<td colspan="2"><input type="text" class="input_text" id = "address1" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" value="<%= dlvAddress.getScrubbedStreet() == null || "".equals(dlvAddress.getScrubbedStreet()) ? dlvAddress.getAddress1() : dlvAddress.getScrubbedStreet() %>"></td>
 		<td align="right">Apt. </td>
-			        <td><input type="text" class="input_text" size="5" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= dlvAddress.getApartment() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+		<%if(addApartment){%>
+		<td><input type="text" class="input_text" id="apt" style = "border: 2px solid red;" size="5" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= dlvAddress.getApartment() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+		<% }
+		else { %>
+			        <td><input type="text" class="input_text" style = "border-color:'';" id="apt" size="5" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= dlvAddress.getApartment() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<% } %>
 	</tr>
 	
-	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'>
-		<tr><td></td><td colspan="5"><span class="error_detail"><%=errorMsg%></span></td></tr>
-	</fd:ErrorHandler>
-	
 	<tr>
-				    <td>&nbsp;&nbsp;Addr.&nbsp;Line&nbsp;2</td>
-		<td colspan="4"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= dlvAddress.getAddress2() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+				    <td>&nbsp;&nbsp;Addr.Line 2</td>
+		<td colspan="4"><input type="text" class="input_text" id="address2" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= dlvAddress.getAddress2() %>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 
 	</tr>
 	<tr>
 				    <td>*&nbsp;City</td>
-		<td colspan="4"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%= dlvAddress.getCity() %>"></td>
+		<td colspan="4"><input type="text" class="input_text" id="cityText" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%= dlvAddress.getCity() %>"></td>
 	</tr>
 	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_CITY.getCode() %>' id='errorMsg'>
 		<tr>
@@ -137,7 +182,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	</fd:ErrorHandler>
 	<tr>
 					<td>*&nbsp;State</td>
-		<td><select name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" class="pulldown">
+		<td><select id="stateList" name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" class="pulldown">
             <option value="NY" <%= "NY".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NY</option>
 			<option value="NJ" <%= "NJ".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>NJ</option>
 			<option value="CT" <%= "CT".equalsIgnoreCase(dlvAddress.getState()) ? "selected" : "" %>>CT</option>
@@ -150,7 +195,7 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode() %>' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 					<td align="right">*&nbsp;Zip&nbsp;Code</td>
-        <td colspan="2"><input type="text" class="input_text" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= dlvAddress.getZipCode() %>"></td>
+        <td colspan="2"><input type="text" class="input_text" id="zipCode" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= dlvAddress.getZipCode() %>"></td>
     </tr>
 	<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'>
 		<tr>
@@ -161,13 +206,15 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 	</fd:ErrorHandler>
     <tr>
         <td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
-		<input type="submit" name="checkAddress" value="CHECK ADDRESS" class="submit">
-                <%=dlvAddress.getAddressType() != null ? "<br>Address Type = " + dlvAddress.getAddressType().getDescription() : ""%> 
-			<% if (/*currentAgent.isSupervisor() && */!CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"skipAddApartment")&& addApartment) {%>
-				<br><br>
-				<input type="submit" name="addApartment" value="ADD APARTMENT" class="new">
-				<br><br>
+
+		<span  style= "margin-left:10px; display-block;"><input type="submit"  align="center" name="checkAddress" value="CHECK ADDRESS" class="submit">
+		       
+		<% if (/*currentAgent.isSupervisor() && */!CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"skipAddApartment")&& addApartment) {%>
+				<input type="submit"  name="addApartment" value="ADD NEW APT. NUMBER" class="submit" onclick="return checkApartment();"></span>
 			<% } %>
+			<br>
+                <%=dlvAddress.getAddressType() != null ? "<br>Address Type = " + dlvAddress.getAddressType().getDescription() : ""%> 
+                <%=(dlvAddress.getAddressType() != null && dlvAddress.getServiceType() != null) ? "<br>RDI = " + dlvAddress.getServiceType().getName() : ""%> 
 		</td>
 	</tr>
 </table>
@@ -175,19 +222,45 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 <%  
 suggestions = (ArrayList)pageContext.getAttribute("suggestions");
 if (suggestions != null) {  %>
-<table align="center">
-    <tr><td><br><i>Suggested addresses:</i></td></tr>
-<%      for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
-            AddressModel suggestion = (AddressModel) sIter.next();  %>
-    <tr><td>
-        <%= suggestion.getAddress1() %> <% if (!"".equals(suggestion.getApartment())) { %>Apt # <%= suggestion.getApartment() %><% } %><br>
+ <div style="border: 1px solid; border-style: inset;margin: 10px 60px 10px 36px;"></div>
+<table align="left" cellpadding="4" cellspacing="4" style="margin-left : 30px;">
+    <tr><span class="error1">We were not able to find your address. Please choose one of the suggested address(es) below or modify your address.</span></tr><br>
+    <tr colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="5"></tr>
+<% int i = 0;      
+for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
+       AddressModel suggestion = (AddressModel) sIter.next();  
+       i++;
+       if(i > 2){
+    %>
+       <tr>
+       <% }%>
+    <td>
+    <input type = radio name="suggestions" id="suggestions" onClick="gRadioValue =this.value;" class="radioLeft"
+    value="<%= suggestion.getAddress1()+","+suggestion.getApartment()+","+suggestion.getAddress2()+","+suggestion.getCity()+","+suggestion.getState()+","+suggestion.getZipCode()%>">
+    <div class="textBlock">
+        <%= suggestion.getAddress1() %> <% if (suggestion.getApartment()!=null && !"".equals(suggestion.getApartment())) { %>, <br>Apt # <%= suggestion.getApartment() %><% } %>
         <% if (!"".equals(suggestion.getAddress2())) { %><%= suggestion.getAddress2() %><br><%   } %>
         <%= suggestion.getCity() %> <%= suggestion.getState() %> <%= suggestion.getZipCode() %>
         <br><br>
-    </td></tr>
-<%      }   %>
+     </div>
+    </td>
+    <% if(i > 2) {
+    	i = 0;
+    %>
+    </tr>
+    <%}%>
+    <%}%>
+    
+<tr>
+<td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
+		<input type="button" name="updateAddress" onclick="setAddress();" value="UPDATE ADDRESS"  class=update>
+<div style="border: 1px solid; border-style: inset; margin-top: 10px;"></div>
+</td>
+</tr>
 </table>
+
 <% } %>
+
 <% List<FDDeliveryZoneInfo> zoneInfo=(List<FDDeliveryZoneInfo>)pageContext.getAttribute("zoneInfo");
    String county=(String)pageContext.getAttribute("county");
    String COSStatus="", zoneCode="", bulkZone="", facility="";
@@ -250,7 +323,8 @@ if (suggestions != null) {  %>
 <%  } }%>
 
 <% aptRanges = (List)pageContext.getAttribute("aptRanges");
-    if (aptRanges != null) { 
+	Boolean dispAptRange = (Boolean)pageContext.getAttribute("dispAptRanges");
+    if (aptRanges != null && dispAptRange != null && dispAptRange) { 
 		if (aptRanges.size() > 0) {
 	%>
 <table align="center">
@@ -274,6 +348,20 @@ if (suggestions != null) {  %>
 	</table><br>
 <% 		}
 	} %>
+	<% 
+	if(dispAptRange != null && !dispAptRange && dlvAddress != null && dlvAddress.getAddressType() !=null && dlvAddress.getAddressType().getDescription() != null && 
+		!dlvAddress.getAddressType().getDescription().equalsIgnoreCase("HIGHRISE")){
+	%>
+		<br>
+	<table cellspacing="0" cellpadding="5" align="center" style="border: solid 1px #999999;">
+		<tr>
+			<td>No Apartment required for this building.</td>
+		</tr>
+	</table><br>
+	
+	<%
+	}
+	%>
 </fd:ZipPlus4Address>
 </crm:GetCurrentAgent>
 

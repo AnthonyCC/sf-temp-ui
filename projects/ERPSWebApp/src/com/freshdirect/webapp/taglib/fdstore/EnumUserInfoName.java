@@ -17,6 +17,7 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName DLV_HOME_PHONE = new EnumUserInfoName("dlvhomephone", "Home Phone");
 	public final static EnumUserInfoName DLV_HOME_PHONE_EXT = new EnumUserInfoName("dlvhomephoneext", "Home Phone Ext.");
 	public final static EnumUserInfoName DLV_ADDRESS_1 = new EnumUserInfoName("address1", "Street Address");
+	public final static EnumUserInfoName DLV_ADDRESS_1SS = new EnumUserInfoName("address1SS", "Street Address");
 	public final static EnumUserInfoName DLV_ADDRESS_2 = new EnumUserInfoName("address2", "Address Line 2");
 	public final static EnumUserInfoName DLV_APARTMENT = new EnumUserInfoName("apartment", "Apt.");
 	public final static EnumUserInfoName DLV_CITY = new EnumUserInfoName("city", "City");
@@ -140,6 +141,12 @@ public class EnumUserInfoName implements Serializable {
 	
 	// Gift Card Donation
 	public final static EnumUserInfoName GC_DONOR_ORGANIZATION_NAME = new EnumUserInfoName("gcDonorOrganizationName", "Donor Organization Name");
+
+	// SmartyStreets Address Suggestions
+	public final static EnumUserInfoName SS_ADDRESS_SUGGESTIONS = new EnumUserInfoName("ADDRESS_NOT_UNIQUE", "Address Suggestion Received");
+	public final static EnumUserInfoName SS_APT_WRONG = new EnumUserInfoName("APT_WRONG", "Apartment is wrong");
+	public final static EnumUserInfoName DLV_APARTMENT_SS = new EnumUserInfoName("aptSS", "Apt.");
+	
 
 	private int id;
 	private String code;

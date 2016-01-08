@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -10,14 +12,18 @@ import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -29,11 +35,14 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 public class CrmAddressControllerTag extends AbstractControllerTag {
 	
 	private ErpAddressModel address;
+	
+	List<AddressModel> suggestions; // a holder for suggested addresses if the original address is not unique
  
 	public void setAddress(ErpAddressModel address){
 		this.address = address;
 	}
 
+	EnumAddressVerificationResult verificationResult;
 	
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try{
@@ -88,6 +97,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		}
 	}
 	
+	
 	private void populateAddress(HttpServletRequest request){
 		EnumServiceType serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode()), ""));
 		this.address.setServiceType(serviceType);
@@ -136,6 +146,32 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
         this.address.setUnattendedDeliveryFlag(unattendedDeliveryFLag);
 	}
 	
+	/**
+	 * @param actionResult
+	 */
+	private FDDeliveryAddressCheckResponse checkAddressSuggestion(ActionResult actionResult){
+		FDDeliveryAddressCheckResponse verifyResponse;
+		try {
+			verifyResponse = FDDeliveryManager.getInstance().checkAddress(this.address);
+			verificationResult = verifyResponse.getVerifyResult();
+			if(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(verificationResult) ){
+				if (verifyResponse.getSuggestions() != null && !verifyResponse.getSuggestions().isEmpty()) {
+					suggestions = verifyResponse.getSuggestions();
+					pageContext.setAttribute("suggestions", suggestions);
+					actionResult.addError(true , EnumUserInfoName.SS_ADDRESS_SUGGESTIONS.getCode(), SystemMessageList.MSG_ADDRESS_NOT_UNIQUE);
+				} 
+			}
+		} catch (FDInvalidAddressException iae) {
+			actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			return null;
+		}catch (FDResourceException ex) {
+			actionResult.addError(
+				new ActionError(EnumUserInfoName.TECHNICAL_DIFFICULTY.getCode(), SystemMessageList.MSG_TECHNICAL_ERROR));
+			return null;
+		}
+		return verifyResponse;
+	}
+	
 	private void validateAddress(ActionResult result) throws FDResourceException{
 		result.addError("".equals(this.address.getFirstName()), EnumUserInfoName.DLV_FIRST_NAME.getCode(), "required");
 		result.addError("".equals(this.address.getLastName()), EnumUserInfoName.DLV_LAST_NAME.getCode(), "required");
@@ -158,12 +194,35 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		result.addError("".equals(this.address.getZipCode()), EnumUserInfoName.DLV_ZIPCODE.getCode(), "required");
 		result.addError(address.getPhone() == null || "".equals(this.address.getPhone().getPhone()), EnumUserInfoName.DLV_HOME_PHONE.getCode(), "required");
 
+		String geCodeResult = "";
+		if(result.isSuccess()){
+			FDDeliveryAddressCheckResponse verifyResponse = checkAddressSuggestion(result);
+			if(verifyResponse != null){
+				geCodeResult = verifyResponse.getGeocodeResult();
+				if (!EnumAddressVerificationResult.ADDRESS_OK.equals(verifyResponse.getVerifyResult())) {
 
+					result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(verifyResponse.getVerifyResult()),
+						EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_OUTERSPACE_ADDRESS);
+
+					result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(verifyResponse.getVerifyResult()),
+						EnumUserInfoName.DLV_ADDRESS_1.getCode() , SystemMessageList.MSG_INVALID_ADDRESS);
+		            
+					result.addError(EnumAddressVerificationResult.STREET_WRONG .equals(verifyResponse.getVerifyResult()),
+						EnumUserInfoName.DLV_ADDRESS_1.getCode() , SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
+		            
+					result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(verifyResponse.getVerifyResult()),
+						EnumUserInfoName.DLV_ADDRESS_1.getCode() , SystemMessageList.MSG_UNRECOGNIZE_STREET_NUMBER); 
+					
+					result.addError(EnumAddressVerificationResult.APT_WRONG.equals(verifyResponse.getVerifyResult()),
+							EnumUserInfoName.DLV_APARTMENT_SS.getCode() , SystemMessageList.MSG_ADDRESS_APT_WRONG); 
+		        }
+			}
+		}
 
 		if (result.isSuccess()) {
 			DeliveryAddressValidator validator = new DeliveryAddressValidator(this.address);
 			// validate address
-			if (validator.validateAddress(result)) {
+			if (validator.validateScrubbedAddress(result,geCodeResult)) {
 				// Second turn: Check SUFFOLK condition 
 				if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(validator.getScrubbedAddress()))
 					&& (this.address.getAltContactPhone() == null
@@ -174,9 +233,8 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 					return;
 				}
 				
+				AddressModel scrubbedAddress = this.address; // get 'normalized' address
 				
-			
-				AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 				FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(scrubbedAddress.getZipCode());
 				boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 				if (validator.isAddressDeliverable()) {

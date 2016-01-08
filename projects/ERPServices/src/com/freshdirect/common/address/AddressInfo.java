@@ -33,6 +33,7 @@ public class AddressInfo implements Serializable {
 	private boolean isGeocodeException;
 	private String buildingId;
 	private String locationId;
+	private String ssScrubbedAddress;
 	
 	public boolean isGeocodeException() {
 		return isGeocodeException;
@@ -128,4 +129,19 @@ public class AddressInfo implements Serializable {
 		this.locationId = locationId;
 	}
 
+	/**
+	 * @return the ssScrubbedAddress
+	 */
+	public String getSsScrubbedAddress() {
+		return ssScrubbedAddress;
+	}
+
+	/**
+	 * @param ssScrubbedAddress the ssScrubbedAddress to set
+	 */
+	public void setSsScrubbedAddress(String ssScrubbedAddress) {
+		this.ssScrubbedAddress = ssScrubbedAddress;
+	}
+
+	
 }

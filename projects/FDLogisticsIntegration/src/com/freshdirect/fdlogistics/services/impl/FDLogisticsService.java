@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -18,6 +19,7 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.controller.data.Depots;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.AddressExceptionRequest;
+import com.freshdirect.logistics.controller.data.request.AddressScrubbingRequest;
 import com.freshdirect.logistics.controller.data.request.AddressVerificationRequest;
 import com.freshdirect.logistics.controller.data.request.CancelReservationRequest;
 import com.freshdirect.logistics.controller.data.request.ConfirmReservationRequest;
@@ -41,6 +43,7 @@ import com.freshdirect.logistics.controller.data.request.ValidateReservationRequ
 import com.freshdirect.logistics.controller.data.request.ZoneRequest;
 import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.logistics.controller.data.response.AddressExceptionResponse;
+import com.freshdirect.logistics.controller.data.response.AddressScrubbingResponse;
 import com.freshdirect.logistics.controller.data.response.AddressVerificationResponse;
 import com.freshdirect.logistics.controller.data.response.DeleteReservationsResponse;
 import com.freshdirect.logistics.controller.data.response.DeliveryETA;
@@ -58,6 +61,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
+import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
@@ -142,6 +146,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String ACTUAL_ORDERSIZE_API ="/reservation/ordersize/update";
 	private static final String STATUS_FDX_ORDER_DISPATCH_API="/order/orderdispatch/";
+	
+	private static final String ADDRESS_SCRUBBING_API ="/address/scrubbing";
 
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
@@ -568,6 +574,15 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		DeliveryZones zones =  getData(inputJson, getEndPoint(ZONE_BYGEOLOC_API), DeliveryZones.class);
 		return zones;	
 	
+	}
+
+	@Override
+	public AddressScrubbingResponse scrubbAddresses(
+			AddressScrubbingRequest request) throws FDLogisticsServiceException {
+		String inputJson = buildRequest(request);
+		AddressScrubbingResponse addressScrubbingResponse = getData(inputJson, getEndPoint(ADDRESS_SCRUBBING_API), AddressScrubbingResponse.class);
+		
+		return addressScrubbingResponse;
 	}
 	
 	@Override
