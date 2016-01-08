@@ -470,8 +470,12 @@ public class StandingOrdersServiceCmd {
 						}else{
 							buffer.append("<td nowrap=\"nowrap\">").append("N/A&nbsp;").append("</td>");
 						}
-						buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getZone()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
+						if(soInfo.getZone()!=null){
+							buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getZone()).append("</td>");
+						}else{
+							buffer.append("<td nowrap=\"nowrap\">").append("N/A&nbsp;").append("</td>");
+						}
+						buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getBusinessPhone()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCellPhone()).append("</td>")								
 						.append("</tr>");					

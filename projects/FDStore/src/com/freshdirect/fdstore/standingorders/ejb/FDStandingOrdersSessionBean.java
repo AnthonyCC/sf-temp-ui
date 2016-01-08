@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import javax.ejb.CreateException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
@@ -53,6 +55,7 @@ import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 
 public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
@@ -344,11 +347,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 
 		// Add Zone info to Standing Order
 		if(ret !=null ){
-			
-			boolean isLocalDeployment = FDStoreProperties.isLocalDeployment();
-			if(!isLocalDeployment){
-				addZoneInfoToStandingOrder(ret);
-			}
+			addZoneInfoToStandingOrder(ret);
 		}
 		
 		return ret;
@@ -371,32 +370,28 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				// retrieve address from Standign Order
 				AddressModel deliveryAddressModel = FDCustomerManager.getAddress( so.getCustomerIdentity(), so.getAddressId() );
 				
-				// retrieve FDUser
-				FDUserI customerUser = so.getUser();
-				
 				//Date startDateTime = soInfo.getStartTime(); 
 				Date startDateTime = soInfo.getNextDate();
 				FDDeliveryZoneInfo zoneInfo = null;
 				
 				try {
 					// zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), (reservation!=null)?reservation.getRegionSvcType():null);
-					zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, startDateTime, customerUser.getHistoricOrderSize(), null);
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(startDateTime);
+					CustomerAvgOrderSize historicSize = FDCustomerManager.getHistoricOrderSize(so.getCustomerIdentity().getErpCustomerPK());
+					if(deliveryAddressModel!=null && StringUtils.isNotBlank(deliveryAddressModel.getAddress1())){
+						zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, cal.getTime(), historicSize, null);
+					}
 				} catch (FDInvalidAddressException e) {
 					LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 				}
 				
 				// add zone to Standing Order
 				if(zoneInfo != null){
-					soInfo.setZone(zoneInfo.getZoneId());
+					soInfo.setZone(zoneInfo.getZoneCode());
 				}
-				
-				
 			} catch (FDResourceException re) {
 				LOGGER.error( "Could not retrieve standing order! - FDResourceException", re );
-
-			} catch (FDAuthenticationException re) {
-				LOGGER.error( "Could not authenticate user while retrieve standing order! - FDAuthenticationException", re );
-
 			}
 			
 		}

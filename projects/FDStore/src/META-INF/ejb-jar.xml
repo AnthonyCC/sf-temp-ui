@@ -679,6 +679,14 @@
       <trans-attribute>NotSupported</trans-attribute>   
     </container-transaction>
 
+	 <container-transaction>
+	      <method>
+	        <ejb-name>StandingOrders</ejb-name>
+	        <method-intf>Remote</method-intf>
+	        <method-name>getMechanicalFailedStandingOrdersCustInfo</method-name>
+	      </method>
+	      <trans-attribute>NotSupported</trans-attribute>   
+	    </container-transaction>
                 		<!--
 		****************************
 		*** Message Driven Beans ***
