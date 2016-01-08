@@ -92,6 +92,30 @@ public class CartData extends AbstractCoremetricsResponse {
 
     private BillingReferenceInfo billingReferenceInfo;
     
+    private boolean tipApplied;
+    
+    private boolean tipAppliedTick;
+    
+    private boolean isCustomTip;
+    
+    private boolean eTippingEnabled;
+    
+    private List<String> tipAmounts = new ArrayList<String>();
+    
+    
+    
+    public CartData() {
+		tipAmounts.add("$5.00");
+		tipAmounts.add("$6.00");
+		tipAmounts.add("$7.00");
+		tipAmounts.add("$8.00");
+		tipAmounts.add("$9.00");
+		tipAmounts.add("Other Amount");
+		
+		tipAppliedTick = false;
+	}
+
+    
     private CustomerServiceRepresentativeData csr;
     
     public String getErrorMessage() {
@@ -254,7 +278,50 @@ public class CartData extends AbstractCoremetricsResponse {
 		this.beforeCheckoutAction = beforeCheckoutAction;
 	}
 	
-    public static class Section implements Serializable {
+    public boolean isTipApplied() {
+		return tipApplied;
+	}
+
+	public void setTipApplied(boolean tipApplied) {
+		this.tipApplied = tipApplied;
+	}
+
+	public List<String> getTipAmounts() {
+		return tipAmounts;
+	}
+
+	public void setTipAmounts(List<String> tipAmounts) {
+		this.tipAmounts = tipAmounts;
+	}
+
+	public boolean isTipAppliedTick() {
+		return tipAppliedTick;
+	}
+
+	public void setTipAppliedTick(boolean tipAppliedTick) {
+		this.tipAppliedTick = tipAppliedTick;
+	}
+
+	public boolean isCustomTip() {
+		return isCustomTip;
+	}
+
+	public void setCustomTip(boolean isCustomTip) {
+		this.isCustomTip = isCustomTip;
+	}
+
+	public boolean iseTippingEnabled() {
+		return eTippingEnabled;
+	}
+
+	public void seteTippingEnabled(boolean eTippingEnabled) {
+		this.eTippingEnabled = eTippingEnabled;
+	}
+
+
+
+
+	public static class Section implements Serializable {
 
         private static final long serialVersionUID = 1965764194639278346L;
 
@@ -319,6 +386,7 @@ public class CartData extends AbstractCoremetricsResponse {
         private boolean freeSample;
         private String subTotal;
         private String taxTotal;
+        private String etipTotal;
         private String subTotalText;
         private boolean hasEstimatedPrice;
 
@@ -424,7 +492,17 @@ public class CartData extends AbstractCoremetricsResponse {
         public void setHasEstimatedPrice(boolean hasEstimatedPrice) {
             this.hasEstimatedPrice = hasEstimatedPrice;
         }
+
+		public String getEtipTotal() {
+			return etipTotal;
+		}
+
+		public void setEtipTotal(String etipTotal) {
+			this.etipTotal = etipTotal;
+		}
     }
+    
+    
 
     public static class Item implements Serializable {
 

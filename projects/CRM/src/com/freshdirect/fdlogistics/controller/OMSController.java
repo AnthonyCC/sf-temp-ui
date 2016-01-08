@@ -723,6 +723,23 @@ private static MailerGatewayHome mailerHome	= null;
 		}
 	}
 	
+	@RequestMapping(value = "/deliveryDate", method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody OrdersDTO getOrdersByDeliveryDate(@RequestBody OrderSearchCriteria criteria) {
+		
+		OrdersDTO orders = new OrdersDTO();
+		try {
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			orders = orderService.getOrdersByDeliveryDate(criteria.getDeliveryDate());
+			orders.setSuccessMessage("Records retrieved successfully");
+			return orders;
+		} catch (FDLogisticsServiceException e) {
+			orders.setStatus(Result.STATUS_FAILED);
+			orders.addErrorMessages(new ActionError("technical_difficulty",
+					SystemMessageList.MSG_TECHNICAL_ERROR));
+			return orders;
+		}
+	}
+	
 	
 	@RequestMapping(value = "/routeStop/export",  method = {RequestMethod.POST, RequestMethod.GET})
 	public @ResponseBody Result saveRouteStopInfo(@RequestBody RouteStopRequest request) {

@@ -51,6 +51,8 @@ public interface IOrderDAO {
 	public void saveCartonInfo(List<CartonInfo> data);
 
 	public List<CartonInfo> getCartonInfo(String orderId);
+	
+	public OrdersDTO getOrdersByDeliveryDate(final Date deliveryDate);
 
 	public void saveRouteStopInfo(List<RouteStop> data);
 

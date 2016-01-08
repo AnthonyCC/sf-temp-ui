@@ -137,6 +137,15 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	private static final String GET_CARTONS_BYORDER = "SELECT CARTON_NUMBER FROM CUST.CARTON_INFO WHERE SALE_ID = ?";
 	
 	private static final String GET_CARTONINFO_BYORDER = "SELECT SALE_ID, CARTON_NUMBER, SAP_NUMBER, CARTON_TYPE FROM CUST.CARTON_INFO WHERE SALE_ID = ?";
+	
+	private static final String GET_ORDERS_BY_DELIVERY_DATE = "SELECT s.id, s.sap_number, sa.requested_date, s.status, di.starttime, di.endtime, "
+			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, "
+			+ "s.customer_id customer_id, di.first_name, di.last_name, di.phone home_phone, di.delivery_instructions, cl.amount "
+			+ "from cust.sale s, cust.salesaction sa "
+			+ ", cust.deliveryinfo di, cust.chargeline cl "
+			+ "where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID and sa.id=cl.salesaction_id and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
+			+ "and s.type ='REG' and s.status NOT IN ('CAN') and cl.type='TIP' "
+			+ "and sa.id = di.salesaction_id and sa.requested_date=?";
 
 	/*
 	 * (non-Javadoc)
@@ -1032,6 +1041,61 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			}
 		});	
 	}
+	
+	@Override	
+	public OrdersDTO getOrdersByDeliveryDate(final Date deliveryDate) {
+		
+		
+		final OrdersDTO result = new OrdersDTO();
+		
+		final StringBuffer query = new StringBuffer();
+		query.append(GET_ORDERS_BY_DELIVERY_DATE);										
+		
+		
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {	
+					PreparedStatement ps =
+						connection.prepareStatement(query.toString());
+					ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));					
+						
+					return ps;
+				}  
+			};
+			
+			jdbcTemplate.query(creator, 
+					new RowCallbackHandler() { 
+						public void processRow(ResultSet rs) throws SQLException {				    	
+							do { 
+								OrderDTO orderModel = new OrderDTO();	
+								result.getOrders().add(orderModel);
+																
+								Customer custModel = new Customer();			
+								orderModel.setCustomer(custModel);
+								custModel.setFirstName(rs.getString("FIRST_NAME"));
+								custModel.setLastName(rs.getString("LAST_NAME"));
+								custModel.setCustomerId(rs.getString("customer_id"));								
+								custModel.setHomePhone(rs.getString("HOME_PHONE"));
+							  
+								orderModel.setArea(rs.getString("ZONE"));
+								orderModel.setDeliveryDate(new java.util.Date(rs.getDate("requested_date").getTime()));
+								orderModel.setCutOffTime(rs.getTimestamp("CUTOFFTIME"));
+								orderModel.setStartTime(rs.getTimestamp("STARTTIME"));
+								orderModel.setEndTime(rs.getTimestamp("ENDTIME"));
+								orderModel.setErpOrderNumber(rs.getString("sap_number"));
+								orderModel.setOrderNumber(rs.getString("id"));
+								orderModel.setOrderStatus(rs.getString("STATUS"));
+								orderModel.setDeliveryType(rs.getString("DELIVERY_TYPE"));
+								orderModel.setReservationId(rs.getString("reservation_id"));
+								//orderModel.setETip(rs.getDouble("amount"));
+								
+							} while(rs.next());
+						}
+					}
+			);
+			return result;
+			
+	}
+
 	
 	private static final String SAVE_ROUTESTOPINFO = "UPDATE CUST.SALE SET TRUCK_NUMBER =LPAD(?, 6, '0'), STOP_SEQUENCE = LPAD(?, 5, '0') WHERE ID = ?";
 	

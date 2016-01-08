@@ -1601,6 +1601,18 @@ public class FDOrderAdapter implements FDOrderI {
 	@Override
 	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo() {
 		return erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
+	}
+
+	@Override
+	public boolean isCustomTip() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setCustomTip(boolean isCustomTip) {
+		// TODO Auto-generated method stub
+		
 	}	
 
 	@Override

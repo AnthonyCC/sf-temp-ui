@@ -107,6 +107,20 @@ public class CheckoutService {
 		}
         return unavailabilityData;
 	}
+	
+	public boolean applyETip(FDUserI user, String tipAmount, boolean isCustomTip) {				
+		
+		FDCartModel cart = user.getShoppingCart();
+		
+		if(tipAmount.startsWith("$")) {
+			tipAmount = tipAmount.substring(1);
+		}
+		
+		cart.setTip(Double.parseDouble(tipAmount));
+		cart.setCustomTip(isCustomTip);
+		
+		return true;
+	}
 
     public boolean checkAtpCheckEligibleByRestrictions(FormRestriction restriction) {
         return restriction == null || restriction.isPassed();

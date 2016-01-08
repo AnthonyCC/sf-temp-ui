@@ -164,6 +164,23 @@
  %>
 </logic:iterate>
 <%
+	if(order.getTip() > 0.0) {
+		lineAmount = order.getTip();
+		totalAmount = totalAmount + order.getTip();
+%>
+<tr>
+    <td>&nbsp;</td>
+    <td>E-Tip</td>
+    <td><%= sdf.format(order.getDatePlaced()) %></td>
+    <td><%= order.getOrderStatus() %> </td>
+    <td align="right"><%=JspMethods.formatPrice(lineAmount)%></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+<%
+	}
+%>  
+<%
 
 if(order.hasInvoice()) {
 %>

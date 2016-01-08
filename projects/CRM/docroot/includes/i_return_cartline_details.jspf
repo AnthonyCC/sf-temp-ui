@@ -126,6 +126,14 @@
 	<td colspan="4"><% if (hasEstimatedItems) out.print("*"); %></td>
     <td colspan="3">&nbsp;</td>
 </tr>
+
+<tr>
+	    <td colspan="3"></td>
+	    <td colspan="2">E-Tip <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
+	    <td colspan="2" align="right"><%=JspMethods.formatPrice(order.getTip()) %><% if (hasInvoice) { %> / <b><%=JspMethods.formatPrice( order.getTip() ) %></b><% } %></td>
+	    <td colspan="4"></td>
+	    <td colspan="3"></td>
+	</tr>
 <tr>
 	<td colspan="3"></td>
 	<td colspan="3" align="right">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>

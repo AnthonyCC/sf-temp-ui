@@ -210,6 +210,52 @@ var FreshDirect = FreshDirect || {};
           $(cartcontent.placeholder).trigger('cartline-delete');
         }
       }
+    },
+    onChangeETip: {
+    	value: function(e){
+    		e.preventDefault();
+            e.stopPropagation();
+            
+            console.log("onTipSelectionChange >>>>>");            
+			$('#tipApplied').hide();
+        	$('#tipApply').show();
+        	$('#tipAppliedTick').hide();
+        	
+        	
+        	if($('#tipDropdown').val() == "Other Amount") {
+        		console.log("Selected Other Amount");
+        		$('#tipDropdown').hide();
+        		$('#tipTextBox').show();
+        	}
+    	}
+    },
+    onTipEntered: {
+    	value: function(e) {
+    		e.preventDefault();
+            e.stopPropagation();
+            
+            console.log("onTipEntered");
+            
+            var tip = $('#tipTextBox').val();
+            var subTotalStr = $('#hiddenSubTotal').val();
+            
+            var subTotal = subTotalStr.substring(2);
+            
+            console.log("Sub Total : " + subTotal + " Tip : " + tip);
+            
+            var maximumTipAllowed = subTotal * 32/100;
+            
+            if(tip > maximumTipAllowed) {
+            	console.log("Tip greater than maximum tip");
+            	$('#tipApply').prop('disabled', true);
+            	var roundedMaxTip = Math.round(maximumTipAllowed * 100)/100;
+            	var innerHtml = $("<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>")
+            	$('#toolTipTextBox').html('').append(innerHtml);
+            } else {
+            	$('#toolTipTextBox').html('');
+            	$('#tipApply').prop('disabled', false);
+            }
+    	}
     }
   });
 
@@ -314,6 +360,12 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '[data-component="update-cart"]', function () {
     $(cartcontent.placeholder).trigger('cartcontent-update');
   });
+  
+  $(document).on('change', cartcontent.placeholder + ' [data-component="changeETip"]', 
+	cartcontent.onChangeETip.bind(cartcontent));
+  
+  $(document).on('input', cartcontent.placeholder + ' [data-component="tooltip"]', 
+		  cartcontent.onTipEntered.bind(cartcontent));
 
   fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
 }(FreshDirect));

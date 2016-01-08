@@ -156,6 +156,10 @@ public interface FDCartI extends java.io.Serializable {
 
 	public ErpDeliveryPlantInfoModel getDeliveryPlantInfo();
 	
+	public boolean isCustomTip();
+	
+	public void setCustomTip(boolean isCustomTip);
+	
 	double getAvalaraTaxValue(AvalaraContext avalaraContext);
 	
 

@@ -388,6 +388,14 @@
 	   <url-pattern>/api/expresscheckout/promotion</url-pattern>
 	</servlet-mapping>
 	<servlet>
+	   <servlet-name>ETipServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.etip.servlet.ETipServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>ETipServlet</servlet-name>
+	   <url-pattern>/api/expresscheckout/etip</url-pattern>
+	</servlet-mapping>
+	<servlet>
 	   <servlet-name>DeliveryPassServlet</servlet-name>
 	   <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.deliverypass.servlet.DeliveryPassServlet</servlet-class>
 	</servlet>

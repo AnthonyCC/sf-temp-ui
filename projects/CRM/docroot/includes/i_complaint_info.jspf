@@ -295,6 +295,22 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         	allPendingCreditsTotal += ((ErpComplaintModel) pit.next()).getAmount();
         }
 %>
+
+    
+    <tr valign="bottom">
+        <td width="4%" colspan="2"><BR></td>
+        <td width="23%" align="right">&nbsp;</td>
+        <td width="9%">Tip&nbsp;</td>
+        <td width="7%" align="center"><%= JspMethods.formatPrice(order.getTip()) %></td>
+        <td width="7%" colspan="2">&nbsp;</td>
+        <td width="7%">Tip&nbsp;</td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice(order.getTip()) %></td>
+        <td width="5%" colspan="2" align="center"><BR></td>
+        <td width="17%" align="RIGHT">&nbsp;</td>
+        <td width="8%">Tip</td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice(order.getTip()) %></td>
+        <td width="1%">&nbsp;</td>
+    </tr>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right"><b>orig. totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

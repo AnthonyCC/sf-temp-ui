@@ -797,7 +797,8 @@ public class FDStoreProperties {
     //fdx new locationbar
 	private final static String PROP_FDX_LOCATIONBAR = "fdstore.fdxlocationbar.enabled";
 	private final static String PROP_FDX_LOCATIONBAR_FDXTAB = "fdstore.fdxlocationbar.fdxtab.enabled";
-    
+    public static final String PROP_ETIPPING_ENABLED= "fdstore.etipping.enabled";
+   
     /*APPDEV-4216 Refer a Friend- Extole Integration*/
     
     public final static String PROP_FDEXTOLEMGR_HOME                            = "freshdirect.fdstore.FDExtoleManager";
@@ -1614,7 +1615,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_FDX_LOCATIONBAR, "true");
         defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
-        
+        defaults.put(PROP_ETIPPING_ENABLED, "false"); 
         
         // Extole related
         
@@ -4043,6 +4044,10 @@ public class FDStoreProperties {
 
 	public static String getFdxAppUrl_Apple() {
         return get( PROP_FDX_APP_APPLE_URL );
+	}
+	
+	public static boolean isETippingEnabled() {
+		return Boolean.parseBoolean(get(PROP_ETIPPING_ENABLED));
 	}
 
 	public static String getPropExtoleSftpHost() {

@@ -279,6 +279,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private ErpDeliveryPlantInfoModel deliveryPlantInfo;
 	
 	private PhoneNumber orderMobileNumber;
+	
+	private boolean isCustomTip;
 
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -1995,6 +1997,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	public double getTip() {
 		return this.getChargeAmount(EnumChargeType.TIP);
+	}
+	
+	public boolean isCustomTip() {
+		return isCustomTip;
+	}
+
+	public void setCustomTip(boolean isCustomTip) {
+		this.isCustomTip = isCustomTip;
 	}
 	
     public void setDlvPassPremiumAllowedTC(boolean dlvPassPremiumAllowedTC){

@@ -204,4 +204,13 @@ public class OrderService implements IOrderService {
 			throw new FDLogisticsServiceException(e);
 		}
 	}
+	
+	@Override
+	public OrdersDTO getOrdersByDeliveryDate(final Date deliveryDate) throws FDLogisticsServiceException {
+		try {
+			return orderDAO.getOrdersByDeliveryDate(deliveryDate);
+		} catch(Exception e) {
+			throw new FDLogisticsServiceException(e);
+		}
+	}
 }

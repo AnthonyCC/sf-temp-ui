@@ -246,6 +246,21 @@
   font-size:13px;
 }
 
+.etip-text{
+  margin:0.5em 0;
+  font-size:13px;
+}
+
+.etip-item{
+  display:inline-block;
+  max-width: 225px;
+}
+
+.etip-item [fdform-error] {
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
 .deliverypass-wrapper{
   width:460px;
   height:70px;

@@ -13,6 +13,11 @@
  * @param populateDCPDPromoDiscount
  * @param? customerServiceRepresentative
  * @param? beforeCheckoutAction
+ * @param? tipAmounts
+ * @param? tipApplied
+ * @param? tipAppliedTick
+ * @param customTip customTip
+ * @param eTippingEnabled eTippingEnabled
  */
 {template .viewcartlines autoescape="false"}
 {call .couponMessage}
@@ -23,6 +28,14 @@
    {call .cartsection data="$section"}
     {param cartlineType: 'YOUR_CART' /}
     {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
+    {param tipAmounts: $tipAmounts /}
+    {param tipApplied: $tipApplied /}
+    {param tipAppliedTick: $tipAppliedTick /}
+    {param subTotalBox: $subTotalBox /}
+	{param userRecognized: $userRecognized /}
+	{param userCorporate: $userCorporate /}
+	{param customTip: $customTip /}
+	{param eTippingEnabled: $eTippingEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
@@ -36,6 +49,7 @@
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
   {param billingReferenceInfo: false /}
+  {param eTippingEnabled: $eTippingEnabled /}
   {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
@@ -51,9 +65,15 @@
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
+ * @param? userCorporate
  * @param? billingReferenceInfo billing reference info
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
+ * @param? tipAmounts
+ * @param? tipApplied
+ * @param? tipAppliedTick
+ * @param customTip customTip
+ * @param eTippingEnabled eTippingEnabled
  * @param? customerServiceRepresentative
  */
 {template .checkoutlines autoescape="false"}
@@ -61,6 +81,14 @@
   {foreach $section in $cartSections}
    {call .cartsection data="$section"}
     {param cartlineType: 'CHECKOUT' /}
+    {param tipAmounts: $tipAmounts /}
+    {param tipApplied: $tipApplied /}
+    {param tipAppliedTick: $tipAppliedTick /}
+    {param subTotalBox: $subTotalBox /}
+	{param userRecognized: $userRecognized /}
+	{param userCorporate: $userCorporate /}
+	{param customTip: $customTip /}
+	{param eTippingEnabled: $eTippingEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
@@ -73,6 +101,7 @@
   {param billingReferenceInfo: $billingReferenceInfo /}
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+  {param eTippingEnabled: $eTippingEnabled /}
   {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
@@ -83,6 +112,14 @@
 
 /**
  * @param cartSections List of cart sections
+ * @param? tipAmounts
+ * @param? tipApplied
+ * @param? tipAppliedTick
+ * @param subTotalBox subtotal
+ * @param? userRecognized is the user recognized?
+ * @param? userCorporate
+ * @param customTip customTip
+ * @param eTippingEnabled eTippingEnabled
  */
 {template .successlines autoescape="false"}
 <div class='cartcontent'>
@@ -90,6 +127,14 @@
    {call .cartsection data="$section"}
     {param noModifyLinks: true /}
     {param cartlineType: 'CHECKOUT' /}
+    {param tipAmounts: $tipAmounts /}
+    {param tipApplied: $tipApplied /}
+    {param tipAppliedTick: $tipAppliedTick /}
+    {param subTotalBox: $subTotalBox /}
+	{param userRecognized: $userRecognized /}
+	{param userCorporate: $userCorporate /}
+	{param customTip: $customTip /}
+	{param eTippingEnabled: $eTippingEnabled /}
    {/call}
   {/foreach}
 </div>
@@ -174,6 +219,14 @@
  * @param info Cartsection additional info
  * @param cartlineType Cartsection type: wine or fallback
  * @param populateDCPDPromoDiscount
+ * @param tipAmounts
+ * @param tipApplied
+ * @param tipAppliedTick
+ * @param? userRecognized is the user recognized?
+ * @param? userCorporate
+ * @param subTotalBox subtotal
+ * @param customTip customTip
+ * @param eTippingEnabled eTippingEnabled
  * @param customerServiceRepresentative
  */
 {template .cartsection autoescape="false"}
@@ -188,10 +241,70 @@
 
   {if $info.subTotal}
     <div class='cartsection__totalwrapper'>
-      <p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
-      <p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
+      {if $eTippingEnabled}	      
+	      <div id="subtotalbox">
+		      {if $subTotalBox and $subTotalBox.subTotalBox}
+		        {call .subTotalBox}
+		          {param subTotalBox: $subTotalBox.subTotalBox /}
+		          {param userRecognized: $userRecognized /}
+		          {param userCorporate: $userCorporate /}
+		        {/call}
+		      {/if}
+		    </div>	    
+		  </div>
+	      <div class='cartsection__tax' fdform-container="etip">      	
+	  		<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
+	  			<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="${$info.subTotal}" />
+		  		Optional Tip <a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a><div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
+	  				<b>Optional Tip</b> 
+	  				<br/> 
+	  				<p>Good news! Now you can e-tip as you’re checking out. 
+	  				As a heads up, adding and updating e-tips is only 
+	  				available on our website for now, but we’re working 
+	  				on adding it to our apps (stay tuned!). 
+	  				You are under no obligation to tip but have the 
+	  				option of providing a tip if you feel that you’ve 
+	  				received exceptional service. FreshDirect personnel are 
+	  				not permitted to solicit tips under any circumstances.</p>
+	  			</div> :
+	  			{if $customTip}  			  
+			      	<select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
+			      	{foreach $option in $tipAmounts}
+			      		<option value="{$option}" {if $info.etipTotal == $option}selected{/if}>{$option}</option>			  
+					{/foreach}  
+					</select>
+					<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$info.etipTotal}" />
+					<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
+				{else}
+					<select id="tipDropdown" name="tipAmount" data-component="changeETip">
+			      	{foreach $option in $tipAmounts}
+			      		<option value="{$option}" {if $info.etipTotal == $option}selected{/if}>{$option}</option>			  
+					{/foreach}  
+					</select>
+					<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" style="display:none" />
+					<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
+				{/if}
+				{if $tipAppliedTick}
+					<img id="tipAppliedTick" src="/media/layout/nav/images/locabar-check.png" alt="Image of Tick" />
+				{/if}						
+				<br/>
+				<input type="hidden" name="action" value="applyETip" />
+				{if $tipApplied}
+		        	<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
+		        	<button id="tipApply" style="display:none" class="cssbutton green">Apply</button>
+		        {else}
+		        	<button id="tipApply" class="cssbutton green">Apply</button>
+		        	<button id="tipApplied" style="display:none" class="cssbutton grey" disabled>Tip Added</button>
+		        {/if}
+	        </form>                
+		 </div>
+	 {else}
+	 	<p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
+      	<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
+	 {/if}      
     </div>
   {/if}
+  
 </div>
 {/template}
 
@@ -423,7 +536,7 @@
 {/deltemplate}
 
 /**
- * @param subTotalBox List of subtotal line items
+ * @param subTotalBox subtotal
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
@@ -431,6 +544,7 @@
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
+ * @param eTippingEnabled eTippingEnabled
  * @param? customerServiceRepresentative Customer service representative data
  */
 {template .total autoescape="false"}
@@ -506,12 +620,22 @@
   </div>
   <div class='total__subtotal total-right'>
     <div id="subtotalbox">
-      {if $subTotalBox and $subTotalBox.subTotalBox}
-        {call .subTotalBox}
-          {param subTotalBox: $subTotalBox.subTotalBox /}
-          {param userRecognized: $userRecognized /}
-          {param userCorporate: $userCorporate /}
-        {/call}
+      {if $eTippingEnabled}	
+	      {if $subTotalBox and $subTotalBox.estimatedTotalBox}
+	        {call .subTotalBox}
+	          {param subTotalBox: $subTotalBox.estimatedTotalBox /}
+	          {param userRecognized: $userRecognized /}
+	          {param userCorporate: $userCorporate /}
+	        {/call}
+	      {/if}
+      {else}
+      	{if $subTotalBox and $subTotalBox.subTotalBox}
+	        {call .subTotalBox}
+	          {param subTotalBox: $subTotalBox.subTotalBox /}
+	          {param userRecognized: $userRecognized /}
+	          {param userCorporate: $userCorporate /}
+	        {/call}
+	    {/if}
       {/if}
     </div>
     {call .additionalInfo}
@@ -567,7 +691,22 @@
                data-ifrpopup='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
                data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
           {else}
-            {$box.text}
+          	{if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
+          		{$box.text}
+          		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+          		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
+	  				<b>Delivery Fee</b> 
+	  				<br/> 
+	  				<p>The delivery fee is not a gratuity
+						for any FreshDirect employee who
+						delivers or is otherwise involved
+						with the delivery of your order
+						and will not be given to any such
+						employee as a gratuity.</p>
+  				</div>
+          	{else}
+            	{$box.text}
+            {/if}
           {/if}
         {/if}
       </div>

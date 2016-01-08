@@ -541,6 +541,18 @@ var OL_PRICES = {};
         <td WIDTH="10%">Subtotal</td>
         <td WIDTH="13%" align="right"><%= JspMethods.formatPrice( (order.hasInvoice()? order.getInvoicedSubTotal() : order.getSubTotal()) - (allCreditsTotal + newComplaint.getAmount()) ) %></td>
     </tr>
+    <tr VALIGN="bottom">
+        <td ALIGN="right">&nbsp;</td>
+        <td>Tip&nbsp;</td>
+        <td align="right"><%= JspMethods.formatPrice(order.getTip()) %></td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>Tip&nbsp;</td>
+        <td align="right"><%= JspMethods.formatPrice(order.getTip()) %></td>
+        <td>&nbsp;</td>
+        <td>Tip</td>
+        <td align="right"><%= JspMethods.formatPrice(order.getTip()) %></td>
+    </tr>
+    
 <%  double appliedCreditTotal = 0.0;
     for (Iterator it = appliedCredits.iterator(); it.hasNext(); ) {
         ErpAppliedCreditModel appliedCredit = (ErpAppliedCreditModel) it.next();
