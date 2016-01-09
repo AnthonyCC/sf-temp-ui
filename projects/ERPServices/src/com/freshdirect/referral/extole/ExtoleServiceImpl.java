@@ -86,18 +86,18 @@ public class ExtoleServiceImpl implements ExtoleService {
 			LOG.debug(entity);
 			jsonResponse = EntityUtils.toString(entity);
 			LOG.debug(jsonResponse);
-			// consume the entity content and ,if exists content stream, close
-			// it.
+			// consume the entity content and ,if exists content stream, close it.
 			EntityUtils.consume(entity);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Exception in ExtoleResponse createConverison ", e);
 			throw new ExtoleServiceException(e.getMessage());
 		} finally {
 			try {
 				if(null!=response)
 				response.close();
 			} catch (Exception e) {
+				LOG.error("Exception in ExtoleResponse createConverison ", e);
 				throw new ExtoleServiceException(e.getMessage());
 			}
 		}
@@ -112,7 +112,6 @@ public class ExtoleServiceImpl implements ExtoleService {
 		try {
 			URI uri = buildExtoleUrl(ENDPOINT_APPROVE_CONVERSION,
 					approveConversion);
-			// System.out.println(uri.toString());
 			httpclient = HttpClients.createDefault();
 			HttpGet getRequest = new HttpGet(uri);
 			getRequest.addHeader("content-type", "application/json");
@@ -127,20 +126,20 @@ public class ExtoleServiceImpl implements ExtoleService {
 
 			HttpEntity entity = response.getEntity();
 			jsonResponse = EntityUtils.toString(entity);
-			// consume the entity content and ,if exists content stream, close
-			// it.
+			// consume the entity content and ,if exists content stream, close it.
 			EntityUtils.consume(entity);
 
 			LOG.debug(jsonResponse);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Exception in ExtoleResponse approveConverison ", e);
 			throw new ExtoleServiceException(e.getMessage());
 		} finally {
 			try {
 				if(null!=response)
 				response.close();
 			} catch (Exception e) {
+				LOG.error("Exception in ExtoleResponse approveConverison ", e);
 				throw new ExtoleServiceException(e.getMessage());
 			}
 		}
@@ -250,6 +249,7 @@ public class ExtoleServiceImpl implements ExtoleService {
 				// response = mapper.readValue(jsonResponse, _class);
 				response = mapper.readValue(jsonResponse, ExtoleResponse.class);
 			} catch (Exception e) {
+				LOG.error("Exception in Extole parseResponse() ", e);
 				throw new ExtoleServiceException(e.getMessage());
 			}
 		}	
