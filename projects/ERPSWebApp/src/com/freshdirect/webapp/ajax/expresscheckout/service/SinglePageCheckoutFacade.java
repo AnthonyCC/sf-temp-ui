@@ -249,16 +249,15 @@ public class SinglePageCheckoutFacade {
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             }            
+            
+            case APPLY_CSR_METHOD:{
+                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
+                break;
+            }
             case APPLY_ETIP:{            	            	
             	CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
             	loadCartData.setTipAppliedTick(true);
                 result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
-                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
-                break;
-            }
-                break;
-            }
-            case APPLY_CSR_METHOD:{
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             }
