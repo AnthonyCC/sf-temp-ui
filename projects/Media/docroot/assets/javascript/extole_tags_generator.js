@@ -165,7 +165,10 @@ Placed inside '(function() {' block and a setInterval checker for jQuery existen
 							console.log("lets register you, new customer");
 							
 							setAndAppendExtoleObject("REGISTER");
-						}else{setAndAppendExtoleObject("PURCHASE",null);}
+						}
+						//else{
+						//setAndAppendExtoleObject("PURCHASE",null);
+						//}
 					}//done just seeing if the Extole object was set up with a signed customer
 					
 					//for duplicating that orange button in the popout, APPBUG-4079
