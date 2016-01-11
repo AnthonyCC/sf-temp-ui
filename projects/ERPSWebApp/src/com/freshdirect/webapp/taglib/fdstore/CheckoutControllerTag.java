@@ -451,7 +451,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				currentUser.setShowPendingOrderOverlay(true);
 			}
 		}
-		if(this.getSuccessPage().equals("/checkout/step_4_submit.jsp") && FDStoreProperties.getAvalaraTaxEnabled()){
+		if(this.getSuccessPage()!=null && this.getSuccessPage().equals("/checkout/step_4_submit.jsp") && FDStoreProperties.getAvalaraTaxEnabled()){
 			AvalaraContext avalaraContext = new AvalaraContext(cart);
 			avalaraContext.setCommit(false);
 			Double taxValue = cart.getAvalaraTaxValue(avalaraContext);
