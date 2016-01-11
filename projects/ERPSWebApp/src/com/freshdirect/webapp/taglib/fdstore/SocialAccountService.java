@@ -170,8 +170,24 @@ public class SocialAccountService implements AccountService {
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		
 							 if(!user.getTcAcknowledge()){
-								  response.sendRedirect(newURL+termsConditions);
-								 LOGGER.info("T&C Accept Page:"+termsConditions);
+								//  response.sendRedirect(newURL+termsConditions);
+								 	String requestUrl = request.getRequestURL().toString();
+								 	
+								 	boolean isFromLogin = Boolean.parseBoolean(request.getParameter("isFromLogin")); 
+								 	String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+									if(isFromLogin){
+										if(preSuccessPage!=null){
+										session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+										session.setAttribute("nextSuccesspage", preSuccessPage );
+										}else{
+										session.setAttribute("nextSuccesspage", updatedSuccessPage );
+										}
+										session.setAttribute("fdTcAgree", false);
+										response.sendRedirect(newURL+"/login/login.jsp");
+									}else {
+										response.sendRedirect(newURL + termsConditions);
+									}
+									
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 									 
@@ -250,15 +266,29 @@ public class SocialAccountService implements AccountService {
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
-								
+				    			 boolean isFromLogin = Boolean.parseBoolean(request.getParameter("isFromLogin"));
+				    			 String requestUrl = request.getRequestURL().toString();
 				    			 String newURL = "";
-								 if(FDStoreProperties.isLocalDeployment()){
-									 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
-								 }else{
-									 newURL = "https" + "://" + request.getServerName();
-								 }
+									 if(FDStoreProperties.isLocalDeployment()){
+										 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+									 }else{
+										 newURL = "https" + "://" + request.getServerName();
+									 }
+									 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+									if(isFromLogin){
+										if(preSuccessPage!=null){
+											session.setAttribute("nextSuccesspage", preSuccessPage +"?socialnetwork="+socialUserProfile.get("provider"));
+										}else {
+											session.setAttribute("nextSuccesspage", termsConditions +"?socialnetwork="+socialUserProfile.get("provider"));
+										}
+										
+										session.setAttribute("fdTcAgree", false);
+										return newURL+"/login/login.jsp";
+									}else {
 									 termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
-								 return newURL + termsConditions;
+									 return newURL + termsConditions;
+									}
+							
 				    			 }else{
 									 String newURL = request.getScheme() + "://" + request.getServerName() ;
 									 if(FDStoreProperties.isLocalDeployment()){

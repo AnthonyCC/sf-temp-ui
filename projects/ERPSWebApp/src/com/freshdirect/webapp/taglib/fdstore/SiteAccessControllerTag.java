@@ -323,7 +323,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					if(null!=request.getParameter("socialNavPage")&&!"".equals(request.getParameter("socialNavPage"))){
 						socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + request.getParameter("socialNavPage");	
 						doRedirect(newURL+socialLoginRecognized);
-					}else if (successPage.indexOf("index.jsp")!=-1){
+					}else if (successPage.indexOf("index.jsp")==-1){
 					session.setAttribute("nextSuccesspage", request.getParameter("nextSuccesspage"));
 					session.setAttribute("LITESIGNUP_COMPLETE", "true");
 					}else{

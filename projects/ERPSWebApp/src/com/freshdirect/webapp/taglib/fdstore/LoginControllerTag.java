@@ -143,7 +143,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			
 			 // APPDEV-4381 TC Accept.
-
+			String requestUrl = request.getRequestURL().toString();
 			 if(user !=null&&!user.getTcAcknowledge()){
 				 
 				 if(FDStoreProperties.isLocalDeployment()){
@@ -153,7 +153,11 @@ public class LoginControllerTag extends AbstractControllerTag {
 				 }
 		 
 					if (FDStoreProperties.isSocialLoginEnabled()&&updatedSuccessPage.indexOf("purchase_giftcard.jsp")==-1 ) {
+						if(requestUrl.indexOf("/login/login.jsp")!=-1){
+							 this.setSuccessPage(newURL+"/login/login.jsp");
+						}else {
 						 this.setSuccessPage(newURL+"/registration/tcaccept_lite.jsp");
+						}
 						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
 						session.setAttribute("fdTcAgree", false);
 					}

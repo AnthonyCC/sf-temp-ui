@@ -144,7 +144,7 @@
 			if(typeof window.top.Modalbox.hide() === "undefined"){
 				//$jq('#MB_overlay').css('display','none');
 				//$jq('#MB_window').css('opacity','0');
-				
+				window.top.location='/login/index.jsp';
 				this.top.close();
 			}else{
 				
@@ -179,7 +179,7 @@
 				
 				<input type="hidden" name="litetcaccept" value="true" />
 				
-				<table border="0" cellpadding="0" cellspacing="0">
+				<table border="0" width="360" cellpadding="0" cellspacing="0">
 					<tr><td class="bodyCopySUL" style="padding-top: 10px;"><label >Hello <%=user.getFirstName()+" "+user.getLastName() %>, Our Customer Agreement & Privacy Policy have changed</label>  </td></tr>
 					<br/>
 					<tr><td class="SystemMessage" style="padding-top: 10px;" >By selecting "I Agree" you agree to the updates to our Customer Agreement and Privacy Policy. If you wish to view or print the new Customer Agreement or Privacy Policy, tap or click the "View Customer Agreement" or "View Privacy Policy" button below.

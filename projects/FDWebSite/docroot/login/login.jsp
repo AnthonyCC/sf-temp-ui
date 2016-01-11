@@ -11,7 +11,11 @@ String template = "/common/template/no_nav.jsp";
 	//diff nav for popup login
 	//if ("popup".equals( request.getParameter("type") ))
 boolean isPopup = false;
+Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
+String nextSuccesspage = ((String)session.getAttribute("nextSuccesspage")!=null)?(String)session.getAttribute("nextSuccesspage"):"/login/index.jsp";
+
 String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
+
 	if (sPage != null) {
 		
 	    // determine the preSuccessPage from previous workflow
@@ -31,6 +35,14 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 <tmpl:insert template='<%=template%>'>
 <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
+
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+	<script type="text/javascript">
+	var nextpage = '<%=nextSuccesspage %>';
+	doOverlayWindow("<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage="+nextpage+"\' width=\'400px\' height=\'350px\' frameborder=\'0\' ></iframe>");
+	</script>
+<%}%>
+
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_LOGIN_TOTAL%>" align="center">
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 	<tr>
