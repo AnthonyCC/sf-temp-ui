@@ -18,6 +18,11 @@
     String orderId = (String) request.getParameter("orderId");
     FDOrderI order = CrmSession.getOrder(session, orderId, true);
     ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
+    
+    boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = ((FDOrderAdapter) order).getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 %>
 <%-- ~~~~~~~~~~~~~~ Get APPROVED complaints ~~~~~~~~~~~~~~ --%>
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">

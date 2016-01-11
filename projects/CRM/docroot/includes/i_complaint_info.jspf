@@ -296,7 +296,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         }
 %>
 
-    
+    <% if (!isFdxOrder) { %>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
@@ -311,6 +311,8 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="5%" align="center"><%= JspMethods.formatPrice(order.getTip()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
+    <% } %>
+    
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right"><b>orig. totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>

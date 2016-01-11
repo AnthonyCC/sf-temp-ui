@@ -127,6 +127,7 @@
     <td colspan="3">&nbsp;</td>
 </tr>
 
+<% if (!isFdxOrder) { %>
 <tr>
 	    <td colspan="3"></td>
 	    <td colspan="2">E-Tip <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
@@ -134,6 +135,7 @@
 	    <td colspan="4"></td>
 	    <td colspan="3"></td>
 	</tr>
+<% } %>
 <tr>
 	<td colspan="3"></td>
 	<td colspan="3" align="right">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>

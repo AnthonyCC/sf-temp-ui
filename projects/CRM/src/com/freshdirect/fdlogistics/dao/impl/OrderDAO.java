@@ -1086,7 +1086,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 								orderModel.setOrderStatus(rs.getString("STATUS"));
 								orderModel.setDeliveryType(rs.getString("DELIVERY_TYPE"));
 								orderModel.setReservationId(rs.getString("reservation_id"));
-								//orderModel.setETip(rs.getDouble("amount"));
+								orderModel.setETip(rs.getDouble("amount"));
 								
 							} while(rs.next());
 						}

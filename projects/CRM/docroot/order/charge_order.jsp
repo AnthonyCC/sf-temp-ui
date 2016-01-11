@@ -53,6 +53,10 @@
     List txList = new ArrayList( saleModel.getTransactions() );
   	Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
     
+  	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = ((FDOrderAdapter) order).getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 %>
 
 <tmpl:put name='content' direct='true'>
@@ -164,7 +168,7 @@
  %>
 </logic:iterate>
 <%
-	if(order.getTip() > 0.0) {
+	if(!isFdxOrder && order.getTip() > 0.0) {
 		lineAmount = order.getTip();
 		totalAmount = totalAmount + order.getTip();
 %>

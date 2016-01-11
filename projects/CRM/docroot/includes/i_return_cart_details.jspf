@@ -101,6 +101,11 @@ function processReturn(formName){
 		hasInvoice = true;
 		hasReturn = order.hasRefusedDelivery();
 	}
+	
+	boolean isFdxOrder = false;
+	EnumEStoreId EStoreIdEnum = null;
+	EStoreIdEnum = ((FDOrderAdapter) order).getEStoreId();
+	if (EStoreIdEnum != null && (EStoreIdEnum).equals(EnumEStoreId.FDX)) { isFdxOrder = true; } 
 %>
 <div class="content_fixed">
 <input type="button" class="submit" value="Return All" onclick="javascript:returnAll('return_order');"> <input type="button" class="submit" value="Clear Return All" onclick="javascript:clearReturnAll('return_order');"> &mdash; <input type="button" class="submit" value="No Fee All" onclick="javascript:setFeeButtons('return_order', 'no_fee');"> <input type="button" class="submit" value="Restock Fee All" onclick="javascript:setFeeButtons('return_order', 'restock_fee');">
