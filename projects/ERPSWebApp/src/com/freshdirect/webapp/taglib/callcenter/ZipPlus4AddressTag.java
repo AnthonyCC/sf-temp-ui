@@ -124,7 +124,8 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		pageContext.setAttribute("suggestions", suggestions);
 		} else if (
 				EnumAddressVerificationResult.ADDRESS_OK.equals(verificationResult)
-					|| EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)) {
+					|| EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)
+					|| EnumAddressVerificationResult.APT_MISSING.equals(verificationResult)) {
 				//
 				// get building apartments
 				//
@@ -132,6 +133,8 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		
 			if(EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)){
 				actionResult.addError(true, EnumAddressVerificationResult.APT_WRONG.getCode(),SystemMessageList.MSG_ADDRESS_APT_WRONG );
+			}else if(EnumAddressVerificationResult.APT_MISSING.equals(verificationResult)){
+				actionResult.addError(true, EnumAddressVerificationResult.APT_MISSING.getCode(),SystemMessageList.MSG_ADDRESS_APT_REQ );
 			}
 		aptRanges = verifyResponse.getAptRanges();
 		

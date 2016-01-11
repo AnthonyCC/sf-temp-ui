@@ -104,13 +104,13 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
                 <span class="error"><%=errorMsg%>
 		<% if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.ADDRESS_BAD.getCode())) {
 				geocodeOK = false;
-			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.APT_WRONG.getCode())) {
+			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.APT_WRONG.getCode()) || (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.APT_MISSING.getCode()))) {
 				addApartment = true;%>
 				<fd:ErrorHandler result='<%=result%>' name='main_error' id='errorMsg'>
 				<span class="error"><%=errorMsg%></span>
 				</fd:ErrorHandler>
 			<%
-			} else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.getCode())){
+			}else if (errorMsg.equalsIgnoreCase(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.getCode())){
 				suggestAddress = true;
 			}
 		%></span><br>
@@ -152,6 +152,9 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 				</fd:ErrorHandler>
 				<tr>
 				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.SS_APT_WRONG.getCode() %>' id='errorMsg'>
+					<tr><td></td><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.SS_APT_MISSING.getCode() %>' id='errorMsg'>
 					<tr><td></td><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
 				</fd:ErrorHandler>
 				    <td>*&nbsp;Address</td>

@@ -145,6 +145,7 @@ public class EnumUserInfoName implements Serializable {
 	// SmartyStreets Address Suggestions
 	public final static EnumUserInfoName SS_ADDRESS_SUGGESTIONS = new EnumUserInfoName("ADDRESS_NOT_UNIQUE", "Address Suggestion Received");
 	public final static EnumUserInfoName SS_APT_WRONG = new EnumUserInfoName("APT_WRONG", "Apartment is wrong");
+	public final static EnumUserInfoName SS_APT_MISSING = new EnumUserInfoName("APT_MISSING", "Apartment is wrong");
 	public final static EnumUserInfoName DLV_APARTMENT_SS = new EnumUserInfoName("aptSS", "Apt.");
 	
 

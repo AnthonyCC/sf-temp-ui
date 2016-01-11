@@ -215,6 +215,9 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 					
 					result.addError(EnumAddressVerificationResult.APT_WRONG.equals(verifyResponse.getVerifyResult()),
 							EnumUserInfoName.DLV_APARTMENT_SS.getCode() , SystemMessageList.MSG_ADDRESS_APT_WRONG); 
+					
+					result.addError(EnumAddressVerificationResult.APT_MISSING.equals(verifyResponse.getVerifyResult()),
+							EnumUserInfoName.DLV_APARTMENT_SS.getCode() , SystemMessageList.MSG_ADDRESS_APT_REQ);
 		        }
 			}
 		}
