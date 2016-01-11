@@ -296,7 +296,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 		if (addr1.getAddress1() != null && addr1.getAddress1().equalsIgnoreCase(addr2.getAddress1())
 				&& ((addr1.getAddress2() == null && addr2.getAddress2() == null) || (addr1.getAddress2() != null && addr1.getAddress2().equalsIgnoreCase(addr2.getAddress2())))
-				&& ((addr1.getApartment() == null && addr2.getApartment() == null) || (addr1.getApartment() != null && addr1.getApartment() != null && addr2.getApartment()!=null && addr1.getApartment().replaceAll(" " , "").equalsIgnoreCase(addr2.getApartment().replaceAll(" " , ""))))
+				&& ((addr1.getApartment() == null && addr2.getApartment() == null) || (addr1.getApartment() != null && addr1.getApartment().replaceAll(" " , "").equalsIgnoreCase(addr2.getApartment().replaceAll(" " , ""))))
 				&& addr1.getCity() != null && addr1.getCity().equalsIgnoreCase(addr2.getCity()) && ((addr1.getFirstName()==null && addr2.getFirstName()==null) || (addr1.getFirstName()!=null && addr1.getFirstName().equalsIgnoreCase(addr2.getFirstName()))) && ((addr1.getLastName()==null && addr2.getLastName()==null) || (addr1.getLastName()!=null && addr1.getLastName().equalsIgnoreCase(addr2.getLastName())))) {
 			return true;
 		}
