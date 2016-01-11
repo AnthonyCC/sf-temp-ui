@@ -320,6 +320,7 @@ public class LogisticsDataDecoder {
 			result.setCtActive(t.isCtActive());
 			result.setHasCapacity(t.isHasCapacity());
 			result.setGeoRestrictionmessages(t.getGeoRestrictionmessages());
+			result.setComments(t.getComments());
 			result.setEcoFriendlySlots(t.getEcoFriendlySlots());
 			result.setNeighbourhoodSlots(t.getNeighbourhoodSlots());
 			result.setTotalSlots(t.getTotalSlots());
