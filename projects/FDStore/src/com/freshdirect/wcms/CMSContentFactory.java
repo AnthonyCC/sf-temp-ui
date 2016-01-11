@@ -157,6 +157,7 @@ public class CMSContentFactory {
 				CMSWebPageModel page = null;				
 				if(pageRequest.isPreview() && pageRequest.getFeedId()!=null) {
 					// if it is for preview and feed id is not null, check the id first and the get the relevant feed page
+					pageRequest.setIgnoreSchedule(true);
 					if(contentNode.getKey().getId().toString().equals(pageRequest.getFeedId())) {
 					page = getCMSPage(contentNode, pageRequest);
 					}
