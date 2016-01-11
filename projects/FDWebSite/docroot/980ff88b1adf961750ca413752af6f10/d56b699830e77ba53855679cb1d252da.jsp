@@ -112,7 +112,6 @@
     	// recognize user and set masquerade mode here
     	loginUser = FDCustomerManager.recognize(identity, ctx);
     	UserUtil.createSessionUser(request, response, loginUser);
-
     	
 		CrmMasqueradeUtil.postInit(ctx, session);    	
     	
@@ -145,6 +144,11 @@
 
 	// make redirection based on params
 	String redirectUri = CrmMasqueradeUtil.getRedirectionUri(params);
+	
+	if(!loginUser.getTcAcknowledge()){
+		session.setAttribute("nextSuccesspage", redirectUri );
+		session.setAttribute("fdTcAgree", false);
+	}
 	
 	response.sendRedirect(redirectUri);
 %>
