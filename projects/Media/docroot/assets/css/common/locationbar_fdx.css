@@ -244,7 +244,8 @@
 	}
 	#topSearchField {
 		margin: 0px 0 0 0;
-		height: 32px;
+		/*height: 40px!important;*/
+		height: 32px!important;
 		padding: 3px 7px;
 		background-color: #efefef;
 		clear: both;
@@ -258,6 +259,11 @@
 	    border-top-right-radius: 0px;
 	    border-bottom-right-radius: 0px;
 	}
+
+	body.no-touch #topSearchField{
+		height: 32px!important;
+	}
+
 	#topSearchField:focus {
 		border: 1px solid #6AAA6D;
 	}
