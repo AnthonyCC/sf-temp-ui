@@ -21,13 +21,13 @@
 	#newzip{
 		margin-top:7px;
 	}
-	#newziptext {
+	#newziptext, #location-email {
 		margin: 0;
-		height: 40px;
+		height: 40px!important;
 		/*width: 130px;*/
 		width:216px;
 		padding: 3px 15px;
-		font-size: 16px;
+		font-size: 16px!important;
 		background-color: #eee;
 		margin-right: 6px;
 		border:none;
@@ -51,18 +51,19 @@
 		border-radius: 2px;
 	}
 	#location-email {
-		margin: 0;
+		margin: 7px 0px 0px 0px;
 		height: 24px;
 		/*width: 130px;*/
-		width: calc(100% - 115px);
+		width: calc(100% - 120px);
 		padding: 3px 7px;
-		font-size: 12px;
+		/*font-size: 12px;*/
 		background-color: #eee;
 		margin-right: 6px;
 	}
 	#location-submit, #location-submit:active, #location-submit:hover {
 		background-image: none;
 		border: none;
+		margin-left:4px;
 	}
 	#location-submit, #location-submit:active {
 		width: 88px;
