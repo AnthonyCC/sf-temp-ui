@@ -217,7 +217,7 @@
 		<% } %>	
 <!-- end email validation --> 
 
-	<div id="sulCont" class="signup-style-social social-singup">
+	<div id="sulCont" class="signup-style-social social-singup" style="min-width:523px">
 		<div class="form-side-social">
 		<div class="form-side-social-header">Create Account:</div>
 		<div id="form_feilds">
@@ -229,13 +229,13 @@
 				<input type="hidden" name="LITESIGNUP" value="true" />
 				<input type="hidden" name="EXPRESSSIGNUP_SKIP_VALIDATION" value="true" />
 				
-					<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
-						<div class="errMsg">
-							<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
-								<span class="text11rbold"><%=errorMsg%></span>
-							</fd:ErrorHandler>
-						</div>
-					<% } %>
+				<% if (result.hasError(EnumUserInfoName.EMAIL.getCode())) { %>
+					<div class="errMsg">
+						<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'>
+							<span class="text11rbold"><%=errorMsg%></span>
+						</fd:ErrorHandler>
+					</div>
+				<% } %>
 				
 			    <table border="0" cellpadding="5" cellspacing="8">
 					<tr>
@@ -250,7 +250,6 @@
 							id="email" placeholder="E-mail" autocomplete="off" autocomplete="false">
 					</td>
 					</tr>
-
 
                     <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
                     <tr>
