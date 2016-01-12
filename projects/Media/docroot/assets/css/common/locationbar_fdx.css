@@ -63,6 +63,8 @@
 	#location-submit, #location-submit:active, #location-submit:hover {
 		background-image: none;
 		border: none;
+	}
+	#locabar_addresses #location-submit{
 		margin-left:4px;
 	}
 	#location-submit, #location-submit:active {
