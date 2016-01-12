@@ -50,7 +50,7 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 			<img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">
 		</td>
        	<td width="200" align="right">
-       		<font class="text9">* Required Information</font>
+       		<!--  <font class="text9">* Required Information</font>-->
 		</td>
 	</tr>
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""></td></tr>
