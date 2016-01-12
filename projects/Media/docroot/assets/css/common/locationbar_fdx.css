@@ -983,6 +983,7 @@
 #selectAddressList-menu .ui-selectmenu-optgroup {
 	text-transform: uppercase;
 	font-weight: bold;
+	padding-left:0px!important;
 }
 #selectAddressList-menu .ui-state-focus{
 	background-image: none;
