@@ -225,8 +225,8 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 <%  
 suggestions = (ArrayList)pageContext.getAttribute("suggestions");
 if (suggestions != null) {  %>
- <div style="border: 1px solid; border-style: inset;margin: 10px 60px 10px 36px;"></div>
-<table align="left" cellpadding="4" cellspacing="4" style="margin-left : 30px;">
+ <div style="border: 1px solid; border-style: inset;margin: 10px 30px 10px 36px;"></div>
+<table align="left" cellpadding="4" cellspacing="4" style="margin-left : 30px;" width="98%">
     <tr><span class="error1">We were not able to find your address. Please choose one of the suggested address(es) below or modify your address.</span></tr><br>
     <tr colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="5"></tr>
 <% int i = 0;      
@@ -257,7 +257,7 @@ for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
 <tr>
 <td colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 		<input type="button" name="updateAddress" onclick="setAddress();" value="UPDATE ADDRESS"  class=update>
-<div style="border: 1px solid; border-style: inset; margin-top: 10px;"></div>
+<div style="border: 1px solid; border-style: inset; margin: 10px 40px 0px 0px;"></div>
 </td>
 </tr>
 </table>

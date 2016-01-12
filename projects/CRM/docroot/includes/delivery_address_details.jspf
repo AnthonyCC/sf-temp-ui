@@ -121,7 +121,7 @@ EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceT
 							<tr>
 								<td colspan="3">
 									<input type="hidden"name="<%=AddressName.DLV_APT_SS%>" id="aptSS">
-									<fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_APT_SS%>" id='errorMsg'><span class="error1" style="width: 330px;" ><%=errorMsg%></span>
+									<fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_APT_SS%>" id='errorMsg'><span class="error1" ><%=errorMsg%></span>
 									<% 
 										if (errorMsg != null && !errorMsg.isEmpty()) {
 											addApartment = true;
@@ -183,8 +183,8 @@ EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceT
 					<%  
 					List suggestions = (ArrayList)pageContext.getAttribute("suggestions");
 					if (suggestions != null) {  %>
-					<div style="border: 1px solid; border-style: inset;margin: 10px 60px 10px 36px;"></div>
-					<table align="left" cellpadding="4" cellspacing="4">
+					<div style="border: 1px solid; border-style: inset; margin: 10px 20px 10px 22px;"></div>
+					<table align="left" cellpadding="4" cellspacing="4" width="94%">
 					    <tr><span class="error1">We were not able to find your address.Please choose one of the suggested address(es) below.</span></tr><br><br>
 					    <tr colspan="5" align="center"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></tr>
 					<% int i = 0;      
