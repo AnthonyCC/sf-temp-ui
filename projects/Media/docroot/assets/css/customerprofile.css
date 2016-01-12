@@ -9,6 +9,7 @@
 	.cright { clear: right; }
 	.cboth { clear: both; }
 	.question { color: orange; font-size: 12px; font-weight: bold; padding-top:10px; padding-bottom:3px; }
+	.question h2 { color: orange; font-size: 12px; font-weight: bold; padding-top:10px; padding-bottom:3px; }
 	.question_number { float: left; width: 25px; }
 	.question_text { float: left; width: 675px; }
 	.answer { margin: 10px; }
@@ -117,3 +118,9 @@
 	.padTop30px { padding-top: 30px; }
 	.rb_image { text-align: center; width: 110px; }
 	.surveyText {font-family:Verdana,Arial,sans-serif; font-size: 10px;}
+
+  h1.customerProfile {
+    text-align: center;
+    color: orange;
+    font-weight: bold;
+  }

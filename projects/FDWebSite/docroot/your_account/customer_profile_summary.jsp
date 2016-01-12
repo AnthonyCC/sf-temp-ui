@@ -153,8 +153,8 @@ response.setHeader("Cache-Control", "no-cache");
 			<!-- NAME profile - customer info -->
 				<table class="col100per noBorder tLeft">
 				<tr>
-					<td class="t20px bolded">
-						<%=user.getFirstName()+"'s Profile"%>
+					<td>
+            <h1><%=user.getFirstName()+"'s Profile"%></h1>
 					</td>
 				</tr>
                 <%if( user.getOrderHistory().getFirstNonPickupOrderDate()!=null &&
