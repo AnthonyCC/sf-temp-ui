@@ -359,3 +359,7 @@ input[type="socialButton"] {
 br.new_cust{
 	display:none;
 }
+
+#fd_login .error{
+	margin-left: 0px;
+}
