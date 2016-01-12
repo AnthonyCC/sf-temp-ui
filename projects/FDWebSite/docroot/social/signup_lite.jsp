@@ -253,16 +253,21 @@
 
                     <% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td></td><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
                     <tr>
-                        <td valign="bottom">
-                        <!-- span id should be the input box id+"_img" -->
-                        <span class="error_img" id="password1_img"></span></td>
+                        <td valign="bottom">&nbsp
+							
+                        </td>
 						<td style="padding-top: 15px;">
 							<input type="text" name="prevent_autofill" id="prevent_autofill" value="" style="display:none;" />
 							<input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
-							</td>
+						</td>
 					</tr>
-							<tr><td>&nbsp</td>
-					<!--  Added for Password Strength Display -->
+					<tr>
+						<td>
+							<!-- span id should be the input box id+"_img" -->
+                        	<span class="error_img" id="password1_img"></span>
+                        	&nbsp
+						</td>
+						<!--  Added for Password Strength Display -->
 						<td>
 							<div class="container1">		
 							<div class="content-group password">
