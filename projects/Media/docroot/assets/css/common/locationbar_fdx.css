@@ -987,9 +987,9 @@
 	background-image: none;
 	background-color: transparent;
 	border: none;
+	font-weight: normal;
 }
 #selectAddressList-menu .ui-state-focus, #selectAddressList-menu .locabar-check-text {
-	font-weight: bold;
 	color: #67a96d;
 }
 #selectAddressList-menu .ui-state-focus:hover {
@@ -998,6 +998,7 @@
 	background-color: transparent;
 	color: #4fa157;
 	border: none;
+	text-decoration: underline;
 }
 .cssbutton-flat {
 	text-shadow: none;

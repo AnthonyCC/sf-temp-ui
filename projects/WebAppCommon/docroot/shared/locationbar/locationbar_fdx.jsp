@@ -192,7 +192,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 											ifSelected = "";
 										}
 										%>
-										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
+										<option data-class="<%=addressClass%> <%=ifSel_cssClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
 											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%></p>
 										</option>
 									</logic:iterate>
@@ -263,7 +263,14 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			} else { //no addresses
 				//do nothing i guess	
 			}
-	
+			%>
+			<style>
+			/* APPBUG-4173 fix */
+			.globalnav_top .nav .searchform { 
+				width: 440px!important; 
+			}
+			</style>
+			<%
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
 				<div class="text">Change zip code.</div>

@@ -176,3 +176,8 @@ $jq('#location-alerts').on('alertOpen', function() {
 $jq('#location-alerts').on('alertClose', function() {
 	$jq('#locabar_addresses').show();
 });
+
+//for APPBUG-4773
+$jq("#selectAddressList-menu").on('hover mouseover', function(e) {
+	$jq(this).find(".locabar-check-text").parent("li").addClass("ui-state-focus");
+});
