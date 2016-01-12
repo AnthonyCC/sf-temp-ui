@@ -52,7 +52,15 @@
 					</form>
 					
 					<form action="/api/locationhandler.jsp" method="post" id="locationhandler" style="display:none">
-						<p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>
+						<!--  <p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>-->
+						
+						<p>
+						We're not delivering to your hood<br/>
+						yet. Enter your email address and we'll<br/>
+						notify you when the service expands in<br/>
+						your area. You can still download the<br/>
+						app to check it out! 
+						</p>
 
 						<div class="field_holders">
 							<input type="text" name="zipcode_lh" id="zipcode_lh" class="required zipcode" data-msg="invalid zipcode"

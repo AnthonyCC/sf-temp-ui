@@ -11,6 +11,12 @@
 		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
+		
+		<meta property="og:image" content="https://foodkick.freshdirect.com/media/images/email/foodkick/header_logo.png" />
+		<meta property="og:title" content="FoodKick | Same-Day Food Delivery NYC" />
+		<meta property="og:description" content="Get what you need in an hour. 30 days FREE delivery. Customizable meals; farm fresh produce, meat, fish and dairy; perfect food and booze pairings from our experts."/>
+		<meta property="og:url" content="http://foodkick.com" />  
+		
 		<!--[if lt IE 9]>
 		   <script src="<%=JS_DIR %>/modernizr-custom.js"></script>
 		   <script src="<%=JS_DIR %>/fk_ie8.js"></script>
