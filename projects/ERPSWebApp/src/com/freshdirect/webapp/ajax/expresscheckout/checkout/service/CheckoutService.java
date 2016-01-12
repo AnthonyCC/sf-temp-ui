@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -103,6 +104,11 @@ public class CheckoutService {
 			
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
+            }
+            else{
+            	AvalaraContext avalaraContext = new AvalaraContext(cart);
+            	avalaraContext.setCommit(false);
+            	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
             }
 		}
         return unavailabilityData;

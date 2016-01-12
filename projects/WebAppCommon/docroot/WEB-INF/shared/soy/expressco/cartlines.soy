@@ -41,6 +41,7 @@
   {/foreach}
 </div>
 {call .total}
+  {param cartlineType: 'YOUR_CART' /}
   {param subTotalBox: $subTotalBox /}
   {param additionalInfo: $additionalInfo /}
   {param goGreen: $goGreen /}
@@ -94,6 +95,7 @@
   {/foreach}
 </div>
 {call .total}
+  {param cartlineType: 'CHECKOUT' /}
   {param subTotalBox: $subTotalBox /}
   {param additionalInfo: $additionalInfo /}
   {param goGreen: $goGreen /}
@@ -241,6 +243,10 @@
 
   {if $info.subTotal}
     <div class='cartsection__totalwrapper'>
+
+
+
+
       {if $eTippingEnabled}	      
 	      <div id="subtotalbox">
 		      {if $subTotalBox and $subTotalBox.subTotalBox}
@@ -300,8 +306,9 @@
 		 </div>
 	 {else}
 	 	<p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
-      	<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
+      	{if $cartlineType == 'CHECKOUT'}<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}
 	 {/if}      
+
     </div>
   {/if}
   
@@ -422,9 +429,9 @@
   <div class="cartline-legend cartline-box">
     <div class="cartline-legendwrapper">
       {if $hasEstimatedPrice}<div class="legend-item">*</div>{/if}
-      {if $hasTax}<div class="legend-item">T</div>{/if}
-      {if $hasDepositValue}<div class="legend-item">D</div>{/if}
-      {if $hasScaledPricing}<div class="legend-item">S</div>{/if}
+      {if $hasTax}<div class="legend-item"></div>{/if}
+      {if $hasDepositValue}<div class="legend-item"></div>{/if}
+      {if $hasScaledPricing}<div class="legend-item"></div>{/if}
     </div>
   </div>
 </div>
@@ -536,7 +543,12 @@
 {/deltemplate}
 
 /**
+
+
+
+ * @param cartlineType Cartsection type
  * @param subTotalBox subtotal
+
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
@@ -620,9 +632,19 @@
   </div>
   <div class='total__subtotal total-right'>
     <div id="subtotalbox">
+
+
+
+
+
+
+
+
+
       {if $eTippingEnabled}	
 	      {if $subTotalBox and $subTotalBox.estimatedTotalBox}
 	        {call .subTotalBox}
+			  {param cartlineType: $cartlineType /}
 	          {param subTotalBox: $subTotalBox.estimatedTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
@@ -631,11 +653,13 @@
       {else}
       	{if $subTotalBox and $subTotalBox.subTotalBox}
 	        {call .subTotalBox}
+			  {param cartlineType: $cartlineType /}
 	          {param subTotalBox: $subTotalBox.subTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
 	        {/call}
 	    {/if}
+
       {/if}
     </div>
     {call .additionalInfo}
@@ -672,6 +696,7 @@
 {/template}
 
 /**
+* @param? cartlineType cartlineType
 * @param? subTotalBox subTotalBox data
 * @param? userRecognized is the user recognised or not
 * @param? userCorporate COS service is available for customer
@@ -680,6 +705,7 @@
 {if $subTotalBox}
   {foreach $box in $subTotalBox}
     <div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
+  {if $cartlineType == 'CHECKOUT'} 
       <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
         {if $box.id == 'freefood'}
           <a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -713,6 +739,28 @@
       <div class='subtotal__rowcell-mid rowcell-text-right'>
       {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}
       </div>
+     {/if}
+  {if $cartlineType == 'YOUR_CART'}
+   {if $box.id != 'deliveryfee'}
+      <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
+        {if $box.id == 'freefood'}
+          <a href='/shared/promotion_popup.jsp?promoCode=signup'
+             data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
+             data-ifrpopup-width='585' data-ifrpopup-height='400'>{$box.text}</a>
+        {else}
+          {if $box.other and $box.other.promoCode}
+            <a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
+               data-ifrpopup='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
+               data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
+          {else}
+            {$box.text}
+          {/if}
+        {/if}
+      </div>
+      <div class='subtotal__rowcell-mid rowcell-text-right'>
+      {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}{/if}
+      </div>
+      {/if}               
       {if $box.other}
       <div class='subtotal__rowcell-right'>
         {if $box.other.mark}{$box.other.mark}{/if}
@@ -765,12 +813,14 @@
     </div>
   {/if}
   <div class='footer__left'>
+	{if $buttonText == 'Place Order'}
     <p>
       <span class='footer__legend'>* - Estimated Price</span>
       <span class='footer__legend'>T - Taxable Item</span>
       <span class='footer__legend'>D - State Bottle Deposit</span>
       <span class='footer__legend'>S - Special Price</span>
     </p>
+    {/if}
     <p class='footer__findout'>Find out more about <a href='/help/estimated_price.jsp' data-ifrpopup='/help/estimated_price.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>estimated prices</a>, <a href='/help/taxes_fees.jsp' data-ifrpopup='/help/taxes_fees.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>taxes, deposits, and fees</a>,<br />
       and other aspects of our <a href='/help/terms_of_service.jsp' data-ifrpopup='/help/terms_of_service.jsp?type=popup' data-ifrpopup-width='600'>customer agreement</a></p>
   </div>
