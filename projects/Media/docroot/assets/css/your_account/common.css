@@ -25,3 +25,20 @@
   text-transform:uppercase;
   font-weight:bold;
 }
+
+.youraccount h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ccc;
+}
+
+.youraccount h2 i {
+  margin: .25em 0 0 .25em;
+  font-size: .75em;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: top;
+  text-transform: none;
+}

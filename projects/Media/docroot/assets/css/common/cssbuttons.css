@@ -220,6 +220,10 @@ span.cssbutton.notext[class*=" icon-"] {
   text-shadow: none;
 }
 
+.cssbutton.green.transparent.border {
+	box-shadow: 0 0 0 1px #669933 inset;	
+}
+
 .cssbutton.red.transparent {
   color: #c94747;
   font-weight: normal;

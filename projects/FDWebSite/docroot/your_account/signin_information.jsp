@@ -11,6 +11,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <% //expanded page dimensions
 final int W_YA_SIGNIN_INFO = 970;
 %>
@@ -19,6 +20,9 @@ final int W_YA_SIGNIN_INFO = 970;
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="signin_info"></fd:SEOMetaTag>
+	</tmpl:put>
+  <tmpl:put name='customhead' direct='true'>
+    <jwr:style src="/your_account.css" media="all"/>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
@@ -443,10 +447,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
-<table width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">
+<table class="youraccount" width="<%= W_YA_SIGNIN_INFO %>" border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td colspan="6"class="text11">
-		<span class="title18">Your Account Preferences</span><br>
+	<td colspan="6">
+    <h1>Your Account Preferences</h1>
 		Change your user name, password, and other account preferences.<br>
     <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="8"><br>
 	</td>
@@ -462,8 +466,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_username.gif" width="214" height="10" border="0" alt="CHANGE YOUR  E-Mail/USERNAME" align="absbottom">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><br>
-    <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+    <h2>Change your e-mail/user name <i>* Required information</i></h2>
 	</td>
 </tr>
 
@@ -491,11 +494,12 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<% 
 			if (!(user.isVoucherHolder() && user.getMasqueradeContext()== null)) {
 		%>
-			<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td>	
+			<td align="right">
+        <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+        <button class="cssbutton small orange">Save Changes</button>
+      </td>	
 		<%	} %>
 		
-		
-	<!-- 	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td> -->
 	</tr>
 	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 	<tr>
@@ -535,12 +539,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<%  boolean isPasswordAddedForSocialUser = UserUtil.isPasswordAddedForSocialUser(identity.getErpCustomerPK());
 			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){	
 		%>
-			<img src="/media_stat/images/navigation/add_a_password.png" width="110" height="20" border="0" alt="ADD A PASSWORD" align="absbottom">&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br>	
+      <h2>Add a password <i>* Required information</i></h2>
 		<%	} else { %>		
-			<img src="/media_stat/images/navigation/change_your_password.gif" width="162" height="9" border="0" alt="CHANGE YOUR PASSWORD" align="absbottom">&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span><br>		
+      <h2>Change your password <i>* Required information</i></h2>
 		<%	} %>	
-		
-	  		<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
 	</td>
 </tr>
 
@@ -592,7 +594,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 		<td></td>
 		-->
-		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
 		
 	</tr>
 	
@@ -641,8 +646,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_display_name.gif" border="0" alt="CHANGE YOUR DISPLAY NAME" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <br>
-    <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+    <h2>Change your display name</h2>
 	</td>
 </tr>
 <form method="post" name="updateDisplayName">
@@ -654,9 +658,11 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Display Name</label></td>
 	<td><input class="text9" size="28" maxlength="30" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		<span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
-	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><a style="text-decoration:none" href="javascript:void(0);" onclick="checkForProfanity();">
-	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
+  <span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
+  <td align="right">
+    <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+    <button type="button" onclick="checkForProfanity();"class="cssbutton small orange">Save Changes</button>
+  </td>	
 	
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""><br><br></td></tr>
@@ -666,8 +672,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <input type="hidden" name="actionName" value="changeContactInfo">
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_contact_info.gif" width="234" height="13" border="0" alt="CHANGE YOUR CONTACT INFORMATION" align="absbottom"> &nbsp;&nbsp;&nbsp;&nbsp; <span class="text9">*Required information</span><br>
-    <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
+    <h2>Change your contact information <i>* Required information</i></h2>
 	</td>
 </tr>
 
@@ -682,7 +687,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
        <option <%="MS.".equalsIgnoreCase(title)?"selected":""%>>Ms</option>
        <option <%="DR.".equalsIgnoreCase(title)?"selected":""%> >Dr.</option>		
 	</select></td>
-	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+  <td align="right">
+    <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+    <button class="cssbutton small orange">Save Changes</button>
+  </td>	
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
@@ -746,8 +754,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
 		<tr>
 			<td colspan="6"><br /><br />
-				<img src="/media_stat/images/navigation/email_preferences.gif" width="122" height="9" border="0" alt="EMAIL PREFERENCES"><br />
-        <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br />
+        <h2>Email preferences</h2>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -757,9 +764,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<strong>It's okay for FreshDirect to send me food offers, news and updates from time to time.</strong><br />
 				You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else. <a href="/help/privacy_policy.jsp">Click here to view our Privacy Policy.</a><br /><br />
 			</td>
-			<td align="right">
-				<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0">
-			</td>
+      <td align="right">
+        <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+        <button class="cssbutton small orange">Save Changes</button>
+      </td>	
 		</tr>
 		<tr valign="top">
 			<td align="right" style="padding-top:5px; padding-right:5px;">
@@ -785,8 +793,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="actionName" value="changeMailPhonePreference">
 	<tr>
 		<td colspan="6"><br /><br />
-			[THIS IMAGE NEEDS TO BE DEFINED]<!-- <img src="/media_stat/images/navigation/mail_phone_preferences.gif" width="122" height="9" border="0" alt="MAIL & PHONE PREFERENCES"> --><br />
-      <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br />
+      <h2>Mail and phone preferences</h2>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -796,7 +803,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td colspan="4" style="padding-top:5px;" class="text12">
 			<strong>Please do not send me offers, and marketing messages in the mail.</strong><br /><br />
 		</td>
-		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right">
@@ -816,8 +826,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="actionName" value="changeEmailPreference">
 	<tr>
 		<td colspan="6"><br><br>
-			<img src="/media_stat/images/navigation/email_preferences.gif" width="122" height="9" border="0" alt="EMAIL PREFERENCES"><br>
-			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+      <h2>Email preferences</h2>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -825,7 +834,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td colspan="4" style="padding-top:5px;" class="text12"><b>Please send me food offers, news and updates from time to time.</b><br>
 		You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else.<br><br>
 		</td>
-		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></td>
@@ -854,8 +866,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="partner_existing" value="<%=partner_messages%>">	
 	<tr>
 		<td colspan="6"><br><br>
-			<img src="/media_stat/images/navigation/mobile_preferences.gif" border="0" alt="MOBILE PREFERENCES"><br>
-			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+      <h2>Mobile preferences</h2>
 		</td>
 	</tr>
 	<tr>
@@ -875,7 +886,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Mobile Number</label></td>
     	<td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
 		<td colspan="2" width="500"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-		<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+    <td align="right">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
 	</tr> 
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr><td colspan="6"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
@@ -1078,12 +1092,14 @@ else{  %>
 	<input type="hidden" name="actionName" value="otherpreferences">	
 	<tr>
 		<td colspan="6"><br><br>
-			<img src="/media_stat/images/navigation/other_preferences.gif" border="0" alt="OTHER"><br>
-			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
+      <h2>Other</h2>
 		</td>
 	</tr>
 	<tr>	
-	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+    <td align="right" valign="top" colspan="6">
+      <a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
+      <button class="cssbutton small orange">Save Changes</button>
+    </td>	
 	</tr>
 	<tr>
 		<td colspan="6">
