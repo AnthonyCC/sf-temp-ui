@@ -31,7 +31,7 @@
 		<header></header>
 		<nav>
 			<div id="locationbar">
-				<a href="/" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+				<a href="https://www.freshdirect.com/index.jsp" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
 			</div>
 		
 			<ul>
