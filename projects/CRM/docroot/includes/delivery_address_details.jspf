@@ -121,7 +121,7 @@ EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceT
 							<tr>
 								<td colspan="3">
 									<input type="hidden"name="<%=AddressName.DLV_APT_SS%>" id="aptSS">
-									<fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_APT_SS%>" id='errorMsg'><span class="error1" ><%=errorMsg%></span>
+									<fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_APT_SS%>" id='errorMsg'><span class="error1" style="width:364px;" ><%=errorMsg%></span>
 									<% 
 										if (errorMsg != null && !errorMsg.isEmpty()) {
 											addApartment = true;

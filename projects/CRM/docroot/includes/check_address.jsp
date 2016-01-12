@@ -152,10 +152,10 @@ if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("addApa
 				</fd:ErrorHandler>
 				<tr>
 				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.SS_APT_WRONG.getCode() %>' id='errorMsg'>
-					<tr><td></td><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
+					<tr><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.SS_APT_MISSING.getCode() %>' id='errorMsg'>
-					<tr><td></td><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
+					<tr><td colspan="5"><span class="error2"><%=errorMsg%></span></td></tr>
 				</fd:ErrorHandler>
 				    <td>*&nbsp;Address</td>
 					<td colspan="2"><input type="text" class="input_text" id = "address1" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" value="<%= dlvAddress.getScrubbedStreet() == null || "".equals(dlvAddress.getScrubbedStreet()) ? dlvAddress.getAddress1() : dlvAddress.getScrubbedStreet() %>"></td>
