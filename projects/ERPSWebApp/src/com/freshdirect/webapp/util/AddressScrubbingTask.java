@@ -81,7 +81,12 @@ public class AddressScrubbingTask implements Callable{
 					ssRowData = originalRowData+","+scrubbedAddress.getSsScrubbedAddress()+","+scrubbedAddress.getServiceType()+","+scrubbedAddress.getAddressType()+","+scrubbedAddress.getScrubbingResult()+"\n";
 					csvReport.append(ssRowData);
 				}else { // Check for suggestions or No Match from SmartyStreets
-					if(scrubbedAddress.getSuggestions() != null && !scrubbedAddress.getSuggestions().isEmpty()){
+					if(scrubbedAddress.getScrubbingResult().equalsIgnoreCase("Suggestions") && (scrubbedAddress.getSuggestions() == null || scrubbedAddress.getSuggestions().isEmpty())){
+						// DPV_MATCH_CODE = S/D
+						ssRowData = originalRowData+","+scrubbedAddress.getSsScrubbedAddress()+","+scrubbedAddress.getServiceType()+","+scrubbedAddress.getAddressType()+","+scrubbedAddress.getScrubbingResult()+"\n";
+						csvReport.append(ssRowData);
+					}
+					else if(scrubbedAddress.getSuggestions() != null && !scrubbedAddress.getSuggestions().isEmpty()){
 						String suggestionRow="";
 						ssRowData = originalRowData+","+scrubbedAddress.getSsScrubbedAddress()+","+scrubbedAddress.getServiceType()+","+scrubbedAddress.getAddressType()+","+"Suggestions"+"\n";
 						csvReport.append(ssRowData);

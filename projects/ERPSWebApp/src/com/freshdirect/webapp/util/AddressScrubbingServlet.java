@@ -78,7 +78,7 @@ public class AddressScrubbingServlet extends HttpServlet {
 				if(!futureTemp.isDone()){
 					futureTemp.cancel(true);
 				}
-				getServletContext().getRequestDispatcher("/scrubbingtool/address_scrubbing_tool.jsp").forward(request, response);
+				response.sendRedirect("/scrubbingtool/address_scrubbing_tool.jsp");
 			}		
 		}else{
 			if(action != null && action.equals("scrubbingCompleted")){
@@ -87,8 +87,12 @@ public class AddressScrubbingServlet extends HttpServlet {
 				}
 				getServletContext().getRequestDispatcher("/scrubbingtool/address_scrubbing_success.jsp").forward(request, response);
 			}else{
-				processCSV(request,response);
-				getServletContext().getRequestDispatcher("/scrubbingtool/address_scrubbing_inprogress.jsp").forward(request, response);
+				boolean success = processCSV(request,response);
+				if(success){
+					getServletContext().getRequestDispatcher("/scrubbingtool/address_scrubbing_inprogress.jsp").forward(request, response);
+				}else{
+					response.sendRedirect("/scrubbingtool/address_scrubbing_tool.jsp");
+				}
 			}
 		}
 		LOGGER.debug("Exit doPost of AddressScrubbingServlet");
@@ -98,7 +102,7 @@ public class AddressScrubbingServlet extends HttpServlet {
 	 * @param request
 	 * @param response
 	 */
-	private void processCSV(HttpServletRequest request,HttpServletResponse response) {
+	private boolean processCSV(HttpServletRequest request,HttpServletResponse response) {
 		LOGGER.debug("Inside processCSV");
 		Map<String, ScrubbedAddress> addressInputMap = new HashMap<String, ScrubbedAddress>();
 		List<ScrubbedAddress> csvAddrList = new ArrayList<ScrubbedAddress>();
@@ -143,6 +147,8 @@ public class AddressScrubbingServlet extends HttpServlet {
 						Future future = scrubbingProcessor.processCSV(addressInputMap, csvAddrList);
 						request.setAttribute("future", future);
 						request.getSession().setAttribute("future", future);
+					}else{
+						return false;
 					}
 				} catch (FileUploadException e) {
 					e.printStackTrace();
@@ -158,6 +164,8 @@ public class AddressScrubbingServlet extends HttpServlet {
 			LOGGER.error("Exception AddressScrubbingServlet"+e.getMessage());
 		}
 		LOGGER.debug("exit processCSV");
+		
+		return true;
 	}
     /**
      * @param rec

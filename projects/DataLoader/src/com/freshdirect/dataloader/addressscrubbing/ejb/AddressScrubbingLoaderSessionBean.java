@@ -38,6 +38,7 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
     private static final String SUCCESS = "SUCCESS";
     public final static String MATCH="Match";
     public final static String NO_MATCH="No Match";
+    public final static String SUGGESTIONS="Suggestions";
 
     private final static Logger LOGGER = LoggerFactory.getInstance(AddressScrubbingLoaderSessionBean.class);
 
@@ -204,9 +205,12 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				List<ScrubbedAddress> scrubbedAddresses = response.getScrubbedAddress();
 				System.out.println("scrubbedAddresses size : "+scrubbedAddresses.size());
 				for(ScrubbedAddress scrubbedAddress : scrubbedAddresses){
-					System.out.println(" Update scrubbedAddresses status : "+scrubbedAddress.getScrubbingResult()+" ID : "+scrubbedAddress.getId());
 					ps.setString(1, scrubbedAddress.getSsScrubbedAddress());
-					ps.setString(2, scrubbedAddress.getScrubbingResult());
+					if(scrubbedAddress.getScrubbingResult() != null && scrubbedAddress.getScrubbingResult().equals("Suggestions")){
+						ps.setString(2, "No Match");
+					}else{
+						ps.setString(2, scrubbedAddress.getScrubbingResult());
+					}
 					ps.setString(3, scrubbedAddress.getId());
 					ps.addBatch();
 				    if(++count % batchSize == 0) {
@@ -289,7 +293,8 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 		for (AddressScrubbingResponse response : addressScrubbingResponses) {
 			List<ScrubbedAddress> scrubbedAddresses = response.getScrubbedAddress();
 			for(ScrubbedAddress scrubbedAddress : scrubbedAddresses){
-				if(scrubbedAddress.getScrubbingResult() != null && scrubbedAddress.getScrubbingResult().equals(NO_MATCH)){
+				if(scrubbedAddress.getScrubbingResult() != null && 
+						(scrubbedAddress.getScrubbingResult().equals(NO_MATCH) || scrubbedAddress.getScrubbingResult().equals(SUGGESTIONS))){
 					return false;
 				}
 			}
