@@ -7,6 +7,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.EnumEStoreId" %>
+<%@ page import="java.util.HashMap" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
