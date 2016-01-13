@@ -66,8 +66,10 @@ public class FDTransactionalEmail extends FDInfoEmail {
 			FDCartLineI cartLine = i.next();
 			ProductModel productNode = cartLine.lookupProduct();
 			
+			if (null == productNode && null !=cartLine.getProductRef()) {
+				productNode = cartLine.getProductRef().lookupProductModel();
+			}
 			if (productNode != null) {
-
 				Map<String, Object> prodInfo = new HashMap<String, Object>();
 				Image prodImage = productNode.getProdImage();
 				
@@ -88,6 +90,12 @@ public class FDTransactionalEmail extends FDInfoEmail {
 				
 				//don't use just a number as a key, xml doesn't like that
 				prodInfos.put("id"+cartLine.getCartlineId(), prodInfo);
+			} else{
+				Map<String, Object> prodInfo = new HashMap<String, Object>();
+				prodInfo.put("nameNoBrand", cartLine.getDescription());
+				
+				//don't use just a number as a key, xml doesn't like that
+				prodInfos.put("id"+cartLine.getCartlineId(), prodInfo);				
 			}
 		}
 		
