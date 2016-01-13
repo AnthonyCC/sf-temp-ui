@@ -78,6 +78,8 @@ function setAndAppendExtoleObject(section, id_placeafter){
 			
 			break;
 		case "REGISTER":
+			//hides the popups for registration
+			$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
 		case "PURCHASE":
 			//both this and 'PURCHASE' extole tags have a 'type' property, instead of a 'zone' property.  (but 'PURCHASE' extole tag has an additional helper extole widget tag)
 			obj.type = section;
