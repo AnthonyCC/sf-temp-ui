@@ -9,6 +9,8 @@ public final String JS_DIR = ASSETS_DIR + "/javascript/foodkick";
 public final String IMAGES_DIR = "/media_stat/foodkick";
 public final String SVG_SRC = "s.jsp?f=";
 
+//freshdirect main page
+public final String FD_SITE_LINK = "https://www.freshdirect.com/index.jsp";
 
 /*
 IOS (iPhone and iPad) APP LINKS

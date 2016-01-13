@@ -2,7 +2,6 @@
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put>
 	<tmpl:put name='content'>
-	
 		<script type="text/javascript">
 			cmCreatePageviewTag("HOMEPAGE: index.jsp","FDX_HOMEPAGE",null,null,"-_--_-HOMEPAGE: index.jsp-_--_--_--_-HOMEPAGE: index.jsp");
 		</script>

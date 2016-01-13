@@ -31,7 +31,7 @@
 		<header></header>
 		<nav>
 			<div id="locationbar">
-				<a href="https://www.freshdirect.com/index.jsp" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+				<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
 			</div>
 		
 			<ul>
@@ -47,7 +47,7 @@
 						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 						
 						<li>
-							<a href="/" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+							<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
 						</li>
 					</ul>
 				</li>
