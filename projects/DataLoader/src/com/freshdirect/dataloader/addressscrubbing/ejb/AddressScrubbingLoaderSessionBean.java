@@ -526,7 +526,10 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 			ranges.add(low);
 			ranges.add(high);
 		}
-			
+		if(ranges != null && ranges.isEmpty()){
+			ranges.add(low);
+			ranges.add(high);
+		}
 //		disp(ranges);
 		LOGGER.info("Exist increment() ..");
 		return ranges;
