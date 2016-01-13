@@ -717,7 +717,8 @@ section#section_Whats_Good {
           section#section_Whats_Good .container .slidesjs-container.slidesjs-single ul li {
             font-size: 1em; } }
     section#section_Whats_Good .container .carousel_Whats_Good img {
-      width: 100%; }
+      width: 100%;
+      height: auto !important; }
     section#section_Whats_Good .container #carousel_Whats_Good_foodkick {
       /*display:none;*/ }
       section#section_Whats_Good .container #carousel_Whats_Good_foodkick figcaption {
