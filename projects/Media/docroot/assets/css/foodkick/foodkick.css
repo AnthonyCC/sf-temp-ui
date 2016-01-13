@@ -112,7 +112,7 @@ nav {
         margin-left: calc(50% - 64px); }
         @media (min-width: 30em) {
           nav ul li.logo_link {
-            margin-left: initial; } }
+            margin-left: 0px; } }
         nav ul li.logo_link a {
           color: transparent; }
   nav a {

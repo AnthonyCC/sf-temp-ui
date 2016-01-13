@@ -272,7 +272,7 @@ nav{
 				margin-left: calc(50% - 64px);
 				
 				@include breakpoint_mixin(medium){
-					margin-left: initial;
+					margin-left: 0px;
 				}
 				
 				a{
