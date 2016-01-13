@@ -74,7 +74,8 @@
 			HashMap<String, String> socialUser = (HashMap<String, String>) session
 				.getAttribute(SessionName.SOCIAL_USER);
 			
-			String currentProviderName = socialUser.get("provider"); 
+			String currentProviderName = socialUser!=null?socialUser.get("provider"):"";
+			
 		
 			boolean connectedWithFacebook = false;
 			boolean connectedWithGoogle = false;
