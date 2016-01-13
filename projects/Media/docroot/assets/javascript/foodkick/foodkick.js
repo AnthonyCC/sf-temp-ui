@@ -1,14 +1,19 @@
+/*
+ * BROWSER DETECTION METHODS/FUNCTIONS
+ * */
+
 //for Internet Explorer browser version checking
 function isIE(){
 	var myNav = navigator.userAgent.toLowerCase();
 	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
+//older IE versions
 function isIE9OrBelow(){
 	return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10;
 }
 
-//used not only for desktop Safari, but also for iPad and iPhone
+//used not only for desktop Safari, but also for iPad and iPhone versions of Safari. NOTE: unlikely to apply to IOS versions of Chrome or Firefox
 function isSafari(){
 	return (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1);
 }
@@ -19,7 +24,11 @@ function getAndroidVersion(ua){ /* String */
 	var match = ua.match(/android\s([0-9\.]*)/);
 	return match ? match[1] : false;
 };
-//parseFloat(getAndroidVersion());
+//typical use: parseFloat(getAndroidVersion());
+
+/*
+ * END BROWSER DETECTION METHODS/FUNCTIONS
+ * */
 
 //detects basic support for whether the calling page has form validation support.
 function hasFormValidation(){ /* void */
@@ -119,7 +128,7 @@ function prepare_slideshow(ss_obj){ /* Object */
 				temp_end_slide_content = ss_obj.img_dir + ss_obj.slides[i].content;
 				if_content = ( parseFloat(i) == 0 )? temp_end_slide_content : temp_empty_img;
 				
-				temp_innerslide_fullcontent = "<img id='media_"+ss_obj.html_id+"_"+i+"' src='"+if_content+"' rel='"+temp_end_slide_content+"' />";
+				temp_innerslide_fullcontent = "<div class=\"img_shadowhelper\"><img id='media_"+ss_obj.html_id+"_"+i+"' src='"+if_content+"' rel='"+temp_end_slide_content+"' /></div>";
 			break;
 		}
 
@@ -134,20 +143,20 @@ function prepare_slideshow(ss_obj){ /* Object */
 		return;
 	}
 
-	//now actually generate the slideshow, stuff before was merely preperation html material
+	//now actually generate the slide show, stuff before was merely preparation html material
 	$("#" + ss_obj.html_id ).slidesjs({
 		width: ss_obj.width,
 		height: ss_obj.height,
         play: {
 			active: true,
-			//auto: true,
+			auto: true,
 			interval: 5000,
 			swap: true,
 			//pauseOnHover: true,
 			restartDelay: 2500
 		},
         callback: {
-			complete: function(number) { //occurs when the carousel slideshow changes slide to display
+			complete: function(number) { //occurs when the carousel slide show changes slide to display
 				// Passes slide number at end of animation
 				var j = number - 1;
 				

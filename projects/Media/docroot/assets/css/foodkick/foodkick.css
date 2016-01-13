@@ -285,16 +285,24 @@ section#section_slideshow {
       margin: 0px;
       background-color: #222;
       height: 100%; }
-      section#section_slideshow #carousel_1 .slidesjs-slide img {
-        width: 100%;
-        height: auto;
-        margin-top: 56px; }
-        @media (min-width: 30em) {
-          section#section_slideshow #carousel_1 .slidesjs-slide img {
-            margin-top: 84px; } }
-        @media (min-width: 50em) {
-          section#section_slideshow #carousel_1 .slidesjs-slide img {
-            margin-top: 154px; } }
+      section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper {
+        box-shadow: inset 0px 10px 6px #222, inset 0px 10px 48px #222;
+        display: inline-block;
+        height: 100%; }
+        section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
+          width: auto;
+          max-width: 100%;
+          height: 100%;
+          margin-top: 56px;
+          /*for the box shadow hack*/
+          z-index: -2;
+          position: relative; }
+          @media (min-width: 30em) {
+            section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
+              margin-top: 84px; } }
+          @media (min-width: 50em) {
+            section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
+              margin-top: 154px; } }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
       /*top:-75px;*/
       left: calc(50% - 27px);
