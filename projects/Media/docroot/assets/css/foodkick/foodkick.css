@@ -177,7 +177,7 @@ nav {
       margin-left: calc(50% - 82px); }
       @media (min-width: 30em) {
         nav.sticky .logo_link {
-          margin-left: initial; } }
+          margin-left: 0px; } }
   nav .dropdown {
     display: none;
     position: absolute; }
