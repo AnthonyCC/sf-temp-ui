@@ -64,12 +64,12 @@
 						<div class="field_holders">
 							<input type="text" name="zipcode_lh" id="zipcode_lh" class="required zipcode" data-msg="invalid zipcode"
 							placeholder="ZIP CODE" maxlength="5" pattern="\d{5}" min="00001" max="99999" title="USA Zipcode format, like '12345'"
-							onkeyup="numbersOnly(this);" required />
+							onkeyup="numbersOnly(this);" required autocomplete="off" />
 						</div>
 						
 						<div class="field_holders">
 							<input type="email" type="email" name="email_lh" id="email_lh" class="required custom_email" data-msg="invalid email"
-							placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required />
+							placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required autocomplete="off" />
 						</div>
 
 						<button id="submit_locationhandler" type="submit">Submit</button>
