@@ -39,7 +39,7 @@
 					<a href="#" class="mobile_link" id="mobile_link_home">
 						<img src="<%=SVG_SRC %>hamburger_helper.svg" />
 					</a>
-					<ul class="dropdown mobile_dropdown">
+					<ul class="dropdown mobile_dropdown" id="mobile_dropdown_menu">
 						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
 						<li><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
 						<!--  <li><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li>-->

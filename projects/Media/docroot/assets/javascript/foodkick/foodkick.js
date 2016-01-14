@@ -284,6 +284,13 @@ function form_inputs_enable_lite(formId){
 	//$(formId).find("button").prop('disabled', false);
 }
 
+//APPDEV-4776
+function go_away_mobile_menu_ur_drunk(){
+	$('#mobile_link_home').trigger('mouseleave');
+	
+	$("#mobile_dropdown_menu").css("display", "none");
+}
+
 //following 2 functions below help with page resizing
 function PageShowHandler(){
 	form_inputs_enable_lite("#ziphandler", true);
@@ -314,38 +321,49 @@ $(function(){
 	$(window).scroll(function(){
 		scroll_header_fix();
 	});
+	
+	//APPDEV-4777
+	$("section").on( "click hover rollover mouseenter", function() {
+		$('#mobile_link_home').trigger('mouseleave');
+	});
 
 	//enable animated scrolling to hashtag links (provided that the 'a' tag with anchor targets actually exist)
-	$('a[href^="#"]').on('click', function(e){
-	    e.preventDefault();
+	$('a[href*="#"]').on('click', function(e){
+		if( window.location.href.indexOf("/index.jsp") != -1 ){ //only if this is the landing page
+			e.preventDefault();
 
-	    var target = this.hash;
-	    var $target = $(target);
+			var target = this.hash;
+			var $target = $(target);
 
-		if($target.length > 0){
-			$('html, body').stop().animate({
-				'scrollTop': $target.offset().top,
-				'start': function(){
-					console.log("this animation started");
-				}
-			}, 900, 'swing', function () {
-				window.location.hash = target;
-				
-				//hide this dumb iphone menu when it is done scrolling someplace for a hash link.  needed in mobile
-				$(".mobile_dropdown").css("display", "none");
-				
-				//signal to the hamburger button that it should not think of itself as being hovered over.  needed in mobile
-				$('#mobile_link_home').trigger('mouseleave');
-				
-				$('#mobile_link_home').bind(
-	                "mouseenter",
-	                function( event ){
-	                    //now remove that style attribute of big purple so that it can be seen again when hamburger helper is clicked again.  needed in mobile
-	                	$(".mobile_dropdown").removeAttr("style");
-	                }
-	            );
-			});
+			if($target.length > 0){
+				$('html, body').stop().animate({
+					'scrollTop': $target.offset().top,
+					'start': function(){
+						console.log("this animation started");
+					}
+				}, 900, 'swing', function(){
+					window.location.hash = target;
+					
+					//hide this dumb iphone menu when it is done scrolling someplace for a hash link.  needed in mobile
+					$(".mobile_dropdown").css("display", "none");
+					
+					//signal to the hamburger button that it should not think of itself as being hovered over.  needed in mobile
+					$('#mobile_link_home').trigger('mouseleave');
+				});
+			}//end if $target.length > 0
+		}//end if this is only if this is the landing page
+	});
+	
+	$('#mobile_link_home').on( "click", function(){
+		if( $("#mobile_dropdown_menu").is(':visible') ){
+			go_away_mobile_menu_ur_drunk();
+		}else{
+			$("#mobile_dropdown_menu").removeAttr("style");
 		}
+	});
+	
+	$('#mobile_dropdown_menu, #mobile_dropdown_menu .mobile_link').on( "click", function() {
+		go_away_mobile_menu_ur_drunk();
 	});
 	
 	//this is just for step 1, to verify if the zip code is within a delivery zone
