@@ -97,9 +97,9 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
                     user.updateUserState();
                     session.setAttribute(USER, user);
 				}
-				else {
-					this.successPage="/login/index.jsp";
-				}
+//				else {
+//					this.successPage="/login/index.jsp";
+//				}
 				
 				user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());	
 				
