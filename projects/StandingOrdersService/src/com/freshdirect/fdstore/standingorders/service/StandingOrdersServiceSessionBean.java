@@ -110,7 +110,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		} else {
 			// We got some list of SO id-s, lets fetch the SO objects
 			try {
-				soList = new ArrayList<FDStandingOrder>( soIdList.size() );
+				soList = new ArrayList<FDStandingOrder>();
 				for ( String soId : soIdList ) {
 					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
 					if ( so != null ) {

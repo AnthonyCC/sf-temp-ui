@@ -148,10 +148,14 @@ public class StandingOrdersServiceCmd {
 		try{
 						
 			if(null !=orders && !orders.trim().equalsIgnoreCase("")){
+				Set<String> soSet = new HashSet<String>();
 				
-				String[] order = orders.split(",");
+				String[] orderArray = orders.split(",");
+				for(String inputOrder : orderArray){
+					soSet.add(inputOrder.trim());
+				}
 				
-				Set<String> soSet = new HashSet<String>(Arrays.asList(order));
+				//Set<String> soSet = new HashSet<String>(Arrays.asList(order));
 				soIdList = new ArrayList<String>(soSet);				
 			}
 										
