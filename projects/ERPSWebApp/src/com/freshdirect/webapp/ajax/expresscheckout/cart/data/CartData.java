@@ -100,6 +100,8 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private boolean eTippingEnabled;
     
+    private boolean avalaraEnabled;
+    
     private List<String> tipAmounts = new ArrayList<String>();
     
     
@@ -318,6 +320,13 @@ public class CartData extends AbstractCoremetricsResponse {
 		this.eTippingEnabled = eTippingEnabled;
 	}
 
+	public void setAvalaraEnabled(boolean avalaraEnabled){
+		this.avalaraEnabled = avalaraEnabled;
+	}
+	
+	public boolean getAvalaraEnabled(){
+		return this.avalaraEnabled;
+	}
 
 
 

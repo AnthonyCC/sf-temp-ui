@@ -89,7 +89,8 @@ public class CheckoutService {
 
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
         UnavailabilityData unavailabilityData = null;
-		FDCartModel cart = user.getShoppingCart();
+        FDCartModel cart = user.getShoppingCart();
+        AvalaraContext avalaraContext = new AvalaraContext(cart);
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
@@ -105,8 +106,7 @@ public class CheckoutService {
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
             }
-            else{
-            	AvalaraContext avalaraContext = new AvalaraContext(cart);
+            else if(cart.getTaxValue() == 0.0){            	
             	avalaraContext.setCommit(false);
             	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
             }
