@@ -336,7 +336,7 @@ if (timeslots.size() > 0) {
 									? "premslots_PREday"
 									:	(timeslots.getHolidays().contains(day))
 											? "holiday_day"+dayIndex
-											: (showCutoffMedia && !showPremiumSlots)
+											: (showCutoffMedia && showPremiumSlots)
 												? "cutoffpassed_CPday"
 												: (!timeslots.getHolidays().contains(day) && timeslots.getTimeslotsForDate(day).size()==0)
 													? "nodelivery_NDday"
