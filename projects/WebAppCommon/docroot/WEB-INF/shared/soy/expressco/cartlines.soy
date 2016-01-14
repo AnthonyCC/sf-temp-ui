@@ -18,6 +18,7 @@
  * @param? tipAppliedTick
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
  */
 {template .viewcartlines autoescape="false"}
 {call .couponMessage}
@@ -36,6 +37,7 @@
 	{param userCorporate: $userCorporate /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
+	{param avalaraEnabled: $avalaraEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
@@ -51,12 +53,14 @@
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
   {param billingReferenceInfo: false /}
   {param eTippingEnabled: $eTippingEnabled /}
+  {param avalaraEnabled: $avalaraEnabled /}
   {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
     {param buttonText: 'Checkout' /}
     {param form: 'viewcart_startcheckout' /}
-    {param beforeCheckoutAction: $beforeCheckoutAction /}    
+    {param beforeCheckoutAction: $beforeCheckoutAction /}   
+    {param avalaraEnabled: $avalaraEnabled /} 
 {/call}
 {/template}
 
@@ -75,6 +79,7 @@
  * @param? tipAppliedTick
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative
  */
 {template .checkoutlines autoescape="false"}
@@ -90,6 +95,7 @@
 	{param userCorporate: $userCorporate /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
+	{param avalaraEnabled: $avalaraEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
    {/call}
   {/foreach}
@@ -104,11 +110,13 @@
   {param promotionApplied: $promotionApplied /}
   {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
   {param eTippingEnabled: $eTippingEnabled /}
+  {param avalaraEnabled: $avalaraEnabled /}
   {param customerServiceRepresentative: $customerServiceRepresentative /}
 {/call}
 {call .footer}
     {param buttonText: 'Place Order' /}
     {param form: 'checkout' /}
+    {param avalaraEnabled: $avalaraEnabled /}
 {/call}
 {/template}
 
@@ -122,6 +130,7 @@
  * @param? userCorporate
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
  */
 {template .successlines autoescape="false"}
 <div class='cartcontent'>
@@ -137,10 +146,13 @@
 	{param userCorporate: $userCorporate /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
+	{param avalaraEnabled: $avalaraEnabled /}
    {/call}
   {/foreach}
 </div>
-{call .footer}{/call}
+{call .footer}
+{param avalaraEnabled: $avalaraEnabled /}
+{/call}
 {/template}
 
 /**
@@ -229,6 +241,7 @@
  * @param subTotalBox subtotal
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
  * @param customerServiceRepresentative
  */
 {template .cartsection autoescape="false"}
@@ -238,15 +251,12 @@
     {delcall expressco.cartline data="$cartline" variant="$cartlineType"}
       {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
       {param customerServiceRepresentative: $customerServiceRepresentative /}
+      {param avalaraEnabled: $avalaraEnabled /}
     {/delcall}
   {/foreach}
 
   {if $info.subTotal}
     <div class='cartsection__totalwrapper'>
-
-
-
-
       {if $eTippingEnabled}	      
 	      <div id="subtotalbox">
 		      {if $subTotalBox and $subTotalBox.subTotalBox}
@@ -254,6 +264,7 @@
 		          {param subTotalBox: $subTotalBox.subTotalBox /}
 		          {param userRecognized: $userRecognized /}
 		          {param userCorporate: $userCorporate /}
+		          {param avalaraEnabled: $avalaraEnabled /}
 		        {/call}
 		      {/if}
 		    </div>	    
@@ -306,7 +317,7 @@
 		 </div>
 	 {else}
 	 	<p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
-      	{if $cartlineType == 'CHECKOUT'}<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}
+      	{if $cartlineType == 'CHECKOUT' and $avalaraEnabled}<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}
 	 {/if}      
 
     </div>
@@ -342,6 +353,7 @@
  * @param? categoryId
  * @param? customerServiceRepresentative
  * @param? complaintReason masquerade mode make good order reason text
+ * @param avalaraEnabled avalaraEnabled
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -428,10 +440,10 @@
   </div>
   <div class="cartline-legend cartline-box">
     <div class="cartline-legendwrapper">
-      {if $hasEstimatedPrice}<div class="legend-item">*</div>{/if}
-      {if $hasTax}<div class="legend-item"></div>{/if}
-      {if $hasDepositValue}<div class="legend-item"></div>{/if}
-      {if $hasScaledPricing}<div class="legend-item"></div>{/if}
+      {if $hasEstimatedPrice and not $avalaraEnabled}<div class="legend-item">*</div>{/if}
+      {if $hasTax and not $avalaraEnabled}<div class="legend-item">T</div>{/if}
+      {if $hasDepositValue and not $avalaraEnabled}<div class="legend-item">D</div>{/if}
+      {if $hasScaledPricing and not $avalaraEnabled}<div class="legend-item">S</div>{/if}
     </div>
   </div>
 </div>
@@ -548,7 +560,6 @@
 
  * @param cartlineType Cartsection type
  * @param subTotalBox subtotal
-
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
  * @param? userRecognized is the user recognized?
@@ -557,6 +568,7 @@
  * @param? promotionApplied
  * @param? billingReferenceInfo billing reference
  * @param eTippingEnabled eTippingEnabled
+ * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative Customer service representative data
  */
 {template .total autoescape="false"}
@@ -632,22 +644,14 @@
   </div>
   <div class='total__subtotal total-right'>
     <div id="subtotalbox">
-
-
-
-
-
-
-
-
-
-      {if $eTippingEnabled}	
+      {if $eTippingEnabled and not $avalaraEnabled}	
 	      {if $subTotalBox and $subTotalBox.estimatedTotalBox}
 	        {call .subTotalBox}
 			  {param cartlineType: $cartlineType /}
 	          {param subTotalBox: $subTotalBox.estimatedTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
+	          {param avalaraEnabled: $avalaraEnabled /}
 	        {/call}
 	      {/if}
       {else}
@@ -657,6 +661,7 @@
 	          {param subTotalBox: $subTotalBox.subTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
+	          {param avalaraEnabled: $avalaraEnabled /}
 	        {/call}
 	    {/if}
 
@@ -700,11 +705,50 @@
 * @param? subTotalBox subTotalBox data
 * @param? userRecognized is the user recognised or not
 * @param? userCorporate COS service is available for customer
+* @param? avalaraEnabled avalaraEnabled
+* @param? eTippingEnabled eTippingEnabled
 */
 {template .subTotalBox}
 {if $subTotalBox}
   {foreach $box in $subTotalBox}
     <div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
+  {if not $avalaraEnabled}
+      <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
+        {if $box.id == 'freefood'}
+          <a href='/shared/promotion_popup.jsp?promoCode=signup'
+             data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
+             data-ifrpopup-width='585' data-ifrpopup-height='400'>{$box.text}</a>
+        {else}
+          {if $box.other and $box.other.promoCode}
+            <a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
+               data-ifrpopup='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
+               data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
+          {else}
+          	{if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
+          		{$box.text}
+          		{if $eTippingEnabled}
+          		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+          		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
+	  				<b>Delivery Fee</b> 
+	  				<br/> 
+	  				<p>The delivery fee is not a gratuity
+						for any FreshDirect employee who
+						delivers or is otherwise involved
+						with the delivery of your order
+						and will not be given to any such
+						employee as a gratuity.</p>
+  				</div>
+  				{/if}
+          	{else}
+            	{$box.text}
+            {/if}
+          {/if}
+        {/if}
+      </div>
+      <div class='subtotal__rowcell-mid rowcell-text-right'>
+      {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}
+      </div>
+  {else}
   {if $cartlineType == 'CHECKOUT'} 
       <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
         {if $box.id == 'freefood'}
@@ -719,6 +763,7 @@
           {else}
           	{if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
           		{$box.text}
+          		{if $eTippingEnabled}
           		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
           		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 	  				<b>Delivery Fee</b> 
@@ -730,6 +775,7 @@
 						and will not be given to any such
 						employee as a gratuity.</p>
   				</div>
+  				{/if}
           	{else}
             	{$box.text}
             {/if}
@@ -753,14 +799,32 @@
                data-ifrpopup='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
                data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
           {else}
+          {if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
+          		{$box.text}
+          		{if $eTippingEnabled}
+          		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+          		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
+	  				<b>Delivery Fee</b> 
+	  				<br/> 
+	  				<p>The delivery fee is not a gratuity
+						for any FreshDirect employee who
+						delivers or is otherwise involved
+						with the delivery of your order
+						and will not be given to any such
+						employee as a gratuity.</p>
+  				</div>
+  				{/if}
+          	{else}
             {$box.text}
           {/if}
+        {/if}
         {/if}
       </div>
       <div class='subtotal__rowcell-mid rowcell-text-right'>
       {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}{/if}
       </div>
-      {/if}               
+      {/if} 
+      {/if}
       {if $box.other}
       <div class='subtotal__rowcell-right'>
         {if $box.other.mark}{$box.other.mark}{/if}
@@ -805,6 +869,7 @@
  * @param? navLink Where the button should navigate
  * @param? form form id for button
  * @param? beforeCheckoutAction on-click action
+ * @param avalaraEnabled avalaraEnabled
  */
 {template .footer autoescape="false"}
 <div class='footer'>
@@ -813,7 +878,8 @@
     </div>
   {/if}
   <div class='footer__left'>
-	{if $buttonText == 'Place Order'}
+	{if $avalaraEnabled}
+	 {if $buttonText == 'Place Order'}
     <p>
       <span class='footer__legend'>* - Estimated Price</span>
       <span class='footer__legend'>T - Taxable Item</span>
@@ -821,6 +887,14 @@
       <span class='footer__legend'>S - Special Price</span>
     </p>
     {/if}
+   {else}
+     <p>
+      <span class='footer__legend'>* - Estimated Price</span>
+      <span class='footer__legend'>T - Taxable Item</span>
+      <span class='footer__legend'>D - State Bottle Deposit</span>
+      <span class='footer__legend'>S - Special Price</span>
+    </p>
+   {/if}
     <p class='footer__findout'>Find out more about <a href='/help/estimated_price.jsp' data-ifrpopup='/help/estimated_price.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>estimated prices</a>, <a href='/help/taxes_fees.jsp' data-ifrpopup='/help/taxes_fees.jsp' data-ifrpopup-width='375' data-ifrpopup-height='335'>taxes, deposits, and fees</a>,<br />
       and other aspects of our <a href='/help/terms_of_service.jsp' data-ifrpopup='/help/terms_of_service.jsp?type=popup' data-ifrpopup-width='600'>customer agreement</a></p>
   </div>
