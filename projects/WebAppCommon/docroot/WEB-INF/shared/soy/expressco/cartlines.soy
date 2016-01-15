@@ -264,6 +264,7 @@
 		          {param subTotalBox: $subTotalBox.subTotalBox /}
 		          {param userRecognized: $userRecognized /}
 		          {param userCorporate: $userCorporate /}
+		          {param eTippingEnabled: $eTippingEnabled /}
 		          {param avalaraEnabled: $avalaraEnabled /}
 		        {/call}
 		      {/if}
@@ -302,7 +303,7 @@
 					<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
 				{/if}
 				{if $tipAppliedTick}
-					<img id="tipAppliedTick" src="/media/layout/nav/images/locabar-check.png" alt="Image of Tick" />
+					<img id="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Image of Tick" />
 				{/if}						
 				<br/>
 				<input type="hidden" name="action" value="applyETip" />
@@ -651,6 +652,7 @@
 	          {param subTotalBox: $subTotalBox.estimatedTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
+	          {param eTippingEnabled: $eTippingEnabled /}
 	          {param avalaraEnabled: $avalaraEnabled /}
 	        {/call}
 	      {/if}
@@ -661,6 +663,7 @@
 	          {param subTotalBox: $subTotalBox.subTotalBox /}
 	          {param userRecognized: $userRecognized /}
 	          {param userCorporate: $userCorporate /}
+	          {param eTippingEnabled: $eTippingEnabled /}
 	          {param avalaraEnabled: $avalaraEnabled /}
 	        {/call}
 	    {/if}
@@ -725,7 +728,7 @@
                data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
           {else}
           	{if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
-          		{$box.text}
+          		{$box.text} 
           		{if $eTippingEnabled}
           		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
           		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
@@ -821,7 +824,7 @@
         {/if}
       </div>
       <div class='subtotal__rowcell-mid rowcell-text-right'>
-      {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}{/if}
+      {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value} </div>{else}{$box.value}{/if}{/if}
       </div>
       {/if} 
       {/if}
