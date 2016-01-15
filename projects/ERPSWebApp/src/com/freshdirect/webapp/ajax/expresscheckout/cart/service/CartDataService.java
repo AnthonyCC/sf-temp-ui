@@ -677,7 +677,8 @@ public class CartDataService {
 	        
 	        cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());
 	        cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
-	        cartData.setCustomTip(cart.isCustomTip());
+	        cartData.setCustomTip(cart.isCustomTip());	        
+	        cartData.setEtipTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getETipValue(cart)));
     	} else {
     		List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
             CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
@@ -729,10 +730,7 @@ public class CartDataService {
     private void decorateSubTotalWithoutWineAndSpirit(FDCartI cart, List<CartData.Section> sections, SectionInfo sectionInfo, boolean hasEstimatedPriceItemInCart,
             String subTotalText) {
         sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalWithoutWineAndSpirit(cart)));
-        sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueWithoutWineAndSpirit(cart)));
-        if(FDStoreProperties.isETippingEnabled()) {
-        	sectionInfo.setEtipTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getETipValue(cart)));
-        }
+        sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueWithoutWineAndSpirit(cart)));        
         sectionInfo.setSubTotalText(subTotalText);
         sectionInfo.setHasEstimatedPrice(hasEstimatedPriceItemInCart);
     }

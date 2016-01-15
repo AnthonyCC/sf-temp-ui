@@ -2,6 +2,7 @@
 
 /**
  * @param subTotalBox subtotal
+ * @param subTotal
  * @param cartSections List of cart sections
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
@@ -17,8 +18,9 @@
  * @param? tipApplied
  * @param? tipAppliedTick
  * @param customTip customTip
- * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
+ * @param eTippingEnabled eTippingEnabled
+ * @param etipTotal eTipTotal
  */
 {template .viewcartlines autoescape="false"}
 {call .couponMessage}
@@ -33,12 +35,15 @@
     {param tipApplied: $tipApplied /}
     {param tipAppliedTick: $tipAppliedTick /}
     {param subTotalBox: $subTotalBox /}
+    {param subTotal: $subTotal /}
 	{param userRecognized: $userRecognized /}
 	{param userCorporate: $userCorporate /}
+	{param etipTotal: $etipTotal /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
 	{param avalaraEnabled: $avalaraEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
+    {param numOfSections : length($cartSections) /}
    {/call}
   {/foreach}
 </div>
@@ -66,6 +71,7 @@
 
 /**
  * @param subTotalBox subtotal
+ * @param subTotal
  * @param cartSections List of cart sections
  * @param? additionalInfo Promotion info
  * @param? goGreen go green state
@@ -74,6 +80,7 @@
  * @param? billingReferenceInfo billing reference info
  * @param? deliveryPassTrialExpired
  * @param? promotionApplied
+ * @param etipTotal etipTotal
  * @param? tipAmounts
  * @param? tipApplied
  * @param? tipAppliedTick
@@ -91,12 +98,15 @@
     {param tipApplied: $tipApplied /}
     {param tipAppliedTick: $tipAppliedTick /}
     {param subTotalBox: $subTotalBox /}
+    {param subTotal: $subTotal /}
 	{param userRecognized: $userRecognized /}
 	{param userCorporate: $userCorporate /}
+	{param etipTotal: $etipTotal /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
 	{param avalaraEnabled: $avalaraEnabled /}
     {param customerServiceRepresentative: $customerServiceRepresentative /}
+    {param numOfSections : length($cartSections) /}
    {/call}
   {/foreach}
 </div>
@@ -126,8 +136,10 @@
  * @param? tipApplied
  * @param? tipAppliedTick
  * @param subTotalBox subtotal
+ * @param subTotal
  * @param? userRecognized is the user recognized?
  * @param? userCorporate
+ * @param etipTotal etipTotal
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
@@ -138,15 +150,18 @@
    {call .cartsection data="$section"}
     {param noModifyLinks: true /}
     {param cartlineType: 'CHECKOUT' /}
+    {param etipTotal: $etipTotal /}
     {param tipAmounts: $tipAmounts /}
     {param tipApplied: $tipApplied /}
     {param tipAppliedTick: $tipAppliedTick /}
     {param subTotalBox: $subTotalBox /}
+    {param subTotal: $subTotal /}
 	{param userRecognized: $userRecognized /}
 	{param userCorporate: $userCorporate /}
 	{param customTip: $customTip /}
 	{param eTippingEnabled: $eTippingEnabled /}
 	{param avalaraEnabled: $avalaraEnabled /}
+	{param numOfSections : length($cartSections) /}
    {/call}
   {/foreach}
 </div>
@@ -233,16 +248,19 @@
  * @param info Cartsection additional info
  * @param cartlineType Cartsection type: wine or fallback
  * @param populateDCPDPromoDiscount
+ * @param etipTotal etipTotal
  * @param tipAmounts
  * @param tipApplied
  * @param tipAppliedTick
  * @param? userRecognized is the user recognized?
  * @param? userCorporate
  * @param subTotalBox subtotal
+ * @param subTotal
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
  * @param customerServiceRepresentative
+ * @param numOfSections
  */
 {template .cartsection autoescape="false"}
 <div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
@@ -257,7 +275,12 @@
 
   {if $info.subTotal}
     <div class='cartsection__totalwrapper'>
-      {if $eTippingEnabled}	      
+      {if $eTippingEnabled}
+      	{if $numOfSections > 1}
+      	  <p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
+      	  <p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
+      	{/if}
+      	{if ($numOfSections > 1 and $info.wine) or $numOfSections == 1}	      	  		      
 	      <div id="subtotalbox">
 		      {if $subTotalBox and $subTotalBox.subTotalBox}
 		        {call .subTotalBox}
@@ -268,11 +291,11 @@
 		          {param avalaraEnabled: $avalaraEnabled /}
 		        {/call}
 		      {/if}
-		    </div>	    
+		    </div>		    	    
 		  </div>
 	      <div class='cartsection__tax' fdform-container="etip">      	
 	  		<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
-	  			<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="${$info.subTotal}" />
+	  			<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
 		  		Optional Tip <a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a><div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 	  				<b>Optional Tip</b> 
 	  				<br/> 
@@ -288,15 +311,15 @@
 	  			{if $customTip}  			  
 			      	<select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
 			      	{foreach $option in $tipAmounts}
-			      		<option value="{$option}" {if $info.etipTotal == $option}selected{/if}>{$option}</option>			  
+			      		<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
 					{/foreach}  
 					</select>
-					<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$info.etipTotal}" />
+					<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />
 					<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
 				{else}
 					<select id="tipDropdown" name="tipAmount" data-component="changeETip">
 			      	{foreach $option in $tipAmounts}
-			      		<option value="{$option}" {if $info.etipTotal == $option}selected{/if}>{$option}</option>			  
+			      		<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
 					{/foreach}  
 					</select>
 					<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" style="display:none" />
@@ -315,7 +338,8 @@
 		        	<button id="tipApplied" style="display:none" class="cssbutton grey" disabled>Tip Added</button>
 		        {/if}
 	        </form>                
-		 </div>
+		 </div>		 		 	
+		 {/if}
 	 {else}
 	 	<p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
       	{if $cartlineType == 'CHECKOUT' and $avalaraEnabled}<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}

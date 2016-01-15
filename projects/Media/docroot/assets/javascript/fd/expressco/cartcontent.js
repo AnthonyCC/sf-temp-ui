@@ -236,10 +236,13 @@ var FreshDirect = FreshDirect || {};
             
             console.log("onTipEntered");
             
+            $('#tipApply').show();
+            $('#tipApplied').hide();
+            
             var tip = $('#tipTextBox').val();
             var subTotalStr = $('#hiddenSubTotal').val();
             
-            var subTotal = subTotalStr.substring(2);
+            var subTotal = subTotalStr.substring(1);
             
             console.log("Sub Total : " + subTotal + " Tip : " + tip);
             
@@ -252,7 +255,7 @@ var FreshDirect = FreshDirect || {};
             	var innerHtml = $("<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>")
             	$('#toolTipTextBox').html('').append(innerHtml);
             } else {
-            	$('#toolTipTextBox').html('');
+            	$('#toolTipTextBox').html('');            	
             	$('#tipApply').prop('disabled', false);
             }
     	}

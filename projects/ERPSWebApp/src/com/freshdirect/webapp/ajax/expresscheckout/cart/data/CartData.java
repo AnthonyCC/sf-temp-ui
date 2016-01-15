@@ -92,6 +92,8 @@ public class CartData extends AbstractCoremetricsResponse {
 
     private BillingReferenceInfo billingReferenceInfo;
     
+    private String etipTotal;
+    
     private boolean tipApplied;
     
     private boolean tipAppliedTick;
@@ -280,6 +282,14 @@ public class CartData extends AbstractCoremetricsResponse {
 		this.beforeCheckoutAction = beforeCheckoutAction;
 	}
 	
+	public String getEtipTotal() {
+		return etipTotal;
+	}
+
+	public void setEtipTotal(String etipTotal) {
+		this.etipTotal = etipTotal;
+	}
+	
     public boolean isTipApplied() {
 		return tipApplied;
 	}
@@ -394,8 +404,7 @@ public class CartData extends AbstractCoremetricsResponse {
         private boolean wine;
         private boolean freeSample;
         private String subTotal;
-        private String taxTotal;
-        private String etipTotal;
+        private String taxTotal;        
         private String subTotalText;
         private boolean hasEstimatedPrice;
 
@@ -501,14 +510,7 @@ public class CartData extends AbstractCoremetricsResponse {
         public void setHasEstimatedPrice(boolean hasEstimatedPrice) {
             this.hasEstimatedPrice = hasEstimatedPrice;
         }
-
-		public String getEtipTotal() {
-			return etipTotal;
-		}
-
-		public void setEtipTotal(String etipTotal) {
-			this.etipTotal = etipTotal;
-		}
+		
     }
     
     
