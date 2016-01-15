@@ -37,7 +37,7 @@ if (cutoffInfo.displayWarning()) {
 						<% if (isHomeAddr) { %>delivery in your area
 						<% } else if (isPickupAddr || isUnknown) {%>pickup
 						<% } else if (isCorporateAddr) {%>office delivery<% } %>
-					tomorrow is <%=cutoffInfo.getLastCutoff()%>.</b>
+					tomorrow is <%= DateUtil.formatShortTimeNoZeroMins(cutoffInfo.getLastCutoff()) %>.</b>
 				<% } else { %>
 					<b><font color="#CC0000">Please note:</font> The cut off time for 
 						<% if (isHomeAddr && !isUnknown) { %>delivery in your area
