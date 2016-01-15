@@ -342,7 +342,12 @@
 		 {/if}
 	 {else}
 	 	<p class='cartsection__total'>{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}</p>
-      	{if $cartlineType == 'CHECKOUT' and $avalaraEnabled}<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}
+      	{if $avalaraEnabled}
+      	 {if $cartlineType == 'CHECKOUT'}
+      	<p class='cartsection__tax'>Tax: {$info.taxTotal}</p>{/if}
+      	{else}
+      	 <p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
+      	{/if}
 	 {/if}      
 
     </div>

@@ -130,6 +130,7 @@ public class CartDataService {
             populateCartData(user, request, userId, cart, cartData);
         }
         cartData.seteTippingEnabled(FDStoreProperties.isETippingEnabled());
+        cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
         return cartData;
     }
 
