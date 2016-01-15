@@ -507,4 +507,21 @@ public class DateUtil {
 		}
 	}
 	
+	/* When we want "11:59pm" or "11pm" */
+	@SuppressWarnings("deprecation")
+	public static String formatShortTimeNoZeroMins(TimeOfDay time) {
+		String formattedTime = "";
+		Date dateObj = time.getAsDate();
+		
+		if (dateObj.getMinutes() != 0) {
+			DateFormat formatter = new SimpleDateFormat("h:mmaa");
+			formattedTime = formatter.format(dateObj);
+		} else {
+			DateFormat formatter = new SimpleDateFormat("haa");
+			formattedTime = formatter.format(dateObj);
+		}
+		
+		return formattedTime.toLowerCase();
+	}
+	
 } 

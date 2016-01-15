@@ -6,6 +6,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import="com.freshdirect.webapp.util.JspLogger" %>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
 
 <% //expanded page dimensions
 final int W_CUTOFF_WARNING_TOTAL = 970;
@@ -37,15 +38,12 @@ if (cutoffInfo.displayWarning()) {
 						<% } else if (isPickupAddr || isUnknown) {%>pickup
 						<% } else if (isCorporateAddr) {%>office delivery<% } %>
 					tomorrow is <%=cutoffInfo.getLastCutoff()%>.</b>
-					<br>
-					<b><font color="#CC0000">Please note:</font></b> orders for earlier <%= isPickupAddr || isUnknown?"pickup":"deliveries"%> (<%=cutoffInfo.getNextEarliestTimeslot()%> - <%=cutoffInfo.getNextLatestTimeslot()%>), must be placed before <%=cutoffInfo.getNextCutoff()%>.
 				<% } else { %>
 					<b><font color="#CC0000">Please note:</font> The cut off time for 
 						<% if (isHomeAddr && !isUnknown) { %>delivery in your area
 						<% } else if (isPickupAddr || isUnknown) {%>pickup
 						<% } else if (isCorporateAddr) {%>office delivery<% } %>
-					tomorrow is <%=cutoffInfo.getNextCutoff()%>.</b><br>
-					<%= isPickupAddr || isUnknown?"For orders":"To receive delivery"%> tomorrow, please complete <a href="/checkout/view_cart.jsp">checkout</a> within the next <font color="#CC0000"><b><%=cutoffInfo.getMinsBeforeCutoff()%> minutes</b></font>.
+					tomorrow is <%= DateUtil.formatShortTimeNoZeroMins(cutoffInfo.getNextCutoff()) %>.</b>
 				<% } %>
 				<br>
 				<% if ((isHomeAddr && !isUnknown) || isCorporateAddr) { %><a href="<% if (_user.getAdjustedValidOrderCount() >= 1) { %>/your_account/delivery_info_avail_slots<% } else { %>/help/delivery_info<%= EnumServiceType.CORPORATE.equals(_user.getSelectedServiceType()) ? "_cos" : ""%><% } %>.jsp"><b>Click here</b></a> to see all available time slots<% if (!isCorporateAddr) { %> for your address<% if (cutoffInfo.getZipCode() != null) { %> in <%=cutoffInfo.getZipCode()%><% } %><% } %>.
@@ -57,7 +55,7 @@ if (cutoffInfo.displayWarning()) {
 	if (uri_cutoffWarning.endsWith("index.jsp") || uri_cutoffWarning.endsWith("view_cart.jsp")) {
 		cutoffInfoDisplayed = true;
 %>
-<div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoffpasthour"><b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%=cutoffInfo.getCutoffTime().toString()%></b></div></div>
+<div class="message invisible" id="cutoff" data-type="cutoff"><div class="cutoffpasthour"><b><font color="#CC0000">Please note:</font> The cut off time for <%= isPickupAddr || isUnknown?"pickup":"delivery"%> <%=dayDateFormat.format(cutoffInfo.getDeliveryDate())%> was <%= DateUtil.formatShortTimeNoZeroMins(cutoffInfo.getCutoffTime()) %></b></div></div>
 		<%
 	}
 }
