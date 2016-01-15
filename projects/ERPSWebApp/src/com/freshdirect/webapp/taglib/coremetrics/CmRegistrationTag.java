@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -60,6 +62,8 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 			tagModelBuilder.setUser(user);
+			
+			tagModelBuilder.setSocialUserProfile((HashMap<String, String>) session.getAttribute(SessionName.SOCIAL_USER));
 			
 			String registrationLocation = (String)session.getAttribute(REGISTRATION_LOCATION); 
 			session.removeAttribute(REGISTRATION_LOCATION);
