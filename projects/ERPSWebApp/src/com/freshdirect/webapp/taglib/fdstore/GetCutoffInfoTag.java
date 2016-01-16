@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -115,7 +117,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 			cutoffInfo.setNextEarliestTimeslot(nextCutoff.getStartTime());
 			cutoffInfo.setNextLatestTimeslot(nextCutoff.getEndTime());
 			
-			FDZoneCutoffInfo lastCutoff = (FDZoneCutoffInfo) cutoffTimes.get(cutoffTimes.size() - 1);
+			FDZoneCutoffInfo lastCutoff = this.getLastCutoff(cutoffTimes);
 			cutoffInfo.setLastCutoff(lastCutoff.getCutoffTime());
 			
 			if(capacity.getRemainingCapacity() <= 0 && cutoffInfo.displayWarning()) {
@@ -128,6 +130,12 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 	}
 	
 	private FDZoneCutoffInfo getNextCutoff(List cInfos, TimeOfDay now) {
+		Collections.sort(cInfos, new Comparator<FDZoneCutoffInfo>() {
+
+			public int compare(FDZoneCutoffInfo o1, FDZoneCutoffInfo o2) {
+				return o1.getCutoffTime().compareTo(o2.getCutoffTime());
+			}
+	    });
 		
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ){
 			FDZoneCutoffInfo info = (FDZoneCutoffInfo) i.next();
@@ -137,6 +145,22 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		}
 		
 		return null;
+	}
+
+	private FDZoneCutoffInfo getLastCutoff(List cInfos) {
+		
+		TimeOfDay last = new TimeOfDay(new Date());
+		FDZoneCutoffInfo lastInfo = null; 
+		
+		for(Iterator i = cInfos.iterator(); i.hasNext(); ){
+			FDZoneCutoffInfo info = (FDZoneCutoffInfo) i.next();
+			if(info.getCutoffTime().after(last)){
+				last = info.getCutoffTime();
+				lastInfo = info;
+			}
+		}
+		
+		return lastInfo;
 	}
 	
 	private FDZoneCutoffInfo getLastElapsedCutoff(List cInfos, TimeOfDay now) {
