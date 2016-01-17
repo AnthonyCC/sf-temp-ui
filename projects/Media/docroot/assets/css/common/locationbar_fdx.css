@@ -34,8 +34,9 @@
 		font-size:16px;
 		font-weight:bold;
 	}
-	#newzipgo, #newzipgo:active, #newzipgo:hover,
-	.newzipgo, .newzipgo:active, .newzipgo:hover {
+	#newzipgo, #newzipgo:active, #newzipgo:hover, #newzipgo, #newzipgo:active, #newzipgo:focus,
+	.newzipgo, .newzipgo:active, .newzipgo:hover, .newzipgo, .newzipgo:active, .newzipgo:focus
+	{
 		background-image: none;
 	}
 	#newzipgo, #newzipgo:active,
@@ -60,7 +61,7 @@
 		background-color: #eee;
 		margin-right: 6px;
 	}
-	#location-submit, #location-submit:active, #location-submit:hover {
+	#location-submit, #location-submit:active, #location-submit:hover, #location-submit:focus {
 		background-image: none;
 		border: none;
 	}
@@ -73,7 +74,7 @@
 		margin-top: 7px;
 		font-size: 13px;
 	}
-	#location-submit:hover {
+	#location-submit:hover, #location-submit:focus {
 		background: #659941;
 	}
 	#popupcart {
@@ -116,10 +117,10 @@
 	#popupcart table .item{
 		width: 300px;
 	}
-	#popupcart tr.cartline:hover {
+	#popupcart tr.cartline:hover, #popupcart tr.cartline:focus {
 		background-color: #f1f1f1;
 	}
-	#popupcart button.remove:hover {
+	#popupcart button.remove:hover, #popupcart button.remove:focus {
 		width: 14px;
 		height: 16px;
 		background-image: url('/media/layout/nav/globalnav/fdx/trash_hover.png');
@@ -153,20 +154,26 @@
 	#popupcart tr.cartline .quantity .qtyinput {
 		height: 25px;
 	}
-	#popupcart tr.cartline:hover .quantity .qtyinput.small .qty {
+	#popupcart tr.cartline:hover .quantity .qtyinput.small .qty,
+	#popupcart tr.cartline:focus .quantity .qtyinput.small .qty 
+	{
 		border: 1px solid #ddd;
 	}
 	#popupcart tr.cartline .quantity .qtyinput.small .qty {
 		border: 1px solid #fff;
 		font-weight: bold;
 	}
-	#popupcart tr.cartline:hover .quantity .qtyinput.small button {
+	#popupcart tr.cartline:hover .quantity .qtyinput.small button,
+	#popupcart tr.cartline:focus .quantity .qtyinput.small button
+	{
 		display: inline-block;
 	}
 	#popupcart tr.cartline .quantity .qtyinput.small button {
 		display: none;
 	}
-	#popupcart tr.cartline:hover button.remove {
+	#popupcart tr.cartline:hover button.remove,
+	#popupcart tr.cartline:focus button.remove
+	{
 		display: inline-block;
 	}
 	#popupcart tr.cartline button.remove {
@@ -214,7 +221,7 @@
 		right: 200px;
 	}
 	
-	#popupcart a.cart:hover {
+	#popupcart a.cart:hover, #popupcart a.cart:focus {
 		text-decoration: underline;
 	}
 	
@@ -564,10 +571,10 @@
 	height: 23px;
 	width: 84px;
 }
-.locabar-tab-fdx-cont:hover {
+.locabar-tab-fdx-cont:hover, .locabar-tab-fdx-cont:focus {
 	background-color: #fff;
 }
-.locabar-tab-fdx-cont:hover .locabar-tab-fdx {
+.locabar-tab-fdx-cont:hover .locabar-tab-fdx, .locabar-tab-fdx-cont:focus .locabar-tab-fdx {
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-tab-fdx_hover.png');
 	background-repeat: no-repeat;
 }
@@ -583,6 +590,9 @@
 
 .locabar_triggers{
 	height:40px;
+}
+.locabar_triggers:focus {
+    outline: 2px solid #f00;
 }
 #locabar_user_trigger {
 	display: inline-block;
@@ -625,7 +635,7 @@
 #locabar_user .section-line {
 	line-height: 2em;
 }
-.section-line a:hover {
+.section-line a:hover, .section-line a:focus {
     color: #67a96d!important;
     text-decoration: underline!important;
 }
@@ -690,7 +700,8 @@
 		line-height: 12px;
 	}
 }
-#locabar_addresses .locabar_addresses-dlvadd-edit:hover, #locabar_addresses .locabar_addresses-ts-info:hover {
+#locabar_addresses .locabar_addresses-dlvadd-edit:hover, #locabar_addresses .locabar_addresses-ts-info:hover,
+#locabar_addresses .locabar_addresses-dlvadd-edit:focus, #locabar_addresses .locabar_addresses-ts-info:focus {
 	background-color: #4fa157;
 }
 #locabar_addresses .locabar_addresses-dlvadd-edit, #locabar_addresses .locabar_addresses-ts-info {
@@ -849,7 +860,7 @@
 	height: 42px;
 }
 
-.locabar-right-sections .locabar-section:hover {
+.locabar-right-sections .locabar-section:hover, .locabar-right-sections .locabar-section:focus {
 	background-color: #4fa157;
 }
 
@@ -870,6 +881,8 @@
 		transform: translate(0, -20px);
 		-moz-transform: translate(0, 0); /* firefox adds negatives, disable for now */
 	}
+	
+	
 	#locabar_addresses_trigger:hover #locabar_addresses,
 	#locabar_popupcart_trigger:hover #locabar_popupcart,
 	#locabar_user_trigger[data-signedin="true"]:hover #locabar_user,
@@ -880,13 +893,27 @@
 		opacity: 1;
 		transform: translate(0, 0);
 	}
-	.disableCart #locabar_addresses_trigger:hover #locabar_addresses,
-	.disableCart #locabar_user_trigger[data-signedin="true"]:hover #locabar_user,
-	.disableCart #locabar_popupcart_trigger:hover #locabar_popupcart {
+	
+	/* override transitions for keyboard navigation */
+	#locabar_addresses_trigger.hover #locabar_addresses,
+	#locabar_popupcart_trigger.hover #locabar_popupcart,
+	#locabar_user_trigger[data-signedin="true"].hover #locabar_user,
+	#locabar_user_trigger[data-recog="true"].hover #locabar_user
+	{
+		visibility: visible;
+		opacity: 1;
+		transform: translate(0, 0);
+	}
+	
+	.disableCart #locabar_addresses_trigger:hover #locabar_addresses, .disableCart #locabar_addresses_trigger:focus #locabar_addresses,
+	.disableCart #locabar_user_trigger[data-signedin="true"]:hover #locabar_user, .disableCart #locabar_user_trigger[data-signedin="true"]:focus #locabar_user,
+	.disableCart #locabar_popupcart_trigger:hover #locabar_popupcart, .disableCart #locabar_popupcart_trigger:focus #locabar_popupcart
+	{
 		visibility: hidden;
 	}
 	
-	#locabar_addresses_trigger:hover #locabar_addresses{
+	#locabar_addresses_trigger:hover #locabar_addresses, #locabar_addresses_trigger:focus #locabar_addresses
+	{
 		top: 48px!important;
     	margin-top: 0px!important;
 	}
@@ -924,9 +951,9 @@
 	
 /* transitions */
 
-	#locabar_addresses_trigger:hover .locabar-down-arrow,
-	#locabar_popupcart_trigger:hover .locabar-down-arrow,
-	#locabar_user_trigger:hover .locabar-down-arrow
+	#locabar_addresses_trigger:hover .locabar-down-arrow, #locabar_addresses_trigger:focus .locabar-down-arrow,
+	#locabar_popupcart_trigger:hover .locabar-down-arrow, #locabar_popupcart_trigger:focus .locabar-down-arrow,
+	#locabar_user_trigger:hover .locabar-down-arrow, #locabar_user_trigger:focus .locabar-down-arrow
 	{
 		background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow_hover.png');
 	}
@@ -1002,7 +1029,7 @@
 #selectAddressList-menu .ui-state-focus, #selectAddressList-menu .locabar-check-text {
 	color: #67a96d;
 }
-#selectAddressList-menu .ui-state-focus:hover {
+#selectAddressList-menu .ui-state-focus:hover, #selectAddressList-menu .ui-state-focus:focus {
 	border: none;
 	background-image: none;
 	background-color: transparent;
@@ -1026,10 +1053,10 @@
 	color: white;
 	background-color: #6AAA6D;
 }
-.cssbutton.fdxgreen:hover {
+.cssbutton.fdxgreen:hover, .cssbutton.fdxgreen:focus {
 	background-color: #4fa157;
 }
-.cssbutton.orange{
+.cssbutton.orange {
 	background-color:#f9963f;
 }
 
@@ -1157,13 +1184,13 @@ option.address-icon {
 .hasFDX .top-item-link a:visited, .hasFDX .top-item-link a:active {
 	background-color: #6AAA6D;
 }
-.hasFDX .top-item-link a:hover {
+.hasFDX .top-item-link a:hover, .hasFDX .top-item-link a:focus {
 	background-color: #4fa157;
 }
 .hasFDX .gnav-footer {
 	background-color: #6AAA6D;
 }
-.hasFDX .gnav-footer .link:hover {
+.hasFDX .gnav-footer .link:hover, .hasFDX .gnav-footer .link:focus {
 	background-color: #4fa157;
 }
 .hasFDX .gnav-footer a:visited, .hasFDX .gnav-footer a:active {
@@ -1175,11 +1202,14 @@ option.address-icon {
 .hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"] {
 	background-color: #e1eee2;
 }
-.hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"]:hover {
+.hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"]:hover,
+.hasFDX [data-component="globalnav"] .bottom-item a[data-highlight="on"]:focus
+{
 	background-color: #cce2ce;
 }
 
-.bottom-nav .bottom-nav-items .bottom-item a:hover{
+.bottom-nav .bottom-nav-items .bottom-item a:hover, .bottom-nav .bottom-nav-items .bottom-item a:focus
+{
 	background-color: #f6faf6!important;
 	color:#4fa157!important;
 }

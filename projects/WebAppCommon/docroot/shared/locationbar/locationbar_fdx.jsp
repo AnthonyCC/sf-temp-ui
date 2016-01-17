@@ -96,7 +96,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 <%-- messages icon --%>
 	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
-			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers">
+			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers" tabindex="0">
 				<div class="section-warning-small" id="locabar-messages-open">
 					<div id="locabar-messages-count" class="locabar-circle-cont messages-count" data-count="0">0</div>
 				</div>
@@ -354,7 +354,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
     	}
 	%>
 	<tmpl:put name="zip_address"><div class="locabar-section locabar-addresses-section">
-		<div id="locabar_addresses_trigger" class="locabar_triggers">
+		<div id="locabar_addresses_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true">
 				<div class="bold cursor-pointer">
 					<div class="locabar-truck" style="display: inline-block;"></div>
 					<div style="display: inline-block;">
@@ -375,7 +375,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					</div>
 				</div>
 				
-				<div id="locabar_addresses" class="posAbs">
+				<div id="locabar_addresses" class="locabar_triggers_menu posAbs" aria-hidden="true">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
@@ -464,7 +464,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			}
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
-			<div id="locabar_user_trigger" class="locabar_triggers" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
+			<div id="locabar_user_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
 					<div class="locabar-user-greeting-cont">
@@ -475,7 +475,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
 				<%@ include file="/shared/template/includes/i_youraccount_links.jspf"%>
-				<div id="locabar_user" class="posAbs">
+				<div id="locabar_user" class="locabar_triggers_menu posAbs" aria-hidden="true">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<div class="section-cont">
@@ -513,7 +513,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
-			<div id="locabar_popupcart_trigger" class="locabar_triggers">
+			<div id="locabar_popupcart_trigger" class="locabar_triggers" tabindex="0">
 				<div class="bold cursor-pointer">
 					<div class="locabar-cart-count-cont">
 						<div class="locabar-cart"></div>
@@ -528,7 +528,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						</div>
 					</div>
 				</div>
-				<div id="locabar_popupcart" class="posAbs">
+				<div id="locabar_popupcart" class="locabar_triggers_menu posAbs" aria-hidden="true">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<fd:GetCart id="cart">

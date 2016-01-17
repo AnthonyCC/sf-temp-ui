@@ -181,3 +181,37 @@ $jq('#location-alerts').on('alertClose', function() {
 $jq("#selectAddressList-menu").on('hover mouseover', function(e) {
 	$jq(this).find(".locabar-check-text").parent("li").addClass("ui-state-focus");
 });
+
+/* keyboard navigation */
+FreshDirect.locabar.lastFocusElemId = '';
+$jq('.locabar_triggers').on('focus retClose', function(event) {
+	var prevId = FreshDirect.locabar.lastFocusElemId;
+	if (prevId !== '' && ( ($jq(this).attr('id') !== $jq(prevId).attr('id')) || (event.type == 'retClose') )) {
+		$jq(prevId).removeClass('hover');
+		$jq(prevId).find('[aria-hidden="false"]:first').attr('aria-hidden', true);
+	} 
+});
+
+$jq('.locabar_triggers').on('keydown', function(event) {	
+	var curId = $jq(this).attr('id');
+	if (event.keyCode == 13) {
+		// send to cart instead...
+		if (curId == 'locabar_popupcart_trigger') {
+			document.location = '/view_cart.jsp';
+		} else {
+			if ($jq(this).hasClass('hover')) { //allow manual closing
+				$jq(this).trigger('retClose');
+			} else {
+				$jq(this).addClass('hover');
+				$jq(this).find('[aria-hidden="true"]:first').attr('aria-hidden', false);
+				FreshDirect.locabar.lastFocusElemId = '#'+curId;
+				
+				//set focus
+				var f = $jq(this).find(':focusable');
+				if (f.length > 0) {
+					f[0].focus();
+				}
+			}
+		}
+	}
+});
