@@ -139,6 +139,12 @@ function showLoginDialog(successPage, useSocial) {
 		showOverlay(1001);
 		$jq('#login_cont_formContent').show();
 		centerLoginModal();
+		
+		//set focus
+		var f = $jq('#login_cont_formContent').find(':focusable');
+		if (f.length > 0) {
+			f[0].focus();
+		}
 	}
 }
 
@@ -192,22 +198,24 @@ $jq('.locabar_triggers').on('focus retClose', function(event) {
 	} 
 });
 
-$jq('.locabar_triggers').on('keydown', function(event) {	
-	var curId = $jq(this).attr('id');
+$jq('.locabar_triggers').on('keyup', function(event) {
+	var $this = $jq(this);
+	var curId = $this.attr('id');
 	if (event.keyCode == 13) {
-		// send to cart instead...
-		if (curId == 'locabar_popupcart_trigger') {
+		if (curId == 'locabar_popupcart_trigger') { // send to cart instead...
 			document.location = '/view_cart.jsp';
+		} else if (curId == 'locabar_user_trigger' && !$this.data('signedin') && !$this.data('recog')) { //allow login
+			$this.trigger('click');
 		} else {
-			if ($jq(this).hasClass('hover')) { //allow manual closing
-				$jq(this).trigger('retClose');
+			if ($this.hasClass('hover')) { //allow manual closing
+				$this.trigger('retClose');
 			} else {
-				$jq(this).addClass('hover');
-				$jq(this).find('[aria-hidden="true"]:first').attr('aria-hidden', false);
+				$this.addClass('hover');
+				$this.find('[aria-hidden="true"]:first').attr('aria-hidden', false);
 				FreshDirect.locabar.lastFocusElemId = '#'+curId;
 				
 				//set focus
-				var f = $jq(this).find(':focusable');
+				var f = $this.find(':focusable');
 				if (f.length > 0) {
 					f[0].focus();
 				}
