@@ -515,6 +515,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
 			<div id="locabar_popupcart_trigger" class="locabar_triggers" tabindex="0">
 				<div class="bold cursor-pointer">
+          <a class="offscreen" href="/view_cart.jsp">View Cart</a>
 					<div class="locabar-cart-count-cont">
 						<div class="locabar-cart"></div>
 						<div class="locabar-circle-cont locabar-popupcart-count">0</div>
