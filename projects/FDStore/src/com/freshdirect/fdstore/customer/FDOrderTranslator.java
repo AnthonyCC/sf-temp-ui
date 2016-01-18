@@ -87,7 +87,7 @@ public class FDOrderTranslator {
 				dpi.setDivision(cart.getDeliveryPlantInfo().getDivision());
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			} else {
-				LOGGER.warn("Defaulting DeliveryPlantInfo");
+				LOGGER.warn("Defaulting DeliveryPlantInfo for customer : "+order.getCustomerId()+ " and eStore :"+cart.getEStoreId());
 				ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo();
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			}
@@ -105,6 +105,7 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
 				
 				if(EnumEStoreId.FDX.name().equals(cart.getEStoreId().name())){
+					LOGGER.warn("Customer : "+order.getCustomerId()+ " and eStore :"+cart.getEStoreId()+" delivery plant :"+deliveryInfo.getDeliveryPlantInfo());
 					deliveryInfo.setOriginalCutoffTime(deliveryReservation.getTimeslot().getOriginalCutoffDateTime()); // this is used by CSR
 					//give minimum time specified in  deliveryReservation.getTimeslot().getMinDurationForModStart() to start order modification
 					// if the sysdate + deliveryReservation.getTimeslot().getMinDurationForModStart() is after the timeslot cutoff then 
