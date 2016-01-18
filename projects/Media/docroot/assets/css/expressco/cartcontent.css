@@ -325,15 +325,21 @@
 .subtotal__rowcell-mid,
 .subtotal__rowcell-right{
   display:inline-block;
+  font-size:16pt;
 }
 
 .subtotal__rowcell-left{
-  width:50%;
-  vertical-align:top;
+	vertical-align:top;
 }
+
+.cartsection__totalwrapper .subtotal__rowcell-left{
+	width:50%;
+}
+
 .subtotal__rowcell-mid{
   min-width:20%;
   padding-left:5px;
+  font-weight:bold;
 }
 .subtotal__rowcell-right{
   margin-left:5px;
@@ -357,8 +363,10 @@
   color: #693;
 }
 
-.rowcell-colon-right:after{
+/*.rowcell-colon-right:after{*/
+.strl_text:after{
   content:":";
+  /*float:right;*/
 }
 
 .row-size-big{
@@ -402,16 +410,27 @@
 
 .cartsection__total,
 .cartsection__tax{
-  font-size:14px;
-  color:#333;
-  font-weight:bold;
-  text-align:right;
-  margin:0;
+	font-size:16pt;
+	color:#333;
+	font-weight:normal;
+	text-align:right;
+	margin:0;
+}
+.cartsection__tax{
+	min-height:100px;
+}
+.cartsection__tax form{
+	float:right;
+}
+.cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
+	float:left;
 }
 
 .cartsection__totalwrapper{
-  border-top:1px solid #e0e3d0;
-  padding: 30px 0;
+	border-top:1px solid #e0e3d0;
+	padding: 30px 0;
+	width: 100%;
+	height: 80px;
 }
 
 .cartheader{
@@ -680,9 +699,9 @@ label[for="dontupdatecartlines"] {
 }
 
 .rowcontent-free-with-pass{
-  margin-left:20px;
-  width:100px;
-  text-align:left;
+	/*margin-left:20px;*/
+	width:80px;
+	text-align:left;
 }
 
 .cartheader__questions .product-sample-carousel {
@@ -879,4 +898,53 @@ label[for="dontupdatecartlines"] {
 .cartsection__cartline.invalid.reason .cartline-complaint-reason-select:after{
   content:" Please select one ";
   color:red;
+}
+
+.subtotalboxes{
+	float: right;
+}
+.subtotalboxes, .cartsection__tax form{
+	width:350px;
+}
+
+.subtotalboxes .subtotal__row{
+	
+}
+
+.subtotalboxes .subtotal__rowcell-left{
+	/*display:block;
+	clear:both;*/
+}
+
+#subtotalbox2{
+	width: 145px;
+}
+#subtotalbox2 .subtotal__rowcell-left{
+	display:block;
+}
+#subtotalbox2 .strl_text{
+	font-weight:normal;
+}
+#subtotalbox2 .strl_text:after{
+	content:"";
+}
+#subtotalbox2 .subtotal__rowcell-mid{
+	font-size: 26pt;
+    padding-left: 0px;
+}
+
+#tipDropdown{
+	padding: 9px 5px;
+	width: 161px;
+	font-size: 18pt;
+	border-width: 2px;
+}
+
+#tipApply, #tipApplied{
+	width: 161px;
+	border-radius: 1px;
+	text-shadow: none;
+	font-weight: normal;
+	font-size: 12pt;
+	margin-top: 8px;
 }

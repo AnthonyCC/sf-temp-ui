@@ -46,7 +46,7 @@ public class CartSubTotalBoxService {
     private static final String MARK_KEY = "mark";
     private static final String TAXABLE_ITEM_MARK = "T";
     private static final String ESTIMATED_PRICE_MARK = "*";
-    private static final String SUBTOTAL_NAME = "Order Subtotal";
+    private static final String SUBTOTAL_NAME = "Subtotal";
     private static final String SUBTOTAL_ID = "subtotal";
     private static final String FUEL_SURCHARGE_NAME = "Fuel Surcharge";
     private static final String FUEL_SURCHARGE_ID = "fuelsurcharge";
@@ -57,7 +57,8 @@ public class CartSubTotalBoxService {
     private static final String DELIVERY_FEE_ID = "deliveryfee";
     private static final String DEPOSIT_NAME = "State Bottle Deposit";
     private static final String DEPOSIT_ID = "statebottledeposit";
-    private static final String TOTAL_TAX_NAME = "Total Tax";
+    //private static final String TOTAL_TAX_NAME = "Total Tax";
+    private static final String TOTAL_TAX_NAME = "Sales Tax";
     private static final String TOTALTAX_ID = "totaltax";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String TIP = "Tip";

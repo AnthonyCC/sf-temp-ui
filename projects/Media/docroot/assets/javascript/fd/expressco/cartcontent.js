@@ -330,7 +330,7 @@ var FreshDirect = FreshDirect || {};
       value: expressco.subTotalBox
     },
     placeholder: {
-      value: '#subtotalbox'
+      value: '#subtotalbox1'
     }
   });
 

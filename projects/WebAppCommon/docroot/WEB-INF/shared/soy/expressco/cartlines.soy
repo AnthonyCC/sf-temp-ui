@@ -281,7 +281,7 @@
       	  <p class='cartsection__tax'>Tax: {$info.taxTotal}</p>
       	{/if}
       	{if ($numOfSections > 1 and $info.wine) or $numOfSections == 1}	      	  		      
-	      <div id="subtotalbox">
+	      <div id="subtotalbox1" class="subtotalboxes">
 		      {if $subTotalBox and $subTotalBox.subTotalBox}
 		        {call .subTotalBox}
 		          {param subTotalBox: $subTotalBox.subTotalBox /}
@@ -296,7 +296,9 @@
 	      <div class='cartsection__tax' fdform-container="etip">      	
 	  		<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
 	  			<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
-		  		Optional Tip <a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a><div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
+	  			<span class="strl_text">Optional Tip</span>
+	  			<a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a>
+	  			<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 	  				<b>Optional Tip</b> 
 	  				<br/> 
 	  				<p>Good news! Now you can e-tip as you’re checking out. 
@@ -307,7 +309,7 @@
 	  				option of providing a tip if you feel that you’ve 
 	  				received exceptional service. FreshDirect personnel are 
 	  				not permitted to solicit tips under any circumstances.</p>
-	  			</div> :
+	  			</div>
 	  			{if $customTip}  			  
 			      	<select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
 			      	{foreach $option in $tipAmounts}
@@ -332,9 +334,11 @@
 				<input type="hidden" name="action" value="applyETip" />
 				{if $tipApplied}
 		        	<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
-		        	<button id="tipApply" style="display:none" class="cssbutton green">Apply</button>
+		        	<!--<button id="tipApply" style="display:none" class="cssbutton green">Apply</button>-->
+		        	<button id="tipApply" style="display:none" class="cssbutton green">Add Tip</button>
 		        {else}
-		        	<button id="tipApply" class="cssbutton green">Apply</button>
+		        	<!--<button id="tipApply" class="cssbutton green">Apply</button>-->
+		        	<button id="tipApply" class="cssbutton green">Add Tip</button>
 		        	<button id="tipApplied" style="display:none" class="cssbutton grey" disabled>Tip Added</button>
 		        {/if}
 	        </form>                
@@ -673,7 +677,7 @@
     {/if}
   </div>
   <div class='total__subtotal total-right'>
-    <div id="subtotalbox">
+    <div id="subtotalbox2" class="subtotalboxes">
       {if $eTippingEnabled and not $avalaraEnabled}	
 	      {if $subTotalBox and $subTotalBox.estimatedTotalBox}
 	        {call .subTotalBox}
@@ -745,11 +749,12 @@
   {foreach $box in $subTotalBox}
     <div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
   {if not $avalaraEnabled}
-      <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
+      <!--<div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>//-->
+      <div class='subtotal__rowcell-left rowcell-colon-right'>
         {if $box.id == 'freefood'}
           <a href='/shared/promotion_popup.jsp?promoCode=signup'
              data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
-             data-ifrpopup-width='585' data-ifrpopup-height='400'>{$box.text}</a>
+             data-ifrpopup-width='585' data-ifrpopup-height='400' class="strl_text">{$box.text}</a>
         {else}
           {if $box.other and $box.other.promoCode}
             <a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
@@ -757,7 +762,7 @@
                data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
           {else}
           	{if $box.id == 'deliveryfee'  and not $box.other.deliveryPassPopupNeeded}
-          		{$box.text} 
+          		<span class="strl_text">{$box.text}</span>
           		{if $eTippingEnabled}
           		<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
           		<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
@@ -769,20 +774,26 @@
 						with the delivery of your order
 						and will not be given to any such
 						employee as a gratuity.</p>
-  				</div>
+  				</div><!--end div.optionalTipToolTip -->
   				{/if}
           	{else}
-            	{$box.text}
+            	{if $box.id == 'ssOrderTotal'}
+            		<span class="strl_text">{$box.text}</span>
+            	{else}
+            		<span class="strl_text">{$box.text}</span>
+            	{/if}
             {/if}
           {/if}
         {/if}
-      </div>
-      <div class='subtotal__rowcell-mid rowcell-text-right'>
+      </div><!--end div.subtotal__rowcell-left.rowcell-colon-right -->
+      <!--<div class='subtotal__rowcell-mid rowcell-text-right'>-->
+      <div class='subtotal__rowcell-mid'>
       {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}
       </div>
   {else}
   {if $cartlineType == 'CHECKOUT'} 
-      <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
+      <!--<div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>//-->
+		<div class='subtotal__rowcell-left rowcell-colon-right'>
         {if $box.id == 'freefood'}
           <a href='/shared/promotion_popup.jsp?promoCode=signup'
              data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
@@ -814,13 +825,15 @@
           {/if}
         {/if}
       </div>
-      <div class='subtotal__rowcell-mid rowcell-text-right'>
+      <!--<div class='subtotal__rowcell-mid rowcell-text-right'>-->
+      <div class='subtotal__rowcell-mid'>
       {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value}</div>{else}{$box.value}{/if}
       </div>
      {/if}
   {if $cartlineType == 'YOUR_CART'}
    {if $box.id != 'deliveryfee'}
-      <div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>
+      <!--<div class='subtotal__rowcell-left rowcell-text-right rowcell-colon-right'>//-->
+      <div class='subtotal__rowcell-left rowcell-colon-right'>
         {if $box.id == 'freefood'}
           <a href='/shared/promotion_popup.jsp?promoCode=signup'
              data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
@@ -852,7 +865,8 @@
         {/if}
         {/if}
       </div>
-      <div class='subtotal__rowcell-mid rowcell-text-right'>
+      <!--<div class='subtotal__rowcell-mid rowcell-text-right'>-->
+      <div class='subtotal__rowcell-mid'>
       {if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}<div class="rowcontent-free-with-pass">{$box.value} </div>{else}{$box.value}{/if}{/if}
       </div>
       {/if} 

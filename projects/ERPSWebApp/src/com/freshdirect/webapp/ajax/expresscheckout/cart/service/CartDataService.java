@@ -660,7 +660,7 @@ public class CartDataService {
     	if(FDStoreProperties.isETippingEnabled()) {
 	        List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
 	        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-	        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
+	        
 	        //CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
 	        CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
 	        CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
@@ -668,6 +668,7 @@ public class CartDataService {
 	        CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
 	        CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
 	        CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
+	        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
 	        cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
 	        
 	        List<CartSubTotalFieldData> estimatedTotalBox = new ArrayList<CartSubTotalFieldData>();
@@ -683,7 +684,7 @@ public class CartDataService {
     	} else {
     		List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
             CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
+            
             CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
             CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
             CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
