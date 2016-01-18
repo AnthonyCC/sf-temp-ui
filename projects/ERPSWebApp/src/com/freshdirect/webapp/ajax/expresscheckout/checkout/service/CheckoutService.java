@@ -90,7 +90,7 @@ public class CheckoutService {
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
         UnavailabilityData unavailabilityData = null;
         FDCartModel cart = user.getShoppingCart();
-        AvalaraContext avalaraContext = new AvalaraContext(cart);
+//        AvalaraContext avalaraContext = new AvalaraContext(cart);
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
@@ -106,10 +106,10 @@ public class CheckoutService {
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
             }
-            else if(cart.getTaxValue() == 0.0){            	
+          /*  else if(cart.getTaxValue() == 0.0 || (cart instanceof FDModifyCartModel)){            	
             	avalaraContext.setCommit(false);
             	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
-            }
+            }*/
 		}
         return unavailabilityData;
 	}
@@ -150,6 +150,7 @@ public class CheckoutService {
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
 		FDCartModel cart = user.getShoppingCart();
+		AvalaraContext avalaraContext = new AvalaraContext(cart);
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
         DeliveryAddressManipulator.checkAddressRestriction(false, actionResult, cart.getDeliveryAddress());
         if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty() && actionResult.isSuccess()) {
@@ -241,6 +242,10 @@ public class CheckoutService {
 				responseData.getValidationResult().getErrors().add(new ValidationError("orderSubmit", error.getDescription()));
 			}
 			responseData.getValidationResult().getErrors().addAll(checkEbtAddressPaymentSelectionError);
+		}
+		else{
+		avalaraContext.setCommit(false);
+    	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
 		}
 		return responseData;
 	}
