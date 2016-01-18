@@ -71,7 +71,7 @@ public class ExternalAccountDAO {
 			
 			ps = con.prepareStatement(sql);
 			ps.setString(1,userId);
-			ps.setString(2, source.value());
+		//	ps.setString(2, source.value());
 			rs = ps.executeQuery();
 		
 			while(rs.next()) {
