@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
@@ -58,7 +59,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-
+			CheckoutService.defaultService().applyAtpCheck(user);
 			// Check whether EWallet Card used for order 
 			checkEWalletCard(result.getPayment(),request);
 			removeOlderEwalletPaymentMethod(result.getPayment(),request);
