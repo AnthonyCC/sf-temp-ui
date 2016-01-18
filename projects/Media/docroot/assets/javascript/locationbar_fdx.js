@@ -197,6 +197,13 @@ $jq('.locabar_triggers').on('focus retClose', function(event) {
 		$jq(prevId).find('[aria-hidden="false"]:first').attr('aria-hidden', true);
 	} 
 });
+$jq('.locabar_triggers').on('mouseenter', function(event) {
+	$jq(this).addClass('mouse');
+});
+$jq('.locabar_triggers').on('mouseleave', function(event) {
+	$jq(this).removeClass('mouse');
+	$jq(this).blur();
+});
 
 $jq('.locabar_triggers').on('keyup', function(event) {
 	var $this = $jq(this);
