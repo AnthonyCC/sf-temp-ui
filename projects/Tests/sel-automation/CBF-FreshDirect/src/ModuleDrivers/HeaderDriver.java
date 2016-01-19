@@ -82,31 +82,35 @@ public class HeaderDriver extends BaseModuleDriver
 	public void ZipCode(DataRow input, DataRow output) throws InterruptedException 
 	{	
 		try{	
-			
-			// wait and check if the zipcode is available
+			uiDriver.click("ZipDownArwHdr");
+			// wait and check if the zip code is available
 			try{
-				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(objMap.getLocator("strzipcode"))));
+				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("strzipcode1"))));
 			}catch(Exception e){
-				RESULT.failed("Zipcode validation", "Zip code should be available on page", "Zip code is not avaialble on page after waiting for 3 minutes");
+				RESULT.failed("Zipcode validation", "Zip code should be available on page", "Zip code is not available on page after waiting for 3 minutes");
 				return;
 			}
-
-			String zip_pattern="^[0-9]{5}$";
+			String zip_pattern="\\(([^)]+)\\)";
 			Pattern zipcode_p=Pattern.compile(zip_pattern);
 			Matcher m;
 			
+			 //String zipAddress = "Long Island City (11101)";
+		     //Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(zipAddress);
+		     //while(m.find()) {
+		     //System.out.println(m.group(1));
+			
 			try
 			{
-				m=zipcode_p.matcher(webDriver.findElement(By.xpath(objMap.getLocator("strzipcode"))).getText());
+				m=zipcode_p.matcher(webDriver.findElement(By.className(objMap.getLocator("strzipcode1"))).getText());
 				if(m.find())
 				{
 					RESULT.passed("Zipcode validation", "Zip code should contain 5 digits", "Zip code contains 5 digits "+
-							webDriver.findElement(By.xpath(objMap.getLocator("strzipcode"))).getText());
+							webDriver.findElement(By.className(objMap.getLocator("strzipcode1"))).getText());
 				}
 				else
 				{
 					RESULT.failed("Zipcode validation", "Zip code should contain 5 digits", "Zip code is invalid"+
-							webDriver.findElement(By.xpath(objMap.getLocator("strzipcode"))).getText());
+							webDriver.findElement(By.className(objMap.getLocator("strzipcode1"))).getText());
 				}
 			}
 			catch(Exception e)
@@ -115,8 +119,6 @@ public class HeaderDriver extends BaseModuleDriver
 						"Zip code 5 digit validation failed due to " + e.getMessage());
 				
 			}
-			
-			//go button validation
 			try
 			{
 				if(uiDriver.getwebDriverLocator(objMap.getLocator("btngoBtn")).isDisplayed() &&
@@ -145,6 +147,7 @@ public class HeaderDriver extends BaseModuleDriver
 				//Verify Zipcode for No Coverage
 				list =connect.runQueryOr("devint","select ZIPCODE from DLV.ZIPCODE where COS_COVERAGE<=0.1 and HOME_COVERAGE<=0.1");
 				zipcode=list.get((int) Math.round(Math.ceil(Math.random()*(list.size()-1)))).values().toString();
+				uiDriver.click("ZipDownArwHdr");
 				webDriver.findElement(By.id(objMap.getLocator("strnewZipCode"))).sendKeys(zipcode);
 			}
 			catch(Exception e)
@@ -155,13 +158,13 @@ public class HeaderDriver extends BaseModuleDriver
 			uiDriver.click("btngoBtn");
 			uiDriver.waitForPageLoad();
 			try{
-				(new WebDriverWait(webDriver,20)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(objMap.getLocator("btngoBtn"))));
+				(new WebDriverWait(webDriver,20)).until(ExpectedConditions.invisibilityOfElementLocated(By.id(objMap.getLocator("btngoBtn"))));
 			}catch(Exception e){
-				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(objMap.getLocator("btngoBtn"))));
+				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(objMap.getLocator("btngoBtn"))));
 			}
 			
 			//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-			
+			/*
 			if(webDriver.findElements(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).size()>0 &&
 					webDriver.findElement(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).getText().equals("Office delivery?"))
 			{
@@ -337,7 +340,6 @@ public class HeaderDriver extends BaseModuleDriver
 			}catch(Exception e){
 				uiDriver.wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(objMap.getLocator("btngoBtn"))));
 			}
-			
 			if(webDriver.findElements(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).size()>0 && 
 					webDriver.findElement(By.linkText(objMap.getLocator("lnkofficeDeliveryLink"))).getText().equals("Office delivery?"))
 			{
@@ -382,7 +384,8 @@ public class HeaderDriver extends BaseModuleDriver
 			{
 				RESULT.warning("Zip code validation for No Coverage Home Delivery",
 						"Home Delivery link should be available", "Home Delivery link is not available");
-			}
+						*/
+			
 			connect.disconnect();			
 		}
 		catch (Exception e) {
@@ -401,13 +404,15 @@ public class HeaderDriver extends BaseModuleDriver
 			{
 				RESULT.passed("Verify SIGN UP button on the page header", "SIGN UP button should be displayed",
 				"SIGN UP button is displayed" );
-				
+				//Trying to handle iFrame-pop up by getting window handle, and returning post script-execution
+				//String mainHandle = webDriver.getWindowHandle();
 				uiDriver.click("btnsignupBtn");
 				
 				SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 				try
 				{
-					webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframe")));
+					//webDriver.switchTo().frame(uiDriver.getwebDriverLocator(objMap.getLocator("frameiframe")));
+					webDriver.switchTo().frame(0);
 				}
 				catch(Exception e)
 				{
@@ -435,12 +440,16 @@ public class HeaderDriver extends BaseModuleDriver
 					RESULT.failed("Sign Up Button", "Sign up now to receive promotional materials or place your first order text verification should be successful",
 							"Text verification unsuccessful");
 				}
-				
+				//uiDriver.click("btnsignupClose");
 				webDriver.switchTo().defaultContent();
 				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-				//uiDriver.click("btnsignupClose");
 				webDriver.findElement(By.xpath(objMap.getLocator("btnsignupClose"))).click();
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				//webDriver.switchTo().defaultContent();
+				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				//webDriver.navigate().refresh();
+				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("btnsignupBtn"))));
+					
+					
 			}
 			else
 			{
@@ -462,9 +471,9 @@ public class HeaderDriver extends BaseModuleDriver
 	public void LoginButton(DataRow input, DataRow output) throws InterruptedException 
 	{
 		try
-		{			
-			uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("btnlogin"))));
-			if(uiDriver.getwebDriverLocator(objMap.getLocator("btnlogin")).isDisplayed())
+		{		
+			uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.className(objMap.getLocator("btnlogin1"))));
+			if(uiDriver.getwebDriverLocator(objMap.getLocator("btnlogin1")).isDisplayed())
 			{
 				RESULT.passed("Verify Login button and its functionality",
 						"LOG IN button should be displayed",
@@ -473,15 +482,15 @@ public class HeaderDriver extends BaseModuleDriver
 				
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("btnlogout"))));
+					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("DownArwHdr"))));
 				}
 				catch(TimeoutException e)
 				{
-					RESULT.failed("Header Login ", "Logout button should be available", "Log out button is not available after waiting for 3 minutes");
+					RESULT.failed("Header Login ", "Downward arrow should be available", "Downward arrow button is not available after waiting for 3 minutes");
 					return;
 				}
 				
-				if(uiDriver.isDisplayed("btnlogout"))
+				if(uiDriver.isDisplayed("DownArwHdr"))
 				{
 					RESULT.passed("Verify Login button and its functionality", "Welcome message with <Username> should be displayed on FD Home page.",
 					"Welcome message with <Username> is displayed on FD Home page." );
@@ -514,8 +523,8 @@ public class HeaderDriver extends BaseModuleDriver
 		
 		try
 		{
-			if(webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0 && 
-					webDriver.findElement(By.name(objMap.getLocator("imgfd_Logo"))).isDisplayed())
+			if(webDriver.findElements(By.xpath(objMap.getLocator("imgfd_Logo"))).size()>0 && 
+					webDriver.findElement(By.xpath(objMap.getLocator("imgfd_Logo"))).isDisplayed())
 			{
 				RESULT.passed("Verify 'Fresh Direct' logo displayed on web page header.", "Fresh Direct' logo should be displayed on web page header.",
 				"Fresh Direct' logo is displayed on web page header.");										
@@ -540,7 +549,7 @@ public class HeaderDriver extends BaseModuleDriver
 					}
 					catch(TimeoutException e)
 					{
-						RESULT.failed("Search Filed validation", "Search string should be available", 
+						RESULT.failed("Search Field validation", "Search string should be available", 
 								"Search string is not available");
 					}
 					
@@ -614,7 +623,7 @@ public class HeaderDriver extends BaseModuleDriver
 					}
 					catch(TimeoutException e)
 					{
-						RESULT.failed("Searcg Filed validation", "Search string should be available", 
+						RESULT.failed("Search Field validation", "Search string should be available", 
 								"Search string is not available");
 					}
 					
@@ -651,7 +660,7 @@ public class HeaderDriver extends BaseModuleDriver
 			//uiDriver.FD_login(input.get("userID"), input.get("password"));
 			try
 			{
-				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.linkText(objMap.getLocator("lnkyourAccountLink"))));
+				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("lnkyourAccountLink"))));
 			}
 			catch(TimeoutException e)
 			{
@@ -660,7 +669,7 @@ public class HeaderDriver extends BaseModuleDriver
 				return;
 			}
 			//String YourAcctLink = webDriver.findElement(By.id(objMap.getLocator("YourAccountLink"))).getText();
-			if(webDriver.findElement(By.linkText(objMap.getLocator("lnkyourAccountLink"))).isDisplayed())
+			if(webDriver.findElement(By.xpath(objMap.getLocator("lnkyourAccountLink"))).isDisplayed())
 			{
 				RESULT.passed("Verify 'Your Account' link in web page header when logged-in customer clicks on the link", 
 						"Your Account' link should be displayed on web page header.",
@@ -710,7 +719,7 @@ public class HeaderDriver extends BaseModuleDriver
 		{
 			try
 			{
-				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.linkText(objMap.getLocator("lnkyourAccountLink"))));
+				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(objMap.getLocator("lnkyourAccountLink"))));
 			}
 			catch(TimeoutException e)
 			{
@@ -719,7 +728,7 @@ public class HeaderDriver extends BaseModuleDriver
 				return;
 			}
 			
-			if(webDriver.findElement(By.linkText(objMap.getLocator("lnkyourAccountLink"))).isDisplayed())
+			if(webDriver.findElement(By.xpath(objMap.getLocator("lnkyourAccountLink"))).isDisplayed())
 			{
 				RESULT.passed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
 						"Your Account' link should be displayed on web page header.",
@@ -736,18 +745,20 @@ public class HeaderDriver extends BaseModuleDriver
 					RESULT.failed("YourAcc_Anonymous", "Anonymous page should be available", "Anonymous page is not available");
 				}
 				
-				if(webDriver.findElements(By.xpath(objMap.getLocator("btngoAnonymous"))).size() > 0)
+				if(webDriver.findElements(By.name(objMap.getLocator("btngoAnonymous"))).size() > 0)
 				{
 					RESULT.passed("Verify 'Your Account' link in web page header when anonymous customer clicks on the link", 
 							"User should be redirected to Log In page",
 							"User is redirected to Log In page");
 					try
 					{
-						uiDriver.setValue("txtemailAddress", input.get("userID"));
-						uiDriver.setValue("txtpass", input.get("password"));
-						webDriver.findElement(By.name(objMap.getLocator("btnloginGoBtn"))).click();						
+						uiDriver.FD_login(input.get("userID"), input.get("password"));
+						//uiDriver.setValue("txtemailAddress", input.get("userID"));
+						//uiDriver.setValue("txtpass", input.get("password"));
+						//uiDriver.click("btnloginGoBtn");
+						//webDriver.findElement(By.name(objMap.getLocator("btnloginGoBtn"))).click();						
 						uiDriver.waitForPageLoad();
-						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("btnloginGoBtn"))));
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("DownArwHdr"))));
 						
 					}
 					catch(Exception e)
@@ -788,8 +799,9 @@ public class HeaderDriver extends BaseModuleDriver
 				}	
 				try
 				{
-					uiDriver.click("btnlogout");
-					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.className(objMap.getLocator("btnlogin"))));
+					webDriver.findElement(By.xpath(objMap.getLocator("DownArwHdr"))).click();
+					uiDriver.click("btnlogout1");
+					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("DownArwHdr"))));
 				}
 				catch(Exception e)
 				{
@@ -821,7 +833,8 @@ public class HeaderDriver extends BaseModuleDriver
 		{			
 			try
 			{
-				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("btnlogout"))));
+				webDriver.findElement(By.xpath(objMap.getLocator("DownArwHdr"))).click();
+				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className(objMap.getLocator("btnlogout1"))));
 			}
 			catch(TimeoutException me)
 			{
@@ -829,24 +842,23 @@ public class HeaderDriver extends BaseModuleDriver
 			}
 			
 			//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-			if(webDriver.findElement(By.className(objMap.getLocator("btnlogout"))).isDisplayed())
+			if(webDriver.findElement(By.className(objMap.getLocator("btnlogout1"))).isDisplayed())
 			{
 				RESULT.passed("Verify 'LOGOUT' button displayed on page header after user login.", 
 						"LOGOUT' button should be displayed on page header.",
-						"LOGOUT' button gets displayed on page header.");		
-				
-				uiDriver.click("btnlogout");
+						"LOGOUT' button gets displayed on page header.");
+				uiDriver.click("btnlogout1");
 				uiDriver.waitForPageLoad();
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogin"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogin1"))));
 				}
 				catch(TimeoutException e)
 				{
 					RESULT.failed("LogoutButton Component","Log in  button should be available","Log in button is not available");
 					return;
 				}
-				if(webDriver.findElement(By.className(objMap.getLocator("btnlogin"))).isDisplayed())
+				if(webDriver.findElement(By.className(objMap.getLocator("btnlogin1"))).isDisplayed())
 				{
 					RESULT.passed("Verify 'LOGOUT' button displayed on page header after user login.", 
 							"FD Storefront home page with 'LOG IN' button on page header should be displayed.",
@@ -902,7 +914,7 @@ public class HeaderDriver extends BaseModuleDriver
 				uiDriver.waitForPageLoad();
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.name(objMap.getLocator("btnloginGoBtn"))));
+					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.name(objMap.getLocator("btngoAnonymous"))));
 				}
 				catch(TimeoutException e)
 				{
@@ -912,9 +924,10 @@ public class HeaderDriver extends BaseModuleDriver
 				}
 				try
 				{
-					uiDriver.setValue("txtemailAddress", input.get("userID"));
-					uiDriver.setValue("txtpass", input.get("password"));
-					uiDriver.click("btnloginGoBtn");
+					uiDriver.FD_login(input.get("userID"), input.get("password"));
+					//uiDriver.setValue("txtemailAddress", input.get("userID"));
+					//uiDriver.setValue("txtpass", input.get("password"));
+					//uiDriver.click("btnloginGoBtn");
 					uiDriver.waitForPageLoad();
 				}
 				catch(Exception e)
@@ -956,9 +969,10 @@ public class HeaderDriver extends BaseModuleDriver
 			}	
 			try
 			{
-				uiDriver.click("btnlogout");
+				webDriver.findElement(By.xpath(objMap.getLocator("DownArwHdr"))).click();
+				uiDriver.click("btnlogout1");
 				uiDriver.waitForPageLoad();
-				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.className(objMap.getLocator("btnlogin"))));
+				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.className(objMap.getLocator("btnlogin1"))));
 			}
 			catch(Exception e)
 			{
@@ -1192,7 +1206,11 @@ public class HeaderDriver extends BaseModuleDriver
 		{
 			try
 			{
-				uiDriver.wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(objMap.getLocator("btnyourCart"))));
+				WebElement btnyrcrt = uiDriver.getwebDriverLocator(objMap.getLocator("btnyourCart"));
+
+				uiDriver.robot.moveToElement(btnyrcrt);
+				//webDriver.findElement(By.className(objMap.getLocator("btnyourCart1"))).click();
+				uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
 			}
 			catch(TimeoutException e)
 			{
@@ -1200,7 +1218,7 @@ public class HeaderDriver extends BaseModuleDriver
 						"Your Cart Button is not available");
 				return;
 			}
-			if(uiDriver.isDisplayed("btnyourCart"))
+			if(uiDriver.isDisplayed("btnviewcart"))
 			{
 				RESULT.passed("Verify 'Your cart' button displayed on page header.", 
 						"'Your cart' button should be displayed on page header.",
@@ -1677,16 +1695,18 @@ public class HeaderDriver extends BaseModuleDriver
 			int Cat_Size=catList.size();
 			//Traversing through each category having sub-category
 			for (int i = 0; i < Cat_Size; i++) {
-				if (webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]//div[@class='subdepartments_cont']//li/span")).size() > 0) {
+				//
+				//
+				if (webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li/span["+ i +"]//div[@class='subdepartments_cont']/ul/li/span")).size() > 0) {
 					//hover on each categories having sub-category
-					uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]")));
+					uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li/span["+ i +"]")));
 					SleepUtils.getInstance().sleep(TimeSlab.YIELD);					
-					List<WebElement> Sub_items=webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]//div[@class='subdepartments_cont']//li/span"));
+					List<WebElement> Sub_items=webDriver.findElements(By.xpath("//ul[@class='top-nav-items']/li/span["+ i +"]//div[@class='subdepartments_cont']/ul/li/span"));
 					//Getting sub-categories text
 					String item[]=new String[Sub_items.size()];
 					for (int j = 0; j < Sub_items.size(); j++) {
 						item[j]=Sub_items.get(j).getText();
-						System.out.println("Sub-category: "+(j+1)+":"+item[j]);
+						System.out.println("Sub-category: "+(j+1)+":"+item[j]); 
 					}
 					//Traversing through each sub-category
 					for (int k = 0; k < item.length; k++) {
@@ -1695,7 +1715,7 @@ public class HeaderDriver extends BaseModuleDriver
 						}
 						String sub_dept_xpath = "//span/a[text() = '"+item[k]+"']";
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-						uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li["+ i +"]")));
+						uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("//ul[@class='top-nav-items']/li/span["+ i +"]")));
 						SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 						//uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(sub_dept_xpath)));
 						//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -1722,12 +1742,10 @@ public class HeaderDriver extends BaseModuleDriver
 									"Breadcrumbs for "+item[k]+" should be displayed",
 									"Breadcrumbs for "+item[k]+" is NOT displayed");
 						}
-						//uiDriver.click("imgfd_Logo");
 					}	
-					
 					uiDriver.click("imgfd_Logo");
 					uiDriver.waitForPageLoad();
-					uiDriver.wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(objMap.getLocator("imgmediaSection"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("imgmediaSection"))));
 				}	
 			}
 		} catch (Exception e) {			
@@ -1746,7 +1764,7 @@ public class HeaderDriver extends BaseModuleDriver
 		String ZipCode;
 		try
 		{
-			ZipCode = webDriver.findElement(By.xpath(objMap.getLocator("strzipcode"))).getText();
+			ZipCode = webDriver.findElement(By.xpath(objMap.getLocator("strzipcode1"))).getText();
 		}
 		catch(NoSuchElementException e)
 		{
@@ -1789,9 +1807,9 @@ public class HeaderDriver extends BaseModuleDriver
 			RESULT.warning("Zipcode check", "Zipcode at header should reflect the previously ordered address",
 			"Zipcode for previous order has not been fetched");
 		}
-		if(webDriver.findElements(By.id(objMap.getLocator("drpheaderDropdown"))).size()>0)
+		if(webDriver.findElements(By.xpath(objMap.getLocator("ZipDownArwHdr"))).size()>0)
 		{
-		uiDriver.click("drpheaderDropdown");		
+		uiDriver.click("ZipDownArwHdr");		
 		String Label1;
 		String Label2;
 		String Label3;
