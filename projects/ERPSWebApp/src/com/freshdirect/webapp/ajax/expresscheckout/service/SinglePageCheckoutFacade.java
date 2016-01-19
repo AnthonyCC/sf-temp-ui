@@ -305,7 +305,7 @@ public class SinglePageCheckoutFacade {
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
             deliveryAddress.setId(NVL.apply(deliveryAddress.getId(), "addressId"));
             user.getShoppingCart().setDeliveryAddress(deliveryAddress);
-            user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
+            //user.getShoppingCart().setDeliveryReservation(cart.getDeliveryReservation());
         } else {
             cart = user.getShoppingCart();
         }
