@@ -185,6 +185,7 @@ public class SocialAccountService implements AccountService {
 										session.setAttribute("fdTcAgree", false);
 										response.sendRedirect(newURL+"/login/login.jsp");
 									}else {
+										session.setAttribute("fdTcAgree", false);
 										response.sendRedirect(newURL + termsConditions);
 									}
 									
@@ -285,6 +286,7 @@ public class SocialAccountService implements AccountService {
 										session.setAttribute("fdTcAgree", false);
 										return newURL+"/login/login.jsp";
 									}else {
+									session.setAttribute("fdTcAgree", false);
 									 termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
 									 return newURL + termsConditions;
 									}
