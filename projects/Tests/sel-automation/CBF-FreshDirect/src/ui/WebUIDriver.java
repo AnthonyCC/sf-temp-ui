@@ -44,6 +44,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
@@ -82,7 +83,7 @@ import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
  * 
  */
 
-public class WebUIDriver extends BaseAppDriver {
+public class WebUIDriver extends BaseAppDriver  {
 
 	// variables for add to cart
 	public String productFullName = null;
@@ -2222,7 +2223,7 @@ public class WebUIDriver extends BaseAppDriver {
 	 */
 
 	public void FD_login(String UID, String PASS) throws InterruptedException {
-		if (webDriver.findElements(By.xpath(objMap.getLocator("btngoAnonymous"))).size() > 0) 
+		if (webDriver.findElements(By.name(objMap.getLocator("btngoAnonymous"))).size() > 0) 
 		{
 			try
 			{
@@ -2240,12 +2241,12 @@ public class WebUIDriver extends BaseAppDriver {
 		}
 		else 
 		{
+			webDriver.findElement(By.className(objMap.getLocator("btnlogin1"))).click();
 			try
 			{
-				uiDriver.click("btnlogin");
 				uiDriver.setValue("txtuserID", UID);
 				uiDriver.setValue("txtpass", PASS);
-				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
 				{
 					uiDriver.getwebDriverLocator(objMap.getLocator("btnsignin")).sendKeys("\n");
@@ -3794,7 +3795,7 @@ public class WebUIDriver extends BaseAppDriver {
 								"Address fields",
 								"All the given data shoud be entered in relevant Address fields",
 						"All the data entered in relevant Address fields");
-						//saving or cancelling address details added by user
+						//saving or canceling address details added by user
 						if (SaveCancelBtn.equalsIgnoreCase("Cancel")) {
 							uiDriver.click("btncancelHome");
 						} else {
@@ -4024,9 +4025,9 @@ public class WebUIDriver extends BaseAppDriver {
 					if (a == 0) {
 						if (FlexibilityFlag.equalsIgnoreCase("Yes") || FlexibilityFlag.isEmpty()) {
 							RESULT.warning(
-									"Delievry Address selection",
+									"Delivery Address selection",
 									myaddnew + " Address should get selected",
-									myaddnew + " Given address is not available in the list and by default first address sholud get selected");
+									myaddnew + " Given address is not available in the list and by default first address should get selected");
 							List<WebElement> addLst1 = webDriver.findElements(By.xpath(objMap.getLocator("lstselectingAddress")));
 							address = addLst1.get(0).getText();
 							SleepUtils.getInstance().sleep(TimeSlab.LOW);
@@ -5358,7 +5359,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 			uiDriver.waitForPageLoad();
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-			// check if the unavailable popup is available then perform the operatiuon
+			// check if the unavailable popup is available then perform the operation
 			if (webDriver.findElements(By.xpath(objMap.getLocator("strverifyWarning"))).size() > 0  
 					&& webDriver.findElement(By.xpath(objMap.getLocator("strverifyWarning"))).isDisplayed()) {
 
@@ -5605,7 +5606,7 @@ public class WebUIDriver extends BaseAppDriver {
 		try {
 			String t_verify_subtotal = null;
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
-			// To check if success page will avialble at the end or not
+			// To check if success page will available at the end or not
 			boolean success_page = true;
 			try {
 				// click on the place order button
@@ -5632,11 +5633,11 @@ public class WebUIDriver extends BaseAppDriver {
 							(new WebDriverWait(webDriver, 40)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("strverifyWarning"))));
 
 							//wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnsaveChanges")))));
-							// handle the save chnages button after place order
+							// handle the save changes button after place order
 							// click
 							//if (webDriver.findElements(By.xpath(objMap.getLocator("btnsaveChanges"))).size() > 0) 
 							//{
-							// handle unavailablity pop-up 
+							// handle unavailability pop-up 
 							uiDriver.FD_unavailablePopUp();
 							//return if we are not on checkout page
 							if (!webDriver.getTitle().equalsIgnoreCase("Checkout")) {								
@@ -5960,7 +5961,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 		} catch (NoSuchWindowException e1) {
 			RESULT.warning("DOM", "DOM should be loaded",
-			"Problem in loading of DOM oe window does not exist");
+			"Problem in loading DOM of window does not exist");
 			return;
 		} catch (Exception e) {
 			RESULT.warning("Place order", "Place order aborted",
@@ -6486,12 +6487,11 @@ public class WebUIDriver extends BaseAppDriver {
 		List<HashMap<String, HashMap<String, String>>> lstouterMap = new ArrayList<HashMap<String, HashMap<String, String>>>();
 		try {
 			// Hover the mouse on "your cart" button to verify item detail
-			WebElement btnYourcart = uiDriver.getwebDriverLocator(objMap
-					.getLocator("btnyourCart"));
+			WebElement btnYourcart = uiDriver.getwebDriverLocator(objMap.getLocator("btnyourCart"));
 			robot.moveToElement(btnYourcart);
 			try
 			{
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("popyourCart"))));
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnviewcart1"))));
 			}
 			catch(Exception e)
 			{
@@ -6513,12 +6513,12 @@ public class WebUIDriver extends BaseAppDriver {
 			// verify "checkout" and "view cart" button is present or not
 			try
 			{
-				WebElement btnview = uiDriver.getwebDriverLocator(objMap.getLocator("btnviewCart"));
-				WebElement btnchkout = uiDriver.getwebDriverLocator(objMap.getLocator("btncheckOut1"));
-
-				robot.moveToElement(btnYourcart);
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("popyourCart"))));
-				if (btnview.isEnabled() && btnchkout.isEnabled()) {
+				WebElement cart1 = webDriver.findElement(By.id(objMap.getLocator("localCart")));
+				uiDriver.robot.moveToElement(cart1);
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnviewcart1"))));
+	            WebElement btnview = webDriver.findElement(By.linkText(objMap.getLocator("btnviewcart")));
+	            WebElement btnchkout = webDriver.findElement(By.linkText(objMap.getLocator("btncheckout")));
+	            if(btnview.isEnabled() && btnchkout.isEnabled()){
 					RESULT.passed(
 							"View cart and checkout button",
 							"View cart and checkout button should exist and should be enabled",
@@ -6538,8 +6538,8 @@ public class WebUIDriver extends BaseAppDriver {
 			List<WebElement> Lstitems_row;
 			try
 			{
-				Lstitems_row = uiDriver.getwebDriverLocator(objMap.getLocator("lstpopupCart")).findElements(
-						By.className(objMap.getLocator("lstcartLine")));
+				Lstitems_row = uiDriver.getwebDriverLocator(objMap.getLocator("btnyourCart")).findElements(
+						By.xpath(objMap.getLocator("lstname")));
 			}
 			catch(Exception e)
 			{
@@ -6551,18 +6551,19 @@ public class WebUIDriver extends BaseAppDriver {
 			int index_tbquant = 0;
 			if (Lstitems_row.size() == 0) {
 				RESULT.passed("view cart",
-						"No items should be available in cart",
-				"No items available in your cart");
+						"2 items should be available in cart",
+				"2 items are available in your cart");
 				emptyCart = 1;
 			}
 			else
 			{
-				robot.moveToElement(btnYourcart);
+				WebElement cart3 = webDriver.findElement(By.xpath(objMap.getLocator("btnyourCart")));
+				uiDriver.robot.moveToElement(cart3);
 				int j = 0,count;
 				for (WebElement item : Lstitems_row) {
 					// quantity of product
 					//robot.moveToElement(btnYourcart);
-					wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("popyourCart"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
 					List<WebElement> qaunt = item.findElements(By.xpath(objMap.getLocator("lstqnty")));
 					List<WebElement> quant_drp = item.findElements(By.xpath(objMap.getLocator("lstqntyDropdown")));
 					if (quant_drp.size() > 0) {
@@ -6578,7 +6579,8 @@ public class WebUIDriver extends BaseAppDriver {
 					do {
 						// actions.moveToElement(btnYourcart).build().perform();
 						//robot.moveToElement(btnYourcart);
-						wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("popyourCart"))));
+						uiDriver.robot.moveToElement(cart3);
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
 						count++;						
 						List<WebElement> nam = item.findElements(By.xpath(objMap.getLocator("lstname")));
 						name = nam.get(j).getText();
@@ -6589,7 +6591,8 @@ public class WebUIDriver extends BaseAppDriver {
 					do {
 						// actions.moveToElement(btnYourcart).build().perform();
 						//robot.moveToElement(btnYourcart);
-						wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(objMap.getLocator("popyourCart"))));
+						uiDriver.robot.moveToElement(cart3);
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
 						count++;
 						List<WebElement> pric = item.findElements(By
 								.xpath(objMap.getLocator("lstprice")));
@@ -6604,10 +6607,13 @@ public class WebUIDriver extends BaseAppDriver {
 			}
 
 			// verify cart by clicking on your cart button
-			btnYourcart.click();
+			WebElement cart2 = webDriver.findElement(By.xpath(objMap.getLocator("btnyourCart")));
+			uiDriver.robot.moveToElement(cart2);
+			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
+			webDriver.findElement(By.linkText(objMap.getLocator("btnviewcart"))).click();
 			waitForPageLoad();
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txtSubTotal"))));
-//			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='cartcontent']/div[1]/div")));
+			//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			if (!(webDriver.findElements(By.xpath(objMap.getLocator("lstverifyProducts"))).size() > 0)) {
 				if (emptyCart == 1) {
 					RESULT.passed(
@@ -6633,10 +6639,10 @@ public class WebUIDriver extends BaseAppDriver {
 
 						// Quantity of product
 						if (prod.findElements(
-								By.className(objMap.getLocator("lstqntyNew")))
+								By.className(objMap.getLocator("lstqntyNew2")))
 								.size() > 0) {
 							quantity = prod.findElement(
-									By.className(objMap.getLocator("lstqntyNew")))
+									By.className(objMap.getLocator("lstqntyNew2")))
 									.getAttribute("value");
 						} else if (prod.findElements(
 								By.xpath(objMap.getLocator("lstqntyDropdownPage")))
@@ -6644,7 +6650,7 @@ public class WebUIDriver extends BaseAppDriver {
 							quantity = "1";
 						} else {
 							quantity = prod.findElement(
-									By.className(objMap.getLocator("lstqntyNew")))
+									By.className(objMap.getLocator("lstqntyNew2")))
 									.getAttribute("value");
 							RESULT
 							.warning(
@@ -6660,7 +6666,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 						// price of product
 						price = prod.findElement(
-								By.className(objMap.getLocator("lstpriceNew")))
+								By.xpath(objMap.getLocator("lstpriceNew")))
 								.getText();
 
 						// match details of each product
@@ -6720,8 +6726,8 @@ public class WebUIDriver extends BaseAppDriver {
 
 			}
 		} catch (Exception e) {
-			RESULT.failed("View cart Exception ", "Product comparision on view cart and your cart should be successful",
-			"Product comparisionon on view cart and your cart is not successful");		
+			RESULT.failed("View cart Exception ", "Product comparison on view cart and your cart should be successful",
+			"Product comparison on view cart and your cart is not successful");		
 		}
 
 	}
@@ -7413,7 +7419,7 @@ public class WebUIDriver extends BaseAppDriver {
 					.isDisplayed()) {
 				RESULT.passed("YourCart Flyout",
 						"YourCart Flyout should be displayed",
-				"YourCart Flyout is displayed successfully");
+				"YourCart Flyout is displayed");
 			} else {
 				RESULT.failed("YourCart Flyout",
 						"YourCart Flyout should be displayed",
@@ -7421,7 +7427,7 @@ public class WebUIDriver extends BaseAppDriver {
 			}
 			List<WebElement> Lstitems_row_1 = uiDriver.getwebDriverLocator(
 					objMap.getLocator("lstpopupCart")).findElements(
-							By.className(objMap.getLocator("lstcartline")));
+							By.xpath(objMap.getLocator("lstcartline")));
 			List<WebElement> nam;
 			boolean item_check_flag = false;
 
@@ -7488,25 +7494,25 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 			}
 
-			uiDriver.robot.moveToElement(webDriver.findElement(By.name(objMap
-					.getLocator("imgfd_Logo"))));
+			//uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(objMap.getLocator("imgfd_Logo"))));
 
 		}catch(Exception e){
 			uiDriver.click("btnyourCart");
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txtSubTotal"))));
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(objMap.getLocator("btnviewcart"))));
 			List<WebElement> LstCartClick =webDriver.findElements(By.xpath(objMap.getLocator("lstverifyProducts")));
 			System.out.println("\n Number of items in cart page is "+ LstCartClick.size());
 			if(LstCartClick.size()== 0){
-				RESULT.warning("Your Cart is Empty",
-						"0 item should be available in cart",
-				"0 item available in your cart");
+				RESULT.warning("Your Cart is not Empty",
+						"0 items should be available in cart",
+				"0 items available in your cart");
 
 			}else{
 				int j = 0;
 				//				int index_tbquant=0;
 				for (WebElement item : LstCartClick) {
 					//nam = item.findElements(By.xpath(objMap.getLocator("lstNAME")));
-					List<WebElement> nam=webDriver.findElements(By.xpath(objMap.getLocator("lnkitemName1")));
+					//xpath(objMap.getLocator("lnkitemName1")));
+					List<WebElement> nam=webDriver.findElements(By.xpath(objMap.getLocator("lstNAME")));
 					String name = nam.get(j).getText();
 					List<WebElement> qaunt = item.findElements(By.className(objMap.getLocator("txtqty")));
 					List<WebElement> quant_drp=item.findElements(By.className(objMap.getLocator("drpqty")));
@@ -7528,7 +7534,7 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 			}
 			webDriver.navigate().back();
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnyourCart"))));
+			wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(objMap.getLocator("imgfd_Logo"))));
 		}
 		return myprod_quantity;
 	}
@@ -7605,7 +7611,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// method for add to cart
 			add_method = method;
 
-			//wait for the page statibility
+			//wait for the page stability
 			waitForPageLoad();
 
 			// store the page reorder/normal and first_item
@@ -7627,7 +7633,8 @@ public class WebUIDriver extends BaseAppDriver {
 				try
 				{
 					if (reorder_grid_or_list.equalsIgnoreCase("grid")) {
-						uiDriver.click("btngridReorder");
+						webDriver.findElement(By.xpath(objMap.getLocator("btngridReorder"))).click();  
+						//uiDriver.click("btngridReorder");
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By
 								.xpath(objMap.getLocator("lnkfirstItem"))));
 						//						SleepUtils.getInstance().sleep(TimeSlab.LOW);
@@ -7635,14 +7642,16 @@ public class WebUIDriver extends BaseAppDriver {
 					}
 					// for list
 					else if (reorder_grid_or_list.equalsIgnoreCase("list")) {
-						uiDriver.click("btnlistReorder");
+						webDriver.findElement(By.xpath(objMap.getLocator("btnlistReorder"))).click();
+						//uiDriver.click("btnlistReorder");
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By
 								.xpath(objMap.getLocator("lnkfirstItemReorder"))));
 						first_item = objMap.getLocator("lnkfirstItemReorder");
 					}
 					// default move ahead with the grid
 					else {
-						uiDriver.click("btngridReorder");
+						webDriver.findElement(By.xpath(objMap.getLocator("btngridReorder"))).click();
+						//uiDriver.click("btngridReorder");
 						//						SleepUtils.getInstance().sleep(TimeSlab.LOW);
 						wait.until(ExpectedConditions.visibilityOfElementLocated(By
 								.xpath(objMap.getLocator("lnkfirstItem"))));
@@ -7714,7 +7723,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// adding it to cart
 			item_initialexistingqty = yourCart(productFullName);
 
-			// add item to cart based on the click or hover prefrence provided
+			// add item to cart based on the click or hover preference provided
 			if (method.equalsIgnoreCase("click")
 					|| method.replace(" ", "").length() == 0 || method == null || (!method.equalsIgnoreCase("click") && !method.equalsIgnoreCase("hover"))) {
 				//show warning if method contains value apart from hover or click and go ahead with click
@@ -7766,7 +7775,7 @@ public class WebUIDriver extends BaseAppDriver {
 			// adding it to cart
 			item_finalexistingqty = yourCart(productFullName);
 
-			// dispaly result based on the method used for add to cart
+			// display result based on the method used for add to cart
 			try{
 				itemAddValidations(add_method, quantity);
 			}catch(Exception e){
@@ -7776,6 +7785,7 @@ public class WebUIDriver extends BaseAppDriver {
 						+ e.getMessage());
 				return;
 			}
+			uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(objMap.getLocator("imgfd_Logo"))));
 
 		} catch (Exception e) {
 			RESULT.failed("Add item to cart function Exception",
@@ -7887,9 +7897,9 @@ public class WebUIDriver extends BaseAppDriver {
 	// function to add item into cart using hover method in /FD_addToCart
 	public void itemAddUsingHover(String quantity, String new_or_modify, String gridOrList) {
 
-		SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+		//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 
-		// create product object to avoid attchement to the DOM
+		// create product object to avoid attachment to the DOM
 		WebElement product;
 		//for list
 		if(reorder_page ==  true && gridOrList.equalsIgnoreCase("list"))
@@ -7903,8 +7913,7 @@ public class WebUIDriver extends BaseAppDriver {
 
 		//hover on to the item
 		robot.moveToElement(product);
-
-		SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+		//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 
 		//for customizable item
 		if (item_customizable == true) {
@@ -7937,7 +7946,7 @@ public class WebUIDriver extends BaseAppDriver {
 			//for normal and reorder using grid add to cart click
 			else{
 				if (webDriver.findElements(By.xpath(objMap.getLocator("btnsearchAddToCartCustomize")))
-						.size() > 0) {
+						.size() > 0 && webDriver.findElement(By.xpath(objMap.getLocator("btnsearchAddToCartCustomize"))).isDisplayed()) {
 					// hover over add to cart
 					jse.executeScript("arguments[0].scrollIntoView()", webDriver.findElement(By.xpath(objMap.getLocator("btnsearchAddToCartCustomize"))));
 					robot.moveToElement(webDriver.findElement(By.xpath(objMap.getLocator("btnsearchAddToCartCustomize"))));
@@ -7970,7 +7979,7 @@ public class WebUIDriver extends BaseAppDriver {
 				s.selectByIndex(1);
 			}
 
-			// enter the quantity in text box if avaialble
+			// enter the quantity in text box if available
 			if (webDriver.findElements(By.xpath(objMap.getLocator("txtqauntityCustHover")))
 					.size() > 0) {
 				if (!(quantity.equals(null) || quantity == "" || quantity == " " || quantity.matches("^[a-zA-z]$"))) {
@@ -8005,7 +8014,7 @@ public class WebUIDriver extends BaseAppDriver {
 							"Product quantity box is not integer : " + quantity);
 				}
 			} 
-			// if quantity with drop down box is avaialble
+			// if quantity with drop down box is available
 			else {
 				// store 1 is global item quantity variable for future use
 				item_quantity = "1";
@@ -8157,10 +8166,12 @@ public class WebUIDriver extends BaseAppDriver {
 					}
 				}
 				// click on add to cart
-				webDriver.findElement(By.className(objMap.getLocator("divproductClassHover")))
-				.findElement(By.className(objMap.getLocator("btnaddToCartClass")))
-				.click();
-				waitForPageLoad();
+				WebDriverWait wait = new WebDriverWait(webDriver, 5);
+				WebElement element = webDriver.findElement(By.xpath(objMap.getLocator("plpCart")));
+				wait.until(ExpectedConditions.visibilityOf(element));
+				
+				JavascriptExecutor js = (JavascriptExecutor) webDriver;
+				js.executeScript("arguments[0].click();", element);
 			}
 		}
 
@@ -8249,7 +8260,7 @@ public class WebUIDriver extends BaseAppDriver {
 	public void itemAddUsingClick(String quantity, String new_or_modify, String gridOrList) {
 
 
-		// create product object to avoid attchement to the DOM
+		// create product object to avoid attachment to the DOM
 		WebElement product;
 		//for list
 		if(reorder_page ==  true && gridOrList.equalsIgnoreCase("list"))
@@ -8279,7 +8290,7 @@ public class WebUIDriver extends BaseAppDriver {
 		}
 		//wait for page to navigate
 		waitForPageLoad();
-		// if product is alcohol alert should be dispalyed
+		// if product is alcohol alert should be displayed
 		if (item_alcohol && item_alcohol_accepted == false) {
 			handleAlcoholAlert("click");
 		}
@@ -8287,7 +8298,7 @@ public class WebUIDriver extends BaseAppDriver {
 		try{			
 			wait.until(ExpectedConditions
 					.invisibilityOfElementLocated(By
-							.partialLinkText(productFullName)));
+							.xpath("sorterView")));
 			waitForPageLoad();
 			wait.until(ExpectedConditions.visibilityOfElementLocated(By
 					.xpath(objMap.getLocator("btnback"))));
@@ -8331,11 +8342,11 @@ public class WebUIDriver extends BaseAppDriver {
 
 		//if quantity is in dropdown form
 		if (webDriver.findElement(By.className(objMap
-				.getLocator("divproductDrpQty"))).findElements(
+				.getLocator("divproductDrpQty2"))).findElements(
 						By.className(objMap.getLocator("drpqty")))
 						.size() > 0){
 			Select salesunit_item = new Select(webDriver.findElement(By.className(objMap
-					.getLocator("divproductDrpQty")))
+					.getLocator("divproductDrpQty2")))
 					.findElement(By.tagName("Select")));
 			salesunit_item.selectByIndex(1);
 			// store 1 is global item quantity variable for future use
@@ -8344,7 +8355,7 @@ public class WebUIDriver extends BaseAppDriver {
 		//else textbox should be displayed
 		else{
 			if (webDriver.findElement(
-					By.className(objMap
+					By.xpath(objMap
 							.getLocator("divproductClassClick")))
 							.findElements(
 									By.className(objMap.getLocator("txtqty")))
@@ -8353,34 +8364,34 @@ public class WebUIDriver extends BaseAppDriver {
 				if (!(quantity.equals(null) || quantity.replace(" ", "").length() == 0 || quantity.matches("^[a-zA-z]$"))) {
 					if (CompositeAppDriver.startUp.equalsIgnoreCase("FIREFOX")
 							|| CompositeAppDriver.startUp.equalsIgnoreCase("CHROME")) {
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty"))).click();
 						actions.keyDown(Keys.CONTROL).sendKeys("a")
 						.keyUp(Keys.CONTROL).sendKeys(Keys.DELETE).perform();
 					} else {
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.click();
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.BACK_SPACE);
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.BACK_SPACE);
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.BACK_SPACE);
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.DELETE);
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.DELETE);
-						webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+						webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 						.findElement(By.className(objMap.getLocator("txtqty")))
 						.sendKeys(Keys.DELETE);
 					}
-					webDriver.findElement(By.className(objMap.getLocator("divproductClassClick")))
+					webDriver.findElement(By.xpath(objMap.getLocator("divproductClassClick")))
 					.findElement(By.className(objMap.getLocator("txtqty")))
 					.sendKeys(quantity);
 				}else{
@@ -8390,26 +8401,26 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 			}else{
 				RESULT.failed("Product quantity box",
-						"Product quantity box should be avaialble",
-				"Product quantity box is not avaialble");
+						"Product quantity box should be available",
+				"Product quantity box is not available");
 				return;
 			}
 		}
 
 		// click on add to cart
-		webDriver.findElement(By.xpath(objMap.getLocator("btnaddToCart")))
-		.click();
+		uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("PDPadd2cart"))));
+		webDriver.findElement(By.xpath(objMap.getLocator("PDPadd2cart"))).click();
 		waitForPageLoad();
 		SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 
-		//handle the  craete new/modify order pop-up
+		//handle the create new/modify order pop-up
 		orderCreationPopup(new_or_modify);
 		SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 
 		//get the added quantity based on page navigation
 		//check if we are still on same PDP page
-		//if we are on pdp page
-		if(webDriver.findElements(By.xpath(objMap.getLocator("btnaddToCart"))).size() > 0){
+		//if we are on PDP page
+		if(webDriver.findElements(By.xpath(objMap.getLocator("divproductClassClick"))).size() > 0){
 			if (webDriver.findElements(
 					By.cssSelector(objMap
 							.getLocator("stritemInCartError"))).size() > 0) {
@@ -8419,15 +8430,15 @@ public class WebUIDriver extends BaseAppDriver {
 								.getText().split(" ")[0]);				
 			}else{
 				RESULT.failed("Product add to cart quantity exceeded",
-						"Product add to cart quantity exceeded message should be avaialble",
-				"Product add to cart quantity exceeded message is not avaialble");
+						"Product add to cart quantity exceeded message should be available",
+				"Product add to cart quantity exceeded message is not available");
 				return;
 			}
 		}
 		//if we are on continue shopping page
 		else{
 
-			// wait for the countinue shopping page after add to cart
+			// wait for the continue shopping page after add to cart
 			wait.until(ExpectedConditions
 					.visibilityOfElementLocated(By.linkText((objMap
 							.getLocator("btncontShopping")))));
@@ -8492,7 +8503,8 @@ public class WebUIDriver extends BaseAppDriver {
 		else {
 			if (webDriver.findElements(
 					By.xpath(objMap.getLocator("btnsearchAddToCartCustomize")))
-					.size() > 0) {
+					.size() > 0 && webDriver.findElement(
+							By.xpath(objMap.getLocator("btnsearchAddToCartCustomize"))).isDisplayed()) {
 				return true;
 			}
 		}
@@ -8508,7 +8520,7 @@ public class WebUIDriver extends BaseAppDriver {
 		// alcohol flag
 		boolean alcohol_product = false;
 		
-		// create product object to avoid attchement to the DOM
+		// create product object to avoid attachment to the DOM
 		WebElement product;
 		//for list
 		if(reorder_page ==  true && gridOrList.equalsIgnoreCase("list"))
@@ -8540,12 +8552,12 @@ public class WebUIDriver extends BaseAppDriver {
 			// SleepUtils.getInstance().sleep(TimeSlab.LOW);
 			waitForPageLoad();
 
-			// if product is alcohol alert should be dispalyed
+			// if product is alcohol alert should be displayed
 			if (alcohol_product) {
 				handleAlcoholAlert("click");
 			}
 
-			// unavailable message should be dispalyed
+			// unavailable message should be displayed
 			if (webDriver.findElements(
 					By.xpath(objMap.getLocator("strprodUnavailability")))
 					.size() > 0) {
@@ -8636,7 +8648,8 @@ public class WebUIDriver extends BaseAppDriver {
 			else {
 				RowProdList = webDriver.findElements(By
 						.xpath("//*[@id='productlist']/ul/li"));
-				header_text_xpath = "div[@class='portrait-item-header']/a";
+				header_text_xpath = "//*[@id='transactionalPopup']/div/div[1]/div[2]/li/div[2]/a/b";
+				//div[@class='portrait-item-header']/a
 				alcohol_check_attribute = "data-product-id";
 			}
 
@@ -8646,7 +8659,7 @@ public class WebUIDriver extends BaseAppDriver {
 					if (prod1.getAttribute("class").contains("unavailable")) {
 						flags[0] = true;
 					}
-					// for alcohol product check the attributr if it
+					// for alcohol product check the attribute if it
 					// starts
 					// with win_...
 					if (prod1.getAttribute(alcohol_check_attribute).startsWith(
@@ -8663,12 +8676,12 @@ public class WebUIDriver extends BaseAppDriver {
 					.xpath("//*[@class='sectionContent']/ul/li"));
 			for (WebElement prod1 : RowProdList) {
 				if (prod1.findElement(
-						By.xpath("div[@class='portrait-item-header']/a"))
+						By.xpath("//*[@id='transactionalPopup']/div/div[1]/div[2]/li/div[2]/a/b"))
 						.getText().contains(productFullName)) {
 					if (prod1.getAttribute("class").contains("unavailable")) {
 						flags[0] = true;
 					}
-					// for alcohol product check the attributr if it
+					// for alcohol product check the attribute if it
 					// starts
 					// with win_...
 					if (prod1.getAttribute("data-product-id").startsWith("win")) {
@@ -10344,9 +10357,9 @@ public class WebUIDriver extends BaseAppDriver {
 						else if (oper[i].contains("CANCEL")) {
 							try
 							{
-								if (uiDriver.isDisplayed("btncancelChanges")) {
+								if (uiDriver.isDisplayed("btncancel_update")) {
 									uiDriver.getwebDriverLocator(
-											objMap.getLocator("btncancelChanges"))
+											objMap.getLocator("btncancel_update"))
 											.click();
 									RESULT.passed(
 											"Cancel modification",
@@ -11014,7 +11027,7 @@ public class WebUIDriver extends BaseAppDriver {
 				}
 				else
 				{
-				robot.moveToElement(webDriver.findElement(By.name(objMap
+				robot.moveToElement(webDriver.findElement(By.xpath(objMap
 						.getLocator("imgfd_Logo"))));
 				}
 				// click on sub-departement if sub-departement is available
@@ -11171,12 +11184,12 @@ public class WebUIDriver extends BaseAppDriver {
 					return;
 				}
 				category_hover_xapth = objMap.getLocator(dept).split("span")[0];
-				// hover on sub-departement if sub-departement is available
+				// hover on sub-department if sub-department is available
 				if (!sub_dept.endsWith(dept)
 						&& sub_dept.replace(" ", "").length() > 0) {
 					String temp_sub_dept = sub_dept;
-					// For the sub-departement correct the sub-departement if we
-					// have item with space whichis without space in excel data
+					// For the sub-department correct the sub-department if we
+					// have item with space which is without space in excel data
 					if (sub_dept.equals("CheeseShop"))
 						sub_dept = "Cheese Shop";
 					else if (sub_dept.equals("FourMinuteMeals"))
@@ -11769,8 +11782,8 @@ public class WebUIDriver extends BaseAppDriver {
 			uiDriver.click("lnknewCustomer");
 
 			try{
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By
-						.xpath(objMap.getLocator("txtzipcodeCRM"))));
+				uiDriver.wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By
+						.xpath(objMap.getLocator("txtzipcodeCRM")))));
 			}catch(Exception e){
 				RESULT.failed("Navigation to create new customer page", "Navigation to create new customer page should be successful", "Navigation to create new customer page failed");
 				return;
@@ -12968,7 +12981,7 @@ public class WebUIDriver extends BaseAppDriver {
 			uiDriver.setValue("txtpassWord1", PassWord1);
 			uiDriver.setValue("txtconfirmPassWord1", ConfirmPassWord1);
 			uiDriver.setValue("txtsecurityQuestion", SecurityQuestion);
-			RESULT.done("Signup in Freshdirect", "User should able to fill reuired details", "Details have been entered");
+			RESULT.done("Signup in Freshdirect", "User should able to fill required details", "Details have been entered");
 			uiDriver.click("btnSIGNup");		
 			SleepUtils.getInstance().sleep(TimeSlab.MEDIUM);
 			if (webDriver.findElements(
@@ -15266,6 +15279,7 @@ public class WebUIDriver extends BaseAppDriver {
 		case CAROUSAL: {
 			// webDriver.findElement(By.name("FD_LOGO")).click();
 			// WebUIDriver.selenium.waitForPageToLoad(PageLoadTime);
+			uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(objMap.getLocator("imgfd_Logo"))));
 			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 			if (uiDriver.isDisplayed("strymalOrCarosProd")) {
 				try {uiDriver.FD_addToCart(ClickOrHover, Item, Quantity, OrderFlagNewModify, 
@@ -15675,6 +15689,18 @@ public class WebUIDriver extends BaseAppDriver {
 		return "WebUIDriver()";
 	}
 
+	public void clearBrowserCache() {
+
+		webDriver.manage().deleteAllCookies();
+		selenium.refresh();
+	}
+	
+	public void HoverAndClick(WebDriver driver, WebElement elementToHover, WebElement elementToClick) {
+
+		Actions action = new Actions(driver);
+		action.moveToElement(elementToHover).click(elementToClick).build().perform();
+		   }
+	
 	private List<Map> uiMap;
 
 	private String sDynamicValue1 = "_x";
