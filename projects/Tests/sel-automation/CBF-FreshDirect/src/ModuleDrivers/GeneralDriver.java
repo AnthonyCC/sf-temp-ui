@@ -6,6 +6,7 @@ import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -26,7 +27,7 @@ public class GeneralDriver extends BaseModuleDriver {
 		// TODO Auto-generated constructor stub
 	}
 
-	// Launch Storefront
+	// Launch Store front
 	public void LaunchApp(DataRow input, DataRow output) {
 		uiDriver.launchApplication(input.get("url"));
 		//if (webDriver.getTitle().equals("FreshDirect")) {
@@ -42,7 +43,7 @@ public class GeneralDriver extends BaseModuleDriver {
 			}
 			RESULT.passed("Launching the Application",
 					"Should open the Application",
-			"Application opened sucessfully!");
+			"Application opened successfully!");
 			try{
 				if(webDriver.findElements(By.xpath(objMap.getLocator("lnkclickHere"))).size() > 0)
 				{
@@ -99,25 +100,26 @@ public class GeneralDriver extends BaseModuleDriver {
 	@SuppressWarnings("deprecation")
 	public void Login(DataRow input, DataRow output) throws InterruptedException
 	{
-
-		if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)
+		if(webDriver.findElements(By.xpath(objMap.getLocator("DownArwHdr"))).size()>0)
 		{
-			if (uiDriver.isDisplayed("btnlogout")) 
+			if (uiDriver.isDisplayed("DownArwHdr")) 
 			{
 				Logout(input, output);	
 			}
-		}
-		else if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()<0 && webDriver.findElements(By.className(objMap.getLocator("btnlogin"))).size()<0)
-		{
-			uiDriver.click("imgfd_Logo");
-			Logout(input, output);
-		}
+		//}
+		//else if(webDriver.findElements(By.xpath(objMap.getLocator("DownArwHdr"))).size()<0 && webDriver.findElements(By.className(objMap.getLocator("btnlogin1"))).size()<0)
+		//{
+		//	uiDriver.click("imgfd_Logo");
+		//	Logout(input, output);
+		//}
+		//webDriver.findElement(By.className(objMap.getLocator("btnlogin1"))).click();
+		uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogin1"))));
 		uiDriver.FD_login(input.get("userID"), input.get("password"));
 		// wait for logout button
 		try
 		{
-			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogout"))));
-			if (uiDriver.isDisplayed("btnlogout")) {
+			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("DownArwHdr"))));
+			if (uiDriver.isDisplayed("DownArwHdr")) {
 				RESULT.passed("Login", 
 						"Should be Logged in Successfully ",
 						"Logged in successfully with  username  " +input.get("userID") +" and  Password " +input.get("password") );
@@ -129,7 +131,7 @@ public class GeneralDriver extends BaseModuleDriver {
 		}
 		catch(Exception e)
 		{
-			RESULT.failed("Login ","Log out button should be available","Log out button is not available");
+			RESULT.failed("Login ","Header downward arrow should be available","Header downward arrow is not available");
 		}
 
 		// set the alcohol alert flag to false as user logged in and its new session 
@@ -186,37 +188,40 @@ public class GeneralDriver extends BaseModuleDriver {
 			RESULT.failed("Merge cart", "Cart should be successfully merged", "Cart is unable to merge successfully");
 		}
 
+		}
 	}
 
 	// Logout from the Storefront
 	public void Logout(DataRow input, DataRow output) {
 		try
 		{
-			if (!(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)) {
-				if (webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0){
-					uiDriver.click("imgfd_Logo");
-					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("imgfd_Logo"))));
-				}else if(webDriver.findElements(By.className(objMap.getLocator("imgfdLogoCheckout"))).size()>0){
-					uiDriver.click("imgfdLogoCheckout");
-					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("imgfdLogoCheckout"))));
-				}
-			}			
+			//if (!(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)) {
+				//if (webDriver.findElements(By.name(objMap.getLocator("imgfd_Logo"))).size()>0){
+				//	uiDriver.click("imgfd_Logo");
+				//	uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(objMap.getLocator("imgfd_Logo"))));
+				//}else if(webDriver.findElements(By.className(objMap.getLocator("imgfdLogoCheckout"))).size()>0){
+				//	uiDriver.click("imgfdLogoCheckout");
+				//	uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("imgfdLogoCheckout"))));
+				//}
+			//}			
 			// verify logout button is there or not
-			if (uiDriver.isDisplayed("btnlogout")) {
+			if (uiDriver.isDisplayed("DownArwHdr")) {
 				// click on logout button
 				if (CompositeAppDriver.startUp.equalsIgnoreCase("IE"))
 				{
-					uiDriver.getwebDriverLocator(objMap.getLocator("btnlogout")).sendKeys("\n");
+					uiDriver.getwebDriverLocator(objMap.getLocator("DownArwHdr")).sendKeys("\n");
+					uiDriver.getwebDriverLocator(objMap.getLocator("btnlogout1")).sendKeys("\n");
 					uiDriver.waitForPageLoad();
 				}				
 				else
 				{
-				uiDriver.click("btnlogout");
+				//uiDriver.robot.moveToElement(webDriver.findElement(By.className(objMap.getLocator("DownArwHdr"))));
+			    uiDriver.click("DownArwHdr");
+				uiDriver.click("btnlogout1");
 				}
 				// verify login button appears or not
 				try{
-					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("btnlogout"))));
-					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogin"))));
+					uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogin1"))));
 					RESULT.passed("Logout", 
 							"Should be Logged out Successfully",
 					"Logged out successfully");
@@ -224,7 +229,7 @@ public class GeneralDriver extends BaseModuleDriver {
 				}catch(Exception e){
 					RESULT.failed("Logout", 
 							"Should be Logged out Successfully",
-					"Could not logout. Log in is not visible");
+					"Could not logout. Log out is not visible");
 				}
 
 			} else {
@@ -347,7 +352,7 @@ public class GeneralDriver extends BaseModuleDriver {
 				uiDriver.click("lnkyouraccountlink");
 				uiDriver.waitForPageLoad();
 				//wait for Your Account page
-				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkpresidentAnonymous"))));
+				uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("lnkpresidentAnonymous1"))));
 			}
 			catch(Exception e)
 			{
@@ -479,17 +484,17 @@ public class GeneralDriver extends BaseModuleDriver {
 	public void SignUp(DataRow input, DataRow output)
 	throws InterruptedException, TimeoutException  {
 		try {
-			if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()>0)
+			if(webDriver.findElements(By.className(objMap.getLocator("btnlogin1"))).size()>0)
 			{
-				if (uiDriver.isDisplayed("btnlogout")) {
+				if (uiDriver.isDisplayed("btnlogout1")) {
 					Logout(input, output);
 				}
 			}
-			else if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()<0 && webDriver.findElements(By.className(objMap.getLocator("btnlogin"))).size()<0)
-			{
-				uiDriver.click("imgfd_Logo");
-				Logout(input, output);
-			}
+			//else if(webDriver.findElements(By.className(objMap.getLocator("btnlogout"))).size()<0 && webDriver.findElements(By.className(objMap.getLocator("btnlogin"))).size()<0)
+			//{
+				//uiDriver.click("imgfd_Logo");
+				//Logout(input, output);
+			//}
 			uiDriver.FD_SignUP(input.get("Firstname"), input.get("Lastname"),
 					input.get("ZipCode"), input.get("ServiceType"), input
 					.get("Email"), input.get("ConfirmEmail"), input
@@ -498,9 +503,11 @@ public class GeneralDriver extends BaseModuleDriver {
 					input.get("CompanyContactNum"), input.get("CompanyFloor"),
 					input.get("CompanyAddress"), input.get("CompanyCity"),
 					input.get("CompanyState"), input.get("CompanyZipcode"));
-			uiDriver.waitForPageLoad();
-			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("btnlogout"))));
-			if (uiDriver.isDisplayed("btnlogout") && webDriver.getCurrentUrl().contains("freshdirect.com/index.jsp")) {
+			//uiDriver.waitForPageLoad();
+			//uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(objMap.getLocator("SgnUp"))));
+			//uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(objMap.getLocator("WelcomeMsg"))));
+			if (webDriver.findElements(By.xpath(objMap.getLocator("DownArwHdr"))).size()>0) { 
+				uiDriver.isElementPresent(By.xpath(objMap.getLocator("DownArwHdr")));
 				RESULT.passed("SignUp",
 						"User should be successfully logged in to the Application and navigated to Home Page",
 				"Logged in successfully in to the Application and navigated to Home Page");
