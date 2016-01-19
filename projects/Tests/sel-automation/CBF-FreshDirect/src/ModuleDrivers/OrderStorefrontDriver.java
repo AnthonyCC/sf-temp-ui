@@ -1,6 +1,7 @@
 package ModuleDrivers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cbf.utils.SleepUtils.TimeSlab;
 
@@ -47,6 +48,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 
 	public void Checkout(DataRow input, DataRow output) throws  
 	InterruptedException{
+	
 		try 
 		{
 			//uiDriver.waitForPageLoad();
@@ -61,12 +63,13 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				{
 					uiDriver.click("btnyourCart");
 				}
-				uiDriver.waitForPageLoad();
-				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("txtSubTotal"))));
+				//removed wait for testing purposes
+				//uiDriver.waitForPageLoad();
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("tXtSuBtoTAL"))));
 				//uiDriver.FD_viewCart();
 			}
 
-			String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("txtSubTotal")).getText();
+			String cartSubtotal = uiDriver.getwebDriverLocator(objMap.getLocator("tXtSuBtoTAL")).getText();
 			cartSubtotal = cartSubtotal.replaceAll(",", "");
 			if(input.get("DeliverypassFlag").equalsIgnoreCase("YES")){
 				try{
@@ -82,7 +85,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				}
 				}catch(Exception e){
 					RESULT.failed("DeliveryPass string",
-							"Deliverypass string shoulb be available",
+							"Deliverypass string should be available",
 							"Deliverypass string is not available and exception caught is " +e.getMessage());
 					return;
 				}
@@ -103,6 +106,9 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 					continue;
 				}
 			}
+			WebElement cart2 = webDriver.findElement(By.xpath(objMap.getLocator("btnyourCart")));
+			uiDriver.robot.moveToElement(cart2);
+			uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btncheckOut"))));
 
 			if(webDriver.findElements(By.xpath(objMap.getLocator("btncheckOut"))).size()>0
 					&& webDriver.findElement(By.xpath(objMap.getLocator("btncheckOut"))).isDisplayed())
@@ -117,6 +123,12 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				else
 				{
 				uiDriver.click("btncheckOut");
+				uiDriver.robot.moveToElement(webDriver.findElement(By.xpath("html/body/div[6]/div/a/img")));
+				uiDriver.wait.withTimeout(10, TimeUnit.SECONDS);
+				uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("ChkOut1"))));
+				webDriver.findElement(By.xpath(objMap.getLocator("ChkOut1"))).click();
+				uiDriver.waitForPageLoad();
+				
 				}
 				//				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				uiDriver.waitForPageLoad();
@@ -159,11 +171,10 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						"No warning message is displayed for  minimum cart requirement");
 						return;
 					}
-				}								
-
+				}
 				try
 				{
-					uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btncheckOut"))));
+					//uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("ChkOut1"))));
 				}
 				catch(TimeoutException e)
 				{
@@ -174,7 +185,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 
 			else
 			{
-				RESULT.failed("Check out button visibility","Check out button should be visible","Check out button is not visible");
+				RESULT.failed("Check out button visibility","Check out button should be invisible","Check out button is visible");
 				return;
 			}
 			//			SleepUtils.getInstance().sleep(TimeSlab.YIELD);
@@ -248,7 +259,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			{
 				RESULT.warning("Check out : Age verification pop up ", "Age verification pop up should be validated", "Age verification pop up is not validated ");
 			}
-			// handle unavailablity pop-up 
+			// handle unavailability pop-up 
 			uiDriver.FD_unavailablePopUp();
 			if (webDriver.getTitle().contains(input.get("PageName"))) 
 			{
@@ -290,7 +301,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 				}
 
 			} catch (Exception e) {
-				RESULT.failed("Handling alcohol pop in Delievery Address",
+				RESULT.failed("Handling alcohol popup in Delievery Address",
 						"Alcohol pop should get handled with flag " + input.get("AlcoholRestriction"),
 						"Alcohol pop is not handled with flag " + input.get("AlcoholRestriction"));
 				return;
@@ -340,13 +351,13 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 							input.get("SelectAddress"), input.get("FlexibilityFlag"));	
 
 					// move to done button and click
-					uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
-					uiDriver.click("btndoneDelAddress");	
-
+					//uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
+					webDriver.findElement(By.xpath(objMap.getLocator("btndoneDelAddress"))).click();
 					// wait for the invisibility of the done button
 
-					try{
-						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));		
+					try{	
+						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnChangeTimeSlot"))));
 						String selectedAddress = webDriver.findElement(By.xpath(objMap.getLocator("strselectedAddress"))).getText();
 						if(selectedAddress.contains(uiDriver.address) && input.get("AddSelectDeleteEdit").equalsIgnoreCase("select"))
 						{
@@ -415,9 +426,10 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 								.get("CompanyName"), input.get("SaveCancelBtn"),
 								input.get("SelectAddress1"), input.get("FlexibilityFlag"));		
 
-						uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
+						//uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
 						uiDriver.click("btndoneDelAddress");
 						uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
+						uiDriver.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(objMap.getLocator("btnChangeTimeSlot"))));
 						String selectedAddress = webDriver.findElement(By.xpath(objMap.getLocator("strselectedAddress"))).getText();
 						if(selectedAddress.contains(uiDriver.address) && input.get("AddSelectDeleteEdit").equalsIgnoreCase("select"))
 						{
@@ -466,7 +478,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						}
 						i++;
 						selectLst.get(i).click();
-						uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
+						//uiDriver.robot.scrollToElement(uiDriver.getwebDriverLocator(objMap.getLocator("btndoneDelAddress")),webDriver);
 						uiDriver.click("btndoneDelAddress");
 						SleepUtils.getInstance().sleep(TimeSlab.LOW);
 					}while(i<selectLst.size());
@@ -474,7 +486,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 			}catch (Exception e) {
 				uiDriver.wait.until(ExpectedConditions.visibilityOf(webDriver.findElement(By.xpath(objMap.getLocator("btnchangeDeliveryAddress")))));
 			}
-			//		uiDriver.wait.until(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(objMap.getLocator("btnchangeDeliveryAddress")))));				
+					//uiDriver.wait.until(ExpectedConditions.stalenessOf(webDriver.findElement(By.xpath(objMap.getLocator("btnchangeDeliveryAddress")))));				
 			uiDriver.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(objMap.getLocator("btndoneDelAddress"))));
 		}catch(Exception e){
 			RESULT.failed("Delivery Address Component",
@@ -846,7 +858,7 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 						//					{
 						//						RESULT.failed("Change Payment button",
 						//								"Payment option should get selected",
-						//						"Specified Payment option:"+input.get("AddEditDeleteSelect")+" is unsucessful");
+						//						"Specified Payment option:"+input.get("AddEditDeleteSelect")+" is unsuccessful");
 						//						return;
 						//					}
 						//					else 
@@ -941,12 +953,16 @@ public class OrderStorefrontDriver extends BaseModuleDriver {
 		{
 			for(int i=0;i<15;i++)
 			{
-				uiDriver.robot.moveToElement(webDriver.findElement(By.name(objMap.getLocator("imgfd_Logo"))));
+				uiDriver.robot.moveToElement(webDriver.findElement(By.xpath(objMap.getLocator("imgfd_Logo"))));
 				if(i>=5 &&!(CompositeAppDriver.startUp.equalsIgnoreCase("CHROME")))
 				{
 					break;
 				}
 			}
+			webDriver.findElement(By.xpath(objMap.getLocator("lnkreorder"))).click();
+			uiDriver.waitForPageLoad();
+			webDriver.findElement(By.xpath(objMap.getLocator("tabyourTopItems"))).click();
+			//Added ability to engage "reorder" search field
 			uiDriver.FD_searchFunction(input.get("Method"), input
 					.get("Departement"), input.get("SubDepartement"), input
 					.get("Category"));
