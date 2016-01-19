@@ -325,6 +325,7 @@
 	#login_cont_formContent.locabar_login .errorMsg {
 		max-width: 256px;
 	}
+
 	#login_cont_formContent.locabar_login #login_cont_formContent_email,
 	#login_cont_formContent.locabar_login #login_cont_formContent_password {
 		width: 268px;
@@ -593,6 +594,9 @@
 }
 .locabar_triggers:focus {
     outline: 2px solid #f00;
+}
+#locabar_user_trigger.locabar_triggers:focus {
+    outline: none;
 }
 .locabar_triggers.mouse {
 	outline: initial;

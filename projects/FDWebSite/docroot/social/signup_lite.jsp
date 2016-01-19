@@ -30,18 +30,18 @@
 		}
 	}
 	  
-	  boolean isCorporate = "CORPORATE".equalsIgnoreCase(serviceType);
+	boolean isCorporate = "CORPORATE".equalsIgnoreCase(serviceType);
 	
 	  
 	
-      String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+	String failurePage = "/social/signup_lite.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
     
-      CmRegistrationTag.setRegistrationLocation(session,"signup social");
+	CmRegistrationTag.setRegistrationLocation(session,"signup social");
       
-      // determine the preSuccessPage from previous workflow
-      String preSuccessPage = (String)request.getParameter("preSuccessPage");
-      if(preSuccessPage != null && preSuccessPage.length()>0 )
-      	session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage); 
+	// determine the preSuccessPage from previous workflow
+	String preSuccessPage = (String)request.getParameter("preSuccessPage");
+	if(preSuccessPage != null && preSuccessPage.length()>0 )
+		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage); 
       
 %>
 
@@ -239,7 +239,7 @@
 				
 			    <table border="0" cellpadding="5" cellspacing="8">
 					<tr>
-						<td valign="bottom">
+						<td>
 							<!-- span id should be the input box id+"_img" -->
 							<span class="error_img" id="email_img"></span>
 						</td>

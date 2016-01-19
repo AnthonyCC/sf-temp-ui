@@ -131,7 +131,7 @@
 }
 
 #sulCont span.show_bg_arrow {
-	margin: 0 5px 15px 0;
+	margin: 25px 5px 15px 0;
   	background:url( "/media_stat/images/common/red_arrow.png") no-repeat;
 }
 
@@ -362,4 +362,7 @@ br.new_cust{
 
 #fd_login .error{
 	margin-left: 0px;
+}
+#fd_login div.error{
+	margin-top: -3px;
 }
