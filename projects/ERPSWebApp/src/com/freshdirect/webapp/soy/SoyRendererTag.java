@@ -62,7 +62,7 @@ public class SoyRendererTag extends SimpleTagSupport {
         }
         
         try {
-            dataObj.put("abFeatures", SoyTemplateEngine.convertToMap(FeaturesService.defaultService().getAllFeatures(cookies, user)));
+            dataObj.put("abFeatures", SoyTemplateEngine.convertToMap(FeaturesService.defaultService().getActiveFeaturesMapped(cookies, user)));
             dataObj.put("metadata", SoyTemplateEngine.convertToMap(FormMetaDataService.defaultService().populateFormMetaData(user)));
         } catch (FDResourceException e) {
             LOGGER.error("Can not decorate soy data with additional information.", e);

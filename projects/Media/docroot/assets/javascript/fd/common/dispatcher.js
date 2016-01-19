@@ -4,8 +4,7 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
   "use strict";
 
-  // TODO: set this to true if #APPDEV-4476 is released (or if any other A/B testing feature requires it)
-  var DECORATE_BODY = false;
+  var DECORATE_BODY = true;
 
   var bus = new Bacon.Bus();
 
