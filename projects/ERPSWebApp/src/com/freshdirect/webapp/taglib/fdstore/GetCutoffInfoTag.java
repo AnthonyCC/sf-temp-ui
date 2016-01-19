@@ -154,7 +154,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ){
 			FDZoneCutoffInfo info = (FDZoneCutoffInfo) i.next();
-			if(info.getCutoffTime().after(last)){
+			if(info.getCutoffTime().after(last) || lastInfo == null){
 				last = info.getCutoffTime();
 				lastInfo = info;
 			}
