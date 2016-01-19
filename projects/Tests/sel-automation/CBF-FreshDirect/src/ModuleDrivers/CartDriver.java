@@ -19,7 +19,7 @@ import cbf.utils.SleepUtils.TimeSlab;
 public class CartDriver extends BaseModuleDriver {
 
 	Actions ac_key = new Actions(webDriver);
-	WebDriverWait wait = new WebDriverWait(webDriver, 20);
+	WebDriverWait wait = new WebDriverWait(webDriver, 1);
 
 	public CartDriver(TestResultLogger resultLogger) {
 		super(resultLogger);
@@ -146,7 +146,7 @@ public class CartDriver extends BaseModuleDriver {
 
 				//get the final quntity in your cart
 				uiDriver.waitForPageLoad();
-				SleepUtils.getInstance().sleep(TimeSlab.YIELD);
+				//SleepUtils.getInstance().sleep(TimeSlab.YIELD);
 				finalqty = Integer.parseInt(webDriver.findElement(
 						By.xpath(objMap.getLocator("stryourCart_initialqty")))
 						.getText().split(" ")[0]);
@@ -176,9 +176,9 @@ public class CartDriver extends BaseModuleDriver {
 				By.xpath("//div[@class='transactional']/ul/li[1]/div[2]/a"))
 				.getText();
 		}catch(Exception e){
-			RESULT.failed("Add product from YMAL or Carousal",
-					"YMAL or Carousal section should be displayed",
-					"YMAL or Carousal section is not displayed");
+			RESULT.failed("Add product from YMAL or Carousel",
+					"YMAL or Carousel section should be displayed",
+					"YMAL or Carousel section is not displayed");
 			return;
 		}
 		
