@@ -40,6 +40,8 @@ import com.freshdirect.security.ticket.MasqueradePurposeBuilder;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.security.ticket.TicketService;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
+import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.crm.security.CrmSecurityManager;
@@ -163,7 +165,7 @@ public class CrmMasqueradeUtil {
 	 * @param params
 	 * @return
 	 */
-	public static String getRedirectionUri(MasqueradeParams params) {
+	public static String getRedirectionUri(HttpServletRequest request, FDUserI user, MasqueradeParams params) {
 		String redirectUri = "/index.jsp";
 		
 		// make redirection based on params
@@ -193,7 +195,7 @@ public class CrmMasqueradeUtil {
 		// Legacy cases
 		else if (params.makeGoodFromOrderId != null) {
 
-			final String payload = createPastOrderUrlPayload(params.makeGoodFromOrderId);
+			final String payload = createPastOrderUrlPayload(request, user, params.makeGoodFromOrderId);
 			
 			if (payload != null) {
 				try {
@@ -219,7 +221,7 @@ public class CrmMasqueradeUtil {
 		return redirectUri;
 	}
 	
-	public static String createPastOrderUrlPayload(final String makeGoodFromOrderId) {
+	public static String createPastOrderUrlPayload(HttpServletRequest request, FDUserI user, final String makeGoodFromOrderId) {
 		
 		// Assumed, Quickshop 2.0 / REORDER feature is active
 		List<Object> orderIdList = new ArrayList<Object>( Arrays.asList(new String[]{ makeGoodFromOrderId }) );
@@ -228,6 +230,7 @@ public class CrmMasqueradeUtil {
 		potato.setOrderIdList( (List<Object>)orderIdList );
 		potato.setTab( EnumQuickShopTab.PAST_ORDERS );
 		potato.setActivePage( 0 );
+		potato.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
 
 		StringWriter writer = new StringWriter();
 		try {

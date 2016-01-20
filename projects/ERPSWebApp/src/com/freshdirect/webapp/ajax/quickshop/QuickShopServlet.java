@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
@@ -39,6 +40,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		if ( requestData == null ) {
 			requestData = new QuickShopListRequestObject();
 		}
+		requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
 		requestData.setUserId(user.getUserId());
 		
 		HttpSession session = request.getSession();

@@ -74,7 +74,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
+	protected QuickShopReturnValue process( FDUserI user, HttpServletRequest request, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
 		
 		//transform request data
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();
@@ -98,11 +98,11 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
 			
-			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ), null, null);
+			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( request.getSession() ), null, null);
 			result = filter.doFlow(nav, filterItems);
 			
 			// post-process
-			QuickShopHelper.postProcessPopulate( user, result, session );
+			QuickShopHelper.postProcessPopulate( user, result, request.getSession() );
 
 		} catch (FDResourceException e) {
 			returnHttpError( 500, "An error occured while working on the user's shopping lists: ", e );
@@ -115,7 +115,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			listDetails = new QuickShopListDetails(firstNode.getRecipeId(), firstNode.getRecipeName(), firstNode.isRecipeAlive());			
 		}
 
-		QuickShopReturnValue responseData = new QuickShopReturnValue(unwrapResult(createPage(requestData, result.getItems())),
+		QuickShopReturnValue responseData = new QuickShopReturnValue(unwrapResult(createPage(user, request, requestData, result.getItems())),
 														result.getMenu(), 
 														new QuickShopPagerValues(requestData.getPageSize(), result.getItems().size(), requestData.getActivePage()),
 														generateSorter(nav),

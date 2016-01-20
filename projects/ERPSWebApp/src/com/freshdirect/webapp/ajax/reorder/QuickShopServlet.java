@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
@@ -18,6 +17,7 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.ElementTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -38,12 +38,11 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		if ( requestData == null ) {
 			requestData = new QuickShopListRequestObject();
 		}
+		requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
 		requestData.setUserId(user.getUserId());
 		
-		HttpSession session = request.getSession();
-		
 		// main processing
-		QuickShopReturnValue responseData = process( user, session, requestData );
+		QuickShopReturnValue responseData = process( user, request, requestData );
 		
 		// write out result
 		writeResponseData( response, responseData );
@@ -58,7 +57,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	 * @return
 	 * @throws HttpErrorResponse
 	 */
-	protected abstract QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse;
+	protected abstract QuickShopReturnValue process( FDUserI user, HttpServletRequest request, QuickShopListRequestObject requestData ) throws HttpErrorResponse;
 
 	
 	// ========================
@@ -95,10 +94,10 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	public static final int DEFAULT_PAGE_NUMBER = 0;
 	public static final int DEFAULT_PAGE_SIZE = FDStoreProperties.getQuickShopPageSize();
 	
-	protected static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(QuickShopListRequestObject reqObj,
+	protected static List<FilteringSortingItem<QuickShopLineItemWrapper>> createPage(FDUserI user, HttpServletRequest request, QuickShopListRequestObject reqObj,
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 
-		int pageSize = DEFAULT_PAGE_SIZE;
+		int pageSize = CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, DEFAULT_PAGE_SIZE);
 		int pageOffset = DEFAULT_PAGE_NUMBER;
 		if (reqObj != null) {
 			pageSize = reqObj.getPageSize();

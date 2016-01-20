@@ -203,8 +203,7 @@ public class CmsFilteringNavigator {
 				break;
 			}
 		}
-		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, EnumRolloutFeature.gridlayoutcolumn4_0, 4, pageSpecificPageSize);
-		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, EnumRolloutFeature.gridlayoutcolumn5_0, 5, pageSpecificPageSize);
+		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
 		cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 		
 		if ((id == null || id.equals("")) && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS))) {
@@ -214,9 +213,15 @@ public class CmsFilteringNavigator {
 		return cmsFilteringNavigator;
 	}
 
-    private static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI fdUser, EnumRolloutFeature feature, int divider, int pageSpecificPageSize) {
-        if (FeaturesService.defaultService().isFeatureActive(feature, request.getCookies(), fdUser)) {
-            pageSpecificPageSize = pageSpecificPageSize + pageSpecificPageSize % divider;
+    public static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI user, int pageSpecificPageSize) {
+        Map<String, String> activeFeatures = FeaturesService.defaultService().getActiveFeaturesMapped(request.getCookies(), user);
+        String gridlayoutversion = activeFeatures.get("gridlayoutcolumn");
+        if (gridlayoutversion != null){
+            int divider = Integer.parseInt(gridlayoutversion.substring(0, 1));
+            int modulo = pageSpecificPageSize % divider;
+            if (modulo != 0) {
+                pageSpecificPageSize = pageSpecificPageSize + (divider - modulo);
+            }
         }
         return pageSpecificPageSize;
     }

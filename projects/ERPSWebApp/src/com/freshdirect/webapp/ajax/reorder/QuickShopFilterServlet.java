@@ -3,7 +3,7 @@ package com.freshdirect.webapp.ajax.reorder;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -58,7 +58,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
-	protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData) throws HttpErrorResponse {
+	protected QuickShopReturnValue process(FDUserI user, HttpServletRequest request, QuickShopListRequestObject requestData) throws HttpErrorResponse {
 		LOG.info("Start processing request...");
 
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();
@@ -66,16 +66,16 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		try {
 			EnumQuickShopTab tab = requestData.getTabType();
 			if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
-				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(user, session, nav, TOP_ITEMS_FILTERS);
+				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(user, request.getSession(), nav, TOP_ITEMS_FILTERS);
 			} else {
-				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(user, session, nav, PAST_ORDERS_FILTERS, requestData);
+				result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(user, request.getSession(), nav, PAST_ORDERS_FILTERS, requestData);
 			}
 		} catch (FDResourceException e) {
 			LOG.error("Error while collecting order history", e);
 			returnHttpError(500, "Error while collecting order history", e);
 		}
 
-		QuickShopReturnValue responseData = new QuickShopReturnValue(unwrapResult(createPage(requestData, result.getItems())), result.getMenu(), new QuickShopPagerValues(requestData.getPageSize(),
+		QuickShopReturnValue responseData = new QuickShopReturnValue(unwrapResult(createPage(user, request, requestData, result.getItems())), result.getMenu(), new QuickShopPagerValues(requestData.getPageSize(),
 				result.getItems().size(), requestData.getActivePage()), generateSorter(nav), nav.getSearchTerm(), null);
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
 		QuickShopPastOrdersCustomMenu transformMenuIntoPastOrdersCustom = QuickShopFilterService.defaultService().transformMenuIntoPastOrdersCustom(responseData.getMenu(), requestData.getYourLastOrderId());

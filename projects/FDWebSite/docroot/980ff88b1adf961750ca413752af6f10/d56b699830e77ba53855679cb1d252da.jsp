@@ -143,7 +143,7 @@
 	out.print("Logged in. Redirecting to StoreFront.<br/>");
 
 	// make redirection based on params
-	String redirectUri = CrmMasqueradeUtil.getRedirectionUri(params);
+	String redirectUri = CrmMasqueradeUtil.getRedirectionUri(request, loginUser, params);
 	
 	if(!loginUser.getTcAcknowledge()){
 		session.setAttribute("nextSuccesspage", redirectUri );

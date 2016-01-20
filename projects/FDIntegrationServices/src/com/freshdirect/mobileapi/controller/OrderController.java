@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,14 +8,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -55,9 +51,11 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet;
+import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 import com.freshdirect.webapp.taglib.fdstore.OrderUtil;
@@ -163,7 +161,7 @@ public class OrderController extends BaseController {
             												&& !"all".equalsIgnoreCase(deptId)) ? deptId : null
             												, noOfOrderFilterDays
             												, sortBy
-            												, requestMessage, request.getSession());
+            												, requestMessage, request);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT.equals(action)) {
         	String orderId = request.getParameter("orderId");
         	String noOfOrderDays = request.getParameter("qsNoOfFilterDays");
@@ -183,7 +181,7 @@ public class OrderController extends BaseController {
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
-            model = getEveryItemEverOrdered(model, user, requestMessage, request.getSession());
+            model = getEveryItemEverOrdered(model, user, requestMessage, request);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDEREDEX.equals(action)){
         	String postData = getPostData(request, response);
             
@@ -192,7 +190,7 @@ public class OrderController extends BaseController {
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
             }
-            model = getEveryItemEverOrderedEX(model, user, requestMessage, request.getSession());
+            model = getEveryItemEverOrderedEX(model, user, requestMessage, request);
         }
 
         return model;
@@ -377,16 +375,14 @@ public class OrderController extends BaseController {
     private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user
     													, String orderId, String deptId
     													, Integer filterOrderDays, String sortBy
-    													, SearchQuery query, HttpSession session) throws FDException, JsonException {
-        Order order = new Order();
-        
+    													, SearchQuery query, HttpServletRequest request) throws FDException, JsonException {
         List<ProductConfiguration> products;
         List<ProductConfiguration> productPage = null;
         List<ProductConfiguration> deptProducts = new ArrayList<ProductConfiguration>();
         try {
             //products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);  
         	//products = loadProductsWithQuickShopFilter(user, session, query);
-        	products = loadProductsWithQuickShopTopItemsFilter(user, session, query);
+        	products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
         	//Add All products in given dept id.
         	
         	for(ProductConfiguration product : products){
@@ -413,14 +409,14 @@ public class OrderController extends BaseController {
     }
     
 	private ModelAndView getEveryItemEverOrdered(ModelAndView model, SessionUser user, SearchQuery query,
-			HttpSession session) throws FDException, JsonException {
+	        HttpServletRequest request) throws FDException, JsonException {
 		
 		List<ProductConfiguration> products;
 		List<ProductConfiguration> productPage = null;
 
 		try {
 			//products = loadProductsWithQuickShopFilter(user, session, query);
-			products = loadProductsWithQuickShopTopItemsFilter(user, session, query);
+			products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
 			if (products != null) {
 				if(query.getPage() > 0) {
 					int start = (query.getPage() - 1) * query.getMax();
@@ -444,14 +440,14 @@ public class OrderController extends BaseController {
 	}
 	
 	private ModelAndView getEveryItemEverOrderedEX(ModelAndView model, SessionUser user, SearchQuery query,
-			HttpSession session) throws FDException, JsonException {
+	        HttpServletRequest request) throws FDException, JsonException {
 		
 		List<ProductConfiguration> products;
 		List<ProductConfiguration> productPage = null;
 
 		try {
 			//products = loadProductsWithQuickShopFilter(user, session, query);
-			products = loadProductsWithQuickShopTopItemsFilter(user, session, query);
+			products = loadProductsWithQuickShopTopItemsFilter(user, request, query);
 			if (products != null) {
 				if(query.getPage() > 0) {
 					int start = (query.getPage() - 1) * query.getMax();
@@ -481,32 +477,11 @@ public class OrderController extends BaseController {
 		return model;
 	}
     
-    private List<ProductConfiguration> loadProductsWithQuickShopFilter(SessionUser user, HttpSession session, SearchQuery query) throws ModelException {
-        FDUserI fdUser = user.getFDSessionUser();//.getUser();
-        
-        QuickShopListRequestObject requestData = new QuickShopListRequestObject();
-       
-        requestData.setTimeFrame("timeFrameAll");
-        requestData.setSortId("freq");
-        if(query.getDepartment() != null && query.getDepartment().trim().length() > 0) {
-        	List<Object> depts = new ArrayList<Object>();
-        	depts.add(query.getDepartment());
-        	requestData.setDeptIdList(depts);
-        }        
-        requestData.setSearchTerm(query.getQuery());
-        try {
-        	FilteringNavigator nav = requestData.convertToFilteringNavigator();
-        	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(fdUser, session, nav, QuickShopFilterServlet.PAST_ORDERS_FILTERS, requestData);
-            return convertToSkuList(result, fdUser);
-        } catch (FDResourceException e) {
-            throw new ModelException(e);
-        }
-    }
-    
     //Load products for New quickshop - this will get the top Items
-    private List<ProductConfiguration> loadProductsWithQuickShopTopItemsFilter(SessionUser user, HttpSession session, SearchQuery query)throws ModelException{
+    private List<ProductConfiguration> loadProductsWithQuickShopTopItemsFilter(SessionUser user, HttpServletRequest request, SearchQuery query)throws ModelException{
     	FDUserI fdUser = user.getFDSessionUser();//.getUser();
     	QuickShopListRequestObject requestData = new QuickShopListRequestObject();
+    	requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user.getFDSessionUser(), QuickShopServlet.DEFAULT_PAGE_SIZE));
     	requestData.setTimeFrame("timeFrameAll");
         requestData.setSortId("freq");
         if(query.getDepartment() != null && query.getDepartment().trim().length() > 0) {
@@ -517,7 +492,7 @@ public class OrderController extends BaseController {
         requestData.setSearchTerm(query.getQuery());
         try {
 			FilteringNavigator nav = requestData.convertToFilteringNavigator();
-			FilteringFlowResult<QuickShopLineItemWrapper> result=QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(fdUser, session, nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
+			FilteringFlowResult<QuickShopLineItemWrapper> result=QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(fdUser, request.getSession(), nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
 			return convertToSkuList(result, fdUser);
         } catch (FDResourceException e) {
 			throw new ModelException(e);
