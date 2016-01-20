@@ -102,7 +102,7 @@ public class FDProductPromotionJcoServer extends FdSapServer
 		tableMetaDataList.add(new TableMetaData("MATNR", JCoMetaData.TYPE_CHAR, 18, 0, "SAP Material Number"));
 		tableMetaDataList.add(new TableMetaData("ZZDEPT", JCoMetaData.TYPE_CHAR, 3, 0, "Department"));
 		tableMetaDataList.add(new TableMetaData("ZONEID", JCoMetaData.TYPE_CHAR, 6, 0, "Zone ID (Pricing Zone)"));
-		tableMetaDataList.add(new TableMetaData("PRIORY", JCoMetaData.TYPE_NUM, 2, 0, "Priority � Order Priority"));
+		tableMetaDataList.add(new TableMetaData("PRIORY", JCoMetaData.TYPE_NUM, 3, 0, "Priority � Order Priority"));
 		tableMetaDataList.add(new TableMetaData("FEATR", JCoMetaData.TYPE_CHAR, 1, 0, "Featured"));
 		tableMetaDataList.add(new TableMetaData("FEATRN", JCoMetaData.TYPE_NUM, 3, 0, "Featured Header"));
 		tableMetaDataList.add(new TableMetaData("ZCATEGORY", JCoMetaData.TYPE_NUM, 50, 0, "Category"));
