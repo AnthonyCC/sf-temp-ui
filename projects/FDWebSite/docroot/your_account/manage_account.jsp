@@ -17,7 +17,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
-<jwr:style src="/your_account.css" media="all"/>
 <% //expanded page dimensions
 final int W_YA_MANAGE_TOTAL = 970;
 final int W_YA_CSICON = 40;
@@ -57,6 +56,7 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		<fd:SEOMetaTag pageId="manage_account"></fd:SEOMetaTag>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
+		<jwr:style src="/your_account.css" media="all"/>
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
