@@ -267,8 +267,8 @@
 	    border-bottom-right-radius: 0px;
 	}
 
-	body.no-touch #topSearchField{
-		height: 32px!important;
+	center #topSearchField{
+		height: 40px!important;
 	}
 
 	#topSearchField:focus {
