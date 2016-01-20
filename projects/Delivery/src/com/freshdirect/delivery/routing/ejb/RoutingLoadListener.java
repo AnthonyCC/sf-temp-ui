@@ -94,22 +94,22 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	}
 	
     private void process(ReservationUpdateCommand command) throws FDResourceException {
-    	LOGGER.debug("receiving updateReservationStatus from queue..."+ command.getReservationId());
+    	LOGGER.info("receiving updateReservationStatus from queue..."+ command.getReservationId());
 		FDDeliveryManager.getInstance().updateReservationStatus(command.getReservationId(), command.getAddress(), command.getSapOrderNumber());
 	}	
     
     private void process(OrderCreateCommand command) throws FDResourceException {
-    	LOGGER.debug("receiving createOrderStatus from queue..."+ command.getSaleId());
+    	LOGGER.info("receiving createOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),command.getOrderMobileNumber());
 	}	
     
     private void process(OrderCancelCommand command) throws FDResourceException {
-    	LOGGER.debug("receiving cancelOrderStatus from queue..."+ command.getSaleId());
+    	LOGGER.info("receiving cancelOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().cancelOrder(command.getSaleId());
 	}	
     
     private void process(OrderModifyCommand command) throws FDResourceException {
-    	LOGGER.debug("receiving modifyOrderStatus from queue..."+ command.getSaleId());
+    	LOGGER.info("receiving modifyOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().modifyOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),command.getOrderMobileNumber());
 	}	
 }

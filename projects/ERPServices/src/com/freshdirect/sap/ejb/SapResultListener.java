@@ -249,6 +249,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						}
 						
 						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
+						LOGGER.info("sending sendReservationUpdateRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																		, ((SapCreateSalesOrder) command).getSapOrderNumber());
@@ -256,6 +257,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						if(((ErpSaleModel)saleEB.getModel()).geteStoreId() !=null &&
 								EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name()))
 								 { 
+							LOGGER.info("sending sendSubmitOrderRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 												erpRoutingGateway.sendSubmitOrderRequest(saleId, 
 														(((ErpSaleModel)saleEB.getModel()).getCurrentOrder()!=null && 
 																((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod()!=null)?
@@ -269,17 +271,19 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					saleEB.cancelOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 					if(EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
+								LOGGER.info("sending sendCancelOrderRequest ...Sale ID: "+ saleId+ " Reservation ID: "+saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 								 erpRoutingGateway.sendCancelOrderRequest(saleId);
 					}
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
+					LOGGER.info("sending sendReservationUpdateRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 																	, saleEB.getSapOrderNumber());
 					if(((ErpSaleModel)saleEB.getModel()).geteStoreId()!=null &&
 							EnumEStoreId.FDX.name().equalsIgnoreCase(((ErpSaleModel)saleEB.getModel()).geteStoreId().name())){
-						
+						LOGGER.info("sending sendModifyOrderRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 								,(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);

@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -32,6 +34,7 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -41,6 +44,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class ModifyOrderHelper {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(ModifyOrderHelper.class);
 	
 	public static void handleDeliveryPassPromotion(FDSessionUser currentUser, FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode,
 			FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException, FDInvalidConfigurationException {
@@ -76,6 +81,7 @@ public class ModifyOrderHelper {
 	}
 	
 	public static void handleReservation(FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException {
+		LOGGER.info("Get Reservation By Id: "+ order.getDeliveryReservationId() + " Sale ID: "+ order.getSale().getId());
 		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId(), order.getSale().getId() );
 		cart.setDeliveryReservation(reservation);
 	}

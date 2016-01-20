@@ -123,6 +123,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
 					if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
 						try {
+							LOGGER.info("releaseReservation by ID: " + dlvRsv.getPK().getId());
 							FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress, event, true);
 						} catch (FDResourceException fdre) {
 							LOGGER.warn("Error releasing reservation", fdre);

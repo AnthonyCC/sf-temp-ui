@@ -142,6 +142,7 @@ public class TimeslotService {
 
             TimeslotEvent event = new TimeslotEvent((user.getApplication() != null) ? user.getApplication().getCode() : "", cart.isDlvPassApplied(), cart.getDeliverySurcharge(),
                     cart.isDeliveryChargeWaived(), (cart.getZoneInfo() != null) ? cart.getZoneInfo().isCtActive() : false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
+            LOG.info("releaseReservation by ID: " + rsvId);
             FDDeliveryManager.getInstance().releaseReservation(rsvId, erpAddress, event, true);
             cart.setDeliveryReservation(null);
         }

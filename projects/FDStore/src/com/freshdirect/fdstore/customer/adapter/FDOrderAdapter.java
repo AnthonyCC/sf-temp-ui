@@ -170,6 +170,7 @@ public class FDOrderAdapter implements FDOrderI {
 		  
 		ErpDeliveryInfoModel delInfo = erpOrder.getDeliveryInfo();
 		try {
+			LOGGER.info("Get Reservation By Id: "+delInfo.getDeliveryReservationId()+ " Sale ID: "+sale.getId());
 			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
 			
 			if (deliveryReservation == null) {

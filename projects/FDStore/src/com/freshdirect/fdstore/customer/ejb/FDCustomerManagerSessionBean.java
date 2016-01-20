@@ -1970,7 +1970,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		catch(Exception e)
 		{
-			
+			LOGGER.info("exception in placeOrder"+e);
 			// do nothing
 		}
 		TimeslotEvent event = new TimeslotEvent((info.getSource()!=null)?info.getSource().getCode():"", 
@@ -1998,6 +1998,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 
 			try {
+				LOGGER.info("Get Reservation By Id: "+reservationId);
 				FDDeliveryManager.getInstance().getReservationById(event.getTransactionSource(), reservationId);
 			} catch (FDResourceException e) {
 				this.getSessionContext().setRollbackOnly();
@@ -2248,6 +2249,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(ce);
 		} catch (ErpAddressVerificationException re) {
 			try{
+				LOGGER.info("AVE releaseReservation by ID: " + reservationId);
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
@@ -2255,6 +2257,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw re;
 		} catch (ErpAuthorizationException re) {
 			try{
+				LOGGER.info("AUF releaseReservation by ID: " + reservationId);
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
@@ -2262,6 +2265,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw re;
 		} catch (RemoteException re) {
 			try{
+				LOGGER.info("Exception releaseReservation by ID: " + reservationId);
 				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
 			}catch(Exception e){
 				LOGGER.info("There was an error releasing the reservation" + reservationId);
@@ -2500,6 +2504,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				isRestored = FDDeliveryManager.getInstance()
 						.releaseReservation(reservationId,
 								order.getDeliveryAddress(), event, restoreReservation);
+				
+				LOGGER.info("releaseReservation by ID: " + reservationId+ " "+restoreReservation+ " "+isRestored+ " "+order.getDeliveryReservation());
 			}
 			if (null != order.getAppliedGiftCards()
 					&& order.getAppliedGiftCards().size() > 0) {
@@ -2881,6 +2887,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							// reservation has changed so release old reservation
 							FDDeliveryManager.getInstance().releaseReservation(
 									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
+							LOGGER.info("releaseReservation by ID: " + oldReservationId);
 							// now commit the new Reservation
 							// dlvSB.commitReservation(newReservationId,
 							// identity.getErpCustomerPK(), saleId);
@@ -2889,6 +2896,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 									newReservationId, identity.getErpCustomerPK(), 
 									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
 									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+							
+							LOGGER.info("commitReservation by ID: " + newReservationId);
 						}
 		
 			if (order.getSelectedGiftCards() != null
@@ -4560,7 +4569,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			
 			//restore reservation is false
 			FDDeliveryManager.getInstance().releaseReservation(reservation.getId(), address , event, false);
-		
+			LOGGER.info("releaseReservation by ID: " + reservation.getId());
+			
 			this.logActivity(getReservationActivityLog(reservation
 					.getTimeslot(), actionInfo,
 					EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation
