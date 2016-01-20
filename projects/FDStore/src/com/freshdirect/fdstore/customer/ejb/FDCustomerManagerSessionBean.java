@@ -4495,7 +4495,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 */
 		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslotId, identity.getErpCustomerPK(), rsvType, 
 				TimeslotLogic.encodeCustomer(address, user), chefsTable, null, isForced, event, false, null);
-
+	
+		LOGGER.info("makeReservation: " + ((rsv!=null)?rsv.getId():null));
+		
 		/*if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 			this.updateRecurringReservation(identity,
 					timeslot.getBegDateTime(), timeslot.getEndDateTime(),
