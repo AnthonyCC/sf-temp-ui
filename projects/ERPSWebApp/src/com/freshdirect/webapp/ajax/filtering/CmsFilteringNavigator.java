@@ -18,9 +18,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.features.service.FeaturesService;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsFilteringNavigator {
@@ -83,7 +85,7 @@ public class CmsFilteringNavigator {
 	 * @throws FDResourceException 
 	 * @throws HttpErrorResponse 
 	 */
-	public static CmsFilteringNavigator createInstance(HttpServletRequest request) throws InvalidFilteringArgumentException, FDResourceException {
+	public static CmsFilteringNavigator createInstance(HttpServletRequest request, FDUserI fdUser) throws InvalidFilteringArgumentException, FDResourceException {
 
 		try {
 			request.setCharacterEncoding("UTF-8");
@@ -179,7 +181,7 @@ public class CmsFilteringNavigator {
 		String id = cmsFilteringNavigator.getId();
 
 		cmsFilteringNavigator.parseFilteringFlowType(request);
-		final int pageSpecificPageSize;
+		int pageSpecificPageSize;
 		if (parsedPageSize != null) {
 			pageSpecificPageSize = parsedPageSize;
 		} else {
@@ -201,6 +203,8 @@ public class CmsFilteringNavigator {
 				break;
 			}
 		}
+		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, EnumRolloutFeature.gridlayoutcolumn4_0, 4, pageSpecificPageSize);
+		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, EnumRolloutFeature.gridlayoutcolumn5_0, 5, pageSpecificPageSize);
 		cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 		
 		if ((id == null || id.equals("")) && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS))) {
@@ -209,6 +213,13 @@ public class CmsFilteringNavigator {
 		
 		return cmsFilteringNavigator;
 	}
+
+    private static int increasePageSizeToFillLayoutFully(HttpServletRequest request, FDUserI fdUser, EnumRolloutFeature feature, int divider, int pageSpecificPageSize) {
+        if (FeaturesService.defaultService().isFeatureActive(feature, request.getCookies(), fdUser)) {
+            pageSpecificPageSize = pageSpecificPageSize + pageSpecificPageSize % divider;
+        }
+        return pageSpecificPageSize;
+    }
 	
 	public static boolean isDisabledPartialRolloutRedirector(HttpServletRequest request) {
 		String value = request.getParameter("disablePartialRolloutRedirector");

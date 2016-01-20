@@ -41,11 +41,11 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 
 		try {
-			
+			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			CmsFilteringNavigator nav = null;
 			
 			if(!pdp && !specialLayout){
-				nav = CmsFilteringNavigator.createInstance((HttpServletRequest)ctx.getRequest());				
+				nav = CmsFilteringNavigator.createInstance((HttpServletRequest)ctx.getRequest(), user.getUser());
 			}else{
 				nav = new CmsFilteringNavigator();
 				if(pdp){
@@ -56,7 +56,6 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				nav.setId(nodeId);
 				nav.parseFilteringFlowType(request);
 			}
-			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			
 			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(nav, user);
 			

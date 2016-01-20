@@ -70,7 +70,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
 		try {
-			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request);
+			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
 			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
 			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
