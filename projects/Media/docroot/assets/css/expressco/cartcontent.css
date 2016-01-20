@@ -955,18 +955,26 @@ label[for="dontupdatecartlines"] {
     padding-left: 0px;
 }
 
-#tipDropdown{
+#tipDropdown, #tipTextBox{
 	padding: 9px 5px;
-	width: 161px;
 	font-size: 18pt;
 	border-width: 2px;
 }
-
-#tipApply, #tipApplied{
+#tipDropdown, #tipApply, #tipApplied{
 	width: 161px;
+}
+#tipApply, #tipApplied{
 	border-radius: 1px;
 	text-shadow: none;
 	font-weight: normal;
 	font-size: 12pt;
 	margin-top: 8px;
+}
+#tipTextBox{
+	width:147px;
+}
+#tipAppliedTick{
+	position: absolute;
+	margin-top: 20px;
+	margin-left: 5px;
 }

@@ -70,6 +70,11 @@ var FreshDirect = FreshDirect || {};
       value:function( config ) {
         focusedElementId = config.dontfocus ? null : document.activeElement && document.activeElement.id;
         console.log('focused: '+focusedElementId);
+        
+        //for etipping, APPBUG-4219
+        if(focusedElementId == "tipApply"){
+        	$jq("#"+focusedElementId).text("wait...").css("opacity", "0.5").prop("disabled", true);
+        }
 
         var ajax = Bacon.fromPromise($.ajax({
                 type:config.method || 'GET',
