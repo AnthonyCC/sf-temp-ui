@@ -57,8 +57,10 @@ if (isSmaller) detailWidth="630";
 <%
 int idx = 0;
 double taxValue =0.0;
-if(!FDStoreProperties.getAvalaraTaxEnabled()){
-	taxValue = (Double)request.getAttribute("AVALARA_CONTEXT");
+if(FDStoreProperties.getAvalaraTaxEnabled()){
+	if(null !=request.getAttribute("AVALARA_CONTEXT")){
+		taxValue = (Double)request.getAttribute("AVALARA_CONTEXT");
+	}
 }
 else{
 	taxValue = cart.getTaxValue();
