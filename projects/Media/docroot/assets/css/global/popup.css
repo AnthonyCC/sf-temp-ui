@@ -13,7 +13,11 @@
 	border: 1px solid #8e7092;
 }
 .qs-popup-content #addtolist-selectList {
-	width:200px;
+	width: 180px;
+}
+
+.qs-popup-content #addtolist-newList {
+  width: 150px;
 }
 
 .qs-popup.manageshoppinglists {

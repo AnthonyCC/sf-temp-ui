@@ -225,7 +225,7 @@
   line-height: 32px;
   height:32px;
   padding: 0 65px 0 5px;
-  margin: 0 -62px 0 0;
+  margin: 0 -63px 0 0;
   background-color: #fff;
   border: 1px solid #aaa;
   width:140px;
@@ -238,7 +238,7 @@
   text-align: center;
   width: 60px;
   vertical-align: top;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .promotion-text{
@@ -490,6 +490,13 @@ div.tooltip p{
   font-size:18px;
   width:250px;
   height:45px;
+  padding: 0;
+  position: relative;
+}
+
+.cartheader__button:after {
+  position: absolute;
+  right: .5em;
 }
 
 .checkout_button_w_subtotal {
@@ -500,9 +507,8 @@ div.tooltip p{
 }
 
 .checkout_button_w_subtotal:after {
-  content: '>';
   position: absolute;
-  right: 20px;
+  right: .5em;
   top: 16px;
 }
 
@@ -650,6 +656,13 @@ label[for="dontupdatecartlines"] {
   font-size:18px;
   width:250px;
   height:45px;
+  padding: 0;
+  position: relative;
+}
+
+.footer__button:after {
+  position: absolute;
+  right: .5em;
 }
 
 .made-changes{

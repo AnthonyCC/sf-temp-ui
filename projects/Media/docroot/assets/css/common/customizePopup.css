@@ -93,6 +93,10 @@
   clear: both;
 }
 
+#customizePopup .buttons .cssbutton.addtolist {
+  margin-top: 1em;
+}
+
 .customizePopup .buttons .addtocart {
   min-width: 110px;
   text-align: center;

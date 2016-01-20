@@ -428,8 +428,8 @@
   <div class="portrait-item-atl">
     <button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</button>
     {if $listId and $originalLineId}
-    <button class="deletefromlist cssbutton white transparent icon-remove-before" aria-haspopup="true" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</button>
-    <button class="editinlist cssbutton purple transparent" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</button>
+    <button class="deletefromlist cssbutton white transparent small icon-trash-new2-before" aria-haspopup="true" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</button>
+    <button class="editinlist cssbutton purple transparent small" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</button>
     <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}" />
     {/if}
   </div>
@@ -580,6 +580,7 @@
           {param quantity:$quantity /}
           {param freeSamplePromoProduct:$freeSamplePromoProduct /}
           {param uid: $catId+'_'+$productId /}
+          {param cssbuttons: true /}
         {/call}
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>

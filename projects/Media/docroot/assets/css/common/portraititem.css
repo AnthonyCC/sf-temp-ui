@@ -184,8 +184,8 @@
   margin: 0;
 }
 
-.portrait-item-atl .deletefromlist {
-  margin-top: 4px;
+.portrait-item-atl .cssbutton + .cssbutton {
+  margin: 4px 0 0;
 }
 
 .qs-lists .portrait-item.unavailable .portrait-item-atl{
@@ -646,7 +646,7 @@ a.portrait-item-header-name:link {
   position:absolute;
   left:0;
   top:0;
-	background:#693;
+	background:#4fa157;
   color:white;
   font-size:14px;
 	padding: 2px 40px 2px 10px;
@@ -660,7 +660,7 @@ a.portrait-item-header-name:link {
 #customizePopup .learnmore:hover,
 #transactionalPopup .transactional-popup-learnmore:hover {
   text-decoration: none;
-  background: #698625;
+  background: #458d4e;
 }
 
 #customizePopup .learnmore:after,
@@ -820,7 +820,7 @@ a.portrait-item-header-name:link {
 
 .qs-content .lineitems22 .itemlist-item-controls.atc-info-message .addtocart,
 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart {
-  background-color: #693;
+  background-color: #4fa157;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls.atc-info-message .addtocart:before,
@@ -937,12 +937,11 @@ a.portrait-item-header-name:link {
   height: 34px;
   display: block;
   font-size: 24px;
-  line-height: 34px;
+  line-height: 32px;
   text-align: center;
   font-weight: bold;
   color: #fff;
-  background: #669933;
-  box-shadow: 1px 1px 2px 0 rgb(172,199,144) inset, -1px -1px 2px 0 rgb(82,123,41) inset;
+  background-image: none;
   text-decoration: none;
   text-indent: 0;
   padding: 0;
@@ -957,21 +956,10 @@ a.portrait-item-header-name:link {
 .qs-content .lineitems22 .itemlist-item-controls.smaller .qtyinput .quantity_minus,
 .qs-content .lineitems22 .itemlist-item-controls.smaller .qtyinput .quantity_plus{
   height:28px;
-  line-height:28px;
+  line-height:26px;
   width:28px;
   font-size:14px;
   font-weight:bold;
-}
-
-.qs-content .lineitems22 .itemlist-item-controls .quantity_minus:focus,
-.qs-content .lineitems22 .itemlist-item-controls .quantity_minus:hover,
-.qs-content .lineitems22 .itemlist-item-controls .quantity_plus:focus,
-.qs-content .lineitems22 .itemlist-item-controls .quantity_plus:hover,
-#transactionalPopup .portrait-item-controls .quantity_minus:focus,
-#transactionalPopup .portrait-item-controls .quantity_minus:hover,
-#transactionalPopup .portrait-item-controls .quantity_plus:focus,
-#transactionalPopup .portrait-item-controls .quantity_plus:hover {
-  background: #698625;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls .quantity_plus,

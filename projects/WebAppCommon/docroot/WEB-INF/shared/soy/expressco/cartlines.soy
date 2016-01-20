@@ -200,7 +200,7 @@
   </div>
   <div class='cartheader__action'>
       <form fdform="viewcart_startcheckout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-        <button class="cssbutton orange cartheader__button" {$beforeCheckoutAction}>Checkout &gt;</button>
+        <button class="cssbutton orange cartheader__button icon-chevron-right-after" {$beforeCheckoutAction}>Checkout</button>
       </form>
   </div>
 </div>
@@ -615,7 +615,7 @@
           <div>
             <input type="text" class="promotion-input" name="promotionCode" placeholder="Enter here" />
             <input type="hidden" name="action" value="applyPromotion" />
-            <button class="cssbutton green">apply<span class="offscreen">promotion code</span></button>
+            <button class="cssbutton green small">apply<span class="offscreen">promotion code</span></button>
           </div>
         </form>
       </div>
@@ -626,7 +626,7 @@
           <div>
             <input type="text" class="promotion-input" name="givexNum" placeholder="Enter here" />
             <input type="hidden" name="action" value="applyGiftCard" />
-            <button class="cssbutton green">apply<span class="offscreen">new gift card</span></button>
+            <button class="cssbutton green small">apply<span class="offscreen">new gift card</span></button>
           </div>
         </form>
       </div>
@@ -731,7 +731,7 @@
 * @param? estimatedTotal
 */
 {template .checkoutButton}
-<button class="cssbutton orange checkout_button_w_subtotal"><span>Place Order</span>
+<button class="cssbutton orange checkout_button_w_subtotal icon-chevron-right-after"><span>Place Order</span>
 {if $estimatedTotal}<span class="est_total">Est. Total: {$estimatedTotal}</span>{/if}
 </button>
 {/template}
@@ -947,7 +947,7 @@
   <div class='footer__right'>
       {if $form}<form fdform="{$form}" action="#">{/if}
       {if $navLink}<a href='{$navLink}'>{/if}
-      {if $buttonText}<button class="cssbutton orange footer__button" {$beforeCheckoutAction}>{$buttonText} &gt;</button>{/if}
+      {if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" {$beforeCheckoutAction}>{$buttonText}</button>{/if}
       {if $navLink}</a>{/if}
       {if $form}</form>{/if}
   </div>

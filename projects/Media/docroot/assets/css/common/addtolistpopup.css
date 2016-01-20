@@ -91,8 +91,7 @@
   padding-top: 10px;
 }
 
-.editinlistpopup .buttons button,
-.deletefromlistpopup .buttons button {
+.editinlistpopup .buttons button {
   display: inline-block;
 	padding: 0;
 	border: none;
@@ -108,13 +107,9 @@
 
 .saverecipepopup p button.saverecipe-button-go,
 .saverecipepopup .buttons button.addtolist-button-ok,
-.deletefromlistpopup .buttons button.deletefromlist-button-delete,
-.deletefromlistpopup .buttons button.deletefromlist-button-cancel,
 .editinlistpopup .buttons button.editinlist-button-save {
   background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
 }
-
-
 
 .saverecipepopup p button.saverecipe-button-go {
     width: 35px;
@@ -143,26 +138,6 @@
 .deletefromlistpopup p[data-item] {
   text-align: center;
   margin-top: 10px;
-}
-
-.deletefromlistpopup .buttons button.deletefromlist-button-delete {
-    width: 85px;
-    height: 27px;
-    background-position: -247px -216px;
-}
-.deletefromlistpopup .buttons button.deletefromlist-button-delete:hover,
-.deletefromlistpopup .buttons button.deletefromlist-button-delete:focus {
-    background-position: -5px -253px;
-}
-
-.deletefromlistpopup .buttons button.deletefromlist-button-cancel {
-    width: 75px;
-    height: 27px;
-    background-position: -197px -115px;
-}
-.deletefromlistpopup .buttons button.deletefromlist-button-cancel:hover,
-.deletefromlistpopup .buttons button.deletefromlist-button-cancel:focus {
-    background-position: -5px -152px;
 }
 
 .editinlistpopup .buttons button.editinlist-button-save {

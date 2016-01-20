@@ -46,7 +46,6 @@
 }
 
 button[data-component="applyCustomization"],
-button[data-component="saveCustomization"],
 #reset {
 	height:22px;
 	margin:0;
@@ -144,16 +143,6 @@ button[data-component="applyCustomization"] {
 button[data-component="applyCustomization"]:hover,
 button[data-component="applyCustomization"]:focus {
     /*background-position: -181px -437px;*/
-}
-
-button[data-component="saveCustomization"] {
-    width: 148px;
-	margin: 0;
-	background-position: -181px -405px;
-}
-button[data-component="saveCustomization"]:hover,
-button[data-component="saveCustomization"]:focus {
-	background-position: -181px -437px;
 }
 
 .qs-actions .cssbutton:after,

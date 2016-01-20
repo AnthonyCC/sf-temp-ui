@@ -143,8 +143,8 @@
 			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
 		{/if}{/foreach}
 		{call common.quantitybox}
-        	{param quantity:$item.quantity /}
-      	{/call}
+      {param quantity:$item.quantity /}
+    {/call}
 		{call common.subtotal}
     		{param availMatPrices:$item.availMatPrices /}
     		{param suRatios:$item.suRatios /}
@@ -218,15 +218,16 @@
         {param soldBySalesUnit:$item.soldBySalesUnit /}
         {param salesUnit:$item.salesUnit /}
         {param quantity:$item.quantity /}
+        {param cssbuttons:true /}
       {/call}
       {call common.subtotal}
-          {param availMatPrices:$item.availMatPrices /}
-          {param suRatios:$item.suRatios /}
-          {param grpPrices:$item.grpPrices /}
-          {param cvPrices:$item.cvPrices /}
-          {param qMin:$item.quantity.qMin /}
-          {param qMax:$item.quantity.qMax /}
-          {param qInc:$item.quantity.qInc /}
+        {param availMatPrices:$item.availMatPrices /}
+        {param suRatios:$item.suRatios /}
+        {param grpPrices:$item.grpPrices /}
+        {param cvPrices:$item.cvPrices /}
+        {param qMin:$item.quantity.qMin /}
+        {param qMax:$item.quantity.qMax /}
+        {param qInc:$item.quantity.qInc /}
       {/call}
     {else}
       {if $item.quantity and $item.quantity.quantity > 0}

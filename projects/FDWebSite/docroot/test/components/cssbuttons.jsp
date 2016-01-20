@@ -17,22 +17,28 @@
 	<section>
 		<h2>colors</h2>
 		<ol>
-			<li><button class="cssbutton orange">orange</button></li>
-			<li><button class="cssbutton blue">blue</button></li>
-			<li><button class="cssbutton purple">purple</button></li>
 			<li><button class="cssbutton green">green</button></li>
-			<li><button class="cssbutton khaki">khaki</button></li>
+			<li><button class="cssbutton green transparent">green transparent</button></li>
+			<li><button class="cssbutton orange">orange</button></li>
+			<li><button class="cssbutton orange transparent">orange transparent</button></li>
 			<li><button class="cssbutton red">red</button></li>
+			<li><button class="cssbutton red nontransparent">red nontransparent</button></li>
+			<li><button class="cssbutton purple">purple</button></li>
+			<li><button class="cssbutton purple nontransparent">purple nontransparent</button></li>
+			<li><button class="cssbutton blue">blue</button></li>
+			<li><button class="cssbutton khaki">khaki</button></li>
 			<li><button class="cssbutton white">white</button></li>
 			<li><button class="cssbutton white transparent">white + transparent</button> - for icon use</li>
-            <li><button class="cssbutton black">black</li>
-            <li><button class="cssbutton grey">grey</li>
+      <li><button class="cssbutton black">black</li>
+      <li><button class="cssbutton grey">grey</li>
+      <li><button class="cssbutton green" disabled>disabled (green)</li>
 		</ol>
 		<h2>sizes</h2>
 		<ol>
-			<li><button class="cssbutton orange">normal</button> - height:30px, font size:12px</li>
-			<li><button class="cssbutton orange medium">medium</button> - height:30px, font size:14px</li>
-			<li><button class="cssbutton orange large">large</button> - height:34px, font size:14px</li>
+			<li><button class="cssbutton orange small">small</button></li>
+			<li><button class="cssbutton orange">normal</button></li>
+			<li><button class="cssbutton orange medium">medium</button></li>
+			<li><button class="cssbutton orange large">large</button></li>
 		</ol>
 	</section>
 	<hr>
@@ -80,6 +86,10 @@
       <li><button class="cssbutton blue icon-add-drawer-before">add drawer - before</button><button class="cssbutton blue icon-add-drawer-after">add drawer - after</button><button class="cssbutton blue icon-add-drawer-before notext">add drawer - notext</button> - notext</li>
       <li><button class="cssbutton blue icon-clock-before">clock - before</button><button class="cssbutton blue icon-clock-after">clock - after</button><button class="cssbutton blue icon-clock-before notext">clock - notext</button> - notext</li>
       <li><button class="cssbutton blue icon-meal-details-before">meal details - before</button><button class="cssbutton blue icon-meal-details-after">meal details - after</button><button class="cssbutton blue icon-meal-details-before notext">meal details - notext</button> - notext</li>
+      <li><button class="cssbutton orange icon-chevron-left-before">chevron left - before</button><button class="cssbutton orange icon-chevron-left-after">chevron left - after</button><button class="cssbutton orange icon-chevron-left-before notext">chevron left - notext</button> - notext</li>
+      <li><button class="cssbutton orange icon-chevron-right-before">chevron right - before</button><button class="cssbutton orange icon-chevron-right-after">chevron right - after</button><button class="cssbutton orange icon-chevron-right-before notext">chevron right - notext</button> - notext</li>
+      <li><button class="cssbutton orange icon-chevron-up-before">chevron up - before</button><button class="cssbutton orange icon-chevron-up-after">chevron up - after</button><button class="cssbutton orange icon-chevron-up-before notext">chevron up - notext</button> - notext</li>
+      <li><button class="cssbutton orange icon-chevron-up-before">chevron up - before</button><button class="cssbutton orange icon-chevron-up-after">chevron up - after</button><button class="cssbutton orange icon-chevron-up-before notext">chevron up - notext</button> - notext</li>
 		</ol>
 	</section>
 	</body>

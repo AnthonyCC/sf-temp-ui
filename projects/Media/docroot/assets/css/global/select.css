@@ -38,8 +38,6 @@ ul.customselect,
   color: inherit;
   background: transparent;
   border: none;
-  margin: 0;
-  padding: 0;
 }
 
 #FDCustomSelect li button:focus,
@@ -53,14 +51,15 @@ ul.customselect,
 
 #FDCustomSelect li.selected {
   background: #f0f5e1;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 .popupcontentghost > .selectButton,
 select.selected + .fdselect > .selectButton {
-  background-color: #728d4b;
+  background-color: #4fa157;
 }
 
 .fdselect .selectButton {
   background-color: #999;
+  border-color: transparent;
 }

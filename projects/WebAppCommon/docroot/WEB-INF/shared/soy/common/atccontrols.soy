@@ -8,6 +8,7 @@
  * @param? optional
  * @param? freeSamplePromoProduct free sample product
  * @param? uid unique id
+ * @param? cssbuttons
  */
 {template .atcControls autoescape="false"}
 {if $salesUnit and length($salesUnit)}
@@ -29,6 +30,7 @@
         {param quantity:$quantity /}
         {param optional:$optional /}
         {param uid:$uid /}
+        {param cssbuttons:$cssbuttons /}
       {/call}
     {/if}
 	{/if}

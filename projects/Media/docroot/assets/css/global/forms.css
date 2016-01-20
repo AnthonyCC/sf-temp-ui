@@ -19,8 +19,9 @@
 }
 
 [fdform][fdform-locked] *:disabled {
-  background:grey;
-  cursor:default;
+  background: #e8e8ea;
+  color: #858585;
+  cursor: not-allowed;
 }
 
 .ec-popup [fdform] input[fdform-hidden],

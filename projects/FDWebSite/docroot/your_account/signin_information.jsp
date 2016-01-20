@@ -462,7 +462,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0" alt=""></td>
 	<td><img src="/media_stat/images/layout/clear.gif" width="80" height="8" border="0" alt=""></td>
 	<td><img src="/media_stat/images/layout/clear.gif" width="135" height="8" border="0" alt=""></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="220" height="8" border="0" alt=""></td>
 </tr>
 
 <tr>

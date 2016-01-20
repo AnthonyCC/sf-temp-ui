@@ -381,29 +381,10 @@ section.main .pager .pagination-pager-button,
   width: auto;
   height: 27px;
   line-height: 27px;
-  color: #693;
-  border: none;
   font-size: 12px;
   margin-left: 12px;
   width:36px;
-  border:1px solid #693;
-  border-radius:5px;
   box-sizing:border-box;
-}
-
-section.main .pager .pagination-pager-button:hover,
-.srch .pager .pagination-pager-button:hover{
-  border-color:#666;
-  background-color: #fff;
-  color:#000;
-}
-
-section.main .pager .pagination-pager-button.selected,
-.srch .pager .pagination-pager-button.selected{
-  border-color:#333;
-  background-color: #fff;
-  color:#333;
-  font-weight: bold;
 }
 
 section.main .pager .pagination-pager-button.selected:hover,
@@ -435,7 +416,6 @@ section.main .pager .cssbutton.gray,
 .srch .pager .cssbutton.gray,
 .qs-content .cssbutton.gray{
   cursor:auto;
-  background:#C0C0C0;
 }
 
 section.main .pager .pagination-pager-separator,
@@ -475,9 +455,14 @@ section.main .leftnav .menuBox {
   margin-top: 16px;
   background: #fffffa;
   border: 1px solid #dce6be;
-  border-radius: 10px;
+  border-radius: 3px;
   color: #333;
   overflow: hidden;
+}
+
+section.main .leftnav .menuBox .cssbutton {
+  width: 100%;
+  padding: 8px 5px 8px 11px;
 }
 
 .srch section.main .leftnav .menuBox:first-child {
@@ -597,23 +582,6 @@ section.main .leftnav .menuBox hr {
   height: 1px;
 }
 
-section.main .category.cssbutton.green {
-  background-color:#728d4b;
-}
-
-section.main [data-boxtype="FILTER"] .category.cssbutton.green {
-  background-color:#88a75c;
-}
-
-section.main [data-menu-selected] .category.cssbutton.green,
-section.main .category.cssbutton.green:focus,
-section.main .category.cssbutton.green:hover,
-.popupcontentghost .category.cssbutton.green,
-.popupcontentghost .cssbutton.green:focus,
-.popupcontentghost .cssbutton.green:hover {
-  background-color:#728d4b;
-}
-
 .browse-popup-content {
   overflow: hidden;
 }
@@ -665,7 +633,7 @@ section.main .category.cssbutton.green:hover,
   display: block;
   line-height: 22px;
   padding: 0 5px;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .no-touch .browse-popup-content li label:hover > span > span  {
@@ -677,7 +645,7 @@ section.main .category.cssbutton.green:hover,
 }
 
 .browse-popup-content li.selected a {
-  background-color:#728d4b;
+  background-color: #4fa157;
   color: #fff;
 }
 
@@ -782,19 +750,19 @@ section.main .leftnav .menuBox input[type="radio"] {
 section.main .leftnav .menuBox li input[type="radio"] + span {
   display: block;
   padding: 2px 0 2px 5px;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 section.main .leftnav .menuBox li.selected input[type="radio"] + span {
   display: block;
   padding: 5px;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 #menupopup input[type="radio"] + span {
   display: block;
   padding: 1px 5px;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 #menupopup [data-component=menuitem]{
@@ -803,14 +771,14 @@ section.main .leftnav .menuBox li.selected input[type="radio"] + span {
 
 #menupopup input[type="radio"]:checked + span,
 section.main .leftnav .menuBox input[type="radio"]:checked + span {
-  background-color:#728d4b;
+  background-color: #4fa157;
   color: #fff;
   font-weight: bold;
 }
 
 .ie8 section.main .leftnav .menuBox .selected input[type="radio"] + span,
 .ie8 section.main .leftnav .menuBox input[type="radio"][checked] + span {
-  background-color:#728d4b;
+  background-color: #4fa157;
   color: #fff;
   font-weight: bold;
 }
@@ -852,12 +820,6 @@ section.main .leftnav .menuBox button.category {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 8px 5px 8px 11px;
-  border-radius: 10px;
-}
-
-section.main .leftnav .menuBox button.category.orange {
-  background: #e07300;
 }
 
 .leftnav-category-popup-button.cssbutton > span,
@@ -878,7 +840,7 @@ section.main .leftnav .menuBox button.category > span:after {
   font-size: 15px;
   line-height: 13px;
   vertical-align: middle;
-  top: 1px;
+  top: 3px;
   right: 0;
   content: "\e619";
 }
@@ -928,9 +890,10 @@ section.main .leftnav .menuBox button.category.emptypopup {
   margin:0;
 }
 
-div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover{
+div.popupcontentghost button.category.popup.leftnav-category-popup-button.cssbutton.green.hover {
   width: 100%;
   padding: 8px 5px 8px 11px;
+  transition-duration: 0;
 }
 
 /* Left Nav - Make buttons active links */
