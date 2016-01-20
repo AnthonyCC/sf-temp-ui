@@ -38,10 +38,3 @@
     vertical-align: baseline;
     background: url(/media_stat/images/navigation/sidecart/bullet-orange.png) no-repeat 50% 50%;
 }
-
-.product-request a:link,
-.product-request a:visited,
-.product-request a:active,
-.product-request a:hover {
-    color: #306700;
-}

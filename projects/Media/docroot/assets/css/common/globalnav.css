@@ -87,13 +87,6 @@ body{
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
-  color: #5c7440;
-}
-
-.globalnav_top .topnavitem a:focus,
-.globalnav_top .topnavitem a:hover{
-	color: #3d571e;
-	text-decoration: none;
 }
 
 .globalnav_top .topnavitem a:focus {

@@ -335,7 +335,8 @@ section.main .breadcrumbs {
   list-style-type: none;
   margin: 0 0 20px;
   border-bottom: 1px solid #e0e3d0;
-  color: #666;
+  color: #458b4c;
+  text-decoration: underline;
 }
 
 section.main .breadcrumbs li {
@@ -343,11 +344,18 @@ section.main .breadcrumbs li {
   line-height: 24px;
 }
 
+section.main .breadcrumbs li a, section.main .breadcrumbs li a:link {
+	text-decoration: none;
+}
+section.main .breadcrumbs li a:hover, section.main .breadcrumbs li a:focus, section.main .breadcrumbs li a:active, section.main .breadcrumbs li a:visited {
+	text-decoration: underline;
+}
+
 section.main .breadcrumbs li:before {
   content: '>';
   display: inline-block;
   font-weight: bold;
-  color: #ddd;
+  color: #333;
   margin: 0 13px;
 }
 

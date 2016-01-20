@@ -829,17 +829,6 @@ span.cssbutton.annotation:hover {
 .pdp-freshness .atleast{
 	font-family: Verdana,sans-serif;
 	font-size:16px;
-	color:#360;
-}
-
-.pdp-freshness a:hover .atleast{
-  text-decoration: underline;
-}
-
-#drugpanel{
-}
-
-.tooltip-body #drugpanel {
 }
 
 /*

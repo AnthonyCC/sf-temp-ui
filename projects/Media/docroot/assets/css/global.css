@@ -23,11 +23,9 @@ td {
 	font-family: Verdana, Arial, sans-serif;
 }
 
-a:link { color : #336600; text-decoration: none }
-a:visited { color : #336600;  text-decoration: none }
-a:active { color : #FF9900;  text-decoration: underline }
-a:focus { color : #336600;  text-decoration: underline }
-a:hover { color : #336600;  text-decoration: underline }
+a, a:link { color: #458b4c;  text-decoration: underline; }
+a:visited { color: #777;  text-decoration: underline; }
+a:hover, a:active, a:focus { color: #5fb069;  text-decoration: underline; }
 
 .fd-red-text {
 	color: #C00 !important;
