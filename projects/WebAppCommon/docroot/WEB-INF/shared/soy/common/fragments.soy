@@ -54,6 +54,7 @@
 * @param? fromProducts
 * @param? numProducts
 * @param productList
+* @param? showConfig
 * @param? abFeatures
 */
 {template .productList autoescape="false"}
@@ -61,10 +62,16 @@
 {if $version == '4_0'}
   {call common.fixedProductList data="all"}
     {param itemPerLine:4 /}
+    {param showConfig: $showConfig /}
+    {param fromProducts: $fromProducts /}
+    {param numProducts: $numProducts /}
   {/call}
 {else}
   {call common.fixedProductList data="all"}
     {param itemPerLine:5 /}
+    {param showConfig: $showConfig /}
+    {param fromProducts: $fromProducts /}
+    {param numProducts: $numProducts /}
   {/call}
 {/if}
 {/template}
@@ -74,6 +81,7 @@
 * @param? numProducts
 * @param productList
 * @param? itemPerLine
+* @param? showConfig
 */
 {template .fixedProductList autoescape="false"}
 {let $ipl: $itemPerLine ? $itemPerLine : 5 /}
@@ -83,13 +91,14 @@
 {let $l: $nProducts - $fProducts /}
 {let $lines: ceiling($l / $ipl) /}
 {for $line in range(0, $lines)}
-  <ul class="products{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+  <ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
     {for $col in range(0, $ipl)}
       {if $fProducts + $col + $line * $ipl < $nProducts}
         {let $product: $productList[$fProducts + $col + $line * $ipl] /}
         {call common.transactionalGridItem}
           {param item:$product /}
           {param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+          {param showConfig: $showConfig /}
         {/call}
       {/if}
     {/for}

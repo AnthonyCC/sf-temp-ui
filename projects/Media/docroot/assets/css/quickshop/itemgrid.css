@@ -35,6 +35,11 @@
   display: table-cell;
 }
 
+.qs-content #productlist ul.products[data-ipl="4"] li.portrait-item {
+  width: 174px;
+  max-width: 174px;
+}
+
 .ie8 .qs-content ul.products li.portrait-item {
   display: inline-block;
 }
