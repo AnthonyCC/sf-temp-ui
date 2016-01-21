@@ -172,4 +172,4 @@ if(user != null) {
 </div>
 
 <!-- Changes for Skip to Content Fix -->
-<div id="skip_to_content"></div>
+<div tabindex="0" id="skip_to_content"></div>
