@@ -13,5 +13,5 @@ import com.freshdirect.erp.model.NotificationModel;
 public interface IPostSettlementNotification {
 
 	public void Notify() throws RemoteException, EJBException, FinderException, ErpTransactionException, CreateException, SQLException;
-	public boolean saveNoification(NotificationModel notificationModel) throws RemoteException, EJBException, CreateException, ErpTransactionException, SQLException;
+	public boolean saveNoification(NotificationModel notificationModel) throws RemoteException, EJBException, CreateException, ErpTransactionException, SQLException, FinderException;
 }

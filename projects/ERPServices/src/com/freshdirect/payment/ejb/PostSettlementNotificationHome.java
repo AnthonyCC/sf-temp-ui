@@ -20,9 +20,9 @@ public interface PostSettlementNotificationHome extends EJBHome {
 	
 	public Collection<PostSettlementNotificationEB> findMultipleByPrimaryKeys(Collection<PrimaryKey> pks) throws FinderException, RemoteException;
 	
-	public Collection<PrimaryKey> findByStatusAndType(EnumSaleStatus status, EnumNotificationType type) throws FinderException, RemoteException;
+	public Collection<PostSettlementNotificationEB> findByStatusAndType(EnumSaleStatus status, EnumNotificationType type) throws FinderException, RemoteException;
 	
-	public Collection<PrimaryKey> findSaleIdsByStatusAndType(EnumSaleStatus status, EnumNotificationType type) throws FinderException, RemoteException;
+	public Collection<PostSettlementNotificationEB> findSaleIdsByStatusAndType(EnumSaleStatus status, EnumNotificationType type) throws FinderException, RemoteException;
 
 	public PostSettlementNotificationEB findBySalesIdAndType(String salesId, EnumNotificationType type) throws FinderException, RemoteException;
 	

@@ -1,8 +1,14 @@
 package com.freshdirect.dataloader.payment.notification;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -14,8 +20,14 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.EnumNotificationType;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.dataloader.payment.ejb.PostSettlementNotifyHome;
+import com.freshdirect.dataloader.payment.ejb.PostSettlementNotifySB;
 import com.freshdirect.erp.model.NotificationModel;
+import com.freshdirect.framework.core.DataSourceLocator;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.PostSettlementNotificationEB;
 import com.freshdirect.payment.ejb.PostSettlementNotificationHome;
@@ -30,17 +42,17 @@ public abstract class PostSettlementNotificationProcessor implements
 	public abstract void Notify() throws RemoteException, EJBException, FinderException, ErpTransactionException, CreateException, SQLException; 
 	
 	@Override
-	public boolean saveNoification(NotificationModel notificationModel) throws RemoteException, EJBException, CreateException, ErpTransactionException, SQLException{
-		PostSettlementNotificationEB postSettlementNotificationhome = lookupPostSettlementNotificationHome().create(notificationModel);
-		postSettlementNotificationhome.updateNotification(notificationModel);
+	public boolean saveNoification(NotificationModel notificationModel) throws RemoteException, EJBException, CreateException, ErpTransactionException, SQLException, FinderException{
+		PostSettlementNotifySB postSettlementNotify = lookupPostSettlementNotifyHome().create();		
+		postSettlementNotify.updateNotification(notificationModel);
 		return false;
 	}
-	
-	public static PostSettlementNotificationHome lookupPostSettlementNotificationHome() throws EJBException {
+
+	public static PostSettlementNotifyHome lookupPostSettlementNotifyHome() throws EJBException {
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			return (PostSettlementNotificationHome)ctx.lookup("freshdirect.payment.Notification");
+			return (PostSettlementNotifyHome)ctx.lookup("freshdirect.payment.Notify");
 		} catch (NamingException ex) {
 			throw new EJBException(ex);
 		} finally {
@@ -53,7 +65,7 @@ public abstract class PostSettlementNotificationProcessor implements
 		}
 	}
 		
-		private static Context getInitialContext() throws NamingException {
+		protected static Context getInitialContext() throws NamingException {
 
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL()); //t3://localhost:7006

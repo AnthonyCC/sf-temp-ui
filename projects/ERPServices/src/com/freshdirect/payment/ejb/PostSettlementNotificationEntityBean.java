@@ -38,6 +38,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	private static Category LOGGER = LoggerFactory.getInstance(PostSettlementNotificationEntityBean.class);
 	private NotificationModel model;
 	private boolean modified = false;
+	private PrimaryKey pk;
 	private EntityContext entityCtx;
 	
 	public void initialize() {
@@ -55,15 +56,22 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 
 	/** Copy from model. */
 	public void setFromModel(NotificationModel model) {
-		throw new UnsupportedOperationException("setFromModel not supported");
+		this.model.setAmount(model.getAmount());
+		this.model.setInsertDate(model.getInsertDate());
+		this.model.setNotification_status(model.getNotification_status());
+		this.model.setNotification_type(model.getNotification_type());
+		this.model.setPk(model.getPk());
+		this.model.setSale_id(model.getSale_id());
+		this.model.setThird_party_name(model.getThird_party_name());
 	}
 
 	public void setPK(PrimaryKey pk) {
-		model.setPK(pk);
+		this.pk=pk;
+		model.setPk(pk);
 	}
 
 	public PrimaryKey getPK() {
-		return model.getPK();
+		return this.pk;
 	}
 	
 	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk) throws ObjectNotFoundException, FinderException {
@@ -99,16 +107,18 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	public PrimaryKey ejbFindBySalesIdAndType(String saleId, EnumNotificationType type) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
+			initialize();
 			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.PYMT_STLMNT_NOTIFICATION where SALE_ID=? and NOTIFICATION_TYPE=?");
 			ps.setString(1, saleId);
 			ps.setString(2, type.getCode());
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
-				throw new ObjectNotFoundException("Unable to find ErpSale with PK " + saleId);
+				throw new ObjectNotFoundException("Unable to find SettlementNotification with saleId " + saleId);
 			}
 
 			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
+			setPK(foundPk);
 			rs.close();
 			ps.close();
 
@@ -186,7 +196,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	
 	public Collection<PrimaryKey> ejbFindSaleIdsByStatusAndType(EnumSaleStatus saleStatus, EnumNotificationType type)
 			throws FinderException {
-		return performFind("SELECT SALE_ID FROM CUST.PYMT_STLMNT_NOTIFICATION WHERE NOTIFICATION_STATUS=? and NOTIFICATION_TYPE=?"
+		return performFind("SELECT ID FROM CUST.PYMT_STLMNT_NOTIFICATION WHERE NOTIFICATION_STATUS=? and NOTIFICATION_TYPE=?"
 				, saleStatus.getStatusCode(), type.getCode(), null);
 	}
 
@@ -233,13 +243,14 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		setPK(new PrimaryKey(getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PYMT_STLMNT_NOTIFICATION (ID,SALE_ID,AMOUNT,NOTIFICATION_TYPE,NOTIFICATION_STATUS,THIRD_PARTY_NAME) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PYMT_STLMNT_NOTIFICATION (ID,SALE_ID,AMOUNT,NOTIFICATION_TYPE,INSERT_DATE,NOTIFICATION_STATUS,THIRD_PARTY_NAME) values (?,?,?,?,?,?,?)");
 		ps.setString(1, getPK().getId());
-		ps.setString(2, model.getSale_id().getId());
+		ps.setString(2, model.getSale_id());
 		ps.setDouble(3, model.getAmount());
-		ps.setString(4, model.getNotification_type().getName());
+		ps.setString(4, model.getNotification_type().getCode());
 		ps.setTimestamp(5, new Timestamp(model.getInsertDate().getTime()));
 		ps.setString(6, model.getNotification_status().getStatusCode());
+		ps.setString(7, model.getThird_party_name());
 	
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -264,7 +275,7 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 		if (!rs.next()) {
 			throw new SQLException("No such Notification PK: " + getPK());
 		}
-		PrimaryKey salesPk = new PrimaryKey(rs.getString(1));
+		String salesPk = rs.getString(1);
 		Double amount = rs.getDouble(2);
 		EnumNotificationType notification_type = EnumNotificationType.getNotificationType((rs.getString(3)));
 		EnumSaleStatus notification_status = EnumSaleStatus.getSaleStatus(rs.getString(4));
@@ -433,22 +444,19 @@ public class PostSettlementNotificationEntityBean implements EntityBean {
 	String update = "update CUST.PYMT_STLMNT_NOTIFICATION set SALE_ID = ?, AMOUNT=?, NOTIFICATION_TYPE=?, INSERT_DATE=?, NOTIFICATION_STATUS=?,THIRD_PARTY_NAME=? where id=?";
 	
 	public void update(Connection conn, NotificationModel model) throws SQLException {
-		if (modified) {
 			PreparedStatement ps = conn.prepareStatement(update);
 			int index = 1;
-			ps.setString(index++, model.getSale_id()!=null?model.getSale_id().getId():null);
+			ps.setString(index++, model.getSale_id()!=null?model.getSale_id():null);
 			ps.setDouble(index++, model.getAmount());
-			ps.setString(index++, model.getNotification_type()!=null?model.getNotification_type().getName():null);
+			ps.setString(index++, model.getNotification_type()!=null?model.getNotification_type().getCode():null);
 			ps.setTimestamp(index++, new Timestamp(model.getInsertDate().getTime()));
-			ps.setString(index++, model.getNotification_status()!=null?model.getNotification_status().getName():null);
+			ps.setString(index++, model.getNotification_status()!=null?model.getNotification_status().getStatusCode():null);
 			ps.setString(index++, model.getThird_party_name()!=null?model.getThird_party_name():null);
 			ps.setString(index++, getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
-			ps.close();
-		}
-			
+ 		ps.close();	
 	}
 
 	@Override

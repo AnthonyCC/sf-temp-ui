@@ -250,7 +250,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       </resource-description>
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>freshdirect.customer.ActivityLog</jndi-name>
-    </weblogic-enterprise-bean>
+    </weblogic-enterprise-bean>    
     <weblogic-enterprise-bean>
       <ejb-name>ZoneInfoManager</ejb-name>
       <stateless-session-descriptor>

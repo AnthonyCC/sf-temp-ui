@@ -86,12 +86,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 						break;
 					}
 				}
-			}
-
-			if(EnumSaleStatus.SETTLED.equals(status)){
-				NotificationModel notificationModel = new NotificationModel(new PrimaryKey(saleId), EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getCurrentOrder().getAmount());
-				getPostSettlementNotificationHome().create(notificationModel);
-			}
+			}			
 			
 			if((EnumSaleStatus.PAYMENT_PENDING.equals(status) ||EnumSaleStatus.SETTLEMENT_FAILED.equals(status)) && !found){
 				ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
@@ -99,6 +94,11 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 					model.setRafTransModel(RafUtil.getApproveTransModel());
 				}
 				eb.addSettlement(model);
+				EnumSaleStatus updatedStatus = eb.getStatus();
+				if(EnumSaleStatus.SETTLED.equals(updatedStatus)){
+					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getCurrentOrder().getAmount());
+					getPostSettlementNotificationHome().create(notificationModel);
+				}
 			}
 			
 			return this.getSettlementInfo(saleId, affiliate, model.getAmount(), model.getAuthCode(), false, refund, false, false, false);

@@ -19,7 +19,7 @@ public class NotificationModel implements Serializable{
 	 */
 	private static final long serialVersionUID = 499901870580395384L;
 	
-	private PrimaryKey sale_id;
+	private String sale_id;
 	private EnumNotificationType notification_type;
 	private EnumSaleStatus notification_status;
 	private String third_party_name;
@@ -28,7 +28,7 @@ public class NotificationModel implements Serializable{
 	private Date insertDate;
 	
 	
-	public NotificationModel(PrimaryKey sale_id, EnumNotificationType notification_type, 
+	public NotificationModel(String sale_id, EnumNotificationType notification_type, 
 			EnumSaleStatus  notification_status, String third_party_name, double amount){
 		this.sale_id = sale_id;
 		this.notification_status = notification_status;
@@ -37,27 +37,13 @@ public class NotificationModel implements Serializable{
 		this.amount = amount;
 		this.insertDate = new Date();
 	}
+
 	
-	
-	 /** gets the primary key associated with a model
-     * @return the primary key of the entity represented by this model
-     */    
-    public PrimaryKey getPK() {
-        return this.pk!=null?this.pk:null;
-    }
-    
-    /** sets the primary key for a model
-     * @param pk the primary key to associate with this model
-     */    
-    public void setPK(PrimaryKey pk) {
-        this.pk = pk;
-    }
-	
-	public PrimaryKey getSale_id() {
+	public String getSale_id() {
 		return sale_id;
 	}
 	
-	public void setSale_id(PrimaryKey sale_id) {
+	public void setSale_id(String sale_id) {
 		this.sale_id = sale_id;
 	}
 	
