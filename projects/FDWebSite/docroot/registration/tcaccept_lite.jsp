@@ -18,6 +18,11 @@
 	String navPage = NVL.apply(request.getParameter("successPage"), "");
 	if(!"".equals(navPage)) {
 		successPage = navPage;
+		
+	}
+	
+	if(!"".equals(navPage)&&"noIndex".equals(navPage)){
+		nextSuccesspage=navPage;
 	}
 	
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
@@ -61,9 +66,11 @@
 		}
 	</style>
 	
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-       
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js">
+	</script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js">
+     </script>
+      
 	<script type="text/javascript" async>
 		function asyncPixelWithTimeout() {
 			var img = new Image(1, 1);
@@ -89,10 +96,21 @@
 	
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
+	   <script language="javascript">
+		 function unLoadPage()
+			 {
+		
+				var loadedFrom = "<%=navPage%>";
+				var match      = loadedFrom.indexOf("nonIndex");
+				if(match==-1){
+				 window.top.location="/index.jsp";
+				}	 
+			 }
 
+		   </script>
     
 </head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="" onunload="unLoadPage()">
 
 
 
@@ -113,7 +131,7 @@
 		String posn = "right";
 
 		if(session.getAttribute("LITESIGNUP_COMPLETE") != null) {
-
+		
 		%>
 			<img src="/media_stat/images/navigation/spinner.gif" class="fleft" />
 			<script language="javascript">
@@ -125,6 +143,17 @@
 			<script language="javascript">
 				window.top.location="/index.jsp";
 			</script>
+			<%}else if("nonIndex".equals((String)session.getAttribute("nextSuccesspage"))){%>
+			<script language="javascript">
+				if(typeof window.top.Modalbox.hide() === "undefined"){
+					
+					this.top.close();
+				}else{
+					
+					window.top.Modalbox.hide();
+				}
+			</script>
+			
 			<%}else {%>
 			<script language="javascript">
 			
@@ -142,12 +171,10 @@
 				top.FreshDirect.terms=true;
 			}
 			if(typeof window.top.Modalbox.hide() === "undefined"){
-				//$jq('#MB_overlay').css('display','none');
-				//$jq('#MB_window').css('opacity','0');
 				window.top.location='/login/index.jsp';
 				this.top.close();
 			}else{
-				
+		
 				window.top.Modalbox.hide();
 			}
 				

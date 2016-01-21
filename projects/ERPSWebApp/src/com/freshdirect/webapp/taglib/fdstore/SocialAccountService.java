@@ -175,17 +175,18 @@ public class SocialAccountService implements AccountService {
 								 	
 								 	boolean isFromLogin = Boolean.parseBoolean(request.getParameter("isFromLogin")); 
 								 	String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+								 	
+									if(preSuccessPage!=null){
+									session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+									session.setAttribute("nextSuccesspage", preSuccessPage );
+									}else{
+									session.setAttribute("nextSuccesspage", updatedSuccessPage );
+									}
+									session.setAttribute("fdTcAgree", false);
+								 	
 									if(isFromLogin){
-										if(preSuccessPage!=null){
-										session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
-										session.setAttribute("nextSuccesspage", preSuccessPage );
-										}else{
-										session.setAttribute("nextSuccesspage", updatedSuccessPage );
-										}
-										session.setAttribute("fdTcAgree", false);
 										response.sendRedirect(newURL+"/login/login.jsp");
 									}else {
-										session.setAttribute("fdTcAgree", false);
 										response.sendRedirect(newURL + termsConditions);
 									}
 									
@@ -276,19 +277,18 @@ public class SocialAccountService implements AccountService {
 										 newURL = "https" + "://" + request.getServerName();
 									 }
 									 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+									
+									if(preSuccessPage!=null){
+										session.setAttribute("nextSuccesspage", preSuccessPage +"?socialnetwork="+socialUserProfile.get("provider"));
+									}else {
+										session.setAttribute("nextSuccesspage", termsConditions +"?socialnetwork="+socialUserProfile.get("provider"));
+									}
+									session.setAttribute("fdTcAgree", false);
 									if(isFromLogin){
-										if(preSuccessPage!=null){
-											session.setAttribute("nextSuccesspage", preSuccessPage +"?socialnetwork="+socialUserProfile.get("provider"));
-										}else {
-											session.setAttribute("nextSuccesspage", termsConditions +"?socialnetwork="+socialUserProfile.get("provider"));
-										}
-										
-										session.setAttribute("fdTcAgree", false);
 										return newURL+"/login/login.jsp";
 									}else {
-									session.setAttribute("fdTcAgree", false);
-									 termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
-									 return newURL + termsConditions;
+										termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
+										return newURL + termsConditions;
 									}
 							
 				    			 }else{
