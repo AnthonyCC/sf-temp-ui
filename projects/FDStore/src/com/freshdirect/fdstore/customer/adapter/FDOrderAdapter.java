@@ -234,7 +234,7 @@ public class FDOrderAdapter implements FDOrderI {
 		ErpDeliveryPlantInfoModel dpi=erpOrder.getDeliveryInfo().getDeliveryPlantInfo();
 		if(dpi==null) {
 			LOGGER.warn("DeliveryPlantInfo is null for " + sale.getPK()+". Defaulting it.");
-			dpi=FDUserUtil.getDefaultDeliveryPlantInfo();
+			dpi=FDUserUtil.getDefaultDeliveryPlantInfo(erpOrder.geteStoreId());
 		}
 		List<ErpOrderLineModel> erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {

@@ -87,8 +87,9 @@ public class FDOrderTranslator {
 				dpi.setDivision(cart.getDeliveryPlantInfo().getDivision());
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			} else {
-				LOGGER.warn("Defaulting DeliveryPlantInfo for customer : "+order.getCustomerId()+ " and eStore :"+cart.getEStoreId());
-				ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo();
+				String customerId=cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
+				LOGGER.warn("Defaulting DeliveryPlantInfo for customer : "+customerId+ " and eStore :"+cart.getEStoreId());
+				ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo(cart.getEStoreId());
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			}
 			if(deliveryReservation!=null)
