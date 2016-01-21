@@ -46,7 +46,9 @@ var FreshDirect = FreshDirect || {};
           } catch (e) {}
         }
         $(document.body).attr('data-drawer-active', null);
-      }
+        var drawerHeader = $(e.target).attr('data-drawer-content');
+    	$('[data-drawer-id="'+ drawerHeader +'"]').focus();
+      }	
     },
     changeClick: {
       value: function (e) {
@@ -95,8 +97,6 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', drawer.cancelTrigger, drawer.reset.bind(drawer));
   $(document).on('keydown', '[data-drawer-content]', function (e) {
     if (e.keyCode === fd.utils.keyCode.ESC) {
-      var drawerHeader = $(e.target).attr('data-drawer-content');
-      		$('[data-drawer-id="'+ drawerHeader +'"]').focus();
       drawer.reset();
     }
   });
