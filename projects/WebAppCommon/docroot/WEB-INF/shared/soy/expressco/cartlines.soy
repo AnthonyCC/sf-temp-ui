@@ -306,7 +306,7 @@
 								{/call}
 							{/if}
 						</div>
-						<div class='cartsection__tax' fdform-container="etip"> /*LINE 309*/
+						<div class='cartsection__tax' fdform-container="etip">
 							<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
 								<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
 								<span class="strl_text">Optional Tip</span>
@@ -543,7 +543,7 @@
 				</a>
 			{/if}
 		</div>
-		<div class='cartline-title cartline-box'> line 546
+		<div class='cartline-title cartline-box'>
 			<div class='cartline-titleholder'>
 				{if $noModifyLinks}
 					{$descr}
@@ -954,7 +954,7 @@
 				{/if} /*end if $avalaraEnabled */
 				
 				{if $box.other}
-					<div class='subtotal__rowcell-right'> /*line 957*/
+					<div class='subtotal__rowcell-right'>
 						{if $box.other.mark}{$box.other.mark}{/if}
 						{if $box.id == 'redemptionpromo'}
 							<form fdform="promotionremove" action="#"
