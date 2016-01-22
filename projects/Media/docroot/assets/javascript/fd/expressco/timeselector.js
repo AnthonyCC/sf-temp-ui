@@ -124,7 +124,7 @@ var FreshDirect = FreshDirect || {};
           method: 'POST',
           data: {
             data: JSON.stringify({
-              fdform: 'deliveryTimeslot',
+              fdform: 'timeslot',
               formdata: ser
             })
           }
@@ -144,7 +144,10 @@ var FreshDirect = FreshDirect || {};
 
   // timeslot related forms
   fd.modules.common.forms.register({
-    id: "deliveryTimeslot",
+    id: "timeslot",
+    submit: function () {
+      timeslot.serialize();
+    },
     success: function () {
       if (fd.expressco.drawer) {
         fd.expressco.drawer.reset();
