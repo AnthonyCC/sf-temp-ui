@@ -233,7 +233,7 @@ var FreshDirect = FreshDirect || {};
 					$jq(etids.inp_tipTextBox).show();
 					
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
-					$jq( etids.btn_tipApply ).prop("disabled", "disabled");
+					//$jq( etids.btn_tipApply ).prop("disabled", "disabled");
 				}
 			}
 		},
