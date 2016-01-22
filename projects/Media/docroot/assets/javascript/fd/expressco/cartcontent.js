@@ -258,9 +258,10 @@ var FreshDirect = FreshDirect || {};
 					var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
 					/*var innerHtml = $("<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>");*/
 					var innerHtml = "<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>";
-					
+
 					$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
-				}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
+				//}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
+				}else{
 					$jq(etids.div_toolTipTextBox).html('');
 					$jq(etids.btn_tipApply).prop('disabled', false);
 				}
@@ -337,6 +338,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		placeholder: {
 			value: '#subtotalbox1'
+			/*value: '.subtotalboxes'*/
 		}
 	});
 
