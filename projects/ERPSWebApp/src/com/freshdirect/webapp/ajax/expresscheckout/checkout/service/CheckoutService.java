@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
@@ -90,7 +91,7 @@ public class CheckoutService {
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
         UnavailabilityData unavailabilityData = null;
         FDCartModel cart = user.getShoppingCart();
-//        AvalaraContext avalaraContext = new AvalaraContext(cart);
+        AvalaraContext avalaraContext = new AvalaraContext(cart);
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
@@ -106,10 +107,10 @@ public class CheckoutService {
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
             }
-          /*  else if(cart.getTaxValue() == 0.0 || (cart instanceof FDModifyCartModel)){            	
+            else if(cart.getTaxValue() == 0.0 || (cart instanceof FDModifyCartModel)){            	
             	avalaraContext.setCommit(false);
             	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
-            }*/
+            }
 		}
         return unavailabilityData;
 	}
@@ -243,10 +244,10 @@ public class CheckoutService {
 			}
 			responseData.getValidationResult().getErrors().addAll(checkEbtAddressPaymentSelectionError);
 		}
-		else{
+		/*else{
 		avalaraContext.setCommit(false);
     	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
-		}
+		}*/
 		return responseData;
 	}
 
