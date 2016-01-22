@@ -89,6 +89,10 @@ body{
   font-weight: normal;
 }
 
+.globalnav_top .topnavitem a:hover, .globalnav_top .topnavitem a:active, .globalnav_top .topnavitem a:focus {
+	text-decoration: none;
+}
+
 .globalnav_top .topnavitem a:focus {
   outline: 2px solid rgba(136,167,92,.4);
 }

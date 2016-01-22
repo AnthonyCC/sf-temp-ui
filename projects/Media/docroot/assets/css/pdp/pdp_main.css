@@ -819,11 +819,14 @@ span.cssbutton.annotation:hover {
 	text-decoration: none;
 }
 
-.pdp-freshness a:link, 
-.pdp-freshness a:visited, 
-.pdp-freshness a:hover, 
-.pdp-freshness a:active{
+.pdp-freshness a:hover,
+.pdp-freshness a:active {
 	text-decoration: none;
+}
+
+.pdp-freshness a:hover .atleast, 
+.pdp-freshness a:active .atleast {
+	text-decoration: underline;
 }
 
 .pdp-freshness .atleast{

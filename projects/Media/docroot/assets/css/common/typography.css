@@ -16,8 +16,8 @@ body {
 }
 
 /* Link colors */
-a, a:link { color: #458b4c; text-decoration: underline; }
-a:visited { color: #777;text-decoration: underline; }
+a, a:link { color: #458b4c; text-decoration: none; }
+a:visited { color: #777;text-decoration: none; }
 a:hover, a:active, a:focus { color: #5fb069; text-decoration: underline; }
 
 /* Headings
