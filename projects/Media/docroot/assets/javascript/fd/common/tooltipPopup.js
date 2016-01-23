@@ -41,7 +41,7 @@ var FreshDirect = FreshDirect || {};
 			align = target.data("tooltipalign") || 'tc-bc',
 			body = target.nextAll('[data-component="tooltipContent"]')[0];
 		
-		if(body){
+		if(body && (body.innerHTML.length > 0) ){
 			this.popup.align = align;
 			this.refreshBody({body:body.innerHTML});
 			this.popup.show(target,align);
