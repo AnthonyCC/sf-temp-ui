@@ -258,7 +258,7 @@ var FreshDirect = FreshDirect || {};
 				
 				//if(tip > maximumTipAllowed){
 				if(tip > roundedMaxTip){ //APPBUG-4270
-					console.log("Tip greater than maximum tip"); console.log("murray rothbard kicks ass");
+					console.log("Tip greater than maximum tip");
 					$jq(etids.btn_tipApply).prop('disabled', true);
 
 					//this goes in the hover box
