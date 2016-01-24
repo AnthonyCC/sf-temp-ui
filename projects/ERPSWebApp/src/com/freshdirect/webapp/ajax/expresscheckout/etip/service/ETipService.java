@@ -44,16 +44,20 @@ public class ETipService {
 			tipAmount = tipAmount.substring(1);
 		}
 		
-		
+		if( tipAmount.length() < 1 ){
+			tipAmount += "0.00";
+		}
 		
 		double subTotal = user.getShoppingCart().getSubTotal();
 		double maximumTipAllowed = subTotal * 32/100;
 		
+		//result.add(new ValidationError(ETIP_FIELD_CODE_ID, "Not a valid tip amount, " + tipAmount));
+		
 		if(!tipAmount.matches(decimalRegex)) {
-			result.add(new ValidationError(ETIP_FIELD_CODE_ID, "Not a valid tip amount"));
+			result.add(new ValidationError(ETIP_FIELD_CODE_ID, "Not a valid tip amount , " + tipAmount.length() ));
 		} else {		
 		   CheckoutService.defaultService().applyETip(user, tipAmount, isCustomTip);		   
-		}   
+		}
 		
 		
 		return result;
