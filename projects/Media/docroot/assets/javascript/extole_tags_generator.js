@@ -152,8 +152,9 @@ Placed inside '(function() {' block and a setInterval checker for jQuery existen
 		if( typeof($jq) == "function" ){
 			clearInterval(extoleInt);
 			
-			//this is to prevent iframed popups (or any other iframed request) from having the RAF lower popup (APPBUG-4160)
-			if( top != self || globalExtoleVars.isSignedCustomer != true ){ // '||' aka 'OR' conditional, prevents this from being shown on right after customer signs up. (APPBUG-4123)
+			//this is to prevent iframed popups (or any other iframed request) from having the RAF lower ad popup (APPBUG-4160)
+			//also to prevent traditional popup windows from having the RAF lower ad (APPBUG-4237)
+			if( top != self || globalExtoleVars.isSignedCustomer != true || window.opener != null ){ // '||' aka 'OR' conditional, prevents this from being shown on right after customer signs up. (APPBUG-4123)
 				//hides the popups
 				$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
 			}
