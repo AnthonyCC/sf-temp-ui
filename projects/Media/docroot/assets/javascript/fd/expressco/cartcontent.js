@@ -244,7 +244,7 @@ var FreshDirect = FreshDirect || {};
 				console.log("onTipEntered");
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.btn_tipApplied).hide();
-				var tip = $(etids.inp_tipTextBox).val().replace(/[A-Za-z\-\_\!\#\%\^\&\*\(\)\[\]\{\}\<\>\,\?]/g, '');
+				var tip = $(etids.inp_tipTextBox).val().replace(/[A-Za-z\-\_\!\#\%\^\&\*\(\)\[\]\{\}\<\>\,\?]/g, '').trim();
 
 				$(etids.inp_tipTextBox).val( tip );
 				
@@ -252,11 +252,16 @@ var FreshDirect = FreshDirect || {};
 				var subTotal = subTotalStr.substring(1);
 				console.log("Sub Total : " + subTotal + " Tip : " + tip);
 				var maximumTipAllowed = subTotal * 32 / 100;
-				if(tip > maximumTipAllowed){
-					console.log("Tip greater than maximum tip"); console.log( "$jq(etids.btn_tipApply).length = " + $jq(etids.btn_tipApply).length );
+				var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+				
+				console.log("maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
+				
+				//if(tip > maximumTipAllowed){
+				if(tip > roundedMaxTip){ //APPBUG-4270
+					console.log("Tip greater than maximum tip"); console.log("murray rothbard kicks ass");
 					$jq(etids.btn_tipApply).prop('disabled', true);
-					var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
-					/*var innerHtml = $("<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>");*/
+
+					//this goes in the hover box
 					var innerHtml = "<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>";
 
 					$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
