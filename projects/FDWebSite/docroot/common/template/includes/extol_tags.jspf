@@ -10,7 +10,7 @@
 	
 	//NEW: prohibited pages.  right now, this includes 'view_cart.jsp' AND checkout
 	String servletPath=request.getServletPath();
-	String[] extoleBlackList = {"view_cart.jsp", "checkout.jsp"};
+	String[] extoleBlackList = {"view_cart.jsp", "checkout.jsp", "order_detail.jsp"};
 	
 	boolean isValidPage = true;
 
