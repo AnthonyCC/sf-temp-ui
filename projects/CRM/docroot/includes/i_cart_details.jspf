@@ -260,7 +260,7 @@
 		</tr>
 	<%  } %> --%>
 	</fd:GetOrder>
-        <% if (isFdxOrder) { %>
+        
 			<tr>
 			    <td colspan="3"></td>
 			    <td colspan="2">E-Tip :</td>
@@ -270,7 +270,7 @@
 			        <td colspan="3"></td>
 			    <% } %>
 			</tr>
-		<% } %>	    
+		   
          <%
        	    String displayString = "";
 	    StringBuffer value = new StringBuffer();
