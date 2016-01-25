@@ -161,6 +161,15 @@
 					</tr>
 				</xsl:if>
 				
+				<xsl:if test="number(order/tip) &gt; 0">
+					<tr valign="top" class="orderSummary">
+						<td colspan="1" align="right">Tip :</td>
+						<td align="right"><xsl:value-of select="format-number(order/tip, '$###,##0.00', 'USD')"/>							
+						</td>
+						<td colspan="1">&nbsp;<</td>
+					</tr>
+				</xsl:if>
+				
 				<xsl:if test="number(order/deliverySurcharge) &gt; 0">
 					<tr valign="top" class="orderSummary">
 						<td colspan="1" align="right">Delivery Fee<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>:</td>
