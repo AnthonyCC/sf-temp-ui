@@ -23,6 +23,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%-- 
 --%>
 <%
@@ -464,11 +465,17 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			}
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
+      <% if (!signedIn) { %>
+        <a class="offscreen" href="/login/login.jsp" title="Sign in">Sign in</a>
+      <% } %>
 			<div id="locabar_user_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
 					<div class="locabar-user-greeting-cont">
-						<div class="locabar-user-greeting"><%= greetingsString %></div><div class="locabar-down-arrow"></div>
+            <div class="locabar-user-greeting">
+              <%= greetingsString %>
+            </div>
+            <div class="locabar-down-arrow"></div>
 					</div>
 				</div>
 				<%
