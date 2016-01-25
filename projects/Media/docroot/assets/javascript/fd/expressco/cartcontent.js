@@ -27,6 +27,8 @@ var FreshDirect = FreshDirect || {};
 	
 	/*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
 	etids.div_toolTipTextBox = "#toolTipTextBox";
+	
+	console.log("how many times will this run?");
 
 	var cartcontent = Object.create(WIDGET,{
 		signal:{
@@ -37,6 +39,8 @@ var FreshDirect = FreshDirect || {};
 				/* need to change between templates based on data param */
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
+				
+				console.log( "data = "); console.log( data );
 
 				this.updateTopCheckoutButton(data);
 
@@ -190,6 +194,9 @@ var FreshDirect = FreshDirect || {};
 					if(!$ph.attr('gogreen-status')) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
+					
+					console.log("LINE 198 of cartcontent.js"); console.log( ajaxData );
+					
 					cartcontent.render(ajaxData);
 					if(ajaxData.coremetrics) {
 						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
@@ -353,6 +360,9 @@ var FreshDirect = FreshDirect || {};
 
 	atcHandler.listen();
 	subtotalbox.listen();
+	
+	//lets try this
+	window.karltcontent = cartcontent;
 
 	$(document).on('click', cartcontent.placeholder + ' .cartline-delete',
 		cartcontent.onDeleteCartLine.bind(cartcontent));
