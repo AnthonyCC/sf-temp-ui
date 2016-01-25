@@ -1,7 +1,10 @@
 package com.freshdirect.payment;
 
+
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.framework.util.StringUtil;
 
 public class AuthorizationInfo {
 
@@ -18,6 +21,8 @@ public class AuthorizationInfo {
 		this.affiliate = affiliate;
 		this.amount = amount;
 		this.paymentMethod = paymentMethod;
+		if(this.paymentMethod!=null && StringUtil.isEmpty(this.paymentMethod.getCustomerId()))
+			this.paymentMethod.setCustomerId(customerId);
 		this.additionalCharge = additionalCharge;
 	}
 	
