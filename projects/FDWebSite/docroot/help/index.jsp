@@ -122,7 +122,7 @@
 				<h2 class="help-heading bold uppercase">Search</h2>
 				<form method="post" name="contact_fd" id="contact_fd_faq">
 					<label for="search-faq"></label><input type="text" id="search-faq"class="search" value="" maxlength="100" name="searchFAQ" />
-					<button class="cssbutton orange" type="submit" name="searchFAQButton">find</button>	
+					<button class="cssbutton orange small" type="submit" name="searchFAQButton">find</button>	
 				</form>
 				<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><h2 class="help-heading bold uppercase">quick links</h2></a>
 				<p>Check below to find the fastest answers to our top customer concerns.</p>
