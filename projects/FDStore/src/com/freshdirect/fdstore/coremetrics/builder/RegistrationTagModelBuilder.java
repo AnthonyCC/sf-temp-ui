@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +38,6 @@ public class RegistrationTagModelBuilder  {
     private String registrationProfileCounty;
     String profileValue=null;
     String county=null;
-    
-    private HashMap<String,String> socialUserProfile;
-    private static final String PROVIDER_FACEBOOK="facebook";
-    private static final String PROVIDER_GOOGLE="google";
-        
 	public RegistrationTagModel buildTagModel() throws SkipTagException{	
 		lookupManagerHome();
 		//if no address is passed explicitly, try to find out if user has a defaultShipToAddress (for existing users)
@@ -178,13 +172,6 @@ public class RegistrationTagModelBuilder  {
 		//for enhancement 4125 marketingPromotion used as a constant value		
 		attributesMap.put(5, tagModel.getRegistrationProfileValue());
 		attributesMap.put(10, tagModel.getRegistrationCounty());
-		
-		if(PROVIDER_FACEBOOK.equalsIgnoreCase(getSocialUserProfile().get("provider"))){
-			attributesMap.put(12, getSocialUserProfile().get("email"));
-		}
-		if(PROVIDER_GOOGLE.equalsIgnoreCase(getSocialUserProfile().get("provider"))){
-			attributesMap.put(13, getSocialUserProfile().get("email"));
-		}
 	}
 	
 	public void setUser(FDUserI user) {
@@ -215,20 +202,6 @@ public class RegistrationTagModelBuilder  {
 	}
 	private static void invalidateManagerHome() {
 		managerHome = null;
-	}
-
-	/**
-	 * @return the socialUserProfile
-	 */
-	public HashMap<String,String> getSocialUserProfile() {
-		return socialUserProfile;
-	}
-
-	/**
-	 * @param socialUserProfile the socialUserProfile to set
-	 */
-	public void setSocialUserProfile(HashMap<String,String> socialUserProfile) {
-		this.socialUserProfile = socialUserProfile;
 	}
 	
 }
