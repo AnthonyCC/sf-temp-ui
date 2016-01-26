@@ -29,7 +29,7 @@
 		}
 	}else{
 		String appName = (String) session.getAttribute(SessionName.APPLICATION);
-		if(messages != null) {
+		if(messages != null && !messages.isEmpty()) {
 			Iterator _iteratorMsg = messages.iterator();
 			while(_iteratorMsg.hasNext()) {
 				String _message = (String)_iteratorMsg.next();
