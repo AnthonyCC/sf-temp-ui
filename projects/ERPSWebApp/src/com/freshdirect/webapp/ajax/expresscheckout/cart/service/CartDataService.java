@@ -464,6 +464,7 @@ public class CartDataService {
                     if (sectionInfo.isWine()) {
                         sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
                         sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueOnlyWineAndSpirit(cart)));
+                        cartData.setContainsWineSection(true);
                     }
                     sectionInfos.put(sectionInfoKey, sectionInfo);
                 }

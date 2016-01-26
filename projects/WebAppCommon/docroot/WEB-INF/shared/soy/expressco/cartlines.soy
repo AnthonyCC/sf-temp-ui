@@ -21,6 +21,7 @@
  * @param avalaraEnabled avalaraEnabled
  * @param eTippingEnabled eTippingEnabled
  * @param etipTotal eTipTotal
+ * @param containsWineSection containsWineSection
  */
 {template .viewcartlines autoescape="false"}
 	{call .couponMessage}
@@ -44,6 +45,8 @@
 				{param avalaraEnabled: $avalaraEnabled /}
 				{param customerServiceRepresentative: $customerServiceRepresentative /}
 				{param numOfSections : length($cartSections) /}
+				{param isLastSection : isLast($section) /}
+				{param containsWineSection : $containsWineSection /}
 			{/call}
 		{/foreach}
 	</div>
@@ -88,6 +91,7 @@
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative
+ * @param containsWineSection containsWineSection
  */
 {template .checkoutlines autoescape="false"}
 	<div class='cartcontent'> /*LINE 93*/
@@ -107,6 +111,8 @@
 				{param avalaraEnabled: $avalaraEnabled /}
 				{param customerServiceRepresentative: $customerServiceRepresentative /}
 				{param numOfSections : length($cartSections) /}
+				{param isLastSection : isLast($section) /}
+				{param containsWineSection : $containsWineSection /}
 			{/call}
 		{/foreach}
 	</div>
@@ -143,6 +149,7 @@
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
+ * @param containsWineSection containsWineSection
  */
 {template .successlines autoescape="false"}
 	<div class='cartcontent'> /*LINE 148*/
@@ -162,6 +169,8 @@
 				{param eTippingEnabled: $eTippingEnabled /}
 				{param avalaraEnabled: $avalaraEnabled /}
 				{param numOfSections : length($cartSections) /}
+				{param isLastSection : isLast($section) /}
+				{param containsWineSection : $containsWineSection /}
 			{/call}
 		{/foreach}
 	</div>
@@ -262,6 +271,8 @@
  * @param avalaraEnabled avalaraEnabled
  * @param customerServiceRepresentative
  * @param numOfSections
+ * @param isLastSection
+ * @param containsWineSection containsWineSection
  */
 {template .cartsection autoescape="false"}
 	<div class='cartsection {if $info.wine}cartsection-wine{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
@@ -287,14 +298,14 @@
 
 		{if $info.subTotal}
 			<div class='cartsection__totalwrapper'> /*LINE 289*/
-				{if $eTippingEnabled} /*LINE 290*/
-					{if $numOfSections > 1}
+				{if $eTippingEnabled and $cartlineType != 'YOUR_CART'} /*LINE 290*/
+					{if $numOfSections > 1 and $containsWineSection}
 						<p class='cartsection__total'>
 							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
 						</p>
 						<p class='cartsection__tax'>Tax: {$info.taxTotal}</p> /*LINE 295*/
 					{/if}
-					/* {if ($numOfSections > 1 and $info.wine) or $numOfSections == 1} */  		      
+					{if $isLastSection or $numOfSections == 1}   		      
 						<div id="subtotalbox1" class="subtotalboxes"> /*LINE 298*/
 							{if $subTotalBox and $subTotalBox.subTotalBox}
 								{call .subTotalBox}
@@ -356,7 +367,7 @@
 								{/if}
 							</form>                
 						</div><!--end div.cartsection__tax fdform-container="etip" -->
-					/* {/if} */ /*end if ($numOfSections > 1 and $info.wine) or $numOfSections == 1  */
+					 {/if}  /*end if ($numOfSections > 1 and $info.wine) or $numOfSections == 1  */
 				{else}
 					<p class='cartsection__total'>
 						{if $info.subTotalText}
@@ -735,7 +746,7 @@
 		</div>
 		<div class='total__subtotal total-right'>
 			<div id="subtotalbox2" class="subtotalboxes">
-				{if $eTippingEnabled}	
+				{if $eTippingEnabled and $cartlineType != 'YOUR_CART'}	
 					{if $subTotalBox and $subTotalBox.estimatedTotalBox}
 						{call .subTotalBox}
 							{param cartlineType: $cartlineType /}

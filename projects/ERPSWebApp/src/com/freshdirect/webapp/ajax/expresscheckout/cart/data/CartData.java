@@ -104,6 +104,8 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private boolean avalaraEnabled;
     
+    private boolean containsWineSection;
+    
     private List<String> tipAmounts = new ArrayList<String>();
     
     
@@ -320,6 +322,14 @@ public class CartData extends AbstractCoremetricsResponse {
 
 	public void setCustomTip(boolean isCustomTip) {
 		this.isCustomTip = isCustomTip;
+	}
+
+	public boolean isContainsWineSection() {
+		return containsWineSection;
+	}
+
+	public void setContainsWineSection(boolean containsWineSection) {
+		this.containsWineSection = containsWineSection;
 	}
 
 	public boolean iseTippingEnabled() {
