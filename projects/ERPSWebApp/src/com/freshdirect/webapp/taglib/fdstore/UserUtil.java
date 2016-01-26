@@ -411,8 +411,8 @@ public class UserUtil {
 				 	{
 				providerStr += "'"+provider+"',";
 				 	}
-				} else {
-				providerStr += "'"+providerStr+"'";
+				} else if(connectedProviders!=null && connectedProviders.size() ==1){
+				providerStr += "'"+connectedProviders.get(0)+"'";
 				}
 				session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", "true");
 				session.setAttribute("CONNECTED_SOCIAL_PROVIDERS", providerStr);
