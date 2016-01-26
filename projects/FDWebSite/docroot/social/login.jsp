@@ -84,19 +84,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		
 </fd:ErrorHandler>
 
-	<script language="javascript">
-		window.onbeforeunload = function()
-	 {
-		var loadedFrom = "<%=successPage%>";
-		var match      = loadedFrom.indexOf("index.jsp");
-		if(match!=-1){
-		 window.top.location="/index.jsp";
-		};	 
-	 };
-
-    </script>
-
-<body  >
+<body>
 	<center>
 		<div id="sulCont" class="signup-style-social social-singin">
 
