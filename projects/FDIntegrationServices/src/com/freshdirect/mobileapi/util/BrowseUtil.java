@@ -4,6 +4,8 @@ import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +21,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -64,6 +68,8 @@ import com.freshdirect.fdstore.content.browse.filter.ProductItemFilterFactory;
 import com.freshdirect.fdstore.content.browse.filter.TagFilter;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -72,6 +78,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
 import com.freshdirect.mobileapi.catalog.model.CatalogKey;
+import com.freshdirect.mobileapi.catalog.model.CouponInfo;
 import com.freshdirect.mobileapi.catalog.model.GroupInfo;
 import com.freshdirect.mobileapi.catalog.model.ScalePrice;
 import com.freshdirect.mobileapi.catalog.model.SkuInfo;
@@ -1272,7 +1279,8 @@ public class BrowseUtil {
 	    					.addKeyWords(p.getKeywords())
 	    					.generateAdditionTagsFromProduct(p)
 	    					.skuInfo(getSkuInfo(p,plantId,pc ))
-	    					.productLayout(p.getProductLayout().getId());
+	    					.productLayout(p.getProductLayout().getId())
+	    					.couponInfo(getCouponInfo(p));
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
     					productList.add(product);
@@ -1292,7 +1300,8 @@ public class BrowseUtil {
 	    	return productList;
 	    }
 	    
-	    public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
+	   
+		public static CatalogInfo __getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
 	    	
 	    	int productCount=0;
 	    	CatalogInfo catalogInfo;
@@ -1360,11 +1369,11 @@ public class BrowseUtil {
 	    	} catch(Exception e) {
 	    		productCount=10;
 	    	}
-	    	
 	    	if(productCount!=0) {
-	    		
+    		
 	    		if(productCount!=-1 && productList.size()>productCount)  
-	    			productList=productList.subList(0, productCount);
+	    			productList=productList.subList(0, productCount);	    		
+	    		
 	    		catalogInfo.addProducts(productList);
 	    	}
 	    	return catalogInfo;
@@ -1508,6 +1517,36 @@ public class BrowseUtil {
 	    	 }
 	    	 return null;
 	    }
+	    
+	    private static CouponInfo getCouponInfo(ProductModel prodModel) {
+			CouponInfo couponInfo=new CouponInfo();
+	    	 SkuModel sku=prodModel.getDefaultSku();
+	    	 if(sku==null && prodModel.getSkus().size()>0) {
+	    		 sku=prodModel.getSku(0);
+	    	 }
+	    	 try {
+	    		 FDCouponInfo fdCouponInfo = FDCouponFactory.getInstance().getCouponByUpc(sku.getProductInfo() != null
+	    				 ? sku.getProductInfo().getUpc() : null);
+	    		 if(fdCouponInfo!=null) {
+	    			 couponInfo.setId(fdCouponInfo.getCouponId());
+	    			 couponInfo.setDetails(StringEscapeUtils.unescapeHtml(fdCouponInfo.getRequirementDescription()));
+	    			 couponInfo.setProductId(prodModel.getContentName());
+	    			 if(fdCouponInfo.getExpirationDate()!=null) {
+	    				 DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM.dd.yyyy");
+	    				 couponInfo.setExpirationDate("Expires "+MONTH_DATE_YEAR_FORMATTER.format(fdCouponInfo.getExpirationDate()));
+	    			 }
+	    		 }
+
+	    	 } catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
+			} catch (FDSkuNotFoundException e) {
+				// TODO Auto-generated catch block
+				LOG.error("Error in getSkuInfo()=>"+sku.getSkuCode()+" "+e.toString());
+			}
+	    	 return couponInfo;
+		}
+
 	    
 	    private static AlcoholType getAlcoholType(FDProduct product) {
 	    	if(!product.isAlcohol())
