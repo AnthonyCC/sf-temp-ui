@@ -273,6 +273,17 @@ if (cart.hasSettledReturn()) {
 		<%
 	}
 }
+
+if (FDStoreProperties.isETippingEnabled()) {
+	%>
+	<tr align="right" class="orderSummary">
+		<td colspan="3">Optional Tip:</td>
+		<td><%=currencyFormatter.format(cart.getTip())%></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+
 %>
 <tr class="orderTotal">
 	<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED <% } %>ORDER TOTAL:</b></td>

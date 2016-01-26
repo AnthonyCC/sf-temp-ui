@@ -7,6 +7,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -56,7 +57,7 @@ public class ReceiptBoxService {
     private static final String FUEL_SURCHARGE_ID = "fuelsurcharge";
     private static final String FUEL_SURCHARGE_WAIVED_NAME = "Fuel Surcharge (waived)";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
-    private static final String TIP_TEXT = "Tip";
+    private static final String TIP_TEXT = "Optional Tip";
     private static final String TIP_ID = "tip";
 
     private static final ReceiptBoxService INSTANCE = new ReceiptBoxService();
@@ -260,15 +261,12 @@ public class ReceiptBoxService {
         }
     }
     public void populateOrderTipToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order) {
-       if("FDX".equalsIgnoreCase(ContentFactory.getInstance().getStoreKey().getId())){
-        double orderTipValue = order.getTip();
-        if (0.0 < orderTipValue) {
-            CartSubTotalFieldData data = new CartSubTotalFieldData();
-            data.setId(TIP_ID);
-            data.setText(TIP_TEXT);
-            data.setValue(JspMethods.formatPrice(orderTipValue));
-            receiptBox.add(data);
-        }
-    }
+    	if (FDStoreProperties.isETippingEnabled()) {
+			CartSubTotalFieldData data = new CartSubTotalFieldData();
+			data.setId(TIP_ID);
+			data.setText(TIP_TEXT);
+			data.setValue(JspMethods.formatPrice(order.getTip()));
+			receiptBox.add(data);
+    	}
     }
 }

@@ -529,6 +529,7 @@ public class CartDataService {
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
     
             if(FDStoreProperties.isETippingEnabled()) {
+            	cartData.seteTippingEnabled(true);
 	            if(cart.getTip() > 0) {
 	            	cartData.setTipApplied(true);
 	            } else {
