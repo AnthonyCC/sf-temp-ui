@@ -601,6 +601,13 @@
 	display: inline-block;
 	position: relative;
 }
+#locabar_user_trigger > a,
+#locabar_user_trigger > a:active,
+#locabar_user_trigger > a:focus,
+#locabar_user_trigger > a:visited {
+  color: #fff;
+  text-decoration: none;
+}
 #locabar_user_trigger .locabar-down-arrow {
 	display: none;
 	float:right;

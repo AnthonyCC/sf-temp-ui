@@ -465,10 +465,10 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			}
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
-      <% if (!signedIn) { %>
-        <a class="offscreen" href="/login/login.jsp" title="Sign in">Sign in</a>
-      <% } %>
 			<div id="locabar_user_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
+        <% if (!signedIn) { %>
+          <a href="/login/login.jsp" fd-login-required fd-login-nosignup>
+        <% } %>
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
 					<div class="locabar-user-greeting-cont">
@@ -478,6 +478,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
             <div class="locabar-down-arrow"></div>
 					</div>
 				</div>
+        <% if (!signedIn) { %>
+          </a>
+        <% } %>
 				<%
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
