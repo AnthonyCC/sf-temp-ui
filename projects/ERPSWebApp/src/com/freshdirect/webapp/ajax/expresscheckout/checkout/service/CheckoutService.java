@@ -163,8 +163,10 @@ public class CheckoutService {
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
 				String outcome = null;
 				if (cart.isAvailabilityChecked()) {
+					if(FDStoreProperties.getAvalaraTaxEnabled()){
 					avalaraContext.setCommit(false);
 			    	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
+					}
                     outcome = CheckoutControllerTag.performSubmitOrder(user, actionName, actionResult, session, request, response, CheckoutControllerTag.AUTHORIZATION_CUTOFF_PAGE,
                             null, null, null);
                     // makegood phase
