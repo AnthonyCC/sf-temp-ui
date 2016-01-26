@@ -148,22 +148,6 @@ function showLoginDialog(successPage, useSocial) {
 	}
 }
 
-$jq('#locabar_user_trigger').on('click', function(event) {
-	var $this = $jq(this);
-	
-	if (!($this.data('signedin') || $this.data('recog'))) { //not signed in, not recog
-		showLoginDialog($jq.QueryString["successPage"], $this.data('social'));
-	} else if (!$this.data('signedin') && $this.data('recog')) { //not signed in, recog
-		$e = $jq(event.target);
-		if (!$e.attr('target')) {
-			event.preventDefault();
-			$this.blur();
-			showLoginDialog(($e.attr('href')).replace($e.attr('origin'), ''), $this.data('social'));
-			$this.parent().addCLass('mouse');
-		}
-	}
-}); 
-
 $jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');
 });

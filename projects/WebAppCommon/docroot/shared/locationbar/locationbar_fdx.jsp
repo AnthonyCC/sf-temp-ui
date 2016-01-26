@@ -499,7 +499,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									<%
 										} else {
 									%>
-								<div class="section-line"><a href="<%= folderMap.get(str)%>"><%= str %></a></div>
+								<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>
 										<%
 											}
 										%>

@@ -103,6 +103,10 @@ body{
 	color: #996699;
 }
 
+.globalnav_top #topnavitem_reorder a:before{
+  font-size: 1.2em;
+}
+
 .globalnav_top #topnavitem_reorder a:hover{
 	color: #7D4C7D;
 }

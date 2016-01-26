@@ -22,7 +22,20 @@
     fd.features = fd.features || {};
 
     fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
+
+    fd.properties = fd.properties || {};
+    fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
+    fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
   
+    <% 
+		FDUserI jsUser = (FDUserI)session.getAttribute(SessionName.USER);
+    if (jsUser != null) {
+      int sessionUserLevel = jsUser.getLevel();
+      %>
+    fd.user = {};
+    fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
+    fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+    <% } %>
   }());
   </script>
 

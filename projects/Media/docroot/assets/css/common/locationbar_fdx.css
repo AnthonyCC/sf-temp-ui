@@ -292,8 +292,7 @@
 		width:290px;
 	}
 	
-	.signUpButton{
-		height: 40px;
+	.globalnav_top .topnavitem .signUpButton{
 		margin-top: -4px;
 	}
 	
@@ -1041,18 +1040,6 @@
 	border: none;
 	text-decoration: underline;
 }
-.cssbutton-flat {
-	text-shadow: none;
-	box-shadow: none;
-	border-radius: 2px;
-}
-
-.cssbutton.orange-imp:focus, .cssbutton.orange-imp:hover {
-	background: #dc862d !important;
-}
-.cssbutton.orange-imp {
-	background: #ff9900 !important;
-}
 .cssbutton.fdxgreen{
 	color: white;
 	background-color: #6AAA6D;
@@ -1060,10 +1047,6 @@
 .cssbutton.fdxgreen:hover, .cssbutton.fdxgreen:focus {
 	background-color: #4fa157;
 }
-.cssbutton.orange {
-	background-color:#f9963f;
-}
-
 .locabar_addresses-reservation-none {
 	text-align: center;
 	margin-top: 10px!important;

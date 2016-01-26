@@ -121,34 +121,13 @@ if(user != null) {
 				</div>
 				
 				<%-- nav links next to search field --%>
-					<% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
-						<div class="topnavitem" id="topnavitem_signup">						
-						<%
-							if (FDStoreProperties.isLightSignupEnabled()) {
-								if ( FDStoreProperties.isSocialLoginEnabled() ) {
-									%><button class="signUpButton locationbar-social-create-account-button cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}) }">Create Account</button><% 
-							} else {
-								%><button class="signUpButton cssbutton orange cssbutton-flat" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) }">Create Account</button><%
-								}
-							} else {
-								%><button class="signUpButton cssbutton orange cssbutton-flat" onclick="window.location='/registration/signup.jsp';">Sign up</button><%
-							}
-						%>
-						</div>
-					<% } %>
-			    	
+        <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
+          <div class="topnavitem" id="topnavitem_signup">						
+            <a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
+          </div>
+        <% } %>
 				<div class="topnavitem" id="topnavitem_reorder">
-					<% if (FDStoreProperties.isSocialLoginEnabled()) { %>
-				    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/quickshop/index.jsp', height: 590, opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-				    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-				        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/quickshop/index.jsp', height: 580, opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-				        <% } else {	%>
-				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-				        <% } %>
-			        <% } else {	%>
-			        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-			        <% } %>			                    
+          <a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
 				</div>
 
 				<div class="topnavitem" id="topnavitem_help">
@@ -199,30 +178,10 @@ if(user != null) {
 
 				    
 				     <div class="topnavitem" id="topnavitem_yourAccount">
-					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
-					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" tabindex="0" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/your_account/manage_account.jsp', height: 590, opacity: .5})">Your Account</a>
-					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/your_account/manage_account.jsp', height: 580, opacity: .5})">Your Account</a>
-					        <% } else {	%>
-					        	<a href="/your_account/manage_account.jsp">Your Account</a>
-					        <% } %>
-						<% } else {	%> 	 
-						     	<a href="/your_account/manage_account.jsp">Your Account</a>
-					    <% } %>				        
+              <a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 				    </div> 
-				     <div class="topnavitem" id="topnavitem_reorder">
-					    <% if (FDStoreProperties.isSocialLoginEnabled()) { %>
-					    	<% if(sessionUserLevel == FDUserI.GUEST) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?preSuccessPage=/quickshop/index.jsp', height: 590, opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-					    	<% } else if(sessionUserLevel == FDUserI.RECOGNIZED) {	%>
-					        	<a href="#" onclick="FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?preSuccessPage=/quickshop/index.jsp', height: 580, opacity: .5})"><div id="reorder-icon"></div>Reorder</a>
-					        <% } else {	%>
-					        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-					        <% } %>
-				        <% } else {	%>
-				        	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
-				        <% } %>				                    
+            <div class="topnavitem" id="topnavitem_reorder">
+              <a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
 				    </div>
 			        <%
 			        	String dlvInfoLink = "";
