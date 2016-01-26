@@ -89,7 +89,7 @@
       <li><button class="cssbutton orange icon-chevron-left-before">chevron left - before</button><button class="cssbutton orange icon-chevron-left-after">chevron left - after</button><button class="cssbutton orange icon-chevron-left-before notext">chevron left - notext</button> - notext</li>
       <li><button class="cssbutton orange icon-chevron-right-before">chevron right - before</button><button class="cssbutton orange icon-chevron-right-after">chevron right - after</button><button class="cssbutton orange icon-chevron-right-before notext">chevron right - notext</button> - notext</li>
       <li><button class="cssbutton orange icon-chevron-up-before">chevron up - before</button><button class="cssbutton orange icon-chevron-up-after">chevron up - after</button><button class="cssbutton orange icon-chevron-up-before notext">chevron up - notext</button> - notext</li>
-      <li><button class="cssbutton orange icon-chevron-up-before">chevron up - before</button><button class="cssbutton orange icon-chevron-up-after">chevron up - after</button><button class="cssbutton orange icon-chevron-up-before notext">chevron up - notext</button> - notext</li>
+      <li><button class="cssbutton orange icon-chevron-down-before">chevron down - before</button><button class="cssbutton orange icon-chevron-down-after">chevron down - after</button><button class="cssbutton orange icon-chevron-down-before notext">chevron down - notext</button> - notext</li>
 		</ol>
 	</section>
 	</body>

@@ -828,6 +828,27 @@
 
     </div>
 
+    <div id="FD_common_loginlinks" class="method">
+      <h3 class="method-title">[fd-login-required]</h3>
+      <p class="description">
+        Links that requires logged in user can be decorated with <code>fd-login-required</code> attribute, this will handle the login in an A11Y friendly way:<br>
+        When the user clicks on them with the mouse the login popup should be opened (non-A11Y user), but if <code>ENTER</code> is pressed when they're in focus then they should work as standard links (and backend should redirect the user to the login page).
+      </p>
+
+      <script>
+        FreshDirect.properties = FreshDirect.properties || {};
+        FreshDirect.user = FreshDirect.user || {};
+        FreshDirect.properties.isSocialLoginEnabled = true;
+        FreshDirect.user.guest = true;
+      </script>
+      <pre class="prettyprint example">
+      </pre>
+      <div class="example-container">
+        <a href="#FD_common_loginlinks" fd-login-required>Example login link</a>
+      </div>
+
+    </div>
+
     <div id="FD_common_Select" class="method">
       <h3 class="method-title">Select()</h3>
       <p class="description">
