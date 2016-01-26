@@ -116,25 +116,24 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 			
 	        <div id="form_feilds">
 	            <form name="fd_login" id="fd_login" method="post" >	            
-	            	<% if (!result.isSuccess()) {	String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
-	                String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");  
-	                String connectedProviders = (String)session.getAttribute("CONNECTED_SOCIAL_PROVIDERS");            	           	
-	                if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
-	                 session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
-	                 session.setAttribute("CONNECTED_SOCIAL_PROVIDERS", null);
-	                    errorMsg = "<div class='error-message'>User Name & Password do not match</br>Please try again or Sign in with "+connectedProviders+".</div>";	                   	
-	                }
-	             out.println(errorMsg);
-	            %>             
-	        <script type="text/javascript">
-	    	   	$jq(function() {
-	        	   $jq('#email_img').addClass('show_bg_arrow');
-	                $jq('#email').addClass('error');
-	                $jq('#password_img').addClass('show_bg_arrow');
-	                $jq('#password').addClass('error');
-	                });
-	            </script>
-	            <% } %>
+	            	<% if (!result.isSuccess()) {
+		            	String errorMsg = "<div class='error-message'>Email and password do not match.</br>Please try again.</div>";
+		                String isSocialLoginOnlyUser = (String)session.getAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION");            				            				
+		                if(isSocialLoginOnlyUser != null && isSocialLoginOnlyUser.length()>0 ){
+		                	session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", null); 
+		                    errorMsg = "<div class='error-message'>An account with this e-mail already exists.</br>Please Sign in with your e-mail or social account.</div>";		                    	
+		                }
+		             	out.println(errorMsg);
+		            %>             
+				        <script type="text/javascript">
+			    	    	$jq(function() {
+				        	    $jq('#email_img').addClass('show_bg_arrow');
+				                $jq('#email').addClass('error');
+				                $jq('#password_img').addClass('show_bg_arrow');
+				                $jq('#password').addClass('error');
+			                });
+			            </script>
+		            <% } %>
 	            	<table border="0" cellpadding="5" cellspacing="8">
 	                    <tr>
 	                	 	<td valign="bottom">

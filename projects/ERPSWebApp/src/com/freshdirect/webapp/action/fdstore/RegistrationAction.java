@@ -1,9 +1,6 @@
 package com.freshdirect.webapp.action.fdstore;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -1260,17 +1257,7 @@ public class RegistrationAction extends WebActionSupport {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
 				
 				if(FDStoreProperties.isSocialLoginEnabled()){ 
-					if(FDStoreProperties.isSocialLoginEnabled() ){ 
-						//actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
-						List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(aInfo.emailAddress);
-						if(providers!=null && providers.size()!=0){
-							String providersStr ="";
-							for(String provider:providers){
-							 providersStr = provider+","+providersStr;
-							}
-							actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),(MessageFormat.format(SystemMessageList.MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE, providersStr.substring(0,providersStr.length()-1)))));	
-						}
-					}
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
 				}else{
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));
 				}
@@ -1298,15 +1285,7 @@ public class RegistrationAction extends WebActionSupport {
 		try {
 			if(FDCustomerManager.dupeEmailAddress(aInfo.emailAddress) != null) {
 				if(FDStoreProperties.isSocialLoginEnabled()){ 
-					//actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
-					List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(aInfo.emailAddress);
-					if(providers!=null && providers.size()!=0){
-						String providersStr ="";
-						for(String provider:providers){
-						 providersStr = provider+","+providersStr;
-						}
-						actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),(MessageFormat.format(SystemMessageList.MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE,  providersStr.substring(0,providersStr.length()-1)))));	
-					}
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP_SOCIAL));	
 				}else{
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));	
 				}
