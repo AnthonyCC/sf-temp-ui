@@ -206,12 +206,13 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 					m.set("_storeId", sKey.split(":")[1]);
 					
 					
-					for (String p : contexts.getPaths()) {
-						if (p.contains(_pKey)) {
-							m.set("label", contexts.getLabel(p));
-							break;
-						}
-					}
+                    for (String p : contexts.getPaths()) {
+                        // Check if path ends with top category key
+                        if (p.endsWith(_pKey)) {
+                            m.set("label", contexts.getLabel(p));
+                            break;
+                        }
+                    }
 					
 					m.set("_enabled", flag ? "true" : "false");
 
