@@ -35,7 +35,7 @@ var FreshDirect = FreshDirect || {};
 		template:{
 			value: function(data){
 				//if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side
-				var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
+				var floatDoubleTip = data.etipTotal ? Number(data.etipTotal.replace(/[^0-9\.]+/g,"")) : 0;
 				if( floatDoubleTip > 0 ){
 					data.eTippingEnabled = true;
 				}
