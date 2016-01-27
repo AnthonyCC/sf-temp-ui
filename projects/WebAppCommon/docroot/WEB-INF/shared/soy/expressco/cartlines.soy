@@ -298,14 +298,14 @@
 
 		{if $info.subTotal}
 			<div class='cartsection__totalwrapper'> /*LINE 289*/
-				{if $eTippingEnabled and $cartlineType != 'YOUR_CART'} /*LINE 290*/
+				{if $eTippingEnabled and $cartlineType == 'YOUR_CART'} /*LINE 290*/
 					{if $numOfSections > 1 and $containsWineSection}
 						<p class='cartsection__total'>
 							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
 						</p>
 						<p class='cartsection__tax'>Tax: {$info.taxTotal}</p> /*LINE 295*/
 					{/if}
-					{if $isLastSection or $numOfSections == 1}   		      
+					{if $isLastSection or $numOfSections == 1}
 						<div id="subtotalbox1" class="subtotalboxes"> /*LINE 298*/
 							{if $subTotalBox and $subTotalBox.subTotalBox}
 								{call .subTotalBox}
@@ -338,7 +338,7 @@
 								{if $customTip}  			  
 									<select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
 									{foreach $option in $tipAmounts}
-										<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
+										<option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
 									{/foreach}  
 									</select>
 									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />

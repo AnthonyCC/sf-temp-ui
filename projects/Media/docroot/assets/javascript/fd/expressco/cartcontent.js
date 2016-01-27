@@ -28,8 +28,6 @@ var FreshDirect = FreshDirect || {};
 	/*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
 	etids.div_toolTipTextBox = "#toolTipTextBox";
 	
-	console.log("how many times will this run?");
-
 	var cartcontent = Object.create(WIDGET,{
 		signal:{
 			value:'cartData'
@@ -40,8 +38,6 @@ var FreshDirect = FreshDirect || {};
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
 				
-				console.log( "data = "); console.log( data );
-
 				this.updateTopCheckoutButton(data);
 
 				return processFn(data);
@@ -194,9 +190,7 @@ var FreshDirect = FreshDirect || {};
 					if(!$ph.attr('gogreen-status')) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
-					
-					console.log("LINE 198 of cartcontent.js"); console.log( ajaxData );
-					
+										
 					cartcontent.render(ajaxData);
 					if(ajaxData.coremetrics) {
 						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
@@ -230,14 +224,14 @@ var FreshDirect = FreshDirect || {};
 			value: function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				console.log("onTipSelectionChange >>>>>");
-				$jq(etids.btn_tipApplied).hide();
-				$jq(etids.btn_tipApply).show();
-				$jq(etids.ck_tipAppliedTick).hide();
-				if($jq(etids.sel_tipDropdown).val() == "Other Amount"){
-					console.log("Selected Other Amount");
-					$jq(etids.sel_tipDropdown).hide();
-					$jq(etids.inp_tipTextBox).show();
+				//console.log("onTipSelectionChange >>>>>");
+				$(etids.btn_tipApplied).hide();
+				$(etids.btn_tipApply).show();
+				$(etids.ck_tipAppliedTick).hide();
+				if($(etids.sel_tipDropdown).val() == "Other Amount"){
+					//console.log("Selected Other Amount");
+					$(etids.sel_tipDropdown).hide();
+					$(etids.inp_tipTextBox).show();
 					
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
 					//$jq( etids.btn_tipApply ).prop("disabled", "disabled");
@@ -248,34 +242,35 @@ var FreshDirect = FreshDirect || {};
 			value: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				console.log("onTipEntered");
-				$jq(etids.btn_tipApply).show();
-				$jq(etids.btn_tipApplied).hide();
-				var tip = $(etids.inp_tipTextBox).val().replace(/[A-Za-z\-\_\!\#\%\^\&\*\(\)\[\]\{\}\<\>\,\?]/g, '').trim();
+				//console.log("onTipEntered");
+				$(etids.btn_tipApply).show();
+				$(etids.btn_tipApplied).hide();
+				var tip = $(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '');
 
 				$(etids.inp_tipTextBox).val( tip );
 				
-				var subTotalStr = $('#hiddenSubTotal').val();
-				var subTotal = subTotalStr.substring(1);
-				console.log("Sub Total : " + subTotal + " Tip : " + tip);
-				var maximumTipAllowed = subTotal * 32 / 100;
-				var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+				var subTotalStr = $('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+				var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
+				//console.log("Sub Total : " + subTotal + " Tip : " + tip);
+				var maximumTipAllowed = subTotal * 0.32;
+				var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
 				
-				console.log("maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
+				//console.log("tip = " + (Math.round(tip*100)/100).toFixed(2), "maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
 				
 				//if(tip > maximumTipAllowed){
 				if(tip > roundedMaxTip){ //APPBUG-4270
-					console.log("Tip greater than maximum tip");
-					$jq(etids.btn_tipApply).prop('disabled', true);
+					//console.log("Tip greater than maximum tip");
+					$(etids.btn_tipApply).prop('disabled', true);
 
 					//this goes in the hover box
 					var innerHtml = "<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>";
 
-					$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
+					$(etids.div_toolTipTextBox).html('').append(innerHtml);
 				//}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
 				}else{
-					$jq(etids.div_toolTipTextBox).html('');
-					$jq(etids.btn_tipApply).prop('disabled', false);
+					$(etids.div_toolTipTextBox).html('');
+					$(etids.btn_tipApply).prop('disabled', false);
+					$(etids.sel_tipDropdown).val('Other Amount');
 				}
 			}
 		}

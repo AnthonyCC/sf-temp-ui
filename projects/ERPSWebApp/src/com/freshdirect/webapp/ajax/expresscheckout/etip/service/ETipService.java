@@ -44,6 +44,13 @@ public class ETipService {
 			tipAmount = tipAmount.substring(1);
 		}
 		
+		if(tipAmount.startsWith(".")) { //allow change without leading zero
+			tipAmount = "0"+tipAmount;
+		}
+		if(tipAmount.endsWith(".")) { //allow no change like "3."
+			tipAmount += "0";
+		}
+		
 		if( tipAmount.length() < 1 ){
 			tipAmount += "0.00";
 		}
