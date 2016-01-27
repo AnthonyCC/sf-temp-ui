@@ -9,6 +9,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -46,7 +47,8 @@ public class CartSubTotalBoxService {
     private static final String MARK_KEY = "mark";
     private static final String TAXABLE_ITEM_MARK = "T";
     private static final String ESTIMATED_PRICE_MARK = "*";
-    private static final String SUBTOTAL_NAME = "Subtotal";
+    private static final String SUBTOTAL_NAME_ETIP = "Subtotal";
+    private static final String SUBTOTAL_NAME = "Order Subtotal";
     private static final String SUBTOTAL_ID = "subtotal";
     private static final String FUEL_SURCHARGE_NAME = "Fuel Surcharge";
     private static final String FUEL_SURCHARGE_ID = "fuelsurcharge";
@@ -57,8 +59,8 @@ public class CartSubTotalBoxService {
     private static final String DELIVERY_FEE_ID = "deliveryfee";
     private static final String DEPOSIT_NAME = "State Bottle Deposit";
     private static final String DEPOSIT_ID = "statebottledeposit";
-    //private static final String TOTAL_TAX_NAME = "Total Tax";
-    private static final String TOTAL_TAX_NAME = "Sales Tax";
+    private static final String TOTAL_TAX_NAME = "Total Tax";
+    private static final String TOTAL_TAX_NAME_ETIP = "Sales Tax";
     private static final String TOTALTAX_ID = "totaltax";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String TIP = "Tip";
@@ -74,7 +76,11 @@ public class CartSubTotalBoxService {
         double subTotalValue = cart.getSubTotal();
         CartSubTotalFieldData data = new CartSubTotalFieldData();
         data.setId(SUBTOTAL_ID);
-        data.setText(SUBTOTAL_NAME);
+        if(FDStoreProperties.isETippingEnabled()){
+        	data.setText(SUBTOTAL_NAME_ETIP);
+        }else{
+        	data.setText(SUBTOTAL_NAME);
+        }
         data.setValue(JspMethods.formatPrice(subTotalValue));
         if (cart.isEstimatedPrice()) {
             data.getOther().put(MARK_KEY, ESTIMATED_PRICE_MARK);
@@ -92,7 +98,11 @@ public class CartSubTotalBoxService {
         } else {
             double taxValue = cart.getTaxValue();
             if (0 < taxValue) {
-                data.setText(TOTAL_TAX_NAME);
+            	if(FDStoreProperties.isETippingEnabled()){
+            		data.setText(TOTAL_TAX_NAME_ETIP);
+            	}else{
+            		data.setText(TOTAL_TAX_NAME);
+            	}
                 data.setValue(JspMethods.formatPrice(taxValue));
                 subTotalBox.add(data);
             }
