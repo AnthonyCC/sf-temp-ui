@@ -203,14 +203,16 @@ var FreshDirect = FreshDirect || {};
               relatedHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
               relatedHolder.find('.portrait-item-productimage_wrapper img.portrait-item-productimage').css('max-height', (maxImageSize-4)+'px');
 
-              // adjust controls
-              mctop = mainControls.find('.portrait-item-addtocart').offset().top;
-              rctop = relatedControls.find('.portrait-item-addtocart').offset().top;
-              if (mctop < rctop) {
-                mainControls.css('padding-top', rctop - mctop);
-              } else {
-                relatedControls.css('padding-top', mctop - rctop);
-              }
+              // adjust controls in async way to let the browser render everything
+              setTimeout(function () {
+                mctop = mainControls.find('.portrait-item-addtocart').offset().top;
+                rctop = relatedControls.find('.portrait-item-addtocart').offset().top;
+                if (mctop < rctop) {
+                  mainControls.css('padding-top', rctop - mctop);
+                } else {
+                  relatedControls.css('padding-top', mctop - rctop);
+                }
+              }, 5);
 
               // adjust related popup size
               relatedHolder.css({
