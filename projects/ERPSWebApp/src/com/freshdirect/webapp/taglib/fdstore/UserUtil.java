@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
@@ -402,10 +403,21 @@ public class UserUtil {
 		try {
 			
 			if (!externalLogin) {
-				if(ExternalAccountManager.isSocialLoginOnlyUser(userId)){
-					session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", "true");
-					actionResult.addError(new ActionError("IS_SOCIAL_LOGIN_USER_VALIDATION"));
-					return updatedSuccessPage;
+				if(ExternalAccountManager.isSocialLoginOnlyUser(userId)){List<String> connectedProviders = null;
+				String providerStr = "";
+				connectedProviders = ExternalAccountManager.getConnectedProvidersByUserId(userId, EnumExternalLoginSource.SOCIAL);
+				if(connectedProviders!=null && connectedProviders.size() >1) {
+				for(String provider : connectedProviders)
+				 	{
+				providerStr += "'"+provider+"',";
+				 	}
+				} else if(connectedProviders!=null && connectedProviders.size() ==1){
+				providerStr += "'"+connectedProviders.get(0)+"'";
+				}
+				session.setAttribute("IS_SOCIAL_LOGIN_USER_VALIDATION", "true");
+				session.setAttribute("CONNECTED_SOCIAL_PROVIDERS", providerStr);
+				actionResult.addError(new ActionError("IS_SOCIAL_LOGIN_USER_VALIDATION"));
+				return updatedSuccessPage;
 				}
 			}
 			
