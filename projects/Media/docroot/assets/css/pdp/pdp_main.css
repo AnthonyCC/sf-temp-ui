@@ -938,8 +938,11 @@ button#pdp-atc-addtolist{
 	margin-left:10px;
 }
 
-
+button#pdp-atc-addtolist,
 .pdp-atc .cssbutton[data-component="ATCButton"] {
+  width: 110px;
+  padding: 10px 0;
+  text-align: center;
 }
 
 .pdp-accordion-item > div > table > tbody > tr > td,
