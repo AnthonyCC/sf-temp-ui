@@ -325,21 +325,15 @@
 .subtotal__rowcell-mid,
 .subtotal__rowcell-right{
   display:inline-block;
-  font-size:16pt;
 }
 
 .subtotal__rowcell-left{
-	vertical-align:top;
+  width:50%;
+  vertical-align:top;
 }
-
-.cartsection__totalwrapper .subtotal__rowcell-left{
-	width:50%;
-}
-
 .subtotal__rowcell-mid{
   min-width:20%;
   padding-left:5px;
-  font-weight:bold;
 }
 .subtotal__rowcell-right{
   margin-left:5px;
@@ -363,10 +357,8 @@
   color: #693;
 }
 
-/*.rowcell-colon-right:after{*/
-.strl_text:after{
+.rowcell-colon-right:after{
   content:":";
-  /*float:right;*/
 }
 
 .row-size-big{
@@ -398,9 +390,7 @@
 .cartsection-wine .cartsection__title{
   visibility:hidden;
 }
-.cartsection__total{
-	
-}
+
 .cartsection-wine .cartsection__total:before{
   content:'FD Wines & Spirits ';
 }
@@ -412,41 +402,36 @@
 
 .cartsection__total,
 .cartsection__tax{
-	font-size:16pt;
-	color:#333;
-	font-weight:normal;
-	text-align:right;
-	margin:0;
+  font-size:14px;
+  color:#333;
+  font-weight:bold;
+  text-align:right;
+  margin:0;
 }
+
 .cartsection__tax{
-	min-height:100px;
+	/*min-height:100px;*/
 }
 .cartsection__tax form{
 	float:right;
+
+  margin-bottom:25px;
 }
 .cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
 	float:left;
 }
-#optionalToolTip{
-	margin-top: 10px;
+
+p.cartsection__tax{
+  margin-bottom:15px;
 }
 
-div.tooltip{
-	font-size:12pt;
-	max-width:25%;
-	padding:20px 20px 5px 20px;
-  margin-top: -8px;
-}
-div.tooltip p{
-	margin-top: 1em;
+#optionalToolTip{
+	margin-top: 10px;
 }
 
 .cartsection__totalwrapper{
 	border-top:1px solid #e0e3d0;
 	padding: 30px 0;
-	width: 100%;
-	height: 80px;
-	min-height:300px;
 }
 
 .cartheader{
@@ -728,9 +713,9 @@ label[for="dontupdatecartlines"] {
 }
 
 .rowcontent-free-with-pass{
-	/*margin-left:20px;*/
-	width:80px;
-	text-align:left;
+  margin-left:20px;
+  width:100px;
+  text-align:left;
 }
 
 .cartheader__questions .product-sample-carousel {
@@ -928,71 +913,153 @@ label[for="dontupdatecartlines"] {
 	content:" Please select one ";
 	color:red;
 }
-.subtotalboxes, .cartsection__tax form{
-	width:350px;
+
+.subtotal__rowcell-left{
+  text-align:right;
+  margin-right: 20px;
 }
 
-.subtotalboxes .subtotal__row{
-	
+
+/*can you guess what job the below definitions are for? */
+.eTippingEnabled div.tooltip{
+  font-size:12pt;
+  max-width:25%;
+  padding:20px 20px 5px 20px;
+  margin-top: -8px;
+}
+.eTippingEnabled div.tooltip p{
+  margin-top: 1em;
 }
 
-#subtotalbox1{
-	margin-left:620px;
-}
-#subtotalbox1 .subtotal__row{
-	width: 350px;
+.eTippingEnabled .subtotalboxes, .eTippingEnabled .cartsection__tax form{
+  width:350px;
 }
 
-.subtotalboxes .subtotal__rowcell-left{
-	/*display:block;
-	clear:both;*/
+.eTippingEnabled .subtotalboxes .subtotal__row{
+  
 }
 
-#subtotalbox2{
-	width: 180px;
-	float: right;
+.eTippingEnabled #subtotalbox1{
+  margin-left:620px;
 }
-#subtotalbox2 .row-size-big{
-	
-}
-#subtotalbox2 .subtotal__rowcell-left{
-	display:block;
-}
-#subtotalbox2 .strl_text{
-	font-weight:normal;
-	white-space:nowrap;
-}
-#subtotalbox2 .strl_text:after{
-	content:"";
-}
-#subtotalbox2 .subtotal__rowcell-mid{
-	font-size: 26pt;
-	padding-left: 0px;
-}
-#subtotalbox2 .subtotal__row .subtotal__rowcell-right{
-	position:absolute;
+.eTippingEnabled #subtotalbox1 .subtotal__row{
+  width: 350px;
 }
 
-#tipDropdown, #tipTextBox{
-	padding: 9px 5px;
-	font-size: 18pt;
-	border-width: 2px;
+.eTippingEnabled .subtotalboxes .subtotal__rowcell-left{
+  /*display:block;
+  clear:both;*/
+  text-align:left;
+  margin-right:1px;
 }
-#tipDropdown, #tipApply, #tipApplied{
-	width: 161px;
+
+.eTippingEnabled #subtotalbox2{
+  width: 180px;
+  float: right;
 }
-#tipApply, #tipApplied{
-	border-radius: 1px;
-	text-shadow: none;
-	font-weight: normal;
+
+.eTippingEnabled .subtotal__rowcell-left{
+  width:initial;
+}
+.eTippingEnabled #subtotalbox2 .subtotal__rowcell-left{
+  display:block;
+}
+.eTippingEnabled .cartsection__totalwrapper{
+  width: 100%;
+}
+.eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left{
+  width:50%;
+}
+.eTippingEnabled #subtotalbox2 .strl_text{
+  font-weight:normal;
+  white-space:nowrap;
+}
+.eTippingEnabled #subtotalbox2 .strl_text:after{
+  content:"";
+}
+.eTippingEnabled .subtotal__rowcell-mid{
+  font-weight:bold;
+}
+.eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid{
+  font-size: 26pt;
+  padding-left: 0px;
+}
+.eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{
+  position:absolute;
+}
+
+.eTippingEnabled .subtotal__rowcell-left,
+.eTippingEnabled .subtotal__rowcell-mid,
+.eTippingEnabled .subtotal__rowcell-right{
+  font-size:16pt;
+}
+
+.eTippingEnabled #tipDropdown, .eTippingEnabled #tipTextBox{
+  padding: 9px 5px;
+  font-size: 18pt;
+  border-width: 2px;
+}
+.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
+  width: 161px;
+}
+.eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
+  border-radius: 1px;
+  text-shadow: none;
+  font-weight: normal;
+  font-size: 12pt;
+  margin-top: 8px;
+}
+.eTippingEnabled #tipTextBox{
+  width:147px;
+}
+.eTippingEnabled #tipAppliedTick{
+  position: absolute;
+  margin-top: 20px;
+  margin-left: 5px;
+}
+
+.eTippingEnabled .rowcell-colon-right:after{
+  content: "";
+}
+.eTippingEnabled .strl_text:after{
+  content:":";
+}
+
+.eTippingEnabled .cartsection__total,
+.eTippingEnabled .cartsection__tax{
+  font-size:16pt;
+  font-weight:normal;
+}
+
+.eTippingEnabled .rowcontent-free-with-pass{
+  width:80px;
+  margin-left:initial;
+}
+
+.eTippingEnabled .orderSummary{
+	padding-top: 20px;
+	width: 400px;
+    float: right;
 	font-size: 12pt;
-	margin-top: 8px;
+	margin-bottom: 40px;
 }
-#tipTextBox{
-	width:147px;
+.eTippingEnabled .orderSummary .cartsection__total{
+	margin-top:10px;
+	margin-bottom:10px;
 }
-#tipAppliedTick{
-	position: absolute;
-	margin-top: 20px;
-	margin-left: 5px;
+.eTippingEnabled .orderSummary .strl_text{
+
+}
+.eTippingEnabled .orderSummary .subtotal__rowcell-mid{
+	width: 140px;
+    text-align: left;
+}
+.eTippingEnabled .SSorderTotal{
+	color: white;
+	text-align:right;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size: 14pt;
+	padding: 10px;
+	background-color: #6AAA6D;
 }

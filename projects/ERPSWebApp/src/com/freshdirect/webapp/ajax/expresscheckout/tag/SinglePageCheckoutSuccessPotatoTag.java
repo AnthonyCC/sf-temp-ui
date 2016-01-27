@@ -36,7 +36,9 @@ public class SinglePageCheckoutSuccessPotatoTag extends SimpleTagSupport {
 		if (orderId != null && !orderId.isEmpty()) {
 			try {
                 SinglePageCheckoutSuccessData result = SinglePageCheckoutFacade.defaultFacade().loadSuccess(requestURI, user, orderId, session);
+                
 				potato = SoyTemplateEngine.convertToMap(result);
+				
 				context.setAttribute(name, potato);
 			} catch (FDResourceException e) {
 				throw new JspException(e);

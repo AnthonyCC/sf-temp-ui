@@ -27,17 +27,24 @@ var FreshDirect = FreshDirect || {};
 	
 	/*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
 	etids.div_toolTipTextBox = "#toolTipTextBox";
-	
+
 	var cartcontent = Object.create(WIDGET,{
 		signal:{
 			value:'cartData'
 		},
 		template:{
 			value: function(data){
+				//if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side
+				var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
+				if( floatDoubleTip > 0 ){
+					data.eTippingEnabled = true;
+				}
+				
 				/* need to change between templates based on data param */
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
+
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
-				
+
 				this.updateTopCheckoutButton(data);
 
 				return processFn(data);
@@ -94,6 +101,8 @@ var FreshDirect = FreshDirect || {};
 					changeCounter++;
 				});
 
+				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
+
 				return changeCounter ? data : null;
 			}
 		},
@@ -128,6 +137,8 @@ var FreshDirect = FreshDirect || {};
 					e.stopPropagation();
 				}
 				$(cartcontent.placeholder).trigger('cartcontent-update');
+
+				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		},
 		getRequestURI: {
@@ -190,7 +201,6 @@ var FreshDirect = FreshDirect || {};
 					if(!$ph.attr('gogreen-status')) {
 						$ph.attr('gogreen-status', !!ajaxData.goGreen);
 					}
-										
 					cartcontent.render(ajaxData);
 					if(ajaxData.coremetrics) {
 						fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
@@ -207,6 +217,8 @@ var FreshDirect = FreshDirect || {};
 						fd.common.transactionalPopup.close();
 					} catch(e) {}
 				});
+
+				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		},
 		onEmptyCart: {
@@ -224,17 +236,18 @@ var FreshDirect = FreshDirect || {};
 			value: function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				//console.log("onTipSelectionChange >>>>>");
-				$(etids.btn_tipApplied).hide();
-				$(etids.btn_tipApply).show();
-				$(etids.ck_tipAppliedTick).hide();
-				if($(etids.sel_tipDropdown).val() == "Other Amount"){
-					//console.log("Selected Other Amount");
-					$(etids.sel_tipDropdown).hide();
-					$(etids.inp_tipTextBox).show();
+				console.log("onTipSelectionChange >>>>>");
+				$jq(etids.btn_tipApplied).hide();
+				$jq(etids.btn_tipApply).show();
+				$jq(etids.ck_tipAppliedTick).hide();
+				if($jq(etids.sel_tipDropdown).val() == "Other Amount"){
+					console.log("Selected Other Amount");
+					$jq(etids.sel_tipDropdown).hide();
+					$jq(etids.inp_tipTextBox).show();
 					
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
 					//$jq( etids.btn_tipApply ).prop("disabled", "disabled");
+					console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 				}
 			}
 		},
@@ -242,36 +255,37 @@ var FreshDirect = FreshDirect || {};
 			value: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				//console.log("onTipEntered");
-				$(etids.btn_tipApply).show();
-				$(etids.btn_tipApplied).hide();
-				var tip = $(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '');
+				console.log("onTipEntered");
+				$jq(etids.btn_tipApply).show();
+				$jq(etids.btn_tipApplied).hide();
+				var tip = $(etids.inp_tipTextBox).val().replace(/[A-Za-z\-\_\!\#\%\^\&\*\(\)\[\]\{\}\<\>\,\?]/g, '').trim();
 
 				$(etids.inp_tipTextBox).val( tip );
 				
-				var subTotalStr = $('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
-				var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
-				//console.log("Sub Total : " + subTotal + " Tip : " + tip);
-				var maximumTipAllowed = subTotal * 0.32;
-				var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
+				var subTotalStr = $('#hiddenSubTotal').val();
+				var subTotal = subTotalStr.substring(1);
+				console.log("Sub Total : " + subTotal + " Tip : " + tip);
+				var maximumTipAllowed = subTotal * 32 / 100;
+				var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
 				
-				//console.log("tip = " + (Math.round(tip*100)/100).toFixed(2), "maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
+				console.log("maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
 				
 				//if(tip > maximumTipAllowed){
 				if(tip > roundedMaxTip){ //APPBUG-4270
-					//console.log("Tip greater than maximum tip");
-					$(etids.btn_tipApply).prop('disabled', true);
+					console.log("Tip greater than maximum tip");
+					$jq(etids.btn_tipApply).prop('disabled', true);
 
 					//this goes in the hover box
 					var innerHtml = "<b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p>";
 
-					$(etids.div_toolTipTextBox).html('').append(innerHtml);
+					$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
 				//}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
 				}else{
-					$(etids.div_toolTipTextBox).html('');
-					$(etids.btn_tipApply).prop('disabled', false);
-					$(etids.sel_tipDropdown).val('Other Amount');
+					$jq(etids.div_toolTipTextBox).html('');
+					$jq(etids.btn_tipApply).prop('disabled', false);
 				}
+
+				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		}
 	});
@@ -316,6 +330,27 @@ var FreshDirect = FreshDirect || {};
 			value: function(value){
 				this.render(value);
 				fd.components.carousel && fd.components.carousel.initialize();
+
+				//remove extra e-tip element crap (sorry for this hack solution)
+				if( $(".cartsection__totalwrapper").length > 1 ){
+					$(".cartsection__totalwrapper:first div.subtotalboxes").remove();
+
+					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
+				}
+
+				if( $(".deliveryFeeToolTips").length > 1 ){
+					//$(".deliveryFeeToolTips:nth-of-type(1)").remove();
+
+					//$(".deliveryFeeToolTips:nth-of-type(1)").css("margin-left", "100px");
+
+					$(".deliveryFeeToolTips").each(function(index){
+						$(this).attr("id", "deliveryFeeToolTip_"+index);
+
+						if( index > 0 ){
+							$("#deliveryFeeToolTip_"+index).remove();
+						}
+					})
+				}
 			}
 		}
 	});
@@ -355,9 +390,6 @@ var FreshDirect = FreshDirect || {};
 
 	atcHandler.listen();
 	subtotalbox.listen();
-	
-	//lets try this
-	window.karltcontent = cartcontent;
 
 	$(document).on('click', cartcontent.placeholder + ' .cartline-delete',
 		cartcontent.onDeleteCartLine.bind(cartcontent));
@@ -379,6 +411,8 @@ var FreshDirect = FreshDirect || {};
 
 	$(document).on('click', '[data-component="update-cart"]', function () {
 		$(cartcontent.placeholder).trigger('cartcontent-update');
+
+		console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 	});
   
 	$(document).on('change', cartcontent.placeholder + ' [data-component="changeETip"]', 
