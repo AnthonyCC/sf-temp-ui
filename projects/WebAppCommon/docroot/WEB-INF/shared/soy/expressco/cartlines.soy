@@ -321,7 +321,7 @@
 							<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
 								<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
 								<span class="strl_text">Optional Tip</span>
-								<a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a>
+								<a href="#" id="optionalToolTip" data-component="tooltip" data-tooltipalign="bl-br" class="tooltip-small">i</a>
 								<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 									<b>Optional Tip</b> 
 									<br/> 
@@ -341,7 +341,7 @@
 										<option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
 									{/foreach}  
 									</select>
-									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />
+									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" data-tooltipalign="cl-cr" name="otherTipAmount" value="{$etipTotal}" />
 									<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
 								{else}
 									<select id="tipDropdown" name="tipAmount" data-component="changeETip">
@@ -349,7 +349,7 @@
 											<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
 										{/foreach}  
 									</select>
-									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" style="display:none" />
+									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" data-tooltipalign="cl-cr" name="otherTipAmount" style="display:none" />
 									<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
 								{/if} /*end if/else $customTip */
 								
@@ -834,7 +834,7 @@
 							{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 								<span class="strl_text">{$box.text}</span>
 								{if $eTippingEnabled}
-									<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+									<a href="#" id="deliveryFeeToolTip" data-component="tooltip" data-tooltipalign="bl-br" class="tooltip-small">i</a>
 									<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 										<b>Delivery Fee</b> 
 										<br/> 
@@ -885,7 +885,7 @@
 									{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 										{$box.text}
 										{if $eTippingEnabled}
-											<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+											<a href="#" id="deliveryFeeToolTip" data-component="tooltip" data-tooltipalign="bl-br" class="tooltip-small">i</a>
 											<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 												<b>Delivery Fee</b> 
 												<br/> 
@@ -932,7 +932,7 @@
 										{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 											{$box.text}
 											{if $eTippingEnabled}
-												<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small">i</a>
+												<a href="#" id="deliveryFeeToolTip" data-component="tooltip" data-tooltipalign="bl-br" class="tooltip-small">i</a>
 												<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
 													<b>Delivery Fee</b> 
 													<br/> 
