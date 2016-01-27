@@ -25,6 +25,13 @@ var FreshDirect = FreshDirect || {};
     loginSignupPopup(target, '/social/login.jsp');
   };
 
+  var showLoginDialog = function (target, e) {
+    if (window.showLoginDialog) {
+      if (e) { e.preventDefault(); }
+      window.showLoginDialog(target, false);
+    }
+  };
+
   var init = function () {
     // signup handler
     $(document).on('click', '[data-component="signup"]', function (e) {
@@ -45,12 +52,16 @@ var FreshDirect = FreshDirect || {};
       var isMouseEvent = e.x || e.clientX || e.y || e.clientY,
           ct = e.currentTarget;
 
-      if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized) && fd.properties.isSocialLoginEnabled) {
-        e.preventDefault();
-        if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-          socialSignup(e.currentTarget.href);
+      if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
+        if (fd.properties.isSocialLoginEnabled) {
+          e.preventDefault();
+          if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
+            socialSignup(e.currentTarget.href);
+          } else {
+            socialLogin(e.currentTarget.href);
+          }
         } else {
-          socialLogin(e.currentTarget.href);
+          showLoginDialog(e.currentTarget.href, e);
         }
       }
     });
