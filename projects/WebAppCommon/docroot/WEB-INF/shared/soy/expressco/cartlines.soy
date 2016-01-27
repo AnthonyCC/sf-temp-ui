@@ -873,7 +873,7 @@
 					{/if} /*end if $box.id == 'freefood' */
 				</div><!--end div.subtotal__rowcell-left.rowcell-colon-right -->
 
-				<div class='subtotal__rowcell-mid' id='div_{$box.id}'>
+				<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
 					{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 					
 						{if $eTippingEnabled}
@@ -933,7 +933,7 @@
 								{/if} /*end if/else $box.other and $box.other.promoCode */
 							{/if} /*end if/else $box.id == 'freefood' */
 						</div>
-						<div class='subtotal__rowcell-mid' id='div_{$box.id}'>
+						<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
 							{if $eTippingEnabled}
 								<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
 								<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
@@ -994,7 +994,7 @@
 								{/if} /*end if $box.id == 'freefood' */
 							</div>
 	
-							<div class='subtotal__rowcell-mid' id='div_{$box.id}'>
+							<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
 								{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 									{if $eTippingEnabled}
 										<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>

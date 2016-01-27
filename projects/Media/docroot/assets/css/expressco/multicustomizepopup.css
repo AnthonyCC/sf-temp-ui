@@ -284,8 +284,9 @@ button[data-component="addToListButton"] {
   display: inline-block;
   padding: 0;
   border: none;
-  text-indent: -9000px;
-  overflow: hidden;
+  /*text-indent: -9000px;
+  overflow: hidden;*/
+  width:105px;
   cursor: pointer;
   margin-left: 12px;
 }
