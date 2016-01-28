@@ -919,7 +919,7 @@
 									data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
 								{else}
 									{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
-										/*{$box.text}
+										{$box.text}
 										{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 											<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
 											<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
@@ -934,7 +934,7 @@
 													employee as a gratuity.</p>
 												</div>
 											</div>
-										{/if}*/ /*end if $eTippingEnabled */
+										{/if} /*end if $eTippingEnabled */
 										
 										{let $deliveryUsed: 1 /}
 									{else}
