@@ -156,7 +156,7 @@
 		{foreach $section in $cartSections}
 			{call .cartsection data="$section"}
 				{param noModifyLinks: true /}
-				{param cartlineType: 'CHECKOUT' /}
+				{param cartlineType: 'CHECKOUT_SUCCESS' /}
 				{param etipTotal: $etipTotal /}
 				{param tipAmounts: $tipAmounts /}
 				{param tipApplied: $tipApplied /}
@@ -275,7 +275,10 @@
  * @param containsWineSection containsWineSection
  */
 {template .cartsection autoescape="false"}
-	<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $eTippingEnabled}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
+	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
+	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
+
+	<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $eTippingEnabled and $cartlineType == 'CHECKOUT' }eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
 		<h2 class='cartsection__title'>
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
@@ -288,8 +291,10 @@
 				</span>
 			{/if}
 		</h2>
+
+		
 		{foreach $cartline in $cartLines}
-			{delcall expressco.cartline data="$cartline" variant="$cartlineType"}
+			{delcall expressco.cartline data="$cartline" variant="$cartlineTypeRevised"}
 				{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
 				{param customerServiceRepresentative: $customerServiceRepresentative /}
 				{param avalaraEnabled: $avalaraEnabled /}
@@ -298,7 +303,7 @@
 
 		{if $info.subTotal}
 			<div class='cartsection__totalwrapper'>
-				{if $eTippingEnabled and ($cartlineType == 'YOUR_CART')}
+				{if $eTippingEnabled and ($cartlineType == 'CHECKOUT') }
 					{if $numOfSections > 1 and $containsWineSection}
 						<p class='cartsection__total'>
 							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
@@ -307,7 +312,7 @@
 					{/if}
 
 					{if $isLastSection or $numOfSections == 1}   		      
-						<div id="subtotalbox1" class="subtotalboxes">
+						<div id="subtotalbox1" class="subtotalboxes"> cartlineType = {$cartlineType}
 							{if $subTotalBox and $subTotalBox.subTotalBox}
 								{call .subTotalBox}
 									{param subTotalBox: $subTotalBox.subTotalBox /}
@@ -324,16 +329,18 @@
 								<span class="strl_text">Optional Tip</span>
 								<a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a>
 								<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-									<b>Optional Tip</b> 
-									<br/> 
-									<p>Good news! Now you can e-tip as you're checking out. 
-									As a heads up, adding and updating e-tips is only 
-									available on our website for now, but we're working 
-									on adding it to our apps (stay tuned!). 
-									You are under no obligation to tip but have the 
-									option of providing a tip if you feel that you've 
-									received exceptional service. FreshDirect personnel are 
-									not permitted to solicit tips under any circumstances.</p>
+									<div class="tooltip-inner">
+										<b>Optional Tip</b>
+										<br/> 
+										<p>Good news! Now you can e-tip as you're checking out. 
+										As a heads up, adding and updating e-tips is only 
+										available on our website for now, but we're working 
+										on adding it to our apps (stay tuned!). 
+										You are under no obligation to tip but have the 
+										option of providing a tip if you feel that you've 
+										received exceptional service. FreshDirect personnel are 
+										not permitted to solicit tips under any circumstances.</p>
+									</div>
 								</div>
 								
 								{if $customTip}  			  
@@ -370,27 +377,28 @@
 						</div><!--end div.cartsection__tax fdform-container="etip" -->
 					 {/if}  /*end {if $isLastSection or $numOfSections == 1}  */
 				{else}
-					{if $eTippingEnabled and  $cartlineType == 'CHECKOUT'}<div class="orderSummary">{/if}
-						<p class='cartsection__total'>
-							<span class="strl_text">
-							{if $info.subTotalText}
-								{$info.subTotalText}
-							{else}
-								Subtotal
-							{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
-						</p>
-						
-						{if $cartlineType == 'CHECKOUT' }
-						 	<p class='cartsection__total'><span class="strl_text">Optional Tip</span> <span class="subtotal__rowcell-mid">{$etipTotal}</span></p>
-						{/if}
-	
-						{if $avalaraEnabled}
-							{if $cartlineType == 'CHECKOUT'}
-								<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
-							{/if}
+					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}<div class="orderSummary">{/if}
+					<p class='cartsection__total'>
+						<span class="strl_text">
+						{if $info.subTotalText}
+							{$info.subTotalText}
 						{else}
+							Subtotal
+						{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
+					</p>
+						
+					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
+					 	<p class='cartsection__total'><span class="strl_text">Optional Tip</span> LINE 391<span class="subtotal__rowcell-mid">{$etipTotal}</span></p>
+					{/if}
+
+					{if $avalaraEnabled}
+						{if $cartlineType == 'CHECKOUT'}
 							<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
 						{/if}
+					{else}
+						<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
+					{/if}
+						
 					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 							<div class="SSorderTotal">
 								{foreach $box in $subTotalBox.estimatedTotalBox}
@@ -667,7 +675,7 @@
  * @param? customerServiceRepresentative Customer service representative data
  */
 {template .total autoescape="false"}
-<div class='total {if $eTippingEnabled}eTippingEnabled{/if}'>
+<div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
 	<div class='total-left'>
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;"{/if} fdform-container="promotion" fdform-container-promotionremove>
@@ -762,7 +770,7 @@
 		</div>
 		<div class='total__subtotal total-right'>
 			<div id="subtotalbox2" class="subtotalboxes">
-				{if $eTippingEnabled and ($cartlineType == 'YOUR_CART' or $cartlineType == 'CHECKOUT')}	
+				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }	
 					{if $subTotalBox and $subTotalBox.estimatedTotalBox}
 						{call .subTotalBox}
 							{param cartlineType: $cartlineType /}
@@ -849,19 +857,21 @@
 						{else}
 							{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 								<span class="strl_text">{$box.text}</span>
-								{if $eTippingEnabled}
+								{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 									<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
 									<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-										<b>Delivery Fee</b> 
-										<br/> 
-										<p>The delivery fee is not a gratuity
-										for any FreshDirect employee who
-										delivers or is otherwise involved
-										with the delivery of your order
-										and will not be given to any such
-										employee as a gratuity.</p>
+										<div class="tooltip-inner">
+											<b>Delivery Fee</b> 
+											<br/> 
+											<p>The delivery fee is not a gratuity
+											for any FreshDirect employee who
+											delivers or is otherwise involved
+											with the delivery of your order
+											and will not be given to any such
+											employee as a gratuity.</p>
+										</div>
 									</div><!--end div.optionalTipToolTip -->
-								{/if} /*end if $eTippingEnabled */
+								{/if} /*end if $eTippingEnabled and $cartlineType == 'CHECKOUT' */
 							{else}
 								{if $box.id == 'ssOrderTotal'}
 									<span class="strl_text ssOrderTotal">{$box.text}</span>
@@ -873,22 +883,10 @@
 					{/if} /*end if $box.id == 'freefood' */
 				</div><!--end div.subtotal__rowcell-left.rowcell-colon-right -->
 
+
 				<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
+
 					{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
-					
-						{if $eTippingEnabled}
-							<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
-							<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-								<b>Delivery Fee</b> 
-								<br/> 
-								<p>The delivery fee is not a gratuity
-								for any FreshDirect employee who
-								delivers or is otherwise involved
-								with the delivery of your order
-								and will not be given to any such
-								employee as a gratuity.</p>
-							</div><!--end div.optionalTipToolTip -->
-						{/if} /*end if $eTippingEnabled */
 						<div class="rowcontent-free-with-pass">
 							{$box.value}
 						</div>
@@ -914,17 +912,19 @@
 								{else}
 									{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 										{$box.text}
-										{if $eTippingEnabled}
+										{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 											<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
 											<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-												<b>Delivery Fee</b> 
-												<br/> 
-												<p>The delivery fee is not a gratuity
-												for any FreshDirect employee who
-												delivers or is otherwise involved
-												with the delivery of your order
-												and will not be given to any such
-												employee as a gratuity.</p>
+												<div class="tooltip-inner">
+													<b>Delivery Fee</b> 
+													<br/> 
+													<p>The delivery fee is not a gratuity
+													for any FreshDirect employee who
+													delivers or is otherwise involved
+													with the delivery of your order
+													and will not be given to any such
+													employee as a gratuity.</p>
+												</div>
 											</div>
 										{/if} /*end if $eTippingEnabled */
 									{else}
@@ -934,19 +934,6 @@
 							{/if} /*end if/else $box.id == 'freefood' */
 						</div>
 						<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
-							{if $eTippingEnabled}
-								<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
-								<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-									<b>Delivery Fee</b> 
-									<br/> 
-									<p>The delivery fee is not a gratuity
-									for any FreshDirect employee who
-									delivers or is otherwise involved
-									with the delivery of your order
-									and will not be given to any such
-									employee as a gratuity.</p>
-								</div><!--end div.optionalTipToolTip -->
-							{/if} /*end if $eTippingEnabled */
 							{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 								<div class="rowcontent-free-with-pass">{$box.value}</div>
 							{else}
@@ -974,17 +961,19 @@
 									{else}
 										{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
 											{$box.text}
-											{if $eTippingEnabled}
+											{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 												<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
 												<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-													<b>Delivery Fee</b> 
-													<br/> 
-													<p>The delivery fee is not a gratuity
-													for any FreshDirect employee who
-													delivers or is otherwise involved
-													with the delivery of your order
-													and will not be given to any such
-													employee as a gratuity.</p>
+													<div class="tooltip-inner">
+														<b>Delivery Fee</b> 
+														<br/> 
+														<p>The delivery fee is not a gratuity
+														for any FreshDirect employee who
+														delivers or is otherwise involved
+														with the delivery of your order
+														and will not be given to any such
+														employee as a gratuity.</p>
+													</div>
 												</div>
 											{/if}
 										{else}
@@ -996,19 +985,6 @@
 	
 							<div class='subtotal__rowcell-mid rowcell-text-right' id='div_{$box.id}'>
 								{if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded}
-									{if $eTippingEnabled}
-										<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
-										<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-											<b>Delivery Fee</b> 
-											<br/> 
-											<p>The delivery fee is not a gratuity
-											for any FreshDirect employee who
-											delivers or is otherwise involved
-											with the delivery of your order
-											and will not be given to any such
-											employee as a gratuity.</p>
-										</div>
-									{/if}
 									<div class="rowcontent-free-with-pass">
 										{$box.value}
 									</div>

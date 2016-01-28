@@ -30,7 +30,7 @@ public class ReceiptService {
 		final List<CartSubTotalFieldData> receiptLines = new ArrayList<CartSubTotalFieldData>();
 		receiptBoxService.populateSubTotalToBox(receiptLines, order);
 		receiptBoxService.populateTaxToBox(receiptLines, order);
-		receiptBoxService.populateOrderTipToBox(receiptLines, order);
+		//receiptBoxService.populateOrderTipToBox(receiptLines, order);
 		receiptBoxService.populateDepositValueToBox(receiptLines, order);
 		receiptBoxService.populateDeliveryChargeToBox(receiptLines, order, user);
 		receiptBoxService.populateFuelSurchargeToBox(receiptLines, order);
@@ -43,11 +43,6 @@ public class ReceiptService {
         receiptBoxService.populateAmountToBeChargedYourBalanceToBox(receiptLines, order);
 		receiptBoxService.populateCustomerCreditsToBox(receiptLines, order);
 		receiptData.setReceiptLines(receiptLines);
-		
-		//System.out.println( "line 47 reciept service" );
-		//System.out.println( receiptLines.getId() );
-		
-		//System.out.println( "line 50 reciept service" );
 
 		return receiptData;
 	}

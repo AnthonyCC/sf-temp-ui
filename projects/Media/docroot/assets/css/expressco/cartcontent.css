@@ -332,7 +332,6 @@
   vertical-align:top;
 }
 .subtotal__rowcell-mid{
-  min-width:20%;
   padding-left:5px;
 }
 .subtotal__rowcell-right{
@@ -921,11 +920,21 @@ label[for="dontupdatecartlines"] {
 
 
 /*can you guess what job the below definitions are for? */
-.eTippingEnabled div.tooltip{
-  font-size:12pt;
-  max-width:25%;
-  padding:20px 20px 5px 20px;
-  margin-top: -8px;
+/*.tooltip{*/
+#tooltipPopup{
+	margin-left: -242px;
+	margin-top: 23px;
+}
+#tooltipPopup.toomuch-etip{
+	margin-left: -320px;
+	margin-top: 95px;
+}
+#tooltipPopup .tooltip-inner{
+	font-size:12pt;
+	/*max-width:25%;*/
+	width: 400px;
+	padding:20px 20px 5px 20px;
+	margin-top: -8px;
 }
 .eTippingEnabled div.tooltip p{
   margin-top: 1em;
@@ -981,7 +990,9 @@ label[for="dontupdatecartlines"] {
   font-weight:bold;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid{
-  font-size: 26pt;
+	color: #333333;
+	font-size: 27px;
+	font-weight: 700;
   padding-left: 0px;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{
@@ -1021,7 +1032,7 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled .rowcell-colon-right:after{
   content: "";
 }
-.eTippingEnabled .strl_text:after{
+.eTippingEnabled .strl_text:after, .cartsection__total .strl_text:after, .cartsection__tax .strl_text:after{
   content:":";
 }
 
@@ -1062,4 +1073,8 @@ label[for="dontupdatecartlines"] {
 	font-size: 14pt;
 	padding: 10px;
 	background-color: #6AAA6D;
+}
+
+.eTippingEnabled .subtotal__rowcell-mid{
+	min-width:20%;
 }
