@@ -309,8 +309,8 @@ public class LogisticsDataEncoder {
 	}
 
 	public static CreateOrderRequest encodeUpdateOrderRequest(String orderId,
-			String parentOrderId, double tip, String reservationId, String orderMobileNumber) {
-		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId,  orderMobileNumber);
+			String parentOrderId, double tip, String reservationId, String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber) {
+		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId,  deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber);
 		return request;
 	}
 	

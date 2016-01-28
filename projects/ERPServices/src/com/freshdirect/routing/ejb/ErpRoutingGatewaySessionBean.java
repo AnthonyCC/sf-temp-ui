@@ -39,13 +39,16 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 	
-	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String orderMobileNumber){
+	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber){
 		
 		OrderCreateCommand command=new OrderCreateCommand();
 		command.setReservationId(reservationId);
 		command.setSaleId(saleId);
 		command.setParentOrderId(parentOrderId);
 		command.setTip(tip);
+		command.setDeliveryInstructions(deliveryInstructions);
+		command.setServiceType(serviceType);
+		command.setUnattendedInstr(unattendedInstr);
 		command.setOrderMobileNumber(orderMobileNumber);
 		
 		this.enqueue(command);
@@ -58,12 +61,15 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 	
-	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String orderMobileNumber){
+	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber){
 		OrderModifyCommand command=new OrderModifyCommand();
 		command.setReservationId(reservationId);
 		command.setSaleId(saleId);
 		command.setParentOrderId(parentOrderId);
 		command.setTip(tip);
+		command.setDeliveryInstructions(deliveryInstructions);
+		command.setServiceType(serviceType);
+		command.setUnattendedInstr(unattendedInstr);
 		command.setOrderMobileNumber(orderMobileNumber);
 		this.enqueue(command);
 	}

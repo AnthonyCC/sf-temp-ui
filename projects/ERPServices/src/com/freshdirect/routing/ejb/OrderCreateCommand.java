@@ -13,6 +13,12 @@ public class OrderCreateCommand implements java.io.Serializable{
 		
 		private String parentOrderId;
 		
+		private String deliveryInstructions;
+		
+		private String serviceType;
+		
+		private String unattendedInstr;
+		
 		private String orderMobileNumber;
 		
 		
@@ -62,6 +68,30 @@ public class OrderCreateCommand implements java.io.Serializable{
 
 		public void setOrderMobileNumber(String orderMobileNumber) {
 			this.orderMobileNumber = orderMobileNumber;
+		}
+
+		public String getDeliveryInstructions() {
+			return deliveryInstructions;
+		}
+
+		public void setDeliveryInstructions(String deliveryInstructions) {
+			this.deliveryInstructions = deliveryInstructions;
+		}
+
+		public String getServiceType() {
+			return serviceType;
+		}
+
+		public void setServiceType(String serviceType) {
+			this.serviceType = serviceType;
+		}
+
+		public String getUnattendedInstr() {
+			return unattendedInstr;
+		}
+
+		public void setUnattendedInstr(String unattendedInstr) {
+			this.unattendedInstr = unattendedInstr;
 		}
 		
 		

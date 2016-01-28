@@ -1221,12 +1221,12 @@ public class FDDeliveryManager {
 		}
 	}
 	public void submitOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String orderMobileNumber) throws FDResourceException {
+			String reservationId, String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.submitOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId, orderMobileNumber));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
@@ -1236,12 +1236,12 @@ public class FDDeliveryManager {
 	}
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
-			String reservationId,  String orderMobileNumber) throws FDResourceException {
+			String reservationId, String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.modifyOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId, orderMobileNumber));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
