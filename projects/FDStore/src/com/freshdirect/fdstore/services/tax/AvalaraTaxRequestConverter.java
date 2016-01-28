@@ -121,6 +121,7 @@ public class AvalaraTaxRequestConverter {
 				taxLine.setDestinationCode("DEST-01");
 				taxLine.setDescription(line.getDescription());
 				taxLine.setQty(BigDecimal.valueOf(quantity));
+				taxLine.setTaxCode(line.getTaxCode());
 				taxLines.add(taxLine);
 			}
 		}
