@@ -1,25 +1,20 @@
 package com.freshdirect.mobileapi.controller;
 
 
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ListIterator;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -35,11 +30,8 @@ import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.UserSocialProfile;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountRegisterRequest;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessageEx;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLinkRequest;
 import com.freshdirect.mobileapi.controller.data.request.ExternalAccountLogin;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessageFdxRequest;
 import com.freshdirect.mobileapi.controller.data.request.SocialLogin;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
 import com.freshdirect.mobileapi.controller.data.response.SocialLoginResponse;
@@ -522,19 +514,20 @@ private ModelAndView recognizeAccountAndLogin(ModelAndView model, SessionUser us
 						.numberOfOrderLines();
 				int loginLines = loginUser.getShoppingCart()
 						.numberOfOrderLines();
-
 				// address needs to be set using logged in user's information -
 				// in case existing cart is used or cart merge
 				currentUser.getShoppingCart().setDeliveryAddress(
 						loginUser.getShoppingCart().getDeliveryAddress());
-
 				
-					// keep current cart
-					loginUser.setShoppingCart(currentUser.getShoppingCart());
-                    loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());  
-
-			
-
+				 if ((currentLines > 0) && (loginLines > 0)) {
+	                    // keep the current cart in the session and send them to the merge cart page	            
+		                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());	                    
+	                } else if ((currentLines > 0) && (loginLines == 0)) {
+	                    // keep current cart                	
+	                    loginUser.setShoppingCart(currentUser.getShoppingCart());
+	                    loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());                                     	                    
+	                }
+				
 				// merge coupons
 				currentUserId = currentUser.getPrimaryKey();
 
