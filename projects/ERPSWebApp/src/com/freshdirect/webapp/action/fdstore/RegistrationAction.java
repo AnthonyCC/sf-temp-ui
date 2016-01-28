@@ -1269,6 +1269,8 @@ public class RegistrationAction extends WebActionSupport {
 							 providersStr = provider+","+providersStr;
 							}
 							actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),(MessageFormat.format(SystemMessageList.MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE, providersStr.substring(0,providersStr.length()-1)))));	
+						} else {
+							actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));
 						}
 					}
 				}else{
@@ -1306,6 +1308,8 @@ public class RegistrationAction extends WebActionSupport {
 						 providersStr = provider+","+providersStr;
 						}
 						actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),(MessageFormat.format(SystemMessageList.MSG_SOCIAL_SOCIALONLY_ACCOUNT_CREATE,  providersStr.substring(0,providersStr.length()-1)))));	
+					} else {
+						actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));	
 					}
 				}else{
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(),SystemMessageList.MSG_UNIQUE_USERNAME_FOR_LSIGNUP));	
