@@ -1,6 +1,30 @@
 /*global expressco, Bacon*/
 var FreshDirect = FreshDirect || {};
 
+//kills unwanted dupes, typically resulting from bad logic in a loop
+function dupe_buster(css_classname, id_prefix){
+	if( $jq(css_classname).length > 1 ){
+		$jq(css_classname).each(function(index){
+			$jq(this).attr("id", id_prefix+"_"+index);
+
+			if( index > 0 ){
+				$jq("#"+id_prefix+"_"+index).remove();
+			}
+		})
+	}
+}
+
+function template_dupe_cleaner(){
+	//kill certain accidental unwanted repetive elements
+	dupe_buster(".deliveryFeeToolTips", "deliveryFeeToolTips");
+	dupe_buster(".st_label_deliveryfee", "st_label_deliveryfee");
+	dupe_buster(".st_val_deliveryfee", "st_val_deliveryfee");
+	dupe_buster(".st_label_subtotal", "st_label_subtotal");
+	dupe_buster(".st_val_subtotal", "st_val_subtotal");
+	dupe_buster(".st_label_ssOrderTotal", "st_label_ssOrderTotal");
+	dupe_buster(".st_val_ssOrderTotal", "st_val_ssOrderTotal");
+}
+
 (function (fd) {
 	'use strict';
 
@@ -61,8 +85,9 @@ var FreshDirect = FreshDirect || {};
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
 
 				this.updateTopCheckoutButton(data);
-
-				return processFn(data);
+				
+				//kill certain accidental unwanted repetive elements
+				return processFn(data) + '<SCR'+'IPT>template_dupe_cleaner();<\/SCR'+'IPT>';
 			}
 		},
 		placeholder:{
@@ -152,8 +177,6 @@ var FreshDirect = FreshDirect || {};
 					e.stopPropagation();
 				}
 				$(cartcontent.placeholder).trigger('cartcontent-update');
-
-				//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		},
 		getRequestURI: {
@@ -233,7 +256,7 @@ var FreshDirect = FreshDirect || {};
 					} catch(e) {}
 				});
 
-				//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
+				template_dupe_cleaner();
 			}
 		},
 		onEmptyCart: {
@@ -353,7 +376,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback: {
 			value: function(value){
-				this.render(value);
+				this.render(value); //everything after this within this function assumes that the soy template has been rendered on the page
 				fd.components.carousel && fd.components.carousel.initialize();
 
 				//remove extra e-tip element crap (sorry for this hack solution)
@@ -371,20 +394,8 @@ var FreshDirect = FreshDirect || {};
 					$jq("#tooltipPopup").removeClass("msg-etip");
 				})
 
-				if( $(".deliveryFeeToolTips").length > 1 ){
-					//$(".deliveryFeeToolTips:nth-of-type(1)").remove();
-
-					//$(".deliveryFeeToolTips:nth-of-type(1)").css("margin-left", "100px");
-
-					$(".deliveryFeeToolTips").each(function(index){
-						$(this).attr("id", "deliveryFeeToolTip_"+index);
-
-						if( index > 0 ){
-							$("#deliveryFeeToolTip_"+index).remove();
-						}
-					})
-
-				}
+				//kill certain accidental unwanted repetive elements
+				template_dupe_cleaner();
 			}
 		}
 	});
@@ -401,6 +412,8 @@ var FreshDirect = FreshDirect || {};
 				if(fd.expressco.deliverypasspopup){
 					fd.expressco.deliverypasspopup.close();
 				}
+				
+				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		}
 	});
