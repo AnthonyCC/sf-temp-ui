@@ -16,25 +16,97 @@ function dupe_buster(css_classname, id_prefix){
 
 function template_dupe_cleaner(){
 	//kill certain accidental unwanted repetive elements
-	dupe_buster(".deliveryFeeToolTips", "deliveryFeeToolTips");
-	dupe_buster(".st_label_deliveryfee", "st_label_deliveryfee");
-	dupe_buster(".st_val_deliveryfee", "st_val_deliveryfee");
-	dupe_buster(".st_label_subtotal", "st_label_subtotal");
-	dupe_buster(".st_val_subtotal", "st_val_subtotal");
+	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
 	
-	dupe_buster(".st_label_totaltax", "st_label_totaltax");
-	dupe_buster(".st_val_totaltax", "st_val_totaltax");
-	
-	dupe_buster(".st_label_statebottledeposit", "st_label_statebottledeposit");
-	dupe_buster(".st_val_statebottledeposit", "st_val_statebottledeposit");
-	
-	dupe_buster(".st_label_ssOrderTotal", "st_label_ssOrderTotal");
-	dupe_buster(".st_val_ssOrderTotal", "st_val_ssOrderTotal");
+	for(var i=0; i<common_dupe_classnames.length; i++){
+		dupe_buster("."+common_dupe_classnames[i], common_dupe_classnames[i]);
+	}
 }
 
 function populateCustomTipField(maxPossibleTip){
-	$jq("#tipTextBox").val( maxPossibleTip );
+	$jq(etids.inp_tipTextBox).val( maxPossibleTip );
+
+	tip_entered();
 }
+
+//this code inside needs to potentially be called from standard js functions as well as the soy template js code
+function tip_entered(){
+	var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
+	
+	var tipFloat = parseFloat(tip);
+
+	$jq(etids.inp_tipTextBox).val( tip );
+	
+	var subTotalStr = $jq('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+	//var subTotal = subTotalStr.substring(1);
+	var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
+	//var maximumTipAllowed = subTotal * 32 / 100;
+	var maximumTipAllowed = subTotal * 0.32;
+	//var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+	var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
+	
+	//if(tip > maximumTipAllowed){
+	if(tipFloat > roundedMaxTip){ //APPBUG-4270
+		console.log("Tip greater than maximum tip");
+		$jq(etids.btn_tipApply).prop('disabled', true);
+
+		//this goes in the hover box
+		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='javascript:populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
+
+		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
+		
+		//this is yet another hack, to replace the tooltip for the input field with something of different properties
+		$jq(etids.inp_tipTextBox).mouseover(function(){
+			$jq(etids.div_tooltipPopup).addClass("toomuch-etip"); //hide the regular tooltip, because it does not meet the business needs here
+		})
+		$jq(etids.inp_tipTextBox).mouseout(function(){
+			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
+		})
+		
+		$jq(etids.inp_tipTextBox).on('mouseover mouseout', function(e){
+			if( $jq(etids.div_toolTipTextBox).html().length > 2 ){
+				$jq(etids.div_tooltipPopup).addClass("toomuch-etip");
+				
+				$jq(etids.div_toolTipTextBox).css("display", "block");
+			}
+		});
+		
+		//if that green tick is seen, then make it not seen
+		$jq( etids.ck_tipAppliedTick ).css("display", "none");
+	}else{ /*if the tip is a proper number, including zero */
+		$jq(etids.div_toolTipTextBox).html('');
+		$jq(etids.btn_tipApply).prop('disabled', false);
+		$jq(etids.sel_tipDropdown).val('Other Amount');
+		
+		//$jq( etids.ck_tipAppliedTick ).css("display", "block");
+	}
+	
+	//forcibly hide that pseudo tooltip
+	$jq(etids.div_toolTipTextBox).css("display", "none");
+}
+
+
+/*this object contains the names of elements relevant to etipping */
+var etids = new Object();
+
+/*buttons, first for applying the tip, the next just to tell you that you did, doesn't actually do anything when clicked*/
+etids.btn_tipApply = "#tipApply";
+etids.btn_tipApplied = "#tipApplied";
+
+/*checkmark which shows up after applying tip*/
+etids.ck_tipAppliedTick = "#tipAppliedTick";
+
+/*select box to choose what tip you want*/
+etids.sel_tipDropdown = "#tipDropdown";
+
+/*hidden by default, until shown by means of choosing from above select box 'other amount'*/
+etids.inp_tipTextBox = "#tipTextBox";
+
+/*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
+etids.div_toolTipTextBox = "#toolTipTextBox";
+
+etids.div_tooltipPopup = "#tooltipPopup";
+
 
 (function (fd) {
 	'use strict';
@@ -43,25 +115,6 @@ function populateCustomTipField(maxPossibleTip){
 	var WIDGET = fd.modules.common.widget;
 	var requestCounter = 0;
 	var focusedElementId;
-	
-	/*this object contains the names of elements relevant to etipping */
-	var etids = new Object();
-	
-	/*buttons, first for applying the tip, the next just to tell you that you did, doesn't actually do anything when clicked*/
-	etids.btn_tipApply = "#tipApply";
-	etids.btn_tipApplied = "#tipApplied";
-	
-	/*checkmark which shows up after applying tip*/
-	etids.ck_tipAppliedTick = "#tipAppliedTick";
-	
-	/*select box to choose what tip you want*/
-	etids.sel_tipDropdown = "#tipDropdown";
-	
-	/*hidden by default, until shown by means of choosing from above select box 'other amount'*/
-	etids.inp_tipTextBox = "#tipTextBox";
-	
-	/*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
-	etids.div_toolTipTextBox = "#toolTipTextBox";
 
 	var cartcontent = Object.create(WIDGET,{
 		signal:{
@@ -151,8 +204,6 @@ function populateCustomTipField(maxPossibleTip){
 					data[cartlineId]={type:'rmv',data:null};
 					changeCounter++;
 				});
-
-				//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 
 				return changeCounter ? data : null;
 			}
@@ -307,54 +358,9 @@ function populateCustomTipField(maxPossibleTip){
 				console.log("onTipEntered");
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.btn_tipApplied).hide();
-				var tip = $(etids.inp_tipTextBox).val().replace(/[A-Za-z\-\_\!\#\%\^\&\*\(\)\[\]\{\}\<\>\,\?]/g, '').trim();
 
-				$(etids.inp_tipTextBox).val( tip );
-				
-				var subTotalStr = $('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
-				//var subTotal = subTotalStr.substring(1);
-				var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
-				//var maximumTipAllowed = subTotal * 32 / 100;
-				var maximumTipAllowed = subTotal * 0.32;
-				//var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
-				var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
-				
-				//console.log("maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
-				
-				//if(tip > maximumTipAllowed){
-				if(tip > roundedMaxTip){ //APPBUG-4270
-					console.log("Tip greater than maximum tip");
-					$(etids.btn_tipApply).prop('disabled', true);
-
-					//this goes in the hover box
-					var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='#' onclick='populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
-
-					$(etids.div_toolTipTextBox).html('').append(innerHtml);
-					
-					
-					$("#tipTextBox").mouseover(function(){
-						$("#tooltipPopup").addClass("toomuch-etip");
-					})
-					$("#tipTextBox").mouseout(function(){
-						//$("#tooltipPopup").removeClass("toomuch-etip");
-						
-						$("#tooltipPopup").css("display", "block");
-					})
-					
-					
-					/*$( "#outer" ).mouseleave(function() {
-						  $( "#log" ).append( "<div>Handler for .mouseleave() called.</div>" );
-						});*/
-					
-					//console.log( "etids.div_toolTipTextBox = " + etids.div_toolTipTextBox );
-				//}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
-				}else{
-					$(etids.div_toolTipTextBox).html('');
-					$(etids.btn_tipApply).prop('disabled', false);
-					$(etids.sel_tipDropdown).val('Other Amount');
-				}
-
-				//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
+				//what used to be around here moved to this function
+				tip_entered();
 			}
 		}
 	});
@@ -455,6 +461,8 @@ function populateCustomTipField(maxPossibleTip){
 	cartcontent.listen();
 	cartcontent.watchChanges();
 	cartcontent.update();
+	
+	window.cc_obj = cartcontent;
 
 	atcHandler.listen();
 	subtotalbox.listen();

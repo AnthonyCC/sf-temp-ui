@@ -381,16 +381,17 @@
 										<option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
 									{/foreach}  
 									</select>
+									/*<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />*/
 									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />
-									<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
+									<div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
 								{else}
 									<select id="tipDropdown" name="tipAmount" data-component="changeETip">
 										{foreach $option in $tipAmounts}
 											<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
 										{/foreach}  
 									</select>
-									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" style="display:none" />
-									<div style="display:none" id="toolTipTextBox" data-component="tooltipContent"></div>
+									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" style="display:none" />
+									<div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
 								{/if} /*end if/else $customTip */
 								
 								{if $tipAppliedTick}

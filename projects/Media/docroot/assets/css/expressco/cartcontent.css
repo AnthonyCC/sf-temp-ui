@@ -927,8 +927,14 @@ label[for="dontupdatecartlines"] {
 }
 #tooltipPopup.toomuch-etip{
 	/*margin-left: -320px;*/
-	margin-left: -320px;
+	margin-left: -1320px;
 	margin-top: 95px;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+	-moz-opacity: 0.0;
+	-khtml-opacity: 0.0;
+	opacity: 0.0;
 }
 #tooltipPopup .tooltip-inner{
 	font-size:12pt;
@@ -1117,4 +1123,13 @@ label[for="dontupdatecartlines"] {
 
 .eTippingEnabled a.tooltip-small{
 	margin-right:5px;
+}
+
+.eTippingEnabled #toolTipTextBox{
+	position: absolute;
+    margin-left: -330px;
+    margin-top: -120px;
+    width:440px;
+    padding:13px 18px 13px 18px;
+    text-align:left;
 }
