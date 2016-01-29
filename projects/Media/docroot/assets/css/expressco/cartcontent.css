@@ -1122,9 +1122,11 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled .cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
 	float:none;
 }
-
 .eTippingEnabled a.tooltip-small{
 	margin-right:5px;
+}
+.eTippingEnabled a.tooltip-small:hover{
+	background-color:rgb(157, 157, 157);
 }
 
 .eTippingEnabled #toolTipTextBox{
