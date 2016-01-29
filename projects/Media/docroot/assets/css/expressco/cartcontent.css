@@ -1033,6 +1033,8 @@ label[for="dontupdatecartlines"] {
     font-size: 15px;
     font-weight: 400;
     -webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
     /*background: transparent url('http://dfoolong.github.io/assets/img/input-arrow-down.png') 97% center no-repeat;*/
 }
 
