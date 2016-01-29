@@ -1113,7 +1113,7 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled .free-link-holder{
-	position: absolute;
+	/*position: absolute;*/
 	/*margin-left: 100px;*/
 }
 
