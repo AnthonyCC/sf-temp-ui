@@ -21,8 +21,19 @@ function template_dupe_cleaner(){
 	dupe_buster(".st_val_deliveryfee", "st_val_deliveryfee");
 	dupe_buster(".st_label_subtotal", "st_label_subtotal");
 	dupe_buster(".st_val_subtotal", "st_val_subtotal");
+	
+	dupe_buster(".st_label_totaltax", "st_label_totaltax");
+	dupe_buster(".st_val_totaltax", "st_val_totaltax");
+	
+	dupe_buster(".st_label_statebottledeposit", "st_label_statebottledeposit");
+	dupe_buster(".st_val_statebottledeposit", "st_val_statebottledeposit");
+	
 	dupe_buster(".st_label_ssOrderTotal", "st_label_ssOrderTotal");
 	dupe_buster(".st_val_ssOrderTotal", "st_val_ssOrderTotal");
+}
+
+function populateCustomTipField(maxPossibleTip){
+	$jq("#tipTextBox").val( maxPossibleTip );
 }
 
 (function (fd) {
@@ -300,37 +311,47 @@ function template_dupe_cleaner(){
 
 				$(etids.inp_tipTextBox).val( tip );
 				
-				var subTotalStr = $('#hiddenSubTotal').val();
-				var subTotal = subTotalStr.substring(1);
-				console.log("Sub Total : " + subTotal + " Tip : " + tip);
-				var maximumTipAllowed = subTotal * 32 / 100;
-				var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+				var subTotalStr = $('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+				//var subTotal = subTotalStr.substring(1);
+				var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
+				//var maximumTipAllowed = subTotal * 32 / 100;
+				var maximumTipAllowed = subTotal * 0.32;
+				//var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+				var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
 				
 				//console.log("maximumTipAllowed = " + maximumTipAllowed + " , roundedMaxTip = " + roundedMaxTip);
 				
 				//if(tip > maximumTipAllowed){
 				if(tip > roundedMaxTip){ //APPBUG-4270
 					console.log("Tip greater than maximum tip");
-					$jq(etids.btn_tipApply).prop('disabled', true);
+					$(etids.btn_tipApply).prop('disabled', true);
 
 					//this goes in the hover box
-					var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be $" + roundedMaxTip + " for this order.</p></div>";
+					var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='#' onclick='populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
 
-					$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
+					$(etids.div_toolTipTextBox).html('').append(innerHtml);
 					
 					
-					$jq("#tipTextBox").mouseover(function(){
-						$jq("#tooltipPopup").addClass("toomuch-etip");
+					$("#tipTextBox").mouseover(function(){
+						$("#tooltipPopup").addClass("toomuch-etip");
 					})
-					$jq("#tipTextBox").mouseout(function(){
-						$jq("#tooltipPopup").removeClass("toomuch-etip");
+					$("#tipTextBox").mouseout(function(){
+						//$("#tooltipPopup").removeClass("toomuch-etip");
+						
+						$("#tooltipPopup").css("display", "block");
 					})
+					
+					
+					/*$( "#outer" ).mouseleave(function() {
+						  $( "#log" ).append( "<div>Handler for .mouseleave() called.</div>" );
+						});*/
 					
 					//console.log( "etids.div_toolTipTextBox = " + etids.div_toolTipTextBox );
 				//}else if( parseFloat(tip) > 0 ){ /*if the tip is a proper number and is greater than zero */
 				}else{
-					$jq(etids.div_toolTipTextBox).html('');
-					$jq(etids.btn_tipApply).prop('disabled', false);
+					$(etids.div_toolTipTextBox).html('');
+					$(etids.btn_tipApply).prop('disabled', false);
+					$(etids.sel_tipDropdown).val('Other Amount');
 				}
 
 				//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );

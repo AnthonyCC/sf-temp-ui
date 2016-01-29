@@ -926,6 +926,7 @@ label[for="dontupdatecartlines"] {
 	margin-top: 23px;
 }
 #tooltipPopup.toomuch-etip{
+	/*margin-left: -320px;*/
 	margin-left: -320px;
 	margin-top: 95px;
 }
@@ -940,92 +941,117 @@ label[for="dontupdatecartlines"] {
   margin-top: 1em;
 }
 
-.eTippingEnabled .subtotalboxes, .eTippingEnabled .cartsection__tax form{
-  width:350px;
-}
 
 .eTippingEnabled .subtotalboxes .subtotal__row{
   
 }
 
 .eTippingEnabled #subtotalbox1{
-  margin-left:620px;
+  margin-left:670px;
 }
 .eTippingEnabled #subtotalbox1 .subtotal__row{
-  width: 350px;
+	white-space:nowrap;
+}
+.eTippingEnabled .subtotalboxes, .eTippingEnabled #subtotalbox1 .subtotal__row, .eTippingEnabled .cartsection__tax form{
+	width: 300px;
 }
 
 .eTippingEnabled .subtotalboxes .subtotal__rowcell-left{
   /*display:block;
   clear:both;*/
-  text-align:left;
+  /*text-align:left;*/
   margin-right:1px;
 }
 
 .eTippingEnabled #subtotalbox2{
-  width: 180px;
+  width: 140px;
   float: right;
 }
 
+.eTippingEnabled #subtotalbox2 .row-size-big{
+	text-align:center;
+}
+
 .eTippingEnabled .subtotal__rowcell-left{
-  width:initial;
+	width:initial;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-left{
-  display:block;
+	display:block;
+	text-align: center;
 }
 .eTippingEnabled .cartsection__totalwrapper{
-  width: 100%;
+	width: 100%;
 }
 .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left{
-  width:50%;
+	min-width: 140px;
+}
+.eTippingEnabled form .subtotal__rowcell-left{
+	float:left;
 }
 .eTippingEnabled #subtotalbox2 .strl_text{
-  font-weight:normal;
-  white-space:nowrap;
+	font-weight:normal;
+	white-space:nowrap;
 }
 .eTippingEnabled #subtotalbox2 .strl_text:after{
-  content:"";
+	content:"";
 }
 .eTippingEnabled .subtotal__rowcell-mid{
-  font-weight:bold;
+	font-weight:bold;
+}
+.eTippingEnabled #subtotalbox1 .subtotal__rowcell-mid{
+	width: 85px;
+	text-align:right;
+	white-space:nowrap;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-mid{
 	color: #333333;
 	font-size: 27px;
 	font-weight: 700;
-  padding-left: 0px;
+	padding-left: 0px;
 }
 .eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{
-  position:absolute;
+	position:absolute;
 }
 
 .eTippingEnabled .subtotal__rowcell-left,
 .eTippingEnabled .subtotal__rowcell-mid,
 .eTippingEnabled .subtotal__rowcell-right{
-  font-size:16pt;
+  font-size:16px;
 }
 
 .eTippingEnabled #tipDropdown, .eTippingEnabled #tipTextBox{
-  padding: 9px 5px;
-  font-size: 18pt;
-  border-width: 2px;
+	border: 2px solid rgb(194, 194, 194);
+	width: 125px;
+	height: 30px;
+	color: #333333;
+    font-size: 15px;
+    font-weight: 400;
+    -webkit-appearance: none;
+    /*background: transparent url('http://dfoolong.github.io/assets/img/input-arrow-down.png') 97% center no-repeat;*/
 }
-.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
-  width: 161px;
+
+.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied, .eTippingEnabled #tipTextBox{
+  width: 129px;
+}
+.eTippingEnabled #tipDropdown{
+	height:34px;
+	background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;
 }
 .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
-  border-radius: 1px;
-  text-shadow: none;
-  font-weight: normal;
-  font-size: 12pt;
-  margin-top: 8px;
+	border-radius: 3px;
+	text-shadow: none;
+	/* font-weight: normal; */
+	font-size: 12px;
+	font-weight: 700;
+	margin-top: 6px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	height: 28px;
 }
-.eTippingEnabled #tipTextBox{
-  width:147px;
-}
+
 .eTippingEnabled #tipAppliedTick{
   position: absolute;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: 5px;
 }
 
@@ -1038,25 +1064,30 @@ label[for="dontupdatecartlines"] {
 
 .eTippingEnabled .cartsection__total,
 .eTippingEnabled .cartsection__tax{
-  font-size:16pt;
+  font-size:16px;
   font-weight:normal;
 }
 
 .eTippingEnabled .rowcontent-free-with-pass{
-  width:80px;
-  margin-left:initial;
+	margin-left:initial;
+	text-align:right;
+	float:right;
+	width:initial;
 }
 
 .eTippingEnabled .orderSummary{
 	padding-top: 20px;
 	width: 400px;
     float: right;
-	font-size: 12pt;
+	font-size: 16px;
 	margin-bottom: 40px;
 }
 .eTippingEnabled .orderSummary .cartsection__total{
 	margin-top:10px;
 	margin-bottom:10px;
+}
+.eTippingEnabled .strl_text{
+	font-size:16px;
 }
 .eTippingEnabled .orderSummary .strl_text{
 
@@ -1075,6 +1106,15 @@ label[for="dontupdatecartlines"] {
 	background-color: #6AAA6D;
 }
 
-.eTippingEnabled .subtotal__rowcell-mid{
-	min-width:20%;
+.eTippingEnabled .free-link-holder{
+	position: absolute;
+	/*margin-left: 100px;*/
+}
+
+.eTippingEnabled .cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
+	float:none;
+}
+
+.eTippingEnabled a.tooltip-small{
+	margin-right:5px;
 }
