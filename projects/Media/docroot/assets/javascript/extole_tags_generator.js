@@ -78,8 +78,10 @@ function setAndAppendExtoleObject(section, id_placeafter){
 			
 			break;
 		case "REGISTER":
-			//hides the popups for registration
-			$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
+			if( window.page != "invite_signup.jsp" ){
+				//hides the popups for registration
+				$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
+			}
 		case "PURCHASE":
 			//both this and 'PURCHASE' extole tags have a 'type' property, instead of a 'zone' property.  (but 'PURCHASE' extole tag has an additional helper extole widget tag)
 			obj.type = section;
@@ -148,13 +150,18 @@ If a customer IS signed in AND this is a brand new customer.  Never is supposed 
 Placed inside '(function() {' block and a setInterval checker for jQuery existence block because both functions above use jQuery (as '$jq').
 */
 (function(){
+	
+	//usable for getting the filename of current page minus the directory
+	var path = window.location.pathname;
+	window.page = path.split("/").pop();
+	
 	var extoleInt = setInterval(function(){ 
 		if( typeof($jq) == "function" ){
 			clearInterval(extoleInt);
 			
 			//this is to prevent iframed popups (or any other iframed request) from having the RAF lower ad popup (APPBUG-4160)
 			//also to prevent traditional popup windows from having the RAF lower ad (APPBUG-4237)
-			if( top != self || globalExtoleVars.isSignedCustomer != true || window.opener != null ){ // '||' aka 'OR' conditional, prevents this from being shown on right after customer signs up. (APPBUG-4123)
+			if( top != self || (globalExtoleVars.isSignedCustomer != true && window.page != "invite_signup.jsp") || window.opener != null ){ // '||' aka 'OR' conditional, prevents this from being shown on right after customer signs up. (APPBUG-4123)
 				//hides the popups
 				$jq( "html" ).append( "<style>#cta1, #cta2, div[class^='extole_id'] {display:none;}</style>" );
 			}
