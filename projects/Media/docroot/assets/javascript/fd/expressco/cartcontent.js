@@ -15,7 +15,7 @@ function dupe_buster(css_classname, id_prefix){
 }
 
 function template_dupe_cleaner(){
-	//kill certain accidental unwanted repetive elements
+	//kill certain accidental unwanted repetitive elements
 	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
 	
 	for(var i=0; i<common_dupe_classnames.length; i++){
@@ -29,15 +29,35 @@ function populateCustomTipField(maxPossibleTip){
 	tip_entered();
 }
 
+function money_format( input ){
+	var index = input.indexOf( '.' );
+	
+	if ( index > -1 ) {
+	    input = input.substr( 0, index + 1 ) + 
+	            input.slice( index ).replace( /\./g, '' );
+	}
+	
+	input = input.replace(/[^0-9\.]/g,'');
+	
+	var inputFloat = parseFloat(input);
+		
+	inputFloat = inputFloat.toFixed(2);
+	
+	return inputFloat;
+}
+
 //this code inside needs to potentially be called from standard js functions as well as the soy template js code
 function tip_entered(){
-	var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
+	//var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
+	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
 	var tipFloat = parseFloat(tip);
 
 	$jq(etids.inp_tipTextBox).val( tip );
 	
-	var subTotalStr = $jq('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+	//var subTotalStr = $jq('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+	var subTotalStr = money_format( $jq('#hiddenSubTotal').val().trim() );
+	
 	//var subTotal = subTotalStr.substring(1);
 	var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
 	//var maximumTipAllowed = subTotal * 32 / 100;
@@ -124,7 +144,9 @@ etids.div_tooltipPopup = "#tooltipPopup";
 			value: function(data){
 				//if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side
 				if( data.etipTotal && data.etipTotal.length > 0 ){
-					var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
+					//var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
+					var floatDoubleTip = money_format( data.etipTotal.trim() );
+					
 					if( floatDoubleTip > 0 ){
 						data.eTippingEnabled = true;
 					}
