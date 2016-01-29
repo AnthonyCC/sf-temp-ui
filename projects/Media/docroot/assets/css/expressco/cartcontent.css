@@ -413,8 +413,9 @@
 }
 .cartsection__tax form{
 	float:right;
-
-  margin-bottom:25px;
+	
+	margin-top:25px;
+	margin-bottom:25px;
 }
 .cartsection__tax form .strl_text, .cartsection__tax form a.tooltip-small{
 	float:left;
