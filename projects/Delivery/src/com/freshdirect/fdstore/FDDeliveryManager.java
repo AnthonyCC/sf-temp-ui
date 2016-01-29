@@ -1,6 +1,9 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -33,6 +36,7 @@ import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.DuplicateKeyException;
@@ -599,6 +603,7 @@ public class FDDeliveryManager {
 		throw new FDResourceException(ex);
 	}
 	}
+	
 	
 	public FDDeliveryETAModel getETAWindowBySaleId(String saleId) throws FDResourceException {
 		FDDeliveryETAModel result = deliveryETACache.get(saleId);
@@ -1221,12 +1226,13 @@ public class FDDeliveryManager {
 		}
 	}
 	public void submitOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.submitOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,
+							firstName,lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
@@ -1236,12 +1242,13 @@ public class FDDeliveryManager {
 	}
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.modifyOrder(
-					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
+					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,
+							firstName, lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);

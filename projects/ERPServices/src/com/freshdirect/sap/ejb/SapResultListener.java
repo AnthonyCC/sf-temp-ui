@@ -264,6 +264,8 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod()!=null)?
 						((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod().getReferencedOrder():null, saleEB.getCurrentOrder().getTip(), 
 						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+						,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
+						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName()
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions(),
 						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
@@ -291,6 +293,8 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						LOGGER.info("sending sendModifyOrderRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 						erpRoutingGateway.sendModifyOrderRequest(saleId, null,
 								saleEB.getCurrentOrder().getTip(), saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+								,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
+								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName()
 								,(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions()!=null)?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions():"none",
 										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
 										,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",

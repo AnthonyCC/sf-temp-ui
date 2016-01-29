@@ -2962,10 +2962,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				//if its fdx estore then make a call to logistics to store fdx order.
 				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
 					FDDeliveryManager.getInstance().modifyOrder(saleId, null,
-							order.getTip(), newReservationId,order.getDeliveryInfo().getDeliveryAddress().getInstructions(),
+							order.getTip(), newReservationId,
+							order.getDeliveryInfo().getDeliveryAddress().getFirstName(),
+							order.getDeliveryInfo().getDeliveryAddress().getLastName(),
+							order.getDeliveryInfo().getDeliveryAddress().getInstructions(),
 							order.getDeliveryInfo().getDeliveryAddress().getServiceType().getName(),
 							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?
-									order.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null, orderMobileNumber);
+							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null, orderMobileNumber);
 				}
 			}
 			

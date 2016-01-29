@@ -21,6 +21,10 @@ public class OrderCreateCommand implements java.io.Serializable{
 		
 		private String orderMobileNumber;
 		
+		private String firstName;
+		
+		private String lastName;
+		
 		
 		public String getReservationId() {
 			return reservationId;
@@ -92,6 +96,23 @@ public class OrderCreateCommand implements java.io.Serializable{
 
 		public void setUnattendedInstr(String unattendedInstr) {
 			this.unattendedInstr = unattendedInstr;
+		}
+
+		
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
 		}
 		
 		
