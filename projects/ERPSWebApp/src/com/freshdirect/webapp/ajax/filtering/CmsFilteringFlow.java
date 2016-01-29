@@ -2,8 +2,6 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +52,6 @@ import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContextService;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
-import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
@@ -107,37 +104,6 @@ public class CmsFilteringFlow {
 			// -- REMOVE MENU BOXES WITH NULL SELECTION --
 			MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
 			
-			//APPDEV 4070 Start
-			//for case insensitive sorting the brands 
-			List<MenuBoxData> menuData = browseDataContext.getMenuBoxes().getMenuBoxes();
-			for(MenuBoxData boxData:menuData){
-				if(boxData.isBrandFilter()){
-					List<MenuItemData> arrayListMenuItemData = boxData.getItems();
-					MenuItemData mainData = arrayListMenuItemData.get(0);
-					/*
-					 * Escaping the first Element as First one will be Heading
-					 * "All Brands", so sorting should not applied on that
-					 */
-					List<MenuItemData> brandData = new ArrayList<MenuItemData>(
-							arrayListMenuItemData.subList(1,
-									arrayListMenuItemData.size()));
-					// Sorting One
-					Collections.sort(brandData, new Comparator<MenuItemData>() {
-						@Override
-						public int compare(MenuItemData o1, MenuItemData o2) {
-							// TODO Auto-generated method stub
-							return o1.getName().compareToIgnoreCase(
-									o2.getName());
-						}
-					});
-					arrayListMenuItemData.clear();
-					arrayListMenuItemData.add(mainData);
-					arrayListMenuItemData.addAll(brandData);
-
-				}
-			}
-			//APPDEV 4070 end
-							
 			if(!nav.isPdp()){
 				
 				// -- PAGING --
