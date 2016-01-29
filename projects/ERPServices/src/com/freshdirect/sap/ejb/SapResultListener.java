@@ -267,7 +267,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions(),
 						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
-						(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
+						(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getPhone()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getPhone().toString()): null);
 										 
 								 }
 					}
@@ -294,7 +294,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 								,(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions()!=null)?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions():"none",
 										saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
 										,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
-						 (saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
+						 (saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getPhone()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getPhone().toString()): null);
 					}
 				}
 
