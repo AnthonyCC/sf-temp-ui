@@ -32,7 +32,6 @@
 }
 
 .pdp {
-	font-family:Verdana,sans-serif;
 	text-align:left;
 }
 
@@ -476,6 +475,17 @@ span.cssbutton.annotation:hover {
 	vertical-align:text-top;
 }
 
+.pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
+  padding: 7px;
+  font-size: inherit;
+}
+
+.pdp-evenbetter-atc button.pdp-evenbetter-addtolist.cssbutton {
+  padding: 6px;
+  width: 30px;
+  margin-left: 4px;
+}
+
 .pdp-evenbetter-atcbutton {
   max-width: 135px;
 }
@@ -572,7 +582,7 @@ span.cssbutton.annotation:hover {
 	position:absolute;
 	left:0;
 	top:0;
-	background:#693;
+	background:#4FA157;
 	color:white;
 	font-size:14px;
 	padding:0 40px 0 10px;
@@ -583,7 +593,7 @@ span.cssbutton.annotation:hover {
 
 #evenBetterPopup .pdp-evenbetter-learnmore:hover {
   text-decoration: none;
-  background: #698625;
+  background: #458d4e;
 }
 
 #evenBetterPopup .pdp-evenbetter-learnmore:after {
@@ -625,7 +635,6 @@ span.cssbutton.annotation:hover {
 .pdp .pdp-evenbetter h3 {
 	margin:0;
 	font-size:14px;
-	color:#360;
 	display:inline;
 	padding-right:0.5em;
 }
