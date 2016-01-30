@@ -41,7 +41,7 @@ function money_format( input ){
 	
 	var inputFloat = parseFloat(input);
 		
-	inputFloat = inputFloat.toFixed(2);
+	//inputFloat = inputFloat.toFixed(2);
 	
 	return inputFloat;
 }
