@@ -76,20 +76,24 @@ function tip_entered(){
 		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
 		
 		//this is yet another hack, to replace the tooltip for the input field with something of different properties
-		$jq(etids.inp_tipTextBox).mouseover(function(){
+		/*$jq(etids.inp_tipTextBox).mouseover(function(){
 			$jq(etids.div_tooltipPopup).addClass("toomuch-etip"); //hide the regular tooltip, because it does not meet the business needs here
-		})
-		$jq(etids.inp_tipTextBox).mouseout(function(){
-			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
-		})
+		})*/
 		
-		$jq(etids.inp_tipTextBox).on('mouseover mouseout', function(e){
+		//hover over the optional tooltip icon and also delivery fee tooltip icon
+		$jq(etids.inp_tipTextBox).on('mouseover mouseenter', function(e){
 			if( $jq(etids.div_toolTipTextBox).html().length > 2 ){
 				$jq(etids.div_tooltipPopup).addClass("toomuch-etip");
 				
 				$jq(etids.div_toolTipTextBox).css("display", "block");
+				
+				console.log('test enter mouse');
 			}
 		});
+		
+		$jq(etids.inp_tipTextBox).mouseout(function(){
+			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
+		})
 		
 		//if that green tick is seen, then make it not seen
 		$jq( etids.ck_tipAppliedTick ).css("display", "none");
@@ -436,11 +440,17 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				}
 				
 				//tooltip hover fix hack
-				$jq("#deliveryFeeToolTip, #optionalToolTip").mouseover(function(){
+				$jq("#deliveryFeeToolTip").mouseover(function(){
 					$jq("#tooltipPopup").addClass("msg-etip");
 				})
-				$jq("#deliveryFeeToolTip, #optionalToolTip").mouseout(function(){
-					$jq("#tooltipPopup").removeClass("msg-etip");
+				$jq("#optionalToolTip").mouseover(function(){
+					$jq("#tooltipPopup").addClass("msg-etip");
+				})
+				$jq("#deliveryFeeToolTip").mouseout(function(){
+					//$jq("#tooltipPopup").removeClass("msg-etip");
+				})
+				$jq("#optionalToolTip").mouseout(function(){
+					//$jq("#tooltipPopup").removeClass("msg-etip");
 				})
 
 				//kill certain accidental unwanted repetive elements
