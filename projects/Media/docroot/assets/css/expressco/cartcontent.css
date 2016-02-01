@@ -975,6 +975,16 @@ label[for="dontupdatecartlines"] {
   float: right;
 }
 
+#subtotalbox2 .rowcell-text-right{
+	text-align: right;
+    min-width: 70px;
+}
+#subtotalbox2 .st_val .rowcontent-free-with-pass{
+	margin-left: 0px;
+	width: initial;
+	text-align: right;
+}
+
 .eTippingEnabled #subtotalbox2 .row-size-big{
 	text-align:center;
 }
@@ -1137,4 +1147,8 @@ label[for="dontupdatecartlines"] {
     width:440px;
     padding:13px 18px 13px 18px;
     text-align:left;
+}
+
+#subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
+	padding-left:13px;
 }
