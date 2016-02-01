@@ -30,6 +30,8 @@ function populateCustomTipField(maxPossibleTip){
 }
 
 function money_format( input ){
+	
+	//lets get rid of multiple dot characters, so we don't have something like '10.2121.121.56.1'
 	var index = input.indexOf( '.' );
 	
 	if ( index > -1 ) {
@@ -37,13 +39,20 @@ function money_format( input ){
 	            input.slice( index ).replace( /\./g, '' );
 	}
 	
-	input = input.replace(/[^0-9\.]/g,'');
+	//second pass, replace all characters which are not numbers or periods / dots
+	input = input.trim().replace(/[^0-9\.]/g,'');
 	
-	var inputFloat = parseFloat(input);
+	//third pass
+	input = input.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+	
+	//does this input have a dot / period with MORE than 2 digits afterward?  if so, apply the parseFloat and toFixed functions to it, otherwise, do not
+	if( /\.([0-9]{3,})$/.test(input) ){
+		var inputFloat = parseFloat(input).toFixed(2);
 		
-	//inputFloat = inputFloat.toFixed(2);
-	
-	return inputFloat;
+		input = inputFloat.toString();
+	}
+
+	return input;
 }
 
 //this code inside needs to potentially be called from standard js functions as well as the soy template js code
@@ -51,7 +60,11 @@ function tip_entered(){
 	//var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
 	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
+	console.log( "LINE 60, tip = " + tip );
+	
 	var tipFloat = parseFloat(tip);
+	
+	console.log( "LINE 64, tipFloat = " + tipFloat );
 
 	$jq(etids.inp_tipTextBox).val( tip );
 	
@@ -150,6 +163,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				if( data.etipTotal && data.etipTotal.length > 0 ){
 					//var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
 					var floatDoubleTip = money_format( data.etipTotal.trim() );
+					
+					console.log( "LINE 164, floatDoubleTip = " + floatDoubleTip );
 					
 					if( floatDoubleTip > 0 ){
 						data.eTippingEnabled = true;

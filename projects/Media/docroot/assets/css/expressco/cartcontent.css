@@ -978,7 +978,17 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox1{
-  margin-left:670px;
+	margin-left:670px;
+}
+.eTippingEnabled #subtotalbox1:before{
+	content: " ";
+	border-top: 1px solid #DDD;
+	width: 970px;
+	height: 2px;
+	display: block;
+	margin-left: -670px;
+	margin-top: 35px;
+	margin-bottom:20px;
 }
 .eTippingEnabled #subtotalbox1 .subtotal__row{
 	white-space:nowrap;
