@@ -49,8 +49,11 @@ public class FDTaxUtil {
 		try{
 			if(request != null){
 				final String content = mapper.writeValueAsString(request);
+				LOGGER.info("Avalara Request is "+content);
+				System.out.println("Avalara Request is "+content);
 				postMethod.setRequestBody(content);
 			}
+			
 			client.executeMethod(postMethod);
 			response = mapper.readValue(postMethod.getResponseBodyAsStream(), responseClass);
 		} catch (JsonProcessingException e1) {
