@@ -56,12 +56,12 @@ var FreshDirect = FreshDirect || {};
         if (fd.properties.isSocialLoginEnabled) {
           e.preventDefault();
           if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-            socialSignup(e.currentTarget.href);
+            socialSignup(e.currentTarget.pathname);
           } else {
-            socialLogin(e.currentTarget.href);
+            socialLogin(e.currentTarget.pathname);
           }
         } else {
-          showLoginDialog(e.currentTarget.href, e);
+          showLoginDialog(e.currentTarget.pathname, e);
         }
       }
     });
