@@ -920,35 +920,44 @@ label[for="dontupdatecartlines"] {
 }
 
 
-/*can you guess what job the below definitions are for? */
-/*.tooltip{*/
-#tooltipPopup.msg-etip{
-	margin-left: -212px;
-	margin-top: 25px;
+.tooltip_holder{
+	display:inline-block;
 }
-#tooltipPopup.msg-etip:after{
-	content:" i ";
+.ttBox1stClass{
+	display:none;
+	position:absolute;
+	background-color:white;
+	border:3px solid #CCC;
+	border-radius:12px;
 
-	font-family: arial;
-    font-weight: bold;
-    font-size: 12px;
-    color: #ffffff;
-    text-decoration: none;
-    text-align: center;
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    padding: 0;
-    background-color: #9d9d9d;
-    border-radius: 16px;
-    float: right;
-    margin-bottom: 5px;
-
-	/*border-radius:3px;*/
+    margin-top: -350px;
+    margin-left: -430px;
+    width: 450px;
+    height: 350px;
+}
+.tooltip_holder.dfTTmaster .ttBox1stClass{
+    margin-top: -250px;
+    margin-left: -330px;
+    width: 350px;
+    height: 250px;
+}
+.tooltip_holder:hover .tooltip-small{
+	z-index:1001;
+}
+.tooltip_holder:hover .ttBox1stClass{
 	display:block;
-	position:relative;
-	
-	cursor:pointer;
+	z-index:1000;
+}
+.ttBox1stClass .tooltip-inner{
+	white-space: normal;
+	text-align: left;
+	padding: 20px 30px;
+}
+.st_val_deliveryfee{
+	white-space:normal;
+}
+.st_val .tooltip_holder{
+	display:none;
 }
 #tooltipPopup.toomuch-etip{
 	/*margin-left: -320px;*/
@@ -1083,8 +1092,12 @@ label[for="dontupdatecartlines"] {
     /*background: transparent url('http://dfoolong.github.io/assets/img/input-arrow-down.png') 97% center no-repeat;*/
 }
 
-.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied, .eTippingEnabled #tipTextBox{
+.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
   width: 129px;
+}
+.eTippingEnabled #tipTextBox{
+	width:129px;
+	box-sizing: border-box;
 }
 .eTippingEnabled #tipDropdown{
 	height:34px;
@@ -1170,7 +1183,8 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled a.tooltip-small{
 	margin-right:5px;
 }
-.eTippingEnabled a.tooltip-small:hover{
+
+.eTippingEnabled a.tooltip-small:hover, .eTippingEnabled a.tooltip-small:focus{
 	background-color:rgb(157, 157, 157);
 }
 

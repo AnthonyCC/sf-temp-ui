@@ -60,11 +60,7 @@ function tip_entered(){
 	//var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
 	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
-	console.log( "LINE 60, tip = " + tip );
-	
 	var tipFloat = parseFloat(tip);
-	
-	console.log( "LINE 64, tipFloat = " + tipFloat );
 
 	$jq(etids.inp_tipTextBox).val( tip );
 	
@@ -100,7 +96,7 @@ function tip_entered(){
 				
 				$jq(etids.div_toolTipTextBox).css("display", "block");
 				
-				console.log('test enter mouse');
+				//console.log('test enter mouse');
 			}
 		});
 		
@@ -164,7 +160,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					//var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
 					var floatDoubleTip = money_format( data.etipTotal.trim() );
 					
-					console.log( "LINE 164, floatDoubleTip = " + floatDoubleTip );
+					//console.log( "LINE 164, floatDoubleTip = " + floatDoubleTip );
 					
 					if( floatDoubleTip > 0 ){
 						data.eTippingEnabled = true;
@@ -453,20 +449,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
 				}
-				
-				//tooltip hover fix hack
-				$jq("#deliveryFeeToolTip").mouseover(function(){
-					$jq("#tooltipPopup").addClass("msg-etip");
-				})
-				$jq("#optionalToolTip").mouseover(function(){
-					$jq("#tooltipPopup").addClass("msg-etip");
-				})
-				$jq("#deliveryFeeToolTip").mouseout(function(){
-					//$jq("#tooltipPopup").removeClass("msg-etip");
-				})
-				$jq("#optionalToolTip").mouseout(function(){
-					//$jq("#tooltipPopup").removeClass("msg-etip");
-				})
 
 				//kill certain accidental unwanted repetive elements
 				template_dupe_cleaner();

@@ -76,38 +76,64 @@
  * delivery fee tooltip
  */
 {template .dfToolTip}
-	<a href="#" id="deliveryFeeToolTip" data-component="tooltip" class="tooltip-small deliveryFeeToolTips">i</a>
-	<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-		<div class="tooltip-inner">
-			<b>Delivery Fee</b> 
-			<br/> 
-			<p>The delivery fee is not a gratuity
+	{call .coreToolTip}
+		{param ttMaster2ndClass: 'dfTTmaster' /}
+		{param iconId: 'deliveryFeeToolTip' /}
+		{param ttIcon2ndClass: 'deliveryFeeToolTips' /}
+		{param ttBox2ndClass: 'optionalTipToolTip' /}
+		{param ttTitle: 'Delivery Fee' /}
+		{param ttBody}
+			The delivery fee is not a gratuity
 			for any FreshDirect employee who
 			delivers or is otherwise involved
 			with the delivery of your order
 			and will not be given to any such
-			employee as a gratuity.</p>
-		</div>
-	</div>
+			employee as a gratuity.
+		{/param}
+	{/call}
 {/template}
 
 /**
  * delivery fee tooltip
  */
 {template .optToolTip}
-	<a href="#" id="optionalToolTip" data-component="tooltip" class="tooltip-small">i</a>
-	<div class="optionalTipToolTip" data-component="tooltipContent" style="display:none">
-		<div class="tooltip-inner">
-			<b>Optional Tip</b>
-			<br/> 
-			<p>Good news! Now you can e-tip as you're checking out. 
+	{call .coreToolTip}
+		{param ttMaster2ndClass: 'optionalTTmaster' /}
+		{param iconId: 'optionalToolTip' /}
+		{param ttBox2ndClass: 'optionalTipToolTip' /}
+		{param ttTitle: 'Optional Tip' /}
+		{param ttBody}
+			Good news! Now you can e-tip as you're checking out. 
 			As a heads up, adding and updating e-tips is only 
 			available on our website for now, but we're working 
 			on adding it to our apps (stay tuned!). 
 			You are under no obligation to tip but have the 
 			option of providing a tip if you feel that you've 
 			received exceptional service. FreshDirect personnel are 
-			not permitted to solicit tips under any circumstances.</p>
+			not permitted to solicit tips under any circumstances.
+		{/param}
+	{/call}
+{/template}
+
+/**
+ * tooltip core
+ * @param? ttMaster2ndClass ttMaster2ndClass
+ * @param iconId iconId
+ * @param? ttIcon2ndClass ttIcon2ndClass
+ * @param ttTitle ttTitle
+ * @param? ttBody ttBody
+ * @param ttBox2ndClass ttBox2ndClass
+ */
+{template .coreToolTip}
+	<div class="tooltip_holder {if $ttMaster2ndClass}{$ttMaster2ndClass}{/if}">
+		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
+		<a href="#" onclick="return false;" id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>
+		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent">
+			<div class="tooltip-inner">
+				<b>{$ttTitle}</b>
+				<br/>
+				<p>{$ttBody}</p>
+			</div>
 		</div>
 	</div>
 {/template}
