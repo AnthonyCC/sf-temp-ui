@@ -49,6 +49,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -95,7 +96,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 				}
 				eb.addSettlement(model);
 				EnumSaleStatus updatedStatus = eb.getStatus();
-				if(EnumSaleStatus.SETTLED.equals(updatedStatus)){
+				if(EnumSaleStatus.SETTLED.equals(updatedStatus) && FDStoreProperties.getAvalaraTaxEnabled()){
 					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getCurrentOrder().getAmount());
 					getPostSettlementNotificationHome().create(notificationModel);
 				}
