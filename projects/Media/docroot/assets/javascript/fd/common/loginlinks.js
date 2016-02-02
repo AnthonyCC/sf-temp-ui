@@ -50,18 +50,19 @@ var FreshDirect = FreshDirect || {};
     // login required links
     $(document).on('click', '[fd-login-required]', function (e) {
       var isMouseEvent = e.x || e.clientX || e.y || e.clientY,
-          ct = e.currentTarget;
+          ct = e.currentTarget,
+          target = ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href;
 
       if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
         if (fd.properties.isSocialLoginEnabled) {
           e.preventDefault();
           if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-            socialSignup(e.currentTarget.pathname);
+            socialSignup(target);
           } else {
-            socialLogin(e.currentTarget.pathname);
+            socialLogin(target);
           }
         } else {
-          showLoginDialog(e.currentTarget.pathname, e);
+          showLoginDialog(target);
         }
       }
     });

@@ -467,7 +467,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
 			<div id="locabar_user_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
         <% if (!signedIn) { %>
-          <a href="/login/login.jsp" fd-login-required fd-login-nosignup>
+          <a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
         <% } %>
 				<div class="bold cursor-pointer">
 					<div>Hi!</div>
