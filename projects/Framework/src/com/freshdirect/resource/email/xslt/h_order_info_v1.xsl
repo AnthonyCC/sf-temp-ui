@@ -307,6 +307,16 @@
 		</tr>
 	</xsl:if>
 	
+	<xsl:if test="number(order/tip) &gt; 0">
+		<tr valign="top" class="orderSummary">
+			<td colspan="1" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Tip :</td>
+			<td colspan="1" align="right" style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">			-
+				<xsl:value-of select="format-number(order/tip, '$###,##0.00', 'USD')" />
+			</td>
+			<td colspan="1" style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"></td>
+		</tr>
+	</xsl:if>
+	
 	<xsl:if test="number(order/miscellaneousCharge) &gt; 0">
 		<tr valign="top" class="orderSummary">
 		<td colspan="4">&nbsp;</td>
