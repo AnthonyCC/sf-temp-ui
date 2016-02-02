@@ -73,13 +73,6 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 <%-- =================================================================================================== --%>
 
 <% //check unattended %>
-<%@ include file="/includes/i_check_unattended_delivery.jspf" %>
-
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
-<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-
-
 <% 
 if (user.getLevel()==FDUserI.RECOGNIZED) {
     response.sendRedirect(response.encodeRedirectURL("/login/login.jsp?successPage=/checkout/step_1_choose.jsp"));
@@ -95,6 +88,13 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name="seoMetaTag" direct="true">
 	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name="extraCSSjs" direct="true">
+<%@ include file="/includes/i_check_unattended_delivery.jspf" %>
+
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>

@@ -29,6 +29,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
 		<jwr:style src="/atp.css"/>
+		<tmpl:get name="extraCSSjs"/>
 </head>
 	
 	<!--[if lt IE 9]><body class="ie8"><![endif]-->
