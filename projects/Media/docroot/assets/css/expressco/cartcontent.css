@@ -1026,6 +1026,7 @@ label[for="dontupdatecartlines"] {
 	margin-left: 0px;
 	width: initial;
 	text-align: right;
+	display:inline;
 }
 
 .eTippingEnabled #subtotalbox2 .row-size-big{
@@ -1083,6 +1084,7 @@ label[for="dontupdatecartlines"] {
 	border: 2px solid rgb(194, 194, 194);
 	width: 125px;
 	height: 30px;
+	padding-left:10px;
 	color: #333333;
     font-size: 15px;
     font-weight: 400;
@@ -1092,11 +1094,8 @@ label[for="dontupdatecartlines"] {
     /*background: transparent url('http://dfoolong.github.io/assets/img/input-arrow-down.png') 97% center no-repeat;*/
 }
 
-.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
-  width: 129px;
-}
-.eTippingEnabled #tipTextBox{
-	width:129px;
+.eTippingEnabled #tipDropdown, .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied, .eTippingEnabled #tipTextBox{
+	width: 129px;
 	box-sizing: border-box;
 }
 .eTippingEnabled #tipDropdown{
@@ -1205,8 +1204,14 @@ label[for="dontupdatecartlines"] {
     display: none;
 }
 .st_val_statebottledeposit{
-	display:none;
+	/*display:none;*/
+
 }
 .st_val_statebottledeposit:first-of-type{
-	display:inline-block;
+/*#st_val_statebottledeposit{*/
+	display:inline-block!important;
+
+}
+.st_val_statebottledeposit:first-child {
+
 }

@@ -16,7 +16,7 @@ function dupe_buster(css_classname, id_prefix){
 
 function template_dupe_cleaner(){
 	//kill certain accidental unwanted repetitive elements
-	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
+	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_val_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
 	
 	for(var i=0; i<common_dupe_classnames.length; i++){
 		dupe_buster("."+common_dupe_classnames[i], common_dupe_classnames[i]);
