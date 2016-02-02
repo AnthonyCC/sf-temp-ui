@@ -1204,3 +1204,9 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled select::-ms-expand {
     display: none;
 }
+.st_val_statebottledeposit{
+	display:none;
+}
+.st_val_statebottledeposit:first-of-type{
+	display:inline-block;
+}
