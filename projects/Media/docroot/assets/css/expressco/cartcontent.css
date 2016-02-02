@@ -989,13 +989,14 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled #subtotalbox1{
 	margin-left:670px;
 }
-.eTippingEnabled #subtotalbox1:before{
+/*.eTippingEnabled #subtotalbox1:before{*/
+.eTippingEnabled.cartsection-wine > .cartsection__totalwrapper > p.cartsection__tax:after{
 	content: " ";
 	border-top: 1px solid #DDD;
 	width: 970px;
 	height: 2px;
 	display: block;
-	margin-left: -670px;
+	/*margin-left: -670px;*/
 	margin-top: 35px;
 	margin-bottom:20px;
 }
