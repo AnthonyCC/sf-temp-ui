@@ -154,6 +154,18 @@ function processReturn(formName){
         <td colspan="3">&nbsp;</td>
 	</tr>	
 	<tr><td colspan="15" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>	
+	
+	<% if (!isFdxOrder) { %>
+     <tr align="right">
+	    <td colspan="3">&nbsp;</td>
+	    <td colspan="3">E-Tip:</td>
+	    <td colspan="2"><%=JspMethods.formatPrice(order.getTip()) %><% if (hasInvoice) { %> / <b><%=JspMethods.formatPrice( order.getTip() ) %></b><% } %></td>
+	   <td colspan="3">&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
+	</tr>
+    <% } %>
+    
+ 
 
     <%if (order.getTotalDiscountValue() > 0.0){%>
 		<tr>
