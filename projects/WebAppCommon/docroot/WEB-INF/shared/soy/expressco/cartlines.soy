@@ -402,22 +402,31 @@
 								</div>
 								
 								{if $customTip}  			  
-									<select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
-									{foreach $option in $tipAmounts}
-										<option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
-									{/foreach}  
-									</select>
-									/*<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />*/
-									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" value="{$etipTotal}" />
-									<div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
+                  <label for="tipDropdown">
+                    <span class="offscreen">Optional Tip:</span>
+                    <select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
+                    {foreach $option in $tipAmounts}
+                      <option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
+                    {/foreach}  
+                    </select>
+                  </label>
+                  <label for="tipTextBox">
+                    <span class="offscreen">Other Tip Amount:</span>
+                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" value="{$etipTotal}" />
+                  </label>
 								{else}
-									<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $etipTotal != '$0.00'}style="display:none"{/if}>
-										{foreach $option in $tipAmounts}
-											<option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
-										{/foreach}  
-									</select>
-									<input type="text" id="tipTextBox" placeholder="$0.00" data-component="tooltip" name="otherTipAmount" {if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} {if $etipTotal == '$0.00'}style="display:none"{/if} />
-									<div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
+                  <label for="tipDropdown">
+                    <span class="offscreen">Optional Tip:</span>
+                    <select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $etipTotal != '$0.00'}style="display:none"{/if}>
+                      {foreach $option in $tipAmounts}
+                        <option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
+                      {/foreach}  
+                    </select>
+                  </label>
+                  <label for="tipTextBox">
+                    <span class="offscreen">Other Tip Amount:</span>
+                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" {if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} {if $etipTotal == '$0.00'}style="display:none"{/if} />
+                  </label>
 								{/if} /*end if/else $customTip */
 								
 								{if $tipAppliedTick}

@@ -76,7 +76,6 @@ function tip_entered(){
 	
 	//if(tip > maximumTipAllowed){
 	if(tipFloat > roundedMaxTip){ //APPBUG-4270
-		console.log("Tip greater than maximum tip");
 		$jq(etids.btn_tipApply).prop('disabled', true);
 
 		//this goes in the hover box
@@ -96,7 +95,6 @@ function tip_entered(){
 				
 				$jq(etids.div_toolTipTextBox).css("display", "block");
 				
-				//console.log('test enter mouse');
 			}
 		});
 		
@@ -160,7 +158,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					//var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
 					var floatDoubleTip = money_format( data.etipTotal.trim() );
 					
-					//console.log( "LINE 164, floatDoubleTip = " + floatDoubleTip );
 					
 					if( floatDoubleTip > 0 ){
 						data.eTippingEnabled = true;
@@ -373,18 +370,15 @@ etids.div_tooltipPopup = "#tooltipPopup";
 			value: function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				console.log("onTipSelectionChange >>>>>");
 				$jq(etids.btn_tipApplied).hide();
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.ck_tipAppliedTick).hide();
-				if($jq(etids.sel_tipDropdown).val() == "Other Amount"){
-					console.log("Selected Other Amount");
+				if($jq(etids.sel_tipDropdown).val() === "Other Amount"){
 					$jq(etids.sel_tipDropdown).hide();
 					$jq(etids.inp_tipTextBox).show();
-					
+					$jq(etids.inp_tipTextBox).focus();
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
 					//$jq( etids.btn_tipApply ).prop("disabled", "disabled");
-					//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 				}
 			}
 		},
@@ -392,7 +386,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 			value: function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				console.log("onTipEntered");
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.btn_tipApplied).hide();
 
@@ -468,8 +461,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				if(fd.expressco.deliverypasspopup){
 					fd.expressco.deliverypasspopup.close();
 				}
-				
-				console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 			}
 		}
 	});
@@ -490,8 +481,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 	cartcontent.listen();
 	cartcontent.watchChanges();
 	cartcontent.update();
-	
-	window.cc_obj = cartcontent;
 
 	atcHandler.listen();
 	subtotalbox.listen();
@@ -516,14 +505,12 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 	$(document).on('click', '[data-component="update-cart"]', function () {
 		$(cartcontent.placeholder).trigger('cartcontent-update');
-
-		//console.log( '$(".cartsection__totalwrapper").length = ' + $(".cartsection__totalwrapper").length );
 	});
-  
-	$(document).on('change', cartcontent.placeholder + ' [data-component="changeETip"]', 
+
+	$(document).on('change', cartcontent.placeholder + ' [data-component="changeETip"]',
 		cartcontent.onChangeETip.bind(cartcontent));
-  
-	$(document).on('input', cartcontent.placeholder + ' [data-component="tooltip"]', 
+
+	$(document).on('input', cartcontent.placeholder + ' [data-component="tooltip"]',
 		cartcontent.onTipEntered.bind(cartcontent));
 
 	fd.modules.common.utils.register('expressco', 'cartcontent', cartcontent, fd);
