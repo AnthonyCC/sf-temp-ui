@@ -154,9 +154,10 @@ var FreshDirect = FreshDirect || {};
 
   forms.showError = function (form, name, error, el, errorid, clearField) {
     var $el = el ? $(el) : $('['+this.attrPrefix+'="'+form.id+'"] [name="'+name+'"]').first(),
+        $errorHolder = $('['+this.attrPrefix+'="'+form.id+'"] ['+this.attrPrefix+'-error-for="'+name+'"]').first(),
         pfx = this.attrPrefix,
         customHandler = form.errorHandlers && form.errorHandlers[name],
-        $parent = $el.parent();
+        $parent = $errorHolder.size() ? $errorHolder : $el.parent();
 
     // if custom error handler found
     if (customHandler) {
