@@ -232,7 +232,7 @@ public class DeliveryAddressValidator {
 			return false;
 		}
 		// Rule: restrict corporate addresses from registering for home delivery
-		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( address.getServiceType() ) ) {
+		if ( EnumAddressType.FIRM.equals( scrubbedAddress.getAddressType() ) && !EnumServiceType.CORPORATE.equals( scrubbedAddress.getServiceType() ) ) {
 			actionResult.addError( new ActionError( EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS ) );
 			return false;
 		}
@@ -242,9 +242,9 @@ public class DeliveryAddressValidator {
 			serviceResult = doCheckAddress(scrubbedAddress);
 			if ( !isAddressDeliverable() ) {
 				// post validations
-				if ( !EnumServiceType.HOME.equals( address.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+				if ( !EnumServiceType.HOME.equals( scrubbedAddress.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
 
-					if ( EnumServiceType.CORPORATE.equals( address.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+					if ( EnumServiceType.CORPORATE.equals( scrubbedAddress.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
 						actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
 					} else {
 						actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1SS.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS );

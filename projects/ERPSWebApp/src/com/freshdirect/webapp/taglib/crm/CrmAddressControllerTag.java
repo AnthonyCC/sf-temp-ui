@@ -66,6 +66,12 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		this.validateAddress(actionResult);
 		this.validateAltDeliveryFields(actionResult);
 		if(actionResult.isSuccess()){
+			// All validation passed, override the SmartyStreets returned service type
+			EnumServiceType serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode()), ""));
+			if(!serviceType.equals(this.address.getServiceType())){
+				this.address.setServiceType(serviceType);
+			}
+			
 			if(CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)){
 				AddressUtil.updateShipToAddress(request, actionResult, CrmSession.getUser(pageContext.getSession()), this.address.getPK().getId(), this.address);
 			}

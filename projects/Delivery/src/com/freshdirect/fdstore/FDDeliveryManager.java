@@ -1,9 +1,6 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -36,7 +33,6 @@ import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.DuplicateKeyException;
@@ -94,6 +90,7 @@ import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
@@ -297,6 +294,26 @@ public class FDDeliveryManager {
 		return this.announcementList;
 	}
 
+	public EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
+		try {
+			FDDeliveryServiceSelectionResult serviceResult = this.getDeliveryServicesByAddress(addressModel);
+			
+			EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(addressModel.getServiceType());
+			
+			if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)||EnumDeliveryStatus.COS_ENABLED.equals(dlvStatus)) {
+				return addressModel.getServiceType();
+			} else { 
+				return EnumServiceType.PICKUP;
+			}
+		}catch (FDInvalidAddressException  fdia) {
+	            LOGGER.info("Invalid address", fdia);
+	    }catch (FDResourceException  fde) {
+	            LOGGER.info("Unexpected exception happened while getting delivery service type", fde);
+	            throw fde;
+	    }
+	    return null;
+    }
+	
 	public FDDeliveryAddressVerificationResponse scrubAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
 		return this.scrubAddress(address, true);
 	}
@@ -317,6 +334,7 @@ public class FDDeliveryManager {
 			throw new FDResourceException(ce);
 		} 
 	}
+	
 	
 	public void addApartment(AddressModel addressModel) throws FDResourceException, FDInvalidAddressException {
 

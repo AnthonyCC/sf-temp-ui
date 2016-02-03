@@ -117,6 +117,7 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
@@ -881,7 +882,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			if (address != null) {
 				try{
-					FDDeliveryManager.getInstance().scrubAddress(address);
+					AddressModel addressModel = null; 
+					if(isAddressScrubbed(address)){
+						addressModel = mapToAddressModel(address);
+						// Get the GEO code
+						getAddressGeoCode(addressModel);
+						// Verify the Delivery Service type
+						address.setServiceType(FDDeliveryManager.getInstance().getDeliveryServiceType(addressModel));
+					}else{
+						FDDeliveryManager.getInstance().scrubAddress(address);
+					}
 				}catch (FDInvalidAddressException e) {
 					//TODO Ignore the Invalid Address Exception for scrub logic
 					LOGGER.info("Exception while geocoding the address");
@@ -900,6 +910,75 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}*/
 	}
 
+	/**
+	 * Returns the GEO code the given address
+	 * @param address
+	 * @throws FDResourceException
+	 */
+	private static void getAddressGeoCode(AddressModel address) throws FDResourceException{
+		try {
+			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( address );
+			String geocodeResult = geocodeResponse.getResult();
+
+			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
+				//
+				// since geocoding is not happening silently ignore it
+				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS :" + address );
+			} else {
+				LOGGER.debug( "setRegularDeliveryAddress : geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
+				address = geocodeResponse.getAddress();
+			}
+
+		} catch ( FDInvalidAddressException iae ) {
+			LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + address + "EXCEPTION :" + iae );
+		}
+    }
+	
+    /**
+     * @param shippingAddress
+     * @return
+     */
+    private AddressModel mapToAddressModel(ErpAddressModel shippingAddress){
+		AddressModel addressModel =null;
+		if(shippingAddress != null){
+			addressModel = new AddressModel();
+			addressModel.setId(shippingAddress.getId());
+			addressModel.setAddress1(shippingAddress.getAddress1());
+			addressModel.setAddress2(shippingAddress.getAddress2());
+			if(shippingAddress.getAddressInfo() == null){
+				AddressInfo info = new AddressInfo();
+				info.setScrubbedStreet(shippingAddress.getScrubbedStreet());
+				addressModel.setAddressInfo(info);
+			}else{
+				addressModel.setAddressInfo(shippingAddress.getAddressInfo());
+			}
+			addressModel.setApartment(shippingAddress.getAltApartment());
+			addressModel.setCity(shippingAddress.getCity());
+			addressModel.setState(shippingAddress.getState());
+			addressModel.setZipCode(shippingAddress.getZipCode());
+			addressModel.setCountry(shippingAddress.getCountry());
+			addressModel.setServiceType(shippingAddress.getServiceType());
+		}
+		return addressModel;
+	}
+    
+	/**
+	 * @param address
+	 * @return
+	 */
+	private boolean isAddressScrubbed(ErpAddressModel address){
+		if(address != null){
+			if(address.getId() != null && !StringUtils.isEmpty(address.getId())){
+				AddressInfo addressInfo = address.getAddressInfo();
+				if( addressInfo !=null && addressInfo.getScrubbedStreet() != null && !StringUtils.isEmpty(addressInfo.getScrubbedStreet())){
+					return true;
+				}else if(address.getScrubbedStreet() !=null && !StringUtils.isEmpty(address.getScrubbedStreet()) ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
 
 	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {

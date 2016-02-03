@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -48,10 +49,12 @@ import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -616,7 +619,19 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			throw new FDResourceException( "Specified address doesn't exist" );
 		}
 
-		AddressModel address = AddressUtil.scrubAddress( shippingAddress, result );
+		// Suppress the Address Validation if the address is already scrubbed.
+		AddressModel address = new AddressModel();
+		if(isAddressScrubbed(shippingAddress)){
+			address = mapToAddressModel(shippingAddress);
+			// Get the GEO code of Scrubbed Address
+			getAddressGeoCode(address);
+			// Verify the Delivery Service type of Scrubbed Address
+			address.setServiceType(AddressUtil.getDeliveryServiceType(address));
+		}else{
+			address = AddressUtil.scrubAddress( shippingAddress, result );
+			getAddressGeoCode(address);
+		}
+		
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
 		/*
 		 * boolean isEBTAccepted = null !=serviceResult ? (serviceResult.isEbtAccepted() && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)):false;
@@ -631,29 +646,14 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		 * "&missingContactPhone=true" ); throw new RedirectToPage( noContactPhonePage + "?addressId=" + addressPK + "&missingContactPhone=true"); }
 		*/
         checkAddressRestriction(locationHandlerMode, result, address);
+        
+     
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
 			return;
 		}
 
-		// since address looks alright need geocode
-		try {
-			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( address );
-			String geocodeResult = geocodeResponse.getResult();
-
-			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
-				//
-				// since geocoding is not happening silently ignore it
-				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS :" + address );
-			} else {
-				LOGGER.debug( "setRegularDeliveryAddress : geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
-				address = geocodeResponse.getAddress();
-			}
-
-		} catch ( FDInvalidAddressException iae ) {
-			LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + address + "EXCEPTION :" + iae );
-		}
-
+		
 		int validCount = user.getOrderHistory().getValidOrderCount();
 		if ( validCount < 1 ) {
 
@@ -740,6 +740,52 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 	}
 
+	/**
+	 * @param address
+	 * @return
+	 */
+	private static boolean isAddressScrubbed(ErpAddressModel address){
+		if(address != null){
+			if(address.getId() != null && !StringUtils.isEmpty(address.getId())){
+				AddressInfo addressInfo = address.getAddressInfo();
+				if( addressInfo !=null && addressInfo.getScrubbedStreet() != null && !StringUtils.isEmpty(addressInfo.getScrubbedStreet())){
+					return true;
+				}else if(address.getScrubbedStreet() !=null && !StringUtils.isEmpty(address.getScrubbedStreet()) ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * @param addressModel
+	 * @return
+	 */
+	private static AddressModel mapToAddressModel(ErpAddressModel shippingAddress){
+		AddressModel address =null;
+		if(shippingAddress != null){
+			address = new AddressModel();
+			address.setId(shippingAddress.getId());
+			address.setAddress1(shippingAddress.getAddress1());
+			address.setAddress2(shippingAddress.getAddress2());
+			if(shippingAddress.getAddressInfo() != null){
+				address.setAddressInfo(shippingAddress.getAddressInfo());
+			}else{
+				AddressInfo addressInfo = new AddressInfo();
+				if(shippingAddress.getScrubbedStreet() != null){
+					addressInfo.setScrubbedStreet(shippingAddress.getScrubbedStreet());
+				}
+				address.setAddressInfo(addressInfo);
+			}
+			address.setApartment(shippingAddress.getAltApartment());
+			address.setCity(shippingAddress.getCity());
+			address.setState(shippingAddress.getState());
+			address.setZipCode(shippingAddress.getZipCode());
+			address.setCountry(shippingAddress.getCountry());
+			address.setServiceType(shippingAddress.getServiceType());
+		}
+		return address;
+	}
     public static void checkAddressRestriction(boolean locationHandlerMode, ActionResult result, AddressModel address) throws FDResourceException {
         EnumRestrictedAddressReason reason = FDDeliveryManager.getInstance().checkAddressForRestrictions( address );
 		if ( !EnumRestrictedAddressReason.NONE.equals( reason ) ) {
@@ -747,6 +793,28 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
     }
 
+    /**
+     * @param address
+     * @throws FDResourceException
+     */
+    private static void getAddressGeoCode(AddressModel address) throws FDResourceException{
+		try {
+			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( address );
+			String geocodeResult = geocodeResponse.getResult();
+
+			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
+				// since geocoding is not happening silently ignore it
+				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS :" + address );
+			} else {
+				LOGGER.debug( "setRegularDeliveryAddress : geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
+				address = geocodeResponse.getAddress();
+			}
+
+		} catch ( FDInvalidAddressException iae ) {
+			LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + address + "EXCEPTION :" + iae );
+		}
+    }
+    
 	private static void setDepotDeliveryLocation(HttpSession session, FDUserI user, String locationId, String contactNumber, String corpDlvInstructions, String actionName) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 
