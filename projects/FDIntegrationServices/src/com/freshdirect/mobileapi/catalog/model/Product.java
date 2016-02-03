@@ -31,7 +31,6 @@ public class Product {
 	private final String primaryBrand;
 	private final String primaryHome;
 	private final SkuInfo skuInfo;
-	private final CouponInfo couponInfo;
 	private final WineAttributes wineAttributes;
 	private final List<String> keywords;
 	private final int productLayout;
@@ -49,7 +48,6 @@ public class Product {
 		primaryHome=builder.primaryHome;
 		quantityText=builder.quantityText;
 		skuInfo=builder.skuInfo;
-		couponInfo=builder.couponInfo;
 		wineAttributes = builder.wineAttributes;
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
@@ -102,11 +100,6 @@ public class Product {
 	public SkuInfo getSkuInfo() {
 		return skuInfo;
 	}
-	
-	public CouponInfo getCouponInfo() {
-		return couponInfo;
-	}
-	
 	
 	public WineAttributes getWineAttributes() {
 		return wineAttributes;
@@ -223,7 +216,6 @@ public class Product {
 		private String primaryBrand;
 		private String primaryHome;
 		private SkuInfo skuInfo;
-		private CouponInfo couponInfo;
 		private WineAttributes wineAttributes;
 		private int productLayout;
 		
@@ -393,11 +385,6 @@ public class Product {
         	return this;
         }
         
-    	public ProductBuilder couponInfo(CouponInfo couponInfo) {
-			this.couponInfo=couponInfo;
-        	return this;			
-		}
-        
         public ProductBuilder addKeyWords(String keywords){
 //        	this.keywords = keywords;
         	if(keywords == null || keywords.isEmpty())
@@ -490,7 +477,6 @@ public class Product {
         public Product build() {
             return new Product(this);
         }
-	
         
         
         /*Images: categoryImage,confirmImage,alternateImage,alternateProductImage,descriptiveImage,detailImage,extraImage,featureImage,itemImage,jumboImage,thumbnailImage */
