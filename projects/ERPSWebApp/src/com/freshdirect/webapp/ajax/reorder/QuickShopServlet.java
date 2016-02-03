@@ -38,7 +38,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 		if ( requestData == null ) {
 			requestData = new QuickShopListRequestObject();
 		}
-		requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, QuickShopServlet.DEFAULT_PAGE_SIZE));
+		requestData.setPageSize(CmsFilteringNavigator.increasePageSizeToFillLayoutFully(request, user, requestData.getPageSize()));
 		requestData.setUserId(user.getUserId());
 		
 		// main processing
