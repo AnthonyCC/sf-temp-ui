@@ -148,17 +148,20 @@
 
 
   /* Tooltip: Default, Hover */
+  span.tooltip,
   a.tooltip{
     color: #888888;
     border-bottom: 1px dashed #888888;
     text-decoration: none;
     position: relative;
   }
+  span.tooltip:hover,
   a.tooltip:hover{
     color: #333333;
     border-bottom: 1px dashed #222222;
     text-decoration: none;
   }
+  span.tooltip:focus,
   a.tooltip:focus{
     color: #333333;
     border-bottom: 1px dashed #222222;
@@ -167,6 +170,7 @@
     outline-color: #ffffff;
     outline-width: thick;     
   }
+  span.tooltip-small,
   a.tooltip-small{
     display: inline-block;
     font-family: arial;
@@ -185,6 +189,7 @@
     top: -10px;
     z-index: 98;
   }
+  span.tooltip-small.info,
   a.tooltip-small.info{
     font-weight: normal;
     font-family: helvetica;
@@ -193,9 +198,11 @@
     background-position: center;
     background-repeat: no-repeat;
   }
+  span.tooltip-small:hover,
   a.tooltip-small:hover{
     background-color: #4fa157;
   }
+  span.tooltip-small:focus,
   a.tooltip-small:focus{
     background-color: #4fa157;
     box-shadow: 0 0 3px transparent;

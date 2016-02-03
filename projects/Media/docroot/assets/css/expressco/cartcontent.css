@@ -941,9 +941,11 @@ label[for="dontupdatecartlines"] {
     width: 350px;
     height: 250px;
 }
+.tooltip_holder:focus .tooltip-small,
 .tooltip_holder:hover .tooltip-small{
 	z-index:1001;
 }
+.tooltip_holder:focus .ttBox1stClass,
 .tooltip_holder:hover .ttBox1stClass{
 	display:block;
 	z-index:1000;

@@ -125,10 +125,10 @@
  * @param ttBox2ndClass ttBox2ndClass
  */
 {template .coreToolTip}
-	<div class="tooltip_holder {if $ttMaster2ndClass}{$ttMaster2ndClass}{/if}">
+	<div class="tooltip_holder {if $ttMaster2ndClass}{$ttMaster2ndClass}{/if}" tabindex="0" aria-describedby="tt_{$iconId}">
 		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
-		<a href="#" onclick="return false;" id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>
-		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent">
+		<span id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</span>
+		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent" id="tt_{$iconId}" aria-hidden="true" role="tooltip">
 			<div class="tooltip-inner">
 				<b>{$ttTitle}</b>
 				<br/>
