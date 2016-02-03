@@ -79,16 +79,16 @@
 	{call .coreToolTip}
 		{param ttMaster2ndClass: 'dfTTmaster' /}
 		{param iconId: 'deliveryFeeToolTip' /}
-		{param ttIcon2ndClass: 'deliveryFeeToolTips' /}
-		{param ttBox2ndClass: 'optionalTipToolTip' /}
+		{param ttIcon2ndClass: 'deliveryFeeToolTipIcon' /}
+		{param ttBox2ndClass: 'deliveryFeeToolTip' /}
 		{param ttTitle: 'Delivery Fee' /}
 		{param ttBody}
-			The delivery fee is not a gratuity
+			<p>The delivery fee is not a gratuity
 			for any FreshDirect employee who
 			delivers or is otherwise involved
 			with the delivery of your order
 			and will not be given to any such
-			employee as a gratuity.
+			employee as a gratuity.</p>
 		{/param}
 	{/call}
 {/template}
@@ -103,14 +103,17 @@
 		{param ttBox2ndClass: 'optionalTipToolTip' /}
 		{param ttTitle: 'Optional Tip' /}
 		{param ttBody}
-			Good news! Now you can e-tip as you're checking out. 
-			As a heads up, adding and updating e-tips is only 
-			available on our website for now, but we're working 
-			on adding it to our apps (stay tuned!). 
-			You are under no obligation to tip but have the 
-			option of providing a tip if you feel that you've 
-			received exceptional service. FreshDirect personnel are 
-			not permitted to solicit tips under any circumstances.
+			<p>Good news! Now you can e-tip as you're checking out.
+			As a heads up, adding and updating e-tips is only available on our website for now,
+			but we're working on adding it to our apps (stay tuned!). </p>
+			
+			<p>
+			You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service.
+			FreshDirect personnel are not permitted to solicit tips under any circumstances.
+			The full amount of the tip, less the processing fee charged by the credit card processor,
+			will be paid to the delivery personnel who participated in the actual delivery of your order as determined under our policies.
+			Another option is to provide a cash tip at the time your order is delivered.
+			</p>
 		{/param}
 	{/call}
 {/template}
@@ -124,20 +127,19 @@
  * @param? ttBody ttBody
  * @param ttBox2ndClass ttBox2ndClass
  */
-{template .coreToolTip}
+{template .coreToolTip autoescape="strict" kind="html"}
 	<div class="tooltip_holder {if $ttMaster2ndClass}{$ttMaster2ndClass}{/if}" tabindex="0" aria-describedby="tt_{$iconId}">
-		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
-		<span id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</span>
 		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent" id="tt_{$iconId}" aria-hidden="true" role="tooltip">
 			<div class="tooltip-inner">
 				<b>{$ttTitle}</b>
 				<br/>
-				<p>{$ttBody}</p>
+				<span class="js_unescape">{$ttBody}</span>
 			</div>
 		</div>
+		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
+		<span id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</span>
 	</div>
 {/template}
-
 
 /**
  * @param subTotalBox subtotal
@@ -395,41 +397,31 @@
 						<div class='cartsection__tax' fdform-container="etip">
 							<form fdform="etip" action="#" fdform-endpoint-submit="/api/expresscheckout/etip">  			
 								<input type="hidden" name="hiddenSubTotal" id="hiddenSubTotal" value="{$subTotal}" />
-								
+
 								<div class="subtotal__rowcell-left">
 									{call .optToolTip /}
 									<span class="strl_text">Optional Tip</span>
 								</div>
+			  
+								<label for="tipDropdown">
+									<span class="offscreen">Optional Tip:</span>
+									
+									<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if}>
+									{foreach $option in $tipAmounts}
+										<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ($etipTotal == $option)}selected{/if}>{$option}</option>			  
+									{/foreach}  
+									</select>
+								</label>
 								
-								{if $customTip}  			  
-                  <label for="tipDropdown">
-                    <span class="offscreen">Optional Tip:</span>
-                    <select id="tipDropdown" name="tipAmount" data-component="changeETip" style="display:none">
-                    {foreach $option in $tipAmounts}
-                      <option value="{$option}" {if $option == 'Other Amount'}selected{/if}>{$option}</option>			  
-                    {/foreach}  
-                    </select>
-                  </label>
-                  <label for="tipTextBox">
-                    <span class="offscreen">Other Tip Amount:</span>
-                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" value="{$etipTotal}" data-component="tooltip"/>
-                    <div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
-                  </label>
-								{else}
-                  <label for="tipDropdown">
-                    <span class="offscreen">Optional Tip:</span>
-                    <select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $etipTotal != '$0.00'}style="display:none"{/if}>
-                      {foreach $option in $tipAmounts}
-                        <option value="{$option}" {if $etipTotal == $option}selected{/if}>{$option}</option>			  
-                      {/foreach}  
-                    </select>
-                  </label>
-                  <label for="tipTextBox">
-                    <span class="offscreen">Other Tip Amount:</span>
-                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" {if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} {if $etipTotal == '$0.00'}style="display:none"{/if} data-component="tooltip"/>
-                    <div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
-                  </label>
-								{/if} /*end if/else $customTip */
+								<label for="tipTextBox">
+									<span class="offscreen">Other Tip Amount:</span>
+									
+									<input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount"
+									{if not $customTip}style="display:none" aria-hidden="true"{/if}
+									{if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} data-component="tooltip"/>
+									
+									<div style="display:none" aria-hidden="true" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
+								</label>
 								
 								{if $tipAppliedTick}
 									<img id="tipAppliedTick" src="/media/layout/nav/globalnav/fdx/locabar-check.png" alt="Image of Tick" />
@@ -438,10 +430,10 @@
 								<input type="hidden" name="action" value="applyETip" />
 								{if $tipApplied}
 									<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
-									<button id="tipApply" style="display:none" class="cssbutton green">Add Tip</button>
+									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton green">Add Tip</button>
 								{else}
 									<button id="tipApply" class="cssbutton green">Add Tip</button>
-									<button id="tipApplied" style="display:none" class="cssbutton grey" disabled>Tip Added</button>
+									<button id="tipApplied" style="display:none" aria-hidden="true" class="cssbutton grey" disabled>Tip Added</button>
 								{/if}
 							</form>                
 						</div><!--end div.cartsection__tax fdform-container="etip" -->
@@ -753,7 +745,7 @@
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
 	<div class='total-left'>
 		<div class='total__promotion'>
-			<div class='promotion-item' {if $promotionApplied}style="display: none;"{/if} fdform-container="promotion" fdform-container-promotionremove>
+			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
 					<p class='promotion-text'>Have a promotional code?</p>
 					<div>

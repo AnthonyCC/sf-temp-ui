@@ -1,7 +1,7 @@
 /*global expressco, Bacon*/
 var FreshDirect = FreshDirect || {};
 
-//kills unwanted dupes, typically resulting from bad logic in a loop
+/*kills unwanted dupes, typically resulting from bad logic in a loop within a soy file*/
 function dupe_buster(css_classname, id_prefix){
 	if( $jq(css_classname).length > 1 ){
 		$jq(css_classname).each(function(index){
@@ -14,24 +14,52 @@ function dupe_buster(css_classname, id_prefix){
 	}
 }
 
+/*batch remove various known classes of unwanted html element duplicates*/
 function template_dupe_cleaner(){
-	//kill certain accidental unwanted repetitive elements
+	/*an array of css classes to hunt for and kill duplicates of*/
 	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_val_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
 	
+	/*kill certain accidental unwanted repetitive elements*/
 	for(var i=0; i<common_dupe_classnames.length; i++){
 		dupe_buster("."+common_dupe_classnames[i], common_dupe_classnames[i]);
 	}
 }
 
+/* should be called everytime the cartlines soy template is rendered or re-rendered. */
+function template_cleanup(){
+	var thisOldHTML = "";
+	var thisNewHTML = "";
+	
+	/*unescape soy template escaped html content (like from within a template call parameter) (turn it back into usable html)*/
+	if( $jq(".js_unescape").length > 0 ){
+		$jq(".js_unescape").each(function(){
+			thisOldHTML = $jq(this).html();
+			thisNewHTML = thisOldHTML.replace(/\&lt\;/g, "<").replace(/\&gt\;/g, ">");
+			
+			$jq(this).html( thisNewHTML );
+		})
+	}
+	
+	template_dupe_cleaner();
+}
+
+/*the function fired by hitting that green link within the excessive tip tooltip box */
 function populateCustomTipField(maxPossibleTip){
+	/* place the maximum allowable tip value into the field, based upon subtotal */
 	$jq(etids.inp_tipTextBox).val( maxPossibleTip );
 
 	tip_entered();
 }
 
+/* this forces an entry to be a realistic money entry,
+* with all characters except numbers and characters being filtered out and
+* only one possible period and also only 2 possible trailing digits after said period
+*/
 function money_format( input ){
 	
-	//lets get rid of multiple dot characters, so we don't have something like '10.2121.121.56.1'
+	console.log("money input with : " + input);
+	
+	/*lets get rid of multiple dot characters, so we don't have something like '10.2121.121.56.1'*/
 	var index = input.indexOf( '.' );
 	
 	if ( index > -1 ) {
@@ -39,13 +67,16 @@ function money_format( input ){
 	            input.slice( index ).replace( /\./g, '' );
 	}
 	
-	//second pass, replace all characters which are not numbers or periods / dots
+	/*second pass, replace all characters which are not numbers or periods / dots*/
 	input = input.trim().replace(/[^0-9\.]/g,'');
 	
-	//third pass
+	/*third pass*/
 	input = input.replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
 	
-	//does this input have a dot / period with MORE than 2 digits afterward?  if so, apply the parseFloat and toFixed functions to it, otherwise, do not
+	/*
+	 * does this input have a dot / period with MORE than 2 digits afterward?
+	 * if so, apply the parseFloat and toFixed functions to it. Otherwise, do not.
+	*/
 	if( /\.([0-9]{3,})$/.test(input) ){
 		var inputFloat = parseFloat(input).toFixed(2);
 		
@@ -55,46 +86,39 @@ function money_format( input ){
 	return input;
 }
 
-//this code inside needs to potentially be called from standard js functions as well as the soy template js code
+/*this code inside needs to potentially be called from standard js functions as well as the soy template js code*/
 function tip_entered(){
-	//var tip = $jq(etids.inp_tipTextBox).val().replace(/[^0-9\.]/g, '').trim();
+	/*clean the initial tip amount of unwanted characters or needless extra periods or trailing numbers after the 1st period */
 	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
 	var tipFloat = parseFloat(tip);
 
+	/*re-populate the optional custom tip textfield*/
 	$jq(etids.inp_tipTextBox).val( tip );
-	
-	//var subTotalStr = $jq('#hiddenSubTotal').val().replace(/[^0-9\.]/g, '');
+
 	var subTotalStr = money_format( $jq('#hiddenSubTotal').val().trim() );
-	
-	//var subTotal = subTotalStr.substring(1);
+
 	var subTotal = (Math.round(subTotalStr*100)/100).toFixed(2);
-	//var maximumTipAllowed = subTotal * 32 / 100;
+
 	var maximumTipAllowed = subTotal * 0.32;
-	//var roundedMaxTip = Math.round(maximumTipAllowed * 100) / 100;
+
 	var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
 	
-	//if(tip > maximumTipAllowed){
-	if(tipFloat > roundedMaxTip){ //APPBUG-4270
+	/*if(tip > maximumTipAllowed){*/
+	if(tipFloat > roundedMaxTip){ /*APPBUG-4270*/
 		$jq(etids.btn_tipApply).prop('disabled', true);
 
-		//this goes in the hover box
+		/*this goes in the hover box for the excessive amount tip*/
 		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='javascript:populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
 
 		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
 		
-		//this is yet another hack, to replace the tooltip for the input field with something of different properties
-		/*$jq(etids.inp_tipTextBox).mouseover(function(){
-			$jq(etids.div_tooltipPopup).addClass("toomuch-etip"); //hide the regular tooltip, because it does not meet the business needs here
-		})*/
-		
-		//hover over the optional tooltip icon and also delivery fee tooltip icon
+		/*hover over the optional tooltip icon and also delivery fee tooltip icon */
 		$jq(etids.inp_tipTextBox).on('mouseover mouseenter', function(e){
 			if( $jq(etids.div_toolTipTextBox).html().length > 2 ){
 				$jq(etids.div_tooltipPopup).addClass("toomuch-etip");
 				
-				$jq(etids.div_toolTipTextBox).css("display", "block");
-				
+				$jq(etids.div_toolTipTextBox).show();
 			}
 		});
 		
@@ -102,18 +126,23 @@ function tip_entered(){
 			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
 		})
 		
-		//if that green tick is seen, then make it not seen
-		$jq( etids.ck_tipAppliedTick ).css("display", "none");
+		/*if that green tick is seen, then make it not seen */
+		$jq( etids.ck_tipAppliedTick ).hide();
+		
+		console.log("LINE 103");
+		
+		/*forcibly show the excessive amount tooltip box */
+		$jq(etids.div_toolTipTextBox).show();
 	}else{ /*if the tip is a proper number, including zero */
 		$jq(etids.div_toolTipTextBox).html('');
 		$jq(etids.btn_tipApply).prop('disabled', false);
 		$jq(etids.sel_tipDropdown).val('Other Amount');
 		
-		//$jq( etids.ck_tipAppliedTick ).css("display", "block");
+		console.log("line 114");
+		
+		/*forcibly hide the excessive amount tooltip box */
+		$jq(etids.div_toolTipTextBox).hide();
 	}
-	
-	//forcibly hide that pseudo tooltip
-	$jq(etids.div_toolTipTextBox).css("display", "none");
 }
 
 
@@ -136,6 +165,7 @@ etids.inp_tipTextBox = "#tipTextBox";
 /*also hidden by default, a popup word balloon that contains information for the user under certain scenarios, typically when user hovers over a tooltip/information icon*/
 etids.div_toolTipTextBox = "#toolTipTextBox";
 
+/*the tooltip popup for too great of a tip*/
 etids.div_tooltipPopup = "#tooltipPopup";
 
 
@@ -153,29 +183,29 @@ etids.div_tooltipPopup = "#tooltipPopup";
 		},
 		template:{
 			value: function(data){
-				//if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side
+				/*if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side*/
 				if( data.etipTotal && data.etipTotal.length > 0 ){
-					//var floatDoubleTip = Number(data.etipTotal.replace(/[^0-9\.]+/g,""));
 					var floatDoubleTip = money_format( data.etipTotal.trim() );
-					
 					
 					if( floatDoubleTip > 0 ){
 						data.eTippingEnabled = true;
 					}
 				}
 				
-				//override, turn etipping off for the view_cart page
+				/*override, turn etipping off for the view_cart page*/
 				var path = window.location.pathname;
 				var page = path.split("/").pop();
 
 				if( page == "view_cart.jsp" ){
 					data.eTippingEnabled = false;
 					
-					//find out if the subtotal member of the data object will have an order total array member
+					/*find out if the subtotal member of the data object will have an order total array member*/
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object" ){
 						data.subTotalBox.subTotalBox.push( data.subTotalBox.estimatedTotalBox[0] );
 					}
 				}
+				
+				data.tipAmountsStr = data.tipAmounts.join(",");
 				
 				/* need to change between templates based on data param */
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
@@ -184,8 +214,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 				this.updateTopCheckoutButton(data);
 				
-				//kill certain accidental unwanted repetive elements
-				return processFn(data) + '<SCR'+'IPT>template_dupe_cleaner();<\/SCR'+'IPT>';
+				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
+				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
 			}
 		},
 		placeholder:{
@@ -352,7 +382,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					} catch(e) {}
 				});
 
-				template_dupe_cleaner();
+				template_cleanup();
 			}
 		},
 		onEmptyCart: {
@@ -378,7 +408,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					$jq(etids.inp_tipTextBox).show();
 					$jq(etids.inp_tipTextBox).focus();
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
-					//$jq( etids.btn_tipApply ).prop("disabled", "disabled");
+					/*$jq( etids.btn_tipApply ).prop("disabled", "disabled");*/
 				}
 			}
 		},
@@ -389,7 +419,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.btn_tipApplied).hide();
 
-				//what used to be around here moved to this function
+				/*what used to be around here moved to this function*/
 				tip_entered();
 			}
 		}
@@ -433,18 +463,18 @@ etids.div_tooltipPopup = "#tooltipPopup";
 		},
 		callback: {
 			value: function(value){
-				this.render(value); //everything after this within this function assumes that the soy template has been rendered on the page
+				this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
 				fd.components.carousel && fd.components.carousel.initialize();
 
-				//remove extra e-tip element crap (sorry for this hack solution)
+				/*remove extra e-tip element crap (sorry for this hack solution)*/
 				if( $(".cartsection__totalwrapper").length > 1 ){
 					$(".cartsection__totalwrapper:first div.subtotalboxes").remove();
 
 					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
 				}
 
-				//kill certain accidental unwanted repetive elements
-				template_dupe_cleaner();
+				/*kill certain accidental unwanted repetive elements*/
+				template_cleanup();
 			}
 		}
 	});

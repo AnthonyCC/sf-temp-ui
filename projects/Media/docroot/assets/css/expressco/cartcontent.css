@@ -922,24 +922,43 @@ label[for="dontupdatecartlines"] {
 
 .tooltip_holder{
 	display:inline-block;
+	margin-right:10px;
 }
-.ttBox1stClass{
-	display:none;
-	position:absolute;
-	background-color:white;
-	border:3px solid #CCC;
-	border-radius:12px;
 
-    margin-top: -350px;
-    margin-left: -430px;
-    width: 450px;
-    height: 350px;
+.ttBox1stClass{
+	height:1px;
 }
-.tooltip_holder.dfTTmaster .ttBox1stClass{
-    margin-top: -250px;
-    margin-left: -330px;
-    width: 350px;
-    height: 250px;
+.ttBox1stClass, #toolTipTextBox{
+	/*width:400px;
+	height: 275px;*/
+	/*margin-left: -330px;*/
+	
+	display:none;
+	position: absolute;
+}
+.ttBox1stClass .tooltip-inner, #toolTipTextBox{
+	position: absolute;
+    text-align:left;
+	
+	background-color:white;
+	border:1px solid #999;
+	border-radius:4px;
+	
+	font-size:12px;
+	-moz-box-shadow: 0px 0px 3px 3px #f1f1f1;
+	-webkit-box-shadow: 0px 0px 3px 3px #f1f1f1;
+	box-shadow: 0px 0px 3px 3px #f1f1f1;
+}
+.ttBox1stClass .tooltip-inner{
+	white-space: normal;
+	padding: 20px 30px;
+	bottom:-19px;
+	min-width:339px;
+	/*min-height:300px;*/
+	right: -23px;
+}
+.ttBox1stClass.optionalTipToolTip .tooltip-inner{
+	bottom:-23px;
 }
 .tooltip_holder:focus .tooltip-small,
 .tooltip_holder:hover .tooltip-small{
@@ -950,11 +969,7 @@ label[for="dontupdatecartlines"] {
 	display:block;
 	z-index:1000;
 }
-.ttBox1stClass .tooltip-inner{
-	white-space: normal;
-	text-align: left;
-	padding: 20px 30px;
-}
+
 .st_val_deliveryfee{
 	white-space:normal;
 }
@@ -1184,19 +1199,18 @@ label[for="dontupdatecartlines"] {
 }
 .eTippingEnabled a.tooltip-small{
 	margin-right:5px;
+	cursor:pointer;
 }
 
 .eTippingEnabled a.tooltip-small:hover, .eTippingEnabled a.tooltip-small:focus{
-	background-color:rgb(157, 157, 157);
+	/*background-color:rgb(157, 157, 157);*/
 }
 
 .eTippingEnabled #toolTipTextBox{
-	position: absolute;
     margin-left: -330px;
     margin-top: -120px;
     width:440px;
     padding:13px 18px 13px 18px;
-    text-align:left;
 }
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
@@ -1217,4 +1231,8 @@ label[for="dontupdatecartlines"] {
 }
 .st_val_statebottledeposit:first-child {
 
+}
+.eTippingEnabled span.tooltip-small:hover, .eTippingEnabled a.tooltip-small:hover{
+	background-color: #9d9d9d;
+	cursor:pointer;
 }
