@@ -69,7 +69,6 @@ var FreshDirect = FreshDirect || {};
     callback:{
       value:function( config ) {
         focusedElementId = config.dontfocus ? null : document.activeElement && document.activeElement.id;
-        console.log('focused: '+focusedElementId);
         
         //for etipping, APPBUG-4219
         if(focusedElementId == "tipApply"){

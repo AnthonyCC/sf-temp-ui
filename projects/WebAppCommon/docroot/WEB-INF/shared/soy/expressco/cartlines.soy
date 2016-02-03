@@ -412,7 +412,8 @@
                   </label>
                   <label for="tipTextBox">
                     <span class="offscreen">Other Tip Amount:</span>
-                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" value="{$etipTotal}" />
+                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" value="{$etipTotal}" data-component="tooltip"/>
+                    <div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
                   </label>
 								{else}
                   <label for="tipDropdown">
@@ -425,7 +426,8 @@
                   </label>
                   <label for="tipTextBox">
                     <span class="offscreen">Other Tip Amount:</span>
-                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" {if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} {if $etipTotal == '$0.00'}style="display:none"{/if} />
+                    <input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" {if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} {if $etipTotal == '$0.00'}style="display:none"{/if} data-component="tooltip"/>
+                    <div style="display:none" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
                   </label>
 								{/if} /*end if/else $customTip */
 								
