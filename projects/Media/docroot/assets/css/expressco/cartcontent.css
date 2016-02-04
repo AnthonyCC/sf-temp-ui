@@ -1057,6 +1057,7 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled #subtotalbox2 .subtotal__rowcell-left{
 	display:block;
 	text-align: center;
+	width:100%;
 }
 .eTippingEnabled .cartsection__totalwrapper{
 	width: 100%;
