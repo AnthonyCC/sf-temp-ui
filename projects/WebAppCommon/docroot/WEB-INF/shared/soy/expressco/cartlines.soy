@@ -416,11 +416,11 @@
 								<label for="tipTextBox">
 									<span class="offscreen">Other Tip Amount:</span>
 									
-									<input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount"
+									<input type="text" id="tipTextBox" placeholder="$0.00" name="otherTipAmount" aria-describedby="toolTipTextBox"
 									{if not $customTip}style="display:none" aria-hidden="true"{/if}
 									{if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} data-component="tooltip"/>
 									
-									<div style="display:none" aria-hidden="true" id="toolTipTextBox" class="tooltip" data-component="tooltipContent"></div>
+									<div style="display:none" aria-hidden="true" id="toolTipTextBox" class="tooltip" data-component="tooltipContent" role="tooltip"></div>
 								</label>
 								
 								{if $tipAppliedTick}

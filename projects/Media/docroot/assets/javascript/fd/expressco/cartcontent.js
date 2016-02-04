@@ -57,8 +57,6 @@ function populateCustomTipField(maxPossibleTip){
 */
 function money_format( input ){
 	
-	console.log("money input with : " + input);
-	
 	/*lets get rid of multiple dot characters, so we don't have something like '10.2121.121.56.1'*/
 	var index = input.indexOf( '.' );
 	
@@ -112,6 +110,7 @@ function tip_entered(){
 		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='javascript:populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
 
 		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
+    $jq(etids.div_toolTipTextBox).attr('tabindex', '0');
 		
 		/*hover over the optional tooltip icon and also delivery fee tooltip icon */
 		$jq(etids.inp_tipTextBox).on('mouseover mouseenter', function(e){
@@ -124,12 +123,10 @@ function tip_entered(){
 		
 		$jq(etids.inp_tipTextBox).mouseout(function(){
 			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
-		})
+    });
 		
 		/*if that green tick is seen, then make it not seen */
 		$jq( etids.ck_tipAppliedTick ).hide();
-		
-		console.log("LINE 103");
 		
 		/*forcibly show the excessive amount tooltip box */
 		$jq(etids.div_toolTipTextBox).show();
@@ -138,10 +135,9 @@ function tip_entered(){
 		$jq(etids.btn_tipApply).prop('disabled', false);
 		$jq(etids.sel_tipDropdown).val('Other Amount');
 		
-		console.log("line 114");
-		
 		/*forcibly hide the excessive amount tooltip box */
 		$jq(etids.div_toolTipTextBox).hide();
+		$jq(etids.div_toolTipTextBox).attr('tabindex', '-1');
 	}
 }
 
