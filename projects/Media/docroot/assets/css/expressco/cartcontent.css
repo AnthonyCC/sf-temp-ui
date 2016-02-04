@@ -1236,3 +1236,6 @@ label[for="dontupdatecartlines"] {
 	background-color: #9d9d9d;
 	cursor:pointer;
 }
+#expresscheckout #cartcontent:before{
+	width: 120%;
+}
