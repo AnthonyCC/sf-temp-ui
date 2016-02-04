@@ -171,7 +171,7 @@
 	
 	<xsl:if test="number(order/tip) &gt; 0">
 		<tr valign="top" class="orderSummary">
-			<td colspan="2" align="right">Tip :</td>			-
+			<td colspan="2" align="right">Tip :</td>
 				<td align="right"><xsl:value-of select="format-number(order/tip, '$###,##0.00', 'USD')" />
 				</td>
 		    <td colspan="3">&nbsp;</td>
