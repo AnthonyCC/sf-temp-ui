@@ -1004,7 +1004,7 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox1{
-	margin-left:670px;
+	margin-left:620px;
 }
 /*.eTippingEnabled #subtotalbox1:before{*/
 .eTippingEnabled.cartsection-wine > .cartsection__totalwrapper > p.cartsection__tax:after{
@@ -1021,7 +1021,7 @@ label[for="dontupdatecartlines"] {
 	white-space:nowrap;
 }
 .eTippingEnabled .subtotalboxes, .eTippingEnabled #subtotalbox1 .subtotal__row, .eTippingEnabled .cartsection__tax form{
-	width: 300px;
+	min-width: 300px;
 }
 
 .eTippingEnabled .subtotalboxes .subtotal__rowcell-left{
@@ -1063,7 +1063,7 @@ label[for="dontupdatecartlines"] {
 	width: 100%;
 }
 .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left{
-	min-width: 140px;
+	min-width: 200px;
 }
 .eTippingEnabled form .subtotal__rowcell-left{
 	float:left;
@@ -1204,6 +1204,9 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled a.tooltip-small{
 	margin-right:5px;
 	cursor:pointer;
+}
+.eTippingEnabled span.tooltip-small, .eTippingEnabled a.tooltip-small{
+	top: -5px;
 }
 
 .eTippingEnabled a.tooltip-small:hover, .eTippingEnabled a.tooltip-small:focus{
