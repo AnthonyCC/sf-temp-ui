@@ -59,7 +59,7 @@ public class AvalaraTaxRequestConverter {
 		taxRequest.setAddresses(taxAddresses);
 		taxRequest.setDocDate(new Date(System.currentTimeMillis()));
 		taxRequest.setCompanyCode(FDStoreProperties.getAvalaraCompanyCode());
-		taxRequest.setDocCode(cart.getDeliveryReservation().getOrderId());
+		taxRequest.setDocCode(cart.getDeliveryReservation()!=null?cart.getDeliveryReservation().getOrderId():"");
 		if(isTaxCommitRequired(cart)){
 			taxRequest.setDocType(DocType.SalesInvoice);
 			taxRequest.setCommit(Boolean.TRUE);
@@ -89,6 +89,7 @@ public class AvalaraTaxRequestConverter {
 					taxLine.setOriginCode("Origin-01");
 					taxLine.setDestinationCode("DEST-01");
 					taxLine.setQty(BigDecimal.valueOf(1));
+					taxLine.setTaxCode(charge.getType()!=null?charge.getType().getTaxCode():"");
 					taxLines.add(taxLine);
 				}
 			}
