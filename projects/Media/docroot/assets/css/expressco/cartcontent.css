@@ -1215,7 +1215,7 @@ label[for="dontupdatecartlines"] {
 }
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
-	padding-left:9px;
+	/*padding-left:9px;*/
 }
 
 .eTippingEnabled select::-ms-expand {
