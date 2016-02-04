@@ -1121,6 +1121,9 @@ label[for="dontupdatecartlines"] {
 	height:34px;
 	background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;
 }
+.eTippingEnabled #tipDropdown:focus{
+	border-color: #4FA157;
+}
 .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
 	border-radius: 3px;
 	text-shadow: none;
