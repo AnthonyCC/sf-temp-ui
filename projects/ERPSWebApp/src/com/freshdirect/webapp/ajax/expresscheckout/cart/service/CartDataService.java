@@ -129,8 +129,6 @@ public class CartDataService {
         synchronized (cart) {
             populateCartData(user, request, userId, cart, cartData);
         }
-        cartData.seteTippingEnabled(FDStoreProperties.isETippingEnabled());
-        cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
         return cartData;
     }
 
@@ -527,15 +525,12 @@ public class CartDataService {
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
             cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
-    
+            cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if(FDStoreProperties.isETippingEnabled()) {
             	cartData.seteTippingEnabled(true);
-	            if(cart.getTip() > 0) {
-	            	cartData.setTipApplied(true);
-	            } else {
-	            	cartData.setTipApplied(false);
-	            }            
+	            cartData.setTipApplied(cart.getTip() > 0);
 	            cartData.setCustomTip(cart.isCustomTip());
+	            cartData.setEtipTotal(JspMethods.formatPrice(cart.getTip()));
         	}
 
         } catch (Exception e) {
@@ -659,49 +654,28 @@ public class CartDataService {
     }
 
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
+        List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
+        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
+        CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
+        CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
+        CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
     	if(FDStoreProperties.isETippingEnabled()) {
-	        List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
-	        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-	        //CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
-	        
-	        CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
-	        
-	        CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
-	        CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
-	        CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
-	        CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
-	        CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
-	        CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
-	        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
-	        cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
-	        
 	        List<CartSubTotalFieldData> estimatedTotalBox = new ArrayList<CartSubTotalFieldData>();
-	        
 	        CartSubTotalBoxService.defaultService().populateOrderTotalToBox(estimatedTotalBox, cart);
 	        CartSubTotalBoxService.defaultService().populateSavingToBox(estimatedTotalBox, cart);
 	        cartData.getSubTotalBox().put(ESTIMATED_TOTAL_BOX_JSON_KEY, estimatedTotalBox);
-	        
-	        cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());
-	        cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
-	        cartData.setCustomTip(cart.isCustomTip());	        
-	        cartData.setEtipTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getETipValue(cart)));
     	} else {
-    		List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
-            CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
-            CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
-            CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
-            CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
-            CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
             CartSubTotalBoxService.defaultService().populateOrderTotalToBox(subTotalBox, cart);
             CartSubTotalBoxService.defaultService().populateSavingToBox(subTotalBox, cart);
-            cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
-            cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());
-            cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
     	}
+    	cartData.getSubTotalBox().put(USER_CORPORATE_JSON_KEY, user.isCorporateUser());
+    	cartData.getSubTotalBox().put(USER_RECOGNIZED_JSON_KEY, FDUserI.GUEST < user.getLevel());
+    	cartData.getSubTotalBox().put(SUB_TOTAL_BOX_JSON_KEY, subTotalBox);
     }
 
     private String getSubTotalTextForNonAlcoholicSections(boolean isWineInCart, boolean hasEstimatedPriceItemInCart) {

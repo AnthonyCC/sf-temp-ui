@@ -797,7 +797,7 @@ public class FDStoreProperties {
     //fdx new locationbar
 	private final static String PROP_FDX_LOCATIONBAR = "fdstore.fdxlocationbar.enabled";
 	private final static String PROP_FDX_LOCATIONBAR_FDXTAB = "fdstore.fdxlocationbar.fdxtab.enabled";
-    public static final String PROP_ETIPPING_ENABLED= "fdstore.etipping.enabled";
+    private final static String PROP_ETIPPING_ENABLED = "fdstore.etipping.enabled";
    
     /*APPDEV-4216 Refer a Friend- Extole Integration*/
     

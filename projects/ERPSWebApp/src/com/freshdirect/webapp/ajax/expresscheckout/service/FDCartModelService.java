@@ -64,10 +64,4 @@ public class FDCartModelService {
 		}
 		return subTotal;
 	}
-	
-	public double getETipValue(FDCartI cart) {
-		double eTip = 0.0;		
-		eTip = cart.getTip();		
-		return eTip;
-	}
 }

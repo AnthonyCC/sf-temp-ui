@@ -260,13 +260,14 @@ public class ReceiptBoxService {
             receiptBox.add(data);
         }
     }
+
     public void populateOrderTipToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order) {
-    	if (FDStoreProperties.isETippingEnabled()) {
-			CartSubTotalFieldData data = new CartSubTotalFieldData();
-			data.setId(TIP_ID);
-			data.setText(TIP_TEXT);
-			data.setValue(JspMethods.formatPrice(order.getTip()));
-			receiptBox.add(data);
-    	}
+        if (0.0 < order.getTip()) {
+            CartSubTotalFieldData data = new CartSubTotalFieldData();
+            data.setId(TIP_ID);
+            data.setText(TIP_TEXT);
+            data.setValue(JspMethods.formatPrice(order.getTip()));
+            receiptBox.add(data);
+        }
     }
 }

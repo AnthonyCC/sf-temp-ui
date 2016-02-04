@@ -8,6 +8,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -378,21 +379,16 @@ public class CartSubTotalBoxService {
             subTotalBox.add(data);
         }
     }
-    
-	public void populateTipToBox(List<CartSubTotalFieldData> subTotalBox,
-			FDCartI cart) {
-		 double tips = cart.getTip();
 
-		 if("FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
-			 if (0 < tips) {
-		CartSubTotalFieldData data = new CartSubTotalFieldData();
-		data.setId(TIP);
-		data.setText(TIP);
-		data.setValue(JspMethods.formatPrice(tips));
-		subTotalBox.add(data);
-			 }
-		 }
-	}
+    public void populateTipToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
+        if (EnumEStoreId.FDX.equals(cart.getEStoreId()) && 0.0 < cart.getTip()) {
+                CartSubTotalFieldData data = new CartSubTotalFieldData();
+                data.setId(TIP);
+                data.setText(TIP);
+                data.setValue(JspMethods.formatPrice(cart.getTip()));
+                subTotalBox.add(data);
+        }
+    }
 
     private boolean hasCartLineGroupDiscount(FDCartLineI cartLine) {
         return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;

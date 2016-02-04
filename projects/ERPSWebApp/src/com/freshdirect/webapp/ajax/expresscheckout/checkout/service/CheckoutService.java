@@ -20,7 +20,6 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
@@ -115,20 +114,6 @@ public class CheckoutService {
         return unavailabilityData;
 	}
 	
-	public boolean applyETip(FDUserI user, String tipAmount, boolean isCustomTip) {				
-		
-		FDCartModel cart = user.getShoppingCart();
-		
-		if(tipAmount.startsWith("$")) {
-			tipAmount = tipAmount.substring(1);
-		}
-		
-		cart.setTip(Double.parseDouble(tipAmount));
-		cart.setCustomTip(isCustomTip);
-		
-		return true;
-	}
-
     public boolean checkAtpCheckEligibleByRestrictions(FormRestriction restriction) {
         return restriction == null || restriction.isPassed();
     }
