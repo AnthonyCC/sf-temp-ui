@@ -12,6 +12,7 @@ import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -39,7 +40,7 @@ public class DeliveryAddressValidator {
 	private FDDeliveryServiceSelectionResult serviceResult;
 	
 	private String eStoreId;
-
+	private EnumServiceType serviceType = null;
 
 	public DeliveryAddressValidator(AddressModel address) {
 		this(address, true);
@@ -238,24 +239,19 @@ public class DeliveryAddressValidator {
 		}
 		try {
 			// [1] Check services for scrubbed address
-
+			
 			serviceResult = doCheckAddress(scrubbedAddress);
-			if ( !isAddressDeliverable() ) {
-				// post validations
-				if ( !EnumServiceType.HOME.equals( scrubbedAddress.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
-
-					if ( EnumServiceType.CORPORATE.equals( scrubbedAddress.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
-						actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
-					} else {
-						actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1SS.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS );
+			if(!serviceTypeValidation(actionResult)){
+				return false;
+			}
+			// This Validation is required if User selected Service type is mismatched with SmartyStreets returned RDI type.
+			if(this.getServiceType() != null){
+				EnumServiceType serviceType = EnumServiceType.getEnum(NVL.apply(this.getServiceType().getName(), ""));
+				if(!serviceType.equals(this.scrubbedAddress.getServiceType())){
+					this.scrubbedAddress.setServiceType(serviceType);
+					if(!serviceTypeValidation(actionResult)){
+						return false;
 					}
-					return false;
-				}// NOT(address type == HOME AND service status == DELIVER)
-				
-				if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
-						serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
-					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
-					return false;
 				}
 			}
 		} catch (FDInvalidAddressException iae) {
@@ -275,6 +271,31 @@ public class DeliveryAddressValidator {
 					MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, new Object[] {SystemMessageList.CUSTOMER_SERVICE_CONTACT}));
 				return false;
 			}
+		}
+		return true;
+	}
+	
+	private boolean serviceTypeValidation(ActionResult actionResult) throws FDResourceException{
+		
+		if ( !isAddressDeliverable() ) {
+			// post validations
+			if ( !EnumServiceType.HOME.equals( scrubbedAddress.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+
+				if ( EnumServiceType.CORPORATE.equals( scrubbedAddress.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
+					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
+				} else {
+					actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1SS.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS );
+				}
+				return false;
+			}// NOT(address type == HOME AND service status == DELIVER)
+			
+			if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
+					serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+				actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
+				return false;
+			}
+			
+			// 
 		}
 		return true;
 	}
@@ -319,4 +340,20 @@ public class DeliveryAddressValidator {
 	protected FDDeliveryAddressGeocodeResponse doGeocodeAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
 		 return FDDeliveryManager.getInstance().geocodeAddress(addr);		
 	}
+
+	/**
+	 * @return the serviceType
+	 */
+	public EnumServiceType getServiceType() {
+		return serviceType;
+	}
+
+	/**
+	 * @param serviceType the serviceType to set
+	 */
+	public void setServiceType(EnumServiceType serviceType) {
+		this.serviceType = serviceType;
+	}
+	
+	
 }

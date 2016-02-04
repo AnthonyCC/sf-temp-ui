@@ -66,12 +66,6 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		this.validateAddress(actionResult);
 		this.validateAltDeliveryFields(actionResult);
 		if(actionResult.isSuccess()){
-			// All validation passed, override the SmartyStreets returned service type
-			EnumServiceType serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode()), ""));
-			if(!serviceType.equals(this.address.getServiceType())){
-				this.address.setServiceType(serviceType);
-			}
-			
 			if(CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)){
 				AddressUtil.updateShipToAddress(request, actionResult, CrmSession.getUser(pageContext.getSession()), this.address.getPK().getId(), this.address);
 			}
@@ -94,7 +88,6 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		if(actionResult.isSuccess()){
 			if(CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)){
 				try{
-					
 					FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(request.getSession()), !CrmSession.getUser(pageContext.getSession()).isDepotUser(), this.address);
 				}catch(ErpDuplicateAddressException e){
 					actionResult.addError(true, "dupilcateAddress", e.getMessage());
@@ -200,6 +193,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		result.addError("".equals(this.address.getZipCode()), EnumUserInfoName.DLV_ZIPCODE.getCode(), "required");
 		result.addError(address.getPhone() == null || "".equals(this.address.getPhone().getPhone()), EnumUserInfoName.DLV_HOME_PHONE.getCode(), "required");
 
+		EnumServiceType inputServiceType = address.getServiceType();
 		String geCodeResult = "";
 		if(result.isSuccess()){
 			FDDeliveryAddressCheckResponse verifyResponse = checkAddressSuggestion(result);
@@ -230,6 +224,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 
 		if (result.isSuccess()) {
 			DeliveryAddressValidator validator = new DeliveryAddressValidator(this.address);
+			validator.setServiceType(inputServiceType);
 			// validate address
 			if (validator.validateScrubbedAddress(result,geCodeResult)) {
 				// Second turn: Check SUFFOLK condition 
