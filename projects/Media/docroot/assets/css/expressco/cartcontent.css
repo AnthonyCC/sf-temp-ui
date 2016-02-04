@@ -1216,6 +1216,9 @@ label[for="dontupdatecartlines"] {
     width:440px;
     padding:13px 18px 13px 18px;
 }
+.eTippingEnabled #toolTipTextBox a, .eTippingEnabled .tooltip a{
+	text-decoration: underline;
+}
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
 	/*padding-left:9px;*/
