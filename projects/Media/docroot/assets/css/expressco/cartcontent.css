@@ -1046,7 +1046,7 @@ label[for="dontupdatecartlines"] {
 	display:inline;
 }
 
-.eTippingEnabled #subtotalbox2 .row-size-big{
+.eTippingEnabled #subtotalbox2 .subtotal__row{
 	text-align:center;
 }
 
