@@ -1,28 +1,23 @@
 /*global expressco, Bacon*/
 var FreshDirect = FreshDirect || {};
 
-/*kills unwanted dupes, typically resulting from bad logic in a loop within a soy file*/
-function dupe_buster(css_classname, id_prefix){
-	if( $jq(css_classname).length > 1 ){
-		$jq(css_classname).each(function(index){
-			$jq(this).attr("id", id_prefix+"_"+index);
-
-			if( index > 0 ){
-				$jq("#"+id_prefix+"_"+index).remove();
-			}
-		})
-	}
-}
-
 /*batch remove various known classes of unwanted html element duplicates*/
 function template_dupe_cleaner(){
-	/*an array of css classes to hunt for and kill duplicates of*/
-	var common_dupe_classnames = new Array("deliveryFeeToolTips", "st_label_deliveryfee", "st_val_deliveryfee", "st_label_subtotal", "st_val_subtotal", "st_label_totaltax", "st_val_totaltax", "st_label_statebottledeposit", "st_val_statebottledeposit", "st_label_ssOrderTotal", "st_val_ssOrderTotal");
-	
-	/*kill certain accidental unwanted repetitive elements*/
-	for(var i=0; i<common_dupe_classnames.length; i++){
-		dupe_buster("."+common_dupe_classnames[i], common_dupe_classnames[i]);
-	}
+	//an array to be populated by the targeted classes that are desired to have only one member be seen on the page
+	var there_can_only_be_one = new Array();
+
+	//loop through elements that are known to be unwanted dupes, identified by particular classnames
+	$jq("*[class*='st_label_'], *[class*='st_val_'], .deliveryFeeToolTips").each(function(i) {
+		var str = $jq(this).attr("class");
+		var re = /(st\_label\_([\w])+|st\_val\_([\w])+|deliveryFeeToolTips)/i;
+		var found = str.match(re);
+
+		if (found != null && found[0] != null && there_can_only_be_one.indexOf(found[0]) == -1) {
+			there_can_only_be_one.push(found[0]);
+		} else {
+			$jq(this).remove();
+		}
+	})
 }
 
 /* should be called everytime the cartlines soy template is rendered or re-rendered. */

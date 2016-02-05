@@ -353,59 +353,59 @@
 [data-boxid="redemptionfailure"] .subtotal__rowcell-mid,
 [data-boxid="giftcardbalance"] .subtotal__rowcell-mid,
 [data-boxid="credits"] .subtotal__rowcell-mid {
-  color: #693;
+	color: #693;
 }
 
-.rowcell-colon-right:after{
-  content:":";
+.rowcell-colon-right:after, .st_label:after{
+	content:":";
 }
 
 .row-size-big{
-  font-size:16px;
-  font-weight:bold;
+	font-size:16px;
+	font-weight:bold;
 }
 
 .subtotal__row .free-link{
-  font-weight:bold;
-  text-decoration: underline;
+	font-weight:bold;
+	text-decoration: underline;
 }
 
 .subtotal__row .free-link:hover,
 .subtotal__row .free-link:active {
-  text-decoration: none;
+	text-decoration: none;
 }
 
 .row-style-saving{
-  font-size:13px;
-  font-weight:bold;
-  color:#dd0303;
+	font-size:13px;
+	font-weight:bold;
+	color:#dd0303;
 }
 
 .cartsection-wine{
-  border-top:1px solid #e0e3d0;
-  padding:20px 0;
+	border-top:1px solid #e0e3d0;
+	padding:20px 0;
 }
 
 .cartsection-wine .cartsection__title{
-  visibility:hidden;
+	visibility:hidden;
 }
 
 .cartsection-wine .cartsection__total:before{
-  content:'FD Wines & Spirits ';
+	content:'FD Wines & Spirits ';
 }
 
 .cartsection-wine .cartsection__title:before{
-  content:'FD Wines & Spirits';
-  visibility:visible;
+	content:'FD Wines & Spirits';
+	visibility:visible;
 }
 
 .cartsection__total,
 .cartsection__tax{
-  font-size:14px;
-  color:#333;
-  font-weight:bold;
-  text-align:right;
-  margin:0;
+	font-size:14px;
+	color:#333;
+	font-weight:bold;
+	text-align:right;
+	margin:0;
 }
 
 .cartsection__tax{
