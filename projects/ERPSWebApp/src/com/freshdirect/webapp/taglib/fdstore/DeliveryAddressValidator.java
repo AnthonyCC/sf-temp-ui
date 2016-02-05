@@ -156,7 +156,6 @@ public class DeliveryAddressValidator {
 	 * @throws FDResourceException
 	 */
 	public boolean validateAddressWithoutGeoCode(ActionResult actionResult) throws FDResourceException {
-		
 		// [1] normalize (scrub) address
 		scrubbedAddress = doScrubAddress(address, actionResult);
 		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
@@ -177,24 +176,21 @@ public class DeliveryAddressValidator {
 			// [2] Check services for scrubbed address
 
 			serviceResult = doCheckAddress(scrubbedAddress);
-			if ( !isAddressDeliverable() ) {
-				// post validations
-				if ( !EnumServiceType.HOME.equals( address.getServiceType() ) || serviceResult.getServiceStatus( EnumServiceType.PICKUP ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
-
-					if ( EnumServiceType.CORPORATE.equals( address.getServiceType() ) && !serviceResult.getServiceStatus( EnumServiceType.HOME ).equals( EnumDeliveryStatus.DONOT_DELIVER ) ) {
-						actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS );
-					} else {
-						actionResult.addError( true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS_SS );
+			
+			if(!serviceTypeValidation(actionResult)){
+				return false;
+			}
+			// This Validation is required if User selected Service type is mismatched with SmartyStreets returned RDI type.
+			if(this.getServiceType() != null){
+				EnumServiceType serviceType = EnumServiceType.getEnum(NVL.apply(this.getServiceType().getName(), ""));
+				if(!serviceType.equals(this.scrubbedAddress.getServiceType())){
+					this.scrubbedAddress.setServiceType(serviceType);
+					if(!serviceTypeValidation(actionResult)){
+						return false;
 					}
-					return false;
-				}// NOT(address type == HOME AND service status == DELIVER)
-				
-				if(getEStoreId() != null && EnumServiceType.FDX.equals(EnumServiceType.getEnum(getEStoreId())) && 
-						serviceResult.getServiceStatus(EnumServiceType.FDX).equals(EnumDeliveryStatus.DONOT_DELIVER)) {
-					actionResult.addError( true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS );
-					return false;
 				}
 			}
+			
 		} catch (FDInvalidAddressException iae) {
 			if (this.strictCheck) {
 				//check for just a missing Address1

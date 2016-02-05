@@ -121,7 +121,10 @@ public class AddressUtil {
 					EnumUserInfoName.DLV_APARTMENT.getCode() , 
 					((apartment == null) || (apartment.length() < 1)) ? SystemMessageList.MSG_APARTMENT_REQUIRED : SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER
 				
-	            );                                    
+	            );
+	            
+	            result.addError(EnumAddressVerificationResult.APT_MISSING.equals(response.getVerifyResult()),
+						EnumUserInfoName.DLV_APARTMENT.getCode() , SystemMessageList.MSG_ADDRESS_APT_REQ);
             }
             result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(response.getVerifyResult()),
             EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS_POSSIBLE_MATCHES);
