@@ -117,7 +117,7 @@ function tip_entered(){
 			if( $jq(etids.div_toolTipTextBox).html().length > 2 ){
 				$jq(etids.div_tooltipPopup).addClass("toomuch-etip");
 				
-				$jq(etids.div_toolTipTextBox).show();
+        $jq(etids.div_toolTipTextBox).addClass('shown');
 			}
 		});
 		
@@ -129,14 +129,14 @@ function tip_entered(){
 		$jq( etids.ck_tipAppliedTick ).hide();
 		
 		/*forcibly show the excessive amount tooltip box */
-		$jq(etids.div_toolTipTextBox).show();
+    $jq(etids.div_toolTipTextBox).addClass('shown');
 	}else{ /*if the tip is a proper number, including zero */
 		$jq(etids.div_toolTipTextBox).html('');
 		$jq(etids.btn_tipApply).prop('disabled', false);
 		$jq(etids.sel_tipDropdown).val('Other Amount');
 		
 		/*forcibly hide the excessive amount tooltip box */
-		$jq(etids.div_toolTipTextBox).hide();
+		$jq(etids.div_toolTipTextBox).removeClass('shown');
 		$jq(etids.div_toolTipTextBox).attr('tabindex', '-1');
 	}
 }

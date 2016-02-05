@@ -129,7 +129,7 @@
  */
 {template .coreToolTip autoescape="strict" kind="html"}
 	<div class="tooltip_holder {if $ttMaster2ndClass}{$ttMaster2ndClass}{/if}" tabindex="0" aria-describedby="tt_{$iconId}">
-		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent" id="tt_{$iconId}" aria-hidden="true" role="tooltip">
+		<div class="ttBox1stClass {$ttBox2ndClass}" data-component="tooltipContent" id="tt_{$iconId}" role="tooltip">
 			<div class="tooltip-inner">
 				<b>{$ttTitle}</b>
 				<br/>
@@ -420,7 +420,7 @@
 									{if not $customTip}style="display:none" aria-hidden="true"{/if}
 									{if $etipTotal and ($etipTotal != '$0.00')}value="{$etipTotal}"{/if} data-component="tooltip"/>
 									
-									<div style="display:none" aria-hidden="true" id="toolTipTextBox" class="tooltip" data-component="tooltipContent" role="tooltip"></div>
+									<div id="toolTipTextBox" class="tooltip" data-component="tooltipContent" role="tooltip"></div>
 								</label>
 								
 								{if $tipAppliedTick}
