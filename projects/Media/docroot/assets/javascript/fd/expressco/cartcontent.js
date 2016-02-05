@@ -401,8 +401,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				$jq(etids.ck_tipAppliedTick).hide();
 				if($jq(etids.sel_tipDropdown).val() === "Other Amount"){
 					$jq(etids.sel_tipDropdown).hide();
-					$jq(etids.inp_tipTextBox).show();
-					$jq(etids.inp_tipTextBox).focus();
+          $jq(etids.inp_tipTextBox).show().focus().select();
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
 					/*$jq( etids.btn_tipApply ).prop("disabled", "disabled");*/
 				}
