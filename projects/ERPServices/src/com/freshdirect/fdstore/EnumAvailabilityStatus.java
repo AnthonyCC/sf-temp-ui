@@ -11,7 +11,8 @@ public enum EnumAvailabilityStatus implements java.io.Serializable {
     AVAILABLE        (0, "AVAL", "Available"),
     DISCONTINUED     (1, "DISC", "Discontinued"),
     OUT_OF_SEASON    (2, "SEAS", "Out Of Season"),
-    TEMP_UNAV        (3, "UNAV", "Temporarily Unavailable");
+    TEMP_UNAV        (3, "UNAV", "Temporarily Unavailable"),
+    TO_BE_DISCONTINUED_SOON        (4, "TBDS", "To be Discontinued soon");
     
 
 	private static final long	serialVersionUID	= -1531192923805339870L;

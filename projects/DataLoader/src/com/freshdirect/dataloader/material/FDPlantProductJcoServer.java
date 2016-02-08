@@ -341,7 +341,12 @@ public class FDPlantProductJcoServer extends FdSapServer {
 			salesAreaModel.setUnavailabilityReason("Testing");//salesAreaModel.getUnavailabilityReason());
 			salesAreaModel.setUnavailabilityStatus("TEST");
 			salesAreaModel.setUnavailabilityDate(SAPConstants.THE_FUTURE);
-		} else {
+		} else if ("40".equalsIgnoreCase(salesAreaModel.getUnavailabilityStatus())) {
+			salesAreaModel.setUnavailabilityReason("Discontinued Soon");//salesAreaModel.getUnavailabilityReason());
+			salesAreaModel.setUnavailabilityStatus("TBDS");
+			salesAreaModel.setUnavailabilityDate(SAPConstants.THE_FUTURE);
+		}
+		else {
 			salesAreaModel.setUnavailabilityReason("");
 			salesAreaModel.setUnavailabilityStatus("");
 		}

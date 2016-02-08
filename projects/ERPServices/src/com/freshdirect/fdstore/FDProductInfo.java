@@ -68,7 +68,8 @@ public class FDProductInfo extends FDSku  {
     private Map<String,FDPlantMaterial> plantMaterialInfo=new HashMap<String,FDPlantMaterial>(5);
 
     private Map<String, FDMaterialSalesArea> materialAvailability=null;
-
+    
+   
     public FDProductInfo(String skuCode,int version,String[] materials,FDInventoryCacheI inventory,ZonePriceInfoListing zonePriceInfoList,Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialAvailability) {
     	super(skuCode, version);
     	this.zonePriceInfoList=zonePriceInfoList;
@@ -166,7 +167,6 @@ public class FDProductInfo extends FDSku  {
 		_setPlantMaterialInfo(plantMaterialInfo);
         this.zonePriceInfoList = zonePriceInfoList;
         this.materialAvailability=materialAvailability;
-
 	}
 
 
@@ -248,8 +248,12 @@ public class FDProductInfo extends FDSku  {
 
     public boolean isAvailable(String salesOrg, String distributionChannel) {
     	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
-		if(sa!=null)
-			return EnumAvailabilityStatus.AVAILABLE.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()));
+		if(sa!=null) {
+			
+			EnumAvailabilityStatus availability=EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus());
+			return EnumAvailabilityStatus.AVAILABLE.equals(availability)|| 
+				   EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(availability);
+		}
 		return false;//::FDX::-> Handle this in a better way.
     }
 
@@ -365,7 +369,7 @@ public class FDProductInfo extends FDSku  {
         			LOGGER.debug("No price setup for zone: "+zone+" and sku=>"+this.getSkuCode());
         		}
 
-        		else if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())) {
+        		else if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())/*&& !this.isAlcohol*/) {
 
         			zpModel= new ZonePriceInfoModel(zpModel.getSellingPrice(), 0, zpModel.getDefaultPriceUnit(), zpModel.getDisplayableDefaultPriceUnit(),false,0,0,zpModel.getZoneInfo(),false);
         		}
@@ -488,6 +492,7 @@ public class FDProductInfo extends FDSku  {
 	}
 
 	public Map<String, FDMaterialSalesArea> getAvailability() {
+		
 		return materialAvailability;
 	}
 

@@ -20,7 +20,7 @@ public class FDStatusAvailability implements FDAvailabilityI {
 
 	@Override
 	public FDAvailabilityInfo availableSomeTime(DateRange requestedRange) {
-		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)) {
+		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)|| EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(status)) {
 			return availability.availableSomeTime(requestedRange);
 		}
 		return new FDStatusAvailabilityInfo(false, status);
@@ -28,7 +28,7 @@ public class FDStatusAvailability implements FDAvailabilityI {
 
 	@Override
 	public FDAvailabilityInfo availableCompletely(DateRange requestedRange) {
-		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)) {
+		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)|| EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(status)) {
 			return availability.availableCompletely(requestedRange);
 		}
 		return new FDStatusAvailabilityInfo(false, status);
@@ -36,7 +36,7 @@ public class FDStatusAvailability implements FDAvailabilityI {
 
 	@Override
 	public Date getFirstAvailableDate(DateRange requestedRange) {
-		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)) {
+		if (status == null || EnumAvailabilityStatus.AVAILABLE.equals(status)|| EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(status)) {
 			return availability.getFirstAvailableDate(requestedRange);
 		}
 		return null;

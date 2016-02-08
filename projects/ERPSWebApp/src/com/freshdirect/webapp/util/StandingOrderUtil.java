@@ -43,6 +43,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdlogistics.model.FDTimeslotList;
+import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -852,6 +853,8 @@ public class StandingOrderUtil {
 				}
 				else if(prodInfo.isTempUnavailable(zone.getSalesOrg(),zone.getDistributionChanel()) || !prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())){
 				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity(),altSkuCode);
+				} else if (EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(prodInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()))) {
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.TBDS, err, cartLine.getQuantity(),altSkuCode);
 				}
 				cart.removeOrderLineById(randomId);				
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
