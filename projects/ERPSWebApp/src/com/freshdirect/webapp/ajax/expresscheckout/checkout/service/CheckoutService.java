@@ -106,9 +106,11 @@ public class CheckoutService {
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
                 unavailabilityData = atpFailureData;
             }
-            else {            	
+            else {    
+            	if(FDStoreProperties.getAvalaraTaxEnabled()){
             	avalaraContext.setCommit(false);
             	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
+            	}
             }
 		}
         return unavailabilityData;

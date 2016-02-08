@@ -316,7 +316,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 	
 	public void setTaxRate(double taxRate){
-		if(!this.lookupFDProduct().isTaxable()){
+		if(!this.lookupFDProduct().isTaxable() && !FDStoreProperties.getAvalaraTaxEnabled()){
 			taxRate = 0.0;
 		}
 		this.orderLine.setTaxRate(taxRate);

@@ -70,7 +70,12 @@ public class AvalaraTaxResponseConverter {
 		if(CollectionUtils.isNotEmpty(cartLines)){
 			for(FDCartLineI cartLine : cartLines){
 				if(StringUtils.equals(lineResult.getLineNo(),cartLine.getCartlineId()) || StringUtils.equals(lineResult.getLineNo(),cartLine.getOrderLineId())){
+					if(!lineResult.getTaxability()){
+					cartLine.setTaxRate(0.0);
+					}
+					else{
 					cartLine.setTaxRate(lineResult.getRate());
+					}
 					if(lineResult.getRate()>0.0)
 					isTaxProds = true;
 					continue;
@@ -86,7 +91,12 @@ public class AvalaraTaxResponseConverter {
 		if(CollectionUtils.isNotEmpty(charges)){
 			for(ErpChargeLineModel charge: charges){
 				if(charge.getType().getCode().equals(taxLine.getLineNo())){
-					charge.setTaxRate(taxLine.getRate());
+					if(!taxLine.getTaxability()){
+						charge.setTaxRate(0.0);
+						}
+						else{
+						charge.setTaxRate(taxLine.getRate());
+						}					
 					isTaxSet = true;
 					continue;
 				}
