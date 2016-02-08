@@ -27,8 +27,10 @@ import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.ProductCouponResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.MessageCodes;
@@ -56,13 +58,42 @@ public class CouponBrowseController extends BaseController {
 
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
       
-    private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly"; 
+    private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
+    
+    private static final String ACTION_GET_ALL_COUPON_DETAILS = "getAllCouponDetails"; 
     
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
+    	if(action.equalsIgnoreCase(ACTION_GET_ALL_COUPON_DETAILS)) {
+    		List<ProductModel> productModels = FDCustomerCouponUtil.getCouponProducts(user.getFDSessionUser(), false);	
+        	List<Product> products = new ArrayList<Product>();
+        	List<ProductCouponResult> productCouponResults = new ArrayList<ProductCouponResult>();
+        	for(ProductModel pm:productModels){
+    			try {
+    				products.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+    			} catch (ModelException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+        	}
+        	for(Product p:products) {
+        		ProductCouponResult pcr = new ProductCouponResult();
+        		pcr.setProductId(p.getProductId());
+        		pcr.setCouponId(p.getDefaultSku().getCoupon().getId());
+        		pcr.setDesc(p.getDefaultSku().getCoupon().getDesc());
+        		pcr.setDetails(p.getDefaultSku().getCoupon().getDetails());
+        		pcr.setExpirationDate(p.getDefaultSku().getCoupon().getExpirationDate());
+        		pcr.setStatus(p.getDefaultSku().getCoupon().getStatus());  		
+        		productCouponResults.add(pcr);
+        	}
+        	BrowseCouponResult result = new BrowseCouponResult();
+        	result.setProductCouponResults(productCouponResults);
+        	setResponseMessage(model, result, user);
+            return model;
+    	} else {
     	
     	// Retrieving any possible payload
         String postData = getPostData(request, response);
@@ -201,5 +232,6 @@ public class CouponBrowseController extends BaseController {
         
         setResponseMessage(model, result, user);
         return model;
+    	}
     }   
 }

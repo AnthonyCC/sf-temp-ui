@@ -1067,6 +1067,10 @@
 		<from>^/v/([0-9]+)/coupon/browse/categorycontentproductonly/(.*)</from>
 		<to last="true">/browsecoupon.do?action=getCategoryContentProductOnly&amp;browseTerm=$2&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/coupon/browse/allCoupons/(.*)</from>
+		<to last="true">/browsecoupon.do?action=getAllCouponDetails&amp;browseTerm=$2&amp;ver=$1</to>
+	</rule>
 
 	<!--  GET ALL NEW PRODUCTS-->
 	<rule>

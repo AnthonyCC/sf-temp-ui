@@ -870,6 +870,11 @@ function loadStuff() {
 	var postdata = '{"category": "picks_gltnfr_condi", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	
+  }else if (loaddata == "BrowseAllCoupons") {
+  	$("#url").val("/coupon/browse/allCoupons/");
+	var postdata = '{}';
+  	$("#payload").val(postdata);
+  	
   }else if (  loaddata == "GetNewProducts") {
   	$("#url").val("/product/getnewproducts/"); 
   	$("#payload").val("");
@@ -1180,7 +1185,7 @@ function doStuff() {
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
   <option value="BrowseCouponCategoryContent">BROWSE COUPON - CATEGORYCONTENT</option>
   <option value="BrowseCouponCategoryContentProductOnly">BROWSE COUPON - CATEGORYCONTENT(Product Only)</option>
-  
+  <option value="BrowseAllCoupons">BROWSE COUPON - All</option>
   <option value=""> ========== EWallet ========== </option>
   <option value="EwalletStdCheckout">EWallet - STANDARD CHECKOUT</option>
   <option value="EwalletStdCheckoutData">EWallet - STANDARD CHECKOUT DATA</option>
