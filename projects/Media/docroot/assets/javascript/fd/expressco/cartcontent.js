@@ -125,6 +125,9 @@ function tip_entered(){
 		
 		/*forcibly show the excessive amount tooltip box */
     $jq(etids.div_toolTipTextBox).addClass('shown');
+
+    /* set the input field invalid */
+    $jq(etids.inp_tipTextBox).attr('invalid','');
 	}else{ /*if the tip is a proper number, including zero */
 		$jq(etids.div_toolTipTextBox).html('');
 		$jq(etids.btn_tipApply).prop('disabled', false);
@@ -133,6 +136,9 @@ function tip_entered(){
 		/*forcibly hide the excessive amount tooltip box */
 		$jq(etids.div_toolTipTextBox).removeClass('shown');
 		$jq(etids.div_toolTipTextBox).attr('tabindex', '-1');
+
+    /* remove invalid property from input field */
+    $jq(etids.inp_tipTextBox).attr('invalid',null);
 	}
 }
 

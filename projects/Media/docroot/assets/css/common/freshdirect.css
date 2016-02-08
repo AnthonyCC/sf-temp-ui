@@ -85,6 +85,23 @@ h2.centerline span {
   display:none;
 }
 
+.csstooltip {
+  display: inline-block;
+}
+
+.csstooltip + .csstooltipcontent,
+.csstooltip .csstooltipcontent {
+  position: absolute;
+  left: -9999px;
+}
+
+.csstooltip:focus + .csstooltipcontent,
+.csstooltip:hover + .csstooltipcontent,
+.csstooltip:focus .csstooltipcontent,
+.csstooltip:hover .csstooltipcontent {
+  left: auto;
+  z-index: 1000;
+}
 
 /* }}} */
 
