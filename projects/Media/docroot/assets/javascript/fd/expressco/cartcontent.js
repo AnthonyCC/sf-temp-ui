@@ -41,7 +41,7 @@ function template_cleanup(){
 /*the function fired by hitting that green link within the excessive tip tooltip box */
 function populateCustomTipField(maxPossibleTip){
 	/* place the maximum allowable tip value into the field, based upon subtotal */
-	$jq(etids.inp_tipTextBox).val( maxPossibleTip );
+  $jq(etids.inp_tipTextBox).val( maxPossibleTip ).focus().select();
 
 	tip_entered();
 }
