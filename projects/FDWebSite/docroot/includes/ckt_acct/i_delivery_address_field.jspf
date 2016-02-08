@@ -14,7 +14,8 @@ final int W_DELIVERY_ADDRESS_FIELD_TOTAL = 970;
 <%!
 String[] checkAddressForm = {
     EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
-    EnumUserInfoName.DLV_COMPANY_NAME.getCode(),    
+    EnumUserInfoName.DLV_COMPANY_NAME.getCode(),
+    EnumUserInfoName.DLV_ADDRESS_1SS.getCode(),
     EnumUserInfoName.DLV_ADDRESS_1.getCode(), EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode(), 
     EnumUserInfoName.DLV_APARTMENT.getCode(), EnumUserInfoName.DLV_CITY.getCode(), 
     EnumUserInfoName.DLV_STATE.getCode(), EnumUserInfoName.DLV_ZIPCODE.getCode(), 
@@ -283,6 +284,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
 				*&nbsp;Street Address&nbsp;&nbsp;
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1SS.getCode()%>"></span></fd:ErrorHandler>
 			</td>
 			<td colspan="2">
 				<input type="text" SIZE="21" maxlength="50" class="text11" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
@@ -298,6 +300,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			<td align="right" class="text12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td class="text12" colspan="2">
 				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
+				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1SS.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
 			</td>
 		</tr>
 		<tr valign="MIDDLE">
