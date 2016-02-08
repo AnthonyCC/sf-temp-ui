@@ -209,7 +209,12 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
 
-				this.updateTopCheckoutButton(data);
+				this.updateTopCheckoutButton(data);				
+				
+				//APPBUG-4312, detects custom tip by the actual earlier granted amount, based on whether or not it is part of the list which populates the dropdown
+				if( data.tipAmountsStr.indexOf(data.etipTotal) < 0  ){
+					data.customTip = true;
+				}
 				
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
 				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
