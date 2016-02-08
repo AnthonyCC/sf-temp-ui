@@ -1088,7 +1088,8 @@ label[for="dontupdatecartlines"] {
 	font-weight: 700;
 	padding-left: 0px;
 }
-.eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{
+/*.eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{*/
+.eTippingEnabled .subtotal__row .subtotal__rowcell-right{
 	position:absolute;
 }
 
