@@ -1125,12 +1125,16 @@ label[for="dontupdatecartlines"] {
 	/*background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;*/
 	background: transparent url('/media/images/layout/input-arrow-down.png') no-repeat 97% center;
 }
-.eTippingEnabled #tipDropdown:focus, .eTippingEnabled tipTextBox:focus{
+.eTippingEnabled #tipDropdown:focus, .eTippingEnabled #tipTextBox:focus{
 	border-color: #4FA157;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
 }
+.eTippingEnabled #tipTextBox::-ms-clear {
+    display: none;
+}
+
 .eTippingEnabled #tipApply, .eTippingEnabled #tipApplied{
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
