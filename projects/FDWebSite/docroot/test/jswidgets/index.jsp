@@ -768,7 +768,7 @@
     <h2 class="module-title" fd-toggle-trigger="toggleCommon">FreshDirect Basic Widgets</h2>
 
     <div id="FD_common_tooltip" class="method deprecated">
-      <h3 class="method-title">Tooltip (old, deprecated)</h3>
+      <h3 class="method-title">Tooltip (old, deprecated, use csstooltip instead)</h3>
       <p class="description">
       Basic tooltip class.<br/>
       New tooltips are created for every DOM element that has <code>tooltip</code> class, and exists before the load of the JS common bundle. (Please note that usually the bundle is loaded at the bottom of the page, but in this testpage it's at the top.)<br/>
@@ -800,6 +800,24 @@
         FreshDirect.modules.common.Tooltip.init();
         new FreshDirect.modules.common.Tooltip(document.getElementById('oldtooltipexample'), {orientation: 'bottom'});
       </script>
+    </div>
+
+    <div id="CSS_tooltip" class="method">
+      <h3 class="method-title">CSS based Tooltip</h3>
+      <p class="description">
+        Lightweight, A11Y aware tooltip implementation.<br>
+      </p>
+
+      <pre class="prettyprint example">
+      </pre>
+
+      <div class="example-container">
+        <button class="csstooltip cssbutton green transparent icon-info-before" aria-describedby="example-tooltip1">Button w/ tooltip</button>
+        <div id="example-tooltip1" class="csstooltipcontent">
+          This is a tooltip.
+        </div>
+      </div>
+
     </div>
 
     <div id="FD_common_tooltipPopup" class="method">
