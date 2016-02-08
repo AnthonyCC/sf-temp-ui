@@ -1078,7 +1078,7 @@ label[for="dontupdatecartlines"] {
 	font-weight:bold;
 }
 .eTippingEnabled #subtotalbox1 .subtotal__rowcell-mid{
-	width: 85px;
+	min-width: 85px;
 	text-align:right;
 	white-space:nowrap;
 }
