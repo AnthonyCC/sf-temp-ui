@@ -1222,13 +1222,27 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #toolTipTextBox{
-    margin-left: -330px;
-    margin-top: -120px;
+    margin-left: -275px;
+    margin-top: -67px;
     width:440px;
     padding:13px 18px 13px 18px;
 }
 .eTippingEnabled #toolTipTextBox a, .eTippingEnabled .tooltip a{
 	text-decoration: underline;
+}
+.eTippingEnabled #toolTipTextBox:before {
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	background-color: #FFFFFF;
+	width: 15px;
+	height: 15px;
+	border-top: #999 1px solid;
+	border-right: #999 1px solid;
+	content: " ";
+	position: absolute;
+	left: 49px;
+	top: 45px;
 }
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
