@@ -5,5 +5,6 @@ public enum UnavailabilityReason {
 	ATP, /* ATP check failed on an item */
 	UNAV, /* item is unavailable */
 	GENERAL /* general issue raised */, 
-	DISC
+	DISC,
+	TBDS /*To be Discontinued soon*/
 }
