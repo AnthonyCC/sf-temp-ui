@@ -250,9 +250,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
 					*/
 					data.etipTotal = "$" + parsedEtipTotal;
-					
-					console.log( data );
-					console.log( "parsedEtipTotal = " + parsedEtipTotal );
 				}
 				
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
