@@ -62,6 +62,13 @@ public class OrderTagModelBuilder {
 		/** SO **/
 		model.getAttributesMaps().put(9, order.getStandingOrderId()); //standingOrderId
 		
+		/**TIP**/
+		
+		if (order.getTip() >= 0) {
+			model.getAttributesMaps().put(12, Double.toString(order.getTip())); // TIP
+		}
+		
+		
 		return model;
 	}
 	
