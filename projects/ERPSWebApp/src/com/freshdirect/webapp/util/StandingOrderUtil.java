@@ -838,24 +838,27 @@ public class StandingOrderUtil {
 		List<FDCartLineI> list = cart.getOrderLines();
 		List<FDCartLineI> detachedList = new ArrayList<FDCartLineI>(list.size());
 		detachedList.addAll(list);	
+		boolean isDiscountinuedSoon=false;
 		for (int i = 0; i < detachedList.size(); i++) {
 			FDCartLineI cartLine = detachedList.get(i);
 			int randomId = cartLine.getRandomId();
 			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
 			ZoneInfo zone=cartLine.getUserContext().getPricingContext().getZoneInfo();
-			if (!prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())) {
+			if(EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(prodInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()))){
+				isDiscountinuedSoon=true;
+			}if (!prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel()) || isDiscountinuedSoon) {
 				String altSkuCode = getAlternateSkuCode(cartLine,excludedProductKeys);
 				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
-					
-				if(prodInfo.isDiscontinued(zone.getSalesOrg(),zone.getDistributionChanel())){
+				if(isDiscountinuedSoon) {
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.TBDS, err, cartLine.getQuantity(),altSkuCode);
+				}	
+				else if(prodInfo.isDiscontinued(zone.getSalesOrg(),zone.getDistributionChanel())){
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.DISC, err, cartLine.getQuantity(),altSkuCode);
 				}
 				else if(prodInfo.isTempUnavailable(zone.getSalesOrg(),zone.getDistributionChanel()) || !prodInfo.isAvailable(zone.getSalesOrg(),zone.getDistributionChanel())){
 				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity(),altSkuCode);
-				} else if (EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(prodInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()))) {
-					vr.addUnavailableItem(cartLine, UnavailabilityReason.TBDS, err, cartLine.getQuantity(),altSkuCode);
-				}
+				} 
 				cart.removeOrderLineById(randomId);				
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
