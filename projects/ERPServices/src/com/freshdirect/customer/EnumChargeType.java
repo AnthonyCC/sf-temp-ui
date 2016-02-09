@@ -15,11 +15,11 @@ public class EnumChargeType extends Enum {
 	public final static EnumChargeType DEPOT_DELIVERY	= new EnumChargeType("DDC", "000000000000008889", "Depot Delivery Fee", "");
 	public final static EnumChargeType RE_DELIVERY		= new EnumChargeType("RDL", "000000000000003333", "Re Delivery Fee", "");
 	public final static EnumChargeType FD_RESTOCKING_FEE	= new EnumChargeType("RFD", null, "FreshDirect Restocking Fee", "");
-	public final static EnumChargeType WBL_RESTOCKING_FEE = new EnumChargeType("RWB", null, "WBL Restocking Fee", "");
+	public final static EnumChargeType WBL_RESTOCKING_FEE = new EnumChargeType("RWB", null, "WBL Restocking Fee", "OR040000");
 	public final static EnumChargeType BC_RESTOCKING_FEE = new EnumChargeType("RBC", null, "BC Restocking Fee", "");
 	public final static EnumChargeType USQ_RESTOCKING_FEE = new EnumChargeType("RUQ", null, "USQ Restocking Fee", "");
 	public final static EnumChargeType FDW_RESTOCKING_FEE = new EnumChargeType("RUW", null, "FDW Restocking Fee", "");
-	public final static EnumChargeType BOUNCED_CHECK = new EnumChargeType("BCF", null, "Bounced Check Fee", "");
+	public final static EnumChargeType BOUNCED_CHECK = new EnumChargeType("BCF", null, "Bounced Check Fee", "PH050231");
 	public final static EnumChargeType DLVPREMIUM = new EnumChargeType("DPR", "000000000000008888", "Premium Fee", "");
 	public final static EnumChargeType TIP = new EnumChargeType("TIP", "000000000000006666", "Tip", "ON030000");
 
