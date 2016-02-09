@@ -838,8 +838,8 @@ public class StandingOrderUtil {
 		List<FDCartLineI> list = cart.getOrderLines();
 		List<FDCartLineI> detachedList = new ArrayList<FDCartLineI>(list.size());
 		detachedList.addAll(list);	
-		boolean isDiscountinuedSoon=false;
 		for (int i = 0; i < detachedList.size(); i++) {
+			boolean isDiscountinuedSoon=false;
 			FDCartLineI cartLine = detachedList.get(i);
 			int randomId = cartLine.getRandomId();
 			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
@@ -862,7 +862,6 @@ public class StandingOrderUtil {
 				cart.removeOrderLineById(randomId);				
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
-			
 		}
 						
 		return vr.isFail();
