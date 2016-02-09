@@ -1122,15 +1122,15 @@ label[for="dontupdatecartlines"] {
 	box-sizing: border-box;
 }
 .eTippingEnabled #tipDropdown{
-	height:34px;
+	height:30px;
 	/*background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;*/
 	background: transparent url('/media/images/layout/input-arrow-down.png') no-repeat 97% center;
-}
-.eTippingEnabled #tipDropdown:focus, .eTippingEnabled #tipTextBox:focus{
-	border-color: #4FA157;
 	border-radius: 0px;
 	-webkit-border-radius: 0px;
 	-moz-border-radius: 0px;
+}
+.eTippingEnabled #tipDropdown:focus, .eTippingEnabled #tipTextBox:focus{
+	border-color: #4FA157;
 }
 .eTippingEnabled #tipTextBox::-ms-clear {
     display: none;
