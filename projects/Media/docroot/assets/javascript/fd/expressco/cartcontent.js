@@ -211,12 +211,48 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 				this.updateTopCheckoutButton(data);
 				
-				/*APPBUG-4312, make a new var from the etip amount into a float value to compare against zero*/
-				var parsedEtipTotal = parseFloat(data.etipTotal.replace(/\$/g, ""));
-				
-				/*APPBUG-4312, detects custom tip by the actual earlier granted amount, based on whether or not it is part of the list which populates the dropdown */
-				if( (data.tipAmountsStr.indexOf(data.etipTotal) < 0) && (parsedEtipTotal > 0) ){
-					data.customTip = true;
+				/*only if etipping is turned on in the properties*/
+				if( data.etipTotal !== null ){
+					/*APPBUG-4312, make a new var from the etip amount into a float value to compare against zero*/
+					var parsedEtipTotal = parseFloat(data.etipTotal.replace(/\$/g, ""));
+					
+					/*APPBUG-4312, detects custom tip by the actual earlier granted amount, based on whether or not it is part of the list which populates the dropdown */
+
+					/*split the tip list that populates the dropdown into a string array*/
+					var tipAmountsArr = data.tipAmountsStr.split(",");
+					
+					/*this will hold the value of the current member of the just made array above*/
+					var currentArrMem = "";
+					
+					/*to find out whether or not the current tip amount is actually within the tip dropdown list array*/
+					var boolInTipList = false;
+					for(var i=0; i<tipAmountsArr.length; i++){
+						/*remove the dollar sign from the current member of the array*/
+						currentArrMem = tipAmountsArr[i].replace(/\$/g, "");
+					    
+						/*if the current member IS a number AND the parsedFloated current tip amount equals the parsedFloated current member*/
+					    if ( !isNaN(currentArrMem) && (parseFloat(currentArrMem) == parsedEtipTotal) ){
+					    	/*so the current tip amount previously entered DOES exist within the dropdown array*/
+					    	boolInTipList = true;
+					    }
+					}
+					
+					/*if the currently placed tip amount is NOT within the tip dropdown array AND it equals more than 0,
+					then declare the customTip property of the data to be true.
+					NOTICE: this property could have been true before for other reasons*/
+					if( (boolInTipList == false) && (parsedEtipTotal > 0) ){
+						data.customTip = true;
+					}
+					
+					/*
+					To address bug in which the soy template select box does not correctly recognize the etip amount as being the same as one of its members.
+					This makes it so that the amount will only have a decimal place when the digits to the RIGHT of the decimal place are both greater than zero.
+					e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
+					*/
+					data.etipTotal = "$" + parsedEtipTotal;
+					
+					console.log( data );
+					console.log( "parsedEtipTotal = " + parsedEtipTotal );
 				}
 				
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
