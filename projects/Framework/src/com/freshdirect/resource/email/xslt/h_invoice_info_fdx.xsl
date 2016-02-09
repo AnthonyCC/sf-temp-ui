@@ -166,7 +166,7 @@
 						<td colspan="1" align="right">Tip :</td>
 						<td align="right"><xsl:value-of select="format-number(order/tip, '$###,##0.00', 'USD')"/>							
 						</td>
-						<td colspan="1">&nbsp;<</td>
+						<td colspan="1">&nbsp;</td>
 					</tr>
 				</xsl:if>
 				
