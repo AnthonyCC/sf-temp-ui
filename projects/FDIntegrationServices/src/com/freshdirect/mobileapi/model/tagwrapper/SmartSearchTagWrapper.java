@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.util.SearchNavigator;
@@ -47,7 +48,7 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
 		Collection<ProductFilterI> filters = new ArrayList<ProductFilterI>();
 		if (FDStoreProperties.isIPhoneSearchFilterDiscontinuedOnly())
 			filters.add(discontinuityFilter);
-		else
+		else if(!(ContentFactory.getInstance()!=null && ContentFactory.getInstance().getStore()!=null && ContentFactory.getInstance().getStore().getContentName()!=null && ContentFactory.getInstance().getStore().getContentName().equals("FDX")))
 			filters.add(availableFilter);
 		filters.add(iphoneFilter);
 		((SmartSearchTag) this.wrapTarget).setProductFilters(filters);
