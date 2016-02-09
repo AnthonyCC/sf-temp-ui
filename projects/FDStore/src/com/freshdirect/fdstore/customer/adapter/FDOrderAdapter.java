@@ -252,10 +252,17 @@ public class FDOrderAdapter implements FDOrderI {
 			cartLine.setCouponDiscount(ol.getCouponDiscount());
 			cartLine.setEStoreId(erpOrder.geteStoreId());
 			cartLine.getUserContext().setStoreContext(StoreContext.createStoreContext(erpOrder.geteStoreId()));
-			if(dpi!=null && !StringUtil.isEmpty(dpi.getSalesOrg()) && !StringUtil.isEmpty(ol.getSalesOrg())  && !ol.getSalesOrg().equals(dpi.getSalesOrg())) {
-				//--Hack for APPDEV-4726 FoodKick pricing errors in order receipt and order details				
-				ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), ol.getSalesOrg(), ol.getDistChannel()));
-				cartLine.getUserContext().setPricingContext(new PricingContext(z));
+			//if(dpi!=null && !StringUtil.isEmpty(dpi.getSalesOrg()) && !StringUtil.isEmpty(ol.getSalesOrg())  && !ol.getSalesOrg().equals(dpi.getSalesOrg())) {
+			if(dpi!=null && !StringUtil.isEmpty(dpi.getSalesOrg()) && !StringUtil.isEmpty(ol.getSalesOrg())) {
+				//--Hack for APPDEV-4726 FoodKick pricing errors in order receipt and order details
+				if(!ol.getSalesOrg().equals(dpi.getSalesOrg())) {
+									
+					ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), ol.getSalesOrg(), ol.getDistChannel()));
+					cartLine.getUserContext().setPricingContext(new PricingContext(z));
+				} else if (!"0001".equals(ol.getSalesOrg())){//for group scale
+					ZoneInfo z=new ZoneInfo(ol.getPricingZoneId(), dpi.getSalesOrg(), dpi.getDistChannel(), ZoneInfo.PricingIndicator.BASE, new ZoneInfo(ol.getPricingZoneId(), "0001", "01"));
+					cartLine.getUserContext().setPricingContext(new PricingContext(z));
+				}
 			}
 			
 			//If gift card sku load the fixed frice into cartline.
