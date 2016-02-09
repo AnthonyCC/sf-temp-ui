@@ -908,8 +908,11 @@
 	{let $deliveryUsed: 0 /}
 	{let $orderTotalUsed: 0 /}
 
-	{if $subTotalBox}
+	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
+		  {if $avalaraEnabled and $box.text == 'Sales Tax' and $cartlineType == 'YOUR_CART'}/*condition not to show tax on view cart */
+	  			
+		  {else}	
 			<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
@@ -957,8 +960,8 @@
 						</div>
 						
 						{let $deliveryUsed: 1 /}
-					{else}
-						{$box.value}
+					{else}		
+							{$box.value}
 					{/if}
 				</div>
 			
@@ -999,7 +1002,7 @@
 							{/if}
 						</div>
 					{/if} /*end if $cartlineType == 'CHECKOUT' */
-					
+				{/if}/*End condition not to show tax on view cart */
 					{if $cartlineType == 'YOUR_CART'}
 						{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal'}
 							<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
@@ -1110,10 +1113,7 @@
 				{/if}
 			{else}
 				<p>
-					<span class='footer__legend'>* - Estimated Price</span>
-					<span class='footer__legend'>T - Taxable Item</span>
-					<span class='footer__legend'>D - State Bottle Deposit</span>
-					<span class='footer__legend'>S - Special Price</span>
+			
 				</p>
 			{/if} /*end if $avalaraEnabled */
 			<p class='footer__findout'>
