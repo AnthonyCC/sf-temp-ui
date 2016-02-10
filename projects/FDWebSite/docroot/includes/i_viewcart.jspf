@@ -1201,8 +1201,8 @@ asyncPixelWithTimeout();
 		</div><div style="clear: both;"></div>
 		
 	</td></tr>
-	<tr><td align="right"><br /><%	if (FDStoreProperties.getAvalaraTaxEnabled()) {%><b>Order total will be recalculated before the order submit</b>&nbsp;&nbsp;&nbsp;&nbsp;<%	}	%><%	if (!FDStoreProperties.getAvalaraTaxEnabled()) {%><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;	<%	}	%><strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
-	<tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
+	<tr><td align="right"><br /><%	if (FDStoreProperties.getAvalaraTaxEnabled()) {%><b>Order total will be recalculated before the order submit</b>&nbsp;&nbsp;&nbsp;&nbsp;<%	}else{%><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;	<%	}	%><strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
+	<!-- <tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>-->
 </table>
 </div>
 
