@@ -287,7 +287,9 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			return false;
 		}
 		
-		Connection conn = null;
+		//APPDEV-4847 :Commented below code because of Make Good order's total comparing with original order validatio
+		 
+		/*Connection conn = null;
 		try {
 			conn = getConnection();
 
@@ -306,7 +308,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 				LOGGER.warn("Unable to close Connection", ex);
 				throw new EJBException(ex.getMessage());
 			}
-		}
+		}*/
 		
 /*
 		ErpSaleInfo refSale = orderHistory.getSale(order.getPaymentMethod().getReferencedOrder());
