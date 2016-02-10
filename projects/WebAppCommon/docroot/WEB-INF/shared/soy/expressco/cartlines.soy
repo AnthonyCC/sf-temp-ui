@@ -912,7 +912,7 @@
 
 	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
-		  {if $avalaraEnabled and $box.text == 'Sales Tax' and $cartlineType == 'YOUR_CART'}/*condition not to show tax on view cart */
+		  {if $avalaraEnabled and ($box.text == 'Sales Tax' or $box.text == 'Total Tax') and $cartlineType == 'YOUR_CART'}/*condition not to show tax on view cart */
 	  			
 		  {else}	
 			<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
