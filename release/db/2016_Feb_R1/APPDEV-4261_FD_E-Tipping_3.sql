@@ -1,12 +1,26 @@
-UPDATE transp.menu SET menu_id='OPR013',MENU_PARENT_ID='MNM002' WHERE menu_id='ADO025';
 
-UPDATE transp.menu_page SET menu_id='OPR013' WHERE menu_id='ADO025';
+Insert into TRANSP.MENU
+   (MENU_ID, LINK, MENU_TITLE, ORIENTATION, MENU_PARENT_ID)
+Values
+   ('OPR014', 'etipping.do', 'E-Tip', 'LEFT', 'MNM002');
+Insert into TRANSP.MENU
+   (MENU_ID, LINK, MENU_TITLE, ORIENTATION, MENU_PARENT_ID)
+Values
+   ('OPR013', 'fdetipping.do', 'ETipping Approval', 'LEFT', 'MNM002');
+Insert into TRANSP.MENU_PAGE
+   (MENU_ID, PAGE_ID)
+Values
+   ('OPR013', 164);
+Insert into TRANSP.MENU_PAGE
+   (MENU_ID, PAGE_ID)
+Values
+   ('OPR014', 149);
+
+
 
 UPDATE transp.MENU_COMPANY_CODE SET menu_id='OPR013' WHERE menu_id='ADO025';
 
-UPDATE transp.menu SET menu_id='OPR014',MENU_PARENT_ID='MNM002' WHERE menu_id='ADO020';
 
-UPDATE transp.menu_page SET menu_id='OPR014' WHERE menu_id='ADO020';
 
 UPDATE transp.MENU_COMPANY_CODE SET menu_id='OPR014' WHERE menu_id='ADO020';
 
