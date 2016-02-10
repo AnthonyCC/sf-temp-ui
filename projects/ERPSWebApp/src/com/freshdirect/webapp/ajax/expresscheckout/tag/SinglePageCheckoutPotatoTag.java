@@ -59,7 +59,9 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
+			if(FDStoreProperties.getAvalaraTaxEnabled()){
 			CheckoutService.defaultService().applyAtpCheck(user);
+			}
 			// Check whether EWallet Card used for order 
 			checkEWalletCard(result.getPayment(),request);
 			removeOlderEwalletPaymentMethod(result.getPayment(),request);
