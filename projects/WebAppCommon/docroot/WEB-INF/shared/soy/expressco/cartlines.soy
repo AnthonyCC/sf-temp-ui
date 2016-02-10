@@ -942,10 +942,10 @@
 								{if $box.id == 'ssOrderTotal'}
 									<span class="strl_text ssOrderTotal">{$box.text}</span>
 								{else}
+									<span class="strl_text">{$box.text}</span>
 									{if $box.id == 'deliveryfee' and $eTippingEnabled}
 										{call .dfToolTip /}
 									{/if}
-									<span class="strl_text">{$box.text}</span>
 								{/if}
 							{/if} /*end if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */
 						{/if} /*end if $box.other and $box.other.promoCode */
@@ -983,10 +983,11 @@
 									data-ifrpopup-width='375' data-ifrpopup-height='335'>{$box.text}</a>
 								{else}
 									{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
+										{$box.text}
 										{if $eTippingEnabled}
 											{call .dfToolTip /}
 										{/if} /*end if $eTippingEnabled */
-										{$box.text}
+										
 										{let $deliveryUsed: 1 /}
 									{else}
 										{$box.text}
@@ -1023,10 +1024,11 @@
 										</a>
 									{else}
 										{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
+											{$box.text}
 											{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
 												{call .dfToolTip /}
 											{/if}
-											{$box.text}
+											
 											
 											{let $deliveryUsed: 1 /}
 										{else}
