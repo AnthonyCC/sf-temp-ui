@@ -175,22 +175,27 @@
     background-position:-108px -15px;
   }
 
-	#locationbar .loginButton,
-	#locationbar .logoutButton,
-	#locationbar .signUpButton,
-	#newzipgo
-	{
-		display:inline-block;
-		height:15px;
-		margin-right:8px;
-		text-decoration:none;
-		overflow:hidden;
-		text-indent:90px;
-		/*vertical-align:middle;*/
-		border: 0 none;
-		cursor: pointer;
-		background-color: transparent;
-	}
+#locationbar .loginButton,
+#locationbar .logoutButton,
+#locationbar .signUpButton,
+#newzipgo
+{
+	display:inline-block;
+	height:15px;
+	margin-right:8px;
+	text-decoration:none;
+	overflow:hidden;
+	text-indent:90px;
+	/*vertical-align:middle;*/
+	border: 0 none;
+	cursor: pointer;
+}
+#locationbar .loginButton,
+#locationbar .logoutButton,
+#locationbar .signUpButton
+{
+	background-color: transparent;
+}
 
 
 #locationbar .buttons label {
