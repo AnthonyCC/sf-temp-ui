@@ -778,7 +778,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 				}
 				address.setAddressInfo(addressInfo);
 			}
-			address.setApartment(shippingAddress.getAltApartment());
+			address.setApartment(shippingAddress.getApartment());
 			address.setCity(shippingAddress.getCity());
 			address.setState(shippingAddress.getState());
 			address.setZipCode(shippingAddress.getZipCode());
