@@ -252,7 +252,6 @@ final class PaymentechRequestHelper {
 	    } else if(TransactionType.GET_PROFILE.equals(transType)) {
 	    	request.setFieldValue(PaymentechFields.ProfileRequest.CustomerProfileAction.name(),
                                   PaymentechConstants.ProfileAction.RETRIEVE.getCode());
-	    
 	    } else if(TransactionType.UPDATE_PROFILE.equals(transType)) {
 	    	request.setFieldValue(PaymentechFields.ProfileRequest.CustomerProfileAction.name(),
 	                              PaymentechConstants.ProfileAction.UPDATE.getCode());
@@ -335,6 +334,8 @@ final class PaymentechRequestHelper {
 	}
 	
 	public static void setEWalletInfo(String transaction, RequestIF request, PaymentMethod paymentMethod) throws FieldNotFoundException {
+		/*
+		 * Commenting this for now till Paymentech resolves MasterCard issue.
 		if (PaymentMethodType.CREDIT_CARD.equals(paymentMethod.getType())) {	
 			CreditCard creditCard = (CreditCard) paymentMethod;						
 			if (creditCard.getEwalletId() != null && creditCard.getEwalletId().equals(PaymentechConstants.MPWALLETID) && creditCard.getCreditCardType().equals(CreditCardType.MASTERCARD)){
@@ -345,7 +346,7 @@ final class PaymentechRequestHelper {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.DigitalWalletType.name(),
 						PaymentechConstants.MASTERPASS);
 				}
-		}
+		}*/
 			
 		}
 	
