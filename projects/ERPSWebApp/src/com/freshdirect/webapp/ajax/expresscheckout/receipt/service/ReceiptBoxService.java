@@ -262,7 +262,7 @@ public class ReceiptBoxService {
     }
 
     public void populateOrderTipToBox(List<CartSubTotalFieldData> receiptBox, FDOrderI order) {
-        if (0.0 < order.getTip()) {
+        if (0.0 <= order.getTip()) {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(TIP_ID);
             data.setText(TIP_TEXT);
