@@ -564,13 +564,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         //
         // standardize billing address on all credit cards
         //
-        if (result.isSuccess()&& !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())&&!EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {   
+        /*
+         * mshetty- This scrub functionality breaks eCheck functionality will SmartyStreet. Not required to scrub payment address.
+         * if (result.isSuccess()&& !EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())&&!EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {   
         	
         	AddressModel cleanAddress = scrubAddress(paymentMethod.getAddress(), result,isFiftyStateValidationReqd);
     		paymentMethod.setAddress1(cleanAddress.getAddress1());
     		paymentMethod.setAddress2(cleanAddress.getAddress2());
 
-        }
+        }*/
         
     }
     
@@ -827,8 +829,5 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	}
     	return msg;
     	
-    }
-    public static void main(String[] a) {
-    	//PaymentMethodUtil.validateCreditCardNumber(number, brand)
     }
 }
