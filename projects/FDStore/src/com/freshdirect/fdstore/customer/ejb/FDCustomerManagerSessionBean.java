@@ -952,7 +952,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}else{
 				addressModel.setAddressInfo(shippingAddress.getAddressInfo());
 			}
-			addressModel.setApartment(shippingAddress.getAltApartment());
+			addressModel.setApartment(shippingAddress.getApartment());
 			addressModel.setCity(shippingAddress.getCity());
 			addressModel.setState(shippingAddress.getState());
 			addressModel.setZipCode(shippingAddress.getZipCode());
