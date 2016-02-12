@@ -24,7 +24,7 @@
 			<context-root>/</context-root>
 		</web>
 	</module>
-<!-- 	<module>
+	<module>
 		<web>
 			<web-uri>../CRM/docroot</web-uri>
 			<context-root>/crm</context-root>
@@ -35,7 +35,7 @@
 			<web-uri>../cms-gwt/target/docroot</web-uri>
 			<context-root>cms-gwt</context-root>
 		</web>
-	</module> -->
+	</module>
 	<!-- 
 	<module>
 		<web>
