@@ -12,6 +12,7 @@ import javax.ejb.EJBException;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -108,7 +109,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	public PrimaryKey create(Connection conn) throws SQLException {
 		
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, CUSTOMER_ID, BUFFER_AMT) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, CUSTOMER_ID, BUFFER_AMT, TAXATION_TYPE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -125,6 +126,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		ps.setString(14, this.model.getGlCode());
 		ps.setString(15, this.model.getCustomerId());
 		ps.setBigDecimal(16, new BigDecimal(String.valueOf(this.model.getBufferAmt())));
+		ps.setString(17, model.getTaxationType()!=null?model.getTaxationType().getCode():"");
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -196,7 +198,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, BUFFER_AMT FROM CUST.SALESACTION WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, BUFFER_AMT, TAXATION_TYPE FROM CUST.SALESACTION WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -220,6 +222,8 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		this.model.setTransactionInitiator(rs.getString("INITIATOR"));
 		this.model.setGlCode(rs.getString("GL_CODE"));
 		this.model.setBufferAmt(rs.getDouble("BUFFER_AMT"));
+		String taxationType = rs.getString("TAXATION_TYPE");
+		this.model.setTaxationType((null!=taxationType && !"".equals(taxationType))?EnumNotificationType.getNotificationType(taxationType):null);
 		
 		// load children
 		OrderLineList oList = new OrderLineList();
