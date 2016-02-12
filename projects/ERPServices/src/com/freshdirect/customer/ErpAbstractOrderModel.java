@@ -39,6 +39,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	private String customerServiceMessage;
 	private String marketingMessage;
 	private String glCode;
+	private EnumNotificationType taxationType;
 	//This attribute is to hold the count of deliverypasses this cart holds.
 	private int deliveryPassCount = 0;
 
@@ -128,6 +129,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			this.setSelectedGiftCards(order.getSelectedGiftCards());
 			this.setAppliedGiftcards(order.getAppliedGiftcards());
 			this.setBufferAmt(order.getBufferAmt());
+			this.setTaxationType(order.getTaxationType());
 			if (isNewObject) {
 				clearPK();
 			}
@@ -458,6 +460,14 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	 */
 	public void setBufferAmt(double bufferAmt) {
 		this.bufferAmt = bufferAmt;
+	}
+
+	public EnumNotificationType getTaxationType() {
+		return taxationType;
+	}
+
+	public void setTaxationType(EnumNotificationType taxationType) {
+		this.taxationType = taxationType;
 	}
 
 	public int getDlvPassExtendDays() {
