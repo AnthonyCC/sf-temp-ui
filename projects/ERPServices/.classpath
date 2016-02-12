@@ -39,6 +39,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpmime-4.5.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gson-1.7.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/opencsv-1.8.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsch-0.1.44.jar"/>
