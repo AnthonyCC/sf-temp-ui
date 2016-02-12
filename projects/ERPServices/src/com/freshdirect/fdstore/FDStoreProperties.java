@@ -341,6 +341,7 @@ public class FDStoreProperties {
     private static final String PROP_GC_CATID = "fdstore.giftCardCatId";
     private static final String PROP_GC_PRODNAME = "fdstore.giftCardProdName";
     private static final String GIVEX_BLACK_HOLE_ENABLED = "givex.black.hole.enabled";
+    private static final String GIVEX_SECURITY_FIX_ENABLED = "givex.security.fix.enabled";
 
     // Robin Hood
     private static final String ROBIN_HOOD_ENABLED = "fdstore.isRobinHoodEnabled";
@@ -760,6 +761,9 @@ public class FDStoreProperties {
 	private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
 	private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
 	private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
+	
+	private static final String PROP_GIVEXGATEWAY_ENDPOINT = "fdstore.givexgateway.url";
+	
 
 	// APPDEV - 4159 - Creating of variables for maximum size of columns in promo table
 	
@@ -1160,6 +1164,8 @@ public class FDStoreProperties {
         defaults.put(PROP_GC_PRODNAME, "GC_testProd");
         defaults.put(GIVEX_BLACK_HOLE_ENABLED, "false");
 
+        defaults.put(GIVEX_SECURITY_FIX_ENABLED, "false");
+        
         // Robin Hood
         defaults.put(ROBIN_HOOD_ENABLED, "false");
         defaults.put(ROBIN_HOOD_LANDING_URL, "/robin_hood/landing.jsp");
@@ -1569,6 +1575,9 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1api.freshdirect.com/");
         defaults.put(PROP_OMS_API_URL, "http://crmdev5.freshdirect.com/");
+        
+        defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.freshdirect.com/givexintegration");
+        
         
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
         defaults.put(PROMO_OLDCOLUMN_MAX_LIMIT, "2999");
@@ -2609,7 +2618,11 @@ public class FDStoreProperties {
     public static boolean isGivexBlackHoleEnabled() {
     	return (Boolean.valueOf(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
     }
-
+    
+    public static boolean isGivexSecurityFixEnabled() {
+    	return (Boolean.valueOf(get(GIVEX_SECURITY_FIX_ENABLED))).booleanValue();
+    }
+    
     public static String getRoutingProviderURL() {
         return get(PROP_ROUTING_PROVIDER_URL);
     }
@@ -3821,7 +3834,9 @@ public class FDStoreProperties {
 	public static String getOMSAPIUrl() {
 		return get(PROP_OMS_API_URL);
 	}
-	
+	public static String getGiveXGatewayEndPoint() {
+		return get(PROP_GIVEXGATEWAY_ENDPOINT);
+	}
 	public static String getLogisticsCompanyCode() {
 		return get(PROP_LOGISTICS_COMPANY_CODE);
 	}

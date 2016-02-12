@@ -72,6 +72,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GivexException;
 import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
+import com.freshdirect.payment.ejb.GivexServerNewGateway;
 
 public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
@@ -119,7 +120,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 						ErpRecipentModel recModel=(ErpRecipentModel)recipentList.get(i); 			
 						String availableGCId = getAvailableGCIdFromList(gcList, assignedGiftcards, recModel.getAmount());
 						if(availableGCId == null) {
-							rspModel=GivexServerGateway.registerCard(recModel.getAmount(), referenceId);
+							if(FDStoreProperties.isGivexSecurityFixEnabled()){
+								rspModel=GivexServerNewGateway.registerCard(recModel.getAmount(), referenceId);
+							}else{
+								rspModel=GivexServerGateway.registerCard(recModel.getAmount(), referenceId);
+							}
 							addGiftCardTransactionModel(rspModel,saleId,EnumGiftCardTransactionType.REGISTER,model, referenceId);
 							ErpGiftCardModel erpGiftCardModel = convertGiftCardModel(model,rspModel, saleId);
 							String gcId=storeGiftCardInfo(erpGiftCardModel);
@@ -435,7 +440,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				}
 				ErpGiftCardModel gcModel = new ErpGiftCardModel();
 				gcModel.setAccountNumber(givexNum);
-				GivexResponseModel response = GivexServerGateway.getBalance(gcModel);
+				GivexResponseModel response = null;
+				if(FDStoreProperties.isGivexSecurityFixEnabled()){
+					response = GivexServerNewGateway.getBalance(gcModel);
+				}else{
+					response = GivexServerGateway.getBalance(gcModel);
+				}
+					
 				//Validation is sucessful. Load the information from the database.
 				//Set the card status as active. 
 				giftCard.setStatus(EnumGiftCardStatus.ACTIVE);
@@ -494,8 +505,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			   toModel.setAccountNumber(toGivexNum);	
 			   ErpSaleModel saleModel = (ErpSaleModel)saleEB.getModel();				
 			   int count = saleModel.getGCTransactions().size();
-			   String referenceId=convertToGivexReference(saleId, count++);					   
-			   GivexResponseModel rspModel= GivexServerGateway.transferBalance(fromModel, toModel, amount,referenceId);
+			   String referenceId=convertToGivexReference(saleId, count++);	
+			   GivexResponseModel rspModel= null;
+			   if(FDStoreProperties.isGivexSecurityFixEnabled()){
+				   rspModel= GivexServerNewGateway.transferBalance(fromModel, toModel, amount,referenceId);
+			   }else{
+				   rspModel= GivexServerGateway.transferBalance(fromModel, toModel, amount,referenceId);
+			   }
 			   rspModel.setGivexNumber(toGivexNum);
 			   ErpGiftCardTransModel btTransModel=createGiftCardTransModel(amount,saleId,EnumTransactionType.BALANCETRANSFER_GIFTCARD);
 			 
@@ -562,7 +578,12 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		try {
 			ErpGiftCardModel gcModel = new ErpGiftCardModel();
 			gcModel.setAccountNumber(givexNum);
-			GivexResponseModel response = GivexServerGateway.getBalance(gcModel);
+			GivexResponseModel response =null;
+			if(FDStoreProperties.isGivexSecurityFixEnabled()){
+				response = GivexServerNewGateway.getBalance(gcModel);
+			}else{
+				response = GivexServerGateway.getBalance(gcModel);
+			}
 			//Validation is sucessful. Load the information from the database.
 			conn = getConnection();
 			String owner = GiftCardPersistanceDAO.lookupOwner(conn, givexNum);
@@ -645,7 +666,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 			try {
 				ErpGiftCardModel gcModel = new ErpGiftCardModel();
 				gcModel.setAccountNumber(giftcard.getAccountNumber());
-				response = GivexServerGateway.getBalance(gcModel);
+				if(FDStoreProperties.isGivexSecurityFixEnabled()){
+					response = GivexServerNewGateway.getBalance(gcModel);
+				}else{
+					response = GivexServerGateway.getBalance(gcModel);
+				}
 				//Validation is sucessful. Set the card status as active.
 				giftcard.setStatus(EnumGiftCardStatus.ACTIVE);
 			}catch(GivexException ge) {
@@ -868,8 +893,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 					ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel) rAuths.get(0);
 					GivexResponseModel rspModel = null;
 					try{
-						rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+						if(FDStoreProperties.isGivexSecurityFixEnabled()){
+							rspModel = GivexServerNewGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
 																	rauth.getReferenceId());
+						}else{
+							rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+									rauth.getReferenceId());
+						}
 						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 						rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
 						//Reset the error message.
@@ -896,7 +926,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel) pAuths.get(0);
 				GivexResponseModel rspModel = null;
 				try{
-					rspModel = GivexServerGateway.preAuthGiftCard(pm, auth.getAmount(), auth.getReferenceId());
+					if(FDStoreProperties.isGivexSecurityFixEnabled()){
+						rspModel = GivexServerNewGateway.preAuthGiftCard(pm, auth.getAmount(), auth.getReferenceId());
+					}else{
+						rspModel = GivexServerGateway.preAuthGiftCard(pm, auth.getAmount(), auth.getReferenceId());
+					}
 					auth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 					auth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
 					//Reset the error message.
@@ -924,8 +958,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				pm.setAccountNumber(getAccountNumber(rauth.getCertificateNum()));
 				GivexResponseModel rspModel = null;
 				try{
-					rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+					if(FDStoreProperties.isGivexSecurityFixEnabled()){
+						rspModel = GivexServerNewGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),	
 																rauth.getReferenceId());
+					}else{
+						rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),	
+								rauth.getReferenceId());
+					}
 					rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 					rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
 					//Reset the error message.
@@ -979,8 +1018,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 					ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel) rAuths.get(0);
 					GivexResponseModel rspModel = null;
 					try{
-						rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+						if(FDStoreProperties.isGivexSecurityFixEnabled()){
+							rspModel = GivexServerNewGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
 																	rauth.getReferenceId());
+						}else{
+							rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+									rauth.getReferenceId());
+						}
 						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 						//Reset the error message.
 						rauth.setErrorMsg("");
@@ -1009,8 +1053,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 				pm.setAccountNumber(getAccountNumber(rauth.getCertificateNum()));
 				GivexResponseModel rspModel = null;
 				try{
-					rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+					if(FDStoreProperties.isGivexSecurityFixEnabled()){
+						rspModel = GivexServerNewGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
 																rauth.getReferenceId());
+					}else{
+						rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+								rauth.getReferenceId());
+					}
 					rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 					rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
 					//Reset the error message.
@@ -1050,7 +1099,12 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		Connection conn = null;
 		try{
 			//Update new GC balance to DB from Givex.
-			GivexResponseModel balResponse = GivexServerGateway.getBalance(pm);
+			GivexResponseModel balResponse = null;
+			if(FDStoreProperties.isGivexSecurityFixEnabled()){
+				balResponse = GivexServerNewGateway.getBalance(pm);
+			}else{
+				balResponse = GivexServerGateway.getBalance(pm);
+			}
 			conn = getConnection();
 			GiftCardPersistanceDAO.updateBalance(conn, (ErpGiftCardModel)pm, balResponse.getCertBalance());
 		}catch(GivexException ge){
@@ -1438,7 +1492,11 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		ErpPostAuthGiftCardModel postAuth = createPostAuthTransaction(referenceId, pm.getCertificateNumber(), auth.getAuthCode(), postAuthAmt);
 		GivexResponseModel rspModel = null;
 		try{
-			rspModel = GivexServerGateway.postAuthGiftCard(pm, postAuthAmt, new Long(auth.getAuthCode()).longValue(), referenceId);
+			if(FDStoreProperties.isGivexSecurityFixEnabled()){
+				rspModel = GivexServerNewGateway.postAuthGiftCard(pm, postAuthAmt, new Long(auth.getAuthCode()).longValue(), referenceId);
+			}else{
+				rspModel = GivexServerGateway.postAuthGiftCard(pm, postAuthAmt, new Long(auth.getAuthCode()).longValue(), referenceId);
+			}
 			postAuth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 			postAuth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
 			//Reset the error message.
@@ -1467,8 +1525,13 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		ErpReverseAuthGiftCardModel rauth = createReverseAuthTransaction(referenceId, pm.getCertificateNumber(), auth.getAuthCode(), auth.getAmount());		
 		GivexResponseModel rspModel =  null;
 		try{
-			rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(auth.getAuthCode()).longValue(),
+			if(FDStoreProperties.isGivexSecurityFixEnabled()){
+				rspModel = GivexServerNewGateway.cancelPreAuthorization(pm, new Long(auth.getAuthCode()).longValue(),
 														auth.getReferenceId());
+			}else{
+				rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(auth.getAuthCode()).longValue(),
+						auth.getReferenceId());
+			}
 
 			
 			rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
