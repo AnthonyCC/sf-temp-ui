@@ -46,6 +46,21 @@ try {
 
 function soon() { alert("Coming soon"); }
 
+//APPBUG-4163
+function close_window_new_account(){
+	/*
+	 * go through with this only if it is called from within the new account iframe,
+	 * AFTER the account has been made or if this is the grey upper right x visually nearby
+	*/
+	if(
+	($jq("#social-login-green-button_begin-shopping").length > 0) ||
+	($jq("#iframepopup-body_id").contents().find("#social-login-green-button_begin-shopping").length > 0)
+	){
+		window.top.location='/login/index.jsp';
+		window.top['FreshDirect'].components.ifrPopup.close();
+	}
+}
+
 //preferred roll-over swap technique..
 function swapImage(imgName,imgURL){
 	if (imgURL.length>0) {
