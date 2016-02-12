@@ -492,6 +492,7 @@ public class CartDataService {
             cartData.setItemCount(itemCount.getValue());
             cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
             cartData.setEstimatedTotal(JspMethods.formatPrice(cart.getTotal()));
+            cartData.setTotalWithoutTax(JspMethods.formatPrice(cart.getTotal()-cart.getTaxValue()));
             
             if(user!= null){
             	sessionUserLevel = user.getLevel();

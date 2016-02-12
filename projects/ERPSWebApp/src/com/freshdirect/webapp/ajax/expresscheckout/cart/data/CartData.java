@@ -106,6 +106,8 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private boolean containsWineSection;
     
+    private String totalWithoutTax; 
+    
     private List<String> tipAmounts = new ArrayList<String>();
     
     
@@ -346,6 +348,14 @@ public class CartData extends AbstractCoremetricsResponse {
 	
 	public boolean getAvalaraEnabled(){
 		return this.avalaraEnabled;
+	}
+
+	public String getTotalWithoutTax() {
+		return totalWithoutTax;
+	}
+
+	public void setTotalWithoutTax(String totalWithoutTax) {
+		this.totalWithoutTax = totalWithoutTax;
 	}
 
 

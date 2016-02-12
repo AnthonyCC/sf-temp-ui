@@ -21,6 +21,7 @@
  * @param eTippingEnabled eTippingEnabled
  * @param etipTotal eTipTotal
  * @param containsWineSection containsWineSection
+ * @param totalWithoutTax TotalWithoutTax
  */
 {template .viewcartlines autoescape="false"}
 	{call .couponMessage}
@@ -62,6 +63,7 @@
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
+		{param totalWithoutTax: $totalWithoutTax /}
 	{/call}
 	{call .footer}
 		{param buttonText: 'Checkout' /}
@@ -161,6 +163,7 @@
  * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative
  * @param containsWineSection containsWineSection
+ * @param? totalWithoutTax TotalWithoutTax 
  */
 {template .checkoutlines autoescape="false"}
 	<div class='cartcontent'>
@@ -197,6 +200,7 @@
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
+		{param totalWithoutTax: $totalWithoutTax /}
 	{/call}
 	{call .footer}
 		{param buttonText: 'Place Order' /}
@@ -343,6 +347,7 @@
  * @param numOfSections
  * @param isLastSection
  * @param containsWineSection containsWineSection
+ * @param? totalWithoutTax TotalWithoutTax 
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
@@ -391,6 +396,7 @@
 									{param userCorporate: $userCorporate /}
 									{param eTippingEnabled: $eTippingEnabled /}
 									{param avalaraEnabled: $avalaraEnabled /}
+									{param totalWithoutTax: $totalWithoutTax /}
 								{/call}
 							{/if}
 						</div>
@@ -742,6 +748,7 @@
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative Customer service representative data
+ * @param? totalWithoutTax TotalWithoutTax 
  */
 {template .total autoescape="false"}
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
@@ -848,6 +855,7 @@
 							{param userCorporate: $userCorporate /}
 							{param eTippingEnabled: $eTippingEnabled /}
 							{param avalaraEnabled: $avalaraEnabled /}
+							{param totalWithoutTax: $totalWithoutTax /}
 						{/call}
 					{/if}
 				{else}
@@ -859,6 +867,7 @@
 							{param userCorporate: $userCorporate /}
 							{param eTippingEnabled: $eTippingEnabled /}
 							{param avalaraEnabled: $avalaraEnabled /}
+							{param totalWithoutTax: $totalWithoutTax /}
 						{/call}
 					{/if}
 				{/if}
@@ -904,18 +913,19 @@
 * @param? userCorporate COS service is available for customer
 * @param? avalaraEnabled avalaraEnabled
 * @param? eTippingEnabled eTippingEnabled
+* @param? totalWithoutTax totalWithoutTax 
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
 	{let $deliveryUsed: 0 /}
 	{let $orderTotalUsed: 0 /}
-
+	
 	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
-		  {if $avalaraEnabled and ($box.text == 'Sales Tax' or $box.text == 'Total Tax') and $cartlineType == 'YOUR_CART'}/*condition not to show tax on view cart */
+		  {if $avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART'}/*condition not to show tax on view cart */
 	  			
-		  {else}	
-			<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
+		  {else}
+		  <div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -962,8 +972,12 @@
 						</div>
 						
 						{let $deliveryUsed: 1 /}
-					{else}		
-							{$box.value}
+					{else}	
+						{if $avalaraEnabled and $box.id=='ssOrderTotal' and $cartlineType == 'YOUR_CART'}
+								{$totalWithoutTax}
+						   {else}	
+							  {$box.value}
+						{/if}
 					{/if}
 				</div>
 			
