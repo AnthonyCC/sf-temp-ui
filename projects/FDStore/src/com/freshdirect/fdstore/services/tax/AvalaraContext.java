@@ -8,6 +8,7 @@ public class AvalaraContext {
 	private boolean commit = false;
 	private String docCode;
 	private Double returnTaxValue;
+	private boolean isAvalaraTaxed = false;
 
 	public AvalaraContext(FDCartI cart){
 		this.cart = cart;
@@ -44,4 +45,13 @@ public class AvalaraContext {
 	public void setReturnTaxValue(Double returnTaxValue) {
 		this.returnTaxValue = returnTaxValue;
 	}
+
+	public boolean isAvalaraTaxed() {
+		return isAvalaraTaxed;
+	}
+
+	public void setAvalaraTaxed(boolean isAvalaraTaxed) {
+		this.isAvalaraTaxed = isAvalaraTaxed;
+	}
+		
 }

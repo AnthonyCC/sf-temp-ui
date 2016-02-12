@@ -1654,6 +1654,7 @@ public class FDCustomerManager {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+			createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 

@@ -27,12 +27,16 @@ public class TaxFactoryImpl implements TaxFactory {
 		}
 
 		try{
-			return taxStrategy.getTaxResponse(avalaraContext);
+			AvalaraContext response = taxStrategy.getTaxResponse(avalaraContext);
+			response.setAvalaraTaxed(true);
+			return response;
 		} catch(FDException e){
 			LOGGER.error("Error in AValara Tax Calculation - Defaults to traditional tax");
 			try{
 				taxStrategy = getTaxStrategies().get("FD_TRADITIONAL_TAX");
-				return taxStrategy.getTaxResponse(avalaraContext);
+				AvalaraContext response = taxStrategy.getTaxResponse(avalaraContext);
+				response.setAvalaraTaxed(false);
+				return response;
 			} catch(FDException e1){
 				LOGGER.error("Error in Traditional tax calculation");
 			}

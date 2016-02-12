@@ -68,6 +68,7 @@ public class CheckoutService {
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
 	private final String EWALLET_ERROR_CODE = "WALLET_ERROR";
+	private AvalaraContext avalaraContext;
 
 
 
@@ -90,7 +91,7 @@ public class CheckoutService {
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
         UnavailabilityData unavailabilityData = null;
         FDCartModel cart = user.getShoppingCart();
-        AvalaraContext avalaraContext = new AvalaraContext(cart);
+        avalaraContext = new AvalaraContext(cart);
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
@@ -134,6 +135,9 @@ public class CheckoutService {
 		UnavailabilityData atpFailureData = null;
         if (checkAtpCheckEligibleByRestrictions(restriction)) {
 			atpFailureData = applyAtpCheck(user);
+			if(null!=this.avalaraContext && this.avalaraContext.isAvalaraTaxed()){
+				request.setAttribute("TAXATION_TYPE", "AVAL");
+			}
 		}
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();

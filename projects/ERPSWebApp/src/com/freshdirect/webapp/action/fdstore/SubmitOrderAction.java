@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumFraudReason;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
@@ -610,6 +611,8 @@ public class SubmitOrderAction extends WebActionSupport {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
 				info.setSource(transactionSource);
+				String taxationType = request.getAttribute("TAXATION_TYPE")!=null?request.getAttribute("TAXATION_TYPE").toString():"";
+				info.setTaxationType(!"".equals(taxationType)?EnumNotificationType.getNotificationType(taxationType):null);
 				boolean isFirstOrder = false;
 				if(user.getOrderHistory().getTotalOrderCount() <=0){
 					isFirstOrder= true;
