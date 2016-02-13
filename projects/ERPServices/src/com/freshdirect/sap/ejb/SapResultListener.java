@@ -267,7 +267,8 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
 						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName()
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions(),
-						saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
+						saleEB.getCurrentOrder().getDeliveryInfo().getServiceType()!=null?
+						saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName():null
 						 ,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
 						(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
 										 
@@ -296,7 +297,8 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 								,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getFirstName(),
 								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getLastName()
 								,(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions()!=null)?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getInstructions():"none",
-								saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getServiceType().getName()
+								saleEB.getCurrentOrder().getDeliveryInfo().getServiceType()!=null?
+								saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName():null
 								,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
 								(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null);
 					}

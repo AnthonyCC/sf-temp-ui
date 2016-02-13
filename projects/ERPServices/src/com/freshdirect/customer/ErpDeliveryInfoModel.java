@@ -5,6 +5,7 @@ package com.freshdirect.customer;
 import java.util.Date;
 
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -26,6 +27,7 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     private double minDurationForModification;
     private PhoneNumber orderMobileNumber;
     private Date originalCutoffTime;
+    private EnumServiceType serviceType;
     
    
   
@@ -80,5 +82,11 @@ public class ErpDeliveryInfoModel extends ModelSupport {
 	}
 	public void setMinDurationForModification(double minDurationForModification) {
 		this.minDurationForModification = minDurationForModification;
+	}
+	public EnumServiceType getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(EnumServiceType serviceType) {
+		this.serviceType = serviceType;
 	}
 }
