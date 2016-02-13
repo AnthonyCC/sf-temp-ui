@@ -154,7 +154,7 @@ public class PricingFactory {
 		if (DEBUG) LOGGER.debug("Building sales unit ratios");
 		SalesUnitRatio[] salesUnitRatios = buildSalesUnitRatios( material.getSalesUnits() );
 
-		return new Pricing(zonePriceList, cvPrices, salesUnitRatios);
+		return new Pricing(zonePriceList, cvPrices, salesUnitRatios,EnumAlcoholicContent.NONE.equals(material.getAlcoholicContent())?false:true);
 	}
 
 	private static MaterialPrice buildPromoPrice(ErpMaterialPriceModel erpPrice) {

@@ -69,8 +69,9 @@ public class FDProductInfo extends FDSku  {
 
     private Map<String, FDMaterialSalesArea> materialAvailability=null;
     
+    private boolean isAlcohol;    
    
-    public FDProductInfo(String skuCode,int version,String[] materials,FDInventoryCacheI inventory,ZonePriceInfoListing zonePriceInfoList,Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialAvailability) {
+    public FDProductInfo(String skuCode,int version,String[] materials,FDInventoryCacheI inventory,ZonePriceInfoListing zonePriceInfoList,Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialAvailability,boolean isAlcohol) {
     	super(skuCode, version);
     	this.zonePriceInfoList=zonePriceInfoList;
     	this.inventory=inventory;
@@ -78,12 +79,13 @@ public class FDProductInfo extends FDSku  {
     	this.groups=null;
     	this.plantMaterialInfo=plantMaterialInfo;
     	this.materialAvailability=materialAvailability;
+    	this.isAlcohol=isAlcohol;
     }
      public FDProductInfo(String skuCode, int version,
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate,
     		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
     		ZonePriceInfoListing zonePriceInfoList, Map<String,FDGroup> groups, EnumSustainabilityRating sustainabilityRating,
-    		String upc, String familyID,Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea) {
+    		String upc, String familyID,Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea,boolean isAlcohol) {
 
 		super(skuCode, version);
 
@@ -115,15 +117,16 @@ public class FDProductInfo extends FDSku  {
         this.upc = upc;
 	    this.familyID = familyID;
         this.materialAvailability=materialSalesArea;
+        this.isAlcohol=isAlcohol;
     }
 
      public FDProductInfo(String skuCode, int version,
      		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate,
      		FDInventoryCacheI inventory,ZonePriceInfoListing zonePriceInfoList, Map<String,FDGroup> groups,
-     		String upc,String familyID, Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea) {
+     		String upc,String familyID, Map<String,FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea,boolean isAlcohol) {
 
  		super(skuCode, version);
-
+ 		this.isAlcohol=isAlcohol;
  		this.materialNumbers = materialNumbers;
 
  		for(FDMaterialSalesArea msa:materialSalesArea.values()) {
@@ -152,12 +155,13 @@ public class FDProductInfo extends FDSku  {
          this.upc = upc;
          this.materialAvailability=materialSalesArea;
          this.familyID = familyID;
+         this.isAlcohol=isAlcohol;
      }
      //::FDX::
 
     public FDProductInfo(String skuCode, int version, String[] materialNumbers,
 			FDInventoryCacheI inventory,Map<String,FDGroup> groups, String upc, List<FDPlantMaterial> plantMaterialInfo,ZonePriceInfoListing zonePriceInfoList,
-			Map<String, FDMaterialSalesArea> materialAvailability) {
+			Map<String, FDMaterialSalesArea> materialAvailability,boolean isAlcohol) {
     	super(skuCode, version);
 		this.materialNumbers = materialNumbers;
 		this.inventory = inventory;
@@ -167,6 +171,7 @@ public class FDProductInfo extends FDSku  {
 		_setPlantMaterialInfo(plantMaterialInfo);
         this.zonePriceInfoList = zonePriceInfoList;
         this.materialAvailability=materialAvailability;
+        this.isAlcohol=isAlcohol;
 	}
 
 
@@ -369,7 +374,7 @@ public class FDProductInfo extends FDSku  {
         			LOGGER.debug("No price setup for zone: "+zone+" and sku=>"+this.getSkuCode());
         		}
 
-        		else if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())/*&& !this.isAlcohol*/) {
+        		else if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getZoneInfo().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator())&& !this.isAlcohol()) {
 
         			zpModel= new ZonePriceInfoModel(zpModel.getSellingPrice(), 0, zpModel.getDefaultPriceUnit(), zpModel.getDisplayableDefaultPriceUnit(),false,0,0,zpModel.getZoneInfo(),false);
         		}
@@ -522,5 +527,11 @@ public class FDProductInfo extends FDSku  {
 		if(sa!=null)
 			return sa.getDayPartValueType();
 		return null;
+	}
+	
+	public boolean isAlcohol() {
+		/*if(this.getSkuCode().startsWith("VI")||this.getSkuCode().startsWith("SPE"))
+			isAlcohol=true;*/
+		return isAlcohol;
 	}
 }

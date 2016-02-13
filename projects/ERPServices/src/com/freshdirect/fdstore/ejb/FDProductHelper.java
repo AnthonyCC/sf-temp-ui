@@ -392,7 +392,7 @@ public class FDProductHelper {
 			erpProductInfo.getUpc(),
 			fdPlantMaterials,
 			zonePriceInfoList,
-			materialSalesAreaMap);
+			materialSalesAreaMap,erpProductInfo.isAlcohol());
 	
 	}
 	 private Comparator<ErpMaterialPrice> matlPriceComparator = new Comparator<ErpMaterialPrice>() {

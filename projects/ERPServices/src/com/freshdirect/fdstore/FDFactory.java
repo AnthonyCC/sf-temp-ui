@@ -469,7 +469,7 @@ public class FDFactory {
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
 			null, pinfo.getZonePriceInfoList(),pinfo.getGroups(),
-			pinfo.getUpc(),pinfo.getFamilyID(),pinfo.getPlantMaterialInfo(),pinfo.getAvailability());
+			pinfo.getUpc(),pinfo.getFamilyID(),pinfo.getPlantMaterialInfo(),pinfo.getAvailability(),pinfo.isAlcohol());
 		
 		/*(String skuCode, int version, 
 	    		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
@@ -496,7 +496,7 @@ public class FDFactory {
 		};
 		;
 		
-		return new FDProductInfo(skuCode,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
+		return new FDProductInfo(skuCode,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail,false);
 		
 	}
 
@@ -722,6 +722,7 @@ public class FDFactory {
 					results.put(entry.getKey(), entry.getValue());
 			for (Map.Entry<String, Date> entry : overriddenBack.entrySet())
 				results.remove(entry.getKey());*/
+			//System.out.println();
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
