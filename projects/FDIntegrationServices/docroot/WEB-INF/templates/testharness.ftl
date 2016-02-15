@@ -916,13 +916,13 @@ function loadStuff() {
   }
   else if (loaddata == "fdxdeliveryconfirmation") {
   	$("#url").val("/ext/t005/");
-	var postdata = '3472634065,45444,3,2015,external interface test';
+	var postdata = '3472634065,DELIVERED,2,1123,1234323,1213';
   	$("#payload").val(postdata);
   	
   }
   else if (loaddata == "fdxsignatureRelay") {
   	$("#url").val("/ext/t006/");
-	var postdata = '3472634065,[B@2911a3a4';
+	var postdata = '3472634065,[B@2911a3a4',CUSTOMER,1110;
   	$("#payload").val(postdata);
   	
   } else if (loaddata == "GetCountries") {
@@ -1090,6 +1090,12 @@ function doStuff() {
 		if(temp.length > 3) {
   	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[3]);
   	 	}
+  	 	if(temp.length > 4) {
+  	 		postData = postData + "&nextStopOrderId=" + $.URLEncode(temp[4]);
+  	 	}
+  	 	if(temp.length > 5) {
+  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[5]);
+  	 	}
 		
   	 }
 		
@@ -1101,6 +1107,12 @@ function doStuff() {
   	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
   	 	if(temp.length > 1) {
   	 		postData = postData + "&bytes=" + $.URLEncode(temp[1]);
+  	 	}
+  	 	if(temp.length > 2) {
+  	 		postData = postData + "&deliveredTo=" + $.URLEncode(temp[2]);
+  	 	}
+  	 	if(temp.length > 3) {
+  	 		postData = postData + "&signatureTimestamp=" + $.URLEncode(temp[3]);
   	 	}
 		
   	 }
