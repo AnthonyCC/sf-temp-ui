@@ -922,7 +922,7 @@ function loadStuff() {
   }
   else if (loaddata == "fdxsignatureRelay") {
   	$("#url").val("/ext/t006/");
-	var postdata = '3472634065,[B@2911a3a4',CUSTOMER,1110;
+	var postdata = '3472634065,[B@2911a3a4',CUSTOMER,1110';
   	$("#payload").val(postdata);
   	
   } else if (loaddata == "GetCountries") {
