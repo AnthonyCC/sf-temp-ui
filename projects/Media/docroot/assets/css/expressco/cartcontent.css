@@ -1031,19 +1031,25 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox2{
-  width: 140px;
-  float: right;
+	width: 140px;
+	float: right;
 }
 
-#subtotalbox2 .rowcell-text-right{
+/*#subtotalbox2 .rowcell-text-right{*/
+ .total .rowcell-text-right{
 	text-align: right;
     min-width: 70px;
 }
-#subtotalbox2 .st_val .rowcontent-free-with-pass{
+/*#subtotalbox2 .st_val .rowcontent-free-with-pass{*/
+.total .rowcontent-free-with-pass{
 	margin-left: 0px;
 	width: initial;
 	text-align: right;
 	display:inline;
+}
+
+.total .st_val_ssOrderTotal{
+	margin-left: 4px;
 }
 
 .eTippingEnabled #subtotalbox2 .subtotal__row{
