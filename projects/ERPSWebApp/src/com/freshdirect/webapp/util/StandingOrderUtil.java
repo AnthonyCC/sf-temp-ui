@@ -316,7 +316,7 @@ public class StandingOrderUtil {
 		ActionResult addressValidatorResult = new ActionResult();
 		
 		try { 
-			addressValidator.validateAddress( addressValidatorResult );
+			addressValidator.validateAddressWithoutScrub( addressValidatorResult );
 		}catch (FDResourceException e) {
 			LOGGER.warn( "Address validation failed with FDResourceException ", e );
 			return SOResult.createTechnicalError( so, "Address validation failed with FDResourceException." );
