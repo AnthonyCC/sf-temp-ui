@@ -195,11 +195,11 @@ public class FDExtoleManagerDAO implements Serializable {
 			  	ps.setTimestamp(i++, new Timestamp(earnedReward.getModifiedTime().getTime()));
 			 	ps.setString(i++, earnedReward.getAdvocateFirstName());
 				ps.setString(i++, earnedReward.getAdvocateLastName());
-				ps.setString(i++, earnedReward.getAdvocateEmail());
+				ps.setString(i++, null !=earnedReward.getAdvocateEmail()?earnedReward.getAdvocateEmail().toLowerCase():null);
 				ps.setString(i++, earnedReward.getAdvocatePartnerUid());
 				ps.setString(i++, earnedReward.getFriendFirstName());
 				ps.setString(i++, earnedReward.getFriendLastName());
-				ps.setString(i++, earnedReward.getFriendEmail());
+				ps.setString(i++, null !=earnedReward.getFriendEmail()?earnedReward.getFriendEmail().toLowerCase():null);
 				ps.setString(i++, earnedReward.getFriendPartnerUid());
 				ps.setString(i++, earnedReward.getRewardType());
 				if(null != earnedReward.getRewardDate()){
