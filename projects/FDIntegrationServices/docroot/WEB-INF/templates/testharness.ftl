@@ -916,13 +916,13 @@ function loadStuff() {
   }
   else if (loaddata == "fdxdeliveryconfirmation") {
   	$("#url").val("/ext/t005/");
-	var postdata = '3472634065,DELIVERED,2,1123,1234323,1213';
+	var postdata = '0028630699,DELIVERED,2,02/02/2016 06:05:00,1234323,10/04/2012 06:05:00';
   	$("#payload").val(postdata);
   	
   }
   else if (loaddata == "fdxsignatureRelay") {
   	$("#url").val("/ext/t006/");
-	var postdata = '3472634065,gfgf2911a3a4,CUSTOMER,1110';
+	var postdata = '0028630699,gfgf2911a3a4,CUSTOMER,02/02/2016 06:05:00';
   	$("#payload").val(postdata);
   	
   } else if (loaddata == "GetCountries") {
