@@ -1040,6 +1040,16 @@
 		<to last="true">/fdinterface.do?action=fdxsmsMessageRelay&amp;ver=$1</to>
 	</rule>
 	
+	<rule>
+		<from>^/v/([0-9]+)/ext/t006(.*)</from>
+		<to last="true">/fdinterface.do?action=fdxsignatureRelay&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/ext/t005(.*)</from>
+		<to last="true">/fdinterface.do?action=fdxdeliveryconfirmation&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Lookup -->
 	<rule>
 		<from>^/v/([0-9]+)/lookup/countries/(.*)</from>

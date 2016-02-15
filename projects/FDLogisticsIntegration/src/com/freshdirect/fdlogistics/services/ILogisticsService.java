@@ -1,17 +1,14 @@
 package com.freshdirect.fdlogistics.services;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.logistics.analytics.model.LateIssueOrder;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.controller.data.Depots;
-import com.freshdirect.logistics.controller.data.OrderSizeRequest;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.AddressExceptionRequest;
 import com.freshdirect.logistics.controller.data.request.AddressScrubbingRequest;
@@ -25,6 +22,7 @@ import com.freshdirect.logistics.controller.data.request.ReservationSearchReques
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
+import com.freshdirect.logistics.controller.data.request.SignatureRequest;
 import com.freshdirect.logistics.controller.data.request.SubscriptionRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotIdRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotRequest;
@@ -54,6 +52,7 @@ import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
+import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
 public interface ILogisticsService {
 
@@ -69,6 +68,11 @@ public interface ILogisticsService {
 	
 	AddressCheckResponse checkAddress(Address address) throws FDLogisticsServiceException;
 
+	Result captureDeliveryConfirmation(DeliveryConfirmationRequest deliveryConfirmationRequest) throws FDLogisticsServiceException;
+	
+	Result captureSignature(SignatureRequest signatureRequest) throws FDLogisticsServiceException;
+	
+	
 	DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
 	
 	DeliveryServices getDeliveryServices(Address address) throws FDLogisticsServiceException;
@@ -99,7 +103,6 @@ public interface ILogisticsService {
 	DeliveryTimeslots getTimeslots(TimeslotRequest timeslotRequest) throws FDInvalidAddressException, FDLogisticsServiceException;
 	
 	Timeslot getTimeslotById(TimeslotIdRequest timeslotIdRequest) throws FDLogisticsServiceException;
-	
 	
 	StateCounty lookupStateCountyByZip(String zipcode) throws FDLogisticsServiceException;
 

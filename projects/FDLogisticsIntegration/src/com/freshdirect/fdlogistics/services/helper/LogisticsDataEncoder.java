@@ -29,6 +29,7 @@ import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
+import com.freshdirect.logistics.controller.data.request.SignatureRequest;
 import com.freshdirect.logistics.controller.data.request.SubscriptionRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotIdRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotRequest;
@@ -39,8 +40,6 @@ import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.Customer;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
-import com.freshdirect.logistics.delivery.model.EnumOrderAction;
-import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
@@ -49,6 +48,7 @@ import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.Subscription;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
+import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
 public class LogisticsDataEncoder {
 
@@ -70,6 +70,24 @@ public class LogisticsDataEncoder {
 		
 	}
 
+	
+	public static DeliveryConfirmationRequest encodeDeliveryConfirmationRequest(String orderId, 
+			String deliveryStatus, int attempts, String estimatedDeliveryTime,String nextStopOrderId,
+			 String nextStopEstDeliveryTime)
+	{
+		DeliveryConfirmationRequest request = new DeliveryConfirmationRequest(orderId, deliveryStatus, attempts, estimatedDeliveryTime,nextStopOrderId,nextStopEstDeliveryTime);
+	return request;
+	}
+	
+	public static SignatureRequest encodeCaptureSignatureRequest(String orderId, 
+			String signature,String deliveredTo,String signatureTimestamp)
+	{
+		SignatureRequest request = new SignatureRequest(orderId, signature,deliveredTo,signatureTimestamp);
+	return request;
+	}
+	
+	
+	
 	public static DeliveryZoneRequest encodeDeliveryZoneRequest(AddressModel address, Date date,
 			CustomerAvgOrderSize orderSize, EnumRegionServiceType serviceType) {
 		DeliveryZoneRequest zoneRequest = new DeliveryZoneRequest();

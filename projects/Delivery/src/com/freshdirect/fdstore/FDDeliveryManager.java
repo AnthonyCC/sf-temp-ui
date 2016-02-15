@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -1258,6 +1259,37 @@ public class FDDeliveryManager {
 
 		
 	}
+	
+ public void captureDeliveryConfirmation(String orderId, String deliveryStatus, int attempts, String estimatedDeliveryTime,String nextStopOrderId,
+		 String nextStopEstDeliveryTime) throws FDResourceException{
+		
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.captureDeliveryConfirmation(
+			LogisticsDataEncoder.encodeDeliveryConfirmationRequest(orderId, deliveryStatus, attempts,estimatedDeliveryTime,nextStopOrderId,nextStopEstDeliveryTime));
+			LogisticsDataDecoder.decodeResult(response);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 
+ public void captureSignature(String orderId, String signature, String deliveredTo,String signatureTimestamp) throws FDResourceException{
+		
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.captureSignature(
+			LogisticsDataEncoder.encodeCaptureSignatureRequest(orderId, signature,deliveredTo,signatureTimestamp));
+			LogisticsDataDecoder.decodeResult(response);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 
+ 
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
 			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {

@@ -6,13 +6,17 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
+
+import weblogic.xml.crypto.wss.Base64Encoding;
 
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -52,6 +56,10 @@ public class ExternalInterfaceController extends BaseController {
     private static final String ACTION_GET_SMS_MESSAGE_RELAY="smsMessageRelay";
     
     private static final String ACTION_GET_SMS_FDX_MESSAGE_RELAY="fdxsmsMessageRelay";
+    
+    private static final String ACTION_GET_FDX_DELIVERY_CONFIRMATION="fdxdeliveryconfirmation";
+    
+    private static final String ACTION_GET_FDX_SIGNATURE="fdxsignatureRelay";
  
         
     protected boolean validateUser() {
@@ -175,12 +183,61 @@ public class ExternalInterfaceController extends BaseController {
 	     	    }  
     		}
     		
+    		else if(ACTION_GET_FDX_DELIVERY_CONFIRMATION.equals(action)){
+    			
+    			try{
+    				// Call SmsAlertsManager with the parameters of the request.
+    				String orderId=request.getParameter("orderId");
+    				String deliveryStatus=request.getParameter("deliveryStatus");
+    				int attempts= Integer.parseInt(request.getParameter("attempts"));
+    				String estimatedDeliveryTime=request.getParameter("estimatedDeliveryTime");
+    				String nextStopOrderId=request.getParameter("nextStopOrderId");
+    				String nextStopEstDeliveryTime=request.getParameter("nextStopEstDeliveryTime");
+    				
+    				
+    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
+    				fDDeliveryManager.captureDeliveryConfirmation(orderId, deliveryStatus, attempts, estimatedDeliveryTime,nextStopOrderId,nextStopEstDeliveryTime);
+    				responseMessage = Message.createSuccessMessage("T004 Successful.");
+    			} catch(Exception e) {
+	        		responseMessage=Message.createFailureMessage("T005 Failed.");
+	        		LOGGER.info("T005_EXP: Unable to save FDX Delivery Confirmation ");
+	  	        }  
+			if(responseMessage == null) {
+	  	        	LOGGER.info("T005: Failed FDX Delivery Confirmation ");
+	  	        	responseMessage = new Message();
+	  	        	responseMessage.addErrorMessage("T005 Failed.");
+	     	    }  
+    		}
+    		
+    		else if(ACTION_GET_FDX_SIGNATURE.equals(action)){
+	
+    			try{
+    				// Call SmsAlertsManager with the parameters of the request.
+    				String erpOrderId=request.getParameter("erpOrderId");
+    				String signature = request.getParameter("bytes");
+    				String deliveredTo = request.getParameter("deliveredTo");
+    				String signatureTimestamp=request.getParameter("signatureTimestamp");
+    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
+    				fDDeliveryManager.captureSignature(erpOrderId, signature,deliveredTo,signatureTimestamp);
+    				responseMessage = Message.createSuccessMessage("T006 Successfull.");
+    			} catch(Exception e) {
+    				responseMessage=Message.createFailureMessage("T006 Failed.");
+    				LOGGER.info("T006_EXP: Unable to save FDX SMS Message Relay received ");
+    			}  
+    			if(responseMessage == null) {
+    				LOGGER.info("T006: Failed FDX SMS Message Relay ");
+    				responseMessage = new Message();
+    				responseMessage.addErrorMessage("T006 Failed.");
+    			}  
+    		}
+    		
     		//End::Added by Sathishkumar Merugu for FDX SMS Alert
 	        setResponseMessage(model, responseMessage, user);
     	}
         return model;
     }
     
+  
     private static final String PARAM_CALLER_GUIID = "data";
     private static final String PARAM_CALLER_ID = "callerId";
     private static final String PARAM_SALE_ID = "orderNumber";    

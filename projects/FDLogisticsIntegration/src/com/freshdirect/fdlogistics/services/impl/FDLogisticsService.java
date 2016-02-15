@@ -10,7 +10,6 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -34,6 +33,7 @@ import com.freshdirect.logistics.controller.data.request.ReservationSearchReques
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
+import com.freshdirect.logistics.controller.data.request.SignatureRequest;
 import com.freshdirect.logistics.controller.data.request.SubscriptionRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotIdRequest;
 import com.freshdirect.logistics.controller.data.request.TimeslotRequest;
@@ -61,10 +61,10 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
-import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
+import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
 public class FDLogisticsService extends AbstractLogisticsService implements ILogisticsService {
 
@@ -143,6 +143,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String CREATE_FDX_ORDER_API ="/order/create";
 	private static final String MODIFY_FDX_ORDER_API ="/order/modify";
 	private static final String CANCEL_FDX_ORDER_API ="/order/cancel";
+	private static final String STORE_DELIVERY_CONFIRM_FDX ="/delivery/deliveryconfirm";
+	private static final String STORE_SIGNATURE_FDX ="/delivery/signature";
 	
 	private static final String ACTUAL_ORDERSIZE_API ="/reservation/ordersize/update";
 	private static final String STATUS_FDX_ORDER_DISPATCH_API="/order/orderdispatch/";
@@ -175,6 +177,22 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		Result response =  getData(inputJson, getEndPoint(ADD_APARTMENT_API), Result.class);
 		return response;	
 	}
+	
+	@Override
+	public Result captureDeliveryConfirmation(DeliveryConfirmationRequest deliveryConfirmationRequest) throws FDLogisticsServiceException {
+		String inputJson = buildRequest(deliveryConfirmationRequest);
+		Result response = getData(inputJson, getEndPoint(STORE_DELIVERY_CONFIRM_FDX), Result.class);
+		return response;	
+	}
+	
+	@Override
+	public Result captureSignature(SignatureRequest signatureRequest) throws FDLogisticsServiceException {
+		String inputJson = buildRequest(signatureRequest);
+		Result response = getData(inputJson, getEndPoint(STORE_SIGNATURE_FDX), Result.class);
+		return response;	
+	}
+	
+	
 
 	@Override
 	public Result addAddressException(AddressExceptionRequest request) throws FDLogisticsServiceException {

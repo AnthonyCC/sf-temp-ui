@@ -913,6 +913,18 @@ function loadStuff() {
 	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
   	$("#payload").val(postdata);
   	
+  }
+  else if (loaddata == "fdxdeliveryconfirmation") {
+  	$("#url").val("/ext/t005/");
+	var postdata = '3472634065,45444,3,2015,external interface test';
+  	$("#payload").val(postdata);
+  	
+  }
+  else if (loaddata == "fdxsignatureRelay") {
+  	$("#url").val("/ext/t006/");
+	var postdata = '3472634065,[B@2911a3a4';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
@@ -1064,7 +1076,36 @@ function doStuff() {
   	 	}
   	 }
 		
-  }   else {
+  }  
+  else if($("#loaddata").val() == "fdxdeliveryconfirmation"){
+  		var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "orderId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&deliveryStatus=" + $.URLEncode(temp[1]);
+  	 	}
+		if(temp.length > 2) {
+  	 		postData = postData + "&attempts=" + $.URLEncode(temp[2]);
+  	 	}
+		if(temp.length > 3) {
+  	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[3]);
+  	 	}
+		
+  	 }
+		
+  } 
+  else if($("#loaddata").val() == "fdxsignatureRelay"){
+  debugger;
+  		var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&bytes=" + $.URLEncode(temp[1]);
+  	 	}
+		
+  	 }
+		
+  }  else {
 	  postData = "data=" + $.URLEncode(payload);
   }
   
@@ -1285,6 +1326,8 @@ function doStuff() {
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   <option value="smsMessageRelay">Send - sms Alert</option>
   <option value="fdxsmsMessageRelay">Send - fdx sms Alert</option>
+  <option value="fdxdeliveryconfirmation">Send - fdx delivery confirmaton</option>
+  <option value="fdxsignatureRelay">Send - fdx signature</option>
   
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>
