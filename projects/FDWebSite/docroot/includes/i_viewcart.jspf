@@ -997,7 +997,7 @@ asyncPixelWithTimeout();
 	%>
 	<tr valign="top" class="SSorderTotal">
 		<td colspan="3" width="<%=W_VIEWCART_FULL/2-140%>"align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
-		<td colspan="1" width="60" align="right"><b><%= JspMethods.formatPrice(cart.getTotal()) %></b></td>
+		<td colspan="1" width="60" align="right"><b><%= JspMethods.formatPrice(cart.getTotal()-cart.getTaxValue()) %></b></td>
 		<td colspan="1" width="10"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="1" width="70"></td>
 	</tr>
