@@ -173,6 +173,9 @@ etids.div_tooltipPopup = "#tooltipPopup";
 	var WIDGET = fd.modules.common.widget;
 	var requestCounter = 0;
 	var focusedElementId;
+	
+	//APPBUG-4365
+	var currentpagefile = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
 
 	var cartcontent = Object.create(WIDGET,{
 		signal:{
@@ -189,6 +192,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					}
 				}
 				
+				console.log("line 192 data"); console.log(data);
+				
 				/*override, turn etipping off for the view_cart page*/
 				var path = window.location.pathname;
 				var page = path.split("/").pop();
@@ -199,6 +204,26 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					/*find out if the subtotal member of the data object will have an order total array member*/
 					if( typeof(data.subTotalBox.estimatedTotalBox) == "object" ){
 						data.subTotalBox.subTotalBox.push( data.subTotalBox.estimatedTotalBox[0] );
+					}
+					
+					/*APPBUG-4365*/
+					if( typeof(data.subTotalBox.subTotalBox) == "object"  ){
+						for(var j=0; j<data.subTotalBox.subTotalBox.length; j++){
+							if( data.subTotalBox.subTotalBox[j]["id"] == "totaltax" ){
+								data.subTotalBox.subTotalBox[j]["text"] = "Sales Tax";
+							}
+						}
+					}
+				}
+				
+				/*APPBUG-4365*/
+				if( page == "checkout.jsp" ){
+					if( typeof(data.subTotalBox.subTotalBox) == "object"  ){
+						for(var j=0; j<data.subTotalBox.subTotalBox.length; j++){
+							if( data.subTotalBox.subTotalBox[j]["id"] == "totaltax" ){
+								data.subTotalBox.subTotalBox[j]["text"] = "Total Tax";
+							}
+						}
 					}
 				}
 				
@@ -251,6 +276,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					*/
 					data.etipTotal = "$" + parsedEtipTotal;
 				}
+				
+				console.log("line 257 data"); console.log(data);
 				
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
 				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
@@ -357,7 +384,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 							header: {
 								requestCounter: (++requestCounter)
 							},
-							change: (userData || {})
+							change: (userData || {}),
+							page: currentpagefile
 						})
 					},
 					url: this.getRequestURI(),
@@ -443,7 +471,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				$jq(etids.ck_tipAppliedTick).hide();
 				if($jq(etids.sel_tipDropdown).val() === "Other Amount"){
 					$jq(etids.sel_tipDropdown).hide();
-          $jq(etids.inp_tipTextBox).show().focus().select();
+					$jq(etids.inp_tipTextBox).show().focus().select();
+					
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
 					/*$jq( etids.btn_tipApply ).prop("disabled", "disabled");*/
 				}

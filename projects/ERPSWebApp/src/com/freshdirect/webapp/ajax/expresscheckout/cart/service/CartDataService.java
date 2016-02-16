@@ -141,7 +141,7 @@ public class CartDataService {
         }
         CartData cartData = new CartData();
         synchronized (cart) {
-            populateSubTotalBox(cartData, cart, user);
+            populateSubTotalBox(cartData, cart, user, request.getRequestURI());
         }
         return cartData.getSubTotalBox();
     }
@@ -509,7 +509,7 @@ public class CartDataService {
 	            } 
             }
                         
-            populateSubTotalBox(cartData, cart, user);
+            populateSubTotalBox(cartData, cart, user, request.getRequestURI());
             populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
                                                 
             if (FDUserI.GUEST < user.getLevel()) {
@@ -654,10 +654,10 @@ public class CartDataService {
         return recentIds;
     }
 
-    private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user) {
+    private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
+        CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri);
         CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
