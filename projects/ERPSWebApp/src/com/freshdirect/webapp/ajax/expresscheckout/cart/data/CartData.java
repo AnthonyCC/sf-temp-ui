@@ -113,6 +113,7 @@ public class CartData extends AbstractCoremetricsResponse {
     
     
     public CartData() {
+    	tipAmounts.add("$0");
     	tipAmounts.add("$1");
     	tipAmounts.add("$2");
     	tipAmounts.add("$3");
