@@ -56,15 +56,8 @@ if (isSmaller) detailWidth="630";
 <div style="width: <%=W_CHECKOUT_STEP_4_CART_DETAILS_TOTAL%>px;">
 <%
 int idx = 0;
-double taxValue =0.0;
-if(FDStoreProperties.getAvalaraTaxEnabled()){
-	if(null !=request.getAttribute("AVALARA_CONTEXT")){
-		taxValue = (Double)request.getAttribute("AVALARA_CONTEXT");
-	}
-}
-else{
-	taxValue = cart.getTaxValue();
-}
+double taxValue  = cart.getTaxValue();
+
 %>
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
