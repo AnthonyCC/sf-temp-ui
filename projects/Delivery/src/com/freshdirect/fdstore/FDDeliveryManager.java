@@ -1260,14 +1260,13 @@ public class FDDeliveryManager {
 		
 	}
 	
- public void captureDeliveryConfirmation(String orderId, String deliveryStatus, int attempts, String estimatedDeliveryTime,String nextStopOrderId,
-		 String nextStopEstDeliveryTime) throws FDResourceException{
+ public void captureDeliveryConfirmation(String orderId, String estimatedDeliveryTime) throws FDResourceException{
 		
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result response = logisticsService.captureDeliveryConfirmation(
-			LogisticsDataEncoder.encodeDeliveryConfirmationRequest(orderId, deliveryStatus, attempts,estimatedDeliveryTime,nextStopOrderId,nextStopEstDeliveryTime));
+			LogisticsDataEncoder.encodeDeliveryConfirmationRequest(orderId, estimatedDeliveryTime));
 			LogisticsDataDecoder.decodeResult(response);
 		} catch (FDLogisticsServiceException e) {
 			// TODO Auto-generated catch block
@@ -1282,6 +1281,21 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result response = logisticsService.captureSignature(
 			LogisticsDataEncoder.encodeCaptureSignatureRequest(orderId, signature,deliveredTo,signatureTimestamp));
+			LogisticsDataDecoder.decodeResult(response);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 
+ public void captureFdxNextStop(String nextStopOrderId,
+		 String nextStopEstDeliveryTime) throws FDResourceException{
+		
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.captureFdxNextStop(
+			LogisticsDataEncoder.encodeFdxNextStopRequest(nextStopOrderId,nextStopEstDeliveryTime));
 			LogisticsDataDecoder.decodeResult(response);
 		} catch (FDLogisticsServiceException e) {
 			// TODO Auto-generated catch block

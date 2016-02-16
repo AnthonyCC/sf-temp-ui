@@ -916,7 +916,7 @@ function loadStuff() {
   }
   else if (loaddata == "fdxdeliveryconfirmation") {
   	$("#url").val("/ext/t005/");
-	var postdata = '0028630699,DELIVERED,2,02/02/2016 06:05:00,1234323,10/04/2012 06:05:00';
+	var postdata = '0028630699,10/04/2012 06:05:00';
   	$("#payload").val(postdata);
   	
   }
@@ -925,7 +925,14 @@ function loadStuff() {
 	var postdata = '0028630699,gfgf2911a3a4,CUSTOMER,02/02/2016 06:05:00';
   	$("#payload").val(postdata);
   	
-  } else if (loaddata == "GetCountries") {
+  }
+  else if (loaddata == "fdxnextstop") {
+  	$("#url").val("/ext/t007/");
+	var postdata = '0028630699,02/02/2016 06:05:00';
+  	$("#payload").val(postdata);
+  	
+  }
+   else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
   	
@@ -1082,26 +1089,14 @@ function doStuff() {
   	 if(temp != null && temp.length > 0) {
   	 	postData = postData + "orderId=" + $.URLEncode(temp[0]);
   	 	if(temp.length > 1) {
-  	 		postData = postData + "&deliveryStatus=" + $.URLEncode(temp[1]);
-  	 	}
-		if(temp.length > 2) {
-  	 		postData = postData + "&attempts=" + $.URLEncode(temp[2]);
-  	 	}
-		if(temp.length > 3) {
   	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[3]);
   	 	}
-  	 	if(temp.length > 4) {
-  	 		postData = postData + "&nextStopOrderId=" + $.URLEncode(temp[4]);
-  	 	}
-  	 	if(temp.length > 5) {
-  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[5]);
-  	 	}
-		
+  	 			
   	 }
 		
   } 
   else if($("#loaddata").val() == "fdxsignatureRelay"){
-  debugger;
+  
   		var temp = payload.split(",");
   	 if(temp != null && temp.length > 0) {
   	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
@@ -1117,7 +1112,21 @@ function doStuff() {
 		
   	 }
 		
-  }  else {
+  } 
+   else if($("#loaddata").val() == "fdxnextstop"){
+  
+  		var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "nextStopOrderId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[1]);
+  	 	}
+  	 	 	 	
+		
+  	 }
+		
+  } 
+   else {
 	  postData = "data=" + $.URLEncode(payload);
   }
   
@@ -1338,8 +1347,9 @@ function doStuff() {
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   <option value="smsMessageRelay">Send - sms Alert</option>
   <option value="fdxsmsMessageRelay">Send - fdx sms Alert</option>
-  <option value="fdxdeliveryconfirmation">Send - fdx delivery confirmaton</option>
-  <option value="fdxsignatureRelay">Send - fdx signature</option>
+  <option value="fdxdeliveryconfirmation"> fdx delivery confirmaton</option>
+  <option value="fdxsignatureRelay">fdx signature</option>
+  <option value="fdxnextstop"> fdx Next Stop</option>
   
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>

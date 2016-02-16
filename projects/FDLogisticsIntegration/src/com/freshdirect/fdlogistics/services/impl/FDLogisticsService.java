@@ -27,6 +27,7 @@ import com.freshdirect.logistics.controller.data.request.DeliverySignatureReques
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
+import com.freshdirect.logistics.controller.data.request.FdxNextStopRequest;
 import com.freshdirect.logistics.controller.data.request.GeoLocationRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
@@ -145,6 +146,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String CANCEL_FDX_ORDER_API ="/order/cancel";
 	private static final String STORE_DELIVERY_CONFIRM_FDX ="/delivery/deliveryconfirm";
 	private static final String STORE_SIGNATURE_FDX ="/delivery/signature";
+	private static final String STORE_NEXT_STOP_FDX ="/delivery/nextstop";
+	
 	
 	private static final String ACTUAL_ORDERSIZE_API ="/reservation/ordersize/update";
 	private static final String STATUS_FDX_ORDER_DISPATCH_API="/order/orderdispatch/";
@@ -189,6 +192,13 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	public Result captureSignature(SignatureRequest signatureRequest) throws FDLogisticsServiceException {
 		String inputJson = buildRequest(signatureRequest);
 		Result response = getData(inputJson, getEndPoint(STORE_SIGNATURE_FDX), Result.class);
+		return response;	
+	}
+	
+	@Override
+	public Result captureFdxNextStop(FdxNextStopRequest fdxNextStopRequest) throws FDLogisticsServiceException {
+		String inputJson = buildRequest(fdxNextStopRequest);
+		Result response = getData(inputJson, getEndPoint(STORE_NEXT_STOP_FDX), Result.class);
 		return response;	
 	}
 	
