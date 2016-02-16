@@ -1303,6 +1303,22 @@ public class FDDeliveryManager {
 		} 
 	}
  
+ 	public void captureFdxDeliveryInfo(String orderId, String estimatedDeliveryTime,String signature,String nextStopOrderId,
+		 String nextStopEstDeliveryTime) throws FDResourceException{
+		
+		
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.captureFdxDeliveryInfo(
+			LogisticsDataEncoder.encodeFdxDeliveryInfoRequest(orderId, estimatedDeliveryTime,
+					signature,nextStopOrderId,nextStopEstDeliveryTime));
+			LogisticsDataDecoder.decodeResult(response);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+ 
  
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,

@@ -932,7 +932,13 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	
   }
-   else if (loaddata == "GetCountries") {
+  else if (loaddata == "fdxdeliveryInfo") {
+  	$("#url").val("/ext/t008/");
+	var postdata = '0028630699,02/02/2016 06:05:00,gfgf2911a3a4,002865699,02/02/2016 08:05:00';
+  	$("#payload").val(postdata);
+  	
+  }
+    else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
   	
@@ -1126,6 +1132,25 @@ function doStuff() {
   	 }
 		
   } 
+    else if($("#loaddata").val() == "fdxdeliveryInfo"){
+  
+  	if(temp != null && temp.length > 0) {
+  	 	postData = postData + "orderId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[3]);
+  	 	}
+  	 	if(temp.length > 2) {
+  	 		postData = postData + "&bytes=" + $.URLEncode(temp[1]);
+  	 	}
+  	 	if(temp.length > 3) {
+  	 	postData = postData + "nextStopOrderId=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 4) {
+  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[1]);
+  	 	} 	 	
+		
+  	 }
+		
+  }
    else {
 	  postData = "data=" + $.URLEncode(payload);
   }
@@ -1350,6 +1375,7 @@ function doStuff() {
   <option value="fdxdeliveryconfirmation"> fdx delivery confirmaton</option>
   <option value="fdxsignatureRelay">fdx signature</option>
   <option value="fdxnextstop"> fdx Next Stop</option>
+  <option value="fdxdeliveryInfo"> fdx delivery info</option>
   
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>

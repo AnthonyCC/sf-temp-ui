@@ -17,6 +17,7 @@ import com.freshdirect.logistics.controller.data.request.ConfirmReservationReque
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
+import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfo;
 import com.freshdirect.logistics.controller.data.request.FdxNextStopRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
@@ -75,6 +76,7 @@ public interface ILogisticsService {
 	
 	Result captureFdxNextStop(FdxNextStopRequest fdxNextStopRequest) throws FDLogisticsServiceException;
 	
+	Result captureFdxDeliveryInfo(FdxDeliveryInfo fdxDeliveryInfo) throws FDLogisticsServiceException;
 	
 	DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
 	

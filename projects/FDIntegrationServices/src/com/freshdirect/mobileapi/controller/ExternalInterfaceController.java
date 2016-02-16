@@ -63,8 +63,9 @@ public class ExternalInterfaceController extends BaseController {
     
     private static final String ACTION_GET_FDX_NEXT_STOP="fdxnextstop";
     
+    private static final String ACTION_GET_FDX_DEL_INFO="fdxdeliveryInfo";
     
- 
+   
         
     protected boolean validateUser() {
         return false;
@@ -237,6 +238,27 @@ public class ExternalInterfaceController extends BaseController {
     				String nextStopEstDeliveryTime=request.getParameter("nextStopEstDeliveryTime");
     				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
     				fDDeliveryManager.captureFdxNextStop(nextStopOrderId,nextStopEstDeliveryTime);
+    				responseMessage = Message.createSuccessMessage("T006 Successfull.");
+    			} catch(Exception e) {
+    				responseMessage=Message.createFailureMessage("T006 Failed.");
+    				LOGGER.info("T006_EXP: Unable to save FDX SMS Message Relay received ");
+    			}  
+    			if(responseMessage == null) {
+    				LOGGER.info("T006: Failed FDX SMS Message Relay ");
+    				responseMessage = new Message();
+    				responseMessage.addErrorMessage("T006 Failed.");
+    			}  
+    		}
+    			else if(ACTION_GET_FDX_DEL_INFO.equals(action)){
+    			
+    			try{
+    				String orderId=request.getParameter("orderId");
+    				String estimatedDeliveryTime=request.getParameter("estimatedDeliveryTime");
+    				String signature = request.getParameter("bytes");
+    				String nextStopOrderId=request.getParameter("nextStopOrderId");
+    				String nextStopEstDeliveryTime=request.getParameter("nextStopEstDeliveryTime");
+    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
+    				fDDeliveryManager.captureFdxDeliveryInfo(orderId,estimatedDeliveryTime, signature, nextStopOrderId, nextStopEstDeliveryTime);
     				responseMessage = Message.createSuccessMessage("T006 Successfull.");
     			} catch(Exception e) {
     				responseMessage=Message.createFailureMessage("T006 Failed.");
