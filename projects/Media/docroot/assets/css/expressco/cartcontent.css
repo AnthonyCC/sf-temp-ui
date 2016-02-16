@@ -1292,3 +1292,6 @@ label[for="dontupdatecartlines"] {
 #expresscheckout #cartcontent:before{
 	width: 120%;
 }
+.total .subtotal__rowcell-right:empty{
+	float:right;
+}
