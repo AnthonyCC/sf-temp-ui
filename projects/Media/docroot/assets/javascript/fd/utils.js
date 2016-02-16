@@ -258,6 +258,11 @@ var FreshDirect = FreshDirect || {};
     return o;
   };
 
+  
+  utils.reloadOnSuccess = function (id) {
+		 window.location=window.location;   
+	  }; 
+  
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 

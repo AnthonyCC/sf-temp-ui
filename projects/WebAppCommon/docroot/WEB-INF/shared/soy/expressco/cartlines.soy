@@ -808,7 +808,7 @@
 			</div>
 			{if $customerServiceRepresentative}
 				<div class="total-masq">
-					<form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" action="#">
+					<form fdform="csrfield" fdform-endpoint-submit="/api/expresscheckout/csr" fdform-success="FreshDirect.utils.reloadOnSuccess"  action="#">
 						{if $customerServiceRepresentative.deliveryCharge > 0}
 							<p><label for="deliveryForceWaived">
 								Delivery Fee: Force Waive
