@@ -415,7 +415,7 @@
 									
 									<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if}>
 									{foreach $option in $tipAmounts}
-										<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ($etipTotal == $option)}selected{/if}>{$option}</option>			  
+										<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ($etipTotal == $option) or ($tipApplied == false and $option == '$5')}selected{/if}>{$option}</option>			  
 									{/foreach}  
 									</select>
 								</label>
