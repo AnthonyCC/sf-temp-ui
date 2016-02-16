@@ -37,7 +37,7 @@ public class EnumNotificationType implements java.io.Serializable{
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof EnumSaleStatus) {
+		if (o instanceof EnumNotificationType) {
 			return this.name == ((EnumNotificationType)o).name;
 		}
 		return false;
