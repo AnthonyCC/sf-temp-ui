@@ -176,19 +176,19 @@ public class SocialAccountService implements AccountService {
 								 	boolean isFromLogin = Boolean.parseBoolean(request.getParameter("isFromLogin")); 
 								 	String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
 								 	
+								 	session.setAttribute("fdTcAgree", false);
+								 	
 									if(preSuccessPage!=null){
 									session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
 									session.setAttribute("nextSuccesspage", preSuccessPage );
+									// return  newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length());
+									 response.sendRedirect(newURL+ "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length()));
 									}else{
 									session.setAttribute("nextSuccesspage", updatedSuccessPage );
+									// return  newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
+									 response.sendRedirect(newURL+ "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
 									}
-									session.setAttribute("fdTcAgree", false);
-								 	
-									if(isFromLogin){
-										response.sendRedirect(newURL+"/login/login.jsp");
-									}else {
-										response.sendRedirect(newURL + termsConditions);
-									}
+									
 									
 								 }else{
 									 LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
@@ -284,12 +284,12 @@ public class SocialAccountService implements AccountService {
 										session.setAttribute("nextSuccesspage", termsConditions +"?socialnetwork="+socialUserProfile.get("provider"));
 									}
 									session.setAttribute("fdTcAgree", false);
-									if(isFromLogin){
-										return newURL+"/login/login.jsp";
-									}else {
-										termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
-										return newURL + termsConditions;
-									}
+
+									//termsConditions = termsConditions +"?socialnetwork="+socialUserProfile.get("provider");
+									//return newURL + termsConditions;
+									socialLoginRecognized = socialLoginRecognized + "?socialnetwork=" + socialUserProfile.get("provider");				    		
+									return newURL + socialLoginRecognized;
+
 							
 				    			 }else{
 									 String newURL = request.getScheme() + "://" + request.getServerName() ;

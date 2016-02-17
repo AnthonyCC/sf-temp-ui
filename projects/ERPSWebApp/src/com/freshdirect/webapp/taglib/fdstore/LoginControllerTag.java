@@ -146,25 +146,10 @@ public class LoginControllerTag extends AbstractControllerTag {
 			String requestUrl = request.getRequestURL().toString();
 			 if(user !=null&&!user.getTcAcknowledge()){
 				 
-				 if(FDStoreProperties.isLocalDeployment()){
-					 newURL = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
-				 }else{
-					 newURL = "https" + "://" + request.getServerName();
-				 }
-		 
-					if (FDStoreProperties.isSocialLoginEnabled()&&updatedSuccessPage.indexOf("purchase_giftcard.jsp")==-1 ) {
-						if(requestUrl.indexOf("/login/login.jsp")!=-1){
-							 this.setSuccessPage(newURL+"/login/login.jsp");
-						}else {
-						 this.setSuccessPage(newURL+"/registration/tcaccept_lite.jsp");
-						}
-						 session.setAttribute("nextSuccesspage", updatedSuccessPage);
-						session.setAttribute("fdTcAgree", false);
-					}
-					else{	
-					//	session.setAttribute("nextSuccesspage", updatedSuccessPage);
-						session.setAttribute("fdTcAgree", false);
-					}
+				 session.setAttribute("nextSuccesspage", updatedSuccessPage);
+					session.setAttribute("fdTcAgree", false);
+	 
+					
 			 }				
 
 	    	

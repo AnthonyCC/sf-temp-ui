@@ -96,21 +96,10 @@
 	
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
-	   <script language="javascript">
-		 function unLoadPage()
-			 {
-		
-				var loadedFrom = "<%=navPage%>";
-				var match      = loadedFrom.indexOf("nonIndex");
-				if(match==-1){
-				 window.top.location="/index.jsp";
-				}	 
-			 }
 
-		   </script>
     
 </head>
-<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="" onunload="unLoadPage()">
+<body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
 
 
 

@@ -10,6 +10,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <% 
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
+	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	String uri = request.getRequestURI().toLowerCase();
     boolean onCartPage = (uri.contains("/checkout/") && !uri.contains("view_cart.jsp") /*|| uri.contains("view_cart.jsp")|| uri.contains("merge_cart.jsp")*/ );
 
@@ -234,6 +235,10 @@ if(user != null) {
     
 		
 	</div>
+	
+
+	
+	
 <% } else { %>
 	<div class="container">
 		<% if (useFdxGlobalNav) { %>
@@ -261,6 +266,15 @@ if(user != null) {
 	    <soy:render template="common.globalnavPopups" data="${globalnav}" />
 	</div>
 <% } %>
+ <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+		<script type="text/javascript">
 
+		$jq(document).on('ready',  function() {
+			
+			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'380px\' height=\'340px\' frameborder=\'0\' ></iframe>');
+				
+		});
+		</script>
+	<%}%>
 <!-- Changes for Skip to Content Fix -->
 <div tabindex="0" id="skip_to_content"></div>

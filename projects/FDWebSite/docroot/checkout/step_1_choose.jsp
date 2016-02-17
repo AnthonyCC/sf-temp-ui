@@ -24,7 +24,7 @@
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_1_CHOOSE_TOTAL = 970;
-Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
+
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
@@ -197,16 +197,6 @@ while (e.hasMoreElements()) {
 	<%-- Start Header --%>
 <%@ include file="/includes/i_modifyorder.jspf"  %>
 
-	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
-				<script type="text/javascript">
-
-				$jq(document).on('ready',  function() {
-					
-					doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'400px\' height=\'400px\' frameborder=\'0\' ></iframe>');
-						
-				});
-				</script>
-	<%}%>
 <tmpl:insert template='<%= ((modifyOrderMode) ? "/includes/checkout_header_modify.jsp" : "/includes/checkout_header.jsp") %>'>
 <% if(modifyOrderMode) { %>
 	<tmpl:put name="ordnumb"><%= modifiedOrderNumber %></tmpl:put>
