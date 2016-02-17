@@ -347,4 +347,6 @@ public interface RequestParamName {
     public static final String REQ_PARAM_USER_TOKEN ="userToken";
     
     public static final String REQ_PARAM_PROVIDER ="provider";
+    
+    public static final String TAXATION_TYPE = "TAXATION_TYPE";
 }

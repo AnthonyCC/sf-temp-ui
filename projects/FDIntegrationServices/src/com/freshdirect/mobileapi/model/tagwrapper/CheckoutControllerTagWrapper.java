@@ -83,8 +83,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                 SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS, SESSION_PARAM_AUTHORIZED_PEOPLE, SESSION_PARAM_PICKUP_AGREEMENT,
                 SESSION_PARAM_RECENT_ORDER_NUMBER, SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_REFERENCED_ORDER,
 				SESSION_PARAM_MAKE_GOOD_ORDER, SessionName.PENDING_CONVERSION_ORDER_MODIFIED_MODELS, SessionName.PENDING_HELP_EMAIL_EVENT, SessionName.PENDING_SHOP_9_MODELS,SESSION_PARAM_AUTH_FAIL_MESSAGE }); //gets,sets
-        addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER, REQ_PARAM_IGNORE_PROMO_ERRORS }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
-                REQ_PARAM_BILLING_REF });//gets,sets
+        addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER, REQ_PARAM_IGNORE_PROMO_ERRORS, TAXATION_TYPE }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
+                REQ_PARAM_BILLING_REF, TAXATION_TYPE });//gets,sets
         getWrapTarget().setActionName(ACTION_SUBMIT_ORDER);
         setMethodMode(true);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
@@ -128,8 +128,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF,
-                REQ_PARAM_GIFT_CARD, REQ_PARAM_DONATION, REQ_PARAM_BYPASS_ACCOUNT_CHECK }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
-                REQ_PARAM_BILLING_REF });//gets,sets
+                REQ_PARAM_GIFT_CARD, REQ_PARAM_DONATION, REQ_PARAM_BYPASS_ACCOUNT_CHECK, TAXATION_TYPE }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
+                REQ_PARAM_BILLING_REF, TAXATION_TYPE });//gets,sets
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_ID, paymentMethodId);
         addRequestValue(REQ_PARAM_BILLING_REF, billingReference);
         getWrapTarget().setActionName(ACTION_SET_PAYMENT_METHOD);
@@ -147,7 +147,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		EnumUserInfoName.DLV_ALT_LASTNAME.getCode(),EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
         		EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode(),EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode(),
         		EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode(), EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_ALT_EXT.getCode(),
-        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode(),"first_name","last_name","homephone"}, new String[] {});//gets,sets
+        		EnumUserInfoName.DLV_COMPANY_NAME.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode(),"first_name","last_name","homephone",TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(EnumUserInfoName.DLV_FIRST_NAME.getCode(), deliveryAddress.getDlvfirstname());
         addRequestValue(EnumUserInfoName.DLV_LAST_NAME.getCode(), deliveryAddress.getDlvlastname());
         addRequestValue(EnumUserInfoName.DLV_COMPANY_NAME.getCode(), deliveryAddress.getDlvcompanyname());
@@ -224,7 +224,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -263,7 +263,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -316,7 +316,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY}, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV, REQ_PARAM_BIL_COUNTRY, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -372,7 +372,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         		REQ_PARAM_ACCOUNT_NUMBER, REQ_PARAM_ABA_ROUTE_NUMBER, REQ_PARAM_BANK_NAME, REQ_PARAM_BYPASS_BAD_ACCOUNT_CHECK, REQ_PARAM_TERMS,
         		REQ_PARAM_ACCOUNT_NUMBER_VERIFY,REQ_PARAM_BANK_ACCOUNT_TYPE,REQ_PARAM_ACCOUNT_HOLDER,REQ_PARAM_BIL_ADDRESS_1,
         		REQ_PARAM_BIL_ADDRESS_2,REQ_PARAM_BIL_APARTMENT,REQ_PARAM_BIL_CITY,REQ_PARAM_BIL_STATE,REQ_PARAM_BIL_ZIPCODE, REQ_PARAM_PAYMENT_METHOD_TYPE,
-        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV,REQ_PARAM_BIL_COUNTRY }, new String[] {});//gets,sets
+        		REQ_PARAM_IS_PAYMENT_METHOD_GIFT_CARD, REQ_PARAM_IS_PAYMENT_METHOD_DONATION, REQ_PARAM_CSV,REQ_PARAM_BIL_COUNTRY, TAXATION_TYPE }, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_CARD_EXP_MONTH, paymentMethod.getCardExpMonth());
         addRequestValue(REQ_PARAM_CARD_EXP_YEAR, paymentMethod.getCardExpYear());
         addRequestValue(REQ_PARAM_CARD_BRAND, paymentMethod.getCardBrand());
@@ -405,7 +405,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
         setMethodMode(true);
@@ -415,7 +415,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle deletePaymentMethodEx(String paymentMethodId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID}, new String[] {});//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_PAYMENT_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_PAYMENT_ID, paymentMethodId);
         getWrapTarget().setActionName(ACTION_DELETE_PAYMENT_METHOD);
         setMethodMode(true);
@@ -439,7 +439,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     
     public ResultBundle reserveDeliveryTimeslot(String deliveryTimeslotId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_MAKE_GOOD_ORDER }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_SLOT_ID }, new String[] { REQ_PARAM_SLOT_ID });//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_SLOT_ID, TAXATION_TYPE }, new String[] { REQ_PARAM_SLOT_ID,TAXATION_TYPE });//gets,sets
         addRequestValue(REQ_PARAM_SLOT_ID, deliveryTimeslotId);
         getWrapTarget().setActionName(ACTION_RESERVE_DELIVERY_TIMESLOT);
         setMethodMode(true);
@@ -458,8 +458,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
         LOGGER.debug("setCheckoutDeliveryAddress[START] :"+ selectAddressId + ","+type);
-        addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF }, new String[] {
-                REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF });//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF, TAXATION_TYPE }, new String[] {
+                REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF, TAXATION_TYPE });//gets,sets
 
         addRequestValue("contact_phone_" + selectAddressId, null); //TODO: move to constant file
 
@@ -504,7 +504,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle setCheckoutOrderMobileNumber(SessionUser user, String orderMobileNumber) throws FDException	 {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_MOBILE_NUMBER}, new String[] {});//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_MOBILE_NUMBER, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_MOBILE_NUMBER, orderMobileNumber);
         addRequestValue("orderMobileNumber", orderMobileNumber);
        
@@ -531,7 +531,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID}, new String[] {});//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_SHIP_ADDRESS_ID, deleteShipToAddressId);
         getWrapTarget().setActionName(ACTION_DELETE_DELIVERY_ADDRESS);
         setMethodMode(true);
@@ -541,7 +541,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
     public ResultBundle deleteDeliveryAddressEx(String deleteShipToAddressId) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID}, new String[] {});//gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_DELETE_SHIP_ADDRESS_ID, TAXATION_TYPE}, new String[] {TAXATION_TYPE});//gets,sets
         addRequestValue(REQ_PARAM_DELETE_SHIP_ADDRESS_ID, deleteShipToAddressId);
         getWrapTarget().setActionName(ACTION_DELETE_DELIVERY_ADDRESS);
         setMethodMode(true);
