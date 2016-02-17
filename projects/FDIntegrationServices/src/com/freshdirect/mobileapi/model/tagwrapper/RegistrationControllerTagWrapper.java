@@ -378,40 +378,7 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         return new ResultBundle(executeTagLogic(), this);
     }
     
-    public ResultBundle setMobilePreferencesFirstOrderFD(MobilePreferenceRequest reqestMessage,  FDCustomerEStoreModel customerSmsPreferenceModel, String eStoreId) throws FDException {
-	    	
-    	boolean currentOrderNotices;
-		boolean currentOrderExceptions; 
-		boolean currentOffers;
-		boolean currentPartnerMessages;
-		String currentMobileNo;
-
-			 currentOrderNotices = customerSmsPreferenceModel.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())? false:true;
-			 currentOrderExceptions = customerSmsPreferenceModel.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
-			 currentOffers = customerSmsPreferenceModel.getOffers().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
-			 currentPartnerMessages = customerSmsPreferenceModel.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? false:true;
-			 currentMobileNo = customerSmsPreferenceModel.getMobileNumber()==null ? "":customerSmsPreferenceModel.getMobileNumber().getPhone();
-	    	
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT, SESSION_PARAM_MAKE_GOOD_ORDER, CLICK_ID, COUPON_CODE },
-                new String[] { SESSION_PARAM_USER, SESSION_PARAM_MAKE_GOOD_ORDER, SESSION_PARAM_SOCIALONLYACCOUNT , SESSION_PARAM_SOCIALONLYEMAIL , SESSION_PARAM_SOCIALONLYACCOUNT_SKIP_VALIDATION, CLICK_ID, COUPON_CODE }); //gets,sets
-        addExpectedRequestValues(new String[] { REQ_PARAM_MOBILE_NUMBER,REQ_PARAM_TEXT_OFFERS,REQ_PARAM_TEXT_DELIVERY,REQ_PARAM_ORDER_NOTICES,REQ_PARAM_ORDER_EXCEPTIONS,REQ_PARAM_OFFERS,REQ_PARAM_PARTNER_MESSAGES,REQ_PARAM_ORDER_NOTICES_EXISTING,REQ_PARAM_ORDER_EXCETION_EXISTING,REQ_PARAM_OFFER_EXISTING,REQ_PARAM_PARTNER_EXISTING,REQ_PARAM_MOBILE_EXISTING}, new String[] {});//gets,sets
-        addRequestValue(REQ_PARAM_MOBILE_NUMBER, reqestMessage.getMobile_number());
-        addRequestValue(REQ_PARAM_ORDER_NOTICES, reqestMessage.getOrder_notices());
-        addRequestValue(REQ_PARAM_ORDER_EXCEPTIONS, reqestMessage.getOrder_exceptions());
-        addRequestValue(REQ_PARAM_OFFERS, reqestMessage.getOffers());
-                
-        addRequestValue(REQ_PARAM_ORDER_NOTICES_EXISTING, currentOrderNotices);
-        addRequestValue(REQ_PARAM_ORDER_EXCETION_EXISTING, currentOrderExceptions);
-        addRequestValue(REQ_PARAM_OFFER_EXISTING, currentOffers);
-        addRequestValue(REQ_PARAM_PARTNER_EXISTING, currentPartnerMessages);
-        addRequestValue(REQ_PARAM_MOBILE_EXISTING, currentMobileNo);
-        addRequestValue(REQ_PARAM_SOURCE,  new String[]{});
-        
-        getWrapTarget().setActionName(ACTION_SET_MOBILE_PREFERENCES);
-        
-        setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
-    }
+    
     
     public ResultBundle setEmailPreferences(EmailPreferenceRequest reqestMessage, ErpCustomerInfoModel cm) throws FDException {
 		//cm.setEmailPreferenceLevel(receive_emailLevel)
