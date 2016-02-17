@@ -86,6 +86,7 @@
   				    			int vip = 0;
   				    			int chefsTable = 0;
   				    			String test = "";
+  				    			int cosTopCustomer = 0;
   				    			ProfileModel profile = null;
   				    			if (user.getIdentity() != null) {
   				    				profile = user.getFDCustomer().getProfile();
@@ -93,6 +94,8 @@
   				    				vip = profile.isVIPCustomer() ? 1 : 0;
   				    				chefsTable = profile.isChefsTable() ? 1 : 0;
   				    				test = profile.isOASTest() ? "true" : "false";
+  				    				cosTopCustomer = profile.isCosTopCustomer()? 1 : 0;
+  				    				
   				    			}
   				    		
   				    			String type = "";
@@ -233,6 +236,7 @@
   				    					.addParam("do",
   				    							user.getAdjustedValidOrderCount())
   				    					.addParam("win", 2);
+  				    					.addParam("costop", cosTopCustomer);
   				    		
   				    			if (cartDeptIds.size() > 0) {
   				    				StringBuffer cartString = new StringBuffer();

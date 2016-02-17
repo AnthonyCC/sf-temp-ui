@@ -368,6 +368,9 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 boolean isVIP = fdCustomer.getProfile().isVIPCustomer();
                 boolean isChefsClub = fdCustomer.getProfile().isChefsTable();
                 boolean isNewbie = adjOrdrCnt >= 2 && adjOrdrCnt <= 4;
+                
+                boolean isTopCOS = fdCustomer.getProfile().isCosTopCustomer();
+                
               %>
                 <div class="cust_module_content">
                     <table width="90%" cellpadding="3" cellspacing="0" class="cust_module_content_text" align="center">
@@ -433,6 +436,19 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
         </table>
     </td></tr>
 <% }  %>
+   
+   
+   <% if (isTopCOS) { %> 
+    <tr><td align="center">
+        <table width="100%" class="vip_label">
+            <tr>
+                <td width="30" align="center"></td>
+                <td>TOP COS Customer</td>
+             </tr>
+        </table>
+    </td></tr>
+<% }  %>
+   
    
     <% if (isNewbie)  {   %>
         <tr><td align="center">

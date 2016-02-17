@@ -33,6 +33,11 @@ public class ProfileModel extends ModelSupport {
 	public boolean isVIPCustomer() {
 		return "true".equalsIgnoreCase(getAttribute("VIPCustomer"));
 	}
+	
+	public boolean isCosTopCustomer() {
+		return "true".equalsIgnoreCase(getAttribute("COS_TOP"));
+	}
+
 
 	public boolean isChefsTable() {
 		return "1".equalsIgnoreCase(getAttribute("ChefsTable"));
