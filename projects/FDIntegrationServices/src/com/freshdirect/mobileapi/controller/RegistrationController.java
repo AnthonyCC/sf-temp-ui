@@ -85,6 +85,8 @@ public class RegistrationController extends BaseController implements SystemMess
     
     private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER = "setmobilepreferencesfirstorder";
     
+    private final static String ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD = "setmobilepreferencesfirstorderfd";
+    
 	protected boolean validateUser() {
 		return false;
 	}
@@ -141,6 +143,10 @@ public class RegistrationController extends BaseController implements SystemMess
 		else if(ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDER.equals(action)){
 			OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
 			 model = setMobilePreferencesFirstOrder(model, user, requestMessage, request );
+		}
+		else if(ACTION_SET_MOBILE_PREFERENCES_FIRST_ORDERFD.equals(action)){
+			MobilePreferenceRequest requestMessage = parseRequestObject(request, response, MobilePreferenceRequest.class);
+			 model = setMobilePreferencesFirstOrderFD(model, user, requestMessage, request );
 		}
 		return model;
 	}
@@ -616,7 +622,28 @@ public class RegistrationController extends BaseController implements SystemMess
         return model;
     }
     
-    
+    private ModelAndView setMobilePreferencesFirstOrderFD(ModelAndView model, SessionUser user, MobilePreferenceRequest reqestMessage,
+            HttpServletRequest request) throws FDException, JsonException {
+    	Message responseMessage = null;   
+    	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
+        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();        
+		FDIdentity identity  = fduser.getIdentity();
+		
+		FDCustomerModel fdCustomerModel=FDCustomerFactory.getFDCustomer(identity);
+        ResultBundle resultBundle = tagWrapper.setMobilePreferencesFirstOrderFD(reqestMessage, fdCustomerModel.getCustomerSmsPreferenceModel(), fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("Contact Number added successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());   
+    	
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+        
    private ModelAndView setEmailPreference(ModelAndView model, SessionUser user, EmailPreferenceRequest reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
 
