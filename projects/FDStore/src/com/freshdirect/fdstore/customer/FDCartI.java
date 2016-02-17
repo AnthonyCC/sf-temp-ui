@@ -160,7 +160,10 @@ public interface FDCartI extends java.io.Serializable {
 	
 	public void setCustomTip(boolean isCustomTip);
 	
-	double getAvalaraTaxValue(AvalaraContext avalaraContext);
+	public boolean isTipApplied();
+	public void setTipApplied(boolean tipApplied);
 	
+	double getAvalaraTaxValue(AvalaraContext avalaraContext);
+
 
 }

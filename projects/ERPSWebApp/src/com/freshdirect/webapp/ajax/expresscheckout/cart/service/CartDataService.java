@@ -529,9 +529,9 @@ public class CartDataService {
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if(FDStoreProperties.isETippingEnabled()) {
             	cartData.seteTippingEnabled(true);
-	            cartData.setTipApplied(cart.getTip() > 0);
 	            cartData.setCustomTip(cart.isCustomTip());
 	            cartData.setEtipTotal(JspMethods.formatPrice(cart.getTip()));
+	            cartData.setTipApplied(cart.isTipApplied());
         	}
 
         } catch (Exception e) {

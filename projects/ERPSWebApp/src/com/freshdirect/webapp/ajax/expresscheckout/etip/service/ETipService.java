@@ -69,6 +69,7 @@ public class ETipService {
             FDCartModel cart = user.getShoppingCart();
             cart.setTip(Double.parseDouble(tipAmount));
             cart.setCustomTip(isCustomTip);
+            cart.setTipApplied(true);
         }
 
         return result;

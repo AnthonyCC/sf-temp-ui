@@ -192,8 +192,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					}
 				}
 				
-				console.log("line 192 data"); console.log(data);
-				
 				/*override, turn etipping off for the view_cart page*/
 				var path = window.location.pathname;
 				var page = path.split("/").pop();
@@ -276,9 +274,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					*/
 					data.etipTotal = "$" + parsedEtipTotal;
 				}
-				
-				console.log("line 257 data"); console.log(data);
-				
+								
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
 				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
 			}

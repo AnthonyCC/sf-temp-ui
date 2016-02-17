@@ -281,6 +281,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private PhoneNumber orderMobileNumber;
 	
 	private boolean isCustomTip;
+	private boolean isTipApplied = false;
 
 	public void incrementSkuCount(String promoCode, int quantity) {
 		Integer count =skuCount.get(promoCode);
@@ -2083,6 +2084,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setOrderMobileNumber(PhoneNumber orderMobileNumber) {
 		this.orderMobileNumber = orderMobileNumber;
 	}
+
+	public boolean isTipApplied() {
+		return isTipApplied;
+	}
+
+	public void setTipApplied(boolean isTipApplied) {
+		this.isTipApplied = isTipApplied;
+	}
+
 
 	
 }
