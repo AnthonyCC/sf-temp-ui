@@ -31,7 +31,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class AvalaraTaxRequestConverter {
 	private static final Logger LOGGER = Logger.getLogger(AvalaraTaxRequestConverter.class);
-	private static final int taxlineId = 1000;
+	private int taxlineId = 1000;
 	
 	public GetTaxRequest convert(AvalaraContext avalaraContext){
 		LOGGER.info("Cart to Request conversion begin");
@@ -132,7 +132,7 @@ public class AvalaraTaxRequestConverter {
 			for(ErpDiscountLineModel discount: cart.getDiscounts()){
 				Line taxLine = new Line();
 				double amount = discount.getDiscount().getAmount()*-1;
-				taxLine.setLineNo(""+(taxlineId+1));
+				taxLine.setLineNo(""+(taxlineId++));
 				taxLine.setAmount(BigDecimal.valueOf(amount));
 				taxLine.setTaxIncluded(false);
 				taxLine.setDiscounted(false);
