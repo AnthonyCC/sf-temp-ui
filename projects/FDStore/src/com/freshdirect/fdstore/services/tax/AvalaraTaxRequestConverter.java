@@ -16,6 +16,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -30,6 +31,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class AvalaraTaxRequestConverter {
 	private static final Logger LOGGER = Logger.getLogger(AvalaraTaxRequestConverter.class);
+	private static final int taxlineId = 1000;
 	
 	public GetTaxRequest convert(AvalaraContext avalaraContext){
 		LOGGER.info("Cart to Request conversion begin");
@@ -71,6 +73,7 @@ public class AvalaraTaxRequestConverter {
 		taxRequest.setCurrencyCode("USD");
 		taxRequest.setDetailLevel(DetailLevel.Line);
 		taxRequest.setCustomerCode("DEFAULT_CUSTOMER_CODE");
+		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
 		LOGGER.info("Cart to Request conversion End");
 		return taxRequest;
 	}
@@ -117,12 +120,26 @@ public class AvalaraTaxRequestConverter {
 				taxLine.setLineNo(StringUtils.defaultIfEmpty(line.getCartlineId(),line.getOrderLineId()));
 				taxLine.setAmount(BigDecimal.valueOf(price));
 				taxLine.setTaxIncluded(false);
-				taxLine.setDiscounted(true);
+				taxLine.setDiscounted(false);
 				taxLine.setOriginCode("Origin-01");
 				taxLine.setDestinationCode("DEST-01");
 				taxLine.setDescription(line.getDescription());
 				taxLine.setQty(BigDecimal.valueOf(quantity));
 				taxLine.setTaxCode(line.getTaxCode());
+				taxLines.add(taxLine);
+			}
+			/** For header level discount **/
+			for(ErpDiscountLineModel discount: cart.getDiscounts()){
+				Line taxLine = new Line();
+				double amount = discount.getDiscount().getAmount()*-1;
+				taxLine.setLineNo(""+(taxlineId+1));
+				taxLine.setAmount(BigDecimal.valueOf(amount));
+				taxLine.setTaxIncluded(false);
+				taxLine.setDiscounted(false);
+				taxLine.setOriginCode("Origin-01");
+				taxLine.setDestinationCode("DEST-01");
+				taxLine.setQty(BigDecimal.valueOf(1.00));
+				taxLine.setTaxCode("NT");
 				taxLines.add(taxLine);
 			}
 		}
