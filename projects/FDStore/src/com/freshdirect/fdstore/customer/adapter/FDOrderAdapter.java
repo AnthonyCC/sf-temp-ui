@@ -1631,4 +1631,16 @@ public class FDOrderAdapter implements FDOrderI {
 		}		
 		return getTaxValue();
 	}
+
+	@Override
+	public boolean isTipApplied() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setTipApplied(boolean tipApplied) {
+		// TODO Auto-generated method stub
+		
+	}
 }
