@@ -17,12 +17,12 @@ import com.freshdirect.payment.GivexResponseModel;
 public class GivexServerNewGateway extends BaseServerGateway {
 	
 	
-	public static final String register_api = "/register/";
-	public static final String transferBalance_api = "/transferBalance/";
-	public static final String getBalance_api = "/getBalance/";
-	public static final String preAuth_api = "/preAuth/";
-	public static final String postAuth_api = "/postAuth/";
-	public static final String cancelPreAuth_api = "/cancelPreAuthorization/";
+	public static final String register_api = "/register";
+	public static final String transferBalance_api = "/transferBalance";
+	public static final String getBalance_api = "/getBalance";
+	public static final String preAuth_api = "/preAuth";
+	public static final String postAuth_api = "/postAuth";
+	public static final String cancelPreAuth_api = "/cancelPreAuthorization";
 	
 	
 	
@@ -33,13 +33,13 @@ public class GivexServerNewGateway extends BaseServerGateway {
 		HttpURLConnection conn = null;
 		try {
 
-			conn = getConnection(register_api);
+			//conn = getConnection(register_api);
 			
 			GiveXRequest request = new GiveXRequest();
 			request.setAmount(amount);
 			request.setReference(reference);
 			
-			GivexResponseModel response = getResponse(conn, request);			
+			GivexResponseModel response = getResponse(register_api, request);			
 			return response;
 
 		} catch (MalformedURLException e) {
@@ -60,7 +60,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 		
 		try {
 
-			conn = getConnection(transferBalance_api);
+			//conn = getConnection(transferBalance_api);
 			
 			GiveXRequest request = new GiveXRequest();
 			request.setPaymentMethod(fromMethod);
@@ -68,7 +68,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 			request.setAmount(amount);
 			request.setReference(reference);
 			
-			GivexResponseModel response = getResponse(conn, request);			
+			GivexResponseModel response = getResponse(transferBalance_api, request);			
 			return response;
 
 		} catch (MalformedURLException e) {
@@ -88,13 +88,13 @@ public class GivexServerNewGateway extends BaseServerGateway {
 		HttpURLConnection conn = null;
 		
 		try {
-			conn = getConnection(getBalance_api);
+			//conn = getConnection(getBalance_api);
 			
 			
 			GiveXRequest request = new GiveXRequest();
 			request.setPaymentMethod(paymentMethod);
 			
-			GivexResponseModel response = getResponse(conn, request);		
+			GivexResponseModel response = getResponse(getBalance_api, request);		
 			return response;
 
 		} catch (MalformedURLException e) {
@@ -114,7 +114,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 		
 		try {
 
-			conn = getConnection(preAuth_api);
+			//conn = getConnection(preAuth_api);
 			
 			
 			GiveXRequest request = new GiveXRequest();
@@ -122,7 +122,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 			request.setAmount(amount);
 			request.setReference(reference);
 			
-			GivexResponseModel response = getResponse(conn, request);		
+			GivexResponseModel response = getResponse(preAuth_api, request);		
 			return response;
 
 		} catch (MalformedURLException e) {
@@ -143,7 +143,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 		
 		try {
 
-			conn = getConnection(postAuth_api);
+			//conn = getConnection(postAuth_api);
 			
 			GiveXRequest request = new GiveXRequest();
 			request.setPaymentMethod(paymentMethod);
@@ -151,7 +151,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 			request.setAuthCode(authCode);
 			request.setReference(reference);
 			
-			GivexResponseModel response = getResponse(conn, request);		
+			GivexResponseModel response = getResponse(postAuth_api, request);		
 			return response;
 
 		} catch (MalformedURLException e) {
@@ -173,7 +173,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 
 		try {
 
-			conn = getConnection(cancelPreAuth_api);
+			//conn = getConnection(cancelPreAuth_api);
 			
 			
 			GiveXRequest request = new GiveXRequest();
@@ -181,7 +181,7 @@ public class GivexServerNewGateway extends BaseServerGateway {
 			request.setAuthCode(authCode);
 			request.setReference(reference);
 			
-			GivexResponseModel response = getResponse(conn, request);		
+			GivexResponseModel response = getResponse(cancelPreAuth_api, request);		
 			return response;
 
 		} catch (MalformedURLException e) {

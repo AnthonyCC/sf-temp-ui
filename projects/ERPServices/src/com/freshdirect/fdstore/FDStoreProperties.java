@@ -1164,7 +1164,7 @@ public class FDStoreProperties {
         defaults.put(PROP_GC_PRODNAME, "GC_testProd");
         defaults.put(GIVEX_BLACK_HOLE_ENABLED, "false");
 
-        defaults.put(GIVEX_SECURITY_FIX_ENABLED, "false");
+        defaults.put(GIVEX_SECURITY_FIX_ENABLED, "true");
         
         // Robin Hood
         defaults.put(ROBIN_HOOD_ENABLED, "false");
@@ -1576,7 +1576,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1api.freshdirect.com/");
         defaults.put(PROP_OMS_API_URL, "http://crmdev5.freshdirect.com/");
         
-        defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.freshdirect.com/givexintegration");
+        defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.freshdirect.com/givex/giftcard");
         
         
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
