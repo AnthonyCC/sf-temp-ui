@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -132,10 +133,10 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			// get salemodel w/ invoice	
 			saleModel = (ErpSaleModel)eb.getModel();
 			FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);
-			if(isShorted && FDStoreProperties.getAvalaraTaxEnabled()){
+	/*		if(isShorted && FDStoreProperties.getAvalaraTaxEnabled() && saleModel.getFirstOrderTransaction().getTaxationType().equals(EnumNotificationType.AVALARA)){
 				AvalaraContext avalaraContext = new AvalaraContext(fdOrder);
 				fdOrder.getAvalaraTaxValue(avalaraContext);
-			}
+			}*/
 			Collections.sort(fdOrder.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 			
 			PrimaryKey customerPK = eb.getCustomerPk();

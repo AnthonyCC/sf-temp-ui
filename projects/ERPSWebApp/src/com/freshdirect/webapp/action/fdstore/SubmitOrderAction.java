@@ -580,6 +580,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 			//List selectedGiftCards = user.getGiftCardList().getSelectedGiftcards();
 			//cart.setSelectedGiftCards(selectedGiftCards);
+			String taxationType = request.getAttribute("TAXATION_TYPE")!=null?request.getAttribute("TAXATION_TYPE").toString():"";
+			
 			if (cart instanceof FDModifyCartModel) {
 				// modify order
 				FDModifyCartModel modCart = (FDModifyCartModel) cart;
@@ -597,6 +599,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				}
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Modified");
 				info.setSource(transactionSource);
+				info.setTaxationType(!"".equals(taxationType)?EnumNotificationType.getNotificationType(taxationType):null);
 				FDCustomerManager.modifyOrder(
 					info,
 					modCart,
@@ -610,8 +613,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
-				info.setSource(transactionSource);
-				String taxationType = request.getAttribute("TAXATION_TYPE")!=null?request.getAttribute("TAXATION_TYPE").toString():"";
+				info.setSource(transactionSource);				
 				info.setTaxationType(!"".equals(taxationType)?EnumNotificationType.getNotificationType(taxationType):null);
 				boolean isFirstOrder = false;
 				if(user.getOrderHistory().getTotalOrderCount() <=0){

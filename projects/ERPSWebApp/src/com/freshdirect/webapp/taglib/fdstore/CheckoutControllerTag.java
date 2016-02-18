@@ -245,6 +245,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
                         cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR");
                     }
                 }
+				request.setAttribute("TAXATION_TYPE", session.getAttribute("TAXATION_TYPE"));
+				session.removeAttribute("TAXATION_TYPE");
 				
 				String outcome = performSubmitOrder(result);
 
@@ -456,7 +458,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			avalaraContext.setCommit(false);
 			Double taxValue = cart.getAvalaraTaxValue(avalaraContext);
 			avalaraContext.setReturnTaxValue(taxValue);
-			request.setAttribute("AVALARA_CONTEXT", avalaraContext);
+			if(avalaraContext.isAvalaraTaxed()){
+			session.setAttribute("TAXATION_TYPE", "AVAL");
+			}
 		}
 		return true;
 	}
