@@ -182,10 +182,18 @@ public class RegistrationTagModelBuilder  {
 		if (null != getSocialUserProfile()) {
 			if (PROVIDER_FACEBOOK.equalsIgnoreCase(getSocialUserProfile().get("provider"))) {
 				attributesMap.put(12, getSocialUserProfile().get("email"));
+				// clear google entry
+				attributesMap.remove(13);
 			}
 			if (PROVIDER_GOOGLE.equalsIgnoreCase(getSocialUserProfile().get("provider"))) {
 				attributesMap.put(13, getSocialUserProfile().get("email"));
+				// clear facebook entry
+				attributesMap.remove(12);
 			}
+		} else {
+			// clear the values for social providers for regular sign-in users
+			attributesMap.remove(12);
+			attributesMap.remove(13);
 		}
 
 	}
