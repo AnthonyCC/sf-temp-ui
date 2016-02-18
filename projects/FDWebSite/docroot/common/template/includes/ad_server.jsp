@@ -235,7 +235,7 @@
   				    					.addParam("nod", lastOrderDate)
   				    					.addParam("do",
   				    							user.getAdjustedValidOrderCount())
-  				    					.addParam("win", 2);
+  				    					.addParam("win", 2)
   				    					.addParam("costop", cosTopCustomer);
   				    		
   				    			if (cartDeptIds.size() > 0) {
