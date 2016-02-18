@@ -534,6 +534,7 @@ public class TimeslotLogic {
 		orderHistory.setSettledOrderCount((user!=null && user.getOrderHistory()!=null)?user.getOrderHistory().getSettledOrderCount():0);
 		customer.setOrderHistory(orderHistory);
 		customer.setProfile(getCustomerProfile(user));
+		customer.setChefsTable(user.isChefsTable());
 		return customer;
 	}
 	
