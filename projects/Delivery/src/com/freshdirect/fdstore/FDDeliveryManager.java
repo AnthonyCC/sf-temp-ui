@@ -295,7 +295,7 @@ public class FDDeliveryManager {
 		return this.announcementList;
 	}
 
-	public EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
+/*	public EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
 		try {
 			FDDeliveryServiceSelectionResult serviceResult = this.getDeliveryServicesByAddress(addressModel);
 			
@@ -313,7 +313,7 @@ public class FDDeliveryManager {
 	            throw fde;
 	    }
 	    return null;
-    }
+    }*/
 	
 	public FDDeliveryAddressVerificationResponse scrubAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
 		return this.scrubAddress(address, true);

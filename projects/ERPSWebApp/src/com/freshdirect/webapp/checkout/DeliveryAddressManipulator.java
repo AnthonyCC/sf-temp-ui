@@ -611,13 +611,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		AddressModel address = new AddressModel();
 		if(isAddressScrubbed(shippingAddress)){
 			address = mapToAddressModel(shippingAddress);
-			// Get the GEO code of Scrubbed Address
-			getAddressGeoCode(address);
-			// Verify the Delivery Service type of Scrubbed Address
-			address.setServiceType(AddressUtil.getDeliveryServiceType(address));
 		}else{
 			address = AddressUtil.scrubAddress( shippingAddress, result );
-			getAddressGeoCode(address);
 		}
 		
 //		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(address.getZipCode());
@@ -641,6 +636,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			return;
 		}
 
+		getAddressGeoCode(address);
 		
 		int validCount = user.getOrderHistory().getValidOrderCount();
 		if ( validCount < 1 ) {

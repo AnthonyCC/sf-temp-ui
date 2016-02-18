@@ -888,7 +888,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						// Get the GEO code
 						getAddressGeoCode(addressModel);
 						// Verify the Delivery Service type
-						address.setServiceType(FDDeliveryManager.getInstance().getDeliveryServiceType(addressModel));
+						//address.setServiceType(FDDeliveryManager.getInstance().getDeliveryServiceType(addressModel));
 					}else{
 						FDDeliveryManager.getInstance().scrubAddress(address);
 					}
