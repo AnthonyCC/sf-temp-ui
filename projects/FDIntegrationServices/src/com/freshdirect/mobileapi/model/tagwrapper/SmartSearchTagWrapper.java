@@ -48,8 +48,8 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
 		Collection<ProductFilterI> filters = new ArrayList<ProductFilterI>();
 		if (FDStoreProperties.isIPhoneSearchFilterDiscontinuedOnly())
 			filters.add(discontinuityFilter);
-		else if(!(ContentFactory.getInstance()!=null && ContentFactory.getInstance().getStore()!=null && ContentFactory.getInstance().getStore().getContentName()!=null && ContentFactory.getInstance().getStore().getContentName().equals("FDX")))
-			filters.add(availableFilter);
+		/*else if(!(ContentFactory.getInstance()!=null && ContentFactory.getInstance().getStore()!=null && ContentFactory.getInstance().getStore().getContentName()!=null && ContentFactory.getInstance().getStore().getContentName().equals("FDX")))
+			filters.add(availableFilter);*/
 		filters.add(iphoneFilter);
 		((SmartSearchTag) this.wrapTarget).setProductFilters(filters);
 
