@@ -2,9 +2,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
 <%
-request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
+request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
 request.setAttribute("noyui", true);
-response.sendRedirect("/"); //temproraly 302 redirect 
 %>
 <tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name='content' direct='true'>
