@@ -82,7 +82,7 @@ public class AvalaraTaxRequestConverter {
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
 		if(CollectionUtils.isNotEmpty(charges)){
 			for(ErpChargeLineModel charge: charges){
-				if(charge.getAmount() > 0.0d){
+				if(charge.getAmount() > 0.0d && null == charge.getDiscount()){
 					Line taxLine = new Line();
 					EnumChargeType chargeType = charge.getType();
 					String itemCode = StringUtils.defaultString(chargeType.getMaterialNumber(),chargeType.getName());
