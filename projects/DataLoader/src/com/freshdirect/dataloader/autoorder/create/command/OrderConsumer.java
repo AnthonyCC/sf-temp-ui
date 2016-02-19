@@ -184,7 +184,7 @@ public class OrderConsumer implements IConsumer {
 					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
 			
 			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, event, TimeslotLogic.encodeCustomer(address, null), 
-					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()), TimeslotContext.CHECKOUT_TIMESLOTS)
+					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()), TimeslotContext.CHECKOUT_TIMESLOTS,false)
 					.getTimeslotList().get(0).getTimeslots();
 				
 			FDTimeslot slot = null;
