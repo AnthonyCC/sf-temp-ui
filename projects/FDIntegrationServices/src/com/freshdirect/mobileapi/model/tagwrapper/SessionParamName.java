@@ -88,6 +88,8 @@ public interface SessionParamName {
      public final static String CLICK_ID = SessionName.CLICK_ID;
      
      public final static String COUPON_CODE = SessionName.COUPONCODE;
+     
+     public static final String TAXATION_TYPE_SESSION = "TAXATION_TYPE";
     
 
 
