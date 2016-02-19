@@ -582,24 +582,26 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, OrderContext context, TimeslotContext timeslotContext) throws FDResourceException {
+			Customer customer, OrderContext context, TimeslotContext timeslotContext
+			,boolean isNewSO3Enabled
+			) throws FDResourceException {
 		
-		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context, timeslotContext);
+		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context, timeslotContext,isNewSO3Enabled);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext) throws FDResourceException{
+			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) throws FDResourceException{
 		return getTimeslotsForDateRangeAndZone(dateranges, event,
-			 customer, null, forceOrder, deliveryInfo, context, timeslotContext);
+			 customer, null, forceOrder, deliveryInfo, context, timeslotContext,isNewSO3Enabled);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
 			Customer customer, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo,
-			OrderContext context, TimeslotContext timeslotContext) throws FDResourceException {
+			OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) throws FDResourceException {
 		try {			
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryTimeslots response = logisticsService.getTimeslots(LogisticsDataEncoder.encodeTimeslotRequest(dateranges, event,
-					 customer, forceOrder, deliveryInfo, context, timeslotContext));
+					 customer, forceOrder, deliveryInfo, context, timeslotContext,isNewSO3Enabled));
 			FDDeliveryTimeslots result = LogisticsDataDecoder.decodeDeliveryTimeslots(response);
 			return result;
 			

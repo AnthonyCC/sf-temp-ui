@@ -205,7 +205,7 @@ public class LogisticsDataEncoder {
 	}
 
 	public static TimeslotRequest encodeTimeslotRequest(List<com.freshdirect.framework.util.DateRange> dateranges,
-			TimeslotEvent event, Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext) {
+			TimeslotEvent event, Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		for(com.freshdirect.framework.util.DateRange daterange: dateranges){
 			DateRange range = new DateRange(daterange.getStartDate(), daterange.getEndDate());
@@ -214,7 +214,7 @@ public class LogisticsDataEncoder {
 		
 		TimeslotRequest request = new TimeslotRequest(ranges, customer, 
 				encodeCart(event), context, forceOrder, deliveryInfo , 
-				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(), timeslotContext, event.isLogged());
+				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(), timeslotContext, event.isLogged(),isNewSO3Enabled);
 		request.setApplicationId(event.getTransactionSource());
 		return request;
 		

@@ -408,7 +408,7 @@ public class StandingOrderUtil {
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
 				(ranges, event, TimeslotLogic.encodeCustomer(contactAddress, customerUser), 
-						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR), TimeslotContext.CHECKOUT_TIMESLOTS)
+						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR), TimeslotContext.CHECKOUT_TIMESLOTS,false)
 				.getTimeslotList().get(0);
 		
 		List<FDTimeslot> timeslots = timeslotList.getTimeslots();
