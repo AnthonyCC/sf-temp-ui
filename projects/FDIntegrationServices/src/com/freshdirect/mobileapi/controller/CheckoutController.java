@@ -23,12 +23,14 @@ import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -148,6 +150,8 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_SET_ORDER_MOBILE_NUMBER_FDX ="setordermobilenumberfdx";
     
     private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
+    
+    private AvalaraContext avalaraContext;
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -627,6 +631,7 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        callAvalaraForTax(user, request.getSession());
         ResultBundle resultBundle = checkout.submitOrder();
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -782,9 +787,21 @@ public class CheckoutController extends BaseController {
         		result.addError(new ActionError(ERR_ATP_FAILED, "One of the products were not available."));
         	}
         }
+        else{
+        	callAvalaraForTax(user, session);
+        }
 
         return result;
     }
+
+	private void callAvalaraForTax(SessionUser user, HttpSession session) {
+		FDCartI cart = user.getFDSessionUser().getShoppingCart();
+		avalaraContext = new AvalaraContext(cart);
+		avalaraContext.setCommit(false);
+		cart.getAvalaraTaxValue(avalaraContext); 
+		if(avalaraContext.isAvalaraTaxed())
+		session.setAttribute("TAXATION_TYPE", "AVAL");
+	}
 
     /**
      * @param model
