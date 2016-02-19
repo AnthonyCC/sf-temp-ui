@@ -1745,6 +1745,7 @@ public class FDCustomerManager {
 			}
 
 			ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
+			order.setTaxationType(info.getTaxationType());
 			order.setTransactionSource(info.getSource());
 			order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 			EnumSaleType type = cart.getOriginalOrder().getOrderType();
