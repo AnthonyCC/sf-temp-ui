@@ -122,12 +122,6 @@ public class Result implements Serializable {
         this.warnings.put(GENERIC_ID + this.warnings.size(), message);
     }
 
-    public void addWarningMessages(Collection<ActionWarning> messages) {
-        for (ActionWarning message : messages) {
-            this.warnings.put(GENERIC_ID + this.warnings.size(), message.getDescription());
-        }
-    }
-
     public void addWarningMessages(Map<String, String> messages) {
         this.warnings.putAll(messages);
     }
@@ -138,19 +132,6 @@ public class Result implements Serializable {
 
     public void addErrorMessage(String message) {
         this.errors.put(GENERIC_ID + this.errors.size(), message);
-    }
-
-    public void addErrorMessages(Collection<ActionError> messages) {
-        for (ActionError message : messages) {
-            this.errors.put(message.getType(), message.getDescription());
-        }
-    }
-    
-    public void addErrorMessages(ActionError message) {
-    	this.errors.put(message.getType(), message.getDescription());
-    }
-    public void addErrorMessages(Map<String, String> messages) {
-        this.errors.putAll(messages);
     }
 
 	public int getErrorCode() {
