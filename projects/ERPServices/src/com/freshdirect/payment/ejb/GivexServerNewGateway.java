@@ -1,17 +1,17 @@
 package com.freshdirect.payment.ejb;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.payment.EnumGivexErrorType;
+import com.freshdirect.payment.GCExceptionType;
 import com.freshdirect.payment.GiveXRequest;
 import com.freshdirect.payment.GivexException;
+import com.freshdirect.payment.GivexResponse;
 import com.freshdirect.payment.GivexResponseModel;
 
 public class GivexServerNewGateway extends BaseServerGateway {
@@ -28,191 +28,121 @@ public class GivexServerNewGateway extends BaseServerGateway {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance( GivexServerNewGateway.class );
 	
-	public static GivexResponseModel registerCard(double amount,String reference) throws GivexException{
+	public GivexResponseModel registerCard(double amount,String reference) throws GivexException{
 
-		HttpURLConnection conn = null;
-		try {
-
-			//conn = getConnection(register_api);
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setAmount(amount);
-			request.setReference(reference);
-			
-			GivexResponseModel response = getResponse(register_api, request);			
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		} finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	}
-	
-	
-	public static GivexResponseModel transferBalance(ErpPaymentMethodI fromMethod,ErpPaymentMethodI toMethod,double amount,String reference) 
-			throws IOException, GivexException{
-		HttpURLConnection conn = null;
-		
-		try {
-
-			//conn = getConnection(transferBalance_api);
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setPaymentMethod(fromMethod);
-			request.setPaymentMethodTo(toMethod);
-			request.setAmount(amount);
-			request.setReference(reference);
-			
-			GivexResponseModel response = getResponse(transferBalance_api, request);			
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		}finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	}
-	
-	
-	
-	public static GivexResponseModel getBalance(ErpPaymentMethodI paymentMethod) throws IOException, GivexException{
-		HttpURLConnection conn = null;
-		
-		try {
-			//conn = getConnection(getBalance_api);
-			
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setPaymentMethod(paymentMethod);
-			
-			GivexResponseModel response = getResponse(getBalance_api, request);		
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		}finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	}
-	
-	
-	public static GivexResponseModel preAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,String reference) throws GivexException{
-		HttpURLConnection conn = null;
-		
-		try {
-
-			//conn = getConnection(preAuth_api);
-			
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setPaymentMethod(paymentMethod);
-			request.setAmount(amount);
-			request.setReference(reference);
-			
-			GivexResponseModel response = getResponse(preAuth_api, request);		
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		}finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	}
-	
-	
-	public static GivexResponseModel postAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,long authCode,String reference) throws GivexException{
-
-		HttpURLConnection conn = null;
-		
-		try {
-
-			//conn = getConnection(postAuth_api);
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setPaymentMethod(paymentMethod);
-			request.setAmount(amount);
-			request.setAuthCode(authCode);
-			request.setReference(reference);
-			
-			GivexResponseModel response = getResponse(postAuth_api, request);		
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		}finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	
-	}
-	
-	public static GivexResponseModel cancelPreAuthorization(ErpPaymentMethodI paymentMethod,long authCode,String reference) throws GivexException{
-
-		HttpURLConnection conn = null;
-		
-
-		try {
-
-			//conn = getConnection(cancelPreAuth_api);
-			
-			
-			GiveXRequest request = new GiveXRequest();
-			request.setPaymentMethod(paymentMethod);
-			request.setAuthCode(authCode);
-			request.setReference(reference);
-			
-			GivexResponseModel response = getResponse(cancelPreAuth_api, request);		
-			return response;
-
-		} catch (MalformedURLException e) {
-			throw new GivexException(e);
-		} catch (IOException e) {
-			throw new GivexException(e);		
-		}finally{
-			if(conn!=null)conn.disconnect();	
-		}
-	
-
-	
-	
-	}
-									
-	public static void main(String args[]) throws FDResourceException, IOException{
-		
 		try{
-			//GivexResponseModel response = registerCard(5.0, "timeOutTest2");
-			//System.out.println("New Card Number "+response.getGivexNumber());
-			//System.out.println("Auth Code: "+response.getAuthCode());
-			ErpGiftCardModel pm = new ErpGiftCardModel();
-			pm.setAccountNumber("60362847331161464760");
-			System.out.println("Balance on new Card "+getBalance(pm).getCertBalance());			
-		}catch(GivexException ge) {
-			System.out.println("Error code "+ge.getErrorCode());
-			System.out.println("Error Message "+ge.getMessage());
-		}catch(Exception ex) {
-			System.out.println("Exception Caught $$$$$$$$$$$$$$$$ ");
-			ex.printStackTrace();
+			GiveXRequest request = new GiveXRequest();
+			request.setAmount(amount);
+			request.setReference(reference);
+			
+			GivexResponse response = call(register_api, request);	
+			
+			return parseResponse(response);
+		}catch(IOException e){
+			throw new GivexException(EnumGivexErrorType.ERROR_TIME_OUT.getDescription(), EnumGivexErrorType.ERROR_TIME_OUT.getErrorCode());
 		}
+	}
+	
+	
+	private GivexResponseModel parseResponse(GivexResponse response) throws GivexException, IOException {
+		if(response.getStatus() == null){
+			throw new IOException();
+		}else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.ApplicationException.name()))
+				throw new GivexException(response.getException().getMessage(), response.getException().getCode());
+		else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.RemoteException.name()))
+			throw new RemoteException();
+		else if(response.getStatus().equals("FAILED") &&  response.getException().getType().equals(GCExceptionType.IOException.name()))
+			throw new IOException();
+		else
+			return new GivexResponseModel(response.getAuthCode(), response.getGivexNumber(), response.getCertBalance(), response.getExpiryDate(), response.getSecurityCode(), response.getAmount());
+	}
+
+
+	public GivexResponseModel transferBalance(ErpPaymentMethodI fromMethod,ErpPaymentMethodI toMethod,double amount,String reference) 
+			throws IOException, GivexException{
+		
+			GiveXRequest request = new GiveXRequest();
+			 
+			request.setPaymentMethod(new PaymentMethodData(fromMethod.getAccountNumber(), fromMethod.getPaymentMethodType().getName()));
+			request.setPaymentMethodTo(new PaymentMethodData(toMethod.getAccountNumber(), toMethod.getPaymentMethodType().getName()));
+			request.setAmount(amount);
+			request.setReference(reference);
+			
+			GivexResponse response = call(transferBalance_api, request);	
+			
+			return parseResponse(response);
+
+	}
+	
+	
+	
+	public GivexResponseModel getBalance(ErpPaymentMethodI paymentMethod) throws IOException, GivexException{
+		
+		
+			GiveXRequest request = new GiveXRequest();
+			request.setPaymentMethod(new PaymentMethodData(paymentMethod.getAccountNumber(), paymentMethod.getPaymentMethodType().getName()));
+			
+			GivexResponse response = call(getBalance_api, request);		
+			
+			return parseResponse(response);
+
+	}
+	
+	
+	public GivexResponseModel preAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,String reference) throws GivexException{
+	try{	
+			GiveXRequest request = new GiveXRequest();
+			request.setPaymentMethod(new PaymentMethodData(paymentMethod.getAccountNumber(), paymentMethod.getPaymentMethodType().getName()));
+			request.setAmount(amount);
+			request.setReference(reference);
+			
+			GivexResponse response = call(preAuth_api, request);		
+			
+			return parseResponse(response);
+	}catch(IOException e){
+		throw new GivexException(EnumGivexErrorType.ERROR_TIME_OUT.getDescription(), EnumGivexErrorType.ERROR_TIME_OUT.getErrorCode());
+	}
+
+	}
+	
+	
+	public GivexResponseModel postAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,long authCode,String reference) throws GivexException{
+	try{
+			GiveXRequest request = new GiveXRequest();
+			request.setPaymentMethod(new PaymentMethodData(paymentMethod.getAccountNumber(), paymentMethod.getPaymentMethodType().getName()));
+			request.setAmount(amount);
+			request.setAuthCode(authCode);
+			request.setReference(reference);
+			
+			GivexResponse response = call(postAuth_api, request);
+			
+			return parseResponse(response);
+	}catch(IOException e){
+		throw new GivexException(EnumGivexErrorType.ERROR_TIME_OUT.getDescription(), EnumGivexErrorType.ERROR_TIME_OUT.getErrorCode());
+	}
+
+	
+	}
+	
+	public GivexResponseModel cancelPreAuthorization(ErpPaymentMethodI paymentMethod,long authCode,String reference) throws GivexException{
+	
+	try{
+			GiveXRequest request = new GiveXRequest();
+			request.setPaymentMethod(new PaymentMethodData(paymentMethod.getAccountNumber(), paymentMethod.getPaymentMethodType().getName()));
+			request.setAuthCode(authCode);
+			request.setReference(reference);
+			
+			GivexResponse response = call(cancelPreAuth_api, request);		
+			
+			return parseResponse(response);
+	}catch(IOException e){
+		throw new GivexException(EnumGivexErrorType.ERROR_TIME_OUT.getDescription(), EnumGivexErrorType.ERROR_TIME_OUT.getErrorCode());
+	}
+
+	}
+
+	public static GivexServerNewGateway getInstance() {
+		return new GivexServerNewGateway();
 	}
 
 }

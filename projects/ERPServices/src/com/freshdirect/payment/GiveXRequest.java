@@ -1,19 +1,19 @@
 package com.freshdirect.payment;
 
-import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.payment.ejb.PaymentMethodData;
 
 public class GiveXRequest {
 
-	ErpPaymentMethodI paymentMethod;
-	ErpPaymentMethodI paymentMethodTo;
+	PaymentMethodData paymentMethod;
+	PaymentMethodData paymentMethodTo;
 	double amount;
 	long authCode;
 	String reference;
 	
-	public ErpPaymentMethodI getPaymentMethod() {
+	public PaymentMethodData getPaymentMethod() {
 		return paymentMethod;
 	}
-	public void setPaymentMethod(ErpPaymentMethodI paymentMethod) {
+	public void setPaymentMethod(PaymentMethodData paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
 	public double getAmount() {
@@ -34,10 +34,10 @@ public class GiveXRequest {
 	public void setReference(String reference) {
 		this.reference = reference;
 	}
-	public ErpPaymentMethodI getPaymentMethodTo() {
+	public PaymentMethodData getPaymentMethodTo() {
 		return paymentMethodTo;
 	}
-	public void setPaymentMethodTo(ErpPaymentMethodI paymentMethodTo) {
+	public void setPaymentMethodTo(PaymentMethodData paymentMethodTo) {
 		this.paymentMethodTo = paymentMethodTo;
 	}
 	
