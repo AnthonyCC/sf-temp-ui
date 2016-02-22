@@ -350,7 +350,10 @@
         <from>^/v/([0-9]+)/(.*)/account/setOrderLevelmobilepreferences/</from>
         <to last="true">/register.do?action=setmobilepreferencesfirstorder&amp;ver=$1</to>
     </rule>
-    
+    <rule>
+        <from>^/v/([0-9]+)/(.*)/account/setOrderLevelmobilepreferencesfd/</from>
+        <to last="true">/register.do?action=setmobilepreferencesfirstorderfd&amp;ver=$1</to>
+    </rule>
     <rule>
         <from>^/v/([0-9]+)/(.*)/account/getmobilepreferences/</from>
         <to last="true">/register.do?action=getmobilepreferences&amp;ver=$1</to>
