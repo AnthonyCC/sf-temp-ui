@@ -292,6 +292,23 @@ public class DataPotatoField {
 		}
 		return null;
 	}
+	
+	   /**
+     * Collect light product related extra info. Mostly used by PDP accordion widgets.
+     * @return
+     */
+    public static Map<String, ?> digProductLightExtraData(FDUserI user, ProductModel product) {
+        // first get a LightProductData for product level attributes
+        try {
+            ProductExtraData extraData = ProductExtraDataPopulator.createLightExtraData(user, product);
+            
+            // convert and return
+            return SoyTemplateEngine.convertToMap( extraData );
+        } catch ( HttpErrorResponse e ) {
+            LOG.error( "Failed to get product info.", e );
+        }
+        return null;
+    }
 
 	
 	/**

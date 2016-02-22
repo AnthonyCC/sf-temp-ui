@@ -76,23 +76,6 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		this.version = version;
 	}
 	
-	private Map<String, ?> extractPotato(FDUserI user, ProductModel product, final String variantId) {
-		return DataPotatoField.digProduct(user, product, variantId);
-	}
-
-	private Map<String, ?> extractExtraPotato(FDUserI user, ProductModel product) {
-		return DataPotatoField.digProductExtraData(user, product, ((PageContext) getJspContext()).getServletContext(), grpId, version );
-	}
-
-	
-	private Map<String, ?>  extractPotatoLight(FDUserI user, ProductModel product) {
-		Map<String, ?> serializedData = DataPotatoField.digProductLight(user, product);
-
-		return serializedData;
-	}
-
-
-
 	@Override
 	public void doTag() throws JspException {
 		LOGGER.info( "Creating data potato: " + name );
@@ -126,29 +109,29 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		}
 
 
-		if (incomplete) {
-			// minimal potato population
-			LOGGER.info("Product " + productId + " is considered 'incomplete', produce light potatos");
-			
-			final Map<String,?> dataMap = extractPotatoLight(user, product);
+        if (incomplete) {
+            // minimal potato population
+            LOGGER.info("Product " + productId + " is considered 'incomplete', produce light potatos");
+            final Map<String, ?> dataMap = DataPotatoField.digProductLight(user, product);
+            ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
-			((PageContext)getJspContext()).setAttribute( name, dataMap );
-		} else {
-			// normal population
-			final Map<String,?> dataMap = extractPotato(user, product, variantId);
+            if (extraName != null) {
+                LOGGER.info("Creating light extra potato: " + extraName);
+                final Map<String, ?> extraMap = DataPotatoField.digProductLightExtraData(user, product);
+                ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
+            }
+        } else {
+            // normal population
+            LOGGER.info("Product " + productId + " is produced potatos.");
+            final Map<String, ?> dataMap = DataPotatoField.digProduct(user, product, variantId);
+            ((PageContext) getJspContext()).setAttribute(name, dataMap);
 
-			((PageContext)getJspContext()).setAttribute( name, dataMap );
-		}
-
-
-		if (extraName != null) {
-			LOGGER.info( "Creating extra potato: " + extraName );
-
-			final Map<String,?> extraMap = extractExtraPotato(user, product);
-
-			((PageContext)getJspContext()).setAttribute( extraName, extraMap );
-			
-		}
+            if (extraName != null) {
+                LOGGER.info("Creating extra potato: " + extraName);
+                final Map<String, ?> extraMap = DataPotatoField.digProductExtraData(user, product, ((PageContext) getJspContext()).getServletContext(), grpId, version);
+                ((PageContext) getJspContext()).setAttribute(extraName, extraMap);
+            }
+        }
 	}
 	
 	public static class TagEI extends TagExtraInfo {

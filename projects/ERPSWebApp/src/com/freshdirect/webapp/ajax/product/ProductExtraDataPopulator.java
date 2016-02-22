@@ -50,11 +50,11 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.EnumPopupType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.MediaModel;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
@@ -89,8 +89,8 @@ import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 public class ProductExtraDataPopulator {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
-	private final static java.text.DecimalFormat qtyFormatter = new java.text.DecimalFormat("0");
-	private final static java.text.DecimalFormat totalFormatter = new java.text.DecimalFormat("0.00");
+	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
+	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
 
 	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, ServletContext ctx, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
@@ -118,7 +118,25 @@ public class ProductExtraDataPopulator {
 		
 		return createExtraData( user, product, ctx, grpId, grpVersion );
 	}
-	
+
+    public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
+
+        if (product == null) {
+            BaseJsonServlet.returnHttpError(500, "product not found");
+        }
+
+        // Create response data object
+        ProductExtraData data = new ProductExtraData();
+
+        // First populate product-level data
+        populateLightExtraData(data, user, product);
+
+        return data;
+    }
+
+    private static void populateLightExtraData(ProductExtraData data, FDUserI user, ProductModel product) {
+        data.setProductDescription(populateProductDescription(user, product.getProductDescription()));
+    }
 	
 	private static void populateData(ProductExtraData data, FDUserI user,
 			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
@@ -170,19 +188,7 @@ public class ProductExtraDataPopulator {
 			}
 		}
 		
-		// product description
-		{
-			if (productNode.getProductDescription() != null) {
-				Html tm = productNode.getProductDescription();
-				try {
-					data.setProductDescription( fetchMedia(tm.getPath(), user, false) );
-				} catch (IOException e) {
-					LOG.error("Failed to fetch product description media " + tm.getPath(), e);
-				} catch (TemplateException e) {
-					LOG.error("Failed to fetch product description media " + tm.getPath(), e);
-				}
-			}
-		}
+		data.setProductDescription(populateProductDescription(user, productNode.getProductDescription()));
 		
 		// product desc media
 		if ( productNode.getProductDescriptionNote() != null ) {
@@ -429,8 +435,8 @@ public class ProductExtraDataPopulator {
 				// brand popup size
 				// Popup window URL: /shared/brandpop.jsp?brandId=<brand.id>
 				if (brandAttrib != null) {
-					TitledMedia tm = (TitledMedia) brandAttrib;
-					/* bi.popupSize = tm.getPopupSize();
+				    /*TitledMedia tm = (TitledMedia) brandAttrib;
+					bi.popupSize = tm.getPopupSize();
 					EnumPopupType popupType = EnumPopupType.getPopupType(tm
 							.getPopupSize());
 					bi.popupWidth = popupType.getWidth();
@@ -788,12 +794,12 @@ public class ProductExtraDataPopulator {
 								isSaleUnitDiff = true;
 							}
 										
-							grpQty = qtyFormatter.format(matPrice.getScaleLowerBound());
+							grpQty = QTY_FORMATTER.format(matPrice.getScaleLowerBound());
 										
 							if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
 								grpQty = grpQty + (matPrice.getScaleUnit().toLowerCase());
 				
-								grpTotalPrice = "$"+totalFormatter.format(displayPrice);
+								grpTotalPrice = "$"+TOTAL_FORMATTER.format(displayPrice);
 										
 								if(isSaleUnitDiff)
 									grpTotalPrice = grpTotalPrice + "/" + (matPrice.getPricingUnit().toLowerCase());
@@ -832,7 +838,7 @@ public class ProductExtraDataPopulator {
 
 						}
 					}
-					/* now iterate over productModels to get ProductDatas */Iterator<String> it = skuList.iterator();
+					/* now iterate over productModels to get ProductDatas */
 					Iterator<ProductModel> productModelListIt = productModelList.iterator();
 					while(productModelListIt.hasNext()){
 						ProductModel curPm = productModelListIt.next();
@@ -841,7 +847,7 @@ public class ProductExtraDataPopulator {
 								
 						if ( !(curPm instanceof ProductModelPricingAdapter) ) {
 							// wrap it into a pricing adapter if naked
-							curPm = ProductPricingFactory.getInstance().getPricingAdapter( curPm, user.getPricingContext() );
+							curPm = ProductPricingFactory.getInstance().getPricingAdapter( curPm, user.getUserContext().getPricingContext() );
 						}
 								
 						if ( skuModel == null ) {
@@ -972,7 +978,7 @@ public class ProductExtraDataPopulator {
 					// wrap it into a pricing adapter if naked
 					productModel = ProductPricingFactory.getInstance()
 							.getPricingAdapter(productModel,
-									user.getPricingContext());
+							        user.getUserContext().getPricingContext());
 				}
 
 				if (skuModel == null) {
@@ -1025,6 +1031,20 @@ public class ProductExtraDataPopulator {
         data.setCustomerServiceContact(user.getCustomerServiceContact());
 	}
 
+    private static String populateProductDescription(FDUserI user, MediaI media) {
+        String productDescription = null;
+        if (media != null) {
+            try {
+                productDescription = fetchMedia(media.getPath(), user, false);
+            } catch (IOException e) {
+                LOG.error("Failed to fetch product description media " + media.getPath(), e);
+            } catch (TemplateException e) {
+                LOG.error("Failed to fetch product description media " + media.getPath(), e);
+            }
+        }
+        return productDescription;
+    }
+
 
 	private static WineRating processWineRating(List<DomainValue> wineRatingsDV, FDUserI user, Html reviewMedia) {
 		if (wineRatingsDV == null || wineRatingsDV.size() == 0)
@@ -1051,24 +1071,6 @@ public class ProductExtraDataPopulator {
 		
 		return r;
 	}
-	
-
-	@SuppressWarnings( "unused" )
-	private static ProductExtraData.PopupContent processTitleMedia(TitledMedia tm, ProductExtraData.PopupContent target) {
-		if (target == null) {
-			target = new ProductExtraData.PopupContent();
-		}
-
-		target.popupTitle = tm.getMediaTitle();
-		target.popupSize = tm.getPopupSize();
-		EnumPopupType popupType = EnumPopupType.getPopupType(tm
-				.getPopupSize());
-		target.popupWidth = popupType.getWidth();
-		target.popupHeight = popupType.getHeight();
-
-		return target;
-	}
-
 
 	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
 		if (mediaPath == null)
@@ -1083,7 +1085,7 @@ public class ProductExtraDataPopulator {
 		StringWriter out = new StringWriter();
 				
 		MediaUtils.render(mediaPath, out, parameters, false, 
-				user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+				user != null && user.getUserContext().getPricingContext() != null ? user.getUserContext().getPricingContext() : PricingContext.DEFAULT);
 
 		String outString = out.toString();
 		
