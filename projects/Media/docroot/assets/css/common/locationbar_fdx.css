@@ -591,12 +591,6 @@
 .locabar_triggers{
 	height:40px;
 }
-.locabar_triggers:focus {
-    outline: 2px solid #f00;
-}
-.mouse .locabar_triggers {
-	outline: initial;
-}
 #locabar_user_trigger {
 	display: inline-block;
 	position: relative;
