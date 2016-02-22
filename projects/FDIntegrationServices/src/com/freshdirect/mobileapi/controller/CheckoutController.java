@@ -795,12 +795,14 @@ public class CheckoutController extends BaseController {
     }
 
 	private void callAvalaraForTax(SessionUser user, HttpSession session) {
-		FDCartI cart = user.getFDSessionUser().getShoppingCart();
-		avalaraContext = new AvalaraContext(cart);
+		if(FDStoreProperties.getAvalaraTaxEnabled()){		
+		Cart cart = user.getShoppingCart();
+		avalaraContext = new AvalaraContext(user.getFDSessionUser().getShoppingCart());
 		avalaraContext.setCommit(false);
-		cart.getAvalaraTaxValue(avalaraContext); 
+		cart.getAvalaraTax(avalaraContext); 
 		if(avalaraContext.isAvalaraTaxed())
 		session.setAttribute("TAXATION_TYPE", "AVAL");
+		}
 	}
 
     /**

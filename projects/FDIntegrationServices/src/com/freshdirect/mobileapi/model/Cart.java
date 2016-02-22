@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -58,6 +59,7 @@ import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
@@ -1219,5 +1221,12 @@ public class Cart {
 		}
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
         user.updateShoppingCart(this);       
+	}
+	
+	public double getAvalaraTax(AvalaraContext avalaraContext){
+		if(FDStoreProperties.getAvalaraTaxEnabled()){
+			return this.cart.getAvalaraTaxValue(avalaraContext);
+		}
+		return 0.0;
 	}
 }
