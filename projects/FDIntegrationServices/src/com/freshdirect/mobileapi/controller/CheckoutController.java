@@ -407,6 +407,10 @@ public class CheckoutController extends BaseController {
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
+        if(EnumCouponContext.VIEWCART.equals(ctx) && FDStoreProperties.getAvalaraTaxEnabled()){
+        	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
+        	user.getShoppingCart().getAvalaraTax(avalaraContext);
+        }
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
         if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
         	responseMessage.addWarningMessage(MessageCodes.WARNING_COUPONSYSTEM_UNAVAILABLE

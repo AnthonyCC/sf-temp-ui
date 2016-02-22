@@ -8,18 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -253,11 +251,7 @@ public class CartController extends BaseController {
      * @throws FDException 
      */
     private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-        Cart cart = user.getShoppingCart();
-        if(FDStoreProperties.getAvalaraTaxEnabled()){
-        	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
-        	cart.getAvalaraTax(avalaraContext);
-        }
+        Cart cart = user.getShoppingCart();       
         CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         responseMessage.setSuccessMessage("Cart detail has been retrieved successfully.");
