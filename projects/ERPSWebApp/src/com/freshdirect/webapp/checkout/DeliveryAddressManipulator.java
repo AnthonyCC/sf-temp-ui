@@ -284,6 +284,19 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (addr1 == null || addr2 == null)
 			return false;
 
+		if(addr1.getAddress2() == null){
+			addr1.setAddress2("");
+		}
+		if(addr2.getAddress2() == null){
+			addr2.setAddress2("");
+		}
+		if(addr1.getApartment() == null){
+			addr1.setApartment("");
+		}
+		if(addr2.getApartment() == null){
+			addr2.setApartment("");
+		}
+
 		if (addr1.getAddress1() != null && addr1.getAddress1().equalsIgnoreCase(addr2.getAddress1())
 				&& ((addr1.getAddress2() == null && addr2.getAddress2() == null) || (addr1.getAddress2() != null && addr1.getAddress2().equalsIgnoreCase(addr2.getAddress2())))
 				&& ((addr1.getApartment() == null && addr2.getApartment() == null) || (addr1.getApartment() != null && addr1.getApartment().replaceAll(" " , "").equalsIgnoreCase(addr2.getApartment().replaceAll(" " , ""))))
