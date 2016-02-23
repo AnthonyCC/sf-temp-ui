@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BookRetailer;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.Recipe;
@@ -1038,7 +1039,12 @@ public class FDEmailFactory {
 		private final String body;
 
 		public FDContactServiceEmail(String body) {
-			this.setRecipient(GENERAL_CS_EMAIL);
+			if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
+					ContentFactory.getInstance().getStore().getContentName() != null && ContentFactory.getInstance().getStore().getContentName().equals("FDX")) {
+				this.setRecipient(FDX_SIDEKICKS_EMAIL);
+			} else {
+				this.setRecipient(GENERAL_CS_EMAIL);
+			}
 			this.body = body;
 		}
 
