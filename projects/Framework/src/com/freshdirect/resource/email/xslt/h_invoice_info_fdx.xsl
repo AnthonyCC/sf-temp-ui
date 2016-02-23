@@ -200,7 +200,7 @@
 					<tr valign="top" class="orderSummary">
 						<td colspan="1" align="right">Phone Handling Fee:</td>
 						<td align="right">$<xsl:value-of select='format-number(order/phoneCharge, "###,##0.00", "USD")'/></td>
-						<td colspan="1">&nbsp;</td>
+						<td colspan="1"><xsl:if test="order/miscellaneousChargeTaxable = 'true'"><b>T</b></xsl:if></td>
 					</tr>
 				</xsl:if>
 				

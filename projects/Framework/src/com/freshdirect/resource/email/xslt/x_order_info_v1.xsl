@@ -155,8 +155,7 @@ Fuel Surcharge<xsl:if test="order/miscellaneousChargeWaived = 'true'"> (waived)<
 </xsl:if>
 
 <xsl:if test="order/phoneChargeWaived = 'false' and number(order/phoneCharge) &gt; 0">
-Phone Handling Fee: <xsl:value-of select="format-number(order/phoneCharge, '$###,##0.00', 'USD')"/>
-</xsl:if>
+Phone Handling Fee: <xsl:value-of select="format-number(order/phoneCharge, '$###,##0.00', 'USD')"/><xsl:if test="order/deliveryChargeTaxable = 'true'"> T</xsl:if></xsl:if>
 
 <xsl:if test="number(order/totalDiscountValue) &gt; 0">
 <xsl:text>

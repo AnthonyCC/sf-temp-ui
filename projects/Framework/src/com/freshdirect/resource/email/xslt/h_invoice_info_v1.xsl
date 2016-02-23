@@ -195,8 +195,8 @@
 	<xsl:if test="order/phoneChargeWaived = 'false' and order/phoneCharge > 0">
 		<tr valign="top" class="orderSummary">
 			<td colspan="2" align="right">Phone Handling Fee:</td>
-			<td align="right">$<xsl:value-of select='format-number(order/phoneCharge, "###,##0.00", "USD")'/></td>
-			<td colspan="3">&nbsp;</td>
+			<td align="right">$<xsl:value-of select='format-number(order/phoneCharge, "###,##0.00", "USD")'/></td><td></td>
+			<td colspan="2"><b>T</b></td>
 		</tr>
 	</xsl:if>
 	
