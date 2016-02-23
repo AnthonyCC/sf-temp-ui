@@ -141,8 +141,12 @@ public class GivexServerNewGateway extends BaseServerGateway {
 
 	}
 
+	private static GivexServerNewGateway gateway = null;
 	public static GivexServerNewGateway getInstance() {
-		return new GivexServerNewGateway();
+		if (gateway == null) {
+				gateway = new GivexServerNewGateway();
+		}
+		return gateway;
 	}
 
 }
