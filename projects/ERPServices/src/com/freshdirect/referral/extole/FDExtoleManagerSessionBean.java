@@ -117,7 +117,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 					if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
 						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
 					}
-					if (FAILURE.equalsIgnoreCase(response.getCode())) {
+					//	if (FAILURE.equalsIgnoreCase(response.getCode())) {
+					else{
 						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
 					}
 					updateConversionRequest(response);
@@ -157,7 +158,8 @@ public class FDExtoleManagerSessionBean extends ERPSessionBeanSupport {
 					if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
 						response.setStatus(EnumRafTransactionStatus.SUCCESS.getValue());
 					}
-					if (FAILURE.equalsIgnoreCase(response.getCode())) {
+					//	if (FAILURE.equalsIgnoreCase(response.getCode())) {
+					else{
 						response.setStatus(EnumRafTransactionStatus.FAILURE.getValue());
 					}
 					/*
