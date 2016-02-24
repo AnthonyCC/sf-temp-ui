@@ -8,6 +8,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.framework.util.StringUtil'%>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType'%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
@@ -60,12 +61,8 @@
 	}
 	
 	
+	String userid = NVL.apply(request.getParameter("userid"), NVL.apply(user.getUserId(), ""));
 	
-	/*String userFromSession = null;
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	if(user != null)
-		userFromSession = user.getUserId();*/
-	String userid= request.getParameter("userid");
 	String triedToConnect= request.getParameter("triedToConnect");		
 	
     // determine the preSuccessPage from previous workflow
@@ -86,7 +83,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 
 
 
-<body  >
+<body>
 	<center>
 		<div id="sulCont" class="signup-style-social social-singin">
 
@@ -132,7 +129,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	                    	    <!-- span id should be the input box id+"_img" -->
 	                            <span class="error_img" id="email_img"></span>
 	                        </td>
-                                <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
+                                <%-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  --%>
                             <td>
 	                            <input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
 	                        </td>
@@ -296,6 +293,9 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 		setTimeout(function(){ 
 			FreshDirect.components.ifrPopup.reposition();
 		}, 100);
+		
+		//set focus
+		$jq('#<%= ("".equals(userid)) ? "email" : "password" %>').focus();
 	});
 </script>
 
