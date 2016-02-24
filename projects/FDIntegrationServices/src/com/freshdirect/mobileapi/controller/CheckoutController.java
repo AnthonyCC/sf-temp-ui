@@ -403,13 +403,14 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
+        Cart cart = user.getShoppingCart();
         if(EnumCouponContext.CHECKOUT.equals(ctx)){
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
         if(EnumCouponContext.VIEWCART.equals(ctx) && FDStoreProperties.getAvalaraTaxEnabled()){
         	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
-        	user.getShoppingCart().getAvalaraTax(avalaraContext);
+        	cart.getAvalaraTax(avalaraContext);
         }
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
         if(!user.getFDSessionUser().isCouponsSystemAvailable() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {

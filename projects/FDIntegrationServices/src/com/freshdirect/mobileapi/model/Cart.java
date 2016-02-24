@@ -1229,4 +1229,8 @@ public class Cart {
 		}
 		return 0.0;
 	}
+	
+	public double getTaxValue(){
+		return this.cart.getTaxValue();
+	}
 }

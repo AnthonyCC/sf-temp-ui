@@ -231,7 +231,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setBeer(fdProduct.isBeer());
 				this.orderLine.setAffiliate(fdProduct.getAffiliate(this.getUserContext().getStoreContext().getEStoreId()));
 				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());
-				
+				this.orderLine.setTaxCode(fdProduct.getTaxCode());
 			}
 			
 			this.performPricing();
