@@ -127,7 +127,7 @@ public class SinglePageCheckoutFacade {
 
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
-            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
+            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
                 result.setAtpFailure(atpFailureData);
             }
         }

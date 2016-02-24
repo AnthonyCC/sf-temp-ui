@@ -104,7 +104,7 @@ public class CheckoutService {
 				atpFailureData.addCoremetrics(pvTagModel.toStringList());
             }
 			
-            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
+            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
                 unavailabilityData = atpFailureData;
             }
             else {    
