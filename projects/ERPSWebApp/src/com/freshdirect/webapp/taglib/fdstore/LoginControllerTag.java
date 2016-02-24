@@ -143,15 +143,17 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			
 			 // APPDEV-4381 TC Accept.
-			String requestUrl = request.getRequestURL().toString();
+			
+			if(actionResult.getErrors() == null || actionResult.getErrors().size() <= 0){
 			 if(user !=null&&!user.getTcAcknowledge()){
 				 
 				 session.setAttribute("nextSuccesspage", updatedSuccessPage);
 					session.setAttribute("fdTcAgree", false);
-	 
-					
-			 }				
-
+	 				
+			 }else{
+				 session.setAttribute("fdTcAgree", true);
+			 }
+			}
 	    	
         } else {
 			fdLoginAttempt++;
