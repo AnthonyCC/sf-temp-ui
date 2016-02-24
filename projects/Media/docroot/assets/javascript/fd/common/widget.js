@@ -22,6 +22,7 @@ var FreshDirect = FreshDirect || {};
         if ($ph.length) {
           $ph.html(this.template(data));
           fd.modules.common.Select.selectize($ph);
+          fd.modules.common.Elements.decorate($ph);
           fd.modules.common.aria.decorate();
         }
       }

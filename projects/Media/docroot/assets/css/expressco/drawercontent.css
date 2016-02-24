@@ -55,6 +55,7 @@
 
 .drawer__itemright{
   margin-bottom:30px;
+  display: inline-block;
 }
 
 .drawer__item__section{

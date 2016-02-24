@@ -199,8 +199,8 @@
 		    	var loginDropboxHtml = '';
 		    	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
 		    		loginDropboxHtml += '<form id="login_cont_formContentForm">';
-		    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
-		    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+		    			loginDropboxHtml += '<div class="fieldInputs!!!"><label for="login_cont_formContent_email"></label><input id="login_cont_formContent_email" type="email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
+		    			loginDropboxHtml += '<div class="fieldInputs"><label for="login_cont_formContent_password"></label><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
 		        		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
 		    		loginDropboxHtml += '</form>';
 					loginDropboxHtml += '<div class="errorMsg" style="display: none;">'

@@ -3,7 +3,16 @@
   display: inline-block;
   text-align: left;
   overflow: auto;
-  max-width:800px;
+  max-width:650px;
+}
+.addpaymentmethodpopup form {
+	background: #fefefe;
+	padding: 60px;
+}
+
+.addpaymentmethodpopup input,
+.addpaymentmethodpopup select {
+	width: 100%
 }
 
 .ec-popup.addpaymentmethodpopup .ec-popup-header {
@@ -16,6 +25,13 @@
 
 #addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] #addpaymentmethod_creditcard {
   display: block;
+}
+
+
+#addpaymentmethodpopup [data-show="addpaymentmethod_creditcard"] label[for="addpaymentmethod_creditcard_selector"],
+#addpaymentmethodpopup [data-show="addpaymentmethod_bank"] label[for="addpaymentmethod_bank_selector"],
+#addpaymentmethodpopup [data-show="addpaymentmethod_ebt"] label[for="addpaymentmethod_ebt_selector"] {
+	background: #fff;
 }
 
 #addpaymentmethodpopup [data-show="addpaymentmethod_bank"] #addpaymentmethod_bank {
@@ -34,101 +50,32 @@
   margin-right:10px;
 }
 
-#addpaymentmethodpopup .formselector{
-  margin-bottom:15px;
-  text-align:center;
+#addpaymentmethodpopup label[for="CC_cardMonth"],
+#addpaymentmethodpopup label[for="CC_cardYear"],
+#addpaymentmethod_ebt span[fdform-error-for="cardYear"] {
+	margin-left: 0.75em;
 }
 
-#addpaymentmethodpopup .formselector label {
-  display: inline-block;
-  width: 100px;
-  font-size: 12px;
-  line-height: 16px;
-  margin-bottom: 5px;
-  text-align:center;
+#addpaymentmethodpopup label[for="CC_bil_state"],
+#addpaymentmethod_bank label[for="EC_bil_state"],
+#addpaymentmethod_ebt label[for="ET_bil_state"],
+#addpaymentmethodpopup label[for="CC_bil_zipcode"],
+#addpaymentmethod_bank label[for="EC_bil_zipcode"],
+#addpaymentmethod_ebt label[for="ET_bil_zipcode"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_apartment"],
+#addpaymentmethodpopup label[for="CC_bil_apartment"] {
+	margin-left: 1.5em;
 }
 
-#addpaymentmethodpopup .formselector label input {
-  margin: 0 5px;
-  vertical-align: top;
-}
-
-#addpaymentmethodpopup .title__strong{
-  font-weight:bold;
-  margin:0.5em 0;
-}
-
-#addpaymentmethodpopup .title__bestno{
-  margin:1.5em 0 0 0;
-}
-
-#addpaymentmethod_creditcard input,
-#addpaymentmethod_creditcard select,
-#addpaymentmethod_creditcard textarea,
-#addpaymentmethod_bank input,
-#addpaymentmethod_bank select,
-#addpaymentmethod_bank textarea,
-#addpaymentmethod_ebt input,
-#addpaymentmethod_ebt select,
-#addpaymentmethod_ebt textarea{
-  box-sizing: border-box;
-}
-
-#addpaymentmethod_creditcard input[name="cardHolderName"],
-#addpaymentmethod_creditcard select[name="cardBrand"],
-#addpaymentmethod_creditcard input[name="cardNum"],
-#addpaymentmethod_creditcard select[name="bil_country"],
-#addpaymentmethod_ebt input[name="cardHolderName"],
-#addpaymentmethod_ebt select[name="cardBrand"],
-#addpaymentmethod_ebt input[name="cardNum"],
-#addpaymentmethod_ebt select[name="bil_country"]{
-  width: 360px;
-}
-
-#addpaymentmethodpopup [fdform-error]{
-  max-width:360px;
-}
-
-#addpaymentmethod_creditcard select[name="cardMonth"]{
-  margin-left:20px;
-}
-
-#addpaymentmethod_creditcard select[name="cardYear"]{
-  margin-left:10px;
-}
-
-#addpaymentmethod_creditcard input[name="bil_address1"],
-#addpaymentmethod_ebt input[name="bil_address1"],
-#addpaymentmethod_creditcard input[name="bil_address2"],
-#addpaymentmethod_ebt input[name="bil_address2"]{
-  width:280px;
-}
-
-#addpaymentmethod_creditcard input[name="bil_apartment"],
-#addpaymentmethod_ebt input[name="bil_apartment"]{
-  margin-left:10px;
-  width:70px;
-}
-
-#addpaymentmethod_creditcard input[name="bil_city"],
-#addpaymentmethod_ebt input[name="bil_city"]{
-  width:240px;
-}
-
-#addpaymentmethod_creditcard select[name="bil_state"],
-#addpaymentmethod_ebt select[name="bil_state"]{
-  margin-left:10px;
-  width:110px;
-}
-
-#addpaymentmethod_creditcard input[name="bil_zipcode"],
-#addpaymentmethod_ebt input[name="bil_zipcode"]{
-  width:240px;
-}
-
-#addpaymentmethod_creditcard input[name="phone"],
-#addpaymentmethod_ebt input[name="phone"]{
-  width:270px;
+#addpaymentmethod_bank label[for="EC_bil_apartment"],
+#addpaymentmethod_ebt label[for="ET_bil_apartment"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_apartment"],
+#addpaymentmethod_creditcard span[fdform-error-for="bil_zipcode"],
+#addpaymentmethod_ebt span[fdform-error-for="bil_zipcode"], 
+#addpaymentmethod_bank label[for="EC_bil_apartment"],
+#addpaymentmethod_bank span[fdform-error-for="bil_apartment"],
+#addpaymentmethod_bank span[fdform-error-for="bil_zipcode"] {
+	margin-left: 5em;
 }
 
 #addpaymentmethod_creditcard .buttons,
@@ -143,77 +90,12 @@
   color:#333;
 }
 
-#addpaymentmethod_bank .account_details,
-#addpaymentmethod_bank .account_address{
-  display:inline-block;
-  vertical-align:top;
-  width:250px;
-}
-
-#addpaymentmethod_bank .account_details h2,
-#addpaymentmethod_bank .account_address h2{
+#addpaymentmethod_bank h2 {
   font-size:14px;
   font-weight:bold;
   border-bottom:1px solid #aaa;
   color:#333;
+  margin-bottom: 20px;
 }
 
 
-#addpaymentmethod_bank .account_details{
-  margin-right:50px;
-}
-
-#addpaymentmethod_bank .account_type label {
-  display: inline-block;
-  width: 50%;
-  margin-bottom: 5px;
-  text-align:center;
-}
-
-#addpaymentmethod_bank .account_type label input{
-  margin:0 5px;
-  vertical-align: top;
-}
-
-#addpaymentmethod_bank .learn-more{
-  margin:0 0 10px 0;
-}
-
-#addpaymentmethod_bank input[name="cardHolderName"],
-#addpaymentmethod_bank input[name="bankName"],
-#addpaymentmethod_bank input[name="cardNum"],
-#addpaymentmethod_bank input[name="cardNumVerify"],
-#addpaymentmethod_bank input[name="abaRouteNumber"],
-#addpaymentmethod_bank select[name="bil_country"]{
-  width:250px;
-}
-
-#addpaymentmethod_bank .account-helper,
-#addpaymentmethod_bank .agreement{
-  margin-top:20px;
-}
-
-#addpaymentmethod_bank .agreement label input{
-  margin:0 5px 0 0;
-}
-
-#addpaymentmethod_bank input[name="bil_address1"],
-#addpaymentmethod_bank input[name="bil_address2"]{
-  width:180px;
-}
-
-#addpaymentmethod_bank input[name="bil_apartment"]{
-  margin-left:10px;
-  width:60px;
-}
-
-#addpaymentmethod_bank input[name="bil_city"],
-#addpaymentmethod_bank input[name="bil_zipcode"],
-#addpaymentmethod_bank input[name="phone"]{
-  width:160px;
-}
-
-#addpaymentmethod_bank select[name="bil_state"]{
-  margin-left:10px;
-  width:80px;
-}

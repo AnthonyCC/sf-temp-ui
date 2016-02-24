@@ -16,9 +16,9 @@
 .ec-popup {
 	display: none;
 	position: absolute;
-  padding: 20px;
+  	/*padding: 20px;
 	max-width: 600px;
-  min-width: 200px;
+  min-width: 200px;*/
 	background: #faf9f7;
 	border: 1px solid #aaa;
 	box-shadow: 0 0 8px rgba(0,0,0,0.2);
@@ -31,7 +31,7 @@
   vertical-align: middle;
   text-align: left;
   overflow: auto;
-	width: 300px;
+	width: 650px;
 }
 
 .ec-popup.addaddresspopup .ec-popup-header {
@@ -44,13 +44,14 @@
   filter:alpha(opacity=70);
 }
 
+/*
 .ec-popup [fdform] select,
 .ec-popup [fdform] input,
 .ec-popup [fdform] textarea {
   display: inline-block;
   margin: 5px 0;
 }
-
+*/
 .ec-popup [fdform] b.label,
 .ec-popup [fdform] span.label {
   display: block;

@@ -106,7 +106,7 @@
 */
 {template .address_home autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+  <label class='drawer__item__label' for="address_{$id}">
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
@@ -181,7 +181,7 @@
 */
 {template .address_office autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+  <label class='drawer__item__label' for="address_{$id}">
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
@@ -232,7 +232,7 @@
 */
 {template .address_pickup autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+  <label class='drawer__item__label' for="address_{$id}">
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
@@ -290,7 +290,7 @@
 <form action="#" fdform="address_preview" fdform-endpoint-submit="/api/expresscheckout/deliveryaddress">
 <input type="hidden" name="action" value="selectDeliveryAddressMethod" />
 <div class="drawer__previewitem noaddress">
-  <label class='drawer__item__label'>
+  <label class='drawer__item__label' for="preview_{$id}">
   <input id="preview_{$id}" value="{$id}" type="radio" class="drawer__itemleft" name="id" fdform-button="submit" fdform-prevent="manual"/>
 
   <div class='drawer__itemright'>
@@ -303,6 +303,7 @@
     </div>
     <div class="drawer__item__section">
       <div class='section__body'>
+      	<label for="{$id}_phone"></label>
         <input name="{$id}_phone" placeholder="Your Phone Number" fdform-mask="(xxx) xxx xxxx" {if not $phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" value="{if $phone}{$phone}{/if}"/>
       </div>
     </div>

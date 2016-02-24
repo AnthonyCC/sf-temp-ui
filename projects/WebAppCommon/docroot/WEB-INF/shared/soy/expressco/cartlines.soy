@@ -756,9 +756,11 @@
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
 					<p class='promotion-text'>Have a promotional code?</p>
 					<div>
-						<input type="text" class="promotion-input" name="promotionCode" placeholder="Enter here" />
+						<label for="promotional-code"></label>  
+						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
 						<button class="cssbutton green small">apply<span class="offscreen">promotion code</span></button>
+						<span fdform-error-for="promotionCode"></span>
 					</div>
 				</form>
 			</div>
@@ -767,9 +769,11 @@
 					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
 						<p class='promotion-text'>Have a new Gift Card?</p>
 						<div>
-							<input type="text" class="promotion-input" name="givexNum" placeholder="Enter here" />
+							<label for="apply-gift-card"></label>  
+							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
 							<button class="cssbutton green small">apply<span class="offscreen">new gift card</span></button>
+							<span fdform-error-for="givexNum"></span>
 						</div>
 					</form>
 				</div>

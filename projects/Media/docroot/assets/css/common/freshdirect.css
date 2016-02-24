@@ -213,19 +213,20 @@ h2.centerline span {
 #recipe_form select,
 #i_viewcart .viewcartselect,
 #popupcart select,
-.qtyinput input.qty {
+.qtyinput input[type="text"].qty {
   font-size: 12px;
   text-align:center;
   padding:2px;
-  line-height:17px;
+  line-height: 24px;
   vertical-align:middle;
-  height:17px;
+  height:24px;
   top:0;
   margin:1px 0;
 }
 
-.qtyinput input.qty {
-  width: 2em;
+.qtyinput input[type="text"].qty {
+  width: 2.5em;
+  display: inline-block;
 }
 
 .qtyinput_fixedwidth {
@@ -931,3 +932,4 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 	color: #FFFFFF;
 	text-decoration: underline;
 }
+

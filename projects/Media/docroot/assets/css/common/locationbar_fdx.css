@@ -325,15 +325,6 @@
 		max-width: 256px;
 	}
 
-	#login_cont_formContent.locabar_login #login_cont_formContent_email,
-	#login_cont_formContent.locabar_login #login_cont_formContent_password {
-		width: 268px;
-		height: 31px;
-		padding: 3px 7px;
-		background-color: #eee;
-		border: 1px solid #a6a6a6;
-		color: #444;
-	}
 	#login_cont_formContent.locabar_login #login_cont_formContentForm_signIn {
 		border-radius: 5px;
 		font-size: 18px;

@@ -209,27 +209,22 @@
 
 .promotion-item{
   display:inline-block;
-  max-width: 225px;
+  max-width: 200px;
+  vertical-align: top;
 }
-
+/*
 .promotion-item [fdform-error] {
   display: inline-block;
   margin-bottom: 4px;
 }
-
+*/
 .promotion-item:first-child {
   margin-right:35px;
 }
 
 .promotion-input{
-  line-height: 32px;
-  height:32px;
-  padding: 0 65px 0 5px;
   margin: 0 -63px 0 0;
-  background-color: #fff;
-  border: 1px solid #aaa;
-  width:140px;
-  box-sizing: content-box;
+  width:11em;
 }
 
 .promotion-item .promotion-input ~ button,

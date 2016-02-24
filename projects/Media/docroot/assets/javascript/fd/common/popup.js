@@ -142,7 +142,13 @@ var FreshDirect = FreshDirect || {};
                 }else{
                     $popupBody.html(bt({data: data || {}}));
                 }
-
+                
+                setTimeout(function () {
+                  fd.modules.common.Elements.decorate($popupBody);
+                  fd.modules.common.Select.selectize($popupBody);
+                  fd.modules.common.aria.decorate();
+                }, 10);
+                
                 // reposition the popups
                 if (this.popup && !this.popup.placeholderActive && this.popup.shown) {
                   this.popup.reposition();

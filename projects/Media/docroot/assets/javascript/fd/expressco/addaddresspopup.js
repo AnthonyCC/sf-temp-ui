@@ -109,7 +109,6 @@ var FreshDirect = FreshDirect || {};
   // phone number +/x
   $(document).on('click', '#' + addaddresspopup.popupId + ' .showaltphone', function (e) {
     var $form = $(e.currentTarget).closest('form');
-
     $form.attr('data-showaltphone', true);
   });
   $(document).on('click', '#' + addaddresspopup.popupId + ' .deletephonenumber', function (e) {

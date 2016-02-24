@@ -276,6 +276,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			%><tmpl:put name="address_change_zip">
 				<div class="text">Change zip code.</div>
 				<span id="newzip">
+					<label for="newziptext"></label>
 					<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
 					<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
 				</span>
@@ -319,6 +320,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
 								<div class="text13">Change your Zip Code.</div>
+								<label for="newzip"></label>
 								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >

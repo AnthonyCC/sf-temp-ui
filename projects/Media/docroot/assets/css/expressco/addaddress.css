@@ -1,108 +1,73 @@
-#addaddresspopup .formselector label {
-  display: inline-block;
-  width: 145px;
-  text-align: center;
-  font-size: 12px;
-  line-height: 16px;
-  margin-bottom: 5px;
-}
-
-#addaddresspopup .formselector label input {
-  margin: 0 5px;
-  vertical-align: top;
-}
-
 #addaddresspopup form {
   display: none;
 }
 
-#addaddresspopup [data-show="addaddress_home"] #addaddress_home {
-  display: block;
+#addaddresspopup .ec-popup {
+	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.13);
+    border: none;
 }
 
+#addaddresspopup [data-show="addaddress_home"] #addaddress_home,
 #addaddresspopup [data-show="addaddress_office"] #addaddress_office {
-  display: block;
+  display: block; 
+  background: #fefefe;
+  padding: 60px; 
 }
 
-#addaddress_home input,
-#addaddress_home select,
-#addaddress_home textarea,
-#addaddress_office input,
-#addaddress_office select,
-#addaddress_office textarea {
-  box-sizing: border-box;
+#addaddresspopup input,
+#addaddresspopup textarea,
+#addaddresspopup select {
+	width: 100%;
 }
 
-#addaddress_office input[name="street_address2"],
-#addaddress_home input[name="street_address2"],
-#addaddress_office input[name="company_name"],
-#addaddress_home input[name="nick_name"] {
-  width: 300px;
+
+#addaddresspopup input[type="radio"] {
+	display: none;
 }
 
-#addaddress_office input[name="floor"],
-#addaddress_office input[name="room"],
-#addaddress_office input[name="first_name"],
-#addaddress_office input[name="last_name"],
-#addaddress_home input[name="first_name"],
-#addaddress_home input[name="last_name"] {
-  width: 145px;
+#addaddresspopup [data-show="addaddress_home"] #addaddress_home_label,
+#addaddresspopup [data-show="addaddress_office"] #addaddress_office_label  {
+	background: #fff;
+	color: #68aa6d;
 }
 
-#addaddress_office input[name="phone"],
-#addaddress_office input[name="alt_phone"],
-#addaddress_home input[name="phone"],
-#addaddress_home .backup_delivery .bd-content input[name="bd_phone"],
-#addaddress_home input[name="alt_phone"] {
-  width: 210px;
+span[fdform-error-for="zip"] {
+	margin-left: 5em;
+}
+label[for="addaddress_home_last_name"],
+label[for="addaddress_home_bd_last_name"],
+label[for="addaddress_office_last_name"],
+span[fdform-error-for="last_name"],
+span[fdform-error-for="phone_ext"],
+span[fdform-error-for="alt_phone_ext"] {
+	margin-left: 3.1em;
 }
 
-#addaddress_office input[name="phone_ext"],
-#addaddress_office input[name="alt_phone_ext"],
-#addaddress_home input[name="phone_ext"],
-#addaddress_home input[name="alt_phone_ext"] {
-  width: 50px;
-  margin-left: 10px;
+label[for="addaddress_home_apartment"],
+label[for="addaddress_office_apartment"],
+label[for="addaddress_home_zip"],
+label[for="addaddress_home_state"],
+label[for="addaddress_home_phone_ext"],
+label[for="addaddress_home_bd_phone_ext"],
+label[for="addaddress_home_alt_phone_ext"],
+label[for="addaddress_office_alt_phone_ext"],
+label[for="addaddress_office_zip"],
+label[for="addaddress_office_state"],
+label[for="addaddress_office_phone_ext"],
+span[fdform-error-for="apartment"] {
+	margin-left: 1.5em;
 }
 
-#addaddress_home .backup_delivery .bd-content input[name="bd_phone_ext"] {
-  width: 80px;
-  margin-left: 10px;
+.backup_delivery {
+	padding-top: 10px;	
 }
 
-#addaddress_office input[name="room"],
-#addaddress_office input[name="last_name"],
-#addaddress_home input[name="last_name"] {
-  margin-left: 10px;
-}
-
-#addaddress_office input[name="street_address"],
-#addaddress_home input[name="street_address"] {
-  width: 210px;
-}
-
-#addaddress_office input[name="city"],
-#addaddress_office input[name="zip"],
-#addaddress_home input[name="city"],
-#addaddress_home input[name="zip"] {
-  width: 210px;
-}
-
-#addaddress_office input[name="apartment"],
-#addaddress_home input[name="apartment"] {
-  width: 80px;
-  margin-left: 10px;
-}
-
-#addaddress_office select[name="state"],
-#addaddress_home select[name="state"] {
-  width: 80px;
-  margin-left: 10px;
+div[bd-id] {
+	min-height: 30px;
 }
 
 #addaddress_office textarea[name="instructions"],
 #addaddress_home textarea[name="instructions"] {
-  width: 300px;
   min-height: 70px;
 }
 
@@ -122,16 +87,13 @@
   padding: 0;
   width: 21px;
   height: 21px;
-  line-height: 21px;
+  line-height: 20px;
   text-align: center;
   margin: 0;
 }
 
 #addaddress_home div.altphone,
-#addaddress_office div.altphone {
-  display: none;
-}
-
+#addaddress_office div.altphone,
 #addaddress_home[data-showaltphone] .showaltphone,
 #addaddress_office[data-showaltphone] .showaltphone {
   display: none;
@@ -172,16 +134,6 @@
   margin: 0 2px 0 0;
 }
 
-#addaddress_home .backup_delivery label {
-  margin: 5px 10px 4px 0;
-  display: block;
-}
-
-#addaddress_home .backup_delivery label input {
-  vertical-align: top;
-  margin: 0 2px 0 0;
-}
-
 #addaddress_home .backup_delivery [bd-id="none"] {
   display: none;
 }
@@ -202,12 +154,6 @@
 #addaddress_home .backup_delivery[bd-selected="neighbor"] [bd-id="neighbor"] .bd-content,
 #addaddress_home .backup_delivery[bd-selected="unattended"] [bd-id="unattended"] .bd-content {
   display: block;
-}
-
-#addaddress_home .backup_delivery .bd-content input,
-#addaddress_home .backup_delivery .bd-content textarea {
-  width: 300px;
-  box-sizing: border-box;
 }
 
 #addaddress_home .backup_delivery .bd-content textarea {
@@ -341,3 +287,4 @@ a.pickuppopup {
 [unattendeddeliveryavailable="true"] #addaddresspopup [bd-id="unattended"] {
   display: block;
 }
+

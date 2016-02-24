@@ -1147,16 +1147,33 @@
           </p>
           <p>
             <label>Required field <input type="text" name="reqfield" fdform-v-required/></label>
+            <span fdform-error-for="reqfield"></span>
           </p>
           <p>
           Select at least one of the following options:
           </p>
           <p>
-            <label>Apple <input type="checkbox" name="fruit" value="Apple" fdform-v-onerequired="fruit"/></label>
-            <label>Banana <input type="checkbox" name="fruit" value="Banana" fdform-v-onerequired="fruit"/></label>
+            <label>Apple <input type="checkbox" class="customcheckbox" name="fruit" value="Apple" fdform-v-onerequired="fruit"/></label>
+            <label>Banana <input type="checkbox" class="customcheckbox" name="fruit" value="Banana" fdform-v-onerequired="fruit"/></label>
+          </p>
+          <p>
+          Select only one of the following options:
+          </p>
+          <p>
+            <label><input type="radio" class="customradio" name="fruit" value="Rasberry" fdform-v-onerequired="fruit"/>Rasberry</label>
+            <label><input type="radio" class="customradio" name="fruit" value="Pear" fdform-v-onerequired="fruit"/>Pear</label>
+          </p>
+          <p>Select from the following options</p>
+          <p>
+            <select class="customsimpleselect">
+          	  <option>Option1</option>
+          	  <option>Option2</option>
+          	  <option>Option3</option>
+            </select>
           </p>
           <p>
             <label>Only '<b>A</b>' validator <input type="text" name="aaafield" /></label>
+             <span fdform-error-for="aaafield"></span> 
           </p>
           <p>
             <label>Uppercase formatter <input type="text" fdform-formatter="uppercase" name="uppercasefield" /></label>
