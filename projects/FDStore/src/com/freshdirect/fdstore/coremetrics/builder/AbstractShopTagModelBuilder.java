@@ -58,8 +58,12 @@ public abstract class AbstractShopTagModelBuilder {
 			
 		} else if (null != cartLine.getAddedFrom()){
 			if(EnumATCContext.DDPP.equals(cartLine.getAddedFrom())){
+				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.PICKS_LOVE.toString());
+			}
+			/*else if(EnumATCContext.DDPP.equals(cartLine.getAddedFrom())){
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.DDPP.toString());
-			}else if(EnumATCContext.SEARCH.equals(cartLine.getAddedFrom())){
+			}*/ 
+			else if(EnumATCContext.SEARCH.equals(cartLine.getAddedFrom())){
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SEARCH.toString());
 			}else if(EnumATCContext.ECOUPON.equals(cartLine.getAddedFrom())){
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.ECOUPON.toString());
