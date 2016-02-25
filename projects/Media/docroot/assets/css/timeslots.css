@@ -11,6 +11,9 @@
 	width: 223px;
 }
 
+#timeslot-tab-content input[type="radio"] {
+	height: 13px;
+}
 
 table.tsContainer td {
 	border: 1px solid #ccc;
