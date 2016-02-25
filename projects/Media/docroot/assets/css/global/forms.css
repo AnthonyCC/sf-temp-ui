@@ -73,9 +73,9 @@ body[developer] *:focus {
     font-size: 16px;
     font-weight: normal;
     box-shadow: none;
-    height: 34px;   
+    height: 34px;
     outline: none;
-    padding: 12px 8px;
+    padding: 8px;
     -webkit-font-smoothing: antialiased;
 }
 [fdform] textarea {
