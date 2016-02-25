@@ -67,6 +67,7 @@
 	{/call}
 	{call .footer}
 		{param buttonText: 'Checkout' /}
+    {param successPage: '/expressco/checkout.jsp' /}
 		{param form: 'viewcart_startcheckout' /}
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /} 
@@ -281,7 +282,7 @@
 		</div>
 		<div class='cartheader__action'>
 			<form fdform="viewcart_startcheckout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-				<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required>Checkout</button>
+				<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">Checkout</button>
 			</form>
 		</div>
 	</div>
@@ -1115,6 +1116,7 @@
  * @param? navLink Where the button should navigate
  * @param? form form id for button
  * @param avalaraEnabled avalaraEnabled
+ * @param? successPage 
  */
 {template .footer autoescape="false"}
 	<div class='footer'>
@@ -1145,7 +1147,7 @@
 		<div class='footer__right'>
 			{if $form}<form fdform="{$form}" action="#">{/if}
 			{if $navLink}<a href='{$navLink}'>{/if}
-			{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required>{$buttonText}</button>{/if}
+			{if $buttonText}<button class="cssbutton orange footer__button icon-chevron-right-after" fd-login-required {if $successPage}fd-login-successpage="{$successPage}"{/if}>{$buttonText}</button>{/if}
 			{if $navLink}</a>{/if}
 			{if $form}</form>{/if}
 		</div>
