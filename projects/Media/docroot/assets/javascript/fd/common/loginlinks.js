@@ -51,7 +51,8 @@ var FreshDirect = FreshDirect || {};
     $(document).on('click', '[fd-login-required]', function (e) {
       var isMouseEvent = e.x || e.clientX || e.y || e.clientY,
           ct = e.currentTarget,
-          target = (ct.hasAttribute('fd-login-successpage-current') && window.location.pathname + window.location.search + window.location.hash) || ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href;
+          currentPage = window.location.pathname + window.location.search + window.location.hash,
+          target = ct.hasAttribute('fd-login-successpage') && currentPage || ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href || currentPage;
 
       if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
         if (fd.properties.isSocialLoginEnabled) {
