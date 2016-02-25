@@ -94,6 +94,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 				if(null != order && null !=order.getRafTransModel()){
 					model.setRafTransModel(RafUtil.getApproveTransModel());
 				}
+				order = eb.getCurrentOrder();
 				eb.addSettlement(model);
 				EnumSaleStatus updatedStatus = eb.getStatus();
 				if(EnumSaleStatus.SETTLED.equals(updatedStatus) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
