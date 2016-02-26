@@ -271,8 +271,10 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					To address bug in which the soy template select box does not correctly recognize the etip amount as being the same as one of its members.
 					This makes it so that the amount will only have a decimal place when the digits to the RIGHT of the decimal place are both greater than zero.
 					e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
+
+          #APPBUG-4391We don't need $ sign for manual tip changes
 					*/
-					data.etipTotal = "$" + parsedEtipTotal;
+					data.etipTotal = parsedEtipTotal;
 				}
 								
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
