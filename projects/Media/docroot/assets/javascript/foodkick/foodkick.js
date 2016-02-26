@@ -142,6 +142,8 @@ function prepare_slideshow(ss_obj){ /* Object */
 		
 		return;
 	}
+	
+	console.log( "ss_obj.width = " + ss_obj.width + ", ss_obj.height = " + ss_obj.height );
 
 	//now actually generate the slide show, stuff before was merely preparation html material
 	$("#" + ss_obj.html_id ).slidesjs({

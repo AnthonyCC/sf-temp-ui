@@ -265,7 +265,8 @@ section#section_slideshow {
   /*display:none;*/ }
   @media (min-width: 30em) {
     section#section_slideshow {
-      height: 68vw; } }
+      height: 68vw;
+      max-height: 786px; } }
   section#section_slideshow #carousel_1 {
     display: none;
     height: inherit;
@@ -299,6 +300,8 @@ section#section_slideshow {
           position: relative; }
           @media (min-width: 30em) {
             section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
+              max-width: 940px;
+              max-height: 632px;
               margin-top: 84px; } }
           @media (min-width: 50em) {
             section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
@@ -306,13 +309,13 @@ section#section_slideshow {
     section#section_slideshow #carousel_1 .slidesjs-pagination {
       /*top:-75px;*/
       left: calc(50% - 27px);
-      top: calc(50vw);
+      top: 59vw;
       position: absolute;
       padding-left: 0px; }
       @media (min-width: 30em) {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
           position: relative;
-          top: -75px;
+          top: -60px;
           left: initial; } }
       @media (min-width: 50em) {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
@@ -328,7 +331,7 @@ section#section_slideshow {
           background-color: white; }
     section#section_slideshow #carousel_1 figcaption {
       position: absolute;
-      top: calc(33% - 24px);
+      top: 52%;
       text-align: center;
       width: calc(100% - 20px);
       margin-left: 10px;
@@ -338,20 +341,21 @@ section#section_slideshow {
         /*color:white;
         text-shadow: 2px 2px 2px rgba(#2D2E37, 0.30);*/
         background-color: rgba(255, 255, 255, 0.75);
-        max-width: 1000px;
+        max-width: 760px;
         margin: auto;
-        padding: 6px; }
+        padding: 6px;
+        letter-spacing: -1px; }
         @media (min-width: 30em) {
           section#section_slideshow #carousel_1 figcaption h1 {
             font-size: 17pt; } }
         @media (min-width: 50em) {
           section#section_slideshow #carousel_1 figcaption h1 {
-            font-size: 42pt; } }
+            font-size: 28pt; } }
   section#section_slideshow .download_button {
     /*position: relative;
     top: -120px;*/
     position: absolute;
-    top: 30vw;
+    top: 46vw;
     left: calc(50% - 80px);
     z-index: 10;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
@@ -369,7 +373,7 @@ section#section_slideshow {
         top: -165px; } }
     @media (min-width: 1000px) {
       section#section_slideshow .download_button {
-        top: -300px; } }
+        top: -235px; } }
   section#section_slideshow button.appstore_button {
     /*position: relative;*/
     /*top: -40px;*/
@@ -386,10 +390,10 @@ section#section_slideshow {
         display: initial; } }
     @media (min-width: 50em) {
       section#section_slideshow button.appstore_button {
-        left: calc(100% - 505px); } }
+        left: calc(100% - 525px); } }
     @media (min-width: 1000px) {
       section#section_slideshow button.appstore_button {
-        left: calc(100% - 525px);
+        left: calc(100% - 535px);
         top: -160px; } }
 
 /*end section '#section_slideshow' */
@@ -599,6 +603,8 @@ section#section_How_it_works {
         vertical-align: top; } }
     section#section_How_it_works article:last-of-type figcaption:before {
       display: none; }
+    section#section_How_it_works article:last-of-type figure img, section#section_How_it_works article:last-of-type figure object {
+      margin-right: 0px; }
   section#section_How_it_works figure {
     margin: 0px; }
     section#section_How_it_works figure div {
@@ -621,6 +627,9 @@ section#section_How_it_works {
     section#section_How_it_works figure img, section#section_How_it_works figure object {
       position: relative;
       top: 9px; }
+      @media (min-width: 30em) {
+        section#section_How_it_works figure img, section#section_How_it_works figure object {
+          margin-right: 17%; } }
     section#section_How_it_works figure figcaption {
       color: #732282;
       min-width: 250px;
@@ -1179,7 +1188,7 @@ form .field_holders {
   display: inline-block;
   z-index: 11; }
   .slidesjs-pagination li {
-    margin: 0 3px;
+    margin: 0 5px;
     display: inline-block; }
     .slidesjs-pagination li a {
       display: block;

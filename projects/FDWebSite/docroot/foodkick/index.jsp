@@ -54,11 +54,8 @@
 						<!--  <p class="ucwords">GIVE US YOUR ZIP SO WE KNOW WHERE TO GO NEXT.</p>-->
 						
 						<p>
-						We're not delivering to your hood<br/>
-						yet. Enter your email address and we'll<br/>
-						notify you when the service expands in<br/>
-						your area. You can still download the<br/>
-						app to check it out! 
+						We&rsquo;re not delivering to your hood yet, but we can send you an email once we&rsquo;re there.
+						You can still download the app to check it out. 
 						</p>
 
 						<div class="field_holders">
@@ -106,30 +103,30 @@
 			
 			<article>
 				<figure>
-					<div><%--svg_obj("section_2/clock.svg") --%> <img src="<%=SVG_SRC %>section_2/clock.svg" /></div>
+					<div><%--svg_obj("section_2/bowl_bottle_fruit.svg") --%> <img src="<%=SVG_SRC %>section_2/bowl_bottle_fruit.svg" /> </div>
 					<figcaption>
-						<h4>OPEN THE APP FOR DELIVERY TIME</h4>
-						that works for you
+						<h4>GET WHAT YOU NEED FOR TODAY AND TOMORROW</h4>
+						like meals, fresh fixin&rsquo;s, booze, and even TP.
 					</figcaption>
 				</figure>
 			</article>
 			
 			<article>
 				<figure>
-					<div><%--svg_obj("section_2/bowl_bottle_fruit.svg") --%> <img src="<%=SVG_SRC %>section_2/bowl_bottle_fruit.svg" /> </div>
+					<div><%--svg_obj("section_2/clock.svg") --%> <img src="<%=SVG_SRC %>section_2/clock.svg" /></div>
 					<figcaption>
-						<h4>GET WHAT YOU NEED FOR TODAY AND TOMORROW</h4>
-						like meals, fresh ingredients, beer and wine, and even household supplies
+						<h4>OPEN THE APP FOR DELIVERY TIME</h4>
+						that works for you. We can be there in an hour.
 					</figcaption>
 				</figure>
 			</article>
-			
+
 			<article>
 				<figure>
 					<div><%--svg_obj("section_2/check.svg") --%> <img src="<%=SVG_SRC %>section_2/check.svg" /></div>
 					<figcaption>
-						<h4>GET BACK TO WHAT YOU WERE DOING</h4>
-						Place your order and we'll do the rest while you post on Instagram, text about dinner later or check your email
+						<h4>GO BACK TO DOING YOU</h4>
+						We&rsquo;ll take care of the food so you have time for important things, like having emoji-only text convos.
 					</figcaption>
 				</figure>
 			</article>
@@ -138,8 +135,8 @@
 				<figure>
 					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" style="top:7px;" /></div>
 					<figcaption>
-						<h4>HAVE AN AMAZING FOOD EXPERIENCE</h4>
-						An amazing meal will be waiting for you to dig into and enjoy!
+						<h4>ENJOY YOUR EATS</h4>
+						Dig in, share with friends, or snap a pic.
 					</figcaption>
 				</figure>
 			</article>	
@@ -150,17 +147,24 @@
 		<section id="section_Whats_Good" class="main_section">
 			<div class="container">
 				<div id="carousel_Whats_Good_foodkick" class="carousel_Whats_Good">
-					<script>
-					OAS_AD('FKMiddle1');
-					</script>
+					<a href="https://dev5.freshdirect.com?ad=19984" target="_top">
+						<img src="<%=CMS_IMAGES_DIR_LP%>/950_1.jpg" alt="Get what you need in an hour: Customizable meals and solutions.
+						Farm-fresh produce, meat, fish, dairy.  Pantry staples and home essentials.
+						The perfect food and booze pairing recommendations from our squad." border="0" />
+					</a>
 				</div>
 			</div>
 			
 			<div class="container">
 				<div id="carousel_Whats_Good_scenes" class="carousel_Whats_Good">
-					<script>
+					<!-- <script>
 					OAS_AD('FKMiddle2');
-					</script>
+					</script> -->
+					<a href="https://dev5.freshdirect.com?ad=19992" target="_top">
+						<img src="<%=CMS_IMAGES_DIR_LP%>/950_2.jpg" alt="Meet Cocktail Courier. Crafted cocktails without stepping foot outside?
+						Cocktail Courier sources recipies for FoodKick from renowned NYC mixologists. Fancy a Moscow Mule or Midnight Manhattan?
+						We'll deliver the mixers, liquor, and recipies to your door so you can get cozy and boozy in 3-2-1." border="0" />
+					</a>
 				</div>
 			</div>
 		</section>
@@ -229,9 +233,8 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 		<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
 		<script type="text/javascript">
 			window.IMAGES_DIR = "<%=IMAGES_DIR%>";
-			OAS_AD('FKTop');
-			//OAS_AD('FKMiddle1');
-			//OAS_AD('FKMiddle2');
+			window.CMS_IMAGES_DIR_LP = "<%=CMS_IMAGES_DIR_LP%>";
 		</script>
+		<script src="/media/editorial/foodkick/lp_top_carousel.js"></script>
 	</tmpl:put>
 </tmpl:insert>
