@@ -1388,9 +1388,12 @@ public class ProductDetailPopulator {
 	public static String getDefaultSalesUnit( FDProduct fdProduct ) {
 		
 		FDSalesUnit su = fdProduct.getDefaultSalesUnit();
-		if ( su == null ) {
+		if ( su == null && null !=fdProduct.getSalesUnits() && fdProduct.getSalesUnits().length > 0) {
 			
 			su = fdProduct.getSalesUnits()[0];
+		}
+		if(null == su){
+			LOG.warn("Salesunit missing for "+ fdProduct.getSkuCode() +" version:" + fdProduct.getVersion());
 		}
 		String salesUnit = su != null ? su.getName() : "unknown salesunit";
 		
