@@ -66,7 +66,7 @@ public class CartSubTotalBoxService {
     private static final String TOTALTAX_ID = "totaltax";
     private static final String AVAL_TOTALTAX_ID = "totalAvalaratax";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
-    private static final String VIEW_CART_TAX_AVALARA = "Added at Checkout";
+    private static final String VIEW_CART_TAX_AVALARA = "Added during Checkout";
     private static final String TIP = "Tip";
 
     private CartSubTotalBoxService() {
