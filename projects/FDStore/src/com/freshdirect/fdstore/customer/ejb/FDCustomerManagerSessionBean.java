@@ -60,6 +60,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
@@ -201,6 +202,7 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.MD5Hasher;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -1058,8 +1060,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));
 		address.setAddress1(rs.getString("ADDRESS1"));
-		address.setAddress2(rs.getString("ADDRESS2"));
-		address.setApartment(rs.getString("APARTMENT"));
+		address.setAddress2(NVL.apply(rs.getString("ADDRESS2"), "").trim());
+		address.setApartment(NVL.apply(rs.getString("APARTMENT"), "").trim());
 		address.setCity(rs.getString("CITY"));
 		address.setState(rs.getString("STATE"));
 		address.setZipCode(rs.getString("ZIP"));
@@ -1072,6 +1074,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltContactPhone(new PhoneNumber(rs
 				.getString("ALT_CONTACT_PHONE")));
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		address.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
+		
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
 				.getString("ALT_DEST")));
 		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
