@@ -142,7 +142,22 @@ public class AvalaraTaxRequestConverter {
 				taxLine.setTaxCode("NT");
 				taxLines.add(taxLine);
 			}
+			if(cart.getCustomerCreditsValue() > 0.0){
+				Line taxLine = new Line();
+				double amount = cart.getCustomerCreditsValue()*-1;
+				taxLine.setLineNo(""+(taxlineId++));
+				taxLine.setAmount(BigDecimal.valueOf(amount));
+				taxLine.setTaxIncluded(false);
+				taxLine.setDiscounted(false);
+				taxLine.setOriginCode("Origin-01");
+				taxLine.setDestinationCode("DEST-01");
+				taxLine.setQty(BigDecimal.valueOf(1.00));
+				taxLine.setTaxCode("NT");
+				taxLines.add(taxLine);
+			}
 		}
+		
+	
 	}
 	
 	private boolean isTaxCommitRequired(FDCartI cart){
