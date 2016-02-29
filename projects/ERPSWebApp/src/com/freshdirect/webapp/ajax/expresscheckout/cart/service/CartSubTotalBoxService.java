@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.bea.wls.redef.AddedFields;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpDiscountLineModel;
@@ -63,7 +64,9 @@ public class CartSubTotalBoxService {
     private static final String TOTAL_TAX_NAME = "Total Tax";
     private static final String TOTAL_TAX_NAME_ETIP = "Sales Tax";
     private static final String TOTALTAX_ID = "totaltax";
+    private static final String AVAL_TOTALTAX_ID = "totalAvalaratax";
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
+    private static final String VIEW_CART_TAX_AVALARA = "Added at Checkout";
     private static final String TIP = "Tip";
 
     private CartSubTotalBoxService() {
@@ -104,7 +107,7 @@ public class CartSubTotalBoxService {
             	}else{
             		data.setText(TOTAL_TAX_NAME );
             	}
-                data.setValue(JspMethods.formatPrice(taxValue));
+            	data.setValue(JspMethods.formatPrice(taxValue));
                 subTotalBox.add(data);
             }
         }
@@ -310,9 +313,18 @@ public class CartSubTotalBoxService {
             Map<String, Object> other = data.getOther();
             other.put(MARK_KEY, ESTIMATED_PRICE_MARK);
         } else {
-            data.setText(ORDER_TOTAL_TEXT);
+        	if(FDStoreProperties.getAvalaraTaxEnabled()){
+        		data.setText(SUBTOTAL_NAME);
+        	}
+        	else{
+        		data.setText(ORDER_TOTAL_TEXT);
+        	}
         }
-        data.setValue(JspMethods.formatPrice(cart.getTotal()));
+        if(FDStoreProperties.getAvalaraTaxEnabled()){
+        	data.setValue(JspMethods.formatPrice(cart.getSubTotal()));
+        }else{
+        	data.setValue(JspMethods.formatPrice(cart.getTotal()));
+        }
         subTotalBox.add(data);
     }
 
@@ -393,5 +405,21 @@ public class CartSubTotalBoxService {
     private boolean hasCartLineGroupDiscount(FDCartLineI cartLine) {
         return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;
     }
+
+	public void populateAvalaraTaxToBox(
+			List<CartSubTotalFieldData> subTotalBox, FDCartI cart, String uri) {
+		 CartSubTotalFieldData data = new CartSubTotalFieldData();
+	        data.setId(AVAL_TOTALTAX_ID);
+	        if (FDCartModelService.defaultService().isEbtPaymentForCart(cart)) {
+	            data.setText(TOTAL_TAX_WAIVED_NAME);
+	            data.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
+	            subTotalBox.add(data);
+	        } else {
+	            	data.setText(TOTAL_TAX_NAME );
+	            	data.setValue(VIEW_CART_TAX_AVALARA);
+	                subTotalBox.add(data);
+	            }
+	        
+	}
 
 }

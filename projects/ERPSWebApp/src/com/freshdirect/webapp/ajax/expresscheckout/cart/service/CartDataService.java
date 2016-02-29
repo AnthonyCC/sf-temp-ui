@@ -656,7 +656,9 @@ public class CartDataService {
 
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
-        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
+        if(!FDStoreProperties.getAvalaraTaxEnabled()){
+            CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
+        }        
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri);
         CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
@@ -665,6 +667,7 @@ public class CartDataService {
         CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
         CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);
+        CartSubTotalBoxService.defaultService().populateAvalaraTaxToBox(subTotalBox, cart, uri);
     	if(FDStoreProperties.isETippingEnabled()) {
 	        List<CartSubTotalFieldData> estimatedTotalBox = new ArrayList<CartSubTotalFieldData>();
 	        CartSubTotalBoxService.defaultService().populateOrderTotalToBox(estimatedTotalBox, cart);
