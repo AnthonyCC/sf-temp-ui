@@ -455,18 +455,19 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							// set default address for express registration user
 							if(this.address == null){
 								address = new AddressModel();  
-								address.setAddress1("23-30 borden ave");
+								/*address.setAddress1("23-30 borden ave");
 								address.setCity("Long Island City");
 								address.setState("NY");
-								address.setCountry("US");
-								address.setZipCode("11101");
+								address.setCountry("US");*/
+								address.setZipCode(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()));
 							}
+							this.serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
 						
 							// Create a user for express registration user
 							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
 								this.createUser(this.serviceType, availableServices);
 							} else { 
-								this.createUser(EnumServiceType.PICKUP, availableServices);
+								this.createUser(((this.serviceType != null) ? this.serviceType : EnumServiceType.PICKUP), availableServices);
 							}		
 							
 														

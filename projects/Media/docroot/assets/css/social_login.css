@@ -366,3 +366,62 @@ br.new_cust{
 #fd_login div.error{
 	margin-top: -3px;
 }
+
+#sul_type_fields {
+	text-align: center;
+}
+#sul_type_fields, #sul_cos_fields>div {
+	margin: 7px 0;
+}
+
+#sul_cos_fields {
+	margin-bottom: 20px;
+}
+
+#sul_type_fields input[type="radio"] {
+    position: absolute;
+    left: -999em;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+#sul_type_fields label, #sul_type_fields .legend {
+    font-size: 16px;
+    font-family: verdana;
+    color: #888;
+}
+#sul_type_fields .legend {
+	display: inline-block;
+	margin: 0 10px 0 20px;
+}
+#sul_type_fields input[type="radio"] + label {
+    cursor: pointer;
+    display: inline-block;
+    text-align: left;
+    min-width: 95px;
+}
+#sul_type_fields input[type="radio"]:checked + label::before {
+    background: #4fa157;
+    box-shadow: 0 0 0 1px #4fa157;
+}
+#sul_type_fields input[type="radio"] + label::before {
+    background: #fafafa;
+    box-shadow: 0 0 0 1px #c2c2c2;
+    content: '\a0';
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
+    line-height: 14px;
+    margin-right: 10px;
+    vertical-align: 2px;
+}
+
+#sulCont input:focus, #sul_type_fields input, #sul_cos_fields input {
+	border-width: 2px !important;
+}
+#sulCont input:focus, #sul_type_fields input:focus, #sul_cos_fields input:focus {
+    border-color: #68aa6d !important;
+    box-shadow: none;
+    outline: none;
+}

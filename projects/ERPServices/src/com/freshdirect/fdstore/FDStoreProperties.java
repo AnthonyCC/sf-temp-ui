@@ -582,6 +582,7 @@ public class FDStoreProperties {
 	
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
 	private final static String PROP_AJAX_SIGNUP_ENABLED = "fdstore.ajaxsignup.enabled";
+	private final static String PROP_LIGHT_SIGNUP_ANTS_ENABLED = "fdstore.signuplight.ants.enabled";
 
 	//APPDEV-2394 Coremetrics Implementation 
 	private final static String PROP_COREMETRICS_ENABLED = "fdstore.coremetrics.enabled";
@@ -1408,6 +1409,7 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
 		defaults.put(PROP_AJAX_SIGNUP_ENABLED, "true");
+		defaults.put(PROP_LIGHT_SIGNUP_ANTS_ENABLED, "true");
 		
 		
 		//defaults for test environment
@@ -3427,6 +3429,10 @@ public class FDStoreProperties {
  
     public static boolean isAjaxSignupEnabled() {
         return (Boolean.valueOf(get(PROP_AJAX_SIGNUP_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isLightSignupAntsEnabled() {
+        return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ANTS_ENABLED))).booleanValue();
     }
     
 	public static boolean isCoremetricsEnabled() {

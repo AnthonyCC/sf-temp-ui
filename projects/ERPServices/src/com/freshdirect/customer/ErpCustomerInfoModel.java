@@ -92,6 +92,8 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String smsPreferenceflag;
 	private Date smsOptinDate;
 	
+	private String companyNameSignup; 
+	
 
 	/* APPDEV-4381  */
 	private String fdTcAgree;
@@ -447,6 +449,14 @@ public class ErpCustomerInfoModel extends ModelSupport {
 
 	public void setPartnerMessages(EnumSMSAlertStatus partnerMessages) {
 		this.partnerMessages = partnerMessages;
+	}
+
+	public String getCompanyNameSignup() {
+		return companyNameSignup;
+	}
+
+	public void setCompanyNameSignup(String companyNameSignup) {
+		this.companyNameSignup = companyNameSignup;
 	}
 
 }

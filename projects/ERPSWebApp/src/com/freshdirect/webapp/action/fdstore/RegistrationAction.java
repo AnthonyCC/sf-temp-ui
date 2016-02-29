@@ -589,15 +589,13 @@ public class RegistrationAction extends WebActionSupport {
 				aInfo = (AccountInfo) session.getAttribute("LITEACCOUNTINFO");				
 			} 
 			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {				
-				addInfo.validate(actionResult);
+				addInfo.validateEx(actionResult); //just company name and zip code
 				cInfo.workPhone = NVL.apply(request.getParameter("busphone"), "").trim();
 				cInfo.workPhoneExt = NVL.apply(request.getParameter("busphoneext"), "").trim();
 			}
 			this.validateLiteSignup();
 			
-		}
-		else
-		{
+		} else {
 			aInfo.validateEx(actionResult);
 			cInfo.validateEx(actionResult);
 		}
@@ -610,7 +608,7 @@ public class RegistrationAction extends WebActionSupport {
 		}
 		
 
-		//EnumServiceType serviceType = addInfo.getAddressType();
+		EnumServiceType serviceType = addInfo.getAddressType();
 		
 		
 		if(session.getAttribute("CLICKID") != null ) {
@@ -664,7 +662,7 @@ public class RegistrationAction extends WebActionSupport {
 		 
 		//String address1 = request.getParameter("address1");
 		//boolean isPartialDelivery =  address1 != null && address1.length() > 0;
-		EnumServiceType serviceType = user.getSelectedServiceType();
+		serviceType = user.getSelectedServiceType();
 		AddressModel address = user.getAddress();
 		//Address will not be null when user signs up for a Partial Delivery address
 		if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
@@ -1460,13 +1458,13 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setTitle(this.title);
 			customerInfo.setBusinessPhone(new PhoneNumber(this.workPhone, this.workPhoneExt));
 			customerInfo.setCellPhone(new PhoneNumber(this.cellPhone, this.cellPhoneExt));
-			if((customerInfo.getEmail() != null ) &&  ((this.firstName == null) || (this.firstName.trim() == ""))){
+			if ( (customerInfo.getEmail() != null) && ( (this.firstName == null) || ("".equals(this.firstName.trim())) ) ){
 				String fname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
 				customerInfo.setFirstName(fname);
 			}else{
 				customerInfo.setFirstName(this.firstName);
 			}
-			if((customerInfo.getEmail() != null ) &&  ((this.lastName == null) || (this.lastName.trim() == ""))){
+			if((customerInfo.getEmail() != null ) &&  ((this.lastName == null) || ("".equals(this.firstName.trim())))){
 				String lname = customerInfo.getEmail().substring(0, customerInfo.getEmail().indexOf("@"));
 				customerInfo.setLastName(lname);
 			}else{
@@ -1494,6 +1492,8 @@ public class RegistrationAction extends WebActionSupport {
 		private boolean plainTextEmail;
 		private boolean termsAccepted;
 		private boolean socialLoginOnly;
+
+		private String companyNameSignup;
 
 		public AccountInfo(HttpServletRequest request) {
 			this.initialize(request);
@@ -1548,6 +1548,7 @@ public class RegistrationAction extends WebActionSupport {
 				"none").trim();
 			
 
+			this.companyNameSignup = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "").trim();
 		}
 
 		public void validate(ActionResult actionResult) {
@@ -1628,6 +1629,7 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setReceiveNewsletter(this.receiveNews); // FD Email Preference
 			customerInfo.setEmailPreferenceLevel(this.emailPreferenceLevel); // FDX Email Preference
 			customerInfo.setEmailPlaintext(this.plainTextEmail);
+			customerInfo.setCompanyNameSignup(this.companyNameSignup);
 		}
 
 		public ErpCustomerModel getErpCustomerModel() {
@@ -1717,6 +1719,30 @@ public class RegistrationAction extends WebActionSupport {
 			if (regType == AccountUtil.DEPOT_USER) {
 				result.addError(locationId == null || locationId.length() < 1, "locationId", SystemMessageList.MSG_REQUIRED);
 			}
+
+		}
+
+		public void validateEx(ActionResult result) {
+
+			if (EnumServiceType.CORPORATE.equals(this.serviceType)) {
+				result
+					.addError("".equals(companyName), EnumUserInfoName.DLV_COMPANY_NAME.getCode(), SystemMessageList.MSG_REQUIRED);
+			}
+			//result.addError("".equals(street1), EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED);
+			//result.addError("".equals(city), EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
+
+//			if (state.length() < 2) {
+//				result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
+//			} else {
+//				result.addError(!AddressUtil.validateState(state), EnumUserInfoName.DLV_STATE.getCode(),
+//					SystemMessageList.MSG_UNRECOGNIZE_STATE);
+//			}
+
+			result.addError(zipcode.length() < 5, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+
+//			if (regType == AccountUtil.DEPOT_USER) {
+//				result.addError(locationId == null || locationId.length() < 1, "locationId", SystemMessageList.MSG_REQUIRED);
+//			}
 
 		}
 

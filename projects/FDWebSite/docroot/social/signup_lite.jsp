@@ -14,6 +14,7 @@
 <fd:CheckLoginStatus />
 
 <% 
+	boolean showAntsFields = FDStorePropeties.isLightSignupAntsEnabled();
 	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -153,7 +154,7 @@
 	
 	session.setAttribute("lastpage","signup_lite");
 	
-	String email="",firstname="",lastname="",repeat_email="",password="",passwordhint="",zipcode="",posn="";
+	String email="",firstname="",lastname="",repeat_email="",password="",passwordhint="",zipcode="",posn="", workphone="", companyName="";
 	
 	if(request.getParameter("is_forwarded") != null)
 	{
@@ -181,6 +182,8 @@
 		zipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "");	
 		posn = "right";
     }
+	workphone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_WORK_PHONE.getCode()), "");
+	companyName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
 
 			
 		/*  out.println("LITESIGNUP_COMPLETE:"+session.getAttribute("LITESIGNUP_COMPLETE")); */
@@ -237,7 +240,43 @@
 					</div>
 				<% } %>
 				
+				<% if (showAntsFields) { %>
+					<div>
+	                   	<div id="sul_type_fields" aria-controls="collapsible-sul_cos_fields" aria-expanded="false">
+							<fieldset>
+		                 		<span class="legend">Delivery For:</span>
+		                 		<input type="radio" name="serviceType" id="sul_type_fields_HOME" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_HOME"><span>Home</span></label><input type="radio" name="serviceType" id="sul_type_fields_CORPORATE" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_CORPORATE"><span>Office</span></label>
+		                 	</fieldset>
+	                   	</div>
+					</div>
+				<% } %>
 			    <table border="0" cellpadding="5" cellspacing="8">
+					<% if (showAntsFields) { %>
+						<%-- ANTS data --%>
+						<tr>
+							<td>&nbsp;</td>
+	                    	<td>
+	                    		<div id="sul_cos_fields" style="display: none;" aria-hidden="true">
+	                    			<div>
+	                    				<input type="text" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" id="sul_cos_fields-workName" value="<%= companyName %>" class="padding-input-box text11ref inputDef required" placeholder="Company Name" maxlength="120" />
+	                    			</div>
+	                    			<div>
+	                    				<input type="text" name="<%= EnumUserInfoName.DLV_FIRST_NAME.getCode() %>" id="sul_cos_fields-firstName" value="<%= firstname %>" class="padding-input-box text11ref inputDef required" placeholder="First Name" maxlength="25" />
+	                    			</div>
+	                    			<div>
+	                    				<input type="text" name="<%= EnumUserInfoName.DLV_LAST_NAME.getCode() %>" id="sul_cos_fields-lastName" value="<%= lastname %>" class="padding-input-box text11ref inputDef required" placeholder="Last Name" maxlength="25"  />
+	                    			</div>
+	                    			<div>
+	                    				<input type="text" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="sul_cos_fields-workPhone" value="<%= workphone %>" class="padding-input-box text11ref inputDef" placeholder="Work Phone #" maxlength="14" />
+	                    			</div>
+	                    			<div>
+	                    				<input type="text" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" id="sul_cos_fields-zipcode" value="<%= zipcode %>" class="padding-input-box text11ref inputDef required" placeholder="Zip Code" maxlength="5" />
+	                    			</div>
+	                    		</div>
+	                    	</td>
+	                    </tr>
+					<% } %>
+                    
 					<tr>
 						<td>
 							<!-- span id should be the input box id+"_img" -->
@@ -265,7 +304,7 @@
 						<td>
 							<!-- span id should be the input box id+"_img" -->
                         	<span class="error_img" id="password1_img"></span>
-                        	&nbsp
+                        	&nbsp;
 						</td>
 						<!--  Added for Password Strength Display -->
 						<td>
@@ -298,8 +337,7 @@
 							</div><!-- // .container -->
 						</td>
 						<!-- Added for Password Strength Display -->
-					</tr>			
-								
+					</tr>
 					<tr>
 						<td></td>
 						<td style="padding-top: 15px;">
@@ -324,7 +362,20 @@
         }
 </script>					
 					
- <script type="text/javascript" language="javascript">
+<script type="text/javascript" language="javascript">
+	 $jq('#sul_type_fields input[type="radio"]').click(function(event){
+		 $cosFields = $jq('#sul_cos_fields');
+		 if ($jq(this).val() === 'CORPORATE' && $jq(this).prop('checked')) {
+			 $cosFields.show();
+			 $cosFields.attr('aria-hidden', false);
+			 $jq('#sul_type_fields').attr('aria-expanded', true);
+		 } else {
+			 $cosFields.hide();
+			 $cosFields.attr('aria-hidden', true);
+			 $jq('#sul_type_fields').attr('aria-expanded', false);
+		 }
+	 });
+	 $jq('#sul_type_fields_<%=serviceType %>').click();
  
  $jq.validator.addMethod("customemail", 
 		 function validateEmail(email) {
@@ -332,7 +383,7 @@
 	    	return re.test(email);
 		} 
  );
- 
+
  
  $jq('#litesignup').validate(
  {
@@ -384,7 +435,7 @@
            onkeyup: false,
      errorPlacement: function(error, element) {
          error.insertBefore(element);
-     },  
+     }
  	}
  );
 		 		 
