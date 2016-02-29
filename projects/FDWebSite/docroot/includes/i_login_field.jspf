@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.framework.util.StringUtil' %>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 
@@ -44,8 +45,8 @@
 	int invalidAttempt = FDStoreProperties.getMaxInvalidLoginAttempt();		
 	String publicKey= FDStoreProperties.getRecaptchaPublicKey();
 	
+	String userid = NVL.apply(request.getParameter("userid"), NVL.apply(user.getUserId(), ""));
 	
-	String userid= request.getParameter("userid");
 	
 %>
 
