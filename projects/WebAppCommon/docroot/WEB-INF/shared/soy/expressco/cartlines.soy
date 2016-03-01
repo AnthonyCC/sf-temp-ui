@@ -258,6 +258,7 @@
  * @param? deliveryCharge Formatted price value
  * @param? cartChangedByCleanUp Boolean flag
  * @param? avalaraEnabled avalaraEnabled
+ * @param? totalWithoutTax totalWithoutTax 
  */
 {template .cartheader autoescape="false"}
 	<div class='cartheader'>
@@ -277,10 +278,11 @@
 					<div class="charges__row">
 					{if $avalaraEnabled}
 					    <div class="charges__rowcell charges-text">&nbsp Order Subtotal:</div>
+					    <div class="charges__rowcell charges-price" id="div_estimatedTotal">{$totalWithoutTax}</div>
 					    {else}
 						<div class="charges__rowcell charges-text">Estimated Total:</div>
-						{/if}
 						<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$estimatedTotal}</div>
+						{/if}
 					</div>
 				{/if}
 			</div>
@@ -931,7 +933,7 @@
 	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
 		<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
-		{if $box.id=='totalAvalaratax'}/* IF NOT AVLARA TOTAL TAX   */
+		{if ($avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id=='subtotal' and $cartlineType == 'YOUR_CART') or($avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id == 'totalAvalaratax' and $cartlineType == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
 										
 		{else}		  
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
@@ -957,14 +959,17 @@
 								
 								{let $deliveryUsed: 1 /}
 							{else}
-								{if $box.id == 'ssOrderTotal'}
-									<span class="strl_text ssOrderTotal">{$box.text}</span>
+								{if $box.id == 'ssOrderTotal' and not ($avalaraEnabled and $cartlineType == 'YOUR_CART')}
+									<span class="strl_text ssOrderTotal">Order Total</span>
 								{else}
-								
+									{if $box.id == 'ssOrderTotal' and ($avalaraEnabled and $cartlineType == 'YOUR_CART')}
+									<span class="strl_text ssOrderTotal">{$box.text}</span>
+									{else}
 									<span class="strl_text">{$box.text}</span>									
 									{if $box.id == 'deliveryfee' and $eTippingEnabled}
 										{call .dfToolTip /}
 									{/if}
+								  {/if}
 								{/if}
 							{/if} /*end if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */
 						{/if} /*end if $box.other and $box.other.promoCode */
@@ -994,6 +999,7 @@
 			
 				{if $avalaraEnabled}
 					{if $cartlineType == 'CHECKOUT'}
+					   {if $box.id != 'totalAvalaratax'}
 						<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 							{if $box.id == 'freefood'}
 								<a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -1037,9 +1043,10 @@
 								{/if}
 							{/if}
 						</div>
+						{/if}
 					{/if} /*end if $cartlineType == 'CHECKOUT' */
 					{if $cartlineType == 'YOUR_CART'}
-						{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal'}
+						{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' and $box.id!='totaltax' and $box.id!='subtotal'}
 							<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 								{if $box.id == 'freefood'}
 									<a href='/shared/promotion_popup.jsp?promoCode=signup'

@@ -39,6 +39,7 @@ public class CartSubTotalBoxService {
     private static final String YOU_SAVED_TEXT = "You've Saved";
     private static final String REDEMPTION_PROMO_ID = "redemptionpromo";
     private static final String ORDER_TOTAL_ID = "ssOrderTotal";
+    private static final String AVALARA_ORDER_TOTAL_ID = "ssOrderSubTotal";
     private static final String ORDER_TOTAL_TEXT = "Order Total";
     private static final String ORDER_ESTIMATED_TOTAL_TEXT = "Estimated Total";
     private static final String CREDITS_TEXT = "Credit Applied";
@@ -320,11 +321,8 @@ public class CartSubTotalBoxService {
         		data.setText(ORDER_TOTAL_TEXT);
         	}
         }
-        if(FDStoreProperties.getAvalaraTaxEnabled()){
-        	data.setValue(JspMethods.formatPrice(cart.getSubTotal()));
-        }else{
+
         	data.setValue(JspMethods.formatPrice(cart.getTotal()));
-        }
         subTotalBox.add(data);
     }
 
@@ -421,5 +419,5 @@ public class CartSubTotalBoxService {
 	            }
 	        
 	}
-
+	
 }

@@ -656,9 +656,7 @@ public class CartDataService {
 
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
-        if(!FDStoreProperties.getAvalaraTaxEnabled()){
-            CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
-        }        
+        CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri);
         CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
