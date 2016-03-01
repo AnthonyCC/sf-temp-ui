@@ -835,7 +835,7 @@ public class RegistrationAction extends WebActionSupport {
 						}
 						//session.setAttribute("lastpage","socialregistration");
 					}
-				
+				CmRegistrationTag.setPendingRegistrationEvent(session);
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
 					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
