@@ -14,7 +14,7 @@
 <fd:CheckLoginStatus />
 
 <% 
-	boolean showAntsFields = FDStorePropeties.isLightSignupAntsEnabled();
+	boolean showAntsFields = FDStoreProperties.isLightSignupAntsEnabled();
 	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
