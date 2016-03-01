@@ -138,7 +138,7 @@
 			</div>
 		</div>
 		/*<a href="#" id="{$iconId}" data-component="tooltip" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</a>*/
-		<span id="{$iconId}" class="icon-info-before {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}"></span>
+		<span id="{$iconId}" class="tooltip-small {if $ttIcon2ndClass}{$ttIcon2ndClass}{/if}">i</span>
 	</div>
 {/template}
 
@@ -930,10 +930,10 @@
 	
 	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
+		<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
 		{if $box.id=='totalAvalaratax'}/* IF NOT AVLARA TOTAL TAX   */
 										
-		{else}
-		  <div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
+		{else}		  
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -993,7 +993,6 @@
 				{/if}/* IF NOT AVLARA TOTAL TAX   */
 			
 				{if $avalaraEnabled}
-				<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
 					{if $cartlineType == 'CHECKOUT'}
 						<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 							{if $box.id == 'freefood'}
@@ -1085,7 +1084,6 @@
 						{/if} /*end if/else $box.id != 'deliveryfee' */
 					{/if} /*end if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' */
 				{/if} /*end if $cartlineType == 'YOUR_CART' */
-				</div>
 				
 				{if $box.other}
 					<div class='subtotal__rowcell-right'>
