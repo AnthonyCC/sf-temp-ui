@@ -398,8 +398,11 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp .pdp-atc .subtotal .qty{
-  margin:0px 15px; 
+margin:0px 15px;  
   text-transform:lowercase;
+}
+.pdp .pdp-atc .subtotal b{
+  text-transform:initial;
 }
 
 .pdp .pdp-atc .subtotal a{
@@ -1012,4 +1015,19 @@ border-bottom-left-radius: 6px;
   color:#CC0000;
   line-height:15px;
   overflow:hidden;
+}
+.width100 {
+	width:100%;
+	float:left;
+}
+.width50 {
+	width:50%;
+	text-align: right;
+}
+.floter_left {
+	float:left;
+	text-align: left;
+}
+.floter_right {
+	float:right;
 }
