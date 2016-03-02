@@ -111,6 +111,7 @@
 		<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 		<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
+		<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1758,6 +1759,7 @@
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
+			<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
 			
 		</path>
 
@@ -2161,6 +2163,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2200,6 +2203,7 @@
 				
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2243,6 +2247,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 				
 				<include name="commons-lang-2.3.jar"/>
 								<include name="spring-aop-4.0.1.RELEASE.jar"/>	
@@ -2301,6 +2306,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 				
 				<include name="commons-lang-2.3.jar"/>
 				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
@@ -2376,6 +2382,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 				<include name="httpclient-4.5.jar"/>
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
@@ -2412,6 +2419,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 				<include name="httpclient-4.5.jar"/>
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
@@ -2491,6 +2499,7 @@
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
