@@ -2989,6 +2989,7 @@
 
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
+				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
 		
 		</makeFDAdminEar>
