@@ -774,7 +774,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
 				+ " EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?,"
 				+ " mobile_number=?, delivery_notification=?, offers_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?,SMS_PREFERENCE_FLAG=?, go_green=?, display_name=?,"
-				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?, SMS_OPTIN_DATE=?"
+				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?, SMS_OPTIN_DATE=? ,"
 				+ " COMPANY_NAME_SIGNUP=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
