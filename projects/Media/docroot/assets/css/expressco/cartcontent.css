@@ -1116,7 +1116,6 @@ label[for="dontupdatecartlines"] {
 .eTippingEnabled #tipDropdown, .eTippingEnabled #tipTextBox{
 	border: 2px solid rgb(194, 194, 194);
 	width: 125px;
-	height: 30px;
 	padding-left:5px;
 	color: #333333;
     font-size: 15px;
@@ -1132,7 +1131,6 @@ label[for="dontupdatecartlines"] {
 	box-sizing: border-box;
 }
 .eTippingEnabled #tipDropdown{
-	height:30px;
 	/*background: transparent url('/media/images/layout/input-arrow-down.png') 97% center no-repeat;*/
 	background: transparent url('/media/images/layout/input-arrow-down.png') no-repeat 97% center;
 	border-radius: 0px;
