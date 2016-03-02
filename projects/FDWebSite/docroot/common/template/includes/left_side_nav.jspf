@@ -10,6 +10,8 @@ private static final int W_LEFT_NAV_LEFT_PADDING = 10;
 private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 %>
 
+<body onload="javascript:changeClass('<%=request.getParameter("id")%>')">
+	
 <%!
 
 	/** @return number of displayed rows */
@@ -43,20 +45,22 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 		buf.append("<tr><td width=\"" + (W_LEFT_NAV_CENTER) + "\"><div style=\"margin-left:");
 		buf.append((nl.getDepth() * 4) + 8);
 		buf.append("px; text-indent: -8px;\">");
-
-
+		String str=nl.getURL().substring(20).split("&")[0];
+		
 		if (nl.isBold()) buf.append("<b>");
 		if (nl.showLink()) {
-			buf.append("<a class=\"lNavTableItem\" href=\"");
+			
+			buf.append("<a name=\"leftLink\" href=\"");
+			
 			buf.append(nl.getURL());
 			buf.append("\"");
 				if (isUnavailable) {
-					buf.append(" style=\"color:#999999\"");
+					buf.append(" style=\"color:green\"");
 				}
-			buf.append(">");
+			buf.append("id='"+str+"'>");
 		}
 
-		buf.append(nl.getDisplayString());
+	        buf.append(nl.getDisplayString());
 
 		if (nl.showLink()) {
 			buf.append("</a>");
@@ -74,6 +78,23 @@ private static final int W_LEFT_NAV_RIGHT_PADDING = 5;
 <% try { %>
 
 <fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems">
+
+<script type="text/javascript">
+
+function changeClass(value) {
+	
+	var availableOptions =  document.getElementsByName("leftLink");
+	for (var j = 0; j < availableOptions.length; j++) {		
+		if (availableOptions[j] && availableOptions[j].id == value) {	
+			availableOptions[j].className="lNavTableItemSelected";	
+			} else {
+			availableOptions[j].style.color="link";						
+		}		
+	}
+}
+
+</script>
+
 <%
 int displayedRows = 1;
 StringBuffer buf = new StringBuffer(10000);
@@ -149,7 +170,7 @@ if (unavailableNavItems.size()>0) {
 
 if (displayedRows > 0) {
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>" class="lNavTable">
+<table border="0" cellspacing="26" cellpadding="0" align="center" width="<%=W_LEFT_NAV_TOTAL%>" class="lNavTable">
 <tr><td width="<%=W_LEFT_NAV_LEFT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 1x1 --%>
 </td><td width="<%=W_LEFT_NAV_CENTER%>"><%-- spacer 120x1 --%></td>
 <td width="<%=W_LEFT_NAV_RIGHT_PADDING%>" rowspan="<%= displayedRows %>"><%-- spacer 4x1 --%></td></tr>
@@ -168,5 +189,5 @@ if (displayedRows > 0) {
 	<oscache:usecached />
 <% } %>
 </oscache:cache>
-
+</body>
 <!-- END YOUR STORE table -->

@@ -22,10 +22,17 @@ td {
 	font-size: 10px;
 	font-family: Verdana, Arial, sans-serif;
 }
+.lNavTable div {
+padding: 4px 0px 0px 17px;
+font: 13px verdana;
+line-height: 26px;
+text-decoration: none;
+}
 
-a, a:link { color: #458b4c;  text-decoration: none; }
-a:visited { color: #777;  text-decoration: none; }
+a:link { color: #458b4c;  text-decoration: none; }
+a:visited { color: #458b4c ; text-decoration: none; }
 a:hover, a:active, a:focus { color: #5fb069;  text-decoration: underline; }
+a.lNavTableItemSelected { font-family: Verdana; color: #669933 ; font-weight: bold; }
 
 .fd-red-text {
 	color: #C00 !important;
