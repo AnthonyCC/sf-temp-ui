@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
+import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -188,6 +189,13 @@ public class FDServiceLocator extends ERPServiceLocator {
     public MasterpassServiceHome getMasterpassServiceHome() {
         try {
             return (MasterpassServiceHome) getRemoteHome(FDStoreProperties.getMPServiceHome());
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    public PayPalServiceHome getPayPalServiceHome() {
+        try {
+            return (PayPalServiceHome) getRemoteHome(FDStoreProperties.getPPServiceHome());
         } catch (NamingException e) {
             throw new EJBException(e);
         }

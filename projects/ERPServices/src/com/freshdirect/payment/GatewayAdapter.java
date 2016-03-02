@@ -6,6 +6,8 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumCVVResponse;
@@ -15,6 +17,7 @@ import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentModel;
 import com.freshdirect.customer.ErpReversalModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.framework.util.StringUtil;
@@ -36,6 +39,7 @@ import com.freshdirect.payment.gateway.impl.RequestFactory;
 
 public class GatewayAdapter {
 	private static final Category LOGGER = LoggerFactory.getInstance( GatewayAdapter.class );
+	private static final String PP_DECRIPTION_AUTH="PayPal authorization";
 	
 	public static Request getAddProfileRequest(ErpPaymentMethodI paymentMethod) {
 		return getProfileRequest(TransactionType.ADD_PROFILE,paymentMethod);
@@ -266,6 +270,7 @@ public class GatewayAdapter {
 				billingInfo.setEwalletId(paymentMethod.geteWalletID());
 				billingInfo.setEwalletTxId(paymentMethod.geteWalletTrxnId());
 				billingInfo.setVendorEwalletId(paymentMethod.getVendorEWalletID());
+				billingInfo.setEmailID(paymentMethod.getEmailID());
 			}
 			request.setBillingInfo(billingInfo);
 		} else return null;
@@ -403,6 +408,8 @@ public class GatewayAdapter {
 			return CreditCardType.MASTERCARD;
 		else if(EnumCardType.VISA.equals(ccType))
 			return CreditCardType.VISA;
+		else if(EnumCardType.PAYPAL.equals(ccType))
+			return CreditCardType.PP;
 		return null;
 	}
 	private static EnumPaymentMethodType translate(PaymentMethodType pmType) {
@@ -466,6 +473,7 @@ public class GatewayAdapter {
 			cc.setEwalletId(paymentMethod.geteWalletID());
 			cc.setEwalletTxId(paymentMethod.geteWalletTrxnId());
 			cc.setVendorEWalletID(paymentMethod.getVendorEWalletID());
+			cc.setEmailID(paymentMethod.getEmailID());
 			return cc;
 		
 	}
@@ -490,6 +498,44 @@ public class GatewayAdapter {
 			ec.setCustomerID(paymentMethod.getCustomerId());
 			return ec;
 	}
-	
-	
+	/**
+	 * @param saleResult
+	 * @param paymentMethod
+	 * @return
+	 */
+	public static ErpAuthorizationModel getPPAuthResponse(
+			Result<Transaction> saleResult, ErpPaymentMethodI paymentMethod) {
+		
+		if(saleResult==null) 
+			return null;
+					
+		ErpAuthorizationModel model = new ErpAuthorizationModel();
+		model.setTransactionSource(EnumTransactionSource.SYSTEM);
+		
+		if(saleResult.getTarget().getProcessorResponseText().equals(EnumPaymentResponse.APPROVED.getDescription())) {
+			model.setResponseCode(EnumPaymentResponse.APPROVED); //hack for AVS bypass	
+			model.setAvs("Y");
+			model.setSequenceNumber(saleResult.getTarget().getPayPalDetails().getAuthorizationId());	
+			model.setEwalletTxId(saleResult.getTarget().getId());
+			
+			model.setAmount(saleResult.getTarget().getAmount().doubleValue());
+			model.setCustomerId(paymentMethod.getCustomerId());
+			
+			model.setGatewayOrderID(saleResult.getTarget().getOrderId());
+			model.setProfileID(saleResult.getTarget().getPayPalDetails().getToken());
+			model.setMerchantId(saleResult.getTarget().getMerchantAccountId());
+			model.setDescription(PP_DECRIPTION_AUTH);
+			model.setEwalletTxId(saleResult.getTarget().getId());
+			// Payment Method 
+			model.setCardType(EnumCardType.PAYPAL);
+			String accountNumber = paymentMethod.getAccountNumber();
+			if(accountNumber!=null && accountNumber.length()>3){
+				model.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+			}
+		}else{	// PayPal AUthorization Denied
+			model.setResponseCode(EnumPaymentResponse.DECLINED);
+//			return null;
+		}
+		return model;
+	}
 }

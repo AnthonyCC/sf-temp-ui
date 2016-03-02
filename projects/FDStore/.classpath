@@ -16,5 +16,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/masterpassExpressSdk.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/braintree-java-2.53.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

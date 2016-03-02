@@ -82,6 +82,7 @@ import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
 import com.freshdirect.mobileapi.controller.data.response.EBTCard;
 import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
+import com.freshdirect.mobileapi.controller.data.response.Ewallet;
 import com.freshdirect.mobileapi.controller.data.response.ModifyCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -541,7 +542,11 @@ public class Cart {
             if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
                 checkoutDetail.setPaymentMethod(new ElectronicCheck(PaymentMethod.wrap(paymentMethod)));
             } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-                checkoutDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
+            	if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("2")){
+            		checkoutDetail.setPaymentMethod(new Ewallet(PaymentMethod.wrap(paymentMethod)));
+            	}else{
+            		checkoutDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
+            	}
             } else if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
             	checkoutDetail.setPaymentMethod(new EBTCard(PaymentMethod.wrap(paymentMethod)));
             }else {

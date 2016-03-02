@@ -56,6 +56,7 @@ public class FDStoreProperties {
     private final static String PROP_EWALLET_HOME= "fdstore.ErpEWallet.home";
     private final static String PROP_EWALLET_SERVICE_HOME= "fdstore.EWalletService.home";
     private final static String PROP_MPService_HOME= "fdstore.MPService.home";
+    private final static String PROP_PPService_HOME="fdstore.PPService.home";
     private final static String PROP_EXTERNAL_ACCOUNTMGR_HOME = "fdstore.externalLoginManager.home";
     private final static String PROP_FDPROMOTIONMGR_HOME = "fdstore.fdPromotionManager.home";
     private final static String PROP_FDPROMOTIONMGR_NEW_HOME = "fdstore.fdPromotionManagerNew.home";
@@ -840,6 +841,9 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_ACCOUNT_NUMBER ="fdstore.tax.avalara.account.number";
 	private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";    
     
+	// PayPal
+	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
+
     static {
        	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -863,6 +867,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_HOME, "freshdirect.fdstore.ErpEWallet");
         defaults.put(PROP_EWALLET_SERVICE_HOME, "freshdirect.fdstore.EWalletService");
         defaults.put(PROP_MPService_HOME, "freshdirect.fdstore.MPService");
+        defaults.put(PROP_PPService_HOME, "freshdirect.fdstore.PPService");
         
         defaults.put(PROP_EWALLET_ENCRYPTION_ALGORITHM,"AES");
         defaults.put(PROP_EWALLET_ENCRYPTION_KEY, "Z8LSq0wWwB5v+6YJzurcP463H3F12iZh74fDj4S74oUH4EONkiKb2FmiWUbtFh97GG/c/lbDE47mvw6j94yXxKHOpoqu6zpLKMKPcOoSppcVWb2q34qENBJkudXUh4MWcreondLmLL2UyydtFKuU9Sa5VgY/CzGaVGJABK2ZR94=");
@@ -1610,6 +1615,7 @@ public class FDStoreProperties {
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
         defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
         defaults.put(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME, "Sandbox-Profile.ini");
+        defaults.put(PROP_EWALLET_PAYPAL_ENV_PROP_NAME, "PayPal-Profile.ini");
         defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
         defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
         
@@ -1780,6 +1786,10 @@ public class FDStoreProperties {
     
     public static String getMPServiceHome() {
         return get(PROP_MPService_HOME);
+    }
+    
+    public static String getPPServiceHome() {
+        return get(PROP_PPService_HOME);
     }
 	
     public static String getExternalAccountManagerHome() {
@@ -3746,6 +3756,11 @@ public class FDStoreProperties {
     public static String getMasterpassEnvironment() {
     	return get(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME);
     }
+    
+    public static String getPayPalEnvironment() {
+    	return get(PROP_EWALLET_PAYPAL_ENV_PROP_NAME);
+    }
+    
     
     public static String getMasterpassBtnImgURL() {
     	return get(PROP_EWALLET_MP_BTN_IMG_URL);

@@ -202,4 +202,10 @@ public class CyberSource implements Gateway{
 	public Response getProfile(Request request) throws ErpTransactionException {
 		throw new ErpTransactionException("Operation not supported");
 	}
+
+	@Override
+	public boolean isValidToken(String token, String customerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

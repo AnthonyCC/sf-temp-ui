@@ -18,6 +18,7 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 	
 	private int verifyFailCount=0;
 	private String trasactionRefIndex="";
+	private String ewalletTxId;
 	
 	public boolean isAddressMatch() {
 		return "Y".equalsIgnoreCase(addressMatchResponse);
@@ -150,4 +151,19 @@ public class ErpAuthorizationModel extends ErpPaymentModel {
 		this.trasactionRefIndex = trasactionRefIndex;
 	}
 
+	/**
+	 * @return the ewalletTxId
+	 */
+	public String getEwalletTxId() {
+		return ewalletTxId;
+	}
+
+	/**
+	 * @param ewalletTxId the ewalletTxId to set
+	 */
+	public void setEwalletTxId(String ewalletTxId) {
+		this.ewalletTxId = ewalletTxId;
+	}
+
+	
 }

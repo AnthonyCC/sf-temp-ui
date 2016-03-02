@@ -8,10 +8,15 @@ public class CreditCard extends PaymentMethod {
         super(paymentMethod);
         this.type = paymentMethod.getCardType();
         SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/yyyy");
-        String expirationDate = dateFormatter.format(paymentMethod.getExpirationDate());
-        String[] parts = expirationDate.split("\\/");
-        this.expirationMonth = parts[0];
-        this.expirationYear = parts[1];
+     
+        if(paymentMethod.getExpirationDate() != null)
+        {	
+        	 String expirationDate = dateFormatter.format(paymentMethod.getExpirationDate());
+        	
+	        String[] parts = expirationDate.split("\\/");
+	        this.expirationMonth = parts[0];
+	        this.expirationYear = parts[1];
+        }
     }
 
     private String type;

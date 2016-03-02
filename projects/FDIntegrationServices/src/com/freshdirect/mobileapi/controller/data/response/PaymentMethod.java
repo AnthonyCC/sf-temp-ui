@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import com.freshdirect.customer.ErpPaymentMethodI;
+
 public class PaymentMethod {
 
     private String id;
@@ -18,6 +20,12 @@ public class PaymentMethod {
     
     private String ewalletType;
     
+    private String emailId;
+    
+    private String tokenType;
+    
+    private String value;
+    
     public PaymentMethod(com.freshdirect.mobileapi.model.PaymentMethod paymentMethod) {
         this.id = paymentMethod.getId();
         this.billingAddress = new BillingAddress(paymentMethod);
@@ -27,8 +35,25 @@ public class PaymentMethod {
         this.abaRoutingNumber = paymentMethod.getAbaRouteNumber();
         this.cardType = paymentMethod.getCardType();
         this.ewalletType = paymentMethod.geteWalletID();
+        this.emailId = paymentMethod.getEmailId();
+        this.value = paymentMethod.getProfileId();
+        this.tokenType = paymentMethod.getTokenType();
     }
 
+    public PaymentMethod(com.freshdirect.mobileapi.model.PaymentMethod paymentMethod,String type) {
+    	this.id = paymentMethod.getId();
+        this.name = paymentMethod.getName();
+        this.ewalletType = paymentMethod.geteWalletID();
+        this.emailId = paymentMethod.getEmailId();
+        this.tokenType = paymentMethod.getTokenType();
+        if(this.id != null && this.id.trim().length() > 0 ){	// Do not return the Vault Token
+        	this.value ="XXXXXX";
+        }else{
+        	this.value = paymentMethod.getProfileId(); // Set Client Token
+        }
+    }
+   
+    
     public String getBankName() {
         return bankName;
     }
@@ -63,4 +88,29 @@ public class PaymentMethod {
 	public String getEwalletType() {
 		return ewalletType;
 	}
+
+	/**
+	 * @return the emailId
+	 */
+	public String getEmailId() {
+		return emailId;
+	}
+
+	/**
+	 * @return the tokenType
+	 */
+	public String getTokenType() {
+		return tokenType;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	
+
+	
 }

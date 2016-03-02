@@ -10,6 +10,7 @@ public class GatewayFactory {
 	
 	private static Gateway paymentech=new Paymentech();
 	private static Gateway cybersource=new CyberSource();
+	private static Gateway paypal=new PayPal();
 	
 	public static Gateway getGateway(String profileID) {
 		GatewayType gatewayType = StringUtil.isEmpty(profileID)?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH;
@@ -30,7 +31,9 @@ public class GatewayFactory {
 		} else if(GatewayType.CYBERSOURCE.equals(gatewayType)) {
 			//return cybersource;
 			throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
-		} else if(gatewayType==null) {
+		} else if(GatewayType.PAYPAL.equals(gatewayType)) {
+			return paypal; 
+		}else if(gatewayType==null) {
 			if(FDStoreProperties.isPaymentechGatewayEnabled()) {
 				return paymentech;
 			} else {

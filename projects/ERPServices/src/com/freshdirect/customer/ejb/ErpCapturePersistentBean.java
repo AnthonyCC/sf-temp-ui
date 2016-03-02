@@ -118,7 +118,7 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, model).getId();
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID ,  GATEWAY_ORDER) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID ,  GATEWAY_ORDER, EWALLET_TX_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		int index = 1;
 		ps.setString(index++, salesactionId);
@@ -158,6 +158,12 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
+		if(this.model.getEwalletTxId() != null) {
+			ps.setString(index++, this.model.getEwalletTxId());
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		
 		
 		try{
 			if(ps.executeUpdate() != 1 ){
@@ -182,7 +188,7 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public void load(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ID, GATEWAY_ORDER FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, RESPONSE_CODE, MERCHANT_ID, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE,TRANS_REF_INDEX, PROFILE_ID , GATEWAY_ID, GATEWAY_ORDER, EWALLET_TX_ID FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -206,6 +212,7 @@ public class ErpCapturePersistentBean extends ErpPaymentPersistentBean {
 			/*GatewayType gt = (GatewayType) NVL.apply(GatewayType.get(rs.getString("GATEWAY_ID")), GatewayType.getPrimary());
 			this.model.setGatewayType(gt);*/
 			this.model.setGatewayOrderID(rs.getString("GATEWAY_ORDER"));
+			this.model.setEwalletTxId(rs.getString("EWALLET_TX_ID"));
 			
 		} else {
 			throw new SQLException("No such ErpInvoice PK: " + this.getPK());

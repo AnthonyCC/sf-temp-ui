@@ -35,6 +35,7 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String eWalletID="";
 	private String vendorEWalletID="";
 	private String eWalletTrxnId="";
+	private String emailID="";
 	
 	/**
 	 * @return the trxnId
@@ -369,5 +370,20 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setVendorEWalletID(String vendorEWalletID) {
 		this.vendorEWalletID = vendorEWalletID;
 	}
+
+	/**
+	 * @return
+	 */
+	public String getEmailID() {
+		return emailID;
+	}
+
+	/**
+	 * @param emailID
+	 */
+	public void setEmailID(String emailID) {
+		this.emailID = emailID;
+	}
+	
 	
 }

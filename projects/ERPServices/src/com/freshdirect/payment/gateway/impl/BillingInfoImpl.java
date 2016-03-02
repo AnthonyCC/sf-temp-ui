@@ -20,6 +20,7 @@ class BillingInfoImpl implements BillingInfo{
 	private String ewalletTxId;	
 	private EnumEStoreId eStore;
 	private String vendorEwalletId;
+	private String emailID;
 	/**
 	 * @return the ewalletTxId
 	 */
@@ -207,6 +208,16 @@ class BillingInfoImpl implements BillingInfo{
 	public void setVendorEwalletId(String vendorEwalletId) {
 		this.vendorEwalletId=vendorEwalletId;
 		
+	}
+
+	@Override
+	public String getEmailID() {
+		return emailID;
+	}
+
+	@Override
+	public void setEmailID(String emailID) {
+		this.emailID = emailID;
 	}
 
 }

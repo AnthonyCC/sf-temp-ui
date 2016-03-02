@@ -5,7 +5,8 @@ import java.util.Map;
  
 public enum GatewayType  implements java.io.Serializable {
     CYBERSOURCE(1, "Cybersource"),
-    PAYMENTECH(2, "Paymentech");
+    PAYMENTECH(2, "Paymentech"),
+    PAYPAL(3, "PayPal");
     private int id;
     private String name;
     

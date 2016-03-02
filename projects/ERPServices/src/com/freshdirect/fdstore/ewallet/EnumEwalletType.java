@@ -16,6 +16,8 @@ public class EnumEwalletType extends ValuedEnum {
 
 	public final static EnumEwalletType MP = new EnumEwalletType("MP", "MasterPass", 1);
 	
+	public final static EnumEwalletType PP = new EnumEwalletType("PP", "PayPal", 2);
+	
 	private String description;
 	
 	private EnumEwalletType(String code, String description, int id) {

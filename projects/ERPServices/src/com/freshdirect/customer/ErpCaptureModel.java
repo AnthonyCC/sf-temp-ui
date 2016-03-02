@@ -56,4 +56,23 @@ public class ErpCaptureModel extends ErpPaymentModel{
 	}
 	private String trasactionRefIndex="";
 	
+	private String procResponseCode;
+
+	public String getProcResponseCode() {
+		return procResponseCode;
+	}
+
+	public void setProcResponseCode(String procResponseCode) {
+		this.procResponseCode = procResponseCode;
+	}
+	
+	private String ewalletTxId;
+
+	public String getEwalletTxId() {
+		return ewalletTxId;
+	}
+
+	public void setEwalletTxId(String ewalletTxId) {
+		this.ewalletTxId = ewalletTxId;
+	}
 }

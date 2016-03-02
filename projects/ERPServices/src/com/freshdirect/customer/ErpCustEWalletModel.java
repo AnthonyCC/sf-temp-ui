@@ -13,6 +13,7 @@ public class ErpCustEWalletModel extends ModelSupport {
 	private String eWalletId;
 	private String longAccessToken;
 	private String customerId;
+	private String emailId;
 	/**
 	 * @return the eWalletId
 	 */
@@ -54,5 +55,20 @@ public class ErpCustEWalletModel extends ModelSupport {
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
+
+	/**
+	 * @return
+	 */
+	public String getEmailId() {
+		return emailId;
+	}
+
+	/**
+	 * @param emailId
+	 */
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	
 
 }

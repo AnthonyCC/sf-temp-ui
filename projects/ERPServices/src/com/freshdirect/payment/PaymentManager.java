@@ -5,8 +5,11 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.braintreegateway.PayPalAccount;
+import com.braintreegateway.exceptions.NotFoundException;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -26,8 +29,10 @@ import com.freshdirect.payment.ejb.PaymentGatewayContext;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodSessionBean;
+import com.freshdirect.payment.gateway.CreditCardType;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 public class PaymentManager {
 
@@ -61,7 +66,13 @@ public class PaymentManager {
 		if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 			return authorizeECheck(paymentMethod,authorizationAmount,tax,merchantId,orderNumber);
 		}
-		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
+		PaymentGatewayContext context = null;
+		if(EnumCardType.PAYPAL.equals(paymentMethod.getCardType())){
+			context = new PaymentGatewayContext(GatewayType.PAYPAL, null);
+		}else{
+			context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
+		}
+				
 		Gateway gateway = GatewayFactory.getGateway(context);
 		ErpAuthorizationModel auth = gateway.authorize(
 				 paymentMethod,
@@ -77,8 +88,12 @@ public class PaymentManager {
 	public ErpCashbackModel returnCashback(String orderNumber, ErpPaymentMethodI paymentMethod, double amount, double tax, ErpAffiliate affiliate)
 		throws ErpTransactionException {
 		
-		
-		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
+		PaymentGatewayContext context = null;
+		if (!paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+			context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
+		} else {
+			context = new PaymentGatewayContext(GatewayType.PAYPAL, null);
+		}
 		Gateway gateway = GatewayFactory.getGateway(context);
 		ErpCashbackModel cashback = gateway.issueCashback(orderNumber, paymentMethod, amount, tax, affiliate);
 		return cashback;
@@ -225,4 +240,17 @@ public class PaymentManager {
 			}
 			return auth;
 		}
+	
+	/**
+	 * Check whether Valut TOken is valid or not
+	 * @param token
+	 * @return
+	 */
+	public boolean isValidVaultToken(String token, String customerId){
+			PaymentGatewayContext context = null;
+			context = new PaymentGatewayContext(GatewayType.PAYPAL, null);
+			Gateway gateway = GatewayFactory.getGateway(context);
+			return gateway.isValidToken(token,customerId);
+		
+	}
 }

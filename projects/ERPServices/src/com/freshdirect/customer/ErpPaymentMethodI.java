@@ -28,7 +28,7 @@ public interface ErpPaymentMethodI extends AddressI {
     public String getName();
 
     public void setName(String name);
-
+    
     public String getAccountNumber();
     
     public void setAccountNumber(String number);
@@ -124,6 +124,17 @@ public interface ErpPaymentMethodI extends AddressI {
 	public String getProfileID();
 	
 	public void setProfileID(String profileID);
+	
+	/**
+	 * @return emailID
+	 */
+	public String getEmailID();
+	
+	/**
+	 * @param emailID
+	 */
+	public void setEmailID(String emailID);
+	
 	
 	public final String DEFAULT_ACCOUNT_NUMBER="1111111111111111";
 	

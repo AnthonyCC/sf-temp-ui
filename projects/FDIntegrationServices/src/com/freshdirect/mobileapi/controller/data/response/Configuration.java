@@ -14,6 +14,7 @@ public class Configuration implements Serializable {
 	private String middleTierUrl;
 	private boolean socialLoginEnabled;
 	private boolean masterPassEnabled;
+	private boolean payPalEnabled;
 	
 
 	public boolean isAkamaiImageConvertorEnabled() {
@@ -75,6 +76,12 @@ public class Configuration implements Serializable {
 	}
 	public void setMasterPassEnabled(boolean masterPassEnabled) {
 		this.masterPassEnabled = masterPassEnabled;
+	}
+	public boolean isPayPalEnabled() {
+		return payPalEnabled;
+	}
+	public void setPayPalEnabled(boolean payPalEnabled) {
+		this.payPalEnabled = payPalEnabled;
 	}	
 	
 	

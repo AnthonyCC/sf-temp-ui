@@ -114,4 +114,12 @@ public class EwalletServiceSessionBean extends SessionBeanSupport {
 			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
 		}
 	}
+	public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException {
+		try {
+			return new EwalletServiceFactory().getVendorService(ewalletRequestData).addPayPalWallet(ewalletRequestData);
+		} catch (Exception e) {
+			throw new RemoteException("Exception occurred during postback to " + ewalletRequestData.geteWalletType(), e);
+		}
+	}
+	
 }

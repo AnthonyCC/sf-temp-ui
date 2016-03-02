@@ -3,7 +3,9 @@ package com.freshdirect.mobileapi.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +41,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.OrderMobileNumberRequest;
 import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
+import com.freshdirect.mobileapi.controller.data.SubmitOrderRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
@@ -72,6 +75,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -216,7 +220,8 @@ public class CheckoutController extends BaseController {
             //Review order. What's being order, where it's going, how it's being paid for, etc.
             model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
         } else if (ACTION_SUBMIT_ORDER.equals(action)) {
-            model = submitOrder(model, user, request);
+        	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
+            model = submitOrder(model, user, request,requestMessage);
         } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
             model = getAtpErrorDetail(model, user, request);
         } else if (ACTION_GET_REMOVE_UNAVAILABLE_ITEMS.equals(action)) {
@@ -634,44 +639,72 @@ public class CheckoutController extends BaseController {
      * @throws FDException
      * @throws JsonException
      */
-    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request, SubmitOrderRequest requestMessage)  throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        callAvalaraForTax(user, request.getSession());
-        ResultBundle resultBundle = checkout.submitOrder();
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-
         Message responseMessage = null;
-        if (result.isSuccess()) {
 
-        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
-            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
-           /* try {
-                orderReceipt = checkout.getOrderReceipt((String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER));
-            } catch (IllegalAccessException e) {
-                throw new FDException(e);
-            } catch (InvocationTargetException e) {
-                throw new FDException(e);
-            }*/
-            
-            Order order = user.getOrder(orderId);
-            if(null !=order){
-	            orderReceipt = order.getOrderDetail(user);
-            }
-            
-            orderReceipt.setOrderNumber(orderId);
-            responseMessage = orderReceipt;
-            responseMessage.addDebugMessage("Order has been submitted successfully.");
-            
-        } else {
-            responseMessage = getErrorMessage(result, request);
+        Map<String,String> errors = new HashMap<String, String>();
+        boolean checkResult = checkForDeviceId(user,requestMessage,errors); // Check Device ID ; Required only when PayPal wallet is used.
+        if(checkResult){ 
+	        callAvalaraForTax(user, request.getSession());
+	        ResultBundle resultBundle = checkout.submitOrder();
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+
+	        if (result.isSuccess()) {
+	
+	        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
+	            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	           /* try {
+	                orderReceipt = checkout.getOrderReceipt((String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER));
+	            } catch (IllegalAccessException e) {
+	                throw new FDException(e);
+	            } catch (InvocationTargetException e) {
+	                throw new FDException(e);
+	            }*/
+	            
+	            Order order = user.getOrder(orderId);
+	            if(null !=order){
+		            orderReceipt = order.getOrderDetail(user);
+	            }
+	            
+	            orderReceipt.setOrderNumber(orderId);
+	            responseMessage = orderReceipt;
+	            responseMessage.addDebugMessage("Order has been submitted successfully.");
+	            
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        responseMessage.addWarningMessages(result.getWarnings());
+        }else{
+        	responseMessage = new Message();
+        	responseMessage.setErrors(errors);
         }
-        responseMessage.addWarningMessages(result.getWarnings());
+        
         setResponseMessage(model, responseMessage, user);
 
         return model;
     }
 
+    /**
+     * @param user
+     * @param requestMessage
+     * @return
+     */
+    private boolean checkForDeviceId(SessionUser user,SubmitOrderRequest requestMessage,Map<String,String> errors){
+    	boolean result = true;
+    	FDSessionUser fdSessionUser =user.getFDSessionUser();
+    	if( fdSessionUser.getShoppingCart() !=null && fdSessionUser.getShoppingCart().getPaymentMethod() != null){
+    		ErpPaymentMethodI paymentMethod = fdSessionUser.getShoppingCart().getPaymentMethod();
+    		if( paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+    			if(requestMessage.getDeviceId() == null || requestMessage.getDeviceId().trim().length() == 0){
+    				result = false;
+    				errors.put("Error input Device Id is missing","Device ID is required when PayPal wallet is used to place the order.");
+    			}
+    		}
+    	}
+    	return result;
+    }
     /**
      * @param model
      * @param user
@@ -1130,19 +1163,30 @@ public class CheckoutController extends BaseController {
     private ModelAndView getPaymentMethods(ModelAndView model, SessionUser user) throws FDException, JsonException {
 		// Discard Masterpass Wallet Cards from list -- For Standard Checkout Feature
 		List<ErpPaymentMethodI> paymentMethods = discardEwalletCards(user.getPaymentMethods(),"MP");
+		List<PaymentMethod> ewallet = user.getEwallet(paymentMethods);
+		paymentMethods = discardEwalletCards(paymentMethods,"PP");
         List<PaymentMethod> electronicChecks = user.getElectronicChecks(paymentMethods);
         List<PaymentMethod> creditCards = user.getCreditCards(paymentMethods);
         List<PaymentMethod> ebtCards = user.getEBTCards(paymentMethods);
+        
         boolean isCheckEligible = user.isCheckEligible();
         boolean isEcheckRestricted = user.isEcheckRestricted();
         boolean isEbtAccepted = user.isEbtAccepted();
 
-        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards, electronicChecks,ebtCards);
+        PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards,electronicChecks,ebtCards,ewallet);
 
         if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
         		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) {
             responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);         
-        } else {
+        } 
+        else if((responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0) 
+        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) 
+        {
+        	
+        	responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+        	
+        }
+        else {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
         }
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());

@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.EwalletResponse;
 import com.freshdirect.mobileapi.controller.data.request.EwalletRequest;
@@ -18,6 +19,7 @@ import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.EwalletService;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 
 /**
  * @author Aniwesh Vatsal
@@ -29,6 +31,10 @@ public class EwalletStandardController extends BaseController{
 	
 	private static final String ACTION_EWALLET_STDCHECKOUT ="stdCheckout";
 	private static final String ACTION_EWALLET_STDRESSCHECKOUT_DATA ="stdCheckoutData";
+	private static final String ACTION_EWALLET_GENERATE_CLIENT_TOKEN = "generateClientToken";
+	private static final String ACTION_EWALLET_ISPAYPAL_WALLET_PAIRED ="isPayPalWalletPaired";
+	private static final String ACTION_UPDATE_PAYPAL_WALLET_TOKEN ="updatePayPalWalletToken";
+	private static final String ACTION_DISCONNECT_WALLET ="disconnectWallet";
 	
 	/* (non-Javadoc)
 	 * @see com.freshdirect.mobileapi.controller.BaseController#validateUser()
@@ -90,14 +96,78 @@ public class EwalletStandardController extends BaseController{
         	}
         	setResponseMessage(model, res, user);
             return model;
+        }else if(ACTION_EWALLET_GENERATE_CLIENT_TOKEN.equals(action)){
+        	if(requestMessage != null){
+        		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_EWALLET_GENERATE_CLIENT_TOKEN);
+        		if(errorMsg !=null && errorMsg.isEmpty()){
+		        	EwalletService ewalletService = new EwalletService(); 
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	res = ewalletService.generateClientToken(requestMessage);
+        		}else{
+        			res.addErrorMessages(errorMsg);
+        		}
+	         	setResponseMessage(model, res, user);
+        	}
+        	setResponseMessage(model, res, user);
+            return model;
         }
-        
+        else if(ACTION_EWALLET_ISPAYPAL_WALLET_PAIRED.equals(action)){
+        	if(requestMessage != null){
+        		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_EWALLET_ISPAYPAL_WALLET_PAIRED);
+        		if(errorMsg !=null && errorMsg.isEmpty()){
+		        	EwalletService ewalletService = new EwalletService(); 
+		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
+        			requestMessage.setFdActionInfo(fdActionInfo);
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	res = ewalletService.isPayPalWalletPaired(requestMessage,user);
+        		}else{
+        			res.addErrorMessages(errorMsg);
+        		}
+	         	setResponseMessage(model, res, user);
+        	}
+        	setResponseMessage(model, res, user);
+            return model;
+        }
+        else if(ACTION_UPDATE_PAYPAL_WALLET_TOKEN.equals(action)){
+        	if(requestMessage != null){
+        		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_UPDATE_PAYPAL_WALLET_TOKEN);
+        		if(errorMsg !=null && errorMsg.isEmpty()){
+		        	EwalletService ewalletService = new EwalletService(); 
+		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
+        			requestMessage.setFdActionInfo(fdActionInfo);
+		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	res = ewalletService.addPayPalWallet(requestMessage);
+        		}else{
+        			res.addErrorMessages(errorMsg);
+        		}
+	         	setResponseMessage(model, res, user);
+        	}
+        	setResponseMessage(model, res, user);
+            return model;
+        }
+        else if(ACTION_DISCONNECT_WALLET.equals(action)){
+        	if(requestMessage != null){
+        		Map<String,String> errorMsg = checkRequiredData(requestMessage,res,ACTION_DISCONNECT_WALLET);
+        		if(errorMsg !=null && errorMsg.isEmpty()){
+        			FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
+        			requestMessage.setFdActionInfo(fdActionInfo);
+        			requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
+		        	EwalletService ewalletService = new EwalletService(); 
+		        	res = ewalletService.disconnectWallet(requestMessage);
+        		}else{
+        			res.addErrorMessages(errorMsg);
+        		}
+	         	setResponseMessage(model, res, user);
+        	}
+        	setResponseMessage(model, res, user);
+            return model;
+        }
         
 		return null;
 	}
 
 	/**
-	 * This method check all the required fields are available on payload
+	 * This method check all the required fields are available on payload based on the action
 	 * @param requestMessage
 	 * @param response
 	 * @return
@@ -119,6 +189,20 @@ public class EwalletStandardController extends BaseController{
 				errors.put("ERR_INPUT_MISSING", "oauthVerifer input is missing");
 			}if(requestMessage.getCheckoutUrl() == null || requestMessage.getCheckoutUrl().trim().length()==0){
 				errors.put("ERR_INPUT_MISSING", "checkoutUrl input is missing");
+			}
+		}if(ACTION_UPDATE_PAYPAL_WALLET_TOKEN.equals(action)){
+			if(requestMessage.getTokenType() == null || requestMessage.getTokenType().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "Token Type input is missing");
+			}if(requestMessage.getTokenValue() == null || requestMessage.getTokenValue().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "Token Value input is missing");
+			}if(requestMessage.getFirstName() == null || requestMessage.getFirstName().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "First Name input is missing");
+			}if(requestMessage.getLastName() == null || requestMessage.getLastName().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "Last Name input is missing");
+			}if(requestMessage.getEmailId() == null || requestMessage.getEmailId().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "Email Id input is missing");
+			}if(requestMessage.getDeviceId() == null || requestMessage.getDeviceId().trim().length()==0){
+				errors.put("ERR_INPUT_MISSING", "Device Id input is missing");
 			}
 		}
 		return errors;

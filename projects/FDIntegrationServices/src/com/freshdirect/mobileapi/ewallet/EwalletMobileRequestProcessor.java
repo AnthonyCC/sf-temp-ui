@@ -54,6 +54,88 @@ public class EwalletMobileRequestProcessor {
 	}
 	
 	/**
+	 * Generate everytime new Client Token
+	 * @param ewalletRequestData
+	 * @return
+	 * @throws Exception
+	 */
+	public EwalletResponseData generateClientToken(EwalletRequestData ewalletRequestData) throws Exception{
+		
+		IEwallet ewallet = null;
+		EwalletResponseData ewalletResponseData = new EwalletResponseData();
+		
+		if(ewalletRequestData != null){
+			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
+			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
+			
+			if(ewallet!=null){
+				ewalletResponseData = ewallet.getToken(ewalletRequestData);
+			}
+		}
+		return ewalletResponseData;
+	}
+	/**
+	 * Method is used to get the Client Token
+	 * @param ewalletRequestData
+	 * @return
+	 * @throws Exception
+	 */
+	public EwalletResponseData isPayPalPaired(EwalletRequestData ewalletRequestData) throws Exception{
+		
+		IEwallet ewallet = null;
+		EwalletResponseData ewalletResponseData = new EwalletResponseData();
+		
+		if(ewalletRequestData != null){
+			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
+			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
+			
+			if(ewallet!=null){
+				ewalletResponseData = ewallet.getToken(ewalletRequestData);
+			}
+		}
+		return ewalletResponseData;
+	}
+	
+
+	/**
+	 * @param ewalletRequestData
+	 * @return
+	 * @throws Exception
+	 */
+	public EwalletResponseData disconnectWallet(EwalletRequestData ewalletRequestData) throws Exception{
+		
+		IEwallet ewallet = null;
+		EwalletResponseData ewalletResponseData = new EwalletResponseData();
+		
+		if(ewalletRequestData != null){
+			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
+			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
+			
+			if(ewallet!=null){
+				ewalletResponseData = ewallet.disconnect(ewalletRequestData);
+			}
+		}
+		return ewalletResponseData;
+	}
+	
+	/**
+	 * @param ewalletRequestData
+	 * @return
+	 * @throws Exception
+	 */
+	public EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception{
+		IEwallet ewallet = null;
+		EwalletResponseData ewalletResponseData = new EwalletResponseData();
+		if(ewalletRequestData != null){
+			EwalletServiceFactory ewalletServiceFactory = new EwalletServiceFactory();
+			ewallet = ewalletServiceFactory.getEwalletService(ewalletRequestData);
+			if(ewallet!=null){
+				ewalletResponseData = ewallet.addPayPalWallet(ewalletRequestData);
+			}
+		}
+		return ewalletResponseData;
+	}
+	/**
 	 * @param ewalletRequestData
 	 * @return
 	 * @throws Exception

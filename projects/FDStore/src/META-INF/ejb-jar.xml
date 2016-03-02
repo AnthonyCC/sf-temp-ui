@@ -528,6 +528,14 @@
 	        <home>com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome</home>
 	        <remote>com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceSB</remote>
       	</ejb-ref>
+      	 <!-- PayPal Service Changes Start -->
+      	<ejb-ref>
+	        <ejb-ref-name>ejb/PayPalService</ejb-ref-name>
+	        <ejb-ref-type>Session</ejb-ref-type>
+	        <home>com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome</home>
+	        <remote>com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceSB</remote>
+      	</ejb-ref>
+      	 <!-- PayPal Service Changes End -->
 	</session>
 	<session>
 		<ejb-name>MasterpassService</ejb-name>
@@ -540,7 +548,19 @@
 	  	<session-type>Stateless</session-type>
 	  	<transaction-type>Bean</transaction-type>
 	</session>
-	
+	  <!-- PayPal Service Changes Start -->
+	<session>
+		<ejb-name>PayPalService</ejb-name>
+	    <home>
+	  	com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome</home>
+	  	<remote>
+	  	com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceSB</remote>
+	  	<ejb-class>
+	  	com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceSessionBean</ejb-class>
+	  	<session-type>Stateless</session-type>
+	  	<transaction-type>Bean</transaction-type>
+	</session>
+	<!-- PayPal Service Changes End -->
 	<session>
 		<ejb-name>EwalletNotify</ejb-name>
 	    <home>

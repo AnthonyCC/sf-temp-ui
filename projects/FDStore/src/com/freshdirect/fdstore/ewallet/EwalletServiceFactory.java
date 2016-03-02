@@ -12,6 +12,8 @@ import com.freshdirect.fdstore.ewallet.ejb.EwalletServiceSB;
 import com.freshdirect.fdstore.ewallet.impl.MasterpassRuntimeException;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceHome;
 import com.freshdirect.fdstore.ewallet.impl.ejb.MasterpassServiceSB;
+import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceHome;
+import com.freshdirect.fdstore.ewallet.impl.ejb.PayPalServiceSB;
 
 
 /**
@@ -32,6 +34,11 @@ public class EwalletServiceFactory {
 		IEwallet ewallet = null;
 		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
 			ewallet = new EwalletServiceRemoteAdapter();
+			return ewallet;
+		}
+		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
+			ewallet = new EwalletServiceRemoteAdapter();
+			return ewallet;
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
 		return ewallet;
@@ -46,6 +53,9 @@ public class EwalletServiceFactory {
 		IEwallet ewallet = null;
 		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
 			ewallet = new MPVendorServiceRemoteAdapter();
+		}
+		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
+			ewallet = new PPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
 		return ewallet;
@@ -349,6 +359,25 @@ public class EwalletServiceFactory {
 			return resp;
 		}
 
+		@Override
+		public EwalletResponseData addPayPalWallet(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			EwalletResponseData resp = null;
+			try {
+				EwalletServiceSB remote = remoteHome.create();
+				resp = remote.addPayPalWallet(ewalletRequestData);
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+			
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
 	}
 	
 	private class MPVendorServiceRemoteAdapter implements IEwallet, IEwallet.NotificationService {
@@ -590,6 +619,148 @@ public class EwalletServiceFactory {
 			}
 			return resp;
 		}
+
+		@Override
+		public EwalletResponseData addPayPalWallet(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
+	
+	private class PPVendorServiceRemoteAdapter implements IEwallet, IEwallet.NotificationService {
+		
+		private PayPalServiceHome remoteHome = null;
+		
+		PPVendorServiceRemoteAdapter() {
+			remoteHome = FDServiceLocator.getInstance().getPayPalServiceHome();
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see com.freshdirect.fdstore.ewallet.IEwallet#getToken(com.freshdirect.fdstore.ewallet.EwalletRequestData)
+		 */
+		@Override
+		public EwalletResponseData getToken(
+				EwalletRequestData ewalletRequestData) {
+			EwalletResponseData resp = null;
+			try {
+				PayPalServiceSB remote = remoteHome.create();
+				resp = remote.getToken(ewalletRequestData);
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+			
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
+		@Override
+		public EwalletResponseData postbackTrxns(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData checkout(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData expressCheckout(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData connect(EwalletRequestData ewalletRequestData)
+				throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData getAllPayMethodInEwallet(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData connectComplete(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData disconnect(
+				EwalletRequestData ewalletRequestData) {
+			EwalletResponseData resp = null;
+			try {
+				PayPalServiceSB remote = remoteHome.create();
+				resp = remote.disconnect(ewalletRequestData);
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+			
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
+		@Override
+		public EwalletResponseData standardCheckout(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData preStandardCheckout(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData expressCheckoutWithoutPrecheckout(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EwalletResponseData addPayPalWallet(
+				EwalletRequestData ewalletRequestData) throws Exception {
+			EwalletResponseData resp = null;
+			try {
+				PayPalServiceSB remote = remoteHome.create();
+				resp = remote.addPayPalWallet(ewalletRequestData);
+			} catch (CreateException e) {
+				throw new MasterpassRuntimeException(e);
+			} catch (RemoteException e) {
+				throw new MasterpassRuntimeException(e);
+			}
+			
+			if (resp == null) {
+				resp = new EwalletResponseData();
+			}
+			return resp;
+		}
+
 
 	}
 }

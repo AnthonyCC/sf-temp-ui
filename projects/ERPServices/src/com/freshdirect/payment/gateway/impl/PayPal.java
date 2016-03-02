@@ -1,0 +1,375 @@
+package com.freshdirect.payment.gateway.impl;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.braintreegateway.PayPalAccount;
+import com.braintreegateway.Result;
+import com.braintreegateway.Transaction;
+import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.exceptions.NotFoundException;
+import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpCaptureModel;
+import com.freshdirect.customer.ErpCashbackModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpVoidCaptureModel;
+import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.PayPalData;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.PaylinxResourceException;
+import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Merchant;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
+import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
+
+/**
+ * @author Aniwesh Vatsal
+ *
+ */
+public class PayPal implements Gateway {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6093295523348808195L;
+	
+	private static final String PAYPAL_VERIFY_VAULT_TOKEN_TXN="VerifyVaultToken";
+	private static final String PAYPAL_TXN_SUCCESS="SUCCESS";
+	private static final String PAYPAL_TXN_FAIL="FAIL";
+	
+	@Override
+	public GatewayType getType() {
+		return GatewayType.PAYPAL;
+		
+	}
+	
+	@Override
+	public ErpAuthorizationModel verify(String merchantId,
+			ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+		return null;
+	}
+
+	@Override
+	public ErpAuthorizationModel authorize(ErpPaymentMethodI paymentMethod,
+			String orderNumber, double authorizationAmount, double tax,
+			String merchantId) throws ErpTransactionException {
+		ErpAuthorizationModel authModel = null;
+		ResponseImpl response = null;
+		try {
+			// 1. Validate the Vault Token
+			boolean isVaultTokenValid = isValidToken(paymentMethod.getProfileID(), paymentMethod.getCustomerId());
+			if(isVaultTokenValid){
+				authModel = null;
+				Merchant merchant=getMerchant(merchantId);
+				String merchantID = PayPalConstants.MerchantID.get(merchant).getValue();
+				TransactionRequest request = new TransactionRequest().
+						amount(BigDecimal.valueOf(authorizationAmount)).orderId(orderNumber). 
+			            paymentMethodToken(paymentMethod.getProfileID()).options().payeeEmail(merchantID).done();
+						
+				Result<Transaction> saleResult = PayPalData.getBraintreeGateway().transaction().sale(request);
+				Request gatewayRequest = GatewayAdapter.getRequest(TransactionType.AUTHORIZE ,paymentMethod, authorizationAmount, tax, orderNumber, merchantID);
+				if (saleResult.isSuccess()) {
+					authModel = GatewayAdapter.getPPAuthResponse(saleResult,paymentMethod);
+					if(authModel != null){
+						authModel.setMerchantId(merchantId);
+						authModel.setGatewayOrderID(orderNumber);
+						authModel.setAmount(authorizationAmount);
+						authModel.setTax(tax);
+					}
+					gatewayRequest.getBillingInfo().setTransactionRef(authModel.getEwalletTxId());
+					response = new ResponseImpl(gatewayRequest);
+					response.setEwalletId(paymentMethod.geteWalletID());
+					response.setEwalletTxId(authModel.getSequenceNumber());
+					response.setRequestProcessed(true);
+					response.setApproved(true);
+					response.setStatusMessage(EnumPaymentResponse.APPROVED.getDescription());
+					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+				} else {
+					authModel = new ErpAuthorizationModel();
+					authModel.setResponseCode(EnumPaymentResponse.DECLINED);
+					authModel.setDescription(saleResult.getMessage());
+					authModel.setCustomerId(paymentMethod.getCustomerId());
+					authModel.setMerchantId(merchantId);
+					authModel.setGatewayOrderID(orderNumber);
+					authModel.setAmount(authorizationAmount);
+					authModel.setTax(tax);
+					response = new ResponseImpl(gatewayRequest);
+					response.setEwalletId(paymentMethod.geteWalletID());
+					response.setRequestProcessed(false);
+					response.setApproved(false);
+					response.setStatusMessage(EnumPaymentResponse.DECLINED.getDescription());
+					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+				}
+			}
+		} catch (Exception e) {
+			throw new ErpTransactionException(e.getMessage());
+		}
+		return authModel;
+	}
+
+	private static Merchant getMerchant(String merchantID) {
+		
+		if(StringUtils.isEmpty(merchantID))
+			return Merchant.FRESHDIRECT;
+		else if (Merchant.FRESHDIRECT.name().equalsIgnoreCase(merchantID))
+			return Merchant.FRESHDIRECT;
+		else if (Merchant.FDW.name().equalsIgnoreCase(merchantID))
+			return Merchant.FDW;
+		else if (Merchant.FDX.name().equalsIgnoreCase(merchantID))
+			return Merchant.FDX;
+		else 
+			return Merchant.USQ;
+	}
+	
+	@Override
+	public ErpCaptureModel capture(ErpAuthorizationModel authorization,
+			ErpPaymentMethodI paymentMethod, double amount, double tax,
+			String saleId) throws ErpTransactionException {
+
+		Result<Transaction> result = null;
+		String txId = authorization.getEwalletTxId();
+
+		if (amount > 0) {
+			TransactionRequest txnRequest = new TransactionRequest().amount(BigDecimal.valueOf(amount));
+			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId, txnRequest);
+		}
+		else {
+			result = PayPalData.getBraintreeGateway().transaction().submitForSettlement(txId);
+		}
+		
+		saleId = authorization.getGatewayOrderID();
+		if (StringUtils.isEmpty(saleId)) {
+			authorization.setGatewayOrderID(saleId);
+		}
+		//Gateway logging and return object preparation
+		Request request = GatewayAdapter.getCaptureRequest(paymentMethod, authorization, amount, tax);
+		ResponseImpl response = new ResponseImpl(request);
+		response.setBillingInfo(request.getBillingInfo());
+		
+		ErpCaptureModel captureModel = new ErpCaptureModel();
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
+			try {
+				captureModel = GatewayAdapter.getCaptureResponse(response, authorization);
+				captureModel.setEwalletTxId(result.getTarget().getId());
+			} catch (PaylinxResourceException e ) {
+				response = new ResponseImpl(request);
+				response.setBillingInfo(request.getBillingInfo());
+				setFailureResponse(response, result);
+				GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+				throw new ErpTransactionException(e.getMessage());
+			}
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		} else {
+			setFailureResponse(response, result);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+			throw new ErpTransactionException(result.getMessage());
+		}
+		
+		return captureModel;
+	}
+
+	public Response voidCapture(Request request) throws ErpTransactionException {
+		String txId = request.getBillingInfo().getEwalletTxId();
+		if (txId == null || txId.isEmpty()) {
+			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
+		}
+		
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
+		
+		ResponseImpl response = new ResponseImpl(request);
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
+			response.setBillingInfo(request.getBillingInfo());
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		} else {
+			setFailureResponse(response, result);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
+		}
+		
+		return response;
+	}
+	
+	@Override
+	public ErpVoidCaptureModel voidCapture(ErpPaymentMethodI paymentMethod,
+			ErpCaptureModel request) throws ErpTransactionException {
+		throw new FDRuntimeException("PayPal - this interface method is not applicable at this time");
+	}
+
+	@Override
+	public Response reverseAuthorize(Request request)
+			throws ErpTransactionException {
+		String txId = request.getBillingInfo().getEwalletTxId();
+		if (txId == null || txId.isEmpty()) {
+			throw new ErpTransactionException("Transaction Id is empty or null while reverse auth of PayPal order ");
+		}
+		
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
+		ResponseImpl response = new ResponseImpl(request);
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
+			response.setBillingInfo(request.getBillingInfo());
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		} else {
+			setFailureResponse(response, result);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
+		}
+		
+		return response;
+	}
+
+	@Override
+	public ErpCashbackModel issueCashback(String orderNumber,
+			ErpPaymentMethodI paymentMethod, double amount, double tax,
+			ErpAffiliate affiliate) throws ErpTransactionException {
+		String txId = paymentMethod.geteWalletTrxnId();
+		if (txId == null || txId.isEmpty()) {
+			throw new ErpTransactionException("Transaction Id is empty or null while issue cashback of PayPal order " + orderNumber);
+		}
+		
+		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().refund(txId, BigDecimal.valueOf(amount));
+		ErpCashbackModel cashback = null;
+		
+		Request request = GatewayAdapter.getCashbackRequest(paymentMethod, amount, tax, 
+								orderNumber, affiliate.getMerchant(paymentMethod.getCardType()));
+		ResponseImpl response = new ResponseImpl(request);
+		if (result.isSuccess()) {
+			setSuccessResponse(response, result);
+			response.setBillingInfo(request.getBillingInfo());
+			cashback= GatewayAdapter.getCashbackResponse(response, paymentMethod);
+			cashback.setAmount(amount);
+			cashback.setTax(tax);
+			cashback.setAffiliate(affiliate);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		} else {
+			setFailureResponse(response, result);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+			throw new ErpTransactionException("PayPal error " + result.getMessage());
+		}
+
+		return cashback;
+	}
+
+	@Override
+	public Response addProfile(Request request) throws ErpTransactionException {
+		// Not Applicable for PayPal
+		return null;
+	}
+
+	@Override
+	public Response updateProfile(Request request)
+			throws ErpTransactionException {
+		// Not Applicable for PayPal
+		return null;
+	}
+
+	@Override
+	public Response deleteProfile(Request request)
+			throws ErpTransactionException {
+		// Not Applicable for PayPal
+		return null;
+	}
+
+	@Override
+	public Response getProfile(Request request) throws ErpTransactionException {
+		// Not Applicable for PayPal
+		return null;
+	}
+
+	@Override
+	public boolean isValidToken(String token, String customerId){
+		try{
+			PayPalAccount paypalAccount = PayPalData.getBraintreeGateway().paypalAccount().find(token);
+			if(paypalAccount != null && paypalAccount.getToken() != null){
+				logPPEwalletRequestResponse(PAYPAL_VERIFY_VAULT_TOKEN_TXN, PAYPAL_TXN_SUCCESS, customerId);
+				return true;
+			}else{
+				logPPEwalletRequestResponse(PAYPAL_VERIFY_VAULT_TOKEN_TXN, PAYPAL_TXN_FAIL, customerId);
+				return false;
+			}
+		}catch(NotFoundException exception){
+			exception.printStackTrace();
+			return false;
+		}
+	}
+
+	
+	
+	/**
+	 * @param trxType
+	 * @param txnStatus
+	 * @param customerId
+	 */
+	private void logPPEwalletRequestResponse(String trxType, String txnStatus, String customerId) {
+		try{
+			EwalletActivityLogModel eWalletLogModel = new EwalletActivityLogModel();
+			
+	        eWalletLogModel.seteWalletID(""+EnumEwalletType.PP.getValue());
+	       	eWalletLogModel.setCustomerId(customerId);
+	       	
+	        StringBuffer eWalletTxnRequest= new StringBuffer(); 
+	        StringBuffer eWalletTxnResponse= new StringBuffer();
+	        
+	        if(trxType.equalsIgnoreCase(PAYPAL_VERIFY_VAULT_TOKEN_TXN)){
+	        	eWalletTxnRequest.append("Verify vault token");
+	        	// Create Response String
+	        	eWalletTxnResponse= new StringBuffer();
+	        	
+	        	if(txnStatus != null && txnStatus.equals(PAYPAL_TXN_SUCCESS)){
+	        		eWalletTxnResponse.append("Vault token is Valid=");
+	        	}else{
+	        		eWalletTxnResponse.append("Vault token is InValid=");
+	        	}
+	        }
+	        eWalletLogModel.setRequest(eWalletTxnRequest.toString());
+	        eWalletLogModel.setResponse(eWalletTxnResponse.toString());
+	        
+	        eWalletLogModel.setTransactionType(trxType);
+	        Timestamp timeNow = new Timestamp(Calendar.getInstance().getTimeInMillis()); 
+	        eWalletLogModel.setCreationTimeStamp(timeNow);
+	        eWalletLogModel.setStatus(txnStatus);
+	        eWalletLogModel.setOrderId("");
+	        EWalletLogActivity.logActivity(eWalletLogModel);
+	        
+			}catch(Exception e){	// Any exception then ignore
+				e.printStackTrace();
+		}
+	}
+	
+	private void setSuccessResponse(ResponseImpl response, Result<Transaction> result) {
+		response.setResponseCode(result.getTarget().getProcessorResponseCode());
+		response.setStatusMessage(result.getMessage());
+		response.setApproved(true);
+		response.setDeclined(false);
+		response.setError(false);
+		response.setEwalletId("" + EnumEwalletType.PP.getValue());
+		response.setEwalletTxId(result.getTarget().getId());
+		response.setRequestProcessed(true);
+	}
+	
+	private void setFailureResponse(ResponseImpl response, Result<Transaction> result) {
+		response.setError(true);
+		response.setApproved(false);
+		response.setRequestProcessed(true);
+		Transaction trxn = result.getTarget();
+		response.setResponseCode(trxn != null ?  trxn.getProcessorResponseCode(): null);
+		response.setStatusMessage(result.getMessage());
+		response.setEwalletId("" + EnumEwalletType.PP.getName());
+		if (trxn != null) {
+			response.setEwalletTxId(trxn.getId());
+		}
+	}
+
+}

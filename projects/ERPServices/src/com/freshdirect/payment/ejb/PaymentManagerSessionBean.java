@@ -204,7 +204,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			    	
 					if(auth.isApproved() && !auth.hasAvsMatched() ){	//-Manoj, Add check payment.isAVSCheckFailed==false					
 						if(!payment.isBypassAVSCheck()){														
-							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           								  
+							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && !payment.geteWalletID().equals("2")){	                           								  
 									payment.setAvsCkeckFailed(true);
 									customerEB.updatePaymentMethodNewTx(payment);								  	
 									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							
@@ -686,5 +686,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		ErpAuthorizationModel auth=null;
 		auth=pm.verify(merchant,paymentMethod);
 		return auth;
+	}
+	
+	public boolean isValidVaultToken(String token, String customerId)throws RemoteException{
+		PaymentManager pm= new PaymentManager();
+		return pm.isValidVaultToken(token,customerId);
 	}
 }

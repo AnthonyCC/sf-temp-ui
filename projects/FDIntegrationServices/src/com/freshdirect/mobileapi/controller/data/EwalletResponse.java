@@ -12,6 +12,7 @@ public class EwalletResponse extends Message{
 
 	private String eWalletStatus;
 	private String callbackUrl;
+	private String tokenType;
 	private String requestToken;
 	private String paringToken;
 	private String expressCheckout;
@@ -28,6 +29,7 @@ public class EwalletResponse extends Message{
 	private List<EwalletPaymentMethod> paymentMethods;
 	private String preCheckoutTxnId;
 	private String checkoutTransactionId;
+	
 	/**
 	 * @return the eWalletStatus
 	 */
@@ -244,6 +246,16 @@ public class EwalletResponse extends Message{
 	public void setCheckoutTransactionId(String checkoutTransactionId) {
 		this.checkoutTransactionId = checkoutTransactionId;
 	}
-	
-	
+	/**
+	 * @return the tokenType
+	 */
+	public String getTokenType() {
+		return tokenType;
+	}
+	/**
+	 * @param tokenType the tokenType to set
+	 */
+	public void setTokenType(String tokenType) {
+		this.tokenType = tokenType;
+	}
 }

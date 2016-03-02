@@ -11,6 +11,8 @@ public class PaymentMethods extends CheckoutResponse {
 
     private List<CreditCard> creditCards = new ArrayList<CreditCard>();
     
+    private List<Ewallet> ewallet = new ArrayList<Ewallet>();
+       
     private List<EBTCard> ebtCards = new ArrayList<EBTCard>();
 
     private String selectedId;
@@ -22,7 +24,7 @@ public class PaymentMethods extends CheckoutResponse {
     private boolean isEbtAccepted;
 
     public PaymentMethods(boolean isCheckEligible, boolean isECheckRestricted, boolean isEbtAccepted, List<com.freshdirect.mobileapi.model.PaymentMethod> creditCards,
-            List<com.freshdirect.mobileapi.model.PaymentMethod> electronicChecks, List<com.freshdirect.mobileapi.model.PaymentMethod> ebtCards) throws FDException {
+            List<com.freshdirect.mobileapi.model.PaymentMethod> electronicChecks, List<com.freshdirect.mobileapi.model.PaymentMethod> ebtCards,List<com.freshdirect.mobileapi.model.PaymentMethod>  ewallet) throws FDException {
         this.isCheckEligible = isCheckEligible;
         this.isECheckRestricted = isECheckRestricted;
         this.isEbtAccepted = isEbtAccepted;
@@ -32,6 +34,9 @@ public class PaymentMethods extends CheckoutResponse {
         }
         for (com.freshdirect.mobileapi.model.PaymentMethod electronicCheck : electronicChecks) {
             this.electronicChecks.add(new ElectronicCheck(electronicCheck));
+        }
+        for (com.freshdirect.mobileapi.model.PaymentMethod PaypalEwallet : ewallet) {
+            this.ewallet.add(new Ewallet(PaypalEwallet));
         }
         for (com.freshdirect.mobileapi.model.PaymentMethod ebtCard : ebtCards) {
             this.ebtCards.add(new EBTCard(ebtCard));
@@ -61,6 +66,14 @@ public class PaymentMethods extends CheckoutResponse {
 
     public void setElectronicChecks(List<ElectronicCheck> electronicChecks) {
         this.electronicChecks = electronicChecks;
+    }
+    
+    public List<Ewallet> getEwallet() {
+        return ewallet;
+    }
+
+    public void setEwallet(List<Ewallet> ewallet) {
+        this.ewallet = ewallet;
     }
 
     public List<CreditCard> getCreditCards() {

@@ -302,7 +302,13 @@ public class Paymentech implements Gateway {
         }
 		
 	}
-	
-	
+
+	@Override
+	public boolean isValidToken(String token, String customerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+		
 	
 }

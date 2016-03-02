@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -99,6 +100,19 @@ public class SessionUser {
         }
         return electronicChecks;
     }
+
+    public List<PaymentMethod> getEwallet(List PaymentMethods) {
+    	
+        List<PaymentMethod> ewallet = new ArrayList<PaymentMethod>();
+        for (ErpPaymentMethodI paymentMethod : (List<ErpPaymentMethodI>) PaymentMethods) {
+           if( EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
+				com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+            	ewallet.add(paymentMethodModel);
+           }
+        }
+        return ewallet;
+    }
+
 
     public List<PaymentMethod> getElectronicChecks(List paymentMethods) {
         List<PaymentMethod> electronicChecks = new ArrayList<PaymentMethod>();

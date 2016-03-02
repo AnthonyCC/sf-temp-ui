@@ -106,6 +106,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
@@ -645,6 +646,30 @@ public class FDCustomerManager {
 		}
 	}
 	
+	/**
+	 * @param paymentMethods
+	 * @return
+	 */
+	public static boolean disconnectInvalidPPAccount(ErpPaymentMethodI paymentMethod , FDIdentity identity){
+		try{
+		  if(paymentMethod != null ){
+			  if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())) {
+				  boolean isValid = isValidVaultToken(paymentMethod.getProfileID(), paymentMethod.getCustomerId());
+				  if(isValid){
+					  return true;
+					  
+				  }else{
+					  // Delete the Vault Token as it is invalid 
+					  deleteLongAccessToken(identity.getErpCustomerPK(), ""+EnumEwalletType.PP.getValue());
+					  return false;
+			 	}
+			  }
+		   }
+		}catch(FDResourceException exception){
+			return true;
+		}
+		return true;
+	}
 	/**
 	 * This method will call ErpEWalletSB class method 
 	 * @param custEWallet
@@ -4767,5 +4792,27 @@ public class FDCustomerManager {
 				throw new FDResourceException(e, "Error creating session bean");
 			}
 		}
-	
+
+		/**
+		 * @param token
+		 * @return
+		 * @throws FDResourceException
+		 */
+		public static boolean isValidVaultToken(String token, String customerId) throws FDResourceException {
+			lookupManagerHome();
+			boolean isValid=false;
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				isValid =sb.isValidVaultToken(token,customerId);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		
+		return isValid;
+		}
 }

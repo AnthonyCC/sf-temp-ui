@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.ewallet;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -48,6 +49,8 @@ public class EwalletResponseData  implements Serializable{
 	private ErpPaymentMethodI paymentMethod;
 	private String preferredMPCard;
 	private String preCheckoutTnxId;
+	private Map<String, String> resParam = new java.util.HashMap<String, String>();
+	
 	
 	//Batch
 	private List<EwalletPostBackModel> trxns;
@@ -289,5 +292,20 @@ public class EwalletResponseData  implements Serializable{
 	public void setPreCheckoutTnxId(String preCheckoutTnxId) {
 		this.preCheckoutTnxId = preCheckoutTnxId;
 	}
+	
+	/**
+	 * @return
+	 */
+	public Map<String, String> getResParam() {
+		return resParam;
+	}
+	
+	/**
+	 * @param resParam
+	 */
+	public void setResParam(Map<String, String> resParam) {
+		this.resParam = resParam;
+	}
+
 	
 }

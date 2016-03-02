@@ -31,4 +31,7 @@ public interface EwalletServiceSB extends EJBObject {
 	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	//PayPal
+	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;
+	
 }

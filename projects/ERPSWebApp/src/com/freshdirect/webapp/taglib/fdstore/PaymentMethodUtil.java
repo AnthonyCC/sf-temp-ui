@@ -459,11 +459,13 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			if(reservation != null && reservation.getTimeslot()!=null){				
 				checkDate = reservation.getStartTime(); 
 			}
-			
-	        result.addError(
-	        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
-	        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
-	        );
+			// PayPal Changes
+			if(paymentMethod.geteWalletID() ==null || ( paymentMethod.geteWalletID() !=null  && !paymentMethod.geteWalletID().equals("2"))){
+				result.addError(
+			        paymentMethod.getExpirationDate() == null || checkDate.after(paymentMethod.getExpirationDate()),
+			        "expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE
+			        );
+			}
 	        
         }
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) { 
@@ -829,5 +831,17 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	}
     	return msg;
     	
+    }
+
+/**
+     * @param token
+     * @return
+     */
+    public static boolean isVaultTokeValid(String token, String customerId){
+    	try {
+			return FDCustomerManager.isValidVaultToken(token,customerId);
+		} catch (FDResourceException e) {
+			return true;
+		}
     }
 }

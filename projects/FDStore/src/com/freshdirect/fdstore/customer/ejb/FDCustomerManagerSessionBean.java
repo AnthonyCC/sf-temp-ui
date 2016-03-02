@@ -8197,5 +8197,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 		
 	}
+	
+	/**
+	 * @param token
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public boolean isValidVaultToken(String token, String customerId)throws FDResourceException {
+		PaymentManagerSB sb=null;
+		try {
+			sb = this.getPaymentManagerHome().create();
+			return sb.isValidVaultToken(token,customerId);
+		}catch (Exception e) {
+			throw new FDResourceException(e);
+		}
+	}
 }
 

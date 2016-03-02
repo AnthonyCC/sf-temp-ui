@@ -7,23 +7,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletUtil;
 import com.freshdirect.fdstore.ewallet.PaymentData;
+import com.freshdirect.fdstore.ewallet.PaymentMethodName;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
 import com.freshdirect.framework.util.DateUtil;
@@ -35,6 +31,8 @@ import com.freshdirect.mobileapi.controller.data.response.PaymentMethod;
 import com.freshdirect.mobileapi.ewallet.EwalletMobileRequestProcessor;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
@@ -55,8 +53,16 @@ public class EwalletService {
 	private static final String PARAM_REQUEST_TOKEN = "oauth_token";
 	private static final String PARAM_OAUTH_VERIFIER = "oauth_verifier";
 	private static final String PARAM_CHECKOUT_URL = "checkout_resource_url";
-
-
+	private static final String PARAM_PP_PAYMENMETHOD_NONCE ="paymentMethodNonce";
+	private static final String PARAM_FIRST_NAME ="firstName";
+	private static final String PARAM_LAST_NAME ="lastName";
+	private static final String PARAM_EMAILID ="email";
+	private static final String WALLET_RESPONSE_STATUS = "status";
+	private static final String WALLET_RESPONSE_SUCCESS = "success";
+	private static final String WALLET_RESPONSE_FAIL = "fail";
+	private static final String WALLET_RESPONSE_PARAM_MESSAGE = "message";
+	private static final String WALLET_RESPONSE_CLIENT="Client";
+	
 	
 	/**
 	 * This method will check the Status of EWallet for Mobile App
@@ -187,6 +193,196 @@ public class EwalletService {
 		return ewalletResponse;
 	}
 
+	/**
+	 * @param ewalletRequest
+	 * @return
+	 */
+	public EwalletResponse generateClientToken(final EwalletRequest ewalletRequest){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		try {
+			if (ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)) {
+				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+				EwalletRequestData requestData = new EwalletRequestData();
+				requestData.setCustomerId(ewalletRequest.getCustomerId());
+				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
+				EwalletResponseData ewalletResponseData = mobileRequestProcessor.generateClientToken(requestData);
+				ewalletResponse.setTokenType(WALLET_RESPONSE_CLIENT);
+				ewalletResponse.setRequestToken(ewalletResponseData.getToken());
+			} else {
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF",
+						ewalletRequest.geteWalletType() + " is disabled");
+			}
+		} catch (Exception exception) {
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.addErrorMessage(
+					"Exception while getting the Client Token "
+							+ ewalletRequest.geteWalletType()
+							+ " EWallet Provider", exception.getMessage());
+			exception.printStackTrace();
+			LOGGER.error("Error while calling generateClientToken Service", exception);
+		}
+		ewalletResponse.seteWalletStatus(ewalletStatus);
+		return ewalletResponse;
+	}
+	/**
+	 * @param ewalletRequest
+	 * @param user
+	 * @return
+	 */
+	public EwalletResponse isPayPalWalletPaired(final EwalletRequest ewalletRequest,final SessionUser user){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		try {
+			if (ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)) {
+				boolean isPayPalPaired = false;
+				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getPaymentMethods();
+				if(paymentMethods != null){
+					ErpPaymentMethodI paymentMethod = getEWalletPaymentMethod(paymentMethods,ewalletRequest.geteWalletType());
+					
+					if(paymentMethod != null){
+						//Check for Valid Vault token
+						boolean isValid = FDCustomerManager.isValidVaultToken(paymentMethod.getProfileID(), ewalletRequest.getCustomerId());
+						if(isValid){
+							com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+							PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
+							ewalletResponse.setPaymentMethod(resPaymentMethod);
+							isPayPalPaired = true;
+						}else{
+							// If Paired PayPal account doesn't have valid Vault Token then delete the PayPal account/disconnect
+							FDCustomerManager.removePaymentMethod(ewalletRequest.getFdActionInfo(), paymentMethod);
+							// Delete the Vault token from CUST.CUST_EWALLET table as well.
+							FDCustomerManager.deleteLongAccessToken(ewalletRequest.getCustomerId(), ""+EnumEwalletType.PP.getValue());
+						}
+					}
+				}
+				if(!isPayPalPaired){
+					EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+					EwalletRequestData requestData = new EwalletRequestData();
+					requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
+					requestData.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
+					EwalletResponseData ewalletResponseData = mobileRequestProcessor.isPayPalPaired(requestData);
+					ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(ewalletResponseData.getToken());
+					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+					PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
+					ewalletResponse.setPaymentMethod(resPaymentMethod);
+				}
+
+			} else {
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF",
+						ewalletRequest.geteWalletType() + " is disabled");
+			}
+		} catch (Exception exception) {
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.addErrorMessage(
+					"Exception while checking PayPal whether wallet is paired or not "
+							+ ewalletRequest.geteWalletType()
+							+ " EWallet Provider", exception.getMessage());
+			exception.printStackTrace();
+			LOGGER.error("Error while calling IsPayPalWalletPaired Service", exception);
+		}
+		ewalletResponse.seteWalletStatus(ewalletStatus);
+		return ewalletResponse;
+	}
+	
+	/**
+	 * This method used to disconnect the Wallet from User for the given Wallet Type.
+	 * @param ewalletRequest
+	 * @param user
+	 * @return
+	 */
+	public EwalletResponse disconnectWallet(final EwalletRequest ewalletRequest){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		try {
+			if (ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)) {
+				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+				EwalletRequestData requestData = new EwalletRequestData();
+				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
+				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
+				requestData.setCustomerId(ewalletRequest.getCustomerId());
+				
+				EwalletResponseData ewalletResponseData = mobileRequestProcessor.disconnectWallet(requestData);
+				Map<String, String> result = ewalletResponseData.getResParam();
+				if(result!= null){
+					if(result.containsKey(WALLET_RESPONSE_STATUS) && result.get(WALLET_RESPONSE_STATUS).equals(WALLET_RESPONSE_SUCCESS) ){
+						ewalletResponse.setStatus(WALLET_RESPONSE_SUCCESS);
+					}else{
+						ewalletResponse.setStatus(WALLET_RESPONSE_FAIL);
+					}
+					ewalletResponse.setSuccessMessage(result.get(WALLET_RESPONSE_PARAM_MESSAGE));
+				}
+			} else {
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF",
+						ewalletRequest.geteWalletType() + " is disabled");
+			}
+		} catch (Exception exception) {
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.addErrorMessage(
+					"Exception while disconnecting the PayPal account "
+							+ ewalletRequest.geteWalletType()
+							+ " EWallet Provider", exception.getMessage());
+			exception.printStackTrace();
+			LOGGER.error("Error while calling disconnect Paypal Account", exception);
+		}
+		ewalletResponse.seteWalletStatus(ewalletStatus);
+		return ewalletResponse;
+	}
+	
+	/**
+	 * @param ewalletRequest
+	 * @return
+	 */
+	public EwalletResponse addPayPalWallet(final EwalletRequest ewalletRequest){
+		EwalletResponse ewalletResponse = new EwalletResponse();
+		String ewalletStatus = checkEWalletStatus(ewalletRequest.geteWalletType());
+		try {
+			if (ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)) {
+				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
+				EwalletRequestData requestData = new EwalletRequestData();
+				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
+				
+				Map<String,String> reqParams = new HashMap<String, String>();
+				reqParams.put(PARAM_PP_PAYMENMETHOD_NONCE, ewalletRequest.getTokenValue());
+				reqParams.put(PARAM_FIRST_NAME, ewalletRequest.getFirstName());
+				reqParams.put(PARAM_LAST_NAME, ewalletRequest.getLastName());
+				reqParams.put(PARAM_EMAILID, ewalletRequest.getEmailId());
+				requestData.setReqParams(reqParams);
+				requestData.setCustomerId(ewalletRequest.getCustomerId());
+				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
+				EwalletResponseData ewalletResponseData = mobileRequestProcessor.addPayPalWallet(requestData);
+				ErpPaymentMethodI paymentMethod = ewalletResponseData.getPaymentMethod();
+				if(paymentMethod != null){
+					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+					PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
+					ewalletResponse.setPaymentMethod(resPaymentMethod);
+				}
+			} else {
+				ewalletResponse = new EwalletResponse();
+				ewalletResponse.seteWalletStatus(ewalletStatus);
+				ewalletResponse.addErrorMessage("EWALLET_STATUS_OFF",
+						ewalletRequest.geteWalletType() + " is disabled");
+			}
+		} catch (Exception exception) {
+			ewalletResponse = new EwalletResponse();
+			ewalletResponse.addErrorMessage(
+					"Exception while aading PayPal account for "
+							+ ewalletRequest.geteWalletType()
+							+ " EWallet Provider", exception.getMessage());
+			exception.printStackTrace();
+			LOGGER.error("Error while calling Add PayPal account Service", exception);
+		}
+		ewalletResponse.seteWalletStatus(ewalletStatus);
+		return ewalletResponse;
+		
+	}
+	
 	private EwalletResponse prepareErrorResponse(ValidationResult validationResult){
 		EwalletResponse ewalletResponse = new EwalletResponse();
 		if(validationResult != null && validationResult.getErrors() !=null && !validationResult.getErrors().isEmpty()){
@@ -352,7 +548,7 @@ public class EwalletService {
 					// 
 					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getFDSessionUser().getIdentity()).getPaymentMethods();
 					if(paymentMethods != null){
-						ErpPaymentMethodI paymentMethod = getEWalletPaymentMethoh(paymentMethods,ewalletRequest.geteWalletType());
+						ErpPaymentMethodI paymentMethod = getEWalletPaymentMethod(paymentMethods,ewalletRequest.geteWalletType());
 						PaymentData paymentData  = createPaymentData(paymentMethod);
 						requestData.setPaymentData(paymentData);
 						ewalletResponseData = mobileRequestProcessor.expressCheckout(requestData);
@@ -388,7 +584,8 @@ public class EwalletService {
         }
         paymentData.setNameOnCard(payment.getName());
         String maskedAccountNumber = payment.getMaskedAccountNumber();
-        if (maskedAccountNumber != null) {
+        if (maskedAccountNumber != null)
+        {
             if (8 < maskedAccountNumber.length()) {
                 maskedAccountNumber = maskedAccountNumber.substring(maskedAccountNumber.length() - 8);
             }
@@ -398,13 +595,15 @@ public class EwalletService {
         if (payment.getExpirationDate() != null) {
             paymentData.setExpiration(DateUtil.getCreditCardExpiryDate(payment.getExpirationDate()));
         }
-        paymentData.setAddress1(payment.getAddress1());
-        paymentData.setAddress2(payment.getAddress2());
-        paymentData.setApartment(payment.getApartment());
-        paymentData.setCity(payment.getCity());
-        paymentData.setZip(payment.getZipCode());
-        paymentData.setState(payment.getState());
-        paymentData.setAbaRouteNumber(payment.getAbaRouteNumber());
+        	
+	        paymentData.setAddress1(payment.getAddress1());
+	        paymentData.setAddress2(payment.getAddress2());
+	        paymentData.setApartment(payment.getApartment());
+	        paymentData.setCity(payment.getCity());
+	        paymentData.setZip(payment.getZipCode());
+	        paymentData.setState(payment.getState());
+	        paymentData.setAbaRouteNumber(payment.getAbaRouteNumber());
+       
         if (payment.getBankAccountType() != null) {
             paymentData.setBankAccountType(payment.getBankAccountType().getDescription());
         }
@@ -419,11 +618,11 @@ public class EwalletService {
 	 * @param ewalletType
 	 * @return
 	 */
-	private ErpPaymentMethodI getEWalletPaymentMethoh(final List<ErpPaymentMethodI> paymentMethods, final String ewalletType){
-		
+	private ErpPaymentMethodI getEWalletPaymentMethod(final List<ErpPaymentMethodI> paymentMethods, final String ewalletType){
+		EnumEwalletType enumEwalletType = EnumEwalletType.getEnum(ewalletType);
 		if(paymentMethods != null && !paymentMethods.isEmpty()){
 			for(ErpPaymentMethodI paymentMethod : paymentMethods){
-				if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){
+				if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+enumEwalletType.getValue())){
 					return paymentMethod;
 				}
 			}
@@ -461,7 +660,9 @@ public class EwalletService {
 				EwalletPaymentMethod ewalletPaymentMethod = new EwalletPaymentMethod();
 				ewalletPaymentMethod.setCardId(paymentData.getId());
 				ewalletPaymentMethod.setCardType(paymentData.getType());
-				ewalletPaymentMethod.setMaskedAccountNumber("XXXXXXXX"+paymentData.getAccountNumber());
+				
+					ewalletPaymentMethod.setMaskedAccountNumber("XXXXXXXX"+paymentData.getAccountNumber());
+					
 				ewalletPaymentMethod.setName(paymentData.getNameOnCard());
 				if(paymentData.getExpiration()!=null){
 					String expiration = paymentData.getExpiration();
@@ -616,6 +817,30 @@ public class EwalletService {
 		ewalletResponse.setReqPairing(ewalletResponseData.getPairingRequest());
 		return ewalletResponse;
 	}
+
+	/**
+	 * @param tokenValue
+	 * @return
+	 */
+	private ErpPaymentMethodI parsePaymentMethodForm(String tokenValue) {
+        EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(PaymentMethodName.PAYMENT_METHOD_TYPE);
+        ErpPaymentMethodI paymentMethod = null;
+        
+        paymentMethod = PaymentManager.createInstance(paymentMethodType);
+        paymentMethod.setProfileID(tokenValue);
+        paymentMethod.seteWalletID("2");
+        return paymentMethod;
+    }
 	
+	 static String scrubAccountNumber(String number){
+	        StringBuffer digitsOnly = new StringBuffer();
+	        for (int i=0; i<number.length(); i++) {
+	            char c = number.charAt(i);
+	            if (Character.isDigit(c)) {
+	                digitsOnly.append(c);
+	            }
+	        }
+	        return digitsOnly.toString();
+	    }
 }
 

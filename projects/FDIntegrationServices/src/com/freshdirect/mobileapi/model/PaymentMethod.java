@@ -1,16 +1,22 @@
 package com.freshdirect.mobileapi.model;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class PaymentMethod {
 
     private ErpPaymentMethodI paymentMethod;
+    
+   
 
     private PaymentMethod() {
 
@@ -29,9 +35,15 @@ public class PaymentMethod {
     }
 
     public String getId() {
-        return ((ErpPaymentMethodModel) paymentMethod).getPK().getId();
+    	if(paymentMethod != null && ((ErpPaymentMethodModel) paymentMethod).getPK() != null){
+    		return ((ErpPaymentMethodModel) paymentMethod).getPK().getId();
+    	}else{
+    		return "";
+    	}
+        
     }
 
+    
     public String getDescription() {
         return paymentMethod.getBankAccountType().getDescription();
     }
@@ -73,11 +85,15 @@ public class PaymentMethod {
     }
 
     public String getCity() {
-        return paymentMethod.getCity();
+    	
+    		return paymentMethod.getCity();
+    		
     }
 
     public String getZipCode() {
-        return paymentMethod.getZipCode();
+    	
+    		return paymentMethod.getZipCode();
+    		
     }
 
     public String getCardType() {
@@ -93,6 +109,30 @@ public class PaymentMethod {
     	if(paymentMethod.geteWalletID() != null){
     		int ewalletId = Integer.parseInt(paymentMethod.geteWalletID());
     		return EnumEwalletType.getEnum(ewalletId).getName();
+    	}else{
+    		return "";
+    	}
+    }
+    
+    public String getEmailId() {
+        return paymentMethod.getEmailID();
+    }
+    
+    public String getProfileId(){
+    	if(paymentMethod.geteWalletID() != null && Integer.parseInt(paymentMethod.geteWalletID()) == EnumEwalletType.PP.getValue()){
+    		return paymentMethod.getProfileID();
+    	}else{
+    		return "";
+    	}
+    }
+    
+    public String getTokenType(){
+    	if(paymentMethod.geteWalletID() != null && Integer.parseInt(paymentMethod.geteWalletID()) == EnumEwalletType.PP.getValue()){
+    		if(paymentMethod.getPK() == null || (paymentMethod.getCustomerId() == null || StringUtil.isEmpty(paymentMethod.getCustomerId()))){
+    			return "Client";
+    		}else{
+    			return "Vault";
+    		}
     	}else{
     		return "";
     	}

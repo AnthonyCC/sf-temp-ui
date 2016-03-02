@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -40,6 +41,7 @@ import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
 import com.freshdirect.mobileapi.controller.data.response.EBTCard;
 import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
+import com.freshdirect.mobileapi.controller.data.response.Ewallet;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
@@ -159,7 +161,11 @@ public class Order {
             if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
                 orderDetail.setPaymentMethod(new ElectronicCheck(PaymentMethod.wrap(paymentMethod)));
             } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-                orderDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
+            	if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+            		orderDetail.setPaymentMethod(new Ewallet(PaymentMethod.wrap(paymentMethod)));
+            	}else{
+            		orderDetail.setPaymentMethod(new CreditCard(PaymentMethod.wrap(paymentMethod)));
+            	}
             } else if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
             	orderDetail.setPaymentMethod(new EBTCard(PaymentMethod.wrap(paymentMethod)));
             }else {

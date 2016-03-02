@@ -1133,7 +1133,23 @@
 	<rule>
 		<from>^/v/([0-9]+)/stdcheckoutdata/(.*)</from>
 		<to last="true">/ewalletstdcheckout.do?action=stdCheckoutData&amp;ver=$1</to>
-	</rule>	
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/generateClientToken/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=generateClientToken&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/isPayPalWalletPaired/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=isPayPalWalletPaired&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/updatePayPalWalletToken/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=updatePayPalWalletToken&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/disconnectWallet/(.*)</from>
+		<to last="true">/ewalletstdcheckout.do?action=disconnectWallet&amp;ver=$1</to>
+	</rule>			
 		
 		
 	<!-- Test -->

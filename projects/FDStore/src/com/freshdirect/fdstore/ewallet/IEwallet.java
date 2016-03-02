@@ -13,7 +13,7 @@ public interface IEwallet {
 	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws Exception;
 	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws Exception;
 	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws Exception;
-	
+	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws Exception;
 	interface NotificationService {
 		EwalletResponseData postbackTrxns(EwalletRequestData ewalletRequestData) throws Exception;
 	}

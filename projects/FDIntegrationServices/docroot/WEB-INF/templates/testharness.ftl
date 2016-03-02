@@ -353,7 +353,7 @@ function loadStuff() {
   	
   } else if (loaddata == "SubmitOrder") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/ordersubmit/");
-  	$("#payload").val('');
+  	$("#payload").val('{ "deviceId" : "asdfjhdsfh"}');
   	
   } else if (loaddata == "SubmitOrderEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/submitorderex/");
@@ -892,6 +892,26 @@ function loadStuff() {
   	var postdata = '{"eWalletType":"MP", "oauthToken":"204f8e865", "oauthVerifer" : "266f8e865b7s", "checkoutUrl" : "http://masterpasstest/chekouturl"}';
   	$("#payload").val(postdata);
   	$("#result").val("");  
+  }else if (  loaddata == "GenerateClientToken") {
+  	$("#url").val("/generateClientToken/"); 
+  	var postdata = '{"eWalletType":"PP"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  
+  }else if (  loaddata == "IsPayPalWalletPaired") {
+  	$("#url").val("/isPayPalWalletPaired/"); 
+  	var postdata = '{"eWalletType":"PP"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  
+  }else if (  loaddata == "UpdatePaypalWalletToken") {
+  	$("#url").val("/updatePaypalWalletToken/"); 
+  	var postdata = '{"eWalletType":"PP","tokenType":"PaymentNonce","tokenValue":"xxx", "firstName":"Aniwesh", "lastName":"Vatsal", "emailId":"pp@email.com", "deviceId":"ldfkjdlf123"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  
+  }else if (  loaddata == "DisconnectWallet") {
+  	$("#url").val("/disconnectWallet/"); 
+  	var postdata = '{"eWalletType":"PP"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  
   }else if ( loaddata == "getSortOptionsForCat") {
   	$("#url").val("/browse/sortoptionsforcategory/"); 
   	var postdata = '{"id": "fdx_test"}';
@@ -1282,6 +1302,11 @@ function doStuff() {
   <option value=""> ========== EWallet ========== </option>
   <option value="EwalletStdCheckout">EWallet - STANDARD CHECKOUT</option>
   <option value="EwalletStdCheckoutData">EWallet - STANDARD CHECKOUT DATA</option>
+  <option value="GenerateClientToken">EWallet - GENERATE CLIENT TOKEN</option>
+  <option value="IsPayPalWalletPaired">EWallet - IS PAYPALWALLET PAIRED</option>
+  <option value="UpdatePaypalWalletToken">EWallet - UPDATE PAYPAL WALLET TOKEN</option>
+  <option value="DisconnectWallet">EWallet - DISCONNECT WALLET</option>
+  
   
   <option value=""> ========== New Products ========== </option>
   <option value="GetNewProducts">NEW PRODUCTS - GET ALL NEW PRODUCTS</option>  

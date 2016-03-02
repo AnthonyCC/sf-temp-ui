@@ -871,5 +871,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 			String serviceType)throws FDResourceException, RemoteException;
 
 	public void storeEmailPreferenceFlag(String fdCustomerId, String flag, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
+	
+	public boolean isValidVaultToken(String token, String customerId)throws FDResourceException, RemoteException;
 }
 
