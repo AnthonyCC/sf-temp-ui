@@ -505,6 +505,7 @@ section#section_slideshow{
 
 	background-size: $full100;
 	background-repeat: no-repeat;
+	background-color: #222;
 	
 	/*display:none;*/
 	
@@ -542,8 +543,7 @@ section#section_slideshow{
 		
 		.slidesjs-container {
 			margin-bottom:10px;
-			background-color: #222;
-			
+
 			/*
 			height: calc(100vw / 1.4769);
 			max-height: 100vh;*/
@@ -611,7 +611,8 @@ section#section_slideshow{
 			@include breakpoint_mixin(medium){
 				position: relative;
 				/*top:-265px;*/
-				top:-65px;
+				/*top:-65px;*/
+				top:-68px;
 				
 				left: initial;
 			}
@@ -683,7 +684,8 @@ section#section_slideshow{
 	.download_button{
 		white-space:nowrap;
 		position: absolute;
-		top: 40vw;
+		/*top: 40vw;*/
+		top: 35vh;
 	    left: calc(50% - 80px);
 	    z-index: 12;
 	    @include box_shadow_mixin(3, 3, 4, rgba(#000, 0.2) );
@@ -751,7 +753,7 @@ section#section_Get_Foodkick{
 		min-height:inherit;
 		/*padding: 25px 0px 25px 12%;*/
 		padding-top:0px;
-		margin-top:-20px;
+		/*margin-top:-20px;*/
 	}
 	
 	h1{
@@ -967,10 +969,14 @@ section#section_Get_Foodkick{
 				text-transform: uppercase;
 				//width:8em;
 				
+				margin-bottom: 30px;
+				
 				@include breakpoint_mixin(medium){
 					//margin-top:5px;
 					//font-size:1em;
 					//padding: 6px;
+					
+					margin-bottom: 5px;
 				}
 				@include breakpoint_mixin(large){
 					//font-size:1.25em;
@@ -1070,7 +1076,7 @@ section#section_How_it_works{
 			position:relative;
 			top:9px;
 			
-			@include breakpoint_mixin(medium){
+			@include breakpoint_mixin(large){
 				margin-right: 17%;
 			}
 		}

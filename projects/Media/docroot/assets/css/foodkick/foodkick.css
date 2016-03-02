@@ -268,6 +268,7 @@ section#section_slideshow {
   /*max-height: calc( 100vh + 261px );*/
   background-size: 100%;
   background-repeat: no-repeat;
+  background-color: #222;
   /*display:none;*/ }
   @media (min-width: 350px) {
     section#section_slideshow {
@@ -294,7 +295,6 @@ section#section_slideshow {
         text-align: center; } }
     section#section_slideshow #carousel_1 .slidesjs-container {
       margin-bottom: 10px;
-      background-color: #222;
       /*
       height: calc(100vw / 1.4769);
       max-height: 100vh;*/
@@ -345,7 +345,8 @@ section#section_slideshow {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
           position: relative;
           /*top:-265px;*/
-          top: -65px;
+          /*top:-65px;*/
+          top: -68px;
           left: initial; } }
       @media (min-width: 50em) {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
@@ -401,7 +402,8 @@ section#section_slideshow {
   section#section_slideshow .download_button {
     white-space: nowrap;
     position: absolute;
-    top: 40vw;
+    /*top: 40vw;*/
+    top: 35vh;
     left: calc(50% - 80px);
     z-index: 12;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
@@ -459,7 +461,7 @@ section#section_Get_Foodkick {
       min-height: inherit;
       /*padding: 25px 0px 25px 12%;*/
       padding-top: 0px;
-      margin-top: -20px; } }
+      /*margin-top:-20px;*/ } }
   section#section_Get_Foodkick h1 {
     font-size: 2em;
     margin-bottom: 2px; }
@@ -619,7 +621,11 @@ section#section_Get_Foodkick {
         background-color: #262626;
         border: none;
         color: white;
-        text-transform: uppercase; }
+        text-transform: uppercase;
+        margin-bottom: 30px; }
+        @media (min-width: 30em) {
+          section#section_Get_Foodkick article form button {
+            margin-bottom: 5px; } }
   section#section_Get_Foodkick object {
     float: right;
     height: inherit;
@@ -678,7 +684,7 @@ section#section_How_it_works {
     section#section_How_it_works figure img, section#section_How_it_works figure object {
       position: relative;
       top: 9px; }
-      @media (min-width: 30em) {
+      @media (min-width: 50em) {
         section#section_How_it_works figure img, section#section_How_it_works figure object {
           margin-right: 17%; } }
     section#section_How_it_works figure figcaption {
