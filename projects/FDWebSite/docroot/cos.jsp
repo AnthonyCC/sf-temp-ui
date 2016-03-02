@@ -76,7 +76,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 }
 	   	
 if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
-%>		<img src="/media_stat/images/cos/banner-at-the-office.jpg" alt="At the Office">
+%>		<!-- <img src="/media_stat/images/cos/banner-at-the-office.jpg" alt="At the Office"> -->
 		<comp:OASFeature 
 			top="HPFeatureTop"
 			left="HPFeature"
