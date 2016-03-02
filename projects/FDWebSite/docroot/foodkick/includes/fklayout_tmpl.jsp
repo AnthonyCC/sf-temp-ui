@@ -31,7 +31,9 @@
 		<header></header>
 		<nav>
 			<div id="locationbar">
-				<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+				<div id="locationbar_inner">
+					<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+				</div>
 			</div>
 		
 			<ul>
@@ -99,7 +101,7 @@
 					</p>
 					<p>
 						Want to Partner?<br/>
-						<a href="mailto:partnerships@foodkick.com">partnerships@foodkick.com</a>
+						<a href="mailto:partners@foodkick.com">partners@foodkick.com</a>
 					</p>
 				</section>
 				<section>

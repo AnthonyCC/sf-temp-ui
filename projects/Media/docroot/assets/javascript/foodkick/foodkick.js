@@ -48,8 +48,6 @@ function canValidateFields(){ /* void */
     return result;
 }
 
-//document.getElementById( 'validation' ).innerHTML = hasFormValidation();
-
 //for the sticky header
 function scroll_header_fix(){ /* void */
 	if( $(this).scrollTop() > ($(window).height() / 2) ){
@@ -138,12 +136,10 @@ function prepare_slideshow(ss_obj){ /* Object */
 	
 	//if there is only one slide, well, our problem is more tedious, but solvable
 	if( ss_obj.slides.length == 1 ){
-		$("#" + ss_obj.html_id ).html(  '<div class="slidesjs-container slidesjs-single"><div class="slidesjs-control">'+ $("#" + ss_obj.html_id ).html() +'</div></div>'  );
+		$("#" + ss_obj.html_id ).html( '<div class="slidesjs-container slidesjs-single"><div class="slidesjs-control">'+ $("#" + ss_obj.html_id ).html() +'</div></div>' );
 		
 		return;
 	}
-	
-	console.log( "ss_obj.width = " + ss_obj.width + ", ss_obj.height = " + ss_obj.height );
 
 	//now actually generate the slide show, stuff before was merely preparation html material
 	$("#" + ss_obj.html_id ).slidesjs({
@@ -173,12 +169,33 @@ function prepare_slideshow(ss_obj){ /* Object */
 	});
 }
 
+//new slideshow the angular js way.  REQUIRES: ss_obj.html_id must pertain to a pre-existing html element
+function new_angularstrapousel(ss_obj){
+	angular.module('ui.bootstrap.demo').controller(ss_obj.html_id, function($scope){
+		$scope.myInterval = ss_obj.slide_interval;
+		$scope.noWrapSlides = false;
+		var slides = $scope.slides = [];
+		
+		$scope.html_id = ss_obj.html_id;
+
+		for(var i=0; i<ss_obj.slides.length; i++){
+			slides.push({
+				content: ss_obj.img_dir + ss_obj.slides[i]["content"],
+				caption: ss_obj.slides[i]["caption"],
+				type: ss_obj.slides[i]["type"]
+			});
+		}
+	});
+}
+
 //to make sure the carousel looks fairly proper when the browser window is resized
 function fullwindow_carousels_handler(){ /* void */
 	//establish final height/width for the carousel
 	var carousel_height = $("#carousel_1").height();
+	
+	console.log( '$(".img_shadowhelper img").first().height() = ' + $(".img_shadowhelper img").first().height() );
 
-	$("#carousel_1 .slidesjs-container, #carousel_1 .slidesjs-control").css("height", carousel_height + "px");
+	//$("#carousel_1 .slidesjs-container, #carousel_1 .slidesjs-control").css("height", carousel_height + "px");
 }
 
 function elements_size_adjuster(){ /* void */

@@ -1,11 +1,17 @@
 //VARS
-$full100: 100%;
+
+//directories
 $MEDIA_DIR: "/media_stat/foodkick";
 //$FONT_DIR: $MEDIA_DIR + "/webfonts";
 $FONT_DIR: "/assets/css/fonts";
 $IMG_DIR: $MEDIA_DIR;
 $SVG_SRC: "/foodkick/s.jsp?f=";
+
+//css common properties
+$full100: 100%;
 $main_purple: #732282;
+//$carousel_max_height: 786px;
+$carousel_max_height: 632px;
 
 //FONT CORE variable names
 $GraphikApp_r_n: "GraphikApp-Regular";
@@ -454,6 +460,12 @@ nav{
 	@include breakpoint_mixin(large){
 		background-color: rgba(115, 34, 130, 1);
 	}
+	
+	#locationbar_inner{
+		width:100%;
+		max-width: 940px;
+		margin:auto;
+	}
 }
 
 .locabar-tab.locabar-tab-fdx-cont{
@@ -486,17 +498,37 @@ nav{
 
 section#section_slideshow{
 	width:$full100;
+	height: calc(100vw * 1.105);
 	/*height: 68vw;*/
-	max-height: 100vh;
+	/*max-height: 100vh;*/
+	/*max-height: calc( 100vh + 261px );*/
 
 	background-size: $full100;
 	background-repeat: no-repeat;
 	
 	/*display:none;*/
 	
+	@include breakpoint_mixin(350px){
+		height: calc(100vw * 0.98);
+	}
+	
+	@include breakpoint_mixin(413px){
+		height: calc(100vw * 0.95);
+	}
+	
+	
 	@include breakpoint_mixin(medium){
+		height: 80vw;
+
+		max-height: calc( #{$carousel_max_height} + 157px );
+	}
+	
+	@include breakpoint_mixin(large){
+		height: 85vw;
+	}
+	
+	@include breakpoint_mixin(1100px){
 		height: 68vw;
-		max-height: 786px;
 	}
 
 	#carousel_1 {
@@ -510,45 +542,48 @@ section#section_slideshow{
 		
 		.slidesjs-container {
 			margin-bottom:10px;
-			background-color:black;
+			background-color: #222;
 			
 			/*
 			height: calc(100vw / 1.4769);
 			max-height: 100vh;*/
 			height: inherit;
 			max-height: inherit;
+			overflow: visible!important;
 		}
 		
 		.slidesjs-slide{
 			margin:0px;
 			
 			background-color: #222;
-			height:100%;
+			/*height:100%;*/
 			
 			div.img_shadowhelper{
-				box-shadow: inset 0px 10px 6px #222, inset 0px 10px 48px #222;
+				box-shadow: inset 0px 1px 6px #222, inset 0px -10px 48px #222;
 				display: inline-block;
-				height: 100%;
+				/*height: 100%;*/
+				max-height: $carousel_max_height;
+				/*margin-top: 56px;*/
+				
+				@include breakpoint_mixin(medium){
+					max-width:940px;
+					max-height:632px;
+					margin-top:84px;
+				}
+				
+				@include breakpoint_mixin(large){
+					margin-top:154px;
+				}
 			
 				img{
 					width:auto;
 					max-width:100%;
-					height:100%;
-					margin-top: 56px;
+					/*height:100%;*/
+					height:auto;
 					
 					/*for the box shadow hack*/
 					z-index: -2;
 					position: relative;
-
-					@include breakpoint_mixin(medium){
-						max-width:940px;
-						max-height:632px;
-						margin-top:84px;
-					}
-					
-					@include breakpoint_mixin(large){
-						margin-top:154px;
-					}
 				}
 			}
 		}
@@ -556,21 +591,39 @@ section#section_slideshow{
 		.slidesjs-pagination{
 			/*top:-75px;*/
 			
-			left: calc(50% - 27px);
+			left: calc(50% - 35px);
 			
-			top: 59vw;
+			/*top: 56vw;*/
+			/*top: 73vw;*/
+			top: 93vw;
 			position: absolute;
 			padding-left: 0px;
 			
+			
+			@include breakpoint_mixin(350px){
+				top: 85vw;
+			}
+			
+			@include breakpoint_mixin(413px){
+				top: 84vw;
+			}
+			
 			@include breakpoint_mixin(medium){
 				position: relative;
-				top:-60px;
+				/*top:-265px;*/
+				top:-65px;
 				
 				left: initial;
 			}
 			
 			@include breakpoint_mixin(large){
 				left: 25px;
+				/*top:-145px;*/
+				top:-65px;
+			}
+			
+			@include breakpoint_mixin(1100px){
+				top:-65px;
 			}
 			
 			a{
@@ -585,13 +638,26 @@ section#section_slideshow{
 		}
 
 		figcaption{
-			position: absolute;
-			top: 52%;
+			/*position: absolute;
+			top: 52%;*/
 			text-align: center;
-			width: calc(100% - 20px);
-			margin-left:10px;
-			
+			width: 100%;
+			/*margin-left:10px;*/
+			background-color:white;
 			z-index: 9;
+			margin-top:56px;
+			
+			@include breakpoint_mixin(medium){
+				/*margin-top:85px;*/
+				position:absolute;
+				background-color:transparent;
+				/*top:50%;*/
+				top:25vw;
+			}
+			
+			@include breakpoint_mixin(large){
+				top:calc(154px + 10vw);
+			}
 		
 			h1{
 				font-size:14pt;
@@ -615,27 +681,24 @@ section#section_slideshow{
 	}
 	
 	.download_button{
-		/*position: relative;
-		top: -120px;*/
-		
+		white-space:nowrap;
 		position: absolute;
-		top: 46vw;
+		top: 40vw;
 	    left: calc(50% - 80px);
-	    z-index: 10;
+	    z-index: 12;
 	    @include box_shadow_mixin(3, 3, 4, rgba(#000, 0.2) );
 	    
 	    @include breakpoint_mixin(medium){
-	    	top: -180px;
-	    	position: relative;
+	    	top: 45vw;
 	    }
 	    
 	    @include breakpoint_mixin(large){
 			left: calc(50% - 120px);
-	    	top: -165px;
 	    }
 
 		@include breakpoint_mixin(1000px){
-			top: -235px;
+			/*top: 50%;*/
+			top: calc(50vh + 50px);
 		}
 	}
 	
@@ -648,22 +711,29 @@ section#section_slideshow{
 		z-index: 10;
 	    
 		display:none;
+		
+		-webkit-filter: drop-shadow(1px 1px 0 white) 
+		                drop-shadow(-1px -1px 0 white);
+		filter:drop-shadow(1px 1px 0 white) 
+		       drop-shadow(-1px -1px 0 white);
 	    
 	    @include breakpoint_mixin(medium){
-	    	top: -120px;
+	    	top: -140px;
 	    	position: relative;
-	    	left: calc(100% - 300px);
+	    	left: calc(100% - 130px);
 	    	
 	    	display:initial;
 	    }
 
 		@include breakpoint_mixin(large){
-			left: calc(100% - 525px);
+			/*left: calc(100% - 525px);*/
+			left: calc(100% - 180px);
 		}
 		
 		@include breakpoint_mixin(1000px){
-			left: calc(100% - 535px);
-			top: -160px;
+			/*left: calc(100% - 535px);*/
+			left: calc(100% - 230px);
+			top: -220px;
 		}
 	}
 }/*end section '#section_slideshow' */
@@ -672,8 +742,9 @@ section#section_Get_Foodkick{
 	/*width:100%;*/
 	min-height: inherit;
 	
-	margin-top:-65px;
-	padding: 25px 0px;
+	/*margin-top:-65px;*/
+	/*padding: 25px 0px;*/
+	padding: 0px;
 	border-bottom: 20px solid #333;
 	
 	@include breakpoint_mixin(medium){
@@ -713,6 +784,7 @@ section#section_Get_Foodkick{
 		text-align:center;
 		padding-top: 15px;
     	padding-bottom: 15px;
+    	margin-top:0px;
 	}
 	
 	section{
@@ -1714,8 +1786,13 @@ form button, .download_button{
     height: 40px;
 	background-color:transparent;
 	border:none;
-
+	
 	@include breakpoint_mixin(large){
+		width: 170px;
+		height: 55px;
+	}
+
+	@include breakpoint_mixin(1000px){
 		width: 220px;
 		height: 70px;
 	}

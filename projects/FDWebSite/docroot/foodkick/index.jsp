@@ -7,9 +7,9 @@
 		</script>
 		<a name="slideshow" id="slideshow" class="fk_anchor"></a>
 		<section id="section_slideshow" class="main_section">
-			<div id="carousel_1"></div>
 			<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "purple") %>
-			
+			<div id="carousel_1"></div>
+
 			<button class="appstore_button" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">
 				<%--svg_obj("appstore.svg") --%>
 				<img src="<%=SVG_SRC %>appstore.svg" />
@@ -115,7 +115,7 @@
 				<figure>
 					<div><%--svg_obj("section_2/clock.svg") --%> <img src="<%=SVG_SRC %>section_2/clock.svg" /></div>
 					<figcaption>
-						<h4>OPEN THE APP FOR DELIVERY TIME</h4>
+						<h4>PICK A DELIVERY TIME</h4>
 						that works for you. We can be there in an hour.
 					</figcaption>
 				</figure>
@@ -230,6 +230,14 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 	</tmpl:put>
 	
 	<tmpl:put name='special_js'>
+		<!--  <script src="<%=ANGULAR_DIR %>/angular.min.js"></script>
+		<script src="<%=ANGULAR_DIR %>/angular-animate.min.js"></script>
+		<script src="<%=ANGULAR_DIR %>/angular-sanitize.min.js"></script>
+		<script src="<%=BOOTSTRAP_DIR %>/js/ui-bootstrap-tpls-0.14.3.min.js"></script>
+
+		<link href="<%=BOOTSTRAP_DIR %>/css/bootstrap.min.css" rel="stylesheet" />
+		-->
+	
 		<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>
 		<script type="text/javascript">
 			window.IMAGES_DIR = "<%=IMAGES_DIR%>";

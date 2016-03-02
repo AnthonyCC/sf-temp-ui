@@ -233,6 +233,10 @@ nav {
   @media (min-width: 50em) {
     #locationbar {
       background-color: #732282; } }
+  #locationbar #locationbar_inner {
+    width: 100%;
+    max-width: 940px;
+    margin: auto; }
 
 .locabar-tab.locabar-tab-fdx-cont {
   display: inline-block;
@@ -258,15 +262,29 @@ nav {
 
 section#section_slideshow {
   width: 100%;
+  height: calc(100vw * 1.105);
   /*height: 68vw;*/
-  max-height: 100vh;
+  /*max-height: 100vh;*/
+  /*max-height: calc( 100vh + 261px );*/
   background-size: 100%;
   background-repeat: no-repeat;
   /*display:none;*/ }
+  @media (min-width: 350px) {
+    section#section_slideshow {
+      height: calc(100vw * 0.98); } }
+  @media (min-width: 413px) {
+    section#section_slideshow {
+      height: calc(100vw * 0.95); } }
   @media (min-width: 30em) {
     section#section_slideshow {
-      height: 68vw;
-      max-height: 786px; } }
+      height: 80vw;
+      max-height: calc( 632px + 157px ); } }
+  @media (min-width: 50em) {
+    section#section_slideshow {
+      height: 85vw; } }
+  @media (min-width: 1100px) {
+    section#section_slideshow {
+      height: 68vw; } }
   section#section_slideshow #carousel_1 {
     display: none;
     height: inherit;
@@ -276,50 +294,67 @@ section#section_slideshow {
         text-align: center; } }
     section#section_slideshow #carousel_1 .slidesjs-container {
       margin-bottom: 10px;
-      background-color: black;
+      background-color: #222;
       /*
       height: calc(100vw / 1.4769);
       max-height: 100vh;*/
       height: inherit;
-      max-height: inherit; }
+      max-height: inherit;
+      overflow: visible !important; }
     section#section_slideshow #carousel_1 .slidesjs-slide {
       margin: 0px;
       background-color: #222;
-      height: 100%; }
+      /*height:100%;*/ }
       section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper {
-        box-shadow: inset 0px 10px 6px #222, inset 0px 10px 48px #222;
+        box-shadow: inset 0px 1px 6px #222, inset 0px -10px 48px #222;
         display: inline-block;
-        height: 100%; }
+        /*height: 100%;*/
+        max-height: 632px;
+        /*margin-top: 56px;*/ }
+        @media (min-width: 30em) {
+          section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper {
+            max-width: 940px;
+            max-height: 632px;
+            margin-top: 84px; } }
+        @media (min-width: 50em) {
+          section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper {
+            margin-top: 154px; } }
         section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
           width: auto;
           max-width: 100%;
-          height: 100%;
-          margin-top: 56px;
+          /*height:100%;*/
+          height: auto;
           /*for the box shadow hack*/
           z-index: -2;
           position: relative; }
-          @media (min-width: 30em) {
-            section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
-              max-width: 940px;
-              max-height: 632px;
-              margin-top: 84px; } }
-          @media (min-width: 50em) {
-            section#section_slideshow #carousel_1 .slidesjs-slide div.img_shadowhelper img {
-              margin-top: 154px; } }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
       /*top:-75px;*/
-      left: calc(50% - 27px);
-      top: 59vw;
+      left: calc(50% - 35px);
+      /*top: 56vw;*/
+      /*top: 73vw;*/
+      top: 93vw;
       position: absolute;
       padding-left: 0px; }
+      @media (min-width: 350px) {
+        section#section_slideshow #carousel_1 .slidesjs-pagination {
+          top: 85vw; } }
+      @media (min-width: 413px) {
+        section#section_slideshow #carousel_1 .slidesjs-pagination {
+          top: 84vw; } }
       @media (min-width: 30em) {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
           position: relative;
-          top: -60px;
+          /*top:-265px;*/
+          top: -65px;
           left: initial; } }
       @media (min-width: 50em) {
         section#section_slideshow #carousel_1 .slidesjs-pagination {
-          left: 25px; } }
+          left: 25px;
+          /*top:-145px;*/
+          top: -65px; } }
+      @media (min-width: 1100px) {
+        section#section_slideshow #carousel_1 .slidesjs-pagination {
+          top: -65px; } }
       section#section_slideshow #carousel_1 .slidesjs-pagination a {
         background-color: rgba(255, 255, 255, 0.5);
         -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.5);
@@ -330,12 +365,24 @@ section#section_slideshow {
         section#section_slideshow #carousel_1 .slidesjs-pagination a.active {
           background-color: white; }
     section#section_slideshow #carousel_1 figcaption {
-      position: absolute;
-      top: 52%;
+      /*position: absolute;
+      top: 52%;*/
       text-align: center;
-      width: calc(100% - 20px);
-      margin-left: 10px;
-      z-index: 9; }
+      width: 100%;
+      /*margin-left:10px;*/
+      background-color: white;
+      z-index: 9;
+      margin-top: 56px; }
+      @media (min-width: 30em) {
+        section#section_slideshow #carousel_1 figcaption {
+          /*margin-top:85px;*/
+          position: absolute;
+          background-color: transparent;
+          /*top:50%;*/
+          top: 25vw; } }
+      @media (min-width: 50em) {
+        section#section_slideshow #carousel_1 figcaption {
+          top: calc(154px + 10vw); } }
       section#section_slideshow #carousel_1 figcaption h1 {
         font-size: 14pt;
         /*color:white;
@@ -352,12 +399,11 @@ section#section_slideshow {
           section#section_slideshow #carousel_1 figcaption h1 {
             font-size: 28pt; } }
   section#section_slideshow .download_button {
-    /*position: relative;
-    top: -120px;*/
+    white-space: nowrap;
     position: absolute;
-    top: 46vw;
+    top: 40vw;
     left: calc(50% - 80px);
-    z-index: 10;
+    z-index: 12;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
     box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
@@ -365,15 +411,14 @@ section#section_slideshow {
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='rgba(0, 0, 0, 0.2)'); }
     @media (min-width: 30em) {
       section#section_slideshow .download_button {
-        top: -180px;
-        position: relative; } }
+        top: 45vw; } }
     @media (min-width: 50em) {
       section#section_slideshow .download_button {
-        left: calc(50% - 120px);
-        top: -165px; } }
+        left: calc(50% - 120px); } }
     @media (min-width: 1000px) {
       section#section_slideshow .download_button {
-        top: -235px; } }
+        /*top: 50%;*/
+        top: calc(50vh + 50px); } }
   section#section_slideshow button.appstore_button {
     /*position: relative;*/
     /*top: -40px;*/
@@ -381,27 +426,32 @@ section#section_slideshow {
     top: 60vw;
     left: calc(100% - 125px);
     z-index: 10;
-    display: none; }
+    display: none;
+    -webkit-filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white);
+    filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white); }
     @media (min-width: 30em) {
       section#section_slideshow button.appstore_button {
-        top: -120px;
+        top: -140px;
         position: relative;
-        left: calc(100% - 300px);
+        left: calc(100% - 130px);
         display: initial; } }
     @media (min-width: 50em) {
       section#section_slideshow button.appstore_button {
-        left: calc(100% - 525px); } }
+        /*left: calc(100% - 525px);*/
+        left: calc(100% - 180px); } }
     @media (min-width: 1000px) {
       section#section_slideshow button.appstore_button {
-        left: calc(100% - 535px);
-        top: -160px; } }
+        /*left: calc(100% - 535px);*/
+        left: calc(100% - 230px);
+        top: -220px; } }
 
 /*end section '#section_slideshow' */
 section#section_Get_Foodkick {
   /*width:100%;*/
   min-height: inherit;
-  margin-top: -65px;
-  padding: 25px 0px;
+  /*margin-top:-65px;*/
+  /*padding: 25px 0px;*/
+  padding: 0px;
   border-bottom: 20px solid #333;
   /*img, & object{*/ }
   @media (min-width: 30em) {
@@ -432,7 +482,8 @@ section#section_Get_Foodkick {
     color: white;
     text-align: center;
     padding-top: 15px;
-    padding-bottom: 15px; }
+    padding-bottom: 15px;
+    margin-top: 0px; }
   section#section_Get_Foodkick section {
     margin: auto; }
     @media (min-width: 30em) {
@@ -1137,6 +1188,10 @@ form button, .download_button {
   background-color: transparent;
   border: none; }
   @media (min-width: 50em) {
+    .appstore_button {
+      width: 170px;
+      height: 55px; } }
+  @media (min-width: 1000px) {
     .appstore_button {
       width: 220px;
       height: 70px; } }
