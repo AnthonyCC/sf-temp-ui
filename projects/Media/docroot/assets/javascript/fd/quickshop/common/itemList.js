@@ -67,7 +67,7 @@ var FreshDirect = FreshDirect || {};
           fd.components.Subtotal.update(element);
         });
         fd.quickshop.common.tabMeta.update();
-        this.scrollToTop();
+        //this.scrollToTop();
       }
     }
   });
