@@ -43,6 +43,7 @@ public class ReferralRewardsDataCronRunner {
 			if(null != args && args.length >0){
 				fileName = args[0];
 			}
+			LOGGER.info(" Rewards file to be downloaded/parsed: "+ fileName);
 			FDExtoleManager.downloadAndSaveRewards(fileName);
 			LOGGER.info(" Finished ReferralRewardsDataCronRunner ");
 
