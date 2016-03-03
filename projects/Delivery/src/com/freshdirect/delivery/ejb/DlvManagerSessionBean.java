@@ -266,8 +266,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 			Date fromTime = getLastExport(conn, ORDERSIZE_FEED_TYPE);
 			
-			ps = conn.prepareStatement("SELECT CUSTOMER_ID , ID , SAP_NUMBER, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, CROMOD_DATE  FROM CUST.SALE S " +
-					"WHERE S.TYPE = 'REG' AND S.STATUS = 'STL' AND S.CROMOD_DATE BETWEEN to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND to_date(?,'MM/DD/YYYY HH:MI:SS AM')");
+			ps = conn.prepareStatement("SELECT S.CUSTOMER_ID , S.ID , SAP_NUMBER, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, S.CROMOD_DATE " +
+					"FROM CUST.SALE S, CUST.SALESACTION SA WHERE S.ID = SA.SALE_ID AND S.CUSTOMER_ID = SA.CUSTOMER_ID AND  S.CROMOD_DATE = SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO','MOD') " +
+					"AND S.TYPE = 'REG' AND S.E_STORE = 'FreshDirect' AND S.STATUS = 'STL' AND S.ID IN ( " +
+					"SELECT SALE_ID FROM CUST.SALESACTION WHERE ACTION_TYPE = 'STL'  AND ACTION_DATE >= TO_DATE(?, 'mm/dd/yyyy hh:mi:ss am') AND " +
+					"ACTION_DATE < TO_DATE(?, 'mm/dd/yyyy hh:mi:ss am') )");
 			
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
