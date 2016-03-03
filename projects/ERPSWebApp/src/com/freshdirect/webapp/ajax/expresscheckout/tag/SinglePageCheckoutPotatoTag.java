@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
@@ -60,7 +61,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		try {
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
 			if(FDStoreProperties.getAvalaraTaxEnabled()){
-			CheckoutService.defaultService().applyAtpCheck(user);
+			CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
 			}
 			// Check whether EWallet Card used for order 
 			checkEWalletCard(result.getPayment(),request);

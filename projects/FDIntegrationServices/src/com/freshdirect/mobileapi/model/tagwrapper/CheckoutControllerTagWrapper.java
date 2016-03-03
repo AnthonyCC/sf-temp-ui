@@ -57,7 +57,9 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
     public static final String ACTION_SET_DELIVERY_ADDRESS_AND_PAYMENT = "setDeliveryAddressAndPayment"; //Not supported
     
-    public static final String ACTION_SET_ORDER_MOBILE_NUMBER = "setOrderMobileNumber"; 
+    public static final String ACTION_SET_ORDER_MOBILE_NUMBER = "setOrderMobileNumber";
+
+	private SessionUser sessionUser; 
     
     protected CheckoutControllerTagWrapper(CheckoutControllerTag wrapTarget, SessionUser user) {
         this(wrapTarget, user.getFDSessionUser());
@@ -74,6 +76,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
     public CheckoutControllerTagWrapper(SessionUser sessionUser) {
         this(new CheckoutControllerTag(), sessionUser.getFDSessionUser());
+        this.sessionUser = sessionUser;
     }
 
     public ResultBundle submitOrder() throws FDException {
@@ -86,7 +89,9 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER, REQ_PARAM_IGNORE_PROMO_ERRORS, TAXATION_TYPE }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
                 REQ_PARAM_BILLING_REF, TAXATION_TYPE });//gets,sets
         getWrapTarget().setActionName(ACTION_SUBMIT_ORDER);
-        setMethodMode(true);
+        ((HttpSessionWrapper)this.pageContext.getSession()).addExpectedSets(new String[]{"TAXATION_TYPE"});
+        this.pageContext.getSession().setAttribute("TAXATION_TYPE", this.sessionUser.isAvalaraTaxed()?"AVAL":null);
+        setMethodMode(true);       
         ResultBundle result = new ResultBundle(executeTagLogic(), this);
 
         //Tag Lib set some values in session that we need. Get them. 

@@ -245,8 +245,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
                         cart.setChargeWaived(EnumChargeType.PHONE, true, "CSR");
                     }
                 }
-				request.setAttribute("TAXATION_TYPE", session.getAttribute("TAXATION_TYPE"));
-				session.removeAttribute("TAXATION_TYPE");
+				request.setAttribute("TAXATION_TYPE", pageContext.getSession().getAttribute("TAXATION_TYPE"));
+				pageContext.getSession().removeAttribute("TAXATION_TYPE");
 				
 				String outcome = performSubmitOrder(result);
 

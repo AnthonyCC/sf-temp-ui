@@ -715,4 +715,12 @@ public class SessionUser {
 	public boolean isVoucherHolder() throws FDResourceException {
 		return this.isVHInDelivery() || this.isVHOutOfDelivery();
 	}
+	
+	public boolean isAvalaraTaxed(){
+		return this.sessionUser.isAvalaraTaxed();
+	}
+	
+	public void setIsAvalaraTaxed(boolean isAvalaraTaxed){
+		this.sessionUser.setIsAvalaraTaxed(isAvalaraTaxed);
+	}
 }

@@ -142,6 +142,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     /* set in RegistrationControllerTag see getter for notes */
     private boolean justSignedUp = false;
     private boolean rafFriendSignedUp = false;
+    private boolean isAvalaraTaxed;
     
     private Set<ContentKey> checkoutUnavailableProductKeys; //set of items which failed the ATP test
     
@@ -1894,4 +1895,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	
 	
+	public boolean isAvalaraTaxed(){
+		return this.isAvalaraTaxed;
+	}
+	
+	public void setIsAvalaraTaxed(boolean isAvalaraTaxed){
+		this.isAvalaraTaxed = isAvalaraTaxed;
+	}
 }

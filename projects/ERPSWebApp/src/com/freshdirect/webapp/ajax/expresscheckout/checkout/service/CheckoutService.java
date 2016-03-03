@@ -91,7 +91,6 @@ public class CheckoutService {
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
         UnavailabilityData unavailabilityData = null;
         FDCartModel cart = user.getShoppingCart();
-        avalaraContext = new AvalaraContext(cart);
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
             AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
@@ -109,12 +108,17 @@ public class CheckoutService {
             }
             else {    
             	if(FDStoreProperties.getAvalaraTaxEnabled()){
-            	avalaraContext.setCommit(false);
-            	avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
+            	getAvalaraTax(cart);
             	}
             }
 		}
         return unavailabilityData;
+	}
+
+	public void getAvalaraTax(FDCartModel cart) {
+		avalaraContext = new AvalaraContext(cart);
+		avalaraContext.setCommit(false);
+		avalaraContext.setReturnTaxValue(cart.getAvalaraTaxValue(avalaraContext));
 	}
 	
     public boolean checkAtpCheckEligibleByRestrictions(FormRestriction restriction) {

@@ -646,7 +646,7 @@ public class CheckoutController extends BaseController {
         Map<String,String> errors = new HashMap<String, String>();
         boolean checkResult = checkForDeviceId(user,requestMessage,errors); // Check Device ID ; Required only when PayPal wallet is used.
         if(checkResult){ 
-	        callAvalaraForTax(user, request.getSession());
+	        callAvalaraForTax(user);
 	        ResultBundle resultBundle = checkout.submitOrder();
 	        ActionResult result = resultBundle.getActionResult();
 	        propogateSetSessionValues(request.getSession(), resultBundle);
@@ -826,20 +826,19 @@ public class CheckoutController extends BaseController {
         	}
         }
         else{
-        	callAvalaraForTax(user, session);
+        	callAvalaraForTax(user);
         }
 
         return result;
     }
 
-	private void callAvalaraForTax(SessionUser user, HttpSession session) {
+	private void callAvalaraForTax(SessionUser user) {
 		if(FDStoreProperties.getAvalaraTaxEnabled()){		
 		Cart cart = user.getShoppingCart();
-		avalaraContext = new AvalaraContext(user.getFDSessionUser().getShoppingCart());
 		avalaraContext.setCommit(false);
 		cart.getAvalaraTax(avalaraContext); 
 		if(avalaraContext.isAvalaraTaxed())
-		session.setAttribute("TAXATION_TYPE", "AVAL");
+		user.setIsAvalaraTaxed(true);
 		}
 	}
 
