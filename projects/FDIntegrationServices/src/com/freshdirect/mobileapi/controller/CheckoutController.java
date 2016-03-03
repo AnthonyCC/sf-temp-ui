@@ -1365,7 +1365,15 @@ public class CheckoutController extends BaseController {
     	
     	} else {
     		// cart not set up for checkout.
- 			message.addErrorMessage("Cart was not set up for checkout.");
+    		if (user==null){
+    			message.addErrorMessage("Error processing checkout - User");
+ 			} else if (user.getShoppingCart()==null){
+    			message.addErrorMessage("Error processing checkout - Cart");
+ 			} else if (user.getShoppingCart().getDeliveryReservation()==null){
+    			message.addErrorMessage("Error processing checkout - Reservation");
+ 			} else if (user.getFDSessionUser().getShoppingCart().getPaymentMethod()==null){
+    			message.addErrorMessage("Error processing checkout - Payment Method");
+ 			}
  			message.setStatus(Message.STATUS_FAILED);
  			
     	}
