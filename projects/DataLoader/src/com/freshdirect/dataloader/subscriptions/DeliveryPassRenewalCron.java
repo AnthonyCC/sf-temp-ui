@@ -49,6 +49,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -68,6 +69,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -144,6 +146,11 @@ public class DeliveryPassRenewalCron {
 		FDCartModel cart=null;
 		try {
 			cart = getCart(arSKU,pymtMethod,dlvAddress,actionInfo.getIdentity().getErpCustomerPK(),userCtx);
+			if(FDStoreProperties.getAvalaraTaxEnabled()){
+			AvalaraContext context = new AvalaraContext(cart);
+			context.setCommit(false);
+			cart.getAvalaraTaxValue(context);
+			}
 			orderID = FDCustomerManager.placeSubscriptionOrder(actionInfo, cart, null, false, cra, null);
 		}  catch (FDResourceException e) {
 			LOGGER.warn(e);
