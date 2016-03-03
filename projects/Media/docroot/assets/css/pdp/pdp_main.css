@@ -328,8 +328,8 @@ span.cssbutton.annotation:hover {
 .pdp-ecoupon {
 	background:#f0f5e1;
 	border:1px solid #dce6be;
-	padding:10px;
-	padding-left: 0;
+	padding:14px;
+	/*padding-left: 0;*/
 	clear:both;
 }
 
@@ -398,7 +398,6 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp .pdp-atc .subtotal .qty{
-margin:0px 15px;  
   text-transform:lowercase;
 }
 .pdp .pdp-atc .subtotal b{
