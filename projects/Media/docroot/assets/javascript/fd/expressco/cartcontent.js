@@ -12,7 +12,7 @@ function template_dupe_cleaner(){
 		var re = /(st\_label\_([\w])+|st\_val\_([\w])+|deliveryFeeToolTips)/i;
 		var found = str.match(re);
 
-		if (found != null && found[0] != null && there_can_only_be_one.indexOf(found[0]) == -1) {
+		if(found != null && found[0] != null && there_can_only_be_one.indexOf(found[0]) == -1){
 			there_can_only_be_one.push(found[0]);
 		} else {
 			$jq(this).remove();
@@ -41,7 +41,7 @@ function template_cleanup(){
 /*the function fired by hitting that green link within the excessive tip tooltip box */
 function populateCustomTipField(maxPossibleTip){
 	/* place the maximum allowable tip value into the field, based upon subtotal */
-  $jq(etids.inp_tipTextBox).val( maxPossibleTip ).focus().select();
+	$jq(etids.inp_tipTextBox).val( maxPossibleTip ).focus().select();
 
 	tip_entered();
 }
@@ -105,29 +105,29 @@ function tip_entered(){
 		var innerHtml = "<div class='tooltip-inner'><b>That's quite a tip, thank you!</b><br/><p>As of now, we cap all electronic tips at 32% of the subtotal, making the highest allowed tip to be <a href='javascript:populateCustomTipField(" + roundedMaxTip + ")'>$" + roundedMaxTip + " for this order.</a></p></div>";
 
 		$jq(etids.div_toolTipTextBox).html('').append(innerHtml);
-    $jq(etids.div_toolTipTextBox).attr('tabindex', '0');
-		
+	    $jq(etids.div_toolTipTextBox).attr('tabindex', '0');
+			
 		/*hover over the optional tooltip icon and also delivery fee tooltip icon */
 		$jq(etids.inp_tipTextBox).on('mouseover mouseenter', function(e){
 			if( $jq(etids.div_toolTipTextBox).html().length > 2 ){
 				$jq(etids.div_tooltipPopup).addClass("toomuch-etip");
 				
-        $jq(etids.div_toolTipTextBox).addClass('shown');
+				$jq(etids.div_toolTipTextBox).addClass('shown');
 			}
 		});
 		
 		$jq(etids.inp_tipTextBox).mouseout(function(){
 			$jq(etids.div_tooltipPopup).removeClass("toomuch-etip");
-    });
+		});
 		
 		/*if that green tick is seen, then make it not seen */
 		$jq( etids.ck_tipAppliedTick ).hide();
-		
+			
 		/*forcibly show the excessive amount tooltip box */
-    $jq(etids.div_toolTipTextBox).addClass('shown');
-
-    /* set the input field invalid */
-    $jq(etids.inp_tipTextBox).attr('invalid','');
+	    $jq(etids.div_toolTipTextBox).addClass('shown');
+	
+	    /* set the input field invalid */
+	    $jq(etids.inp_tipTextBox).attr('invalid','');
 	}else{ /*if the tip is a proper number, including zero */
 		$jq(etids.div_toolTipTextBox).html('');
 		$jq(etids.btn_tipApply).prop('disabled', false);
@@ -137,8 +137,8 @@ function tip_entered(){
 		$jq(etids.div_toolTipTextBox).removeClass('shown');
 		$jq(etids.div_toolTipTextBox).attr('tabindex', '-1');
 
-    /* remove invalid property from input field */
-    $jq(etids.inp_tipTextBox).attr('invalid',null);
+	    /* remove invalid property from input field */
+	    $jq(etids.inp_tipTextBox).attr('invalid',null);
 	}
 }
 
@@ -267,12 +267,17 @@ etids.div_tooltipPopup = "#tooltipPopup";
 						data.customTip = true;
 					}
 					
+					/*APPDEV-4887, if there is an etip total, then logically, it should be thought of as having a tip applied */
+					if( data.etipTotal && (parsedEtipTotal > 0) ){
+						data.tipApplied = true;
+					}
+					
 					/*
 					To address bug in which the soy template select box does not correctly recognize the etip amount as being the same as one of its members.
 					This makes it so that the amount will only have a decimal place when the digits to the RIGHT of the decimal place are both greater than zero.
 					e.g., '$5.02' is still '$5.02', but '$5.00' becomes '$5'
 
-          #APPBUG-4391We don't need $ sign for manual tip changes
+					#APPBUG-4391, We don't need $ sign for manual tip changes
 					*/
 					data.etipTotal = parsedEtipTotal;
 				}
