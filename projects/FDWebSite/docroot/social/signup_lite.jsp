@@ -18,7 +18,10 @@
 	String site_subdomain = FDStoreProperties.getSocialOneAllSubdomain();
 	String site_post_url = FDStoreProperties.getSocialOneAllPostUrl();
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	String successPage = "index.jsp";
+	String successPage = request.getParameter("successPage");
+	if (successPage == null) { 
+		    successPage = "index.jsp";
+	}
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
 	//System.out.println("\n\n\n"+user.getSelectedServiceType().getName()+"\n\n\n");
 	if("".equals(serviceType)) {
@@ -504,7 +507,7 @@
 					</div>
 					<div class="bottom-links">
 						Already have an account? 
-						<a href="/social/login.jsp" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp', opacity: .5})">
+            <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?successPage=<%=successPage%>', opacity: .5})">
 							Sign In
 						</a>
 					</div>
