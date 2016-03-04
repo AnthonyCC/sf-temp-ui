@@ -358,7 +358,7 @@
 		<td colspan="2" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Phone Handling Fee:</td>
 			<td colspan="1"  align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"><xsl:value-of select="format-number(order/phoneCharge, '$###,##0.00', 'USD')"/></td>
 			<td  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"></td>
-			<td colspan="3"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"><xsl:if test="order/phoneCharge = 'false'"><xsl:if test="order/miscellaneousChargeTaxable = 'true'"><b>T</b></xsl:if></xsl:if></td>
+			<td colspan="3"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;"><xsl:if test="order/phoneChargeWaived = 'false'"><xsl:if test="order/miscellaneousChargeTaxable = 'true'"><b>T</b></xsl:if></xsl:if></td>
 		</tr>
 	</xsl:if>
 	
