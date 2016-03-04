@@ -835,6 +835,7 @@ public class CheckoutController extends BaseController {
 	private void callAvalaraForTax(SessionUser user) {
 		if(FDStoreProperties.getAvalaraTaxEnabled()){		
 		Cart cart = user.getShoppingCart();
+		avalaraContext = new AvalaraContext(user.getFDSessionUser().getShoppingCart());
 		avalaraContext.setCommit(false);
 		cart.getAvalaraTax(avalaraContext); 
 		if(avalaraContext.isAvalaraTaxed())
