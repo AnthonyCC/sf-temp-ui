@@ -66,7 +66,7 @@ body[developer] *:focus {
     border-right: 2px solid transparent;
     border-left: 2px solid transparent;
     border-bottom: 2px solid #c2c2c2;
-    backgroud: #fefefe;
+    background: #fefefe;
     border-radius: 0;
     box-sizing: border-box;
     color: #444;
@@ -156,7 +156,7 @@ body[developer] *:focus {
 }  
    
 .select-wrapper {
-	display: inline-block;
+	display: inline;
 	position: relative;
 }
 
@@ -172,7 +172,7 @@ body[developer] *:focus {
     content: "\e874";
     position: absolute;
     right: 10px;
-    top: 7px;
+    top: -2px;
     pointer-events: none;
 }
 
