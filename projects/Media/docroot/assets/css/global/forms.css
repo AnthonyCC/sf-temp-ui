@@ -145,7 +145,7 @@ body[developer] *:focus {
     -moz-appearance: none;
     appearance: none;
     background: #fefefe;
-    padding: 0 20px 0 8px;
+    padding: 0 27px 0 8px;
     border: 2px solid #c2c2c2;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -156,7 +156,7 @@ body[developer] *:focus {
 }  
    
 .select-wrapper {
-	display: inline;
+	display: inline-block;
 	position: relative;
 }
 
@@ -169,10 +169,11 @@ body[developer] *:focus {
     text-transform: none;
     vertical-align: text-bottom;
     -webkit-font-smoothing: antialiased;
-	content: "\e874";
-	position: absolute;
+    content: "\e874";
+    position: absolute;
     right: 10px;
-    bottom: 0;
+    top: 7px;
+    pointer-events: none;
 }
 
 .fake-radio:before {
