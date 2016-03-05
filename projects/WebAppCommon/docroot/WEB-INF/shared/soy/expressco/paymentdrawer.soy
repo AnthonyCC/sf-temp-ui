@@ -271,11 +271,8 @@
 */
 {template .paymentmethod autoescape="false"}
 <div class='drawer__item'>
-  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if} />
-  /** 
-  <input type="hidden" id="payment_{$eWalletID}" name="eWalletID_{$id}" value="{$eWalletID}" />
-  */
-  <label class='drawer__item__label' for='payment_{$id}'>
+  <label class='drawer__item__label'>
+  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if} />
   <div class='drawer__itemright'>
   {if $eWalletID == '1'}
      	<p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>

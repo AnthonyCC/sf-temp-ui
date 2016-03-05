@@ -106,8 +106,8 @@
 */
 {template .address_home autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label' for="address_{$id}">
-  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
+  <label class='drawer__item__label'>
+  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
     <p class='drawer__item__title'>{$nick_name ? $nick_name : $street_address}</p>
@@ -181,8 +181,8 @@
 */
 {template .address_office autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label' for="address_{$id}">
-  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
+  <label class='drawer__item__label'>
+  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
     <p class='drawer__item__title'>{$company_name ? $company_name : $street_address}</p>
@@ -232,8 +232,8 @@
 */
 {template .address_pickup autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label' for="address_{$id}">
-  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if}/>
+  <label class='drawer__item__label'>
+  <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
   <div class='drawer__itemright'>
     <p class='drawer__item__title'>Pickup: {$name ? $name : ''}</p>
@@ -291,7 +291,7 @@
 <input type="hidden" name="action" value="selectDeliveryAddressMethod" />
 <div class="drawer__previewitem noaddress">
   <label class='drawer__item__label' for="preview_{$id}">
-  <input id="preview_{$id}" value="{$id}" type="radio" class="drawer__itemleft" name="id" fdform-button="submit" fdform-prevent="manual"/>
+  <input id="preview_{$id}" value="{$id}" type="radio" class="drawer__itemleft customradio" name="id" fdform-button="submit" fdform-prevent="manual"/>
 
   <div class='drawer__itemright'>
     <p class='drawer__item__title'>Pick Up Your Order</p>
