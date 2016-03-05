@@ -186,6 +186,10 @@ div[bd-id] {
 }
 
 [data-drawer-content="address"] [data-component="addresschangebutton"] {
+	font-size: 18px;
+	height: 45px;
+}
+[data-drawer-content="address"] [data-component="addresschangebutton"] {
   float: right;
 }
 

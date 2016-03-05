@@ -83,6 +83,7 @@ $jq('#selectAddressList').iconselectmenu({
 	},
 	create: function(event, ui) {
 		$jq('#selectAddressList').iconselectmenu('open');
+		iconselectmenuSetEvents();
 	},
 	open: function(event, ui) {
 		//remove document mousedown close listener (ONLY)
@@ -113,8 +114,50 @@ $jq('#selectAddressList').iconselectmenu({
 	} 
 }).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 
-$jq('#locabar_addresses_choices' ).on('mouseleave', function(){
+/* add events here, otherwise they'll be lost on refresh */
+function iconselectmenuSetEvents() {
+	$jq('#locabar_addresses_choices li.ui-menu-item').on('mouseenter mouseleave', function(e){
+		var $makeResvButton = $jq('.locabar_addresses-reservation-make');
+		if (e.type === 'mouseenter') {
+			var $refIcon = $jq(this).find('.address-icon:first');
+			
+			$jq('.locabar_addresses-reservation-make-notFor').data('resvPrevHtml', $jq('.locabar_addresses-reservation-make-notFor').html());
+			$makeResvButton.data('resvDisabled', $makeResvButton.hasClass('disabled'));
+			
+			if ($refIcon.hasClass('address-type-home')) {
+				$jq('.locabar_addresses-reservation-make-notFor').html('&nbsp;');
+				
+				$makeResvButton.removeClass('disabled');
+			} else {
+				if ($refIcon.hasClass('address-type-cos')) {
+					$jq('.locabar_addresses-reservation-make-notFor').html('Not for Office Delivery');
+				} else if ($refIcon.hasClass('address-type-pickup')) {
+					$jq('.locabar_addresses-reservation-make-notFor').html('Not for Pickup Option');
+				}
+				$makeResvButton.addClass('disabled');
+			}
+			
+		} else if (e.type === 'mouseleave') {
+
+			$jq('.locabar_addresses-reservation-make-notFor').html( $jq('.locabar_addresses-reservation-make-notFor').data('resvPrevHtml') );
+			if ($makeResvButton.data('resvDisabled')) {
+				$makeResvButton.addClass('disabled');
+			} else {
+				$makeResvButton.removeClass('disabled');
+			}
+		}
+	});
+}
+
+
+$jq('#locabar_addresses_choices').on('mouseleave', function(e){
 	$jq('#selectAddressList').iconselectmenu('refresh');
+	iconselectmenuSetEvents();
+});
+
+$jq('.locabar_addresses-reservation-make.disabled').on('click', function(e) {
+	e.preventDefault();
+	return false;
 });
 
 function showLoginDialog(successPage, useSocial) {

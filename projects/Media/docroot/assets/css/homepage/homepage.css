@@ -143,3 +143,10 @@ html,body {
 	font-size:13px;
 	color:#333;
 }
+
+#welcome-section-container .text-left {
+	display: none;
+}
+#welcome-section-container .clear {
+	clear: both;
+}

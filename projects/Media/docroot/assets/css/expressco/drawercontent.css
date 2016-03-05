@@ -202,6 +202,11 @@
   margin:0;
 }
 
+[data-drawer-content="timeslot"] [data-component="timeslotchangebutton"],
+[data-drawer-content="payment"] [data-component="paymentchangebutton"] {
+	font-size: 18px;
+	height: 45px;
+}
 [data-drawer-content="timeslot"] [data-component="timeslotchangebutton"] {
   float:right;
 }

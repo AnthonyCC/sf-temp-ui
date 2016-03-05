@@ -526,11 +526,12 @@
 .locabar-truck {
 	display: inline-block;
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-truck.png');
-	background-repeat: no-repeat;
-	height: 22px;
-	width: 43px;
-	padding-right: 5px;
-	margin-bottom: 3px;
+	background-position-y: 50%;
+    background-repeat: no-repeat;
+    height: 35px;
+    width: 43px;
+    padding-right: 5px;
+    vertical-align: top;
 }
 .locabar-cart-total {
 	display: inline-block;
@@ -547,6 +548,16 @@
     top: 9px;
     left: 2px;
     position: relative;
+}
+.locabar-user {
+	display: inline-block;
+    background-image: url('/media/layout/nav/globalnav/fdx/me-active.png');
+    background-position-y: 50%;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 28px;
+    margin-right: 10px;
+    vertical-align: top;
 }
 .locabar-down-arrow {
 	display: inline-block;
@@ -664,16 +675,14 @@
 	line-height: 15px;
 }
 #locabar_user .locabar-user-signout {
-	padding-bottom: 20px;
+	padding-bottom: 8px;
 }
 #locabar_user .locabar-user-signout .locabar-logout {
-	float: right;
-	clear: both;
-    width: 100%;
-    text-align: right;
-	color:#67a96d;
-	padding-top: 5px;
-    padding-bottom: 10px;
+	width: 100%;
+	text-align: center;
+	color: #67a96d;
+	margin-bottom: 14px;
+	margin-top: 6px;
 }
 
 #locabar_addresses .nodeliver-form {
@@ -726,11 +735,11 @@
 #locabar_addresses {
 	display: inline-block;
 	background-color: #fff;
-	padding: 30px 15px 20px 15px;
+	padding: 30px 15px 5px 15px;
 	margin: 15px 0 0 0;
 	color: #656565;
 	font-size: 14px!important;
-	min-width: 353px;
+	min-width: 380px;
 	min-height: 156px;
 	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.2)!important;
 }
@@ -1042,17 +1051,24 @@
 .locabar_addresses-reservation-none {
 	text-align: center;
 	margin-top: 10px!important;
+	vertical-align: top;
 }
 .locabar_addresses-reservation-make-disabled {
 	opacity: 0.5;
 	background: #dc862d !important;
 	cursor: default;
 }
+.locabar_addresses-reservation-view {
+	margin-right: 10px;
+}
 .locabar_addresses-reservation-none .cssbutton {
 	font-size: 14px;
     padding: 14px 20px!important;
     margin-top: 10px;
     margin-bottom:6px;
+}
+.locabar_addresses-reservation-none .cssbutton.green.transparent.locabar_addresses-reservation-view {
+    border: none;
 }
 .locabar_addresses-reservation-existing {
 	font-weight: bold;
@@ -1191,4 +1207,13 @@ option.address-icon {
 {
 	background-color: #f6faf6!important;
 	color:#4fa157!important;
+}
+
+.locabar_addresses-reservation-none>div {
+	display: inline-block;
+	vertical-align: top;
+}
+.locabar_addresses-reservation-make-notFor {
+	margin-top: 4px;
+	font-size: 12px;
 }

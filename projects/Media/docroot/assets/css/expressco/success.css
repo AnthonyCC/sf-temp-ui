@@ -130,3 +130,12 @@
   line-height: 44px;
   border-bottom: 1px solid #ddd;
 }
+
+.successmodifyorder-cont {
+	margin-top: 20px;
+	text-align: center;
+}
+.successmodifyorder {
+	font-size: 18px;
+	height: 45px;
+}

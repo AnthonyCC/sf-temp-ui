@@ -139,7 +139,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		
 	
 		if (user!=null && user.getLevel() != FDUserI.GUEST) {
-			zipAddDisplayString = "Choose Delivery Time";
+			zipAddDisplayString = "View Delivery Timeslots";
 			isEligibleForPreReservation = user.isEligibleForPreReservation();
 			
 			
@@ -172,7 +172,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
-										addressClass = "address-icon";
+										addressClass = "address-icon address-type-home";
 											
 										if (userReservervation != null && (userReservervation.getAddressId()).equals(homeAddress.getPK().getId()) ) {
 											userReservervationAddressModel = homeAddress;
@@ -203,7 +203,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<optgroup label="Office Delivery">
 									<logic:iterate id="corporateAddress" collection="<%=allCorporateAddresses%>" type="com.freshdirect.common.address.AddressModel">
 										<%
-										addressClass = "address-icon";
+										addressClass = "address-icon address-type-cos";
 										
 										if (userReservervation != null && (userReservervation.getAddressId()).equals(corporateAddress.getPK().getId()) ) {
 											userReservervationAddressModel = corporateAddress;
@@ -234,7 +234,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<optgroup label="Pickup">
 								<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 									<%
-									addressClass = "address-icon";
+									addressClass = "address-icon address-type-pickup";
 									
 									//whether this home address has already been selected earlier in a previous page load
 									if( selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ){
@@ -260,6 +260,12 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<%}
 						%></select>
 					</div>
+					<%
+						/* one last zipAddDisplayString change now that we know selected address type */
+						if (isEligibleForPreReservation && userReservervation == null && "HOME".equals(foundSelectedAddressType)) {
+							zipAddDisplayString = "Make a Reservation";
+						}
+					%>
 				</tmpl:put><%
 			} else { //no addresses
 				//do nothing i guess	
@@ -391,17 +397,40 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<tmpl:get name="address" />
 					
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
+						<%
+							String temp_delivery_link = "";
+							if (user.getLevel() >= FDUserI.RECOGNIZED) {
+								temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+							} else {
+								temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+							}
+							//check if user has addresses besides pickup
+							if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+								//nope, change url
+								temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+							}
+						%>
 						<div class="section-header">
-							TIME SLOT
+							TIMESLOT
 							<a href="<%= dlvInfoLink %>" class="locabar_addresses-ts-info" title="Delivery Info"></a>
 						</div>
 						<% if (isEligibleForPreReservation) { %>
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals(selectedAddress.getId()) ) { %>
 								<div class="locabar_addresses-reservation-none">
-									<% if (foundSelectedAddress && foundSelectedAddressType == "PICKUP") { %>
-										<span class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make-disabled">Make a Reservation</span>
+									<div>
+										<a href="<%=temp_delivery_link %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
+									</div>
+									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
+										<div>
+											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make disabled">Make a Reservation</a>
+											<%-- This text is also in locationbar_fdx.js --%>
+											<div class="locabar_addresses-reservation-make-notFor">Not for <%= ("PICKUP".equals(foundSelectedAddressType)) ? "Pickup Option" : ("COS".equals(foundSelectedAddressType)) ? "Office Delivery" : "&nbsp;" %></div>
+										</div>
 									<% } else { %>
-										<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">Make a Reservation</a>
+										<div>
+											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">Make a Reservation</a>
+											<div class="locabar_addresses-reservation-make-notFor">&nbsp;</div>
+										</div>
 									<% } %>
 								</div>
 							<% } else { %>
@@ -417,20 +446,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% } %>
 						<% }else{ %>
 								<div class="locabar_addresses-reservation-none">
-									<%
-									String temp_delivery_link = "";
-									if (user.getLevel() >= FDUserI.RECOGNIZED) {
-										temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
-									} else {
-										temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
-									}
-									//check if user has addresses besides pickup
-									if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
-										//nope, change url
-										temp_delivery_link = "/help/delivery_info_check_slots.jsp";
-									}
-									%>
-									<a href="<%=temp_delivery_link %>" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">View Time Slots</a>
+									<a href="<%=temp_delivery_link %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 								</div>
 						<% } %>
 					<% } %>
@@ -472,8 +488,11 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
           <a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
         <% } %>
 				<div class="bold cursor-pointer">
-					<div>Hi!</div>
-					<div class="locabar-user-greeting-cont">
+					<div class="locabar-user" style="display: inline-block;"></div>
+					<div style="display: inline-block;">
+						<div>Hi!</div>
+						<div class="locabar-user-greeting-cont">
+					</div>
             <div class="locabar-user-greeting">
               <%= greetingsString %>
             </div>
@@ -491,31 +510,47 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<div class="section-cont">
-						<div class="section-header">YOUR SETTINGS</div>
+						<div class="section-header">YOUR FRESHDIRECT</div>
 						<%
+							String temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+						
+							if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
+								if (user.getLevel() >= FDUserI.RECOGNIZED) {
+									temp_delivery_link = "/your_account/delivery_info_avail_slots.jsp";
+								} else {
+									temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+								}
+								//check if user has addresses besides pickup
+								if (allHomeAddresses.size() + allCorporateAddresses.size() == 0) {
+									//nope, change url
+									temp_delivery_link = "/help/delivery_info_check_slots.jsp";
+								}
+							}
+							
 							Iterator<String> itr=folderMap.keySet().iterator();
 							while (itr.hasNext()) {
-								String str=itr.next();
-								%>
-							<!-- This is for the Global Navigation Microsite URL for Extole -->
-							<%	if (str == "Refer A Friend") {
-									%>
-								<div class="section-line"><a href="<%= FDStoreProperties.getPropExtoleMicrositeGlobalNavUrl() %>" target="_blank"><%= str %></a></div>
-									<%
-										} else {
-									%>
-								<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>
-										<%
-											}
-										%>
-							<%
-							}
-						%>
+								String str=itr.next();								
+								
+								// This is for the Global Navigation Microsite URL for Extole
+								if (str == "Refer A Friend") { %>
+									<div class="section-line"><a href="<%= FDStoreProperties.getPropExtoleMicrositeGlobalNavUrl() %>" target="_blank"><%= str %></a></div>
+								<% } else if (!"Reminder Service".equals(str) && !"Profile".equals(str)) { %>
+									<% if ("Account Preferences".equals(str)) { %>
+										<hr class="line-divider" style="margin-bottom: 1em;" />										
+									<% } %>
+									<% if ("View Timeslots".equals(str)) { /* this item changes based on user and addresses */ %>
+										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required><%= str %></a></div>
+									<% } else { %>
+										<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>									
+									<% } %>
+								<% } %>
+							<% } %>
 					</div>
 					<hr class="line-divider" />
 					<div class="section-cont locabar-user-signout">
-						<div class="footer-item"><%= ((user != null) ? ("Not " + user.getFirstName() + "?") : "") %>
-							<a href="#" class="locabar-logout">Sign out</a>
+						<div class="footer-item"><%= ((user != null) ? ("Not " + user.getFirstName() + "?") : "") %></div>
+						<div class="footer-item">
+							<a href="#" class="cssbutton green transparent cssbutton-flat locabar-logout">Sign out</a>
 						</div>
 					</div>
 				</div>
