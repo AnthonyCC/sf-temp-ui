@@ -7,6 +7,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.ErpServicesProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -26,8 +27,17 @@
 		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
 		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
 		<script type="text/javascript" src="/ERPSAdmin/product/json2.js"></script>
-		<script type="text/javascript" src="/ERPSAdmin/product/erpsydaisysku2urladdon.js"></script>
 		<script type="text/javascript" src="http://www.freshdirect.com/assets/javascript/prototype.js"></script>
+		<script>
+			var FreshDirect = FreshDirect || {};
+			FreshDirect.sku2url = {
+					'base': {
+						'fd': '<%=ErpServicesProperties.getMasqueradeStoreFrontBaseUrl()%>',
+						'fdx': '<%=ErpServicesProperties.getMasqueradeFDXStoreFrontBaseUrl()%>'
+					}
+			};
+		</script>
+		<script type="text/javascript" src="/product/erpsydaisysku2urladdon.js"></script>
 		<script>
 		function copyConfirm(value){
 			if(value == ""){
@@ -172,10 +182,12 @@
 
                 <fd:AttributeController erpObject="<%= product %>" userMessage="feedback" />
 				<div id="feeback" style="color:red; font-size:12px;font-weight:bold;"><%=feedback%></div>
-				
+
+				<div id="skuCode_links"></div
+
                 <table width="600" cellspacing=2 cellpadding=0>
                     <tr><th align="left" class="section_title">PRODUCT:</th></tr>
-                    <tr><td><%= (product.getSkuCode() != null) ? product.getSkuCode() : "" %></td></tr>					
+                    <tr><td><span id="skucode"><%= (product.getSkuCode() != null) ? product.getSkuCode() : "" %></span></td></tr>					
 					<tr><td id="add_on"><div id="addon">
 					</div></td></tr>
                     <tr><td><%= product.getProxiedMaterial().getDescription() %></td></tr>
@@ -243,9 +255,9 @@
 
                 <%  if (product.getSkuCode() != null) { %>
                 <form action="product_view.jsp" method="post">
-                	<input type=hidden name=action value=save>
-                	<input type=hidden name="sku_code" value="<%= skuCode %>">
-                	<input type=hidden name="skuCode" value="<%= skuCode %>">
+                	<input type="hidden" name="action" value="save" />
+                	<input type="hidden" name="sku_code" value="<%= skuCode %>" />
+                	<input type="hidden" name="skuCode" value="<%= skuCode %>" />
                 <table width="600" cellspacing="2" cellpadding="0">
                 <tr>
                     <th align="left" class="section_title">New / Back-in-Stock Manual Override</th>
@@ -441,8 +453,7 @@
                     </table>
                 </fd:Nutrition>
             <%  } %>
-                                
+        
                                 
 </body>
 </html>
-<script language="javascript">sku_urls();</script>
