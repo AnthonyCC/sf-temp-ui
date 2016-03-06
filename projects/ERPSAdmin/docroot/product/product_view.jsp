@@ -20,12 +20,12 @@
 <html>
 	<head>
 		<title>Erpsy - ProductView</title>
-		<link rel="shortcut icon" href="/blackbirdjs/favicon.ico" type="image/x-icon" />		
+		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">
+		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
+		
 		<script type="text/javascript" src="/assets/javascript/jquery/1.7.2/jquery.js"></script>
 		<script type="text/javascript" src="/assets/javascript/jquery/ui/1.9.2/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="/ERPSAdmin/common/css/erpsadmin.css" type="text/css">	
 		<script type="text/javascript" src="/ERPSAdmin/batch/blackbirdjs/blackbird.js"></script>
-		<link type="text/css" rel="Stylesheet" href="/ERPSAdmin/batch/blackbirdjs/blackbird.css" />
 		<script type="text/javascript" src="/ERPSAdmin/product/json2.js"></script>
 		<script type="text/javascript" src="http://www.freshdirect.com/assets/javascript/prototype.js"></script>
 		<script>
@@ -37,7 +37,7 @@
 					}
 			};
 		</script>
-		<script type="text/javascript" src="/product/erpsydaisysku2urladdon.js"></script>
+		<script type="text/javascript" src="/ERPSAdmin/product/erpsydaisysku2urladdon.js"></script>
 		<script>
 		function copyConfirm(value){
 			if(value == ""){

@@ -47,9 +47,7 @@
 	}
 
 	/* parse skuInfo */
-	function parseSkuInfo(skuInfo, base) {
-		console.log('[PARSE SKU INFO] Parsing SKU info...'); 
-		
+	function parseSkuInfo(skuInfo, base) {		
 		var skuInfoObj = JSON.parse(skuInfo);
 
 		//run through skuInfo and get the objects as we need them
@@ -64,13 +62,6 @@
 			var linkHtml = getLinkedWWW(base, '@'+linkText[1], linkText[1], linkText[0], skuInfo[objName].isGrocery);
 			var tempHtml = '';
 			
-			console.log('prefSku:' + prefSku);
-			console.log('defSku:' + defSku);
-			console.log('skuCodes:' + skuCodes);
-			console.log('curObj:' + curObj);
-			console.log('linkText:' + linkText);
-			console.log('linkHtml:' + linkHtml);
-
 			if (skuInfo[objName].isOrphan) {
 				linkHtml = '<span class="orphan">'+linkHtml+'</span>';
 			}
@@ -78,7 +69,6 @@
 			if (skuInfo[objName].isPrimary) {
 				//primary product model, add to table
 				//insert each virtual into our content table
-				console.log("Applying isPrimary");
 
 				tempHtml = '';
 				tempHtml += '<div>';
@@ -105,13 +95,11 @@
 				$('.'+base+' .skuCont_tdRelatedPrimary').append(tempHtml);
 			} else {
 				
-				console.log("Applying secondary");
 				//secondary
 				$('.'+base+' .skuCont_tdRelatedSecondary').append('<div>Related Product: '+linkHtml+'<br /></div>');
 			}
 		}
 
-		console.log("Applying componentGroups");
 		//now do components if we have any
 		skuInfo = skuInfoObj.componentGroups;
 
@@ -162,12 +150,10 @@
 			}
 		}
 
-		console.log('[PARSE SKU INFO] ... done.'); 
 	}
 
 	/* fetch sku info */
 	function fetchSkuInfo(skuCode, base, baseUrl) {
-		console.log('[FETCH SKU INFO] Fetching SKU from...' + '/ERPSAdmin/product/product_info.jsp?sku='+skuCode+'&uurl='+baseUrl);
 
 		/* virtual sku code removed */
 
@@ -182,7 +168,6 @@
 			
 			$('.'+base+' .skuCont_tdPrimary').html(FreshDirect.sku2url.sku);
 
-			console.log('xx[FETCH SKU INFO] success, parsing...' ); 
 			parseSkuInfo(data, base);
 		});
 
