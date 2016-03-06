@@ -32,8 +32,8 @@
 			var FreshDirect = FreshDirect || {};
 			FreshDirect.sku2url = {
 					'base': {
-						'fd': '<%=ErpServicesProperties.getMasqueradeStoreFrontBaseUrl()%>',
-						'fdx': '<%=ErpServicesProperties.getMasqueradeFDXStoreFrontBaseUrl()%>'
+						'FD': '<%=ErpServicesProperties.getMasqueradeStoreFrontBaseUrl()%>',
+						'FDX': '<%=ErpServicesProperties.getMasqueradeFDXStoreFrontBaseUrl()%>'
 					}
 			};
 		</script>
@@ -49,26 +49,17 @@
 		}
 		</script>
 		<style>
-			table#_skuContTable, table#_skuContTable td, table#_keyTable, table#_keyTable td {
+			table.skuContTable, table.skuContTable td, table.keyTable, table.keyTable td {
 				padding: 0;
 				border-collapse: collapse;
 			}
-			table#_skuContTable td#_skuCont_tdRelatedPrimary {
+			table.skuContTable td.skuCont_tdRelatedPrimary {
 				width: 50%;
 			}
-			table#_skuContTable div, td#_skuCont_tdRelatedSecondary div, table#_skuContTable td#_skuCont_tdRelatedSecondary  {
-				border: 1px solid #eee;
-				padding: 0;
-				margin: 0;
-				float: left;
-			}
-			table#_skuContTable td#_skuCont_tdRelatedSecondary div {
+			table.skuContTable td.skuCont_tdRelatedSecondary div {
 				border: 0 none;
 			}
-			table#_skuContTable div {
-				width: 170px;
-			}
-			td#_skuCont_tdRelatedPrimary a {
+			td.skuCont_tdRelatedPrimary a {
 				color: #BF0B34;
 			}
 			span.defSKU {
@@ -97,42 +88,74 @@
 			.www2LinkBG {
 				background-color: #279F54;
 			}
-			#_keyTableTD0 div div {
+			.keyTableTD0 div div {
 				margin-right: 3px;
 				width: 16px;
 			}
-			#_keyTableTD0 div {
+			.keyTableTD0 div {
 				margin-right: 16px;
 			}
-			td#_skuCont_tdRelatedSecondary a, td#_skuCont_tdComponentsOpt a {
+			td.skuCont_tdRelatedSecondary a, td.skuCont_tdComponentsOpt a {
 				color: #279F54;
 			}
-			td#_skuCont_tdVirtual a, td#_skuCont_tdRelatedPrimary span.siblingSKU a, span.siblingSKU a {
+			td.skuCont_tdVirtual a, td.skuCont_tdRelatedPrimary span.siblingSKU a, span.siblingSKU a {
 				color: #7F7F7F;
 			}
-			table td#_skuCont_tdRelatedPrimary, table td#_skuCont_tdRelatedSecondary, table td#_skuCont_tdComponentsOpt {
+			table td.skuCont_tdRelatedPrimary, table td.skuCont_tdRelatedSecondary, table td.skuCont_tdComponentsOpt, table td.skuCont_tdComponents {
 				vertical-align: top;
+				padding: 5px;
 			}
-			table td#_skuCont_tdRelatedPrimary div, table td#_skuCont_tdRelatedSecondary div, #_skuCont_tdVirtual div, table td#_skuCont_tdComponentsOpt div, table td#_skuCont_tdComponents div {
+			table td.skuCont_tdRelatedPrimary div, table td.skuCont_tdRelatedSecondary div, .skuCont_tdVirtual div, table td.skuCont_tdComponents div {
 				width: 100%;
 			}
-			table td#_skuCont_tdComponents div a.skuToggle {
-				float: right;
-				margin-right: 5px;
+			table td.skuCont_tdComponents div a.skuToggle {
 				font-size: 9px;
 				background-color: #666;
 				color: #fff;
 				padding: 0 2px 1px 2px;
+				position: absolute;
+				right: 5px;
+				width: 70px;
+				text-align: center;
 			}
-			#_skuContTable, table#_keyTable {
+			/*.skuContTable, */
+			table.keyTable {
 				width: 100%;
 				margin-bottom: 5px;
 			}
-			#_keyTableTHKey {
+			.keyTableTHKey {
 				font-weight: bold;
 			}
-			table#_keyTable div {
+			table.keyTable div {
 				float: left;
+			}
+			.skuContTableCont {
+				display: inline-block;
+			}
+			.skuContTableBase {
+				font-size: 11px;
+				color: #fff;
+				background-color: #000;
+				font-weight: bold;
+				padding: 3px;
+			}
+			.siblingSkus>div, .optProds>div, .component-label, .component-skus {
+				padding-left: 15px;
+			}
+			.baseCont {
+				border: 1px solid #333;
+			}
+			.baseCont.FD .skuContTableBase {
+				background-color: #f90;
+			}
+			.baseCont.FDX .skuContTableBase {
+				background-color: #808;
+			}
+			.skuContTable td {
+				vertical-align: top;
+			}
+			.component {
+				position: relative;
 			}
 		</style>
 	</head>

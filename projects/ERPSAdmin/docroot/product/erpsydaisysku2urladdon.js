@@ -134,7 +134,7 @@
 					
 					tempHtml += '<div class="component">';
 						tempHtml += '<span class="component-label">'+objVarName+':</span>';
-						tempHtml += '<a href="#" class="skuToggle" onclick="$(this).parent().find(\'.component-skus\').toggle(); ($(this).html()==\'show SKUs\') ? $(this).html(\'hide SKUs\') : $(this).html(\'show SKUs\'); return false;">show SKUs</a>';
+						tempHtml += '<a href="#" class="skuToggle" onclick="jQuery(this).parent().find(\'.component-skus\').toggle(); (jQuery(this).html()==\'show SKUs\') ? jQuery(this).html(\'hide SKUs\') : jQuery(this).html(\'show SKUs\'); return false;">show SKUs</a>';
 						tempHtml += '<div class="component-skus" style="display: none;">';
 							for (var i =0; i < skuCodes.length; i++) { //sku, status, material
 								tempHtml += '<div><span class="siblingSKU">'+getLinkedProductView(skuCodes[i])+'</span> ('+skuCodes[i+1]+') : <span class="siblingSKU">'+getLinkededSearch(skuCodes[i+2], 'SAPID')+'</span></div>';
@@ -159,7 +159,7 @@
 
 		$.get('/ERPSAdmin/product/product_info.jsp?sku='+skuCode+'&uurl='+baseUrl, function(data) {
 			
-			$('#'+FreshDirect.sku2url.skucodeLinksContId).append(
+			$('#'+FreshDirect.sku2url.skucodeLinksContId+' .basesCont').append(
 				'<div class="skuContTableCont baseCont '+base+'">'+
 					'<div class="skuContTableBase">'+base+'</div>'+
 					FreshDirect.sku2url.linksHtml+
@@ -169,6 +169,8 @@
 			$('.'+base+' .skuCont_tdPrimary').html(FreshDirect.sku2url.sku);
 
 			parseSkuInfo(data, base);
+			
+			$('#'+FreshDirect.sku2url.skucodeLinksContId+' .keyTable').show();
 		});
 
 	}
@@ -194,12 +196,13 @@
 			'skucodeContId': 'skuCode',
 			'skucodeLinksContId': 'skuCode_links',
 			'linksHtml': '<table class="skuContTable"><tr class="skuCont_trPrimary"><td colspan="2" class="skuCont_tdPrimary"></td></tr><tr class="skuCont_trRelated"><td class="skuCont_tdRelatedPrimary"></td><td class="skuCont_tdRelatedSecondary"></td></tr><tr class="skuCont_components_tr"><td class="skuCont_tdComponents"></td><td class="skuCont_tdComponentsOpt"></td></tr></table>',
-			'keyHtml': '<table class="keyTable"><tr class="keyTableTR0"><td class="keyTableTHKey">Display Key:</td></tr><tr class="keyTableTR1"><td class="keyTableTD0"><div><div class="www1LinkBG">&nbsp;</div>WWW Primary Product Link</div><div><div class="www2LinkBG">&nbsp;</div>WWW Related Product Link</div><br style="clear: both;"><div><div class="localLinkBG">&nbsp;</div>ERPSy-Daisy Link</div><div><div class="defSKUBG">&nbsp;</div>Default SKU</div><div><div class="prefSKUBG">&nbsp;</div>Preferred SKU</div><div class="orphan">Orphan Product</div></td></tr></table>'
+			'keyHtml': '<table class="keyTable" style="display: none;"><tr class="keyTableTR0"><td class="keyTableTHKey">Display Key:</td></tr><tr class="keyTableTR1"><td class="keyTableTD0"><div><div class="www1LinkBG">&nbsp;</div>WWW Primary Product Link</div><div><div class="www2LinkBG">&nbsp;</div>WWW Related Product Link</div><br style="clear: both;"><div><div class="localLinkBG">&nbsp;</div>ERPSy-Daisy Link</div><div><div class="defSKUBG">&nbsp;</div>Default SKU</div><div><div class="prefSKUBG">&nbsp;</div>Preferred SKU</div><div class="orphan">Orphan Product</div></td></tr></table>'
 		});
 
 		FreshDirect.sku2url.sku = getSkuCode(FreshDirect.sku2url.skucodeContId, '#'+FreshDirect.sku2url.skucodeContId);
 
 		if (FreshDirect.sku2url.sku !== '') {
+			$('#'+FreshDirect.sku2url.skucodeLinksContId).append('<div class="basesCont"></div>')
 			//add links container(s)
 			for (var base in FreshDirect.sku2url.base) {
 
