@@ -3050,7 +3050,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							order.getDeliveryInfo().getDeliveryAddress().getFirstName(),
 							order.getDeliveryInfo().getDeliveryAddress().getLastName(),
 							order.getDeliveryInfo().getDeliveryAddress().getInstructions(),
-							order.getDeliveryInfo().getDeliveryAddress().getServiceType().getName(),
+							(order.getDeliveryInfo().getDeliveryAddress().getServiceType()!=null?order.getDeliveryInfo().getDeliveryAddress().getServiceType().getName():null),
 							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?
 							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null, orderMobileNumber);
 				}

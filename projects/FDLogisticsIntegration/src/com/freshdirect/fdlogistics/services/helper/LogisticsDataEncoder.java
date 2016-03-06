@@ -25,8 +25,7 @@ import com.freshdirect.logistics.controller.data.request.ConfirmReservationReque
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
-import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfo;
-import com.freshdirect.logistics.controller.data.request.FdxNextStopRequest;
+import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
@@ -87,20 +86,11 @@ public class LogisticsDataEncoder {
 	return request;
 	}
 	
-	public static FdxNextStopRequest encodeFdxNextStopRequest(String nextStopOrderId,
-			 String nextStopEstDeliveryTime)
+	public static FdxDeliveryInfoRequest encodeFdxDeliveryInfoRequest(String erpOrderId, String confirmationTimestamp,
+			String nextStopId,String estDeliveryTime)
 	{
-		FdxNextStopRequest request = new FdxNextStopRequest(nextStopOrderId,nextStopEstDeliveryTime);
-	return request;
-	}
-	
-	public static FdxDeliveryInfo encodeFdxDeliveryInfoRequest(String orderId, String estimatedDeliveryTime,
-			String signature,String nextStopOrderId,
-			 String nextStopEstDeliveryTime)
-	{
-		FdxDeliveryInfo request = new FdxDeliveryInfo(orderId,signature,estimatedDeliveryTime,
-				nextStopOrderId,nextStopEstDeliveryTime);
-	return request;
+		FdxDeliveryInfoRequest request = new FdxDeliveryInfoRequest(erpOrderId,confirmationTimestamp,nextStopId,estDeliveryTime);
+		return request;
 	}
 	
 	

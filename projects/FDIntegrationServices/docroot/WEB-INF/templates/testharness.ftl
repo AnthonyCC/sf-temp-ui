@@ -938,27 +938,9 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	
   }
-  else if (loaddata == "fdxdeliveryconfirmation") {
-  	$("#url").val("/ext/t005/");
-	var postdata = '0028630699,10/04/2012 06:05:00';
-  	$("#payload").val(postdata);
-  	
-  }
-  else if (loaddata == "fdxsignatureRelay") {
-  	$("#url").val("/ext/t006/");
-	var postdata = '0028630699,gfgf2911a3a4,CUSTOMER,02/02/2016 06:05:00';
-  	$("#payload").val(postdata);
-  	
-  }
-  else if (loaddata == "fdxnextstop") {
-  	$("#url").val("/ext/t007/");
-	var postdata = '0028630699,02/02/2016 06:05:00';
-  	$("#payload").val(postdata);
-  	
-  }
   else if (loaddata == "fdxdeliveryInfo") {
-  	$("#url").val("/ext/t008/");
-	var postdata = '0028630699,02/02/2016 06:05:00,gfgf2911a3a4,002865699,02/02/2016 08:05:00';
+  	$("#url").val("/ext/t005/");
+	var postdata = '0028630699,02/02/2016 06:05:00,0028634499,02/02/2016 06:45:00';
   	$("#payload").val(postdata);
   	
   }
@@ -1114,64 +1096,21 @@ function doStuff() {
   	 }
 		
   }  
-  else if($("#loaddata").val() == "fdxdeliveryconfirmation"){
-  		var temp = payload.split(",");
-  	 if(temp != null && temp.length > 0) {
-  	 	postData = postData + "orderId=" + $.URLEncode(temp[0]);
-  	 	if(temp.length > 1) {
-  	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[3]);
-  	 	}
-  	 			
-  	 }
-		
-  } 
-  else if($("#loaddata").val() == "fdxsignatureRelay"){
   
-  		var temp = payload.split(",");
-  	 if(temp != null && temp.length > 0) {
-  	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
-  	 	if(temp.length > 1) {
-  	 		postData = postData + "&bytes=" + $.URLEncode(temp[1]);
-  	 	}
-  	 	if(temp.length > 2) {
-  	 		postData = postData + "&deliveredTo=" + $.URLEncode(temp[2]);
-  	 	}
-  	 	if(temp.length > 3) {
-  	 		postData = postData + "&signatureTimestamp=" + $.URLEncode(temp[3]);
-  	 	}
-		
-  	 }
-		
-  } 
-   else if($("#loaddata").val() == "fdxnextstop"){
-  
-  		var temp = payload.split(",");
-  	 if(temp != null && temp.length > 0) {
-  	 	postData = postData + "nextStopOrderId=" + $.URLEncode(temp[0]);
-  	 	if(temp.length > 1) {
-  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[1]);
-  	 	}
-  	 	 	 	
-		
-  	 }
-		
-  } 
     else if($("#loaddata").val() == "fdxdeliveryInfo"){
   var temp = payload.split(",");
   	if(temp != null && temp.length > 0) {
-  	 	postData = postData + "orderId=" + $.URLEncode(temp[0]);
+  	 	postData = postData + "erpOrderId=" + $.URLEncode(temp[0]);
   	 	if(temp.length > 1) {
-  	 		postData = postData + "&estimatedDeliveryTime=" + $.URLEncode(temp[1]);
+  	 		postData = postData + "&deliveryTime=" + $.URLEncode(temp[1]);
   	 	}
   	 	if(temp.length > 2) {
-  	 		postData = postData + "&bytes=" + $.URLEncode(temp[2]);
+  	 		postData = postData + "&nexStopErpOrderId=" + $.URLEncode(temp[2]);
   	 	}
   	 	if(temp.length > 3) {
-  	 	postData = postData + "&nextStopOrderId=" + $.URLEncode(temp[3]);
+  	 		postData = postData + "&estDeliveryTime=" + $.URLEncode(temp[3]);
   	 	}
-  	 	if(temp.length > 4) {
-  	 		postData = postData + "&nextStopEstDeliveryTime=" + $.URLEncode(temp[4]);
-  	 	} 	 	
+  	 	
 		
   	 }
 		
@@ -1403,9 +1342,6 @@ function doStuff() {
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
   <option value="smsMessageRelay">Send - sms Alert</option>
   <option value="fdxsmsMessageRelay">Send - fdx sms Alert</option>
-  <option value="fdxdeliveryconfirmation"> fdx delivery confirmaton</option>
-  <option value="fdxsignatureRelay">fdx signature</option>
-  <option value="fdxnextstop"> fdx Next Stop</option>
   <option value="fdxdeliveryInfo"> fdx delivery info</option>
   
   <option value=""> ========== Lookup ========== </option>

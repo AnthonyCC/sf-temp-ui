@@ -57,13 +57,7 @@ public class ExternalInterfaceController extends BaseController {
     
     private static final String ACTION_GET_SMS_FDX_MESSAGE_RELAY="fdxsmsMessageRelay";
     
-    private static final String ACTION_GET_FDX_DELIVERY_CONFIRMATION="fdxdeliveryconfirmation";
-    
-    private static final String ACTION_GET_FDX_SIGNATURE="fdxsignatureRelay";
-    
-    private static final String ACTION_GET_FDX_NEXT_STOP="fdxnextstop";
-    
-    private static final String ACTION_GET_FDX_DEL_INFO="fdxdeliveryInfo";
+      private static final String ACTION_GET_FDX_DEL_INFO="fdxdeliveryInfo";
     
    
         
@@ -187,87 +181,25 @@ public class ExternalInterfaceController extends BaseController {
 	  	        	responseMessage.addErrorMessage("T004 Failed.");
 	     	    }  
     		}
-    		
-    		else if(ACTION_GET_FDX_DELIVERY_CONFIRMATION.equals(action)){
-    			
-    			try{
-    				// Call SmsAlertsManager with the parameters of the request.
-    				String orderId=request.getParameter("orderId");
-    				
-    				String estimatedDeliveryTime=request.getParameter("estimatedDeliveryTime");
-    				
-    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-    				fDDeliveryManager.captureDeliveryConfirmation(orderId,  estimatedDeliveryTime);
-    				responseMessage = Message.createSuccessMessage("T004 Successful.");
-    			} catch(Exception e) {
-	        		responseMessage=Message.createFailureMessage("T005 Failed.");
-	        		LOGGER.info("T005_EXP: Unable to save FDX Delivery Confirmation ");
-	  	        }  
-			if(responseMessage == null) {
-	  	        	LOGGER.info("T005: Failed FDX Delivery Confirmation ");
-	  	        	responseMessage = new Message();
-	  	        	responseMessage.addErrorMessage("T005 Failed.");
-	     	    }  
-    		}
-    		
-    		else if(ACTION_GET_FDX_SIGNATURE.equals(action)){
-	
-    			try{
-    				// Call SmsAlertsManager with the parameters of the request.
-    				String erpOrderId=request.getParameter("erpOrderId");
-    				String signature = request.getParameter("bytes");
-    				String deliveredTo = request.getParameter("deliveredTo");
-    				String signatureTimestamp=request.getParameter("signatureTimestamp");
-    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-    				fDDeliveryManager.captureSignature(erpOrderId, signature,deliveredTo,signatureTimestamp);
-    				responseMessage = Message.createSuccessMessage("T006 Successfull.");
-    			} catch(Exception e) {
-    				responseMessage=Message.createFailureMessage("T006 Failed.");
-    				LOGGER.info("T006_EXP: Unable to save FDX SMS Message Relay received ");
-    			}  
-    			if(responseMessage == null) {
-    				LOGGER.info("T006: Failed FDX SMS Message Relay ");
-    				responseMessage = new Message();
-    				responseMessage.addErrorMessage("T006 Failed.");
-    			}  
-    		}
-    		else if(ACTION_GET_FDX_NEXT_STOP.equals(action)){
-    			
-    			try{
-    				String nextStopOrderId=request.getParameter("nextStopOrderId");
-    				String nextStopEstDeliveryTime=request.getParameter("nextStopEstDeliveryTime");
-    				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-    				fDDeliveryManager.captureFdxNextStop(nextStopOrderId,nextStopEstDeliveryTime);
-    				responseMessage = Message.createSuccessMessage("T006 Successfull.");
-    			} catch(Exception e) {
-    				responseMessage=Message.createFailureMessage("T006 Failed.");
-    				LOGGER.info("T006_EXP: Unable to save FDX SMS Message Relay received ");
-    			}  
-    			if(responseMessage == null) {
-    				LOGGER.info("T006: Failed FDX SMS Message Relay ");
-    				responseMessage = new Message();
-    				responseMessage.addErrorMessage("T006 Failed.");
-    			}  
-    		}
+    	
     			else if(ACTION_GET_FDX_DEL_INFO.equals(action)){
     			
     			try{
-    				String orderId=request.getParameter("orderId");
-    				String estimatedDeliveryTime=request.getParameter("estimatedDeliveryTime");
-    				String signature = request.getParameter("bytes");
-    				String nextStopOrderId=request.getParameter("nextStopOrderId");
-    				String nextStopEstDeliveryTime=request.getParameter("nextStopEstDeliveryTime");
+    				String erpOrderId=request.getParameter("erpOrderId");
+    				String deliveryTime=request.getParameter("deliveryTime");
+    				String nexStopErpOrderId=request.getParameter("nexStopErpOrderId");
+    				String estDeliveryTime=request.getParameter("estDeliveryTime");
     				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
-    				fDDeliveryManager.captureFdxDeliveryInfo(orderId,estimatedDeliveryTime, signature, nextStopOrderId, nextStopEstDeliveryTime);
-    				responseMessage = Message.createSuccessMessage("T006 Successfull.");
+    				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
+    				responseMessage = Message.createSuccessMessage("T005 Successfull.");
     			} catch(Exception e) {
-    				responseMessage=Message.createFailureMessage("T006 Failed.");
-    				LOGGER.info("T006_EXP: Unable to save FDX SMS Message Relay received ");
+    				responseMessage=Message.createFailureMessage("T005 Failed.");
+    				LOGGER.info("T005_EXP: Unable to save fdx delivery info Relay received ");
     			}  
     			if(responseMessage == null) {
-    				LOGGER.info("T006: Failed FDX SMS Message Relay ");
+    				LOGGER.info("T005: Failed fdx delivery info Relay ");
     				responseMessage = new Message();
-    				responseMessage.addErrorMessage("T006 Failed.");
+    				responseMessage.addErrorMessage("T005 Failed.");
     			}  
     		}
     		

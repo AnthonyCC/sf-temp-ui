@@ -17,8 +17,7 @@ import com.freshdirect.logistics.controller.data.request.ConfirmReservationReque
 import com.freshdirect.logistics.controller.data.request.DeliveryZipCodeRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
-import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfo;
-import com.freshdirect.logistics.controller.data.request.FdxNextStopRequest;
+import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
@@ -74,9 +73,7 @@ public interface ILogisticsService {
 	
 	Result captureSignature(SignatureRequest signatureRequest) throws FDLogisticsServiceException;
 	
-	Result captureFdxNextStop(FdxNextStopRequest fdxNextStopRequest) throws FDLogisticsServiceException;
-	
-	Result captureFdxDeliveryInfo(FdxDeliveryInfo fdxDeliveryInfo) throws FDLogisticsServiceException;
+	Result captureFdxDeliveryInfo(FdxDeliveryInfoRequest fdxDeliveryInfo) throws FDLogisticsServiceException;
 	
 	DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
 	
