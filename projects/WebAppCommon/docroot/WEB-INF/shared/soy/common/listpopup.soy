@@ -71,7 +71,8 @@
 {if $url}
 <p>You must have a FreshDirect account in order to use Shopping Lists.</p>
 
-<p><b>New Customer?</b> <a href="/registration/signup.jsp?successPage={$url}">Sign Up</a></p>
+<p><b>New Customer?</b> <a href="/registration/signup.jsp?successPage={$url}" data-component="signup">Sign Up</a></p>
+
 <p><b>Current Customer?</b> <a href="/login/login.jsp?successPage={$url}">Log In</a></p>
 {else}
 {sp}
