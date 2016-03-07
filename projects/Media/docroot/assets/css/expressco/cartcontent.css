@@ -420,10 +420,6 @@ p.cartsection__tax{
   margin-bottom:15px;
 }
 
-#optionalToolTip{
-	margin-top: 10px;
-}
-
 .cartsection__totalwrapper{
 	border-top:1px solid #e0e3d0;
 	padding: 30px 0;
@@ -945,7 +941,7 @@ label[for="dontupdatecartlines"] {
 }
 .ttBox1stClass .tooltip-inner{
 	white-space: normal;
-	padding: 20px 30px;
+	padding: 20px 20px 5px 20px;
 	bottom:-19px;
 	min-width:339px;
 	/*min-height:300px;*/
