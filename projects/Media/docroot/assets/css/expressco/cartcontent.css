@@ -994,7 +994,7 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox1{
-	margin-left:660px;
+	margin-left: 651px;
 }
 /*.eTippingEnabled #subtotalbox1:before{*/
 .eTippingEnabled.cartsection-wine > .cartsection__totalwrapper > p.cartsection__tax:after{
@@ -1060,7 +1060,12 @@ label[for="dontupdatecartlines"] {
 	width: 100%;
 }
 .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left {
-    min-width: 167px;
+	min-width: auto;
+	width: 170px;
+	margin-right: 20px;
+	margin-bottom: 4px;
+	line-height: 21px;
+	white-space: normal;
 }
 
 .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
@@ -1093,10 +1098,17 @@ label[for="dontupdatecartlines"] {
 	font-weight: 700;
 	padding-left: 0px;
 }
-
-/*.eTippingEnabled #subtotalbox2 .subtotal__row .subtotal__rowcell-right{*/
 .eTippingEnabled .subtotal__row .subtotal__rowcell-right{
 	position:absolute;
+}
+
+.eTippingEnabled #subtotalbox1 .subtotal__rowcell-mid, 
+.eTippingEnabled .subtotal__row .subtotal__rowcell-right{
+	position: static;
+	vertical-align: bottom;
+	padding: 0;
+	line-height: 21px;
+	margin-bottom: 4px;
 }
 
 .eTippingEnabled .subtotal__rowcell-left,
