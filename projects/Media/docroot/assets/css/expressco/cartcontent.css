@@ -374,6 +374,8 @@
 	font-size:13px;
 	font-weight:bold;
 	color:#dd0303;
+	
+	margin-top: -5px;
 }
 
 .cartsection-wine{
@@ -1022,8 +1024,11 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled #subtotalbox2{
-	width: 140px;
+	/*width: 140px;*/
 	float: right;
+	
+	min-width: 150px;
+    width: auto;
 }
 
 /*#subtotalbox2 .rowcell-text-right{*/
@@ -1268,7 +1273,8 @@ label[for="dontupdatecartlines"] {
 }
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
-	/*padding-left:9px;*/
+	text-align: left;
+	display: block;
 }
 
 .eTippingEnabled select::-ms-expand {
@@ -1295,4 +1301,33 @@ label[for="dontupdatecartlines"] {
 }
 .total .subtotal__rowcell-right:empty{
 	float:right;
+}
+
+
+#st_label_ssOrderTotal{
+	text-align: left;
+}
+
+.row-style-saving .st_label_youSaved,
+.row-style-saving .st_val_youSaved{
+	display: inline-block;
+	width: auto;
+	margin-right: 0px;
+	font-size: 12px;
+}
+.row-style-saving #st_label_youSaved{
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.row-style-saving #st_label_youSaved .strl_text{
+	font-size: 12px;
+	color: #666;
+}
+
+.row-style-saving .st_val_youSaved{
+	font-size: 12px;
+	text-align: left;
+	color: #666666;
+	display: inline-block;
 }
