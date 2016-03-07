@@ -220,8 +220,12 @@ public class CheckoutController extends BaseController {
             //Review order. What's being order, where it's going, how it's being paid for, etc.
             model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
         } else if (ACTION_SUBMIT_ORDER.equals(action)) {
+        	if(getPostData(request, response)!=null) {
         	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
             model = submitOrder(model, user, request,requestMessage);
+        	} else {
+        		model = submitOrder(model, user, request);
+        	}
         } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
             model = getAtpErrorDetail(model, user, request);
         } else if (ACTION_GET_REMOVE_UNAVAILABLE_ITEMS.equals(action)) {
@@ -635,6 +639,7 @@ public class CheckoutController extends BaseController {
      * @param model
      * @param user
      * @param request
+     * @param requestMessage
      * @return
      * @throws FDException
      * @throws JsonException
@@ -681,6 +686,54 @@ public class CheckoutController extends BaseController {
         	responseMessage.setErrors(errors);
         }
         
+        setResponseMessage(model, responseMessage, user);
+
+        return model;
+    }
+    
+    
+    /**
+     * @param model
+     * @param user
+     * @param request
+     * @return
+     * @throws FDException
+     * @throws JsonException
+     */
+    private ModelAndView submitOrder(ModelAndView model, SessionUser user, HttpServletRequest request)  throws FDException, JsonException {
+        Checkout checkout = new Checkout(user);
+        Message responseMessage = null;
+
+	        callAvalaraForTax(user);
+	        ResultBundle resultBundle = checkout.submitOrder();
+	        ActionResult result = resultBundle.getActionResult();
+	        propogateSetSessionValues(request.getSession(), resultBundle);
+
+	        if (result.isSuccess()) {
+	
+	        	com.freshdirect.mobileapi.controller.data.response.Order orderReceipt = new com.freshdirect.mobileapi.controller.data.response.Order();
+	            String orderId=(String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	           /* try {
+	                orderReceipt = checkout.getOrderReceipt((String) request.getSession().getAttribute(SessionName.RECENT_ORDER_NUMBER));
+	            } catch (IllegalAccessException e) {
+	                throw new FDException(e);
+	            } catch (InvocationTargetException e) {
+	                throw new FDException(e);
+	            }*/
+	            
+	            Order order = user.getOrder(orderId);
+	            if(null !=order){
+		            orderReceipt = order.getOrderDetail(user);
+	            }
+	            
+	            orderReceipt.setOrderNumber(orderId);
+	            responseMessage = orderReceipt;
+	            responseMessage.addDebugMessage("Order has been submitted successfully.");
+	            
+	        } else {
+	            responseMessage = getErrorMessage(result, request);
+	        }
+	        responseMessage.addWarningMessages(result.getWarnings());            
         setResponseMessage(model, responseMessage, user);
 
         return model;
