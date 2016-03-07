@@ -468,11 +468,13 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	
 <%-- SIGN IN area --%>
 	<tmpl:put name="sign_in"><%
-			String greetingsString = "Sign in";
+			String actionString = "Sign in";
+			String greetingsString = "Hi";
 			boolean signedIn = false; //used for js logic for hover/click event results
 			boolean recog = false; //used for js logic for hover/click event results
 			if (user != null && user.getLevel() != FDUserI.GUEST) {
-				greetingsString = user.getFirstName();
+				actionString = "Your Account";
+				greetingsString += " "+user.getFirstName();
 				
 				if (user.getLevel() == FDUserI.SIGNED_IN) {
 					signedIn = true;
@@ -481,27 +483,30 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					recog = true;
 				}
 			}
+
+			greetingsString += "!";
 			
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
 			<div id="locabar_user_trigger" class="locabar_triggers" tabindex="0" role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
-        <% if (!signedIn) { %>
-          <a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
-        <% } %>
-				<div class="bold cursor-pointer">
-					<div class="locabar-user" style="display: inline-block;"></div>
-					<div style="display: inline-block;">
-						<div>Hi!</div>
-						<div class="locabar-user-greeting-cont">
+		        <% if (!signedIn) { %>
+					<a href="/login/login.jsp" fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+		        <% } %>
+					<div class="bold cursor-pointer">
+						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
+						<div style="display: inline-block;">
+							<div class="locabar-user-greeting-cont">
+					            <div class="locabar-user-greeting">
+									<%= greetingsString %>
+					            </div>
+					            <div class="locabar-user-action">
+									<%= actionString %><div class="locabar-down-arrow"></div>
+					            </div>
+							</div>
+						</div>
 					</div>
-            <div class="locabar-user-greeting">
-              <%= greetingsString %>
-            </div>
-            <div class="locabar-down-arrow"></div>
-					</div>
-				</div>
-        <% if (!signedIn) { %>
-          </a>
-        <% } %>
+		        <% if (!signedIn) { %>
+		          </a>
+		        <% } %>
 				<%
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
@@ -561,20 +566,26 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 <%-- CART area --%>
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
 			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
-				<div class="bold cursor-pointer">
-          <a class="offscreen" href="/view_cart.jsp">View Cart</a>
-					<div class="locabar-cart-count-cont">
-						<div class="locabar-cart"></div>
-						<div class="locabar-circle-cont locabar-popupcart-count">0</div>
-					</div>
-					
-					<div style="display: inline-block;">
-						<div class="locabar-cart-total">
-							<!-- <div>&nbsp;</div> -->
-							<div class="locabar-popupcart-total">$0.00</div>
-							<div class="locabar-down-arrow"></div>
+				<div class="bold cursor-pointer locabar_triggers_menuitem">
+          			<a href="/view_cart.jsp">
+						<span class="offscreen">View Cart</span>
+						<div style="display: inline-block;">
+							<div class="locabar-cart-count-cont">
+								<div class="locabar-cart"></div>
+								<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+							</div>
 						</div>
-					</div>
+						<div style="display: inline-block;">
+							<div class="locabar-cart-total">
+								<!-- <div>&nbsp;</div> -->
+								<div class="locabar-popupcart-total">$0.00</div>
+							</div>
+							<div>
+								Cart
+								<div class="locabar-down-arrow"></div>
+							</div>
+						</div>
+					</a>
 				</div>
 				<div id="locabar_popupcart" class="locabar_triggers_menu posAbs">
 					<div class="ui-arrow-buffer"></div>

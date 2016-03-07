@@ -503,7 +503,7 @@
 
 .locabar-popupcart-total {
 	display: inline-block;
-	font-weight: bold;
+	font-weight: normal;
 	min-width: 50px;
 	font-size: 13px;
 }
@@ -545,8 +545,6 @@
 	height: 20px;
 	width: 18px;
 	background-repeat: no-repeat;
-    top: 9px;
-    left: 2px;
     position: relative;
 }
 .locabar-user {
@@ -673,7 +671,12 @@
 	white-space: nowrap;
 	height: 15px;
 	line-height: 15px;
+	font-weight: normal;
 }
+.locabar-user-greeting-cont .locabar-user-action {
+	line-height: 15px;
+}
+
 #locabar_user .locabar-user-signout {
 	padding-bottom: 8px;
 }
@@ -698,6 +701,7 @@
 	white-space: nowrap;
 	display: inline-block;
 	line-height: 15px;
+	font-weight: normal;
 }
 @-moz-document url-prefix() { 
 	.locabar-addresses-section .locabar-addresses-addzip {
@@ -798,8 +802,8 @@
 	min-height: 36px;
 	padding-left: 16px;
 	background-position: left bottom;
-	margin-left: 15px;
-	margin-right:10px;
+	margin-left: 20px;
+	margin-right: 14px;
 }
 #locabar_messages_trigger .section-warning-small-circle {
 	padding-left: 19px;
@@ -853,8 +857,8 @@
 
 #locabar_addresses_trigger, #locabar_popupcart_trigger, #locabar_user_trigger {
 	margin-top: 5px;
-	padding-left: 15px;
-	padding-right: 15px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 .locabar-right-sections .locabar-section {
@@ -1216,4 +1220,8 @@ option.address-icon {
 .locabar_addresses-reservation-make-notFor {
 	margin-top: 4px;
 	font-size: 12px;
+}
+.locabar_triggers_menuitem a {
+    color: #fff;
+    text-decoration: none;
 }
