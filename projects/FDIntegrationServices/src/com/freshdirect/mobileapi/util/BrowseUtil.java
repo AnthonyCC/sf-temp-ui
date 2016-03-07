@@ -1484,7 +1484,10 @@ public class BrowseUtil {
 					
 					if(status == null || prodModel.isUnavailable()) {
 						skuInfo.setAvailable(EnumAvailabilityStatus.TEMP_UNAV.getId());
-					} else{
+					} else if(EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON.equals(status)){//APPDEV-4653-Material status 40
+						LOG.info(productInfo.getSkuCode()+ " is in 40 status");
+						skuInfo.setAvailable(EnumAvailabilityStatus.AVAILABLE.getId());
+					} else {
 						skuInfo.setAvailable(status.getId());
 					}
 					
