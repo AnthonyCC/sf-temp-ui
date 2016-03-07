@@ -178,7 +178,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
           <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
       </li><!--
     --><li class="menu-item item-skin">      
-          <span class="gf-item">gift & reciepient options</span>
+          <span class="gf-item">gift & recipient options</span>
       </li><!--
       --><li class="menu-item item-skin">
           <span class="gf-item">payment info</span>
@@ -198,9 +198,9 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
     --><li class="menu-item item-skin <% if (step == 1) { %> item-skin-hovered <% } %> <% if (step > 1) { %> item-skin-hover <% } %>">      
         
         <% if (step > 1) { %>
-          <a class="gf-item reset-link" href="<%= step1_link %>">gift & reciepient options</a>
+          <a class="gf-item reset-link" href="<%= step1_link %>">gift & recipient options</a>
         <%} else {%>
-          <span class="gf-item">gift & reciepient options</span>
+          <span class="gf-item">gift & recipient options</span>
         <%}%>
       </li><!--
       --><li class="menu-item item-skin <% if (step == 2) { %> item-skin-hovered <% } %> <% if (step > 2) { %> item-skin-hover <% } %>">
