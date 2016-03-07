@@ -10,6 +10,7 @@ package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -192,13 +193,18 @@ public class Pricing implements Serializable {
 	}
 	
 	private MaterialPrice[] getBaseIndicatorMaterialPrice(MaterialPrice[] matPrice) {
-		MaterialPrice[] baseIndicatorMaterialPrice=new MaterialPrice[matPrice.length];
+		
+		List<MaterialPrice> list = new ArrayList<MaterialPrice>();
 		MaterialPrice mp=null;
 		for (int i=0;i<matPrice.length;i++) {
 			mp=matPrice[i];
-			baseIndicatorMaterialPrice[i]=new MaterialPrice(mp.getOriginalPrice(),mp.getPricingUnit(),mp.getScaleLowerBound(),mp.getScaleUpperBound(),mp.getScaleUnit(),0);
+//			baseIndicatorMaterialPrice[i]=new MaterialPrice(mp.getOriginalPrice(),mp.getPricingUnit(),mp.getScaleLowerBound(),mp.getScaleUpperBound(),mp.getScaleUnit(),0);
+			if(null !=mp && mp.getScaleLowerBound() <= 0){
+				list.add(new MaterialPrice(mp.getOriginalPrice(),mp.getPricingUnit(),mp.getScaleLowerBound(),Double.POSITIVE_INFINITY,mp.getScaleUnit(),0));
+			}
 		}
-		return baseIndicatorMaterialPrice;
+		MaterialPrice[] baseIndicatorMaterialPrice=new MaterialPrice[list.size()];
+		return list.toArray(baseIndicatorMaterialPrice);
 		
 	}
 
