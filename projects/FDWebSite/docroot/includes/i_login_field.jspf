@@ -280,6 +280,9 @@
 				setTimeout(function(){ 
 					FreshDirect.components.ifrPopup.reposition();
 				}, 100);
+				
+				//set focus
+				$jq('#<%= ("".equals(userid)) ? "email" : "password" %>').focus();
 			});
 		</script>
 	</div> <!-- social login section ends here -->
