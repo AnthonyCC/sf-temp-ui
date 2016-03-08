@@ -1046,10 +1046,44 @@ td.noTopBorder {
     text-decoration:none;
     color: #ccc;
 }
+
 [data-component="timeselectorcontent"] {
 	overflow: auto;
 }
 
 .tsContainerNoDelBGE{
 	background: #FFFFFF;
+}
+
+[data-component="timeselectorcontent"] input[type="radio"] {
+    position: absolute;
+    left: -999em;
+}
+
+[data-component="timeselectorcontent"] input:focus, [data-component="timeselectorcontent"] textarea:focus {
+    border-top: 2px solid #68aa6d;
+    border-right: 2px solid #68aa6d;
+    border-bottom: 2px solid #68aa6d;
+    border-left: 2px solid #68aa6d;
+    box-shadow: none;
+    outline: none;
+}
+[data-component="timeselectorcontent"] input[type="radio"]:checked + label::before {
+    background: #4fa157;
+    box-shadow: 0 0 0 1px #4fa157;
+}
+[data-component="timeselectorcontent"] input[type="radio"]:focus + label::before {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+[data-component="timeselectorcontent"] input[type="radio"] + label::before {
+    background: #fafafa;
+    box-shadow: 0 0 0 1px #c2c2c2;
+    content: '\a0';
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
+    line-height: 14px;
+    margin-right: 10px;
+    vertical-align: 2px;
 }
