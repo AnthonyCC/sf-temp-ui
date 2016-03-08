@@ -419,11 +419,24 @@ $(function(){
 
 	//this should take care of any loose end browsers that lack html5 form validation 
 	$('form#locationhandler').validate({
-		onkeyup: false,
+		//onkeyup: false,
+		//onkeyup: true,
 		errorElement: "label",
 
 		errorPlacement: function(error, element){
-			error.insertAfter(element);
+			error.insertAfter(element); /* ready the form elements with a error element after them */
+		},
+
+		showErrors: function(errorMap, errorList) {
+			//show those red errors
+			this.defaultShowErrors();
+			
+			//enable or disable the submit button when appropriate
+			if( this.numberOfInvalids() < 1 ){
+				button_enableDisable('#submit_locationhandler', true);
+			}else{
+				button_enableDisable('#submit_locationhandler', false);
+			}
 		}
 	});
 	

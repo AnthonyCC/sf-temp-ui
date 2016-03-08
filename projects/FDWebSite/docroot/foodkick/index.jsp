@@ -69,15 +69,10 @@
 							placeholder="EMAIL" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$" required autocomplete="off" />
 						</div>
 
-						<button id="submit_locationhandler" type="submit">Submit</button>
+						<button id="submit_locationhandler" type="submit" class="button_disabled" disabled>Submit</button>
 						<br/>
 						By hitting submit, you agree to receive FoodKick emails.
-						<br/>
-						<a href="#Get_Foodkick" onClick="reset_zip_forms();">
-							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
-						</a>
-						<br/>
-						Try another zip.
+						
 					</form>
 					
 					<div id="we_deliver_to_you" style="display:none">
@@ -93,11 +88,20 @@
 						</a>
 						<br/>
 						Try another zip.
+						<br/>
 					</div>
 					
 					<div id="form_congratulations" style="display:none">
 						<p class="ucwords">Thank you for your submission!</p>
 						We will contact you when Foodkick DOES deliver to your area!
+						
+						<br/>
+						<a href="#Get_Foodkick" onClick="reset_zip_forms();">
+							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
+						</a>
+						<br/>
+						Try another zip.
+						<br/>
 					</div>
 				</article>
 			</section>
