@@ -82,7 +82,7 @@ public class AvalaraTaxRequestConverter {
 		if(null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK())){
 			try {
 				model = FDCustomerFactory.getErpCustomer(identity);
-				customercode = null != model?model.getSapId().substring(3):"DEFAULT_CUSTOMER_CODE";
+				customercode = null != model?model.getSapId():"DEFAULT_CUSTOMER_CODE";
 			} catch (FDResourceException e) {
 				customercode = "DEFAULT_CUSTOMER_CODE";
 			}
