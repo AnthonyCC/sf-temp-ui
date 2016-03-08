@@ -103,13 +103,18 @@ body[developer] *:focus {
 [fdform] input:focus, 
 [fdform] textarea:hover,  
 [fdform] textarea:focus {
-    border-color: #68aa6d;
-    border-right: 2px solid #68aa6d;
-    border-bottom: 2px solid #68aa6d;
-    border-left: 2px solid #68aa6d;
-    background-color: #fefefe;
-    box-shadow: none;
-    outline: none;
+  border-color: #68aa6d;
+  border-right: 2px solid #68aa6d;
+  border-bottom: 2px solid #68aa6d;
+  border-left: 2px solid #68aa6d;
+  background-color: #fefefe;
+  box-shadow: none;
+  outline: none;
+}
+
+[fdform] select:hover,
+[fdform] select:focus {
+  border-color: #68aa6d;
 }
 
 [fdform] input:disabled,

@@ -22,10 +22,6 @@
 }
 
 
-#addaddresspopup input[type="radio"] {
-	display: none;
-}
-
 #addaddresspopup [data-show="addaddress_home"] #addaddress_home_label,
 #addaddresspopup [data-show="addaddress_office"] #addaddress_office_label  {
 	background: #fff;
