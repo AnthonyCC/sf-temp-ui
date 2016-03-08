@@ -30,8 +30,8 @@
     <input type="hidden" name="action" value="{if $data.action}{$data.action}{else}addDeliveryAddressMethod{/if}" />
   {/if}
   <div class="input-wrapper">
-  	<label for="addaddress_home_first_name">Address Nickname</label>
-    <input name="nick_name" id="addaddress_home_first_name" placeholder='Address Nickname (i.e. "Apartment")' value="{if $data.nick_name}{$data.nick_name}{/if}" required fdform-fieldname="Address Nickname"/>
+  	<label for="addaddress_home_nick_name">Address Nickname</label>
+    <input name="nick_name" id="addaddress_home_nick_name" placeholder='Address Nickname (i.e. "Apartment")' value="{if $data.nick_name}{$data.nick_name}{/if}" required fdform-fieldname="Address Nickname"/>
 	<span fdform-error-for="nick_name"></span>
   </div>
   <div class="input-wrapper">
