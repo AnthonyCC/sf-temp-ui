@@ -90,10 +90,14 @@ body[developer] *:focus {
 }
 
 [fdform] label,
-[fdform] textarea, 
-[fdform] select {
+[fdform] textarea {
 	font-size: 14px;
 }
+
+[fdform] select {
+	font-size: 16px;
+}
+
 
 [fdform] input:hover,
 [fdform] input:focus, 
@@ -288,6 +292,7 @@ label.tabs {
   text-align: center;
   line-height: 1.75rem;
   margin-left: 4px;
+  font-weight: bold;
 }
 
 .tabs input[type="radio"] {
@@ -331,4 +336,8 @@ span[fdform-error] {
 .small-fieldset {
 	width: 30%;
 	display: inline-block;
+}
+
+[fdform][fdform-hidden] label {
+	display: none;
 }

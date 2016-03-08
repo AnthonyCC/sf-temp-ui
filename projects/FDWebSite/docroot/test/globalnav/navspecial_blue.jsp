@@ -16,7 +16,7 @@
         <span class="header-skin">gift cards</span>
       </li><!--
     --><li class="menu-item item-skin">      
-        <span class="gf-item">gift & reciepient options</span>
+        <span class="gf-item">gift & recipient options</span>
       </li><!--
       --><li class="menu-item item-skin">
         <span class="gf-item">payment info</span>
@@ -33,7 +33,7 @@
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
     --><li class="menu-item item-skin item-skin-hovered gf-item">
-          <span class="gf-item">gift & reciepient options</span>
+          <span class="gf-item">gift & recipient options</span>
       </li><!--
       --><li class="menu-item item-skin">
           <span class="gf-item">payment info</span>
@@ -50,7 +50,7 @@
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
     --><li class="menu-item item-skin item-skin-hover gf-item">
-        <a class="gf-item reset-link" href="/options">gift & reciepient options</a>
+        <a class="gf-item reset-link" href="/options">gift & recipient options</a>
       </li><!--
       --><li class="menu-item item-skin item-skin-hovered">
           <span class="gf-item">payment info</span>
@@ -67,7 +67,7 @@
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
     --><li class="menu-item item-skin item-skin-hover gf-item">
-        <a class="gf-item reset-link" href="/options">gift & reciepient options</a>
+        <a class="gf-item reset-link" href="/options">gift & recipient options</a>
       </li><!--
       --><li class="menu-item item-skin item-skin-hover">
         <a class="gf-item reset-link" href="/payment">payment info</a>

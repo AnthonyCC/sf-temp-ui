@@ -12,6 +12,7 @@
   display: block; 
   background: #fefefe;
   padding: 60px; 
+  font-weight: bold;
 }
 
 #addaddresspopup input,
@@ -28,7 +29,8 @@
 #addaddresspopup [data-show="addaddress_home"] #addaddress_home_label,
 #addaddresspopup [data-show="addaddress_office"] #addaddress_office_label  {
 	background: #fff;
-	color: #68aa6d;
+	color: #4fa157;
+	font-weight: bold;
 }
 
 span[fdform-error-for="zip"] {
@@ -71,16 +73,24 @@ div[bd-id] {
   min-height: 70px;
 }
 
-#addaddress_home .buttons,
-#addaddress_office .buttons {
-  text-align: center;
-}
 
 #addaddress_home .buttons button,
 #addaddress_office .buttons button {
-  width: 120px;
   margin: 10px;
 }
+
+
+#addaddress_home .buttons [fdform-button="cancel"],
+#addaddress_office .buttons [fdform-button="cancel"] {
+	margin-top: 10px;
+}
+
+#addaddress_home .buttons [type="submit"],
+#addaddress_office .buttons [type="submit"] {
+  float: right;
+  width: 260px;
+}
+
 
 #addaddress_home .showaltphone,
 #addaddress_office .showaltphone {

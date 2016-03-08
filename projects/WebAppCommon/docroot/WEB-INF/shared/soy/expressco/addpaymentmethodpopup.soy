@@ -100,7 +100,7 @@
 		<label for="CC_bil_address1" class="three-quarter-fieldset">Street Address
 	    	<input name="bil_address1" id="CC_bil_address1" placeholder="Street Address" value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
 	   	</label>
-	   	<label for="CC_bil_apartment" class="small-fieldset">
+	   	<label for="CC_bil_apartment" class="small-fieldset">Apt.
 	    	<input name="bil_apartment" id="CC_bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
 	   	</label>
 	    <span fdform-error-for="bil_address1" class="three-quarter-fieldset"></span>
@@ -140,8 +140,8 @@
 	  	<span fdform-error-for="phone"></span>
 	</div>
 	<div class="buttons">
-    	<button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
-    	<button class="cssbutton green" type="submit">Save</button>
+    	<button class="cssbutton green transparent medium close" fdform-button="cancel">Cancel</button>
+    	<button class="cssbutton green large" type="submit">Save</button>
   	</div>
 </form>
 {/template}
@@ -164,7 +164,7 @@
   <p class='learn-more'>Learn More: <a href='/pay_by_check.jsp' data-ifrpopup='/pay_by_check.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>How it works</a> <a href='/help/faq_index.jsp?show=security' data-ifrpopup='/help/faq_index.jsp?show=security' data-ifrpopup-width='585' data-ifrpopup-height='400'>Security Policies</a></p>
     <h2>Account Details</h2>
     <div class="input-wrapper">
-		<label for="EC_bankAccountType_C" class="medium-fieldset normal-label">
+		<label for="EC_bankAccountType_C" class="one-quarter-fieldset normal-label">
 	  		<input type="radio" class="customradio" name="bankAccountType" value="C" {if not $data.bankAccountType or $data.bankAccountType == 'C'}checked{/if} />Checking
 	  </label>
 	  <label for="EC_bankAccountType_S" class="medium-fieldset normal-label">
@@ -190,19 +190,19 @@
 	    <span fdform-error-for="cardNum"></span>
     </div>
     <div class="input-wrapper">
-	    <label for="EC_cardNumVerify">Verify Account Number 
+	    <label for="EC_cardNumVerify" {if $data.id}class="hidden"{/if}>Verify Account Number 
 	    	<input name="cardNumVerify" id="EC_cardNumVerify" placeholder='Enter Account Number Again' value="{if $data.cardNumVerify}{$data.cardNumVerify}{/if}" fdform-fieldname="Account Number Again" {if $data.id}disabled fdform-hidden{else}required{/if}/>
 	    </label>
     	<span fdform-error-for="cardNumVerify"></span>
     </div>
-    <div class="input-wrapper">
+    <div>
 	    <label for="EC_abaRouteNumber">Routing Number
 	     	<input name="abaRouteNumber" id="EC_abaRouteNumber" placeholder='Routing Number' value="{if $data.abaRouteNumber}{$data.abaRouteNumber}{/if}" fdform-fieldname="Routing Number" required/>
 	     </label>
      	<span fdform-error-for="abaRouteNumber"></span>
     </div>
     <div class='account-helper'>Find your account information on your checks: </div>
-    <h2>Account Address</h2>
+    <h2 id="account_address_title">Account Address</h2>
     <div class="input-wrapper">
 	    <label for="EC_bil_country">Country
 	    	<select name="bil_country" id="EC_bil_country" class="customsimpleselect" required>
@@ -221,11 +221,11 @@
 	    <label for="EC_bil_address1" class="three-quarter-fieldset">Street Address
 	    	<input name="bil_address1" id="EC_bil_address1" placeholder="Street Address" value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
 	    </label>
-	    <label for="EC_bil_apartment" class="one-quarter-fieldset">Apt.
+	    <label for="EC_bil_apartment" class="small-fieldset">Apt.
 	    	<input name="bil_apartment" id="EC_bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
 	    </label>
 	    <span fdform-error-for="bil_address1" class="three-quarter-fieldset"></span>
-	    <span fdform-error-for="bil_apartment" class="one-quarter-fieldset"></span>
+	    <span fdform-error-for="bil_apartment" class="small-fieldset"></span>
     </div>
     <div class="input-wrapper">
     	<label for="EC_bil_address2">Address Line 2
@@ -268,8 +268,8 @@
       	<span fdform-error-for="terms"></span>
     </div>
  	<div class="buttons">
-    	<button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
-    	<button class="cssbutton green" type="submit">Save</button>
+    	<button class="cssbutton green medium transparent close" fdform-button="cancel">Cancel</button>
+    	<button class="cssbutton green large" type="submit">Save</button>
   	</div>
 </form>
 {/template}
@@ -318,11 +318,11 @@
 	  <label for="ET_bil_address1" class="three-quarter-fieldset">Street Address
 	    <input name="bil_address1" id="ET_bil_address1" placeholder="Street Address"value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
 	  </label>
-	  <label for="ET_bil_apartment" class="one-quarter-fieldset">
+	  <label for="ET_bil_apartment" class="small-fieldset">
 	    <input name="bil_apartment" id="ET_bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
 	  </label>
 	  <span fdform-error-for="bil_address1" class="three-quarter-fieldset"></span>
-	  <span fdform-error-for="bil_apartment" class="one-quarter-fieldset"></span>
+	  <span fdform-error-for="bil_apartment" class="small-fieldset"></span>
   </div>
   <div class="input-wrapper">
 	  <label for="">Address Line 2
@@ -356,8 +356,8 @@
   </label>
   <span fdform-error-for="phone"></span>
   <div class="buttons">
-    <button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
-    <button class="cssbutton green" type="submit">Save</button>
+    <button class="cssbutton green transparent medium close" fdform-button="cancel">Cancel</button>
+    <button class="cssbutton green large" type="submit">Save</button>
   </div>
 </form>
 {/template}
