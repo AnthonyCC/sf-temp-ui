@@ -63,20 +63,25 @@ body[developer] *:focus {
 [fdform] textarea, 
 [fdform] select {
 	border-top: 2px solid transparent;
-    border-right: 2px solid transparent;
-    border-left: 2px solid transparent;
-    border-bottom: 2px solid #c2c2c2;
-    background: #fefefe;
-    border-radius: 0;
-    box-sizing: border-box;
-    color: #444;
-    font-size: 16px;
-    font-weight: normal;
-    box-shadow: none;
-    height: 34px;
-    outline: none;
-    padding: 8px;
-    -webkit-font-smoothing: antialiased;
+  border-right: 2px solid transparent;
+  border-left: 2px solid transparent;
+  border-bottom: 2px solid #c2c2c2;
+  background: #fefefe;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: #444;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: Verdana, arial, sans-serif;
+  box-shadow: none;
+  height: auto;
+  line-height: 22px;
+  outline: none;
+  padding: 4px 8px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 [fdform] textarea {
 	border-top: 2px solid #c2c2c2;
@@ -141,14 +146,14 @@ body[developer] *:focus {
 }
 
 [fdform] select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: #fefefe;
-    padding: 0 27px 0 8px;
-    border: 2px solid #c2c2c2;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #fefefe;
+  padding-right: 27px;
+  border: 2px solid #c2c2c2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 [fdform] select::-ms-expand {
@@ -204,7 +209,7 @@ input[type="radio"]:disabled + .fake-radio:before {
 }
 
 .fake-checkbox-wrapper > input[type="checkbox"] {
-  position: relative;
+  position: absolute;
   left: -9999px;
   width: 1px;
   height: 1px;
