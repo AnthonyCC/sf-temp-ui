@@ -14,6 +14,8 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
@@ -740,13 +742,12 @@ public class FDStandingOrdersManager {
 	 * TODO : make the ERPSalesInfo as Map : 
 	 */
 	public Collection<FDStandingOrder>  getAllSOUpcomingOrders(FDUserI user, Collection<FDStandingOrder> sos) throws FDResourceException, FDAuthenticationException {
-
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
 		Collection<FDStandingOrder> fdStandingOrders=new ArrayList<FDStandingOrder>();
 		for (FDStandingOrder so : sos) {
 			for (ErpSaleInfo i : h.getErpSaleInfos()) {
 				if (so.getId().equalsIgnoreCase(i.getStandingOrderId()) && ! i.getStatus().isCanceled()
-						&& i.getDeliveryCutoffTime().after(new Date())) {
+						&& i.getDeliveryCutoffTime().after(new Date()) && isModifiable(i)) {
 					FDOrderInfoAdapter x = new FDOrderInfoAdapter(i);
 					so.setUpcomingDelivery(x);
 					fdStandingOrders.add(so);
@@ -755,6 +756,16 @@ public class FDStandingOrdersManager {
 		}
 
 		return fdStandingOrders;
+	}
+
+	public boolean isModifiable(ErpSaleInfo saleInfo) {
+		if (saleInfo.isMakeGood())
+			return false;
+		final EnumSaleStatus status = saleInfo.getStatus();
+		return (EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZED.equals(status)
+				|| EnumSaleStatus.AVS_EXCEPTION.equals(status) || (EnumSaleStatus.AUTHORIZATION_FAILED
+				.equals(status) && EnumSaleType.REGULAR.equals(saleInfo.getSaleType())))
+				&& !saleInfo.getSaleType().equals(EnumSaleType.DONATION);
 	}
 
 	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException {

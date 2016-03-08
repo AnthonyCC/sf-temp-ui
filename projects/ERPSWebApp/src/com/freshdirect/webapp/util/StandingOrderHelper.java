@@ -807,7 +807,7 @@ public class StandingOrderHelper {
 
 	public static boolean isValidStandingOrder(FDStandingOrder so) {
 		
-		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate()?true:false;
+		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate() && so.getFrequency()>0 ?true:false;
 	}
 
 	public static StandingOrderResponseData populateResponseData(FDStandingOrder so,boolean isPdp) {
