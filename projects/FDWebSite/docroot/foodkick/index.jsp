@@ -72,6 +72,12 @@
 						<button id="submit_locationhandler" type="submit">Submit</button>
 						<br/>
 						By hitting submit, you agree to receive FoodKick emails.
+						<br/>
+						<a href="#Get_Foodkick" onClick="reset_zip_forms();">
+							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
+						</a>
+						<br/>
+						Try another zip.
 					</form>
 					
 					<div id="we_deliver_to_you" style="display:none">
@@ -86,7 +92,7 @@
 							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
 						</a>
 						<br/>
-						Try another hood.
+						Try another zip.
 					</div>
 					
 					<div id="form_congratulations" style="display:none">
@@ -105,7 +111,7 @@
 				<figure>
 					<div><%--svg_obj("section_2/bowl_bottle_fruit.svg") --%> <img src="<%=SVG_SRC %>section_2/bowl_bottle_fruit.svg" /> </div>
 					<figcaption>
-						<h4>GET WHAT YOU NEED FOR TODAY AND TOMORROW</h4>
+						<h4>GET WHAT YOU NEED FOR TODAY OR TOMORROW</h4>
 						like meals, fresh fixin&rsquo;s, booze, and even TP.
 					</figcaption>
 				</figure>
