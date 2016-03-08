@@ -1052,6 +1052,11 @@ label[for="dontupdatecartlines"] {
 	text-align:center;
 }
 
+#subtotalbox2 .subtotal__row.row-size-big{
+	width: 325px;
+	float: right;
+}
+
 .eTippingEnabled .subtotal__rowcell-left{
 	width:initial;
     text-align: left;
@@ -1274,7 +1279,7 @@ label[for="dontupdatecartlines"] {
 
 #subtotalbox2 .row-size-big .subtotal__rowcell-mid.st_val{
 	text-align: left;
-	display: block;
+	/*display: block;*/
 }
 
 .eTippingEnabled select::-ms-expand {
@@ -1330,4 +1335,16 @@ label[for="dontupdatecartlines"] {
 	text-align: left;
 	color: #666666;
 	display: inline-block;
+}
+
+
+.gogreen-text{
+	vertical-align: middle;
+}
+
+.gogreen-text label input{
+	float: left;
+    margin-top: -5px;
+    margin-bottom: 0px;
+    margin-right: 5px;
 }

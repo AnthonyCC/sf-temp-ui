@@ -165,7 +165,6 @@ etids.div_toolTipTextBox = "#toolTipTextBox";
 /*the tooltip popup for too great of a tip*/
 etids.div_tooltipPopup = "#tooltipPopup";
 
-
 (function (fd) {
 	'use strict';
 
@@ -216,11 +215,43 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				
 				/*APPBUG-4365*/
 				if( page == "checkout.jsp" ){
+					
+					/*APPBUG-4407*/
+					var salesOrTotal = "Sales Tax";
+					var tempJ = 0;
+					var tempJ2 = 0;
+					
+					if(data.cartSections && data.cartSections.length > 1){
+						for(var i=0; i<data.cartSections.length; i++){
+							if( data.cartSections[i].title == "wineSectionKey" ){
+								console.log("were up all night to get taxy");
+								
+								salesOrTotal = "Total Tax";
+							}
+						}
+					}
+					
+					
+					
 					if( typeof(data.subTotalBox.subTotalBox) == "object"  ){
 						for(var j=0; j<data.subTotalBox.subTotalBox.length; j++){
-							if( data.subTotalBox.subTotalBox[j]["id"] == "totaltax" ){
-								data.subTotalBox.subTotalBox[j]["text"] = "Total Tax";
+							if( (data.subTotalBox.subTotalBox[j]["id"] == "totaltax") || (data.subTotalBox.subTotalBox[j]["id"] == "totalAvalaratax") ){
+								//data.subTotalBox.subTotalBox[j]["text"] = "Total Tax";
+								data.subTotalBox.subTotalBox[j]["text"] = salesOrTotal;
 							}
+							
+							if(data.subTotalBox.subTotalBox[j]["id"] == "totaltax"){
+								tempJ = j;
+							}
+							
+							if(data.subTotalBox.subTotalBox[j]["id"] == "totalAvalaratax"){
+								tempJ2 = j;
+							}
+						}
+						
+						//if avalara is present, get rid of the 'totaltax' field
+						if(tempJ2 > 0){
+							data.subTotalBox.subTotalBox.splice(tempJ, 1);
 						}
 					}
 				}
@@ -281,6 +312,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					*/
 					data.etipTotal = parsedEtipTotal;
 				}
+				
+				console.log("data = "); console.log(data);
 								
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
 				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
