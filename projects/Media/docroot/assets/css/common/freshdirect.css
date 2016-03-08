@@ -227,6 +227,12 @@ h2.centerline span {
 .qtyinput input[type="text"].qty {
   width: 2.5em;
   display: inline-block;
+  border-color: #c2c2c2;
+}
+
+.qtyinput input[type="text"].qty:hover,
+.qtyinput input[type="text"].qty:focus {
+  border-color: #68aa6d;
 }
 
 .qtyinput_fixedwidth {
