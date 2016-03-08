@@ -70,7 +70,7 @@ public class AvalaraTaxResponseConverter {
 		if(CollectionUtils.isNotEmpty(cartLines)){
 			for(FDCartLineI cartLine : cartLines){
 				if(StringUtils.equals(lineResult.getLineNo(),cartLine.getCartlineId()) || StringUtils.equals(lineResult.getLineNo(),cartLine.getOrderLineId())){
-					if(!lineResult.getTaxability()){
+					if(!lineResult.getTaxability() || lineResult.getExemption() != 0.0){
 					cartLine.setTaxRate(0.0);
 					}
 					else{

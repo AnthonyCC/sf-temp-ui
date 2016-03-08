@@ -16,11 +16,15 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.services.tax.data.Address;
 import com.freshdirect.fdstore.services.tax.data.DetailLevel;
@@ -72,7 +76,18 @@ public class AvalaraTaxRequestConverter {
 		
 		taxRequest.setCurrencyCode("USD");
 		taxRequest.setDetailLevel(DetailLevel.Line);
-		taxRequest.setCustomerCode("DEFAULT_CUSTOMER_CODE");
+		ErpCustomerModel model = null;
+		String customercode = "DEFAULT_CUSTOMER_CODE";
+		FDIdentity identity =  cart.getOrderLines().get(0)!=null?cart.getOrderLines().get(0).getUserContext().getFdIdentity():null;
+		if(null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK())){
+			try {
+				model = FDCustomerFactory.getErpCustomer(identity);
+				customercode = null != model?model.getSapId().substring(3):"DEFAULT_CUSTOMER_CODE";
+			} catch (FDResourceException e) {
+				customercode = "DEFAULT_CUSTOMER_CODE";
+			}
+		}
+		taxRequest.setCustomerCode(customercode);
 		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
 		LOGGER.info("Cart to Request conversion End");
 		return taxRequest;
