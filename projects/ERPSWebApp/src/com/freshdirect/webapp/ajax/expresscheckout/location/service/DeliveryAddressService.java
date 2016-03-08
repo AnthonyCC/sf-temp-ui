@@ -58,6 +58,7 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class DeliveryAddressService {
 
@@ -302,8 +303,13 @@ public class DeliveryAddressService {
                 }
             }
 
-        }
-
+        }else if(EnumCheckoutMode.CREATE_SO.equals(user.getCheckoutMode()) && StandingOrderHelper.isSO3StandingOrder(user)){
+			  populateCorporateDeliveryAddress (user,addresses);
+	            if (addresses.size() < 2) {
+	                disableDeleteActionOnAddresses(addresses);
+	            }
+		}
+         
         TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(session);
 
         return addresses;
@@ -601,4 +607,42 @@ public class DeliveryAddressService {
 
         return addressModel;
     }
+	/*
+	 *  populate the corporate addresses for Standing Order
+	 */
+	protected void populateCorporateDeliveryAddress(FDUserI user, List<LocationData> addresses) throws FDResourceException, JspException, RedirectToPage{
+        boolean isValidSOAddress=false;
+		List<ErpAddressModel> shippingAddresses = new ArrayList<ErpAddressModel>(FDCustomerManager.getShipToAddresses(user.getIdentity()));
+		sortDeliveryAddress(user, shippingAddresses);
+
+		for (ErpAddressModel shippingAddress : shippingAddresses) {
+			EnumServiceType serviceType = shippingAddress.getServiceType();
+			if ( EnumServiceType.CORPORATE.equals(serviceType)) {
+				String deliveryAddressId = NVL.apply(shippingAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
+				LocationData deliveryAddress = convertDeliveryAddressModelToLocationData(deliveryAddressId, shippingAddress, serviceType, isDeliveryZoneUnattended(shippingAddress));
+				//deliveryAddress.setSO3(true);
+				if (deliveryAddress.getId().equals(user.getCurrentStandingOrder().getAddressId())) {
+					deliveryAddress.setSelected(true);
+					isValidSOAddress=true;
+				}
+				addresses.add(deliveryAddress);
+			}
+		}
+		if (!isValidSOAddress && !addresses.isEmpty()) {
+			String selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
+			boolean isSelectedMatch = false;
+			if (selectedDeliveryAddressId != null) {
+				for (LocationData locationData : addresses) {
+					if (locationData.getId().equals(selectedDeliveryAddressId)) {
+						locationData.setSelected(true);
+						isSelectedMatch = true;
+						break;
+					}
+				}
+			}
+			if (!isSelectedMatch) {
+				addresses.get(0).setSelected(true);
+			}
+		}
+	}  
 }

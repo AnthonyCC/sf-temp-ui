@@ -159,6 +159,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private List<ProductReference> productSamples;
 	
+	private boolean isSoContainerOpen = false;
+	
+	public boolean isSoContainerOpen() {
+		return isSoContainerOpen;
+	}
+	
+	public void setSoContainerOpen(boolean isSoContainerOpen) {
+		this.isSoContainerOpen = isSoContainerOpen;
+	}
+
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
     }
@@ -1902,4 +1912,25 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setIsAvalaraTaxed(boolean isAvalaraTaxed){
 		this.isAvalaraTaxed = isAvalaraTaxed;
 	}
+	@Override
+	public FDCartModel getSoTemplateCart() {
+		return this.user.getSoTemplateCart();
+	}
+
+	@Override
+	public void setSoTemplateCart(FDCartModel soTemplateCart) {
+      this.user.setSoTemplateCart(soTemplateCart)	;	
+	}
+
+	@Override
+	public boolean isCustomerHasStandingOrders() {
+		return user.isCustomerHasStandingOrders();
+	}
+
+	@Override
+	public boolean isNewSO3Enabled() {
+		// TODO Auto-generated method stub
+		return user.isNewSO3Enabled();
+	}
+
 }

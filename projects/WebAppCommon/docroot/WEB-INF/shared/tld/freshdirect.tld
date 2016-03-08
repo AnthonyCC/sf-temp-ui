@@ -5718,6 +5718,18 @@
 		<bodycontent>JSP</bodycontent>
 	</tag>
 
+ 	<tag>
+		<name>ManageNewStandingOrder</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.ManageNewStandingOrderTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.ManageNewStandingOrderTag$TagEI</teiclass>
+ 		<bodycontent>JSP</bodycontent>
+ 		<info>Creates a new Standing Order object in session</info>	
+ 		<attribute>
+ 			<name>result</name>
+ 			<required>true</required>
+ 			<rtexprvalue>false</rtexprvalue>
+ 		</attribute>
+ 	</tag>
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>

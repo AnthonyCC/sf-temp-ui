@@ -12,11 +12,19 @@
 
 
 <%@page import="com.freshdirect.fdstore.util.TimeslotLogic"%>
+<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%
 	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
 	boolean isPreReservedSlotId = slot.getId().equals(preReserveSlotId);
 	boolean isSelectedSlotId = slot.getId().equals(selectedSlotId);
+	String soFirstNextText=null;
+	
+	if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
+		soFirstNextText = "Next";
+	} else {
+		soFirstNextText = "First";
+	}
 	if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
 		request.setAttribute("shownCTSlot", "TRUE");
 	}
@@ -125,7 +133,7 @@
 												(isForce && !slot.hasAvailCTCapacity())
 													? ("f_"+ slot.getId())
 													: slot.getId()
-											)+"\" />"
+											)+"\" data-sofirstdate=\""+slot.getFormattedSoFirstDeliveryDateFull()+"\" />" 
 										);
 						}
 					}
@@ -151,7 +159,8 @@
 												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
 													? "tsEcoFriendlyTimeC"
 													: "" 
-					)+"\">"+slot.getDisplayString(true)+"</div>\n");
+					)+"\">"+slot.getDisplayString(true)+ "<span class=\"so-first-delivery\">(" + soFirstNextText + " Delivery "+slot.getFormattedSoFirstDeliveryDate()+")</span>" +"</div>\n");
+	
 	
 	/* add hidden ts info */
 	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getStartDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");

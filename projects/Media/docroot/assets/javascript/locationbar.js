@@ -6,7 +6,6 @@
 		locationHandlerAPI = '/api/locationhandler.jsp',
 		locationMessages = document.getElementById('location-messages');
 	
-	
 	var setAddress = function(zip,address){
 		if(!zip || !address) return;
 		if(address.length) {
@@ -58,6 +57,7 @@
 	function updateMessagesCount() {
 		var $messages_count = $('.messages-count');
 		var curCount = 0;
+		var soCount = 0;
 		
 		$messages_count.data('count', ($messages_count.data('count') || $messages_count.attr('data-count') || curCount));
 
@@ -65,10 +65,15 @@
 		
 		curCount++;
 		
+		if($('#activatesoalert .so-activate-alert').length){
+			soCount = $('#activatesoalert .so-activate-alert').length;
+		}
+		
+		
 		$messages_count.data('count', curCount);
-		$messages_count.html(curCount);
+		$messages_count.html(curCount + soCount);
 
-		if (curCount > 0) {
+		if (curCount + soCount > 0) {
 			$('.locabar-messages-section').show();
 		}
 	}

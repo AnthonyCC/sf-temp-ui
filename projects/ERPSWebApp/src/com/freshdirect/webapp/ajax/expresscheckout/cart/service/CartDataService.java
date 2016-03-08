@@ -28,6 +28,7 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpComplaintReason;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -39,6 +40,7 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.coremetrics.CmContextUtility;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -55,6 +57,8 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
@@ -74,16 +78,20 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
+import com.freshdirect.webapp.ajax.expresscheckout.service.StandingOrderHelperService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class CartDataService {
 
@@ -119,11 +127,16 @@ public class CartDataService {
      * @throws JspException
      */
     public CartData loadCartData(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
-        String userId = loadUser(user);
+        String userId = loadUser(user);        
         updateUserAndCart(request, user);
-        FDCartModel cart = loadUserShoppingCart(user, userId);
+        FDCartModel cart = loadUserShoppingCart(user, userId);      
         if (user.getIdentity() != null) {
             FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+        }
+        
+        if(StandingOrderHelper.isSO3StandingOrder(user)) {
+        	FDStandingOrder so = user.getCurrentStandingOrder();
+        	cart.setTip(so.getTipAmount());
         }
         CartData cartData = new CartData();
         synchronized (cart) {
@@ -159,11 +172,17 @@ public class CartDataService {
     public CartData updateCartData(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
         FDCartModel cart = loadUserShoppingCart(user, userId);
+        //cart.setTip(5.00);
         CartData cartData = new CartData();
         synchronized (cart) {
             updateCart(request, user, userId, cart, cartData);
             updateUserAndCart(request, user);
             populateCartData(user, request, userId, cart, cartData);
+            if(StandingOrderHelper.isSO3StandingOrder(user)){
+				final HttpSession session = request.getSession();
+            	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+            	FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
+            }
         }
         return cartData;
     }
@@ -235,6 +254,13 @@ public class CartDataService {
             String orderId = modifyCart.getOriginalOrder().getErpSalesId();
             session.setAttribute("MODIFIED" + orderId, orderId);
             modifyCartData.setOrderId(orderId);
+            try {
+				FDOrderI order=FDCustomerManager.getOrder(orderId);
+				modifyCartData.setSoName(order.getStandingOrderName());
+				modifyCartData.setSoOrderDate(order.getSODeliveryDate());
+			} catch (FDResourceException e) {
+				LOG.error("eRROR while retreiving order details order id"+orderId);
+			}
             mCart.setTransactionSource(null);
             Calendar cal = Calendar.getInstance();
             cal.setTime(modifyCart.getOriginalOrder().getDatePlaced());
@@ -291,7 +317,9 @@ public class CartDataService {
     }
 
     private FDCartModel loadUserShoppingCart(FDUserI user, String userId) throws HttpErrorResponse {
-        FDCartModel cart = user.getShoppingCart();
+        FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?
+        		user.getSoTemplateCart():user.getShoppingCart();
+        
         if (cart == null) {
             LOG.error("No cart found for user " + userId);
             BaseJsonServlet.returnHttpError(500, "No cart found for user " + userId);
@@ -522,17 +550,30 @@ public class CartDataService {
             cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
-            cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
+            if(!StandingOrderHelper.isSO3StandingOrder(user)){
+             cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
+            } 
+            cartData.setDisplayCheckout(StandingOrderHelper.isSO3StandingOrder(user)?false:true);
+            cartData.setSoftLimit(StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()));
+            cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
+            
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
             cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
-            if(FDStoreProperties.isETippingEnabled()) {
-            	cartData.seteTippingEnabled(true);
-	            cartData.setCustomTip(cart.isCustomTip());
-	            cartData.setEtipTotal(JspMethods.formatPrice(cart.getTip()));
-	            cartData.setTipApplied(cart.isTipApplied());
-        	}
+			if (FDStoreProperties.isETippingEnabled()) {
+				if (StandingOrderHelper.isValidStandingOrder(user)) {
+					cartData.setEtipTotal(JspMethods.formatPrice(user
+							.getCurrentStandingOrder().getTipAmount()));
+
+				} else {
+					cartData.setEtipTotal(JspMethods.formatPrice(cart.getTip()));
+				}
+				cartData.seteTippingEnabled(true);
+				cartData.setCustomTip(cart.isCustomTip());
+				cartData.setTipApplied(cart.isTipApplied());
+
+			}
 
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
@@ -741,6 +782,7 @@ public class CartDataService {
             Map<Integer, CartRequestData.Change> changes = reqData.getChange();
             List<FDCartLineI> clines2report = new ArrayList<FDCartLineI>();
             String serverName = request.getServerName();
+            if(null !=changes)
             for (FDCartLineI cartLine : new ArrayList<FDCartLineI>(cartLines)) {
                 Integer id = cartLine.getRandomId();
                 CartRequestData.Change change = changes.get(id);

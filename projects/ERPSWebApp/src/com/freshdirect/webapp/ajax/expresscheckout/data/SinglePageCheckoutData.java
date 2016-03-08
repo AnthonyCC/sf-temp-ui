@@ -8,6 +8,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Section;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
+import com.freshdirect.webapp.ajax.standingorder.StandingOrderResponseData;
 
 public class SinglePageCheckoutData {
 
@@ -22,6 +23,8 @@ public class SinglePageCheckoutData {
 	private FormTimeslotData timeslot;
 	private String redirectUrl;
 	private HeaderData headerData;
+	private boolean showSOProduct;
+	private StandingOrderResponseData standingOrderResponseData;
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -110,4 +113,24 @@ public class SinglePageCheckoutData {
 	public void setHeaderData(HeaderData headerData) {
 		this.headerData = headerData;
 	}
+
+	public boolean isShowSOProduct() {
+		return showSOProduct;
+	}
+
+	public void setShowSOProduct(boolean showSOProduct) {
+		this.showSOProduct = showSOProduct;
+	}
+
+	public StandingOrderResponseData getStandingOrderResponseData() {
+		return standingOrderResponseData;
+	}
+
+	public void setStandingOrderResponseData(
+			StandingOrderResponseData standingOrderResponseData) {
+		this.standingOrderResponseData = standingOrderResponseData;
+	}
+
+
+	
 }

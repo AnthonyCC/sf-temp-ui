@@ -27,6 +27,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationErr
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.fdstore.UnattendedDeliveryTag;
+import com.freshdirect.webapp.util.StandingOrderHelper;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class DeliveryAddressServlet extends BaseJsonServlet {
 
@@ -41,7 +43,6 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
             PageAction pageAction = FormDataService.defaultService().getPageAction(deliveryAddressRequest);
             ValidationResult validationResult = new ValidationResult();
             FormDataResponse deliveryAddressResponse = FormDataService.defaultService().prepareFormDataResponse(deliveryAddressRequest, validationResult);
-
             if (pageAction != null) {
                 switch (pageAction) {
                     case GET_DELIVERY_ADDRESS_METHOD: {
@@ -69,10 +70,16 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {
                         DeliveryAddressService.defaultService().deleteDeliveryAddressMethod(deliveryAddressRequest, request.getSession(), user);
+						if(StandingOrderHelper.isSO3StandingOrder(user)){
+							user.getCurrentStandingOrder().setAddressId(null);
+						}
                         break;
                     }
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
+						if(StandingOrderHelper.isSO3StandingOrder(user)){
+							user.getCurrentStandingOrder().setAddressId(deliveryAddressId);
+						}
                         String ebtPaymentRemovalApproved = FormDataService.defaultService().get(deliveryAddressRequest, "ebtPaymentRemovalApproved");
                         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
                         ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
@@ -96,6 +103,17 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     deliveryAddressResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction, validationResult));
                 }
             }
+			if(StandingOrderHelper.isSO3StandingOrder(user)
+					&& validationResult.getErrors().isEmpty() ){
+				try {
+ 					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),deliveryAddressResponse.getSubmitForm().getResult());
+
+					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
+					deliveryAddressResponse.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
+
+				} catch (FDResourceException e) {
+					BaseJsonServlet.returnHttpError(500, "Error while selecting delivery address for user " + user.getUserId(), e);  				}
+			}
             deliveryAddressResponse.getSubmitForm().setSuccess(validationResult.getErrors().isEmpty());
             writeResponseData(response, deliveryAddressResponse);
         } catch (FDResourceException e) {

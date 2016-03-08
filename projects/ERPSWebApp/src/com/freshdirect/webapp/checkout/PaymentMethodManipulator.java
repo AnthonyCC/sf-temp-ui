@@ -37,6 +37,7 @@ import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentMethodManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( PaymentMethodManipulator.class );
@@ -178,27 +179,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = getCart(user, actionName);
-		
-		if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)){
-			// if user made a successful EBT order, isEbtAccepted flag did not populate at new cart creation correctly -> so making sure this is populated freshly
-            if (user.getShoppingCart().getDeliveryAddress() != null) {
-                DeliveryAddressManipulator.checkAndSetEbtAccepted(user.getShoppingCart().getDeliveryAddress().getZipCode(), user, user.getShoppingCart());
-            }
-		}
-		
-		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !user.isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
-			/*if(null ==getUser().getShoppingCart().getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getUser().getShoppingCart().getPaymentMethod().getPaymentMethodType()) ||
-					!(getUser().getShoppingCart() instanceof FDModifyCartModel)){*/	
-				
-				result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
-				if(null!= cart.getDeliveryAddress() && cart.getDeliveryAddress().isEbtAccepted()){ 
-					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
-				}
-				if(user.hasEBTAlert()){
-					result.addError(new ActionError("ebtPaymentNotAllowed",MessageFormat.format(SystemMessageList.MSG_EBT_NOT_ALLOWED_ON_ALERT, 
-		            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-				}
-//			}
+		// EPT payment is not allowed for Standing order 
+		if(!StandingOrderHelper.isSO3StandingOrder(user)){
+			if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)){
+				// if user made a successful EBT order, isEbtAccepted flag did not populate at new cart creation correctly -> so making sure this is populated freshly
+           		 if (user.getShoppingCart().getDeliveryAddress() != null) {
+               	 DeliveryAddressManipulator.checkAndSetEbtAccepted(user.getShoppingCart().getDeliveryAddress().getZipCode(), user, user.getShoppingCart());
+            	}	
+			}
 		}
 			
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {

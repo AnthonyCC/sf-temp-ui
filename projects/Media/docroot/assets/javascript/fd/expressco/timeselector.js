@@ -109,6 +109,16 @@ var FreshDirect = FreshDirect || {};
         timeslot.renderContent(value);
         timeslot.renderPreview(value);
         timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
+        if($("#soFreq").length > 0){
+        	$("#soFreq").select2({
+				minimumResultsForSearch: Infinity 
+        	});
+        };
+        if($("#soFreq2").length > 0){
+        	$("#soFreq2").select2({
+				minimumResultsForSearch: Infinity 
+        	});
+        };
       }
     },
     serialize:{
@@ -118,7 +128,8 @@ var FreshDirect = FreshDirect || {};
         $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
           ser[k.name] = k.value;
         });
-
+        ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="radio"]:checked').data('sofirstdate')||''; 
+        
         DISPATCHER.signal('server', {
           url: '/api/expresscheckout/timeslot',
           method: 'POST',
@@ -152,6 +163,7 @@ var FreshDirect = FreshDirect || {};
       if (fd.expressco.drawer) {
         fd.expressco.drawer.reset();
       }
+      $("#ec-drawer").trigger("timeselector-update");
     }
   });
 

@@ -4,66 +4,81 @@
  * @param data
  */
 {template .productDisplay autoescape="false"}
-<div class="leftColumn">
-<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
-	<h1>{if $data.productName}{$data.productName}{/if}
-	{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
-	{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
-	{if isNonnull($data.atcItemId)}
-	<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
-	{/if}	
-	{if $data.variantId}
-	<input type="hidden" data-component="productData" data-productdata-name="variantId" name="variantId" value="{$data.variantId}">
-	{/if}	
-  {if $data.pageType}
-	<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
-  {/if}
-	{if $data.skus}
-	<ol class="productDisplay-skulist">
-	{foreach $sku in $data.skus}
-	{if $sku.available}
-	<li>
-		<label>
-			{$sku.label}{sp}
-			{call common.price}
-				{param wasPrice:$sku.wasPrice /}
-				{param price:$sku.price /}
-				{param scaleUnit:$sku.scaleUnit /}
-				{param aboutPriceText:$sku.aboutPriceText /}
-			{/call}
-			<input type="radio" name="skuCode" value="{$sku.skuCode}" {if $sku.selected}checked{/if} data-component="productData" data-productdata-name="skuCode">
-		</label>
-		<div>{call common.rating.expert}{param ratingValue:$sku.expertRating /}{/call}</div>
-		<div>{call common.rating.wine}{param ratingValue:$sku.wineRating /}{/call}</div>
-		<div class="productDisplay-sustrating">{if $sku.sustainabilityRating}<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a> -{call common.rating.sustainability}{param ratingValue:$sku.sustainabilityRating /}{/call}{/if}</div>
-	</li>
-	{/if}
-	{/foreach}
-	</ol>
-	{/if}
-	<div class="productDisplay-skuconfig" {if $data.cartData and $data.cartData.incart}data-component="incartinfo" data-amount="{$data.cartData.incart}"{/if}></div>
-  <div class="buttons">
-	{if $data.ATCApply}
-		<span data-component="applyCustomization">
-      <button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
-    </span>
-	{else}
-      <button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
-      <button type="button" class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</button>
-		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br>
-      <button type="button" class="cssbutton blue" data-component="saveCustomization"><span class="message">Save customization</span></button>
-    </div>{/if}
-	{/if}
-  </div>
-	{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}
-	{if $data.listId}<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$data.listId}">{/if}
-</div>
-<div class="rightColumn">
-	/*<a href="/product.jsp?catId={$data.catId}&productId={$data.productId}" class="moreinfo">More about this product</a>*/
-	<a href="{$data.productPageUrl}" class="learnmore">Learn more</a>
-	<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
-</form>
-</div>
+	<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
+		<div class="leftColumn">
+			<a href="{$data.productPageUrl}" class="learnmore">Learn more</a>
+			<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
+		</div>
+		<div class="rightColumn">
+			<h1>{if $data.productName}{$data.productName}{/if}
+			{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
+			{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
+			{if isNonnull($data.atcItemId)}
+				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
+			{/if}	
+			{if $data.variantId}
+				<input type="hidden" data-component="productData" data-productdata-name="variantId" name="variantId" value="{$data.variantId}">
+			{/if}	
+			{if $data.pageType}
+				<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
+			{/if}
+			{if $data.skus}
+				<ol class="productDisplay-skulist">
+					{foreach $sku in $data.skus}
+						{if $sku.available}
+							<li>
+								<label>
+									{$sku.label}{sp}
+									{call common.price}
+										{param wasPrice:$sku.wasPrice /}
+										{param price:$sku.price /}
+										{param scaleUnit:$sku.scaleUnit /}
+										{param aboutPriceText:$sku.aboutPriceText /}
+									{/call}
+									<input type="radio" name="skuCode" value="{$sku.skuCode}" {if $sku.selected}checked{/if} data-component="productData" data-productdata-name="skuCode">
+								</label>
+								<div>{call common.rating.expert}{param ratingValue:$sku.expertRating /}{/call}</div>
+								<div>{call common.rating.wine}{param ratingValue:$sku.wineRating /}{/call}</div>
+								<div class="productDisplay-sustrating">{if $sku.sustainabilityRating}<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a> -{call common.rating.sustainability}{param ratingValue:$sku.sustainabilityRating /}{/call}{/if}</div>
+							</li>
+						{/if}
+					{/foreach}
+				</ol>
+			{/if}
+		</div>
+		<div class="leftright-bottom">
+			<div class="productDisplay-skuconfig" {if $data.cartData and $data.cartData.incart}data-component="incartinfo" data-amount="{$data.cartData.incart}"{/if}></div>
+			<div class="buttons">
+				{if $data.ATCApply}
+					<span data-component="applyCustomization">
+						<button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
+					</span>
+				{else}
+					<button type="button" class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></button>
+					<button type="button" class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</button>
+					{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br>
+						<button type="button" class="cssbutton blue" data-component="saveCustomization"><span class="message">Save customization</span></button>
+					</div>{/if}
+				{/if}
+			</div>
+			{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}
+			{if $data.listId}<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$data.listId}">{/if}
+
+			{if $data.soData and $data.soData.settingsData and $data.soData.settingsData.soSettings.isEligibleForStandingOrders}
+				{if length($data.soData.settingsData.soData) > 0}
+					<div class="so-container">
+						{call common.soResults /}
+						{call common.soList}
+							{param soData: $data.soData.settingsData.soData /}
+							{param isContainerOpen: $data.soData.settingsData.soSettings.isContainerOpen /}
+							{param selectedSoId: $data.soData.settingsData.soSettings.selectedSoId /}
+						{/call}
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</form>
+	
 {/template}
 
 /**

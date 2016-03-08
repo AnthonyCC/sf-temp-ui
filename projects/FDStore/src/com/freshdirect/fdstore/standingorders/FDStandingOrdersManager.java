@@ -15,13 +15,22 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.services.ILogisticsService;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -35,7 +44,17 @@ import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersHome;
 import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 
+/**
+ * @author kumarramachandran
+ *
+ */
+/**
+ * @author kumarramachandran
+ *
+ */
 public class FDStandingOrdersManager {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDStandingOrdersManager.class);
@@ -95,12 +114,12 @@ public class FDStandingOrdersManager {
 		}
 	}
 
-	public Collection<FDStandingOrder> loadActiveStandingOrders() throws FDResourceException {
+	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			return sb.loadActiveStandingOrders();
+			return sb.loadActiveStandingOrders(isNewSo);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -115,16 +134,41 @@ public class FDStandingOrdersManager {
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			return sb.loadCustomerStandingOrders(identity);
+			Collection<FDStandingOrder> fdStandingOrders=sb.loadCustomerStandingOrders(identity);
+			
+			return fdStandingOrders;
+			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (FDInvalidConfigurationException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error talking to session bean");
 		}
 	}
-
+	public Collection<FDStandingOrder> loadCustomerNewStandingOrders(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			Collection<FDStandingOrder> fdStandingOrders=sb.loadCustomerNewStandingOrders(identity);
+			
+			return fdStandingOrders;
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (FDInvalidConfigurationException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error talking to session bean");
+		}
+	}
 	public FDStandingOrder load(PrimaryKey pk) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -247,6 +291,58 @@ public class FDStandingOrdersManager {
 		return true;
 	}
 
+	public com.freshdirect.logistics.controller.data.Result saveStandingOrderToLogistics(String templateId, 
+			String timeslotId, String dayOfWeek,
+			CustomerAvgOrderSize orderSize,
+			String customerId,ErpAddressModel address,boolean isNewSo) throws FDResourceException {
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			com.freshdirect.logistics.controller.data.Result response = logisticsService.reservesoTemplate(LogisticsDataEncoder.encodeReservesoTemplateRequest(
+					templateId,
+					timeslotId,dayOfWeek,
+					orderSize,
+					customerId,address,isNewSo));
+			return response;			
+		}  catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+		
+	}
+	
+	
+	
+	public com.freshdirect.logistics.controller.data.Result activateStandingOrderInLogistics(String templateId) throws FDResourceException {
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			com.freshdirect.logistics.controller.data.Result response = logisticsService.activateSOTemplate(templateId);
+			return response;			
+		}  catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+		
+	}
+	
+	
+	
+	public com.freshdirect.logistics.controller.data.Result deletesoTemplate(String templateId) throws FDResourceException {
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			com.freshdirect.logistics.controller.data.Result response = logisticsService.deletesoTemplate(templateId);
+			return response;			
+		}  catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+		
+	}
+	
+	
+	
 	public boolean markSaleAltDeliveryDateMovement(String orderId) throws FDResourceException {
 		
 		if ( orderId == null || orderId.trim().equals( "" ) ) {
@@ -281,12 +377,12 @@ public class FDStandingOrdersManager {
 	 * 
 	 * @param ident
 	 * @param cart
-	 * @param standingOrder
+	 * @param FDStandingOrder
 	 * @param isUpdateSO 
 	 * @return primary key of the standing order created
 	 * @throws FDResourceException
 	 */
-	public String manageStandingOrder(FDActionInfo info, FDCartModel cart, FDStandingOrder standingOrder, String saleId) throws FDResourceException {
+	public FDStandingOrder manageStandingOrder(FDActionInfo info, FDCartModel cart, FDStandingOrder standingOrder, String saleId) throws FDResourceException {
 		
 		LOGGER.debug( "manageStandingOrder() starting." );
 		
@@ -350,8 +446,11 @@ public class FDStandingOrdersManager {
 				standingOrder.clearLastError();
 			}
 			
+			standingOrder.setTipAmount(cart.getTip());
+			
 			// #2 Update standing order
-			return save(info, standingOrder, saleId);
+			standingOrder.setId(save(info, standingOrder, saleId));
+			return standingOrder;
 		} catch (FDResourceException e) {
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_SAVE_FAILED);
 			if (standingOrder == null)
@@ -614,6 +713,9 @@ public class FDStandingOrdersManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
+		}catch (FDInvalidConfigurationException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error talking to session bean");
 		}
 	}
 	
@@ -623,13 +725,36 @@ public class FDStandingOrdersManager {
         List<FDOrderInfoI> result = new ArrayList<FDOrderInfoI>();
                   
         for ( ErpSaleInfo i : h.getErpSaleInfos() ) {
-                if ( so.getId().equalsIgnoreCase( i.getStandingOrderId() ) && i.getStatus().isPending() && i.getRequestedDate().after(new Date()) ) {
+                if ( so.getId().equalsIgnoreCase( i.getStandingOrderId() ) && i.getStatus().isPending() && i.getDeliveryCutoffTime().after(new Date()) ) {
                         FDOrderInfoAdapter x = new FDOrderInfoAdapter( i );
                         result.add( x );
                 }
         }
                   
 	return result;
+	}
+
+	/*
+	 * This method is used to get the list of Standing order details for
+	 * upcoming deliveries
+	 * TODO : make the ERPSalesInfo as Map : 
+	 */
+	public Collection<FDStandingOrder>  getAllSOUpcomingOrders(FDUserI user, Collection<FDStandingOrder> sos) throws FDResourceException, FDAuthenticationException {
+
+		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
+		Collection<FDStandingOrder> fdStandingOrders=new ArrayList<FDStandingOrder>();
+		for (FDStandingOrder so : sos) {
+			for (ErpSaleInfo i : h.getErpSaleInfos()) {
+				if (so.getId().equalsIgnoreCase(i.getStandingOrderId()) && ! i.getStatus().isCanceled()
+						&& i.getDeliveryCutoffTime().after(new Date())) {
+					FDOrderInfoAdapter x = new FDOrderInfoAdapter(i);
+					so.setUpcomingDelivery(x);
+					fdStandingOrders.add(so);
+				}
+			}
+		}
+
+		return fdStandingOrders;
 	}
 
 	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException {
@@ -771,5 +896,94 @@ public class FDStandingOrdersManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}		
+	}
+	
+	public Collection<FDStandingOrder> getValidStandingOrder(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			Collection<FDStandingOrder> fdStandingOrders=sb.getValidStandingOrder(identity);
+			
+			return fdStandingOrders;
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public boolean activateStandingOrder(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.activateStandingOrder(so);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	public boolean checkCustomerHasSo(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.checkIfCustomerHasStandingOrder(identity);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public FDStandingOrder getStandingOrderDetails(FDStandingOrder so) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			Collection<FDStandingOrder> standingOrders=new ArrayList<FDStandingOrder>();
+			standingOrders.add(so);
+			standingOrders=sb.getStandingOrderDetails(standingOrders);
+			
+			return  (FDStandingOrder) new ArrayList<FDStandingOrder>(standingOrders).get(0);
+			
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (FDInvalidConfigurationException re) {
+			// TODO Auto-generated catch block
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public boolean updateDefaultStandingOrder(String listId, FDIdentity userIdentity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			 
+
+			return sb.updateDefaultStandingOrder(listId,userIdentity);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} 
 	}
 }

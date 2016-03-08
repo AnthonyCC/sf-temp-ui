@@ -455,7 +455,22 @@
 	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
 	   <url-pattern>/api/contentcache</url-pattern>
 	</servlet-mapping>
-
+	<servlet>
+	   <servlet-name>ManageStandingOrderServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.standingorder.ManageStandingOrderServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>ManageStandingOrderServlet</servlet-name>
+	   <url-pattern>/api/manageStandingOrder</url-pattern>
+	</servlet-mapping>
+	<servlet>
+	   <servlet-name>StandingOrderCartServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.standingorder.StandingOrderCartServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>StandingOrderCartServlet</servlet-name>
+	   <url-pattern>/api/standingOrderCartServlet</url-pattern>
+	</servlet-mapping>
   <servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
 		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>

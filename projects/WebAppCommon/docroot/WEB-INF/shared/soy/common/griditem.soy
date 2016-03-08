@@ -44,6 +44,7 @@
   {param productNameNoBrand:$item.productNameNoBrand /}
   {param itemId:$item.itemId /}
   {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
+  {param soData:$item.soData /}
 {/call}
 {/template}
 
@@ -125,6 +126,7 @@
   {param useReplacement:$item.useReplacement /}
   {param replacement:$item.replacement /}
   {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
+  {param soData:$item.soData /}
 {/call}
 {/template}
 
@@ -168,10 +170,12 @@
  * @param? itemId atc item id
  * @param productNameNoBrand
  * @param? freeSamplePromoProduct free sample product
+ * @param? soData standing order data
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
-<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
+<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
@@ -293,180 +297,200 @@
  * @param? replacement replacement item
  * @param? useReplacement use replacement item
  * @param? freeSamplePromoProduct free sample product
+ * @param? soData standing order data
  */
 {template .potatoTransactionalGridItem autoescape="false"}
-{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
-<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
-  <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
-    <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
-      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
-    </div>
-  </div>
-  <div class="portrait-item-header">
-    {if $brandName and $productNameNoBrand}
-      {if $discontinued}
-        <b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
-      {else}
-        <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
-      {/if}
-    {else}
-      {if $discontinued}
-        {$productName}
-      {else}
-        <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
-      {/if}
-    {/if}
-    <div class="rating">
-      {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
-      {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
-      {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
-      {if not $customerRating and not $expertRating and not $wineRating and $showRatings}
-        <b class="norating smallrating">Not rated</b>
-      {/if}
-      {if $sustainabilityRating}
-        {call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
-      {/if}
-    </div>
-    {if $salesUnitDescrPDP}
-    <div class="configDescr">
-        {$salesUnitDescrPDP}
-    </div>
-    {/if}
-  </div>
-  {if $freeSamplePromoProduct and $cmEventSource=='ps_caraousal'}
-    <div class="portrait-item-price product-sample-free">FREE</div>
-  {else}
-    <div class="portrait-item-price">
-    {call common.price}
-      {param wasPrice:$wasPrice /}
-      {param price:$price /}
-      {param scaleUnit:$scaleUnit /}
-      {param aboutPriceText:$aboutPriceText /}
-    {/call}
-    {if $dealInfo}
-      {if $grpLink}
-      <a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-      {else}
-      <div class="portrait-item-price-deal">{$dealInfo}</div>
-      {/if}
-    {/if}
-    {if $savingString}
-      {if $grpLink}
-      <a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
-      {else}
-      <div class="portrait-item-price-deal">{$savingString}</div>
-      {/if}
-    {/if}
-    {if $utPrice}
-      <span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-    {/if}
-    {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
-    </div>
-  {/if}
-  {if $showConfig}
-  <div class="portrait-item-configuration">
-    {if $quantity and $quantity.quantity}
-    <div class="quantity">Quantity: <span data-productdata-visualized="quantity" data-quantity-original="{$quantity.quantity}">{$quantity.quantity}</span></div>
-    {call common.subtotal}
-      {param availMatPrices:$availMatPrices /}
-      {param suRatios:$suRatios /}
-      {param grpPrices:$grpPrices /}
-      {param cvPrices:$cvPrices /}
-      {param qInc:$quantity.qInc /}
-      {param qMin:$quantity.qMin /}
-      {param qMax:$quantity.qMax /}
-      {param soldBySalesUnit:$soldBySalesUnit /}
-    {/call}
-    {/if}
-  </div>
-  {/if}
-  {if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{param detailsFirst:true /}{/call}</div>{/if}
-  {if $nutritionSortValue}
-  <div class="nutritionSortInfo">
-    {if $nutritionSortTitle}<div class="nutritionSortTitle"><strong>{$nutritionSortTitle}</strong></div>{/if}
-    <div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
-  </div>
-  {/if}
-  <form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
-  {call common.potatoTransactionalGridItemControls}
-    {param customizePopup:$customizePopup /}
-    {param hasTerms:$hasTerms /}
-    {param soldBySalesUnit:$soldBySalesUnit /}
-    {param salesUnit:$salesUnit /}
-    {param quantity:$quantity /}
-    {param availMatPrices:$availMatPrices /}
-    {param suRatios:$suRatios /}
-    {param grpPrices:$grpPrices /}
-    {param cvPrices:$cvPrices /}
-    {param qInc:$quantity ? $quantity.qInc : 0/}
-    {param productId:$productId /}
-    {param catId:$catId /}
-    {param variantId:$variantId /}
-    {param pageType:$pageType /}
-    {param productId:$productId /}
-    {param skuCode:$skuCode /}
-    {param configuration:$configuration /}
-    {param atcItemId:$atcItemId /}
-    {param isAlcoholic:$isAlcoholic /}
-    {param availabilityMessage:$availabilityMessage /}
-    {param productPageUrl:$productPageUrl /}
-    {param cmEventSource:$cmEventSource /}
-    {param listId:$listId /}
-    {param freeSamplePromoProduct:$freeSamplePromoProduct /}
-  {/call}
-  {call common.atcInCart}
-    {param amount:$inCartAmount /}
-    {param atcItemId:$atcItemId /}
-  {/call}
-  {if $originalLineId}
-    <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
-  {/if}
-  </form>
-  {if not $freeSamplePromoProduct}
-  <div class="portrait-item-atl">
-    <button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</button>
-    {if $listId and $originalLineId}
-    <button class="deletefromlist cssbutton white transparent small icon-trash-new2-before" aria-haspopup="true" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</button>
-    <button class="editinlist cssbutton purple transparent small" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</button>
-    <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}" />
-    {/if}
-  </div>
-  {/if}
-  {if $replacement}
-  <div class="portrait-item-replacement">
-    {if $useReplacement}
-    <button class="cssbutton green transparent">We Recommend</button>
-    {else}
-    We Recommend: <button class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</button>
-    {/if}
-  </div>
-  {/if}
-  {if $relatedItem}
-  <ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
-    {call common.transactionalGridItem}
-      {param item:$relatedItem /}
-      {param extraClass:$extraClass /}
-    {/call}
-  </ul>
-  {/if}
-  {if $useReplacement and $replacement}
-  <ul class="relatedItem" data-component="relateditem">
-    {call common.transactionalGridItem}
-      {param item:$replacement /}
-      {param extraClass:$extraClass /}
-    {/call}
-  </ul>
-  {/if}
-  {if $salesUnit and length($salesUnit)}
-    {foreach $su in $salesUnit}
-      {if $su.selected}
-        <input type="hidden" value="{$su.id}" data-productdata-name="salesUnit" data-component="productData" data-salesunit-original="{$su.id}"/>
-      {/if}
-    {/foreach}
-  {/if}
-</li>
+	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
+	{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
+	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
+
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+		<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
+			<div class="portrait-item-burst_wrapper">
+				<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+				{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
+			</div>
+		</div>
+		<div class="portrait-item-header">
+		{if $brandName and $productNameNoBrand}
+			{if $discontinued}
+				<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
+			{else}
+				<a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+			{/if}
+		{else}
+			{if $discontinued}
+				{$productName}
+			{else}
+				<a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+			{/if}
+		{/if}
+		<div class="rating">
+			{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+			{call common.rating.expert}{param ratingValue:$expertRating /}{/call}
+			{call common.rating.wine}{param ratingValue:$wineRating /}{/call}
+			{if not $customerRating and not $expertRating and not $wineRating and $showRatings}
+				<b class="norating smallrating">Not rated</b>
+			{/if}
+			{if $sustainabilityRating}
+				{call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
+			{/if}
+		</div>
+			{if $salesUnitDescrPDP}
+				<div class="configDescr">
+					{$salesUnitDescrPDP}
+				</div>
+			{/if}
+		</div>
+		{if $freeSamplePromoProduct and $cmEventSource=='ps_caraousal'}
+			<div class="portrait-item-price product-sample-free">FREE</div>
+		{else}
+			<div class="portrait-item-price">
+				{call common.price}
+					{param wasPrice:$wasPrice /}
+					{param price:$price /}
+					{param scaleUnit:$scaleUnit /}
+					{param aboutPriceText:$aboutPriceText /}
+				{/call}
+				{if $dealInfo}
+					{if $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+					{else}
+					<div class="portrait-item-price-deal">{$dealInfo}</div>
+					{/if}
+				{/if}
+				{if $savingString}
+					{if $grpLink}
+					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+					{else}
+					<div class="portrait-item-price-deal">{$savingString}</div>
+					{/if}
+				{/if}
+				{if $utPrice}
+					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+				{/if}
+				{if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
+			</div>
+		{/if}
+		{if $showConfig}
+			<div class="portrait-item-configuration">
+				{if $quantity and $quantity.quantity}
+					<div class="quantity">Quantity: <span data-productdata-visualized="quantity" data-quantity-original="{$quantity.quantity}">{$quantity.quantity}</span></div>
+					{call common.subtotal}
+						{param availMatPrices:$availMatPrices /}
+						{param suRatios:$suRatios /}
+						{param grpPrices:$grpPrices /}
+						{param cvPrices:$cvPrices /}
+						{param qInc:$quantity.qInc /}
+						{param qMin:$quantity.qMin /}
+						{param qMax:$quantity.qMax /}
+						{param soldBySalesUnit:$soldBySalesUnit /}
+					{/call}
+				{/if}
+			</div>
+		{/if}
+		{if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{param detailsFirst:true /}{/call}</div>{/if}
+		{if $nutritionSortValue}
+			<div class="nutritionSortInfo">
+				{if $nutritionSortTitle}<div class="nutritionSortTitle"><strong>{$nutritionSortTitle}</strong></div>{/if}
+				<div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
+			</div>
+		{/if}
+		<form class="atc" id="atc_form_{$catId}_{$productId}" fdform="atc_form_{$catId}_{$productId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart">
+			{call common.potatoTransactionalGridItemControls}
+				{param customizePopup:$customizePopup /}
+				{param hasTerms:$hasTerms /}
+				{param soldBySalesUnit:$soldBySalesUnit /}
+				{param salesUnit:$salesUnit /}
+				{param quantity:$quantity /}
+				{param availMatPrices:$availMatPrices /}
+				{param suRatios:$suRatios /}
+				{param grpPrices:$grpPrices /}
+				{param cvPrices:$cvPrices /}
+				{param qInc:$quantity ? $quantity.qInc : 0/}
+				{param productId:$productId /}
+				{param catId:$catId /}
+				{param variantId:$variantId /}
+				{param pageType:$pageType /}
+				{param productId:$productId /}
+				{param skuCode:$skuCode /}
+				{param configuration:$configuration /}
+				{param atcItemId:$atcItemId /}
+				{param isAlcoholic:$isAlcoholic /}
+				{param availabilityMessage:$availabilityMessage /}
+				{param productPageUrl:$productPageUrl /}
+				{param cmEventSource:$cmEventSource /}
+				{param listId:$listId /}
+				{param freeSamplePromoProduct:$freeSamplePromoProduct /}
+			{/call}
+			{call common.atcInCart}
+				{param amount:$inCartAmount /}
+				{param atcItemId:$atcItemId /}
+			{/call}
+			{if $originalLineId}
+				<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
+			{/if}
+		</form>
+		{if not $freeSamplePromoProduct}
+			{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
+				{call common.soShowBtn /}
+			{/if}
+			<div class="portrait-item-atl">
+				<button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton cssbutton-flat purpleborder" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Add to List</button>
+				{if $listId and $originalLineId}
+					<button class="deletefromlist cssbutton white transparent small icon-trash-new2-before" aria-haspopup="true" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Remove</button>
+					<button class="editinlist cssbutton purple transparent small" data-itemname="{$productName}" data-listid="{$listId}" data-itemid="{$originalLineId}">Save Changes</button>
+					<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}" />
+				{/if}
+			</div>
+		{/if}
+		{if $replacement}
+			<div class="portrait-item-replacement">
+				{if $useReplacement}
+					<button class="cssbutton green transparent">We Recommend</button>
+				{else}
+					We Recommend: <button class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</button>
+				{/if}
+			</div>
+		{/if}
+		{if $relatedItem}
+			<ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
+				{call common.transactionalGridItem}
+					{param item:$relatedItem /}
+					{param extraClass:$extraClass /}
+				{/call}
+			</ul>
+		{/if}
+		{if $useReplacement and $replacement}
+			<ul class="relatedItem" data-component="relateditem">
+				{call common.transactionalGridItem}
+					{param item:$replacement /}
+					{param extraClass:$extraClass /}
+				{/call}
+			</ul>
+		{/if}
+		{if $salesUnit and length($salesUnit)}
+			{foreach $su in $salesUnit}
+				{if $su.selected}
+				<input type="hidden" value="{$su.id}" data-productdata-name="salesUnit" data-component="productData" data-salesunit-original="{$su.id}"/>
+				{/if}
+			{/foreach}
+		{/if}
+		
+		{if $isEligibleForStandingOrders}
+			{if length($soData.settingsData.soData) == 0}
+				<div class="portrait-item-so-container">
+					<div class="portrait-item-so">
+						<div class="portrait-item-so-recurring">
+							{call common.soRecurring}
+								{param useButton: false /}
+							{/call}
+						</div>
+					</div>
+				</div>
+			{/if}
+		{/if}
+	</li>
 {/template}
 
 /**
@@ -602,7 +626,7 @@
           {else}
             <div class="subtotalPlaceholder"></div>
           {/if}
-          <button type="button" class="customize cssbutton orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</button>
+          <button type="button" class="customize cssbutton cssbutton-flat orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</button>
         {else}
           {if $quantity}
             {call common.subtotal}
@@ -616,7 +640,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <button type="button" class="addtocart cssbutton orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
+            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
           {/if}
         {/if}
       </div>
@@ -688,3 +712,4 @@
 		</div>
     {/if}
 {/template}
+

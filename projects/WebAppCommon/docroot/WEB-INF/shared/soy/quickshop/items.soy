@@ -116,83 +116,83 @@
  * @param? replaced if true, then item is replaced
  */
 {template .availableItem autoescape="false"}
-{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
-{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
-<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
-	<div class="itemlist-item-productimage_wrapper">
-		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
-			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-		</div>
-	</div>
-  <div class="itemlist-item-header-buttons">
-    {if $type == 'shopfromlists' and not $replaced}
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save">save changes</button>
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
-    {/if}
-    <button class="addtolist">add to list</button>
-  </div>
-	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{param tempConfig:$tempConfig /}{param replaced:$replaced /}{/call}</div>
-	<div class="itemlist-item-controls" data-component="product-controls">
-		<div class="itemlist-item-controls-subtotal">
-		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
-			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
-		{/if}{/foreach}
-		{call common.quantitybox}
-      {param quantity:$item.quantity /}
-    {/call}
-		{call common.subtotal}
-    		{param availMatPrices:$item.availMatPrices /}
-    		{param suRatios:$item.suRatios /}
-        	{param grpPrices:$item.grpPrices /}
-        	{param cvPrices:$item.cvPrices /}
-        	{param qInc:$item.quantity.qInc /}
-		{/call}
-		</div>
-		<div class="itemlist-item-addtocart">
-			{if $replaced}
-				{if $item.customizePopup}<button class="customize {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">customize</button>
-				{else}<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
+	{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
+	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
+	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				{if $item.discontinued}
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
+				{else}
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
 				{/if}
-			{else}
-				{if not $item.customizePopup }<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
-				{else}<button class="customize {$inCart}" data-component="customizeButton" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
-				{/if}
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
+		</div>
+		<div class="itemlist-item-header-buttons">
+			{if $type == 'shopfromlists' and not $replaced}
+				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save">save changes</button>
+				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
 			{/if}
-			{call common.atcInCart}
-				{param amount:$item.inCartAmount /}
+			<button class="addtolist">add to list</button>
+		</div>
+		<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{param tempConfig:$tempConfig /}{param replaced:$replaced /}{/call}</div>
+		<div class="itemlist-item-controls" data-component="product-controls">
+			<div class="itemlist-item-controls-subtotal">
+				{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
+					<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
+				{/if}{/foreach}
+				{call common.quantitybox}
+					{param quantity:$item.quantity /}
+				{/call}
+				{call common.subtotal}
+					{param availMatPrices:$item.availMatPrices /}
+					{param suRatios:$item.suRatios /}
+					{param grpPrices:$item.grpPrices /}
+					{param cvPrices:$item.cvPrices /}
+					{param qInc:$item.quantity.qInc /}
+				{/call}
+			</div>
+			<div class="itemlist-item-addtocart">
+				{if $replaced}
+					{if $item.customizePopup}<button class="customize {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">customize</button>
+					{else}<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
+					{/if}
+				{else}
+					{if not $item.customizePopup }<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
+					{else}<button class="customize {$inCart}" data-component="customizeButton" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
+					{/if}
+				{/if}
+				{call common.atcInCart}
+					{param amount:$item.inCartAmount /}
+					{param atcItemId:$item.itemId /}
+				{/call}
+			</div>
+			<div class="itemlist-item-price">
+				{call common.price}
+					{param wasPrice:$item.wasPrice /}
+					{param price:$item.price /}
+					{param scaleUnit:$item.scaleUnit /}
+					{param aboutPriceText:$item.aboutPriceText /}
+				{/call}
+				{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
+				{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
+				{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
+				{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
+			</div>
+			{call common.productData}
+				{param productId:$item.productId /}
+				{param catId:$item.catId /}
+				{param skuCode:$item.skuCode /}
+				{param listId:$item.listId /}
+				{param configuration:$item.configuration /}
 				{param atcItemId:$item.itemId /}
+				{param isAlcoholic:$item.alcoholic /}
+				{param originalLineId:$item.originalLineId /}
+				{param productPageUrl:$item.productPageUrl /}
 			{/call}
 		</div>
-		<div class="itemlist-item-price">
-			{call common.price}
-				{param wasPrice:$item.wasPrice /}
-				{param price:$item.price /}
-				{param scaleUnit:$item.scaleUnit /}
-				{param aboutPriceText:$item.aboutPriceText /}
-			{/call}
-			{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
-			{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
-			{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
-			{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
-		</div>
-		{call common.productData}
-			{param productId:$item.productId /}
-			{param catId:$item.catId /}
-			{param skuCode:$item.skuCode /}
-			{param listId:$item.listId /}
-			{param configuration:$item.configuration /}
-			{param atcItemId:$item.itemId /}
-			{param isAlcoholic:$item.alcoholic /}
-			{param originalLineId:$item.originalLineId /}
-			{param productPageUrl:$item.productPageUrl /}
-		{/call}
-	</div>
-</li>
+	</li>
 {/template}
 
 
@@ -205,157 +205,161 @@
  * @param? replaced if true, then item is replaced
  */
 {template .availableItemQS22 autoescape="false"}
-{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
-{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
-<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}>
-	<form class="itemlist-item-controls smaller" data-component="product-controls" action="#" fdform="qsatc_{$item.itemId}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
-		<div class="itemlist-item-controls-subtotal">
-		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
-			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
-		{/if}{/foreach}
-    {if not $item.customizePopup}
-      {call common.atcControls}
-        {param soldBySalesUnit:$item.soldBySalesUnit /}
-        {param salesUnit:$item.salesUnit /}
-        {param quantity:$item.quantity /}
-        {param cssbuttons:true /}
-      {/call}
-      {call common.subtotal}
-        {param availMatPrices:$item.availMatPrices /}
-        {param suRatios:$item.suRatios /}
-        {param grpPrices:$item.grpPrices /}
-        {param cvPrices:$item.cvPrices /}
-        {param qMin:$item.quantity.qMin /}
-        {param qMax:$item.quantity.qMax /}
-        {param qInc:$item.quantity.qInc /}
-      {/call}
-    {else}
-      {if $item.quantity and $item.quantity.quantity > 0}
-        <input type="hidden" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true" value="{$item.quantity.quantity}" />
-      {/if}
-    {/if}
-		</div>
-		<div class="itemlist-item-addtocart">
-			{if $replaced}
-				{if $item.customizePopup}<button fdform-default-button type="button" class="customize cssbutton orange small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
-				{else}<button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+	{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : '')) /}
+	{let $inCart: ($item.inCartAmount > 0) ? 'incart' :'' /}
+	{let $isEligibleForStandingOrders: ($item.soData and $item.soData.settingsData.soSettings and $item.soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
+	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.productId}"{/if}>
+		<form class="itemlist-item-controls smaller" data-component="product-controls" action="#" fdform="qsatc_{$item.itemId}" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
+			<div class="itemlist-item-controls-subtotal">
+				{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
+					<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
+				{/if}{/foreach}
+				{if not $item.customizePopup}
+					{call common.atcControls}
+						{param soldBySalesUnit:$item.soldBySalesUnit /}
+						{param salesUnit:$item.salesUnit /}
+						{param quantity:$item.quantity /}
+					{/call}
+					{call common.subtotal}
+						{param availMatPrices:$item.availMatPrices /}
+						{param suRatios:$item.suRatios /}
+						{param grpPrices:$item.grpPrices /}
+						{param cvPrices:$item.cvPrices /}
+						{param qMin:$item.quantity.qMin /}
+						{param qMax:$item.quantity.qMax /}
+						{param qInc:$item.quantity.qInc /}
+					{/call}
+				{else}
+					{if $item.quantity and $item.quantity.quantity > 0}
+						<input type="hidden" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true" value="{$item.quantity.quantity}" />
+					{/if}
 				{/if}
+			</div>
+			<div class="itemlist-item-addtocart">
+				{if $replaced}
+					{if $item.customizePopup}<button fdform-default-button type="button" class="customize cssbutton orange cssbutton-flat small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
+					{else}<button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+					{/if}
+				{else}
+					{if not $item.customizePopup }<button fdform-default-button type="button" class="addtocart cssbutton cssbutton-flat orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+					{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
+					{/if}
+				{/if}
+				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
+					{call common.soResults /}
+					{call common.soShowBtn /}
+				{/if}
+				{call common.atcInCart}
+					{param amount:$item.inCartAmount /}
+					{param atcItemId:$item.itemId /}
+				{/call}
+			</div>
+			{call common.productData}
+				{param productId:$item.productId /}
+				{param catId:$item.catId /}
+				{param skuCode:$item.skuCode /}
+				{param listId:$item.listId /}
+				{param configuration:$item.configuration /}
+				{param atcItemId:$item.itemId /}
+				{param isAlcoholic:$item.alcoholic /}
+				{param originalLineId:$item.originalLineId /}
+				{param productPageUrl:$item.productPageUrl /}
+			{/call}
+		</form>
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				{if $item.discontinued}
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
+				{else}
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+				{/if}
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
+			{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+		</div>
+		<div class="itemlist-center-content">
+			<div class="itemlist-item-header">
+				{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
+				{if $item.discontinued}
+					<span class="itemlist-item-header-name">{$item.productName}</span>{sp}
+				{else}
+					<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
+				{/if}
+				{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
+				{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
+				{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}
+				<div class="subtitle">
+					{if $item.configDescr}<i class="itemlist-item-header-configuration">
+						{if $tempConfig}
+							Temporary customization:</i><br>{$item.configDescr}
+						{else}
+							{$item.configDescr}</i>
+						{/if}
+					{/if}
+					/**
+					 * APPDEV-4123
+					 */
+					{if $item.showMsg}
+						<div style="color:#CC0000"><strong>Not available as originally customized.Please Customize.</strong></div>
+					{/if} 
+					<div class="item-price">
+						{call common.price}
+							{param wasPrice:$item.wasPrice /}
+							{param price:$item.price /}
+							{param scaleUnit:$item.scaleUnit /}
+							{param aboutPriceText:$item.aboutPriceText /}
+						{/call}
+						{if $item.taxAndDeposit}<i class="tax">{$item.taxAndDeposit}</i>{/if}
+					</div>
+				</div>
+    				{if $item.available}
+					<div class="availability">
+						{call common.availabilityMessage}{param item:$item /}{/call}
+					</div>
+    				{/if}
+			</div>
+			<div class="itemlist-item-price">
+				{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
+				{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
+				{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
+			</div>
+			{if $item.available}
+				<div class="itemlist-item-header-buttons">
+					<button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
+					{if $type == 'shopfromlists' and not $replaced}
+						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
+						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
+					{/if}
+				</div>
 			{else}
-				{if not $item.customizePopup }
-          <button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
-				{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
+				<div class="itemlist-item-unavailable">
+					{if $item.discontinued}
+						<div>Item Discontinued</div>
+					{else}
+						<div>Item Unavailable</div>
+					{/if}
+				</div>
+				{if $type == 'shopfromlists' and not $replaced}
+					<div class="itemlist-item-header-buttons"><button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button></div>
+				{/if}
+				{if $item.replacement and not $item.useReplacement}
+					<div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
 				{/if}
 			{/if}
-			{call common.atcInCart}
-				{param amount:$item.inCartAmount /}
-				{param atcItemId:$item.itemId /}
-			{/call}
+			{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
+				{call common.soRecurring /}
+			{/if}
 		</div>
-		{call common.productData}
-			{param productId:$item.productId /}
-			{param catId:$item.catId /}
-			{param skuCode:$item.skuCode /}
-			{param listId:$item.listId /}
-			{param configuration:$item.configuration /}
-			{param atcItemId:$item.itemId /}
-			{param isAlcoholic:$item.alcoholic /}
-			{param originalLineId:$item.originalLineId /}
-			{param productPageUrl:$item.productPageUrl /}
+	</li>
+	{if $item.replacement and $item.useReplacement}
+		{call quickshop.itemQS22 }
+			{param item:$item.replacement /}
+			{param title:'We recommend:'/}
+			{param type:$type /}
+			{param tempConfig:$tempConfig /}
+			{param replaced:true /}
 		{/call}
-	</form>
-	<div class="itemlist-item-productimage_wrapper">
-		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
-			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
-		</div>
-		{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
-	</div>
-  <div class="itemlist-center-content">
-	<div class="itemlist-item-header">
-		{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
-    {if $item.discontinued}
-      <span class="itemlist-item-header-name">{$item.productName}</span>{sp}
-    {else}
-      <a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
-    {/if}
-		{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
-		{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
-		{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}		
-    <div class="subtitle">
-      {if $item.configDescr}<i class="itemlist-item-header-configuration">
-        {if $tempConfig}
-          Temporary customization:</i><br>{$item.configDescr}
-        {else}
-          {$item.configDescr}</i>
-        {/if}
-      {/if}
- 
-	  /**
-	    * APPDEV-4123
-		*/  
-      {if $item.showMsg}
-      	<div style="color:#CC0000"><strong>Not available as originally customized.Please Customize.</strong></div>
-      {/if} 
-        
-      <div class="item-price">
-        {call common.price}
-          {param wasPrice:$item.wasPrice /}
-          {param price:$item.price /}
-          {param scaleUnit:$item.scaleUnit /}
-          {param aboutPriceText:$item.aboutPriceText /}
-        {/call}
-        {if $item.taxAndDeposit}<i class="tax">{$item.taxAndDeposit}</i>{/if}
-      </div>
-    </div>
-    {if $item.available}
-    <div class="availability">
-      {call common.availabilityMessage}{param item:$item /}{/call}
-    </div>
-    {/if}
-  </div>
-  <div class="itemlist-item-price">
-    {if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
-    {if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
-    {if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
-  </div>
-  {if $item.available}
-  <div class="itemlist-item-header-buttons">
-    <button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
-    {if $type == 'shopfromlists' and not $replaced}
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
-  		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
-    {/if}
-  </div>
-  {else}
-    <div class="itemlist-item-unavailable">
-      {if $item.discontinued}
-        <div>Item Discontinued</div>
-      {else}
-        <div>Item Unavailable</div>
-      {/if}
-    </div>
-    {if $type == 'shopfromlists' and not $replaced}
-    <div class="itemlist-item-header-buttons"><button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button></div>
-    {/if}
-    {if $item.replacement and not $item.useReplacement}
-    <div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
-    {/if}
-  {/if}
-  </div>
-</li>
-{if $item.replacement and $item.useReplacement}
-  {call quickshop.itemQS22 }
-    {param item:$item.replacement /}
-    {param title:'We recommend:'/}
-    {param type:$type /}
-    {param tempConfig:$tempConfig /}
-    {param replaced:true /}
-  {/call}
-{/if}
+	{/if}
 {/template}
 
 /**
@@ -365,87 +369,84 @@
  * @param? changed if true, then item is changed
  */
 {template .YMALItem autoescape="false"}
-{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : ($type == 'tempCust' ? 'Temporary Customization' : ''))) /}
-<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
-	<div class="itemlist-item-productimage_wrapper">
-		<div class="itemlist-item-burst_wrapper">
-      {if $item.discontinued}
-        <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-      {else}
-        <a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
-      {/if}
-			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+	{let $itemTitle: ($title ? $title : ($item.itemTitle ? $item.itemTitle : ($type == 'tempCust' ? 'Temporary Customization' : ''))) /}
+	<li class="itemlist-item {not $item.available ? 'unavailable' : ''}{if $changed}changed{/if}" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				{if $item.discontinued}
+					<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
+				{else}
+					<a href="{$item.productPageUrl}"><img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage"></a>
+				{/if}
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
+			</div>
 		</div>
-	</div>
-  <div class="itemlist-item-header-buttons">
-    <button class="addtolist">add to list</button>
-  </div>
-	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{/call}</div>
-	<div class="itemlist-item-controls" data-component="product-controls">
-		{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
-		<div class="itemlist-item-controls-subtotal">
-		{if not $item.customizePopup}
-			{call common.atcControls}
-				{param soldBySalesUnit:$item.soldBySalesUnit /}
-				{param salesUnit:$item.salesUnit /}
-				{param quantity:$item.quantity /}
-			{/call}
-			{call common.subtotal}
-	    		{param availMatPrices:$item.availMatPrices /}
-	    		{param suRatios:$item.suRatios /}
-          {param grpPrices:$item.grpPrices /}
-          {param cvPrices:$item.cvPrices /}
-          {param qMin:$item.quantity.qMin /}
-          {param qMax:$item.quantity.qMax /}
-          {param qInc:$item.quantity.qInc /}
-			{/call}
-		{/if}
+		<div class="itemlist-item-header-buttons">
+			<button class="addtolist">add to list</button>
 		</div>
-		<div class="itemlist-item-addtocart">
-			{if $item.customizePopup}
-				<button class="customize {if $item.inCartAmount > 0}incart{/if}" data-component="customizeButton" {if $type == 'shopfromlists'}data-hasApply="true"{/if} {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
-				<input type="hidden" value="{$item.quantity.quantity}" data-productdata-name="quantity" data-component="productData">
-				{foreach $salesUnit in $item.salesUnit}
-					{if $salesUnit.selected}
-						<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
-					{/if}
-				{/foreach}
-			{else}
-				<button class="addtocart {if $item.inCartAmount > 0}incart{/if}" data-component="ATCButton">add to cart</button>
-			{/if}
-			{call common.atcInCart}
-				{param amount:$item.inCartAmount /}
+		<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{/call}</div>
+		<div class="itemlist-item-controls" data-component="product-controls">
+			{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
+			<div class="itemlist-item-controls-subtotal">
+				{if not $item.customizePopup}
+					{call common.atcControls}
+						{param soldBySalesUnit:$item.soldBySalesUnit /}
+						{param salesUnit:$item.salesUnit /}
+						{param quantity:$item.quantity /}
+					{/call}
+					{call common.subtotal}
+						{param availMatPrices:$item.availMatPrices /}
+						{param suRatios:$item.suRatios /}
+						{param grpPrices:$item.grpPrices /}
+						{param cvPrices:$item.cvPrices /}
+						{param qMin:$item.quantity.qMin /}
+						{param qMax:$item.quantity.qMax /}
+						{param qInc:$item.quantity.qInc /}
+					{/call}
+				{/if}
+			</div>
+			<div class="itemlist-item-addtocart">
+				{if $item.customizePopup}
+					<button class="customize {if $item.inCartAmount > 0}incart{/if}" data-component="customizeButton" {if $type == 'shopfromlists'}data-hasApply="true"{/if} {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
+					<input type="hidden" value="{$item.quantity.quantity}" data-productdata-name="quantity" data-component="productData">
+					{foreach $salesUnit in $item.salesUnit}
+						{if $salesUnit.selected}
+							<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
+						{/if}
+					{/foreach}
+				{else}
+					<button class="addtocart {if $item.inCartAmount > 0}incart{/if}" data-component="ATCButton">add to cart</button>
+				{/if}
+				{call common.atcInCart}
+					{param amount:$item.inCartAmount /}
+					{param atcItemId:$item.itemId /}
+				{/call}
+			</div>
+			<div class="itemlist-item-price">
+				{call common.price}
+					{param wasPrice:$item.wasPrice /}
+					{param price:$item.price /}
+					{param scaleUnit:$item.scaleUnit /}
+					{param aboutPriceText:$item.aboutPriceText /}
+				{/call}
+				{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
+				{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
+				{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
+			</div>
+			{call common.productData}
+				{param productId:$item.productId /}
+				{param catId:$item.catId /}
+				{param skuCode:$item.skuCode /}
+				{param listId:$item.listId /}
+				{param configuration:$item.configuration /}
 				{param atcItemId:$item.itemId /}
+				{param isAlcoholic:$item.alcoholic /}
+				{param originalLineId:$item.originalLineId /}
+				{param productPageUrl:$item.productPageUrl /}
 			{/call}
 		</div>
-		<div class="itemlist-item-price">
-			{call common.price}
-				{param wasPrice:$item.wasPrice /}
-				{param price:$item.price /}
-				{param scaleUnit:$item.scaleUnit /}
-				{param aboutPriceText:$item.aboutPriceText /}
-			{/call}
-			{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
-			{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
-			{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
-		</div>
-		{call common.productData}
-			{param productId:$item.productId /}
-			{param catId:$item.catId /}
-			{param skuCode:$item.skuCode /}
-			{param listId:$item.listId /}
-			{param configuration:$item.configuration /}
-			{param atcItemId:$item.itemId /}
-			{param isAlcoholic:$item.alcoholic /}
-			{param originalLineId:$item.originalLineId /}
-			{param productPageUrl:$item.productPageUrl /}
-		{/call}
-	</div>
-</li>
+	</li>
 {/template}
-
-
-
 
 /**
  * @param item definition of an item
@@ -460,9 +461,9 @@
 		</div>
 	</div>
 	<div class="itemlist-item-header-buttons">
-    {if $type == 'shopfromlists'}
-      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
-    {/if}
+		{if $type == 'shopfromlists'}
+			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
+		{/if}
 	</div>
 	<div class="itemlist-item-header">
 		{if $item.itemTitle}<b class="itemlist-item-header-title">{$item.itemTitle}</b>{/if}
@@ -485,49 +486,46 @@
  * @param? tempConfig type of an item
  */
 {template .unavailableWithReplacementItem autoescape="false"}
-<li class="itemlist-item unavailable {if $item.useReplacement}replaced{/if}" data-component="product">
-	<div class="itemlist-item-productimage_wrapper">
-		<div class="itemlist-item-burst_wrapper">
-			<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
-			{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{/call}
+	<li class="itemlist-item unavailable {if $item.useReplacement}replaced{/if}" data-component="product">
+		<div class="itemlist-item-productimage_wrapper">
+			<div class="itemlist-item-burst_wrapper">
+				<img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
+				{call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{/call}
+			</div>
 		</div>
-	</div>
-	<div class="itemlist-item-header-buttons">
-    {if $type == 'shopfromlists'}
-      <button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
-    {/if}
-	</div>
-	<div class="itemlist-item-header">
-		{if $item.itemTitle}<b class="itemlist-item-header-title">{$item.itemTitle}</b>{/if}
-		<strong class="itemlist-item-header-name">{$item.productName}</strong>{sp}
-		{if $item.configDescr}<i class="itemlist-item-header-configuration">{$item.configDescr}</i>{/if}
-		{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
-		{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
-		{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
-		{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}
-		<div class="itemlist-item-unavailable">
-			<div>Item Unavailable</div>
-		</div>
-		{if not $item.useReplacement}
-		<div class="itemlist-item-replacement">We Recommend: <span class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</span></div>
-		{else}
-		<hr>
+		<div class="itemlist-item-header-buttons">
+		{if $type == 'shopfromlists'}
+			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
 		{/if}
-	</div>
-</li>
-{if $item.useReplacement}
-	{call quickshop.item }
-		{param item:$item.replacement /}
-		{param title:'Your temporary replacement is:'/}
-		{param type:$type /}
-		{param tempConfig:$tempConfig /}		
-		{param replaced:true /}		
-	{/call}
-{/if}
-
+		</div>
+		<div class="itemlist-item-header">
+			{if $item.itemTitle}<b class="itemlist-item-header-title">{$item.itemTitle}</b>{/if}
+			<strong class="itemlist-item-header-name">{$item.productName}</strong>{sp}
+			{if $item.configDescr}<i class="itemlist-item-header-configuration">{$item.configDescr}</i>{/if}
+			{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
+			{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+			{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
+			{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}
+			<div class="itemlist-item-unavailable">
+				<div>Item Unavailable</div>
+			</div>
+			{if not $item.useReplacement}
+			<div class="itemlist-item-replacement">We Recommend: <span class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</span></div>
+			{else}
+			<hr>
+			{/if}
+		</div>
+	</li>
+	{if $item.useReplacement}
+		{call quickshop.item }
+			{param item:$item.replacement /}
+			{param title:'Your temporary replacement is:'/}
+			{param type:$type /}
+			{param tempConfig:$tempConfig /}
+			{param replaced:true /}
+		{/call}
+	{/if}
 {/template}
-
-
 
 /**
  * @param item definition of an item
@@ -536,37 +534,37 @@
  * @param? replaced is replaced
  */
 {template .itemHeader private="true" autoescape="false"}
-		{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
-		<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
-		{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
-		{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
-		{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
-		{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}		
-		{if $item.configDescr}<br><i class="itemlist-item-header-configuration">
-			{if $tempConfig}
-				Temporary customization:</i><br>{$item.configDescr}
-			{else}
-				{$item.configDescr}</i>
-			{/if}
+	{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
+	<a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
+	{call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
+	{call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
+	{call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
+	{call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}
+	{if $item.configDescr}<br><i class="itemlist-item-header-configuration">
+		{if $tempConfig}
+			Temporary customization:</i><br>{$item.configDescr}
+		{else}
+			{$item.configDescr}</i>
 		{/if}
-    {if $item.customizePopup and not $replaced}
-    <div class="itemlist-item-header-changecustomization">
-      <button data-component="customizeButton" data-hasApply="true" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}><span>Change Customization</span></button>
-    </div>
-    {/if}
-    <div class="availability">
-      {call common.availabilityMessage}{param item:$item /}{/call}
-    </div>
+	{/if}
+	{if $item.customizePopup and not $replaced}
+		<div class="itemlist-item-header-changecustomization">
+			<button data-component="customizeButton" data-hasApply="true" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}><span>Change Customization</span></button>
+		</div>
+	{/if}
+	<div class="availability">
+		{call common.availabilityMessage}{param item:$item /}{/call}
+	</div>
 {/template}
-
 
 /**
  * @param item definition of an item
  * @param? type type of an item
  */
 {template .simpleItem autoescape="false"}
-  {call common.simpleItem}
-    {param item:$item /}
-    {param type:$type /}
-  {/call}
+	{call common.simpleItem}
+		{param item:$item /}
+		{param type:$type /}
+	{/call}
 {/template}
+

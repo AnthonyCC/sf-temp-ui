@@ -102,6 +102,7 @@ var FreshDirect = FreshDirect || {};
       if (id && fd.expressco.drawer) {
         fd.expressco.drawer.reset();
       }
+      $("#ec-drawer").trigger("paymentmethod-update");
     }
   });
   fd.modules.common.forms.register({

@@ -6,6 +6,7 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 
 public class FDShoppingCartService {
@@ -22,7 +23,7 @@ public class FDShoppingCartService {
 	}
 	
 	public void updateShoppingCart(FDUserI user, HttpSession session) throws JspException {
-		FDCartModel cart = user.getShoppingCart();
+		FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)? user.getSoTemplateCart():user.getShoppingCart();
 		FDShoppingCartControllerTag.handleDeliveryPass(user, cart);
 		boolean cartChangedByCleanUp = FDShoppingCartControllerTag.cartCleanUp(true, cart, session, user);
 		session.setAttribute(CART_CHANGED_BY_CLEAN_UP_SESSION_ATTRIBUTE_ID, cartChangedByCleanUp);

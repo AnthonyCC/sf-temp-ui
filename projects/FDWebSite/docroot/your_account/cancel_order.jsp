@@ -64,7 +64,7 @@ final int W_YA_CANCEL_ORDER = 970;
 %>
 <!-- error message handling here -->
 <table width="<%= W_YA_CANCEL_ORDER %>" border="0" cellpadding="0" cellspacing="0">
-	<tr><td class="title18" colspan="3">Cancel Order # <%= orderId %> ?</td>
+	<tr><td class="title18" colspan="3">Cancel <% if (cartOrOrder.getStandingOrderName() != null){ %><%= cartOrOrder.getStandingOrderName() %>, <%= cartOrOrder.getSODeliveryDate() %> Delivery, <% } %>Order # <%= orderId %> ?</td>
 	</tr>
 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_CANCEL_ORDER - 210 %>" height="6"></td><td><img src="/media_stat/images/layout/clear.gif" width="200" height="6"></td></tr>
 	<tr bgcolor="#FF9933">

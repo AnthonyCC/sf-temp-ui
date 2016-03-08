@@ -22,7 +22,8 @@ public class AddToListRequestData implements Serializable {
 	private String recipeId;	// For creating new list from a recipe
 	private String recipeVariantId;	// For creating new list from a recipe - recipe variant (optional)
 	private String recipeName;
-	
+	private String standingOrderId; 
+	private String actiontype;
 //	private Object header;
 	
 //	public Object getHeader() {
@@ -72,5 +73,18 @@ public class AddToListRequestData implements Serializable {
 	public void setRecipeName(String recipeName) {
 		this.recipeName = recipeName;
 	}
+	public String getStandingOrderId() {
+		return standingOrderId;
+	}
+	public void setStandingOrderId(String standingOrderId) {
+		this.standingOrderId = standingOrderId;
+	}
+	public String getActiontype() {
+		return actiontype;
+	}
+	public void setActiontype(String actiontype) {
+		this.actiontype = actiontype;
+	}
+
 
 }

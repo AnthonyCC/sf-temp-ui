@@ -54,7 +54,7 @@ public class FDURLUtil {
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
 
 	public static final String STANDING_ORDER_DETAIL_PAGE_OLD	= "/quickshop/so_details.jsp";
-	public static final String STANDING_ORDER_MAIN_PAGE_OLD	= "/quickshop/standing_orders.jsp";
+	public static final String STANDING_ORDER3_MAIN_PAGE	= "/quickshop/standing_orders.jsp";
 	
 	public static final String STANDING_ORDER_DETAIL_PAGE_NEW	= "/quickshop/qs_so_details.jsp";
 	public static final String STANDING_ORDER_MAIN_PAGE_NEW	= "/quickshop/qs_standing_orders.jsp";
@@ -699,9 +699,10 @@ public class FDURLUtil {
 	}
 	
 	public static String getStandingOrderMainPage( FDUserI user ) {
+		 //TODO Need to check why we need  isEligibleForNewQuickShop
 		boolean newQs = QuickShopRedirector.isEligibleForNewQuickShop( user );
 		StringBuilder uri = new StringBuilder();
-		uri.append( newQs ? STANDING_ORDER_MAIN_PAGE_NEW : STANDING_ORDER_MAIN_PAGE_OLD );
+		uri.append( user.isNewSO3Enabled() ? STANDING_ORDER3_MAIN_PAGE:STANDING_ORDER_MAIN_PAGE_NEW );
 		return uri.toString();
 	}
 

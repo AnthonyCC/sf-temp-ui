@@ -30,6 +30,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.GeoLocationRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
@@ -133,7 +134,10 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	private static final String FULFILLMENTINFO_API ="/delivery/fulfillmentinfo/";
 	
 	private static final String RESERVE_SOTEMPLATE_API ="/reservation/sotemplate/reserve";
-	private static final String CANCEL_SOTEMPLATE_API ="/reservation/sotemplate/cancel";
+	private static final String CANCEL_SOTEMPLATE_API ="/reservation/sotemplate/cancel/";
+	private static final String ACTIVATE_SOTEMPLATE_API ="/reservation/sotemplate/activate/";
+	private static final String REMOVE_SOTEMPLATE_API ="/reservation/sotemplate/delete";
+	
 	private static final String ADD_APARTMENT_API ="/address/apartment/add";
 	private static final String ADD_ADDRESS_API ="/address/add";
 	private static final String ADDRESS_SUGGESTIONS_API ="/address/suggestions";
@@ -231,6 +235,17 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		
 	}
 
+	
+	@Override
+	public Result removeOrdersfromLogistics(RemoveStandingOrderRequest request)throws FDLogisticsServiceException {
+
+		String inputJson = buildRequest(request);
+		Result response =  getData(inputJson, getEndPoint(REMOVE_SOTEMPLATE_API), AddressExceptionResponse.class);
+		return response;
+		
+	}
+	
+	
 	@Override
 	public Result deleteAddressException(String id) throws FDLogisticsServiceException {
 
@@ -395,19 +410,30 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	}
 
 	@Override
-	public Result reservesoTemplate(String companycode,
+	public Result reservesoTemplate(
 			SOReserveTimeslotRequest request) throws FDLogisticsServiceException {
 		String inputJson = buildRequest(request);
 		Result response =  getData(inputJson, getEndPoint(RESERVE_SOTEMPLATE_API), Result.class);
 		return response;
 	}
-
+	
+	
+	
 	@Override
 	public Result deletesoTemplate(String templateId) throws FDLogisticsServiceException {
 		Result response =  getData(null, getEndPoint(CANCEL_SOTEMPLATE_API)+templateId, Result.class);
 		return response;
 	
 	}
+	
+	@Override
+	public Result activateSOTemplate(String templateId) throws FDLogisticsServiceException {
+		Result response =  getData(null, getEndPoint(ACTIVATE_SOTEMPLATE_API)+templateId, Result.class);
+		return response;
+	
+	}
+	
+	
 
 	@Override
 	public DeliveryReservations reserveTimeslot(ReserveTimeslotRequest request) throws FDLogisticsServiceException {

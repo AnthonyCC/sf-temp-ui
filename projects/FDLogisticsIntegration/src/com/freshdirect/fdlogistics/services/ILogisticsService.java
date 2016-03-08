@@ -19,6 +19,7 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
@@ -106,6 +107,8 @@ public interface ILogisticsService {
 	
 	Timeslot getTimeslotById(TimeslotIdRequest timeslotIdRequest) throws FDLogisticsServiceException;
 	
+	Result removeOrdersfromLogistics(RemoveStandingOrderRequest removeStandingOrderRequest) throws FDLogisticsServiceException;
+	
 	StateCounty lookupStateCountyByZip(String zipcode) throws FDLogisticsServiceException;
 
 	public Map<String, Set<StateCounty>> getCountiesByState() throws FDLogisticsServiceException;
@@ -121,7 +124,9 @@ public interface ILogisticsService {
 	
 	Result addSubscription(SubscriptionRequest request) throws FDLogisticsServiceException;
 
-	Result reservesoTemplate(String companycode, SOReserveTimeslotRequest request) throws FDLogisticsServiceException;	
+	Result reservesoTemplate(SOReserveTimeslotRequest request) throws FDLogisticsServiceException;	
+	
+	Result activateSOTemplate(String templateId) throws FDLogisticsServiceException;
 	
 	Result submitOrder(CreateOrderRequest request) throws FDLogisticsServiceException;
 

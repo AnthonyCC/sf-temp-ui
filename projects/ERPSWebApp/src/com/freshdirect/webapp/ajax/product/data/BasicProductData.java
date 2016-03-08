@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.product.data;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 
@@ -157,7 +158,18 @@ public abstract class BasicProductData implements Serializable {
 	 * product has terms & conditions
 	 */
 	protected boolean hasTerms;
+	/*
+	 * standing order data
+	 */
+	protected Map<String, Object> soData;
+	
+	public Map<String, Object> getSoData() {
+		return soData;
+	}
 
+	public void setSoData(Map<String, Object> soData) {
+		this.soData = soData;
+	}
 	
 	public String getProductName() {
 		return productName;

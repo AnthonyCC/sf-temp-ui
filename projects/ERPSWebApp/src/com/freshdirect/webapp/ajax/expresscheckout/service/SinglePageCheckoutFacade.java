@@ -66,15 +66,16 @@ import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutFacade {
 
     private static final String SUB_TOTAL_BOX_JSON_KEY = "subTotalBox";
     public static final String REDIRECT_URL_JSON_KEY = "redirectUrl";
     private static final String ATP_FAILURE_JSON_KEY = "atpFailure";
-    private static final String TIMESLOT_JSON_KEY = "timeslot";
-    private static final String PAYMENT_JSON_KEY = "payment";
-    private static final String ADDRESS_JSON_KEY = "address";
+    public static final String TIMESLOT_JSON_KEY = "timeslot";
+    public static final String PAYMENT_JSON_KEY = "payment";
+    public static final String ADDRESS_JSON_KEY = "address";
     private static final String RESTRICTION_JSON_KEY = "restriction";
     private static final String WARNING_MESSAGE_LABEL = "warning_message";
     private static final String EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL = "/expressco/view_cart.jsp";
@@ -115,16 +116,16 @@ public class SinglePageCheckoutFacade {
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
         FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
+        result.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
+        if(StandingOrderHelper.isSO3StandingOrder(user)){
+            result.setStandingOrderResponseData(StandingOrderHelper.populateResponseData(user.getCurrentStandingOrder(),false));	
+        }
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
         result.setDrawer(DrawerService.defaultService().loadDrawer(user));
         result.setPayment(loadUserPaymentMethods(user, request));
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
-        result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
         result.setAddress(loadAddress(user, request.getSession(), cart));
-        result.setTimeslot(timeslotService.loadCartTimeslot(user, cart));
-
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null || !atpFailureData.getPasses().isEmpty()) {
@@ -132,6 +133,17 @@ public class SinglePageCheckoutFacade {
             }
         }
 
+       if(StandingOrderHelper.isSO3StandingOrder(user)){
+           result.setTimeslot(timeslotService.loadCartTimeslot(user,user.getSoTemplateCart()));
+       }else{
+           result.setTimeslot(timeslotService.loadCartTimeslot(user,user.getShoppingCart()));
+       }
+       
+       if(!StandingOrderHelper.isSO3StandingOrder(user)){
+    	   result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
+    	   result.setRedirectUrl(
+                RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+       }
         return result;
     }
 
@@ -149,7 +161,7 @@ public class SinglePageCheckoutFacade {
         	LOGGER.debug("Skipped restriction check for fraud address");
         }
 
-        FDCartI cart = populateCartDataFromParentOrder(user);
+        FDCartI cart =StandingOrderHelper.isSO3StandingOrder(user)?user.getSoTemplateCart(): populateCartDataFromParentOrder(user);
 
         HttpSession session = request.getSession();
         switch (pageAction) {
@@ -160,8 +172,10 @@ public class SinglePageCheckoutFacade {
             case DELETE_DELIVERY_ADDRESS_METHOD:
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session, cart));
                     result.put(TIMESLOT_JSON_KEY, timeslotService.loadCartTimeslot(user, cart));
-                result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                        availabilityService.selectWarningType(user)));
+					if(!StandingOrderHelper.isSO3StandingOrder(user)){
+	               		 result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                       	 availabilityService.selectWarningType(user)));
+					}
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
@@ -172,8 +186,10 @@ public class SinglePageCheckoutFacade {
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
                         result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                     }
-                    result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                            availabilityService.selectWarningType(user)));
+                    if(!StandingOrderHelper.isSO3StandingOrder(user)){
+                        result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                                availabilityService.selectWarningType(user)));
+                    }
                     result.put(BILLING_REFERENCE_INFO_JSON_KEY, CartDataService.defaultService().populateBillingReferenceInfo(session, user));
                     result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                     result.put(FORM_META_DATA_JSON_KEY, FormMetaDataService.defaultService().populateFormMetaData(user));
@@ -193,7 +209,7 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_TIMESLOT:
             	{
-					result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, user.getShoppingCart()));
+					result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, cart));//user.getShoppingCart()
 					if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
 						result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
 					}
@@ -254,11 +270,22 @@ public class SinglePageCheckoutFacade {
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             }
-            case APPLY_ETIP:{            	            	
-            	CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
-            	loadCartData.setTipAppliedTick(true);
-                result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
-                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
+            case APPLY_ETIP:{ 
+            	
+            	 if(StandingOrderHelper.isSO3StandingOrder(user)) {
+                 	CartData cartData = CartDataService.defaultService().updateCartData(request, user);
+                	cartData.setTipAppliedTick(true);
+                 	result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(cartData));
+                 	result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
+                 } else {            	
+	            	CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
+	            	loadCartData.setTipAppliedTick(true);
+	                result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
+	                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));	              
+                 }
+                
+               
+                
                 break;
             }
             default:
@@ -272,6 +299,14 @@ public class SinglePageCheckoutFacade {
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
+
+        if(StandingOrderHelper.isSO3StandingOrder(user)){
+        	if(null!=user.getCurrentStandingOrder().getAddressId()){
+        		formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
+        	}else{
+        		user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
+        	}
+        }
         formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));
         return formLocation;
     }
@@ -300,7 +335,9 @@ public class SinglePageCheckoutFacade {
 
     private FDCartI populateCartDataFromParentOrder(final FDUserI user) throws FDResourceException {
         FDCartI cart = null;
-        if (user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled()){
+        if(StandingOrderHelper.isSO3StandingOrder(user)){
+        	cart=user.getSoTemplateCart();
+        } else if (user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled()){
             cart = loadOrder(user.getMasqueradeContext().getParentOrderId(), user);
             ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
             deliveryAddress.setId(NVL.apply(deliveryAddress.getId(), "addressId"));
@@ -335,7 +372,9 @@ public class SinglePageCheckoutFacade {
     }
 
     private List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
-        FDCartModel cart = user.getShoppingCart();
+    	
+    	FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart():user.getShoppingCart();
+       
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         HttpSession session = request.getSession();
         if (cart instanceof FDModifyCartModel) {
@@ -439,6 +478,7 @@ public class SinglePageCheckoutFacade {
         updateEwalleTMPLogo(cartPaymentDatas);
         formPaymentData.setPayments(cartPaymentDatas);
         formPaymentData.setSelected(getSelectedPaymentId(cartPaymentDatas));
+
         return formPaymentData;
     }
 
@@ -468,6 +508,9 @@ public class SinglePageCheckoutFacade {
         successPageData.setHeader(contentFactoryService.getExpressCheckoutReceiptHeader(user));
         successPageData.setRightBlock(contentFactoryService.getExpressCheckoutReceiptEditorial(user));
         successPageData.setOrderId(order.getErpSalesId());
+        successPageData.setSoName(order.getStandingOrderName());
+        successPageData.setSoOrderDate(order.getSODeliveryDate());
+
         successPageData.setReceipt(receiptService.populateReceiptData(order, requestURI, user));
         return successPageData;
     }
@@ -483,21 +526,25 @@ public class SinglePageCheckoutFacade {
     private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
-        processGiftCards(user, formPaymentData);
+        
+        if(!StandingOrderHelper.isSO3StandingOrder(user)){
+         processGiftCards(user, formPaymentData);
+        }
 //        boolean isMPCard = false;
 
-        if (formPaymentData.isCoveredByGiftCard()) {
+        if (formPaymentData.isCoveredByGiftCard() && !StandingOrderHelper.isSO3StandingOrder(user)) {
             paymentService.setNoPaymentMethod(user, request);
         } else {
             List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
             formPaymentData.setPayments(userPaymentMethods);
             for (PaymentData data : userPaymentMethods) {
-                if (data.isSelected()) {
-                    formPaymentData.setSelected(data.getId());
-                    break;
-                }
-            }
-            
+                    if (data.isSelected()) {
+                        formPaymentData.setSelected(data.getId());
+                        break;
+                    }
+             } if(StandingOrderHelper.isSO3StandingOrder(user)){
+                  user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
+               }
             formPaymentData.setMpEwalletStatus(getMasterpassEwalletStatus(user, MASTERPASS_EWALLET_TYPE));
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
             
@@ -524,7 +571,7 @@ public class SinglePageCheckoutFacade {
 
         return formPaymentData;
     }
-
+    
     /**
      * @param eWalletType
      * @return

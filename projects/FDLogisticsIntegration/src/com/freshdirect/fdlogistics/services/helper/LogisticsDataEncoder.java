@@ -27,8 +27,10 @@ import com.freshdirect.logistics.controller.data.request.DeliveryZipRequest;
 import com.freshdirect.logistics.controller.data.request.DeliveryZoneRequest;
 import com.freshdirect.logistics.controller.data.request.FdxDeliveryInfoRequest;
 import com.freshdirect.logistics.controller.data.request.PickupLocationsRequest;
+import com.freshdirect.logistics.controller.data.request.RemoveStandingOrderRequest;
 import com.freshdirect.logistics.controller.data.request.ReservationSearchRequest;
 import com.freshdirect.logistics.controller.data.request.ReserveTimeslotRequest;
+import com.freshdirect.logistics.controller.data.request.SOReserveTimeslotRequest;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
 import com.freshdirect.logistics.controller.data.request.SignatureRequest;
 import com.freshdirect.logistics.controller.data.request.SubscriptionRequest;
@@ -195,7 +197,8 @@ public class LogisticsDataEncoder {
 	}
 
 	public static TimeslotRequest encodeTimeslotRequest(List<com.freshdirect.framework.util.DateRange> dateranges,
-			TimeslotEvent event, Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) {
+			TimeslotEvent event, Customer customer, boolean forceOrder, boolean deliveryInfo, 
+			OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		for(com.freshdirect.framework.util.DateRange daterange: dateranges){
 			DateRange range = new DateRange(daterange.getStartDate(), daterange.getEndDate());
@@ -204,7 +207,8 @@ public class LogisticsDataEncoder {
 		
 		TimeslotRequest request = new TimeslotRequest(ranges, customer, 
 				encodeCart(event), context, forceOrder, deliveryInfo , 
-				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(), timeslotContext, event.isLogged(),isNewSO3Enabled);
+				(customer.getAddress().getServiceType()!=null)?customer.getAddress().getServiceType():EnumServiceType.HOME.name(),
+						timeslotContext, event.isLogged(),isNewSO3Enabled);
 		request.setApplicationId(event.getTransactionSource());
 		return request;
 		
@@ -242,6 +246,37 @@ public class LogisticsDataEncoder {
 		request.setCriteriaMap("statusCode", EnumReservationStatus.RESERVED.getCode());
 		return request;
 	}
+	
+	public static SOReserveTimeslotRequest encodeReservesoTemplateRequest(String templateId, 
+			String timeslotId,String dayOfWeek,
+			CustomerAvgOrderSize orderSize,
+			String customerId,ErpAddressModel address,boolean isNewSo) {
+		SOReserveTimeslotRequest request = new SOReserveTimeslotRequest();
+		request.setTemplateId(templateId);
+		request.setTimeslotId(timeslotId);
+		request.setDayOfWeek(dayOfWeek);
+		request.setCustomer(encodeCustomer(address,customerId,orderSize));
+		request.setNewSo(isNewSo);
+		return request;
+	}
+	
+	public static RemoveStandingOrderRequest encodeRemovesoTemplateRequest(List<String> soIds) {
+		RemoveStandingOrderRequest requests = new RemoveStandingOrderRequest();
+	List<SOReserveTimeslotRequest> requestss = new ArrayList<SOReserveTimeslotRequest>();
+		for(String soId:soIds)
+		{
+		SOReserveTimeslotRequest request = new SOReserveTimeslotRequest();
+		request.setTemplateId(soId);
+		request.setTimeslotId(null);
+		request.setDayOfWeek(null);
+		request.setCustomer(null);
+		requestss.add(request);
+		}
+		requests.setSoIds(requestss);
+		return requests;
+	}
+	
+	
 
 	public static SearchRequest encodeReservationByCriteriaRequest(
 			GenericSearchCriteria resvCriteria) {

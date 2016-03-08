@@ -193,6 +193,10 @@ function showLoginDialog(successPage, useSocial) {
 
 $jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');
+	if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
+		$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+	}
+	
 });
 
 $jq('#login_cont_formContent').on('hide', function() {
@@ -206,10 +210,10 @@ $jq(window).on('resize', function(event) {
 	centerLoginModal();
 });
 
-$jq('#location-alerts').on('alertOpen', function() {
+$jq('#sitemessage').on('alertOpen', ['sitemessage'], function(event) {
 	$jq('#locabar_addresses').hide();
 });
-$jq('#location-alerts').on('alertClose', function() {
+$jq('#sitemessage').on('alertClose', ['sitemessage'], function(event) {
 	$jq('#locabar_addresses').show();
 });
 
@@ -259,4 +263,10 @@ $jq('.locabar_triggers').on('keyup', function(event) {
 			}
 		}
 	}
+});
+$jq('#modifyorderalert').on('alertOpen', ['modifyorderalert'], function(event) {
+	$jq('#locabar_orders').hide();
+});
+$jq('#modifyorderalert').on('alertClose', ['modifyorderalert'], function(event) {
+	$jq('#locabar_orders').show();
 });

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,11 +21,18 @@ import javax.ejb.CreateException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+
+import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.customer.EnumServiceType;
+
 import com.freshdirect.common.address.AddressModel;
+
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -33,13 +42,21 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -48,7 +65,11 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+
 import com.freshdirect.fdstore.standingorders.SOResult;
+
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
@@ -58,6 +79,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 
+/**
+ * @author kumarramachandran
+ *
+ */
 public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	
 	private static final long serialVersionUID = 1021328260150726448L;
@@ -98,13 +123,13 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	}
 
 
-	public Collection<FDStandingOrder> loadActiveStandingOrders() throws FDResourceException {
+	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			Collection<FDStandingOrder> ret = dao.loadActiveStandingOrders(conn);
+			Collection<FDStandingOrder> ret = dao.loadActiveStandingOrders(conn,isNewSo);
 			
 			return ret;
 		} catch (SQLException e) {
@@ -116,13 +141,13 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException {
+	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			Collection<FDStandingOrder> ret = dao.loadCustomerStandingOrders(conn, identity);
+			Collection<FDStandingOrder> ret = dao.loadCustomerStandingOrders(conn, identity,false);
 			
 			return ret;
 		} catch (SQLException e) {
@@ -134,6 +159,78 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	public Collection<FDStandingOrder> loadCustomerNewStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			Collection<FDStandingOrder> ret = dao.loadCustomerStandingOrders(conn, identity,true);
+			
+			ret = getStandingOrderDetails(ret);
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadCustomerNewStandingOrders() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	/*
+	 *  To get the standing order details about the product
+	 */
+	public Collection<FDStandingOrder> getStandingOrderDetails(Collection<FDStandingOrder> fdStandingOrders)
+			throws FDResourceException, FDInvalidConfigurationException {
+		
+		FDIdentity customerIdentity = null;
+
+		for (FDStandingOrder so : fdStandingOrders) {
+
+			if (customerIdentity == null) {
+				customerIdentity = getCustomerIdentity(so.getCustomerId());
+			}
+			populateSODetails(customerIdentity, so);
+		}
+
+		return fdStandingOrders;
+
+	}
+
+
+	/**
+	 * @param customerIdentity
+	 * @param so
+	 * @throws FDResourceException
+	 * @throws FDInvalidConfigurationException
+	 */
+	public void populateSODetails(FDIdentity customerIdentity,FDStandingOrder so) throws FDResourceException,
+			FDInvalidConfigurationException {
+		FDStandingOrderList fdSdingOrderList = FDListManager.getStandingOrderList(customerIdentity, so.getCustomerListId());
+
+		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems(fdSdingOrderList
+				.getLineItems());
+
+		for (FDProductSelectionI fdSelection : productSelectionList) {
+			FDCartLineI cartLine = new FDCartLineModel(fdSelection);
+			if (!cartLine.isInvalidConfig()) {
+				//cartLine.refreshConfiguration();
+				so.getStandingOrderCart().addOrderLine(cartLine);
+			}
+		}
+		
+		if(null!=productSelectionList && !productSelectionList.isEmpty()){
+			so.getStandingOrderCart().refreshAll(true);
+		}
+	}
+
+	public FDIdentity getCustomerIdentity(String customerId) throws FDResourceException {
+
+		FDIdentity customerIdentity = new FDIdentity(customerId, FDCustomerFactory.getFDCustomerIdFromErpId(customerId));
+		return customerIdentity;
+	}
+	
 	public FDStandingOrder load(PrimaryKey pk) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -142,11 +239,18 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			
 			FDStandingOrder ret = dao.load(conn, pk.getId());
 			
+			if(null!=ret){
+				populateSODetails(getCustomerIdentity(ret.getCustomerId()), ret);
+			}
+		    
 			return ret;
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in load() : " + e.getMessage(), e );
-			e.printStackTrace();
 			throw new FDResourceException(e);
+		} catch (FDInvalidConfigurationException e) {
+			LOGGER.error( "SQL ERROR in load() : " + e.getMessage(), e );	
+			throw new FDResourceException(e);
+
 		} finally {
 			close(conn);
 		}
@@ -161,6 +265,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			dao.deleteStandingOrder(conn, so.getId(), so.getCustomerListId());
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_DELETED);
 			rec.setStandingOrderId(so.getId());
+			FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 			this.logActivity(rec);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in delete() : " + e.getMessage(), e );
@@ -186,7 +291,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn( "FDResourceException catched", e );
 			}
 			
-			if (so.getId() == null) {
+			if (so.getId() == null ||  so.getId().isEmpty()) {
 				// create object
 				LOGGER.debug( "Creating new standing order." );
 				primaryKey = dao.createStandingOrder(conn, so);
@@ -194,6 +299,17 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				rec.setChangeOrderId(saleId);
 				rec.setStandingOrderId(primaryKey);
 				this.logActivity(rec);
+				if(so.getAddressId()!=null 
+						&& so.getTimeSlotId()!=null && so.getReservedDayOfweek() !=0
+						)
+				{
+					
+				ErpAddressModel address=getShipToAddress(so.getAddressId());
+				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
+						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
+						so.getUser().getHistoricOrderSize(),
+						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+				}
 			} else {
 				LOGGER.debug( "Updating existing standing order." );
 				dao.updateStandingOrder(conn, so);
@@ -202,19 +318,89 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				rec.setChangeOrderId(saleId);
 				rec.setStandingOrderId(primaryKey);
 				this.logActivity(rec);
+				if(so.getAddressId()!=null 
+						&& so.getTimeSlotId()!=null && so.getReservedDayOfweek()!=0
+						)
+				{
+				ErpAddressModel address=getShipToAddress(so.getAddressId());
+				FDStandingOrdersManager.getInstance().saveStandingOrderToLogistics(so.getId(),
+						so.getTimeSlotId(),Integer.toString(so.getReservedDayOfweek()),
+						so.getUser().getHistoricOrderSize(),
+						so.getCustomerId(),address,so.getUser().isNewSO3Enabled());
+				}
 			}
 							
 			return primaryKey;
 			
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in save() : " + e.getMessage(), e );
-			e.printStackTrace();
 			throw new FDResourceException(e);
-		} finally {
+		} catch(FDAuthenticationException fae){
+			LOGGER.error( "FDAuthenticationException in save() : " + fae.getMessage(), fae );
+			throw new FDResourceException(fae);
+		}
+		finally {
 			close(conn);
 		}
 	}
 	
+	
+	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
+
+	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(SHIP_TO_ADDRESS_QUERY);
+			ps.setString(1, addressId);
+			rs = ps.executeQuery();
+			ErpAddressModel address = null;
+			if (rs.next()) {
+				address = this.loadDeliveryAddressFromResultSet(rs);
+				address.setPK(new PrimaryKey(rs.getString("ID")));
+				address.setCompanyName(rs.getString("COMPANY_NAME"));
+				address.setServiceType(EnumServiceType.getEnum(rs
+						.getString("SERVICE_TYPE")));
+			}
+			return address;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+			close(conn);
+		}
+	}
+	
+	private ErpAddressModel loadDeliveryAddressFromResultSet(ResultSet rs) throws SQLException {
+		ErpAddressModel address = new ErpAddressModel();
+		address.setFirstName(rs.getString("FIRST_NAME"));
+		address.setLastName(rs.getString("LAST_NAME"));
+		address.setAddress1(rs.getString("ADDRESS1"));
+		address.setAddress2(rs.getString("ADDRESS2"));
+		address.setApartment(rs.getString("APARTMENT"));
+		address.setCity(rs.getString("CITY"));
+		address.setState(rs.getString("STATE"));
+		address.setZipCode(rs.getString("ZIP"));
+		address.setCountry(rs.getString("COUNTRY"));
+		address.setPhone(new PhoneNumber(rs.getString("PHONE")));
+		address.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
+		address.setAltLastName(rs.getString("ALT_LAST_NAME"));
+		address.setAltApartment(rs.getString("ALT_APARTMENT"));
+		address.setAltPhone(new PhoneNumber(rs.getString("ALT_PHONE")));
+		address.setAltContactPhone(new PhoneNumber(rs
+				.getString("ALT_CONTACT_PHONE")));
+		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
+				.getString("ALT_DEST")));
+
+		return address;
+	}
+
 	public void assignStandingOrderToOrder(PrimaryKey salePK, PrimaryKey standingOrderPK) throws FDResourceException {		
 
 		LOGGER.debug( "assigning SO["+standingOrderPK+"] to SALE["+salePK+"]" );
@@ -517,7 +703,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	}
 	
 	
-	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException {
+	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
 		
 		Connection conn=null;
 		try{
@@ -821,5 +1007,86 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}			
+	}
+	
+	public Collection<FDStandingOrder> getValidStandingOrder(FDIdentity identity) throws FDResourceException, RemoteException, FDInvalidConfigurationException
+	{
+	Connection conn = null;
+	try {
+		conn = getConnection();
+		FDStandingOrderDAO dao = new FDStandingOrderDAO();
+		
+		Collection<FDStandingOrder> ret = dao.getValidStandingOrder(conn, identity);
+		
+		ret=getStandingOrderDetails(ret);
+		
+		return ret;
+	} catch (SQLException e) {
+		LOGGER.error( "SQL ERROR in loadCustomerStandingOrders() : " + e.getMessage(), e );
+		e.printStackTrace();
+		throw new FDResourceException(e);
+	} finally {
+		close(conn);
+	}
+	}
+	
+    /*
+       *  To activate Standing order 
+      */
+	public boolean activateStandingOrder(FDStandingOrder so) throws FDResourceException,RemoteException{
+		Connection conn = null;
+		boolean isActivate=false;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			isActivate = dao.activateStandingOrder(conn, so);
+			FDStandingOrdersManager.getInstance().activateStandingOrderInLogistics(so.getId());		
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in activateStandingOrder() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+		return isActivate;
+
+	}
+	public boolean checkIfCustomerHasStandingOrder(FDIdentity identity) throws FDResourceException,RemoteException{
+		Connection conn = null;
+		boolean hasExtisingSO=false;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			hasExtisingSO = dao.checkIfCustomerHasStandingOrder(conn, identity);
+						
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in checkIfCustomerHasStandingOrder() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+		return hasExtisingSO;
+	}
+	
+	public boolean updateDefaultStandingOrder(String listId,FDIdentity identity)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		boolean isUpdate=false;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			isUpdate = dao.updateDefaultStandingOrder(conn,listId,identity);
+						
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateDefaultStandingOrder() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+		return isUpdate;
 	}
 }

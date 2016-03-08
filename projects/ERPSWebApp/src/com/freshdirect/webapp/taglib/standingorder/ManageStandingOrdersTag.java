@@ -274,6 +274,10 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
         
         Collection<FDStandingOrder> so = m.loadCustomerStandingOrders( user.getIdentity() );
+        
+        //TODO : Need to work on this
+      //  Collection<FDStandingOrder> validSO = m.getValidStandingOrder(user.getIdentity() );
+       // so=m.getAllSOUpcomingOrders(user, so);
 		
 		return so;
 	}

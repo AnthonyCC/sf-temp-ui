@@ -6,6 +6,7 @@ public class FormDataResponse {
 
     private SubmitForm submitForm;
     private ValidationResult validationResult;
+    private boolean showSOProduct;
 
     public SubmitForm getSubmitForm() {
         return submitForm;
@@ -22,5 +23,13 @@ public class FormDataResponse {
     public void setValidationResult(ValidationResult validationResult) {
         this.validationResult = validationResult;
     }
+
+	public boolean isShowSOProduct() {
+		return showSOProduct;
+	}
+
+	public void setShowSOProduct(boolean showSOProduct) {
+		this.showSOProduct = showSOProduct;
+	}
 
 }

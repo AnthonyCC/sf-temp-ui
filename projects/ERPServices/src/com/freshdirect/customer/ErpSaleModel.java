@@ -57,7 +57,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private String standingOrderId;
 	private Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
 	private EnumEStoreId eStoreId;
-	
+	private String standingOrderName=null;
 	/**
 	 * @return Returns the deliveryPassId.
 	 */
@@ -110,7 +110,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param standingOrderId ID of StandingOrder that created this sale
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List<ErpTransactionModel> transactions, List<ErpComplaintModel> complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId) {
+		Set<String> usedPromotionCodes, List<ErpCartonInfo> cartonInfo, String dlvPassId, EnumSaleType type, String standingOrderId, boolean hasSignature,EnumEStoreId eStoreId,String standingOrderName) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -125,6 +125,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.standingOrderId = standingOrderId;
 		this.hasSignature = hasSignature;
 		this.eStoreId = eStoreId;
+		this.standingOrderName=standingOrderName;
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -1828,6 +1829,20 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 */
 	public void seteStoreId(EnumEStoreId eStoreId) {
 		this.eStoreId = eStoreId;
+	}
+
+	/**
+	 * @return the standingOrderName
+	 */
+	public String getStandingOrderName() {
+		return standingOrderName;
+	}
+
+	/**
+	 * @param standingOrderName the standingOrderName to set
+	 */
+	public void setStandingOrderName(String standingOrderName) {
+		this.standingOrderName = standingOrderName;
 	}
 	
 	

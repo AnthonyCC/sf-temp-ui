@@ -25,10 +25,12 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 
 	private String name = "singlePageCheckoutPotato";
+	private String standingOrder=null;
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	private static final String WALLET_SESSION_CARD_ID="WALLET_CARD_ID";
@@ -59,6 +61,8 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
+	        StandingOrderHelper.clearSO3Context(user, request, standingOrder);
+
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
 			if(FDStoreProperties.getAvalaraTaxEnabled()){
 			CheckoutService.defaultService().getAvalaraTax(user.getShoppingCart());
@@ -257,4 +261,20 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * @return the standingOrder
+	 */
+	public String getStandingOrder() {
+		return standingOrder;
+	}
+
+	/**
+	 * @param standingOrder the standingOrder to set
+	 */
+	public void setStandingOrder(String standingOrder) {
+		this.standingOrder = standingOrder;
+	}
+	
+	
 }

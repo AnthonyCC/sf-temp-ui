@@ -41,6 +41,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
@@ -367,101 +368,114 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 	private Result getGenericTimeslots() throws FDResourceException {
 		final FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-		final FDCartModel cart = user.getShoppingCart();
+		final FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?user.getSoTemplateCart():user.getShoppingCart();
 		final FDStandingOrder so = user.getCurrentStandingOrder();
-
 
 		final Result result = new Result();
 		final FDDeliveryTimeslotModel deliveryModel = new FDDeliveryTimeslotModel();
-	
-		DateRange range = createDateRange(1,8);
-		List<DateRange> ranges = new ArrayList<DateRange>();
-		ranges.add(range);
-		
-		// collect all restrictions
-		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
-		// narrow down restrictions
-		LOGGER.debug("All Restrictions (before OTR filter): "  + restrictions.size());
-		restrictions.keepRestrictionsForGenericTimeslots();
-		LOGGER.debug("All Restrictions: " + restrictions.size());
-		
-		
-		FDTimeslotUtil tsu; // we want only a single set of time slots (see: multiple sets in case of advance orders)
-		List<FDTimeslotUtil> singleTSset = new ArrayList<FDTimeslotUtil>();
-		FDDeliveryTimeslots deliveryTimeslots = null;
-		{
-			String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
-			if(user.getMasqueradeContext()!=null){
-				applicationId = "CSR";
+			DateRange range = createDateRange(1,8);
+			if(user.isNewSO3Enabled()){
+				range = createDateRange(2,9); //For SO 3.0 - fetch timeslots from 2 days ahead of current date. 
 			}
-			TimeslotEvent event = new TimeslotEvent(applicationId,
-					cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
-					(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
-
-			event.setLogged(false);
-			if("GET".equalsIgnoreCase(request.getMethod()) ||
-			"Y".equals(request.getParameter("addressChange"))){
-				event.setLogged(true);
-			}
+			List<DateRange> ranges = new ArrayList<DateRange>();
+			ranges.add(range);
 			
-			// Fetch time slots
-			deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					ranges, event, TimeslotLogic.encodeCustomer(address, user), 
-					TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), timeSlotContext
-					,false);
+			// collect all restrictions
+			DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+			// narrow down restrictions
+			LOGGER.debug("All Restrictions (before OTR filter): "  + restrictions.size());
+			restrictions.keepRestrictionsForGenericTimeslots();
+			LOGGER.debug("All Restrictions: " + restrictions.size());
 			
-			FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
 			
-			tsu = new FDTimeslotUtil(tsList.getTimeslots(), range.getStartDate(), range.getEndDate(), restrictions, tsList.getResponseTime(),range.isAdvanced(), null);
-			singleTSset.add( tsu );
-		}
-
-
-		List<RestrictionI> alcoholRestrictions;
-		{
-			List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, getAlcoholRestrictionReasons(cart), range);
-			//Filter Alcohol restrictions by current State and county.
-			final String county = FDDeliveryManager.getInstance().getCounty(address);
-			alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
-
-			LOGGER.debug("Alcohol restrictions" + alcoholRestrictions);
-		}
+			FDTimeslotUtil tsu; // we want only a single set of time slots (see: multiple sets in case of advance orders)
+			List<FDTimeslotUtil> singleTSset = new ArrayList<FDTimeslotUtil>();
+			FDDeliveryTimeslots deliveryTimeslots = null;
+			{
+				String applicationId = (user.getApplication()!=null)?user.getApplication().getCode():"";
+				if(user.getMasqueradeContext()!=null){
+					applicationId = "CSR";
+				}
+				TimeslotEvent event = new TimeslotEvent(applicationId,
+						cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
+						(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 	
-		DlvTimeslotStats stats = new DlvTimeslotStats();
+				event.setLogged(false);
+				if("GET".equalsIgnoreCase(request.getMethod()) ||
+				"Y".equals(request.getParameter("addressChange"))){
+					event.setLogged(true);
+				}
+				
+				
+				// Fetch time slots
+				try {
+					deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
+							ranges, event, TimeslotLogic.encodeCustomer(address, user), 
+							TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, 
+									user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), 
+									timeSlotContext,so.getUser().isNewSO3Enabled());
+				} catch (FDAuthenticationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
+				for (FDTimeslot d:tsList.getTimeslots()){
+					System.err.println(" Delivery timeslot for standing order are : "+d.getDlvStartTime()+" "+d.getDlvEndTime()+" "+d.getDeliveryDate()+" "+d.getDayOfWeek());
+							
+					}
+				
+				tsu = new FDTimeslotUtil(tsList.getTimeslots(), range.getStartDate(), range.getEndDate(), restrictions, tsList.getResponseTime(),range.isAdvanced(), null);
+				singleTSset.add( tsu );
+			}
+	
+	
+			List<RestrictionI> alcoholRestrictions;
+			{
+				List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, getAlcoholRestrictionReasons(cart), range);
+				//Filter Alcohol restrictions by current State and county.
+				final String county = FDDeliveryManager.getInstance().getCounty(address);
+				alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+	
+				LOGGER.debug("Alcohol restrictions" + alcoholRestrictions);
+			}
 		
-		stats.apply(deliveryTimeslots);
-		
-		TimeslotLogic.filterDeliveryTimeSlots(user, restrictions, singleTSset,
-				Collections.<String>emptySet(), deliveryModel, alcoholRestrictions,
-				false, address,
-				true, stats);
-		// Post-op: remove unnecessary timeslots
-		TimeslotLogic.purge(singleTSset);
-
-		deliveryModel.setTimeslotList(singleTSset);
-		stats.apply(deliveryModel);
-		// update chefs table stats in user
-		stats.apply(user);
-
-
-		// unflag variable min order timeslots for deliveryinfo timeslots
-		// TimeslotLogic.clearVariableMinimum(user, singleTSset);
-		// deliveryModel.setMinOrderReqd(false);
-		
-		// fill in delivery model
-		deliveryModel.setShoppingCart(cart);
-		deliveryModel.setCurrentStandingOrder(user.getCurrentStandingOrder()); // <== ??? does it matter here?
-		deliveryModel.setZoneId(cart.getDeliveryZone());		
-		deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
-		
-		// set selected timeslot ID according to next delivery date of standing order template
-		deliveryModel.setTimeSlotId( StandingOrderHelper.findMatchingSlot(so, tsu));
-		deliveryModel.setPreReserved( false );
-		deliveryModel.setPreReserveSlotId( null );
-		
-		// cheat the capacity
-		deliveryModel.setHasCapacity( true );
-		
+			DlvTimeslotStats stats = new DlvTimeslotStats();
+			
+			stats.apply(deliveryTimeslots);
+			
+			TimeslotLogic.filterDeliveryTimeSlots(user, restrictions, singleTSset,
+					Collections.<String>emptySet(), deliveryModel, alcoholRestrictions,
+					false, address,
+					true, stats);
+			// Post-op: remove unnecessary timeslots
+			TimeslotLogic.purge(singleTSset);
+			
+			deliveryModel.setTimeslotList(singleTSset);
+			
+			stats.apply(deliveryModel);
+			// update chefs table stats in user
+			stats.apply(user);
+	
+	
+			// unflag variable min order timeslots for deliveryinfo timeslots
+			// TimeslotLogic.clearVariableMinimum(user, singleTSset);
+			// deliveryModel.setMinOrderReqd(false);
+			
+			// fill in delivery model
+			deliveryModel.setShoppingCart(cart);
+			deliveryModel.setCurrentStandingOrder(user.getCurrentStandingOrder()); // <== ??? does it matter here?
+			deliveryModel.setZoneId(cart.getDeliveryZone());		
+			deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
+			
+			// set selected timeslot ID according to next delivery date of standing order template
+			deliveryModel.setTimeSlotId( StandingOrderHelper.findMatchingSlot(so, tsu));
+			deliveryModel.setPreReserved( false );
+			deliveryModel.setPreReserveSlotId( null );
+			
+			// cheat the capacity
+			deliveryModel.setHasCapacity( true );
 		result.setDeliveryTimeslotModel(deliveryModel);
 		return result;
 	}

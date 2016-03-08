@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -18,16 +20,17 @@ import com.freshdirect.webapp.ajax.cart.data.PendingExternalAtcItemsData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PendingExternalAtcItemsPopulator {
 
 	private static final Logger LOG = LoggerFactory.getInstance(PendingExternalAtcItemsPopulator.class);
 	
-	public static Map<String, List<PendingExternalAtcItemsData>> createPendingExternalAtcItemsData(FDSessionUser user) {
+	public static Map<String, List<PendingExternalAtcItemsData>> createPendingExternalAtcItemsData(FDSessionUser user, HttpServletRequest request) {
 
 		Map<String, List<AddToCartItem>> pendingExternalAtcItemsMap = user.getPendingExternalAtcItems();
 		Map<String, List<PendingExternalAtcItemsData>> pendingExternalAtcItemDataMap = new HashMap<String, List<PendingExternalAtcItemsData>>();
-		
+				
 		if (pendingExternalAtcItemsMap != null){
 			for (String groupName : pendingExternalAtcItemsMap.keySet()){
 				List<PendingExternalAtcItemsData> pendingAtcFailureDatas = new ArrayList<PendingExternalAtcItemsData>();

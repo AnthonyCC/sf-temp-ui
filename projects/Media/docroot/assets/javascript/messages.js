@@ -104,7 +104,7 @@ SESSIONSTORAGE:
 				var closeIdsArr = $(this).attr('data-alertcloseids') || [];
 				if (!$.isArray(closeIdsArr)) { closeIdsArr = closeIdsArr.split(',')}
 				$(this).parent(parentSelector).messages('closeAlerts', closeIdsArr);
-				$(this).hide();
+				//$(this).hide();
 			}
 		},
 		jsessionId: getJsessionId(),
@@ -265,11 +265,16 @@ SESSIONSTORAGE:
 
 					
 					for (var alert in messageData.alerts) {
+						if (curAlert !== '_all' && alert !== curAlert) {
+							continue;
+						}
+
 						messageData.alerts[alert].isClosed = false;
 						$(messageData.alerts[alert].addTo).addClass(messageData.options.alertsOpenClass);
 
 						$(messageData.alerts[alert].addTo).trigger({
-							type: 'alertOpen'
+							type: 'alertOpen',
+							alert: alert
 						});
 						
 						//trigger on parent as well (to catch grouped alerts)
@@ -278,7 +283,8 @@ SESSIONSTORAGE:
 							$parentCont.addClass(messageData.options.alertsOpenClass);
 						
 							$parentCont.trigger({
-								type: 'alertOpen'
+								type: 'alertOpen',
+								alert: alert
 							});
 						}
 					}

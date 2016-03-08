@@ -210,7 +210,8 @@ public class ClickToCallUtil {
 				ranges.add(new DateRange(begCal.getTime(), endCal.getTime()));
 				
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
-						(ranges, event, TimeslotLogic.encodeCustomer((ContactAddressModel)address, user), TimeslotLogic.getDefaultOrderContext(user.getFDCustomer().getErpCustomerPK()),
+						(ranges, event, TimeslotLogic.encodeCustomer((ContactAddressModel)address, user), 
+								TimeslotLogic.getDefaultOrderContext(user.getFDCustomer().getErpCustomerPK()),
 								TimeslotContext.CHECK_AVAILABLE_TIMESLOTS,false)
 						.getTimeslotList().get(0).getTimeslots();
 				

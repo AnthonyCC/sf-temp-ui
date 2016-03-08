@@ -23,6 +23,8 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.FDCouponProperties;
@@ -96,9 +98,13 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.referral.FDReferralManager;
+import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyConstants;
@@ -151,6 +157,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FDReservation reservation;
     private FDCartModel shoppingCart = initializeCart();
     
+    private FDCartModel soTemplateCart = new FDCartModel();
     //Creating a dummy cart for gift card processing.
     private FDCartModel dummyCart = new FDCartModel();
     private FDRecipientList recipientList;
@@ -1980,7 +1987,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	// Profile key
 	private static String PROFILE_SO_KEY = "so.enabled"; 
-	
+	private static String PROFILE_SO3_KEY = "so3.enabled"; 
+
 
 	/**
 	 * Ensures StandingOrder feature is enabled for the customer
@@ -1991,9 +1999,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 */
 	protected boolean isSOEnabled() {
 		// Check personal flag in user profile
+		boolean isEnabledInProfile=false;
 		try {
-			boolean isEnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO_KEY)).booleanValue();
-			
+			//TODO need to change this once get identity issue is resolved
+			if(getLevel()>=2){
+				isEnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO_KEY)).booleanValue();
+			}
 			if (isEnabledInProfile) {
 				LOGGER.debug("SO enabled in customer profile");
 				return true;
@@ -3205,4 +3216,65 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	
+	public FDCartModel getSoTemplateCart() {
+		return soTemplateCart;
+	}
+
+	public void setSoTemplateCart(FDCartModel soTemplateCart) {
+		this.soTemplateCart = soTemplateCart;
+	}
+
+	@Override
+	public boolean isCustomerHasStandingOrders() {
+		boolean isCustomerHasSO = false;
+
+		final FDStandingOrdersManager m = FDStandingOrdersManager.getInstance();
+		try {
+			try {
+				isCustomerHasSO = m.checkCustomerHasSo(this.identity);
+			} catch (FDInvalidConfigurationException e) {
+				LOGGER.error("Error in isCustomerHasStandingOrders : customer id " + this.identity, e);
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in isCustomerHasStandingOrders  : customer id " + this.identity, e);
+		}
+		return isCustomerHasSO;
+	}
+
+	@Override
+	public void setCurrentStandingOrder(FDStandingOrder currentStandingOrder) {
+		throw new IllegalArgumentException( "Calling setCurrentStandingOrder() in FDUser is not allowed." );	
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.freshdirect.fdstore.customer.FDUserI#isNewSO3Enabled()
+	 *  To enable customer to SO 3
+	 */
+
+	@Override
+	public boolean isNewSO3Enabled() {
+		return !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.standingorder3_0, this));
+		/*
+		// Check personal flag in user profile
+		boolean isSO3EnabledInProfile=false;
+		try {
+			//TODO need to change this once get identity issue is resolved
+			if(getLevel()>=2){
+				isSO3EnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO3_KEY)).booleanValue();
+			}
+
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in isNewSO3Enabled  : customer id " + this.identity, e);
+
+		}
+		return isSO3EnabledInProfile;
+		*/
+	}
+
+	/* session only */
+	@Override
+	public boolean isSoContainerOpen() {
+		throw new IllegalArgumentException( "Calling isSoContainerOpen() in FDUser is not allowed (use FDSessionUser instead)." );
+	}
 }

@@ -323,9 +323,9 @@ public class FDDeliveryManager {
 		try {
 			
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			
 			Address address = LogisticsDataEncoder.encodeAddress(addressModel);
 			AddressVerificationResponse response = logisticsService.verifyAddress(address);
-			
 			FDDeliveryAddressVerificationResponse verifyResponse =  
 					LogisticsDataDecoder.decodeAddressVerificationResponse(addressModel, response);
 			
@@ -582,15 +582,14 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, OrderContext context, TimeslotContext timeslotContext
-			,boolean isNewSO3Enabled
-			) throws FDResourceException {
+			Customer customer, OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) throws FDResourceException {
 		
 		return getTimeslotsForDateRangeAndZone(dateranges, event, customer, false, false, context, timeslotContext,isNewSO3Enabled);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, TimeslotContext timeslotContext,boolean isNewSO3Enabled) throws FDResourceException{
+			Customer customer, boolean forceOrder, boolean deliveryInfo, OrderContext context, 
+			TimeslotContext timeslotContext,boolean isNewSO3Enabled) throws FDResourceException{
 		return getTimeslotsForDateRangeAndZone(dateranges, event,
 			 customer, null, forceOrder, deliveryInfo, context, timeslotContext,isNewSO3Enabled);
 	}
@@ -611,6 +610,20 @@ public class FDDeliveryManager {
 		}catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		} 
+	}
+	
+	public com.freshdirect.logistics.controller.data.Result removeOrdersfromLogistics(List<String> soIds) throws FDResourceException {
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			com.freshdirect.logistics.controller.data.Result response = logisticsService.removeOrdersfromLogistics(LogisticsDataEncoder.encodeRemovesoTemplateRequest
+				(soIds));
+			return response;			
+		}  catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+		
 	}
 	
 

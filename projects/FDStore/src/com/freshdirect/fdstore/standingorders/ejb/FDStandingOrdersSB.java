@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.standingorders.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -25,8 +28,8 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public interface FDStandingOrdersSB extends EJBObject {
 	public FDStandingOrder createStandingOrder(FDCustomerList list) throws FDResourceException, RemoteException;
-	public Collection<FDStandingOrder> loadActiveStandingOrders() throws FDResourceException, RemoteException;
-	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, RemoteException;
+	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException, RemoteException;
+	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException,RemoteException;
 	public FDStandingOrder load(PrimaryKey pk) throws FDResourceException, RemoteException;
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException, RemoteException;
 	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException, RemoteException;
@@ -45,7 +48,7 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public boolean lock(FDStandingOrder so, String lockId) throws FDResourceException,RemoteException;
 	public boolean unlock(FDStandingOrder so, String lockId) throws FDResourceException,RemoteException;
 	public String getLockId(String soId) throws FDResourceException,RemoteException;
-	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException,RemoteException;
+	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException,FDInvalidConfigurationException,RemoteException;
 	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException, RemoteException;
 	public boolean getCoremetricsUserinfo(FDUserI fdUser) throws FDResourceException, RemoteException;
 	public Map<Date, List<FDStandingOrderAltDeliveryDate>> getStandingOrdersGlobalAlternateDeliveryDates() throws FDResourceException, RemoteException;
@@ -58,4 +61,14 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws FDResourceException,RemoteException;
 	public void persistUnavailableDetailsToDB(List<Result> resultsList) throws FDResourceException,RemoteException;
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException,RemoteException;
+	public Collection<FDStandingOrder> getStandingOrderDetails(Collection<FDStandingOrder> fdStandingOrders)
+			throws FDResourceException, FDInvalidConfigurationException,RemoteException ;
+	public Collection<FDStandingOrder> getValidStandingOrder(FDIdentity identity) throws FDResourceException, RemoteException,FDInvalidConfigurationException;
+
+	public boolean activateStandingOrder(FDStandingOrder so) throws FDResourceException,RemoteException; 
+	
+	public boolean checkIfCustomerHasStandingOrder(FDIdentity identity) throws FDResourceException,RemoteException;
+	
+	public boolean updateDefaultStandingOrder(String listId,FDIdentity userIdentity)throws FDResourceException,RemoteException;
+	public Collection<FDStandingOrder> loadCustomerNewStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException,RemoteException;
 }

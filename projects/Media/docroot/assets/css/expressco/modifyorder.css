@@ -1,23 +1,34 @@
 .modifyorder{
-  outline:2px solid #6699cc;
-  padding:30px;
-  clear:both;
-  margin-top:30px;
-  position:relative;
+  outline: 1px solid rgba(199, 215, 201, 66);
+  background-color: #f7f7f7;
+  padding: 15px 25px;
+  clear: both;
+  margin-top: 30px;
+  position: relative;
 }
 
 .modifyorder-title{
-  font-size:18px;
-  font-weight:bold;
-  color:#000;
-  margin:0.2em 0;
+  font-size: 23px;
+  line-height: 27px;
+  font-weight: bold;
+  color: #000;
+  margin: 13px 0;
 }
 
-.modifyorder-list{
-  list-style-type:disc;
-  font-size:14px;
-  color:#333;
-  margin:0;
+.modifyorder-so-title{
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.modifyorder-hr{
+  background-color: #e8e8e5;
+  height: 1px;
+  margin: 0;
+}
+
+.modifyorder-cutoff{
+  padding-top: 15px;
+  font-weight: bold
 }
 
 .modifyorder-cancelbutton{
@@ -25,8 +36,7 @@
   font-weight:bold;
   float:right;
   position:absolute;
-  top:40px;
+  top: 18px;
   right:30px;
   width:217px;
-  height:46px;
 }

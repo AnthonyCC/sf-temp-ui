@@ -1,10 +1,25 @@
 {namespace expressco}
 
 /**
+ * @param? newSO3
+ * @param? soFreq
 */
 {template .timeselectorcontent autoescape="false"}
 <div class="drawer__content">
   <div class="drawer__header">
+  	{if $newSO3}
+  		<div class="standing-orders-3-select-freq-header">
+  			Select a Delivery Day & Time
+  		</div>
+  		<div class="standing-orders-3-select-freq">
+  			<select name="soFreq" id="soFreq2" onchange="selectFrequency(this)">
+    			<option value="-1" style="display:none" disabled="disabled" selected>Frequency</option>
+    			<option value="1" {if $soFreq == 1}selected{/if}>Weekly</option> 
+				<option value="2" {if $soFreq == 2}selected{/if}>Bi-Weekly</option>
+				<option value="4" {if $soFreq == 4}selected{/if}>Monthly</option>
+			</select>
+  		</div>
+  	{/if}
     <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
   </div>
   <div data-component="timeselectorcontent">
@@ -22,25 +37,51 @@
  * @param? onOpenCoremetrics
  * @param? showForceOrder
  * @param? forceOrderEnabled
+ * @param? newSO3
+ * @param? soFreq
  */
 {template .timeselectorpreview autoescape="false"}
-{if $id and $timePeriod}
-<div class='drawer__previewitem'>
-  {call .successtimeslot}
-    {param id: $id /}
-    {param month: $month /}
-    {param dayOfMonth: $dayOfMonth /}
-    {param dayOfWeek: $dayOfWeek /}
-    {param timePeriod: $timePeriod /}
-  {/call}
-  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
-</div>
+{if $id and $timePeriod and $soFreq and $newSO3}
+	<div class='drawer__previewitem'>
+	  {call .successtimeslot}
+	    {param id: $id /}
+	    {param month: $month /}
+	    {param dayOfMonth: $dayOfMonth /}
+	    {param dayOfWeek: $dayOfWeek /}
+	    {param timePeriod: $timePeriod /}
+	    {param soFreq: $soFreq /} 
+	  {/call}
+	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	</div>
+{elseif $id and $timePeriod}
+	<div class='drawer__previewitem'>
+	  {call .successtimeslot}
+	    {param id: $id /}
+	    {param month: $month /}
+	    {param dayOfMonth: $dayOfMonth /}
+	    {param dayOfWeek: $dayOfWeek /}
+	    {param timePeriod: $timePeriod /}
+	  {/call}
+	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	</div>
 {else}
-<div class='drawer__previewitem'>
-  <div class="drawer__previewitem__button__section">
-    <button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
-  </div>
-  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
-</div>
+	<div class='drawer__previewitem'>
+	  <div class="drawer__previewitem__button__section">
+	  	{if $newSO3}
+	    	<div class="standing-orders-3-pick-freq">
+	    		<p>Select Order Frequency</p>
+	    		<select name="soFreq" id="soFreq" onchange="selectFrequency(this)">
+	    			<option value="-1" style="display:none" disabled="disabled" selected>Frequency</option>
+	    			<option value="1" {if $soFreq == 1}selected{/if}>Weekly</option>
+					<option value="2" {if $soFreq == 2}selected{/if}>Bi-Weekly</option>
+					<option value="4" {if $soFreq == 4}selected{/if}>Monthly</option>
+				</select>
+	    	</div>
+	    {else}
+	    	<button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
+	    {/if}
+	  </div>
+	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
+	</div>
 {/if}
 {/template}

@@ -68,11 +68,10 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	%><comp:homePageLetter user="<%= user %>" />
 <%} else if (!showAltHome && location2Media) { 
 	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>"  isCosPage="<%=true%>"/>
-	  <comp:modifyOrderBar user="<%= user %>"  htmlId="index_table_ordModify_0" /><% 
+	 <% 
 } else if (!showAltHome && !location2Media) { 
 	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>"  isCosPage="<%=true%>"/>
-	  <comp:deliverySlotReserved user="<%= user %>" />
-	  <comp:modifyOrderBar user="<%= user %>" htmlId="index_table_ordModify_1" /><%
+	  <comp:deliverySlotReserved user="<%= user %>" /><%
 }
 	   	
 if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 

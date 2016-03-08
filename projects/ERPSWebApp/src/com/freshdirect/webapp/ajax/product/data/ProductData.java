@@ -181,6 +181,19 @@ public class ProductData extends BasicProductData implements SkuData {
 
     private HolidayMealBundleContainer holidayMealBundleContainer;
 
+	/*
+	 * standing order data
+	 */
+	protected Map<String, Object> soData;
+	
+	public Map<String, Object> getSoData() {
+		return soData;
+	}
+
+	public void setSoData(Map<String, Object> soData) {
+		this.soData = soData;
+	}
+	
     public boolean isFeatured() {
         return isFeatured;
     }

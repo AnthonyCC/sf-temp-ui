@@ -6,13 +6,27 @@
 {template .modifyorder autoescape="false"}
 {if $modifyCartData and $modifyCartData.modifyOrderEnabled}
 <div class='modifyorder'>
-  <p class='modifyorder-title'>Modifying Order: {$modifyCartData.orderId}</p>
-  <ul class='modifyorder-list'>
-    <li>The price and availability of some items may change.</li>
-    <li>You must complete any modifications by {$modifyCartData.cutoffTime}</li>
-  </ul>
-  <p>If your new delivery date is on or after {$modifyCartData.oneWeekLater}, all of your items will be updated to reflect today's prices.</p>
-  <a href="/your_account/cancel_modify_order.jsp"><button class="cssbutton blue modifyorder-cancelbutton">Cancel Changes</button></a>
+  {if $modifyCartData.soName}
+  	<p class='modifyorder-title'>
+	  Modifying, {$modifyCartData.soOrderDate} Delivery 
+	  <div class='modifyorder-so-title'>{$modifyCartData.soName} | Order #{$modifyCartData.orderId}</div>	    
+  	</p>
+  	<a href="/your_account/cancel_modify_order.jsp">
+	  <button class="cssbutton cssbutton-flat green transparent modifyorder-cancelbutton">Cancel Changes</button>
+	</a>
+  {else}
+  	<p class='modifyorder-title'>
+	  Modifying, Order#: {$modifyCartData.orderId}  		
+  	</p>
+  	<a href="/your_account/cancel_modify_order.jsp">
+	  <button class="cssbutton blue modifyorder-cancelbutton">Cancel Changes</button>
+	</a>
+  {/if}
+  <hr class='modifyorder-hr'>
+  <div class="modifyorder-details">
+  	<div class="modifyorder-cutoff">Modifications must be completed by: {$modifyCartData.cutoffTime}</div>
+  	<div class="modifyorder-info">The price and availability of some items may change. If your new delivery date is on or after {$modifyCartData.oneWeekLater} all of your items will be updated to reflect today's prices.</div>
+  </div>  
 </div>
 {/if}
 {/template}

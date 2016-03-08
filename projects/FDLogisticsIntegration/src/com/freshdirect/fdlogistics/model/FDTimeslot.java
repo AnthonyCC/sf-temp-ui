@@ -33,7 +33,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			boolean isUnavailable, boolean isEcoFriendly, boolean isSoldOut, boolean isDepot, 
 			boolean isPremiumSlot, boolean isFdxSlot, double totalAvailable, double baseAvailable, double chefsTableAvailble,
 			boolean hasSteeringRadius, String travelZone, double minDurationForModStart, double minDurationForModification,
-			int additionalDistance, EnumRegionServiceType regionSvcType, Date originalCutoffDateTime)
+			int additionalDistance, EnumRegionServiceType regionSvcType,Date  soFirstDeliveryDate, Date originalCutoffDateTime)
 	{
 		super();
 		this.id = id;
@@ -73,6 +73,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.minDurationForModStart = minDurationForModStart;
 		this.minDurationForModification = minDurationForModification;
 		this.regionSvcType = regionSvcType;
+		this.soFirstDeliveryDate=soFirstDeliveryDate;
 		this.originalCutoffDateTime = originalCutoffDateTime;
 	}
 
@@ -137,7 +138,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private double minDurationForModStart;
 	private double minDurationForModification;
 	private EnumRegionServiceType regionSvcType;
-	
+	private Date soFirstDeliveryDate;
 	private double deliveryFee;
 	private double promoDeliveryFee;
 	private EnumDeliveryFeeTier dlvfeeTier;
@@ -611,6 +612,36 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setCutoffDateTime(Date cutoffDateTime) {
 		this.cutoffDateTime = cutoffDateTime;
+	}
+
+	public Date getSoFirstDeliveryDate() {
+		return soFirstDeliveryDate;
+	}
+
+	public String getFormattedSoFirstDeliveryDate() {
+		String formattedSoFirstDeliveryDate = null;
+		if(null ==soFirstDeliveryDate){
+			soFirstDeliveryDate = DateUtil.addDays(deliveryDate, 7); 	
+		}
+		if(null !=soFirstDeliveryDate){
+			formattedSoFirstDeliveryDate = DateUtil.formatDateWithMonthAndDate(soFirstDeliveryDate);
+		}
+		return formattedSoFirstDeliveryDate;
+	}
+	
+	public String getFormattedSoFirstDeliveryDateFull() {
+		String formattedSoFirstDeliveryDateFull = null;
+		if(null ==soFirstDeliveryDate){
+			soFirstDeliveryDate = DateUtil.addDays(deliveryDate, 7); 	
+		}
+		if(null !=soFirstDeliveryDate){
+			formattedSoFirstDeliveryDateFull = DateUtil.formatDate(soFirstDeliveryDate);
+		}
+		return formattedSoFirstDeliveryDateFull;
+	} 
+	
+	public void setSoFirstDeliveryDate(Date soFirstDeliveryDate) {
+		this.soFirstDeliveryDate = soFirstDeliveryDate;
 	}
 
 	public double getDeliveryFee() {

@@ -90,6 +90,29 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	
+	<tag>
+		<name>productList</name>
+		<tag-class>com.freshdirect.webapp.soy.ProductListPotatoTag</tag-class>
+		<teiclass>com.freshdirect.webapp.soy.ProductListPotatoTag$TagEI</teiclass>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>productList</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>perLine</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>images</name>
@@ -260,6 +283,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>standingOrder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
     <tag>
         <name>viewCart</name>
@@ -279,6 +307,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+			<name>standingOrder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
     </tag>
     <tag>
         <name>singlePageCheckoutSuccess</name>
@@ -297,5 +330,10 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+			<name>standingOrder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
     </tag>
 </taglib>

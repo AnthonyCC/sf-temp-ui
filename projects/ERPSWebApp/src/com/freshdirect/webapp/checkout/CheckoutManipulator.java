@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -14,6 +15,7 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.HttpContextAware;
 import com.freshdirect.webapp.action.ResultAware;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public abstract class CheckoutManipulator {
 	HttpServletRequest	request;
@@ -85,7 +87,9 @@ public abstract class CheckoutManipulator {
 			user.setGiftCart( cart );
 		} else if ( actionName.indexOf( "rh_" ) != -1 ) {
 			user.setDonationCart( cart );
-		} else {
+		} else if(StandingOrderHelper.isSO3StandingOrder(user)){
+				user.setSoTemplateCart(cart);
+		}else {
 			user.setShoppingCart( cart );
 		}
 		session.setAttribute( SessionName.USER, user );
@@ -96,6 +100,15 @@ public abstract class CheckoutManipulator {
 			return user.getGiftCart();
 		} else if (actionName.indexOf("rh_") != -1) {
 			return user.getDonationCart();
+		}else if(StandingOrderHelper.isSO3StandingOrder(user)){
+			try {
+				if(null!=user.getCurrentStandingOrder().getAddressId()){
+				user.getSoTemplateCart().setDeliveryAddress(user.getCurrentStandingOrder().getDeliveryAddress());
+				}
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			}
+			return user.getSoTemplateCart();
 		}
 		return user.getShoppingCart();
 	}

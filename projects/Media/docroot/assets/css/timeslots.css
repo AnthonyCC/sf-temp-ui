@@ -1049,3 +1049,7 @@ td.noTopBorder {
 [data-component="timeselectorcontent"] {
 	overflow: auto;
 }
+
+.tsContainerNoDelBGE{
+	background: #FFFFFF;
+}

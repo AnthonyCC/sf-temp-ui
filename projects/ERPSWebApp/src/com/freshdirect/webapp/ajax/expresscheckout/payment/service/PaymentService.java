@@ -46,6 +46,7 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class PaymentService {
 
@@ -222,7 +223,9 @@ public class PaymentService {
         Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
         List<ValidationError> selectionError = new ArrayList<ValidationError>();
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
-            if (user.getShoppingCart().getPaymentMethod() == null) {
+        	if(vaidateSO3Payment(user,paymentMethods)){
+        		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
+        	}else if (user.getShoppingCart().getPaymentMethod() == null) {
                 selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
                 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
@@ -245,7 +248,22 @@ public class PaymentService {
         return paymentDatas;
     }
 
-    /**
+    protected boolean vaidateSO3Payment(FDUserI user,
+			List<ErpPaymentMethodI> paymentMethods) {
+    	boolean isValidPayment=false;
+        if(StandingOrderHelper.isSO3StandingOrder(user) && null!=user.getCurrentStandingOrder().getPaymentMethodId()){
+        	for(ErpPaymentMethodI erpPaymentMethodI:paymentMethods){
+        		if(erpPaymentMethodI.getPK().getId().equals(user.getCurrentStandingOrder().getPaymentMethodId())){
+        			isValidPayment=true;
+        			break;
+        		}
+        	}
+        }
+    	
+    	return isValidPayment;
+	}
+
+	/**
      * @param user
      * @param request
      * @param paymentMethods

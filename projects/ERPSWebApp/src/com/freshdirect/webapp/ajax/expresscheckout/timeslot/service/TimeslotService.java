@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.timeslot.service;
 
 import java.text.DateFormatSymbols;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
@@ -34,6 +36,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class TimeslotService {
 
@@ -58,6 +61,12 @@ public class TimeslotService {
     public FormTimeslotData loadCartTimeslot(FDUserI user, final FDCartI cart) {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
+        ErpAddressModel addressModel=null;
+        try {
+			 addressModel=StandingOrderHelper.isValidStandingOrder(user)?user.getCurrentStandingOrder().getDeliveryAddress():cart.getDeliveryAddress();
+		} catch (FDResourceException e) {
+            LOG.error("Failed to get delivery Adress");
+		}
         if (reservation != null) {
             if (!(cart instanceof FDOrderI)) {
                 // Deal with case when timeslot zone does not match
@@ -67,8 +76,8 @@ public class TimeslotService {
                 String timeslotAddressId = reservation.getAddressId();
                 // pick delivery address
                 String dlvAddressId = null;
-                if (cart != null && cart.getDeliveryAddress() != null) {
-                    dlvAddressId = cart.getDeliveryAddress().getId();
+                if (cart != null && addressModel != null) {
+                    dlvAddressId = addressModel.getId();
                 }
 
                 // Make the comparison, abort load if mismatch detected
@@ -79,7 +88,7 @@ public class TimeslotService {
                     return timeslotData;
                 }
             }
-
+           
             Date startTime = reservation.getStartTime();
             Calendar startTimeCalendar = DateUtil.toCalendar(startTime);
             String dayNames[] = new DateFormatSymbols().getWeekdays();
@@ -89,17 +98,55 @@ public class TimeslotService {
             timeslotData.setDayOfMonth(String.valueOf(startTimeCalendar.get(Calendar.DAY_OF_MONTH)));
             timeslotData.setDayOfWeek(dayNames[startTimeCalendar.get(Calendar.DAY_OF_WEEK)]);
             timeslotData.setTimePeriod(format(startTime, reservation.getEndTime()));
+            timeslotData.setStartDate(startTime);
+            timeslotData.setEndDate(reservation.getEndTime());
+        }else if(StandingOrderHelper.isSO3StandingOrder(user)){
+        	loadStandingOrderCartTimeSlot(timeslotData,user.getCurrentStandingOrder());
         }
         timeslotData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("timeslot"));
         timeslotData.setShowForceOrder(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderAvailable() && !user.getMasqueradeContext().isAddOnOrderEnabled());
         timeslotData.setForceOrderEnabled(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderEnabled());
+        popuateStandingOrderDetails(user,timeslotData);
+        
         return timeslotData;
     }
 
-    public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {
-        String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
+    private void popuateStandingOrderDetails(FDUserI user,
+			FormTimeslotData timeslotData) {
+    	if(StandingOrderHelper.isSO3StandingOrder(user)){
+    		timeslotData.setNewSO3(true);
+    		FDStandingOrder so=user.getCurrentStandingOrder();
+            timeslotData.setSoFreq(so.getFrequency()>=1? Integer.toString(so.getFrequency()):null);
+            timeslotData.setSoCutOffFormattedDeliveryDate(so.getFormattedCutOffDeliveryDate());
+            timeslotData.setSoCutOffDeliveryTime(FDStandingOrder.cutOffDeliveryTime);
+            timeslotData.setSoActivated(null!=so.getActivate() && "Y".equals(so.getActivate())?true:false);
+            timeslotData.setShortDayOfWeek(DateUtil.formatDayOfWk(so.getNextDeliveryDate()));
+            timeslotData.setSoDeliveryDate(DateUtil.formatMonthAndDate(so.getNextDeliveryDate()));
+    	}
+
+	}
+
+	private void loadStandingOrderCartTimeSlot(FormTimeslotData timeslotData,
+			FDStandingOrder so) {
+        if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){
+            Calendar startTimeCalendar = DateUtil.toCalendar(so.getNextDeliveryDate());
+            String dayNames[] = new DateFormatSymbols().getWeekdays();
+            timeslotData.setId(DEFAULT_TIMESLOT_ID);
+            timeslotData.setYear(String.valueOf(startTimeCalendar.get(Calendar.YEAR)));
+            timeslotData.setMonth(String.valueOf(startTimeCalendar.get(Calendar.MONTH) + 1));
+            timeslotData.setDayOfMonth(String.valueOf(startTimeCalendar.get(Calendar.DAY_OF_MONTH)));
+            timeslotData.setDayOfWeek(dayNames[startTimeCalendar.get(Calendar.DAY_OF_WEEK)]);
+            timeslotData.setTimePeriod(format(so.getStartTime(), so.getEndTime()));
+            timeslotData.setStartDate(so.getNextDeliveryDate());
+            timeslotData.setEndDate(so.getNextDeliveryDate());
+        }
+	}
+
+	public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {
+        String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");  
+        String soFirstDate = FormDataService.defaultService().get(timeslotRequestData, "soFirstDate");        
         try {
-            return reserveDeliveryTimeslot(deliveryTimeSlotId, session);
+            return reserveDeliveryTimeslot(deliveryTimeSlotId, session, soFirstDate);
         } catch (ReservationException e) {
             LOG.error(MessageFormat.format("Failed to reserve timeslot for timeslot id[{0}]:", deliveryTimeSlotId), e);
             throw new FDResourceException(e);
@@ -123,14 +170,18 @@ public class TimeslotService {
         }
     }
 
-    public List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session) throws FDResourceException, ReservationException {
+    public List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session, String soNextDeliveryDate) throws FDResourceException, ReservationException {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ActionResult actionResult = new ActionResult();
-        ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
+        ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult, soNextDeliveryDate);
         for (ActionError error : actionResult.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
         return validationErrors;
+    }
+    
+    public List<ValidationError> reserveDeliveryTimeslot(String deliveryTimeSlotId, HttpSession session) throws FDResourceException, ReservationException {
+        return reserveDeliveryTimeslot(deliveryTimeSlotId, session, null);
     }
 
     public void releaseTimeslot(FDUserI user) throws FDResourceException {

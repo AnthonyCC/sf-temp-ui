@@ -22,8 +22,11 @@
  * @param etipTotal eTipTotal
  * @param containsWineSection containsWineSection
  * @param totalWithoutTax TotalWithoutTax
- */
+* @param? displayCheckout
+* @param? softLimit
+*/
 {template .viewcartlines autoescape="false"}
+       {if $displayCheckout}
 	{call .couponMessage}
 		{param couponMessage: $couponMessage /}
 	{/call}
@@ -47,6 +50,7 @@
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
+                                  {param displayCheckout : $displayCheckout /}
 			{/call}
 		{/foreach}
 	</div>
@@ -63,15 +67,92 @@
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
+                     {param displayCheckout: $displayCheckout /}
 		{param totalWithoutTax: $totalWithoutTax /}
 	{/call}
 	{call .footer}
 		{param buttonText: 'Checkout' /}
-    {param successPage: '/expressco/checkout.jsp' /}
+    		{param successPage: '/expressco/checkout.jsp' /}
 		{param form: 'viewcart_startcheckout' /}
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /} 
+                     {param displayCheckout: $displayCheckout /}     
 	{/call}
+       {else}
+              <div class='cartcontent'>
+                     <div class="standing-orders-3-cart-details-header">
+                           <h2 class="standing-orders-3-cart-details-header-text">Cart Details</h2>
+                           <div class="standing-orders-3-cart-details-header-buttons">
+                                  <button class="standing-orders-3-newso-shop-buttons-past cssbutton cssbutton-flat purple" onclick="window.open('/quickshop/qs_past_orders.jsp', '_self');">Shop from Past Order</button>
+                                  <button class="standing-orders-3-newso-shop-buttons-now cssbutton cssbutton-flat green" onclick="window.open('/index.jsp', '_self');">Shop Now &gt;</button>      
+                           </div>
+                           <div class="clear"></div>
+                     </div>
+                     {if $cartSections[0]}
+                           <div id="questions">
+                                  {call .cartheaderQuestions /}
+                           </div>
+                           {foreach $section in $cartSections}
+                           {call .cartsection data="$section"}
+                                  {param cartlineType: 'YOUR_CART' /}
+                                  {param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
+                                  {param tipAmounts: $tipAmounts /}
+                                  {param tipApplied: $tipApplied /}
+                                  {param tipAppliedTick: $tipAppliedTick /}
+                                  {param subTotalBox: $subTotalBox /}
+                                  {param subTotal: $subTotal /}
+                                  {param userRecognized: $userRecognized /}
+                                  {param userCorporate: $userCorporate /}
+                                  {param etipTotal: $etipTotal /}
+                                  {param customTip: $customTip /}
+                                  {param eTippingEnabled: $eTippingEnabled /}
+                                  {param avalaraEnabled: $avalaraEnabled /}
+                                  {param customerServiceRepresentative: $customerServiceRepresentative /}
+                                  {param numOfSections : length($cartSections) /}
+                                  {param isLastSection : isLast($section) /}
+                                  {param containsWineSection : $containsWineSection /}
+                           {/call}
+                     {/foreach}
+                     {else} 
+                           <div class="standing-orders-3-cart-details-no-items-container">
+                                  <div class="standing-orders-3-cart-details-no-items-container-min-message">
+                                         Must add items to cart and meet the ${$softLimit} minimum to receive a delivery.
+                                  </div>                            
+                                  <div class="standing-orders-3-cart-details-no-items-container-start-shop">
+                                         <div class="standing-orders-3-cart-details-no-items-container-start-shop-header">
+                                                Time to start shopping for your Standing Order!
+                                         </div>
+                                         <img alt="Add items from anywhere, anytime using the standing order button. No need to visit Standing Order page first." src="/media_stat/images/template/standing_order/Add-to-SO-image_03.png">
+                                  </div>
+                           </div>
+                     {/if}
+              </div>
+              {if $cartSections[0]}
+              		{call .total}
+						 {param cartlineType: 'YOUR_CART' /}
+	                     {param subTotalBox: $subTotalBox /}
+	                     {param additionalInfo: $additionalInfo /}
+	                     {param goGreen: $goGreen /}
+	                     {param userRecognized: $userRecognized /}
+	                     {param userCorporate: $userCorporate /}
+	                     {param promotionApplied: $promotionApplied /}
+	                     {param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
+	                     {param billingReferenceInfo: false /}
+	                     {param eTippingEnabled: $eTippingEnabled /}
+	                     {param avalaraEnabled: $avalaraEnabled /}
+	                     {param customerServiceRepresentative: $customerServiceRepresentative /}
+	                     {param displayCheckout: $displayCheckout /}
+	                     {param totalWithoutTax: $totalWithoutTax /} 
+                     {/call}
+					 {call .footer}
+                           {param buttonText: 'Checkout' /}
+                           {param form: 'viewcart_startcheckout' /}
+                           {param eTippingEnabled: $eTippingEnabled /}
+                           {param avalaraEnabled: $avalaraEnabled /}
+                           {param displayCheckout: $displayCheckout /}     
+                     {/call}
+              {/if}
+       {/if}
 {/template}
 
 
@@ -354,12 +435,13 @@
  * @param isLastSection
  * @param containsWineSection containsWineSection
  * @param? totalWithoutTax TotalWithoutTax 
+* @param? displayCheckout to display checkout
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
 	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
 
-	<div class='cartsection {if $info.wine}cartsection-wine{/if} {if $eTippingEnabled and $cartlineType == 'CHECKOUT' }eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
+       <div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout)}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
 		<h2 class='cartsection__title'>
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
@@ -383,6 +465,7 @@
 		{/foreach}
 
 		{if $info.subTotal}
+       				{let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
 			<div class='cartsection__totalwrapper'>
 				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
 					{if $numOfSections > 1 and $containsWineSection}
@@ -755,10 +838,13 @@
  * @param avalaraEnabled avalaraEnabled
  * @param? customerServiceRepresentative Customer service representative data
  * @param? totalWithoutTax TotalWithoutTax 
+* @param? displayCheckout to display checkout
  */
 {template .total autoescape="false"}
+{let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
 <div class='total {if $eTippingEnabled and $cartlineType == 'CHECKOUT'}eTippingEnabled{/if}'>
 	<div class='total-left'>
+       {if $displayCheckout}
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
@@ -792,6 +878,7 @@
 				{/if}
 			</span>
 		</div> <!-- end div.total__promotion -->
+       {/if}
 		{if $userRecognized and $deliveryPassTrialExpired}
 			<div class='total__deliverypass'>
 				<div class='deliverypass-wrapper'>
@@ -1137,6 +1224,7 @@
  * @param? buttonText Display text of button
  * @param? navLink Where the button should navigate
  * @param? form form id for button
+ * @param? displayCheckout to display checkout
  * @param avalaraEnabled avalaraEnabled
  * @param? successPage 
  */
@@ -1166,6 +1254,7 @@
 				and other aspects of our <a href='/help/terms_of_service.jsp' data-ifrpopup='/help/terms_of_service.jsp?type=popup' data-ifrpopup-width='600'>customer agreement</a>
 			</p>
 		</div>
+              {if $displayCheckout}
 		<div class='footer__right'>
 			{if $form}<form fdform="{$form}" action="#">{/if}
 			{if $navLink}<a href='{$navLink}'>{/if}
@@ -1173,6 +1262,7 @@
 			{if $navLink}</a>{/if}
 			{if $form}</form>{/if}
 		</div>
+              {/if}
 	</div> <!-- end div.footer -->
 {/template}
 

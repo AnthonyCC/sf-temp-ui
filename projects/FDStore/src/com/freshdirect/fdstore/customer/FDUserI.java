@@ -630,6 +630,11 @@ public interface FDUserI extends java.io.Serializable {
 	public void resetUserContext();
 
 	public boolean isProductSample(ProductReference prodRef);
+	
+	public FDCartModel getSoTemplateCart() ;
+	
+	public void setSoTemplateCart(FDCartModel soTemplateCart) ;
+	
 
 
 	/**
@@ -650,6 +655,18 @@ public interface FDUserI extends java.io.Serializable {
 	public void setRafClickId(String rafClickId);
 	public String getRafClickId(); 
 	
+	
+	
+	
+	/** Is customer has existing Standing Orders ? */
+	public boolean isCustomerHasStandingOrders();
+	
+	public void setCurrentStandingOrder(FDStandingOrder currentStandingOrder) ;
+	
+	public boolean isNewSO3Enabled();
+
+	/* use FDSessionUser instead */
+	boolean isSoContainerOpen();
 	
 	
 }

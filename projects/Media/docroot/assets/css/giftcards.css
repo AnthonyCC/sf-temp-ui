@@ -107,10 +107,6 @@ div.card_controls a, div.card_controls a img, div.card_shopNow a img, div.card_c
 	#gcChooseDesign_img {
 	}
 
-/* generic clear */
-div.clear,p.clear,span.clear { clear: both; display: none; }
-
-
 /* recipient list */
 .recipTable {
 	width: 625px;

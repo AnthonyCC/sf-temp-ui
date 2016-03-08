@@ -5,7 +5,7 @@ public enum EnumRolloutFeature {
             "leftnavtut", "2014"), browseflyoutrecommenders("browseflyout", "recommenders"), // fly-out recommended products on "browse" pages (transactionalPopup)
     quickshop2_2("quickshop", "2_2"), quickshop2_0(quickshop2_2, "quickshop", "2_0"), akamaiimageconvertor("akamaiimageconvertor", "2015"), checkout2_0("checkout", "2_0"), checkout1_0(
             checkout2_0, "checkout", "1_0"), gridlayoutcolumn4_0("gridlayoutcolumn", "4_0"), gridlayoutcolumn5_0(gridlayoutcolumn4_0,
-            "gridlayoutcolumn", "5_0");
+            "gridlayoutcolumn", "5_0"), standingorder3_0("standingorder", "3_0");
 
     private final EnumRolloutFeature child;
     private final String cookieName;

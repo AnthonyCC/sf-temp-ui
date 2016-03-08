@@ -46,6 +46,7 @@ var FreshDirect = FreshDirect || {};
       if (fd.expressco.drawer) {
         fd.expressco.drawer.reset();
       }
+      $("#ec-drawer").trigger("address-update");
     },
     validate: function () {
       var errors = [],

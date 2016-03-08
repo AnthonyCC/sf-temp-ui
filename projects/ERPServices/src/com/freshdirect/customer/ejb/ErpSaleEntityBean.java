@@ -102,7 +102,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null);
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false, null,null);
 		complaints = new ErpComplaintList();
 	}
 
@@ -558,7 +558,26 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				pstmt.close();
 		}
 		
-
+         // Load Standing Order Name 
+		PreparedStatement soNameStmnt=null;
+		ResultSet soNameRS=null;
+		String soName=null;
+		try{
+		 if(null!=standingOrderId && !"".equals(standingOrderId)){
+			 soNameStmnt =conn.prepareStatement(" select cl.name from cust.standing_order so, cust.customerlist cl where so.customerlist_id=cl.id and so.id=?");
+			 soNameStmnt.setString(1,standingOrderId);
+			 soNameRS=soNameStmnt.executeQuery();
+			 while(soNameRS.next()){
+				 soName=soNameRS.getString("name");
+			 }
+		 }}catch(Exception e){
+			 LOGGER.error("Error while fetching the standing order name  id:"+standingOrderId);
+		 }finally{
+				if(soNameRS!=null)
+					soNameRS.close();
+				if(soNameStmnt!=null)
+					soNameStmnt.close();
+		 }
 		// load children
 
 		ErpTransactionList txList = new ErpTransactionList();
@@ -574,7 +593,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId);
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId,soName);
 		model.setPK(oldPk);
 		
 		super.decorateModel(model);

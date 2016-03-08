@@ -20,6 +20,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class CartDataServlet extends BaseJsonServlet {
 
@@ -33,6 +34,7 @@ public class CartDataServlet extends BaseJsonServlet {
 			Map<String, Object> responseData;
 			String actionName = request.getParameter("action");
 			if ("startCheckout".equals(actionName)) {
+				StandingOrderHelper.clearSO3Context(user, request, null);
 				final FormDataRequest startCheckoutData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
 				// com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag.handleMakeGood(String[], String[], HttpSession, List<FDCartLineI>, ActionResult)
 				final FormDataResponse result = CartDataService.defaultService().validateOrderMinimumOnStartCheckout(user, startCheckoutData);

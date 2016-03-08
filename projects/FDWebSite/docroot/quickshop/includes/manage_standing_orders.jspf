@@ -1,0 +1,99 @@
+<%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
+<%@page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.common.address.ContactAddressModel"%>
+<%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@ page import="com.freshdirect.webapp.crm.util.DeliveryTimeWindowFormatter"%>
+<%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
+<%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="java.text.DateFormatSymbols"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType" %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+
+ 
+<potato:pendingExternalAtcItem standingOrder="true"/>
+<potato:singlePageCheckout standingOrder="true"/>
+<potato:cartData standingOrder="true"/>
+<%	
+	Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
+	Collection<Map<String,Object>> soList= StandingOrderHelper.convertStandingOrderToSoy(
+	FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos), true);
+	Map<String,Object> upComingDataMap = new HashMap<String,Object>();
+	Map<String,Object> standingOrderSettingDataMap = new HashMap<String,Object>();
+	upComingDataMap.put( "upComingData", soList );
+	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false));
+%>
+<script>
+	FreshDirect.standingorder = FreshDirect.standingorder || {};
+	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) %>
+</script>
+
+<% if(soList!=null && !soList.isEmpty()) { %>
+	<div class="standing-orders-3-upcoming-deliveries">
+		<div class="standing-orders-3-edit-header">
+		    Upcoming Deliveries
+		    <div class="standing-orders-3-create-text">
+		        Review your delivery details and make changes if needed.
+		    </div>
+		</div>
+	
+		
+		<div class="standing-orders-3-edit-upcoming-deliveries">
+			<soy:render template="standingorder.standingOrdersUpcomingDeliveries" data="<%=upComingDataMap%>"/>
+		</div>
+	
+		<div style="clear:both;"></div>
+	</div>	
+<% } %> 
+<div class="standing-orders-3-so-settings">
+	<div class="standing-orders-3-settings-header">
+		<div class="standing-orders-3-edit-header">
+		    Standing Order Settings
+		    <div class="standing-orders-3-create-text">
+		        Change the details of your standing order
+		    </div>
+		</div>
+		<a href="/quickshop/new_standing_order.jsp">
+		    <div class="standing-orders-3-edit-build-new">
+		        <div class="standing-orders-3-edit-build-new-ball">
+		            <div class="standing-orders-3-edit-build-new-plus">+</div>
+		        </div>Build New Standing Order
+		    </div>
+		</a>
+		<hr class="standing-orders-3-edit-header-line">
+	</div>
+	<div class="standing-orders-3-edit-so-settings">
+		<soy:render template="standingorder.standingOrdersSettings" data="<%=standingOrderSettingDataMap%>"/>
+	</div>
+</div>
+<script>
+	window.FreshDirect.expressco = {};
+	window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
+	window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
+	window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+</script>

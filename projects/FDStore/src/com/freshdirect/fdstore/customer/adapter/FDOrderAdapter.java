@@ -1643,4 +1643,25 @@ public class FDOrderAdapter implements FDOrderI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getStandingOrderName() {
+		// TODO Auto-generated method stub
+		return sale.getStandingOrderName();
+	}
+
+	@Override
+	public String getSODeliveryDate() { 
+		if(null!=sale.getStandingOrderName()){
+			Calendar cl = Calendar.getInstance();
+		    StringBuilder buf = new StringBuilder();
+	        cl.setTime(erpOrder.getDeliveryInfo().getDeliveryStartTime());
+	        buf.append(cl.get(Calendar.MONTH)+1);
+			buf.append("/");
+			buf.append(cl.get(Calendar.DATE));
+			return buf.toString();
+		}
+     return null;
+	}
+	
 }

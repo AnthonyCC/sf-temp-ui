@@ -204,4 +204,6 @@ public interface FDOrderI extends FDCartI {
 	public boolean isMakeGood();
 	public String getAuthFailDescription();
 	public ErpDeliveryInfoModel getDeliveryInfo();
+	public String getStandingOrderName();
+	public String getSODeliveryDate();
 }

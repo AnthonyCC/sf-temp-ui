@@ -52,6 +52,28 @@ var FreshDirect = FreshDirect || {};
           this.refreshBody({},this.bodyTemplate,pdp.evenBetterPopupHeader(config));
           this.popup.show(target);
 
+          	/* add events on things only in popup */
+			$('#'+this.popupId+' .so-test-added-toggler').on('click', function(e) {
+				e.stopPropagation();
+				$(this).closest('.so-container').find('.so-results-content').toggleClass('so-close');
+
+				function sOResultsClose() {
+					$('.so-results-content').addClass('so-close');
+				}
+				
+				window.setTimeout(sOResultsClose, 3000);
+		        return false;
+			});
+			$('#'+this.popupId+' .cssbutton[data-component="showSOButton"]').on('click', function(e) {
+				e.stopPropagation();
+				$(this).closest('.pdp-evenbetter-soPreShow').toggleClass('pdp-evenbetter-soPreShow pdp-evenbetter-soShow');
+		        return false;
+			});
+			$('#'+this.popupId+' button[data-component="addToSOButton"]').on('click', function() {
+				addToSoEvenBetter($jq(this));
+				return false;
+			});
+          
           // make ID-s unique
           $('#'+this.popupId+' '+this.bodySelector+' [id]').each(function (i, el) {
             el.id = 'trnp_'+el.id;

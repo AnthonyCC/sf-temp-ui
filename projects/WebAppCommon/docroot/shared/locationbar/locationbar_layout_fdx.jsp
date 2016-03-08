@@ -18,11 +18,16 @@
 	
 	<%-- fright sections --%>
 	<div class="locabar-right-sections">
-		<tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
+		<tmpl:get name="modify_order" /><tmpl:get name="messages" /><tmpl:get name="zip_address" /><tmpl:get name="sign_in" /><tmpl:get name="cartTotal" />
 	</div>
 </div>
 
-<div id="location-alerts" class=""><tmpl:get name="location_out_of_area_alert" /></div>
+<div id="location-alerts" class="">
+	<tmpl:get name="location_out_of_area_alert" />
+	<tmpl:get name="error_so_alerts" />
+	<tmpl:get name="activate_so_alerts" />
+	<tmpl:get name="modify_order_alerts" />	
+</div>
 <div id="unrecognized" class="invisible" data-type="sitemessage">
 	<div class="unrecognized error-message">
 		<p>

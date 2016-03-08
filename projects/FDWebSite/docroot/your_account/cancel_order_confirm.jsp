@@ -16,12 +16,14 @@ final int W_YA_CANCEL_ORDER_CONFIRM = 970;
 <%
 	String orderId = request.getParameter("orderId");
 	String comment = NVL.apply(request.getParameter("comment"), "");
+	FDOrderI cancelCartOrOrder = FDCustomerManager.getOrder(orderId);
+
 %>
 
 <%-- error message handling here --%>
 <TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">
-<font class="title18">Order # <%= orderId %> Cancelled</font><br>
+<font class="title18"><% if (cancelCartOrOrder.getStandingOrderName() != null){ %><%= cancelCartOrOrder.getStandingOrderName() %>, <%= cancelCartOrOrder.getSODeliveryDate() %> Delivery, <% } %>Order # <%= orderId %> Cancelled</font><br>
 <FONT CLASS="space4pix"><BR></FONT></td>
 </tr></table>
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"><BR>

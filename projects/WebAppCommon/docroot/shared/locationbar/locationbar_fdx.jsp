@@ -13,6 +13,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.LinkedHashMap" %>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
@@ -24,6 +25,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%-- 
 --%>
 <%
@@ -94,7 +99,30 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			</div>
 		</tmpl:put>
 	<% } %>
-
+	
+	<tmpl:put name="modify_order">
+		<div class="locabar-section locabar-modify-order-section" style="display: none;">
+			<div id="locabar_modify_order_trigger">
+				<div class="cursor-pointer">
+					<div class="section-modify-order-img" id="locabar-modify-order-open">
+						<div id="locabar-modify-order-count" class="">0</div>
+					</div>
+					<div class="locabar-modify-order-container">
+						<div class="locabar-modify-order-container-header">Modify Order</div>
+						<div><div class="locabar-modify-order-container-message"></div><div class="locabar-down-arrow"></div></div>
+					</div>
+				</div>
+				<div id="locabar_orders" class="posAbs">
+					<div class="ui-arrow-buffer"></div>
+					<div class="ui-arrow ui-top"></div>
+					<div class="section-header">
+						<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</tmpl:put>
+	
 <%-- messages icon --%>
 	<tmpl:put name="messages"><div class="locabar-section locabar-messages-section" style="display: none;">
 			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers" tabindex="0">
@@ -109,7 +137,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
 				<div class="messages invisible" id="test3" data-type="test3">this is a test message</div>
 				<script>
-					$jq(document).ready(function() { 
+					$jq(document).ready(function() {
 						$jq('#test1').messages('add','test1');
 						$jq('#test2').messages('add','test2');
 						$jq('#test3').messages('add','test3');
@@ -308,7 +336,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="nodeliver-form">
 						<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 							<form class="n">
-								<div class=""><label class="n">We'll notify you when service expands in<br />your area.</label></div>
+								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
 									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 								</div>
@@ -332,7 +360,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user != null && !user.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
-										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Let us notify you when service expands in your area.</label></div>
+										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Notify me when service comes to my area.</label></div>
 										<div>
 											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
 										</div>
@@ -624,6 +652,36 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 <%-- OUT OF AREA ALERT --%>
 	<% if (user != null && user.getLevel() == FDUserI.GUEST) { %>
 	<% } %>
+
+<%-- SO ALERTS --%>
+
+	<%
+		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
+		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user, false));
+	%>
+	<tmpl:put name="error_so_alerts">
+		<div id="errorsoalerts" class="alerts invisible" data-type="errorsoalerts">
+			<soy:render template="standingorder.errorSOAlert" data="<%=errorSOAlert%>"/>
+		</div>
+	</tmpl:put>
+
+	<%
+		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
+		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user, false));
+	%>
+	<tmpl:put name="activate_so_alerts">
+		<div id="activatesoalert" class="alerts invisible" data-type="activatesoalert">
+			<soy:render template="standingorder.activateSOAlert" data="<%=activateSOAlert%>"/>
+		</div>
+	</tmpl:put>
+
+<%-- MODIFY ORDER ALERTS --%>
+
+	<tmpl:put name="modify_order_alerts">
+		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+			<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+		</div>
+	</tmpl:put>
 </tmpl:insert>
 
 

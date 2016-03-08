@@ -38,7 +38,7 @@ public class QuickShopRedirector extends BodyTagSupport {
 	public static final String URL_OLD_QS_SHOPPING_LISTS = "/quickshop/all_lists.jsp";
 	public static final String URL_OLD_QS_SHOPPING_LIST_DETAIL = "/quickshop/shop_from_list.jsp";
 	public static final String URL_OLD_QS_FD_LISTS = "/quickshop/all_starter_lists.jsp";
-	public static final String URL_OLD_QS_STANDING_ORDERS = "/quickshop/standing_orders.jsp";
+	public static final String URL_QS_STANDING_ORDERS3 = "/quickshop/standing_orders.jsp";
 	public static final String URL_OLD_QS_SO_DETAILS = "/quickshop/so_details.jsp";
 
 	public static enum FROM {
@@ -190,7 +190,9 @@ public class QuickShopRedirector extends BodyTagSupport {
 			// Not eligible for the new stuff, do no redirect
 			return null;
 		}
-
+        if(user.isNewSO3Enabled()){
+    		return URL_QS_STANDING_ORDERS3;
+        }
 		return URL_NEW_QS_STANDING_ORDERS;
 	}
 
@@ -222,13 +224,16 @@ public class QuickShopRedirector extends BodyTagSupport {
 			// Count the active standing orders
 			int soCount = 0;
 			try {
-				soCount = FDStandingOrdersManager.getInstance().loadCustomerStandingOrders(user.getIdentity()).size();
+				soCount = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity()).size();
 			} catch (FDResourceException e) {
 				LOG.error("Failed to get standing orders for " + user.getUserId(), e);
 			}
 
 			if (soCount > 0) {
 				// Happiness, we have standing orders, display them
+		        if(user.isNewSO3Enabled()){
+		    		return URL_QS_STANDING_ORDERS3;
+		        }
 				return URL_NEW_QS_STANDING_ORDERS;
 			}
 
@@ -265,10 +270,13 @@ public class QuickShopRedirector extends BodyTagSupport {
 	 */
 
 	private String getRedirectForNewStandingOrderPage() {
-		if (isNewQs) {
+		if (isNewQs && user.isNewSO3Enabled()) {
 			// Eligible for the new stuff, just let him through
-			return null;
+			return URL_QS_STANDING_ORDERS3;
+		} else if(isNewQs){
+			return null; // to open qs_standing_order.jsp 
 		}
+			
 
 		// Not allowed to see the new stuff, send him back to the old and ugly
 		// page

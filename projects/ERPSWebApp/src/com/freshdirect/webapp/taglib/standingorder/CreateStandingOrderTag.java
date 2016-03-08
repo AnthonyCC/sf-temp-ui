@@ -9,8 +9,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.common.customer.EnumStandingOrderActiveType;
+import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -20,6 +23,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class CreateStandingOrderTag extends BodyTagSupport {
 	
@@ -39,7 +43,6 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 		ActionResult result = new ActionResult();
 		
 		String action = request.getParameter("action");
-		
 
 
 		// store action result in request
@@ -67,16 +70,16 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				throw new JspException(e2);
 			}
 			
-			
 			int frequency = 0;
-			String freqValue = request.getParameter("soFreq");
-			try {
-				frequency = Integer.parseInt( freqValue );
-			} catch (NumberFormatException e) {
-				result.addError(true, "SO_FREQ", "Please specify delivery frequency!");
+			// don't Validate frequency if SO 3.0 is enabled 
+			if (!u.isNewSO3Enabled()) {
+				String freqValue = request.getParameter("soFreq");
+				try {
+					frequency = Integer.parseInt(freqValue);
+				} catch (NumberFormatException e) {
+					result.addError(true, "SO_FREQ", "Please specify delivery frequency!");
+				}
 			}
-			
-	
 			if (!result.isFailure()) {
 				
 				FDStandingOrder so = new FDStandingOrder();
@@ -85,15 +88,27 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				
 
 				so.setCustomerId(u.getIdentity().getErpCustomerPK());
+                
+				if (u.isNewSO3Enabled()) {
+					// Need to save the standing order
+					try {
+						so.setNewSo(true);
+						so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
+						StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
 
-				try {
-					so.setPaymentMethodId( FDCustomerManager.getDefaultPaymentMethodPK( u.getIdentity()));
-				} catch (FDResourceException e1) {
-				}
+					} catch (FDResourceException e) {
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
+					} catch (FDResourceException e1) {
+					}
 
-				try {
-					so.setAddressId( FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
-				} catch (FDResourceException e) {
+					try {
+						so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
+					} catch (FDResourceException e) {
+					}
 				}
 
 				// What is missing initially
@@ -104,6 +119,8 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				
 				// record new standing order object in session
 				// note that this object is not yet complete
+
+				
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
 
@@ -111,11 +128,14 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 
 				try {
 					// redirect to main page
-					response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS"));
+					if(u.isNewSO3Enabled()){
+						response.sendRedirect(response.encodeRedirectURL("/quickshop/new_standing_order.jsp?newso=false")) ;
+					}else{
+						response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS")) ;
+					}
 
 					return SKIP_BODY;
 				} catch (IOException ioe) {
-					// if there was a problem redirecting, well.. fuck it.. :)
 					throw new JspException("Error redirecting " + ioe.getMessage());
 				}
 			}

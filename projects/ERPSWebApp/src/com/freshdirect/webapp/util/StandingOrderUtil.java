@@ -143,6 +143,7 @@ public class StandingOrderUtil {
 	 * @return
 	 * 
 	 * @throws FDResourceException
+	 * @throws FDAuthenticationException 
 	 * 
 	 */
 	public static SOResult.Result process( FDStandingOrder so, FDStandingOrderAltDeliveryDate altDateInfo, TimeslotEvent event, FDActionInfo info
@@ -408,7 +409,7 @@ public class StandingOrderUtil {
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
 				(ranges, event, TimeslotLogic.encodeCustomer(contactAddress, customerUser), 
-						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR), TimeslotContext.CHECKOUT_TIMESLOTS,false)
+						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR), TimeslotContext.CHECKOUT_TIMESLOTS,customerUser.isNewSO3Enabled())
 				.getTimeslotList().get(0);
 		
 		List<FDTimeslot> timeslots = timeslotList.getTimeslots();
@@ -513,7 +514,7 @@ public class StandingOrderUtil {
 		// ==========================
 		
 		ProcessActionResult vr = new ProcessActionResult();
-		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr, customerUser.getUserContext());		
+		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, so.getTipAmount(), vr, customerUser.getUserContext());		
 		// boolean hasInvalidItems = vr.isFail();
 		
 		final List<FDCartLineI> originalCartItems = new ArrayList<FDCartLineI>(cart.getOrderLines());
@@ -766,7 +767,7 @@ public class StandingOrderUtil {
 	}
 
 
-	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, ProcessActionResult vr, UserContext userContext) throws FDResourceException {
+	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, double tipAmount, ProcessActionResult vr, UserContext userContext) throws FDResourceException {
 		FDCartModel cart = new FDTransientCartModel();
 		
 		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
@@ -790,6 +791,7 @@ public class StandingOrderUtil {
 		cart.setDeliveryAddress( erpDeliveryAddress );		
 		cart.setDeliveryReservation( reservation );
         cart.setZoneInfo( zoneInfo );
+        cart.setTip(tipAmount);
         if(null ==userContext){
         	userContext = ContentFactory.getInstance().getCurrentUserContext();
         }
@@ -1077,11 +1079,12 @@ public class StandingOrderUtil {
 		FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 
 		info.setNote("Standing Order Created w/First Order Placed");
-		String soPk = FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, so, saleId);
-		so.setId( soPk );
+		 so = FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, so, saleId);
 
 		// establish link between SO and Sale
 		FDStandingOrdersManager.getInstance().assignStandingOrderToSale(saleId, so);
+		
+		
 	}
 
 

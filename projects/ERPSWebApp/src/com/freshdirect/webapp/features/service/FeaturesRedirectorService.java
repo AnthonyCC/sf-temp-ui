@@ -19,7 +19,8 @@ public class FeaturesRedirectorService {
 	public String getRedirectUrl(EnumRolloutFeature feature, String originalUrl, FDUserI user, Cookie[] cookies) {
 		String redirectUrl = null;
 		if (FeaturesService.defaultService().isFeatureActive(feature, cookies, user)) {
-			boolean standingOrderModeActive = user.getCheckoutMode() != null && user.getCheckoutMode().isStandingOrderMode();
+			boolean standingOrderModeActive = user.getCheckoutMode() != null && user.getCheckoutMode().isStandingOrderMode() 
+					&& !user.isNewSO3Enabled();
 			switch (feature) {
 			case checkout2_0:
 				if (!standingOrderModeActive) {

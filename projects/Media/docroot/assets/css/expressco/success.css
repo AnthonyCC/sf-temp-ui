@@ -31,6 +31,12 @@
   font-weight:bold;
 }
 
+.orderbox .standing-order-3-receiptBox{
+  color: #666;
+  font-weight: normal;
+  font-size: 0.95em;
+}
+
 .orderbox ul{
   padding:0;
   margin:0;

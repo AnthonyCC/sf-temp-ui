@@ -2,15 +2,19 @@ package com.freshdirect.fdstore.standingorders;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -22,8 +26,13 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.xml.ExcludeFromXmlSerializer;
 
+/**
+ * @author kumarramachandran
+ *
+ */
 public class FDStandingOrder extends ModelSupport {
 	
 	private static final long serialVersionUID = 9146272725813248955L;
@@ -37,6 +46,7 @@ public class FDStandingOrder extends ModelSupport {
 	Date endTime;				// dlv timeslot - end date
 	Date nextDeliveryDate;		// next delivery date
 	Date previousDeliveryDate;  // previous delivery date (pseudo transient value -- not saved)
+	public static final String cutOffDeliveryTime = "11pm";
 	
 	int frequency;				// frequency in weeks (chosen by the customer; can be one, two, three, and four weeks)
 	
@@ -53,6 +63,22 @@ public class FDStandingOrder extends ModelSupport {
 
 	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/qs_so_details.jsp";
 	
+	FDOrderInfoI upcomingDelivery ;
+
+	FDCartModel standingOrderCart=new FDCartModel();
+	
+	boolean newSo=false;
+
+	String activate=null; // enumType EnumStandingOrderType
+	
+	boolean isDefault=false;
+	
+	String timeSlotId ;
+	
+	int reservedDayOfweek ;
+	
+	double tipAmount;
+	
 	public FDStandingOrder() {
 		super();
 	}
@@ -65,7 +91,14 @@ public class FDStandingOrder extends ModelSupport {
 		setCustomerId(list.getCustomerPk().getId());
 		setCustomerListId(list.getPK().getId());
 	}
+	
+	public double getTipAmount() {
+		return tipAmount;
+	}
 
+	public void setTipAmount(double tipAmount) {
+		this.tipAmount = tipAmount;
+	}
 
 	public String getCustomerId() {
 		return customerId;
@@ -184,9 +217,27 @@ public class FDStandingOrder extends ModelSupport {
 	}
 
 	public void setupDelivery(FDReservation r) {
-		setStartTime(r.getStartTime());
+		setupDelivery(r,true);
+		/*setStartTime(r.getStartTime());
 		setEndTime(r.getEndTime());
 		calculateNextDeliveryDate( r.getTimeslot().getDeliveryDate() );
+		setTimeSlotId(r.getTimeslotId());
+		Calendar c = Calendar.getInstance();
+		c.setTime(r.getTimeslot().getDeliveryDate());
+		setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));*/
+	}
+	
+	public void setupDelivery(FDReservation r, boolean calcNextDeliveryDate) {		
+		setStartTime(r.getStartTime());
+		setEndTime(r.getEndTime());
+		if(calcNextDeliveryDate){				
+			calculateNextDeliveryDate( r.getTimeslot().getDeliveryDate() );
+		}
+		setTimeSlotId(r.getTimeslotId());
+		Calendar c = Calendar.getInstance();
+		c.setTime(r.getTimeslot().getDeliveryDate());
+		setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
+		
 	}
 
 	/**
@@ -250,6 +301,18 @@ public class FDStandingOrder extends ModelSupport {
 		return "every " + i2s[frequency] + " weeks";
 	}
 	
+	public String getFullFrequencyDescription(){
+		switch (frequency) {
+		case 1:
+			return "Every ";
+		case 2:
+			return "Every Other ";
+		case 4:
+			return "Every Fourth ";
+		default:
+			return null;
+		}
+	}
 
 	public static final String DATE_FORMAT = "EEEE, MMMM d.";
 	public static final String DATE_FORMAT_SHORT = "MM/dd/yy";
@@ -434,5 +497,130 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setZone(String zone) {
 		this.zone = zone;
+	}
+
+	public FDOrderInfoI getUpcomingDelivery() {
+		return upcomingDelivery;
+	}
+
+	public void setUpcomingDelivery(FDOrderInfoI upcomingDelivery) {
+		this.upcomingDelivery = upcomingDelivery;
+	}
+
+	public FDCartModel getStandingOrderCart() {
+		return standingOrderCart;
+	}
+
+	public void setStandingOrderCart(FDCartModel standingOrderCart) {
+		this.standingOrderCart = standingOrderCart;
+	}
+
+	/**
+	 * @return the newSo
+	 */
+	public boolean isNewSo() {
+		return newSo;
+	}
+
+	/**
+	 * @param newSo the newSo to set
+	 *  Differentiate normal standing order with express 
+	 *  checkout standing order
+	 */
+	public void setNewSo(boolean newSo) {
+		this.newSo = newSo;
+	}
+
+	public String getActivate() {
+		return activate;
+	}
+
+	public void setActivate(String activate) {
+		this.activate = activate;
+	}
+
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
+
+	public String getTimeSlotId() {
+		return timeSlotId;
+	}
+
+	public void setTimeSlotId(String timeSlotId) {
+		this.timeSlotId = timeSlotId;
+	}
+
+	public int getReservedDayOfweek() {
+		return reservedDayOfweek;
+	}
+
+	public void setReservedDayOfweek(int reservedDayOfweek) {
+		this.reservedDayOfweek = reservedDayOfweek;
+	}
+
+	public String getFormattedCutOffDeliveryDate() {
+		String formattedCutOffDeliveryDate=null;
+		Date cutOffDeliveryDateTime=getCutOffDeliveryDateTime();		
+		if(null !=cutOffDeliveryDateTime){
+			formattedCutOffDeliveryDate=DateUtil.DAY_MONTH_DATE_FORMATTER.format(cutOffDeliveryDateTime);
+		}
+		return formattedCutOffDeliveryDate;
+	}
+	
+
+	/**
+	 * The cutoff time for the SO template activation is 11pm on 2 days before the nextdeliverydate
+	 * The SO activation cutoff time of 11pm, is same for all templates irrespective of 
+	 * the timeslot window chosen for the SO template.
+	 * @return
+	 */
+	public Date getCutOffDeliveryDateTime() {
+		Date cutOffDeliveryDateTime = null;
+		if(null !=nextDeliveryDate){
+			cutOffDeliveryDateTime = DateUtil.addDays(nextDeliveryDate,-2);
+			cutOffDeliveryDateTime=DateUtil.setTimeForDate(cutOffDeliveryDateTime, FDStoreProperties.getSO3ActivateCutoffTime());
+		}
+		return cutOffDeliveryDateTime;
+	}
+	
+	public String getShortSODeliveryDayOfWeek(FDStandingOrder so, boolean alt) {
+		String shortDeliveryDayOfWeek=null;
+		if(null != getNextDeliveryDate()){
+			if(alt){
+			shortDeliveryDayOfWeek=DateUtil.formatDayOfWk(so.getUpcomingDelivery().getRequestedDate());
+			} else {
+				shortDeliveryDayOfWeek=DateUtil.formatDayOfWk(so.getNextDeliveryDate());
+			}
+		}
+		return shortDeliveryDayOfWeek;
+	}
+	
+	public String getShortSODeliveryDate(FDStandingOrder so, boolean alt) {
+		String shortSODeliveryDate=null;
+		if(null != getNextDeliveryDate()){
+			if(alt){
+			shortSODeliveryDate=DateUtil.formatDateWithMonthAndDate(so.getUpcomingDelivery().getRequestedDate());
+		} else {
+			shortSODeliveryDate=DateUtil.formatDateWithMonthAndDate(so.getNextDeliveryDate());
+		}
+		}	
+		return shortSODeliveryDate;
+	}
+	
+	public String getDayOfWeek(FDStandingOrder so, boolean alt) {
+		String dayOfweek=null;
+		if(null != getNextDeliveryDate()){
+			if(alt){
+				dayOfweek=DateUtil.formatFullDayOfWk(so.getUpcomingDelivery().getRequestedDate());
+			} else {
+				dayOfweek=DateUtil.formatFullDayOfWk(so.getNextDeliveryDate());
+			}
+		}
+		return dayOfweek;
 	}
 }

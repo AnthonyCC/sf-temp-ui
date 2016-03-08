@@ -33,6 +33,7 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.JspMethods;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class AvailabilityService {
 
@@ -113,21 +114,17 @@ public class AvailabilityService {
 		return warningMessages;
 	}
 
-	public String translateWarningMessage(String warningMessageKey, FDUserI user)
-			throws FDResourceException {
-		String warningMessage = null;
-		if (warningMessageKey != null) {
-			Map<String, String> populateWarningMessages = AvailabilityService
-					.defaultService().populateWarningMessages(user);
-			warningMessage = populateWarningMessages.get(warningMessageKey);
-			if (AvailabilityService.GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY
-					.equals(warningMessageKey)) {
-				warningMessage = MessageFormat.format(warningMessage,
-						JspMethods.formatPrice(user.getMinimumOrderAmount()));
-			}
-		}
-		return warningMessage;
-	}
+    public String translateWarningMessage(String warningMessageKey, FDUserI user) throws FDResourceException {
+        String warningMessage = null;
+        if (warningMessageKey != null && !StandingOrderHelper.isSO3StandingOrder(user)) {
+            Map<String, String> populateWarningMessages = AvailabilityService.defaultService().populateWarningMessages(user);
+            warningMessage = populateWarningMessages.get(warningMessageKey);
+            if (AvailabilityService.GENERAL_UNDER_ORDER_MINIMUM_MESSAGE_KEY.equals(warningMessageKey)) {
+                warningMessage = MessageFormat.format(warningMessage, JspMethods.formatPrice(user.getMinimumOrderAmount()));
+            }
+        }
+        return warningMessage;
+    }
 
 	public String selectAlcoholicOrderMinimumType(FDUserI user)
 			throws FDResourceException {

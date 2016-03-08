@@ -38,6 +38,7 @@ public class DlvProperties {
 	private final static String PROP_DLVDEPOT_HOME 				= "delivery.depot.home";
 	private final static String PROP_DLVDEPOTMANAGER_HOME 		= "delivery.depotManager.home";
 	private final static String PROP_DLVMANAGER_HOME 			= "delivery.manager.home";
+	private final static String PROP_SO3_HOME 					= "delivery.so3.home";
 	private final static String PROP_PAYMENTGATEWAY_HOME 		= "payment.gateway.home";
 	private final static String PROP_CUSTOMER_MANAGER_HOME 		= "customer.manager.home";
 	private final static String PROP_PAYMENT_HOME 				= "payment.home";
@@ -70,6 +71,7 @@ public class DlvProperties {
 		defaults.put(PROP_DLVDEPOT_HOME, "freshdirect.delivery.Depot");
 		defaults.put(PROP_DLVDEPOTMANAGER_HOME, "freshdirect.delivery.DepotManager");
 		defaults.put(PROP_DLVMANAGER_HOME, "freshdirect.delivery.DeliveryManager");
+		defaults.put(PROP_SO3_HOME, "freshdirect.SO3.ReservationManager");
 		defaults.put(PROP_PAYMENTGATEWAY_HOME, "freshdirect.payment.Gateway");
 		defaults.put(PROP_CUSTOMER_MANAGER_HOME, "freshdirect.erp.CustomerManager");
 		defaults.put(PROP_PAYMENT_HOME, "freshdirect.payment.Payment");
@@ -134,6 +136,10 @@ public class DlvProperties {
 	
 	public static String getDlvManagerHome(){
 		return config.getProperty(PROP_DLVMANAGER_HOME);
+	}
+	
+	public static String getSO3Home(){
+		return config.getProperty(PROP_SO3_HOME);
 	}
 	
 	public static String getDlvPlanHome(){

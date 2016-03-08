@@ -154,7 +154,7 @@ public class CartSubTotalBoxService {
             }
         }
         
-        if("FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
+        if(null!=cart.getEStoreId() && "FDX".equalsIgnoreCase(cart.getEStoreId().getContentId())){
         	deliveryPassPopupNeeded=false;
         }
         

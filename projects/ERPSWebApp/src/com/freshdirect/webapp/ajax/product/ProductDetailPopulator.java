@@ -106,6 +106,7 @@ import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RestrictionUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class ProductDetailPopulator {
 
@@ -555,6 +556,8 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		
+		data.setSoData(StandingOrderHelper.getAllSoData(user,true));
+		
 		// alcoholic & usq flags
 		try {
 			// For alcoholic and usq flags check the default sku
@@ -614,6 +617,7 @@ public class ProductDetailPopulator {
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
+		item.setSoData(StandingOrderHelper.getAllSoData(user,true));
 
 		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );

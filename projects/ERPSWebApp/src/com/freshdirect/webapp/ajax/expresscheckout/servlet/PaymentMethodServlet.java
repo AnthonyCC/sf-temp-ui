@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -24,6 +25,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.util.StandingOrderHelper;
+import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class PaymentMethodServlet extends BaseJsonServlet {
 
@@ -75,10 +78,16 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                     case DELETE_PAYMENT_METHOD: {
                         PaymentService.defaultService().deletePaymentMethod(paymentRequestData, request);
                         changed = true;
+                        if(StandingOrderHelper.isSO3StandingOrder(user)){
+                        	user.getCurrentStandingOrder().setPaymentMethodId(null);	
+                        }
                         break;
                     }
                     case SELECT_PAYMENT_METHOD: {
                         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
+    					if(StandingOrderHelper.isSO3StandingOrder(user)){
+    						user.getCurrentStandingOrder().setPaymentMethodId(paymentId);
+    					}
                         
                         // EWallet Express Checkout
                         /*String eWalletID = FormDataService.defaultService().get(paymentRequestData, "eWalletID_"+paymentId);
@@ -211,6 +220,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                     default:
                         break;
                 }
+
                 paymentSubmitResponse.getSubmitForm().setSuccess(paymentSubmitResponse.getValidationResult().getErrors().isEmpty());
                 if (changed && paymentSubmitResponse.getSubmitForm().isSuccess()) {
                     Map<String, Object> singlePageCheckoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction, validationResult);
@@ -262,6 +272,16 @@ public class PaymentMethodServlet extends BaseJsonServlet {
         			
                     paymentSubmitResponse.getSubmitForm().setResult(singlePageCheckoutData);
                 }
+
+   			if(StandingOrderHelper.isSO3StandingOrder(user)
+   					&& validationResult.getErrors().isEmpty() ){
+   				try {
+ 					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
+   					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
+					paymentSubmitResponse.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
+   				} catch (FDResourceException e) {
+   					BaseJsonServlet.returnHttpError(500, "Error while submit payment for user " + user.getUserId(), e);  				}
+   			}
             }
             writeResponseData(response, paymentSubmitResponse);
         } catch (final Exception e) {

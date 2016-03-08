@@ -56,14 +56,13 @@ public class DateUtil {
 	private static final DateFormat MON_D_YEAR_FORMATTER = new SimpleDateFormat(MON_D_YEAR_PATTERN);
 	private static final DateFormat MON_D_YEAR = new SimpleDateFormat(MON_D_YEAR_PATTERN);
 	private static final DateFormat YEAR_OF_THE_DATE = new SimpleDateFormat("yyyy");
-
+	public static final DateFormat MONTH_DATE_FORMATTER = new SimpleDateFormat("MM/dd");
+	public static final DateFormat DAY_MONTH_DATE_FORMATTER = new SimpleDateFormat("EEE, MMMM dd");
+	public static final DateFormat FULL_DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEEE");
+	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM dd");
+	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("hha");
+	
 	private DateUtil() {
-	}
-
-	public static void main(String s[]){
-		Date d = new Date();
-		String str = DateUtil.formatDayOfWeek(d);
-		System.out.println(str);
 	}
 
 	public static Calendar toCalendar(Date date) {
@@ -258,7 +257,11 @@ public class DateUtil {
 	}
 	
 	public static String formatDayOfWk(Date dateValue) {
+		if(null!=dateValue){
 		return DAY_OF_WK_FORMATTER.format(dateValue);
+		} else {
+			return null;
+		}
 	}
 	
 	public static String formatCmTimeslot(Date dateValue){
@@ -507,6 +510,15 @@ public class DateUtil {
 		}
 	}
 	
+	public static String formatDateWithMonthAndDate(Date date){
+		if(null!=date){
+		return MONTH_DATE_FORMATTER.format(date);
+		} else {
+			return null;
+		}
+	}
+	
+	
 	/* When we want "11:59pm" or "11pm" */
 	@SuppressWarnings("deprecation")
 	public static String formatShortTimeNoZeroMins(TimeOfDay time) {
@@ -524,4 +536,49 @@ public class DateUtil {
 		return formattedTime.toLowerCase();
 	}
 	
+	public static Date setTimeForDate(Date date, int hourOfDay ){
+		Calendar cal= Calendar.getInstance();
+		cal.setTime(date);
+		cal=truncate(cal);
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		return cal.getTime();
+	}
+	public static String formatFullDayOfWk(Date dateValue) {
+		if(null!=dateValue){
+		return FULL_DAY_OF_WK_FORMATTER.format(dateValue);
+		} else {
+			return null;
+		}
+	}
+	
+	public static String formatMonthAndDate(Date dateValue) {
+		if(null!=dateValue){
+		return MON_DATE_FORMATTER.format(dateValue);
+		} else {
+			return null;
+		}
+	}
+	public static String formatHourAMPM(Date dateValue) {
+		if(null!=dateValue){
+		return HOUR_AMPM_FORMATTER.format(dateValue);
+		} else {
+			return null;
+		}
+	}
+	public static String formatHourAMPMRange(Date startDate, Date endDate){
+		StringBuilder hourRange=new StringBuilder();
+		String startDateString=null;
+		String endDateString=null;
+		if(null!=startDate){
+			startDateString=formatHourAMPM(startDate);
+		}
+		if(null!=endDate){
+			endDateString=formatHourAMPM(endDate);
+		}
+		hourRange.append(startDateString)
+			.append("-")
+			.append(endDateString);
+		
+		return hourRange.toString();
+	}
 } 

@@ -55,6 +55,7 @@ import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class CheckoutService {
 
@@ -80,7 +81,7 @@ public class CheckoutService {
 	}
 
 	public FormRestriction preCheckOrder(FDUserI user) throws FDResourceException, IOException, TemplateException {
-		FDCartModel cart = user.getShoppingCart();
+		FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)? user.getSoTemplateCart():user.getShoppingCart();
 		FormRestriction restriction = null;
 		if (cart.containsAlcohol()) {
 			restriction = RestrictionService.defaultService().verifyRestriction(user);

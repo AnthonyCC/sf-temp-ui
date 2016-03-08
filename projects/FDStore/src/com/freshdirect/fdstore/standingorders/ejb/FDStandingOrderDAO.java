@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -25,6 +26,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -34,41 +36,63 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderProductSku;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.fdstore.standingorders.InventoryMapInfoBean;
-import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
-import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
-import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
+import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
 	
 	
-		private static final String ALTERNATE_DELIVERY_DATE = "ALTERNATE_DELIVERY_DATE";
+    private static final String ALTERNATE_DELIVERY_DATE = "ALTERNATE_DELIVERY_DATE";
 
 	private static final String CURRENT_DELIVERY_DATE = "current_delivery_date";
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP";
 
-	private static final String LOAD_CUSTOMER_STANDING_ORDERS =
+	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-		"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
+		"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL " +
 		"order by CCL.NAME";
-
+	
+	private static final String LOAD_CUSTOMER_NEW_STANDING_ORDERS =
+			"select " + FIELDZ_ALL + " " +
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
+			"order by CCL.NAME";
+	private static final String LOAD_CUSTOMER_VALID_STANDING_ORDERS =
+			"select " + FIELDZ_ALL + " " + 
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 and SO.ADDRESS_ID IS NOT NULL and SO.PAYMENTMETHOD_ID IS NOT NULL" +
+			" and SO.START_TIME IS NOT NULL and SO.END_TIME is not null and SO.NEXT_DATE IS NOT NULL and SO.FREQUENCY IS NOT NULL "+
+			"order by CCL.NAME";
+	
 	private static final String LOAD_ACTIVE_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-		"where SO.DELETED<>1 " +
-		"order by CCL.NAME";
+		"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL order by CCL.NAME";
 
+	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS =
+			"select " + FIELDZ_ALL + " " +
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' " +
+			"order by CCL.NAME";
+	
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
 	
 	private static final String LOAD_STANDING_ORDER =
@@ -78,8 +102,8 @@ public class FDStandingOrderDAO {
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
-	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)";
 	
 	private static final String UPDATE_STANDING_ORDER = "update CUST.STANDING_ORDER set " +
 	"CUSTOMER_ID = ?, " +
@@ -94,8 +118,12 @@ public class FDStandingOrderDAO {
 	"DELETED = ?, " +
 	"LAST_ERROR = ?, " +
 	"ERROR_HEADER = ?, " +	
-	"ERROR_DETAIL = ? " +	
+	"ERROR_DETAIL = ?, " +	
+	"IS_ACTIVATED= ?, "+
+	"MODIFIED_TIME= ?, "+
+	"TIP=?"+
 	"where ID = ?";
+	
 	
 	private static final String LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO =
 			"select * " +
@@ -134,6 +162,20 @@ public class FDStandingOrderDAO {
 
 	private static final String GET_RUNINSTANCE_SQL = "select max(RUN_INSTANCE) as maxInstance from mis.UNAV_ITEMS_INV where run_date > SYSDATE - 1";
 	
+	private final static String QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS ="  select * from cust.standing_order so where so.next_date is not null and " +
+			"(so.next_date<=trunc(sysdate)+1 OR (so.next_date = trunc(sysdate)+2 and to_char(sysdate,'HH24')>="+FDStoreProperties.getSO3ActivateCutoffTime()+")) and so.is_activated is null";
+	
+	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL WHERE ID=?";
+
+	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y'  where  so.id=?" ;
+	
+	private static final String IS_CUSTOMER_HAS_STANDING_ORDER="SELECT  count(*)  as SO_COUNT from CUST.STANDING_ORDER SO WHERE "+
+				" SO.CUSTOMER_ID=? AND SO.DELETED<>1 ";
+	
+	private static final String UPDATE_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so='Y' WHERE  so.customer_id = ? AND SO.CUSTOMERLIST_ID=? ";
+	
+	private static final String REVERT_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so=NULL WHERE  so.customer_id = ? AND SO.default_so='Y' ";
+
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
 	}
@@ -173,11 +215,12 @@ public class FDStandingOrderDAO {
 	
 	/**
 	 * Load standing orders
+	 * @param isNewSo 
 	 * 
 	 * @return
 	 * @throws SQLException 
 	 */
-	public Collection<FDStandingOrder> loadActiveStandingOrders(Connection conn) throws SQLException {
+	public Collection<FDStandingOrder> loadActiveStandingOrders(Connection conn, boolean isNewSo) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -185,8 +228,12 @@ public class FDStandingOrderDAO {
 		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
 
 		try {
-			ps = conn.prepareStatement(LOAD_ACTIVE_STANDING_ORDERS);
-
+			
+			if (isNewSo) {
+				ps = conn.prepareStatement(LOAD_NEW_SO_ACTIVE_STANDING_ORDERS);
+			} else {
+				ps = conn.prepareStatement(LOAD_ACTIVE_STANDING_ORDERS);
+			}
 			rs = ps.executeQuery();
 			
 			while (rs.next()) {
@@ -219,17 +266,25 @@ public class FDStandingOrderDAO {
 	 * 
 	 * @param conn
 	 * @param identity
+	 * @param isNewSo 
 	 * @return
 	 * @throws SQLException
+	 * @throws FDResourceException 
+	 * @throws FDInvalidConfigurationException 
 	 */
-	public Collection<FDStandingOrder> loadCustomerStandingOrders(Connection conn, FDIdentity identity) throws SQLException {
+	public Collection<FDStandingOrder> loadCustomerStandingOrders(Connection conn, FDIdentity identity, boolean isNewSo) throws SQLException, FDResourceException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		
 		List<FDStandingOrder> sorders;
 		try {
-			ps = conn.prepareStatement(LOAD_CUSTOMER_STANDING_ORDERS);
+			if(isNewSo){
+			ps = conn.prepareStatement(LOAD_CUSTOMER_NEW_STANDING_ORDERS);
+			}else{
+				ps = conn.prepareStatement(LOAD_CUSTOMER_OLD_STANDING_ORDERS);
+
+			}
 			ps.setString(1, identity.getErpCustomerPK());
 
 			sorders = new ArrayList<FDStandingOrder>();
@@ -240,6 +295,7 @@ public class FDStandingOrderDAO {
 				FDStandingOrder so = new FDStandingOrder();
 				
 				sorders.add( populate(rs, so) );
+				
 			}
 
 			rs.close();
@@ -257,6 +313,7 @@ public class FDStandingOrderDAO {
 		
 		return sorders;
 	}
+
 
 	
 	/**
@@ -310,13 +367,15 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = conn.prepareStatement(LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO);
-			ps.setString(1, so.getId());
-			ps.setDate(2, so.getNextDeliveryDate()==null? null : new java.sql.Date(so.getNextDeliveryDate().getTime()));
-			rs = ps.executeQuery();
-			if(rs.next()){
-				FDStandingOrderAltDeliveryDate soAltDeliveryInfo = populateAltDeliveryInfo(rs);
-				so.setAltDeliveryInfo(soAltDeliveryInfo);
+			if (null != so.getNextDeliveryDate()) {
+				ps = conn.prepareStatement(LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO);
+				ps.setString(1, so.getId());
+				ps.setDate(2, new java.sql.Date(so.getNextDeliveryDate().getTime()));
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					FDStandingOrderAltDeliveryDate soAltDeliveryInfo = populateAltDeliveryInfo(rs);
+					so.setAltDeliveryInfo(soAltDeliveryInfo);
+				}
 			}
 		} catch (SQLException e) {
 			throw e;
@@ -330,7 +389,7 @@ public class FDStandingOrderDAO {
 		}
 	}
 
-	private FDStandingOrder populate( ResultSet rs, FDStandingOrder so ) throws SQLException {
+	protected FDStandingOrder populate( ResultSet rs, FDStandingOrder so ) throws SQLException {
 		
 		so.setId(rs.getString("ID"));
 
@@ -356,7 +415,11 @@ public class FDStandingOrderDAO {
 		if ( listName == null )
 			listName = DELETED_LIST_NAME;
 		so.setCustomerListName( listName );
-
+		so.setActivate( rs.getString("IS_ACTIVATED") );
+		so.setDefault(rs.getString("DEFAULT_SO")!=null && "Y".equals(rs.getString("DEFAULT_SO"))?true:false);
+		
+		so.setTipAmount(rs.getDouble("TIP"));
+		
 		return so;
 	}
 	
@@ -384,7 +447,7 @@ public class FDStandingOrderDAO {
 
 		String myId = null;
 		PreparedStatement ps = null; 
-		
+		Date currDate = new Date();
 		try {
 			myId = getNextId(conn);
 
@@ -409,7 +472,11 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getLastError() == null ? null : so.getLastError().name());
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
-			
+			ps.setString(counter++, null!=so.getActivate()? so.getActivate():null);
+			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Created Time
+			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
+			ps.setDouble(counter++, so.getTipAmount());
+
 			ps.execute();
 			
 			ps.close();
@@ -431,7 +498,7 @@ public class FDStandingOrderDAO {
 		
 		if (so == null || so.getId() == null)
 			return;
-				
+		Date currDate = new Date();		
 		PreparedStatement ps = null;
 		try {
 			ps = conn.prepareStatement(UPDATE_STANDING_ORDER);
@@ -450,11 +517,21 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
 
+			// to deactivate standing order if there is an error so that customer can go and reactivate them by fixing the error 
+			if(so.getLastError() != null && so.getErrorHeader()!=null && so.getErrorDetail()!=null
+					&& "Y".equals(so.getActivate())){
+				ps.setString(counter++, "N");
+
+			}else{
+				ps.setString(counter++, so.getActivate());
+
+			}
+			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
+			ps.setDouble(counter++,so.getTipAmount());
 			ps.setString(counter++, so.getId());
-			
+
 			ps.executeUpdate();
 			
-			ps.close();
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
@@ -1720,5 +1797,157 @@ public class FDStandingOrderDAO {
 			rs.close();
 		}		
 	}
+	
+	public Collection<FDStandingOrder> getValidStandingOrder(Connection conn, FDIdentity identity) throws SQLException, FDResourceException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		List<FDStandingOrder> sorders;
+		try {
+			ps = conn.prepareStatement(LOAD_CUSTOMER_VALID_STANDING_ORDERS);
+			ps.setString(1, identity.getErpCustomerPK());
 
+			sorders = new ArrayList<FDStandingOrder>();
+			
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrder so = new FDStandingOrder();
+				
+				sorders.add( populate(rs, so) );
+				
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return sorders;
+	}
+
+	public boolean activateStandingOrder(Connection conn, FDStandingOrder so) throws SQLException{
+		PreparedStatement ps = null;
+		
+		int result;
+		try {
+			ps = conn.prepareStatement(ACTIVATE_STANDING_ORDER);
+			ps.setString(1, so.getId());
+
+			
+			result = ps.executeUpdate();
+			
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return result>0?true:false;
+	}
+	
+	public boolean checkIfCustomerHasStandingOrder(Connection conn,FDIdentity identity) throws SQLException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		boolean isCustomerHasSO=false;
+		try {
+			ps = conn.prepareStatement(IS_CUSTOMER_HAS_STANDING_ORDER);
+			ps.setString(1, identity.getErpCustomerPK());
+			
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				
+                 if(Integer.valueOf(rs.getString("SO_COUNT"))>0){				
+                	 isCustomerHasSO=true; 
+                 }
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+		return isCustomerHasSO;
+	}
+
+
+	public boolean updateDefaultStandingOrder(Connection conn,String listId, FDIdentity identity) throws SQLException {
+		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
+		boolean isCustomerHasSO=true;
+		try {
+			ps = conn.prepareStatement(REVERT_DEFAULT_STANDING_ORDER);
+			ps.setString(1, identity.getErpCustomerPK());
+			
+			ps.executeUpdate();
+			
+			ps1 = conn.prepareStatement(UPDATE_DEFAULT_STANDING_ORDER);
+			ps1.setString(1, identity.getErpCustomerPK());
+			ps1.setString(2, listId);
+			
+			ps1.executeUpdate();
+			
+			
+		} catch (SQLException exc) {
+			isCustomerHasSO=false;
+			throw exc;
+		} finally {
+			if(ps != null) {
+				ps.close();
+			}if(ps1 != null) {
+				ps1.close();
+			}
+		}
+		
+		return isCustomerHasSO;
+	}
+	
+	public List<String> queryForStandingOrders(Connection conn) throws SQLException {
+		
+		List<String> list = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			list.add(rs.getString("id"));
+		}
+		LOGGER.info(list);
+		rs.close();
+		ps.close();
+		return list;
+	}
+
+public void removeTimeSlotInfoFromSO(Connection con,List<String> list) throws SQLException {
+		
+			
+		PreparedStatement ps = con.prepareStatement(QUERY_SO_UPDATE_SO);
+		for (Iterator<String> iterator = list.iterator(); iterator
+				.hasNext();) {
+		String soId = (String) iterator.next();
+		int i=1;
+		ps.setString(i++, soId);
+		ps.addBatch();
+		
+		LOGGER.info("timeslots removed for standing order id: "+soId);
+		}
+		
+		ps.executeBatch();
+		ps.close();
+		
+	}
 }

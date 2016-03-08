@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class ETipService {
 
@@ -66,10 +67,15 @@ public class ETipService {
         }
 
         if (result.isEmpty()) {
-            FDCartModel cart = user.getShoppingCart();
+        	FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?
+            		user.getSoTemplateCart():user.getShoppingCart();
             cart.setTip(Double.parseDouble(tipAmount));
             cart.setCustomTip(isCustomTip);
             cart.setTipApplied(true);
+            
+            if(StandingOrderHelper.isSO3StandingOrder(user)) {
+            	user.getCurrentStandingOrder().setTipAmount(Double.parseDouble(tipAmount));
+            }
         }
 
         return result;

@@ -162,6 +162,8 @@ var FreshDirect = FreshDirect || {};
               visibility: 'hidden'
             }).removeClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html(related.html());
+            //pass on classes from container
+            relatedHolder.addClass(related.attr('class'));
             related.remove();
 
             // set current value

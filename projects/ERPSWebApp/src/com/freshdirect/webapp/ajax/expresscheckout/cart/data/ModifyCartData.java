@@ -6,7 +6,9 @@ public class ModifyCartData {
 	private String orderId;
 	private String cutoffTime;
 	private String oneWeekLater;
-
+    private String soName;
+    private String soOrderDate;
+    
 	public String getOrderId() {
 		return orderId;
 	}
@@ -38,4 +40,34 @@ public class ModifyCartData {
 	public void setModifyOrderEnabled(boolean modifyOrderEnabled) {
 		this.modifyOrderEnabled = modifyOrderEnabled;
 	}
+
+	/**
+	 * @return the soName
+	 */
+	public String getSoName() {
+		return soName;
+	}
+
+	/**
+	 * @param soName the soName to set
+	 */
+	public void setSoName(String soName) {
+		this.soName = soName;
+	}
+
+	/**
+	 * @return the soOrderDate
+	 */
+	public String getSoOrderDate() {
+		return soOrderDate;
+	}
+
+	/**
+	 * @param soOrderDate the soOrderDate to set
+	 */
+	public void setSoOrderDate(String soOrderDate) {
+		this.soOrderDate = soOrderDate;
+	}
+	
+	
 }

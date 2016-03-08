@@ -23,7 +23,8 @@
     <%-- TODO: REVISE where data comes to templates below!! --%>
     <div class="thxgiving-includes">
       <soy:render template="pdp.bundleProductIncludes" data="${productPotato}" />
-    </div><!-- /thxgiving-includes  --><div class="thxgiving-actions">
+    </div><!-- /thxgiving-includes  -->
+    <div class="thxgiving-actions">
       <soy:render template="pdp.bundleProductActionsMedia" data="${productExtraPotato}" />
       <soy:render template="pdp.bundleProductActionsDetails" data="${productPotato}" />
     </div>
@@ -36,7 +37,7 @@
        <label class="agree"><input type="checkbox" name="agree" data-component="agree-terms" />I have read and agree to the terms</label>
        </c:if>
     </div>
-    <div class="addtocart-right center-content" data-component="product" data-cmeventsource="pdp_main">
+    <div class="addtocart-right center-content<%= (user.isEligibleForStandingOrders()) ? " soShow" : "" %>" data-component="product" data-cmeventsource="pdp_main">
       <soy:render template="pdp.productData" data="${productPotato}" />
       <soy:render template="pdp.bundleProductAddToCart" data="${productPotato}"/>
     </div>

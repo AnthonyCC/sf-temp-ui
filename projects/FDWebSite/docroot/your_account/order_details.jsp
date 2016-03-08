@@ -142,6 +142,9 @@ if(orderId==null){
 		</table>
 	</div>
 	<%-- order details/CTA row (under top nav bar) --%>
+	<% if (cart.getStandingOrderName() != null){ %>
+		<div class="order-details-so-info"><%= cart.getStandingOrderName() %>, <%= cart.getSODeliveryDate() %> Delivery</div>
+	<% }%>
 	<%
 		boolean hasCredit = false;
 	    Collection comp = cart.getComplaints();

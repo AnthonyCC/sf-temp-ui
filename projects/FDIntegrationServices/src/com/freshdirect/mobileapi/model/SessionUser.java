@@ -723,4 +723,12 @@ public class SessionUser {
 	public void setIsAvalaraTaxed(boolean isAvalaraTaxed){
 		this.sessionUser.setIsAvalaraTaxed(isAvalaraTaxed);
 	}
+
+    public boolean isSoContainerOpen() {
+        return this.sessionUser.isSoContainerOpen();
+    }
+
+	public void setSoContainerOpen(boolean isSoContainerOpen) {
+		this.sessionUser.setSoContainerOpen(isSoContainerOpen);
+	}
 }

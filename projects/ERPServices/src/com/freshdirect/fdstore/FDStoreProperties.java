@@ -286,6 +286,8 @@ public class FDStoreProperties {
 
     // CORS domain settings
     private static final String CORS_DOMAIN = "fdstore.CORS.domain";
+    
+    public static final String PROP_SO3_ACTIVATE_CUTOFF_TIME="fdstore.so3.activate.cutoff.time";
 
     // Smart Search
     /**
@@ -812,6 +814,7 @@ public class FDStoreProperties {
 	public final static String PROP_EXTOLE_SFTP_USERNAME		                = "extole.sftp.username";
 	public final static String PROP_EXTOLE_SFTP_FILE_DOWNLOADER_REMOTE_WORKDIR	= "extole.sftp.remotedirectory";
 	public final static String PROP_EXTOLE_SFTP_FILE_DOWNLOADER_LOCAL_WORKDIR	= "extole.sftp.localdirectory";
+    public static final String PROP_FEATURE_ROLLOUT_NEW_SO="feature.rollout.new.standindorder.enabled";
 	
 	public static final String PROP_SCHEME_HTTPS                                = "scheme.https";
 	public static final String PROP_EXTOLE_BASE_URL                             = "prop.base.url";
@@ -1505,6 +1508,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         //defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1657,6 +1661,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_EXTOLE_MICROSITE_SUB_URL, "https://refer.freshdirect.com/myaccountsub");
 		defaults.put(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL, "https://refer.freshdirect.com/globalnav");
 		
+        
+        defaults.put(PROP_FEATURE_ROLLOUT_NEW_SO, "true");
+        defaults.put(PROP_SO3_ACTIVATE_CUTOFF_TIME, "23");//11pm - Hour of the day in 24hr format.
 		refresh();
     }
 
@@ -4180,4 +4187,8 @@ public class FDStoreProperties {
 	public static String getAvalaraCompanyCode() {
 		return StringUtils.defaultString(get(PROP_AVALARA_COMPANY_CODE),"0011");
 	}
+	
+	public static int getSO3ActivateCutoffTime() {
+        return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
+    }
 }

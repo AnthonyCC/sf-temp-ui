@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.util;
 
 import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,22 +9,40 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
+import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
+import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
+import com.freshdirect.webapp.ajax.standingorder.StandingOrderResponseData;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -40,6 +59,47 @@ public class StandingOrderHelper {
 	
 	public static final String DAY_NAMES[] = new DateFormatSymbols().getWeekdays();
 
+
+/*	public static String getSODeliveryDate(FDStandingOrder so, boolean alt) {
+
+		Calendar cl = Calendar.getInstance();
+		StringBuilder buf = new StringBuilder();
+
+		if (null != so.getNextDeliveryDate()) {
+			if (alt) {
+				// normal format for upcoming delivery "Tue May 6, 10pm-11pm "
+			cl.setTime(so.getUpcomingDelivery().getRequestedDate());
+			buf.append(new SimpleDateFormat("EEE MMM d", Locale.ENGLISH).format(cl.getTime()));
+			} else {
+				// format for standing order settings Tuesday, 10pm -11 pm
+				cl.setTime(so.getNextDeliveryDate());
+				if (so.getStartTime() != null && so.getEndTime() != null) {
+					buf.append(DAY_NAMES[cl.get(Calendar.DAY_OF_WEEK)]);
+					buf.append(", ");
+					buf.append(formatTime(so.getStartTime(), so.getEndTime()));
+				}
+			}
+		}
+		return buf.toString();
+	}
+*/
+
+	public static String getSODeliveryDate(FDStandingOrder so, boolean alt) {
+
+		if (null != so.getNextDeliveryDate()) {
+			if (alt) {
+				// normal format for upcoming delivery "Feb 20"
+			return DateUtil.formatMonthAndDate(so.getUpcomingDelivery().getRequestedDate());
+			
+			} else {
+				// format for standing order settings "Feb 20"
+				return DateUtil.formatMonthAndDate(so.getNextDeliveryDate());
+				}
+			}
+		
+		return null;
+	}
+	
 	/**
 	 * Returns formatted delivery date (e.g. "Tuesday, 6 - 8am")
 	 * @param alt use alternative format?
@@ -66,8 +126,6 @@ public class StandingOrderHelper {
 		
 		return buf.toString();
 	}
-
-
 	/**
 	 * Helper class to display / set SO delivery time
 	 * 
@@ -297,8 +355,8 @@ public class StandingOrderHelper {
 	 * @return matching timeslot ID
 	 */
 	public static String findMatchingSlot(final FDStandingOrder so, FDTimeslotUtil tsu) {
-		String __so_timeslotId = null;
-
+	   String __so_timeslotId = null;
+       if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){
 		Calendar c = Calendar.getInstance();
 		c.setTime( so.getNextDeliveryDate() );
 		final int _dw = c.get(Calendar.DAY_OF_WEEK);
@@ -359,7 +417,9 @@ public class StandingOrderHelper {
 				}
 			}
 		}
-		
+       }else{
+    	   __so_timeslotId="";
+        }
 		return __so_timeslotId;
 	}
 	
@@ -518,5 +578,309 @@ public class StandingOrderHelper {
 		}
 		return result;
 	}
+	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList,boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
+		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
+		for (FDStandingOrder so : soList) {
+			
+			
+			Map<String, Object> map = convertStandingOrderToSoy(isUpcomingDelivery, so);
+			
+			result.add(map);
+
+		}
+		return result;
+
+	}
+
+	/**
+	 * @param isUpcomingDelivery
+	 * @param so
+	 * @return
+	 * @throws FDResourceException
+	 * @throws FDInvalidConfigurationException
+	 * @throws PricingException
+	 */
+	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingDelivery, FDStandingOrder so)
+			throws FDResourceException, FDInvalidConfigurationException, PricingException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", so.getId());
+		map.put("url", so.getLandingPage());
+		map.put("soName", so.getCustomerListName());
+		map.put("listId", so.getCustomerListId());
+		map.put("frequencyDesc", so.getFullFrequencyDescription());
+		map.put("errorHeader", so.getErrorHeader());
+		map.put("errorDetails",so.getErrorDetail());
+		if(null!=so.getLastError()){
+			map.put("lastError", so.getLastError().name());
+		} else {
+			map.put("lastError", null);
+		}
+		int productCnt = 0;
+		double amount=0.0;
+		//TODO : need to work on calculating total amount
+		if(!isUpcomingDelivery){
+				productCnt= getNoOfItemsForSoSettings(so);	
+				amount=getTotalAmountForSoSettings(so);
+		}else{
+			productCnt= getNoOfItemsForUpcomingDelivery(so);	
+			amount=so.getUpcomingDelivery().getTotal();
+			map.put("orderId", so.getUpcomingDelivery().getErpSalesId());
+		}
+		map.put("noOfitems", productCnt );
+		map.put("amount", amount);
+		map.put("activated", "Y".equals(so.getActivate())?true:false);
+		map.put("readyForActivation",populateResponseData(so, false).isActivate());
+		
+		//map.put("dayOfWeek", so.getNextDeliveryDate()!=null?DateUtil.formatFullDayOfWk(so.getNextDeliveryDate()):null);
+		map.put("dayOfWeek", so.getDayOfWeek(so, isUpcomingDelivery));
+		map.put("shortDayOfWeek", so.getShortSODeliveryDayOfWeek(so, isUpcomingDelivery));
+		map.put("deliveryDate", getSODeliveryDate(so, isUpcomingDelivery));
+		map.put("deliveryTime",
+				isUpcomingDelivery ? DateUtil.formatHourAMPMRange(so.getUpcomingDelivery()
+						.getDeliveryStartTime(), so.getUpcomingDelivery()
+						.getDeliveryEndTime())
+						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
+								so.getStartTime(), so.getEndTime()) : "");
+
+		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
+		//map.put("shortDeliveryDate",so.getNextDeliveryDate()!=null? DateUtil.formatMonthAndDate(so.getNextDeliveryDate()):null );
+		map.put("shortDeliveryDate", so.getShortSODeliveryDate(so, isUpcomingDelivery));
+		map.put("cutOffFormattedDeliveryDate", so.getFormattedCutOffDeliveryDate());
+		map.put("cutOffDeliveryTime", FDStandingOrder.cutOffDeliveryTime);
+		map.put("tipAmount", so.getTipAmount());
+		
+		return map;
+	}
 	
+	private static double getTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
+		double amount = 0.0;
+		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
+		if (null != cartLineIs) {
+		 so.getStandingOrderCart().refreshAll(true);
+		 amount=so.getStandingOrderCart().getTotal();
+		 amount=amount+so.getTipAmount();
+		}
+		return amount;
+	}
+
+	private static Object getModifyDeliveryDate( Date deliveryDate ) {
+		Calendar cl = Calendar.getInstance();
+	    StringBuilder buf = new StringBuilder();
+        
+			cl.setTime(deliveryDate);
+
+			buf.append(cl.get(Calendar.MONTH)+1);
+			buf.append("/");
+			buf.append(cl.get(Calendar.DATE));
+		return buf.toString();
+	}
+
+	private static int getNoOfItemsForUpcomingDelivery(FDStandingOrder so) throws FDResourceException {
+       
+		FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+        
+        int productCnt = 0;
+        FDOrderI fdOrderI= FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
+        productCnt=fdOrderI.getLineCnt();
+        	
+		return productCnt;
+	}
+
+	// Count the available items - as in QSController and QuickCart
+
+	private static int getNoOfItemsForSoSettings(FDStandingOrder so) throws FDResourceException {
+		int productCnt = 0;
+		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
+		if (null != cartLineIs) {
+			for (FDCartLineI cartLineI : cartLineIs) {
+				ProductModel productNode = cartLineI.lookupProduct();
+				if (!((productNode == null || productNode.getSku(cartLineI.getSkuCode()).isUnavailable() || cartLineI
+						.isInvalidConfig()))) {
+					productCnt++;
+				}
+			}
+		}
+		return productCnt;
+	}
+	
+	public static FDStandingOrder populateStandingOrderDetails(FDStandingOrder so, Map<String, Object> responseDate) {
+		FormLocationData addressLocationData=(FormLocationData) responseDate.get(SinglePageCheckoutFacade.ADDRESS_JSON_KEY);
+		FormTimeslotData timeSlotData=(FormTimeslotData) responseDate.get(SinglePageCheckoutFacade.TIMESLOT_JSON_KEY);
+		FormPaymentData paymentData=(FormPaymentData) responseDate.get(SinglePageCheckoutFacade.PAYMENT_JSON_KEY);
+
+		if(null!=addressLocationData && null!=addressLocationData.getSelected()){
+			so.setAddressId(addressLocationData.getSelected());
+		}if(null!=paymentData && null!=paymentData.getSelected()){
+			so.setPaymentMethodId(paymentData.getSelected());
+		}if(null!=timeSlotData){
+			so.setStartTime(timeSlotData.getStartDate());
+			so.setEndTime(timeSlotData.getEndDate());
+		}
+		
+	return so;
+	
+	}
+	
+	public static boolean isSO3StandingOrder(FDUserI user) {
+		return user.getCurrentStandingOrder() != null && user.getCurrentStandingOrder().getId() != null 
+				&& user.getCurrentStandingOrder().isNewSo()? true : false;
+	}
+	
+	public static void clearSO3Context(FDUserI user,HttpServletRequest request, String standingOrder){
+		
+		if(null == request.getParameter("isSO") && standingOrder==null){
+        	FDSessionUser fdSessionUser=(FDSessionUser) user;
+        	if(null!=user.getCurrentStandingOrder() && user.getCurrentStandingOrder().isNewSo()){
+            	fdSessionUser.setCheckoutMode(EnumCheckoutMode.NORMAL);
+                user.setCurrentStandingOrder(null);
+        	}
+        }
+	}
+	
+	/* combined check for using SO 3.0
+	 * method is needed for separate checks outside of here
+	 * */
+	public static boolean isEligibleForSo3_0(FDUserI user) {
+		if (user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {
+			return true;
+		}
+		return false;
+	}
+
+	/* get a single Hashmap has all data that soy files need
+	 * can be used directly, returns "settingsData":{DATA} */
+	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct) {
+		HashMap<String,Object> allSoData = new HashMap<String,Object>();
+		HashMap<String,Object> soSettingsData = new HashMap<String,Object>();
+		String selectedSoId=null;
+		/* these are global settings */
+		HashMap<String, Object> soSettings = new HashMap<String, Object>();
+		soSettings.put("isEligibleForStandingOrders", isEligibleForSo3_0(user));
+		soSettings.put("isContainerOpen", ((FDSessionUser)user).isSoContainerOpen()); /* replace with real value - get from fdsessionuser */
+		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()));
+		soSettings.put("soSoftLimitDisplay", StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()));
+		allSoData.put("soSettings", soSettings);
+		
+		/* these are the so's themselves */
+		Collection<FDStandingOrder> standingOrders = new ArrayList<FDStandingOrder>();
+		Collection<Map<String, Object>> soData = new ArrayList<Map<String, Object>>();
+
+		try {
+			if(isAddtoProduct){
+				standingOrders = FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity());
+			}else{
+				standingOrders = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+			}
+
+		    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Error While Getting the valid standing Order");
+		} catch (FDInvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Error While Getting the valid standing Order");
+		} catch (PricingException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Error While Getting the valid standing Order");
+		}
+        
+		if(null!=standingOrders && !standingOrders.isEmpty()){
+			for(FDStandingOrder fdStandingOrder:standingOrders){
+				if(fdStandingOrder.isDefault()){
+					selectedSoId=fdStandingOrder.getId();
+					break;
+				}
+			}
+		}
+		soSettings.put("selectedSoId", selectedSoId); 
+
+		allSoData.put("soData", soData);
+		
+		soSettingsData.put("settingsData", allSoData);
+		
+		return soSettingsData;
+	}
+	public static boolean isValidStandingOrder(FDUserI user) {
+	        FDStandingOrder so=isSO3StandingOrder(user)? user.getCurrentStandingOrder():null;
+	        return isValidStandingOrder(so);
+		}
+
+	public static boolean isValidStandingOrder(FDStandingOrder so) {
+		
+		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate()?true:false;
+	}
+
+	public static StandingOrderResponseData populateResponseData(FDStandingOrder so,boolean isPdp) {
+		
+		StandingOrderResponseData orderResponseData = new StandingOrderResponseData();
+
+		try {
+			if (null != so) {
+				if (isPdp) {
+					orderResponseData.setName(so.getCustomerListName());
+
+					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
+					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
+					if (orderResponseData.getAmount() <= FDStoreProperties.getStandingOrderHardLimit()) {
+						orderResponseData.setMessage(" Add $"
+								+ StandingOrderHelper.formatDecimalPrice((FDStoreProperties.getStandingOrderHardLimit() - orderResponseData.getAmount()))
+								+ " to meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()) + " minimum");
+					} else {
+						orderResponseData
+								.setMessage("Changes will begin with your "
+										+ getModifyDeliveryDate(so.getNextDeliveryDate())
+										+ " delivery.");
+					}
+				} else {
+					if (isValidStandingOrder(so) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
+						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderHardLimit()) {
+							orderResponseData.setActivate(isSOActivated(so)?false:true);
+						} else {
+							orderResponseData
+							.setMessage("Must add items to cart and meet the $" + StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderHardLimit()) + " minimum to receive a delivery");
+						}
+					} else {
+						orderResponseData
+								.setMessage("This order is incomplete. Add missing info to add your Standing Order");
+					}
+
+				}
+			} else {
+				orderResponseData
+						.setMessage("Error while adding product to the standing order ");
+
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Error While Getting standing order response data ");
+			orderResponseData
+					.setMessage("Error while adding product to the standing order ");
+
+		} catch (FDInvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Error While Getting the standing order response data");
+			orderResponseData
+					.setMessage("Error while adding product to the standing order ");
+		}
+		return orderResponseData;
+	}
+
+	/**
+	 * Format method to remove trailing decimals.
+	 * Used in soy template for user cart minimum alerts
+	 * @param number
+	 * @return
+	 */
+	public static String formatDecimalPrice(double number) {
+		DecimalFormat decimalFormat = new DecimalFormat("0.##");
+		return decimalFormat.format(number);
+	}
+
+	public static boolean isSOActivated(FDStandingOrder so){
+		
+		if(null!=so && "Y".equals(so.getActivate())){
+			return true;
+		}
+		return false;
+	}
 }

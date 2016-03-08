@@ -131,6 +131,12 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private CustomerServiceRepresentativeData csr;
     
+    private boolean displayCheckout=true;
+    
+    private String softLimit;
+    
+    private String hardLimit;
+    
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -1123,4 +1129,29 @@ public class CartData extends AbstractCoremetricsResponse {
         this.csr = csr;
     }
 
+	public boolean isDisplayCheckout() {
+		return displayCheckout;
+	}
+
+	public void setDisplayCheckout(boolean displayCheckout) {
+		this.displayCheckout = displayCheckout;
+	}
+	
+	public String getSoftLimit() {
+		return softLimit;
+	}
+	
+	public void setSoftLimit(String softLimit) {
+		this.softLimit = softLimit;
+	}
+
+	public String getHardLimit() {
+		return hardLimit;
+	}
+	
+	public void setHardLimit(String hardLimit) {
+		this.hardLimit = hardLimit;
+	}
+
+    
 }

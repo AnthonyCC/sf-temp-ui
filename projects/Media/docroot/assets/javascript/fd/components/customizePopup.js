@@ -23,7 +23,8 @@ var FreshDirect = FreshDirect || {};
       value: ''
     },
     customClass: {
-      value: ''
+      value: '',
+      writable:true
     },
     template:{
       value:common.customizePopup
@@ -105,6 +106,23 @@ var FreshDirect = FreshDirect || {};
         value.variantId = this.dataConfig.variantId;
         this.refreshBody(value);
         this.refreshSkuControls();
+
+		$jq('button[data-component="addToSOButton"]').on('click', function() {
+			addToSoCustomize($(this));
+			return false;
+		});
+
+        $('#'+this.popupId+' .so-test-added-toggler').on('click', function(e) {
+			e.stopPropagation();
+
+			function sOResultsClose() {
+				$('.so-results-content').addClass('so-close');
+			}
+			
+			$jq(this).closest('.so-container').find('.so-results-content').toggleClass('so-close');
+			window.setTimeout(sOResultsClose, 3000);
+			return false;
+		});
       }
     },
     open: {
@@ -115,7 +133,7 @@ var FreshDirect = FreshDirect || {};
 
         this.popup.show($(config.element));
         this.popup.clicked = true;
-
+		
         request.productId = item.productId;
         request.configuration = item.configuration;
         request.quantity = parseFloat(item.quantity);
@@ -131,9 +149,9 @@ var FreshDirect = FreshDirect || {};
             pageType:item.pageType,
             cmEventSource:config.cmEventSource || '',
             variantId:item.variantId,
-            ATCApply:config.hasApply && fd.quickshop.itemType === 'pastOrders'
+            ATCApply:config.hasApply && fd.quickshop && fd.quickshop.itemType === 'pastOrders'
         };
-
+        
         fd.common.dispatcher.signal('server',{
           url:'/api/productconfig',
           data:{data:JSON.stringify(request)},
@@ -160,6 +178,13 @@ var FreshDirect = FreshDirect || {};
           return;
         }
       }
+    }
+    
+
+
+	$('#' + customizePopup.popupId).removeClass('soShow');
+    if ($(element).data('soshow')) {
+    	$('#' + customizePopup.popupId).addClass('soShow');
     }
 
     var item = fd.modules.common.productSerialize(element).pop();

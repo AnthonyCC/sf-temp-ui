@@ -90,8 +90,15 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			LOGGER.info( "Null list passed, processing all standing orders." );
 			try {
 				LOGGER.info( "Loading active standing orders." );
-				soList = soManager.loadActiveStandingOrders();			
-				if ( soList == null ) {
+				// Need to Pass parameter to get EXISTING and NEW standing orders
+				// true :: New Standing Orders3.0  with active flag is Y
+				// false: existing standing Orders with active flag as null
+				
+				soList = soManager.loadActiveStandingOrders(false);	
+				
+				soList.addAll(soManager.loadActiveStandingOrders(true));	
+
+				if ( soList.isEmpty()  ) {
 					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
 					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
 					return null;
