@@ -3,6 +3,7 @@
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
 <%
 request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+request.setAttribute("sitePage", "www.freshdirect.com/welcome.jsp");
 request.setAttribute("noyui", true);
 %>
 <tmpl:insert template="/common/template/page_template_optimized.jsp">
