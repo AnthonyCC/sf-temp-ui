@@ -290,10 +290,6 @@ label.tabs {
   margin-left: 4px;
 }
 
-label.tabs:first-child {
-	margin-left: 135px;
-}
-
 .tabs input[type="radio"] {
 	display: none;
 }
@@ -312,6 +308,7 @@ span[fdform-error] {
 
 .formselector {
 	background: #e9e9e9;
+  text-align: center;
 }
 
 /* field sizes */
