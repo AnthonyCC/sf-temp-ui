@@ -167,47 +167,48 @@ body[developer] *:focus {
 
 .select-wrapper:after {
 	font-family: 'freshdirect_icons';
-    speak: none;
-    font-style: normal;
-    font-weight: bold;
-    font-variant: normal;
-    text-transform: none;
-    vertical-align: text-bottom;
-    -webkit-font-smoothing: antialiased;
-    content: "\e874";
-    position: absolute;
-    right: 10px;
-    top: -2px;
-    pointer-events: none;
+  speak: none;
+  font-style: normal;
+  font-weight: bold;
+  font-variant: normal;
+  text-transform: none;
+  vertical-align: text-bottom;
+  -webkit-font-smoothing: antialiased;
+  content: "\e874";
+  position: absolute;
+  right: 10px;
+  top: -2px;
+  pointer-events: none;
 }
 
 .fake-radio:before {
-    background: #fafafa;
-    box-shadow: 0 0 0 1px #c2c2c2;
-    content: '\a0';
-    display: inline-block;
-    height: 18px;
-    width: 18px;
-    border-radius: 9px;
-    vertical-align: top;
-    margin-right: 10px;
-}
-
-.fake-radio-wrapper > input[type="radio"] {
-	display: none;
+  background: #fafafa;
+  box-shadow: 0 0 0 1px #c2c2c2;
+  content: '\a0';
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  border-radius: 9px;
+  vertical-align: top;
+  margin-right: 10px;
 }
 
 input[type="radio"]:checked + .fake-radio:before {
-    background: #4fa157;
-    box-shadow: 0 0 0 1px #4fa157;
+  background: #4fa157;
+  box-shadow: 0 0 0 1px #4fa157;
+}
+
+input[type="radio"]:focus + .fake-radio:before {
+  box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
 }
 
 input[type="radio"]:disabled + .fake-radio:before {
-    background: #ddd;
-    box-shadow: 0 0 0 1px #ddd;
-    cursor: not-allowed;
+  background: #ddd;
+  box-shadow: 0 0 0 1px #ddd;
+  cursor: not-allowed;
 }
 
+.fake-radio-wrapper > input[type="radio"],
 .fake-checkbox-wrapper > input[type="checkbox"] {
   position: absolute;
   left: -9999px;
@@ -230,6 +231,10 @@ input[type="radio"]:disabled + .fake-radio:before {
   width: 17px; 
   height: 17px;
   background: #fafafa;
+}
+
+[type="checkbox"]:disabled + .fake-checkbox:before {
+  box-shadow: none;
 }
 
 [type="checkbox"]:disabled + .fake-checkbox:after {
