@@ -159,8 +159,12 @@
 	margin: 5px 0 10px;
 }
 
-.productDisplay-skuconfig select-wrapper {
+.productDisplay-skuconfig .select-wrapper {
 	margin-right: 5px;
+}
+
+.productDisplay-skuconfig .select-wrapper select {
+    width: 100%;
 }
 
 .productDisplay-skuconfig .error em {
