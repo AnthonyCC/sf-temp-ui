@@ -140,7 +140,7 @@
 										);
 						}
 					}
-	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+slot.getDisplayString(true)+"</label></div>\n");
+	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>\n");
 
 	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
 				.append(
