@@ -155,6 +155,8 @@ public class CheckoutController extends BaseController {
     
     private final static String DIR_ERROR_KEY="ERR_DARKSTORE_RECONCILIATION";
     
+    private final static String DEVICE_ID="deviceId";
+    
     private AvalaraContext avalaraContext;
 
     /* (non-Javadoc)
@@ -220,7 +222,7 @@ public class CheckoutController extends BaseController {
             //Review order. What's being order, where it's going, how it's being paid for, etc.
             model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
         } else if (ACTION_SUBMIT_ORDER.equals(action)) {
-        	if(getPostData(request, response)!=null) {
+        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DEVICE_ID)) {
         	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
             model = submitOrder(model, user, request,requestMessage);
         	} else {
