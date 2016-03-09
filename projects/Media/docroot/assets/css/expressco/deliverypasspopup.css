@@ -43,7 +43,7 @@
   background-color:#fff;
   border:1px solid #c7cabc;
   margin:0 10px 40px 10px;
-  padding:10px 10px 10px 30px;
+  padding:10px 10px 10px 35px;
   width:210px;
   box-sizing:border-box;
   vertical-align:top;
@@ -78,10 +78,15 @@ body.ie .deliverypasspopup__option {
   font-size:11px;
 }
 
+.deliverypasspopup__label > .fake-radio-wrapper,
 .deliverypasspopup__radio,
 .ec-popup [fdform] .deliverypasspopup__radio{
-  margin-left:-20px;
+  margin-left:-25px;
   float:left;
+}
+
+.deliverypasspopup__label > .fake-radio-wrapper > .fake-radio:before {
+  margin-right: 5px;
 }
 
 .deliverypasspopup__footer{

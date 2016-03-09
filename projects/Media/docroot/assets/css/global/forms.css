@@ -61,6 +61,7 @@ body[developer] *:focus {
 [fdform] input[type="time"], 
 [fdform] input[type="week"], 
 [fdform] textarea, 
+.select-wrapper > select,
 [fdform] select {
 	border-top: 2px solid transparent;
   border-right: 2px solid transparent;
@@ -83,6 +84,17 @@ body[developer] *:focus {
   -moz-appearance: none;
   appearance: none;
 }
+
+[fdform] input[type="radio"],
+[fdform] input[type="checkbox"] {
+  border-color: #c2c2c2;
+}
+
+[fdform] input[type="radio"]:checked,
+[fdform] input[type="checkbox"]:checked {
+  background-color: #68aa6d;
+}
+
 [fdform] textarea {
 	border-top: 2px solid #c2c2c2;
 	border-left: 2px solid #c2c2c2;
@@ -94,6 +106,7 @@ body[developer] *:focus {
 	font-size: 14px;
 }
 
+.select-wrapper > select,
 [fdform] select {
 	font-size: 16px;
 }
@@ -112,6 +125,8 @@ body[developer] *:focus {
   outline: none;
 }
 
+.select-wrapper > select:hover,
+.select-wrapper > select:focus,
 [fdform] select:hover,
 [fdform] select:focus {
   border-color: #68aa6d;
@@ -119,6 +134,7 @@ body[developer] *:focus {
 
 [fdform] input:disabled,
 [fdform] input[type="text"]:disabled, 
+.select-wrapper > select:disabled,
 [fdform] select:disabled {
 	background: #eee;
 	cursor: not-allowed;
@@ -131,6 +147,9 @@ body[developer] *:focus {
 [fdform] input[type="text"]:disabled:hover,
 [fdform] input[type="text"]:disabled:active, 
 [fdform] input[type="text"]:disabled:focus, 
+.select-wrapper > select:disabled:active,
+.select-wrapper > select:disabled:hover,
+.select-wrapper > select:disabled:focus,
 [fdform] select:disabled:hover,
 [fdform] select:disabled:active,
 [fdform] select:disabled:focus {
@@ -154,6 +173,7 @@ body[developer] *:focus {
 	font-size: inherit;
 }
 
+.select-wrapper > select,
 [fdform] select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -165,6 +185,7 @@ body[developer] *:focus {
   text-overflow: ellipsis;
 }
 
+.select-wrapper > select::-ms-expand,
 [fdform] select::-ms-expand {
     display: none;
 }  
@@ -172,6 +193,7 @@ body[developer] *:focus {
 .select-wrapper {
 	display: inline;
 	position: relative;
+  line-height: 1.7em;
 }
 
 .select-wrapper:after {

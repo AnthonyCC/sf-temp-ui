@@ -45,7 +45,7 @@
  */
 {template .deliveryoption autoescape="false"}
 <label class="deliverypasspopup__option deliverypasspopup__label" data-component="deliverypasspopup-option" for="{$id}">
-  <input id="{$id}" type="radio" name="deliverypass-option" value="{$id}" class="deliverypasspopup__radio" {if $selected}checked="checked"{/if} />
+  <input id="{$id}" type="radio" name="deliverypass-option" value="{$id}" class="deliverypasspopup__radio customradio" {if $selected}checked="checked"{/if} />
     <p class="deliverypasspopup__option-title">{$title}
       &nbsp;{if $totalPrice}<span class="deliverypasspopup__total">(${$totalPrice} total)</span>{/if}</p>
     {if $pricePerMonth}
