@@ -68,7 +68,7 @@ public class FDStandingOrderDAO {
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 			"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
-			"order by CCL.NAME";
+			"order by SO.CREATED_TIME DESC ";
 	private static final String LOAD_CUSTOMER_VALID_STANDING_ORDERS =
 			"select " + FIELDZ_ALL + " " + 
 			"from CUST.STANDING_ORDER SO " +
@@ -76,7 +76,7 @@ public class FDStandingOrderDAO {
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 			"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 and SO.ADDRESS_ID IS NOT NULL and SO.PAYMENTMETHOD_ID IS NOT NULL" +
 			" and SO.START_TIME IS NOT NULL and SO.END_TIME is not null and SO.NEXT_DATE IS NOT NULL and SO.FREQUENCY IS NOT NULL "+
-			"order by CCL.NAME";
+			"order by SO.CREATED_TIME DESC ";
 	
 	private static final String LOAD_ACTIVE_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
