@@ -88,6 +88,11 @@ body[developer] *:focus {
 [fdform] input[type="radio"],
 [fdform] input[type="checkbox"] {
   border-color: #c2c2c2;
+  padding: 8px;
+}
+
+[fdform] input[type="radio"] {
+  border-radius: 100%;
 }
 
 [fdform] input[type="radio"]:checked,
