@@ -470,7 +470,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			deliveryModel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliveryModel.getZoneId()));
 			
 			// set selected timeslot ID according to next delivery date of standing order template
-			deliveryModel.setTimeSlotId( StandingOrderHelper.findMatchingSlot(so, tsu));
+			if(StandingOrderHelper.isSO3StandingOrder(user)){
+				deliveryModel.setTimeSlotId("");	
+
+			}else{
+				deliveryModel.setTimeSlotId( StandingOrderHelper.findMatchingSlot(so, tsu));	
+			}
 			deliveryModel.setPreReserved( false );
 			deliveryModel.setPreReserveSlotId( null );
 			

@@ -2,6 +2,7 @@ package com.freshdirect.webapp.util;
 
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,7 +10,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -37,6 +39,8 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -58,6 +62,8 @@ public class StandingOrderHelper {
 	public static final String	PM			= "pm";
 	
 	public static final String DAY_NAMES[] = new DateFormatSymbols().getWeekdays();
+    private static final String DEFAULT_TIMESLOT_ID = "timeslotId";
+	private static SimpleDateFormat			FORMATTER			= new SimpleDateFormat( "hh:mm a" );
 
 
 /*	public static String getSODeliveryDate(FDStandingOrder so, boolean alt) {
@@ -652,7 +658,7 @@ public class StandingOrderHelper {
 		return map;
 	}
 	
-	private static double getTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
+	public static double getTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
 		double amount = 0.0;
 		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
 		if (null != cartLineIs) {
@@ -722,7 +728,7 @@ public class StandingOrderHelper {
 	}
 	
 	public static boolean isSO3StandingOrder(FDUserI user) {
-		return user.getCurrentStandingOrder() != null && user.getCurrentStandingOrder().getId() != null 
+		return  user.isNewSO3Enabled() && user.getCurrentStandingOrder() != null && user.getCurrentStandingOrder().getId() != null 
 				&& user.getCurrentStandingOrder().isNewSo()? true : false;
 	}
 	
@@ -807,7 +813,8 @@ public class StandingOrderHelper {
 
 	public static boolean isValidStandingOrder(FDStandingOrder so) {
 		
-		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate() && so.getFrequency()>0 ?true:false;
+		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate() && so.getFrequency()>0 
+				&& so.getLastError() ==null?true:false;
 	}
 
 	public static StandingOrderResponseData populateResponseData(FDStandingOrder so,boolean isPdp) {
@@ -882,5 +889,97 @@ public class StandingOrderHelper {
 			return true;
 		}
 		return false;
+	}
+	
+	/*
+	 *  To clear last error details if user has fixed anyone of the following error
+	 *  ADDRESS,PAYMENT ,NO_ADDRESS,MINORDER
+	 */
+	public static void clearSO3ErrorDetails(FDStandingOrder so,String[] userModules){
+		for( String userModule:userModules){
+			if(userModule.equals(so.getLastError())){
+				so.clearLastError();
+			}
+		}
+
+	}
+	
+	public static void populateSO3TimeslotDetails(FDUserI user, String deliveryTimeSlotId,
+			ErpAddressModel erpAddress, String soNextDeliveryDate) throws ParseException, FDResourceException{
+			FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId, erpAddress.getBuildingId(), true);
+			user.getCurrentStandingOrder().setNextDeliveryDate(DateUtil.parseMDY(soNextDeliveryDate));
+			FDStandingOrder so=user.getCurrentStandingOrder();
+			so.setStartTime(timeSlot.getStartTime());
+			so.setEndTime(timeSlot.getEndTime());
+			so.setTimeSlotId(timeSlot.getId());
+			Calendar c = Calendar.getInstance();
+			c.setTime(so.getNextDeliveryDate());
+			so.setReservedDayOfweek(c.get(Calendar.DAY_OF_WEEK));
+		}
+	
+	public static void loadSO3CartTimeSlot(FormTimeslotData timeslotData,FDStandingOrder so) {
+        if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){
+            Calendar startTimeCalendar = DateUtil.toCalendar(so.getNextDeliveryDate());
+            String dayNames[] = new DateFormatSymbols().getWeekdays();
+            timeslotData.setId(DEFAULT_TIMESLOT_ID);
+            timeslotData.setYear(String.valueOf(startTimeCalendar.get(Calendar.YEAR)));
+            timeslotData.setMonth(String.valueOf(startTimeCalendar.get(Calendar.MONTH) + 1));
+            timeslotData.setDayOfMonth(String.valueOf(startTimeCalendar.get(Calendar.DAY_OF_MONTH)));
+            timeslotData.setDayOfWeek(dayNames[startTimeCalendar.get(Calendar.DAY_OF_WEEK)]);
+            timeslotData.setTimePeriod(format(DateUtil.toCalendar(so.getStartTime()), DateUtil.toCalendar(so.getEndTime())));
+            timeslotData.setStartDate(so.getNextDeliveryDate());
+            timeslotData.setEndDate(so.getNextDeliveryDate());
+        }
+	}
+ protected static String format(Calendar startCal, Calendar endCal) {
+        StringBuffer sb = new StringBuffer();
+
+        formatCal(startCal, sb);
+        sb.append(" - ");
+        formatCal(endCal, sb);
+
+        return sb.toString();
+    }
+ protected static void formatCal(Calendar cal, StringBuffer sb) {
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        int marker = cal.get(Calendar.AM_PM);
+
+        if (hour > 12) {
+            sb.append(hour - 12);
+        } else {
+            sb.append(hour);
+        }
+
+        if (minute != 0) {
+            sb.append(':').append(minute);
+        }
+
+        if (marker == Calendar.AM) {
+            sb.append("AM");
+        } else {
+            sb.append("PM");
+        }
+    }
+ 
+ public static boolean findSO3MatchTimeslot(FDTimeslot slot, FDStandingOrder so){
+	 boolean isMatch=false;
+     if(null!=so.getNextDeliveryDate() && null!=so.getStartTime()){
+    	 
+	 	Calendar calendar1 = Calendar.getInstance();
+	 	Calendar calendar2 = Calendar.getInstance();
+    
+	 	calendar1.setTime(slot.getDeliveryDate());
+	 	calendar2.setTime(so.getNextDeliveryDate());
+
+	 	boolean sameDay = calendar1.get(Calendar.DAY_OF_WEEK) == calendar2.get(Calendar.DAY_OF_WEEK);
+	 	isMatch=sameDay && convert(slot.getDlvStartTime().getAsDate()).equals(convert(so.getStartTime())) && convert(slot.getDlvEndTime().getAsDate()).equals(convert(so.getEndTime()))? true:false;
+     }
+	 return isMatch;
+	 
+ }
+ 
+private static String convert(Date time) {
+		 return FORMATTER.format(time);
 	}
 }

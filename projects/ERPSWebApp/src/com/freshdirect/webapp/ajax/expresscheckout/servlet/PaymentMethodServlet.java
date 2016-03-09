@@ -276,6 +276,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
    			if(StandingOrderHelper.isSO3StandingOrder(user)
    					&& validationResult.getErrors().isEmpty() ){
    				try {
+   					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT"});
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
    					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
 					paymentSubmitResponse.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));

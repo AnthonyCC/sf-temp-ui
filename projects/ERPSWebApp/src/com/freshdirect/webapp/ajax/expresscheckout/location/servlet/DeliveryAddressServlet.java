@@ -106,6 +106,8 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 			if(StandingOrderHelper.isSO3StandingOrder(user)
 					&& validationResult.getErrors().isEmpty() ){
 				try {
+   					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"ADDRESS","NO_ADDRESS"});
+
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),deliveryAddressResponse.getSubmitForm().getResult());
 
 					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);

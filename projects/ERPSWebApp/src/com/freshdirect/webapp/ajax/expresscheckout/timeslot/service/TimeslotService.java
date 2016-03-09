@@ -62,12 +62,10 @@ public class TimeslotService {
         FormTimeslotData timeslotData = new FormTimeslotData();
         FDReservation reservation = cart.getDeliveryReservation();
         ErpAddressModel addressModel=null;
-        try {
-			 addressModel=StandingOrderHelper.isValidStandingOrder(user)?user.getCurrentStandingOrder().getDeliveryAddress():cart.getDeliveryAddress();
-		} catch (FDResourceException e) {
-            LOG.error("Failed to get delivery Adress");
-		}
-        if (reservation != null) {
+        addressModel=cart.getDeliveryAddress();
+        if(StandingOrderHelper.isSO3StandingOrder(user)){
+        	StandingOrderHelper.loadSO3CartTimeSlot(timeslotData,user.getCurrentStandingOrder());
+        } else if (reservation != null) {
             if (!(cart instanceof FDOrderI)) {
                 // Deal with case when timeslot zone does not match
                 // the zone of selected address assigned to cart
@@ -100,8 +98,6 @@ public class TimeslotService {
             timeslotData.setTimePeriod(format(startTime, reservation.getEndTime()));
             timeslotData.setStartDate(startTime);
             timeslotData.setEndDate(reservation.getEndTime());
-        }else if(StandingOrderHelper.isSO3StandingOrder(user)){
-        	loadStandingOrderCartTimeSlot(timeslotData,user.getCurrentStandingOrder());
         }
         timeslotData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("timeslot"));
         timeslotData.setShowForceOrder(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderAvailable() && !user.getMasqueradeContext().isAddOnOrderEnabled());
@@ -124,22 +120,6 @@ public class TimeslotService {
             timeslotData.setSoDeliveryDate(DateUtil.formatMonthAndDate(so.getNextDeliveryDate()));
     	}
 
-	}
-
-	private void loadStandingOrderCartTimeSlot(FormTimeslotData timeslotData,
-			FDStandingOrder so) {
-        if(null!=so.getNextDeliveryDate()&& null!=so.getStartTime()&& null!=so.getEndTime()){
-            Calendar startTimeCalendar = DateUtil.toCalendar(so.getNextDeliveryDate());
-            String dayNames[] = new DateFormatSymbols().getWeekdays();
-            timeslotData.setId(DEFAULT_TIMESLOT_ID);
-            timeslotData.setYear(String.valueOf(startTimeCalendar.get(Calendar.YEAR)));
-            timeslotData.setMonth(String.valueOf(startTimeCalendar.get(Calendar.MONTH) + 1));
-            timeslotData.setDayOfMonth(String.valueOf(startTimeCalendar.get(Calendar.DAY_OF_MONTH)));
-            timeslotData.setDayOfWeek(dayNames[startTimeCalendar.get(Calendar.DAY_OF_WEEK)]);
-            timeslotData.setTimePeriod(format(so.getStartTime(), so.getEndTime()));
-            timeslotData.setStartDate(so.getNextDeliveryDate());
-            timeslotData.setEndDate(so.getNextDeliveryDate());
-        }
 	}
 
 	public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {

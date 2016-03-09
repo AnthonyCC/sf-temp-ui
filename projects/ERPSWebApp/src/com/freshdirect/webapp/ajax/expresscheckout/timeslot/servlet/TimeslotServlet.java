@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.timeslot.servlet;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,26 @@ public class TimeslotServlet extends BaseJsonServlet {
 			ValidationResult validationResult = new ValidationResult();
 			FormDataResponse responseData = FormDataService.defaultService().prepareFormDataResponse(timeslotRequestData, validationResult);
 			try {
-				List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, user, request.getSession());
-				validationResult.getErrors().addAll(timeslotReservationErrors);
+				  // To Save the selected time slot for Standing Order
+				if(StandingOrderHelper.isSO3StandingOrder(user)){
+					String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");  
+			        String soFirstDate = FormDataService.defaultService().get(timeslotRequestData, "soFirstDate");
+			        
+			        if(null!=user.getCurrentStandingOrder().getAddressId()){
+						StandingOrderHelper.populateSO3TimeslotDetails(user, deliveryTimeSlotId, user.getCurrentStandingOrder().getDeliveryAddress(), soFirstDate);
+						StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
+							responseData.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
+			        }else{
+						validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserver timeslot for Standing order 3.0 due to address is not available."));
+
+			        }
+				}else{
+					List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, user, request.getSession());
+					validationResult.getErrors().addAll(timeslotReservationErrors);
+				}
 			} catch (FDResourceException e) {
+				validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserve timeslot due to technical difficulty."));
+			} catch (ParseException e) {
 				validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserve timeslot due to technical difficulty."));
 			}
 			if (validationResult.getErrors().isEmpty()) {
@@ -50,18 +68,6 @@ public class TimeslotServlet extends BaseJsonServlet {
 					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not load checkout data due to technical difficulty."));
 				} catch (RedirectToPage e) {
 					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not load checkout data due to technical difficulty."));
-				}
-			}
-			  // To Save the selected time slot for Standing Order
-			  // TODO need to add time slot into current standing order 
-			if(StandingOrderHelper.isSO3StandingOrder(user)
-					&& validationResult.getErrors().isEmpty()){
-				try {
-					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),responseData.getSubmitForm().getResult());
-					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
-					responseData.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
-				} catch (FDResourceException e) {
-					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserve timeslot due to technical difficulty."));
 				}
 			}
 			responseData.getSubmitForm().setSuccess(validationResult.getErrors().isEmpty());
