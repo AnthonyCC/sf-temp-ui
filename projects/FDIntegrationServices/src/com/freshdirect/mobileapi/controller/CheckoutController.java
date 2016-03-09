@@ -1231,16 +1231,18 @@ public class CheckoutController extends BaseController {
         PaymentMethods responseMessage = new PaymentMethods(isCheckEligible, isEcheckRestricted, isEbtAccepted, creditCards,electronicChecks,ebtCards,ewallet);
 
         if ((responseMessage.getCreditCards() != null && responseMessage.getCreditCards().size() == 0) 
-        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) {
+        		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0) 
+        		&& (responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0)) {
             responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);         
-        } 
-        else if((responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0) 
+        }
+        // Commented below as condition is invalid because credit card check also should be there. Added the Ewallet check in the above condition itself.
+        /*else if((responseMessage.getEwallet() != null && responseMessage.getEwallet().size() == 0) 
         		&& (responseMessage.getElectronicChecks() != null && responseMessage.getElectronicChecks().size() == 0)) 
         {
         	
         	responseMessage.addWarningMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
         	
-        }
+        }*/
         else {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
         }
