@@ -897,7 +897,7 @@ public class StandingOrderHelper {
 	 */
 	public static void clearSO3ErrorDetails(FDStandingOrder so,String[] userModules){
 		for( String userModule:userModules){
-			if(userModule.equals(so.getLastError())){
+			if(userModule.equals(so.getLastErrorCode())){
 				so.clearLastError();
 			}
 		}
