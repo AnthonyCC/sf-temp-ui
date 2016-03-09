@@ -30,12 +30,23 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType" %>
+<%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
- 
+ <%
+FDStandingOrder currentStandingOrder=new FDStandingOrder();
+currentStandingOrder.setCustomerId(user.getIdentity().getErpCustomerPK());
+currentStandingOrder.setId("");
+currentStandingOrder.setNewSo(true);
+user.setCurrentStandingOrder(currentStandingOrder);
+user.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
+user.setSoTemplateCart(new FDCartModel());
+%>
+
 <potato:pendingExternalAtcItem standingOrder="true"/>
 <potato:singlePageCheckout standingOrder="true"/>
 <potato:cartData standingOrder="true"/>
