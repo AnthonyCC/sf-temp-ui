@@ -623,4 +623,8 @@ public class FDStandingOrder extends ModelSupport {
 		}
 		return dayOfweek;
 	}
+	
+	public String getLastErrorCode(){
+		return this.lastError;
+	}
 }

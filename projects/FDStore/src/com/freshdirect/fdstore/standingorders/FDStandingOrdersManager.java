@@ -446,9 +446,11 @@ public class FDStandingOrdersManager {
 				
 				if(l!=null){
 				FDListManager.storeCustomerList(l);
-
 				}
-				standingOrder.clearLastError();
+				
+				if(!standingOrder.isNewSo()){
+					standingOrder.clearLastError();
+				}
 			}
 			
 			standingOrder.setTipAmount(cart.getTip());
