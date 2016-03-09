@@ -435,16 +435,19 @@ public class FDStandingOrdersManager {
 				FDStandingOrderList l = (FDStandingOrderList) FDListManager.getCustomerList(ident, EnumCustomerListType.SO, standingOrder.getCustomerListName());
 
 				// clean list
+				if(l!=null){
 				l.removeAllLineItems();
-				
+				}
 				// copy items from cart to list
 				Collection<FDCartLineI> cl = cart.getOrderLines();
 				for (FDCartLineI s : cl) {
 					l.mergeSelection(s, false, true);
 				}
-
+				
+				if(l!=null){
 				FDListManager.storeCustomerList(l);
 
+				}
 				standingOrder.clearLastError();
 			}
 			
