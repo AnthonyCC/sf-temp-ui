@@ -78,6 +78,9 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
 						if(StandingOrderHelper.isSO3StandingOrder(user)){
+							user.getCurrentStandingOrder().setNextDeliveryDate(null);
+							user.getCurrentStandingOrder().setStartTime(null);
+							user.getCurrentStandingOrder().setEndTime(null);
 							user.getCurrentStandingOrder().setAddressId(deliveryAddressId);
 						}
                         String ebtPaymentRemovalApproved = FormDataService.defaultService().get(deliveryAddressRequest, "ebtPaymentRemovalApproved");

@@ -45,6 +45,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class LocationHandlerTag extends SimpleTagSupport {
 	
@@ -115,6 +116,8 @@ public class LocationHandlerTag extends SimpleTagSupport {
 	
 	/** based on step_1_choose.jsp*/
 	private void doSelectAddressAction() throws JspException, FDResourceException{
+        // Clear Standing Order Session 
+		StandingOrderHelper.clearSO3Context(user, request, null);
 		DeliveryAddressManipulator m = new DeliveryAddressManipulator(ctx, result, "setDeliveryAddress");
 		m.setLocationHandlerMode(true);
 		try {

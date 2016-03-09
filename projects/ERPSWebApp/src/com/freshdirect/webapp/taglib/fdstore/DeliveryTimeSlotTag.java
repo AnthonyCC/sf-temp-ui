@@ -156,16 +156,23 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 	@Override
 	protected Result getResult() throws FDResourceException, ReservationException {
-		if (address == null) {
+		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+		ErpAddressModel addressModel=null;
+		if(StandingOrderHelper.isSO3StandingOrder(user)){
+			addressModel=null!=user.getCurrentStandingOrder().getAddressId()? user.getCurrentStandingOrder().getDeliveryAddress():null;
+			if(null ==addressModel){
+					return null;	
+			}
+		}else if(address == null){
 			return null;
 		}
+
 		
 		// [APPDEV-2149] go a different way
 		if (generic) {
-			return getGenericTimeslots();
+			return getGenericTimeslots(addressModel);
 		}
 					
-		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		FDDeliveryTimeslotModel deliveryModel = new FDDeliveryTimeslotModel();
 
 		final FDCartModel cart = user.getShoppingCart();
@@ -366,7 +373,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 	
 	
 	
-	private Result getGenericTimeslots() throws FDResourceException {
+	private Result getGenericTimeslots(ErpAddressModel addressModel) throws FDResourceException {
 		final FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		final FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?user.getSoTemplateCart():user.getShoppingCart();
 		final FDStandingOrder so = user.getCurrentStandingOrder();
@@ -410,7 +417,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				// Fetch time slots
 				try {
 					deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-							ranges, event, TimeslotLogic.encodeCustomer(address, user), 
+							ranges, event, TimeslotLogic.encodeCustomer(addressModel, user), 
 							TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, 
 									user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE), 
 									timeSlotContext,so.getUser().isNewSO3Enabled());
@@ -435,8 +442,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			{
 				List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, getAlcoholRestrictionReasons(cart), range);
 				//Filter Alcohol restrictions by current State and county.
-				final String county = FDDeliveryManager.getInstance().getCounty(address);
-				alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+				final String county = FDDeliveryManager.getInstance().getCounty(addressModel);
+				alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(addressModel.getState(), county, r);
 	
 				LOGGER.debug("Alcohol restrictions" + alcoholRestrictions);
 			}
@@ -447,7 +454,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			
 			TimeslotLogic.filterDeliveryTimeSlots(user, restrictions, singleTSset,
 					Collections.<String>emptySet(), deliveryModel, alcoholRestrictions,
-					false, address,
+					false, addressModel,
 					true, stats);
 			// Post-op: remove unnecessary timeslots
 			TimeslotLogic.purge(singleTSset);
