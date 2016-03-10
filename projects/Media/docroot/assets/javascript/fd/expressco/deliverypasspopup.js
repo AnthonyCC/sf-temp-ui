@@ -130,7 +130,7 @@ var FreshDirect = FreshDirect || {};
     id: "deliverypass",
     submit: function (e) {
       var formEl = e.formEl,
-          product = formEl.find('input:checked ~ [data-component="product"]');
+          product = formEl.find('input:checked').parent().siblings('[data-component="product"]');
 
       if (product.size()) {
         fd.components.AddToCart.addToCart(product);
