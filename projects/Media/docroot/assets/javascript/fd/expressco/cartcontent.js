@@ -142,6 +142,60 @@ function tip_entered(){
 	}
 }
 
+/* APPDEV-4904, get the chosen payment type for the customer */
+function get_current_paymenttype_choice(){
+	var fd = window.FreshDirect;
+	
+	if( fd.hasOwnProperty("expressco") &&
+		fd.expressco.hasOwnProperty("data") &&
+		fd.expressco.data.hasOwnProperty("payment") &&
+		fd.expressco.data.payment.hasOwnProperty("payments")
+	){
+		
+		for(var i=0; i<fd.expressco.data.payment.payments.length; i++){
+			if( fd.expressco.data.payment.payments[i].selected == true ){
+				return fd.expressco.data.payment.payments[i].type;
+			}
+		}
+	}
+	
+	return "not set yet";
+}
+
+/* APPDEV-4904, Set the chosen payment type for the customer within the global js object.
+NOTE: only affects javascript objects/variables on the current page until the next tab/page refresh or close */
+function set_current_payment_choice_JSonly(arr){
+	var fd = window.FreshDirect;
+	
+	/*first correct the window.FreshDirect version of what payment the customer currently has selected */
+	/*for(var i=0; i<arr.length; i++){
+		if( arr[i].selected == true ){
+			window.FreshDirect.expressco.data.payment.payments[i].selected = true;
+		}else{
+			window.FreshDirect.expressco.data.payment.payments[i].selected = false;
+		}
+	}*/
+	
+	/* APPDEV-4904, update the cart data about it's current EBT status */
+	if( (fd.cartTemplateObj) && (fd.cartTemplateObj.data) ){
+		window.FreshDirect.cartTemplateObj.data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
+	}
+}
+
+/* APPDEV-4904, this standalone function creates the potential to re-render the cart content and associated elements from anywhere else in javascript */
+function cart_content_template_htmlstr(){
+	if( (window.FreshDirect.cartTemplateObj) && (window.FreshDirect.cartTemplateObj.data) && (window.FreshDirect.cartTemplateObj.processFn) ){
+		var data = window.FreshDirect.cartTemplateObj.data;
+		
+		var processFn = window.FreshDirect.cartTemplateObj.processFn;
+						
+		/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
+		return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
+	}else{
+		return "";
+	}
+}
+
 
 /*this object contains the names of elements relevant to etipping */
 var etids = new Object();
@@ -182,6 +236,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 		},
 		template:{
 			value: function(data){
+				window.FreshDirect.cartTemplateObj = window.FreshDirect.cartTemplateObj || new Object();
+				
 				/*if there is a tip amount, just forcibly make sure that etipping is enabled on the javascript side*/
 				if( data.etipTotal && data.etipTotal.length > 0 ){
 					var floatDoubleTip = money_format( data.etipTotal.trim() );
@@ -231,8 +287,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 						}
 					}
 					
-					
-					
 					if( typeof(data.subTotalBox.subTotalBox) == "object"  ){
 						for(var j=0; j<data.subTotalBox.subTotalBox.length; j++){
 							if( (data.subTotalBox.subTotalBox[j]["id"] == "totaltax") || (data.subTotalBox.subTotalBox[j]["id"] == "totalAvalaratax") ){
@@ -251,7 +305,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 						
 						//if avalara is present, get rid of the 'totaltax' field
 						if(tempJ2 > 0){
-							data.subTotalBox.subTotalBox.splice(tempJ, 1);
+							//data.subTotalBox.subTotalBox.splice(tempJ, 1);
 						}
 					}
 				}
@@ -260,8 +314,11 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				
 				/* need to change between templates based on data param */
 				var lineTemplate = $(this.placeholder).data('ec-linetemplate');
+				//var lineTemplate = $( the_placeholder ).data('ec-linetemplate');
 
 				var processFn = fd.modules.common.utils.discover(lineTemplate) || expressco.viewcartlines;
+				
+				window.FreshDirect.cartTemplateObj.processFn = processFn;
 
 				this.updateTopCheckoutButton(data);
 				
@@ -312,9 +369,16 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					*/
 					data.etipTotal = parsedEtipTotal;
 				}
+				
+				/* APPDEV-4904 */
+				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
+				
+				//make the object for this global
+				window.FreshDirect.cartTemplateObj.data = data;
 								
-				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
-				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
+				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements
+				 * no arguments sent, as the data it works with is global by now */
+				return cart_content_template_htmlstr();
 			}
 		},
 		placeholder:{

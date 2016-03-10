@@ -24,6 +24,7 @@
  * @param totalWithoutTax TotalWithoutTax
 * @param? displayCheckout
 * @param? softLimit
+* @param? isEBTused
 */
 {template .viewcartlines autoescape="false"}
        {if $displayCheckout}
@@ -50,7 +51,8 @@
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
-                                  {param displayCheckout : $displayCheckout /}
+				{param displayCheckout : $displayCheckout /}
+				{param isEBTused : $isEBTused /}
 			{/call}
 		{/foreach}
 	</div>
@@ -111,6 +113,7 @@
                                   {param numOfSections : length($cartSections) /}
                                   {param isLastSection : isLast($section) /}
                                   {param containsWineSection : $containsWineSection /}
+                                  {param isEBTused : $isEBTused /}
                            {/call}
                      {/foreach}
                      {else} 
@@ -244,6 +247,7 @@
  * @param? customerServiceRepresentative
  * @param containsWineSection containsWineSection
  * @param? totalWithoutTax TotalWithoutTax 
+ * @param? isEBTused
  */
 {template .checkoutlines autoescape="false"}
 	<div class='cartcontent'>
@@ -265,6 +269,7 @@
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
+				{param isEBTused : $isEBTused /}
 			{/call}
 		{/foreach}
 	</div>
@@ -304,6 +309,7 @@
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
  * @param containsWineSection containsWineSection
+ * @param? isEBTused
  */
 {template .successlines autoescape="false"}
 	<div class='cartcontent'>
@@ -325,6 +331,7 @@
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
+				{param isEBTused : $isEBTused /}
 			{/call}
 		{/foreach}
 	</div>
@@ -435,7 +442,8 @@
  * @param isLastSection
  * @param containsWineSection containsWineSection
  * @param? totalWithoutTax TotalWithoutTax 
-* @param? displayCheckout to display checkout
+ * @param? isEBTused Is the customer using EBT? 
+ * @param? displayCheckout to display checkout
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
@@ -526,9 +534,9 @@
 								<input type="hidden" name="action" value="applyETip" />
 								{if $tipApplied}
 									<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
-									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton green">Add Tip</button>
+									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled{/if}>Add Tip</button>
 								{else}
-									<button id="tipApply" class="cssbutton green">Add Tip</button>
+									<button id="tipApply" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled{/if}>Add Tip</button>
 									<button id="tipApplied" style="display:none" aria-hidden="true" class="cssbutton grey" disabled>Tip Added</button>
 								{/if}
 							</form>                

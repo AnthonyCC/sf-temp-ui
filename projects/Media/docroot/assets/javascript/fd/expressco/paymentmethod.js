@@ -11,12 +11,23 @@ var FreshDirect = FreshDirect || {};
     signal: {
       value:'payment'
     },
-    callback: {
-      value: function (data) {
-        DRAWER_WIDGET.callback.call(this, data);
-        this.check();
-      }
-    },
+	callback: {
+		value: function (data) {
+			DRAWER_WIDGET.callback.call(this, data);
+			this.check();
+		    
+		    /* APPDEV-4904, update the global freshdirect object */
+			set_current_payment_choice_JSonly( data.payments );
+
+			/* get what the cart contents should be, assuming that the global window.Freshdirect object has it yet */
+			var templateRendered = cart_content_template_htmlstr();
+			
+			/* if the cart element exists AND anything worthwhile is returned from above, then repopulate it */
+			if( ($("#cartcontent").length > 0) && (templateRendered.length > 1) ){
+				$("#cartcontent").html( templateRendered );
+			}
+		}
+	},
     contentTemplate: {
       value: expressco.paymentmethodcontent
     },
