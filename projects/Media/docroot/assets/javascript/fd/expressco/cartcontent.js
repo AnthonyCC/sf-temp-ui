@@ -266,7 +266,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				this.updateTopCheckoutButton(data);
 				
 				/*only if etipping is turned on in the properties*/
-				if( data.etipTotal !== null ){
+				if( data.etipTotal !== null && typeof data.etipTotal === 'string'){
 					/*APPBUG-4312, make a new var from the etip amount into a float value to compare against zero*/
 					var parsedEtipTotal = parseFloat(data.etipTotal.replace(/\$/g, ""));
 					
@@ -312,8 +312,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					*/
 					data.etipTotal = parsedEtipTotal;
 				}
-				
-				console.log("data = "); console.log(data);
 								
 				/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
 				return processFn(data) + '<SCR'+'IPT>template_cleanup();<\/SCR'+'IPT>';
