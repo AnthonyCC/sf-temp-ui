@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.services.tax.data.Address;
 import com.freshdirect.fdstore.services.tax.data.DetailLevel;
 import com.freshdirect.fdstore.services.tax.data.DocType;
@@ -78,6 +79,15 @@ public class AvalaraTaxRequestConverter {
 		taxRequest.setDetailLevel(DetailLevel.Line);
 		ErpCustomerModel model = null;
 		String customercode = "DEFAULT_CUSTOMER_CODE";
+		if(cart instanceof FDOrderAdapter){
+			FDOrderAdapter order = (FDOrderAdapter)cart;
+			try {
+				model = FDCustomerFactory.getErpCustomer(null!=order.getSale()?order.getSale().getCustomerPk().getId():null);
+				customercode = null != model?model.getSapId():"DEFAULT_CUSTOMER_CODE";
+			} catch (FDResourceException e) {
+				customercode = "DEFAULT_CUSTOMER_CODE";
+			}
+		}else{
 		FDIdentity identity =  cart.getOrderLines().get(0)!=null?cart.getOrderLines().get(0).getUserContext().getFdIdentity():null;
 		if(null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK())){
 			try {
@@ -86,6 +96,7 @@ public class AvalaraTaxRequestConverter {
 			} catch (FDResourceException e) {
 				customercode = "DEFAULT_CUSTOMER_CODE";
 			}
+		  }
 		}
 		taxRequest.setCustomerCode(customercode);
 		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
