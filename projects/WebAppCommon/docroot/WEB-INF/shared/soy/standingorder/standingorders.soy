@@ -9,7 +9,7 @@
 			<tr>
 				<th width="246">Standing Order</th>
 			    <th width="120">Order #</th>
-			    <th width="134">Date& Time</th>
+			    <th width="134">Date & Time</th>
 			    <th width="106">In cart</th>
 			    <th colspan="2">Change an Upcoming Delivery</th>
 			</tr>
@@ -17,17 +17,17 @@
 				<tr id="usoid_{$item.id}">
 				    <td class="td-so-name"><div class="td-so-name-text">{$item.soName}</div></td>
 				    <td class="td-so-order-number">{$item.orderId}</td>
-				    <td class="td-so-date-time">{$item.deliveryDate}</td>
+				    <td class="td-so-date-time">{$item.deliveryDate},<br>{$item.deliveryTime}</td>
 				    <td class="td-so-in-cart">${$item.amount}<br/><span class="td-so-in-cart-items">{$item.noOfitems} {if $item.noOfitems == 1}item{else}items{/if}</span></td>
 				    <td class="td-so-modify"><a href="/your_account/modify_order.jsp?orderId={$item.orderId}&action=modify">Modify {$item.shortDeliveryDate} Delivery</a></td>
 				    <td class="td-so-cancel">
-				    	<a class="td-so-cancel-button" href="javascript:openUpcomingOrderCancel({$item.orderId})">Cancel Delivery</a>
+				    	<a class="td-so-cancel-button" href="javascript:openUpcomingOrderCancel({$item.id})">Cancel Delivery</a>
 				    	<div style="position:relative;">
 				    		<div class="td-so-cancel-popup">
-				    			Cancel [NEED DATE] delivery of your <span class="td-so-cancel-popup-name">{$item.soName}</span> Standing Order?
+				    			Cancel {$item.shortDeliveryDate} delivery of your <span class="td-so-cancel-popup-name">{$item.soName}</span> Standing Order?
 				    			<div class="td-so-cancel-popup-buttons">
 				    				<a class="td-so-cancel-popup-buttons-yes" href="/your_account/cancel_order.jsp?orderId={$item.orderId}">Yes</a>
-				    				<a class="td-so-cancel-popup-buttons-no" href="javascript:closeUpcomingOrderCancel({$item.orderId})">No</a>
+				    				<a class="td-so-cancel-popup-buttons-no" href="javascript:closeUpcomingOrderCancel()">No</a>
 				    			</div>
 				    		</div>
 				    	</div>
