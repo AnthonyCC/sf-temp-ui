@@ -75,7 +75,7 @@ public class FDExtoleManagerDAO implements Serializable {
 				requestModel.setEmail(rs.getString("EMAIL"));
 				requestModel.setFirstName(rs.getString("FIRST_NAME"));
 				requestModel.setLastName(rs.getString("LAST_NAME"));
-			//	requestModel.setClickId(rs.getString("CLICK_ID"));
+				requestModel.setClickId(rs.getString("CLICK_ID"));
 			//	requestModel.setCouponCode("RAF_PROMO_CODE");
 
 				list.add(requestModel);
