@@ -863,9 +863,9 @@ public class CheckoutController extends BaseController {
 
         //TODO: Not only find out availability but also get error on which specific products weren't available
         //And what to do...choose another date? or remove item?
-
+        Double subTotal = null;
+        
         if (!isProductFullyAvailable) {
-        	Double subTotal = null;
         	Cart cart = user.getShoppingCart();
         	FDReservation reservation = cart.getDeliveryReservation();
         	Cart clonedCart = Cart.cloneCart(cart);
@@ -881,7 +881,8 @@ public class CheckoutController extends BaseController {
         	}
         }
         else{
-        	callAvalaraForTax(user);
+        	if(subTotal != null && subTotal > user.getShoppingCart().getDeliveryReservation().getMinOrderAmt())
+				callAvalaraForTax(user);
         }
 
         return result;
