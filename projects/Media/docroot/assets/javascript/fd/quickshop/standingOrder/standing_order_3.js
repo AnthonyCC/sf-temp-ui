@@ -13,7 +13,7 @@ $jq( document ).ready(function() {
 			$jq(".standing-orders-3-name-input-change").addClass("show");
 		});
 		$jq("input.standing-orders-3-name-input").blur(function() {
-			$jq(".standing-orders-3-name-input-change").removeClass("show");
+			$jq(".standing-orders-3-name-input-change.show").removeClass("show");
 			$jq(".standing-orders-3-name-input[name='soName']").val(soName);
 		});
 		$jq(".standing-orders-3-char-count").text($jq("input.standing-orders-3-name-input").val().length + "/25");
@@ -122,15 +122,14 @@ function submitFormNewSO(action, id, name){
 //manage_standing_orders
 function openUpcomingOrderCancel(id){
 	var usoID = "#usoid_" + id;
-	$jq(".td-so-cancel .td-so-cancel-popup.open").removeClass("open");
+	closeUpcomingOrderCancel();
 	$jq(usoID + " .td-so-cancel .td-so-cancel-popup").addClass("open");
-	$jq(usoID + " .td-so-cancel .td-so-cancel-popup").parent().parent().parent().children().addClass("cancel");
+	$jq(usoID + " td").addClass("cancel");
 };
 
-function closeUpcomingOrderCancel(id){
-	var usoID = "#usoid_" + id;
-	$jq(usoID + " .td-so-cancel .td-so-cancel-popup.open").removeClass("open");
-	$jq(usoID + " .td-so-cancel .td-so-cancel-popup").parent().parent().parent().children().removeClass("cancel");
+function closeUpcomingOrderCancel(){
+	$jq(".td-so-cancel .td-so-cancel-popup.open").removeClass("open");
+	$jq(".table-so-upcoming-deliveries td.cancel").removeClass("cancel");
 };
 
 function openSettingsDelete(id){
@@ -145,14 +144,14 @@ function closeSettingsDelete(id){
 };
 
 function deleteSO(name, id){
+	var soID = "#soid_" + id;
+	var usoID = "#usoid_" + id;
 	submitFormManageSO(id,"delete",name,null);
-	$jq(".table-so-upcoming-deliveries .td-so-name").each(function() {
-		 if ($jq( this ).html() == name){
-			 openUpcomingOrderCancel($jq( this ).parent().find(".td-so-order-number").html());
-		 }
-	});
+	if($jq(usoID).length > 0){
+		openUpcomingOrderCancel(id);
+	}	
 	closeSettingsDelete(id);
-	$jq("#soid_"+id).remove();
+	$jq(soID).remove();
 };
 
 function openSOSettings(id) {			
@@ -356,5 +355,6 @@ function activateSo(id){
 
 function updateSOItem(id, data){
 	var soID = "#soid_" + id;
-	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data}, FreshDirect.standingorder.softLimitDisplay || "50"));
+	var softLimit = FreshDirect.standingorder.softLimitDisplay || "50";
+	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit}));
 };
