@@ -164,7 +164,7 @@
 }
 
 .productDisplay-skuconfig .select-wrapper select {
-    width: 100%;
+    max-width: 100%;
 }
 
 .productDisplay-skuconfig .error em {
