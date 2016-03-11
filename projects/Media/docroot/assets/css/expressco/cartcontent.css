@@ -1196,10 +1196,10 @@ label[for="dontupdatecartlines"] {
 }
 
 .eTippingEnabled .rowcontent-free-with-pass{
-	margin-left:initial;
-	text-align:right;
+	margin-left:0;
+	text-align:left;
 	float:right;
-	width:initial;
+  width: auto;
 }
 
 .eTippingEnabled .orderSummary{
