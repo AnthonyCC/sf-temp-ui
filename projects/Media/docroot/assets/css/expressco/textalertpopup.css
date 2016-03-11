@@ -62,6 +62,10 @@
   margin:10px 0;
 }
 
+.textalertpopup .choices li .fake-checkbox-wrapper {
+  margin-left: -35px;
+}
+
 .textalertpopup .choices li input[type=checkbox]{
   float:left;
   margin-left:-20px;
