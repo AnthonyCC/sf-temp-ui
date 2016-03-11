@@ -190,7 +190,10 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					if(null ==errorMessage){
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 						if(null !=so){
-							FDListManager.renameShoppingList(so.getCustomerListId(), soName);
+						FDListManager.renameShoppingList(so.getCustomerListId(), soName);
+						u.getCurrentStandingOrder().setCustomerListName(soName);
+						}else{
+							errorMessage = "Standing order is not exist !";
 						}
 					}
 					writeResponseData( response, errorMessage );
