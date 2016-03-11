@@ -81,6 +81,7 @@ public class AvalaraTaxRequestConverter {
 		taxRequest.setDetailLevel(DetailLevel.Line);
 		ErpCustomerModel model = null;
 		String customercode = "DEFAULT_CUSTOMER_CODE";
+		if(cart.getOrderLines().size() > 0){
 		if (cart instanceof FDOrderAdapter) {
 			FDOrderAdapter order = (FDOrderAdapter) cart;
 			customercode = getCustomerCode(order);
@@ -98,6 +99,7 @@ public class AvalaraTaxRequestConverter {
 					customercode = "DEFAULT_CUSTOMER_CODE";
 				}
 			}
+		  }
 		}
 		taxRequest.setCustomerCode(customercode);
 		taxRequest.setDiscount(BigDecimal.valueOf(cart.getTotalDiscountValue()));
