@@ -22,6 +22,9 @@ public class AvalaraTaxStrategyImpl implements TaxStrategy{
 	
 	@Override
 	public AvalaraContext getTaxResponse(AvalaraContext avalaraContext) throws FDException {
+		if(avalaraContext.getCart().getOrderLines().size() == 0){
+			return avalaraContext;
+		}
 		GetTaxRequest request = requestConverter.convert(avalaraContext);
 		AvalaraTaxService taxService = new AvalaraTaxService();
 		GetTaxResult result = taxService.getTax(request);
