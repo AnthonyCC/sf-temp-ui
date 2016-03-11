@@ -8,7 +8,7 @@
   <form fdform="selectlist" action="#" fdform-submit="FreshDirect.modules.common.forms.submitFns.defaultButton">
     <p>
       <label for="addtolist-selectList">Add to Existing List</label>
-      <select name="selectList" id="addtolist-selectList">
+      <select name="selectList" id="addtolist-selectList" class="customsimpleselect">
         {foreach $listInfo in $data}
           <option value="{$listInfo.listId}">
             {$listInfo.name}
