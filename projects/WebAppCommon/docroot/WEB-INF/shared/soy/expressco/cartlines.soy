@@ -364,12 +364,12 @@
 				{/if}
 				{if $estimatedTotal}
 					<div class="charges__row">
-					{if $avalaraEnabled}
-					    <div class="charges__rowcell charges-text">&nbsp Order Subtotal:</div>
-					    <div class="charges__rowcell charges-price" id="div_estimatedTotal">{$totalWithoutTax}</div>
+						{if $avalaraEnabled}
+							<div class="charges__rowcell charges-text">&nbsp Order Subtotal:</div>
+							<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$totalWithoutTax}</div>
 					    {else}
-						<div class="charges__rowcell charges-text">Estimated Total:</div>
-						<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$estimatedTotal}</div>
+							<div class="charges__rowcell charges-text">Estimated Total:</div>
+							<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$estimatedTotal}</div>
 						{/if}
 					</div>
 				{/if}
@@ -547,7 +547,11 @@
 					<p class='cartsection__total'>
 						<span class="strl_text">
 						{if $info.subTotalText}
-							{$info.subTotalText}
+							{if $avalaraEnabled}
+								Subtotal
+							{else}
+								{$info.subTotalText}
+							{/if}
 						{else}
 							Subtotal
 						{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
@@ -572,9 +576,9 @@
 					{/if}
 						
 					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-							<div class="SSorderTotal">
+							<div class="SSorderTotal"> THIS IS A UNIFIED TEST
 								{foreach $box in $subTotalBox.estimatedTotalBox}
-									<span class="strl_text">{$box.text}</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
+									<span class="strl_text">{$box.text}JOKEZ</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
 								{/foreach}
 							</div>
 						</div><!--end div.orderSummary-->
@@ -1036,7 +1040,7 @@
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
 						data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
 						data-ifrpopup-width='585' data-ifrpopup-height='400' class="strl_text">
-							{$box.text}
+							{$box.text}PHOON
 						</a>
 					{else}
 						{if $box.other and $box.other.promoCode}
@@ -1058,12 +1062,12 @@
 									<span class="strl_text ssOrderTotal">Order Total</span>
 								{else}
 									{if $box.id == 'ssOrderTotal' and ($avalaraEnabled and $cartlineType == 'YOUR_CART')}
-									<span class="strl_text ssOrderTotal">{$box.text}</span>
+										<span class="strl_text ssOrderTotal"><!--{$box.text}--> Order Subtotal</span>
 									{else}
-									<span class="strl_text">{$box.text}</span>									
-									{if $box.id == 'deliveryfee' and $eTippingEnabled}
-										{call .dfToolTip /}
-									{/if}
+										<span class="strl_text">{$box.text}</span>								
+										{if $box.id == 'deliveryfee' and $eTippingEnabled}
+											{call .dfToolTip /}
+										{/if}
 								  {/if}
 								{/if}
 							{/if} /*end if $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */

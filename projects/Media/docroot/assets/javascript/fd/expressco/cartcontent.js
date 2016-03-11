@@ -187,6 +187,8 @@ function cart_content_template_htmlstr(){
 	if( (window.FreshDirect.cartTemplateObj) && (window.FreshDirect.cartTemplateObj.data) && (window.FreshDirect.cartTemplateObj.processFn) ){
 		var data = window.FreshDirect.cartTemplateObj.data;
 		
+		console.log("data = "); console.log(data);
+		
 		var processFn = window.FreshDirect.cartTemplateObj.processFn;
 						
 		/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
@@ -265,6 +267,13 @@ etids.div_tooltipPopup = "#tooltipPopup";
 							if( data.subTotalBox.subTotalBox[j]["id"] == "totaltax" ){
 								data.subTotalBox.subTotalBox[j]["text"] = "Sales Tax";
 							}
+						}
+					}
+					
+					/* correct copy for when avalara is enabled in subtotal areas */
+					if( typeof(data.subTotalBox.estimatedTotalBox) == "object"  ){
+						if(data.avalaraEnabled == true){
+							data.subTotalBox.estimatedTotalBox[0]["text"] = "Order Subtotal with rodents";
 						}
 					}
 				}
@@ -372,6 +381,8 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				
 				/* APPDEV-4904 */
 				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
+				
+				console.log(" data = "); console.log( data );
 				
 				//make the object for this global
 				window.FreshDirect.cartTemplateObj.data = data;
