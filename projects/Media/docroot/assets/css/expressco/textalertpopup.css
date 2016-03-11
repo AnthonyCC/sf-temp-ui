@@ -41,6 +41,10 @@
   font-size:22px;
 }
 
+.textalertpopup label {
+  font-weight: normal;
+}
+
 .textalertpopup .choices-title{
   font-size:14px;
   font-weight:bold;
@@ -76,10 +80,11 @@
 .nothanks-holder{
   display:inline-block;
   margin-right:30px;
+  text-align: left;
 }
 
 .nothanks-holder label.remindme{
-  margin-top: 5px;
+  margin-top: 10px;
   display:block;
 }
 
