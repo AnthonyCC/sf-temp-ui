@@ -1342,6 +1342,10 @@ label[for="dontupdatecartlines"] {
 	vertical-align: middle;
 }
 
+.gogreen-text label {
+  font-weight: normal;
+}
+
 .gogreen-text label input{
 	float: left;
     margin-top: -5px;
