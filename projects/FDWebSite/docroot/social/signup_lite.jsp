@@ -247,8 +247,8 @@
 					<div>
 	                   	<div id="sul_type_fields" aria-controls="collapsible-sul_cos_fields" aria-expanded="false">
 							<fieldset>
-		                 		<span class="legend">Delivery For:</span>
-		                 		<input type="radio" name="serviceType" id="sul_type_fields_HOME" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_HOME"><span>Home</span></label><input type="radio" name="serviceType" id="sul_type_fields_CORPORATE" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_CORPORATE"><span>Office</span></label>
+		                 		<span class="legend"><legend>Delivery For:</legend></span>
+		                 		<input type="radio" name="serviceType" id="sul_type_fields_HOME" value="HOME" <%= (serviceType.equals("HOME"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_HOME"><span>Home</span><span class="offscreen"> Delivery</span></label><input type="radio" name="serviceType" id="sul_type_fields_CORPORATE" value="CORPORATE" <%= (serviceType.equals("CORPORATE"))?"checked":"" %> tabindex="0" /><label for="sul_type_fields_CORPORATE"><span>Business or School</span><span class="offscreen"> Delivery</span></label>
 		                 	</fieldset>
 	                   	</div>
 					</div>
@@ -344,9 +344,7 @@
 					<tr>
 						<td></td>
 						<td style="padding-top: 15px;">
-							<a onclick="dlvadrspage();" href="#" class="butText social-login-continue-button">
-								<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" style="display:block;">
-							</a>
+							<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" class="butText social-login-continue-button" style="display:block;" onclick="dlvadrspage();">
 						</td>
 					</tr>
 				

@@ -400,10 +400,7 @@ br.new_cust{
     text-align: left;
     min-width: 95px;
 }
-#sul_type_fields input[type="radio"]:checked + label::before {
-    background: #4fa157;
-    box-shadow: 0 0 0 1px #4fa157;
-}
+
 #sul_type_fields input[type="radio"] + label::before {
     background: #fafafa;
     box-shadow: 0 0 0 1px #c2c2c2;
@@ -416,7 +413,6 @@ br.new_cust{
     margin-right: 10px;
     vertical-align: 2px;
 }
-
 #sulCont input:focus, #sul_type_fields input, #sul_cos_fields input {
 	border-width: 2px !important;
 }
@@ -425,3 +421,11 @@ br.new_cust{
     box-shadow: none;
     outline: none;
 }
+#sul_type_fields input[type="radio"]:checked + label::before, #sul_cos_fields input[type="radio"]:checked + label::before {
+    background: #4fa157;
+    box-shadow: 0 0 0 1px #4fa157;
+}
+#sul_type_fields input[type="radio"]:focus + label::before, #sul_cos_fields input[type="radio"]:focus + label::before {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+}
+
