@@ -108,8 +108,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<div id="locabar-modify-order-count" class="">0</div>
 					</div>
 					<div class="locabar-modify-order-container">
-						<div class="locabar-modify-order-container-header">Modify Order</div>
-						<div><div class="locabar-modify-order-container-message"></div><div class="locabar-down-arrow"></div></div>
+						<div class="locabar-modify-order-container-message"></div>
+						<div><div class="locabar-modify-order-container-header">Modify Order</div><div class="locabar-down-arrow"></div></div>
 					</div>
 				</div>
 				<div id="locabar_orders" class="posAbs">

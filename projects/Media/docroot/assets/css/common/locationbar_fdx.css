@@ -485,7 +485,7 @@
 	background-color: #fff;
 	font-size: 11px;
 	font-weight: bold;
-	padding: 5px;
+	padding: 3px;
 	line-height: 14px;
 	min-width: 14px;
 	text-align: center;
@@ -529,7 +529,7 @@
 	background-position-y: 50%;
     background-repeat: no-repeat;
     height: 35px;
-    width: 43px;
+    width: 39px;
     padding-right: 5px;
     vertical-align: top;
 }
@@ -790,9 +790,9 @@
 .locabar-section .section-warning-small,
 .locabar-section .section-warning-small-circle  {
 	display: inline-block;
-	background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning-small.png');
+	background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning-small-white.png');
 	min-height: 26px;
-	min-width: 28px;
+	min-width: 23px;
 	background-repeat: no-repeat;
 }
 #locabar_messages_trigger .section-warning-small-circle {
@@ -800,11 +800,11 @@
 }
 #locabar_messages_trigger .section-warning-small,
 #locabar_messages_trigger .section-warning-small-circle {
-	min-height: 36px;
+	min-height: 33px;
 	padding-left: 16px;
 	background-position: left bottom;
-	margin-left: 20px;
-	margin-right: 14px;
+	margin-left: 8px;
+	margin-right: 8px;
 }
 #locabar_messages_trigger .section-warning-small-circle {
 	padding-left: 19px;
@@ -858,8 +858,8 @@
 
 #locabar_addresses_trigger, #locabar_popupcart_trigger, #locabar_user_trigger {
 	margin-top: 5px;
-	padding-left: 20px;
-	padding-right: 20px;
+	padding-left: 8px;
+	padding-right: 8px;
 }
 
 .locabar-right-sections .locabar-section {
@@ -880,14 +880,16 @@
 }
 
 #locabar_modify_order_trigger{
-	padding-right: 15px;
+	padding-right: 8px;
+    padding-left: 8px;
+    margin-top: 5px;
 }
 
 #locabar_modify_order_trigger .section-modify-order-img{
-	display: inline-block;
+	display: none; /* hide 20160310 */
 	padding-left: 16px;
 	background-position: left bottom;
-	margin-left: 15px;
+	margin-left: 8px;
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-modify-white-circle.png');
 	min-height: 36px;
 	min-width: 25px;
@@ -900,7 +902,7 @@
 	background-color: #fff;
 	font-size: 11px;
 	font-weight: bold;
-	padding: 5px;
+	padding: 3px;
 	line-height: 14px;
 	min-width: 14px;
 	text-align: center;
@@ -916,7 +918,6 @@
 
 #locabar_modify_order_trigger .locabar-modify-order-container-message{
 	display: inline-block;
-	font-weight: bold;
 }
 
 #locabar_modify_order_trigger #locabar_orders{
@@ -1470,4 +1471,8 @@ option.address-icon {
 	font-weight: bold;
     font-size: 13px;
     line-height: 16px;	
+}
+.locabar-modify-order-container-header {
+    display: inline-block;
+	font-weight: bold;
 }
