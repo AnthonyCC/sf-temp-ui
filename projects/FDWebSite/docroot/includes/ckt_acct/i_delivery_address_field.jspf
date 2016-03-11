@@ -342,7 +342,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				*&nbsp;Contact #&nbsp;&nbsp;
 				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>"></span></fd:ErrorHandler>
 			</td>
-			<td colspan="2" class="text12"><input type="text" size="16" class="text11" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" value="<%=fldHomePhone%>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+			<td colspan="2" class="text12"><input type="text" size="16" class="text11" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" value="<%=fldHomePhone%>" required="true">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 			&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=fldHomePhoneExt%>"></td>
 		</tr>
 			<tr>
