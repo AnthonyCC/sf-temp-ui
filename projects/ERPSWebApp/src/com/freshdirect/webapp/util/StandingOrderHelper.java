@@ -626,7 +626,7 @@ public class StandingOrderHelper {
 		//TODO : need to work on calculating total amount
 		if(!isUpcomingDelivery){
 				productCnt= getNoOfItemsForSoSettings(so);	
-				amount=getTotalAmountForSoSettings(so);
+				amount=productCnt>0?getTotalAmountForSoSettings(so):0.0;
 		}else{
 			productCnt= getNoOfItemsForUpcomingDelivery(so);	
 			amount=so.getUpcomingDelivery().getTotal();
