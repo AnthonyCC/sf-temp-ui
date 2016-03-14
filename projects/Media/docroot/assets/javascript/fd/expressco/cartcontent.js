@@ -187,8 +187,6 @@ function cart_content_template_htmlstr(){
 	if( (window.FreshDirect.cartTemplateObj) && (window.FreshDirect.cartTemplateObj.data) && (window.FreshDirect.cartTemplateObj.processFn) ){
 		var data = window.FreshDirect.cartTemplateObj.data;
 		
-		console.log("data = "); console.log(data);
-		
 		var processFn = window.FreshDirect.cartTemplateObj.processFn;
 						
 		/*process the soy template, using the data to populate it, then kill certain accidental unwanted repetive elements*/
@@ -289,8 +287,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					if(data.cartSections && data.cartSections.length > 1){
 						for(var i=0; i<data.cartSections.length; i++){
 							if( data.cartSections[i].title == "wineSectionKey" ){
-								console.log("were up all night to get taxy");
-								
 								salesOrTotal = "Total Tax";
 							}
 						}
@@ -381,8 +377,6 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				
 				/* APPDEV-4904 */
 				data.isEBTused = ( get_current_paymenttype_choice() == "EBT")? true : false;
-				
-				console.log(" data = "); console.log( data );
 				
 				//make the object for this global
 				window.FreshDirect.cartTemplateObj.data = data;

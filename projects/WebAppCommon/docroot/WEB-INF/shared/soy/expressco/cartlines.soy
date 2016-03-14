@@ -576,9 +576,9 @@
 					{/if}
 						
 					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-							<div class="SSorderTotal"> THIS IS A UNIFIED TEST
+							<div class="SSorderTotal">
 								{foreach $box in $subTotalBox.estimatedTotalBox}
-									<span class="strl_text">{$box.text}JOKEZ</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
+									<span class="strl_text">{$box.text}</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
 								{/foreach}
 							</div>
 						</div><!--end div.orderSummary-->
@@ -1040,7 +1040,7 @@
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
 						data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
 						data-ifrpopup-width='585' data-ifrpopup-height='400' class="strl_text">
-							{$box.text}PHOON
+							{$box.text}
 						</a>
 					{else}
 						{if $box.other and $box.other.promoCode}
