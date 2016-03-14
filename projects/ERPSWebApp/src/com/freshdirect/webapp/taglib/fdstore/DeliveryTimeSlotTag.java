@@ -169,8 +169,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 		
 		// [APPDEV-2149] go a different way
-		if (generic) {
+		if (generic && user.isNewSO3Enabled()) {
 			return getGenericTimeslots(addressModel);
+		}else if(generic){
+			return getGenericTimeslots(address);
+
 		}
 					
 		FDDeliveryTimeslotModel deliveryModel = new FDDeliveryTimeslotModel();
