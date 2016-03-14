@@ -102,25 +102,9 @@ public class TimeslotService {
         timeslotData.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("timeslot"));
         timeslotData.setShowForceOrder(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderAvailable() && !user.getMasqueradeContext().isAddOnOrderEnabled());
         timeslotData.setForceOrderEnabled(user.getMasqueradeContext() != null && user.getMasqueradeContext().isForceOrderEnabled());
-        popuateStandingOrderDetails(user,timeslotData);
         
         return timeslotData;
     }
-
-    private void popuateStandingOrderDetails(FDUserI user,
-			FormTimeslotData timeslotData) {
-    	if(StandingOrderHelper.isSO3StandingOrder(user)){
-    		timeslotData.setNewSO3(true);
-    		FDStandingOrder so=user.getCurrentStandingOrder();
-            timeslotData.setSoFreq(so.getFrequency()>=1? Integer.toString(so.getFrequency()):null);
-            timeslotData.setSoCutOffFormattedDeliveryDate(so.getFormattedCutOffDeliveryDate());
-            timeslotData.setSoCutOffDeliveryTime(FDStandingOrder.cutOffDeliveryTime);
-            timeslotData.setSoActivated(null!=so.getActivate() && "Y".equals(so.getActivate())?true:false);
-            timeslotData.setShortDayOfWeek(DateUtil.formatDayOfWk(so.getNextDeliveryDate()));
-            timeslotData.setSoDeliveryDate(DateUtil.formatMonthAndDate(so.getNextDeliveryDate()));
-    	}
-
-	}
 
 	public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, FDUserI user, HttpSession session) throws FDResourceException {
         String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");  

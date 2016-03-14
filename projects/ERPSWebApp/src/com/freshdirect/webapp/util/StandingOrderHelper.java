@@ -929,6 +929,13 @@ public class StandingOrderHelper {
             timeslotData.setTimePeriod(format(DateUtil.toCalendar(so.getStartTime()), DateUtil.toCalendar(so.getEndTime())));
             timeslotData.setStartDate(so.getNextDeliveryDate());
             timeslotData.setEndDate(so.getNextDeliveryDate());
+    		timeslotData.setNewSO3(true);
+            timeslotData.setSoFreq(so.getFrequency()>=1? Integer.toString(so.getFrequency()):null);
+            timeslotData.setSoCutOffFormattedDeliveryDate(so.getFormattedCutOffDeliveryDate());
+            timeslotData.setSoCutOffDeliveryTime(FDStandingOrder.cutOffDeliveryTime);
+            timeslotData.setSoActivated(null!=so.getActivate() && "Y".equals(so.getActivate())?true:false);
+            timeslotData.setShortDayOfWeek(DateUtil.formatDayOfWk(so.getNextDeliveryDate()));
+            timeslotData.setSoDeliveryDate(DateUtil.formatMonthAndDate(so.getNextDeliveryDate()));
         }
 	}
  protected static String format(Calendar startCal, Calendar endCal) {
