@@ -93,6 +93,10 @@ public class Timeslot implements DateFormat {
         return formatter.format(this.start);
     }
 
+    public Date getStartDate() {
+        return this.start;
+    }
+    
     public void setStart(Date start) {
         this.start = start;
     }
@@ -105,18 +109,26 @@ public class Timeslot implements DateFormat {
     public String getEnd() {
         return formatter.format(this.end);
     }
-
-    @JsonSetter("end")
-    public void setEnd(String end) throws ParseException {
-        this.end = formatter.parse(end);
+    
+    public Date getEndDate() {
+        return this.end;
     }
 
     public void setEnd(Date end) {
         this.end = end;
     }
+    
+    @JsonSetter("end")
+    public void setEnd(String end) throws ParseException {
+        this.end = formatter.parse(end);
+    }
 
     public String getCutoffDate() {
         return formatter.format(this.cutoffDate);
+    }
+    
+    public Date getCutoffDateDate() {
+        return this.cutoffDate;
     }
 
     public void setCutoffDate(Date cutoffDate) {
