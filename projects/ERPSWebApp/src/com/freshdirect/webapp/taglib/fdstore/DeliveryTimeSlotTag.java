@@ -428,11 +428,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				
 				
 				FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
-				for (FDTimeslot d:tsList.getTimeslots()){
-					System.err.println(" Delivery timeslot for standing order are : "+d.getDlvStartTime()+" "+d.getDlvEndTime()+" "+d.getDeliveryDate()+" "+d.getDayOfWeek());
-							
-					}
-				
+
 				tsu = new FDTimeslotUtil(tsList.getTimeslots(), range.getStartDate(), range.getEndDate(), restrictions, tsList.getResponseTime(),range.isAdvanced(), null);
 				singleTSset.add( tsu );
 			}
