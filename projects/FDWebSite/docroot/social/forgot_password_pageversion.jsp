@@ -14,7 +14,7 @@ final int W_FORGET_PASSWORD_TOTAL = 700;
 	<tmpl:insert template='/common/template/no_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-			<%@ include file="forgot_password.jsp" %>
+			<%@ include file="/social/i_forgot_password_fields.jspf" %>
 		</tmpl:put>
 	</tmpl:insert>
 </fd:ForgotPasswordController>
