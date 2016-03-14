@@ -656,6 +656,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 <%-- SO ALERTS --%>
 
 	<%
+	  if(user.isNewSO3Enabled()) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
 		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user, false));
 	%>
@@ -674,7 +675,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			<soy:render template="standingorder.activateSOAlert" data="<%=activateSOAlert%>"/>
 		</div>
 	</tmpl:put>
-
+  <% } %>
 <%-- MODIFY ORDER ALERTS --%>
 
 	<tmpl:put name="modify_order_alerts">
