@@ -24,7 +24,7 @@ String addressId="";
 String timeSlotId = null;
 ErpAddressModel address;
 boolean forceOrder = user.getMasqueradeContext()!=null && user.getMasqueradeContext().isForceOrderAvailable() && Boolean.parseBoolean(request.getParameter("forceorder"));
-if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
+if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() && !user.isNewSO3Enabled()) {
 	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 } else { // MODIFY_SO_CSOI or MODIFY_SO_MSOI 
 	address = currentStandingOrder.getDeliveryAddress();
