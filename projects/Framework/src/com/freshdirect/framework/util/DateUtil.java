@@ -517,7 +517,19 @@ public class DateUtil {
 			return null;
 		}
 	}
-	
+	public static String formatDayAndMonth(Date date){
+		if(null!=date){
+			StringBuffer buff=new StringBuffer();
+			Calendar cal=Calendar.getInstance();
+			cal.setTime(date);
+			buff.append(cal.get(Calendar.MONTH) +"/");
+			buff.append(cal.get(Calendar.DATE));
+
+		return buff.toString();
+		} else {
+			return null;
+		}
+	}
 	
 	/* When we want "11:59pm" or "11pm" */
 	@SuppressWarnings("deprecation")
