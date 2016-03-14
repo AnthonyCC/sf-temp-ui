@@ -102,8 +102,8 @@ public class FDStandingOrderDAO {
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
-	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)";
+	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
 	
 	private static final String UPDATE_STANDING_ORDER = "update CUST.STANDING_ORDER set " +
 	"CUSTOMER_ID = ?, " +
@@ -447,8 +447,15 @@ public class FDStandingOrderDAO {
 
 		String myId = null;
 		PreparedStatement ps = null; 
+		PreparedStatement defaultSOPS = null; 
+
 		Date currDate = new Date();
 		try {
+			defaultSOPS = conn.prepareStatement(REVERT_DEFAULT_STANDING_ORDER);
+			defaultSOPS.setString(1, so.getCustomerId());
+			
+			defaultSOPS.executeUpdate();
+			
 			myId = getNextId(conn);
 
 			ps = conn.prepareStatement(INSERT_STANDING_ORDER);
@@ -476,16 +483,17 @@ public class FDStandingOrderDAO {
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Created Time
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDouble(counter++, so.getTipAmount());
+			ps.setString(counter++, "Y");
 
 			ps.execute();
 			
-			ps.close();
-
 			so.setId(myId);
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
-			if(ps != null) {
+			if(defaultSOPS != null) {
+				defaultSOPS.close();
+			} if(ps != null) {
 				ps.close();
 			}
 		}
