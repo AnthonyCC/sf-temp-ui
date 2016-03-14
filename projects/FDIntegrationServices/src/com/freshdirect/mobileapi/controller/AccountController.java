@@ -1,19 +1,28 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.apache.tools.ant.util.DateUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -220,6 +229,18 @@ public class AccountController extends BaseController {
         	
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+            
+            if("true".equalsIgnoreCase(FDStoreProperties.get(FDStoreProperties.PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED))){
+	            List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tslist2 = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
+	            for  (com.freshdirect.mobileapi.controller.data.response.Timeslot ts : deliveryTimeslots.getTimeSlots())
+	            {
+	        		ts.setStart(DateUtil.addHours(ts.getStartDate(), 1));
+	        		ts.setEnd(DateUtil.addHours(ts.getEndDate(), 1));
+	        		ts.setCutoffDate(DateUtil.addHours(ts.getCutoffDateDate(), 1));			
+	    			tslist2.add(ts);        	
+	            }
+	            deliveryTimeslots.setTimeSlots(tslist2); 
+            }
 
             ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
             responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
@@ -244,14 +265,26 @@ public class AccountController extends BaseController {
         return timeSlotResult;
     }
 
-    private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user, String addressId) throws FDException, JsonException,
+   private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user, String addressId) throws FDException, JsonException,
             ServiceException {
 
         DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
         deliveryAddresses.setPreSelectedId(addressId);
         TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(model, user, addressId);
         DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
-
+        
+        if("true".equalsIgnoreCase(FDStoreProperties.get(FDStoreProperties.PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED))){//this is for FDX only.
+	        List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tslist2 = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
+	        for  (com.freshdirect.mobileapi.controller.data.response.Timeslot ts : deliveryTimeslots.getTimeSlots())
+	        {
+	    		ts.setStart(DateUtil.addHours(ts.getStartDate(), 1));
+	    		ts.setEnd(DateUtil.addHours(ts.getEndDate(), 1));
+	    		ts.setCutoffDate(DateUtil.addHours(ts.getCutoffDateDate(), 1));			
+				tslist2.add(ts);        	
+	        }
+	        deliveryTimeslots.setTimeSlots(tslist2);             
+        }
+        
         ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
         responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);

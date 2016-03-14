@@ -847,6 +847,7 @@ public class FDStoreProperties {
 	// PayPal
 	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
 
+	public static final String PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED = "fdstore.edt.est.timeslot.conversion.enabled";//It should be 'true' only for FDX.
     static {
        	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1664,6 +1665,8 @@ public class FDStoreProperties {
         
         defaults.put(PROP_FEATURE_ROLLOUT_NEW_SO, "true");
         defaults.put(PROP_SO3_ACTIVATE_CUTOFF_TIME, "23");//11pm - Hour of the day in 24hr format.
+        
+        defaults.put(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED, false);//It should be 'true' only for FDX.
 		refresh();
     }
 
