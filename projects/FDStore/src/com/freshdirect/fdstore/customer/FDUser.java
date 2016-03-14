@@ -1815,7 +1815,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public FDGiftCardInfoList getGiftCardList() {
-		if (getLevel() == FDUserI.GUEST) {
+		if (getLevel() != FDUserI.SIGNED_IN) { //[APPDEV-4924]-Load giftcards only for logged-in users.
 			// We don't have an identity 
 			return null;
 		}
