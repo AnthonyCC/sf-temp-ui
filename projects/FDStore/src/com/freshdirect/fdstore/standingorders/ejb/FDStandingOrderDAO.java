@@ -165,7 +165,7 @@ public class FDStandingOrderDAO {
 	private final static String QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS ="  select * from cust.standing_order so where so.next_date is not null and " +
 			"(so.next_date<=trunc(sysdate)+1 OR (so.next_date = trunc(sysdate)+2 and to_char(sysdate,'HH24')>="+FDStoreProperties.getSO3ActivateCutoffTime()+")) and so.is_activated='N' ";
 	
-	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL WHERE ID=?";
+	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL , LAST_ERROR=? ,ERROR_HEADER=?, ERROR_DETAIL=? WHERE ID=?";
 
 	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y'  where  so.id=?" ;
 	
@@ -1929,33 +1929,48 @@ public class FDStandingOrderDAO {
 	public List<String> queryForStandingOrders(Connection conn) throws SQLException {
 		
 		List<String> list = new ArrayList<String>();
-		PreparedStatement ps = conn.prepareStatement(QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS);
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try{
+		ps = conn.prepareStatement(QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS);
+		rs = ps.executeQuery();
 		while (rs.next()) {
 			list.add(rs.getString("id"));
 		}
 		LOGGER.info(list);
-		rs.close();
-		ps.close();
+		}finally{
+			if(rs!=null){
+				rs.close();
+			} if(ps!=null){
+				ps.close();
+			}
+		}
 		return list;
 	}
 
 public void removeTimeSlotInfoFromSO(Connection con,List<String> list) throws SQLException {
-		
-			
-		PreparedStatement ps = con.prepareStatement(QUERY_SO_UPDATE_SO);
-		for (Iterator<String> iterator = list.iterator(); iterator
-				.hasNext();) {
-		String soId = (String) iterator.next();
-		int i=1;
-		ps.setString(i++, soId);
-		ps.addBatch();
-		
-		LOGGER.info("timeslots removed for standing order id: "+soId);
-		}
-		
-		ps.executeBatch();
-		ps.close();
-		
+	PreparedStatement ps=null;
+	int param=1;
+		try{	
+			 ps = con.prepareStatement(QUERY_SO_UPDATE_SO);
+
+			for (Iterator<String> iterator = list.iterator(); iterator
+					.hasNext();) {
+			String soId = (String) iterator.next();
+			 ps.setString(param++, FDStandingOrder.ErrorCode.RELEASE_TIMESLOT.name());
+			 ps.setString(param++, FDStandingOrder.ErrorCode.RELEASE_TIMESLOT.getErrorHeader());
+			 ps.setString(param++, FDStandingOrder.ErrorCode.RELEASE_TIMESLOT.getErrorDetail(null));
+			 ps.setString(param++, soId);
+
+			ps.addBatch();
+			param=1;
+			LOGGER.info("timeslots removed for standing order id: "+soId);
+			}
+			ps.executeBatch();
+		}finally{
+			if(ps!=null){
+				ps.close();
+			}
+		}		
 	}
 }

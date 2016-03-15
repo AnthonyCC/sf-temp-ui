@@ -66,8 +66,9 @@ public class StandingOrder3CancelReservationCron {
 			}
 			if(null != soIdList && !soIdList.isEmpty()){
 				LOGGER.info("Non Activated SOs :"+soIdList);
-				sb.removeTimeSlotInfoFromSO(soIdList);
 				sb.removeSOfromLogistics(soIdList);
+				sb.removeTimeSlotInfoFromSO(soIdList);
+				
 			}
 			
 		} catch (FDResourceException e) {

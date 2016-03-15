@@ -201,7 +201,9 @@ public class QuickShopRedirector extends BodyTagSupport {
 			// Not eligible for the new stuff, do no redirect
 			return null;
 		}
-
+        if(user.isNewSO3Enabled()){
+    		return URL_QS_STANDING_ORDERS3;
+        }
 		String listId = pageContext.getRequest().getParameter("ccListId");
 		return URL_NEW_QS_SO_DETAILS + "?ccListId=" + listId;
 	}

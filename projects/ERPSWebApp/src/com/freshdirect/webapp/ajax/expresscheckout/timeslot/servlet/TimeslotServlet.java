@@ -43,6 +43,8 @@ public class TimeslotServlet extends BaseJsonServlet {
 			        
 			        if(null!=user.getCurrentStandingOrder().getAddressId()){
 						StandingOrderHelper.populateSO3TimeslotDetails(user, deliveryTimeSlotId, user.getCurrentStandingOrder().getDeliveryAddress(), soFirstDate);
+	            		StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[]{"TIMESLOT","RELEASE_TIMESLOT"});
+
 						StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
 							responseData.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
 			        }else{

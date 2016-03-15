@@ -210,7 +210,7 @@ public class SinglePageCheckoutFacade {
             case SELECT_DELIVERY_TIMESLOT:
             	{
 					result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user, cart));//user.getShoppingCart()
-					if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction)) {
+					if (CheckoutService.defaultService().checkAtpCheckEligibleByRestrictions(restriction) && !StandingOrderHelper.isSO3StandingOrder(user)) {
 						result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
 					}
 					CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);

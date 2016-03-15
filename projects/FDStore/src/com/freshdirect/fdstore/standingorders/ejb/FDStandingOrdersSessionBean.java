@@ -205,23 +205,25 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 * @throws FDInvalidConfigurationException
 	 */
-	public void populateSODetails(FDIdentity customerIdentity,FDStandingOrder so) throws FDResourceException,
-			FDInvalidConfigurationException {
-		FDStandingOrderList fdSdingOrderList = FDListManager.getStandingOrderList(customerIdentity, so.getCustomerListId());
+	public void populateSODetails(FDIdentity customerIdentity,FDStandingOrder so) throws FDResourceException,FDInvalidConfigurationException {
+		FDStandingOrderList fdSdingOrderList = FDListManager.getStandingOrderList(customerIdentity,
+				so.getCustomerListId());
+		List<FDProductSelectionI> productSelectionList = null;
+		if (null != fdSdingOrderList) {
+			productSelectionList = OrderLineUtil
+					.getValidProductSelectionsFromCCLItems(fdSdingOrderList.getLineItems());
 
-		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems(fdSdingOrderList
-				.getLineItems());
-
-		for (FDProductSelectionI fdSelection : productSelectionList) {
-			FDCartLineI cartLine = new FDCartLineModel(fdSelection);
-			if (!cartLine.isInvalidConfig()) {
-				//cartLine.refreshConfiguration();
-				so.getStandingOrderCart().addOrderLine(cartLine);
+			for (FDProductSelectionI fdSelection : productSelectionList) {
+				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
+				if (!cartLine.isInvalidConfig()) {
+					// cartLine.refreshConfiguration();
+					so.getStandingOrderCart().addOrderLine(cartLine);
+				}
 			}
-		}
-		
-		if(null!=productSelectionList && !productSelectionList.isEmpty()){
-			so.getStandingOrderCart().refreshAll(true);
+
+			if (null != productSelectionList && !productSelectionList.isEmpty()) {
+				so.getStandingOrderCart().refreshAll(true);
+			}
 		}
 	}
 
