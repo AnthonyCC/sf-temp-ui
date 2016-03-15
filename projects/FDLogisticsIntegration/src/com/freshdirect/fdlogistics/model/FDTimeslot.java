@@ -624,7 +624,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			soFirstDeliveryDate = DateUtil.addDays(deliveryDate, 7); 	
 		}
 		if(null !=soFirstDeliveryDate){
-			formattedSoFirstDeliveryDate = DateUtil.formatDateWithMonthAndDate(soFirstDeliveryDate);
+			formattedSoFirstDeliveryDate = DateUtil.formatDayAndMonth(soFirstDeliveryDate);
 		}
 		return formattedSoFirstDeliveryDate;
 	}
