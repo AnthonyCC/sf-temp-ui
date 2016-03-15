@@ -23,6 +23,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -38,11 +39,14 @@ import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.erp.model.NotificationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionStatus;
 import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -61,6 +65,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 
 	private transient ErpSaleHome erpSaleHome = null;
 	private transient PaymentGatewayHome gatewayHome=null;
+	private final static ServiceLocator LOCATOR = new ServiceLocator();
 		
 	/**
 	 * capture the authorization for a given sale id
@@ -208,6 +213,11 @@ public class PaymentSessionBean extends SessionBeanSupport{
 					eb.addSettlement(settlementModel);
 					utx.commit();
 				}
+				ErpAbstractOrderModel order = eb.getCurrentOrder();
+				if(EnumSaleStatus.SETTLED.equals(eb.getStatus()) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
+					NotificationModel notificationModel = new NotificationModel(saleId, EnumNotificationType.AVALARA, EnumSaleStatus.PENDING, "Avalara", eb.getInvoice().getAmount());
+					getPostSettlementNotificationHome().create(notificationModel);
+				}
 			}
 			/*
 			 *  In the case of gro orders that requires GC payments only we put the order
@@ -242,6 +252,15 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			throw new EJBException(e);
 		}
 	}
+	
+	private PostSettlementNotificationHome getPostSettlementNotificationHome() {
+		try {
+			return (PostSettlementNotificationHome) LOCATOR.getRemoteHome("freshdirect.payment.Notification");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
 	private ErpCaptureModel doFDCapture(ErpAuthorizationModel auth, double amount, double tax) {
 		
 		ErpCaptureModel capture = new ErpCaptureModel();
