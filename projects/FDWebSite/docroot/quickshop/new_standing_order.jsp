@@ -25,7 +25,6 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato"%>
 <fd:CheckLoginStatus id="user" guestAllowed='false'
 	recognizedAllowed='false' />
-
 <%
 FDStandingOrder currentStandingOrder=null;
 String isNewSo= request.getParameter("newso");

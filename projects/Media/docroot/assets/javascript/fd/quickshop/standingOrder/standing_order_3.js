@@ -1,5 +1,6 @@
 var soName = "";
 var isNewSOCreated = false;
+FreshDirect.standingorder = FreshDirect.standingorder || {};
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -102,6 +103,7 @@ function submitFormNewSO(action, id, name){
 	    success: function(data) {
 	    	if(!isNaN(data)){
 	    		newsoID = data;
+	    		soSaved(id, false, true);
 	    	} else {
 	    		$jq('#newsoErroMessage').html(data);
 	    	}
@@ -115,7 +117,14 @@ function submitFormNewSO(action, id, name){
 					$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
 				});
 	    		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
+	    		soSaved(id, false, true);
 	    	}
+	    	$jq("#cartcontent").on( "cartcontent-update", function(){ soSaved(id, false, true) });
+  			$jq("#cartcontent").on( "quantity-change", function(){ soSaved(id, false, true) });
+  			$jq("#cartcontent").on( "cartline-delete", function(){ soSaved(id, false, true) });
+  			$jq("#ec-drawer").on( "address-update", function(){ soSaved(id, false, true) });
+  			$jq("#ec-drawer").on( "timeselector-update", function(){ soSaved(id, false, true) });
+  			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soSaved(id, false, true) });
 	    }
 	});
 };
@@ -193,20 +202,27 @@ function standingOrdersNameInputChangeOK(id){
 	}			
 }
 
-function soSaved(id, activated){
+function soSaved(id, activated, isNewSO){
 	var soID = "#soid_" + id;
-	if(activated){
-		$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved").addClass("show");
-		$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved-activated").addClass("show");
+	if(isNewSO){
+		$jq(".standing-orders-3-so-new-saved").addClass("show");
 		setTimeout(function(){
-			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved").removeClass("show");
-			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved-activated").removeClass("show");
+			$jq(".standing-orders-3-so-new-saved.show").removeClass("show");
 		}, 3000);
 	} else {
-		$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved").addClass("show");
-		setTimeout(function(){
-			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-saved").removeClass("show");
-		}, 3000);
+		if(activated){
+			$jq(soID).addClass("show-saved");
+			$jq(soID).addClass("show-saved-activated");
+			setTimeout(function(){
+				$jq(soID).removeClass("show-saved");
+				$jq(soID).removeClass("show-saved-activated");
+			}, 3000);
+		} else {
+			$jq(soID).addClass("show-saved");
+			setTimeout(function(){
+				$jq(soID).removeClass("show-saved");
+			}, 3000);
+		}
 	}
 }
 
@@ -254,7 +270,7 @@ function submitFormManageSO(id,action,name,freq){
             	getSOData(id, action);
             }
             if('changename'==action){
-            	soSaved(id, false);
+            	soSaved(id, false, false);
             }
             if('activate'==action){
             	getSOData(id, action);
@@ -306,9 +322,8 @@ function getSOData(id, action){
         type: 'GET',
         data: dataString,
         success: function(data){
-        	bugaga = data;
         	if('selectFreq'==action){
-        		soSaved(id, data.activated);
+        		soSaved(id, data.activated, false);
         		if(data.frequencyDesc != null && data.dayOfWeek != null){
         			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-frequency").html(data.frequencyDesc + " " + data.dayOfWeek + " /");
         		}
@@ -325,7 +340,7 @@ function getSOData(id, action){
             	updateSOItem(id, data);
             }
         	if('soItemUpdate'==action){
-        		soSaved(id, data.activated);
+        		soSaved(id, data.activated, false);
         		updateSOItem(id, data);
         	}
         }

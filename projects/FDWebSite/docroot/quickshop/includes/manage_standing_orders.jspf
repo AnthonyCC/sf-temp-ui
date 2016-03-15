@@ -60,7 +60,6 @@ user.setSoTemplateCart(new FDCartModel());
 	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false));
 %>
 <script>
-	FreshDirect.standingorder = FreshDirect.standingorder || {};
 	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) %>
 </script>
 

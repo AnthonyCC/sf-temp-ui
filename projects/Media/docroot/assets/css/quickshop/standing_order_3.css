@@ -749,9 +749,9 @@
 .standing-orders-3-so-settings-saved{
 	position: absolute;
     top: -20px;
-    left: -318px;
+    left: -365px;
     height: 20px;
-    width: 400px;
+    width: 430px;
     font-size: 12px;
     line-height: 21px;
     font-weight: bold;
@@ -775,12 +775,12 @@
 .standing-orders-3-so-settings-saved-activated{
 	display: none;
 }
-.standing-orders-3-so-settings-saved.show,
+.standing-orders-3-so-settings-container.show-saved .standing-orders-3-so-settings-saved,
 .standing-orders-3-so-new-saved.show,
 .standing-orders-3-so-settings-close.show{
 	display: block;
 }
-.standing-orders-3-so-settings-saved-activated.show{
+.standing-orders-3-so-settings-container.show-saved-activated .standing-orders-3-so-settings-saved-activated{
 	display: inline-block;
 }
 .standing-orders-3-so-settings-drawer-cart{
