@@ -25,6 +25,7 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato"%>
 <fd:CheckLoginStatus id="user" guestAllowed='false'
 	recognizedAllowed='false' />
+<fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.NEW_SO3_DETAIL %>"/>
 <%
 FDStandingOrder currentStandingOrder=null;
 String isNewSo= request.getParameter("newso");

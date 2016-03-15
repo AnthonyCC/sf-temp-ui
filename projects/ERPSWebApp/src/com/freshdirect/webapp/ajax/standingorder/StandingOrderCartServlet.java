@@ -19,10 +19,12 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -46,6 +48,7 @@ import com.freshdirect.webapp.ajax.shoppinglist.AddToListResponseItem;
 import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListChange;
 import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListInfo;
 import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListRequestData;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class StandingOrderCartServlet extends BaseJsonServlet {
@@ -219,7 +222,12 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						 if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							 so.getStandingOrderCart().refreshAll(true);
 						 }
-							orderResponseData=StandingOrderHelper.populateResponseData(so,true);
+						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=FDStoreProperties.getStandingOrderHardLimit()){    
+							 StandingOrderHelper.clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"}) ;
+							 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
+							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
+						 }
+						orderResponseData=StandingOrderHelper.populateResponseData(so,true);
 	
 					 }else{
 						 orderResponseData.setMessage("Standing Order has been deleted. " +

@@ -42,7 +42,7 @@ public class QuickShopRedirector extends BodyTagSupport {
 	public static final String URL_OLD_QS_SO_DETAILS = "/quickshop/so_details.jsp";
 
 	public static enum FROM {
-		NEW_PAST_ORDERS, NEW_LISTS, NEW_FD_LISTS, NEW_SO, NEW_SO_DETAILS, OLD_INDEX, OLD_SO, OLD_SO_DETAILS, OLD_QS_ORDER_SHOP_FROM, OLD_QS_LIST_SHOP_FROM, OLD_QS_ALL_LISTS
+		NEW_PAST_ORDERS, NEW_LISTS, NEW_FD_LISTS, NEW_SO, NEW_SO_DETAILS, OLD_INDEX, OLD_SO, OLD_SO_DETAILS, OLD_QS_ORDER_SHOP_FROM, OLD_QS_LIST_SHOP_FROM, OLD_QS_ALL_LISTS,NEW_SO3_DETAIL
 	};
 
 	private static final long serialVersionUID = 6322447917892657222L;
@@ -137,7 +137,9 @@ public class QuickShopRedirector extends BodyTagSupport {
 		case OLD_QS_ALL_LISTS:
 			redirectUrl = getRedirectForOldAllListPage();
 			break;
-
+		
+		case NEW_SO3_DETAIL:
+			redirectUrl =getRedirectForNewSO3Page();
 		}
 
 		// No need for redirecting, (continue rendering the old page)
@@ -288,9 +290,11 @@ public class QuickShopRedirector extends BodyTagSupport {
 	}
 
 	private String getRedirectForNewStandingOrderDetailPage() {
-		if (isNewQs) {
+		if (isNewQs && user.isNewSO3Enabled()) {
 			// Eligible for the new stuff, just let him through
-			return null;
+			return URL_QS_STANDING_ORDERS3;
+		} else if(isNewQs){
+			return null; // to open qs_standing_order.jsp 
 		}
 
 		// Not allowed to see the new stuff, send him back to the old and ugly
@@ -407,4 +411,14 @@ public class QuickShopRedirector extends BodyTagSupport {
 
 	}
 
+	private String getRedirectForNewSO3Page() {
+		if (user.isNewSO3Enabled()) {
+			// Eligible for the new stuff, just let him through
+			return null;
+		}
+
+		// Not allowed to see the new stuff, send him back to the old and ugly
+		// page
+		return URL_NEW_QS_STANDING_ORDERS;
+	}
 }

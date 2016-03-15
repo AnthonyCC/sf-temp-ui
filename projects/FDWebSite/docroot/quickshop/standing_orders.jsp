@@ -21,6 +21,8 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' />
+<%-- redirect back to old quickshop page if not allowed to see the new (partial rollout check) --%>
+<fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.NEW_SO3_DETAIL %>"/>
 
 <tmpl:insert template='/quickshop/includes/standing_order.jsp'>
   <tmpl:put name="soytemplates"><soy:import packageName="standingorder"/><soy:import packageName="expressco"/></tmpl:put>

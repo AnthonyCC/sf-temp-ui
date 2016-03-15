@@ -629,9 +629,6 @@ public class StandingOrderHelper {
 		map.put("amount", amount);
 		map.put("activated", "Y".equals(so.getActivate())?true:false);
 		map.put("readyForActivation",populateResponseData(so, false).isActivate());
-		if(amount >= FDStoreProperties.getStandingOrderHardLimit()){
-			clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"});
-		}
 		map.put("errorHeader", so.getErrorHeader());
 		map.put("errorDetails",so.getErrorDetail());
 		if(null!=so.getLastError()){
