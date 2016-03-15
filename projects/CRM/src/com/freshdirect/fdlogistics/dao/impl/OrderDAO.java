@@ -21,8 +21,10 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.fdlogistics.dao.IOrderDAO;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.logistics.controller.data.request.OrderSearchCriteria;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
 import com.freshdirect.logistics.controller.data.response.DiscountTimeslot;
@@ -138,15 +140,15 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	
 	private static final String GET_CARTONINFO_BYORDER = "SELECT SALE_ID, CARTON_NUMBER, SAP_NUMBER, CARTON_TYPE FROM CUST.CARTON_INFO WHERE SALE_ID = ?";
 	
-	private static final String GET_ORDERS_BY_DELIVERY_DATE = "SELECT s.id, s.sap_number, sa.requested_date, s.status, di.starttime, di.endtime, "
+	private static final String GET_ORDERS_BY_DELIVERY_DATE = "SELECT s.id, s.sap_number, sa.requested_date, s.status, di.starttime, di.endtime,p.CARD_TYPE,p.EWALLET_ID, "
 			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, "
 			+ "s.customer_id customer_id, di.first_name, di.last_name, di.phone home_phone, di.delivery_instructions, cl.amount "
 			+ "from cust.sale s, cust.salesaction sa "
-			+ ", cust.deliveryinfo di, cust.chargeline cl "
+			+ ", cust.deliveryinfo di, cust.chargeline cl ,cust.PAYMENTINFO p "
 			+ "where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID and sa.id=cl.salesaction_id and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
-			+ "and s.type ='REG' and s.status NOT IN ('CAN') and cl.type='TIP' "
+			+ "and s.type ='REG' and s.status NOT IN ('CAN') and sa.id = p.salesaction_id and cl.type='TIP' "
 			+ "and sa.id = di.salesaction_id and sa.requested_date=?";
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1087,6 +1089,8 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 								orderModel.setDeliveryType(rs.getString("DELIVERY_TYPE"));
 								orderModel.setReservationId(rs.getString("reservation_id"));
 								orderModel.setETip(rs.getDouble("amount"));
+								orderModel.setCardType(rs.getString("CARD_TYPE"));
+								orderModel.setEwalletID(rs.getString("EWALLET_ID"));
 								
 							} while(rs.next());
 						}
