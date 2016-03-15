@@ -1,26 +1,20 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
-import org.apache.tools.ant.util.DateUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -234,9 +228,9 @@ public class AccountController extends BaseController {
 	            List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tslist2 = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
 	            for  (com.freshdirect.mobileapi.controller.data.response.Timeslot ts : deliveryTimeslots.getTimeSlots())
 	            {
-	        		ts.setStart(DateUtil.addHours(ts.getStartDate(), 1));
-	        		ts.setEnd(DateUtil.addHours(ts.getEndDate(), 1));
-	        		ts.setCutoffDate(DateUtil.addHours(ts.getCutoffDateDate(), 1));			
+	        		ts.setStart(addHours(ts.getStartDate(), 1));
+	        		ts.setEnd(addHours(ts.getEndDate(), 1));
+	        		ts.setCutoffDate(addHours(ts.getCutoffDateDate(), 1));			
 	    			tslist2.add(ts);        	
 	            }
 	            deliveryTimeslots.setTimeSlots(tslist2); 
@@ -277,9 +271,9 @@ public class AccountController extends BaseController {
 	        List<com.freshdirect.mobileapi.controller.data.response.Timeslot> tslist2 = new ArrayList<com.freshdirect.mobileapi.controller.data.response.Timeslot>();
 	        for  (com.freshdirect.mobileapi.controller.data.response.Timeslot ts : deliveryTimeslots.getTimeSlots())
 	        {
-	    		ts.setStart(DateUtil.addHours(ts.getStartDate(), 1));
-	    		ts.setEnd(DateUtil.addHours(ts.getEndDate(), 1));
-	    		ts.setCutoffDate(DateUtil.addHours(ts.getCutoffDateDate(), 1));			
+	    		ts.setStart(addHours(ts.getStartDate(), 1));
+	    		ts.setEnd(addHours(ts.getEndDate(), 1));
+	    		ts.setCutoffDate(addHours(ts.getCutoffDateDate(), 1));			
 				tslist2.add(ts);        	
 	        }
 	        deliveryTimeslots.setTimeSlots(tslist2);             
@@ -322,4 +316,10 @@ public class AccountController extends BaseController {
         return model;
     }
 
+    private static Date addHours(Date date, int hours) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.HOUR, hours);
+		return cal.getTime();
+	}
 }
