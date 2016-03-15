@@ -67,6 +67,10 @@ var FreshDirect = FreshDirect || {};
 
         data = data || {};
         data.metadata = data.metadata || fd.expressco.data.formMetaData;
+        if(typeof FreshDirect.standingorder !== "undefined" && typeof FreshDirect.standingorder.isStandingOrderContext !== "undefined"){
+        	data.service_type = 'corporate';
+        	data.standing_order = true;
+        }
 
         if (e && e.preventDefault) {
           e.preventDefault();

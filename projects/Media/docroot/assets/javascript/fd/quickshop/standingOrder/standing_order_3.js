@@ -70,6 +70,7 @@ $jq( document ).ready(function() {
 		openSOSettings($jq.QueryString["soid"]);
 		$jq("#soid_" + $jq.QueryString['soid'] + " .standing-orders-3-so-settings-item").focus();
 	}
+	FreshDirect.standingorder.isStandingOrderContext = true;
 });
 
 // new_standing_order
