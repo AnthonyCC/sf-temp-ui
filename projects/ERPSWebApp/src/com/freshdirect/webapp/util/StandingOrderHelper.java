@@ -614,13 +614,6 @@ public class StandingOrderHelper {
 		map.put("soName", so.getCustomerListName());
 		map.put("listId", so.getCustomerListId());
 		map.put("frequencyDesc", so.getFullFrequencyDescription());
-		map.put("errorHeader", so.getErrorHeader());
-		map.put("errorDetails",so.getErrorDetail());
-		if(null!=so.getLastError()){
-			map.put("lastError", so.getLastError().name());
-		} else {
-			map.put("lastError", null);
-		}
 		int productCnt = 0;
 		double amount=0.0;
 		//TODO : need to work on calculating total amount
@@ -636,7 +629,16 @@ public class StandingOrderHelper {
 		map.put("amount", amount);
 		map.put("activated", "Y".equals(so.getActivate())?true:false);
 		map.put("readyForActivation",populateResponseData(so, false).isActivate());
-		
+		if(amount >= FDStoreProperties.getStandingOrderHardLimit()){
+			clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"});
+		}
+		map.put("errorHeader", so.getErrorHeader());
+		map.put("errorDetails",so.getErrorDetail());
+		if(null!=so.getLastError()){
+			map.put("lastError", so.getLastError().name());
+		} else {
+			map.put("lastError", null);
+		}
 		//map.put("dayOfWeek", so.getNextDeliveryDate()!=null?DateUtil.formatFullDayOfWk(so.getNextDeliveryDate()):null);
 		map.put("dayOfWeek", so.getDayOfWeek(so, isUpcomingDelivery));
 		map.put("shortDayOfWeek", so.getShortSODeliveryDayOfWeek(so, isUpcomingDelivery));
