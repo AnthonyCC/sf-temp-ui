@@ -204,7 +204,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			    	
 					if(auth.isApproved() && !auth.hasAvsMatched() ){	//-Manoj, Add check payment.isAVSCheckFailed==false					
 						if(!payment.isBypassAVSCheck()){														
-							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && !payment.geteWalletID().equals("2")){	                           								  
+							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && (payment.geteWalletID() == null || !payment.geteWalletID().equals("2"))) {	                           								  
 									payment.setAvsCkeckFailed(true);
 									customerEB.updatePaymentMethodNewTx(payment);								  	
 									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							
