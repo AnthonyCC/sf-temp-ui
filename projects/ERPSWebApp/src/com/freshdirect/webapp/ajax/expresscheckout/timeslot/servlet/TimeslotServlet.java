@@ -40,16 +40,19 @@ public class TimeslotServlet extends BaseJsonServlet {
 				if(StandingOrderHelper.isSO3StandingOrder(user)){
 					String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");  
 			        String soFirstDate = FormDataService.defaultService().get(timeslotRequestData, "soFirstDate");
-			        
-			        if(null!=user.getCurrentStandingOrder().getAddressId()){
+			        if(deliveryTimeSlotId==null){
+			        	validationResult.getErrors().add(new ValidationError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help."));
+
+			        } else if(null==user.getCurrentStandingOrder().getAddressId()){
+						validationResult.getErrors().add(new ValidationError("deliveryAddress", "You must select a address."));
+
+			        }else{
+
 						StandingOrderHelper.populateSO3TimeslotDetails(user, deliveryTimeSlotId, user.getCurrentStandingOrder().getDeliveryAddress(), soFirstDate);
 	            		StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[]{"TIMESLOT","RELEASE_TIMESLOT"});
 
 						StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
 							responseData.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
-			        }else{
-						validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not reserver timeslot for Standing order 3.0 due to address is not available."));
-
 			        }
 				}else{
 					List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, user, request.getSession());

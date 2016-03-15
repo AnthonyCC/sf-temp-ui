@@ -78,8 +78,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				LOGGER.warn("ParseException while parsing soNextDeliveryDate:"+soNextDeliveryDate,e);				
 			}
 		}
-		boolean isForced=false;
-		if(null!=erpAddress){
+		   boolean isForced=false;
 			final MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 			if(masqueradeContext!=null && masqueradeContext.getParentOrderId()!=null) {
 				 isForced = true;
@@ -197,7 +196,6 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				}	
 			
 			} 
-		}
 		return actionResult;
 	}
 	
