@@ -24,6 +24,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
+import com.freshdirect.mobileapi.controller.data.request.Timezone;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
@@ -49,6 +50,8 @@ public class AccountController extends BaseController {
     private static String ACTION_GET_ADDRESSES = "getaddresses";
 
     private static String ACTION_GET_TIMESLOTS = "gettimeslots";
+    
+    private static String ACTION_GET_TIMESLOTS_BY_TIMEZONE = "gettimeslotsbytimezone";
 
     private static String ACTION_CANCEL_RESERVATION = "cancelreservation";
 
@@ -74,6 +77,15 @@ public class AccountController extends BaseController {
                 model = getDeliveryTimeslot(model, user);
             } else {
                 model = getDeliveryTimeslot(model, user, addressId);
+            }
+        } else if (ACTION_GET_TIMESLOTS_BY_TIMEZONE.equals(action)) {
+            String addressId = request.getParameter(PARAM_ADDRESS_ID);
+            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
+            String timezone = requestMessage.getTimezone();
+            if (addressId == null || addressId.isEmpty()) {
+            	model = getDeliveryTimeslotByTimezone(model, user, timezone);
+            } else {
+            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
             }
         } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
             String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -251,6 +263,51 @@ public class AccountController extends BaseController {
     	}
         
     }
+    
+    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone) throws FDException, JsonException, ServiceException {
+        String addressId = null;
+        
+        //FDX-1873 - Show timeslots for anonymous address
+        if(user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) {
+        	addressId = user.getReservationAddressId();
+        }
+        ShipToAddress anonymousAddress = null;
+        
+        if (addressId == null) {
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0) {
+    			anonymousAddress = ShipToAddress.wrap(user.getAddress());
+    		} else {
+	        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
+		            if (user.getDefaultShipToAddress() != null){
+		                addressId = user.getDefaultShipToAddress();
+		            } else{
+		            	if(user.getDeliveryAddresses().size() > 0) {//This can happen when user signed up through Iphone.
+		            		addressId =  user.getDeliveryAddresses().get(0).getId();
+		            	}	            	
+		            }
+	        	}
+    		}        	
+        }
+        
+        if (anonymousAddress != null) {
+        	
+        	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
+            DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+            ReservationTimeslots responseMessage = new ReservationTimeslots(new DeliveryAddresses(), deliveryTimeslots, user);
+            responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
+            setResponseMessage(model, responseMessage, user);
+            return model;
+    	} else if(addressId == null) {
+        	
+        	Message responseMessage = Message.createSuccessMessage("You need to add a delivery address to perform this action.");
+    		setResponseMessage(model, responseMessage, user);
+    		return model;
+        } else {
+    		
+    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+    	}
+        
+    }
 
     private TimeSlotCalculationResult getTimeSlotCalculationResult(ModelAndView model, SessionUser user, String addressId)
             throws FDException, JsonException {
@@ -285,6 +342,21 @@ public class AccountController extends BaseController {
 
         return model;
     }
+   
+   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone) throws FDException, JsonException,
+		   ServiceException {
+		
+		DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
+		deliveryAddresses.setPreSelectedId(addressId);
+		TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(model, user, addressId);
+		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
+		
+		ReservationTimeslots responseMessage = new ReservationTimeslots(deliveryAddresses, deliveryTimeslots, user);
+		responseMessage.setSuccessMessage("Delivery timeslots have been retrieved successfully.");
+		setResponseMessage(model, responseMessage, user);
+		
+		return model;
+	}
 
     private DeliveryAddresses getDeliveryAddresses(SessionUser user) throws FDException, ServiceException, JsonException {
         List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();

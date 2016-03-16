@@ -814,6 +814,15 @@
 		<from>^/v/([0-9]+)/(.*)/account/timeslots$</from>
 		<to last="true">/account.do?action=gettimeslots&amp;ver=$1</to>
 	</rule>
+	<!-- Delivery Info : Get Timeslots By Timezone -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/timeslots/timezone$</from>
+		<to last="true">/account.do?action=gettimeslotsbytimezone&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/account/timeslots/timezone/(.*)$</from>
+		<to last="true">/account.do?action=gettimeslotsbytimezone&amp;addressId=$3&amp;ver=$1</to>
+	</rule>
 	<!-- Delivery Info : Cancel Reservation -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/account/timeslots/cancel$</from>

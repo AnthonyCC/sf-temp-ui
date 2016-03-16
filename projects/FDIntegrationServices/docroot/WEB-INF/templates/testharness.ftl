@@ -688,7 +688,17 @@ function loadStuff() {
   } else if (loaddata == "AccountDeliveryTimeslots") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/2148933356");
   	$("#payload").val("");
+   
+  } else if (loaddata == "AccountDeliveryTimeslotsDefaultTimezone") {
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/timezone");
+  	var postdata='{ "timezone": "EDT" }';
+  	$("#payload").val(postdata);
   	
+  } else if (loaddata == "AccountDeliveryTimeslotsTimezone") {
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/timezone/2148933356");
+  	var postdata='{ "timezone": "EDT" }';
+  	$("#payload").val(postdata);
+  	  	
   } else if (loaddata == "AccountCancelTimeslotsReservation") {
   	$("#url").val("/saptest12@freshdirect.com/account/timeslots/cancel");
     var postdata = '{ "addressId" : "2148933356","deliveryTimeslotId": "xxx"}';
@@ -1301,6 +1311,8 @@ function doStuff() {
   <option value="AccountDeliveryInfo">ACCOUNT - Get AddressesEX</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>
   <option value="AccountDeliveryTimeslots">ACCOUNT - Get Delivery Timeslots</option>
+  <option value="AccountDeliveryTimeslotsDefaultTimezone">ACCOUNT - Get Delivery Timeslots DEFAULT BY TIMEZONE</option>
+  <option value="AccountDeliveryTimeslotsTimezone">ACCOUNT - Get Delivery Timeslots BY TIMEZONE</option>
   <option value="AccountCancelTimeslotsReservation">ACCOUNT - Cancel Timeslot Reservation</option>
   <option value="AccountReservedTimeslots">ACCOUNT - Reserve Delivery Timeslots</option>
   <option value="AddDeliveryAddress">ACCOUNT - Add Delivery Address</option>
