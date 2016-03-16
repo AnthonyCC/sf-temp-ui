@@ -23,7 +23,6 @@ public class SinglePageCheckoutData {
 	private FormTimeslotData timeslot;
 	private String redirectUrl;
 	private HeaderData headerData;
-	private boolean showSOProduct;
 	private StandingOrderResponseData standingOrderResponseData;
 
 	public String getErrorMessage() {
@@ -112,14 +111,6 @@ public class SinglePageCheckoutData {
 
 	public void setHeaderData(HeaderData headerData) {
 		this.headerData = headerData;
-	}
-
-	public boolean isShowSOProduct() {
-		return showSOProduct;
-	}
-
-	public void setShowSOProduct(boolean showSOProduct) {
-		this.showSOProduct = showSOProduct;
 	}
 
 	public StandingOrderResponseData getStandingOrderResponseData() {

@@ -653,7 +653,7 @@ public class StandingOrderHelper {
 		map.put("cutOffFormattedDeliveryDate", so.getFormattedCutOffDeliveryDate());
 		map.put("cutOffDeliveryTime", FDStandingOrder.cutOffDeliveryTime);
 		map.put("tipAmount", so.getTipAmount());
-		
+		map.put("displayCart", isValidStandingOrder(so, false));
 		return map;
 	}
 	
@@ -807,13 +807,13 @@ public class StandingOrderHelper {
 	}
 	public static boolean isValidStandingOrder(FDUserI user) {
 	        FDStandingOrder so=isSO3StandingOrder(user)? user.getCurrentStandingOrder():null;
-	        return isValidStandingOrder(so);
+	        return isValidStandingOrder(so,false);
 		}
 
-	public static boolean isValidStandingOrder(FDStandingOrder so) {
+	public static boolean isValidStandingOrder(FDStandingOrder so,boolean noErronCheck) {
 		
 		return null!=so && null!=so.getAddressId()&& null!=so.getPaymentMethodId() && null!=so.getNextDeliveryDate() && so.getFrequency()>0 
-				&& so.getLastError() ==null?true:false;
+				&& (noErronCheck ? true:so.getLastError() ==null) ? true:false;
 	}
 
 	public static StandingOrderResponseData populateResponseData(FDStandingOrder so,boolean isPdp) {
@@ -838,7 +838,7 @@ public class StandingOrderHelper {
 										+ " delivery.");
 					}
 				} else {
-					if (isValidStandingOrder(so) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
+					if (isValidStandingOrder(so,true) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
 						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderHardLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {

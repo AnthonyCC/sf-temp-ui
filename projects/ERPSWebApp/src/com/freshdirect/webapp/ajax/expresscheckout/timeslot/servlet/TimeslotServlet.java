@@ -52,7 +52,6 @@ public class TimeslotServlet extends BaseJsonServlet {
 	            		StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[]{"TIMESLOT","RELEASE_TIMESLOT"});
 
 						StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
-							responseData.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
 			        }
 				}else{
 					List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, user, request.getSession());

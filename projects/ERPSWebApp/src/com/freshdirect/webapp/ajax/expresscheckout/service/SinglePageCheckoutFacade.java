@@ -116,7 +116,6 @@ public class SinglePageCheckoutFacade {
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
         FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
-        result.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
         if(StandingOrderHelper.isSO3StandingOrder(user)){
             result.setStandingOrderResponseData(StandingOrderHelper.populateResponseData(user.getCurrentStandingOrder(),false));	
         }

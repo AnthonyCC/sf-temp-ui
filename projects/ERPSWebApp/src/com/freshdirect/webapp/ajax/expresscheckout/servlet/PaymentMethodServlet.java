@@ -279,7 +279,6 @@ public class PaymentMethodServlet extends BaseJsonServlet {
    					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT","PAYMENT_ADDRESS"});
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
    					StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
-					paymentSubmitResponse.setShowSOProduct(StandingOrderHelper.isValidStandingOrder(user));
    				} catch (FDResourceException e) {
    					BaseJsonServlet.returnHttpError(500, "Error while submit payment for user " + user.getUserId(), e);  				}
    			}
