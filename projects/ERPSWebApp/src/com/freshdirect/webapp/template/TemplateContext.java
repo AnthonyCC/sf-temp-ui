@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.template;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -1116,7 +1118,7 @@ public class TemplateContext extends BaseTemplateContext{
 	    return c;
 	}
 	/* for test page purposes */
-	public Object getNewInstanceByStringName(String fullClassName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public Object getNewInstanceByStringName(String fullClassName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Object instanceObject = null;
 		try {
 //			Class cls = null;
@@ -1133,7 +1135,22 @@ public class TemplateContext extends BaseTemplateContext{
 				instanceObject = java.lang.reflect.Array.newInstance(Class.forName(fullClassName.replaceAll("\\[\\]", "")), 0);
 			} else {
 				cls = Class.forName(fullClassName);
-				instanceObject = cls.newInstance();
+
+			    Constructor c;
+				try {
+					c = cls.getDeclaredConstructor();
+					c.setAccessible(true);   // solution
+				    instanceObject = c.newInstance();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    
+				//doesn't always work
+				//instanceObject = cls.newInstance();
 			}
 		} catch (ClassNotFoundException e) {
 			LOGGER.debug("Unable to find Class with name: " + fullClassName + " (Freemarker)");
