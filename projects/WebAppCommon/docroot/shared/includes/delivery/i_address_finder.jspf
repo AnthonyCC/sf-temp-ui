@@ -116,7 +116,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						</SELECT><br /><br />
 						</FORM>
 					</td>
-					<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
+					<%if (!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
 						<td class="text12">
 							<b>Please note that you may only have a delivery timeslot reservation for one address at a time.</b>
 						</td>
@@ -152,8 +152,14 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 
 <%
-	if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)
-		&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && user.isEligibleForPreReservation()){
+	if (
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS) && 
+			!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && 
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) && 
+			user.isEligibleForPreReservation()
+	){
 %>
 
 <table width="<%=W_ADDRESS_FINDER_TOTAL%>" cellpadding="0" cellspacing="0" style="border:1px solid #CCCCCC;text-align:center;">
@@ -163,28 +169,28 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation()) { %>
 			
-	<table width="100%" style="padding-left: 5px; padding-right: 5px;">
-					<tr>
-						<td  align="left">
-							<font class="text14"><b>Want to Plan Ahead?</b></font><br/>
-							<span class="text12">As a <% if (user.isChefsTable()){ %>Chef's Table<% } else { %>DeliveryPass<% }%> member, you may reserve a timeslot ahead of time.</span>
-						</td>
-						<td align="right">
-							<a href="/your_account/reserve_timeslot.jsp" style="text-align:right;">
-								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
-							</a>
-						</td>
-					</tr>
-				<% if (FDStoreProperties.isAdServerEnabled()) { %>
-					<%--
-					<tr>
-						<SCRIPT LANGUAGE=JavaScript>
-							OAS_AD('TimeslotBottom');
-						</SCRIPT><br/>
-					</tr>
-					--%>
-				<% } %>
-				</table>
+		<table width="100%" style="padding-left: 5px; padding-right: 5px;">
+			<tr>
+				<td  align="left">
+					<font class="text14"><b>Want to Plan Ahead?</b></font><br/>
+					<span class="text12">As a <% if (user.isChefsTable()){ %>Chef's Table<% } else { %>DeliveryPass<% }%> member, you may reserve a timeslot ahead of time.</span>
+				</td>
+				<td align="right">
+					<a href="/your_account/reserve_timeslot.jsp" style="text-align:right;">
+						<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="24" border="0" alt="Reserve a Delivery Time" vspace="4">
+					</a>
+				</td>
+			</tr>
+			<% if (FDStoreProperties.isAdServerEnabled()) { %>
+				<%--
+				<tr>
+					<SCRIPT LANGUAGE=JavaScript>
+						OAS_AD('TimeslotBottom');
+					</SCRIPT><br/>
+				</tr>
+				--%>
+			<% } %>
+		</table>
 			
 	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) { %>
 			<%--
