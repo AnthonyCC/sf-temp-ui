@@ -9,6 +9,8 @@ import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
 
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.sap.ejb.SapException;
 
 public interface SaleCronSB extends EJBObject{ 
@@ -42,4 +44,8 @@ public interface SaleCronSB extends EJBObject{
 	public void settleEBTSales() throws RemoteException;
 	
 	public void settleEBTSales(List<String> saleIds)throws FinderException, RemoteException, ErpTransactionException, SapException, RemoteException;
+
+	public void queryForMissingFdxOrders() throws RemoteException;
+	
+	
 }

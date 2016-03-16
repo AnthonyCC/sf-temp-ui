@@ -37,6 +37,8 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.DlvProperties;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -53,6 +55,7 @@ import com.freshdirect.giftcard.ejb.GCGatewayHome;
 import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.payment.command.Capture;
 import com.freshdirect.payment.command.PaymentCommandI;
 import com.freshdirect.payment.ejb.PaymentGatewayHome;
@@ -1462,6 +1465,85 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				list.add(settlementInfo);		
 			}
 		}
+		return list;
+	}
+	
+	private final static String QUERY_SALE_ELIGIBLE_FOR_PICKING =
+			"SELECT ORDER_ID, PARENT_ID,  TIP, RESERVATION_ID, MOBILE_NUMBER, DELIVERY_INSTRUCTIONS, UNATTENDED_INSTRUCTIONS, " +
+			"SERVICE_TYPE, FIRST_NAME, LAST_NAME FROM CUST.LOGISTICS_FDX_ORDER WHERE STATUS='NEW'";
+
+	private final static String UPDATE_SALE_ELIGIBLE_FOR_PICKING =
+			"UPDATE CUST.LOGISTICS_FDX_ORDER SET STATUS='SENT TO LOGISTICS' WHERE ORDER_ID=?";
+
+	public void queryForMissingFdxOrders() {
+		
+		
+		Connection con = null;
+		try {
+			con = this.getConnection();
+			List<CreateOrderRequest> list = this.queryForFdxSales(con, QUERY_SALE_ELIGIBLE_FOR_PICKING);	
+			if(list.size()>0)
+			sendOrdersToLogistics(con,list);
+		} catch (Exception e) {
+			LOGGER.warn(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+	}
+	public void sendOrdersToLogistics(Connection con,List<CreateOrderRequest> list) throws FDResourceException  {
+		for(CreateOrderRequest command:list){
+		FDDeliveryManager.getInstance().submitOrder(command.getOrderId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
+				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber());
+		updateStatusOfOrder(con,command);
+		}    	
+	}
+	
+	public void updateStatusOfOrder(Connection con,CreateOrderRequest order)  {
+	
+
+		try {
+			PreparedStatement ps = con.prepareStatement(UPDATE_SALE_ELIGIBLE_FOR_PICKING);
+			
+			ps.setString(1,order.getOrderId());
+			 ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+		
+		}
+		
+		}
+			
+	
+	private List<CreateOrderRequest> queryForFdxSales(Connection conn, String query) throws SQLException {
+		List<CreateOrderRequest> list = new ArrayList<CreateOrderRequest>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			list.add(new CreateOrderRequest(
+					rs.getString("ORDER_ID"),
+					rs.getString("PARENT_ID"), rs.getDouble("TIP"),
+					rs.getString("RESERVATION_ID"),
+					rs.getString("MOBILE_NUMBER"),
+					rs.getString("DELIVERY_INSTRUCTIONS"),
+					rs.getString("UNATTENDED_INSTRUCTIONS"),
+					rs.getString("SERVICE_TYPE"),
+					rs.getString("FIRST_NAME"),
+					rs.getString("LAST_NAME")));
+		}
+		LOGGER.info(list);
+		rs.close();
+		ps.close();
 		return list;
 	}
 }
