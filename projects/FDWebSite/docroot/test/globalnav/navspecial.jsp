@@ -19,7 +19,7 @@
         <span class="gf-item">gift & recipient options</span>
       </li><!--
       --><li class="menu-item item-skin">
-        <span class="gf-item">payment info</span>
+        <span class="svn gf-item">payment info</span>
       </li><!--
       --><li class="menu-item item-skin">
         <span class="gf-item">confirmation</span>

@@ -117,4 +117,18 @@ h2#account_address_title {
 	margin-top: 20px;
 }
 
+/* fix for Safari v8 */
+
+#CC_cardHolderName,
+#CC_phone, 
+#EC_cardHolderName, 
+#EC_bankName, 
+#EC_cardNum, 
+#EC_abaRouteNumber,
+#EC_phone, 
+#ET_cardHolderName, 
+#ET_cardNum,
+#ET_phone {
+	display: block;
+}
 
