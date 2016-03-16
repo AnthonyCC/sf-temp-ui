@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -91,7 +90,6 @@ import com.freshdirect.logistics.delivery.dto.ScrubbedAddress;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
-import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
@@ -114,6 +112,7 @@ public class FDDeliveryManager {
 	private static TimedLruCache<String, FDDeliveryServiceSelectionResult> zipCheckCache = new TimedLruCache<String,FDDeliveryServiceSelectionResult>(200, 60 * 60 * 1000);
 	
 	/** 1 hr cache state -> List of state county */
+	
 	private static TimedLruCache<String,Set<StateCounty>>  countiesByState = new TimedLruCache<String,Set<StateCounty>>(50, 60 * 60 * 1000);
 
 	/** 1 hr cache zoneCode -> List of cutoff-times for next day (FDZoneCutoffInfo)*/
@@ -1260,15 +1259,29 @@ public class FDDeliveryManager {
 		}
 	}
 	public void submitOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr, String orderMobileNumber) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.submitOrder(
 					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,
 							firstName,lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
+			
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
+			try {
+					DlvManagerSB sb = getDlvManagerHome().create();
+					sb.logFailedFdxOrder(orderId,parentOrderId,tip,reservationId,firstName,lastName,
+							deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber);
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (CreateException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}  
+			
 			throw new FDResourceException(e);
 		}
 

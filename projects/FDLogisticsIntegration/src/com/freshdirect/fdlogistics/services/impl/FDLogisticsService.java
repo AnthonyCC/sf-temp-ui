@@ -582,8 +582,17 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	@Override
 	public Result submitOrder(CreateOrderRequest request) throws FDLogisticsServiceException{
+		Result response =null;
+		try
+		{
 		String inputJson = buildRequest(request);
-		Result response = getData(inputJson, getEndPoint(CREATE_FDX_ORDER_API), Result.class);
+		 response = getData(inputJson, getEndPoint(CREATE_FDX_ORDER_API), Result.class);
+		}catch(FDLogisticsServiceException e){
+			throw new FDLogisticsServiceException(e.getMessage());
+			//response.addErrorMessage(e.getMessage());
+			//LOsGGER.info("Exception converting {} to ListOfObjects "+response);
+			
+		}
 		return response;
 	}
 	

@@ -29,7 +29,10 @@ public interface DlvManagerSB extends EJBObject {
 
 	public void saveFutureZoneNotification(String email, String zip, String serviceType) throws RemoteException;
     public List<SiteAnnouncement> getSiteAnnouncements() throws FDResourceException, RemoteException;
-	public List<MunicipalityInfo> getMunicipalityInfos() throws RemoteException;
+    public void logFailedFdxOrder(String orderId, String parentOrderId, double tip,
+			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr, String orderMobileNumber) throws FDResourceException, RemoteException;
+    public List<MunicipalityInfo> getMunicipalityInfos() throws RemoteException;
 	public void sendOrderSizeFeed() throws FDResourceException, RemoteException;
 	public void sendLateOrderFeed() throws FDResourceException, RemoteException;
 	public FDReservation reserveTimeslot(String timeslotId, String customerId,
