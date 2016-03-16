@@ -60,13 +60,13 @@
                
                			<p><b style="color: #990000;"><xsl:value-of select="standingOrder/errorHeader"/></b><markup:cdata-section text=" "/><xsl:value-of select="standingOrder/errorDetail"/></p>
                
-               			<p><a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">Fix your Standing order</a></p>
+               			<p><a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">Fix your Standing order.</a></p>
 					
 					</xsl:otherwise>
 				</xsl:choose>
 
                
-               <p>Sincerely<br/>
+               <p>Sincerely,<br/>
                <br/>
                Your Customer Service Team at <a href="http://www.freshdirect.com/">FreshDirect</a></p>
                
