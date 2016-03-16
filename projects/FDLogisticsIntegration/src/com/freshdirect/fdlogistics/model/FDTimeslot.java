@@ -620,9 +620,6 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public String getFormattedSoFirstDeliveryDate() {
 		String formattedSoFirstDeliveryDate = null;
-		if(null ==soFirstDeliveryDate){
-			soFirstDeliveryDate = DateUtil.addDays(deliveryDate, 7); 	
-		}
 		if(null !=soFirstDeliveryDate){
 			formattedSoFirstDeliveryDate = DateUtil.formatDayAndMonth(soFirstDeliveryDate);
 		}
@@ -631,9 +628,6 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	
 	public String getFormattedSoFirstDeliveryDateFull() {
 		String formattedSoFirstDeliveryDateFull = null;
-		if(null ==soFirstDeliveryDate){
-			soFirstDeliveryDate = DateUtil.addDays(deliveryDate, 7); 	
-		}
 		if(null !=soFirstDeliveryDate){
 			formattedSoFirstDeliveryDateFull = DateUtil.formatDate(soFirstDeliveryDate);
 		}
