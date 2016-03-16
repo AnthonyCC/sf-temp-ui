@@ -501,7 +501,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			boolean signedIn = false; //used for js logic for hover/click event results
 			boolean recog = false; //used for js logic for hover/click event results
 			if (user != null && user.getLevel() != FDUserI.GUEST) {
-				actionString = "Your Account";
+				actionString = "Your Settings";
 				greetingsString += " "+user.getFirstName();
 				
 				if (user.getLevel() == FDUserI.SIGNED_IN) {
