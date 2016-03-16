@@ -91,7 +91,7 @@ public class AvalaraTaxResponseConverter {
 		if(CollectionUtils.isNotEmpty(charges)){
 			for(ErpChargeLineModel charge: charges){
 				if(charge.getType().getCode().equals(taxLine.getLineNo())){
-					if(!taxLine.getTaxability()){
+					if(!taxLine.getTaxability() || taxLine.getExemption() != 0.0){
 						charge.setTaxRate(0.0);
 						}
 						else{
