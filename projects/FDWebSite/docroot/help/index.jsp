@@ -308,7 +308,7 @@
 							<%if (identity == null) { %>
 							<div class="underline">
 								<h4 class="bold inline uppercase">2. enter your contact information</h4>
-								<span class="bold small"> * Required information</span>
+								<span class="small"> * Required information</span>
 							</div>
 							<div class="from-elements-wrapper">
 							<div class="form-group">	

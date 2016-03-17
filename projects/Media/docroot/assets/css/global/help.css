@@ -8,8 +8,10 @@
 
 .purple-text {
 	color: #996699;
+	font-size: 18px;
+	font-family: Verdana;
+	font-weight:bold;
 	margin-top: 10px;
-	font-size: 1.4em;
 }
 
 #timeslotloyalityHeader {
@@ -28,13 +30,18 @@
 }
 
 .help-heading {
-	color: #c66;
-	margin: 8px 0;
+	color: #333333;
+    margin: 8px 0;
+    font-family: Verdana Regular;
+    font-size: 16px;
 }
 
 .help-subheading {
 	color: #6f6f6f;
 	margin-top: 1.5em;
+	font-family: Verdana;
+    font-weight: Bold;
+    font-size: 12px;
 }
 
 .underline {
@@ -44,6 +51,10 @@
 
 .underline h4 {
 	margin-bottom: .5em;
+	font-family: Verdana;
+    font-weight: Bold;
+	font-size: 14px;
+	color: #333;
 }
 
 .help-aside {

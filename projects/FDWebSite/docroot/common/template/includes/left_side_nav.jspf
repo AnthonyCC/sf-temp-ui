@@ -116,15 +116,16 @@ if (aliasNode!=null) {
 }
 Image catImage = topCategory.getCategoryTitle();
 if (catImage!=null) {
-	buf.append("<tr><td class=\"lNavTableCatTitleImg\"><a href=\"");
+	buf.append("<tr><td width=\"" + W_LEFT_NAV_CENTER + "\" class=\"lNavTableCatTitleText\"><a href=\"");
 	buf.append(topCatLink);
 	buf.append("&trk=snav\">");
 
-	buf.append("<IMG SRC=\"").append(catImage.getPath());
-	buf.append("\" WIDTH=\"").append(catImage.getWidth());
+	/* buf.append("<IMG SRC=\"").append(catImage.getPath()); */
+	/* buf.append("\" WIDTH=\"").append(catImage.getWidth());
 	buf.append("\" HEIGHT=\"").append(catImage.getHeight());
-	buf.append("\" border=\"0\">");
-	buf.append("</a><br>&nbsp;</td></tr>");
+	buf.append("\" border=\"0\">"); */
+	buf.append("<div>ABOUT US </div>");
+	buf.append("</a></td></tr>");
 
 	displayedRows++;
 }

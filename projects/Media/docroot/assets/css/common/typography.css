@@ -87,7 +87,7 @@ input.ph_active { color: #aaa; }
 /* Misc classes
 -------------------------------------------------------------- */
 
-.small      { font-size: .8em; margin-bottom: 1.875em; line-height: 1.875em; }
+.small      { font-family: Verdana Reg;font-size: 10px;	color: #333; margin-bottom: 1.875em; line-height: 1.875em; }
 .large      { font-size: 1.2em; line-height: 2.5em; margin-bottom: 1.25em; }
 .hide       { display: none; }
 

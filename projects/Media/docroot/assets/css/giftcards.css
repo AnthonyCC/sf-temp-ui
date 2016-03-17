@@ -106,7 +106,19 @@ div.card_controls a, div.card_controls a img, div.card_shopNow a img, div.card_c
 	/* choose card design header image */
 	#gcChooseDesign_img {
 	}
-
+.card_controls_text
+{
+	font-size:14px;
+	font-family: Verdana;
+	font-weight:Bold;
+    color: #333333;	
+}
+.ChooseCardDesign{
+	font-size:16px;
+	font-family: Verdana;
+	font-weight:Bold;
+    color: #333333;	
+}
 /* recipient list */
 .recipTable {
 	width: 625px;

@@ -261,7 +261,9 @@
 		width:calc(100% - 75px);
 		float:left;
 		/*width: 450px!important;*/
-		color:#333;
+		color: #999966;
+		font-size: 12px;
+		font-family: Verdana;
 		border: 1px solid #efefef;
 	    border-top-right-radius: 0px;
 	    border-bottom-right-radius: 0px;

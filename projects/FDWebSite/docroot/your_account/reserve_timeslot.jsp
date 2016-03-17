@@ -83,7 +83,8 @@ String actionName = request.getParameter("actionName");
 				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
 			</tr>
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservartion Type"></td>
+				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservartion Type"></td> -->
+				<span class="Container_Top_YourAccountTimeslot">Please Choose a Reservartion Type</span>
 			</tr>
 			<tr valign="top">
 				<td>

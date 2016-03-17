@@ -821,9 +821,10 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-freshness .guarfresh{
-	font-family: 'Eagle-Bold', 'EagleBook', verdana, arial, sans-serif;
-	font-size:24px;
-	color:#A7A77F;
+	font-size:22px;
+	font-family: Verdana;
+    color: #999966;
+	font-weight:Bold;
 	line-height:27px; /* same as .pdp-freshness .days */
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;

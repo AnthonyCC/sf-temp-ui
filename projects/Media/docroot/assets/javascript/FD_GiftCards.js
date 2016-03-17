@@ -619,8 +619,8 @@ function showDialogs() {
 							]),
 							Builder.node( 'div', { className: 'card_controls' }, [
 								Builder.node( 'div', { className: 'card_controls_header' }, [
-									Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
-							
+								      Builder.node( 'span', { className: 'ChooseCardDesign' }, ['Choose Card Design']),
+									/*Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )*/
 								]),
 								Builder.node( 'div', { className: 'card_controls_select' }, [
 									Builder.node( 'select', { id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
@@ -689,7 +689,8 @@ function showDialogs() {
 								Builder.node('tr', [ 
 									Builder.node('td',{ }, [
 										Builder.node( 'div', { className: 'card_controls_header' }, [
-											Builder.node( 'img', { src: this.mediaStaticRoot + 'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } ),
+										     Builder.node( 'span', { className: 'card_controls_text' }, ['Gift Card options include']), 
+											/*Builder.node( 'img', { src: this.mediaStaticRoot + 'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } ),*/
 											Builder.node( 'br', [ ] )
 										]),
 										Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])

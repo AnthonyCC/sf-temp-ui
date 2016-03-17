@@ -168,7 +168,7 @@ function loadWalletInfo(){
 			<% if (hasCheck) { %>
 		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-		    <td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')">Terms of Use</a><br>
+		    <td><!-- <img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"> --><span class="Container_Top_ChkAcctDetails">Checking Account Details</span> &nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><span class="Terms"> Terms of Use </span></a><br>
 		    <IMG src="/media_stat/images/layout/999966.gif" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
 		    </td>
 		</tr>
@@ -191,8 +191,9 @@ function loadWalletInfo(){
 		<% } %>
 		<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-		    <td><img src="/media_stat/images/navigation/credit_card_details.gif"
-		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
+		    <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
+		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
+		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit Card Details</span><BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
 		</tr>

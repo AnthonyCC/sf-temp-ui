@@ -54,6 +54,9 @@ img { border:none }
 
 .bodyCopy		{ font-size: 12px;  font-family: Verdana, Arial, sans-serif; }
 
+.cos_faqhelp_fdatheOffice   {font-size: 14px; width:100%;  font-family: Verdana; font-weight: bold; color:#333333; float:left;}
+.cos_faq_helpsubattheOffice   {font-size: 14px;  font-family: Verdana; font-weight: reg; color:#333333;float:left;}
+
 .bodyCopy ul    { margin: 0; padding: 0; }
 .bodyCopy ul li { list-style-position: inside; list-style-type: disc; padding-left: 15px; text-indent: -15px; padding-bottom: 4px; margin-left: 0; }
 
@@ -160,6 +163,137 @@ A.list		    { line-height: 12px; }
     top: -88px;
     left: 0;
     display: block;
+}
+
+.text10 .Container_Top_help {
+    font-family: Verdana Reg;
+    font-size: 26px;
+    color: #ff9933;
+    text-decoration: none;
+    position: relative;
+    right: 1px;
+}
+.text10 .Container_Top_help_Que {
+	font-family: Verdana Bold;
+    font-size: 18px;
+    color: #333333;
+    text-transform: uppercase;
+}
+.text10 .Container_Top_help_FAQ {
+	font-family: Verdana Reg;
+    font-size: 16px;
+    color: #5d5f36;
+}
+.text10 .Container_Top_help_Search {
+	font-family: Verdana Bold;
+    font-size: 16px;
+    color: #333333;
+    text-transform: uppercase;
+}
+/* .text10 .Container_Top_help_PP {
+	font-family: Verdana Bold;
+    font-size: 22px;
+    color: #333333;
+} */
+
+
+.Container_Top_YourAccount {
+    font-family: Verdana reg;
+    font-size: 24px;
+    color: #ff9933;
+    text-decoration: none;
+}
+.Container_Top_YourAccount:hover,.text10 a {
+    text-decoration: none;
+}
+.text10 .Container_Top_YourAccountTimeslot{
+	font-family: Verdana;
+	font-weight:bold;
+    font-size: 14px;
+    color: #ff9933;
+}
+.lNavTableCatTitleText a div
+{
+	font-family: Verdana Reg;
+	font-size: 26px;
+	color: #333333;
+	margin: 25px 0px 6px 0px;
+}
+
+.aboutUsText
+{
+	font-family: Verdana Reg;
+	font-size: 26px;
+	color: #ff9933;
+    margin-right: 25px;
+    text-transform: uppercase;
+}
+.verdanaReg22{
+	font-family: Verdana;
+	font-weight:normal;
+	font-size: 22px;
+	color: #333;
+}
+.Container_Top_YourAccCheftable{
+	font-size: 14px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333;
+}
+.text10 .Container_Top_YourAccHomeDel{
+	font-size: 14px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333333;
+}
+.Container_Top_YourAccCCDetails{
+    font-size: 14px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333;	
+}
+
+.Container_Top_ChkAcctDetails{
+font-size: 14px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333;	
+}
+.Terms{
+	font-size: 10px;
+	font-family: Verdana Reg;
+    color: #333;	
+}
+.Container_Top_YourAccGiftCard{
+	font-size: 16px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #669933;
+}
+
+.Container_Top_GiftCardMain{
+	font-size: 22px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333333;
+}
+
+.Container_Top_CurrentCustLogin{
+	font-size: 14px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #333333;
+}
+.Aboutus_LearnMore{
+	font-size: 17px;
+	font-family: Verdana;
+	font-weight:bold;
+    color: #336600;
+}
+.Container_Top_Welcome{
+	font-size:56px;
+	font-family: Verdana Reg;
+    color: #999966;	
 }
 [data-component="carousel"] [data-component="carousel-list"]{
                 text-align: center;

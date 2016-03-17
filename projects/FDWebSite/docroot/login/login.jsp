@@ -47,7 +47,8 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt=""></td></tr>
 	<tr>
 		<td width="<%=W_LOGIN_TOTAL-200%>">
-			<img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">
+			<!-- <img src="/media_stat/images/navigation/current_cust_log_in_now.gif" width="222" height="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW"> -->
+			<span class="Container_Top_CurrentCustLogin">CURRENT CUSTOMERS LOG IN NOW</span>
 		</td>
        	<td width="200" align="right">
        		<!--  <font class="text9">* Required Information</font>-->

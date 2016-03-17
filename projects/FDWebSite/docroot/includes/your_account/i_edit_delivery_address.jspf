@@ -91,7 +91,8 @@ if(user.isDepotUser()){
 				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
 					<TR VALIGN="TOP">
 						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
-							<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;
+							<!-- <img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp; -->
+							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Corporate Delivery</span><br>
 							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 						</td>
@@ -111,7 +112,9 @@ if(user.isDepotUser()){
 				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" >
 					<TR VALIGN="TOP">
 						<TD WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>">
-							<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp;
+							<!-- <img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp; -->
+							<span vspace="0" border="0" class="Container_Top_YourAccHomeDel ">Home Delivery</span><br>
+							
 							<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_EDIT_DELIVERY_ADDR %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 							<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 						</td>

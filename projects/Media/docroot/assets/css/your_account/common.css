@@ -26,19 +26,29 @@
   font-weight:bold;
 }
 
-.youraccount h2 {
+/* .youraccount h2 {
   font-size: 1.2em;
   font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ccc;
+} */
+.youraccount h2 {
+  font-size: 14px;
+  font-family: Verdana;
+  font-weight:Bold;
+  color: #333;
   text-transform: uppercase;
   border-bottom: 1px solid #ccc;
 }
 
 .youraccount h2 i {
   margin: .25em 0 0 .25em;
-  font-size: .75em;
+  font-size: 10px;
   font-weight: normal;
   font-style: normal;
   display: inline-block;
   vertical-align: top;
   text-transform: none;
+   color:#333;
+   font-family: Verdana Reg;
 }
