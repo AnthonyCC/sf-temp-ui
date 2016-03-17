@@ -5,10 +5,13 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $ = fd.libs.$;
+  //APPDEV-3971
+  fd.properties = fd.properties || {};
+  
   var focusedElementId;
   var DISPATCHER = fd.common.dispatcher;
   var errorMessages={
-      "401": '<div class="unauthorized">Session expired, please refresh!</div>',
+     // "401": '<div class="unauthorized">Session expired, please refresh!</div>',
       "500": function (e) {
         var result = e.responseText,
             message = "Internal Error";
@@ -45,9 +48,28 @@ var FreshDirect = FreshDirect || {};
       }
     } catch(e) {}
   };
-
+  //APPDEV-3971
+  var loginSignupPopup = function (target, popupUrl) {
+	    if (fd.components && fd.components.ifrPopup) {
+	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
+	    }
+	  };
+  var socialLogin = function (target) {
+		    loginSignupPopup(target, '/social/login.jsp');
+		  };
   var errorHandler = function( e ){
-    var status = e.status,
+    var status = e.status;
+    if(status == 401){
+	    var targetHolder = $('#target-link-holder').attr("href");
+	    $('#target-link-holder').remove();
+	    fd.user.recognized=true;
+	    $("button[disabled]").removeAttr("disabled");
+	    if (fd.properties.isSocialLoginEnabled) {
+	    socialLogin(e.targetHolder);
+	    }else{
+	    window.location.href = "/login/login.jsp";
+	    }
+}
         message = errorMessages[status];
 
     if (typeof message === 'function') {
@@ -61,7 +83,7 @@ var FreshDirect = FreshDirect || {};
     }
 
   };
-
+//END APPDEV 3971
   var server = Object.create(fd.common.signalTarget,{
     signal:{
       value:'server'

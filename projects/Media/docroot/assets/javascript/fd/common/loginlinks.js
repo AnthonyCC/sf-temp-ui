@@ -53,12 +53,13 @@ var FreshDirect = FreshDirect || {};
           ct = e.currentTarget,
           currentPage = window.location.pathname + window.location.search + window.location.hash,
           target = ct.hasAttribute('fd-login-successpage-current') && currentPage || ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href || currentPage;
-
+      //APPDEV-3971
+          $("body").append("<a id=target-link-holder href="+ target +" style=display:none;>");
       if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
         if (fd.properties.isSocialLoginEnabled) {
           e.preventDefault();
           if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-            socialSignup(target);
+        	  socialLogin(target);
           } else {
             socialLogin(target);
           }
@@ -68,6 +69,7 @@ var FreshDirect = FreshDirect || {};
       }
     });
   };
+  //APPDEV-3971
 
   var login = {
     socialSignup: socialSignup,
