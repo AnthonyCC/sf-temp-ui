@@ -1063,6 +1063,22 @@ a.portrait-item-header-name:link {
 	display:block;
 }
 
+/* APPBUG-4501 */
+.qs-content .lineitems22 .itemlist-item-controls-subtotal{
+	display: inline-block;
+	text-align: right;
+	margin-left: 142px;
+}
+.itemlist-item-controls .qtyinput .quantity_plus{
+	background-color: #4fa157;
+	border: 1px solid #4fa157;
+}
+.itemlist-item-controls .qtyinput .quantity_minus{
+	background-color: #4fa157;
+	border: 1px solid #4fa157;
+}
+/* APPBUG-4501 */
+
 .qs-content .lineitems22 .itemlist-item-header-buttons {
   float:none;
   margin: 0 0 10px;
