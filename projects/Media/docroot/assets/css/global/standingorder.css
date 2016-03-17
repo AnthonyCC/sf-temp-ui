@@ -72,6 +72,14 @@
 	#customizePopup.soShow .skucontrol-quantity {
 		margin-bottom: 15px;
 	}
+	/* APPBUG-4515 */
+	#customizePopup .skucontrol-quantity {
+		text-align: right;
+		margin-right: 250px;
+	}
+	#customizePopup .buttons{
+		margin-right: 243px;
+	}
 	.pdp-atc.soShow .qtyinput input.qty,
 	.pdp-evenbetter-quantity .qtyinput input.qty,
 	.portrait-item-soPreShow input.qty,
