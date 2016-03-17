@@ -1197,6 +1197,14 @@ public class FDOrderAdapter implements FDOrderI {
 		return chargeInvoiceTotal;
 	}
 	
+	public double getBouncedCheckTotal(){
+		double bouncedCheckTotal = 0;
+		if(sale.getChargeInvoice().getCharge(EnumChargeType.BOUNCED_CHECK) != null){
+			bouncedCheckTotal = sale.getChargeInvoice().getCharge(EnumChargeType.BOUNCED_CHECK).getAmount();
+		}
+		return bouncedCheckTotal;
+	}
+	
 	public List<ErpDiscountLineModel> getDiscounts() { 
 		return erpOrder.getDiscounts(); 
 	}

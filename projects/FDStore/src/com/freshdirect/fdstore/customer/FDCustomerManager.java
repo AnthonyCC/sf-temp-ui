@@ -3035,6 +3035,7 @@ public class FDCustomerManager {
 		    }
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
 			createOrder.setTransactionSource(info.getSource());
+			createOrder.setTaxationType(info.getTaxationType());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
 			FDCustomerManagerSB sb = managerHome.create();

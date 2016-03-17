@@ -60,7 +60,7 @@ public class AvalaraTaxRequestConverter {
 			createCartLinesTaxEntry(cart, taxLines);
 		}
 
-		createAdditionalChargeTaxEntry(cart, taxLines);
+		createChargeTaxEntry(cart, taxLines);
 
 		Line[] linesArray = new Line[taxLines.size()];
 		taxRequest.setLines(taxLines.toArray(linesArray));
@@ -84,6 +84,7 @@ public class AvalaraTaxRequestConverter {
 		if (cart instanceof FDOrderAdapter) {
 			FDOrderAdapter order = (FDOrderAdapter) cart;
 			customercode = getCustomerCode(order);
+			createAdditionalChargeTaxEntry(order, taxLines);
 		} else if (cart instanceof FDModifyCartModel) {
 			FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
 			FDOrderAdapter order = modifyCart.getOriginalOrder();
@@ -117,7 +118,7 @@ public class AvalaraTaxRequestConverter {
 		return customercode;
 	}
 
-	private void createAdditionalChargeTaxEntry(FDCartI cart,
+	private void createChargeTaxEntry(FDCartI cart,
 			List<Line> taxLines) {
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
 		if (CollectionUtils.isNotEmpty(charges)) {
@@ -139,6 +140,40 @@ public class AvalaraTaxRequestConverter {
 					taxLines.add(taxLine);
 				}
 			}
+		}
+	}
+	
+	private void createAdditionalChargeTaxEntry(FDOrderAdapter order,
+			List<Line> taxLines) {
+		if(order.getBouncedCheckTotal() != 0.0){
+			Line taxLine = new Line();
+			EnumChargeType chargeType = EnumChargeType.BOUNCED_CHECK;
+			String itemCode = StringUtils.defaultString(
+					chargeType.getMaterialNumber(),
+					chargeType.getName());
+			taxLine.setItemCode(itemCode);
+			taxLine.setLineNo(chargeType.getCode());
+			taxLine.setAmount(BigDecimal.valueOf(order.getChargeInvoiceTotal()));
+			taxLine.setOriginCode("Origin-01");
+			taxLine.setDestinationCode("DEST-01");
+			taxLine.setQty(BigDecimal.valueOf(1));
+			taxLine.setTaxCode(chargeType.getTaxCode());
+			taxLines.add(taxLine);
+		}
+		if(order.getRestockingCharges() != 0.0){
+			Line taxLine = new Line();
+			EnumChargeType chargeType = EnumChargeType.RESTOCKING;
+			String itemCode = StringUtils.defaultString(
+					chargeType.getMaterialNumber(),
+					chargeType.getName());
+			taxLine.setItemCode(itemCode);
+			taxLine.setLineNo(chargeType.getCode());
+			taxLine.setAmount(BigDecimal.valueOf(order.getChargeInvoiceTotal()));
+			taxLine.setOriginCode("Origin-01");
+			taxLine.setDestinationCode("DEST-01");
+			taxLine.setQty(BigDecimal.valueOf(1));
+			taxLine.setTaxCode(chargeType.getTaxCode());
+			taxLines.add(taxLine);
 		}
 	}
 
