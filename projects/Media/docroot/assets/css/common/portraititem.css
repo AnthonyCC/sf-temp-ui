@@ -363,10 +363,17 @@
   margin: 10px 0;
 }
 
-.portrait-item .burst {
+/* .portrait-item .burst {
   position:absolute;
   top:0;
   left:0;
+} */
+/* APPDEV-3962 */
+.portrait-item .burst {
+    position: relative;
+    top: -135px;
+    left: 0;
+    display: block;
 }
 
 .portrait-item .was-price {

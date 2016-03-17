@@ -11,7 +11,12 @@
   background: #f0f5e1;
   border: 1px solid #dce6be;
 }
-
+/*Burst Alignment APPDEV-3962*/
+.browseContent .sectionContent ul.products {
+    margin: 17px 0 29px;
+    padding: 15px 0 0;
+    display: table;
+}
 .browseContent .browse-loading {
   position: absolute;
   top: 0;
@@ -33,15 +38,25 @@
 .srch h1.orange-title{
 	text-transform:capitalize;
 }
-.srch h1.orange-title,
+/* .srch h1.orange-title,
 .browseContent h2 {
   font-size: 26px;
-  /*text-transform: capitalize;*/
+  text-transform: capitalize;
   font-family: Verdana, Arial, sans-serif;
   font-weight:bold;
   line-height: 1.1em;
   color: #333;
   margin-bottom: 10px;
+} */
+/* APPDEV-3962 */
+.srch h1.orange-title, .browseContent h2 {
+    font-size: 26px;
+    font-family: Verdana, Arial, sans-serif;
+    font-weight: bold;
+    line-height: 1.1em;
+    color: #333;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .browseContent .noSubSections h2.last {

@@ -154,7 +154,11 @@ A.list		    { line-height: 12px; }
 .title18or	     { font-size: 18px; color: #f93; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .title24 	     { font-size: 24px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-
+/* APPDEV-3962 */
+[data-component="carousel"] [data-component="carousel-list"]{
+                text-align: center;
+                padding-top: 12px;
+}
 
 /* BEST CELLARS */
 .bc	 			{ color: #791473; }
