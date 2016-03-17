@@ -45,6 +45,7 @@ var FreshDirect = FreshDirect || {};
           } catch (e) {}
         }
         $(document.body).attr('data-drawer-active', null);
+        $("#ec-drawer").trigger("drawer-reset");
       }	
     },
     changeClick: {

@@ -61,6 +61,7 @@ user.setSoTemplateCart(new FDCartModel());
 %>
 <script>
 	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(FDStoreProperties.getStandingOrderSoftLimit()) %>
+	FreshDirect.standingorder.currentPage = "manage";
 </script>
 
 <% if(soList!=null && !soList.isEmpty()) { %>

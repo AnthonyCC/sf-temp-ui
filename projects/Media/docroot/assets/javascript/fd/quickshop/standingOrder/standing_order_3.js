@@ -1,12 +1,13 @@
 var soName = "";
 var isNewSOCreated = false;
+var isActiveDrawerOpen = false;
 FreshDirect.standingorder = FreshDirect.standingorder || {};
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
 		//new_standing_order
 		soName = $jq(".standing-orders-3-name-input[name='soName']").val();
-		
+		FreshDirect.standingorder.currentPage = "new";
 		if (typeof newsoID === 'undefined') {
 			newsoID = 0;
 		}
@@ -23,7 +24,7 @@ $jq( document ).ready(function() {
 		});
 		if($jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 			isNewSOCreated = true
-			populateDrawer();
+			populateDrawer(newsoID);
     		$jq("#soFreq").select2({
 				minimumResultsForSearch: Infinity
 			});
@@ -83,7 +84,7 @@ function newStandingOrderNameInputChangeOK(){
 	$jq('#newsoErroMessage').text("");
 	if (!isNewSOCreated && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 		soName = $jq(".standing-orders-3-name-input[name='soName']").val();
-		submitFormNewSO("create", null, soName);
+		submitFormNewSO("create", "", soName);
 	} else if(soName != $jq(".standing-orders-3-name-input[name='soName']").val() && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 		soName = $jq(".standing-orders-3-name-input[name='soName']").val();
 		submitFormNewSO("changename", newsoID, soName);
@@ -109,7 +110,7 @@ function submitFormNewSO(action, id, name){
 	    	}
 	    	if($jq('#newsoErroMessage').text() == "" && action=="create"){
 	    		isNewSOCreated = true;
-	    		populateDrawer();
+	    		populateDrawer(newsoID);
 	    		$jq("#soFreq").select2({
 					minimumResultsForSearch: Infinity
 				});
@@ -246,8 +247,8 @@ function submitFormManageSO(id,action,name,freq){
 	      		}
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
       			populateCartContent();
-      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container').prepend('<div id="ec-drawer"></div>');
-      			populateDrawer();
+      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container').prepend('<div id="ec-drawer"></div>');      			
+      			populateDrawer(id);
       			$jq("#soFreq").select2({
       				minimumResultsForSearch: Infinity
         		});
@@ -290,11 +291,21 @@ function populateCartContent(){
 	}
 }
 
-function populateDrawer(){
+function populateDrawer(id){
 	FreshDirect.common.dispatcher.signal('drawer', FreshDirect.expressco.data.drawer);
 	FreshDirect.common.dispatcher.signal('payment', FreshDirect.expressco.data.payment);
 	FreshDirect.common.dispatcher.signal('address', FreshDirect.expressco.data.address);
 	FreshDirect.common.dispatcher.signal('timeslot', FreshDirect.expressco.data.timeslot);
+	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='address'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
+	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
+	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='payment'] button.change.cssbutton").on( "click", function(){ hideShopNowButtuns(); isActiveDrawerOpen = true; });
+	getSOData( id, "displayShopNow");
+	$jq("#ec-drawer").on( "drawer-reset", function(){
+		if(isActiveDrawerOpen){
+			isActiveDrawerOpen = false;
+			getSOData( id, "displayShopNow");
+		}
+	});
 }
 
 function soItemTriggerUpdate(id, data, isCartUpdate){
@@ -343,6 +354,13 @@ function getSOData(id, action){
         		soSaved(id, data.activated, false);
         		updateSOItem(id, data);
         	}
+        	if('displayShopNow'==action){
+        		if(data.displayCart){
+        			showShopNowButtuns();
+        		} else {
+        			hideShopNowButtuns();
+        		}
+        	}
         }
  	});
 };
@@ -353,7 +371,7 @@ function selectFrequency(item){
 		freq = item.value;
 		$jq("#soFreq2").val(freq);
 		$jq("#soFreq2").select2("val", freq);
-		submitFormManageSO(id,"selectFreq",null,freq);
+		submitFormManageSO("","selectFreq",null,freq);
 	}
 	if(item.id == "soFreq2"){
 		freq = item.value;
@@ -361,9 +379,15 @@ function selectFrequency(item){
 			$jq("#soFreq").val(freq);
 			$jq("#soFreq").select2("val", freq);
 		}
-		submitFormManageSO(id,"selectFreq",null,freq);
+		submitFormManageSO("","selectFreq",null,freq);
 	}
 };
+
+function selectWeeklyFrequency(){
+	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").one("click", function(){
+		selectFrequency(document.getElementById("soFreq2"));
+	});
+}
 
 function activateSo(id){
 	submitFormManageSO(id,"activate",null,null);
@@ -373,4 +397,18 @@ function updateSOItem(id, data){
 	var soID = "#soid_" + id;
 	var softLimit = FreshDirect.standingorder.softLimitDisplay || "50";
 	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit}));
+};
+
+function hideShopNowButtuns(){
+	$jq(".standing-orders-3 #cartcontent.show").removeClass("show");
+	$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container.show").removeClass("show");
+}
+
+function showShopNowButtuns(){
+	hideShopNowButtuns();
+	if(FreshDirect.standingorder.currentPage === "manage"){
+		$jq(".standing-orders-3 #cartcontent").addClass("show");
+	} else {
+		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container").addClass("show");
+	}
 };
