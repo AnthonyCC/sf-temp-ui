@@ -1609,6 +1609,9 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 		</path>
 
 		<makeEjbProject
