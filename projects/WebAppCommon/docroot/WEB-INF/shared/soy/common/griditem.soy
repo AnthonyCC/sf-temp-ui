@@ -374,7 +374,6 @@
 		{/if}
 		{if $showConfig}
 			<div class="portrait-item-configuration">
-				{if $quantity and $quantity.quantity}
 					<div class="quantity">Quantity: <span data-productdata-visualized="quantity" data-quantity-original="{$quantity.quantity}">{$quantity.quantity}</span></div>
 					{call common.subtotal}
 						{param availMatPrices:$availMatPrices /}
@@ -386,7 +385,6 @@
 						{param qMax:$quantity.qMax /}
 						{param soldBySalesUnit:$soldBySalesUnit /}
 					{/call}
-				{/if}
 			</div>
 		{/if}
 		{if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{param detailsFirst:true /}{/call}</div>{/if}

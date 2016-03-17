@@ -37,18 +37,21 @@ var FreshDirect = FreshDirect || {};
   function chgQty(value, min, max, inc, incart) {
     var originalValueIsFloat = (value + "").indexOf('.') > -1;
     var qty = parseFloat(value) + 0;
-
-    incart = incart || 0;
-
-    if (isNaN(qty) || qty < min) {
-      qty = min;
-    } else if (qty >= max-incart) {
-      qty = Math.max(max-incart, min);
-    }
-    qty = originalValueIsFloat ? ((qty-min)/inc)*inc + min : Math.floor( (qty-min)/inc )*inc + min;
-
-    return qty;
-  }
+	    incart = incart || 0;
+	  //APPDEV-4331  
+	    if(qty == 0){
+	    	return qty;
+	         }else{
+	        if (isNaN(qty) || qty < min) {
+	          qty = min;
+	        } else if (qty >= max-incart) {
+	          qty = Math.max(max-incart, min);
+	        }
+	         }
+	        qty = originalValueIsFloat ? ((qty-min)/inc)*inc  + min : Math.floor( (qty-min)/inc )*inc  + min;
+	      
+	        return qty;
+	      }
 
   var getValue = function($quantitybox){
     var $qtybox = $($quantitybox),
@@ -71,8 +74,10 @@ var FreshDirect = FreshDirect || {};
         max = +$el.data("max"),
         cartdata = fd.modules.common.getCartData($el),
         newVal = oldVal + increment;
-
-    if($el.data("mayempty") && newVal < min && increment < 0) {
+//APPDEV-4331
+   // if($el.data("mayempty") && newVal < min && increment < 0) {
+    if(newVal < min && increment < 0) {
+ //END   	
       newVal = 0;
     } else {
       newVal = Math.max(min, Math.min(max-(cartdata.incart||0), newVal));

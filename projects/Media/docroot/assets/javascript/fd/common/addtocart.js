@@ -66,7 +66,8 @@ var FreshDirect = FreshDirect || {};
 			var required = item.required;
 			if(required.length) {
 				Object.keys(item).forEach(function(data){
-					if(required.indexOf(data) > -1 && (!item[data] || item[data]==='0') ) {
+					//APPDEV-4331
+					if(required.indexOf(data) > -1 && (!item[data] || item[data]==='-1') ) {
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').addClass('missing-data');
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').parents('.errorcontainer').first().addClass('haserror');
 						item.invalid = true;
@@ -200,29 +201,30 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('click','[data-component="ATCButton"]', eventATC);
 
 	$(document).on('addToCart',atcHandler);
-
-  function allConfirmProcess(data) {
-    var $cont = $(data.container),
-        $products = $cont.find('[data-component="product"]').filter(function (i, el) {
-          return !$(el).hasClass('unavailable');
-        }),
-        sumsubtotal = 0;
-
-    data.header = "Add " + $products.size() + " items to cart?";
-
-    $products.each(function () {
-      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
-
-      if (subtotal) {
-        sumsubtotal += +(subtotal.substring(1));
-      }
-    });
-
-    data.message = "Estimated Subtotal: $" + sumsubtotal.toFixed(2);
-
-    return data;
-  }
-	
+/*
+ * APPDEV-4331
+ */
+	function allConfirmProcess(data) {
+	    var $cont = $(data.container),
+	        $products = $cont.find('[data-component="product"]').filter(function (i, el) {
+	          return !$(el).hasClass('unavailable');
+	        }),
+	        sumsubtotal = 0;
+	   var $finalProductSize = $products.size();
+	    $products.each(function () {
+	      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
+	      if (subtotal.substring(1)!="0.00" && subtotal.substring(1)!="") {
+	        sumsubtotal += +(subtotal.substring(1));        
+	      }
+	      else{
+	    	  $finalProductSize  = $finalProductSize - 1;
+	      }
+	    });
+	    data.header = "Add " + $finalProductSize + " items to cart?";
+	    data.message = "Estimated Subtotal: $" + sumsubtotal.toFixed(2);
+	    return data;
+	  }
+	//END APPDEV-4331
   fd.modules.common.utils.register("components", "AddToCart", {
     addToCart:addToCart,
     formAddToCart:formAddToCart,

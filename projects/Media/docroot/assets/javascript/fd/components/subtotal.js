@@ -89,8 +89,8 @@ var FreshDirect = FreshDirect || {};
         (!bySalesUnit && origqty % qInc !== 0)) {
       price = 0;
     }
-
-    if (price) {
+//APPDEV-4331
+    if (price >= 0 && !isNaN(origqty)) {
       price = price.toFixed(2);
       if( template && template.call ){
         $subtotal.html( template.call( null, { 'price' : price, 'quantity' : qty, 'pricingUnit' : pricingUnit } ) );
