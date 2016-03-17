@@ -522,7 +522,7 @@ public class DateUtil {
 			StringBuffer buff=new StringBuffer();
 			Calendar cal=Calendar.getInstance();
 			cal.setTime(date);
-			buff.append(cal.get(Calendar.MONTH)+1 +"/");
+			buff.append((cal.get(Calendar.MONTH)+1) +"/");
 			buff.append(cal.get(Calendar.DATE));
 
 		return buff.toString();
