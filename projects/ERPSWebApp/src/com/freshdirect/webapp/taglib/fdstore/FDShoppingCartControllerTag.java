@@ -517,6 +517,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
             } else if ("addMultipleToCart".equalsIgnoreCase(action)) {
                 session.removeAttribute("SkusAdded");
                 affectedLines = this.addMultipleToCart();
+                String cartIndex = request.getParameter("cartLine");
+                if(cartIndex != null && !cartIndex.equals("-1")){
+                	cart.removeOrderLine(Integer.parseInt(request.getParameter("cartLine")));/*APPDEV-4336*/
+                }
             } else if ("changeOrderLine".equalsIgnoreCase(action)) {
                 affectedLines = changeOrderLine() ? 1 : 0;
             } else if ("updateQuantities".equalsIgnoreCase(action)) {
@@ -925,7 +929,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                         }
                     }
                 }
-
+                
+                if(cartIndex != -1 )
+	            	cart.removeOrderLine(cartIndex);
+                
                 newCartLine.setSource(getEventSource());
                 newCartLine.setExternalAgency(originalLine.getExternalAgency());
                 newCartLine.setExternalSource(originalLine.getExternalSource());
@@ -933,12 +940,45 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                 FDEventUtil.logEditCartEvent(newCartLine, request);
                 try {
 
+                	for(int i=0;i<cart.numberOfOrderLines();i++){
+    					FDCartLineI fDCartLineI	=cart.getOrderLine(i);
+    					boolean configurationAvailable=true;
+
+    					if(!(fDCartLineI instanceof FDModifyCartLineI)){
+    						if(newCartLine.getConfiguration().getOptions().size()>0 && fDCartLineI.getConfiguration().getOptions().size() >0 ){
+    							for(String keySet:newCartLine.getConfiguration().getOptions().keySet()){
+    								if( keySet != null && fDCartLineI.getConfiguration().getOptions()!= null){
+        								if(!(newCartLine.getConfiguration().getOptions().get(keySet)!= null &&  fDCartLineI.getConfiguration().getOptions().get(keySet) !=null && 
+        										fDCartLineI.getConfiguration().getOptions().get(keySet).equalsIgnoreCase(newCartLine.getConfiguration().getOptions().get(keySet)) 
+        										)){
+        									configurationAvailable=false;		
+        								}
+        								}			
+    							}						
+    						}
+    					
+    					if(fDCartLineI.getSkuCode().equalsIgnoreCase(newCartLine.getSkuCode()) && String.valueOf(fDCartLineI.getVersion()).equalsIgnoreCase(String.valueOf(newCartLine.getVersion())) && fDCartLineI.getSalesUnit().equalsIgnoreCase(newCartLine.getSalesUnit()) && configurationAvailable){
+    						newCartLine.setQuantity(newCartLine.getQuantity()+fDCartLineI.getQuantity());
+    						cart.removeOrderLine(i);
+    						
+    					}
+    					}
+    				} 
+                	
+    				
+    	            cartLinesToAdd = new ArrayList<FDCartLineI>(1);
+    	            cartLinesToAdd.add(newCartLine);
+    	            
+//    	            int remCartIndex = cart.getOrderLineIndex(cartIndex);
+    	            
+    	            cart.addOrderLines(cartLinesToAdd);
+                	
                     if (((FDCartLineModel) newCartLine).copyInto(originalLine)) {
                         originalLine.setSource(getEventSource());
-                        cart.setOrderLine(cartIndex, originalLine);
+                       // cart.setOrderLine(cartIndex, originalLine);
                     } else {
                         // Cannot Copy into, not
-                        cart.setOrderLine(cartIndex, newCartLine);
+                       // cart.setOrderLine(cartIndex, newCartLine);
                     }
 
                 } catch (ClassCastException e) {
@@ -1053,7 +1093,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
      * @return number of orderlines that were added, zero if none/error
      */
     protected int addMultipleToCart() throws JspException {
-
+    	String cartIndex = request.getParameter("cartLine");
         int l = "addSingleToCart_".length();
         String suffix = null;
         for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
@@ -1070,7 +1110,42 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 
             FDCartLineI cartLine = this.processCartLine("_" + suffix, null, false, true);
             if (cartLine != null) {
-                cart.addOrderLine(cartLine);
+            	for(int i=0;i<cart.numberOfOrderLines();i++){
+					FDCartLineI fDCartLineI	=cart.getOrderLine(i);
+					boolean configurationAvailable=true;
+
+					if(!(fDCartLineI instanceof FDModifyCartLineI)){
+						if(cartLine.getConfiguration().getOptions().size()>0 && fDCartLineI.getConfiguration().getOptions().size() >0 ){
+							for(String keySet:cartLine.getConfiguration().getOptions().keySet()){
+								if( keySet != null && fDCartLineI.getConfiguration().getOptions()!= null){
+    								if(!( 	cartLine.getConfiguration().getOptions().get(keySet)!= null &&  
+    										fDCartLineI.getConfiguration().getOptions().get(keySet) !=null && 
+    										fDCartLineI.getConfiguration().getOptions().get(keySet).equalsIgnoreCase(cartLine.getConfiguration().getOptions().get(keySet))
+    										)){
+    									configurationAvailable=false;		
+    								}
+    								}			
+							}						
+						}
+					
+					if(fDCartLineI.getSkuCode().equalsIgnoreCase(cartLine.getSkuCode()) && String.valueOf(fDCartLineI.getVersion()).equalsIgnoreCase(String.valueOf(cartLine.getVersion())) && fDCartLineI.getSalesUnit().equalsIgnoreCase(cartLine.getSalesUnit()) && configurationAvailable){
+						cartLine.setQuantity(cartLine.getQuantity()+fDCartLineI.getQuantity());
+						cart.removeOrderLine(i);
+						
+					}
+					}
+				} 
+            	
+            	
+	            cartLinesToAdd = new ArrayList<FDCartLineI>(1);
+	            cartLinesToAdd.add(cartLine);
+	            if(cartIndex != null && !cartIndex.equals("-1")){
+	            	cart.removeOrderLine(Integer.parseInt(cartIndex));/*APPDEV-4336*/
+	            }
+	            cart.addOrderLines(cartLinesToAdd);
+            	
+            	
+                //cart.addOrderLine(cartLine);
                 cartLine.setSource(getEventSource());
                 // cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
                 cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
@@ -1104,6 +1179,44 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
                     // skip
                     continue;
                 }
+                
+            	for(int j=0;j<cart.numberOfOrderLines();j++){
+					FDCartLineI fDCartLineI	=cart.getOrderLine(j);
+					boolean configurationAvailable=true;
+
+					if(!(fDCartLineI instanceof FDModifyCartLineI)){
+						if(cartLine.getConfiguration().getOptions().size()>0 && fDCartLineI.getConfiguration().getOptions().size() >0 ){
+							for(String keySet:cartLine.getConfiguration().getOptions().keySet()){
+								if( keySet != null && fDCartLineI.getConfiguration().getOptions()!= null){
+    								if(!(
+    										fDCartLineI.getConfiguration().getOptions().get(keySet) !=null && 
+    										cartLine.getConfiguration().getOptions().get(keySet)!= null &&
+    										fDCartLineI.getConfiguration().getOptions().get(keySet).equalsIgnoreCase(cartLine.getConfiguration().getOptions().get(keySet)) 
+    										  
+    										)
+    									){
+    									configurationAvailable=false;		
+    								}
+    								}			
+							}						
+						}
+					
+					if(fDCartLineI.getSkuCode().equalsIgnoreCase(cartLine.getSkuCode()) && String.valueOf(fDCartLineI.getVersion()).equalsIgnoreCase(String.valueOf(cartLine.getVersion())) && fDCartLineI.getSalesUnit().equalsIgnoreCase(cartLine.getSalesUnit()) && configurationAvailable){
+						cartLine.setQuantity(cartLine.getQuantity()+fDCartLineI.getQuantity());
+						cart.removeOrderLine(j);
+						
+					}
+					}
+				} 
+            	
+            	// = request.getParameter("cartLine");
+	            //cartLinesToAdd = new ArrayList<FDCartLineI>(1);
+	            //cartLinesToAdd.add(cartLine);
+            	if(cartIndex != null && !"-1".equals(cartIndex)){
+            		cart.removeOrderLine(Integer.parseInt(cartIndex));/*APPDEV-4336*/
+            	}
+	            //cart.addOrderLines(cartLinesToAdd);
+                
                 cartLinesToAdd.add(cartLine);
                 // Log that an item has been added.
                 // Make sure to describe it first

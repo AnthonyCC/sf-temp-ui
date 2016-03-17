@@ -137,7 +137,11 @@ public class CartOperations {
 			
 			// Create cartlines and collect them in a list 
 			List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>(items.size());
-
+			List<FDCartLineI> existCartLine = new ArrayList<FDCartLineI>();
+			
+			HashMap<String, String> existSkucode=new HashMap<String, String>();
+			
+			boolean checkExistCartLine=false;
 			for ( AddToCartItem item : items ) {
 				AddToCartResponseDataItem responseItem = new AddToCartResponseDataItem();
 				responseData.getAtcResult().add(responseItem);
@@ -181,8 +185,43 @@ public class CartOperations {
 				
 				cartLine.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
 				cartLine.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
-
+				LOG.info( "items is null"+cart.numberOfOrderLines() );
+				/* Check Product Already In Cart*/	
+				//APPDEV-4336
+				for(int i=0;i<cart.numberOfOrderLines();i++){
+					FDCartLineI fDCartLineI	=cart.getOrderLine(i);
+					boolean configurationAvailable=true;				
+					if(!(fDCartLineI instanceof FDModifyCartLineI)){
+						if(cartLine.getConfiguration().getOptions().size()>0 && fDCartLineI.getConfiguration().getOptions().size() >0 ){
+							
+							for(String keySet:fDCartLineI.getConfiguration().getOptions().keySet()){
+								if( keySet != null){
+    								if(!( cartLine.getConfiguration().getOptions().get(keySet)!= null &&  
+    										fDCartLineI.getConfiguration().getOptions().get(keySet) !=null &&
+    										fDCartLineI.getConfiguration().getOptions().get(keySet).equalsIgnoreCase(cartLine.getConfiguration().getOptions().get(keySet)))){
+    									configurationAvailable=false;		
+    								}
+    								}								}						
+						}
+					if(fDCartLineI.getSkuCode().equalsIgnoreCase(cartLine.getSkuCode()) && String.valueOf(fDCartLineI.getVersion()).equalsIgnoreCase(String.valueOf(cartLine.getVersion())) && fDCartLineI.getSalesUnit().equalsIgnoreCase(cartLine.getSalesUnit()) && configurationAvailable){
+						cartLine.setQuantity(fDCartLineI.getQuantity()+cartLine.getQuantity());
+						existCartLine.add(cartLine);
+						checkExistCartLine=true;
+						existSkucode.put(fDCartLineI.getSkuCode()+String.valueOf(fDCartLineI.getVersion())+cartLine.getSalesUnit()+cartLine.getConfiguration().getOptions().toString(), String.valueOf(i));
+					}
+					}
+				}
+				//END APPDEV-4336]
+				if(!checkExistCartLine)
 				cartLinesToAdd.add(cartLine);
+				for(int i=0;i<existCartLine.size();i++){
+					FDCartLineI fDCartLineI=existCartLine.get(i);
+					String index=existSkucode.get(fDCartLineI.getSkuCode()+String.valueOf(fDCartLineI.getVersion())+fDCartLineI.getSalesUnit()+fDCartLineI.getConfiguration().getOptions().toString());					
+					fDCartLineI.setQuantity(fDCartLineI.getQuantity());
+					if(cart.numberOfOrderLines()>0)
+					cart.removeOrderLine(Integer.parseInt(index));
+					cartLinesToAdd.add(fDCartLineI);
+				}
 				
 				// [APPDEV-4558]
 				if (CmContextUtility.isCoremetricsAvailable(user)) {
@@ -326,6 +365,10 @@ public class CartOperations {
 			double max = extractMaximumQuantity(user, cartLine.getOrderLineId(), product);
 			double inc = product.getQuantityIncrement();
 			double oldQ = cartLine.getQuantity();
+			List<FDCartLineI> existCartLine = new ArrayList<FDCartLineI>();
+			HashMap<String, String> existSkucode=new HashMap<String, String>();
+			List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>();
+			
 			
 			if ( newQ <= min ) {
 				newQ = min;
@@ -353,14 +396,70 @@ public class CartOperations {
 			// ===============
 			// Modify cartline
 			// ===============
-			
+			boolean checkExistCartLine=false;
 			if ( !(cartLine instanceof FDModifyCartLineI) ) {			
 				// Normal cart
 				
 				cartLine.setQuantity( newQ );
 				logEditCart( user, cartLine, product, serverName );
 				
-			} else {			
+			} else {
+				double deltaQty1 = newQ - oldQ;
+				
+				if ( Math.abs(deltaQty1) < EPSILON ) {
+					// nothing to do
+					return;
+					
+				} else if ( deltaQty1 < 0 ) {
+					// need to remove some
+					cartLine.setQuantity( newQ );
+					logEditCart( user, cartLine, product, serverName );
+					
+				} else {
+					/* Check Product Already In Cart*/				
+					for(int i=0;i<cart.numberOfOrderLines();i++){
+						FDCartLineI fDCartLineI	=cart.getOrderLine(i);
+						boolean configurationAvailable=true;
+						//[APPDEV-4336]
+						if(!(fDCartLineI instanceof FDModifyCartLineI)){
+							if(cartLine.getConfiguration().getOptions().size()>0 && fDCartLineI.getConfiguration().getOptions().size() >0 ){
+								for(String keySet:cartLine.getConfiguration().getOptions().keySet()){
+									if(!(
+											cartLine.getConfiguration().getOptions().get(keySet)!= null && 
+													fDCartLineI.getConfiguration().getOptions().get(keySet) != null &&
+											fDCartLineI.getConfiguration().getOptions().get(keySet).equalsIgnoreCase(cartLine.getConfiguration().getOptions().get(keySet)) )){
+										configurationAvailable=false;		
+									}			
+								}						
+							}
+						
+						if(fDCartLineI.getSkuCode().equalsIgnoreCase(cartLine.getSkuCode()) && String.valueOf(fDCartLineI.getVersion()).equalsIgnoreCase(String.valueOf(cartLine.getVersion())) && fDCartLineI.getSalesUnit().equalsIgnoreCase(cartLine.getSalesUnit()) && configurationAvailable){
+							existCartLine.add(fDCartLineI);
+							checkExistCartLine=true;
+							existSkucode.put(fDCartLineI.getSkuCode()+String.valueOf(fDCartLineI.getVersion())+cartLine.getSalesUnit()+cartLine.getConfiguration().getOptions().toString(), String.valueOf(i));
+						}
+						}
+					}
+				}
+				//APPDEV-4336
+				if(checkExistCartLine){					
+					double addingQty=newQ;	
+				
+					
+					// add a new orderline for rest of the difference, if any
+						
+					for(int i=0;i<existCartLine.size();i++){
+						FDCartLineI fDCartLineI=existCartLine.get(i);
+						String index=existSkucode.get(fDCartLineI.getSkuCode()+String.valueOf(fDCartLineI.getVersion())+fDCartLineI.getSalesUnit());					
+						fDCartLineI.setQuantity(fDCartLineI.getQuantity()+1);
+						if(cart.numberOfOrderLines()>0)
+						cart.removeOrderLine(Integer.parseInt(index));
+						cartLinesToAdd.add(fDCartLineI);
+					}
+					cart.addOrderLines(cartLinesToAdd);
+				
+				}else{
+				
 				// Modify order cart
 	
 				// how much we're adding/removing
@@ -409,6 +508,7 @@ public class CartOperations {
 						logAddToCart( user, newLine, product, serverName );
 					}
 				}
+			}
 			}
 			
 			saveUserAndCart( user, cart );
