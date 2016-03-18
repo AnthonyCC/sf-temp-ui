@@ -120,18 +120,20 @@ public class ModifyOrderHelper {
 	public static void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
 		FDGiftCardInfoList gcList = user.getGiftCardList();
 		//Clear any hold amounts.
-		gcList.clearAllHoldAmount();
-    	List<ErpAppliedGiftCardModel> appliedGiftCards = originalOrder.getAppliedGiftCards();
-    	if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
-	    	for( ErpAppliedGiftCardModel agcmodel : appliedGiftCards ) {
-	    		String certNum = agcmodel.getCertificateNum();
-	    		FDGiftCardI fg = gcList.getGiftCard(certNum);
-	    		if(fg != null) {
-	    			//Found. Gift card already validated. set hold amount = amount applied on this order.
-	    			fg.setHoldAmount(originalOrder.getAppliedAmount(certNum));
-	    		} 
+		if(null !=gcList){
+			gcList.clearAllHoldAmount();
+	    	List<ErpAppliedGiftCardModel> appliedGiftCards = originalOrder.getAppliedGiftCards();
+	    	if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
+		    	for( ErpAppliedGiftCardModel agcmodel : appliedGiftCards ) {
+		    		String certNum = agcmodel.getCertificateNum();
+		    		FDGiftCardI fg = gcList.getGiftCard(certNum);
+		    		if(fg != null) {
+		    			//Found. Gift card already validated. set hold amount = amount applied on this order.
+		    			fg.setHoldAmount(originalOrder.getAppliedAmount(certNum));
+		    		} 
+		    	}
 	    	}
-    	}
+		}
 	}
 
 	public static void handleModificationCutoff(FDOrderAdapter order, FDSessionUser currentUser, HttpSession session, ActionResult results) {
