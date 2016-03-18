@@ -205,6 +205,7 @@ public class SinglePageCheckoutFacade {
             	//$FALL-THROUGH$
             case SELECT_PAYMENT_METHOD:
                 result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
+                result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             case SELECT_DELIVERY_TIMESLOT:
             	{
