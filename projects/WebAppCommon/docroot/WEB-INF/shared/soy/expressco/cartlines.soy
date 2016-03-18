@@ -516,7 +516,7 @@
 								
 								<label for="tipDropdown">
 									<span class="offscreen">Optional Tip:</span>
-									<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if}>
+									<select id="tipDropdown" name="tipAmount" data-component="changeETip" {if $customTip}style="display:none" aria-hidden="true"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>
 									{foreach $option in $tipAmounts}
 										<option value="{$option}" {if ($customTip and $option == 'Other Amount') or ( ('$' + $etipTotal) == $option) or (($tipApplied == false) and $option == '$5')}selected{/if}>
 										{$option}</option>			  
@@ -529,7 +529,7 @@
 									
 									<input type="text" id="tipTextBox" placeholder="0.00" name="otherTipAmount"
 									{if not $customTip}style="display:none"{/if}
-									{if $etipTotal and $customTip}value="{$etipTotal}"{/if} data-component="tooltip"/>
+									{if $etipTotal and $customTip}value="{$etipTotal}"{/if} {if $isEBTused}disabled title="Disabled for EBT purchases"{/if} data-component="tooltip"/>
 									
 									<div id="toolTipTextBox" class="tooltip" data-component="tooltipContent" role="tooltip"></div>
 								</label>
@@ -541,9 +541,9 @@
 								<input type="hidden" name="action" value="applyETip" />
 								{if $tipApplied}
 									<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
-									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled{/if}>Add Tip</button>
+									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
 								{else}
-									<button id="tipApply" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled{/if}>Add Tip</button>
+									<button id="tipApply" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
 									<button id="tipApplied" style="display:none" aria-hidden="true" class="cssbutton grey" disabled>Tip Added</button>
 								{/if}
 							</form>                

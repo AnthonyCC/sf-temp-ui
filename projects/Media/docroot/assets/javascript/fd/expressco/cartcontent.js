@@ -168,13 +168,13 @@ function set_current_payment_choice_JSonly(arr){
 	var fd = window.FreshDirect;
 	
 	/*first correct the window.FreshDirect version of what payment the customer currently has selected */
-	/*for(var i=0; i<arr.length; i++){
+	for(var i=0; i<arr.length; i++){
 		if( arr[i].selected == true ){
 			window.FreshDirect.expressco.data.payment.payments[i].selected = true;
 		}else{
 			window.FreshDirect.expressco.data.payment.payments[i].selected = false;
 		}
-	}*/
+	}
 	
 	/* APPDEV-4904, update the cart data about it's current EBT status */
 	if( (fd.cartTemplateObj) && (fd.cartTemplateObj.data) ){
