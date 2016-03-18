@@ -244,6 +244,7 @@
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
+ * @param? displayCheckout 
  * @param? customerServiceRepresentative
  * @param containsWineSection containsWineSection
  * @param? totalWithoutTax TotalWithoutTax 
@@ -265,6 +266,7 @@
 				{param customTip: $customTip /}
 				{param eTippingEnabled: $eTippingEnabled /}
 				{param avalaraEnabled: $avalaraEnabled /}
+				{param displayCheckout: $displayCheckout /}
 				{param customerServiceRepresentative: $customerServiceRepresentative /}
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
@@ -284,6 +286,7 @@
 		{param deliveryPassTrialExpired: $deliveryPassTrialExpired /}
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
+		{param displayCheckout: $displayCheckout /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
 		{param totalWithoutTax: $totalWithoutTax /}
 	{/call}
@@ -292,6 +295,7 @@
 		{param form: 'checkout' /}
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
+		{param displayCheckout: $displayCheckout /}
 	{/call}
 {/template}
 
@@ -308,6 +312,7 @@
  * @param customTip customTip
  * @param eTippingEnabled eTippingEnabled
  * @param avalaraEnabled avalaraEnabled
+ * @param? displayCheckout
  * @param containsWineSection containsWineSection
  * @param? isEBTused
  */
@@ -328,6 +333,7 @@
 				{param customTip: $customTip /}
 				{param eTippingEnabled: $eTippingEnabled /}
 				{param avalaraEnabled: $avalaraEnabled /}
+				{param displayCheckout: $displayCheckout /}
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
@@ -338,6 +344,7 @@
 	{call .footer}
 		{param avalaraEnabled: $avalaraEnabled /}
 		{param eTippingEnabled: $eTippingEnabled /}
+		{param displayCheckout: $displayCheckout /}
 	{/call}
 {/template}
 
