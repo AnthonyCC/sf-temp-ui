@@ -619,7 +619,7 @@ public class StandingOrderHelper {
 		//TODO : need to work on calculating total amount
 		if(!isUpcomingDelivery){
 				productCnt= getNoOfItemsForSoSettings(so);	
-				amount=productCnt>0?getTotalAmountForSoSettings(so):0.0;
+				amount=getTotalAmountForSoSettings(so);
 		}else{
 			productCnt= getNoOfItemsForUpcomingDelivery(so);	
 			amount=so.getUpcomingDelivery().getTotal();
@@ -653,7 +653,7 @@ public class StandingOrderHelper {
 		map.put("cutOffFormattedDeliveryDate", so.getFormattedCutOffDeliveryDate());
 		map.put("cutOffDeliveryTime", FDStandingOrder.cutOffDeliveryTime);
 		map.put("tipAmount", so.getTipAmount());
-		map.put("displayCart", isValidStandingOrder(so, false));
+		map.put("displayCart", isValidStandingOrder(so, true));
 		return map;
 	}
 	
@@ -807,7 +807,7 @@ public class StandingOrderHelper {
 	}
 	public static boolean isValidStandingOrder(FDUserI user) {
 	        FDStandingOrder so=isSO3StandingOrder(user)? user.getCurrentStandingOrder():null;
-	        return isValidStandingOrder(so,false);
+	        return isValidStandingOrder(so,true);
 		}
 
 	public static boolean isValidStandingOrder(FDStandingOrder so,boolean noErronCheck) {
@@ -838,7 +838,7 @@ public class StandingOrderHelper {
 										+ " delivery.");
 					}
 				} else {
-					if (isValidStandingOrder(so,true) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
+					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
 						if (getTotalAmountForSoSettings(so) >= FDStoreProperties.getStandingOrderHardLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {

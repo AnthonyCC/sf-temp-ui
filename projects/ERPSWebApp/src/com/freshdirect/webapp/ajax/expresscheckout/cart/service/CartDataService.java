@@ -565,7 +565,7 @@ public class CartDataService {
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
 			if (FDStoreProperties.isETippingEnabled()) {
-				if (StandingOrderHelper.isValidStandingOrder(user)) {
+				if (StandingOrderHelper.isSO3StandingOrder(user)) {
 					cartData.setEtipTotal(JspMethods.formatPrice(user
 							.getCurrentStandingOrder().getTipAmount()));
 

@@ -53,10 +53,11 @@ public class ETipService {
         if (tipAmount.length() < 1) {
             tipAmount += "0.00";
         }
-
+    	FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?
+        		user.getSoTemplateCart():user.getShoppingCart();
         try {
             double parsedTipAmount = Double.parseDouble(tipAmount);
-            double subTotal = user.getShoppingCart().getSubTotal();
+            double subTotal = cart.getSubTotal();
             double maximumTipAllowed = subTotal * CUSTOM_TIP_RATIO;
             double roundedMaximumTipAllowed = (double) Math.round(maximumTipAllowed*100)/100;
             if (roundedMaximumTipAllowed < parsedTipAmount) {
@@ -67,8 +68,6 @@ public class ETipService {
         }
 
         if (result.isEmpty()) {
-        	FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)?
-            		user.getSoTemplateCart():user.getShoppingCart();
             cart.setTip(Double.parseDouble(tipAmount));
             cart.setCustomTip(isCustomTip);
             cart.setTipApplied(true);
