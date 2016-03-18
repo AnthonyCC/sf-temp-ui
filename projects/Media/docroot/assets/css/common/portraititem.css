@@ -1066,6 +1066,7 @@ a.portrait-item-header-name:link {
 /* APPBUG-4501 */
 .qs-content .lineitems22 .itemlist-item-controls-subtotal{
 	display: inline-block;
+	width: 110px;
 	text-align: right;
 	margin-left: 142px;
 }
