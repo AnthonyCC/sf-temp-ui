@@ -42,7 +42,7 @@
           <td>
                <p>Dear <xsl:value-of select="customer/firstName"/>,</p>
                	<xsl:choose>
-					<xsl:when test="standingOrder/lastError != 'RELEASE_TIMESLOT'">
+					<xsl:when test="standingOrder/lastErrorCode != 'RELEASE_TIMESLOT'">
 						<p>We were unable to process your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order (<xsl:value-of select="standingOrder/customerListName"/>)</a> when we tried to schedule a delivery between
 						<xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="standingOrder/startTime"/></xsl:call-template>
 						and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="standingOrder/endTime"/></xsl:call-template>
