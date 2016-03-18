@@ -34,6 +34,7 @@ import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationHome;
 import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -201,6 +202,23 @@ public class SettlementLoaderUtil {
 		}
 	}
 
+	public static PayPalReconciliationHome lookupPPReconciliationHome() throws EJBException {
+		Context ctx = null;
+		try {
+			ctx = getInitialContext();
+			return (PayPalReconciliationHome) ctx.lookup("freshdirect.payment.PayPalReconciliation");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null)
+					ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.debug(ne);
+			}
+		}
+	}
+	
 	public static GiftCardManagerHome lookupGiftCardManagerHome() throws EJBException {
 		Context ctx = null;
 		try {
@@ -234,7 +252,7 @@ public class SettlementLoaderUtil {
 		ErpMailSender mailer = new ErpMailSender();
 		
 		try {
-			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), "Settlement Failure", sw.getBuffer().toString());
+			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), "TESTING - Settlement Failure - incl.PayPal Transactions", sw.getBuffer().toString());
 		} catch (MessagingException me) {
 			LOGGER.fatal("Could not send a email for Settlement Failure", me);
 		}

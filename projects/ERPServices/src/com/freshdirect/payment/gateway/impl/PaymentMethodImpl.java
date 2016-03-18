@@ -22,6 +22,7 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 	private String ewalletTxId;
 	private String vendorEWalletID;
 	private String emailID;
+	private String deviceId;
 	
 	/* (non-Javadoc)
 	 * @see com.freshdirect.payment.gateway.PaymentMethod#setEwalletTxId(java.lang.String)
@@ -250,6 +251,7 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 		this.vendorEWalletID = vendorEWalletID;
 		
 	}
+
 	/**
 	 * @return the emailID
 	 */
@@ -264,6 +266,19 @@ abstract class PaymentMethodImpl implements PaymentMethod {
 	public void setEmailID(String emailID) {
 		this.emailID = emailID;
 	}
-	
+	/**
+	 * @return the deviceId
+	 */
+	@Override
+	public String getDeviceId() {
+		return deviceId;
+	}
+	/**
+	 * @param deviceId the deviceId to set
+	 */
+	@Override
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
 	
 }

@@ -8,13 +8,17 @@ package com.freshdirect.payment.ejb;
  * 
  * @author tbalumuri
  */
-import javax.ejb.*;
-import javax.naming.*;
-import javax.jms.*;
+import javax.jms.ObjectMessage;
 
-import com.freshdirect.payment.command.PaymentCommandI;
+import org.apache.log4j.Category;
+
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.framework.core.GatewaySessionBeanSupport;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.gateway.BillingInfo;
 import com.freshdirect.payment.gateway.CreditCard;
+import com.freshdirect.payment.gateway.CreditCardType;
 import com.freshdirect.payment.gateway.ECheck;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.PaymentMethod;
@@ -22,12 +26,6 @@ import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
-
-import com.freshdirect.framework.core.*;
-
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
 
 
@@ -101,11 +99,17 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 				   CreditCard cc=(CreditCard)pm;
 					logModel.setCardType(cc.getCreditCardType());
 					logModel.setExpirationDate(cc.getExpirationDate());
-				} else if(PaymentMethodType.ECHECK.equals(pm.getType())){
+				}else if (PaymentMethodType.PP.equals(pm.getType())) {
+					logModel.setCardType(CreditCardType.PYPL);
+				}
+				else if(PaymentMethodType.ECHECK.equals(pm.getType())){
 					ECheck ec=(ECheck)pm;
 					logModel.setBankAccountType(ec.getBankAccountType());
 				}
 				
+				if(pm.getEwalletId() != null && pm.getEwalletId().equals(""+EnumEwalletType.PP.getValue())){
+					logModel.setDeviceId(pm.getDeviceId());
+				}
 				// Update EWallet ID
 				logModel.seteWalletId(response.getEwalletId());
 				logModel.seteWalletTxId(response.getEwalletTxId());

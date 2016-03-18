@@ -38,8 +38,10 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+import com.braintreegateway.CreditCard.CardType;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CallLogModel;
@@ -133,11 +135,13 @@ import com.freshdirect.payment.gateway.BillingInfo;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Merchant;
+import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.gateway.impl.PayPal;
 import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
 import com.freshdirect.payment.gateway.impl.Paymentech;
 import com.freshdirect.payment.gateway.impl.RequestFactory;
@@ -3459,13 +3463,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
     " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+
     " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
     " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+
-    " and PI.ON_FD_ACCOUNT='R' ) A, "+
+    " and PI.ON_FD_ACCOUNT='R' and pi.card_type != 'PP' ) A, "+
     " cust.salesaction sa1, cust.payment p "+
-    " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
+    " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' and p.card_type != 'PP' "+
     " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' ) "+
     " UNION "+
     " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME,GAL.E_STORE from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "+
-    " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' ";
+    " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' and CARD_TYPE != 'PP' ";
 	
 	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException {
 		Connection conn = null;
@@ -3517,9 +3521,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
             " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='PPG' "+ 
             " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
             " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE IN ('EC','CC' ) "+
-            " and PI.ON_FD_ACCOUNT='R' ) A, "+
+            " and PI.ON_FD_ACCOUNT='R' and PI.CARD_TYPE != 'PP') A, "+
             " cust.salesaction sa1, cust.payment p "+
-            " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='CAP' "+
+            " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='CAP' and p.card_type != 'PP' "+
             " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='CAPTURE' and GAL.IS_APPROVED='Y' ) ";
 			
 			public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException {

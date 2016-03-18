@@ -31,6 +31,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAbstractSettlementModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
+import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpChargeSettlementModel;
 import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackReversalModel;
@@ -65,7 +66,7 @@ import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
-public class ReconciliationSessionBean extends SessionBeanSupport{
+public class ReconciliationSessionBean extends SessionBeanSupport {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(ReconciliationSessionBean.class);
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
@@ -81,7 +82,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 				ErpSettlementModel settlement = null;
 				for(Iterator i = eb.getSettlements().iterator(); i.hasNext(); ){
 					settlement = (ErpSettlementModel)i.next();
-					if(model.getSequenceNumber().equals(settlement.getSequenceNumber())){
+					if((model.getSequenceNumber() != null && model.getSequenceNumber().equals(settlement.getSequenceNumber())) ||
+							(model.getAuthCode() != null && model.getAuthCode().equals(settlement.getAuthCode()))){
 						found = true;
 						LOGGER.info("Got another same settlement for: "+saleId);
 						break;
@@ -89,12 +91,25 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 				}
 			}			
 			
+			if (EnumPaymentMethodType.PAYPAL.equals(model.getPaymentMethodType()) &&
+					EnumCardType.PAYPAL.equals(model.getCardType())) {
+				List<ErpCaptureModel> trxns = eb.getCaptures();
+				for (ErpCaptureModel trxn : trxns) {
+					if (trxn.getGatewayOrderID().equals(model.getGatewayOrderID())) {
+						model.setProcessorTrxnId(trxn.getProfileID());
+						model.setEwallet_tx_id(trxn.getEwalletTxId());
+					}
+				}
+			}
+			
 			if((EnumSaleStatus.PAYMENT_PENDING.equals(status) ||EnumSaleStatus.SETTLEMENT_FAILED.equals(status)) && !found){
 				ErpAbstractOrderModel order = eb.getFirstOrderTransaction();
 				if(null != order && null !=order.getRafTransModel()){
 					model.setRafTransModel(RafUtil.getApproveTransModel());
 				}
+
 				order = eb.getCurrentOrder();
+
 				eb.addSettlement(model);
 				EnumSaleStatus updatedStatus = eb.getStatus();
 				if(EnumSaleStatus.SETTLED.equals(updatedStatus) && FDStoreProperties.getAvalaraTaxEnabled() && null!=order.getTaxationType() && EnumNotificationType.AVALARA.getCode().equals(order.getTaxationType().getCode())){
@@ -103,7 +118,11 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 				}
 			}
 			
-			return this.getSettlementInfo(saleId, affiliate, model.getAmount(), model.getAuthCode(), false, refund, false, false, false);
+			if (EnumPaymentMethodType.PAYPAL.equals(model.getPaymentMethodType()) &&
+					EnumCardType.PAYPAL.equals(model.getCardType()))
+				return this.getSettlementInfo(saleId, affiliate, model.getAmount(), model.getSequenceNumber(), false, refund, false, false, false);
+			else
+				return this.getSettlementInfo(saleId, affiliate, model.getAmount(), model.getAuthCode(), false, refund, false, false, false);
 			
 		}catch(FinderException fe){
 			LOGGER.warn("Cannot find sale for: "+saleId, fe);
@@ -119,7 +138,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			
 	}
 	
-	private ErpSettlementInfo getSettlementInfo(String saleId, ErpAffiliate affiliate, double amount, String authCode, boolean chargeSettlement, boolean refund, boolean settlementFail, boolean cbk, boolean cbr) throws RemoteException, FinderException {
+	public ErpSettlementInfo getSettlementInfo(String saleId, ErpAffiliate affiliate, double amount, String authCode, boolean chargeSettlement, boolean refund, boolean settlementFail, boolean cbk, boolean cbr) throws RemoteException, FinderException {
 		ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 		ErpSaleModel sale = (ErpSaleModel) eb.getModel();
 		ErpAbstractSettlementModel settlement = null;
@@ -128,7 +147,13 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 		}else if(chargeSettlement) {
 			settlement = sale.getLastChargeSettlement();
 		}else{
-			settlement = sale.getSettlement(affiliate, amount, authCode);
+			ErpPaymentMethodI pm = sale.getCurrentOrder().getPaymentMethod();
+			if (EnumPaymentMethodType.PAYPAL.equals(pm.getPaymentMethodType()) &&
+					EnumCardType.PAYPAL.equals(pm.getCardType())) {
+				settlement = sale.getSettlement(affiliate, authCode);
+			} else {
+				settlement = sale.getSettlement(affiliate, amount, authCode);
+			}
 		}
 		
 		boolean settlementFailedAfterSettled = this.isSettlementFailedAfterSettled(saleId);
@@ -269,6 +294,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 		new ErpCreateCaseCommand(LOCATOR, info).execute();
 	}
 	
+
 	private final static String summaryQuery = "select batch_number from cust.settlement where process_period_start = ? and process_period_end = ? ";
 	
 	public void addSettlementSummary(ErpSettlementSummaryModel model) {
@@ -957,5 +983,42 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 		SapSendSettlement command = new SapSendSettlement(fileName, folder);
 		command.execute();
 		LOGGER.info("End Send Settlement Recon to Sap: "+ fileName);
+	}
+	
+	private static final String UPDATE_PROCESSED_DATE = "update cust.settlement " +
+			"set PROCESSED_TIME_DATE = systimestamp, IS_LOCKED = null where PROCESS_PERIOD_START = ?";
+	public void updatePPProcessedDate(Date date) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		LOGGER.debug("Finishing PayPal Settlements for " + date);
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(UPDATE_PROCESSED_DATE);
+			ps.setDate(1, new java.sql.Date(date.getTime()));
+			rs = ps.executeQuery();
+			if (!rs.next())
+				throw new EJBException("Update to DB failed for unknown reason. Please try again ");
+		} catch (SQLException e) {
+			LOGGER.debug("SQLException: ", e);
+			throw new EJBException("SQLException: ", e);
+		} finally {
+			try{
+				if(rs != null){
+					rs.close();
+					rs = null;
+				}
+				if(ps != null){
+					ps.close();
+					ps = null;
+				}
+				if(conn != null){
+					conn.close();
+					conn = null;
+				}
+			}catch(SQLException se){
+				LOGGER.warn("Exception while trying to cleanup: ", se);
+			}
+		}
 	}
 }

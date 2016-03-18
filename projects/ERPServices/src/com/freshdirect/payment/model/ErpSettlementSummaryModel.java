@@ -17,6 +17,7 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	
 	private List summaryDetails = new ArrayList(); //list of detail records
 	private List invoices = new ArrayList(); //list of invoices
+	private List settlementTrxns = new ArrayList(); //list of transactions
 	
 	private Date processPeriodStart = null;
 	private Date processPeriodEnd = null;
@@ -28,6 +29,16 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 	private int numberOfAdjustments;
 	private double adjustmentAmount;
 	private Date settlementFileDate = null;
+	
+	private String affiliateAccountId = null;
+	private long totalGrossCredit = 0;
+	private long totalGrossDebit = 0;
+	private long totalTransactionFeeCredit = 0;
+	private long totalTransactionFeeDebit = 0;
+	private String settlementSource = null;
+	
+	private String isLocked = "";
+	private String status = "";
 	
 	/**
 	 * no argument Constructor
@@ -51,6 +62,36 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.numberOfAdjustments = numberOfAdjustments;
 		this.adjustmentAmount = adjustmentAmount;
 		this.settlementFileDate = settlementFileDate;
+	}
+		
+	/**
+	 * all argument Constructor
+	 */
+	public ErpSettlementSummaryModel(Date processPeriodStart, Date processPeriodEnd, Date batchDate, String batchNumber, Date processDate, Date depositDate,
+									  double netSalesAmount, int numberOfAdjustments, double adjustmentAmount, Date settlementFileDate,
+									  String affiliateAccountId, long totalGrossCredit, long totalGrossDebit, long totalTransactionFeeCredit,
+									  long totalTrasactionFeeDebit){
+		this(processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate,
+									  netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate);
+		this.affiliateAccountId = affiliateAccountId;
+		this.totalGrossCredit = totalGrossCredit;
+		this.totalGrossDebit = totalGrossDebit;
+		this.totalTransactionFeeCredit = totalTransactionFeeCredit;
+		this.totalTransactionFeeDebit = totalTrasactionFeeDebit;
+	}
+	
+	
+	/**
+	 * all argument Constructor
+	 */
+	public ErpSettlementSummaryModel(Date processPeriodStart, Date processPeriodEnd, Date batchDate, String batchNumber, Date processDate, Date depositDate,
+									  double netSalesAmount, int numberOfAdjustments, double adjustmentAmount, Date settlementFileDate,
+									  String affiliateAccountId, long totalGrossCredit, long totalGrossDebit, long totalTransactionFeeCredit,
+									  long totalTrasactionFeeDebit, String isLocked, String status){
+		this(processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate,
+									  netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate);
+		this.isLocked = isLocked;
+		this.status = status;
 	}
 	
 	public Date getProcessPeriodStart(){
@@ -144,6 +185,86 @@ public class ErpSettlementSummaryModel extends ModelSupport{
 		this.invoices.add(invoice);
 	}
 	
+	public double getNetSalesAmount() {
+		return netSalesAmount;
+	}
+
+	public void setNetSalesAmount(double netSalesAmount) {
+		this.netSalesAmount = netSalesAmount;
+	}
+
+	public String getAffiliateAccountId() {
+		return affiliateAccountId;
+	}
+
+	public void setAffiliateAccountId(String affiliateAccountId) {
+		this.affiliateAccountId = affiliateAccountId;
+	}
+
+	public long getTotalGrossCredit() {
+		return totalGrossCredit;
+	}
+
+	public void setTotalGrossCredit(long totalGrossCredit) {
+		this.totalGrossCredit = totalGrossCredit;
+	}
+
+	public long getTotalGrossDebit() {
+		return totalGrossDebit;
+	}
+
+	public void setTotalGrossDebit(long totalGrossDebit) {
+		this.totalGrossDebit = totalGrossDebit;
+	}
+
+	public long getTotalTransactionFeeCredit() {
+		return totalTransactionFeeCredit;
+	}
+
+	public void setTotalTransactionFeeCredit(long totalTransactionFeeCredit) {
+		this.totalTransactionFeeCredit = totalTransactionFeeCredit;
+	}
+
+	public long getTotalTransactionFeeDebit() {
+		return totalTransactionFeeDebit;
+	}
+
+	public void setTotalTransactionFeeDebit(long totalTransactionFeeDebit) {
+		this.totalTransactionFeeDebit = totalTransactionFeeDebit;
+	}
+
+	public String getSettlementSource() {
+		return settlementSource;
+	}
+
+	public void setSettlementSource(String settlementSource) {
+		this.settlementSource = settlementSource;
+	}
+	
+	public List<ErpSettlementTransactionModel> getSettlementTrxns() {
+		return settlementTrxns;
+	}
+
+	public void setSettlementTrxns(List settlementTrxns) {
+		this.settlementTrxns = settlementTrxns;
+	}
+	
+	public String getIsLocked() {
+		return isLocked;
+	}
+
+	public void setIsLocked(String isLocked) {
+		this.isLocked = isLocked;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String toString() {
 		return super.toString() + " " + System.identityHashCode(this); 
 	}

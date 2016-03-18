@@ -21,8 +21,8 @@ public static void log(FDGatewayActivityLogModel log, Connection conn) {
 				"CUSTOMER_ADDRESS1,CUSTOMER_ADDRESS2,CUSTOMER_CITY,CUSTOMER_STATE,CUSTOMER_ZIP,"+
 				"CUSTOMER_COUNTRY,ORDER_ID,TX_REF_NUM,TX_REF_IDX,IS_PROCESSED,IS_APPROVED,IS_DECLINED,"+
 				"IS_PROCESSING_ERROR,AUTH_CODE,IS_AVS_MATCH,IS_CVV_MATCH,AVS_RESPONSE_CODE,"+
-				"CVV_RESPONSE_CODE,RESPONSE_CODE,RESPONSE_CODE_ALT,STATUS_CODE,STATUS_MSG,AMOUNT,EWALLET_ID, EWALLET_TX_ID,E_STORE" +
-				") values(?,SYSDATE,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"CVV_RESPONSE_CODE,RESPONSE_CODE,RESPONSE_CODE_ALT,STATUS_CODE,STATUS_MSG,AMOUNT,EWALLET_ID, EWALLET_TX_ID,E_STORE,DEVICE_ID" +
+				") values(?,SYSDATE,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int i=1;
 		ps.setInt(i++, Integer.parseInt(SequenceGenerator.getNextIdFromSequence(conn, "MIS.GATEWAY_LOG_SEQUENCE")));
 		if(null !=log.getTransactionType()){
@@ -194,6 +194,11 @@ public static void log(FDGatewayActivityLogModel log, Connection conn) {
 			ps.setString(i++, EnumEStoreId.FD.getContentId());
 		}
 		
+		if(null !=log.getDeviceId()){
+			ps.setString(i++, log.getDeviceId());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		ps.execute();
 		
 	} catch (SQLException e) {

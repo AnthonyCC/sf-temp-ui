@@ -130,10 +130,38 @@ public class CustomerStrategy implements PromotionStrategyI {
 							//Ignore
 						}
 						 EnumEwalletType eWalletType = (null != eWalletId? EnumEwalletType.getEnum(eWalletId): null);
+						 
+						 
 						 if(null ==eWalletType || !eWalletType.getName().equals(EnumCardType.MASTERPASS.getFdName())){
 							 context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 							 return DENY;
 						 }
+					}else{
+						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+						return DENY;
+					}
+					
+				} else if(paymentTypes.contains(EnumCardType.PAYPAL)) {
+					if(null !=cart.getPaymentMethod().geteWalletID()){
+						Integer eWalletId = null;
+						try {
+							eWalletId = Integer.parseInt(cart.getPaymentMethod().geteWalletID());
+						} catch (NumberFormatException e) {
+							//Ignore
+						}
+						 EnumEwalletType eWalletType = (null != eWalletId? EnumEwalletType.getEnum(eWalletId): null);
+						 
+						/* if(null ==eWalletType || !eWalletType.getName().equals(EnumCardType.PAYPAL.getFdName())){
+							 context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+							 return DENY;
+						 }*/
+						 if(null ==eWalletType || !(cart.getPaymentMethod()!= null && cart.getPaymentMethod().getCardType() != null && 
+								 EnumCardType.PAYPAL.equals(cart.getPaymentMethod().getCardType()))){
+							 context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+							 return DENY;
+						 }
+						 
+						 
 					}else{
 						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 						return DENY;

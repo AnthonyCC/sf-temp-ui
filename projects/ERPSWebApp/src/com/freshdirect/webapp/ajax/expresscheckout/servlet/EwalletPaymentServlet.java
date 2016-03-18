@@ -12,16 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletUtil;
@@ -49,37 +45,6 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 
 	private static final long serialVersionUID = -6000498208914127773L;
 
-/*	private static final String EWALLET_MP_PAIRING_START = "MP_Pairing_Start";
-	private static final String EWALLET_MP_PAIRING_END = "MP_Pairing_End";
-	private static final String EWALLET_MP_CONNECT_START="MP_Connect_Start";
-	private static final String EWALLET_MP_CONNECT_END="MP_Connect_End";
-	private static final String EWALLET_MP_EXPRESS_CHECKOUT = "MP_Express_Checkout";
-	private static final String EWALLET_MP_GET_ALL_PAYMETHOD_IN_EWALLET="MP_All_PayMethod_In_Ewallet";
-	private static final String EWALLET_MP_DISCONNECT_EWALLET="MP_Disconnect_Ewallet";
-	private static final String PARAM_PAIRING_TOKEN = "pairing_token";
-	private static final String PARAM_PAIRING_VERIFIER = "pairing_verifier";
-	private final String EWALLET_PAIRED_PAYMENT_METHOD = "mpPairedPaymentMethod";
-	private final String EWALLET_PRECHECKOT_CARDID = "precheckout_CardId";
-	private static final String ACTION = "action";
-
-*/	
-	private static final String MP_EWALLET_RESPONSE_STATUS = "mpstatus";
-	private static final String EWALLET_MP_STANDARD_CHECKOUT="MP_Standard_Checkout";
-	private static final String EWALLET_MP_STANDARD_CHECKOUT_DATA="MP_Standard_CheckoutData";
-	private static final String MASTERPASS_CANCEL_STATUS="cancel";
-	private static final String MASTERPASS_FAILURE_STATUS="failure";
-	private static final String MASTERPASS_TRANSACTIONID="transactionId";
-	private static final String MASTERPASS_REQ_ATTR_ACTION_COMPLETED="actionCompleted";
-	private static final String MP_REQ_ATTR_ACTION_COMPLETED_VALUE="Standard_Checkout";
-	private static final String PARAM_REQUEST_TOKEN = "oauth_token";
-	private static final String PARAM_OAUTH_VERIFIER = "oauth_verifier";
-	private static final String PARAM_CHECKOUT_URL = "checkout_resource_url";
-	private static final String EWALLET_TYPE = "ewalletType";
-	private static final String MP_EWALLET_NAME = "MP";
-	private final String EWALLET_ERROR_CODE = "WALLET_ERROR";
-
-
-
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response, FDUserI user)
@@ -106,6 +71,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			throws HttpErrorResponse {
 		try {
 			
+			LOGGER.debug("Inside EwalletPaymentServlet - process()");
 			// Create EWallet Request Object
 			EwalletRequestData ewalletRequestData = new EwalletRequestData();
 			createEwalletRequestData(ewalletRequestData, request, response,user);
@@ -117,7 +83,10 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			EwalletResponseData ewalletResponseData = null;
 			final FormDataRequest requestData = EwalletBaseServlet
 					.parseRequestData(request, FormDataRequest.class);
-
+			
+			// Read all the params from Request
+			checkRequestParams(requestData,ewalletRequestData);
+			
 			PageAction pageAction = getPageAction(request, ewalletRequestData,
 					requestData);
 
@@ -161,19 +130,56 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     				break;
     			}*/
     			case MASTERPASS_STANDARD_CHECKOUT: {
-    				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT);
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT);
     				EwalletUtil.prepareShoppingCartItems(user, ewalletRequestData, ewalletRequestData.getAppBaseUrl()
     						+ ewalletRequestData.getContextPath());
     				break;
     			}
     			case MASTERPASS_STANDARD_CHECKOUT_DATA: {
-    				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT_DATA);
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA);
     				// Check for Error response from EWallet Vendor
     				if( checkWalletErrorResponse(ewalletRequestData,response)){
     					response.sendRedirect("/expressco/checkout.jsp");
     				}
     				break;
     			}
+    			case PAYPAL_START_PAIRING: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_START_PAIRING);
+    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
+    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
+    				}
+    				break;
+    			}
+    			case PAYPAL_END_PAIRING: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_END_PAIRING);
+    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
+    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
+    				}
+    				break;
+    			}
+    			case PAYPAL_START_CONNECTING: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_START_CONNECTING);
+    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
+    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
+    				}
+    				break;
+    			}
+    			
+    			case PAYPAL_END_CONNECTING: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_END_CONNECTING);
+    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
+    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
+    				}
+    				break;
+    			}
+    			case PAYPAL_WALLET_DISCONNECT: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_DISCONNECT);
+    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
+    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
+    				}
+    				break;
+    			}
+    			
 				default:
 					break;
 				}
@@ -183,11 +189,17 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			EwalletRequestProcessor processor = new EwalletRequestProcessor();
 			ewalletResponseData = processor.processRequest(ewalletRequestData);
 
-			if(ewalletRequestData.geteWalletAction().equals(EWALLET_MP_STANDARD_CHECKOUT_DATA)){
+			if(ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
 				postStandardCheckoutData(ewalletResponseData, request, response, user);
 			}
 			
-			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request);
+			
+			if(ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_PP_END_PAIRING)){
+				user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
+				request.getSession().removeAttribute(EwalletConstants.EWALLET_SESSION_ATTRIBUTE_NAME);
+			}
+			
+			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request,ewalletRequestData.geteWalletType());
 			
 			final FormDataResponse eWalletSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(requestData,validationResult);
 			// Submit the response
@@ -207,12 +219,38 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			 
 			eWalletSubmitResponse.getSubmitForm().setResult(eWalletResponseMap);
 			writeResponseData(response, eWalletSubmitResponse);
-
+			
+			LOGGER.debug("Exit EwalletPaymentServlet - process()");
 		} catch (final Exception e) {
 			returnHttpError(500, "Error while submit EWallet response to user "+ user.getUserId(), e);
 		}
 	}
 
+	/**
+	 * @param requestData
+	 * @param ewalletRequestData
+	 */
+	private void checkRequestParams(FormDataRequest requestData, EwalletRequestData ewalletRequestData){
+		
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE, (String)requestData.getFormData().get(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE));
+		}
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_FIRST_NAME)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_FIRST_NAME, (String)requestData.getFormData().get(EwalletConstants.PARAM_FIRST_NAME));
+		}
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_LAST_NAME)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_LAST_NAME, (String)requestData.getFormData().get(EwalletConstants.PARAM_LAST_NAME));
+		}
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_EMAILID)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_EMAILID, (String)requestData.getFormData().get(EwalletConstants.PARAM_EMAILID));
+		}
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_ORIGIN)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_ORIGIN, (String)requestData.getFormData().get(EwalletConstants.PARAM_ORIGIN));
+		}
+		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_DEVICEID)){
+			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_DEVICEID, (String)requestData.getFormData().get(EwalletConstants.PARAM_DEVICEID));
+		}
+	}
 	/**
 	 * User can click on "Cancel button on Masterpass Light UI before or after login to Wallet
 	 * @param ewalletRequestData
@@ -221,12 +259,12 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	 */
 	private boolean checkWalletErrorResponse(EwalletRequestData ewalletRequestData,HttpServletResponse response){
 		boolean retVal = false;
-		if(ewalletRequestData.getReqParams() != null && ewalletRequestData.getReqParams().containsKey(MP_EWALLET_RESPONSE_STATUS)){
-			String responseStatus = ewalletRequestData.getReqParams().get(MP_EWALLET_RESPONSE_STATUS);
-			if(responseStatus.equals(MASTERPASS_CANCEL_STATUS) || responseStatus.equals(MASTERPASS_FAILURE_STATUS)){
+		if(ewalletRequestData.getReqParams() != null && ewalletRequestData.getReqParams().containsKey(EwalletConstants.MP_EWALLET_RESPONSE_STATUS)){
+			String responseStatus = ewalletRequestData.getReqParams().get(EwalletConstants.MP_EWALLET_RESPONSE_STATUS);
+			if(responseStatus.equals(EwalletConstants.MASTERPASS_CANCEL_STATUS) || responseStatus.equals(EwalletConstants.MASTERPASS_FAILURE_STATUS)){
 				retVal =  true;
 			}else{
-				ewalletRequestData.seteWalletAction(EWALLET_MP_STANDARD_CHECKOUT_DATA);
+				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA);
 				retVal =  false;
 			}
 		}
@@ -236,7 +274,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	 * @param ewalletResponseData
 	 * @return
 	 */
-	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request){
+	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request, String ewalletType){
 		ValidationResult validationResult = new ValidationResult();
 		com.freshdirect.fdstore.ewallet.ValidationResult validresult = ewalletResponseData.getValidationResult();
 		if(validresult != null && validresult.getErrors() !=null && !validresult.getErrors().isEmpty()){
@@ -247,7 +285,8 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				respError.setName(error.getName());
 				respError.setError(error.getError());
 				resValidErrors.add(respError);
-				request.getSession().setAttribute(EWALLET_ERROR_CODE, error.getName());
+				request.getSession().setAttribute(EwalletConstants.EWALLET_ERROR_CODE, error.getName());
+				request.getSession().setAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE,ewalletType);
 			}
 			validationResult.setErrors(resValidErrors);
 		}
@@ -268,14 +307,16 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				return;
 			}
 		}else{
-			request.getSession().setAttribute(MASTERPASS_TRANSACTIONID, ewalletResponseData.getTransactionId());
-			request.setAttribute(MASTERPASS_REQ_ATTR_ACTION_COMPLETED, MP_REQ_ATTR_ACTION_COMPLETED_VALUE);
+			request.getSession().setAttribute(EwalletConstants.MASTERPASS_TRANSACTIONID, ewalletResponseData.getTransactionId());
+			request.setAttribute(EwalletConstants.MASTERPASS_REQ_ATTR_ACTION_COMPLETED, EwalletConstants.MP_REQ_ATTR_ACTION_COMPLETED_VALUE);
 			if (ewalletResponseData.getPaymentMethod() != null && ewalletResponseData.getPaymentMethod().getPK() != null)
 				request.getSession().setAttribute("WALLET_CARD_ID",""+ewalletResponseData.getPaymentMethod().getPK().getId());
 			user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
 			request.getRequestDispatcher(ewalletResponseData.getRedirectUrl()).forward(request, response);
 		}
 	}
+	
+	
 	/**
 	 * @param request
 	 * @param ewalletRequestData
@@ -319,18 +360,18 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 		Map<String,String> params = new Hashtable<String, String>(); 
 		
 		// Masterpass Standard Checkout request parameters after Light Box finished
-		if (request.getParameter(PARAM_REQUEST_TOKEN) != null){
-			params.put(PARAM_REQUEST_TOKEN, request.getParameter(PARAM_REQUEST_TOKEN));
+		if (request.getParameter(EwalletConstants.PARAM_REQUEST_TOKEN) != null){
+			params.put(EwalletConstants.PARAM_REQUEST_TOKEN, request.getParameter(EwalletConstants.PARAM_REQUEST_TOKEN));
 		}
-		if (request.getParameter(PARAM_OAUTH_VERIFIER) != null){
-			params.put(PARAM_OAUTH_VERIFIER, request.getParameter(PARAM_OAUTH_VERIFIER));
+		if (request.getParameter(EwalletConstants.PARAM_OAUTH_VERIFIER) != null){
+			params.put(EwalletConstants.PARAM_OAUTH_VERIFIER, request.getParameter(EwalletConstants.PARAM_OAUTH_VERIFIER));
 		}
-		if (request.getParameter(PARAM_CHECKOUT_URL) != null){
-			params.put(PARAM_CHECKOUT_URL, request.getParameter(PARAM_CHECKOUT_URL));
+		if (request.getParameter(EwalletConstants.PARAM_CHECKOUT_URL) != null){
+			params.put(EwalletConstants.PARAM_CHECKOUT_URL, request.getParameter(EwalletConstants.PARAM_CHECKOUT_URL));
 		}
-		if (request.getParameter(MP_EWALLET_RESPONSE_STATUS) != null) {
-			params.put(MP_EWALLET_RESPONSE_STATUS, request.getParameter(MP_EWALLET_RESPONSE_STATUS));
-			ewalletRequestData.seteWalletResponseStatus(request.getParameter(MP_EWALLET_RESPONSE_STATUS).toString());
+		if (request.getParameter(EwalletConstants.MP_EWALLET_RESPONSE_STATUS) != null) {
+			params.put(EwalletConstants.MP_EWALLET_RESPONSE_STATUS, request.getParameter(EwalletConstants.MP_EWALLET_RESPONSE_STATUS));
+			ewalletRequestData.seteWalletResponseStatus(request.getParameter(EwalletConstants.MP_EWALLET_RESPONSE_STATUS).toString());
 		}
 		// Uncomment for Masterpass ExpressCheckout
 /*		
@@ -352,10 +393,10 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			ewalletRequestData.setPrecheckoutCardId(request.getAttribute(EWALLET_PRECHECKOT_CARDID).toString());
 		}
 */		
-		if (request.getParameter(EWALLET_TYPE) != null) {
-			ewalletRequestData.seteWalletType(request.getParameter(EWALLET_TYPE));
+		if (request.getParameter(EwalletConstants.EWALLET_TYPE) != null) {
+			ewalletRequestData.seteWalletType(request.getParameter(EwalletConstants.EWALLET_TYPE));
 		} else {
-			ewalletRequestData.seteWalletType(MP_EWALLET_NAME);
+			ewalletRequestData.seteWalletType(EwalletConstants.MP_EWALLET_NAME);
 		}
 		ewalletRequestData.setReqParams(params);
 			

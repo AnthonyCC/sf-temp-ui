@@ -101,7 +101,9 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	public PrimaryKey create(Connection conn) throws SQLException {
 
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
 		int index = 1;
 			ps.setString(index++, id);
 			ps.setString(index++, this.getParentPK().getId());
@@ -213,6 +215,13 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			
+			if (model.getDeviceId() != null) {
+				ps.setString(index++, model.getDeviceId());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);
+			}
+
 		//}
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -233,7 +242,8 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, " +
 				"ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED," +
-				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+
+				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -261,6 +271,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.seteWalletID(rs.getString("EWALLET_ID"));
 				model.setVendorEWalletID(rs.getString("VENDOR_EWALLET_ID"));
 				model.setEmailID(rs.getString("PAYPAL_ACCOUNT_ID"));
+				model.setDeviceId(rs.getString("DEVICE_ID"));
 				
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());

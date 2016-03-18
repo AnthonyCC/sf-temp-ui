@@ -249,8 +249,8 @@ public class GatewayAdapter {
 		Request request=RequestFactory.getRequest(transType);
 		BillingInfo billingInfo=null;
 		Merchant merchant=getMerchant(merchantID);
-		if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
-			
+		if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || 
+				EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType())) {
 			billingInfo=BillingInfoFactory.getBillingInfo(merchant, getCreditCardModel(paymentMethod));
 		}
 		else if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
@@ -409,7 +409,7 @@ public class GatewayAdapter {
 		else if(EnumCardType.VISA.equals(ccType))
 			return CreditCardType.VISA;
 		else if(EnumCardType.PAYPAL.equals(ccType))
-			return CreditCardType.PP;
+			return CreditCardType.PYPL;
 		return null;
 	}
 	private static EnumPaymentMethodType translate(PaymentMethodType pmType) {
@@ -450,8 +450,6 @@ public class GatewayAdapter {
 	}
 	
 	public static CreditCard getCreditCardModel(ErpPaymentMethodI paymentMethod) {
-		
-		
 			CreditCard cc=PaymentMethodFactory.getCreditCard();
 			EnumCardType cardType=paymentMethod.getCardType();
 			if(cardType!=null) {
@@ -474,6 +472,7 @@ public class GatewayAdapter {
 			cc.setEwalletTxId(paymentMethod.geteWalletTrxnId());
 			cc.setVendorEWalletID(paymentMethod.getVendorEWalletID());
 			cc.setEmailID(paymentMethod.getEmailID());
+			cc.setDeviceId(paymentMethod.getDeviceId());
 			return cc;
 		
 	}
@@ -498,6 +497,7 @@ public class GatewayAdapter {
 			ec.setCustomerID(paymentMethod.getCustomerId());
 			return ec;
 	}
+	
 	/**
 	 * @param saleResult
 	 * @param paymentMethod
@@ -512,7 +512,7 @@ public class GatewayAdapter {
 		ErpAuthorizationModel model = new ErpAuthorizationModel();
 		model.setTransactionSource(EnumTransactionSource.SYSTEM);
 		
-		if(saleResult.getTarget().getProcessorResponseText().equals(EnumPaymentResponse.APPROVED.getDescription())) {
+		if(saleResult.isSuccess() && saleResult.getTarget().getStatus().equals(Transaction.Status.AUTHORIZED)) {
 			model.setResponseCode(EnumPaymentResponse.APPROVED); //hack for AVS bypass	
 			model.setAvs("Y");
 			model.setSequenceNumber(saleResult.getTarget().getPayPalDetails().getAuthorizationId());	
@@ -525,9 +525,9 @@ public class GatewayAdapter {
 			model.setProfileID(saleResult.getTarget().getPayPalDetails().getToken());
 			model.setMerchantId(saleResult.getTarget().getMerchantAccountId());
 			model.setDescription(PP_DECRIPTION_AUTH);
-			model.setEwalletTxId(saleResult.getTarget().getId());
 			// Payment Method 
 			model.setCardType(EnumCardType.PAYPAL);
+			model.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 			String accountNumber = paymentMethod.getAccountNumber();
 			if(accountNumber!=null && accountNumber.length()>3){
 				model.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));

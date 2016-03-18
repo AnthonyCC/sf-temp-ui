@@ -26,6 +26,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -50,6 +51,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCashbackModel;
@@ -111,11 +113,18 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderLineI;
@@ -549,7 +558,31 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			
 			reconcileCustomerCredits(erpCustomerPk, order);
-
+			
+			ErpPaymentMethodI origPM = originalOrder.getPaymentMethod();
+			if (EnumSaleStatus.AUTHORIZED.equals(sale.getStatus()) && 
+					EnumPaymentMethodType.PAYPAL.equals(origPM.getPaymentMethodType()) && EnumCardType.PAYPAL.equals(origPM.getCardType())) {
+				ErpPaymentMethodI currPM = order.getPaymentMethod();
+				if (!(EnumPaymentMethodType.PAYPAL.equals(currPM.getPaymentMethodType()) &&
+						EnumCardType.PAYPAL.equals(currPM.getCardType())) || !(currPM.getProfileID().equals(origPM.getProfileID()))) {
+			     	List<ErpAuthorizationModel> auths = sale.getPPAuthorizations();
+			    	for (ErpAuthorizationModel auth : auths) {
+			    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
+			    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
+			    		try {
+				    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
+				    		Response response = gateway.reverseAuthorize(request);
+				    		if (!response.isApproved()) {
+				    			LOGGER.warn("Reverse auth failed for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+				    		} else {
+				    			LOGGER.info("Auth voided for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+				    		}
+			    		} catch (ErpTransactionException e) {
+			    			LOGGER.warn("Reverse auth failed for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+			    		}
+			    	}
+				}
+			}
 			LOGGER.info("Modify order - successful. saleId=" + saleId);
 		} catch (CreateException ce) {
 			throw new EJBException(ce);
@@ -1668,24 +1701,68 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			  }		
 			
 			PaymentManager paymentManager = new PaymentManager();
+			List<ErpAuthorizationModel> auths = saleEB.getAuthorizations();
+
 			if(fdAmount > 0) {
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
+					for (ErpAuthorizationModel auth : auths) {
+						if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+								EnumCardType.PAYPAL.equals(auth.getCardType()) &&  auth.getAffiliate() != null &&
+								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
+							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+						}
+					}
+				}
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdAmount, 0.0, FD);
 				saleEB.addCashback(cashback);
 			}
 			
 			if(bcAmount > 0) {
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+					throw new ErpTransactionException("PayPal does not support affiliate BC ");
+				}
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, bcAmount, 0.0, BC);
 				saleEB.addCashback(cashback);
 			}
 			if(usqAmount > 0) {
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+					for (ErpAuthorizationModel auth : auths) {
+						if (auth.getAffiliate() != null &&
+								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
+							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+						}
+					}
+				}
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, usqAmount, 0.0, USQ);
 				saleEB.addCashback(cashback);
 			}
 			if(fdwAmount > 0) {
-				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+					for (ErpAuthorizationModel auth : auths) {
+						if (auth.getAffiliate() != null &&
+								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW))) {
+							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+						}
+					}
+				}
+				ErpCashbackModel cashback = null;
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+					cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+				} else {
+					cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+				}
 				saleEB.addCashback(cashback);
 			}
 			if(fdxAmount > 0) {
+				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
+						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
+					throw new ErpTransactionException("PayPal does not support affiliate FDX ");
+				}
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdxAmount, 0.0, FDX);
 				saleEB.addCashback(cashback);
 			}

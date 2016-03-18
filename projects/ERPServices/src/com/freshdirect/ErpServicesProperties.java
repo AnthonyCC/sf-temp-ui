@@ -218,6 +218,14 @@ public class ErpServicesProperties {
 	public final static String PROP_EWALLET_NOTIFY_EMAIL_ENABLED	= "ewallet.notify.email.send";
 	public final static String PROP_EWALLET_POSTBACK_CHUNK_SIZE = "ewallet.notify.postback.chunk";
 	public final static String PROP_EWALLET_POSTBACK_MAXDAYS = "ewallet.notify.postback.maxdays";
+	private final static String PROP_PP_SETTLEMENT_STL_EVENTCODES = "dataloader.pp.stl.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_STF_EVENTCODES = "dataloader.pp.stf.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_CBK_EVENTCODES = "dataloader.pp.cbk.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_CBR_EVENTCODES = "dataloader.pp.cbr.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_MISC_FEE_EVENTCODES = "dataloader.pp.cbp.eventcodes"; //charge back processing fee
+	private final static String PROP_PP_SETTLEMENT_REF_EVENTCODES = "dataloader.pp.ref.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_FD_ACCOUNTID = "dataloader.pp.fd.accountid";
+	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	
 	static {
 		Properties defaults = new Properties();
@@ -394,6 +402,15 @@ public class ErpServicesProperties {
 		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_ENABLED, "true");
 		defaults.put(PROP_EWALLET_POSTBACK_CHUNK_SIZE, "0");
 		defaults.put(PROP_EWALLET_POSTBACK_MAXDAYS, "7");
+		
+		defaults.put(PROP_PP_SETTLEMENT_STL_EVENTCODES, "T0006, T0003");
+		defaults.put(PROP_PP_SETTLEMENT_STF_EVENTCODES, "");
+		defaults.put(PROP_PP_SETTLEMENT_CBK_EVENTCODES, "T1106, T1201");
+		defaults.put(PROP_PP_SETTLEMENT_CBR_EVENTCODES, "T1202, T1205, T1207, T1208");
+		defaults.put(PROP_PP_SETTLEMENT_MISC_FEE_EVENTCODES, "T0100, T0106, T0107, T1108");
+		defaults.put(PROP_PP_SETTLEMENT_REF_EVENTCODES, "T1107");
+		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
+		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -949,5 +966,33 @@ public class ErpServicesProperties {
 			result = 7;
 		}
 		return result;
+	}
+	
+	public static String getPPFDAccountIds() {
+		return config.getProperty(PROP_PP_SETTLEMENT_FD_ACCOUNTID);
+	}
+	
+	public static String getPPFDWAccountIds() {
+		return config.getProperty(PROP_PP_SETTLEMENT_FDW_ACCOUNTID);
+	}
+	
+	public static String getPPSTLEventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_STL_EVENTCODES);
+	}
+	
+	public static String getPPSTFEventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_STF_EVENTCODES);
+	}
+	
+	public static String getPPCBKEventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_CBK_EVENTCODES);
+	}
+	
+	public static String getPPCBREventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_CBR_EVENTCODES);
+	}
+	
+	public static String getPPREFEventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_REF_EVENTCODES);
 	}
 }

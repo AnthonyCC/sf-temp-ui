@@ -44,6 +44,10 @@
 								<td>MasterPass</td>
 							</tr>
 							<tr>
+								<td><input type="checkbox" id="payPal" name="payPal" <%= (paymentType.indexOf("PayPal")>-1)?"checked":"" %>/></td>
+								<td>PayPal</td>
+							</tr>
+							<tr>
 								<td class="vTop"><input type="checkbox" id="eCheck" name="eCheck" value="eCheck" <%= (paymentType.indexOf("ECheck")>-1)?"checked":"" %>/></td>
 								<td>
 									eCheck<br />

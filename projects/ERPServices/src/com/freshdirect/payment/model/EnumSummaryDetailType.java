@@ -17,6 +17,7 @@ public class EnumSummaryDetailType implements Serializable {
 	public final static EnumSummaryDetailType CARTE_BLANCHE       = new EnumSummaryDetailType(5, "C", "Carte Blanche", "CB");
 	public final static EnumSummaryDetailType NOVUS          	= new EnumSummaryDetailType(6, "S", "Novus", "DI");
 	public final static EnumSummaryDetailType JCB		        = new EnumSummaryDetailType(7, "J", "JCB", "JC");
+	public final static EnumSummaryDetailType PAYPAL		        = new EnumSummaryDetailType(8, "PP", "PYPL", "NA");
 	
 	private EnumSummaryDetailType(int id, String code, String name, String paymentechCode){
 		this.id = id;

@@ -5,6 +5,6 @@ public enum CreditCardType  implements java.io.Serializable {
 	DISCOVER,
 	VISA,
 	MASTERCARD,
-	PP;
+	PYPL;
 
 }

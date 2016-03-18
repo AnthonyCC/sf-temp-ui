@@ -945,4 +945,71 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 	color: #FFFFFF;
 	text-decoration: underline;
 }
-
+/* PP Changes */
+#add-new-payment-method-checking-acc-disabled-master{
+	display: inline-block;
+	float: left;
+	width: 174px;
+    margin: 0px 40px 0px 0;
+}
+.add-payment-methods-button.cssbutton.green{
+	width: 150px;
+    margin: 15px 40px 5px 0;
+    padding: 12px;
+    float: left;
+}
+.add-payment-methods-button.cssbutton.green.disabled{
+	opacity: 0.5;
+	cursor: default;
+}
+.wallet-title-header, .acc-payment-methods-title-header {
+	/* font-family: Verdana, Arial, sans-serif; font-weight: bold; font-size: 14px; color: rgb(51, 51, 51); */ 
+	font-size: 14px;
+    font-family: Verdana;
+    font-weight: bold;
+    color: #333;
+}
+.wallet-title-header img {
+	position: relative;
+    left: 19px;
+    cursor: pointer;
+}
+.wallet-first-card{ padding-left: 18px;}
+#PP-connect{
+	float: left;
+    vertical-align: middle;
+    margin: 15px 5px;
+}
+.disconnectWallet{ display: inline-block; }
+.disconnect-cssbutton-green{
+	color: rgb(255, 255, 255);
+	background: #669933;
+	text-shadow: 1px 1px #555555;
+    border-radius: 5px;
+    box-shadow: -1px -1px 2px 0 rgba(128, 128, 128, 0.3) inset,1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
+    cursor: pointer;
+    -webkit-font-smoothing: antialiased;
+	margin-left: 6px;
+    font-size: 10px;
+    padding: 3px 10px 3px 20px;
+}
+#PP_logo{ 
+	display: inline-block; 
+	vertical-align: middle; 
+	float: left;
+    margin: 15px 10px;}
+#PP_wrapper{
+	display: inline-block;
+    vertical-align: middle;
+    float: center;
+    margin: 0;
+    text-align: center;
+}
+.wallet-connected-indicator{ 
+	color: #669933; 
+	font-weight: bold;
+    margin-top: 4px;
+}
+.wallet-connected-indicator img{
+	vertical-align: middle;
+}

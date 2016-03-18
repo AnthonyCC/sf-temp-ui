@@ -16,6 +16,10 @@ import com.freshdirect.payment.ewallet.ejb.EwalletActivityLogHome;
 import com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSB;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 
+/**
+ * @author Aniwesh Vatsal
+ *
+ */
 public class EWalletLogActivity {
 
 	

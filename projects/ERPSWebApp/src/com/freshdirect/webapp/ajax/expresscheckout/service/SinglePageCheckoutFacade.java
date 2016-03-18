@@ -544,9 +544,16 @@ public class SinglePageCheckoutFacade {
              } if(StandingOrderHelper.isSO3StandingOrder(user)){
                   user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
                }
-            formPaymentData.setMpEwalletStatus(getMasterpassEwalletStatus(user, MASTERPASS_EWALLET_TYPE));
+            FDCardCount(userPaymentMethods);
+            formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
+            formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
             
+            if(!getEwalletStatus(EnumEwalletType.PP.getName())){
+            	userPaymentMethods = removePPWallet(userPaymentMethods);
+            	formPaymentData.setPayments(userPaymentMethods);
+            }
+            formPaymentData.setPpEwalletPaired(isPayPalPaired(userPaymentMethods));
             // Express Checkout Code
 /*            if(formPaymentData.isMpEwalletStatus()){
             	ErpCustEWalletModel custEWalletModel = getCustomerEWallet(user);
@@ -571,12 +578,68 @@ public class SinglePageCheckoutFacade {
         return formPaymentData;
     }
     
+    private boolean isPayPalPaired(List<PaymentData> userPaymentMethod){
+    	if( userPaymentMethod != null && !userPaymentMethod.isEmpty()){
+    		for(PaymentData paymentData:userPaymentMethod){
+	    		if(paymentData.geteWalletID() != null && paymentData.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+	    			return true;
+	    		}
+    		}
+    	}
+    	return false;
+    }
+    /**
+     * Removed PayPal ewallet data if the PayPal wallet status is disabled. 
+     * @param userPaymentMethods
+     * @param eWalletStatus
+     * @return
+     */
+    private List<PaymentData> removePPWallet(List<PaymentData> userPaymentMethods){
+    	List<PaymentData> newPaymentData = new ArrayList<PaymentData>();
+    	if( userPaymentMethods != null && !userPaymentMethods.isEmpty()){
+    		for(PaymentData paymentData:userPaymentMethods){
+    			if(paymentData.geteWalletID() != null && paymentData.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+    				continue;
+    			}else{
+    				newPaymentData.add(paymentData);
+    			}
+    		}
+    		return newPaymentData;
+    	}else{
+    		return userPaymentMethods;
+    	}
+    }
+    /**
+     * @param userPaymentMethods
+     */
+    private void FDCardCount(List<PaymentData> userPaymentMethods){
+    	int count = 0;
+    	if(userPaymentMethods != null && !userPaymentMethods.isEmpty()){
+    		for(PaymentData paymentData:userPaymentMethods){	// Get FD card Count
+    			if( paymentData.geteWalletID() == null){
+    				count++;
+    			}
+    			if(count > 2){
+    				break;
+    			}
+    		}
+    		if(count < 2){
+	    		for(PaymentData paymentData:userPaymentMethods){
+	    			paymentData.setCanDelete(false);
+				}
+    		}
+    	}
+    }
     /**
      * @param eWalletType
      * @return
      */
-    private boolean getMasterpassEwalletStatus(FDUserI user, String eWalletType) {
+    private boolean getEwalletStatusWithMasquerade(FDUserI user, String eWalletType) {
         return FDCustomerManager.getEwalletStatusByType(eWalletType) && user.getMasqueradeContext() == null;
+    }
+    
+    private boolean getEwalletStatus(String eWalletType) {
+        return FDCustomerManager.getEwalletStatusByType(eWalletType);
     }
     
     /*private ErpCustEWalletModel getCustomerEWallet(FDUserI user) throws FDResourceException{

@@ -19,6 +19,8 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 <potato:singlePageCheckout />
 <potato:cartData />
 
+<input type="hidden" id="ppDeviceId" value="">
+
 <tmpl:insert template='/expressco/includes/ec_template.jsp'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 
@@ -41,6 +43,10 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
         }
       }());
     </script>
+ <!-- <script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script> -->
+ 	<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
+	<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
+	
 
 <script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
 
@@ -157,4 +163,28 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
     <fd:javascript src="/assets/javascript/timeslots.js" />
   </tmpl:put>
 
+<script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script>
+	//While loading the screen get the Device ID from braintress
+	jQuery(document).ready(function($){
+	       $.ajax({
+		  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+	          type: 'post',
+	          contentType: "application/json; charset=utf-8",
+	          dataType: "json",
+	          success: function(result){ 
+	          	var deviceObj = "";
+	  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+	 	    		  dataCollector: {
+	 	    			    paypal: true
+	 	    			  },
+	 	    		  onReady: function (integration) {
+	 	    		    deviceObj = JSON.parse(integration.deviceData);
+	 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
+	 	    		  }
+	  	    	});
+	          }
+		 });
+	});
+</script>
 </tmpl:insert>

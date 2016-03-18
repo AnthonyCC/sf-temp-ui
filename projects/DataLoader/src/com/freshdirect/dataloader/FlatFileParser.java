@@ -227,6 +227,30 @@ public abstract class FlatFileParser {
         }
     }
     
+    /** retreives the value of a token as long from a field name
+     * @param tokens a HashMap of parsed tokens
+     * @param fieldName the name of the field to retreive
+     * @throws BadDataException an problems retieving the token's value
+     * @return the token's long value
+     */
+    protected long getLong(Map<String, String> tokens, String fieldName) throws BadDataException {
+        //
+        // first get as a string
+        //
+        String s = getString(tokens, fieldName);
+        //
+        // try to convert to an int
+        //
+        if(s == null || "".equals(s)){
+        	return 0;
+        }
+        try {
+            return Long.parseLong(s);
+        } catch (NumberFormatException nfe) {
+            throw new BadDataException(nfe, "Unable to read field \"" + fieldName + "\" as a Long");
+        }
+    }
+    
     /** retrieves the value of a token as a double given the field's name
      * @param tokens a HashMap of parsed tokens
      * @param fieldName the name of the field to retreive
@@ -406,6 +430,11 @@ public abstract class FlatFileParser {
          */
         protected boolean required;
         
+        /** indicates type of field 
+         * 	Extending for PayPal purpose
+         */
+        protected String type;
+        
         /** constructor specifying a name, length, and whether this field is required
          * @param tn the field name
          * @param len the length of the field
@@ -415,6 +444,19 @@ public abstract class FlatFileParser {
             name = tn;
             length = len;
             required = req;
+        }
+        
+        
+        /** constructor specifying a name, length, and whether this field is required
+         * @param tn the field name
+         * @param len the length of the field
+         * @param req true if this is a required field
+         */
+        public Field(String tn, int len, boolean req, String type) {
+            name = tn;
+            length = len;
+            required = req;
+            this.type = type;
         }
         
         /** the name of a field
@@ -438,6 +480,13 @@ public abstract class FlatFileParser {
             return required;
         }
         
+        
+        /** the type of a field
+         * @return the field's length
+         */
+        public String getType() {
+            return type;
+        }
     }
     
     

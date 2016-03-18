@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.ewallet.EnumEwalletType"%>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag' %>
 <%@ page import='com.freshdirect.framework.util.NVL' %>
@@ -134,16 +135,23 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
             <% } %>     
             <BR>
             
-            <%if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){%> 
+            <%if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.MP.getValue())){%> 
 				<img src="https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif">
+			<%}else if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){ %>
+				<img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png">
 			<%}else{ %> 
 			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>
 			<% }%>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
 			<font class="space4pix"><br></font>
             <%= paymentMethod.getName()%><BR>
+            <%= paymentMethod.getEmailID()%>
+            <%if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){%>
+            <BR><BR>
+            <% }%>
+             <%if (paymentMethod.geteWalletID() == null || ( paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.MP.getValue()))){%> 
             <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
-            <BR>            
+            <BR>       
             <b>Billing Address:</b><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName() %><BR>
@@ -153,6 +161,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
             <%} %>
             <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR>
             <BR>
+            <% }%>
             <%
             if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
                 <b>Billing Reference/Client Code:</b><BR>

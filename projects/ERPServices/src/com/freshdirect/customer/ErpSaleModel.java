@@ -272,7 +272,6 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 	public ErpAbstractOrderModel getCurrentOrder() {
-		
 		ErpAbstractOrderModel lastOrder = null;
 		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
 		Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
@@ -1650,7 +1649,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		ErpSettlementModel model = null;
 		for( ErpTransactionI tr : l ) {
 			ErpSettlementModel m = (ErpSettlementModel) tr;
-			if(m.getAffiliate().equals(affiliate) && m.getAmount() == amount && authCode != null && authCode.equals(m.getAuthCode())) {
+			if(m.getAffiliate() != null && m.getAffiliate().equals(affiliate) &&
+					m.getAmount() == amount && authCode != null && authCode.equals(m.getAuthCode())) {
 				model = m;
 				break;
 			}
@@ -1659,6 +1659,21 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return model;
 	}
 
+	public ErpSettlementModel getSettlement (ErpAffiliate affiliate, String seqNumber) {
+		List<ErpTransactionI> l = filterTransaction(ErpSettlementModel.class);
+		ErpSettlementModel model = null;
+		for( ErpTransactionI tr : l ) {
+			ErpSettlementModel m = (ErpSettlementModel) tr;
+			if(m.getAffiliate() != null && m.getAffiliate().equals(affiliate) &&
+					seqNumber != null && seqNumber.equals(m.getSequenceNumber())) {
+				model = m;
+				break;
+			}
+		}
+
+		return model;
+	}
+	
 	public ErpFailedSettlementModel getLastFailSettlement() {
 		List<ErpTransactionI> l = filterTransaction(ErpFailedSettlementModel.class);
 		if(l.isEmpty()) {
@@ -1845,5 +1860,21 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.standingOrderName = standingOrderName;
 	}
 	
+	public List<ErpAuthorizationModel> getPPAuthorizations() {
+		List<ErpTransactionModel> txs = new ArrayList<ErpTransactionModel>(transactions);
+		Collections.sort(txs, Collections.reverseOrder(ErpTransactionI.TX_DATE_COMPARATOR));
+		List<ErpAuthorizationModel> lastAuths = new ArrayList<ErpAuthorizationModel>();
+		
+		ErpAuthorizationModel am = null;
+		for ( ErpTransactionModel m : txs ) {
+			if (m instanceof ErpAuthorizationModel) {
+				am = (ErpAuthorizationModel)m;
+				if (EnumPaymentMethodType.PAYPAL.equals(((ErpAuthorizationModel) m).getPaymentMethodType())
+						&& EnumCardType.PAYPAL.equals(am.getCardType()))
+					lastAuths.add((ErpAuthorizationModel)m);
+			}
+		}
+		return lastAuths;
+	}
 	
 }

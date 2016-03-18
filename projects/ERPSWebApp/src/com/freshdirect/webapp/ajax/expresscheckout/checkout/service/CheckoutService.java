@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -133,8 +134,10 @@ public class CheckoutService {
 	public FormDataResponse submitOrder(final FDUserI user, FormDataRequest requestData, final HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
+		String deviceId = FormDataService.defaultService().get(requestData, "ppDeviceId");
         String billingReference = FormDataService.defaultService().get(requestData, "billingReference");
         session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
+        session.setAttribute(SessionName.PAYPAL_DEVICE_ID, deviceId);
 		boolean checkoutPageReloadNeeded = false;
 		FormRestriction restriction = preCheckOrder(user);
 		UnavailabilityData atpFailureData = null;
@@ -291,6 +294,10 @@ public class CheckoutService {
 						paymentsNew.add(data);
 					}
 				}
+				//PayPal Changes
+				if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ EnumEwalletType.PP.getValue())){
+					paymentsNew.add(data);
+				}
 			}
 			formpaymentData.setPayments(paymentsNew);
 		}
@@ -304,6 +311,7 @@ public class CheckoutService {
 			// Remove Error Message From session
 			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
 				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
+				request.getSession().removeAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE);
 			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";

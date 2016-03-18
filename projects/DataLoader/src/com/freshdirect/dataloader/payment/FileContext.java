@@ -16,6 +16,8 @@ public class FileContext implements java.io.Serializable {
 	private String password;
 	
 	private boolean downloadFiles;
+	
+	private String paypalFileDate;
 
 	public boolean downloadFiles() {
 		return downloadFiles;
@@ -73,6 +75,14 @@ public class FileContext implements java.io.Serializable {
 		return key;
 	}
 
+	public void setPayPalFileDate(String paypalFileDate) {
+		this.paypalFileDate = paypalFileDate;
+	}
+	
+	public String getPayPalFileDate() {
+		return paypalFileDate;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

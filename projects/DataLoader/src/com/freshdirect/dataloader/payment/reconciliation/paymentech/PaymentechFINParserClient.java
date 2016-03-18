@@ -16,11 +16,15 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
+import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
+import com.freshdirect.payment.gateway.impl.ReconciliationConstants;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
@@ -35,6 +39,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private static final String PAYMENTECH_RETURN_TX_EC = "N";
 	private static final String PAYMENTECH_RETURN_TX_EC_NEW = "ER";//Orbital reconciliation file uses ER for Echeck cashbacks.
 	
+	private static final String PAYPAL_FEE_TX= "Fee";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechFINParserClient.class);
 	
 	private Date batchDate;
@@ -43,6 +49,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private double netDeductions;
 	private int adjustmentCount;
 	private double adjustmentAmount;
+	
+	private Date ppDesiredDate;
 	//GC net sales.
 	private double gcNetSales;
 	//Failed GC settlements
@@ -53,6 +61,20 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB) {
 		super(builder, reconciliationSB);
+	}
+	
+	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB) {
+		super(builder, reconciliationSB);
+	}
+	
+	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, Date desiredDate) {
+		super(builder, reconciliationSB);
+		this.ppDesiredDate = desiredDate;
+	}
+	
+	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB, Date desiredDate) {
+		super(builder, reconciliationSB, ppReconcSB);
+		this.ppDesiredDate = desiredDate;
 	}
 	
 	public void process(DFRStart start) {
@@ -154,6 +176,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 			appendGCSettlements(gcSettlementInfos);
 			processedSaleIds.add(saleId);
 		}
+		
 	}
 
 	private void appendGCSettlements(List gcSettlementInfos) {
@@ -170,6 +193,31 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		}
 	}
 
+	private void appendPPSettlements(List ppSettlementInfos) {
+		if(ppSettlementInfos.size() > 0){
+			for(Iterator iter = ppSettlementInfos.iterator() ; iter.hasNext();){
+				ErpPPSettlementInfo ppInfo = (ErpPPSettlementInfo) iter.next();
+				if (ppInfo.getTxEventCode().equals(ReconciliationConstants.FEE_KEY)) {
+					this.builder.addPPFeeDetail(ppInfo);
+				} else if (ppInfo.getTxEventCode().equals(ReconciliationConstants.MISC_FEE_KEY)) {
+					this.builder.addPPMiscFeeDetail(ppInfo);
+				} else if (DataLoaderProperties.getPPSTLEventCodes().contains(ppInfo.getTxEventCode())) {
+					this.builder.addChargeDetail(ppInfo, false, ppInfo.getAmount(), EnumCardType.PAYPAL);
+				} else if (DataLoaderProperties.getPPCBREventCodes().contains(ppInfo.getTxEventCode())) {
+					this.builder.addChargebackReversal(ppInfo, ppInfo.getAmount());
+				} else if (DataLoaderProperties.getPPCBKEventCodes().contains(ppInfo.getTxEventCode())) {
+					this.builder.addChargeback(ppInfo, ppInfo.getAmount());
+				} else if (DataLoaderProperties.getPPREFEventCodes().contains(ppInfo.getTxEventCode())) {
+					this.builder.addChargeDetail(ppInfo, true, ppInfo.getAmount(), EnumCardType.PAYPAL);
+				} else if (DataLoaderProperties.getPPMiscFeeEventCodes().contains(ppInfo.getTxEventCode())) {
+					this.builder.addInvoice(ppInfo.getAmount(), getMiscFeeDescr(ppInfo.getTxEventCode()));
+				} else {
+					LOGGER.error("Unknown PayPal settlment event code identified " + ppInfo.getTxEventCode());
+				}
+			}
+		}
+	}
+	
 	private void appendFailedGCSettlements(List<ErpGCSettlementInfo> gcSettlementInfos) {
 		if(gcSettlementInfos.size() > 0){
 			for (ErpGCSettlementInfo gcInfo : gcSettlementInfos) {
@@ -187,6 +235,12 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		//Before adding header process settlement pending orders(Orders Paid with GC only).
 		List gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
 		appendGCSettlements(gcSettlementInfos);
+		List ppSettlementInfos = this.ppReconSB.processPPSettlement(ppDesiredDate);
+		if (ppSettlementInfos != null)
+			appendPPSettlements(ppSettlementInfos);
+		else
+			LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+		
 		double netDeposit = this.netSales - Math.abs(this.netDeductions);
 		this.settlementSummary.setBatchNumber(this.batchNumber);
 		this.settlementSummary.setNetSaleAmount(netDeposit);
@@ -198,4 +252,17 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		appendFailedGCSettlements(failedGCSettlements);
 	}
 
+	private String getMiscFeeDescr(String txEventCode) {
+		//T0100, T0106, T0107, T1108
+		if (txEventCode.equals("T0100")) {
+			return "General non-payment fee of a type not belonging to the other T01xx categories";
+		} else if (txEventCode.equals("T0106")) {
+			return "Chargeback Processing Fee";
+		} else if (txEventCode.equals("T0107")) {
+			return "Payment Fee";
+		} else if (txEventCode.equals("T1108")) {
+			return "Fee Reversal";
+		}
+		return "NOT DEFINED";
+	}
 }

@@ -36,6 +36,7 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String vendorEWalletID="";
 	private String eWalletTrxnId="";
 	private String emailID="";
+	private String deviceId;
 	
 	/**
 	 * @return the trxnId
@@ -384,6 +385,20 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setEmailID(String emailID) {
 		this.emailID = emailID;
 	}
-	
+	/* (non-Javadoc)
+	 * @see com.freshdirect.customer.ErpPaymentMethodI#setDeviceId(java.lang.String)
+	 */
+	@Override
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.customer.ErpPaymentMethodI#getDeviceId()
+	 */
+	@Override
+	public String getDeviceId() {
+		return this.deviceId;
+	}
 	
 }

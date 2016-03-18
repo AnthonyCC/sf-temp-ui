@@ -21,6 +21,8 @@ public class ErpCashbackModel extends ErpPaymentModel{
 	private String description;
 	private String avs;
 	
+	private String ewallet_tx_id;
+	
 	/** Creates new ErpCashbackModel */
     public ErpCashbackModel() {
 		super(EnumTransactionType.CASHBACK);
@@ -68,4 +70,13 @@ public class ErpCashbackModel extends ErpPaymentModel{
 		this.responseCode = responseCode;
 	}
 
+	public String getEwallet_tx_id() {
+		return ewallet_tx_id;
+	}
+
+	public void setEwallet_tx_id(String ewallet_tx_id) {
+		this.ewallet_tx_id = ewallet_tx_id;
+	}
+
+	
 }

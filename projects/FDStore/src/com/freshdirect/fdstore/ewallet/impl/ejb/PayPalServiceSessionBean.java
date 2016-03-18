@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.ewallet.impl.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,15 +10,13 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.Customer;
 import com.braintreegateway.CustomerRequest;
-import com.braintreegateway.Environment;
 import com.braintreegateway.PaymentMethod;
 import com.braintreegateway.PaymentMethodRequest;
 import com.braintreegateway.Result;
+import com.braintreegateway.exceptions.AuthenticationException;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
@@ -26,12 +25,18 @@ import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
+import com.freshdirect.fdstore.ewallet.ValidationError;
+import com.freshdirect.fdstore.ewallet.ValidationResult;
+import com.freshdirect.fdstore.ewallet.impl.EWalletRuntimeException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.gateway.ewallet.impl.EWalletLogActivity;
 
@@ -45,19 +50,6 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	private static final long serialVersionUID = -4137899364083573169L;
 	private final static Category LOGGER = LoggerFactory.getInstance(PayPalServiceSessionBean.class);
 	
-	private static final String PAYPAL_CLIENT_TOKEN_TXN="ClientTokenTxn";
-	private static final String PAYPAL_CREATE_CUSTOMER_TXN="CreateCustomerTxn";
-	private static final String PAYPAL_GET_VAULT_TOKEN_TXN="GetVaultTokenTxn";
-	
-	private static final String PAYPAL_TXN_SUCCESS="SUCCESS";
-	private static final String PAYPAL_TXN_FAIL="FAIL";
-	private static final String PARAM_PP_PAYMENMETHOD_NONCE ="paymentMethodNonce";
-	private static final String PARAM_FIRST_NAME ="firstName";
-	private static final String PARAM_LAST_NAME ="lastName";
-	private static final String PARAM_EMAILID ="email";
-	private static final String PARAM_ORIGIN ="origin";
-
-
 	/**
 	 * @param ewalletRequestData
 	 * @return
@@ -65,17 +57,28 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	 */
 	public EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException {
 		EwalletResponseData ewalletResponseData = new EwalletResponseData();
+		List<ValidationError> eWalletValidationErrors = new ArrayList<ValidationError>();
 		try{
 			String clientToken = clientToken();
 			ewalletResponseData.setToken(clientToken);	
-			
-			String tnx = PAYPAL_TXN_FAIL;
+			String tnx = EwalletConstants.PAYPAL_TXN_FAIL;
 			if(ewalletResponseData.getToken() != null  && ewalletResponseData.getToken().trim().length() > 0){
-				tnx = PAYPAL_TXN_SUCCESS;
+				tnx = EwalletConstants.PAYPAL_TXN_SUCCESS;
 			}
-			logPPEwalletRequestResponse(ewalletRequestData, ewalletResponseData, PAYPAL_CLIENT_TOKEN_TXN, tnx);
-		}catch(Exception ex){
-			logPPEwalletRequestResponse(ewalletRequestData, ewalletResponseData, PAYPAL_CLIENT_TOKEN_TXN, PAYPAL_TXN_FAIL);
+			logPPEwalletRequestResponse(ewalletRequestData, ewalletResponseData, EwalletConstants.PAYPAL_CLIENT_TOKEN_TXN, tnx);
+		}catch(EWalletRuntimeException walletException){
+			eWalletValidationErrors.add(new ValidationError("Cannot Connect", "Error while getting Request Token From PayPal"));
+		}
+		catch(Exception ex){
+			eWalletValidationErrors.add(new ValidationError("Cannot Connect", "Error while getting Request Token From PayPal"));
+		}
+		
+		// Check for any error
+		if(eWalletValidationErrors!=null && !eWalletValidationErrors.isEmpty()){
+			ValidationResult result = new ValidationResult();
+			result.setErrors(eWalletValidationErrors);
+			ewalletResponseData.setValidationResult(result);
+			
 		}
 		return ewalletResponseData;
 	}
@@ -85,7 +88,13 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	 * @return
 	 */
 	private String clientToken() {
-		return PayPalData.getBraintreeGateway().clientToken().generate();
+		String requestToken="";
+		try{
+			requestToken = PayPalData.getBraintreeGateway().clientToken().generate();
+		}catch(AuthenticationException authenticationException){
+			throw new EWalletRuntimeException("Can not connect to PayPal.");
+		}
+		return requestToken;
 	}
 	
 	
@@ -102,21 +111,25 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		String lastName = "";
 		String email = "";
 		String origin = "";
-		if (ewalletRequestData.getReqParams().containsKey(PARAM_PP_PAYMENMETHOD_NONCE)) {
+		String deviceId="";
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE)) {
 			paymentMethodNonce = ewalletRequestData.getReqParams().get(
-					PARAM_PP_PAYMENMETHOD_NONCE);
+					EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE);
 		}
-		if (ewalletRequestData.getReqParams().containsKey(PARAM_FIRST_NAME)) {
-			firstName = ewalletRequestData.getReqParams().get(PARAM_FIRST_NAME);
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_FIRST_NAME)) {
+			firstName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_FIRST_NAME);
 		}
-		if (ewalletRequestData.getReqParams().containsKey(PARAM_LAST_NAME)) {
-			lastName = ewalletRequestData.getReqParams().get(PARAM_LAST_NAME);
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_LAST_NAME)) {
+			lastName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_LAST_NAME);
 		}
-		if (ewalletRequestData.getReqParams().containsKey(PARAM_EMAILID)) {
-			email = ewalletRequestData.getReqParams().get(PARAM_EMAILID);
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_EMAILID)) {
+			email = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_EMAILID);
 		}
-		if (ewalletRequestData.getReqParams().containsKey(PARAM_ORIGIN)) {
-			origin = ewalletRequestData.getReqParams().get(PARAM_ORIGIN);
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_ORIGIN)) {
+			origin = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_ORIGIN);
+		}
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
+			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
 		}
 		
 		String vaultToken = obtainVaultToken(paymentMethodNonce,ewalletRequestData, firstName, lastName);
@@ -136,12 +149,13 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			insertVaultToken(custEWalletModel);
 			
 			//Add paymentmethod
-			ErpPaymentMethodI paymentMethod = new ErpCreditCardModel();
+//			ErpPaymentMethodI paymentMethod = new ErpCreditCardModel();
+			ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.PAYPAL);
 			paymentMethod.setName(firstName+" "+lastName);
 			paymentMethod.setEmailID(email);
 			paymentMethod.setAccountNumber("1111111111111111");
 			paymentMethod.setCardType(EnumCardType.PAYPAL);
-			paymentMethod.setAddress1("20-30 BORDEN AVE");
+			paymentMethod.setAddress1("23-30 BORDEN AVE");
 			paymentMethod.setAddress2("");
 			paymentMethod.setApartment("");
 			paymentMethod.setCity("Long Island City");
@@ -153,6 +167,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			paymentMethod.setVendorEWalletID("");
 			paymentMethod.seteWalletTrxnId("");
 		    paymentMethod.setCustomerId(ewalletRequestData.getCustomerId());
+		    paymentMethod.setDeviceId(deviceId);
 		     
 		    ErpPaymentMethodI searchedPM = searchPPWalletCards(ewalletRequestData, paymentMethod);
 		     
@@ -164,7 +179,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			
 					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
 					
-			        if (!paymentMethods.isEmpty() && !origin.equals("your_account")) {
+			        if (!paymentMethods.isEmpty() && !origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			        	sortPaymentMethodsByIdReserved(paymentMethods);
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
 			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
@@ -182,7 +197,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			
 					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
 					
-			        if (!paymentMethods.isEmpty() && origin!= null && !origin.equals("your_account")) {
+			        if (!paymentMethods.isEmpty() && origin!= null && !origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			        	sortPaymentMethodsByIdReserved(paymentMethods);
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
 			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
@@ -198,7 +213,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			
 			}	
 		}
-		ewalletResponseData.setToken(vaultToken);
+//		ewalletResponseData.setToken(vaultToken);
 		return ewalletResponseData;
 	}
 	
@@ -251,6 +266,10 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	 */
 	private String obtainVaultToken(String paymentMethodNonce, EwalletRequestData ewalletRequestData, String fName, String lName) {
 		// Create customer object
+		String deviceId = "";
+		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
+			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
+		}
 		CustomerRequest request = new CustomerRequest();
 		request.customerId(ewalletRequestData.getCustomerId());
 		request.firstName(fName);
@@ -259,22 +278,29 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		Result<? extends PaymentMethod> vaultResult = null;
 		
 	    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+//	    customerResult.getTransaction(); Verify this one 
 	    // Check customer record created successfully or not
 	    if(customerResult.isSuccess()){
-	    	logPPEwalletRequestResponse(ewalletRequestData, null, PAYPAL_CREATE_CUSTOMER_TXN, PAYPAL_TXN_SUCCESS);
+	    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
 			PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
-				    .paymentMethodNonce(paymentMethodNonce);
+				    .paymentMethodNonce(paymentMethodNonce)
+				    .deviceData(deviceId);
 			vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
 //			PAYPAL_GET_VAULT_TOKEN_TXN
 			if(vaultResult != null){
-				logPPEwalletRequestResponse(ewalletRequestData, null, PAYPAL_GET_VAULT_TOKEN_TXN, PAYPAL_TXN_SUCCESS);
-				return vaultResult.getTarget().getToken();
+				if(vaultResult.isSuccess()){
+					logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
+					return vaultResult.getTarget().getToken();
+				}else{
+					//fail
+					return null;
+				}
 			}else{
-				logPPEwalletRequestResponse(ewalletRequestData, null, PAYPAL_GET_VAULT_TOKEN_TXN, PAYPAL_TXN_FAIL);
+				logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
 				return null;
 			}
 	    }else{
-	    	logPPEwalletRequestResponse(ewalletRequestData, null, PAYPAL_CREATE_CUSTOMER_TXN, PAYPAL_TXN_FAIL);
+	    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
 	    	return null;
 	    }
 	}
@@ -349,27 +375,27 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 	        StringBuffer eWalletTxnRequest= new StringBuffer(); 
 	        StringBuffer eWalletTxnResponse= new StringBuffer();
 	        
-	        if(trxType.equalsIgnoreCase(PAYPAL_CLIENT_TOKEN_TXN)){
+	        if(trxType.equalsIgnoreCase(EwalletConstants.PAYPAL_CLIENT_TOKEN_TXN)){
 	        	eWalletTxnRequest.append("Generate Client Token ");
 	        	// Create Response String
 	        	eWalletTxnResponse= new StringBuffer();
 	        	if(resPonseData != null && resPonseData.getToken() != null){
 	        		eWalletTxnResponse.append("ClientToken="+resPonseData.getToken());
 	        	}
-	        }else if(trxType.equalsIgnoreCase(PAYPAL_CREATE_CUSTOMER_TXN)){
+	        }else if(trxType.equalsIgnoreCase(EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN)){
 	        	eWalletTxnRequest.append("Create customer ");
 	        	// Create Response String
 	        	eWalletTxnResponse= new StringBuffer();
-	        	if(txnStatus.equals(PAYPAL_TXN_SUCCESS)){
+	        	if(txnStatus.equals(EwalletConstants.PAYPAL_TXN_SUCCESS)){
 	        		eWalletTxnResponse.append("Successful");
 	        	}else{
 	        		eWalletTxnResponse.append("Failed");
 	        	}
-	        }else if(trxType.equalsIgnoreCase(PAYPAL_GET_VAULT_TOKEN_TXN)){
+	        }else if(trxType.equalsIgnoreCase(EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN)){
 	        	eWalletTxnRequest.append("Get Vault Token ");
 	        	// Create Response String
 	        	eWalletTxnResponse= new StringBuffer();
-	        	if(txnStatus.equals(PAYPAL_TXN_SUCCESS)){
+	        	if(txnStatus.equals(EwalletConstants.PAYPAL_TXN_SUCCESS)){
 	        		eWalletTxnResponse.append("Vault Token created Successfully");
 	        	}else{
 	        		eWalletTxnResponse.append("Failed to get Vault Token");

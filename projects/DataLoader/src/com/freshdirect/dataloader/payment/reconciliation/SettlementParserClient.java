@@ -8,6 +8,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 
 public abstract class SettlementParserClient implements SynchronousParserClient {
 	
@@ -15,10 +16,18 @@ public abstract class SettlementParserClient implements SynchronousParserClient 
 
 	protected final SettlementBuilderI builder;
 	protected final ReconciliationSB reconciliationSB;
+	protected final PayPalReconciliationSB ppReconSB;
 
 	public SettlementParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB) {
 		this.builder = builder;
 		this.reconciliationSB = reconciliationSB;
+		this.ppReconSB = null;
+	}
+	
+	public SettlementParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconSB) {
+		this.builder = builder;
+		this.reconciliationSB = reconciliationSB;
+		this.ppReconSB = ppReconSB;
 	}
 	
 

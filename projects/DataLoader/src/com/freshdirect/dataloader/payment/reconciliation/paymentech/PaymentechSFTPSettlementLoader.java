@@ -1,16 +1,11 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
@@ -31,9 +26,12 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
+import com.freshdirect.dataloader.payment.reconciliation.paypal.PayPalSFTPSettlementLoader;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.gateway.ewallet.impl.PayPalReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechSFTPSettlementLoader {
@@ -50,6 +48,10 @@ public class PaymentechSFTPSettlementLoader {
 	
 	private static final String NO_DATA="No data to send back at this time";
 	
+	private static Date date = null;
+	
+	PayPalReconciliationSB ppReconSB = null;
+	
 	public static void main(String[] args) {
 		PaymentechSFTPSettlementLoader loader = new PaymentechSFTPSettlementLoader();
 		
@@ -64,11 +66,10 @@ public class PaymentechSFTPSettlementLoader {
 	}
 	
 private static FileContext getFileContext(String[] args) {
-		
-		
+
 		FileContext ctx=new FileContext();
 		ctx.setFileType(PaymentFileType.DFR);
-		ctx.setDownloadFiles(true);
+		ctx.setDownloadFiles(false);
 		if (args.length >= 1) {
 			for (String arg : args) {
 				try { 
@@ -82,9 +83,11 @@ private static FileContext getFileContext(String[] args) {
 						ctx.setOpenSSHPrivateKey(arg.substring("privateKey=".length()));  							
 					}else if(arg.startsWith("fetchFiles=")) {
 						ctx.setDownloadFiles(Boolean.valueOf(arg.substring("fetchFiles=".length())).booleanValue());  							
+					} else if (arg.startsWith("ppStmntProcessDate=")) {
+						date = new SimpleDateFormat("yyyyMMdd").parse(arg.substring("ppStmntProcessDate=".length()));
 					}
 				} catch (Exception e) {
-					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.PaymentechSFTPSettlementLoader  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value]");
+					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.PaymentechSFTPSettlementLoader  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value] [ppStmntProcessDate=yyyymmdd]");
 					System.exit(-1);
 				}
 			}
@@ -103,6 +106,7 @@ private static FileContext getFileContext(String[] args) {
 		return ctx;
 		
 	}
+
 	private void loadSettlement(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException {
 		String timestamp = SF.format(new Date());
 		//make the dfr file
@@ -116,7 +120,7 @@ private static FileContext getFileContext(String[] args) {
 		if(ctx.downloadFiles()) {
 			this.downloadFile(ctx,finFile, pdeFile, tmpFileOne, tmpFileTwo);
 		}
-		
+		ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
 		String fileName = loadFile(finFile, pdeFile, false);
 		
 		
@@ -126,6 +130,7 @@ private static FileContext getFileContext(String[] args) {
 		//tell sap to the file is there
 		SettlementLoaderUtil.callSettlementBapi(fileName);
 		
+		ppReconSB.updatePayPalStatus(date);
 	}
 	
 	private void downloadFile(FileContext ctx,File finFile, File pdeFile, File tmpFileOne, File tmpFileTwo) throws UnknownHostException, IOException {
@@ -202,8 +207,6 @@ private static FileContext getFileContext(String[] args) {
 		return false;
 	}
 	
-	
-	
 	private String loadFile(File finFile, File pdeFile, boolean buildOldSapFileFormat) throws RemoteException, EJBException, CreateException, IOException {
 		
 		ReconciliationSB reconSB = SettlementLoaderUtil.lookupReconciliationHome().create();		
@@ -219,7 +222,10 @@ private static FileContext getFileContext(String[] args) {
 		isFin = new FileInputStream(finFile);
 		
 		PaymentechFINParser finParser = new PaymentechFINParser(); 
-		finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
+		if (date == null)
+			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB));
+		else
+			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, date));
 		finParser.parseFile(isFin);
 		
 		LOGGER.info("Finished loading FIN File");

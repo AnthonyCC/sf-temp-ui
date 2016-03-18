@@ -13,12 +13,14 @@ import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
+import com.freshdirect.payment.model.ErpSettlementTransactionModel;
 import com.freshdirect.payment.model.ErpSummaryDetailModel;
 
 public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupport {
 	
 	private SummaryDetailList summaryDetails = new SummaryDetailList();
 	private SettlementInvoiceList invoices = new SettlementInvoiceList();
+	private SettlementTransactionList settlementTrxns = new SettlementTransactionList();
 	
 	private Date processPeriodStart;
 	private Date processPeriodEnd;
@@ -31,6 +33,15 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
 	private double adjustmentAmount;
 	private Date settlementFileDate;
 	
+	private String affiliateAccountId = null;
+	private long totalGrossCredit = 0;
+	private long totalGrossDebit = 0;
+	private long totalTransactionFeeCredit = 0;
+	private long totalTransactionFeeDebit = 0;
+	private String settlementSource = null;
+	
+	private String isLocked = "";
+	private String status = "";
 	
 	/** 
 	 * Creates new SettlementSummaryPersistentBean
@@ -55,6 +66,41 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         this.numberOfAdjustments = numberOfAdjustments;
         this.adjustmentAmount = adjustmentAmount;
         this.settlementFileDate = settlementFileDate;
+        
+        this.isLocked = isLocked;
+    }
+    
+    
+    /** 
+     * Creates new SettlementSummaryPersistentBean
+     */
+    public SettlementSummaryPersistentBean(PrimaryKey pk, Date processPeriodStart, Date processPeriodEnd, Date batchDate, String batchNumber, Date processDate, Date depositDate, 
+    									   double netSalesAmount, int numberOfAdjustments, double adjustmentAmount, Date settlementFileDate, 
+    									   String affiliateAccountId, long totalGrossCredit, long totalGrossDebit, long totalTransactionFeeCredit, long totalTransactionFeeDebit,
+    									   String settlementSource) {
+        this(pk, processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate, 
+				   netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate);
+        this.affiliateAccountId = affiliateAccountId;
+        this.totalGrossCredit = totalGrossCredit;
+        this.totalGrossDebit = totalGrossDebit;
+        this.totalTransactionFeeCredit = totalTransactionFeeCredit;
+        this.totalTransactionFeeDebit = totalTransactionFeeDebit;
+        this.settlementSource = settlementSource;
+    }
+    
+    /** 
+     * Creates new SettlementSummaryPersistentBean
+     */
+    public SettlementSummaryPersistentBean(PrimaryKey pk, Date processPeriodStart, Date processPeriodEnd, Date batchDate, String batchNumber, Date processDate, Date depositDate, 
+    									   double netSalesAmount, int numberOfAdjustments, double adjustmentAmount, Date settlementFileDate, 
+    									   String affiliateAccountId, long totalGrossCredit, long totalGrossDebit, long totalTransactionFeeCredit, long totalTransactionFeeDebit,
+    									   String settlementSource, String isLocked, String status) {
+        this(pk, processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate, 
+				   netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate, affiliateAccountId,
+				   totalGrossCredit, totalGrossDebit, totalTransactionFeeCredit, totalTransactionFeeDebit,
+				   settlementSource);
+        this.isLocked = isLocked;
+        this.status = status;
     }
     
     /**
@@ -109,6 +155,19 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         this.numberOfAdjustments = m.getNumberOfAdjustments();
         this.adjustmentAmount = m.getAdjustmentAmount();
         this.settlementFileDate = m.getSettlementFileDate();
+        
+        //PayPal related fields
+        this.affiliateAccountId = m.getAffiliateAccountId();
+        this.totalGrossCredit = m.getTotalGrossCredit();
+        this.totalGrossDebit = m.getTotalGrossDebit();
+        this.totalTransactionFeeCredit = m.getTotalTransactionFeeCredit();
+        this.totalTransactionFeeDebit = m.getTotalTransactionFeeDebit();
+        this.settlementSource = m.getSettlementSource();
+        
+        this.isLocked = m.getIsLocked();
+        this.status = m.getStatus();
+        
+        //PayPal related fields, which can be empty
         for(Iterator i = m.getSummaryDetails().iterator(); i.hasNext(); ){
         	SettlementDetailPersistentBean bean = new SettlementDetailPersistentBean((ErpSummaryDetailModel)i.next());
         	this.summaryDetails.add(bean);
@@ -119,6 +178,13 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         	this.invoices.add(bean);
         }
 
+        if (this.settlementSource != null && settlementSource.equals("PP")) {
+            for(Iterator i = m.getSettlementTrxns().iterator(); i.hasNext(); ){
+            	SettlementTransactionPersistentBean bean = new SettlementTransactionPersistentBean(
+            														(ErpSettlementTransactionModel)i.next());
+            	this.settlementTrxns.add(bean);
+            }
+        }
     }
     
     
@@ -133,7 +199,10 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
     public static SettlementSummaryPersistentBean findByPrimaryKey(Connection conn, PrimaryKey pk) throws SQLException {
         SettlementSummaryPersistentBean bean = null;
         
-        PreparedStatement ps = conn.prepareStatement("SELECT ID, PROCESS_PERIOD_START, PROCESS_PERIOD_END, BATCH_DATE, BATCH_NUMBER, PROCESS_DATE, DEPOSIT_DATE, NET_SALES_AMOUNT, NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE FROM CUST.SETTLEMENT WHERE ID = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT ID, PROCESS_PERIOD_START, PROCESS_PERIOD_END, BATCH_DATE, BATCH_NUMBER, PROCESS_DATE," +
+        		" DEPOSIT_DATE, NET_SALES_AMOUNT, NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE, " +
+        		"AFFILIATE_ACCOUNT_ID, TOTAL_GROSS_CREDIT, TOTAL_GROSS_DEBIT, TOTAL_TRANSACTION_FEE_CREDIT, TOTAL_TRANSACTION_FEE_DEBIT, SETTLEMENT_SOURCE" +
+        		" FROM CUST.SETTLEMENT WHERE ID = ?");
         ps.setString(1, pk.getId());
         ResultSet rs = ps.executeQuery();
         
@@ -150,8 +219,16 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
             double adjustmentAmount = rs.getDouble("ADJUSTMENT_MOUNT");
             Date settlementFileDate = rs.getDate("SETTLEMENT_FILE_DATE");
             
-			
-            bean =	new SettlementSummaryPersistentBean( new PrimaryKey(id), processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate, netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate);
+        	String affiliateAccountId = rs.getString("AFFILIATE_ACCOUNT_ID");
+        	long totalGrossCredit = rs.getLong("TOTAL_GROSS_CREDIT");
+        	long totalGrossDebit = rs.getLong("TOTAL_GROSS_DEBIT");
+        	long totalTransactionFeeCredit = rs.getLong("TOTAL_TRANSACTION_FEE_CREDIT");
+        	long totalTransactionFeeDebit = rs.getLong("TOTAL_TRANSACTION_FEE_DEBIT");
+        	String settlementSource = rs.getString("SETTLEMENT_SOURCE");
+            			
+            bean =	new SettlementSummaryPersistentBean( new PrimaryKey(id), processPeriodStart, processPeriodEnd, batchDate, batchNumber, processDate, depositDate, netSalesAmount, numberOfAdjustments, adjustmentAmount, settlementFileDate,
+            		affiliateAccountId, totalGrossCredit, totalGrossDebit, totalTransactionFeeCredit, totalTransactionFeeDebit,
+					   settlementSource);
         }
         rs.close();
         rs = null;
@@ -170,7 +247,12 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
      */
     public PrimaryKey create(Connection conn) throws SQLException {
     	String id = this.getNextId(conn, "CUST");
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SETTLEMENT (ID, PROCESS_PERIOD_START, PROCESS_PERIOD_END, BATCH_DATE, BATCH_NUMBER, PROCESS_DATE, DEPOSIT_DATE, NET_SALES_AMOUNT, NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE) values (?,?,?,?,?,?,?,?,?,?,?)" );
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SETTLEMENT (ID, PROCESS_PERIOD_START," +
+        		" PROCESS_PERIOD_END, BATCH_DATE, BATCH_NUMBER, PROCESS_DATE, DEPOSIT_DATE, NET_SALES_AMOUNT," +
+        		" NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE," +
+        		" AFFILIATE_ACCOUNT_ID, TOTAL_GROSS_CREDIT, TOTAL_GROSS_DEBIT, TOTAL_TRANS_FEE_CREDIT, " +
+        		"TOTAL_TRANS_FEE_DEBIT, SETTLEMENT_SOURCE, CREATED_TIME_DATE, IS_LOCKED, ALL_RECORDS_PROCESSED)" +
+        		" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)" );
         
         ps.setString(1, id);
         ps.setDate(2, new java.sql.Date(this.processPeriodStart.getTime()));
@@ -185,7 +267,16 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         ps.setBigDecimal(10, new java.math.BigDecimal(this.adjustmentAmount));
         ps.setDate(11, new java.sql.Date(this.settlementFileDate.getTime()));
         
-        
+        //PayPal related fields
+        ps.setString(12, this.affiliateAccountId);
+        ps.setLong(13, this.totalGrossCredit);
+        ps.setLong(14, this.totalGrossDebit);
+        ps.setLong(15, this.totalTransactionFeeCredit);
+        ps.setLong(16, this.totalTransactionFeeDebit);
+        ps.setString(17, this.settlementSource);
+        ps.setDate(18, new java.sql.Date(new Date().getTime()));
+        ps.setString(19, this.isLocked);
+        ps.setString(20, this.status);
         
 	    try {
             ps.executeUpdate();
@@ -203,6 +294,10 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
 		this.invoices.setParentPK(this.getPK());
 		this.invoices.create(conn);
 		
+		if (this.settlementSource != null && settlementSource.equals("PP")) { //TODO change to appropriate Enum
+			this.settlementTrxns.setParentPK(this.getPK());
+			this.settlementTrxns.create(conn);
+		}
         this.unsetModified();
         return this.getPK();
     }
@@ -214,7 +309,11 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
      * @throws SQLException any problems entountered while loading this object
      */
     public void load(Connection conn) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT ID, PROCESS_PERIOD_START, PROCESS_PERIOD_END, BATCH_DATE, BATCH_NUMBER, PROCESS_DATE, DEPOSIT_DATE, NET_SALES_AMOUNT, NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE FROM CUST.SETTLEMENT WHERE ID = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT ID, PROCESS_PERIOD_START, PROCESS_PERIOD_END, BATCH_DATE," +
+        		" BATCH_NUMBER, PROCESS_DATE, DEPOSIT_DATE, NET_SALES_AMOUNT, NUM_ADJUSTMENTS, ADJUSTMENT_AMOUNT, SETTLEMENT_FILE_DATE " +
+        		"AFFILIATE_ACCOUNT_ID, TOTAL_GROSS_CREDIT, TOTAL_GROSS_DEBIT, TOTAL_TRANSACTION_FEE_CREDIT, TOTAL_TRANSACTION_FEE_DEBIT, SETTLEMENT_SOURCE, " +
+        		"ALL_RECORDS_PROCESSED" +
+        		" FROM CUST.SETTLEMENT WHERE ID = ?");
         
         ps.setString(1, this.getPK().getId());
         ResultSet rs = ps.executeQuery();
@@ -230,6 +329,14 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
         	this.adjustmentAmount = rs.getDouble("ADJUSTMENT_AMOUNT");
         	this.settlementFileDate = rs.getDate("SETTLEMENT_FILE_DATE");
             
+        	this.affiliateAccountId = rs.getString("AFFILIATE_ACCOUNT_ID");
+        	this.totalGrossCredit = rs.getLong("TOTAL_GROSS_CREDIT");
+        	this.totalGrossDebit = rs.getLong("TOTAL_GROSS_DEBIT");
+        	this.totalTransactionFeeCredit = rs.getLong("TOTAL_TRANSACTION_FEE_CREDIT");
+        	this.totalTransactionFeeDebit = rs.getLong("TOTAL_TRANSACTION_FEE_DEBIT");
+        	this.settlementSource = rs.getString("SETTLEMENT_SOURCE");
+        	this.status = rs.getString("ALL_RECORDS_PROCESSED");
+            
         } else {
             throw new SQLException("No such SettlementSummaryBean PK: " + this.getPK() );
         }
@@ -244,6 +351,9 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
 		
 		invoices.setParentPK(this.getPK());
 		invoices.load(conn);
+		
+		if (settlementSource != null && settlementSource.equals("PP")) //TODO change to appropriate Enum
+			settlementTrxns.load(conn);
         
         this.unsetModified();
     }
@@ -283,5 +393,13 @@ public class SettlementSummaryPersistentBean extends DependentPersistentBeanSupp
 			this.set( SettlementInvoicePersistentBean.findByParent(conn, SettlementInvoiceList.this.getParentPK()) );
 		}	
 	}
-
+	
+	/**
+	 * Inner class for the list of Settlement Invoices.
+	 */
+	private static class SettlementTransactionList extends DependentPersistentBeanList {
+		public void load(Connection conn) throws SQLException {
+			this.set( SettlementTransactionPersistentBean.findByParent(conn, SettlementTransactionList.this.getParentPK()) );
+		}	
+	}
 }

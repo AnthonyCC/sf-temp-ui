@@ -32,6 +32,12 @@ public class EwalletRequestProcessor {
 	private static final String EWALLET_MP_STANDARD_CHECKOUT="MP_Standard_Checkout";
 	private static final String EWALLET_MP_STANDARD_CHECKOUT_DATA="MP_Standard_CheckoutData";
 
+	private static final String EWALLET_PP_START_PAIRING="PP_Start_Pairing";
+	private static final String EWALLET_PP_END_PAIRING="PP_End_Pairing";
+	
+	private static final String EWALLET_PP_START_CONNECTING="PP_Start_Connecting";
+	private static final String EWALLET_PP_END_CONNECTING="PP_End_Connecting";
+	private static final String EWALLET_PP_WALLET_DISCONNECT="PP_Wallet_Disconnect";
 	
 	/**
 	 * @param ewalletRequestData
@@ -78,10 +84,44 @@ public class EwalletRequestProcessor {
 				ewalletResponseData  = standardCheckoutData(ewallet,ewalletRequestData);
 			}
 		}
+		
+		if(ewallet != null && ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
+			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_START_PAIRING) || ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_START_CONNECTING)){
+				ewalletResponseData  = pairingPayPal(ewallet,ewalletRequestData);
+			}
+			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_END_PAIRING) || ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_END_CONNECTING)){
+				ewalletResponseData  = obtainVaultToken(ewallet,ewalletRequestData);
+			}
+			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_WALLET_DISCONNECT)){
+				ewalletResponseData  = disconnectPayPalAccount(ewallet,ewalletRequestData);
+			}
+		}
+		
 		return ewalletResponseData;
 	}
 	
+
+
+
+	private EwalletResponseData pairingPayPal(IEwallet ewallet,
+			EwalletRequestData ewalletRequestData) throws Exception {
+		EwalletResponseData ewalletResponseData = ewallet.getToken(ewalletRequestData);
+		return ewalletResponseData;
+	}
 	
+	private EwalletResponseData obtainVaultToken(IEwallet ewallet,
+			EwalletRequestData ewalletRequestData) throws Exception {
+		EwalletResponseData ewalletResponseData = ewallet.addPayPalWallet(ewalletRequestData);
+		return ewalletResponseData;
+	}
+
+	private EwalletResponseData disconnectPayPalAccount(IEwallet ewallet,EwalletRequestData ewalletRequestData) throws Exception{
+		// get token
+		EwalletResponseData ewalletResponseData = ewallet.disconnect(ewalletRequestData);
+		return ewalletResponseData;
+	}
+
+
 	/**
 	 * @param ewallet
 	 * @param ewalletRequestData

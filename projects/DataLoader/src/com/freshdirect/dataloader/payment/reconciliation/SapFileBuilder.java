@@ -11,6 +11,7 @@ import java.util.Date;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
 
 public class SapFileBuilder implements SettlementBuilderI {
@@ -102,7 +103,31 @@ public class SapFileBuilder implements SettlementBuilderI {
 		
 		this.appendInfo(info);
 	}
+	
+	public void addPPFeeDetail(ErpPPSettlementInfo info) {
+		sb.append("P");
 
+		sb.append("\t");
+		sb.append(Math.abs(info.getAmount()) );
+		
+		sb.append("\t");
+		sb.append("Transactional Fee");
+		
+		sb.append("\n");
+	}
+	
+	public void addPPMiscFeeDetail(ErpPPSettlementInfo info) {
+		sb.append("M");
+
+		sb.append("\t");
+		sb.append(Math.abs(info.getAmount()) );
+		
+		sb.append("\t");
+		sb.append("Miscellaneous Fee");
+		
+		sb.append("\n");
+	}
+	
 	public void addFailedGCSettlement(ErpGCSettlementInfo info, EnumCardType cardType) {
 		sb.append("D");
 

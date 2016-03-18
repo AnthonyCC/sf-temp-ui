@@ -122,7 +122,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 		
 		Map requiredCaptures = new CaptureStrategy(sale).getOutstandingCaptureAmounts();
-		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		PaymentGatewayContext context = new PaymentGatewayContext(getGatewayType(paymentMethod), null);
 //		Gateway gateway = GatewayFactory.getGateway(context);	
 		
 		try{
@@ -762,6 +762,20 @@ public class PaymentSessionBean extends SessionBeanSupport{
 			try {
 				ctx.close();
 			} catch (NamingException ne) {}
+		}
+	}
+	
+	private GatewayType getGatewayType(ErpPaymentMethodI pm) {
+		String profileId = pm.getProfileID();
+		if (StringUtil.isEmpty(profileId) && !EnumCardType.PAYPAL.equals(pm.getCardType())) {
+			return GatewayType.CYBERSOURCE;
+		} else {
+			EnumCardType type = pm.getCardType();
+			if (type != EnumCardType.PAYPAL) {
+				return GatewayType.PAYMENTECH;
+			} else {
+				return GatewayType.PAYPAL;
+			}
 		}
 	}
 }

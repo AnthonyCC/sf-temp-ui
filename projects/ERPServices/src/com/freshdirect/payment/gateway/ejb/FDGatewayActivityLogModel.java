@@ -48,6 +48,7 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	private String eWalletId;
 	private String eWalletTxId;
 	private EnumEStoreId eStoreId;
+	private String deviceId;
 	
 	/**
 	 * @return the eWalletTxId
@@ -280,5 +281,18 @@ public class FDGatewayActivityLogModel implements java.io.Serializable{
 	public EnumEStoreId getEStoreId() {
 		return eStoreId;
 	}
+	/**
+	 * @return the deviceId
+	 */
+	public String getDeviceId() {
+		return deviceId;
+	}
+	/**
+	 * @param deviceId the deviceId to set
+	 */
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
 	
 }

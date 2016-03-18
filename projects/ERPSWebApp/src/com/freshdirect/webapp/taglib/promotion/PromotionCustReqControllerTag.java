@@ -110,6 +110,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				String visa = NVL.apply(request.getParameter("visa"),"").trim();
 				String discover = NVL.apply(request.getParameter("discover"),"").trim();
 				String masterPass = NVL.apply(request.getParameter("masterPass"),"").trim();
+				String payPal = NVL.apply(request.getParameter("payPal"),"").trim();
 				String eCheck = NVL.apply(request.getParameter("eCheck"),"").trim();
 				String debitCard = NVL.apply(request.getParameter("debitCard"),"").trim();
 				String minOrders = NVL.apply(request.getParameter("minOrders"),"").trim();
@@ -118,7 +119,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				
 				StringBuffer paymentType = new StringBuffer();
 				boolean isSelected = false;
-				EnumCardType paymentTypes[] = new EnumCardType[]{null,null,null,null,null,null,null};
+				EnumCardType paymentTypes[] = new EnumCardType[]{null,null,null,null,null,null,null,null};
 				if(!"".equalsIgnoreCase(amex)){
 					paymentTypes[0]=EnumCardType.AMEX;
 					isSelected = true;
@@ -163,6 +164,13 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 						paymentType.append(",");
 					}
 					paymentTypes[6]=EnumCardType.MASTERPASS;
+					isSelected = true;
+				}
+				if(!"".equalsIgnoreCase(payPal)){
+					if(isSelected){
+						paymentType.append(",");
+					}
+					paymentTypes[7]=EnumCardType.PAYPAL;
 					isSelected = true;
 				}
 				

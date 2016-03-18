@@ -1,6 +1,7 @@
 package com.freshdirect.payment.model;
 
 import com.freshdirect.framework.core.*;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  *
@@ -10,13 +11,19 @@ import com.freshdirect.framework.core.*;
 
 public class ErpSummaryDetailModel extends ModelSupport {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5971698378250658889L;
 	private EnumSummaryDetailType summaryDetailType;
 	private int numberOfItems;
 	private double netAmount;
 	private double interchangeFees;
 	private double assessmentFees;
 	private double transactionFees;
-	
+	private EnumPaymentMethodType pmType;
+
+
 	/**
 	 * Constructor
 	 */
@@ -28,7 +35,7 @@ public class ErpSummaryDetailModel extends ModelSupport {
 	/**
 	 * Constructor with all arguments
 	 */
-	public ErpSummaryDetailModel(EnumSummaryDetailType type, int numberOfItems, double netAmount, double interchangeFees, double assessmentFees, double transactionFees){
+	public ErpSummaryDetailModel(EnumSummaryDetailType type, int numberOfItems, double netAmount, double interchangeFees, double assessmentFees, double transactionFees, EnumPaymentMethodType pmType){
 		super();
 		this.summaryDetailType = type;
 		this.numberOfItems = numberOfItems;
@@ -36,6 +43,7 @@ public class ErpSummaryDetailModel extends ModelSupport {
 		this.interchangeFees = interchangeFees;
 		this.assessmentFees = assessmentFees;
 		this.transactionFees = transactionFees;
+		this.pmType = pmType;
 	}
 	
 	public int getNumberOfItems(){
@@ -75,6 +83,14 @@ public class ErpSummaryDetailModel extends ModelSupport {
 	
 	public EnumSummaryDetailType getSummaryDatailType(){
 		return this.summaryDetailType;
+	}
+	
+	public EnumPaymentMethodType getPmType() {
+		return pmType;
+	}
+
+	public void setPmType(EnumPaymentMethodType pmType) {
+		this.pmType = pmType;
 	}
 	
 	public boolean equals(Object obj){

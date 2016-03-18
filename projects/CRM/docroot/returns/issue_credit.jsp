@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.common.customer.EnumCardType"%>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Set" %>
@@ -755,25 +756,34 @@ if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())
     <td WIDTH="7%">
         <b>Name:<BR>
         Method:<BR>
-        <% if (paymentMethod.getCardType() != null) { %>
+        <% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
         CC Type<BR>
-        <% } %>
         Acct #:<BR>
+        <% } else { %>
+        Account:<BR>
+        <% } %>
         <% if (paymentMethod.getExpirationDate() != null) { %>
         Exp. Dt:<BR>
         <% } %>
+        <% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
         Address:</b>
+        <% } %>
     </td>
     <td WIDTH="13%">
         <%= paymentMethod.getName() %><BR>
         <%= paymentMethod.getPaymentMethodType() %><BR>
-        <% if (paymentMethod.getCardType() != null) { %><%= paymentMethod.getCardType() %><BR><% } %>
-        <%= PaymentMethodUtil.getDisplayableAccountNumber(paymentMethod) %><BR>
-        <% if (paymentMethod.getAbaRouteNumber() != null) { %><%= paymentMethod.getAbaRouteNumber() %><BR><% } %>
-        <% if (paymentMethod.getBankAccountType() != null) { %><%= paymentMethod.getBankAccountType() %><BR><% } %>
-        <% if (paymentMethod.getExpirationDate() != null) { %><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %><BR><% } %>
-        <%= paymentMethod.getAddress1() %><BR>
-        <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %>
+        <% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
+        	<%= paymentMethod.getCardType() %><BR>
+	        <%= PaymentMethodUtil.getDisplayableAccountNumber(paymentMethod) %><BR>
+	        <% if (paymentMethod.getAbaRouteNumber() != null) { %><%= paymentMethod.getAbaRouteNumber() %><BR><% } %>
+	        <% if (paymentMethod.getBankAccountType() != null) { %><%= paymentMethod.getBankAccountType() %><BR><% } %>
+	        <% if (paymentMethod.getExpirationDate() != null) { %><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %><BR><% } %>
+	        <%= paymentMethod.getAddress1() %><BR>
+	        <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %>
+	    <% } else { %>
+	    	<img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"><br />
+	    	<%= paymentMethod.getEmailID() %>
+	    <% } %>
     </td>
 <%      } %>
     <td WIDTH="5%"><BR></td>

@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.checkout;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -209,8 +211,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		//
 		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
-		// Do not set Ewallet card as default Payment Method
-		if(paymentMethod.geteWalletID() == null){
+		// Do not set MP Ewallet card as default Payment Method
+		if(paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
 		}
 		
@@ -391,5 +393,36 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDCartModel cart = getCart(user, actionName);
 		FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
 		setCart(cart, user, actionName, session);
+	}
+	
+	/**
+	 * @param paymentMethods
+	 * @param request
+	 * @return
+	 */
+	public static List<ErpPaymentMethodI> disconnectInvalidPayPalWallet( List<ErpPaymentMethodI> paymentMethods, HttpServletRequest request){
+		 ActionResult result = new ActionResult();
+		if(paymentMethods != null && !paymentMethods.isEmpty()){
+			List<ErpPaymentMethodI> erpPaymentMethodIs = new ArrayList<ErpPaymentMethodI>();
+			for(ErpPaymentMethodI paymentMethod : paymentMethods){
+				if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){ // PayPal wallet is paired
+					boolean isValid  = PaymentMethodUtil.isVaultTokeValid(paymentMethod.getProfileID(),paymentMethod.getCustomerId());
+					if(isValid){
+						erpPaymentMethodIs.add(paymentMethod);
+					}else{
+						FDCustomerManager.deleteLongAccessToken(paymentMethod.getCustomerId(), ""+EnumEwalletType.PP.getValue());
+						 try {
+							PaymentMethodUtil.deletePaymentMethod(request, result, paymentMethod.getPK().getId());
+						} catch (FDResourceException e) {
+							LOGGER.error("Unable to delete the disconnect PayPal Payment Method");
+						}
+					}
+				}else{
+					erpPaymentMethodIs.add(paymentMethod);
+				}
+			}
+			return erpPaymentMethodIs;
+		}
+		return paymentMethods;
 	}
 }

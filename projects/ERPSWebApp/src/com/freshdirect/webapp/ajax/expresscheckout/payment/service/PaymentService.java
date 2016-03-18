@@ -218,6 +218,7 @@ public class PaymentService {
     public List<PaymentData> loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
         List<PaymentData> paymentDatas = new ArrayList<PaymentData>();
         List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
+        paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
         Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
@@ -339,6 +340,7 @@ public class PaymentService {
         	paymentData.setVendorEWalletID(payment.getVendorEWalletID());
         	paymentData.setMpLogoURL(FDStoreProperties.getMasterpassLogoURL());
             paymentData.setBankName(payment.getBankName());
+            paymentData.setEmailID(payment.getEmailID());
         }
         return paymentData;
     }

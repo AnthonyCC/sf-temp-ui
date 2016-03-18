@@ -75,7 +75,7 @@ public class EwalletMobileRequestProcessor {
 		return ewalletResponseData;
 	}
 	/**
-	 * Method is used to get the Client Token
+	 * Method is used to whether PayPal a/c is paired or not. If yes then return the PayPal paymentMethod details otherwise return the Client Token
 	 * @param ewalletRequestData
 	 * @return
 	 * @throws Exception

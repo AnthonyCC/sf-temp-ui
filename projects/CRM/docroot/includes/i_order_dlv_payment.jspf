@@ -8,6 +8,8 @@
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import='com.freshdirect.fdstore.CallCenterServices' %>
 <%@ include file="/includes/i_globalcontext.jspf" %>
+<%@page import="com.freshdirect.common.customer.EnumCardType"%>
+
 <script type="text/javascript" language="javascript">
 //<!--
 
@@ -101,7 +103,7 @@ function loadSignature(order)
 	<table>
 	<tr>
 		<td>
-		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We’ll release any unused balance when your order is processed. Learn about Estimated Price.
+		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We?ll release any unused balance when your order is processed. Learn about Estimated Price.
 
 
 		
@@ -115,7 +117,7 @@ function loadSignature(order)
 	<table>
 	<tr>
 		<td>
-		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We’ll release any unused balance when your order is processed. Learn about Estimated Price.
+		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We?ll release any unused balance when your order is processed. Learn about Estimated Price.
 
 
 		
@@ -210,63 +212,68 @@ function loadSignature(order)
 					<%}%> 
 					
 				</tr>
-				<% if (paymentMethod.getCardType() != null) { %>
+				<% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
 				<tr>
 					<td>Card Type&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getCardType() %></td>
 				</tr>
-				<% } %>
 				<tr>
 					<td>Account Number&nbsp;&nbsp;</td>
 					<td><%= PaymentMethodUtil.getDisplayableAccountNumber(paymentMethod) %></td>
 				</tr>
-				<% if (paymentMethod.getAbaRouteNumber() != null) { %>
-				<tr>
-					<td>ABA Route Number&nbsp;&nbsp;</td>
-					<td><%= paymentMethod.getAbaRouteNumber() %></td>
-				</tr>
-				<% } %>
-				<% if (paymentMethod.getBankAccountType() != null) { %>
-				<tr>
-					<td>Bank Account Type&nbsp;&nbsp;</td>
-					<td><%= paymentMethod.getBankAccountType() %></td>
-				</tr>
-				<% } %>
-				<% if (paymentMethod.getExpirationDate() != null) { %>
-				<tr>
-					<td>Expires&nbsp;&nbsp;</td>
-					<td><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %></td>
-				</tr>
-				<% } %>
-				<% if (!EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())) {%>
+				<% } else { %>
+			        <td>Account &nbsp;&nbsp;</td>
+			        <td><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"><br />
+	    				<%= paymentMethod.getEmailID() %></td>
+			    <% } %>
+			    <% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
+					<% if (paymentMethod.getAbaRouteNumber() != null) { %>
+					<tr>
+						<td>ABA Route Number&nbsp;&nbsp;</td>
+						<td><%= paymentMethod.getAbaRouteNumber() %></td>
+					</tr>
+					<% } %>
+					<% if (paymentMethod.getBankAccountType() != null) { %>
+					<tr>
+						<td>Bank Account Type&nbsp;&nbsp;</td>
+						<td><%= paymentMethod.getBankAccountType() %></td>
+					</tr>
+					<% } %>
+					<% if (paymentMethod.getExpirationDate() != null) { %>
+					<tr>
+						<td>Expires&nbsp;&nbsp;</td>
+						<td><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %></td>
+					</tr>
+					<% } %>
+					<% if (!EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())) {%>
+						<tr><td colspan="2">&nbsp;</td></tr>
+						<tr>
+						<%if(EnumPaymentType.ADD_ON_ORDER.equals(paymentMethod.getPaymentType())) {%>
+							<td><b>Order Type</b></td>
+							<%}else{%>
+							<td><b>Payment</b></td>
+							<%}%>
+							<td style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></td>
+						</tr>
+						<tr>
+							<td>Referenced order</td>
+							<td><%= paymentMethod.getReferencedOrder() %></td>
+						</tr>
+						<%
+					}
+					%>
 					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr>
-					<%if(EnumPaymentType.ADD_ON_ORDER.equals(paymentMethod.getPaymentType())) {%>
-						<td><b>Order Type</b></td>
-						<%}else{%>
-						<td><b>Payment</b></td>
-						<%}%>
-						<td style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></td>
+					<tr valign="top">
+						<td>Billing address</td>
+						<td><%=paymentMethod.getAddress1()%>&nbsp;Apt. <%=paymentMethod.getApartment()%>
+	                                    <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
+	                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%><br><%=paymentMethod.getCountry()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
 					</tr>
 					<tr>
-						<td>Referenced order</td>
-						<td><%= paymentMethod.getReferencedOrder() %></td>
+						<td>Billing Reference&nbsp;&nbsp;</td>
+						<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
 					</tr>
-					<%
-				}
-				%>
-				<tr><td colspan="2">&nbsp;</td></tr>
-				<tr valign="top">
-					<td>Billing address</td>
-					<td><%=paymentMethod.getAddress1()%>&nbsp;Apt. <%=paymentMethod.getApartment()%>
-                                    <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
-                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%><br><%=paymentMethod.getCountry()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
-				</tr>
-				<tr>
-					<td>Billing Reference&nbsp;&nbsp;</td>
-					<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
-				</tr>
-				
+				<% } %>
 				<%
 					List<com.freshdirect.fdstore.customer.WebOrderViewI> views = order.getOrderViews();
 					boolean usq_message = false;

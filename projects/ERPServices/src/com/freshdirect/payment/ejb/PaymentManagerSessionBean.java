@@ -47,6 +47,7 @@ import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.customer.ejb.ErpSaleInfoDAO;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -204,7 +205,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			    	
 					if(auth.isApproved() && !auth.hasAvsMatched() ){	//-Manoj, Add check payment.isAVSCheckFailed==false					
 						if(!payment.isBypassAVSCheck()){														
-							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && (payment.geteWalletID() == null || !payment.geteWalletID().equals("2"))) {	                           								  
+							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && (payment.geteWalletID() == null || !payment.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){	                           								  
 									payment.setAvsCkeckFailed(true);
 									customerEB.updatePaymentMethodNewTx(payment);								  	
 									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							

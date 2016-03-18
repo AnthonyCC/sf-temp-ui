@@ -89,4 +89,7 @@ public interface SessionName {
     public static final String ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL = "orderSubmittedFlagForSemPixel";
     public static final String CLICK_ID = "CLICKID";
     public static final String COUPONCODE = "COUPONCODE";
+    
+    // PayPal
+    public static final String PAYPAL_DEVICE_ID = "DEVICE_ID";
 }

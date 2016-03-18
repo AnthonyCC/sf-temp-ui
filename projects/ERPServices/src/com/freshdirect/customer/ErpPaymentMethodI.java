@@ -173,5 +173,7 @@ public interface ErpPaymentMethodI extends AddressI {
 	 */
 	public void seteWalletTrxnId(String trxnId);
 	
+	public void setDeviceId(String deviceId);
+	public String getDeviceId();
 }
 

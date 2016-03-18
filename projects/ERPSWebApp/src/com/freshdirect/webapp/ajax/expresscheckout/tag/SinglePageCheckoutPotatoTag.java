@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
@@ -175,11 +176,20 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 					}
 					paymentsNew.add(data);
 				}else{
-					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
-					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+					int ewalletId = EnumEwalletType.MP.getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId)
+																	&& selectedWalletCardId.equals(data.getId())){
 						paymentsNew.add(data);
 						selectedMacted = true;
 					}
+					//PayPal Changes
+					ewalletId = EnumEwalletType.PP.getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId)){
+						paymentsNew.add(data);
+						if(formpaymentData.getSelected() != null && formpaymentData.getSelected().equals(data.getId())){
+							selectedMacted = true;
+						}
+					}   
 				}
 			}
 			if(paymentsNew.isEmpty() || !selectedMacted){
@@ -197,7 +207,12 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		if (formpaymentData != null) {
 			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
 				formpaymentData.setWalletErrorMsg(request.getSession().getAttribute(EWALLET_ERROR_CODE).toString());
+				if(request.getSession().getAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE) != null){
+					formpaymentData.seteWalletErrorProvider(request.getSession().getAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE).toString());
+				}
+				
 				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
+				request.getSession().removeAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE);
 			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";

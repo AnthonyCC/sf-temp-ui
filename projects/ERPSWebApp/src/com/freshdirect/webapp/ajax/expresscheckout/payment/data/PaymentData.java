@@ -24,6 +24,8 @@ public class PaymentData {
 	private String eWalletID;
 	private String vendorEWalletID;
 	private String mpLogoURL;
+	private String emailID;
+	private boolean canDelete = true;
 
 	public String getId() {
 		return id;
@@ -219,4 +221,33 @@ public class PaymentData {
 		this.mpLogoURL = mpLogoURL;
 	}
 
+	/**
+	 * @return emailID
+	 */
+	public String getEmailID() {
+		return emailID;
+	}
+
+	/**
+	 * @param emailID
+	 */
+	public void setEmailID(String emailID) {
+		this.emailID = emailID;
+	}
+
+	/**
+	 * @return the canDelete
+	 */
+	public boolean isCanDelete() {
+		return canDelete;
+	}
+
+	/**
+	 * @param canDelete the canDelete to set
+	 */
+	public void setCanDelete(boolean canDelete) {
+		this.canDelete = canDelete;
+	}
+
+	
 }

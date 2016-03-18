@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJBObject;
+import javax.ejb.FinderException;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
@@ -52,4 +53,6 @@ public interface ReconciliationSB extends EJBObject {
 	public List processSettlementPendingOrders() throws RemoteException;
 	
 	public void sendSettlementReconToSap(String fileName, String folder) throws SapException, RemoteException;
+	
+	public ErpSettlementInfo getSettlementInfo(String saleId, ErpAffiliate affiliate, double amount, String authCode, boolean chargeSettlement, boolean refund, boolean settlementFail, boolean cbk, boolean cbr) throws RemoteException, FinderException;
 }

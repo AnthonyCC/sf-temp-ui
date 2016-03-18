@@ -124,7 +124,7 @@ public class ErpAbstractSettlementPersistentBean extends ErpPaymentPersistentBea
 	 */
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, this.model).getId();
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, RESPONSE_CODE, AFFILIATE, AUTH_CODE) values (?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, SEQUENCE_NUMBER, CARD_TYPE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, RESPONSE_CODE, AFFILIATE, AUTH_CODE, PROFILE_ID, GATEWAY_ORDER, EWALLET_TX_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		int index =1;
 		ps.setString(index++, salesactionId);
@@ -141,6 +141,9 @@ public class ErpAbstractSettlementPersistentBean extends ErpPaymentPersistentBea
 			ps.setNull(index++, Types.VARCHAR);
 		}
 		ps.setString(index++, this.model.getAuthCode());
+		ps.setString(index++, model.getProfileID());
+		ps.setString(index++, model.getGatewayOrderID());
+		ps.setString(index++, model.getEwallet_tx_id());
 		
 		try{
 			if(ps.executeUpdate() != 1 ){

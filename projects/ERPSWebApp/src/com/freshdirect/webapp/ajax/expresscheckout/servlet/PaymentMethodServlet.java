@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -299,6 +300,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 			// Remove Error Message From session
 			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
 				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
+				request.getSession().removeAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE);
 			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";
@@ -342,8 +344,14 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 				if(data.geteWalletID() == null){
 					paymentsNew.add(data);
 				}else{
-					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+					int ewalletId = EnumEwalletType.MP.getValue();
 					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+						paymentsNew.add(data);
+					}
+					
+					//PayPal Changes
+					ewalletId = EnumEwalletType.PP.getValue();
+					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId)){
 						paymentsNew.add(data);
 					}
 				}

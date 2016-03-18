@@ -103,7 +103,7 @@ public class ErpCashbackPersistentBean extends ErpPaymentPersistentBean {
 	 */
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, this.model).getId();
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, RESPONSE_CODE, AFFILIATE) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENT (SALESACTION_ID, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, RESPONSE_CODE, AFFILIATE, GATEWAY_ORDER, EWALLET_TX_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int index = 1;
 		ps.setString(index++, salesactionId);
@@ -122,8 +122,8 @@ public class ErpCashbackPersistentBean extends ErpPaymentPersistentBean {
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
-		
-		
+		ps.setString(index++, this.model.getGatewayOrderID());
+		ps.setString(index++, this.model.getEwallet_tx_id());
 		try{
 			if(ps.executeUpdate() != 1 ){
 				throw new SQLException("new row cannot be created");
@@ -148,7 +148,7 @@ public class ErpCashbackPersistentBean extends ErpPaymentPersistentBean {
 	
 	public void load(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, RESPONSE_CODE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CARD_TYPE, SEQUENCE_NUMBER, AUTH_CODE, DESCRIPTION, AVS, RESPONSE_CODE, CCNUM_LAST4, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, AFFILIATE, GATEWAY_ORDER FROM CUST.SALESACTION, CUST.PAYMENT WHERE SALESACTION.ID = PAYMENT.SALESACTION_ID AND SALESACTION.ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -165,6 +165,7 @@ public class ErpCashbackPersistentBean extends ErpPaymentPersistentBean {
 			this.model.setPaymentMethodType(EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")));
 			this.model.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 			this.model.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
+			this.model.setGatewayOrderID(rs.getString("GATEWAY_ORDER"));
 			ErpAffiliate aff = (ErpAffiliate) NVL.apply(ErpAffiliate.getEnum(rs.getString("AFFILIATE")), ErpAffiliate.getPrimaryAffiliate());
 			this.model.setAffiliate(aff);
 			

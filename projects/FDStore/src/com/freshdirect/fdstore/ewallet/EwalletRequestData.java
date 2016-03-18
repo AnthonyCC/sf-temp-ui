@@ -32,6 +32,7 @@ public class EwalletRequestData implements Serializable {
 	private String mobileCallbackDomain;
 	private String precheckoutTransactionId;
 	private Map<String,String> reqParams;
+	private String emailId;
 	
 	
 	//batch interface related trxns
@@ -273,4 +274,19 @@ public class EwalletRequestData implements Serializable {
 	public void setReqParams(Map<String, String> reqParams) {
 		this.reqParams = reqParams;
 	}
+	
+	/**
+	 * @return
+	 */
+	public String getEmailId() {
+		return emailId;
+	}
+
+	/**
+	 * @param email
+	 */
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	
 }

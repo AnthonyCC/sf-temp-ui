@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -484,6 +485,14 @@ public class SubmitOrderAction extends WebActionSupport {
 			if(paymentMethodModel.geteWalletID() == null){ 
 				FDCustomerManager.setDefaultPaymentMethod(
 					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK());
+			}else{
+				if(paymentMethodModel.geteWalletID() != null && paymentMethodModel.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+					if(session.getAttribute(SessionName.PAYPAL_DEVICE_ID) != null){
+						String deviceId = (String)session.getAttribute(SessionName.PAYPAL_DEVICE_ID);
+						paymentMethodModel.setDeviceId(deviceId);
+					}
+					
+				}
 			}
 		}
         if (!(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled())) {

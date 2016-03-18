@@ -6,9 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSummaryDetailModel;
 
@@ -21,6 +23,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
 	private double interchangeFees;
 	private double assessmentFees;
 	private double transactionFees;
+	private EnumPaymentMethodType pmType;
 	
 	/** 
 	 * Creates new SettlementDetailPersistentBean
@@ -32,7 +35,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
     /** 
      * Creates new SettlementDetailPersistentBean
      */
-    public SettlementDetailPersistentBean(PrimaryKey pk, EnumSummaryDetailType summaryType, int numberOfItems, double netAmount, double interchangeFees, double assessmentFees, double transactionFees) {
+    public SettlementDetailPersistentBean(PrimaryKey pk, EnumSummaryDetailType summaryType, int numberOfItems, double netAmount, double interchangeFees, double assessmentFees, double transactionFees, EnumPaymentMethodType pmType) {
         super(pk);
         this.summaryType = summaryType;
         this.numberOfItems = numberOfItems;
@@ -40,6 +43,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
         this.interchangeFees = interchangeFees;
         this.assessmentFees = assessmentFees;
         this.transactionFees = transactionFees;
+        this.pmType = pmType;
     }
     
     /**
@@ -68,7 +72,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
      * @return Model representing state of this object
      */
     public ModelI getModel(){
-        ErpSummaryDetailModel model = new ErpSummaryDetailModel(this.summaryType, this.numberOfItems, this.netAmount, this.interchangeFees, this.assessmentFees, this.transactionFees);
+        ErpSummaryDetailModel model = new ErpSummaryDetailModel(this.summaryType, this.numberOfItems, this.netAmount, this.interchangeFees, this.assessmentFees, this.transactionFees, this.pmType);
         super.decorateModel(model);
         return model;
     }
@@ -87,6 +91,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
         this.interchangeFees = m.getInterchangeFees();
         this.assessmentFees = m.getAssessmentFees();
         this.transactionFees = m.getTransactionFees();
+        this.pmType = m.getPmType();
     }
     
     
@@ -100,7 +105,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
      */
     public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
         java.util.List beans = new java.util.LinkedList();
-        PreparedStatement ps = conn.prepareStatement("SELECT ID, SETTLEMENT_ID, CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES FROM CUST.SETTLEMENT_DETAIL WHERE SETTLEMENT_ID = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT ID, SETTLEMENT_ID, CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES, PAYMENT_METHOD_TYPE FROM CUST.SETTLEMENT_DETAIL WHERE SETTLEMENT_ID = ?");
         ps.setString(1, parentPK.getId());
         ResultSet rs = ps.executeQuery();
         
@@ -112,7 +117,8 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
 			double interchangeFees = rs.getDouble("INTERCHANGE_FEES");
 			double assessmentFees = rs.getDouble("ASSESSMENT_FEES");
 			double transactionFees = rs.getDouble("TRANSACTION_FEES");
-            SettlementDetailPersistentBean bean =	new SettlementDetailPersistentBean( new PrimaryKey(id),  summaryType, numberOfItems, netAmount, interchangeFees, assessmentFees, transactionFees);
+			EnumPaymentMethodType pmType = EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE"));
+            SettlementDetailPersistentBean bean =	new SettlementDetailPersistentBean( new PrimaryKey(id),  summaryType, numberOfItems, netAmount, interchangeFees, assessmentFees, transactionFees, pmType);
             bean.setParentPK(parentPK);
             beans.add(bean);
         }
@@ -133,11 +139,14 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
      */
     public PrimaryKey create(Connection conn) throws SQLException {
     	String id = this.getNextId(conn, "CUST");
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SETTLEMENT_DETAIL (ID, SETTLEMENT_ID, CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES) values (?,?,?,?,?,?,?,?)" );
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SETTLEMENT_DETAIL (ID, SETTLEMENT_ID, CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES, PAYMENT_METHOD_TYPE) values (?,?,?,?,?,?,?,?,?)" );
         
         ps.setString(1, id);
         ps.setString(2, this.getParentPK().getId());
-        ps.setString(3, this.summaryType.getCode());
+        if (EnumSummaryDetailType.PAYPAL.equals(this.summaryType))
+        	ps.setString(3, this.summaryType.getName());
+        else
+        	ps.setString(3, this.summaryType.getCode());
         ps.setInt(4, this.numberOfItems);
         //ps.setDouble(5, this.netAmount);
         ps.setBigDecimal(5, new java.math.BigDecimal(this.netAmount));
@@ -147,7 +156,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
         ps.setBigDecimal(7, new java.math.BigDecimal(this.assessmentFees));
         //ps.setDouble(8, this.transactionFees);
         ps.setBigDecimal(8, new java.math.BigDecimal(this.transactionFees));
-        
+        ps.setString(9, pmType.getName());
 	    try {
             ps.executeUpdate();
             this.setPK(new PrimaryKey(id));
@@ -168,7 +177,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
      * @throws SQLException any problems entountered while loading this object
      */
     public void load(Connection conn) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("SELECT CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES FROM CUST.SETTLEMENT_DETAIL WHERE ID = ?");
+        PreparedStatement ps = conn.prepareStatement("SELECT CARD_TYPE, NUM_ITEMS, NET_AMOUNT, INTERCHANGE_FEES, ASSESSMENT_FEES, TRANSACTION_FEES, PAYMENT_METHO_TYPE FROM CUST.SETTLEMENT_DETAIL WHERE ID = ?");
         
         ps.setString(1, this.getPK().getId());
         ResultSet rs = ps.executeQuery();
@@ -180,6 +189,7 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
             this.interchangeFees = rs.getDouble("INTERCHANGE_FEES");
             this.assessmentFees = rs.getDouble("ASSESSMENT_FEES");
             this.transactionFees = rs.getDouble("TRANSACTION_FEES");
+            this.pmType = EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHO_TYPE"));
             
         } else {
             throw new SQLException("No such SettlementSummaryBean PK: " + this.getPK() );

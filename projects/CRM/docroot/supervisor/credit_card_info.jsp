@@ -2,6 +2,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.common.customer.EnumCardType"%>
 
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="crm" prefix="crm" %>
@@ -58,33 +59,42 @@
 			<%if(ccList != null && !ccList.isEmpty()){%>
 				<logic:iterate id="cc" collection="<%= ccList %>" type="com.freshdirect.customer.ErpPaymentMethodI">
 				<table>
-					<tr>
-						<td align="left"><b>Account Number:</b></td>
-						<td><%=cc.getAccountNumber()%></td>
-					</tr>
+				    <% if (cc.getCardType() != null && !cc.getCardType().equals(EnumCardType.PAYPAL)) { %>
+						<tr>
+							<td align="left"><b>Account Number:</b></td>
+							<td><%=cc.getAccountNumber()%></td>
+						</tr>
+					<% } %>
 					<tr>
 						<td align="left"><b>Name On Account:</b></td>
 						<td><%=cc.getName()%></td>
 					</tr>
-					<% if (cc.getExpirationDate() != null) { %>
+					<% if (cc.getCardType() != null && !cc.getCardType().equals(EnumCardType.PAYPAL)) { %>
+						<% if (cc.getExpirationDate() != null) { %>
+						<tr>
+							<td align="left"><b>Expiration Date:</b></td>
+							<td><%=CCFormatter.formatCreditCardExpDate(cc.getExpirationDate())%></td>
+						</tr>
+						<% } %>
+						<% if (cc.getAbaRouteNumber() != null) { %>
+						<tr>
+							<td align="left"><b>Aba Route Number:</b></td>
+							<td><%=cc.getAbaRouteNumber()%></td>
+						</tr>
+						<% } %>
+						<% if (cc.getBankAccountType() != null) { %>
+						<tr>
+							<td align="left"><b>Bank Account Type:</b></td>
+							<td><%=cc.getBankAccountType().getDescription()%></td>
+						</tr>
+					<% } %>
+					<% } else { %>
 					<tr>
-						<td align="left"><b>Expiration Date:</b></td>
-						<td><%=CCFormatter.formatCreditCardExpDate(cc.getExpirationDate())%></td>
+						<td><b>Account:</b></td>
+						<td><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"><br />
+	    					<%= cc.getEmailID() %></td>
 					</tr>
 					<% } %>
-					<% if (cc.getAbaRouteNumber() != null) { %>
-					<tr>
-						<td align="left"><b>Aba Route Number:</b></td>
-						<td><%=cc.getAbaRouteNumber()%></td>
-					</tr>
-					<% } %>
-					<% if (cc.getBankAccountType() != null) { %>
-					<tr>
-						<td align="left"><b>Bank Account Type:</b></td>
-						<td><%=cc.getBankAccountType().getDescription()%></td>
-					</tr>
-					<% } %>
-					
 				</table>
 				</logic:iterate >
 			<%}%>

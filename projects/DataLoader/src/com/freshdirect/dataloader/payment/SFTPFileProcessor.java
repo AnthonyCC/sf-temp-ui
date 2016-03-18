@@ -2,6 +2,8 @@ package com.freshdirect.dataloader.payment;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,14 +37,41 @@ public class SFTPFileProcessor {
 		
 		try {
 			SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fsOptions, "no");
-			SftpFileSystemConfigBuilder.getInstance().setIdentities(fsOptions, new File[]{new File(context.getOpenSSHPrivateKey())});
+			if (!PaymentFileType.PAYPAL_SETTLEMENT.equals(context.getFileType()))
+				SftpFileSystemConfigBuilder.getInstance().setIdentities(fsOptions, new File[]{new File(context.getOpenSSHPrivateKey())});
 			this.context=context;
 			initialized=true;
 		} catch (FileSystemException e) {
 			LOGGER.fatal("Could not initialize SFTPFileProcessor due to"+e.toString() );
 		}
 	}
-
+	
+	private FileSelector getPPFileSelector() {
+		
+		return new FileSelector(){
+       	 
+            public boolean includeFile(FileSelectInfo fileSelectInfo) throws Exception {
+            	String absPath = fileSelectInfo.getFile().getName().toString();
+            	String filename = absPath.substring(absPath.lastIndexOf("/") + 1);
+            	
+            	if (filename.startsWith(DataLoaderProperties.getPayPalStlmntFilePrefix()
+            			+ context.getPayPalFileDate() + ".A") &&
+            			filename.endsWith(DataLoaderProperties.getPayPalStlmntFileSuffix() +
+            									DataLoaderProperties.getPayPalStlmntFileExtn())) {
+            		return true; 
+            	}
+            	
+            	return false;
+            }
+ 
+            public boolean traverseDescendents(FileSelectInfo fileSelectInfo) throws Exception {
+            	if (fileSelectInfo.getDepth() == 0)
+            		return true;
+            	else
+            		return false;
+            }
+		};
+	}
 	
 	private  String getExtension() {
 		if(this.context!=null)
@@ -67,8 +96,39 @@ public class SFTPFileProcessor {
               }
             }
         };
-		
+	
 	}
+	
+	public List<File> getPPFiles() throws IOException, URISyntaxException {
+		FileSystemManager fsManager = VFS.getManager();
+
+        String remoteURL = "";
+    	String userCreds = context.getUserName() +":"+context.getPassword();
+    	String path = DataLoaderProperties.getPayPalStlmntFolder();
+    	URI uri = new URI("sftp", userCreds, context.getRemoteHost(), -1, path, null, null);
+    	remoteURL = uri.toString();
+
+        
+        FileObject remoteFileObject = fsManager.resolveFile(remoteURL, fsOptions);
+        FileObject[] children = remoteFileObject.findFiles(getPPFileSelector());
+        LocalFile localFile =	  (LocalFile) fsManager.resolveFile(context.getLocalHost());
+        localFile.copyFrom(remoteFileObject,getPPFileSelector());
+        
+        List<File> downloadedFiles=new ArrayList<File>(children.length);
+        for(int i=0;i<children.length;i++) {
+       		downloadedFiles.add(new File(context.getLocalHost()+children[i].getName().getBaseName()));
+        }
+
+        boolean deleteFiles=DataLoaderProperties.isPaymentechSFTPFileDeletionEnabled();
+	    if(deleteFiles)
+	      	deleteFiles(children);
+	    deleteFiles = DataLoaderProperties.isPayPalSFTPFileDeletionEnabled();
+	    if (deleteFiles)
+	    	deleteFiles(children);
+	    
+	    return  downloadedFiles;
+	}
+	
 	public List<String> getFiles() throws IOException {
 		
 		
@@ -129,7 +189,21 @@ public class SFTPFileProcessor {
 	}
 	
 	public static void main(String[] a) throws Exception {
-		
+		FileContext ctx=new FileContext();
+		ctx.setFileType(PaymentFileType.PAYPAL_SETTLEMENT);
+		ctx.setLocalHost(DataLoaderProperties.getWorkingDir());
+		ctx.setPayPalFileDate("20160222");
+		//ctx.setOpenSSHPrivateKey(DataLoaderProperties.getWorkingDir()+DataLoaderProperties.getPaymentSFTPKey());
+		ctx.setRemoteHost(DataLoaderProperties.getPayPalFtpIp());
+		ctx.setUserName(DataLoaderProperties.getPayPalFtpUser());
+		ctx.setPassword(DataLoaderProperties.getPayPalFtpPassword());
+		SFTPFileProcessor fp=new SFTPFileProcessor(ctx);
+		List<String> files=fp.getFiles();
+		System.out.println("Files downloaded are:");
+		for(String v:files) {
+			System.out.println(v);
+		}
+		/*
 		FileContext ctx=new FileContext();
 		ctx.setFileType(PaymentFileType.DFR);
 		ctx.setLocalHost(DataLoaderProperties.getWorkingDir());
@@ -143,5 +217,6 @@ public class SFTPFileProcessor {
 		for(String v:files) {
 			System.out.println(v);
 		}
+		*/
 	}
 }

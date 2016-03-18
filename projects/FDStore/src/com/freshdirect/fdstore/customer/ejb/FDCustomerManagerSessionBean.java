@@ -38,6 +38,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentModel;
@@ -2615,12 +2616,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			//Start:: Add FDX SMS for order Cancelled
 			
+			
+			
 			try {
 				if(FDStoreProperties.getSmsOrderCancel() && EnumEStoreId.FDX.name().equalsIgnoreCase(order.getEStoreId().name())&& "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderExceptions()))
 					isSent = SMSAlertManager.getInstance().smsOrderCancel(info.getFdUserId(), orderMobileNumber, saleId, EnumEStoreId.FDX.name());
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
 				LOGGER.warn("Error Sending FDXSMS for Order Cancelled: ", e);
+			}
+			
+			if (EnumPaymentMethodType.PAYPAL.equals(order.getPaymentMethod().getPaymentMethodType()) &&
+					order.getPaymentMethod().getCardType().equals(EnumCardType.PAYPAL) &&
+					EnumSaleStatus.MODIFIED_CANCELED.equals(order.getOrderStatus())) {
+				reversePPAuths(sb.getOrder(new PrimaryKey(saleId)));
 			}
 			
 			//End:: Add FDX SMSfor order Cancelled
@@ -2635,6 +2644,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 */
 	}
 
+	private void reversePPAuths(ErpSaleModel sale) throws ErpTransactionException {
+     	List<ErpAuthorizationModel> auths = sale.getPPAuthorizations();
+    	for (ErpAuthorizationModel auth : auths) {
+    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
+    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
+    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
+    		Response response = gateway.reverseAuthorize(request);
+    		if (!response.isApproved()) {
+    			LOGGER.warn("Reverse auth failed for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+    		} else {
+    			LOGGER.info("Auth voided for PayPal transaction during order cancellation of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
+    		}
+    	}
+	}
+	
 	private void cancelPassExtension(DlvPassManagerSB dlvPassSB,
 			DeliveryPassModel dlvPass, FDOrderI order) throws RemoteException {
 
