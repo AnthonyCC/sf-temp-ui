@@ -113,7 +113,9 @@ final int W_YA_GIFTCARDS = 970;
 		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="middle">
 				<td style="height: 25px;" align="center">
-					<img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Have a New Gift card? Enter the Code Here" /> <input type="text"name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
+					<!-- <img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Have a New Gift card? Enter the Code Here" /> -->
+					<span class="Container_Top_GiftCardMain">Have a New Gift card? Enter the Code Here</span>
+					 <input type="text"name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
 				</td>
 			</tr>
 			<tr>

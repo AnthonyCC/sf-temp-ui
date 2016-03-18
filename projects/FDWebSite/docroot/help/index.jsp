@@ -141,7 +141,7 @@
 					<% List savedList=(List)pageContext.getAttribute("savedFaqs");
 
 					if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
-							<h3 class="help-subheading bold">Top Questions</h3>
+							<h3 class="help-subheading">Top Questions</h3>
 							<% if (null != faqSections) {
 								%>
 								<ul class="orangeDot bold">
@@ -159,7 +159,7 @@
 							<% } %>
 					<% } %>
 
-					<h3 class="help-subheading bold">Learn More</h3>
+					<h3 class="help-subheading">Learn More</h3>
 					<% if(null != faqSections) { %>
 							<ul class="orangeDot bold">
 							<%
@@ -182,7 +182,7 @@
 								</p>
 						
 						<div class="underline">
-							<h4 class="bold uppercase inline">1. enter your message</h4>
+							<h4 class="bold inline">1. Enter Your Message</h4>
 							<span class="small"> * Required information</span>	
 						</div>
 	
@@ -307,7 +307,7 @@
 							<%-- info --%>
 							<%if (identity == null) { %>
 							<div class="underline">
-								<h4 class="bold inline uppercase">2. enter your contact information</h4>
+								<h4 class="bold inline">2. Enter Your Contact Information</h4>
 								<span class="small"> * Required information</span>
 							</div>
 							<div class="from-elements-wrapper">
@@ -347,7 +347,7 @@
 						</div>
 							<% }else{ %>
 								<div class="underline">
-									<h4 class="bold inline uppercase">2. enter your contact information</h4>
+									<h4 class="bold inline">2. Enter Your Contact Information</h4>
 								</div>
 								<div class="form-group text-center small-text">
 									<span class="bold">E-mail Address/User Name:</span><span> <%=email%></span>
