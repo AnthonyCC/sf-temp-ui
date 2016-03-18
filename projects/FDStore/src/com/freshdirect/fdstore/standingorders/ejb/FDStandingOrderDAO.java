@@ -163,7 +163,7 @@ public class FDStandingOrderDAO {
 	private static final String GET_RUNINSTANCE_SQL = "select max(RUN_INSTANCE) as maxInstance from mis.UNAV_ITEMS_INV where run_date > SYSDATE - 1";
 	
 	private final static String QUERY_SO_ELIGIBLE_FOR_REMOVING_TIMESLOTS ="  select * from cust.standing_order so where so.next_date is not null and " +
-			"(so.next_date<=trunc(sysdate)+1 OR (so.next_date = trunc(sysdate)+2 and to_char(sysdate,'HH24')>="+FDStoreProperties.getSO3ActivateCutoffTime()+")) and so.is_activated='N' and so.deleted<>1";
+			"(so.next_date<=trunc(sysdate)+1 OR (so.next_date = trunc(sysdate)+2 and to_char(sysdate,'HH24')>="+FDStoreProperties.getSO3ActivateCutoffTime()+")) and so.is_activated='N' and so.deleted<>1 and so.last_error is null ";
 	
 	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL , LAST_ERROR=? ,ERROR_HEADER=?, ERROR_DETAIL=? WHERE ID=?";
 
