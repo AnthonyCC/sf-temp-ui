@@ -128,6 +128,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			<div id="locabar_messages_trigger" class="cursor-pointer locabar_triggers" tabindex="0">
 				<div class="section-warning-small" id="locabar-messages-open">
 					<div id="locabar-messages-count" class="locabar-circle-cont messages-count" data-count="0">0</div>
+					<span class="offscreen"> delivery alerts</span>
 				</div>
 			</div>
 			
