@@ -55,7 +55,8 @@
 		
 		<tr>
 			<td colspan="6"><br><br>
-				<img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="Social Accounts"><br>
+				<!-- <img src="/media_stat/images/navigation/social_accounts/Social_Accounts.png" width="130" height="16" border="0" alt="SOCIAL ACCOUNTS"><br> -->
+				<span class="SocialAccount">Social Accounts</span>
 				<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>								
 			</td>
 		</tr>
