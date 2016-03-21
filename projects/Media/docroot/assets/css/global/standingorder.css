@@ -43,7 +43,7 @@
 		color: #fff;
 		background-color: #6AAA6D;
 	}
-	.pdp-atc.soShow .qty, .pdp-evenbetter-quantity .qty,
+	.pdp-atc.soShow .qty, /* .pdp-evenbetter-quantity .qty, APPBUG-4499 */
 	.portrait-item-soPreShow .qty,
 	#customizePopup.soShow .qty {
 		border-left: none;
@@ -71,6 +71,11 @@
 	}
 	#customizePopup.soShow .skucontrol-quantity {
 		margin-bottom: 15px;
+		text-align: left;
+		margin-right: 0;
+	}	
+	#customizePopup.soShow .skucontrol-quantity .qtyinput{
+	    width: auto;
 	}
 	/* APPBUG-4515 */
 	#customizePopup .skucontrol-quantity {
@@ -80,13 +85,16 @@
 	#customizePopup .buttons{
 		margin-right: 243px;
 	}
+	 #customizePopup.soShow input.qty{
+		height: 40px;
+	 }
 	.pdp-atc.soShow .qtyinput input.qty,
 	.pdp-evenbetter-quantity .qtyinput input.qty,
 	.portrait-item-soPreShow input.qty,
 	#transactionalPopup .portrait-item-soPreShow input.qty,
 	#customizePopup.soShow input.qty {
 		vertical-align: top;
-		margin: 0;
+		/* margin: 0; APPBUG-4498 */
 		padding: 0 2px;
 		/* height: 38px; APPBUG-4498 */
 	}
@@ -96,7 +104,7 @@
 		right: 40px;
 	}
 	.pdp-evenbetter-quantity .qtyinput input.qty {
-		width: 3em;
+		/* width: 3em; APPBUG-4498 */
 		/* font-size: 16px; APPBUG-4498 */
 		color: #333;
 		font-family: Verdana, Arial, sans-serif;
@@ -337,16 +345,13 @@
 		padding: 0 20px;
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton  {
-		width: 342px;
+		/* width: 342px; APPBUG-4499 */
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-addtolist {
 		margin-left: 0;
 	}
 	.pdp-evenbetter-soShow .pdp-evenbetter-atcbutton {
 		display: none;
-	}
-	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton {
-		max-width: 342px;
 	}
 	#evenBetterPopup .pdp-evenbetter-soPreShow .pdp-evenbetter-atc, #evenBetterPopup .pdp-evenbetter-soShow .pdp-evenbetter-atc {
 		background-color: transparent;
@@ -356,10 +361,14 @@
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton .cssbutton[data-component="addToSOButton"],
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton .cssbutton[data-component="showSOButton"]
 	{
-		margin-left: 10px;
+		/* margin-left: 10px; APPBUG-4499 */
+	}
+	/* APPBUG-4499 */
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
+		font-size: 14px;
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton .cssbutton[data-component="ATCButton"] {
-		width: 94px;
+		/* width: 94px; APPBUG-4499 */
 	}
 	#evenBetterPopup .pdp-evenbetter-soPreShow form.pdp-evenbetter-atc,
 	#evenBetterPopup.shown .pdp-evenbetter-soShow .pdp-evenbetter-atc {
