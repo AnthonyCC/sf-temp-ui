@@ -144,3 +144,11 @@ label.remindme input[type=checkbox]{
   text-align: center;
 }
 
+.textalertpopup [fdform-error="notices"] {
+  text-align: left;
+}
+
+.textalertpopup [fdform-error="mobile"] {
+  margin-top: -20px;
+  padding-right: 150px;
+}

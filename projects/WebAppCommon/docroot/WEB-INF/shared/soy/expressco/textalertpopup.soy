@@ -9,7 +9,9 @@
   <div id="textalert_formbody">
     {if $data.header}{$data.header}{/if}
     <p class="mobile">Mobile # <input name="mobile" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
+    <span fdform-error-for="mobile"><span>
     <p class="choices-title">Select Your Alerts</p>
+    <span fdform-error-for="notices"></span>
     <ul class="choices">
       <li><label><input type="checkbox" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="notices" checked/><span class="choice-title">Order Notices</span> - Receive a refined estimated time of delivery on the day-of as well as an alert when you're receiving the next delivery.</label></li>
       <li><label><input type="checkbox" class="customcheckbox" fdform-v-onerequired="textalertcbs" name="alerts" checked/><span class="choice-title">Order Alerts</span> - Recieve an alert when your order has been cancelled, an unsuccessful delivery attempt has been made or your order has been left with your doorman or according to your unattended delivery request.</label></li>
