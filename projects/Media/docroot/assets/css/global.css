@@ -55,7 +55,7 @@ img { border:none }
 .bodyCopy		{ font-size: 12px;  font-family: Verdana, Arial, sans-serif; }
 
 .cos_faqhelp_fdatheOffice   {font-size: 14px; width:100%;  font-family: Verdana; font-weight: bold; color:#333333; float:left;}
-.cos_faq_helpsubattheOffice   {font-size: 14px;  font-family: Verdana; font-weight: reg; color:#333333;float:left;}
+.cos_faq_helpsubattheOffice   {font-size: 14px;  font-family: Verdana reg; color:#333333;float:left;}
 
 .bodyCopy ul    { margin: 0; padding: 0; }
 .bodyCopy ul li { list-style-position: inside; list-style-type: disc; padding-left: 15px; text-indent: -15px; padding-bottom: 4px; margin-left: 0; }

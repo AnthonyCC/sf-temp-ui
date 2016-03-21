@@ -467,7 +467,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-    <h2>Change your e-mail/user name <i>* Required information</i></h2>
+    <h2>Change Your E-mail/User Name <i>* Required Information</i></h2>
 	</td>
 </tr>
 
@@ -540,9 +540,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<%  boolean isPasswordAddedForSocialUser = UserUtil.isPasswordAddedForSocialUser(identity.getErpCustomerPK());
 			if((erpCustomer != null) && (erpCustomer.isSocialLoginOnly()) && !isPasswordAddedForSocialUser){	
 		%>
-      <h2>Add a password <i>* Required information</i></h2>
+      <h2>Add a password <i>* Required Information</i></h2>
 		<%	} else { %>		
-      <h2>Change your password <i>* Required information</i></h2>
+      <h2>Change Your Password <i>* Required Information</i></h2>
 		<%	} %>	
 	</td>
 </tr>
@@ -647,7 +647,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <tr>
 	<td colspan="6">
-    <h2>Change your display name</h2>
+    <h2>Change Your Display Name</h2>
 	</td>
 </tr>
 <form method="post" name="updateDisplayName">
@@ -673,7 +673,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <input type="hidden" name="actionName" value="changeContactInfo">
 <tr>
 	<td colspan="6">
-    <h2>Change your contact information <i>* Required information</i></h2>
+    <h2>Change Your Contact Information <i>* Required Information</i></h2>
 	</td>
 </tr>
 
@@ -755,7 +755,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
 		<tr>
 			<td colspan="6"><br /><br />
-        <h2>Email preferences</h2>
+        <h2>Email Preferences</h2>
 			</td>
 		</tr>
 		<tr valign="top">
@@ -794,7 +794,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="actionName" value="changeMailPhonePreference">
 	<tr>
 		<td colspan="6"><br /><br />
-      <h2>Mail and phone preferences</h2>
+      <h2>Mail And Phone Preferences</h2>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -867,7 +867,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="partner_existing" value="<%=partner_messages%>">	
 	<tr>
 		<td colspan="6"><br><br>
-      <h2>Mobile preferences</h2>
+      <h2>Mobile Preferences</h2>
 		</td>
 	</tr>
 	<tr>

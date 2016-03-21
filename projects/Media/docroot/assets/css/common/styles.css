@@ -1,6 +1,10 @@
-
-
-
+.youraccount h2 {
+  border-bottom: 1px solid #ccc !important;
+  font-size: 14px;
+  font-family: Verdana;
+  font-weight:bold;
+  color: #333;
+}
 .container1 {
 	/*width: 960px;*/
 	padding: 0;	
