@@ -118,6 +118,7 @@ $jq('#selectAddressList').iconselectmenu({
 function iconselectmenuSetEvents() {
 	$jq('#locabar_addresses_choices li.ui-menu-item').on('mouseenter mouseleave', function(e){
 		var $makeResvButton = $jq('.locabar_addresses-reservation-make');
+		var $makeResvCont = $jq('.locabar_addresses-reservation-make-cont');
 		if (e.type === 'mouseenter') {
 			var $refIcon = $jq(this).find('.address-icon:first');
 			
@@ -128,6 +129,7 @@ function iconselectmenuSetEvents() {
 				$jq('.locabar_addresses-reservation-make-notFor').html('&nbsp;');
 				
 				$makeResvButton.removeClass('disabled');
+				$makeResvCont.show();
 			} else {
 				if ($refIcon.hasClass('address-type-cos')) {
 					$jq('.locabar_addresses-reservation-make-notFor').html('Not for Office Delivery');
@@ -135,6 +137,7 @@ function iconselectmenuSetEvents() {
 					$jq('.locabar_addresses-reservation-make-notFor').html('Not for Pickup Option');
 				}
 				$makeResvButton.addClass('disabled');
+				$makeResvCont.hide();
 			}
 			
 		} else if (e.type === 'mouseleave') {
@@ -142,8 +145,10 @@ function iconselectmenuSetEvents() {
 			$jq('.locabar_addresses-reservation-make-notFor').html( $jq('.locabar_addresses-reservation-make-notFor').data('resvPrevHtml') );
 			if ($makeResvButton.data('resvDisabled')) {
 				$makeResvButton.addClass('disabled');
+				$makeResvCont.hide();
 			} else {
 				$makeResvButton.removeClass('disabled');
+				$makeResvCont.show();
 			}
 		}
 	});

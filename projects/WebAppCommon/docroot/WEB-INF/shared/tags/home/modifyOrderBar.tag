@@ -72,7 +72,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 											    </div>
 											</td>
 											<td width="10%" class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details</a></td>
-											<td width="16%" class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat green transparent" onclick="window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></td>
+											<td width="16%" class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></td>
 										</tr>
 										<% } %>
 									</table>

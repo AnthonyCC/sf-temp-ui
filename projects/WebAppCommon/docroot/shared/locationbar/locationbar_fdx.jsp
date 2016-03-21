@@ -450,13 +450,13 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										<a href="<%=temp_delivery_link %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
 									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
-										<div>
+										<div class="locabar_addresses-reservation-make-cont">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make disabled">Make a Reservation</a>
 											<%-- This text is also in locationbar_fdx.js --%>
 											<div class="locabar_addresses-reservation-make-notFor">Not for <%= ("PICKUP".equals(foundSelectedAddressType)) ? "Pickup Option" : ("COS".equals(foundSelectedAddressType)) ? "Office Delivery" : "&nbsp;" %></div>
 										</div>
 									<% } else { %>
-										<div>
+										<div class="locabar_addresses-reservation-make-cont">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make">Make a Reservation</a>
 											<div class="locabar_addresses-reservation-make-notFor">&nbsp;</div>
 										</div>
