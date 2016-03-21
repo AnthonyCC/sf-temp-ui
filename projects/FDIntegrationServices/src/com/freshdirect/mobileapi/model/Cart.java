@@ -541,7 +541,7 @@ public class Cart {
         if (null != paymentMethod) {
             if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
                 checkoutDetail.setPaymentMethod(new ElectronicCheck(PaymentMethod.wrap(paymentMethod)));
-            } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+            } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType())) {
             	if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("2")){
             		checkoutDetail.setPaymentMethod(new Ewallet(PaymentMethod.wrap(paymentMethod)));
             	}else{
