@@ -771,22 +771,24 @@ public class StandingOrderHelper {
 		Collection<Map<String, Object>> soData = new ArrayList<Map<String, Object>>();
 
 		try {
-			if(isAddtoProduct){
-				standingOrders = FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity());
-			}else{
-				standingOrders = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+			if(null != user.getIdentity()){
+				if(isAddtoProduct){
+					standingOrders = FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity());
+				}else{
+					standingOrders = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+				}
+	
+			    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
 			}
-
-		    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error While Getting the valid standing Order");
+			LOGGER.error("Error While Getting the valid standing Order" + e);
 		} catch (FDInvalidConfigurationException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error While Getting the valid standing Order");
+			LOGGER.error("Error While Getting the valid standing Order" + e);
 		} catch (PricingException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error While Getting the valid standing Order");
+			LOGGER.error("Error While Getting the valid standing Order" + e);
 		}
         
 		if(null!=standingOrders && !standingOrders.isEmpty()){
@@ -858,13 +860,13 @@ public class StandingOrderHelper {
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error While Getting standing order response data ");
+			LOGGER.error("Error While Getting standing order response data "+e);
 			orderResponseData
 					.setMessage("Error while adding product to the standing order ");
 
 		} catch (FDInvalidConfigurationException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error While Getting the standing order response data");
+			LOGGER.error("Error While Getting the standing order response data"+e);
 			orderResponseData
 					.setMessage("Error while adding product to the standing order ");
 		}

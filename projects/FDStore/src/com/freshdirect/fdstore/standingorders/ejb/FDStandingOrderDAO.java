@@ -277,37 +277,37 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		
-		List<FDStandingOrder> sorders;
-		try {
-			if(isNewSo){
-			ps = conn.prepareStatement(LOAD_CUSTOMER_NEW_STANDING_ORDERS);
-			}else{
-				ps = conn.prepareStatement(LOAD_CUSTOMER_OLD_STANDING_ORDERS);
-
-			}
-			ps.setString(1, identity.getErpCustomerPK());
-
-			sorders = new ArrayList<FDStandingOrder>();
-			
-			rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				FDStandingOrder so = new FDStandingOrder();
+		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
+		if(null !=identity){
+			try {
+				if(isNewSo){
+				ps = conn.prepareStatement(LOAD_CUSTOMER_NEW_STANDING_ORDERS);
+				}else{
+					ps = conn.prepareStatement(LOAD_CUSTOMER_OLD_STANDING_ORDERS);
+	
+				}
+				ps.setString(1, identity.getErpCustomerPK());			
 				
-				sorders.add( populate(rs, so) );
+				rs = ps.executeQuery();
 				
-			}
-
-			rs.close();
-			ps.close();
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(rs != null){
+				while (rs.next()) {
+					FDStandingOrder so = new FDStandingOrder();
+					
+					sorders.add( populate(rs, so) );
+					
+				}
+	
 				rs.close();
-			}
-			if(ps != null) {
 				ps.close();
+			} catch (SQLException exc) {
+				throw exc;
+			} finally {
+				if(rs != null){
+					rs.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
 			}
 		}
 		
@@ -1811,29 +1811,29 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		
-		List<FDStandingOrder> sorders;
-		try {
-			ps = conn.prepareStatement(LOAD_CUSTOMER_VALID_STANDING_ORDERS);
-			ps.setString(1, identity.getErpCustomerPK());
-
-			sorders = new ArrayList<FDStandingOrder>();
-			
-			rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				FDStandingOrder so = new FDStandingOrder();
+		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
+		if(null !=identity){
+			try {
+				ps = conn.prepareStatement(LOAD_CUSTOMER_VALID_STANDING_ORDERS);
+				ps.setString(1, identity.getErpCustomerPK());		
 				
-				sorders.add( populate(rs, so) );
+				rs = ps.executeQuery();
 				
-			}
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(rs != null){
-				rs.close();
-			}
-			if(ps != null) {
-				ps.close();
+				while (rs.next()) {
+					FDStandingOrder so = new FDStandingOrder();
+					
+					sorders.add( populate(rs, so) );
+					
+				}
+			} catch (SQLException exc) {
+				throw exc;
+			} finally {
+				if(rs != null){
+					rs.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
 			}
 		}
 		
@@ -1868,29 +1868,30 @@ public class FDStandingOrderDAO {
 		ResultSet rs = null;
 		
 		boolean isCustomerHasSO=false;
-		try {
-			ps = conn.prepareStatement(IS_CUSTOMER_HAS_STANDING_ORDER);
-			ps.setString(1, identity.getErpCustomerPK());
-			
-			rs = ps.executeQuery();
-			
-			while (rs.next()) {
+		if(null != identity){
+			try {
+				ps = conn.prepareStatement(IS_CUSTOMER_HAS_STANDING_ORDER);
+				ps.setString(1, identity.getErpCustomerPK());
 				
-                 if(Integer.valueOf(rs.getString("SO_COUNT"))>0){				
-                	 isCustomerHasSO=true; 
-                 }
-			}
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(rs != null){
-				rs.close();
-			}
-			if(ps != null) {
-				ps.close();
+				rs = ps.executeQuery();
+				
+				while (rs.next()) {
+					
+	                 if(Integer.valueOf(rs.getString("SO_COUNT"))>0){				
+	                	 isCustomerHasSO=true; 
+	                 }
+				}
+			} catch (SQLException exc) {
+				throw exc;
+			} finally {
+				if(rs != null){
+					rs.close();
+				}
+				if(ps != null) {
+					ps.close();
+				}
 			}
 		}
-		
 		return isCustomerHasSO;
 	}
 
