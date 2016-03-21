@@ -1075,7 +1075,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltContactPhone(new PhoneNumber(rs
 				.getString("ALT_CONTACT_PHONE")));
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
-		address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		//address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
 		address.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
 		
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
