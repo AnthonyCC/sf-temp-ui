@@ -827,7 +827,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="actionName" value="changeEmailPreference">
 	<tr>
 		<td colspan="6"><br><br>
-      <h2>Email preferences</h2>
+      <h2>Email Preferences</h2>
 		</td>
 	</tr>
 	<tr valign="top">
