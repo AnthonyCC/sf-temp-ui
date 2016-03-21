@@ -160,7 +160,7 @@ public class Order {
         if (null != paymentMethod) {
             if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
                 orderDetail.setPaymentMethod(new ElectronicCheck(PaymentMethod.wrap(paymentMethod)));
-            } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+            } else if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType())) {
             	if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
             		orderDetail.setPaymentMethod(new Ewallet(PaymentMethod.wrap(paymentMethod)));
             	}else{
