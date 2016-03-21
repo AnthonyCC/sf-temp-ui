@@ -226,7 +226,8 @@ function loadSignature(order)
 			        <td><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="Buy With PayPal"><br />
 	    				<%= paymentMethod.getEmailID() %></td>
 			    <% } %>
-			    <% if (paymentMethod.getCardType() != null && !paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
+			    <% if (paymentMethod.getCardType() != null) {%>   	
+				<%  if (!paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) { %>
 					<% if (paymentMethod.getAbaRouteNumber() != null) { %>
 					<tr>
 						<td>ABA Route Number&nbsp;&nbsp;</td>
@@ -269,6 +270,7 @@ function loadSignature(order)
 	                                    <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
 	                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%><br><%=paymentMethod.getCountry()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
 					</tr>
+					<% } %>
 					<tr>
 						<td>Billing Reference&nbsp;&nbsp;</td>
 						<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
