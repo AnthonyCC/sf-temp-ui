@@ -1134,6 +1134,10 @@ label[for="dontupdatecartlines"] {
 	margin-bottom: 4px;
 }
 
+#subtotalbox2 .subtotal__rowcell-right{
+	height: 40px;
+}
+
 .eTippingEnabled .subtotal__rowcell-left,
 .eTippingEnabled .subtotal__rowcell-mid,
 .eTippingEnabled .subtotal__rowcell-right{
