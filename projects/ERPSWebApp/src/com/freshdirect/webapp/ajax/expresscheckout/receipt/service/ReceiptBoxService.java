@@ -156,7 +156,7 @@ public class ReceiptBoxService {
             CartSubTotalFieldData data = new CartSubTotalFieldData();
             data.setId(REMAINING_GIFT_CARD_BALANCE_ID);
             data.setText(REMAINING_GIFT_CARD_BALANCE_NAME);
-            data.setValue(JspMethods.formatPrice(user.getGiftcardBalance() - totalAppliedGiftcartAmount));
+            data.setValue(JspMethods.formatPrice(user.getGiftcardBalance()));
             receiptBox.add(data);
         }
     }
