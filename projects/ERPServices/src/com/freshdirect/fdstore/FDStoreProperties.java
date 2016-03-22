@@ -846,6 +846,8 @@ public class FDStoreProperties {
     
 	// PayPal
 	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
+	private static final String PROP_EWALLET_PAYPAL_ENABLED = "fdstore.ewallet.paypal.enabled";
+	private static final String PROP_EWALLET_MASTERPASS_ENABLED = "fdstore.ewallet.masterpass.enabled";
 
 	public static final String PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED = "fdstore.edt.est.timeslot.conversion.enabled";//It should be 'true' only for FDX.
     static {
@@ -1667,6 +1669,10 @@ public class FDStoreProperties {
         defaults.put(PROP_SO3_ACTIVATE_CUTOFF_TIME, "23");//11pm - Hour of the day in 24hr format.
         
         defaults.put(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED, false);//It should be 'true' only for FDX.
+        
+        defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
+        defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
+        		
 		refresh();
     }
 
@@ -4193,5 +4199,13 @@ public class FDStoreProperties {
 	
 	public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
+    }
+	
+	public static boolean isPayPalEnabled() {
+        return Boolean.valueOf(get(PROP_EWALLET_PAYPAL_ENABLED)).booleanValue();
+    }
+	
+	public static boolean isMasterpassEnabled() {
+        return Boolean.valueOf(get(PROP_EWALLET_MASTERPASS_ENABLED)).booleanValue();
     }
 }

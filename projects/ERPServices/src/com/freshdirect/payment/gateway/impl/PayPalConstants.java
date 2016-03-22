@@ -3,6 +3,7 @@ package com.freshdirect.payment.gateway.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.fdstore.PayPalData;
 import com.freshdirect.payment.gateway.Merchant;
 
 /**
@@ -23,9 +24,8 @@ final class PayPalConstants implements java.io.Serializable {
 	
 	 
 	 static enum MerchantID implements java.io.Serializable {
-			FRESHDIRECT(Merchant.FRESHDIRECT,"mrunal.doddanavar-facilitator@igate.com"),
-//			USQ(Merchant.USQ,"mrunal.doddanavar-facilitator@igate.com"),
-			FDW(Merchant.FDW,"mrunal.doddanavar-facilitatorFDW@igate.com");
+			FRESHDIRECT(Merchant.FRESHDIRECT,PayPalData.getMerchantFRESHDIRECT()),
+			FDW(Merchant.FDW,PayPalData.getMerchantFDW());
 			private Merchant id;
 		    private String value;
 		    private static Map<Merchant, MerchantID> merchantIDs;

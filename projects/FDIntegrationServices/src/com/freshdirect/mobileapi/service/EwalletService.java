@@ -85,7 +85,12 @@ public class EwalletService {
 	 * @return
 	 */
 	private String checkEWalletStatus(String ewalletType){
-		boolean ewalletStatus =  FDCustomerManager.getEwalletMobileStatusByType(ewalletType);
+		boolean ewalletStatus =  false;
+		if(EnumEwalletType.PP.getName().equalsIgnoreCase(ewalletType)){
+			ewalletStatus = MobileApiProperties.isPayPalEnabled();
+		}else if(EnumEwalletType.MP.getName().equalsIgnoreCase(ewalletType)){
+			ewalletStatus = MobileApiProperties.isMasterpassEnabled();
+		}
 		if(ewalletStatus) {
 			return EWALLET_STATUS_ON;
 		}else {

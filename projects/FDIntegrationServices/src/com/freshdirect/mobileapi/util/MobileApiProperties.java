@@ -66,6 +66,9 @@ public class MobileApiProperties {
     
     private static Properties config;
 
+	private static final String PROP_EWALLET_PAYPAL_ENABLED = "mobileapi.ewallet.paypal.enabled";
+	private static final String PROP_EWALLET_MASTERPASS_ENABLED = "mobileapi.ewallet.masterpass.enabled";
+	
     private final static Properties defaults = new Properties();
 
     static {
@@ -79,6 +82,8 @@ public class MobileApiProperties {
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
 		defaults.put(PROP_ADDITION_MEDIA_PATH,"/media/editorial/win_fdw/icons/");
+		defaults.put(PROP_EWALLET_PAYPAL_ENABLED, "true");
+		defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, "true");
 		
         refresh();
     }
@@ -194,4 +199,11 @@ public class MobileApiProperties {
     	return get(PROP_ADDITION_MEDIA_PATH);
     }
 
+	public static boolean isPayPalEnabled() {
+        return Boolean.valueOf(get(PROP_EWALLET_PAYPAL_ENABLED)).booleanValue();
+    }
+	
+	public static boolean isMasterpassEnabled() {
+        return Boolean.valueOf(get(PROP_EWALLET_MASTERPASS_ENABLED)).booleanValue();
+    }
 }

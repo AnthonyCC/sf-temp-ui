@@ -690,25 +690,15 @@ public class FDCustomerManager {
 	}
 	
 	/**
-	 * This method will call ErpEWalletSB class method 
+	 * This method Check the status of the given the Wallet - Enable/Disable 
 	 * @param custEWallet
 	 * @return
 	 */
 	public static boolean getEwalletStatusByType(String eWalletType){
-		lookupeWalletHome();
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 ErpEWalletModel erpEWalletModel= erpEWalletSB.findEWalletByType(eWalletType);
-			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
-				 if(erpEWalletModel.geteWalletStatus().equalsIgnoreCase("E"))
-				 	return true;
-				 else
-					 return false;
-			 }
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (CreateException e) {
-			e.printStackTrace();
+		if(EnumEwalletType.PP.getName().equalsIgnoreCase(eWalletType)){
+			return FDStoreProperties.isPayPalEnabled();
+		}else if(EnumEwalletType.MP.getName().equalsIgnoreCase(eWalletType)){
+			return FDStoreProperties.isMasterpassEnabled();
 		}
 		return false;
 	}

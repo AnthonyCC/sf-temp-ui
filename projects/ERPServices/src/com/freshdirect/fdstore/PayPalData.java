@@ -239,7 +239,7 @@ public class PayPalData {
 	/**
 	 * @return the merchantFDW
 	 */
-	public String getMerchantFDW() {
+	public static String getMerchantFDW() {
 		//return merchantFDW;
 		return config.getProperty(MERCHANT_FDW_PROP);
 	}

@@ -44,6 +44,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.HealthWarningControllerTagWrap
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ReserveTimeslotControllerTagWrapper;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.CutoffInfo;
@@ -104,11 +105,13 @@ public class SessionUser {
     public List<PaymentMethod> getEwallet(List PaymentMethods) {
     	
         List<PaymentMethod> ewallet = new ArrayList<PaymentMethod>();
-        for (ErpPaymentMethodI paymentMethod : (List<ErpPaymentMethodI>) PaymentMethods) {
-           if( EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
-				com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
-            	ewallet.add(paymentMethodModel);
-           }
+        if(MobileApiProperties.isPayPalEnabled()){	// Check PayPal wallet is Enabled 
+	        for (ErpPaymentMethodI paymentMethod : (List<ErpPaymentMethodI>) PaymentMethods) {
+	           if( EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
+					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+	            	ewallet.add(paymentMethodModel);
+	           }
+	        }
         }
         return ewallet;
     }
