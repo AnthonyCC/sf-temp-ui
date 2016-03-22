@@ -92,7 +92,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
 <!--  MP Use Case #4 -->
 <!-- <script type="text/javascript" src="https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js"></script> -->
-<script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
+
 <script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script> 
 <SCRIPT LANGUAGE=JavaScript>
 	<!--
@@ -100,77 +100,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 	//-->
 </SCRIPT> 
 <!--  PP Use Case  -->
- <script type="text/javascript" language="Javascript">
-
-$( document ).ready(function(){
-    $('#PP-connect').click(function() {
-              console.log("-- Connect With Paypal click handler  --");
-              $.ajax({
-            	  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
-                            type: 'post',
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function(result){ 
-                            	//var x = document.getElementById("PP_button");
-                            	var deviceObj = "";
-                    	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-                    	    		  dataCollector: {
-                    	    			    paypal: true
-                    	    			  },
-                    	    		  onReady: function (integration) {
-                    	    			 // alert("integration.deviceData :"+integration.deviceData);
-                    	    		    checkout = integration;
-                    	    		    checkout.paypal.initAuthFlow();
-                    	    		    deviceObj = JSON.parse(integration.deviceData);
-                    	    		    
-                    	    		  },
-                    	    		  onPaymentMethodReceived: function (payload) {
-
-                    	    	        $.ajax({
-                    	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
-                    	                      		"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
-                    	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
-                    	                      type: 'post',
-                    	                      success: function(id, result){
-                    	                    	  $('#PP_logo').css("display","inline-block");
-                    	                    	  $('#PP-connect').css("display","none");
-                    	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet onclick=deletePPWallet()><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
-                    	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
-                    	                      }
-                    	    	        });
-                    	    		    
-
-                    	    		  },
-                    	    		  paypal: {
-                    	    		    singleUse: false,
-                    	    		    headless: true
-                    	    		  }
-                    	    		  
-                    	    		});
-                    	    			
-                            }
-       });
-    });
-    
-}); 
  
-function deletePPWallet(){
-         $.ajax({
-                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
-                      type: 'post',
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      success: function(result1){ 
-                    	  /* $('#pp_wallet_cards').css("display","none"); */
-                    	    $('#pp_wallet_cards').empty();
-                    	    $('#PP_logo').css("display","none");
-                    	    $('#PP-connect').css("display","inline-block");
-                      } 
-                });
-	
-}
-
-</script>  
 
 <fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
      
@@ -219,7 +149,7 @@ function deletePPWallet(){
 	              
 		              <tr><td class=wallet-title-header>PayPal
 		              <% if (masqueradeContext == null) { %>
-		              	<div class="disconnectWallet" onclick="deletePPWallet()"><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div>
+		              	<div class="disconnectWallet" id=deletePPWallet ><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div>
 		              <% } %>
 		              </td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>
 		              
@@ -327,4 +257,76 @@ function deletePPWallet(){
 <BR>
 </fd:PaymentMethodController>
 </tmpl:put>
+
+<script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script type="text/javascript" language="Javascript">
+
+jQuery(document).ready(function($){
+    $('#PP-connect').click(function() {
+              console.log("-- Connect With Paypal click handler  --");
+              $.ajax({
+            	  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+                            type: 'post',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function(result){ 
+                            	//var x = document.getElementById("PP_button");
+                            	var deviceObj = "";
+                    	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+                    	    		  dataCollector: {
+                    	    			    paypal: true
+                    	    			  },
+                    	    		  onReady: function (integration) {
+                    	    			 // alert("integration.deviceData :"+integration.deviceData);
+                    	    		    checkout = integration;
+                    	    		    checkout.paypal.initAuthFlow();
+                    	    		    deviceObj = JSON.parse(integration.deviceData);
+                    	    		    
+                    	    		  },
+                    	    		  onPaymentMethodReceived: function (payload) {
+
+                    	    	        $.ajax({
+                    	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
+                    	                      		"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+                    	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+                    	                      type: 'post',
+                    	                      success: function(id, result){
+                    	                    	  $('#PP_logo').css("display","inline-block");
+                    	                    	  $('#PP-connect').css("display","none");
+                    	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
+                    	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
+                    	                      }
+                    	    	        });
+                    	    		    
+
+                    	    		  },
+                    	    		  paypal: {
+                    	    		    singleUse: false,
+                    	    		    headless: true
+                    	    		  }
+                    	    		  
+                    	    		});
+                    	    			
+                            }
+       });
+    });
+    
+    
+    $('#deletePPWallet').click(function() {
+    	 $.ajax({
+             url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
+             type: 'post',
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(result1){ 
+           	  /* $('#pp_wallet_cards').css("display","none"); */
+           	    $('#pp_wallet_cards').empty();
+           	    $('#PP_logo').css("display","none");
+           	    $('#PP-connect').css("display","inline-block");
+             } 
+       });
+    });
+}); 
+ 
+</script>  
 </tmpl:insert>
