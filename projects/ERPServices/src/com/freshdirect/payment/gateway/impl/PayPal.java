@@ -397,7 +397,7 @@ public class PayPal implements Gateway {
 	        	if(txnStatus != null && txnStatus.equals(PAYPAL_TXN_SUCCESS)){
 	        		eWalletTxnResponse.append("Vault token is Valid=");
 	        	}else{
-	        		eWalletTxnResponse.append("Vault token is InValid=");
+	        		eWalletTxnResponse.append("Vault token is InValid");
 	        	}
 	        }
 	        eWalletLogModel.setRequest(eWalletTxnRequest.toString());
