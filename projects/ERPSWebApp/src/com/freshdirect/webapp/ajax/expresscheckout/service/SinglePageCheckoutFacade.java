@@ -542,12 +542,19 @@ public class SinglePageCheckoutFacade {
                         formPaymentData.setSelected(data.getId());
                         break;
                     }
-             } if(StandingOrderHelper.isSO3StandingOrder(user)){
-                  user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
-               }
+             } 
+            if(StandingOrderHelper.isSO3StandingOrder(user)){
+            	userPaymentMethods = removeEWalletPaymentMethod(userPaymentMethods); 
+           	 	formPaymentData.setPayments(userPaymentMethods);
+                user.getCurrentStandingOrder().setPaymentMethodId(formPaymentData.getSelected());
+                formPaymentData.setMpEwalletStatus(false);	// Masterpass wallet will be disable for Standing Orders
+                formPaymentData.setPpEwalletStatus(false); // PayPal wallet will be disable for Standing Orders
+
+           }else{
+               formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
+               formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
+           }
             FDCardCount(userPaymentMethods);
-            formPaymentData.setMpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.MP.getName()));
-            formPaymentData.setPpEwalletStatus(getEwalletStatusWithMasquerade(user, EnumEwalletType.PP.getName()));
             formPaymentData.setMpButtonImgURL(FDStoreProperties.getMasterpassBtnImgURL());
             
             if(!getEwalletStatus(EnumEwalletType.PP.getName())){
@@ -643,6 +650,27 @@ public class SinglePageCheckoutFacade {
         return FDCustomerManager.getEwalletStatusByType(eWalletType);
     }
     
+    /**
+     * Remove Ewallet Payment Data from list. 
+     * @param userPaymentMethods
+     * @param eWalletStatus
+     * @return
+     */
+    private List<PaymentData> removeEWalletPaymentMethod(List<PaymentData> userPaymentMethods){
+    	List<PaymentData> newPaymentData = new ArrayList<PaymentData>();
+    	if( userPaymentMethods != null && !userPaymentMethods.isEmpty()){
+    		for(PaymentData paymentData:userPaymentMethods){
+    			if(paymentData.geteWalletID() != null ){
+    				continue;
+    			}else{
+    				newPaymentData.add(paymentData);
+    			}
+    		}
+    		return newPaymentData;
+    	}else{
+    		return userPaymentMethods;
+    	}
+    }
     /*private ErpCustEWalletModel getCustomerEWallet(FDUserI user) throws FDResourceException{
     	return FDCustomerManager.findLongAccessTokenByCustID(user.getFDCustomer().getErpCustomerPK(),MASTERPASS_EWALLET_TYPE);
     }*/
