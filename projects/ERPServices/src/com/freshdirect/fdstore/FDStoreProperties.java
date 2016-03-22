@@ -345,6 +345,7 @@ public class FDStoreProperties {
     private static final String PROP_GC_PRODNAME = "fdstore.giftCardProdName";
     private static final String GIVEX_BLACK_HOLE_ENABLED = "givex.black.hole.enabled";
     private static final String GIVEX_SECURITY_FIX_ENABLED = "givex.security.fix.enabled";
+    private static final String PROP_GC_OOO = "fdstore.giftcardoutoforder";
 
     // Robin Hood
     private static final String ROBIN_HOOD_ENABLED = "fdstore.isRobinHoodEnabled";
@@ -850,8 +851,12 @@ public class FDStoreProperties {
 	private static final String PROP_EWALLET_MASTERPASS_ENABLED = "fdstore.ewallet.masterpass.enabled";
 
 	public static final String PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED = "fdstore.edt.est.timeslot.conversion.enabled";//It should be 'true' only for FDX.
-    static {
-       	    	
+	
+	//erpsy linking
+	public static final String PROP_ERPSYLINK_STOREFRONT_FD = "fdstore.erpsylink.storefront.fd";
+	public static final String PROP_ERPSYLINK_STOREFRONT_FDX = "fdstore.erpsylink.storefront.fdx";
+	
+    static {      	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY,
@@ -1177,6 +1182,7 @@ public class FDStoreProperties {
         defaults.put(GIVEX_BLACK_HOLE_ENABLED, "false");
 
         defaults.put(GIVEX_SECURITY_FIX_ENABLED, "true");
+        defaults.put(PROP_GC_OOO, "false");
         
         // Robin Hood
         defaults.put(ROBIN_HOOD_ENABLED, "false");
@@ -1673,6 +1679,10 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
         		
+
+        defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev07.nyc1.freshdirect.com:7001");
+        defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev04.nyc1.freshdirect.com:7001");
+        
 		refresh();
     }
 
@@ -2394,6 +2404,10 @@ public class FDStoreProperties {
 
     public static double getGiftCardMaxAmount() {
         return Double.parseDouble(get(PROP_GC_MAX_AMOUNT));
+    }
+    
+    public static boolean isGiftCardOutOfOrder() {
+        return Boolean.valueOf(get(PROP_GC_OOO)).booleanValue();
     }
 
     // Robin Hood
@@ -4207,5 +4221,13 @@ public class FDStoreProperties {
 	
 	public static boolean isMasterpassEnabled() {
         return Boolean.valueOf(get(PROP_EWALLET_MASTERPASS_ENABLED)).booleanValue();
+    }
+
+    public static String getErpsyLinkStorefrontFD() {
+        return get(PROP_ERPSYLINK_STOREFRONT_FD);
+    }
+
+    public static String getErpsyLinkStorefrontFDX() {
+        return get(PROP_ERPSYLINK_STOREFRONT_FDX);
     }
 }

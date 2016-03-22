@@ -7,7 +7,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.ErpServicesProperties' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -32,8 +32,8 @@
 			var FreshDirect = FreshDirect || {};
 			FreshDirect.sku2url = {
 					'base': {
-						'FD': '<%=ErpServicesProperties.getMasqueradeStoreFrontBaseUrl()%>',
-						'FDX': '<%=ErpServicesProperties.getMasqueradeFDXStoreFrontBaseUrl()%>'
+						'FD': '<%= FDStoreProperties.getErpsyLinkStorefrontFD() %>',
+						'FDX': '<%= FDStoreProperties.getErpsyLinkStorefrontFDX() %>'
 					}
 			};
 		</script>
