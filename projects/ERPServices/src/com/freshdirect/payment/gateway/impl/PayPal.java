@@ -102,6 +102,7 @@ public class PayPal implements Gateway {
 					response.setEwalletTxId(authModel.getEwalletTxId());
 					response.setRequestProcessed(true);
 					response.setApproved(true);
+					response.setAVSMatch(true);
 					response.setResponseCode(saleResult.getTarget().getProcessorResponseCode());
 					response.setStatusMessage(EnumPaymentResponse.APPROVED.getDescription());
 					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
@@ -123,6 +124,7 @@ public class PayPal implements Gateway {
 					response.setEwalletId(paymentMethod.geteWalletID());
 					response.setRequestProcessed(false);
 					response.setApproved(false);
+					response.setAVSMatch(true);
 					response.setResponseCode(saleResult.getTarget().getProcessorResponseCode());
 					response.setStatusMessage(saleResult.getTarget().getProcessorResponseText());
 					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
@@ -167,6 +169,7 @@ public class PayPal implements Gateway {
 		response.setEwalletId(paymentMethod.geteWalletID());
 		response.setRequestProcessed(false);
 		response.setApproved(false);
+		response.setAVSMatch(false);
 		response.setStatusCode(EnumPaymentResponse.ERROR.getName());
 		response.setStatusMessage(EnumPaymentResponse.ERROR.getDescription());
 //		GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
@@ -395,7 +398,7 @@ public class PayPal implements Gateway {
 	        	eWalletTxnResponse= new StringBuffer();
 	        	
 	        	if(txnStatus != null && txnStatus.equals(PAYPAL_TXN_SUCCESS)){
-	        		eWalletTxnResponse.append("Vault token is Valid=");
+	        		eWalletTxnResponse.append("Vault token is Valid");
 	        	}else{
 	        		eWalletTxnResponse.append("Vault token is InValid");
 	        	}
