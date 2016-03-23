@@ -493,7 +493,7 @@
 	text-align: center;
 	display: inline-block;
 	position: absolute;
-	top: 6px;
+	top: 3px;
 	border: 2px solid #6AAA6D;
 }
 
@@ -1477,4 +1477,7 @@ option.address-icon {
 .locabar-modify-order-container-header {
     display: inline-block;
 	font-weight: bold;
+}
+.locabar_addresses-reservation-view-cont {
+    height: 63px;
 }

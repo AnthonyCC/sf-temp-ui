@@ -446,11 +446,11 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<% if (isEligibleForPreReservation) { %>
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals(selectedAddress.getId()) ) { %>
 								<div class="locabar_addresses-reservation-none">
-									<div>
+									<div class="locabar_addresses-reservation-view-cont">
 										<a href="<%=temp_delivery_link %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
 									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
-										<div class="locabar_addresses-reservation-make-cont">
+										<div class="locabar_addresses-reservation-make-cont" style="display: none;">
 											<a href="/your_account/reserve_timeslot.jsp" class="cssbutton orange cssbutton-flat locabar_addresses-reservation-make disabled">Make a Reservation</a>
 											<%-- This text is also in locationbar_fdx.js --%>
 											<div class="locabar_addresses-reservation-make-notFor">Not for <%= ("PICKUP".equals(foundSelectedAddressType)) ? "Pickup Option" : ("COS".equals(foundSelectedAddressType)) ? "Office Delivery" : "&nbsp;" %></div>
@@ -502,7 +502,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			boolean signedIn = false; //used for js logic for hover/click event results
 			boolean recog = false; //used for js logic for hover/click event results
 			if (user != null && user.getLevel() != FDUserI.GUEST) {
-				actionString = "Your Settings";
+				actionString = "Your Account";
 				greetingsString += " "+user.getFirstName();
 				
 				if (user.getLevel() == FDUserI.SIGNED_IN) {
