@@ -1134,7 +1134,7 @@ label[for="dontupdatecartlines"] {
 	margin-bottom: 4px;
 }
 
-#subtotalbox2 .subtotal__rowcell-right{
+#subtotalbox2 .row-size-big .subtotal__rowcell-right{
 	height: 40px;
 }
 
