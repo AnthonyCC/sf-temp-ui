@@ -1211,17 +1211,23 @@ button.button_disabled {
   color: #666;
   cursor: not-allowed; }
 
-form .error {
-  color: #cb2929 !important; }
-form input.error {
-  border-color: #cb2929 !important; }
-form label.error {
-  /*position:absolute;*/ }
-form .field_holders {
-  height: 80px; }
-  @media (min-width: 30em) {
-    form .field_holders {
-      height: 68px; } }
+form {
+  /*APPDEV-4969*/ }
+  form .error {
+    color: #cb2929 !important; }
+  form .error.niceerror {
+    color: inherit !important; }
+  form input.error {
+    border-color: #cb2929 !important; }
+  form input.error.niceerror {
+    border-color: inherit !important; }
+  form label.error {
+    /*position:absolute;*/ }
+  form .field_holders {
+    height: 80px; }
+    @media (min-width: 30em) {
+      form .field_holders {
+        height: 68px; } }
 
 .fk_anchor {
   top: -60px;

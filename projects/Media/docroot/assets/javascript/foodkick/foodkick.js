@@ -416,12 +416,35 @@ $(function(){
 		button_enableDisable('#submit_locationhandler', false);
 	});
 
+	//this is so that the customer does not start out seeing error messages when typing in the email or whatever, APPDEV-4969
+	var show_locationerrors = false;
 
 	//this should take care of any loose end browsers that lack html5 form validation 
 	$('form#locationhandler').validate({
-		//onkeyup: false,
-		//onkeyup: true,
 		errorElement: "label",
+		onkeyup: function(element, error){ /*APPDEV-4969*/
+			
+			//the following if bracket allows for validation while typing, but no nasty reds or error messages
+			if(! $('form#locationhandler').valid() ){
+
+				if( show_locationerrors == true ){
+					$("#"+error.currentTarget.name+"-error").show();
+					$("#"+error.currentTarget.name).removeClass("niceerror");
+				}else{
+					$("#"+error.currentTarget.name+"-error").hide();
+					$("#"+error.currentTarget.name).addClass("niceerror");
+				}
+			}
+		},
+		onfocusout: function(element, error){ /*APPDEV-4969*/
+			//allows for this element to have its error message below to show, along with red error text and border
+			show_locationerrors = true;
+
+			if( this.numberOfInvalids() > 0 ){
+				$("#"+error.currentTarget.name+"-error").show();
+				$("#"+error.currentTarget.name).removeClass("niceerror");
+			}
+		},
 
 		errorPlacement: function(error, element){
 			error.insertAfter(element); /* ready the form elements with a error element after them */
@@ -445,7 +468,6 @@ $(function(){
 	jQuery.validator.addMethod("zipcode", function(value, element){
 		return this.optional(element) || /\d{5}-\d{4}$|^\d{5}$/.test(value)
 	}, "The specified US ZIP Code is invalid");
-	
 	
 	//assisting above validation for email addresses.  this is much better than the default email pattern that is used by the validate plugin
 	jQuery.validator.addMethod("custom_email", function(value, element){

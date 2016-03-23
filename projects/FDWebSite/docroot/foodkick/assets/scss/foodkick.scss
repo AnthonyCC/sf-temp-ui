@@ -1815,8 +1815,17 @@ form{
 		color:#cb2929!important;
 	}
 	
+	/*APPDEV-4969*/
+	.error.niceerror{
+		color:inherit!important;
+	}
+	
 	input.error{
 		border-color: rgb(203, 41, 41)!important;
+	}
+	
+	input.error.niceerror{
+		border-color: inherit!important;
 	}
 	
 	label.error{
