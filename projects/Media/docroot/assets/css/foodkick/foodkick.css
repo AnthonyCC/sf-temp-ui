@@ -93,7 +93,14 @@ nav {
   nav ul {
     list-style-type: none;
     margin: 0px;
-    padding: 0px; }
+    padding: 0px;
+    width: 100%;
+    max-width: 940px; }
+    @media (min-width: 30em) {
+      nav ul {
+        vertical-align: bottom;
+        display: table;
+        margin: auto; } }
     @media (min-width: 50em) {
       nav ul {
         margin-top: 42px; } }
@@ -103,11 +110,15 @@ nav {
         display: none; }
         @media (min-width: 30em) {
           nav ul li.standard_link {
-            display: inline-block;
+            /*display:inline-block;*/
+            display: table-cell;
+            vertical-align: bottom;
             margin: 0px 3px; } }
         @media (min-width: 50em) {
           nav ul li.standard_link {
             margin: 0px 22px; } }
+        nav ul li.standard_link a {
+          white-space: nowrap; }
       nav ul li.logo_link {
         margin-left: calc(50% - 64px); }
         @media (min-width: 30em) {
@@ -156,8 +167,8 @@ nav {
           top: 5px; } }
       @media (min-width: 1280px) {
         nav a img, nav a object {
-          margin-left: 200px;
-          margin-right: 200px; } }
+          /*margin-left:200px;
+          margin-right:200px;*/ } }
     @media (min-width: 30em) {
       nav a {
         font-size: 8.5pt; } }
@@ -326,7 +337,8 @@ section#section_slideshow {
           height: auto;
           /*for the box shadow hack*/
           z-index: -2;
-          position: relative; }
+          position: relative;
+          top: -1px; }
     section#section_slideshow #carousel_1 .slidesjs-pagination {
       /*top:-75px;*/
       left: calc(50% - 35px);
@@ -419,8 +431,10 @@ section#section_slideshow {
         left: calc(50% - 120px); } }
     @media (min-width: 1000px) {
       section#section_slideshow .download_button {
-        /*top: 50%;*/
-        top: calc(50vh + 50px); } }
+        top: calc(60vh + 50px); } }
+    @media (min-height: 789px) {
+      section#section_slideshow .download_button {
+        top: 520px; } }
   section#section_slideshow button.appstore_button {
     /*position: relative;*/
     /*top: -40px;*/
@@ -461,7 +475,8 @@ section#section_Get_Foodkick {
       min-height: inherit;
       /*padding: 25px 0px 25px 12%;*/
       padding-top: 0px;
-      /*margin-top:-20px;*/ } }
+      /*margin-top:-20px;*/
+      margin-top: -4px; } }
   section#section_Get_Foodkick h1 {
     font-size: 2em;
     margin-bottom: 2px; }
@@ -532,7 +547,7 @@ section#section_Get_Foodkick {
       line-height: 0.99em;
       letter-spacing: -1px;
       margin-top: 0px;
-      margin-bottom: 30px; }
+      /*margin-bottom: 30px;*/ }
       @media (min-width: 50em) {
         section#section_Get_Foodkick article h1 {
           font-size: 4.5em; } }
@@ -606,11 +621,11 @@ section#section_Get_Foodkick {
         @media (min-width: 50em) {
           section#section_Get_Foodkick article form input {
             padding-left: 5px;
-            height: 1.66em;
-            font-size: 1.4em; } }
+            height: 2em;
+            font-size: 1.5em; } }
         @media (min-width: 1000px) {
           section#section_Get_Foodkick article form input {
-            width: inherit; } }
+            width: 277px; } }
         section#section_Get_Foodkick article form input.placeholder {
           color: rgba(0, 0, 0, 0.5); }
       section#section_Get_Foodkick article form button {
@@ -622,10 +637,12 @@ section#section_Get_Foodkick {
         border: none;
         color: white;
         text-transform: uppercase;
+        width: 157px;
         margin-bottom: 30px; }
         @media (min-width: 30em) {
           section#section_Get_Foodkick article form button {
-            margin-bottom: 5px; } }
+            margin-bottom: 5px;
+            width: 277px; } }
   section#section_Get_Foodkick object {
     float: right;
     height: inherit;
@@ -683,7 +700,7 @@ section#section_How_it_works {
             min-width: 305px; } }
     section#section_How_it_works figure img, section#section_How_it_works figure object {
       position: relative;
-      top: 9px; }
+      top: 5px; }
       @media (min-width: 50em) {
         section#section_How_it_works figure img, section#section_How_it_works figure object {
           margin-right: 17%; } }
@@ -691,7 +708,8 @@ section#section_How_it_works {
       color: #732282;
       min-width: 250px;
       padding-left: 20px;
-      padding-right: 20px; }
+      padding-right: 20px;
+      margin-top: 14px; }
       @media (min-width: 30em) {
         section#section_How_it_works figure figcaption {
           padding-left: initial;
@@ -716,23 +734,24 @@ section#section_How_it_works {
             transform: scaleY(2);
             height: 48px;
             margin-bottom: 80px;
-            margin-left: 10px;
-            margin-top: 18px; } }
+            margin-left: 10px; } }
       section#section_How_it_works figure figcaption h4 {
         color: #732282;
         font-family: "GraphikApp-Semibold";
         margin-bottom: 4px; }
   section#section_How_it_works .download_button {
-    margin-top: 35px;
-    display: block;
     margin-left: auto;
     margin-right: auto; }
+    @media (min-width: 30em) {
+      section#section_How_it_works .download_button {
+        display: block; } }
 
 /*end section '#section_How_it_works' */
 section#section_Whats_Good {
   margin-bottom: 30px;
   height: 194vw;
-  /*display:none;*/ }
+  /*display:none;*/
+  margin-bottom: 35px; }
   @media (min-width: 50em) {
     section#section_Whats_Good {
       height: 48vw; } }
@@ -740,6 +759,9 @@ section#section_Whats_Good {
     /*width:600px;*/
     width: 100%;
     /*height:inherit;*/
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 4px;
     /*
     .carousel_Whats_Good:before{
     	background-color:rgba(black, 0.5);
@@ -1148,7 +1170,7 @@ footer {
         margin-bottom: 35px; }
 
 form button, .download_button {
-  width: 137px;
+  /*width: 137px;*/
   padding: 10px;
   font-size: 13.3px;
   cursor: pointer; }
@@ -1212,6 +1234,7 @@ button.button_disabled {
   cursor: not-allowed; }
 
 form {
+  /*APPDEV-4969*/
   /*APPDEV-4969*/ }
   form .error {
     color: #cb2929 !important; }
@@ -1224,7 +1247,7 @@ form {
   form label.error {
     /*position:absolute;*/ }
   form .field_holders {
-    height: 80px; }
+    height: 50px; }
     @media (min-width: 30em) {
       form .field_holders {
         height: 68px; } }

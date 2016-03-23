@@ -143,7 +143,7 @@
 			
 			<article class="last">
 				<figure>
-					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" style="top:7px;" /></div>
+					<div><%--svg_obj("section_2/smiley.svg") --%> <img src="<%=SVG_SRC %>section_2/smiley.svg" style="top:4px;" /></div>
 					<figcaption>
 						<h4>ENJOY YOUR EATS</h4>
 						Dig in, share with friends, or snap a pic.
@@ -244,8 +244,6 @@ terms and conditions apply. FoodKick reserves the right to cancel or modify this
 		<script src="<%=ANGULAR_DIR %>/angular-animate.min.js"></script>
 		<script src="<%=ANGULAR_DIR %>/angular-sanitize.min.js"></script>
 		<script src="<%=BOOTSTRAP_DIR %>/js/ui-bootstrap-tpls-0.14.3.min.js"></script>
-
-		<link href="<%=BOOTSTRAP_DIR %>/css/bootstrap.min.css" rel="stylesheet" />
 		-->
 	
 		<script src="<%=JS_DIR %>/jquery.slides.min.js"></script>

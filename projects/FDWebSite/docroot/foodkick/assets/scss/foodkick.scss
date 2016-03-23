@@ -10,6 +10,7 @@ $SVG_SRC: "/foodkick/s.jsp?f=";
 //css common properties
 $full100: 100%;
 $main_purple: #732282;
+$carousel_max_width: 940px;
 //$carousel_max_height: 786px;
 $carousel_max_height: 632px;
 
@@ -130,15 +131,15 @@ $form_t_color_p: rgba($form_t_color, 0.5);
 }
 
 //media query breakpoints
-@mixin breakpoint_mixin($point) {
+@mixin breakpoint_mixin($point, $type:min-width) {
 	@if $point == medium {
-		@media (min-width: 30em) { @content; }
+		@media ($type: 30em) { @content; }
 	}
 	@else if $point == large {
-		@media (min-width: 50em) { @content; }
+		@media ($type: 50em) { @content; }
 	}
 	@else if $point { // allows custom breakpoints
-		@media (min-width: $point) { @content; }
+		@media ($type: $point) { @content; }
 	}
 }
 
@@ -253,6 +254,14 @@ nav{
 		list-style-type: none;
 		margin: 0px;
 		padding: 0px;
+		width: 100%;
+		max-width: $carousel_max_width;
+		
+		@include breakpoint_mixin(medium){
+			vertical-align: bottom;
+			display: table;
+			margin:auto;
+		}
 		
 		@include breakpoint_mixin(large){
 			margin-top:42px;
@@ -265,12 +274,18 @@ nav{
 				display:none;
 
 				@include breakpoint_mixin(medium){
-					display:inline-block;
+					/*display:inline-block;*/
+					display:table-cell;
+					vertical-align: bottom;
 					margin: 0px 3px;
 				}
 
 				@include breakpoint_mixin(large){
 					margin: 0px 22px;
+				}
+				
+				a{
+					white-space:nowrap;
 				}
 			}
 			
@@ -342,8 +357,8 @@ nav{
 			}
 
 			@include breakpoint_mixin(1280px){
-				margin-left:200px;
-				margin-right:200px;
+				/*margin-left:200px;
+				margin-right:200px;*/
 			}
 		}
 
@@ -463,7 +478,7 @@ nav{
 	
 	#locationbar_inner{
 		width:100%;
-		max-width: 940px;
+		max-width: $carousel_max_width;
 		margin:auto;
 	}
 }
@@ -566,7 +581,7 @@ section#section_slideshow{
 				/*margin-top: 56px;*/
 				
 				@include breakpoint_mixin(medium){
-					max-width:940px;
+					max-width:$carousel_max_width;
 					max-height:632px;
 					margin-top:84px;
 				}
@@ -584,6 +599,8 @@ section#section_slideshow{
 					/*for the box shadow hack*/
 					z-index: -2;
 					position: relative;
+					
+					top: -1px;
 				}
 			}
 		}
@@ -699,8 +716,11 @@ section#section_slideshow{
 	    }
 
 		@include breakpoint_mixin(1000px){
-			/*top: 50%;*/
-			top: calc(50vh + 50px);
+			top: calc(60vh + 50px);
+		}
+		
+		@include breakpoint_mixin(789px, min-height){
+			top:520px;
 		}
 	}
 	
@@ -754,6 +774,7 @@ section#section_Get_Foodkick{
 		/*padding: 25px 0px 25px 12%;*/
 		padding-top:0px;
 		/*margin-top:-20px;*/
+		margin-top:-4px;
 	}
 	
 	h1{
@@ -852,7 +873,7 @@ section#section_Get_Foodkick{
 			line-height: 0.99em;
 			letter-spacing: -1px;
 			margin-top:0px;
-			margin-bottom: 30px;
+			/*margin-bottom: 30px;*/
 			
 			@include breakpoint_mixin(large){
 				font-size:4.5em;
@@ -941,13 +962,15 @@ section#section_Get_Foodkick{
 				
 				@include breakpoint_mixin(large){
 					padding-left:5px;
-					height:1.66em;
-					font-size:1.4em;
+					height:2em;
+					font-size:1.5em;
 					//margin-bottom:5px;
 				}
 				
 				@include breakpoint_mixin(1000px){
-					width:inherit;
+					//width:inherit;
+					
+					width: 277px;
 				}
 				
 				&.placeholder{
@@ -968,6 +991,7 @@ section#section_Get_Foodkick{
 				color: white;
 				text-transform: uppercase;
 				//width:8em;
+				width: 157px;
 				
 				margin-bottom: 30px;
 				
@@ -977,6 +1001,8 @@ section#section_Get_Foodkick{
 					//padding: 6px;
 					
 					margin-bottom: 5px;
+					
+					width: 277px;
 				}
 				@include breakpoint_mixin(large){
 					//font-size:1.25em;
@@ -1074,7 +1100,8 @@ section#section_How_it_works{
 		}
 		img, & object{
 			position:relative;
-			top:9px;
+			//top:9px;
+			top:5px;
 			
 			@include breakpoint_mixin(large){
 				margin-right: 17%;
@@ -1086,6 +1113,7 @@ section#section_How_it_works{
 			min-width:250px;
 			padding-left:20px;
 			padding-right:20px;
+			margin-top: 14px;
 			
 			@include breakpoint_mixin(medium){
 				padding-left:initial;
@@ -1109,7 +1137,7 @@ section#section_How_it_works{
 					height: 48px;
 					margin-bottom: 80px;
 					margin-left: 10px;
-					margin-top: 18px;
+					//margin-top: 18px;
 				}
 			}
 			
@@ -1122,10 +1150,14 @@ section#section_How_it_works{
 	}
 	
 	.download_button{
-		margin-top:35px;
-		display: block;
+		//margin-top:35px;
+		//display: block;
 		margin-left: auto;
 		margin-right: auto;
+		
+		@include breakpoint_mixin(medium){
+			display: block;
+		}
 	}
 }/*end section '#section_How_it_works' */
 
@@ -1133,6 +1165,7 @@ section#section_Whats_Good{
 	margin-bottom:30px;
 	height:194vw;
 	/*display:none;*/
+	margin-bottom: 35px;
 	
 	@include breakpoint_mixin(50em){
 		height:48vw;
@@ -1142,6 +1175,10 @@ section#section_Whats_Good{
 		/*width:600px;*/
 		width: 100%;
 		/*height:inherit;*/
+		
+		padding-left:0px;
+		padding-right:0px;
+		margin-bottom: 4px;
 		
 		@include breakpoint_mixin(large){
 			width: 50%;
@@ -1728,7 +1765,7 @@ footer{
 }
 
 form button, .download_button{
-	width: 137px;
+	/*width: 137px;*/
 	padding:10px;
 	font-size:13.3px;
 	cursor: pointer;
@@ -1824,6 +1861,7 @@ form{
 		border-color: rgb(203, 41, 41)!important;
 	}
 	
+	/*APPDEV-4969*/
 	input.error.niceerror{
 		border-color: inherit!important;
 	}
@@ -1833,7 +1871,7 @@ form{
 	}
 	
 	.field_holders{
-		height:80px;
+		height:50px;
 		
 		@include breakpoint_mixin(medium){
 			height:68px;

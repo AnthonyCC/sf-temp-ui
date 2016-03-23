@@ -21,6 +21,7 @@
 		   <script src="<%=JS_DIR %>/modernizr-custom.js"></script>
 		   <script src="<%=JS_DIR %>/fk_ie8.js"></script>
 		<![endif]-->
+		<link href="<%=BOOTSTRAP_DIR %>/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
 		<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
