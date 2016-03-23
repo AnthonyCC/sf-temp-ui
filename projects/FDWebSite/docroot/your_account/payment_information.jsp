@@ -291,10 +291,11 @@ jQuery(document).ready(function($){
                     	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
                     	                      type: 'post',
                     	                      success: function(id, result){
-                    	                    	  $('#PP_logo').css("display","inline-block");
-                    	                    	  $('#PP-connect').css("display","none");
-                    	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
-                    	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
+//                     	                    	  $('#PP_logo').css("display","inline-block");
+//                     	                    	  $('#PP-connect').css("display","none");
+//                     	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteWalletPP class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
+//                     	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
+                    	                    	  location.reload(true);
                     	                      }
                     	    	        });
                     	    		    
