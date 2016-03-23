@@ -175,7 +175,7 @@ public class ReferralCreditCron {
 	
 						// set complaint details
 						complaintModel.setCreatedBy(agent.getUserId());
-						complaintModel.setDescription("Referral credit testing1");
+						complaintModel.setDescription("Referral Credits");
 						complaintModel.setCreateDate(new java.util.Date());
 						complaintModel.setStatus(EnumComplaintStatus.PENDING);
 						// email options - don;t send for now
@@ -342,7 +342,7 @@ public class ReferralCreditCron {
 					    
 					    //set complaint details
 					    complaintModel.setCreatedBy(agent.getUserId());
-					    complaintModel.setDescription("Referral credit testing1");
+					    complaintModel.setDescription("Referral Credits");
 					    complaintModel.setCreateDate(new java.util.Date());
 					    complaintModel.setStatus(EnumComplaintStatus.PENDING);
 					    //email options - don;t send for now
