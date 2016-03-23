@@ -150,6 +150,8 @@ var FreshDirect = FreshDirect || {};
   $(document).on('change','[data-component="productDataConfiguration"]',eventHandler);
 
   $(document).on('transactionalPopup-open','[data-component="product"]',eventHandler);
+  
+  $(document).on('soCustomizePopup', function(){Subtotal.update($jq("#customizePopup form[data-component='product']"))});
 
   $(document).on('productConfigurationChange', pccHandler);
 

@@ -104,12 +104,14 @@
 			<div class="so-toggler">Add to Standing Order<button class="cssbutton cssbutton-flat so-arrow"></button></div>
 			<div class="so-content">
 				<div class="so-listadd-content">
-					<select class="so-select">
-						<option value="">Select a Standing Order</option>
-						{foreach $item in $soData}
-							<option value="{$item.id}:{$item.listId}"{if $selectedSoId == $item.id or length($soData) == 1} selected="true"{/if}>{$item.soName}</option>
-						{/foreach}
-					</select>
+					<div class="select-wrapper">
+						<select class="so-select salesunit customsimpleselect">
+							<option value="">Select a Standing Order</option>
+							{foreach $item in $soData}
+								<option value="{$item.id}:{$item.listId}"{if $selectedSoId == $item.id or length($soData) == 1} selected="true"{/if}>{$item.soName}</option>
+							{/foreach}
+						</select>
+					</div>
 					{call .soAddBtn /}
 				</div>
 			</div>

@@ -111,7 +111,9 @@ var FreshDirect = FreshDirect || {};
 			addToSoCustomize($(this));
 			return false;
 		});
-
+		if($jq('button[data-component="addToSOButton"]').length > 0 && $jq("#customizePopup").hasClass("shown") && $jq("#customizePopup").hasClass("soShow")){
+			$jq(document).trigger("soCustomizePopup");
+		}
         $('#'+this.popupId+' .so-test-added-toggler').on('click', function(e) {
 			e.stopPropagation();
 

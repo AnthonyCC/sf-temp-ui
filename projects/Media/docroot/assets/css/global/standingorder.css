@@ -85,9 +85,6 @@
 	#customizePopup .buttons{
 		margin-right: 243px;
 	}
-	 #customizePopup.soShow input.qty{
-		height: 40px;
-	 }
 	.pdp-atc.soShow .qtyinput input.qty,
 	.pdp-evenbetter-quantity .qtyinput input.qty,
 	.portrait-item-soPreShow input.qty,
@@ -97,6 +94,13 @@
 		/* margin: 0; APPBUG-4498 */
 		padding: 0 2px;
 		/* height: 38px; APPBUG-4498 */
+	}
+	.pdp-atc.soShow .qtyinput input.qty,
+	.portrait-item-soPreShow input.qty,
+	#transactionalPopup .portrait-item-soPreShow input.qty,
+	#customizePopup.soShow input.qty{
+		height: 40px;
+		margin: 0;
 	}
 	 #transactionalPopup .portrait-item-soPreShow .portrait-item-controls .qtyinput > span.qtywrapper {
 		height: 40px;
@@ -455,8 +459,6 @@
 	}
 	.so .so-select {
 		width: 180px;
-		padding: 2px;
-		height: 30px;
 	}
 	.so-results-continer {
 		position: relative;
