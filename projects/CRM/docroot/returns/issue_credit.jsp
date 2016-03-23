@@ -750,7 +750,8 @@ var OL_PRICES = {};
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="order_detail">
 <tr VALIGN="TOP">
 <%      
-if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) ||
+		EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
 %>
     <td WIDTH="5%" ALIGN="RIGHT"><INPUT TYPE="radio" NAME="payment_method_type" value="card" <%= ( "card".equalsIgnoreCase( request.getParameter("payment_method_type") ) ) ? "CHECKED" : "" %>></td>
     <td WIDTH="7%">
