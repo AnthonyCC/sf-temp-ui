@@ -414,8 +414,7 @@ section#section_slideshow {
   section#section_slideshow .download_button {
     white-space: nowrap;
     position: absolute;
-    /*top: 40vw;*/
-    top: 35vh;
+    top: 60vw;
     left: calc(50% - 80px);
     z-index: 12;
     -moz-box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2);
