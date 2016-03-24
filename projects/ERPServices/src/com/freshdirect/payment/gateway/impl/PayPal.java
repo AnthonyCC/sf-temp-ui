@@ -87,7 +87,7 @@ public class PayPal implements Gateway {
 					request.deviceData(paymentMethod.getDeviceId());
 				}
 				Result<Transaction> saleResult = PayPalData.getBraintreeGateway().transaction().sale(request);
-				if (saleResult.isSuccess()) {
+				if (saleResult!= null && saleResult.isSuccess()) {
 					authModel = GatewayAdapter.getPPAuthResponse(saleResult,paymentMethod);
 					if(authModel != null){
 						authModel.setMerchantId(merchantId);
@@ -104,14 +104,15 @@ public class PayPal implements Gateway {
 					response.setApproved(true);
 					response.setAVSMatch(true);
 					response.setResponseCode(saleResult.getTarget().getProcessorResponseCode());
+					response.setStatusCode(EnumPaymentResponse.APPROVED.getName());
 					response.setStatusMessage(EnumPaymentResponse.APPROVED.getDescription());
+					response.setDeclined(false);
 					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 				} else {
 					authModel = new ErpAuthorizationModel();
 					authModel.setTransactionSource(EnumTransactionSource.SYSTEM);
 					authModel.setProfileID(paymentMethod.getProfileID());
 					authModel.setResponseCode(EnumPaymentResponse.DECLINED);
-					authModel.setDescription(saleResult.getMessage());
 					authModel.setCustomerId(paymentMethod.getCustomerId());
 					authModel.setMerchantId(merchantId);
 					authModel.setGatewayOrderID(orderNumber);
@@ -123,10 +124,18 @@ public class PayPal implements Gateway {
 					response = new ResponseImpl(gatewayRequest);
 					response.setEwalletId(paymentMethod.geteWalletID());
 					response.setRequestProcessed(false);
-					response.setApproved(false);
+//					response.setApproved(false);
 					response.setAVSMatch(true);
-					response.setResponseCode(saleResult.getTarget().getProcessorResponseCode());
-					response.setStatusMessage(saleResult.getTarget().getProcessorResponseText());
+					response.setDeclined(true);
+					response.setStatusCode(EnumPaymentResponse.DECLINED.getCode());
+					response.setStatusMessage(EnumPaymentResponse.DECLINED.getDescription());
+					if(saleResult != null && saleResult.getTransaction() != null){
+						authModel.setDescription(saleResult.getTransaction().getProcessorResponseText());
+						authModel.setEwalletTxId(saleResult.getTransaction().getId());
+						response.setResponseCode(saleResult.getTransaction().getProcessorResponseCode());
+						response.setStatusMessage(saleResult.getTransaction().getProcessorResponseText());
+						response.setEwalletTxId(saleResult.getTransaction().getId());
+					}
 					GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 				}
 			}else{
@@ -158,7 +167,7 @@ public class PayPal implements Gateway {
 		authModel.setTransactionSource(EnumTransactionSource.SYSTEM);
 		authModel.setResponseCode(EnumPaymentResponse.ERROR);
 		authModel.setProfileID(paymentMethod.getProfileID());
-		authModel.setDescription(errDesc);
+		authModel.setDescription(EnumPaymentResponse.ERROR.getDescription()+"."+errDesc);
 		authModel.setCustomerId(paymentMethod.getCustomerId());
 		authModel.setMerchantId(merchantId);
 		authModel.setGatewayOrderID(orderNumber);
@@ -171,8 +180,8 @@ public class PayPal implements Gateway {
 		response.setApproved(false);
 		response.setAVSMatch(false);
 		response.setStatusCode(EnumPaymentResponse.ERROR.getName());
-		response.setStatusMessage(EnumPaymentResponse.ERROR.getDescription());
-//		GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		response.setStatusMessage(EnumPaymentResponse.ERROR.getDescription()+"."+errDesc);
+		response.setError(true);
 	}
 
 	private static Merchant getMerchant(String merchantID) {
