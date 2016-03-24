@@ -1,4 +1,4 @@
-#addaddresspopup form {
+##addaddresspopup form {
   display: none;
 }
 
@@ -298,3 +298,14 @@ a.pickuppopup {
   display: block;
 }
 
+/* APPBUG-4517 fix for Savari v8. alignment problems */
+
+#addaddress_home_nick_name,
+#addaddress_office_company_name,
+#addaddress_home_street_address2,
+addaddress_office_street_address2,
+#addaddress_home_bd_address,
+#addaddress_home_instructions,
+#office_instructions {
+	display: block;
+}
