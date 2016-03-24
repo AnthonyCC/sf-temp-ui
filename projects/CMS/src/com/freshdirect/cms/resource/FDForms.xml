@@ -2015,6 +2015,12 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
+						<title>DARK STORE</title>
+						<fields>
+							<CmsField><attribute>WebPageDarkStore</attribute></CmsField>												
+						</fields>
+					</CmsSection>
+					<CmsSection>
 						<title>Section and Schedule</title>
 						<fields>
 						    <CmsField><attribute>WebPageType</attribute></CmsField>
@@ -2122,6 +2128,12 @@
 						<title>NAME</title>
 						<fields>
 							<CmsField><attribute>name</attribute></CmsField>												
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>DARK STORE</title>
+						<fields>
+							<CmsField><attribute>SectionDarkStore</attribute></CmsField>												
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -2264,5 +2276,23 @@
 				</CmsPage>
               </pages>
 	</CmsEditor>
+	
+	<CmsEditor id="DarkStore">
+		<contentType>DarkStore</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>value</attribute></CmsField>
+						</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>	
+						
 	
 </Content>

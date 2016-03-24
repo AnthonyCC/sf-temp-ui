@@ -56,6 +56,7 @@
 				<DestinationDef contentType="ImageBanner"/>
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="PickListItem"/>
+				<DestinationDef contentType="DarkStore"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2496,6 +2497,9 @@
 			<RelationshipDef cardinality="Many" name="WebPageSchedule" label="Sections">
 				<DestinationDef contentType="Schedule"/>
 			</RelationshipDef>
+			<RelationshipDef cardinality="Many" name="WebPageDarkStore" label="Dark Store">
+				<DestinationDef contentType="DarkStore"/>
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
@@ -2551,6 +2555,9 @@
 			</RelationshipDef>
 			<RelationshipDef cardinality="Many" name="SectionSchedule" label="Schedule">
 				<DestinationDef contentType="Schedule"/>
+			</RelationshipDef>
+			<RelationshipDef cardinality="Many" name="SectionDarkStore" label="Dark Store">
+				<DestinationDef contentType="DarkStore"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2672,6 +2679,12 @@
 				<DestinationDef contentType="Product"/>
 			</RelationshipDef>
 		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="DarkStore" generateId="false">
+		<AttributeDefs>
+		    <AttributeDef name="value" type="S" label="Select Dark Store" required="false"/>
+		</AttributeDefs>
 	</ContentTypeDef>
 		
 </CMSDef>
