@@ -66,6 +66,8 @@ public class DataLoaderProperties {
 	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	private final static String PROP_PP_SFTP_DELETE_FILES="dataloader.paypal.sftp.deleteFiles";
 	
+	private final static String PROP_PP_SETTLEMENT_ENABLED = "dataloader.paypal.enabled";
+	
 	private final static Properties config;
 	
 	static {
@@ -117,6 +119,8 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PP_SETTLEMENT_REF_EVENTCODES, "T1107");
 		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
 		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
+		
+		defaults.put(PROP_PP_SETTLEMENT_ENABLED, "false");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
@@ -226,6 +230,9 @@ public class DataLoaderProperties {
 	}
 	public static boolean isPayPalSFTPFileDeletionEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_PP_SFTP_DELETE_FILES)).booleanValue();
+	}
+	public static boolean isPayPalSettlementEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_PP_SETTLEMENT_ENABLED)).booleanValue();
 	}
 	public static String getSettlementFailureFileName(){
     	return config.getProperty(PROP_SETTLEMENT_FAILURE_FILE_NAME);

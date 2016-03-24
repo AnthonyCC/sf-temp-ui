@@ -64,7 +64,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	}
 	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB) {
-		super(builder, reconciliationSB);
+		super(builder, reconciliationSB, ppReconcSB);
 	}
 	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, Date desiredDate) {
@@ -235,11 +235,14 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		//Before adding header process settlement pending orders(Orders Paid with GC only).
 		List gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
 		appendGCSettlements(gcSettlementInfos);
-		List ppSettlementInfos = this.ppReconSB.processPPSettlement(ppDesiredDate);
-		if (ppSettlementInfos != null)
-			appendPPSettlements(ppSettlementInfos);
-		else
-			LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+		
+		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
+			List ppSettlementInfos = this.ppReconSB.processPPSettlement(ppDesiredDate);
+			if (ppSettlementInfos != null)
+				appendPPSettlements(ppSettlementInfos);
+			else
+				LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+		}
 		
 		double netDeposit = this.netSales - Math.abs(this.netDeductions);
 		this.settlementSummary.setBatchNumber(this.batchNumber);

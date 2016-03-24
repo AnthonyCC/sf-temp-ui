@@ -252,7 +252,7 @@ public class SettlementLoaderUtil {
 		ErpMailSender mailer = new ErpMailSender();
 		
 		try {
-			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), "TESTING - Settlement Failure - incl.PayPal Transactions", sw.getBuffer().toString());
+			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(), ErpServicesProperties.getSapMailCC(), "Settlement Failure", sw.getBuffer().toString());
 		} catch (MessagingException me) {
 			LOGGER.fatal("Could not send a email for Settlement Failure", me);
 		}
@@ -265,9 +265,7 @@ public class SettlementLoaderUtil {
 		file.renameTo(tempFile);
 		InputStream is = new FileInputStream(tempFile);
 		BufferedReader lines = new BufferedReader(new InputStreamReader(is));
-		File newFile = new File(oldName);
-		
-		FileOutputStream ofs = new FileOutputStream(newFile);
+		File newFile = new File(oldName);		FileOutputStream ofs = new FileOutputStream(newFile);
 		BufferedWriter bfw = new BufferedWriter(new OutputStreamWriter(ofs));
 		String maskedLine = null;
 		String line = lines.readLine();

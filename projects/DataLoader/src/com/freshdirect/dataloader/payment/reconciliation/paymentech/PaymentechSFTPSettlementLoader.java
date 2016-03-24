@@ -26,7 +26,6 @@ import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechFINParser;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
-import com.freshdirect.dataloader.payment.reconciliation.paypal.PayPalSFTPSettlementLoader;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -50,8 +49,6 @@ public class PaymentechSFTPSettlementLoader {
 	
 	private static Date date = null;
 	
-	PayPalReconciliationSB ppReconSB = null;
-	
 	public static void main(String[] args) {
 		PaymentechSFTPSettlementLoader loader = new PaymentechSFTPSettlementLoader();
 		
@@ -65,11 +62,10 @@ public class PaymentechSFTPSettlementLoader {
 		}
 	}
 	
-private static FileContext getFileContext(String[] args) {
-
+	private static FileContext getFileContext(String[] args) {
 		FileContext ctx=new FileContext();
 		ctx.setFileType(PaymentFileType.DFR);
-		ctx.setDownloadFiles(false);
+		ctx.setDownloadFiles(true);
 		if (args.length >= 1) {
 			for (String arg : args) {
 				try { 
@@ -120,7 +116,7 @@ private static FileContext getFileContext(String[] args) {
 		if(ctx.downloadFiles()) {
 			this.downloadFile(ctx,finFile, pdeFile, tmpFileOne, tmpFileTwo);
 		}
-		ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+
 		String fileName = loadFile(finFile, pdeFile, false);
 		
 		
@@ -129,8 +125,7 @@ private static FileContext getFileContext(String[] args) {
 
 		//tell sap to the file is there
 		SettlementLoaderUtil.callSettlementBapi(fileName);
-		
-		ppReconSB.updatePayPalStatus(date);
+
 	}
 	
 	private void downloadFile(FileContext ctx,File finFile, File pdeFile, File tmpFileOne, File tmpFileTwo) throws UnknownHostException, IOException {
@@ -209,7 +204,8 @@ private static FileContext getFileContext(String[] args) {
 	
 	private String loadFile(File finFile, File pdeFile, boolean buildOldSapFileFormat) throws RemoteException, EJBException, CreateException, IOException {
 		
-		ReconciliationSB reconSB = SettlementLoaderUtil.lookupReconciliationHome().create();		
+		ReconciliationSB reconSB = SettlementLoaderUtil.lookupReconciliationHome().create();
+		
 		SapFileBuilder builder = new SapFileBuilder();
 		builder.setBuildOldSapFileFormat(buildOldSapFileFormat);
 		String fileName = DataLoaderProperties.getSapFileNamePrefix() + "_Paymentech_" + SF.format(new Date()) + ".txt";
@@ -222,10 +218,20 @@ private static FileContext getFileContext(String[] args) {
 		isFin = new FileInputStream(finFile);
 		
 		PaymentechFINParser finParser = new PaymentechFINParser(); 
-		if (date == null)
-			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB));
+		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
+			PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+			if (date == null)
+				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB));
+			else
+				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, date));
+
+			ppReconSB.updatePayPalStatus(date);
+		}
 		else
-			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, date));
+		{
+			finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
+		}
+		
 		finParser.parseFile(isFin);
 		
 		LOGGER.info("Finished loading FIN File");
