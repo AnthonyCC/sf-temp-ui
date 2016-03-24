@@ -69,7 +69,7 @@
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
-                     {param displayCheckout: $displayCheckout /}
+		{param displayCheckout: $displayCheckout /}
 		{param totalWithoutTax: $totalWithoutTax /}
 	{/call}
 	{call .footer}
@@ -109,6 +109,7 @@
                                   {param customTip: $customTip /}
                                   {param eTippingEnabled: $eTippingEnabled /}
                                   {param avalaraEnabled: $avalaraEnabled /}
+                                  {param displayCheckout : $displayCheckout /}
                                   {param customerServiceRepresentative: $customerServiceRepresentative /}
                                   {param numOfSections : length($cartSections) /}
                                   {param isLastSection : isLast($section) /}
@@ -451,6 +452,7 @@
  * @param? totalWithoutTax TotalWithoutTax 
  * @param? isEBTused Is the customer using EBT? 
  * @param? displayCheckout to display checkout
+ * @param? noModifyLinks hide product modify links
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
@@ -469,13 +471,14 @@
 				</span>
 			{/if}
 		</h2>
-
 		
 		{foreach $cartline in $cartLines}
 			{delcall expressco.cartline data="$cartline" variant="$cartlineTypeRevised"}
 				{param populateDCPDPromoDiscount: $populateDCPDPromoDiscount /}
 				{param customerServiceRepresentative: $customerServiceRepresentative /}
 				{param avalaraEnabled: $avalaraEnabled /}
+				{param displayCheckout: $displayCheckout /}
+				{param noModifyLinks: $noModifyLinks /}
 			{/delcall}
 		{/foreach}
 
@@ -624,17 +627,18 @@
  * @param? customerServiceRepresentative
  * @param? complaintReason masquerade mode make good order reason text
  * @param avalaraEnabled avalaraEnabled
+ * @param displayCheckout
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
-			<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
+			<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>
 				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/fd_defs/meat/bstk_prtrhs_c.jpg{/if}' alt="Image of {$descr}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
 			<div class='cartline-titleholder'>
-				<a class='cartline-link' href='{if $mealBundle}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>{$descr}</a>
+				<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>{$descr}</a>
 				{if $newItem}
 					<span class="new">(new)</span>
 				{/if}

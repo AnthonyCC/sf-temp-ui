@@ -31,6 +31,7 @@
 	<tmpl:put name='content' direct='true'>
 		
 		<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
+		<link rel="stylesheet" type="text/css" href="/assets/css/global/standingorder.css"/>
 		<script type="text/javascript" language="javascript" src="/assets/javascript/timeslots.js"></script>
 
 		<crm:GetFDUser id="user">
