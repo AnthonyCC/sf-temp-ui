@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
@@ -140,6 +141,8 @@ int numECards=0;
 int ccNum = 0;
 int ecNum = 0;
 int ebtNum=0;
+boolean isPayPalWalletPaired=false;
+ErpPaymentMethodI payPalPaymentMethod = null;
 
 %>
 
@@ -615,19 +618,61 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                     </tr>
                 </table>
 
+			<logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
+	            <%
+	            if(EnumPaymentMethodType.CREDITCARD.equals(payment.getPaymentMethodType())){
+	            	numCreditCards++;
+	            }else if(EnumPaymentMethodType.ECHECK.equals(payment.getPaymentMethodType())){
+	            	numEChecks++;
+	            }else if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
+	            	numECards++;
+	            }else if(EnumPaymentMethodType.PAYPAL.equals(payment.getPaymentMethodType())){
+	            	isPayPalWalletPaired = true;
+	            	payPalPaymentMethod = payment;
+	            }
+	            
+	            %>
+            </logic:iterate>
+            
+            <%
+            if(FDStoreProperties.isPayPalEnabled()){
+            %>
+            <!--  PAYPAL START  -->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;"><tr><td width="20%" style="padding: 4px; margin-top: 5px; border-bottom: none; background:#E8FFE8;"><b>PayPal</b></td>
+            <td align="right" width="78%"></td><td width="1%"></td></tr></table>
+            <%-- START:PAYMENT ENTRIES --%>
+	            <%
+	            if(isPayPalWalletPaired && payPalPaymentMethod != null){
+	            %>
+	                <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
+	                     <div class="cust_module_content">
+	                     <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
+	                        <tr valign="top">
+	                        <td class="cust_module_content_note"></td>
+	                        <td>
+	                        <table width="90%" cellpadding="3" cellspacing="0" class="cust_module_content_text" align="center">
+	                        	 <tr>
+	                        	 <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png">
+	                        	 </tr>
+	                            <tr>
+	                                <td><%=payPalPaymentMethod.getName()%></td>
+	                            </tr>
+								 <tr>
+									<td><%=payPalPaymentMethod.getEmailID()%></td>
+								</tr>
+	                        </table>
+	                        </td></tr></table>
+	                    </div>
+	                    
+	                    
+	                </div>
+	                <%} %>
+            <%-- END:PAYMENT ENTRIES --%>
+			<br clear="all">	
+              <%} %>
+               <!-- PAYPAL END -->
 			<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: solid 1px #999999;"><tr><td width="20%" style="padding: 4px; margin-top: 5px; border-bottom: none; background:#E8FFE8;"><b>Credit cards</b></td><td align="right" width="78%"><%if (!forPrint){%><%if(editable){%><a href="/customer_account/new_credit_card.jsp" class="add">ADD</a><%}else{%><%=case_required_add%><%}%><%}%></td><td width="1%"></td></tr></table>
             <%-- START:PAYMENT ENTRIES --%>
-            <logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
-            <%
-            if(EnumPaymentMethodType.CREDITCARD.equals(payment.getPaymentMethodType())){
-            	numCreditCards++;
-            }else if(EnumPaymentMethodType.ECHECK.equals(payment.getPaymentMethodType())){
-            	numEChecks++;
-            }else if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
-            	numECards++;
-            }
-            %>
-            </logic:iterate>
 
             <logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
             <%
