@@ -53,6 +53,7 @@ import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
+import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpChargeInvoiceModel;
@@ -1701,16 +1702,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			  }		
 			
 			PaymentManager paymentManager = new PaymentManager();
-			List<ErpAuthorizationModel> auths = saleEB.getAuthorizations();
+			List<ErpCaptureModel> auths = saleEB.getCaptures();
 
 			if(fdAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
-					for (ErpAuthorizationModel auth : auths) {
+					for (ErpCaptureModel auth : auths) {
 						if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 								EnumCardType.PAYPAL.equals(auth.getCardType()) &&  auth.getAffiliate() != null &&
 								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
-							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+							if (auth.getAmount() > fdAmount)
+								paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
 						}
 					}
 				}
@@ -1729,7 +1731,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if(usqAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
-					for (ErpAuthorizationModel auth : auths) {
+					for (ErpCaptureModel auth : auths) {
 						if (auth.getAffiliate() != null &&
 								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
 							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
@@ -1742,10 +1744,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if(fdwAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
-					for (ErpAuthorizationModel auth : auths) {
+					for (ErpCaptureModel auth : auths) {
 						if (auth.getAffiliate() != null &&
 								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW))) {
-							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+							if (auth.getAmount() > fdwAmount)
+								paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
 						}
 					}
 				}
