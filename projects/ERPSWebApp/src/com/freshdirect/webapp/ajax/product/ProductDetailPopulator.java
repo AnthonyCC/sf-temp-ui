@@ -555,9 +555,9 @@ public class ProductDetailPopulator {
 		data.setPackageDescription( product.getPackageDescription() );
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
-		
-		data.setSoData(StandingOrderHelper.getAllSoData(user,true));
-		
+		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+			data.setSoData(StandingOrderHelper.getAllSoData(user,true));
+		}
 		// alcoholic & usq flags
 		try {
 			// For alcoholic and usq flags check the default sku
@@ -617,7 +617,9 @@ public class ProductDetailPopulator {
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
-		item.setSoData(StandingOrderHelper.getAllSoData(user,true));
+		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+			item.setSoData(StandingOrderHelper.getAllSoData(user,true));
+		}
 
 		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );
