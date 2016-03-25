@@ -915,14 +915,18 @@ section#section_Get_Foodkick{
 
 		form{
 			text-align:center;
+			max-width:550px;
 			
 			@include breakpoint_mixin(medium){
 				padding-right:20px;
+				padding-top: 50px;
 				padding-bottom: 50px;
 			}
 			@include breakpoint_mixin(large){
 				padding-right:initial;
-				padding-bottom:initial;
+				//padding-bottom:initial;
+				padding-top: 40px;
+				padding-bottom: 40px;
 			}
 			
 			input{
@@ -951,7 +955,7 @@ section#section_Get_Foodkick{
 					margin-bottom:0em;
 					
 					min-height:1.1em;
-					font-size:0.7em;
+					//font-size:0.7em;
 					
 					@include inp_ph_mixin(){
 						color: $form_t_color_p;
@@ -1843,12 +1847,6 @@ form button, .download_button{
 	}
 }
 
-button.button_disabled{
-	@include opacity_mixin(0.5);
-	color:#666;
-	cursor: not-allowed;
-}
-
 form{
 	.error{
 		color:#cb2929!important;
@@ -1879,6 +1877,16 @@ form{
 			height:68px;
 		}
 	}
+	
+	&.form_disabled{
+		@include opacity_mixin(0.5);
+	}
+}
+
+button.button_disabled, form.form_disabled *{
+	@include opacity_mixin(0.5);
+	color:#666;
+	cursor: not-allowed;
 }
 
 .fk_anchor{

@@ -3,18 +3,18 @@
  * */
 
 //for Internet Explorer browser version checking
-function isIE(){
+function isIE(){ /* void */
 	var myNav = navigator.userAgent.toLowerCase();
 	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
 //older IE versions
-function isIE9OrBelow(){
+function isIE9OrBelow(){ /* void */
 	return /MSIE\s/.test(navigator.userAgent) && parseFloat(navigator.appVersion.split("MSIE")[1]) < 10;
 }
 
 //used not only for desktop Safari, but also for iPad and iPhone versions of Safari. NOTE: unlikely to apply to IOS versions of Chrome or Firefox
-function isSafari(){
+function isSafari(){ /* void */
 	return (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1);
 }
 
@@ -91,8 +91,8 @@ function prepare_slideshow(ss_obj){ /* Object */
 	}
 	
 	//make sure that the slideshow holder shows the slideshow container, just in case
-	$("#" + ss_obj.html_id).css("display", "block");
-	$("#" + ss_obj.html_id).parents("section").css("display", "block");
+	$("#" + ss_obj.html_id).show();
+	$("#" + ss_obj.html_id).parents("section").show();
 	
 	//loop through the slide array object from OAS
 	for(var i in ss_obj.slides){
@@ -170,7 +170,7 @@ function prepare_slideshow(ss_obj){ /* Object */
 }
 
 //new slideshow the angular js way.  REQUIRES: ss_obj.html_id must pertain to a pre-existing html element
-function new_angularstrapousel(ss_obj){
+function new_angularstrapousel(ss_obj){ /* object */
 	angular.module('ui.bootstrap.demo').controller(ss_obj.html_id, function($scope){
 		$scope.myInterval = ss_obj.slide_interval;
 		$scope.noWrapSlides = false;
@@ -193,7 +193,7 @@ function fullwindow_carousels_handler(){ /* void */
 	//establish final height/width for the carousel
 	var carousel_height = $("#carousel_1").height();
 	
-	console.log( '$(".img_shadowhelper img").first().height() = ' + $(".img_shadowhelper img").first().height() );
+	//console.log( '$(".img_shadowhelper img").first().height() = ' + $(".img_shadowhelper img").first().height() );
 
 	//$("#carousel_1 .slidesjs-container, #carousel_1 .slidesjs-control").css("height", carousel_height + "px");
 }
@@ -234,6 +234,8 @@ function zonenotification_zip_and_email(param_obj){ /* Object */
 	var form_id = "#locationhandler";
 	var action_url = $(form_id).attr("action");
 	
+	$(form_id).addClass("form_disabled");
+	
 	$.ajax({
 		url: action_url,
 		data:{
@@ -255,7 +257,7 @@ function numbersOnly(src){ /* String */
 	src.value = src.value.replace(/[A-Za-z]/g, '');
 }
 
-function form_enableDisable(formId, eORd){ /*String, Boolean*/
+function form_enableDisable(formId, eORd, seenNow){ /*String, Boolean, Boolean*/
 	var eORd = (typeof eORd !== 'undefined')? eORd : false;
 	
 	//the submit button for the form
@@ -263,19 +265,26 @@ function form_enableDisable(formId, eORd){ /*String, Boolean*/
 	var theButton_id = theButton.attr("id");
 
 	if(eORd == false){
-		$(formId).css("opacity", "0.5");
+		//$(formId).css("opacity", "0.5");
 		
-		$(formId).find("input").prop('disabled', true).css("cursor", "not-allowed");
+		$(formId).addClass("form_disabled");
+		
+		$(formId).find("input").prop('disabled', true);
 		//theButton.prop('disabled', true).css("cursor", "not-allowed").attr("text2", theButton.text().trim());
 		theButton.attr("text2", theButton.text().trim());
 		button_enableDisable( "#"+theButton_id, false);
 		theButton.text("please wait...");
 	}else{
 		//make form fully and normally opaque
-		$(formId).css("opacity", "1").css("display", "block");
+		$(formId).removeClass("form_disabled");
+		
+		if( !(typeof seenNow !== 'undefined' && seenNow == false) ){
+			$(formId).show();
+		}
 		
 		//re-enable the form elements
-		$(formId).find("input").prop('disabled', false).css("cursor", "default");
+		//$(formId).find("input").prop('disabled', false).css("cursor", "default");
+		$(formId).find("input").prop('disabled', false);
 		//theButton.prop('disabled', false).css("cursor", "default").text( theButton.attr("text2") );
 		button_enableDisable( "#"+theButton_id, true);
 		theButton.text( theButton.attr("text2") );
@@ -291,33 +300,41 @@ function button_enableDisable(buttonId, eORd){ /*String, Boolean*/
 }
 
 //reset the zipcode / email form flow
-function reset_zip_forms(){
+function reset_zip_forms(){ /* void */
 	form_enableDisable('#ziphandler', true);
-	$('#we_deliver_to_you').css('display', 'none');
+	$('#we_deliver_to_you').hide();
+	$('#form_congratulations').hide();
 	
-	$("#zipcode_zh").val("").text("");
+	//$('#locationhandler').css("opacity", "1");
+	
+	/*$('#locationhandler input').each(function(){
+		$(this).val("").text("").prop("disabled", false);
+	})*/
+	
+	form_enableDisable('#locationhandler', true, false);
+	$('#email_lh, #zipcode_zh').text("").val("").removeAttr("style");
 }
 
-function form_inputs_enable_lite(formId){
+function form_inputs_enable_lite(formId){ /* String */
 	$(formId).find("input").prop('disabled', false);
 	//$(formId).find("button").prop('disabled', false);
 }
 
 //APPDEV-4776
-function go_away_mobile_menu_ur_drunk(){
+function go_away_mobile_menu_ur_drunk(){ /* void */
 	$('#mobile_link_home').trigger('mouseleave');
 	
-	$("#mobile_dropdown_menu").css("display", "none");
+	$("#mobile_dropdown_menu").hide();
 }
 
 //following 2 functions below help with page resizing
-function PageShowHandler(){
+function PageShowHandler(){ /* void */
 	form_inputs_enable_lite("#ziphandler", true);
 	
 	window.addEventListener('unload', UnloadHandler, false);
 }
 
-function UnloadHandler(){
+function UnloadHandler(){ /* void */
 	form_inputs_enable_lite("#ziphandler", true);
 	
 	//enable button here
@@ -358,13 +375,13 @@ $(function(){
 				$('html, body').stop().animate({
 					'scrollTop': $target.offset().top,
 					'start': function(){
-						console.log("this animation started");
+						//console.log("this animation started");
 					}
 				}, 900, 'swing', function(){
 					window.location.hash = target;
 					
 					//hide this dumb iphone menu when it is done scrolling someplace for a hash link.  needed in mobile
-					$(".mobile_dropdown").css("display", "none");
+					$(".mobile_dropdown").hide();
 					
 					//signal to the hamburger button that it should not think of itself as being hovered over.  needed in mobile
 					$('#mobile_link_home').trigger('mouseleave');
@@ -453,6 +470,8 @@ $(function(){
 		showErrors: function(errorMap, errorList) {
 			//show those red errors
 			this.defaultShowErrors();
+			
+			//console.log( "this.numberOfInvalids() = ", this.numberOfInvalids() );
 			
 			//enable or disable the submit button when appropriate
 			if( this.numberOfInvalids() < 1 ){

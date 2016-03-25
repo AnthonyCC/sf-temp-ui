@@ -83,7 +83,7 @@
 							Download the app today.
 						</h2>
 						<br/>
-						<a href="#Get_Foodkick" onClick="reset_zip_forms();">
+						<a id="recycler" href="#Get_Foodkick" onClick="reset_zip_forms();">
 							<img src="<%=IMAGES_DIR %>/section_3/recycle.png" />
 						</a>
 						<br/>

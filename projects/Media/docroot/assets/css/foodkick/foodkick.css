@@ -574,15 +574,18 @@ section#section_Get_Foodkick {
           margin-top: 2em;
           margin-bottom: 2em; } }
     section#section_Get_Foodkick article form {
-      text-align: center; }
+      text-align: center;
+      max-width: 550px; }
       @media (min-width: 30em) {
         section#section_Get_Foodkick article form {
           padding-right: 20px;
+          padding-top: 50px;
           padding-bottom: 50px; } }
       @media (min-width: 50em) {
         section#section_Get_Foodkick article form {
           padding-right: initial;
-          padding-bottom: initial; } }
+          padding-top: 40px;
+          padding-bottom: 40px; } }
       section#section_Get_Foodkick article form input {
         height: 1.75em;
         font-size: 1.5em;
@@ -605,8 +608,7 @@ section#section_Get_Foodkick {
             color: black;
             /*margin-left: 0px;*/
             margin-bottom: 0em;
-            min-height: 1.1em;
-            font-size: 0.7em; }
+            min-height: 1.1em; }
             section#section_Get_Foodkick article form input::-webkit-input-placeholder {
               color: rgba(0, 0, 0, 0.5); }
             section#section_Get_Foodkick article form input:-moz-placeholder {
@@ -1223,15 +1225,6 @@ form button, .download_button {
       width: 220px;
       height: 70px; } }
 
-button.button_disabled {
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-  filter: alpha(opacity=50);
-  -moz-opacity: 0.5;
-  -khtml-opacity: 0.5;
-  opacity: 0.5;
-  color: #666;
-  cursor: not-allowed; }
-
 form {
   /*APPDEV-4969*/
   /*APPDEV-4969*/ }
@@ -1250,6 +1243,21 @@ form {
     @media (min-width: 30em) {
       form .field_holders {
         height: 68px; } }
+  form.form_disabled {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5; }
+
+button.button_disabled, form.form_disabled * {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+  color: #666;
+  cursor: not-allowed; }
 
 .fk_anchor {
   top: -60px;
