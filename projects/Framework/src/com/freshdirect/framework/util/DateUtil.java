@@ -61,6 +61,7 @@ public class DateUtil {
 	public static final DateFormat FULL_DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEEE");
 	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM dd");
 	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("hha");
+	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("hh:mma");
 	
 	private DateUtil() {
 	}
@@ -571,7 +572,12 @@ public class DateUtil {
 		}
 	}
 	public static String formatHourAMPM(Date dateValue) {
+		Calendar cal= Calendar.getInstance();
 		if(null!=dateValue){
+			cal.setTime(dateValue);
+			 if (cal.get(Calendar.MINUTE) > 0) {
+				 return HOUR_MMAMPM_FORMATTER.format(dateValue);
+		        }
 		return HOUR_AMPM_FORMATTER.format(dateValue);
 		} else {
 			return null;
