@@ -220,18 +220,19 @@ public class PayPal implements Gateway {
 		}
 		//Gateway logging and return object preparation
 		Request request = GatewayAdapter.getCaptureRequest(paymentMethod, authorization, amount, tax);
+		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		response.setBillingInfo(request.getBillingInfo());
 		
 		ErpCaptureModel captureModel = new ErpCaptureModel();
 		if (result.isSuccess()) {
-			setSuccessResponse(response, result);
 			try {
+				setSuccessResponse(response, result);
 				captureModel = GatewayAdapter.getCaptureResponse(response, authorization);
 				captureModel.setCardType(EnumCardType.PAYPAL);
 				captureModel.setEwalletTxId(result.getTarget().getId());
+				captureModel.setProfileID(authorization.getProfileID());
 				captureModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
-				setSuccessResponse(response, result);
 
 			} catch (PaylinxResourceException e ) {
 				response.setBillingInfo(request.getBillingInfo());
@@ -258,7 +259,7 @@ public class PayPal implements Gateway {
 		}
 		
 		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
-		
+		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		if (result.isSuccess()) {
 			setSuccessResponse(response, result);
@@ -288,10 +289,11 @@ public class PayPal implements Gateway {
 		}
 		
 		Result<Transaction> result = PayPalData.getBraintreeGateway().transaction().voidTransaction(txId);
+		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
+		response.setBillingInfo(request.getBillingInfo());
 		if (result.isSuccess()) {
 			setSuccessResponse(response, result);
-			response.setBillingInfo(request.getBillingInfo());
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 		} else {
 			setFailureResponse(response, result);
@@ -315,6 +317,7 @@ public class PayPal implements Gateway {
 		
 		Request request = GatewayAdapter.getCashbackRequest(paymentMethod, amount, tax, 
 								orderNumber, affiliate.getMerchant(paymentMethod.getCardType()));
+		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 		ResponseImpl response = new ResponseImpl(request);
 		if (result.isSuccess()) {
 			setSuccessResponse(response, result);
@@ -326,7 +329,6 @@ public class PayPal implements Gateway {
 			cashback.setTax(tax);
 			cashback.setAffiliate(affiliate);
 			cashback.setCardType(EnumCardType.PAYPAL);
-			cashback.setSequenceNumber(response.getBillingInfo().getTransactionRef());
 			cashback.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
 			cashback.setProfileID(txId);
 			cashback.setGatewayOrderID(result.getTarget().getOrderId());
@@ -436,6 +438,9 @@ public class PayPal implements Gateway {
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
 		response.setEwalletTxId(result.getTarget().getId());
 		response.setRequestProcessed(true);
+		
+		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
+		response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getAuthorizationId());
 	}
 	
 	private void setFailureResponse(ResponseImpl response, Result<Transaction> result) {
@@ -449,6 +454,7 @@ public class PayPal implements Gateway {
 			response.setResponseCode(trxn.getProcessorResponseCode());
 			response.setEwalletTxId(trxn.getId());
 		}
+		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 	}
 
 }

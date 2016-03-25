@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -41,7 +42,6 @@ public class PayPalSFTPSettlementLoader {
 	private static final Category LOGGER = LoggerFactory.getInstance(PayPalSFTPSettlementLoader.class);
 	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyyMMdd");
 	
-	private static boolean overrideLock = false;
 	private static String timestamp = SF.format(new Date());
 	private static boolean downloadFlag = true;
 	
@@ -49,6 +49,7 @@ public class PayPalSFTPSettlementLoader {
 	
 	static PayPalReconciliationSB ppReconSB = null;
 	static ReconciliationSB reconSB = null;
+	static List<String> settlementIds = null;
 	
 	/**
 	 * @param args
@@ -77,29 +78,32 @@ public class PayPalSFTPSettlementLoader {
 			try {
 				timestamp = SF.format(SF.parse(args[1]));
 			} catch (ParseException pe) {
-				timestamp = SF.format(new Date());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				cal.add(Calendar.DATE, -1);
+				timestamp = SF.format(cal.getTime());
 			}
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.add(Calendar.DATE, -1);
+			timestamp = SF.format(cal.getTime());
 		}
 		
-		if (args.length > 2) {
-			if ("true".equalsIgnoreCase(args[2])) {
-				overrideLock = true;
-			}
-		}
-		
-		LOGGER.info("Arguments are : downloadFlag - " + downloadFlag + " Date being processed - " + timestamp +
-							" override lock " + overrideLock);
-		
+		LOGGER.info("Arguments are : downloadFlag - " + downloadFlag + " Date being processed - " + timestamp);
+
 		try {
 			PayPalSFTPSettlementLoader loader = new PayPalSFTPSettlementLoader();
 			
 			ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+			ppReconSB.acquirePPLock(SF.parse(timestamp));
 			loader.loadSettlements();
-			ppReconSB.releasePPLock(SF.parse(timestamp));
+			if (settlementIds != null && !settlementIds.isEmpty())
+				ppReconSB.releasePPLock(settlementIds);
 		} catch (Exception e) {
 			try {
-				if (!overrideLock)
-					ppReconSB.releasePPLock(SF.parse(timestamp));
+				if (settlementIds != null && !settlementIds.isEmpty())
+					ppReconSB.releasePPLock(settlementIds);
 			} catch (Exception e2) {
 				LOGGER.info("Exception while releasing PP lock can be ignored ", e2);
 			}
@@ -206,11 +210,7 @@ public class PayPalSFTPSettlementLoader {
 
 		//create parser and set loader as its client
 		PayPalParser parser = new PayPalParser();
-		parser.setClient(new PayPalSettlementParserClient(null, reconSB, ppReconSB, overrideLock));
-		if (!overrideLock)
-			ppReconSB.acquirePPLock(SF.parse(timestamp), false);
-		else
-			ppReconSB.acquirePPLock(SF.parse(timestamp), true);
+		parser.setClient(new PayPalSettlementParserClient(null, reconSB, ppReconSB, settlementIds));
 		
 		parser.parseFile(is);
 

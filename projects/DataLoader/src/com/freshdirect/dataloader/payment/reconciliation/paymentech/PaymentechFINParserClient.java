@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
@@ -40,7 +41,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private static final String PAYMENTECH_RETURN_TX_EC_NEW = "ER";//Orbital reconciliation file uses ER for Echeck cashbacks.
 	
 	private static final String PAYPAL_FEE_TX= "Fee";
-	
+	private List<String> settlementIds = null;
 	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechFINParserClient.class);
 	
 	private Date batchDate;
@@ -63,8 +64,9 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		super(builder, reconciliationSB);
 	}
 	
-	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB) {
+	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, PayPalReconciliationSB ppReconcSB, List<String> settlementIds) {
 		super(builder, reconciliationSB, ppReconcSB);
+		this.settlementIds = settlementIds;
 	}
 	
 	public PaymentechFINParserClient(SettlementBuilderI builder, ReconciliationSB reconciliationSB, Date desiredDate) {
@@ -236,12 +238,20 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		List gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
 		appendGCSettlements(gcSettlementInfos);
 		
-		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-			List ppSettlementInfos = this.ppReconSB.processPPSettlement(ppDesiredDate);
-			if (ppSettlementInfos != null)
-				appendPPSettlements(ppSettlementInfos);
-			else
-				LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+		try {
+			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
+				List ppSettlementInfos = this.ppReconSB.processPPSettlements(settlementIds);
+				if (ppSettlementInfos != null)
+					appendPPSettlements(ppSettlementInfos);
+				else
+					LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+			}
+		} catch (RemoteException e) {
+			LOGGER.error("Could not process PayPal transactions ", e);
+		} catch (CreateException e) {
+			LOGGER.error("Could not process PayPal transactions ", e);
+		} catch (ErpTransactionException e) {
+			LOGGER.error("Could not process PayPal transactions ", e);
 		}
 		
 		double netDeposit = this.netSales - Math.abs(this.netDeductions);

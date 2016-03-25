@@ -45,15 +45,16 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	private long currSectionTotalTransactionDebits = 0;
 	private long currSectionTotalFeeCredits = 0;
 	private long currSectionTotalFeeDebits = 0;
+	private List<String> settlementIds = null;
 	
 	private boolean ignoreLock = false;
 		
 	public PayPalSettlementParserClient(SettlementBuilderI builder,ReconciliationSB reconSB,
-			PayPalReconciliationSB ppReconSB, boolean ignoreLock) {
+			PayPalReconciliationSB ppReconSB, List<String> settlementIds) {
 		super(builder, reconSB, ppReconSB);
 		settlementSummarys = new ErpSettlementSummaryModel[2];
 		settlementDetails = new ArrayList<ErpSummaryDetailModel>();
-		this.ignoreLock = ignoreLock;
+		this.settlementIds = settlementIds;
 	}
 
 	public void process(ReportHeaderDataRecord record) {
@@ -263,7 +264,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 					" do not match with Sections. Settlement File of " + batchDate + " " + "may be corrupted");
 		} else if (record.getRowCount() > 0){
 			try {
-				this.ppReconSB.addPPSettlementSummary(settlementSummarys, ignoreLock);
+				settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);
 			}

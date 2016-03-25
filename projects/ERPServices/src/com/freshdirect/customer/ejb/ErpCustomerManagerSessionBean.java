@@ -123,6 +123,7 @@ import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
@@ -570,6 +571,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			    	for (ErpAuthorizationModel auth : auths) {
 			    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
 			    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
+			    		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 			    		try {
 				    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
 				    		Response response = gateway.reverseAuthorize(request);

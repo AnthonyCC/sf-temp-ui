@@ -79,8 +79,6 @@ public class PaymentechSFTPSettlementLoader {
 						ctx.setOpenSSHPrivateKey(arg.substring("privateKey=".length()));  							
 					}else if(arg.startsWith("fetchFiles=")) {
 						ctx.setDownloadFiles(Boolean.valueOf(arg.substring("fetchFiles=".length())).booleanValue());  							
-					} else if (arg.startsWith("ppStmntProcessDate=")) {
-						date = new SimpleDateFormat("yyyyMMdd").parse(arg.substring("ppStmntProcessDate=".length()));
 					}
 				} catch (Exception e) {
 					System.err.println("Usage: java com.freshdirect.dataloader.payment.bin.PaymentechSFTPSettlementLoader  [fetchFiles={true | false}] [remoteURL=Value] [remoteUser=Value] [remotePassword=Value]  [privateKey=Value] [ppStmntProcessDate=yyyymmdd]");
@@ -217,23 +215,22 @@ public class PaymentechSFTPSettlementLoader {
 		
 		isFin = new FileInputStream(finFile);
 		
-		PaymentechFINParser finParser = new PaymentechFINParser(); 
+		PaymentechFINParser finParser = new PaymentechFINParser();
+		PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+		List<String> ppSettlementIds = null;
 		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-			PayPalReconciliationSB ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-			if (date == null)
-				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB));
-			else
-				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, date));
-
-			ppReconSB.updatePayPalStatus(date);
-		}
-		else
-		{
+			ppSettlementIds = ppReconSB.acquirePPLock(null);
+			finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB, ppSettlementIds));
+		} else {
 			finParser.setClient(new PaymentechFINParserClient(builder, reconSB));
 		}
 		
 		finParser.parseFile(isFin);
 		
+		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
+			ppReconSB.updatePayPalStatus(ppSettlementIds);
+			ppReconSB.releasePPLock(ppSettlementIds);
+		}
 		LOGGER.info("Finished loading FIN File");
 		//mask CC number in the downloaded FIN file.
 		SettlementLoaderUtil.maskCCPaymentech(finFile);

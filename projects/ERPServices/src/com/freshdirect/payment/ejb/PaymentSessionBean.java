@@ -53,8 +53,11 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.GatewayAdapter;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.referral.extole.RafUtil;
 ;
@@ -155,6 +158,15 @@ public class PaymentSessionBean extends SessionBeanSupport{
 						ErpAuthorizationModel auth = (ErpAuthorizationModel)j.next();
 						Double captureAmount = (Double) captureMap.get(auth.getPK().getId());
 						if(captureAmount == null){
+							try {
+								if (EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && EnumCardType.PAYPAL.equals(auth.getCardType())) {
+									Request request = GatewayAdapter.getReverseAuthRequest(paymentMethod, auth);
+									request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
+									gateway.reverseAuthorize(request);
+								}
+							} catch (Exception e) {
+								LOGGER.info("Reversal of PayPal auth failed for seq number " + auth.getSequenceNumber() + " of order id " + saleId + ". It can be ignored");
+							}
 							utx.commit();
 							continue;
 						}
