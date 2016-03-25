@@ -22,17 +22,6 @@ public class DataLoaderProperties {
 	private final static String PROP_FTP_USER = "dataloader.ftp.user";
 	private final static String PROP_FTP_PASSWORD = "dataloader.ftp.password";
 	
-	//PayPal settlement related properties
-	private final static String PROP_PP_FTP_IP = "dataloader.pp.ftp.ip";
-	private final static String PROP_PP_FTP_USER = "dataloader.pp.ftp.user";
-	private final static String PROP_PP_FTP_PASSWORD = "dataloader.pp.ftp.password";
-	private final static String PROP_PP_SETTLEMENT_FOLDER = "dataloader.pp.ftp.folder";
-	private final static String PROP_PP_SETTLEMENT_FILE_PREFIX = "dataloader.pp.ftp.file.prefix";
-	private final static String PROP_PP_SETTLEMENT_FILE_VERSION = "dataloader.pp.ftp.file.version";
-	private final static String PROP_PP_SETTLEMENT_FILE_SUFFIX = "dataloader.pp.ftp.file.suffix";
-	private final static String PROP_PP_SETTLEMENT_FILE_ALT_SUFFIX = "dataloader.pp.ftp.file.alt.suffix";
-	private final static String PROP_PP_SETTLEMENT_FILE_EXTN = "dataloader.pp.ftp.file.extn";
-	
 	private final static String PROP_SUMMARY_FILE_NAME = "dataloader.summaryFile.name";
 	private final static String PROP_TRANSACTION_FILE_NAME = "dataloader.transactionFile.name";
 	private final static String PROP_WORKING_DIR = "dataloader.working.dir";
@@ -56,6 +45,17 @@ public class DataLoaderProperties {
 	private final static String PROP_PAYMENTECH_STF_SFTP_HOST = "dataloader.paymentech.stf.sftp.host";
 	private final static String PROP_PAYMENTECH_STF_SFTP_USER = "dataloader.paymentech.stf.sftp.user";
 	private final static String PROP_PAYMENTECH_STF_SFTP_PASSWORD = "dataloader.paymentech.stf.sftp.password";
+
+	//PayPal settlement related properties - Start
+	private final static String PROP_PP_FTP_IP = "dataloader.pp.ftp.ip";
+	private final static String PROP_PP_FTP_USER = "dataloader.pp.ftp.user";
+	private final static String PROP_PP_FTP_PASSWORD = "dataloader.pp.ftp.password";
+	private final static String PROP_PP_SETTLEMENT_FOLDER = "dataloader.pp.ftp.folder";
+	private final static String PROP_PP_SETTLEMENT_FILE_PREFIX = "dataloader.pp.ftp.file.prefix";
+	private final static String PROP_PP_SETTLEMENT_FILE_VERSION = "dataloader.pp.ftp.file.version";
+	private final static String PROP_PP_SETTLEMENT_FILE_SUFFIX = "dataloader.pp.ftp.file.suffix";
+	private final static String PROP_PP_SETTLEMENT_FILE_ALT_SUFFIX = "dataloader.pp.ftp.file.alt.suffix";
+	private final static String PROP_PP_SETTLEMENT_FILE_EXTN = "dataloader.pp.ftp.file.extn";
 	private final static String PROP_PP_SETTLEMENT_STL_EVENTCODES = "dataloader.pp.stl.eventcodes";
 	private final static String PROP_PP_SETTLEMENT_STF_EVENTCODES = "dataloader.pp.stf.eventcodes";
 	private final static String PROP_PP_SETTLEMENT_CBK_EVENTCODES = "dataloader.pp.cbk.eventcodes";
@@ -65,8 +65,8 @@ public class DataLoaderProperties {
 	private final static String PROP_PP_SETTLEMENT_FD_ACCOUNTID = "dataloader.pp.fd.accountid";
 	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	private final static String PROP_PP_SFTP_DELETE_FILES="dataloader.paypal.sftp.deleteFiles";
-	
 	private final static String PROP_PP_SETTLEMENT_ENABLED = "dataloader.paypal.enabled";
+	//PayPal settlement related properties - End
 	
 	private final static Properties config;
 	
@@ -77,16 +77,6 @@ public class DataLoaderProperties {
 		defaults.put(PROP_FTP_IP, "ems1.nyc1.freshdirect.com");
 		defaults.put(PROP_FTP_USER, "bmadmin");
 		defaults.put(PROP_FTP_PASSWORD, "sun1ray");
-		defaults.put(PROP_PP_FTP_IP, "reports.sandbox.paypal.com");
-		defaults.put(PROP_PP_FTP_USER, "sftpID_mrunal.doddanavar-facilit"); //TODO To be chDDR-20160222.X.01.01.008DDR-20160222.X.01.01.008anged
-		defaults.put(PROP_PP_FTP_PASSWORD, "Fresh@123");
-		defaults.put(PROP_PP_SETTLEMENT_FOLDER, "/ppreports/outgoing/");
-		defaults.put(PROP_PP_SETTLEMENT_FILE_VERSION, ".009");
-		defaults.put(PROP_PP_SETTLEMENT_FILE_PREFIX, "STL-");
-		defaults.put(PROP_PP_SETTLEMENT_FILE_SUFFIX, ".009");
-		defaults.put(PROP_PP_SETTLEMENT_FILE_EXTN, ".CSV");
-		defaults.put(PROP_PP_SFTP_DELETE_FILES, "false");
-		
 		defaults.put(PROP_SUMMARY_FILE_NAME, "M044.txt");
 		defaults.put(PROP_TRANSACTION_FILE_NAME, "E012.txt");
 		defaults.put(PROP_WORKING_DIR, "c:/temp/");
@@ -110,7 +100,17 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PAYMENTECH_STF_SFTP_HOST, "netconnectbatchvar1.chasepaymentech.net");
 		defaults.put(PROP_PAYMENTECH_STF_SFTP_USER, "SVSMVJK7");
 		defaults.put(PROP_PAYMENTECH_STF_SFTP_PASSWORD, "D77BSZYG");
-		
+
+		//PayPal settlement related properties - Start
+		defaults.put(PROP_PP_FTP_IP, "reports.sandbox.paypal.com");
+		defaults.put(PROP_PP_FTP_USER, "sftpID_mrunal.doddanavar-facilit"); //TODO To be changed
+		defaults.put(PROP_PP_FTP_PASSWORD, "Fresh@123");
+		defaults.put(PROP_PP_SETTLEMENT_FOLDER, "/ppreports/outgoing/");
+		defaults.put(PROP_PP_SETTLEMENT_FILE_VERSION, ".009");
+		defaults.put(PROP_PP_SETTLEMENT_FILE_PREFIX, "STL-");
+		defaults.put(PROP_PP_SETTLEMENT_FILE_SUFFIX, ".009");
+		defaults.put(PROP_PP_SETTLEMENT_FILE_EXTN, ".CSV");
+		defaults.put(PROP_PP_SFTP_DELETE_FILES, "false");		
 		defaults.put(PROP_PP_SETTLEMENT_STL_EVENTCODES, "T0006, T0003");
 		defaults.put(PROP_PP_SETTLEMENT_STF_EVENTCODES, "");
 		defaults.put(PROP_PP_SETTLEMENT_CBK_EVENTCODES, "T1106, T1201");
@@ -119,8 +119,8 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PP_SETTLEMENT_REF_EVENTCODES, "T1107");
 		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
 		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
-		
 		defaults.put(PROP_PP_SETTLEMENT_ENABLED, "false");
+		//PayPal settlement related properties - End
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
