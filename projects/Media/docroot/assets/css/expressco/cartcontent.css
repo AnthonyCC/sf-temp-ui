@@ -1089,6 +1089,7 @@ label[for="dontupdatecartlines"] {
 
 .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
     min-width: 156px;
+	display: table;
 }
 .eTippingEnabled form .subtotal__rowcell-left{
 	float:left;
@@ -1232,6 +1233,9 @@ label[for="dontupdatecartlines"] {
 }
 .eTippingEnabled .strl_text{
 	font-size:16px;
+}
+.eTippingEnabled #subtotalbox1 .strl_text, .eTippingEnabled .tooltip_holder, .icon-info-before{
+	display: table-cell;
 }
 .eTippingEnabled .orderSummary .strl_text{
 

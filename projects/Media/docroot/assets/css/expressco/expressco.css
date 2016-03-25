@@ -181,8 +181,19 @@
   	z-index: 98;
   	display: inline-block;
   	vertical-align: top;
-  	top: -10px;
+  	/*top: -10px;*/
   }
+	.eTippingEnabled span.icon-info-before {
+		float: right;
+	}
+	
+	#optionalToolTip{
+		margin-right: 40px;
+	}
+	
+	.st_val .icon-info-before{
+		display:none;
+	}
   
   .tooltip_holder:hover span.icon-info-before,
   .tooltip_holder:focus span.icon-info-before,
