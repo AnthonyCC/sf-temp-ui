@@ -121,7 +121,9 @@
   font-size:16px;
   line-height:16px;
 }
-
+.checkout-wallet-button{
+	margin-top: 2px;
+}
 #payment-method-separator{
 		font-size: 11px;
     		font-weight: bold;

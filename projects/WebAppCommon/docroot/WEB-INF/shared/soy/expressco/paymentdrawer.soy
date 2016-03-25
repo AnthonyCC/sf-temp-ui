@@ -43,12 +43,10 @@
  
  	/** Masterpass Standard Checkout  */ 
     	{if $mpEwalletStatus}
-		 	<img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        <hr><span>Or</span><hr>
 					</div>
-			    <img src='/media_stat/images/layout/clear.gif'>
-			    <form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
@@ -61,9 +59,7 @@
 		 {/if}
 		 <!-- PayPal -->
 		 {if $ppEwalletStatus}
-		 	<img src='/media_stat/images/layout/clear.gif'>
-			    <img src='/media_stat/images/layout/clear.gif'>
-		     <form id="addpaymentmethod_paypal" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		     <form id="addpaymentmethod_paypal"  class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
@@ -86,12 +82,10 @@
  /**
    	{if $mpEwalletStatus}
 	    {if $mpEWalletID != '1' and $mpCardPaired != 'Yes'}
-	    	<img src='/media_stat/images/layout/clear.gif'>
 		        <div id="payment-method-separator">
 	        <hr><span>Or</span><hr>
 				</div>
-		    <img src='/media_stat/images/layout/clear.gif'>
-		    <form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 		    	<input type="hidden" name="action" value="MP_Pairing_Start" />
 		    	<input type="hidden" name="ewalletType" value="MP" />
 		  		<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
@@ -99,7 +93,6 @@
 		{else}
 			{if $displayedCardType != 'MP' or $mpCardPaired == 'Yes' }
 				<img src='/media_stat/images/layout/clear.gif'>
-		        <div id="payment-method-separator">
 	        <hr><span>Or</span><hr>
 				</div>
 		    	<img src='/media_stat/images/layout/clear.gif'>
@@ -121,12 +114,10 @@
     
  	/** Masterpass Standard Checkout  */ 
     	{if $mpEwalletStatus}
-		 	<img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        <hr><span>Or</span><hr>
 					</div>
-			    <img src='/media_stat/images/layout/clear.gif'>
-			    <form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
@@ -140,10 +131,8 @@
 		 {/if}
 		 
 	 		 <!-- PayPal -->
-		{if $ppEwalletStatus}	 		 
-		     <img src='/media_stat/images/layout/clear.gif'>
-			    <img src='/media_stat/images/layout/clear.gif'>
-		     <form id="addpaymentmethod_paypal" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		{if $ppEwalletStatus}
+		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
@@ -167,19 +156,16 @@
    	/**
     	{if $mpEwalletStatus}
 	     	 {if $mpEWalletID != '1' and $mpCardPaired != 'Yes' }
-		     	<img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        <hr><span>Or</span><hr>
 					</div>
-			    <img src='/media_stat/images/layout/clear.gif'>
-	     		<form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+	     		<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 		    		<input type="hidden" name="action" value="MP_Pairing_Start" />
 		    		<input type="hidden" name="ewalletType" value="MP" />
 		  			<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 				</form>
 			{else}
 				{if $displayedCardType != 'MP' and $mpCardPaired == 'Yes' }
-					<img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        		<hr><span>Or</span><hr>
 					</div>
@@ -200,27 +186,23 @@
 
  		/** Masterpass Standard Checkout  */ 
     	{if $mpEwalletStatus}
-		 	<img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        <hr><span>Or</span><hr>
 					</div>
-			    <img src='/media_stat/images/layout/clear.gif'>
-			    <form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
 			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+			    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
 			    	</div>
 			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 		 {/if}
 				 <!-- PayPal -->
-		{if $ppEwalletStatus}				 
-		     <img src='/media_stat/images/layout/clear.gif'>
-			    <img src='/media_stat/images/layout/clear.gif'>	 
-		     <form id="addpaymentmethod_paypal" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		{if $ppEwalletStatus} 
+		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
 			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
@@ -242,12 +224,10 @@
    	/** Masterpass Express Checkout Code */   
    	/**		    
 		    {if $mpEwalletStatus}
-			    <img src='/media_stat/images/layout/clear.gif'>
 			        <div id="payment-method-separator">
 		        <hr><span>Or</span><hr>
 					</div>
-			    <img src='/media_stat/images/layout/clear.gif'>
-			    <form id="addpaymentmethod_masterpass" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
 			  		<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
