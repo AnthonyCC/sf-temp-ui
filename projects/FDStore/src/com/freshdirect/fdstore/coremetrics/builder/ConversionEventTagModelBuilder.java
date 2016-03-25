@@ -161,13 +161,15 @@ public class ConversionEventTagModelBuilder  {
 		List<ConversionEventTagModel> models = new ArrayList<ConversionEventTagModel>();
 		models.add(model);
 		
-		if(!cart.getDeliveryReservation().getStartTime().equals(originalCart.getDeliveryReservation().getStartTime())){
-			ConversionEventTagModel tsModel = new ConversionEventTagModel();
-			tsModel.setActionType(ACTION_END);
-			tsModel.setEventCategoryId( context.prefixedCategoryId( CAT_ORDER_MODIFIED ));
-			tsModel.setEventId(EVENT_TIME_SLOT_CHANGED);
-			tsModel.setPoints("1");
-			models.add(tsModel);
+		if(cart != null && cart.getDeliveryReservation()!= null && originalCart!= null && originalCart.getDeliveryReservation()!=null){
+			if(!cart.getDeliveryReservation().getStartTime().equals(originalCart.getDeliveryReservation().getStartTime())){
+				ConversionEventTagModel tsModel = new ConversionEventTagModel();
+				tsModel.setActionType(ACTION_END);
+				tsModel.setEventCategoryId( context.prefixedCategoryId( CAT_ORDER_MODIFIED ));
+				tsModel.setEventId(EVENT_TIME_SLOT_CHANGED);
+				tsModel.setPoints("1");
+				models.add(tsModel);
+			}
 		}
 		
 		return models;
