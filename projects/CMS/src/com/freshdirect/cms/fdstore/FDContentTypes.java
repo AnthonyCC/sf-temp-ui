@@ -73,6 +73,7 @@ public class FDContentTypes {
 	public final static ContentType TEXT_COMPONENT = ContentType.get("TextComponent");
 	public final static ContentType SECTION = ContentType.get("Section");
 	public final static ContentType IMAGE_BANNER = ContentType.get("ImageBanner");
+	public final static ContentType DARKSTORE = ContentType.get("DarkStore");
 	public final static ContentType STOPWORDS = ContentType.get("Stopwords");
 	private FDContentTypes() {
 	}
