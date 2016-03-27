@@ -653,6 +653,19 @@ var FreshDirect = FreshDirect || {};
     return errors;
   });
   
+//floor validator
+  forms.registerValidator('[fdform-v-floor]', function (field) {
+    var errors = [],
+        $field = $(field),
+        apt = $field.val();
+
+    if (apt!==null && apt!=="" && apt.length > 20 ) {
+      errors = addError(errors, field, 'Please provide valid floor/suite!');
+    }
+
+    return errors;
+  });
+  
 //street addess 1 validator
   forms.registerValidator('[fdform-v-address1]', function (field) {
     var errors = [],
