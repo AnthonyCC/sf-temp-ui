@@ -211,10 +211,10 @@
   </div>
   <div class="input-wrapper">
   	<label for="addaddress_office_street_address" class="three-quarter-fieldset">Street Address
-    	<input name="street_address"placeholder="Street Address" value="{if $data.street_address}{$data.street_address}{/if}" required/>
+    	<input name="street_address"placeholder="Street Address" fdform-v-address1 value="{if $data.street_address}{$data.street_address}{/if}" required/>
     </label>
     <label for="addaddress_office_apartment" class="small-fieldset">Floor/Room
-    	<input name="apartment" placeholder="Floor/Room" value="{if $data.apartment}{$data.apartment}{/if}"/>
+    	<input name="apartment" placeholder="Floor/Room"  fdform-v-apartment value="{if $data.apartment}{$data.apartment}{/if}"/>
     </label>
     <span fdform-error-for="street_address" class="three-quarter-fieldset"></span>
     <span fdform-error-for="apartment" class="small-fieldset"></span>
