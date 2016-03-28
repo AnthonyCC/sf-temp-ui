@@ -96,7 +96,7 @@ public class PayPalSFTPSettlementLoader {
 			PayPalSFTPSettlementLoader loader = new PayPalSFTPSettlementLoader();
 			
 			ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-			ppReconSB.acquirePPLock(SF.parse(timestamp));
+			settlementIds = ppReconSB.acquirePPLock(SF.parse(timestamp));
 			loader.loadSettlements();
 			if (settlementIds != null && !settlementIds.isEmpty())
 				ppReconSB.releasePPLock(settlementIds);

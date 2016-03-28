@@ -36,6 +36,7 @@ import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.Money;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.ejb.SettlementSummaryPersistentBean;
@@ -198,38 +199,32 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	public void releasePPLock(List<String> settlementIds) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 		LOGGER.debug("Releasing PayPal Settlements Lock.");
-		try {
-			for (String settlementId : settlementIds) {
+
+		for (String settlementId : settlementIds) {
+			try {
 				conn = this.getConnection();
 				ps = conn.prepareStatement(RELEASE_PP_LOCK_UDPATE);
 				ps.setString(1, settlementId);
-				rs = ps.executeQuery();
-				if (!rs.next()) {
-					LOGGER.warn("Exception while trying to release lock. Ignoring it. ");
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				LOGGER.debug("SQLException: ", e);
+				throw new EJBException("SQLException: ", e);
+			} finally {
+				try{
+					if(ps != null){
+						ps.close();
+						ps = null;
+					}
+					if(conn != null){
+						conn.close();
+						conn = null;
+					}
+				}catch(SQLException se){
+					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
 				}
 			}
-		} catch (SQLException e) {
-			LOGGER.debug("SQLException: ", e);
-			throw new EJBException("SQLException: ", e);
-		} finally {
-			try{
-				if(rs != null){
-					rs.close();
-					rs = null;
-				}
-				if(ps != null){
-					ps.close();
-					ps = null;
-				}
-				if(conn != null){
-					conn.close();
-					conn = null;
-				}
-			}catch(SQLException se){
-				LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
-			}
+
 		}
 	}
 	
@@ -364,7 +359,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		miscFeeInfo.setTxEventCode(ReconciliationConstants.MISC_FEE_KEY);
 		if (miscFee < 0)
 			LOGGER.error("Unexpected Misc fee in settlement ");
-		else
+		else if (miscFee > 0)
 			settlementInfos.add(miscFeeInfo);
 	}
 
@@ -501,36 +496,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private class Money {
-		BigDecimal dollar = null;
-		BigDecimal cents = null;
-		BigDecimal orig = null;
-		
-		public Money(long actual) {
-			this.cents = BigDecimal.valueOf(actual);
-			this.dollar = cents.movePointLeft(2);
-			this.orig = cents;
-		}
-		
-		public Money(double actual) {
-			this.dollar = BigDecimal.valueOf(actual);
-			this.cents = dollar.movePointRight(2);
-			this.orig = dollar;
-		}
-		
-		public Money(BigDecimal actual) {
-			
-			this.orig = actual;
-		}
-		
-		public double getDollar() {
-			return dollar.doubleValue();
-		}
-		
-		public long getCents() {
-			return cents.longValue();
-		}
-	}
+
 	
 	public static ReconciliationHome lookupReconciliationHome() throws EJBException {
 		Context ctx = null;

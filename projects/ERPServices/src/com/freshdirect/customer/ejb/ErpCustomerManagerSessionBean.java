@@ -115,6 +115,7 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GatewayAdapter;
+import com.freshdirect.payment.Money;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
@@ -1709,17 +1710,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if(fdAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						EnumCardType.PAYPAL.equals(paymentMethod.getCardType())) {
-					for (ErpCaptureModel auth : auths) {
-						if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
-								EnumCardType.PAYPAL.equals(auth.getCardType()) &&  auth.getAffiliate() != null &&
-								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
-							if (auth.getAmount() > fdAmount)
-								paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
-						}
-					}
+					issuePayPalCashback(auths, fdAmount, paymentMethod, paymentManager, saleEB, FD);
+				} else {
+					ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdAmount, 0.0, FD);
+					saleEB.addCashback(cashback);
 				}
-				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdAmount, 0.0, FD);
-				saleEB.addCashback(cashback);
 			}
 			
 			if(bcAmount > 0) {
@@ -1733,35 +1728,20 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if(usqAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
-					for (ErpCaptureModel auth : auths) {
-						if (auth.getAffiliate() != null &&
-								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD))) {
-							paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
-						}
-					}
+					issuePayPalCashback(auths, usqAmount, paymentMethod, paymentManager, saleEB, USQ);
+				} else {
+					ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, usqAmount, 0.0, USQ);
+					saleEB.addCashback(cashback);
 				}
-				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, usqAmount, 0.0, USQ);
-				saleEB.addCashback(cashback);
 			}
 			if(fdwAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
 						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
-					for (ErpCaptureModel auth : auths) {
-						if (auth.getAffiliate() != null &&
-								auth.getAffiliate().equals(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW))) {
-							if (auth.getAmount() > fdwAmount)
-								paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
-						}
-					}
-				}
-				ErpCashbackModel cashback = null;
-				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
-						paymentMethod.getCardType().equals(EnumCardType.PAYPAL)) {
-					cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+					issuePayPalCashback(auths, fdwAmount, paymentMethod, paymentManager, saleEB, FDW);
 				} else {
-					cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+					ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, fdwAmount, 0.0, FDW);
+					saleEB.addCashback(cashback);
 				}
-				saleEB.addCashback(cashback);
 			}
 			if(fdxAmount > 0) {
 				if (EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) &&
@@ -3062,6 +3042,36 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					}
 				} catch (SQLException se) {
 					LOGGER.warn("SQLException while cleaning up", se);
+				}
+			}
+		}
+		
+		private void issuePayPalCashback(List<ErpCaptureModel> auths, double affAmount, ErpPaymentMethodI paymentMethod,
+				PaymentManager paymentManager, ErpSaleEB saleEB, ErpAffiliate aff) throws RemoteException, ErpTransactionException {
+			for (ErpCaptureModel auth : auths) {
+				if (auth.getAffiliate() != null &&
+						auth.getAffiliate().equals(aff)) {
+					double amount = 0.0;
+					if (affAmount > 0) {
+						if (affAmount <= auth.getAmount())
+							amount = affAmount;
+						else
+							amount = auth.getAmount();
+						paymentMethod.seteWalletTrxnId(auth.getEwalletTxId());
+						try {
+							ErpCashbackModel cashback = paymentManager.returnCashback(auth.getGatewayOrderID(), paymentMethod, amount, 0.0, aff);
+							saleEB.addCashback(cashback);
+							affAmount = new Money(affAmount).subtract(new Money(auth.getAmount()));
+						} catch (ErpTransactionException e) {
+							if (e.getMessage() != null && e.getMessage().contains("Refund amount is too large"))
+								LOGGER.info("Amount may have been refunded from this transaction already, trxn Id " + auth.getEwalletTxId(), e);
+							else
+								throw e;
+						}
+
+					} else {
+						break;
+					}
 				}
 			}
 		}
