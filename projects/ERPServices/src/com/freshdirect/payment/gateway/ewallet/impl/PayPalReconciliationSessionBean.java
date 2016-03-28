@@ -533,31 +533,61 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	private static final String UPDATE_PP_SETTLEMENT = "update CUST.SETTLEMENT set PROCESSED_TIME_DATE = systimestamp, " +
 			" ALL_RECORDS_PROCESSED = 'Y' where id = ?  and settlement_source = 'PP' ";
 	private static final String UPDATE_PP_SETTLEMENT_TX = "update CUST.SETTLEMENT_TRANSACTION set PROCESSED_TIME_DATE = systimestamp, " +
-			" STATUS = 'C' where id = ? ";
+			" STATUS = 'C' where settlement_id = ? ";
 	public void updatePayPalStatus(List<String> settlementIds) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		try{
-			LOGGER.debug("Processing PayPal Settlements.");
-			conn = this.getConnection();
-			for (String settlementId : settlementIds) {
+		LOGGER.debug("Updating status PayPal Settlements.");
+
+		for (String settlementId : settlementIds) {
+			
+			try{
+				conn = this.getConnection();
 				ps = conn.prepareStatement(UPDATE_PP_SETTLEMENT);
 				ps.setString(1, settlementId);
 				ps.executeUpdate();
-				try {
-					ps = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX);
-					ps.setString(1, settlementId);
-					ps.executeUpdate();
-				} catch (SQLException e) {
-					LOGGER.info("No records in settlement id for trxns " + rs.getString(1));
+			} catch (Exception e) {
+				LOGGER.error("Update failed. Ignoring " + e);
+			} finally {
+				try{
+					if(ps != null){
+						ps.close();
+						ps = null;
+					}
+					if(conn != null){
+						conn.close();
+						conn = null;
+					}
+				}catch(SQLException se){
+					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
 				}
 			}
 			
-		} catch (Exception e) {
-			LOGGER.error("Update failed. Reprocess with force on " + e);
+			try {
+				conn = this.getConnection();
+				ps = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX);
+				ps.setString(1, settlementId);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				LOGGER.info("Update of trxn records failed in settlement id " + settlementId);
+			} finally {
+				try{
+
+					if(ps != null){
+						ps.close();
+						ps = null;
+					}
+					if(conn != null){
+						conn.close();
+						conn = null;
+					}
+				}catch(SQLException se){
+					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
+				}
+			}
 		}
+
 	}
 	
 	private void cleanUp(Date date) throws SQLException {
