@@ -6928,7 +6928,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				click2callModel.setUserId(rs.getString(6));
 				click2callModel.setCroModDate(rs.getTimestamp(7));
 				Array array = rs.getArray(4);
-				String[] zoneCodes = (String[])array.getArray();	
+				String[] zoneCodes = null;
+				if(array != null){
+					zoneCodes = (String[])array.getArray();
+				}
 				click2callModel.setDeliveryZones(zoneCodes);
 				PreparedStatement ps1 = conn.prepareStatement("select * from CUST.CLICK2CALL_TIME where click2call_id="+rs.getString(1));
 				ResultSet rs1 = ps1.executeQuery();
