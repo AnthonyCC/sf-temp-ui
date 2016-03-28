@@ -66,7 +66,7 @@ public class PublishXmlDBTask implements PublishTask {
 	}
 
 	public void initialize() {
-		publishContentTypeId = Arrays.asList("WebPage","PickList","PickListItem", "Anchor", "ImageBanner","TextComponent","Section","Schedule");
+		publishContentTypeId = Arrays.asList("WebPage","PickList","PickListItem", "Anchor", "ImageBanner","TextComponent","Section","Schedule", "DarkStore");
 	}
 	
 	public void execute(Publish publish) {

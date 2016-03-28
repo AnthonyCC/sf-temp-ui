@@ -2684,6 +2684,7 @@
 	<ContentTypeDef name="DarkStore" generateId="false">
 		<AttributeDefs>
 		    <AttributeDef name="value" type="S" label="Select Dark Store" required="false"/>
+		    <AttributeDef name="name" type="S" label="Name" required="false"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 		

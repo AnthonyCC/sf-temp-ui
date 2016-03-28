@@ -2286,6 +2286,7 @@
 					<CmsSection>
 						<title>CORE</title>
 						<fields>
+						    <CmsField><attribute>name</attribute></CmsField>
 							<CmsField><attribute>value</attribute></CmsField>
 						</fields>
 						</CmsSection>
