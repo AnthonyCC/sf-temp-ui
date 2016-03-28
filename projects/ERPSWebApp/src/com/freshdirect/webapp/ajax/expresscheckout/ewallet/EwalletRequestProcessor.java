@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.ewallet;
 
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletServiceFactory;
@@ -13,32 +14,6 @@ import com.freshdirect.fdstore.ewallet.IEwallet;
  */
 public class EwalletRequestProcessor {
 
-
-/*	Required for EWallet Express Checkout
- * private static final String EWALLET_MP_EXPRESS_CHECKOUT="MP_Express_Checkout";
-	private static final String EWALLET_MP_PAIRING_CHECKOUT="MP_Pairing_Start";
-	private static final String EWALLET_MP_PAIRING_END="MP_Pairing_End";
-	private static final String EWALLET_MP_GET_ALL_PAYMETRHOD_IN_EWALLET = "MP_All_PayMethod_In_Ewallet";
-	private static final String EWALLET_MP_CONNECT_START="MP_Connect_Start";
-	private static final String EWALLET_MP_CONNECT_END="MP_Connect_End";
-	private static final String EWALLET_MP_DISCONNECT="MP_Disconnect_Ewallet";
-	private static final String MASTERPASS_REQ_ATTR_ACTION_COMPLETED_VALUE="Pairing_End";
-	private static final String MASTERPASS_BOOLEAN_TRUE="true";
-	private static final String MASTERPASS_REQ_ATTR_INVALID_PAYMENT="invalidPaymentMethod";
-	private static final String MASTERPASS_REQ_ATTR_PAYMENT="paymentData";
-	private static final String MASTERPASS_REQ_ATTR_MPPAYMENTS="mpEwalletPaymentData";
-	private static final String MASTERPASS_REQ_ATTR_MPPREFERREDCARD="mpEwalletPreferredCard";
-	*/
-	private static final String EWALLET_MP_STANDARD_CHECKOUT="MP_Standard_Checkout";
-	private static final String EWALLET_MP_STANDARD_CHECKOUT_DATA="MP_Standard_CheckoutData";
-
-	private static final String EWALLET_PP_START_PAIRING="PP_Start_Pairing";
-	private static final String EWALLET_PP_END_PAIRING="PP_End_Pairing";
-	
-	private static final String EWALLET_PP_START_CONNECTING="PP_Start_Connecting";
-	private static final String EWALLET_PP_END_CONNECTING="PP_End_Connecting";
-	private static final String EWALLET_PP_WALLET_DISCONNECT="PP_Wallet_Disconnect";
-	
 	/**
 	 * @param ewalletRequestData
 	 * @return
@@ -53,7 +28,7 @@ public class EwalletRequestProcessor {
 		}
 		
 		// For Masterpass 
-		if(ewallet != null && ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
+		if(ewallet != null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
 			/*if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_MP_PAIRING_CHECKOUT)){
 				ewalletResponseData  = processMasterpassStartPairing(ewallet,ewalletRequestData);
 			}
@@ -77,33 +52,32 @@ public class EwalletRequestProcessor {
 			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_MP_DISCONNECT)){
 				ewalletResponseData  = disconnect(ewallet,ewalletRequestData);
 			}*/
-			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_MP_STANDARD_CHECKOUT)){
+			if(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT.equals(ewalletRequestData.geteWalletAction())){
 				ewalletResponseData  = standardCheckout(ewallet,ewalletRequestData);
 			}
-			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_MP_STANDARD_CHECKOUT_DATA)){
+			if(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA.equals(ewalletRequestData.geteWalletAction())){
 				ewalletResponseData  = standardCheckoutData(ewallet,ewalletRequestData);
 			}
 		}
 		
-		if(ewallet != null && ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
-			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_START_PAIRING) || ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_START_CONNECTING)){
-				ewalletResponseData  = pairingPayPal(ewallet,ewalletRequestData);
+		if(ewallet != null && EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType())){
+			if(EwalletConstants.EWALLET_PP_START_PAIRING.equals(ewalletRequestData.geteWalletAction()) || 
+					EwalletConstants.EWALLET_PP_START_CONNECTING.equalsIgnoreCase(ewalletRequestData.geteWalletAction())){
+				ewalletResponseData  = pairingEwallet(ewallet,ewalletRequestData);
 			}
-			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_END_PAIRING) || ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_END_CONNECTING)){
+			if(EwalletConstants.EWALLET_PP_END_PAIRING.equals(ewalletRequestData.geteWalletAction()) || 
+					EwalletConstants.EWALLET_PP_END_CONNECTING.equalsIgnoreCase(ewalletRequestData.geteWalletAction())){
 				ewalletResponseData  = obtainVaultToken(ewallet,ewalletRequestData);
 			}
-			if(ewalletRequestData.geteWalletAction().equalsIgnoreCase(EWALLET_PP_WALLET_DISCONNECT)){
+			if(EwalletConstants.EWALLET_PP_WALLET_DISCONNECT.equals(ewalletRequestData.geteWalletAction())){
 				ewalletResponseData  = disconnectPayPalAccount(ewallet,ewalletRequestData);
 			}
 		}
 		
 		return ewalletResponseData;
 	}
-	
 
-
-
-	private EwalletResponseData pairingPayPal(IEwallet ewallet,
+	private EwalletResponseData pairingEwallet(IEwallet ewallet,
 			EwalletRequestData ewalletRequestData) throws Exception {
 		EwalletResponseData ewalletResponseData = ewallet.getToken(ewalletRequestData);
 		return ewalletResponseData;

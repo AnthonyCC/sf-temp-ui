@@ -19,6 +19,20 @@ public class EwalletConstants {
 	public final String EWALLET_PAIRED_PAYMENT_METHOD = "mpPairedPaymentMethod";
 	public final String EWALLET_PRECHECKOT_CARDID = "precheckout_CardId";
 	public static final String ACTION = "action";
+	
+	private static final String EWALLET_MP_EXPRESS_CHECKOUT="MP_Express_Checkout";
+	private static final String EWALLET_MP_PAIRING_CHECKOUT="MP_Pairing_Start";
+	private static final String EWALLET_MP_PAIRING_END="MP_Pairing_End";
+	private static final String EWALLET_MP_GET_ALL_PAYMETRHOD_IN_EWALLET = "MP_All_PayMethod_In_Ewallet";
+	private static final String EWALLET_MP_CONNECT_START="MP_Connect_Start";
+	private static final String EWALLET_MP_CONNECT_END="MP_Connect_End";
+	private static final String EWALLET_MP_DISCONNECT="MP_Disconnect_Ewallet";
+	private static final String MASTERPASS_REQ_ATTR_ACTION_COMPLETED_VALUE="Pairing_End";
+	private static final String MASTERPASS_BOOLEAN_TRUE="true";
+	private static final String MASTERPASS_REQ_ATTR_INVALID_PAYMENT="invalidPaymentMethod";
+	private static final String MASTERPASS_REQ_ATTR_PAYMENT="paymentData";
+	private static final String MASTERPASS_REQ_ATTR_MPPAYMENTS="mpEwalletPaymentData";
+	private static final String MASTERPASS_REQ_ATTR_MPPREFERREDCARD="mpEwalletPreferredCard";
 
 */	
 	public static final String MP_EWALLET_RESPONSE_STATUS = "mpstatus";
@@ -61,4 +75,6 @@ public class EwalletConstants {
 	public static final String PAYPAL_TXN_SUCCESS="SUCCESS";
 	public static final String PAYPAL_TXN_FAIL="FAIL";
 	public static final String PAYPAL_ORIGIN_YOUR_ACCOUNT = "your_account";
+	
+	public static final String EWALLET_PP_WALLET_DISCONNECT="PP_Wallet_Disconnect";
 }

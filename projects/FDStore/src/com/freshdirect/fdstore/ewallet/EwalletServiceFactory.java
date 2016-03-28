@@ -32,11 +32,8 @@ public class EwalletServiceFactory {
 	public IEwallet getEwalletService(EwalletRequestData ewalletRequestData){
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
 		IEwallet ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
-			ewallet = new EwalletServiceRemoteAdapter();
-			return ewallet;
-		}
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
+		if(ewalletRequestData != null && (EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType()) || 
+				EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType()))){
 			ewallet = new EwalletServiceRemoteAdapter();
 			return ewallet;
 		}
@@ -49,15 +46,14 @@ public class EwalletServiceFactory {
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
 	public IEwallet getVendorService(EwalletRequestData ewalletRequestData){
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
+		LOG.info("EwalletServiceFactory --> getVendorService(ewalletRequestData) -> Entered ");
 		IEwallet ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
+		if(ewalletRequestData != null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
 			ewallet = new MPVendorServiceRemoteAdapter();
-		}
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.PP.getName())){
+		}else if(ewalletRequestData != null && EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType())){
 			ewallet = new PPVendorServiceRemoteAdapter();
 		}
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
+		LOG.info("EwalletServiceFactory --> getVendorService(ewalletRequestData) -> Exit ");
 		return ewallet;
 	}
 	
@@ -66,37 +62,37 @@ public class EwalletServiceFactory {
 	 * @return Returns the Ewallet service instance based on the Ewallet type
 	 */
 	public IEwallet getVendorService(EnumEwalletType type){
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
+		LOG.info("EwalletServiceFactory --> getVendorService -> Entered ");
 		IEwallet ewallet = null;
-		if(type.equals(EnumEwalletType.MP)){
+		if(EnumEwalletType.MP.equals(type)){
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
+		LOG.info("EwalletServiceFactory --> getVendorService -> Exit ");
 		return ewallet;
 	}
 	
 	/**
 	 * @param ewalletRequestData
-	 * @return Returns the Ewallet service instance based on the Ewallet type
+	 * @return Returns the EwalletServiceRemoteAdapter instance based on the Ewallet type
 	 */
 	public IEwallet.NotificationService getEwalletNotificationService(EwalletRequestData ewalletRequestData){
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Entered ");
+		LOG.info("EwalletServiceFactory --> getEwalletNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
+		if(ewalletRequestData!= null && EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
 			ewallet = new EwalletServiceRemoteAdapter();
 		}
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
+		LOG.info("EwalletServiceFactory --> getEwalletNotificationService -> Exit ");
 		return ewallet;
 	}
 	
 	/**
 	 * @param ewalletRequestData
-	 * @return Returns the Ewallet service instance based on the Ewallet type
+	 * @return Returns the MPVendorServiceRemoteAdapter instance based on the Ewallet type
 	 */
 	public IEwallet.NotificationService getVendorNotificationService(EwalletRequestData ewalletRequestData){
 		LOG.info("EwalletServiceFactory -->  getVendorNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(ewalletRequestData.geteWalletType().equals(EnumEwalletType.MP.getName())){
+		if(EnumEwalletType.MP.getName().equals(ewalletRequestData.geteWalletType())){
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
 		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
@@ -111,10 +107,10 @@ public class EwalletServiceFactory {
 	public IEwallet.NotificationService getVendorNotificationService(EnumEwalletType type){
 		LOG.info("EwalletServiceFactory -->  getVendorNotificationService -> Entered ");
 		IEwallet.NotificationService ewallet = null;
-		if(type.equals(EnumEwalletType.MP)){
+		if(EnumEwalletType.MP.equals(type)){
 			ewallet = new MPVendorServiceRemoteAdapter();
 		}
-		LOG.info("EwalletServiceFactory --> getEwalletService -> Exit ");
+		LOG.info("EwalletServiceFactory --> getVendorNotificationService -> Exit ");
 		return ewallet;
 	}
 	
@@ -623,7 +619,6 @@ public class EwalletServiceFactory {
 		@Override
 		public EwalletResponseData addPayPalWallet(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -663,42 +658,36 @@ public class EwalletServiceFactory {
 		@Override
 		public EwalletResponseData postbackTrxns(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData checkout(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData expressCheckout(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData connect(EwalletRequestData ewalletRequestData)
 				throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData getAllPayMethodInEwallet(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData connectComplete(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -724,21 +713,18 @@ public class EwalletServiceFactory {
 		@Override
 		public EwalletResponseData standardCheckout(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData preStandardCheckout(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public EwalletResponseData expressCheckoutWithoutPrecheckout(
 				EwalletRequestData ewalletRequestData) throws Exception {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
