@@ -1381,6 +1381,12 @@ public class BrowseUtil {
 	    	return getCatalogInfo(user, request);
 	    }
 	    
+	    public static CatalogInfo getCatalogInfoAddr(AddressModel address,SessionUser user, HttpServletRequest request) {
+	    	
+	    	user.setAddress(address);
+	    	return getCatalogInfo(user, request);
+	    }
+	    
 	    public static CatalogInfo getCatalogInfo(SessionUser user, HttpServletRequest request) {
 	    	
 	    	String plantId=user.getFDSessionUser().getUserContext().getFulfillmentContext().getPlantId();

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BannerModel;
@@ -26,7 +27,11 @@ import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
+import com.freshdirect.mobileapi.catalog.model.CatalogKey;
+import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.CatalogKeyResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.FeaturedCategoriesResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeGetAllResponse;
@@ -197,10 +202,41 @@ public class HomeController extends BaseController {
 	private ModelAndView getCMSPage(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
+		
+		ErpAddressModel address = new ErpAddressModel();
+		if(user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() != null)
+		{
+			address = user.getShoppingCart().getDeliveryAddress();
+		}
+		else
+		{
+			address = null;
+		}
+		
+    	String plantid;
+		if(address != null)
+		{
+			CatalogKeyResult res = new CatalogKeyResult();
+        	CatalogInfo ci = null;
+        	
+        	if(address.getZipCode() != null && address.getZipCode().trim().length() > 0) {
+        		ci = BrowseUtil.getCatalogInfoAddr(address, user, request);
+        	} else {
+        		ci = BrowseUtil.getCatalogInfo(user, request);
+        	}
+        	CatalogId cid = ci.getKey();
+        	plantid = cid.getPlantId();
+		}
+		else
+		{
+			plantid = "1310";
+		}
+		
+		pageRequest.setPlantId(plantid);
+		
 		if(pageRequest != null){
 			if(pageRequest.isPreview()){ 
-				//Refresh the feed if it is for preview
-				
+				//Refresh the feed if it is for preview		
 				CMSContentFactory cmsContentFactory = new CMSContentFactory();
 				List<CMSWebPageModel> pages = cmsContentFactory.getCMSPageByParameters(pageRequest);
 				if(pages != null && !pages.isEmpty()){

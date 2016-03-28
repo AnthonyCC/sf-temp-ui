@@ -8,6 +8,7 @@ public class CMSPageRequest {
 	private boolean ignoreSchedule;
 	private boolean preview;
 	private String feedId;
+	private String plantid;
 	
 	public String getPageType() {
 		return pageType;
@@ -47,6 +48,14 @@ public class CMSPageRequest {
 
 	public void setFeedId(String feedId) {
 		this.feedId = feedId;
+	}
+	
+	public String getPlantId() {
+		return plantid;
+	}
+
+	public void setPlantId(String plantid) {
+		this.plantid = plantid;
 	}
 	
 	

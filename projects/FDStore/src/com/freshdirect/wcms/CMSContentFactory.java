@@ -203,9 +203,25 @@ public class CMSContentFactory {
 				return null;
 			}
 			
-			List<CMSSectionModel> sections = getPageSections(contentNode, request);
-			if(sections != null && !sections.isEmpty()){
-				webPage.setSections(sections);
+			List<ContentKey> darkStoreContentkey = (List<ContentKey>) contentNode
+					.getAttributeValue("WebPageDarkStore");
+			ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
+
+			if (darkStoreContentkey != null) {
+				for (ContentKey key : darkStoreContentkey) {
+					ContentNodeI contentnode = getContentNodeByKey(key, request);
+					if (contentnode != null)
+						darkStoreFromCMS.add(((String) (contentnode
+								.getAttributeValue("value"))));
+				}
+			}
+
+			if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) {
+				List<CMSSectionModel> sections = getPageSections(contentNode,
+						request);
+				if (sections != null && !sections.isEmpty()) {
+					webPage.setSections(sections);
+				}
 			}
 		}
 		if(webPage.getSections() != null){
@@ -227,7 +243,23 @@ public class CMSContentFactory {
 					if(sectionNode!=null){
 					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
 					}
-					if(isSchedulesMatches(schedules, request, false) && sectionNode!=null){
+					
+				List<ContentKey> darkStoreContentkey = (List<ContentKey>) sectionNode
+						.getAttributeValue("SectionDarkStore");
+				ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
+
+				if (darkStoreContentkey != null) {
+					for (ContentKey key : darkStoreContentkey) {
+						ContentNodeI contentnode = getContentNodeByKey(key,
+								request);
+						if (contentnode != null)
+							darkStoreFromCMS.add(((String) (contentnode
+									.getAttributeValue("value"))));
+					}
+				}
+
+				if (isSchedulesMatches(schedules, request, false) && sectionNode != null) {
+					if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) { 
 						section.setName((String)sectionNode.getAttributeValue("name"));
 						section.setType((String)sectionNode.getAttributeValue("Type"));
 						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
@@ -273,7 +305,8 @@ public class CMSContentFactory {
 							section.setComponents(components);						
 						}
 						sections.add(section);
-					} else {
+					} 
+				}else {
 						LOG.debug("Schedule is not matching for :"+ pageNode.getKey());
 					}
 				}
