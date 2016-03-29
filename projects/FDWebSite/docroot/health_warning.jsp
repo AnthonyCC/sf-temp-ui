@@ -8,8 +8,7 @@
     request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 %>
 <fd:HealthWarningController successPage="<%=successPage%>" result="result">
-	<fd:IncludeMedia name="/media/editorial/site_pages/health_warning.html"/>
+	<fd:IncludeMedia name="/media/editorial/site_pages/health_warning_2016.html"/>
 </fd:HealthWarningController>
 </tmpl:put>
-
 </tmpl:insert>
