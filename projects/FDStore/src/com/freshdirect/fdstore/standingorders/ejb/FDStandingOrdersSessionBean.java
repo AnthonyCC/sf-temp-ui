@@ -580,7 +580,10 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				}
 			} catch (FDResourceException re) {
 				LOGGER.error( "Could not retrieve standing order! - FDResourceException", re );
+			}catch (Exception re) {
+				LOGGER.error( "Could not retrieve standing order! ", re );
 			}
+			
 			
 		}
 		
@@ -1019,8 +1022,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		FDStandingOrderDAO dao = new FDStandingOrderDAO();
 		
 		Collection<FDStandingOrder> ret = dao.getValidStandingOrder(conn, identity);
-		
-		ret=getStandingOrderDetails(ret);
 		
 		return ret;
 	} catch (SQLException e) {

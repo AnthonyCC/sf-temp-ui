@@ -779,6 +779,14 @@ public class StandingOrderHelper {
 				}
 	
 			    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
+				if(null!=standingOrders && !standingOrders.isEmpty()){
+					for(FDStandingOrder fdStandingOrder:standingOrders){
+						if(fdStandingOrder.isDefault()){
+							selectedSoId=fdStandingOrder.getId();
+							break;
+						}
+					}
+				}
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
@@ -791,14 +799,7 @@ public class StandingOrderHelper {
 			LOGGER.error("Error While Getting the valid standing Order" + e);
 		}
         
-		if(null!=standingOrders && !standingOrders.isEmpty()){
-			for(FDStandingOrder fdStandingOrder:standingOrders){
-				if(fdStandingOrder.isDefault()){
-					selectedSoId=fdStandingOrder.getId();
-					break;
-				}
-			}
-		}
+
 		soSettings.put("selectedSoId", selectedSoId); 
 
 		allSoData.put("soData", soData);
