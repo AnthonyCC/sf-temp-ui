@@ -117,7 +117,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 							titleImg = (titleImg == null) ? new Image() : titleImg;
 						%>
 						<%-- <td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><img src="<%= titleImg.getPath() %>" border="0" width="<%= titleImg.getWidth() %>" height="<%= titleImg.getHeight() %>"><span class="about_us_text">About us</span></a></td> --%>
-						<td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><div class="aboutUsText">ABOUT US</div></a></td>
+						<td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><div class="aboutUsText"><%= department.getFullName() %></div></a></td>
 						<td>
 							<table cellpadding="0" cellspacing="0" border="0">
 								<% for ( int rowIndex = 0; rowIndex < maxRows; rowIndex++ ) { %>
