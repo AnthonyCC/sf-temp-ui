@@ -434,7 +434,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		return recList;
 	}
 	
-    protected String doExecute() throws FDResourceException, ErpAddressVerificationException {
+    protected String doExecute() throws FDResourceException {
 
 		final HttpSession session = this.getWebActionContext().getSession();
 		final HttpServletRequest request = this.getWebActionContext().getRequest();
@@ -757,9 +757,12 @@ public class SubmitOrderAction extends WebActionSupport {
                         response.sendRedirect(this.authCutoffPage);
                     }
 				}else{
-                    getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_FAILURE_MESSAGE, PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage()));
+                    String errorMessage = PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage());
+                    getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_FAILURE_MESSAGE, errorMessage);
                     if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
                         response.sendRedirect(this.ccdProblemPage + "?duplicateCheck=skip");
+                    } else {
+                        throw new FDResourceException(ae, errorMessage);
                     }
 				}
 				
@@ -783,7 +786,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				this.addError("address_verification_failed", message);
 				user.setAddressVerficationMsg(message);
                 if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
-                    throw new ErpAddressVerificationException(message);
+                    throw new FDResourceException(ae, message);
                 } else {
                     response.sendRedirect(this.ccdProblemPage);
                 }
@@ -820,47 +823,70 @@ public class SubmitOrderAction extends WebActionSupport {
 						new Object[] {order_amount, UserUtil.getCustomerServiceContact(this.getWebActionContext().getRequest())});
 		        }
 				this.addError("order_amount_fraud", msg);
+                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                    throw new FDResourceException(ex, msg);
+                }
 				
 			} else if (EnumFraudReason.MAX_MAKEGOOD.equals(ex.getFraudReason())) {
-
-				this.addError("order_amount_fraud", formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_MAKEGOOD_TOO_LARGE));
-
+                String errorMessage = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_MAKEGOOD_TOO_LARGE);
+                this.addError("order_amount_fraud", errorMessage);
+                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                    throw new FDResourceException(ex, errorMessage);
+                }
 			} else {
 			
 				boolean callcenter = "CALLCENTER".equalsIgnoreCase((String) session.getAttribute(SessionName.APPLICATION));
 				if (callcenter) {
-					this.addError("fraud_check_failed", ex.getFraudReason().getDescription());
+                    String errorMessage = ex.getFraudReason().getDescription();
+                    this.addError("fraud_check_failed", errorMessage);
+                    if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                        throw new FDResourceException(ex, errorMessage);
+                    }
 				} else {
-					this.addError("fraud_check_failed", formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD));
+                    String errorMessage = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD);
+                    this.addError("fraud_check_failed", errorMessage);
+                    if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                        throw new FDResourceException(ex, errorMessage);
+                    }
 				}
 			}
 			
-		}catch(FDPaymentInadequateException pe){
-			this.addError("payment_indequate", SystemMessageList.MSG_PAYMENT_INADEQUATE);
+        } catch (FDPaymentInadequateException pe) {
+            String errorMessage = SystemMessageList.MSG_PAYMENT_INADEQUATE;
+            this.addError("payment_indequate", errorMessage);
 			//clear the dummy Payment method.
 			cart.setPaymentMethod(null);
-			List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
-			try {
-				HttpServletResponse response = this.getWebActionContext().getResponse();
-				 if (payMethods==null || payMethods.size()==0) {
-					response.sendRedirect(this.ccdAddCardPage+"?duplicateCheck=skip");
-				}else{
-					response.sendRedirect(this.ccdProblemPage+"?duplicateCheck=skip");
-				}
-			}catch(IOException ie) {
-				throw new FDResourceException(ie.getMessage());
-			}
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                throw new FDResourceException(pe, errorMessage);
+            } else {
+                List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
+                try {
+                    HttpServletResponse response = this.getWebActionContext().getResponse();
+                    if (payMethods == null || payMethods.size() == 0) {
+                        response.sendRedirect(this.ccdAddCardPage + "?duplicateCheck=skip");
+                    } else {
+                        response.sendRedirect(this.ccdProblemPage + "?duplicateCheck=skip");
+                    }
+                } catch (IOException ie) {
+                    throw new FDResourceException(ie.getMessage());
+                }
+            }
 		}
 		catch(ReservationException ex) {
 			//Remove the timeslot id from the session
 			cart.setDeliveryReservation(null);
-			
-			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION);
+            String errorMessage = SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION;
+            this.addError("invalid_reservation", errorMessage);
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                throw new FDResourceException(ex, errorMessage);
+            }
 		}  catch(DeliveryPassException ex) {
 			//There was delivery pass validation failure.
-			String errorMsg =  ex.getMessage();
-			this.addError("invalid_deliverypass", errorMsg);
-			
+            String errorMessage = ex.getMessage();
+            this.addError("invalid_deliverypass", errorMessage);
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                throw new FDResourceException(ex, errorMessage);
+            }
 		} 
 
 		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		

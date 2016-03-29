@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -48,14 +47,12 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 			final FormDataRequest placeOrderData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
 			FormDataResponse responseData = CheckoutService.defaultService().submitOrder(user, placeOrderData, request.getSession(), request, response);
 			writeResponseData(response, responseData);
-		} catch (FDResourceException e) {
-			returnHttpError(500, "Failed to post single page checkout info.", e);
+        } catch (FDResourceException exception) {
+            returnHttpErrorWithMessage(500, exception.getMessage(), exception);
 		} catch (FDInvalidConfigurationException e) {
 			returnHttpError(500, "Failed to post single page checkout info.", e);
 		} catch (JspException e) {
 			returnHttpError(500, MessageFormat.format("Failed to update cart for user[{0}] after adjust ATP restrictions.", user.getIdentity().getErpCustomerPK()), e);
-        } catch (ErpAddressVerificationException exception) {
-            returnHttpErrorWithMessage(500, exception.getMessage(), exception);
 		} catch (Exception e) {
 			returnHttpError(500, MessageFormat.format("Failed to submit order for user[{0}].", user.getIdentity().getErpCustomerPK()), e);
 		}
