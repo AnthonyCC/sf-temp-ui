@@ -1,5 +1,6 @@
 <%@ page isErrorPage="true" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
+<%@ page import='com.freshdirect.webapp.util.AjaxErrorHandlingService' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <%
 
@@ -13,25 +14,11 @@
 try {
   if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
     // AJAX errors
-    response.setStatus(500);
-
-    response.setHeader( "Cache-Control", "no-cache" );
-    response.setHeader( "Pragma", "no-cache" );
-    response.setContentType( "application/json" );
-
-    String message = "unknown error";
-
-    if (exception != null) {
-      message = exception.getMessage();
-      if (message != null) {
-        message = message.replace("\"", "'");
-      } else {
-        message = "unknown error";
-      }
-    }
-
+    String message = AjaxErrorHandlingService.defaultService().prepareErrorMessageForAjaxCall(request, response);
+    String primaryErrorMessage = AjaxErrorHandlingService.defaultService().getPrimaryErrorMessage(message);
+    String secondaryErrorMessage = AjaxErrorHandlingService.defaultService().getSecondaryErrorMessage(message);
   %>
-  {"error": "<%= message %>"}
+  {"error": {"primary": "<%= primaryErrorMessage%>", "secondary": "<%= secondaryErrorMessage%>"}}
   <%
   } else {
     // standard JSP errors

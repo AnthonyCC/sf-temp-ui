@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.AjaxErrorHandlingService;
 
 
 public abstract class BaseJsonServlet extends HttpServlet {
@@ -99,8 +100,9 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	
 	@Override
 	protected final void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {		
-		try {
-			FDUserI user = authenticate( request );
+        FDUserI user = null;
+        try {
+            user = authenticate(request);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doPost( request, response, user );
@@ -109,7 +111,8 @@ public abstract class BaseJsonServlet extends HttpServlet {
 				doPost( request, response, user );
 			}
 		} catch ( HttpErrorResponse e ) {
-			response.sendError( e.getErrorCode() );
+            String errorMessage = AjaxErrorHandlingService.defaultService().populateErrorMessage(e.getMessage(), user.getCustomerServiceContact());
+            response.sendError(e.getErrorCode(), errorMessage);
 		}
 	}
 	@SuppressWarnings( "static-method" )
@@ -280,15 +283,43 @@ public abstract class BaseJsonServlet extends HttpServlet {
     	LOG.error( "Aborting with HTTP"+errorCode );
     	throw new HttpErrorResponse( errorCode );
 	}
+
+    /**
+     * Log the error message and throws an HttpErrorResponse containing only the error code.
+     * 
+     * @param errorCode
+     * @param errorMessage
+     * @throws HttpErrorResponse
+     */
 	public final static void returnHttpError( int errorCode, String errorMessage ) throws HttpErrorResponse {
     	LOG.error( errorMessage );
     	throw new HttpErrorResponse( errorCode );
 	}
+
+    /**
+     * Log the error message and throws an HttpErrorResponse containing only the error code.
+     * 
+     * @param errorCode
+     * @param errorMessage
+     * @throws HttpErrorResponse
+     */
 	public final static void returnHttpError( int errorCode, String errorMessage, Throwable e ) throws HttpErrorResponse {
     	LOG.error( errorMessage, e );
-    	throw new HttpErrorResponse( errorCode );
+        throw new HttpErrorResponse(errorCode);
 	}
 	
+    /**
+     * Log the error message and throws an HttpErrorResponse containing the error code and message to which will be displayed.
+     * 
+     * @param errorCode
+     * @param errorMessage
+     * @throws HttpErrorResponse
+     */
+    public final static void returnHttpErrorWithMessage(int errorCode, String errorMessage, Throwable e) throws HttpErrorResponse {
+        LOG.error(errorMessage, e);
+        throw new HttpErrorResponse(errorMessage, errorCode);
+    }
+
 	public final static class HttpErrorResponse extends Exception {
 				
 		private static final long	serialVersionUID	= -4320607318778165536L;
@@ -297,6 +328,11 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			this.errorCode = errorCode;
 		}
 		
+        public HttpErrorResponse(String message, int errorCode) {
+            super(message);
+            this.errorCode = errorCode;
+        }
+
 		private int errorCode;
 
 		public int getErrorCode() {

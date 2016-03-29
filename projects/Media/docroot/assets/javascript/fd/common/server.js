@@ -21,7 +21,7 @@ var FreshDirect = FreshDirect || {};
         } catch (err) {
         }
 
-        message = '<div class="internalerrorheader">Internal error occured, please refresh the page!</div><div class="internalerror">If that does not work, contact FreshDirect customer service at 1-212-796-8002. We apologize for any inconvenience.</div><div class="internalerrormessage">Error message: '+message+'</div>';
+        message = '<div class="internalerrorheader">'+ message.primary +'</div><div class="internalerror">'+ message.secondary +'</div>';
 
         return message;
       }
@@ -58,7 +58,7 @@ var FreshDirect = FreshDirect || {};
 		    loginSignupPopup(target, '/social/login.jsp');
 		  };
   var errorHandler = function( e ){
-    var status = e.status;
+    var status = e.status, message;
     if(status == 401){
 	    var targetHolder = $('#target-link-holder').attr("href");
 	    $('#target-link-holder').remove();

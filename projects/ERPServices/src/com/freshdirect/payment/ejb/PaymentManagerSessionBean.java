@@ -15,11 +15,7 @@ import javax.ejb.FinderException;
 import javax.ejb.SessionContext;
 import javax.naming.NamingException;
 
-
 import org.apache.log4j.Category;
-
-
-
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -170,7 +166,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			if( payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				 SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();
-				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
+                throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider.");
 			}
 
 			

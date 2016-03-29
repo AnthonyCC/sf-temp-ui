@@ -434,7 +434,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		return recList;
 	}
 	
-	protected String doExecute() throws FDResourceException {
+    protected String doExecute() throws FDResourceException, ErpAddressVerificationException {
 
 		final HttpSession session = this.getWebActionContext().getSession();
 		final HttpServletRequest request = this.getWebActionContext().getRequest();
@@ -782,7 +782,11 @@ public class SubmitOrderAction extends WebActionSupport {
 				LOGGER.error( message, ae );
 				this.addError("address_verification_failed", message);
 				user.setAddressVerficationMsg(message);
-				response.sendRedirect(this.ccdProblemPage);
+                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
+                    throw new ErpAddressVerificationException(message);
+                } else {
+                    response.sendRedirect(this.ccdProblemPage);
+                }
 			} catch(IOException ie) {
 			   throw new FDResourceException(ie.getMessage());
 		    }			
