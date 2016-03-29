@@ -156,7 +156,10 @@ public class SettlementDetailPersistentBean extends DependentPersistentBeanSuppo
         ps.setBigDecimal(7, new java.math.BigDecimal(this.assessmentFees));
         //ps.setDouble(8, this.transactionFees);
         ps.setBigDecimal(8, new java.math.BigDecimal(this.transactionFees));
-        ps.setString(9, pmType.getName());
+        if (pmType != null)
+        	ps.setString(9, pmType.getName());
+        else
+        	ps.setString(9, "");
 	    try {
             ps.executeUpdate();
             this.setPK(new PrimaryKey(id));
