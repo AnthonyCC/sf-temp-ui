@@ -24,6 +24,7 @@ public class AddToListRequestData implements Serializable {
 	private String recipeName;
 	private String standingOrderId; 
 	private String actiontype;
+	private String alcoholVerified;
 //	private Object header;
 	
 //	public Object getHeader() {
@@ -84,6 +85,18 @@ public class AddToListRequestData implements Serializable {
 	}
 	public void setActiontype(String actiontype) {
 		this.actiontype = actiontype;
+	}
+	/**
+	 * @return the alcoholVerified
+	 */
+	public String getAlcoholVerified() {
+		return alcoholVerified;
+	}
+	/**
+	 * @param alcoholVerified the alcoholVerified to set
+	 */
+	public void setAlcoholVerified(String alcoholVerified) {
+		this.alcoholVerified = alcoholVerified;
 	}
 
 

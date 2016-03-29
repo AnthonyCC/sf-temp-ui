@@ -10,6 +10,8 @@ public class StandingOrderResponseData {
 	private String error;
 	private boolean success=true;
 	
+	private boolean isAlcohol=false;
+	
 	public String getName() {
 		return name;
 	}
@@ -63,6 +65,18 @@ public class StandingOrderResponseData {
 	 */
 	public void setSuccess(boolean success) {
 		this.success = success;
+	}
+	/**
+	 * @return the isAlcohol
+	 */
+	public boolean isAlcohol() {
+		return isAlcohol;
+	}
+	/**
+	 * @param isAlcohol the isAlcohol to set
+	 */
+	public void setAlcohol(boolean isAlcohol) {
+		this.isAlcohol = isAlcohol;
 	}
 	
 	

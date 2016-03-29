@@ -2,11 +2,8 @@ package com.freshdirect.webapp.ajax.standingorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +12,10 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -25,14 +24,10 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
-import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
-import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -42,12 +37,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.ajax.expresscheckout.service.StandingOrderHelperService;
 import com.freshdirect.webapp.ajax.shoppinglist.AddToListRequestData;
 import com.freshdirect.webapp.ajax.shoppinglist.AddToListResponseItem;
-import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListChange;
-import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListInfo;
-import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListRequestData;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
 
@@ -71,125 +62,20 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		// TODO need to get Standing order details
 		final FDStandingOrdersManager m = FDStandingOrdersManager.getInstance();
 
 		try {
 
-			Collection<FDStandingOrder> validSO = m.getValidStandingOrder(user.getIdentity());
-            
+			Collection<FDStandingOrder> sos = m.getValidStandingOrder(user.getIdentity());
+			Collection<Map<String, Object>> so3Details=StandingOrderHelper.convertStandingOrderToSoy(sos,false);
+			writeResponseData(response,so3Details);
 		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
 			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
 		} catch (FDInvalidConfigurationException e) {
 			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
+		} catch (PricingException e) {
+			LOG.error("EORRO WHILE GETTING THE STANDING ORDER DETAILS", e);
 		} 
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-
-		if (user.getLevel() < FDUserI.SIGNED_IN) {
-			// User did not login. Login required for delete/modify.
-			returnHttpError(401, "User not logged in!"); // 401 Unauthorized
-		}
-
-		// Parse request data
-		ShoppingListRequestData reqData = parseRequestData(request, ShoppingListRequestData.class);
-
-		List<ShoppingListChange> newListInfos = reqData.getListInfos();
-		if (newListInfos == null) {
-			returnHttpError(400, "Bad JSON - listInfos is missing"); // 400 Bad
-																		// Request
-		}
-
-		List<ShoppingListInfo> oldListInfos = collectListInfos(user);
-		Set<String> oldListIds = new HashSet<String>();
-		for (ShoppingListInfo inf : oldListInfos) {
-			oldListIds.add(inf.getListId());
-		}
-
-		for (ShoppingListChange newInfo : newListInfos) {
-			String listId = newInfo.getListId();
-			// ====== VALIDATION ======
-			if (listId == null) {
-				// Invalid, no ID
-				LOG.warn("Missing ID for shopping list change request, skipping.");
-				continue;
-			}
-
-			if (!oldListIds.contains(listId)) {
-				// It's not your list!
-				LOG.warn("Invalid ID for shopping list change request : " + listId
-						+ " - list belongs to another customer or does not exist, skipping.");
-				continue;
-			}
-
-			// ====== DELETE ======
-			if (newInfo.isDelete()) {
-				deleteList(user, listId);
-				continue;
-			}
-
-			// ====== SET DEFAULT LIST ======
-			if (newInfo.isDefault()) {
-				user.setDefaultListId(newInfo.getListId());
-			}
-
-			// ====== RENAME ======
-			String newName = newInfo.getName();
-			if (newName != null && !newName.trim().equals("")) {
-				renameList(newInfo, listId, newName);
-				continue;
-			}
-
-			if (newInfo.isEmpty()) {
-				deleteListItems(user, listId);
-				continue;
-			}
-		}
-
-		// Save user
-		saveUser(user);
-
-		// Query and send back the new state
-		// getInternal(request, response, user, true, null);
-
-	}
-
-	private void deleteListItems(FDUserI user, String listId) {
-		LOG.info("Deleting list items " + listId);
-		try {
-			FDCustomerCreatedList customerCreatedList = FDListManager.getCustomerCreatedList(user.getIdentity(), listId);
-			customerCreatedList.removeAllLineItems();
-			FDListManager.storeCustomerList(customerCreatedList);
-			LOG.info("Deleted list items " + listId);
-		} catch (FDResourceException e) {
-			LOG.error("Failed to delete list items: " + listId, e);
-		}
-	}
-
-	private void renameList(ShoppingListChange newInfo, String listId, String newName) {
-		LOG.info("renaming list " + newInfo.getListId() + " to " + newInfo.getName());
-		try {
-			FDListManager.renameShoppingList(listId, newName);
-			LOG.info("Renamed list " + listId + " to " + newName);
-		} catch (FDResourceException e) {
-			LOG.error("Failed to rename list: " + listId, e);
-		}
-	}
-
-	private void deleteList(FDUserI user, String listId) {
-		LOG.info("Deleting list " + listId);
-		try {
-			FDListManager.deleteShoppingList(listId);
-			if (listId.equals(user.getDefaultListId())) {
-				user.setDefaultListId(null);
-			}
-			LOG.info("Deleted list " + listId);
-		} catch (FDResourceException e) {
-			LOG.error("Failed to delete list: " + listId, e);
-		}
 	}
 
 	@Override
@@ -197,75 +83,96 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		StandingOrderResponseData orderResponseData=new StandingOrderResponseData();
 
 
-		if (user.getLevel() >= FDUserI.RECOGNIZED) {
-
+		if (user.getLevel() > FDUserI.RECOGNIZED) {
 			AddToListRequestData reqData = parseRequestData(request, AddToListRequestData.class);
-			if (null != reqData.getActiontype() && "SaveStandingOrder".equalsIgnoreCase(reqData.getActiontype())) {
-				StandingOrderHelperService helperService = new StandingOrderHelperService();
-				try {
-					helperService.saveStandingOrder(user);
-				} catch (FDResourceException e) {
-					LOG.error("ERROR WHILE SAVING STANDING ORDER TEMPLATE", e);
-				}
-	
-			} else if (null != reqData.getActiontype() && "AddProductToSO".equalsIgnoreCase(reqData.getActiontype())) {
-				// To store product details for given customer list id and list type
-				// should be SO
-	
-				storeCustomerList(reqData, user);
-				storeDefualtStandingOrder(reqData, user);
+
+			try {
+			
+				if (null != reqData.getActiontype() && "AddProductToSO".equalsIgnoreCase(reqData.getActiontype())) {
+
+				   if(validateSO3AlcoholResrtiction(reqData,user)){
+					 orderResponseData.setAlcohol(true);
+				   } else {
+					storeCustomerList(reqData, user);
+					storeDefualtStandingOrder(reqData, user);
 				
-				FDStandingOrder so=null;
-				try {
-					so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
+					FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
 					 if(null!=so){
+						 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 						 if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							 so.getStandingOrderCart().refreshAll(true);
 						 }
 						 if(so.getLastErrorCode()!=null && StandingOrderHelper.getTotalAmountForSoSettings(so)>=FDStoreProperties.getStandingOrderHardLimit()){    
 							 StandingOrderHelper.clearSO3ErrorDetails(so, new String[]{"MINORDER","TIMESLOT_MINORDER"}) ;
-							 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
+						 } if("Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
+							 so.setAlcoholAgreement(true);
+							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
+
 						 }
 						orderResponseData=StandingOrderHelper.populateResponseData(so,true);
 	
-					 }else{
+					 } else {
 						 orderResponseData.setMessage("Standing Order has been deleted. " +
 						 		" Please choose another Standing Order") ;
 					 }
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					 orderResponseData.setMessage("ERROR WHILE RETRIEVING THE STANDING ORDER DATA") ;
-					 orderResponseData.setSuccess(false);
-					LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
-				} catch (FDInvalidConfigurationException e) {
-					// TODO Auto-generated catch block
-					 orderResponseData.setMessage("ERROR WHILE RETRIEVING THE STANDING ORDER DATA") ;
-					 orderResponseData.setSuccess(false);
-					LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
 				}
 				// Save user
 				saveUser(user);
 
-			 }
+			  }
+			} catch (FDResourceException e) {
+			 orderResponseData.setMessage("ERROR WHILE RETRIEVING THE STANDING ORDER DATA") ;
+			 orderResponseData.setSuccess(false);
+			 LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
+			} catch (FDInvalidConfigurationException e) {
+			 orderResponseData.setMessage("ERROR WHILE RETRIEVING THE STANDING ORDER DATA") ;
+			 orderResponseData.setSuccess(false);
+			 LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
+			}
+		
 		}else{
 			// User level not sufficient.
 			 orderResponseData.setMessage("User Session is expired please try login to add the product to Standing order") ;
 			 orderResponseData.setError("Session Expired");
 			 orderResponseData.setSuccess(false);
-			 //returnHttpError(401, "User auth level not sufficient!"); // 401 Unauthorized
 		}
 		writeResponseData(response,orderResponseData);
 
 
 	}
 
+	protected boolean validateSO3AlcoholResrtiction(AddToListRequestData reqData, FDUserI user) {
+
+		String soId=reqData.getStandingOrderId();
+		FDStandingOrder so = null;
+		boolean isAlcoholPopupDisplay=false;
+		try {
+			
+			    FDProduct product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(reqData.getItems().get(0).getSkuCode()));
+
+				if(product.isAlcohol()){
+					so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
+					if(!so.isAlcoholAgreement()){
+						isAlcoholPopupDisplay=true;
+					}
+				}
+			
+		} catch (FDResourceException e) {
+            LOG.error("ERROR WHILE GETTING STANDING ORDER : ID "+ soId);
+		} catch (FDSkuNotFoundException e) {
+			LOG.error("ERROR WHILE validating STANDING ORDER : ID "+ soId);
+		}
+		return isAlcoholPopupDisplay;
+	}
+	
+	
 	protected void storeDefualtStandingOrder(AddToListRequestData reqData,
 			FDUserI user) throws HttpErrorResponse{
 		try {
 			FDStandingOrdersManager.getInstance().updateDefaultStandingOrder(reqData.getListId(),user.getIdentity()); 
 		} catch (FDResourceException e) {
-			returnHttpError(500, "System error (FDResourceException) - couldn't persist shopping list", e); // 500
+			returnHttpError(500, "System error (FDResourceException) - couldn't persist Standing Order list", e); // 500
 																											// Internal// Server																									// Error
 		}
 	}
@@ -319,7 +226,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		}
 
 		if (list == null) {
-			returnHttpError(500, "Failed to get shopping list : " + listId); // 500 Internal Server Error
+			returnHttpError(500, "Failed to get Standing order list : " + listId); // 500 Internal Server Error
 		}
 
 		// prepare response items holder
@@ -383,8 +290,6 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		if ((item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty()) && quantity != 0.0) {
 			// has no sales-unit set, only quantity => set sales-unit to default
 			try {
-				// FIXME : this is quite bizarre for simply getting a default(?)
-				// sales-unit ...
 				item.setSalesUnit(FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(item.getSkuCode())).getSalesUnits()[0]
 						.getName());
 			} catch (FDResourceException e) {
@@ -452,53 +357,5 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		}
 		return recipe.getName();
 	}
-
-	private static List<ShoppingListInfo> collectListInfos(FDUserI user) {
-		String defaultListId = user.getDefaultListId();
-		List<FDCustomerListInfo> lists = user.getCustomerCreatedListInfos();
-		if (lists == null) {
-			return new ArrayList<ShoppingListInfo>();
-		}
-
-		List<ShoppingListInfo> listInfos = new ArrayList<ShoppingListInfo>(lists.size());
-		for (FDCustomerListInfo list : lists) {
-			ShoppingListInfo info = new ShoppingListInfo();
-			info.setListId(list.getId());
-			info.setName(list.getName());
-			info.setCount(list.getCount());
-			info.setRecipeId(list.getRecipeId());
-			info.setDefault(list.getId().equals(defaultListId));
-			listInfos.add(info);
-		}
-
-		Collections.sort(listInfos, new Comparator<ShoppingListInfo>() {
-			@Override
-			public int compare(ShoppingListInfo o1, ShoppingListInfo o2) {
-				// Default list is always the first
-				if (o1.isDefault())
-					return -1;
-				if (o2.isDefault())
-					return 1;
-
-				// Sort the rest alphabetically
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
-
-		return listInfos;
-	}
-
-	private static String createList(FDUserI user, String name) throws FDResourceException, FDCustomerListExistsException {
-		String newId = FDListManager.createCustomerCreatedList(user, name);
-		user.invalidateCache();
-		return newId;
-	}
-
-	@SuppressWarnings("unused")
-	private static void removeLineItem(FDUserI user, String lineId) throws FDResourceException {
-		FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
-		user.invalidateCache();
-	}
-
 
 }
