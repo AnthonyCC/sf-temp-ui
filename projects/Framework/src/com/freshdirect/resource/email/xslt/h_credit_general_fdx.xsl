@@ -99,46 +99,5 @@
 		
 	</div>
 	<xsl:call-template name="h_footer_fdx"/>
-	
-	
-	<table cellpadding="0" cellspacing="0">
-		<tr>
-			<td width="20"><img src="/images/clear.gif" width="20" height="1" border="0" alt="" /></td>
-			<td>
-				
-				<table cellpadding="0" cellspacing="0" width="90%">
-					<tr>
-						<td>
-							
-							<br />
-							<xsl:if test="complaint/storeCreditAmount &gt; 0">Please note it takes approximately two business days for your store credit to become available. Once it is available we'll automatically subtract these store credits from your next order total at the last stage of checkout.</xsl:if>
-							<xsl:if test="complaint/cashBackAmount &gt; 0">Please note that this credit should reflect on your credit card within five business days.</xsl:if>
-							<br />
-							<br />
-							I'd like to thank you for letting us know what occurred and giving us the opportunity to help solve your problem. If, for any reason you're dissatisfied with how we resolved your problem, or need further assistance, please feel free to e-mail us directly by clicking on the contact us link on the website or call us at 212-796-8002.<br />
-							<br />
-							Your satisfaction is our number one priority!<br />
-							<br />
-							Sincerely,<br />
-							<br />
-	                          <xsl:if test="string-length(complaint/customerEmail/signature) &gt; 0">
-	                            <xsl:value-of select="complaint/customerEmail/signature"/><br />
-	                          </xsl:if>
-							Your FreshDirect Customer Service Team<br />
-							Keep in mind that we are here for you:<br />
-							<br />
-							<xsl:for-each select="contactHours/contactHours">
-								<xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/><br />
-							</xsl:for-each>
-	
-							<p><xsl:call-template name="h_footer_fdx"/></p>
-	
-						</td>
-					</tr>
-				</table>
-			</td>
-			<td width="20"><img src="/images/clear.gif" width="20" height="1" border="0" alt="" /></td>
-		</tr>
-	</table>
 </xsl:template>
 </xsl:stylesheet>
