@@ -144,13 +144,12 @@ function tip_entered(){
 
 /* APPDEV-4904, get the chosen payment type for the customer */
 function get_current_paymenttype_choice(){
-	var fd = window.FreshDirect;
+	var fd = window.FreshDirect || {};
 	
-	if( fd.hasOwnProperty("expressco") &&
-		fd.expressco.hasOwnProperty("data") &&
-		fd.expressco.data.hasOwnProperty("payment") &&
-		fd.expressco.data.payment.hasOwnProperty("payments")
-	){
+	if( fd.expressco && fd.expressco.data &&
+		fd.expressco.data.payment &&
+		fd.expressco.data.payment.payments && 
+		fd.expressco.data.payment.payments.length ){
 		
 		for(var i=0; i<fd.expressco.data.payment.payments.length; i++){
 			if( fd.expressco.data.payment.payments[i].selected == true ){
