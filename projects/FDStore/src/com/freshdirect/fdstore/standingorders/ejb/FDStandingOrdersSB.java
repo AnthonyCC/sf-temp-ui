@@ -71,4 +71,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public boolean updateDefaultStandingOrder(String listId,FDIdentity userIdentity)throws FDResourceException,RemoteException;
 	public Collection<FDStandingOrder> loadCustomerNewStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException,RemoteException;
+	
+	public FDStandingOrder loadSOCron(PrimaryKey pk) throws FDResourceException,RemoteException;
 }

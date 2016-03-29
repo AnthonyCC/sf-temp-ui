@@ -257,7 +257,22 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-
+	public FDStandingOrder loadSOCron(PrimaryKey pk) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			FDStandingOrder ret = dao.load(conn, pk.getId());
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in load() : " + e.getMessage(), e );
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -553,7 +568,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				String soId = soInfo.getSoID();
 				
 				// load Standing Order
-				FDStandingOrder so = load( new PrimaryKey( soId ) );
+				FDStandingOrder so = loadSOCron( new PrimaryKey( soId ) );
 								
 				// retrieve address from Standign Order
 				AddressModel deliveryAddressModel = FDCustomerManager.getAddress( so.getCustomerIdentity(), so.getAddressId() );
