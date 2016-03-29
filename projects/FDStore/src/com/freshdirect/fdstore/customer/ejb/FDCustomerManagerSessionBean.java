@@ -1030,7 +1030,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ps.setString(1, lastOrderId);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				return this.loadAddressFromResultSet(rs);
+				return this.loadAddressFromResultSet(rs,false);
 			} else {
 				throw new SQLException("Cannot find address for order ID: "
 						+ lastOrderId);
@@ -1047,9 +1047,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException, FDResourceException {
+		return loadAddressFromResultSet(rs,true);
+	}
+	
+	private ErpAddressModel loadAddressFromResultSet(ResultSet rs, boolean loadunAttendDlvFlag) throws SQLException, FDResourceException {
 		ErpAddressModel address;
 		if (rs.getString("DEPOTLOCATION_ID") == null){
-			address = loadDeliveryAddressFromResultSet(rs);
+			address = loadDeliveryAddressFromResultSet(rs, loadunAttendDlvFlag);
 		}else {
 			address = loadDepotAddressFromResultSet(rs);
 		}
@@ -1057,6 +1061,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	private ErpAddressModel loadDeliveryAddressFromResultSet(ResultSet rs) throws SQLException {
+		return loadDeliveryAddressFromResultSet(rs,true);
+	}
+	
+	private ErpAddressModel loadDeliveryAddressFromResultSet(ResultSet rs, boolean loadunAttendDlvFlag) throws SQLException {
 		ErpAddressModel address = new ErpAddressModel();
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));
@@ -1075,7 +1083,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltContactPhone(new PhoneNumber(rs
 				.getString("ALT_CONTACT_PHONE")));
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
-		//address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		if(loadunAttendDlvFlag){
+			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
+		}
 		address.setUnattendedDeliveryInstructions(rs.getString("UNATTENDED_INSTR"));
 		
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs

@@ -235,6 +235,11 @@
 					result += manifestResult.deliveryInstructions;
 				}
 				result += "</td></tr>";
+				result += "<tr><td colspan=\"2\"><b>Uattended DeliveryInstructions:</b><br/>";
+				if(manifestResult.uattendedDeliveryInstructions != null){
+					result += manifestResult.uattendedDeliveryInstructions;
+				}
+				result += "</td></tr>";
 				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 									
 				result += "<tr><td colspan=\"2\"><b>SIGNATURE</b><br/>By signing I am acknowledging<br/>only that I have received <br/>as listed below.<br/><br/></td></tr>";

@@ -790,7 +790,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 
 	}
 
-	private static final String GET_DELIVERY_MANIFEST = "select di.last_name,di.first_name, di.delivery_instructions, (select count(*) from cust.carton_info where sale_id=s.id) cartonCnt from "
+	private static final String GET_DELIVERY_MANIFEST = "select di.last_name,di.first_name, di.delivery_instructions,di.unattended_instr, (select count(*) from cust.carton_info where sale_id=s.id) cartonCnt from "
 			+ "cust.sale s, cust.salesaction sa, cust.deliveryinfo di where s.id=sa.sale_id and sa.id = di.salesaction_id and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') and "
 			+ "s.id = ?";
 
@@ -815,6 +815,9 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 					result.setLastName(rs.getString("last_name"));
 					result.setDeliveryInstructions(rs
 							.getString("delivery_instructions"));
+					
+					result.setUattendedDeliveryInstructions(rs
+							.getString("unattended_instr"));
 					result.setCartonCnt(rs.getInt("cartonCnt"));
 				} while (rs.next());
 			}

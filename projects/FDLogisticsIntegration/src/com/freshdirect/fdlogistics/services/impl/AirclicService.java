@@ -138,6 +138,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 		response.setFirstName(deliveryInfo.getFirstName());
 		response.setLastName(deliveryInfo.getLastName());
 		response.setDeliveryInstructions(deliveryInfo.getDeliveryInstructions());
+		response.setUattendedDeliveryInstructions(deliveryInfo.getUattendedDeliveryInstructions());
 		response.setCartonCnt(deliveryInfo.getCartonCnt());
 		return response;
 	}
