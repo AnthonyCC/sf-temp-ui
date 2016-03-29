@@ -177,6 +177,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.FDCouponManager;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
+import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
@@ -3038,10 +3039,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.create();
 			if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(fdOrder.getOrderStatus())) {
 				
-				if(EnumTransactionSource.WEBSITE.equals(order.getTransactionSource()))
+				if(EnumTransactionSource.WEBSITE.equals(order.getTransactionSource())){
 					paymentManager.authorizeSaleRealtime(saleId);
-				else 
-					paymentManager.authorizeSale(saleId, true);
+				}
+				else if(EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource())){
+					ErpPaymentMethodI payment = order.getPaymentMethod();
+					if(payment != null && payment.geteWalletID() != null && payment.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+						paymentManager.authorizeSaleRealtime(saleId);
+					}else{
+						paymentManager.authorizeSale(saleId, true);
+					}
+				}
 			} else {
 				paymentManager.authorizeSaleRealtime(saleId);
 			}
