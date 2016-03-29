@@ -444,12 +444,13 @@ public class PayPal implements Gateway {
 		response.setError(true);
 		response.setApproved(false);
 		response.setRequestProcessed(true);
-		Transaction trxn = result.getTarget();
+		Transaction trxn = result.getTransaction();
 		response.setStatusMessage(result.getMessage());
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
 		if (trxn != null) {
 			response.setResponseCode(trxn.getProcessorResponseCode());
 			response.setEwalletTxId(trxn.getId());
+			response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getAuthorizationId());
 		}
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 	}

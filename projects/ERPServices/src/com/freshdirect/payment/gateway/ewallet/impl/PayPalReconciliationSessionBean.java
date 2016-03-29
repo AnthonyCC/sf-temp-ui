@@ -24,13 +24,11 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ejb.ErpSettlementPersistentBean;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -40,7 +38,6 @@ import com.freshdirect.payment.Money;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.ejb.SettlementSummaryPersistentBean;
-import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.impl.ReconciliationConstants;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.model.ErpSettlementTransactionModel;
@@ -63,6 +60,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			" values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, systimestamp, ?, ?, ?)";
 	private static final String ACQUIRE_PP_LOCK_UDPATE = "update cust.settlement " +
 			" set IS_LOCKED = 'Y' where id = ? and settlement_source = 'PP'";
+	
 	public List<String>  acquirePPLock(Date date) {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -85,7 +83,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						throw new EJBException("The batch for date " + date + " are already processed.");
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
 						ps = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
-						ps.setDate(1, new java.sql.Date(date.getTime()));
+						ps.setString(1, settlementId);
 						ps.executeUpdate();
 					} else if (locked.equals(PAYPAL_SETTLEMENT_IS_LOCKED)) {
 						throw new EJBException("[PayPal Batch] Some other process should be running for the same date " + date);
@@ -113,7 +111,6 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				ps.setString(i++, PAYPAL_NO_RECORDS_PROCESSED);
 				ps.executeUpdate();
 				settlementIds.add(settlementId);
-
 			} else {
 				ps = conn.prepareStatement(ACQUIRE_PENDING_PP_LOCK_QUERY);
 				rs = ps.executeQuery();
