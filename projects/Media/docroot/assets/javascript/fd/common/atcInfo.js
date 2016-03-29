@@ -100,9 +100,13 @@ var FreshDirect = FreshDirect || {};
 			document,'script','//connect.facebook.net/en_US/fbevents.js');
 			// Insert Your Facebook Pixel ID below. 
 			fbq('init', '1634670833479183');
-			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD','content_ids':'['+item.itemId+']','content_type':'product' });    	  
-          }
 
+			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
+				'content_name': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
+				'content_ids':[item.itemId],
+				'content_type':'product'});
+          }
+           
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
             product.remove();
             return;

@@ -88,7 +88,7 @@ setTimeout(function ()
 , 33);
 };
 asyncPixelWithTimeout();
-</script>
+<%-- </script>
 
 	<!-- Facebook Conversion Code for Add_to_Cart -->
 	<script>
@@ -99,9 +99,13 @@ asyncPixelWithTimeout();
 		document,'script','//connect.facebook.net/en_US/fbevents.js');
 		// Insert Your Facebook Pixel ID below. 
 		fbq('init', '1634670833479183');
-		fbq('track', 'AddToCart', {'value':'0.00','currency':'USD'});
+		fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
+			'content_name': $jq.QueryString["productId"] !== undefined ? "pdp": $jq.QueryString["pageType"]||"DEFAULT" ,
+			'content_ids':'['+<%= "atc_"+orderLine.getCategoryName()+"_"+orderLine.getSkuCode()+"_"+orderLine.getProductName() %>+']',
+			'content_type':'product'});
+		//fbq('track', 'AddToCart', {'value':'0.00','currency':'USD'});
 	</script>
-
+ --%>
 <%-- Includes Bottom of Items added to Cart --%>
 <fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
 <%	
@@ -135,8 +139,12 @@ asyncPixelWithTimeout();
 				// Insert Your Facebook Pixel ID below. 
 				fbq('init', '1634670833479183');
 				<%-- should match atcInfo itemId format: "atc_cat_pid_86_HMR0065413_mls_main_chicken" --%>
-				fbq('track', 'AddToCart', {'value':'0.00','currency':'USD','content_ids':'['+<%= "atc_"+orderLine.getCategoryName()+"_"+orderLine.getSkuCode()+"_"+orderLine.getProductName() %>+']','content_type':'product' }); 
-			</script>
+				fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
+				'content_name': $jq.QueryString["productId"] !== undefined ? "pdp": $jq.QueryString["pageType"]||"DEFAULT" ,
+				'content_ids':['<%= "atc_"+orderLine.getCategoryName()+"_"+orderLine.getSkuCode()+"_"+orderLine.getProductName() %>'],
+				'content_type':'product'});
+				
+		</script>
 		</fd:ProductGroup>
 	
 	</fd:FDShoppingCart>

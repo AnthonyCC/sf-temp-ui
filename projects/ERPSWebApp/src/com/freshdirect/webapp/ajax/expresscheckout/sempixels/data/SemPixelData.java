@@ -12,6 +12,7 @@ public class SemPixelData {
     private String discountAmount;
     private String discountAmountND;
     private int validOrders;
+    private String productId;
 
     public String getDiscountAmount() {
         return discountAmount;
@@ -92,4 +93,12 @@ public class SemPixelData {
     public void setValidOrders(int validOrders) {
         this.validOrders = validOrders;
     }
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
 }

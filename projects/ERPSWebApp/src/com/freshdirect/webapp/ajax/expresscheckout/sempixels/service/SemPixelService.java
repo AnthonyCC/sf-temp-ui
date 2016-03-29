@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.expresscheckout.sempixels.data.SemPixelData;
@@ -39,6 +40,17 @@ public class SemPixelService {
         result.setTotalCartItems(order.getLineCnt());
         result.setUserCounty(user.getDefaultCounty());
         result.setValidOrders(user.getAdjustedValidOrderCount());
+        result.setProductId(getProductIdInformation(order));
         return result;
+    }
+    
+    public String getProductIdInformation(FDOrderI order){
+     	StringBuilder productIds=new StringBuilder();
+    	for(FDCartLineI cartLine : order.getOrderLines()){
+    		productIds.append(cartLine.getCategoryName()+"_"+cartLine.getSkuCode()+"_"+cartLine.getProductName());   		
+    		productIds.append(",");
+    	}
+    	String productResult=productIds.toString();
+    	return productResult.substring(0, productResult.length()-1);
     }
 }

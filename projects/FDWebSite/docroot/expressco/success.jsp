@@ -160,6 +160,8 @@ asyncPixelWithTimeout();
 				semPixel_DIGO2.setParam("checkout_receipt", "true");
 				semPixel_DIGO2.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
 				semPixel_DIGO2.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
+				semPixel_DIGO2.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
+				semPixel_DIGO2.setParam("productId", semPixelData.get("productId")); // sem_productId
 				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" />
       </c:if>
     </c:if>

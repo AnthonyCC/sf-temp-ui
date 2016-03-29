@@ -273,7 +273,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 		<fd:SemPixelIncludeMedia pixelNames="DiGo1" />
 	<% /* Digo1 Pixel */ %>
 	
-	<%
+	<%-- <%
 		/* Digo2 Pixel */
 		SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
 		FDUserI user_DIGO2 = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -320,5 +320,5 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 		//receipt doesn't use footer, code in step_4_receipt.jsp
 	%>
 		<fd:SemPixelIncludeMedia pixelNames="DiGo2" />
-	<% /* Digo2 Pixel */ %>
+ --%>	<% /* Digo2 Pixel */ %>
 <% } %>
