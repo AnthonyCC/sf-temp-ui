@@ -228,9 +228,9 @@ public class PaymentechSFTPSettlementLoader {
 		finParser.parseFile(isFin);
 		
 		if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-			ppReconSB.updatePayPalStatus(ppSettlementIds);
 			ppReconSB.releasePPLock(ppSettlementIds);
 		}
+		
 		LOGGER.info("Finished loading FIN File");
 		//mask CC number in the downloaded FIN file.
 		SettlementLoaderUtil.maskCCPaymentech(finFile);

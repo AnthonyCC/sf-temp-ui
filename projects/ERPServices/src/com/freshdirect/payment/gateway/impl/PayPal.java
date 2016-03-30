@@ -202,7 +202,7 @@ public class PayPal implements Gateway {
 	public ErpCaptureModel capture(ErpAuthorizationModel authorization,
 			ErpPaymentMethodI paymentMethod, double amount, double tax,
 			String saleId) throws ErpTransactionException {
-
+		
 		Result<Transaction> result = null;
 		String txId = authorization.getEwalletTxId();
 
@@ -233,7 +233,6 @@ public class PayPal implements Gateway {
 				captureModel.setEwalletTxId(result.getTarget().getId());
 				captureModel.setProfileID(authorization.getProfileID());
 				captureModel.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
-
 			} catch (PaylinxResourceException e ) {
 				setFailureResponse(response, result);
 				GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
@@ -447,11 +446,8 @@ public class PayPal implements Gateway {
 		Transaction trxn = result.getTransaction();
 		response.setStatusMessage(result.getMessage());
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
-		if (trxn != null) {
-			response.setResponseCode(trxn.getProcessorResponseCode());
-			response.setEwalletTxId(trxn.getId());
-			response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getAuthorizationId());
-		}
+		response.setEwalletTxId(trxn.getId());
+		response.getBillingInfo().setTransactionRef(trxn.getPayPalDetails().getAuthorizationId());
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 	}
 

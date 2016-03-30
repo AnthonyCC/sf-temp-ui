@@ -243,8 +243,8 @@ public class SettlementTransactionPersistentBean extends DependentPersistentBean
     	ps.setString(i++, this.paypalReferenceId);
     	ps.setString(i++, this.paypalReferenceIdType);
     	ps.setString(i++, this.transactionEventCode);
-    	ps.setDate(i++, new java.sql.Date(this.transactionInitiationDate.getTime()));
-    	ps.setDate(i++, new java.sql.Date(this.transactionCompletionDate.getTime()));
+    	ps.setTimestamp(i++, new java.sql.Timestamp(this.transactionInitiationDate.getTime()));
+    	ps.setTimestamp(i++, new java.sql.Timestamp(this.transactionCompletionDate.getTime()));
     	ps.setString(i++, this.transactionDebitOrCredit);
     	ps.setLong(i++, this.grossTransactionAmount);
     	ps.setString(i++, this.grossTransactionCurrency);
