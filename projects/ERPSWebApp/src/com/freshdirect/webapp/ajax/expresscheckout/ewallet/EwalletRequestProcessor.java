@@ -62,7 +62,8 @@ public class EwalletRequestProcessor {
 		
 		if(ewallet != null && EnumEwalletType.PP.getName().equals(ewalletRequestData.geteWalletType())){
 			if(EwalletConstants.EWALLET_PP_START_PAIRING.equals(ewalletRequestData.geteWalletAction()) || 
-					EwalletConstants.EWALLET_PP_START_CONNECTING.equalsIgnoreCase(ewalletRequestData.geteWalletAction())){
+					EwalletConstants.EWALLET_PP_START_CONNECTING.equalsIgnoreCase(ewalletRequestData.geteWalletAction()) ||
+					EwalletConstants.GET_PP_DEVICE_DATA.equalsIgnoreCase(ewalletRequestData.geteWalletAction())){
 				ewalletResponseData  = pairingEwallet(ewallet,ewalletRequestData);
 			}
 			if(EwalletConstants.EWALLET_PP_END_PAIRING.equals(ewalletRequestData.geteWalletAction()) || 

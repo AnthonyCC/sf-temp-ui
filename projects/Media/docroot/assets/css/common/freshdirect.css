@@ -1013,3 +1013,30 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 .wallet-connected-indicator img{
 	vertical-align: middle;
 }
+
+.wallet-error-msg{
+	padding-bottom: 4px;
+}
+.wallet-error-msg span{
+	color: #c94747;
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: top;
+	width: 180px;
+    display: inline-block;
+    text-align: left;
+    margin-left: 4px;
+}
+
+#PP_ERROR_WRAPPER{
+    display: inline-block;
+    width: 210px;
+    float: left;
+    margin-top: 15px;
+}
+#PP_ERROR_WRAPPER #PP_ERROR{
+	position: relative;
+}
+#PP_ERROR_WRAPPER #PP-connect{
+    margin: 0;
+}

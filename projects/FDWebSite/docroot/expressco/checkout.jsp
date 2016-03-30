@@ -168,21 +168,23 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 	//While loading the screen get the Device ID from braintress
 	jQuery(document).ready(function($){
 	       $.ajax({
-		  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+		  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"get_pp_device_data\",\"ewalletType\":\"PP\"}}",
 	          type: 'post',
 	          contentType: "application/json; charset=utf-8",
 	          dataType: "json",
-	          success: function(result){ 
-	          	var deviceObj = "";
-	  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-	 	    		  dataCollector: {
-	 	    			    paypal: true
-	 	    			  },
-	 	    		  onReady: function (integration) {
-	 	    		    deviceObj = JSON.parse(integration.deviceData);
-	 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
-	 	    		  }
-	  	    	});
+	          success: function(result){
+	        	  if(result.submitForm.success){
+		          	var deviceObj = "";
+		  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+		 	    		  dataCollector: {
+		 	    			    paypal: true
+		 	    			  },
+		 	    		  onReady: function (integration) {
+		 	    		    deviceObj = JSON.parse(integration.deviceData);
+		 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
+		 	    		  }
+		  	    	});
+	        	  }
 	          }
 		 });
 	});

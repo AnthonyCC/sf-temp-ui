@@ -112,7 +112,13 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               	<tr><td class="acc-payment-methods-title-header">ADD NEW PAYMENT METHOD</td></tr>
               	<tr><td colspan="9"><img src="/media_stat/images/layout/999966.gif" width="970" height="1" border="0" vspace="3"></td></tr>
               	<tr align="middle">
-       				<td><a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT CARD</a>
+       				<td>
+       				<div>
+              		<div id="PP_ERROR" class="wallet-error-msg" style="display:none">
+  						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+  					</div>
+              	</div>
+       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT CARD</a>
        					<div id="add-new-payment-method-checking-acc-disabled-master">
        						<a id="add-new-payment-method-checking-acc-disabled" class="cssbutton green add-payment-methods-button disabled" href="#" onclick="return false;">CHECKING ACCOUNT</a>
        						<div id="add-new-payment-method-checking-acc-disabled-indicator">Available after first order.</div>
@@ -128,11 +134,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
        							<input id="PP-connect" type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal" style="display: none;">
        							
        						<% } else { %>
-              			<input id="PP-connect" type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal">
-              			<div id="PP_logo" style="display: none;">
-       								<img src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Paypal Logo">
-       								<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
-       							</div>
+       						         <div id="PP_ERROR_WRAPPER">
+	              						<!-- <div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
+				    						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+				    					</div> -->
+	              						<input id="PP-connect" type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal">
+              						</div>
               				<% } %>
               			<% } %>
        				</td>
@@ -269,46 +276,53 @@ jQuery(document).ready(function($){
                             type: 'post',
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
-                            success: function(result){ 
-                            	//var x = document.getElementById("PP_button");
-                            	var deviceObj = "";
-                    	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-                    	    		  dataCollector: {
-                    	    			    paypal: true
-                    	    			  },
-                    	    		  onReady: function (integration) {
-                    	    			 // alert("integration.deviceData :"+integration.deviceData);
-                    	    		    checkout = integration;
-                    	    		    checkout.paypal.initAuthFlow();
-                    	    		    deviceObj = JSON.parse(integration.deviceData);
-                    	    		    
-                    	    		  },
-                    	    		  onPaymentMethodReceived: function (payload) {
-
-                    	    	        $.ajax({
-                    	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
-                    	                      		"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
-                    	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
-                    	                      type: 'post',
-                    	                      success: function(id, result){
-//                     	                    	  $('#PP_logo').css("display","inline-block");
-//                     	                    	  $('#PP-connect').css("display","none");
-//                     	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteWalletPP class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
-//                     	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
-                    	                    	  location.reload(true);
-                    	                      }
-                    	    	        });
-                    	    		    
-
-                    	    		  },
-                    	    		  paypal: {
-                    	    		    singleUse: false,
-                    	    		    headless: true
-                    	    		  }
-                    	    		  
-                    	    		});
-                    	    			
+                            success: function(result){
+                            	if(result.submitForm.success){
+                            		$('#PP_ERROR').css("display","none");
+	                            	//var x = document.getElementById("PP_button");
+	                            	var deviceObj = "";
+	                    	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+	                    	    		  dataCollector: {
+	                    	    			    paypal: true
+	                    	    			  },
+	                    	    		  onReady: function (integration) {
+	                    	    			 // alert("integration.deviceData :"+integration.deviceData);
+	                    	    		    checkout = integration;
+	                    	    		    checkout.paypal.initAuthFlow();
+	                    	    		    deviceObj = JSON.parse(integration.deviceData);
+	                    	    		    
+	                    	    		  },
+	                    	    		  onPaymentMethodReceived: function (payload) {
+	
+	                    	    	        $.ajax({
+	                    	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
+	                    	                      		"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+	                    	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+	                    	                      type: 'post',
+	                    	                      success: function(id, result){
+	//                     	                    	  $('#PP_logo').css("display","inline-block");
+	//                     	                    	  $('#PP-connect').css("display","none");
+	//                     	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteWalletPP class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
+	//                     	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
+	                    	                    	  location.reload(true);
+	                    	                      }
+	                    	    	        });
+	                    	    		    
+	
+	                    	    		  },
+	                    	    		  paypal: {
+	                    	    		    singleUse: false,
+	                    	    		    headless: true
+	                    	    		  }
+	                    	    		  
+	                    	    		});
+	                    	    			
+	                            }else{
+	                            	$('#PP_ERROR').css("display","inline-block");
+	                            }
+                            	
                             }
+              	         
        });
     });
     

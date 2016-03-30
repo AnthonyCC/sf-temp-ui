@@ -179,7 +179,10 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     				}
     				break;
     			}
-    			
+    			case GET_PP_DEVICE_DATA: {
+    				ewalletRequestData.seteWalletAction(EwalletConstants.GET_PP_DEVICE_DATA);
+    				break;
+    			}
 				default:
 					break;
 				}
@@ -199,7 +202,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				request.getSession().removeAttribute(EwalletConstants.EWALLET_SESSION_ATTRIBUTE_NAME);
 			}
 			
-			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request,ewalletRequestData.geteWalletType());
+			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request,ewalletRequestData);
 			
 			final FormDataResponse eWalletSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(requestData,validationResult);
 			// Submit the response
@@ -208,14 +211,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			
 			if(eWalletSubmitResponse.getSubmitForm().isSuccess()){
 				eWalletResponseMap.put("eWalletResponseData", ewalletResponseData);
-			}else{
-				response.sendRedirect("/expressco/checkout.jsp");
 			}
-			
-			// Code related to Express Checkout
-//			 if (pageAction != null && (pageAction == PageAction.MASTERPASS_EXPRESS_CHECKOUT || pageAction == PageAction.MASTERPASS_WALLET_ALL_PAYMETHOD_IN_EWALLET)) {
-//				 return;
-//			 }
 			 
 			eWalletSubmitResponse.getSubmitForm().setResult(eWalletResponseMap);
 			writeResponseData(response, eWalletSubmitResponse);
@@ -274,21 +270,22 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	 * @param ewalletResponseData
 	 * @return
 	 */
-	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request, String ewalletType){
+	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request, EwalletRequestData ewalletRequestData){
 		ValidationResult validationResult = new ValidationResult();
 		com.freshdirect.fdstore.ewallet.ValidationResult validresult = ewalletResponseData.getValidationResult();
-		if(validresult != null && validresult.getErrors() !=null && !validresult.getErrors().isEmpty()){
-			List<ValidationError> resValidErrors = new ArrayList<ValidationError>();
-			
-			for(com.freshdirect.fdstore.ewallet.ValidationError error : validresult.getErrors()){
-				ValidationError respError= new ValidationError();
-				respError.setName(error.getName());
-				respError.setError(error.getError());
-				resValidErrors.add(respError);
-				request.getSession().setAttribute(EwalletConstants.EWALLET_ERROR_CODE, error.getName());
-				request.getSession().setAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE,ewalletType);
+		// don't do validation for GET_PP_DEVICE_DATA action
+		if(!EwalletConstants.GET_PP_DEVICE_DATA.equals(ewalletRequestData.geteWalletAction())){
+			if(validresult != null && validresult.getErrors() !=null && !validresult.getErrors().isEmpty()){
+				List<ValidationError> resValidErrors = new ArrayList<ValidationError>();
+				
+				for(com.freshdirect.fdstore.ewallet.ValidationError error : validresult.getErrors()){
+					ValidationError respError= new ValidationError();
+					respError.setName(error.getName());
+					respError.setError(error.getError());
+					resValidErrors.add(respError);
+				}
+				validationResult.setErrors(resValidErrors);
 			}
-			validationResult.setErrors(resValidErrors);
 		}
 		
 		return  validationResult;

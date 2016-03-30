@@ -13,11 +13,9 @@ public class FormPaymentData {
 //	private String mpCardPaired;
 	
 	private boolean mpEwalletStatus;
-	private String walletErrorMsg;
 	private String mpButtonImgURL;
     private List<String> onOpenCoremetrics;
     private boolean ppEwalletStatus;
-    private String eWalletErrorProvider;
     private boolean ppEwalletPaired;
 
 	public boolean isCoveredByGiftCard() {
@@ -66,21 +64,7 @@ public class FormPaymentData {
 		this.mpEwalletStatus = mpEwalletStatus;
 	}
 
-	/**
-	 * @return the walletErrorMsg
-	 */
-	public String getWalletErrorMsg() {
-		return walletErrorMsg;
-	}
-
-	/**
-	 * @param walletErrorMsg the walletErrorMsg to set
-	 */
-	public void setWalletErrorMsg(String walletErrorMsg) {
-		this.walletErrorMsg = walletErrorMsg;
-	}
-
-	/**
+		/**
 	 * @return the mpButtonImgURL
 	 */
 	public String getMpButtonImgURL() {
@@ -114,20 +98,6 @@ public class FormPaymentData {
 	 */
 	public void setPpEwalletStatus(boolean ppEwalletStatus) {
 		this.ppEwalletStatus = ppEwalletStatus;
-	}
-
-	/**
-	 * @return the eWalletErrorProvider
-	 */
-	public String geteWalletErrorProvider() {
-		return eWalletErrorProvider;
-	}
-
-	/**
-	 * @param eWalletErrorProvider the eWalletErrorProvider to set
-	 */
-	public void seteWalletErrorProvider(String eWalletErrorProvider) {
-		this.eWalletErrorProvider = eWalletErrorProvider;
 	}
 
 	/**

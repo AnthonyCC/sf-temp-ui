@@ -6,7 +6,7 @@
  param ppEwalletStatus
  param? displayedCardType
  param? mpCardPaired 
- @param? eWalletErrorProvider
+ param? walletErrorMsg
  */
  
 /**
@@ -15,13 +15,11 @@
  * @param coveredByGiftCard
  * @param mpEwalletStatus
  * @param ppEwalletStatus
- * @param backupPaymentRequiredForGiftCard
- * @param? walletErrorMsg  
+ * @param backupPaymentRequiredForGiftCard  
  * @param? mpButtonImgURL
  * @param? onOpenCoremetrics
  * @param? ppEwalletPaired
- * @param? eWalletErrorProvider
- */
+  */
 {template .paymentmethodpreview autoescape="false"}
 {if $coveredByGiftCard}
   <p class="drawer__item__title">NO PAYMENT NECESSARY...</p>
@@ -49,11 +47,12 @@
 			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+			    	
+			    	<div id="MP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+				    	</div>
 			    	</div>
-			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 		 {/if}
@@ -62,11 +61,13 @@
 		     <form id="addpaymentmethod_paypal"  class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-			    	</div> 
-			    	{/if}
+			    	
+			    	<div id="PP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+				    	</div> 
+				    </div>
+			    	
 			  		{if $ppEwalletPaired}
 			  			<div id="PP_wrapper">
 				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal" >
@@ -120,11 +121,11 @@
 			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
+			    	<div id="MP_ERROR" style="display: none;">
 			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
 			    	</div>	
-			    	{/if}
+			    	</div>
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 			 	
@@ -135,11 +136,11 @@
 		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-			    	</div>
-			    	{/if}
+			    	<div id="PP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
+				    	</div> 
+				    </div>
 			  		{if $ppEwalletPaired}
 			  			<div id="PP_wrapper">
 				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal" >
@@ -192,11 +193,11 @@
 			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'MP'}
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+			    	<div id="MP_ERROR" style="display: none;">
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+				    	</div>
 			    	</div>
-			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 		 {/if}
@@ -205,11 +206,10 @@
 		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	{if $walletErrorMsg and $eWalletErrorProvider == 'PP'}
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-			    	</div>
-			    	{/if} 
+			    	<div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
+			    		<img src='/media_stat/images/masterpass/mpwarning.png'> 
+			    		<span>Cannot Connect to PayPal at this time.</span>
+			    	</div> 
 			  		{if $ppEwalletPaired}
 			  			<div id="PP_wrapper">
 				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal" >

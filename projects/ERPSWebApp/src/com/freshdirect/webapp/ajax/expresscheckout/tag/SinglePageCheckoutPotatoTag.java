@@ -205,15 +205,6 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 	 */
 	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
-			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
-				formpaymentData.setWalletErrorMsg(request.getSession().getAttribute(EWALLET_ERROR_CODE).toString());
-				if(request.getSession().getAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE) != null){
-					formpaymentData.seteWalletErrorProvider(request.getSession().getAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE).toString());
-				}
-				
-				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
-				request.getSession().removeAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE);
-			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";
 			String actionCompleted = "";

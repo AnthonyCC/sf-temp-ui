@@ -308,11 +308,6 @@ public class CheckoutService {
 	 */
 	private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
-			// Remove Error Message From session
-			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
-				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
-				request.getSession().removeAttribute(EwalletConstants.PROVIDER_EWALLET_TYPE);
-			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";
 			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){
