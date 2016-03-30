@@ -145,38 +145,23 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
     			}
     			case PAYPAL_START_PAIRING: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_START_PAIRING);
-    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
-    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
-    				}
     				break;
     			}
     			case PAYPAL_END_PAIRING: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_END_PAIRING);
-    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
-    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
-    				}
     				break;
     			}
     			case PAYPAL_START_CONNECTING: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_START_CONNECTING);
-    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
-    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
-    				}
     				break;
     			}
     			
     			case PAYPAL_END_CONNECTING: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_END_CONNECTING);
-    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
-    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
-    				}
     				break;
     			}
     			case PAYPAL_WALLET_DISCONNECT: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_DISCONNECT);
-    				if(ewalletRequestData.geteWalletType() != EwalletConstants.PP_EWALLET_NAME){
-    					ewalletRequestData.seteWalletType(EwalletConstants.PP_EWALLET_NAME);
-    				}
     				break;
     			}
     			case GET_PP_DEVICE_DATA: {
@@ -192,12 +177,11 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			EwalletRequestProcessor processor = new EwalletRequestProcessor();
 			ewalletResponseData = processor.processRequest(ewalletRequestData);
 
-			if(ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
+			if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
 				postStandardCheckoutData(ewalletResponseData, request, response, user);
 			}
 			
-			
-			if(ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_PP_END_PAIRING)){
+			if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_PP_END_PAIRING)){
 				user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
 				request.getSession().removeAttribute(EwalletConstants.EWALLET_SESSION_ATTRIBUTE_NAME);
 			}
@@ -246,6 +230,9 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 		if(requestData.getFormData().containsKey(EwalletConstants.PARAM_DEVICEID)){
 			ewalletRequestData.getReqParams().put(EwalletConstants.PARAM_DEVICEID, (String)requestData.getFormData().get(EwalletConstants.PARAM_DEVICEID));
 		}
+		if(requestData.getFormData().containsKey(EwalletConstants.EWALLET_TYPE)){
+			ewalletRequestData.seteWalletType((String)requestData.getFormData().get(EwalletConstants.EWALLET_TYPE));
+		}
 	}
 	/**
 	 * User can click on "Cancel button on Masterpass Light UI before or after login to Wallet
@@ -272,12 +259,14 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	 */
 	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request, EwalletRequestData ewalletRequestData){
 		ValidationResult validationResult = new ValidationResult();
-		com.freshdirect.fdstore.ewallet.ValidationResult validresult = ewalletResponseData.getValidationResult();
+		com.freshdirect.fdstore.ewallet.ValidationResult validresult = null;
+		if(ewalletResponseData != null ){
+			validresult = ewalletResponseData.getValidationResult();
+		}
 		// don't do validation for GET_PP_DEVICE_DATA action
-		if(!EwalletConstants.GET_PP_DEVICE_DATA.equals(ewalletRequestData.geteWalletAction())){
+		if(ewalletRequestData != null && !EwalletConstants.GET_PP_DEVICE_DATA.equals(ewalletRequestData.geteWalletAction())){
 			if(validresult != null && validresult.getErrors() !=null && !validresult.getErrors().isEmpty()){
 				List<ValidationError> resValidErrors = new ArrayList<ValidationError>();
-				
 				for(com.freshdirect.fdstore.ewallet.ValidationError error : validresult.getErrors()){
 					ValidationError respError= new ValidationError();
 					respError.setName(error.getName());
@@ -299,7 +288,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	 * @throws ServletException
 	 */
 	private void postStandardCheckoutData(EwalletResponseData ewalletResponseData, HttpServletRequest request, HttpServletResponse response, FDUserI user) throws IOException, ServletException{
-		if(ewalletResponseData.getValidationResult()!=null){
+		if(ewalletResponseData != null && ewalletResponseData.getValidationResult()!=null){
 			if(ewalletResponseData.getValidationResult().getErrors()!=null && !ewalletResponseData.getValidationResult().getErrors().isEmpty()){
 				return;
 			}

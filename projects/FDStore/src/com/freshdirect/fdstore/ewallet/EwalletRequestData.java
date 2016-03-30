@@ -75,7 +75,9 @@ public class EwalletRequestData implements Serializable {
 	 * @param eWalletType the eWalletType to set
 	 */
 	public void seteWalletType(String eWalletType) {
-		this.eWalletType = EnumEwalletType.getEnum(eWalletType);
+		if(eWalletType != null){
+			this.eWalletType = EnumEwalletType.getEnum(eWalletType);
+		}
 	}
 	
 	/**

@@ -112,24 +112,26 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		String email = "";
 		String origin = "";
 		String deviceId="";
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE)) {
-			paymentMethodNonce = ewalletRequestData.getReqParams().get(
-					EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE);
-		}
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_FIRST_NAME)) {
-			firstName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_FIRST_NAME);
-		}
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_LAST_NAME)) {
-			lastName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_LAST_NAME);
-		}
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_EMAILID)) {
-			email = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_EMAILID);
-		}
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_ORIGIN)) {
-			origin = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_ORIGIN);
-		}
-		if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
-			deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
+		if(ewalletRequestData != null && ewalletRequestData.getReqParams() != null){
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE)) {
+				paymentMethodNonce = ewalletRequestData.getReqParams().get(
+						EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE);
+			}
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_FIRST_NAME)) {
+				firstName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_FIRST_NAME);
+			}
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_LAST_NAME)) {
+				lastName = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_LAST_NAME);
+			}
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_EMAILID)) {
+				email = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_EMAILID);
+			}
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_ORIGIN)) {
+				origin = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_ORIGIN);
+			}
+			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_DEVICEID)) {
+				deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
+			}
 		}
 		
 		String vaultToken = obtainVaultToken(paymentMethodNonce,ewalletRequestData, firstName, lastName);
@@ -149,7 +151,6 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 			insertVaultToken(custEWalletModel);
 			
 			//Add paymentmethod
-//			ErpPaymentMethodI paymentMethod = new ErpCreditCardModel();
 			ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.PAYPAL);
 			paymentMethod.setName(firstName+" "+lastName);
 			paymentMethod.setEmailID(email);
@@ -171,49 +172,32 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		     
 		    ErpPaymentMethodI searchedPM = searchPPWalletCards(ewalletRequestData, paymentMethod);
 		     
-		 	// Add the card detail to Database
+		 	// Add the PayPal account details to Database
 			try {
-				if (searchedPM == null) {	// No Paypal account exists for the customer
-					ewalletRequestData.setPaymentechEnabled(false);
-					FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled());
-			
-					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
-					
-			        if (!paymentMethods.isEmpty() && !origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
-			        	sortPaymentMethodsByIdReserved(paymentMethods);
-			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
-			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
-			    		
-			        }
-					if (!paymentMethods.isEmpty() && paymentMethods.size() > 1) {
-						sortPaymentMethodsByIdReserved(paymentMethods);
-					}
-					ErpPaymentMethodI lastAddedPM = paymentMethods.get(0);
-					ewalletResponseData.setPaymentMethod(lastAddedPM);
-				} else {	// Paypal account exists for the customer, remove and add new record
+				if(searchedPM != null){ // PayPal card is already paired
 					FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
-					ewalletRequestData.setPaymentechEnabled(false);
-					FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,	ewalletRequestData.isPaymentechEnabled());
-			
-					List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
-					
-			        if (!paymentMethods.isEmpty() && origin!= null && !origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
-			        	sortPaymentMethodsByIdReserved(paymentMethods);
+				}
+				
+				ewalletRequestData.setPaymentechEnabled(false);
+				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled());
+		
+				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
+				
+				if(paymentMethods != null && !paymentMethods.isEmpty()){
+					if (paymentMethods.size() > 1) {
+						sortPaymentMethodsByIdReserved(paymentMethods);
+					}
+			        if (!origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
 			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
 			    		
 			        }
-					if (!paymentMethods.isEmpty() && paymentMethods.size() > 1) {
-						sortPaymentMethodsByIdReserved(paymentMethods);
-					}
-					ErpPaymentMethodI lastAddedPM = paymentMethods.get(0);
-					ewalletResponseData.setPaymentMethod(lastAddedPM);
+					ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
 				}
 			} catch (Exception exception) {
-			
+				LOGGER.error("Error While adding PayPal account details : "+exception.getMessage());
 			}	
 		}
-//		ewalletResponseData.setToken(vaultToken);
 		return ewalletResponseData;
 	}
 	
