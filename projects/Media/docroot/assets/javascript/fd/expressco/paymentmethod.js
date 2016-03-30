@@ -103,41 +103,38 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
 	    id: "PP",
 		success: function (id, result) {
-			alert("Success..");
-			if(result.submitForm.success){
-				$('#PP_ERROR').css("display","none");
+			$('#PP_ERROR').css("display","none");
 //		    	var x = document.getElementById("PP_button");
-		    	var deviceObj = "";
-		    	braintree.setup(result.eWalletResponseData.token, "custom", {
-		    		  dataCollector: {
-		    			    paypal: true
-		    			  },
-		    		  onReady: function (integration) {
-		    			 // alert("integration.deviceData :"+integration.deviceData);
-		    		    checkout = integration;
-		    		    checkout.paypal.initAuthFlow();
-		    		    deviceObj = JSON.parse(integration.deviceData);
-		    		  },
-		    		  onPaymentMethodReceived: function (payload) {
-		    		    $.ajax({
-		                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
-		                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
-		                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
-		                      type: 'post',
-		                      success: function(id, result){
-		                    	 //location.reload(true);
-		                    	 window.location.assign("/expressco/checkout.jsp");
-		                      }
-		    	        });
-		    		  },
-		    		  paypal: {
-		    		    singleUse: false,
-		    		    
-		    		    headless: true
-		    		  }
-		    		  
-		    		});
-		    }
+	    	var deviceObj = "";
+	    	braintree.setup(result.eWalletResponseData.token, "custom", {
+	    		  dataCollector: {
+	    			    paypal: true
+	    			  },
+	    		  onReady: function (integration) {
+	    			 // alert("integration.deviceData :"+integration.deviceData);
+	    		    checkout = integration;
+	    		    checkout.paypal.initAuthFlow();
+	    		    deviceObj = JSON.parse(integration.deviceData);
+	    		  },
+	    		  onPaymentMethodReceived: function (payload) {
+	    		    $.ajax({
+	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
+	                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+	                      type: 'post',
+	                      success: function(id, result){
+	                    	 //location.reload(true);
+	                    	 window.location.assign("/expressco/checkout.jsp");
+	                      }
+	    	        });
+	    		  },
+	    		  paypal: {
+	    		    singleUse: false,
+	    		    
+	    		    headless: true
+	    		  }
+	    		  
+	    		});
 		},
 		failure:function (id, result) {
 			$('#PP_ERROR').css("display","inline-block");
