@@ -353,15 +353,19 @@ public class StandingOrdersServiceCmd {
 			}
 			
 		 catch (MessagingException e) {
+			 sendExceptionMail(Calendar.getInstance().getTime(), e);
 			LOGGER.warn("Error Sending Standing Order cron report email: ", e);
 		}
 		catch ( CreateException e ) {
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
 			invalidateSOSHome();
 			LOGGER.error("CreateException",e);
 		} catch ( RemoteException e ) {
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
 			invalidateSOSHome();
 			LOGGER.error("RemoteException",e);
 		} catch ( FDResourceException e ) {
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
 			invalidateSOSHome();
 			LOGGER.error("FDResourceException",e);
 		}
@@ -607,8 +611,10 @@ public class StandingOrdersServiceCmd {
 					subject, buffer.toString(), true, "");
 			LOGGER.info( "Cron report sent to "+ FDStoreProperties.getStandingOrderReportToEmail() );
 		} catch (FDResourceException e) {
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
 			LOGGER.warn("Error getting failed standing orders: ", e);
 		} catch (MessagingException e) {
+			sendExceptionMail(Calendar.getInstance().getTime(), e);
 			LOGGER.warn("Error Sending Standing Order cron report email: ", e);
 		}
 		
