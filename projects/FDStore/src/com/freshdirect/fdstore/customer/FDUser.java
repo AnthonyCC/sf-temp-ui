@@ -306,6 +306,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private boolean vHPopupDisplay=false;
 	
+	private Collection<FDStandingOrder> validSO3s =new ArrayList<FDStandingOrder>();
+	
+	private boolean  refreshValidSO3=true;
+	
 	public Date getTcAcknowledgeDate() {
 		return tcAcknowledgeDate;
 	}
@@ -3276,5 +3280,26 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
 	public boolean isSoContainerOpen() {
 		throw new IllegalArgumentException( "Calling isSoContainerOpen() in FDUser is not allowed (use FDSessionUser instead)." );
+	}
+
+	@Override
+	public Collection<FDStandingOrder> getValidSO3() {
+     return this.validSO3s;		
+	}
+
+	@Override
+	public void setValidSO3(Collection<FDStandingOrder> validSO3s) {
+		
+		this.validSO3s=validSO3s;
+	}
+
+	@Override
+	public boolean isRefreshValidSO3() {
+		return this.refreshValidSO3;
+	}
+
+	@Override
+	public void setRefreshValidSO3(boolean isRefreshValidSO3) {
+		this.refreshValidSO3=isRefreshValidSO3;
 	}
 }

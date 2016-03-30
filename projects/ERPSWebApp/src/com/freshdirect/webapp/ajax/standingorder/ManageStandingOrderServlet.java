@@ -163,6 +163,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 	
 						if (!so.isDeleted()) {
+							 u.setRefreshValidSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
 							FDStandingOrdersManager.getInstance().delete(info, so);
 						}
@@ -170,11 +171,13 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					}
 	
 				} else if("create".equalsIgnoreCase(action)){
+					u.setRefreshValidSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
 					writeResponseData( response, errorMessage );
 	
 				} else if("selectFreq".equalsIgnoreCase(action)){
 					 if(freq!=null){
+						 u.setRefreshValidSO3(true);
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
@@ -192,6 +195,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if(null !=so){
 						FDListManager.renameShoppingList(so.getCustomerListId(), soName);
 						u.getCurrentStandingOrder().setCustomerListName(soName);
+						u.setRefreshValidSO3(true);
 						}else{
 							errorMessage = "Standing order is not exist !";
 						}

@@ -668,5 +668,11 @@ public interface FDUserI extends java.io.Serializable {
 	/* use FDSessionUser instead */
 	boolean isSoContainerOpen();
 	
+	public Collection<FDStandingOrder> getValidSO3();
 	
+	public void setValidSO3(Collection<FDStandingOrder> sos );
+	
+	public boolean isRefreshValidSO3();
+	
+	public void setRefreshValidSO3(boolean isRefreshValidSO3);
 }

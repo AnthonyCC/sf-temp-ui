@@ -1933,4 +1933,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.isNewSO3Enabled();
 	}
 
+	@Override
+	public Collection<FDStandingOrder> getValidSO3() {
+		
+     return user.getValidSO3();		
+	}
+
+	@Override
+	public void setValidSO3(Collection<FDStandingOrder> validSO3s) {
+		
+      this.user.setValidSO3(validSO3s);	
+	}
+
+	@Override
+	public boolean isRefreshValidSO3() {
+		// TODO Auto-generated method stub
+		return user.isRefreshValidSO3();
+	}
+
+	@Override
+	public void setRefreshValidSO3(boolean isRefreshValidSO3) {
+      this.user.setRefreshValidSO3(isRefreshValidSO3);
+    
+	}
+
 }
