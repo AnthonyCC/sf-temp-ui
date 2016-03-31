@@ -757,7 +757,14 @@ public class SubmitOrderAction extends WebActionSupport {
                         response.sendRedirect(this.authCutoffPage);
                     }
 				}else{
-                    String errorMessage = PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage());
+					ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+					String errorMessage = "";
+					if(paymentMethod != null && paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+						errorMessage = PaymentMethodUtil.getPayPalAuthFailErrorMessage(ae.getMessage());
+					}else{
+						errorMessage = PaymentMethodUtil.getAuthFailErrorMessage(ae.getMessage());
+					}
+                    
                     getWebActionContext().getSession().setAttribute(SessionName.ORDER_AUTHORIZATION_FAILURE_MESSAGE, errorMessage);
                     if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), fdUser)) {
                         response.sendRedirect(this.ccdProblemPage + "?duplicateCheck=skip");

@@ -230,4 +230,8 @@ public interface SystemMessageList {
     public final static String MSG_ADDRESS_APT_REQ = "We're sorry, an Apt. number is required for this address. Please add an Apt. number or update the address.";
 	public final static String MSG_APARTMENT_INVALID_MISSING	= "An Apt/Suite # is missing/invalid for this address.";
 	public final static String MSG_DONT_DELIVER_TO_ADDRESS_SS 	= "We're sorry, but you must have an address in one of our <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">delivery zones</a>. Please update your address or enter a new address.";
+	
+	//PayPal
+	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";	
+	public final static String MSG_PAYPAL_AUTH_FAIL_ERR_1="Paypal is unable to process your payment at this time.";
 }

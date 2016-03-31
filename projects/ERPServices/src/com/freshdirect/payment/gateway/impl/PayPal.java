@@ -9,6 +9,7 @@ import com.braintreegateway.PayPalAccount;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.exceptions.AuthenticationException;
 import com.braintreegateway.exceptions.NotFoundException;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
@@ -147,10 +148,18 @@ public class PayPal implements Gateway {
 						merchantId, errDesc);
 				GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
 			}
-		} catch (Exception e) {
+		} catch(AuthenticationException authenticationException){
 			authModel = new ErpAuthorizationModel();
 			response = new ResponseImpl(gatewayRequest);
-			String errDesc = "Unable to connect to Paypal.";
+			String errDesc = "Cannot Connect to PayPal at this time.";
+			getEewalletFailResponse(authModel, response, paymentMethod,
+					orderNumber, authorizationAmount, tax,
+					merchantId, errDesc);
+			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
+		}catch (Exception e) {
+			authModel = new ErpAuthorizationModel();
+			response = new ResponseImpl(gatewayRequest);
+			String errDesc = "Paypal is unable to process your payment at this time.";
 			getEewalletFailResponse(authModel, response, paymentMethod,
 					orderNumber, authorizationAmount, tax,
 					merchantId, errDesc);

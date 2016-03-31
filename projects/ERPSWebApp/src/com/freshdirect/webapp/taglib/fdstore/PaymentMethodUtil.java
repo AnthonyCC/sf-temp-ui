@@ -833,6 +833,19 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	
     }
 
+    public static String getPayPalAuthFailErrorMessage(String authFailMsg ) {
+    	String msg =SystemMessageList.MSG_PAYPAL_AUTH_FAIL_ERR_1;
+    	
+    	if(authFailMsg != null && !authFailMsg.isEmpty()){
+    		if(authFailMsg.equalsIgnoreCase("PayPal Buyer Revoked Pre-Approved Payment Authorization")){
+    			msg =SystemMessageList.MSG_PAYPAL_AUTH_FAIL_ERR;
+    		}else{
+    			msg = authFailMsg;
+    		}
+    	}
+    	return msg;
+    	
+    }
 /**
      * @param token
      * @return
