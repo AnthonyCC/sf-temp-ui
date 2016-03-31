@@ -2,7 +2,10 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
-<tmpl:insert template='/common/template/no_site_nav.jsp'>
+<%
+	response.sendRedirect("/login/login.jsp");
+%>
+<tmpl:insert template='/common/template/no_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			
