@@ -256,21 +256,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	@Override
 	public int compareTo(FDTimeslot t1) {
-		if(this.getStartTime().compareTo(t1.getStartTime()) <0 && this.getCutoffTime().compareTo(t1.getCutoffTime()) >0){
-			return this.getCutoffTime().compareTo(t1.getCutoffTime());
-		}
-		else if(this.getStartTime().compareTo(t1.getStartTime()) <0 && this.getCutoffTime().compareTo(t1.getCutoffTime()) <0){
-			return this.getStartTime().compareTo(t1.getStartTime());
-		}
-		else if(this.getStartTime().compareTo(t1.getStartTime()) >0 && this.getCutoffTime().compareTo(t1.getCutoffTime()) <0){
-			return this.getCutoffTime().compareTo(t1.getCutoffTime());
-		}
-		else if(this.getStartTime().compareTo(t1.getStartTime()) >0 && this.getCutoffTime().compareTo(t1.getCutoffTime()) >0){
-			return this.getStartTime().compareTo(t1.getStartTime());
-		}
-		else{
-		    return this.getStartTime().compareTo(t1.getStartTime());
-		}
+		return this.getStartTime().compareTo(t1.getStartTime());		
 	}
 
 	public static String getDisplayString(boolean forceAmPm, Date startTime,
