@@ -349,4 +349,6 @@ public interface RequestParamName {
     public static final String REQ_PARAM_PROVIDER ="provider";
     
     public static final String TAXATION_TYPE = "TAXATION_TYPE";
+    
+    public static final String REQ_PARAM_CARTLINE = "cartLine";
 }

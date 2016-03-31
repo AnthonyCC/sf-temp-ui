@@ -54,8 +54,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
-                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_IS_QUICKBUY,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY  }, new String[] { REQ_PARAM_ATC_SUFFIX,
-                REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS}); //gets,sets
+                REQ_PARAM_RECIPE_ID, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, "remove_from_cart.x", REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_IS_QUICKBUY,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_CARTLINE  }, new String[] { REQ_PARAM_ATC_SUFFIX,
+                REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE}); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, updateItemInCart.getCartLineId());
 
@@ -149,8 +149,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
     }
 
     public ResultBundle refreshDeliveryPass() throws FDException {
-        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE,SessionName.PARAM_EVALUATE_COUPONS },
-                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE,SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE },
+                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(null);
         return new ResultBundle(executeTagLogic(), this);
@@ -163,8 +163,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      */
     public ResultBundle removeItemFromCart(String cartLineId, CartEvent cartEvent) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
-        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY  },
-                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_CARTLINE  },
+                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
         addRequestValue(REQ_PARAM_CART_LINE_ID, cartLineId);
 
@@ -194,8 +194,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         //ymalSetId
         addExpectedRequestValues(new String[] { REQ_PARAM_VARIANT, REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_ADDED_FROM,
-                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID}, new String[] {
-                REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_EVALUATE_COUPONS }); //gets,sets
+                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID, REQ_PARAM_CARTLINE}, new String[] {
+                REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED,
                 REQ_PARAM_ATC_SUFFIX }); //gets,sets
 
@@ -340,8 +340,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addExpectedRequestValues(new String[] { REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_CATEGORY_ID, REQ_PARAM_YMAL_BOX, REQ_PARAM_IMPRESSESION_ID, REQ_PARAM_ATC_SUFFIX,
                 REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY,
-                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID}, new String[] { REQ_PARAM_FD_ACTION, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
-                REQ_PARAM_ATC_SUFFIX, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS  }); //gets,sets
+                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID, REQ_PARAM_CARTLINE}, new String[] { REQ_PARAM_FD_ACTION, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
+                REQ_PARAM_ATC_SUFFIX, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS, REQ_PARAM_CARTLINE  }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_SKUS_ADDED }); //gets,sets
 
         addRequestValue(REQ_PARAM_FD_ACTION, "addMultipleToCart");
@@ -475,6 +475,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @throws FDException
      */
     public ResultBundle removeMultipleItemsFromCart(List<String> cartLineIds, CartEvent cartEvent) throws FDException {
+    	
+    	addExpectedRequestValues(new String[] { REQ_PARAM_CARTLINE } , new String[] {REQ_PARAM_CARTLINE} );
         ActionResult actionResult = new ActionResult();
         for (String cartLineId : cartLineIds) {
             ResultBundle rmResult = this.removeItemFromCart(cartLineId, cartEvent);
