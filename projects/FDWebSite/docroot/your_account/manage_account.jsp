@@ -8,6 +8,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 
 <%@ page import='java.text.*' %>
 
@@ -17,11 +18,15 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <% //expanded page dimensions
 final int W_YA_MANAGE_TOTAL = 970;
 final int W_YA_CSICON = 40;
 final int W_YA_MAIN = 601;
 final int W_YA_CT = 328;
+
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+boolean selectedAddressIsHome = (user != null && (EnumServiceType.HOME).equals(user.getSelectedServiceType())) ? true : false;
 %>
 <%!
 private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
@@ -49,7 +54,6 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 
 
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/no_nav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account</tmpl:put>
     <tmpl:put name="seoMetaTag" direct="true">
@@ -59,7 +63,6 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		<jwr:style src="/your_account.css" media="all"/>
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
         //--------OAS Page Variables-----------------------
@@ -145,20 +148,22 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 			</font><br>Review your recurring orders and make changes.
 			<br><br>
 		<%}%>
-		
 		<%if(user.isEligibleForPreReservation()){%>
-			<font class="text13bold">
-						<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve a Delivery Time </a>
-			</font><br>
-			Reserve your delivery timeslot before you place your order.
-			<br><br>
+			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">
+				<% if (selectedAddressIsHome) { %><a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>"><% } %><span class="text13bold">Reserve a Delivery Time</span><% if (selectedAddressIsHome) { %></a><% } %>
+				<% if (!selectedAddressIsHome) { %><span>(Only available for Home Delivery)</span><% } %>
+				<div>Reserve your delivery timeslot before you place your order.</div>
+			</div>
+			<br />
 		<%}%>
 		<%if(user.isEligibleForDeliveryPass() && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())){%>
-			<font class="text13bold">
-						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect DeliveryPass</a>
-			</font><br>
-						See your membership and renewal details.
-			<br><br>
+			<div class="<%= (!selectedAddressIsHome) ? "selectedAddressIsHome-false": "" %>">
+				
+				<% if (selectedAddressIsHome) { %><a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>"><% } %><span class="text13bold">FreshDirect DeliveryPass</span><% if (selectedAddressIsHome) { %></a><% } %>
+				<% if (!selectedAddressIsHome) { %><span>(Only available for Home Delivery)</span><% } %>
+				<div>See your membership and renewal details.</div>
+			</div>
+			<br />
 		<%}%>
 		
 		<font class="text13bold">

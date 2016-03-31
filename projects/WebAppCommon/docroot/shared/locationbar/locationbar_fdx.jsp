@@ -102,7 +102,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	
 	<tmpl:put name="modify_order">
 		<div class="locabar-section locabar-modify-order-section" style="display: none;">
-			<div id="locabar_modify_order_trigger">
+			<div id="locabar_modify_order_trigger" class="locabar_triggers" tabindex="0" aria-haspopup="true" role="menuitem">
 				<div class="cursor-pointer">
 					<div class="section-modify-order-img" id="locabar-modify-order-open">
 						<div id="locabar-modify-order-count" class="">0</div>
@@ -574,6 +574,13 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									<% } %>
 									<% if ("View Timeslots".equals(str)) { /* this item changes based on user and addresses */ %>
 										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required><%= str %></a></div>
+									<% } else if ("Reserve Delivery".equals(str) && !"HOME".equals(foundSelectedAddressType) ) { %>
+										<%-- If the user has the ability to reserve and non-Home selected, modify Reserve Link --%>
+										<div class="section-line"><a href="<%= temp_delivery_link %>" fd-login-required>View Timeslots</a></div>
+									<% } else if ("DeliveryPass".equals(str) ) { %>
+										<% if ("HOME".equals(foundSelectedAddressType) ) { /* only if home is selected */ %>
+											<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>								
+										<% } %>
 									<% } else { %>
 										<div class="section-line"><a href="<%= folderMap.get(str)%>" fd-login-required><%= str %></a></div>									
 									<% } %>

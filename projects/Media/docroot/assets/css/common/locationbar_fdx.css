@@ -559,6 +559,7 @@
     margin-right: 10px;
     vertical-align: top;
 }
+
 .locabar-down-arrow {
 	display: inline-block;
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow.png');
@@ -566,6 +567,15 @@
 	height: 7px;
 	width: 11px;
 }
+.locabar_triggers:hover .locabar-down-arrow, .locabar_triggers:focus .locabar-down-arrow {
+	background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow_hover.png');
+}
+.locabar_triggers.alertOpen .locabar-down-arrow, 
+.locabar_triggers.alertOpen:hover .locabar-down-arrow, .locabar_triggers.alertOpen:focus .locabar-down-arrow
+{
+	background-image: none;		
+}
+
 .locabar-tab-fdx {
 	display: inline-block;
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-tab-fdx.png');
@@ -750,6 +760,7 @@
 	min-height: 156px;
 	box-shadow: 0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.2)!important;
 }
+
 #locabar_addresses_choices {
 	/*width: 300px;*/
 	overflow-y: auto;
@@ -1094,13 +1105,6 @@
 	
 /* transitions */
 
-	#locabar_addresses_trigger:hover .locabar-down-arrow, #locabar_addresses_trigger:focus .locabar-down-arrow,
-	#locabar_popupcart_trigger:hover .locabar-down-arrow, #locabar_popupcart_trigger:focus .locabar-down-arrow,
-	#locabar_user_trigger:hover .locabar-down-arrow, #locabar_user_trigger:focus .locabar-down-arrow,
-	#locabar_modify_order_trigger:hover .locabar-down-arrow
-	{
-		background-image: url('/media/layout/nav/globalnav/fdx/locabar-arrow_hover.png');
-	}
 #locabar_addresses_trigger > div > div > div:last-child {
     position: relative;
 }
@@ -1480,4 +1484,19 @@ option.address-icon {
 }
 .locabar_addresses-reservation-view-cont {
     height: 63px;
+}
+
+.locabar-section:hover, .locabar-section:focus {
+	border-left: 1px solid #6AAA6D;	
+}
+.locabar-section.alertOpen {
+	background-color: #4fa157;
+	border-left: 1px solid #6AAA6D;
+}
+
+.alertOpen .cursor-pointer {
+    cursor: default;
+}
+.selectedAddressIsHome-false {
+	color: #c2c2c2;
 }

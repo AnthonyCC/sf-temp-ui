@@ -2,7 +2,7 @@
 /*
 
 MESSAGES AND ALERTS
-	MESSAGES: Are all grouped together under one container (messageData.options.$messages). They are all either open or closed together, and have a single handler which is appened to the container.
+	MESSAGES: Are all grouped together under one container (messageData.options.$messages). They are all either open or closed together, and have a single handler which is appended to the container.
 
 	ALERTS: Act independently, each with it's own handler that is appended to their container(s). Each can be appended to multiple parent containers, each parent will get a handler controlling all locations of the alert.
 	
@@ -33,6 +33,8 @@ MESSAGE USAGE:
 	
 	Events:
 		messageAdded : On a successful add, triggers event on callee.
+		messagesOpen : On open, triggers event on callee.
+		messagesClose : On close, triggers event on callee.
 
 ALERTS USAGE:
 	to define a new alert that runs automatically:
@@ -254,6 +256,9 @@ SESSIONSTORAGE:
 		openMessages: function() {
 			messageStorage.messages.isClosed = false;
 			messageData.options.$messages.addClass(messageData.options.messagesOpenClass);
+			$(messageData.options.$messages).trigger({
+				type: 'messagesOpen'
+			});
 		},
 		openAlerts: function(alertsArr) {
 			if ($.isArray(alertsArr)) {
@@ -307,6 +312,10 @@ SESSIONSTORAGE:
 		closeMessages: function() {
 			messageStorage.messages.isClosed = true;
 			messageData.options.$messages.removeClass(messageData.options.messagesOpenClass);
+			
+			$(messageData.options.$messages).trigger({
+				type: 'messagesClose'
+			});
 			
 			setMessageStorage();
 		},

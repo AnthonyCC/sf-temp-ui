@@ -44,16 +44,17 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 										if(itr.hasNext()){
 										String str=itr.next();
 									%>
-									<%	if (str == "Refer A Friend") {
-									%>
-									<td><a href="<%=folderMap.get(str)%>" target="_blank"><%=str%></a><br /></td>
-									<%
-										} else {
-									%>
-									<td><a href="<%= folderMap.get(str)%>"><%= str %></a><br/></td>
-										<%
-											}
-										%>
+									<%	if (str == "Refer A Friend") { %>
+										<td><a href="<%=folderMap.get(str)%>" target="_blank"><%=str%></a><br /></td>
+									<% } else if ("Reserve Delivery".equals(str) || "DeliveryPass".equals(str)) { %>
+										<% if (user != null && !(EnumServiceType.HOME).equals(user.getSelectedServiceType())) { %>
+											<td class="selectedAddressIsHome-false"><%= str %><br /></td>
+										<% } else { %>
+											<td><a href="<%= folderMap.get(str)%>"><%= str %></a><br /></td>
+										<% } %>
+									<% } else {	%>
+										<td><a href="<%= folderMap.get(str)%>"><%= str %></a><br /></td>
+									<% } %>
 								<%}%>
 							<%}%>
 

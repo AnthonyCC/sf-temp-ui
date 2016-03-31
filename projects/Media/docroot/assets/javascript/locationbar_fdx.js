@@ -216,9 +216,13 @@ $jq(window).on('resize', function(event) {
 });
 
 $jq('#sitemessage').on('alertOpen', ['sitemessage'], function(event) {
+	$jq('#locabar_addresses').parent('.locabar_triggers').addClass('alertOpen');
+	$jq('#locabar_addresses').closest('.locabar-section').addClass('alertOpen');
 	$jq('#locabar_addresses').hide();
 });
 $jq('#sitemessage').on('alertClose', ['sitemessage'], function(event) {
+	$jq('#locabar_addresses').parent('.locabar_triggers').removeClass('alertOpen');
+	$jq('#locabar_addresses').closest('.locabar-section').removeClass('alertOpen');
 	$jq('#locabar_addresses').show();
 });
 
@@ -270,8 +274,28 @@ $jq('.locabar_triggers').on('keyup', function(event) {
 	}
 });
 $jq('#modifyorderalert').on('alertOpen', ['modifyorderalert'], function(event) {
+	$jq('#locabar_orders').parent('.locabar_triggers').addClass('alertOpen');
+	$jq('#locabar_orders').closest('.locabar-section').addClass('alertOpen');
 	$jq('#locabar_orders').hide();
 });
 $jq('#modifyorderalert').on('alertClose', ['modifyorderalert'], function(event) {
+	$jq('#locabar_orders').parent('.locabar_triggers').removeClass('alertOpen');
+	$jq('#locabar_orders').closest('.locabar-section').removeClass('alertOpen');
 	$jq('#locabar_orders').show();
+});
+$jq(document).ready(function() {
+	function messagesOpened() {
+		$jq('#locabar-messages-open').parent('.locabar_triggers').addClass('alertOpen');
+		$jq('#locabar-messages-open').closest('.locabar-section').addClass('alertOpen');
+	}
+	if ($jq('#messages').hasClass('open')) { /* doc ready will miss the initial messagesOpen trigger */
+		messagesOpened();
+	}
+	$jq('#messages').on('messagesOpen', function(event) {
+		messagesOpened()
+	});
+	$jq('#messages').on('messagesClose', function(event) {
+		$jq('#locabar-messages-open').parent('.locabar_triggers').removeClass('alertOpen');
+		$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
+	});
 });

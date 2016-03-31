@@ -5,6 +5,8 @@
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ page import='com.freshdirect.common.address.AddressModel' %>
 
 <% //expanded page dimensions
 final int W_ADDRESS_FINDER_TOTAL = 970;
@@ -86,7 +88,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					<td colspan="3" class="text12"><%= (user != null && user.getReservation() != null) ? " Displayed below is your current delivery reservation for" : " Displayed below are the timeslots currently available to be reserved for"%>:</td>
 				</tr>
 				
-			<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){%>
+			<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){ %>
 				<tr>
 					<td colspan="3" class="text12">Displayed below are the timeslots currently available to be reserved for:</td>
 				</tr>
@@ -103,16 +105,29 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
 						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
 						<SELECT name="addressId" onChange="javascript:submit()" CLASS="text12" style="width: 250px;">
-							<% 
-							for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
-								ErpAddressModel addr = (ErpAddressModel)saItr.next();
-								String id = "";
-								id = addr.getPK().getId();
-							%>
-							<OPTION value="<%= id %>" <%= id.equals(address.getPK().getId()) ? "SELECTED" : "" %>>
-								<%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%>
-							</OPTION>
-							<% } %>
+							
+								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
+									<fd:LocationHandler/>
+								<%
+									AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+								%>
+									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
+										<option value="<%= homeAddress.getPK().getId() %>" <%= (selectedAddress != null && selectedAddress.equals(homeAddress)) ? "selected=\"selected\"" : "" %>>
+											<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
+										</option>
+									</logic:iterate>
+								<% } else { %>
+									<% 
+									for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
+										ErpAddressModel addr = (ErpAddressModel)saItr.next();
+										String id = "";
+										id = addr.getPK().getId();
+									%>
+										<OPTION value="<%= id %>" <%= id.equals(address.getPK().getId()) ? "SELECTED" : "" %>>
+											<%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%>
+										</OPTION>
+									<% } %>
+								<% } %>
 						</SELECT><br /><br />
 						</FORM>
 					</td>
