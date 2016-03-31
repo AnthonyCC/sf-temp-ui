@@ -318,7 +318,7 @@ public class PayPal implements Gateway {
 		response.setBillingInfo(request.getBillingInfo());
 		if (result.isSuccess()) {
 			setSuccessResponse(response, result);
-			
+			response.getBillingInfo().setTransactionRef(result.getTarget().getPayPalDetails().getCaptureId());
 			cashback= GatewayAdapter.getCashbackResponse(response, paymentMethod);
 			cashback.setCustomerId(paymentMethod.getCustomerId());
 			cashback.setAmount(amount);

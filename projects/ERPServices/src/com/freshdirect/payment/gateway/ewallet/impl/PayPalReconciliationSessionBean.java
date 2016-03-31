@@ -75,7 +75,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				ps.setDate(1, new java.sql.Date(date.getTime()));
 
 				rs = ps.executeQuery();
-				if (rs.next()) {
+				while (rs.next()) {
 					String locked = rs.getString("IS_LOCKED");
 					String processed = rs.getString("ALL_RECORDS_PROCESSED");
 					settlementId = rs.getString("ID");
@@ -85,6 +85,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						ps = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps.setString(1, settlementId);
 						ps.executeUpdate();
+						settlementIds.add(settlementId);
 					} else if (locked.equals(PAYPAL_SETTLEMENT_IS_LOCKED)) {
 						throw new EJBException("[PayPal Batch] Some other process should be running for the same date " + date);
 					} else {
@@ -92,25 +93,27 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					}
 				}
 				//new process
-				byte i = 1;
-				ps = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
-				settlementId = SequenceGenerator.getNextId(conn, "CUST");
-				ps.setString(i++, settlementId);
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setLong(i++, date.getTime());
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setLong(i++, 0);
-				ps.setLong(i++, 0);
-				ps.setLong(i++, 0);
-				ps.setDate(i++, new java.sql.Date(date.getTime()));
-				ps.setString(i++, PAYPAL_SETTLEMENT_IS_LOCKED);
-				ps.setString(i++, EnumPaymentMethodType.PAYPAL.getName());
-				ps.setString(i++, PAYPAL_NO_RECORDS_PROCESSED);
-				ps.executeUpdate();
-				settlementIds.add(settlementId);
+				if (settlementIds.isEmpty()) {
+					byte i = 1;
+					ps = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
+					settlementId = SequenceGenerator.getNextId(conn, "CUST");
+					ps.setString(i++, settlementId);
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setLong(i++, date.getTime());
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setLong(i++, 0);
+					ps.setLong(i++, 0);
+					ps.setLong(i++, 0);
+					ps.setDate(i++, new java.sql.Date(date.getTime()));
+					ps.setString(i++, PAYPAL_SETTLEMENT_IS_LOCKED);
+					ps.setString(i++, EnumPaymentMethodType.PAYPAL.getName());
+					ps.setString(i++, PAYPAL_NO_RECORDS_PROCESSED);
+					ps.executeUpdate();
+					settlementIds.add(settlementId);
+				}
 			} else {
 				ps = conn.prepareStatement(ACQUIRE_PENDING_PP_LOCK_QUERY);
 				rs = ps.executeQuery();
@@ -120,7 +123,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					Date processDate = rs.getDate("PROCESS_PERIOD_START");
 					String id = rs.getString("ID");
 					if ("Y".equals(locked)) {
-						throw new EJBException("Ignoring acquiring lock for date." + processDate);
+						LOGGER.info("Ignoring acquiring lock for settlement id." + id);
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
 						ps = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps.setString(1, id);
