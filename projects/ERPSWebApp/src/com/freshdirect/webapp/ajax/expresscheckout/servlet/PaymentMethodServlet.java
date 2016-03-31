@@ -298,7 +298,9 @@ public class PaymentMethodServlet extends BaseJsonServlet {
  */
     private void checkEWalletCard(FormPaymentData formpaymentData,HttpServletRequest request){
 		if (formpaymentData != null) {
-			
+			if(request.getSession().getAttribute(EWALLET_ERROR_CODE) != null ){
+				request.getSession().removeAttribute(EWALLET_ERROR_CODE);
+			}
 			List<PaymentData> payments = formpaymentData.getPayments();
 			String session_card = "";
 			if(request.getSession().getAttribute(EWALLET_SESSION_ATTRIBUTE_NAME) != null){

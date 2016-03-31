@@ -189,13 +189,17 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request,ewalletRequestData);
 			
 			final FormDataResponse eWalletSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(requestData,validationResult);
-			// Submit the response
-			eWalletSubmitResponse.getSubmitForm().setSuccess(eWalletSubmitResponse.getValidationResult().getErrors().isEmpty());
 			Map<String, Object> eWalletResponseMap = new HashMap<String, Object>();
-			
 			if(eWalletSubmitResponse.getSubmitForm().isSuccess()){
 				eWalletResponseMap.put("eWalletResponseData", ewalletResponseData);
+				request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
+			}else{
+				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA))
+					response.sendRedirect("/expressco/checkout.jsp");
 			}
+			
+			// Submit the response
+			eWalletSubmitResponse.getSubmitForm().setSuccess(eWalletSubmitResponse.getValidationResult().getErrors().isEmpty());
 			 
 			eWalletSubmitResponse.getSubmitForm().setResult(eWalletResponseMap);
 			writeResponseData(response, eWalletSubmitResponse);
@@ -272,6 +276,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 					respError.setName(error.getName());
 					respError.setError(error.getError());
 					resValidErrors.add(respError);
+					request.getSession().setAttribute(EwalletConstants.EWALLET_ERROR_CODE, error.getName());
 				}
 				validationResult.setErrors(resValidErrors);
 			}

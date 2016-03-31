@@ -16,6 +16,7 @@
  * @param mpEwalletStatus
  * @param ppEwalletStatus
  * @param backupPaymentRequiredForGiftCard  
+ * @param? walletErrorMsg  
  * @param? mpButtonImgURL
  * @param? onOpenCoremetrics
  * @param? ppEwalletPaired
@@ -53,6 +54,11 @@
 				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
 				    	</div>
 			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 		 {/if}
@@ -126,6 +132,11 @@
 			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
 			    	</div>	
 			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 			 	
@@ -198,6 +209,11 @@
 				    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>Cannot Connect</span>
 				    	</div>
 			    	</div>
+			    	{if $walletErrorMsg}
+				    	<div class="wallet-error-msg">
+				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+				    	</div>
+			    	{/if}
 			  		<input type="image" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
 				</form>
 		 {/if}

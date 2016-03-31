@@ -48,6 +48,7 @@ public class EwalletConstants {
 	public static final String PARAM_CHECKOUT_URL = "checkout_resource_url";
 	public static final String EWALLET_TYPE = "ewalletType";
 	public static final String MP_EWALLET_NAME = "MP";
+	public static final String EWALLET_ERROR_CODE = "WALLET_ERROR";
 	
 	public static final String EWALLET_PP_START_PAIRING="PP_Start_Pairing";
 	public static final String PP_EWALLET_NAME = "PP";
