@@ -244,7 +244,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				if (ppSettlementInfos != null)
 					appendPPSettlements(ppSettlementInfos);
 				else
-					LOGGER.info("No PayPal records to be process for date " + ppDesiredDate + ". Please check whether PayPalSettlementLoader is run");
+					LOGGER.info("No PayPal records to be processed. Please check whether PayPalSettlementLoader is run");
 				ppReconSB.updatePayPalStatus(settlementIds);
 			}
 		} catch (RemoteException e) {

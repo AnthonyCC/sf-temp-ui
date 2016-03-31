@@ -245,7 +245,9 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		
 		String gatewayOrderId = "";
 		String saleId = "";
-		processPPFee(ppStlmntTrxns, settlementInfos);
+		int totalTrxns = processPPFee(ppStlmntTrxns, settlementInfos);
+		if (totalTrxns == 0)
+			return null;
 		
 		for (ErpSettlementSummaryModel summary : ppStlmntTrxns) {
 			ErpAffiliate affiliate = getErpAffiliate(summary.getAffiliateAccountId());
@@ -331,11 +333,13 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		cbModel.setTransactionSource(EnumTransactionSource.SYSTEM);
 	}
 	
-	private void processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) {
+	private int processPPFee(List<ErpSettlementSummaryModel> stlmntTrxns, List<ErpPPSettlementInfo> settlementInfos) {
 		long txFee = 0;
 		long miscFee = 0;
+		int totalTrxns = 0;
 		for (ErpSettlementSummaryModel summary : stlmntTrxns) {
 			for (ErpSettlementTransactionModel tx : summary.getSettlementTrxns()) {
+				totalTrxns++;
 				if (ErpServicesProperties.getPPSTLEventCodes().contains(tx.getTransactionEventCode())) {
 					txFee += tx.getFeeAmount();
 				} else if (ErpServicesProperties.getPPSTFEventCodes().contains(tx.getTransactionEventCode()) ||
@@ -346,6 +350,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			}
 		}
 		
+		if (totalTrxns <= 0)
+			return 0;
 		ErpPPSettlementInfo txFeeInfo = new ErpPPSettlementInfo("FeeTrxnNOInvoice", ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
 		txFeeInfo.setAmount(new Money(txFee).getDollar());
 		txFeeInfo.setTxEventCode(ReconciliationConstants.FEE_KEY);
@@ -361,6 +367,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unexpected Misc fee in settlement ");
 		else if (miscFee > 0)
 			settlementInfos.add(miscFeeInfo);
+		return totalTrxns;
 	}
 
 	private static final String GET_PP_SETTLEMENT_SUMMARY = "select ID, AFFILIATE_ACCOUNT_ID, TOTAL_TRANS_FEE_CREDIT, " +
