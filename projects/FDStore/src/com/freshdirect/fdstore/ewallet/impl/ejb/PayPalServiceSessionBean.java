@@ -112,6 +112,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		String email = "";
 		String origin = "";
 		String deviceId="";
+		List<ValidationError> eWalletValidationErrors = new ArrayList<ValidationError>();
 		if(ewalletRequestData != null && ewalletRequestData.getReqParams() != null){
 			if (ewalletRequestData.getReqParams().containsKey(EwalletConstants.PARAM_PP_PAYMENMETHOD_NONCE)) {
 				paymentMethodNonce = ewalletRequestData.getReqParams().get(
@@ -133,8 +134,15 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				deviceId = ewalletRequestData.getReqParams().get(EwalletConstants.PARAM_DEVICEID);
 			}
 		}
-		
-		String vaultToken = obtainVaultToken(paymentMethodNonce,ewalletRequestData, firstName, lastName);
+		String vaultToken ="";
+		try{
+			vaultToken = obtainVaultToken(paymentMethodNonce,ewalletRequestData, firstName, lastName);
+		}catch(EWalletRuntimeException walletException){
+			eWalletValidationErrors.add(new ValidationError("Cannot Connect", "Error while obtaining Vault Token from PayPal"));
+		}
+		catch(Exception ex){
+			eWalletValidationErrors.add(new ValidationError("Cannot Connect", "Error while obtaining Vault Token from PayPal"));
+		}
 		
 		if(vaultToken != null && !StringUtil.isEmpty(vaultToken)){
 			//Store VaultToken and then Store PayPal account in Paymentmethod table.
@@ -198,6 +206,13 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				LOGGER.error("Error While adding PayPal account details : "+exception.getMessage());
 			}	
 		}
+		// Check for any error
+		if(eWalletValidationErrors!=null && !eWalletValidationErrors.isEmpty()){
+			ValidationResult result = new ValidationResult();
+			result.setErrors(eWalletValidationErrors);
+			ewalletResponseData.setValidationResult(result);
+			
+		}
 		return ewalletResponseData;
 	}
 	
@@ -258,35 +273,38 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		request.customerId(ewalletRequestData.getCustomerId());
 		request.firstName(fName);
 		request.lastName(lName);
-		
-		Result<? extends PaymentMethod> vaultResult = null;
-		
-	    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
-//	    customerResult.getTransaction(); Verify this one 
-	    // Check customer record created successfully or not
-	    if(customerResult.isSuccess()){
-	    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-			PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
-				    .paymentMethodNonce(paymentMethodNonce)
-				    .deviceData(deviceId);
-			vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
-//			PAYPAL_GET_VAULT_TOKEN_TXN
-			if(vaultResult != null){
-				if(vaultResult.isSuccess()){
-					logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
-					return vaultResult.getTarget().getToken();
+		try{
+			Result<? extends PaymentMethod> vaultResult = null;
+			
+		    Result<Customer> customerResult = PayPalData.getBraintreeGateway().customer().create(request);
+	//	    customerResult.getTransaction(); Verify this one 
+		    // Check customer record created successfully or not
+		    if(customerResult.isSuccess()){
+		    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
+				PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest().customerId(customerResult.getTarget().getId())
+					    .paymentMethodNonce(paymentMethodNonce)
+					    .deviceData(deviceId);
+				vaultResult = PayPalData.getBraintreeGateway().paymentMethod().create(paymentMethodRequest);
+	//			PAYPAL_GET_VAULT_TOKEN_TXN
+				if(vaultResult != null){
+					if(vaultResult.isSuccess()){
+						logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_SUCCESS);
+						return vaultResult.getTarget().getToken();
+					}else{
+						//fail
+						return null;
+					}
 				}else{
-					//fail
+					logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
 					return null;
 				}
-			}else{
-				logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_GET_VAULT_TOKEN_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
-				return null;
-			}
-	    }else{
-	    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
-	    	return null;
-	    }
+		    }else{
+		    	logPPEwalletRequestResponse(ewalletRequestData, null, EwalletConstants.PAYPAL_CREATE_CUSTOMER_TXN, EwalletConstants.PAYPAL_TXN_FAIL);
+		    	return null;
+		    }
+		}catch(AuthenticationException exception){
+			throw new EWalletRuntimeException("Cannot connect to PayPal.");
+		}
 	}
 	
 	

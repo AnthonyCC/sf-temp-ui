@@ -212,6 +212,13 @@ public class EwalletService {
 				requestData.setCustomerId(ewalletRequest.getCustomerId());
 				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.generateClientToken(requestData);
+				
+				// Error Handling - Check for Any error
+				ValidationResult validationResult = ewalletResponseData.getValidationResult();
+				if(validationResult != null && validationResult.getErrors() != null && !validationResult.getErrors().isEmpty()){
+					ewalletResponse = prepareErrorResponse(validationResult);
+					ewalletResponse.seteWalletStatus(ewalletStatus);
+				}
 				ewalletResponse.setTokenType(WALLET_RESPONSE_CLIENT);
 				ewalletResponse.setRequestToken(ewalletResponseData.getToken());
 			} else {
@@ -269,10 +276,17 @@ public class EwalletService {
 					requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 					requestData.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
 					EwalletResponseData ewalletResponseData = mobileRequestProcessor.isPayPalPaired(requestData);
-					ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(ewalletResponseData.getToken());
-					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
-					PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
-					ewalletResponse.setPaymentMethod(resPaymentMethod);
+					// Error Handling - Check for Any error
+					ValidationResult validationResult = ewalletResponseData.getValidationResult();
+					if(validationResult != null && validationResult.getErrors() != null && !validationResult.getErrors().isEmpty()){
+						ewalletResponse = prepareErrorResponse(validationResult);
+						ewalletResponse.seteWalletStatus(ewalletStatus);
+					}else{
+						ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(ewalletResponseData.getToken());
+						com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+						PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
+						ewalletResponse.setPaymentMethod(resPaymentMethod);
+					}
 				}
 
 			} else {
@@ -362,11 +376,17 @@ public class EwalletService {
 				requestData.setCustomerId(ewalletRequest.getCustomerId());
 				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.addPayPalWallet(requestData);
-				ErpPaymentMethodI paymentMethod = ewalletResponseData.getPaymentMethod();
-				if(paymentMethod != null){
-					com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
-					PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
-					ewalletResponse.setPaymentMethod(resPaymentMethod);
+				ValidationResult validationResult = ewalletResponseData.getValidationResult();
+				if(validationResult != null && validationResult.getErrors() != null && !validationResult.getErrors().isEmpty()){
+					ewalletResponse = prepareErrorResponse(validationResult);
+					ewalletResponse.seteWalletStatus(ewalletStatus);
+				}else{
+					ErpPaymentMethodI paymentMethod = ewalletResponseData.getPaymentMethod();
+					if(paymentMethod != null){
+						com.freshdirect.mobileapi.model.PaymentMethod paymentMethodModel =com.freshdirect.mobileapi.model.PaymentMethod.wrap(paymentMethod);
+						PaymentMethod resPaymentMethod = new PaymentMethod(paymentMethodModel,"");
+						ewalletResponse.setPaymentMethod(resPaymentMethod);
+					}
 				}
 			} else {
 				ewalletResponse = new EwalletResponse();

@@ -388,6 +388,8 @@ public class PayPal implements Gateway {
 		}catch(NotFoundException exception){
 			exception.printStackTrace();
 			return false;
+		}catch(AuthenticationException authenticationException){// When not able to interact with PayPal
+			return true;
 		}
 	}
 
