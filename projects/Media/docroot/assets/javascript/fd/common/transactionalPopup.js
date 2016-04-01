@@ -96,9 +96,9 @@ var FreshDirect = FreshDirect || {};
             }
           });
 
-          $(pimg).css({
+          /*$(pimg).css({
             marginTop: (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px'
-          });
+          });*/
 
           if ($img[0].getBoundingClientRect().height > 30) {
             $img.css({
