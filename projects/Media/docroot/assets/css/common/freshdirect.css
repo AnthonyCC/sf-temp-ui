@@ -1008,7 +1008,7 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 .wallet-connected-indicator{ 
 	color: #669933; 
 	font-weight: bold;
-    margin-top: 1px;
+    margin-top: 3px;
 }
 .wallet-connected-indicator img{
 	vertical-align: middle;

@@ -122,7 +122,7 @@
   line-height:16px;
 }
 .checkout-wallet-button{
-	margin-bottom: 10px;
+	margin-bottom: 16px;
 }
 #payment-method-separator{
 		font-size: 11px;
@@ -151,7 +151,9 @@
     text-align: left;
     margin-left: 4px;
 }
-
+#PP_button, #MP_button {
+	padding: 0;
+}
 
   /* Tooltip: Default, Hover */
   span.tooltip,

@@ -100,7 +100,7 @@
 		    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 		    	<input type="hidden" name="action" value="MP_Pairing_Start" />
 		    	<input type="hidden" name="ewalletType" value="MP" />
-		  		<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
+		  		<input type="image" id="MP_button" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 			</form>
 		{else}
 			{if $displayedCardType != 'MP' or $mpCardPaired == 'Yes' }
@@ -110,7 +110,7 @@
 		    	<img src='/media_stat/images/layout/clear.gif'>
 				<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
 					<input type="hidden" name="action" value="selectMPPaymentMethod" />		
-					<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
+					<input type="image" id="MP_button" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 				</form>
 		    {/if}
 	    {/if}
@@ -181,7 +181,7 @@
 	     		<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 		    		<input type="hidden" name="action" value="MP_Pairing_Start" />
 		    		<input type="hidden" name="ewalletType" value="MP" />
-		  			<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
+		  			<input type="image" id="MP_button" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 				</form>
 			{else}
 				{if $displayedCardType != 'MP' and $mpCardPaired == 'Yes' }
@@ -191,7 +191,7 @@
 			    		<img src='/media_stat/images/layout/clear.gif'>
 					<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
 						<input type="hidden" name="action" value="selectMPPaymentMethod" />		
-						<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
+						<input type="image" id="MP_button" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 					</form>
 		    	{/if}
 			{/if}
@@ -258,7 +258,7 @@
 			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
 			    	<input type="hidden" name="action" value="MP_Pairing_Start" />
 			    	<input type="hidden" name="ewalletType" value="MP" />
-			  		<input type="image" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
+			  		<input type="image" id="MP_button" src="https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png" alt="Buy With MasterPass">
 				</form>
 		   {/if}
 		   
