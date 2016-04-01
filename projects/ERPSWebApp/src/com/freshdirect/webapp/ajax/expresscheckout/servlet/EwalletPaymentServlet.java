@@ -194,8 +194,12 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 				eWalletResponseMap.put("eWalletResponseData", ewalletResponseData);
 				request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
 			}else{
-				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA))
+				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
 					response.sendRedirect("/expressco/checkout.jsp");
+				}else{
+					request.getSession().removeAttribute(EwalletConstants.EWALLET_ERROR_CODE);
+				}
+				
 			}
 			
 			// Submit the response
@@ -264,6 +268,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 	private ValidationResult convertValidationResult(EwalletResponseData ewalletResponseData, HttpServletRequest request, EwalletRequestData ewalletRequestData){
 		ValidationResult validationResult = new ValidationResult();
 		com.freshdirect.fdstore.ewallet.ValidationResult validresult = null;
+		String errorMsg = "";
 		if(ewalletResponseData != null ){
 			validresult = ewalletResponseData.getValidationResult();
 		}
@@ -276,7 +281,10 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 					respError.setName(error.getName());
 					respError.setError(error.getError());
 					resValidErrors.add(respError);
-					request.getSession().setAttribute(EwalletConstants.EWALLET_ERROR_CODE, error.getName());
+					errorMsg = error.getName();
+				}
+				if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_MP_STANDARD_CHECKOUT_DATA)){
+					request.getSession().setAttribute(EwalletConstants.EWALLET_ERROR_CODE, errorMsg);
 				}
 				validationResult.setErrors(resValidErrors);
 			}
