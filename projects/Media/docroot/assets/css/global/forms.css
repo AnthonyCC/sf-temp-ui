@@ -196,9 +196,9 @@ body[developer] *:focus {
 }  
    
 .select-wrapper {
-	display: inline;
+	/*display: inline;*/
 	position: relative;
-  line-height: 1.7em;
+	line-height: 2.7em;
 }
 
 .select-wrapper:after {
