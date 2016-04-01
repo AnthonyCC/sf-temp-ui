@@ -303,8 +303,11 @@
   line-height: 0;
   padding-bottom: 4px;
   vertical-align: bottom;
-  min-height:166px;
   margin-top: 0px;
+}
+
+.transactional-popup-wrapper .portrait-item-burst_wrapper {
+	min-height:166px;
 }
 
 .portrait-item:hover .portrait-item-controls {
