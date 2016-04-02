@@ -334,7 +334,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setTcAcknowledge(boolean tcAcknowledge) {
 		//this.tcAcknowledge = tcAcknowledge;
-		this.cachedFDCustomer.getCustomerEStoreModel().setTcAcknowledge(true);
+		if (null ==this.cachedFDCustomer) {
+			try {
+				this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
+			} catch (FDResourceException e) {
+				LOGGER.warn("Error in setTcAcknowledge() "+e);
+			}
+		}
+		if(null !=this.cachedFDCustomer){
+			this.cachedFDCustomer.getCustomerEStoreModel().setTcAcknowledge(true);
+		}
 	}
 
 
