@@ -127,8 +127,9 @@ public class PayPalSFTPSettlementLoader {
 				@Override
 				public boolean accept(File dir, String name) {
 					if (name.startsWith(DataLoaderProperties.getPayPalStlmntFilePrefix() + timestamp + INFIX) &&
-							name.endsWith(DataLoaderProperties.getPayPalStlmntFileSuffix() +
-												DataLoaderProperties.getPayPalStlmntFileExtn()))
+							(name.endsWith(DataLoaderProperties.getPayPalStlmntFileSuffix() +
+												DataLoaderProperties.getPayPalStlmntFileExtn()) || name.endsWith(DataLoaderProperties.getPayPalStlmntFileSuffix() +
+														DataLoaderProperties.getPayPalStlmntFileExtn().toLowerCase())))
 						return true;
 					return false;
 				}
