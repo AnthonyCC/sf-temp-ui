@@ -60,7 +60,9 @@
 {template .evenBetterItem}
 	{let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
+	<div>evenBetter.soy</div>
 	<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
+		<div>this is: $isEligibleForStandingOrders: {$isEligibleForStandingOrders}</div>
 		<div class="pdp-evenbetter-image">
 			<div class="portrait-item-burst_wrapper">
 				<img src="{$productImage}" alt="{$productNameNoBrand}" data-evenbetteritem-trigger class="portrait-item-productimage">
@@ -97,6 +99,8 @@
 					{/call}
 				</div>
 				<div class="pdp-evenbetter-atcbutton">
+					$isEligibleForStandingOrders: {$isEligibleForStandingOrders}<br />
+					$soData.settingsData.soData: {$soData.settingsData.soData}
 					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
 						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
 						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
