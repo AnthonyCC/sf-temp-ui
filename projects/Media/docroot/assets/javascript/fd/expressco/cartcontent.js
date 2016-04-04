@@ -38,6 +38,17 @@ function template_cleanup(){
 	template_dupe_cleaner();
 }
 
+
+function button_enableDisable(buttonId, eORd){ /*String, Boolean*/
+	if( $jq(buttonId).length > 0 ){
+		if( eORd == true ){ // if this button SHOULD be enabled...
+			$jq(buttonId).prop('disabled', false).removeClass("grey").addClass("green"); // enables button
+		}else{ // or if not
+			$jq(buttonId).prop('disabled', 'disabled').removeClass("green").addClass("grey");  // disables button
+		}
+	}
+}
+
 /*the function fired by hitting that green link within the excessive tip tooltip box */
 function populateCustomTipField(maxPossibleTip){
 	/* place the maximum allowable tip value into the field, based upon subtotal */
@@ -84,6 +95,8 @@ function tip_entered(){
 	/*clean the initial tip amount of unwanted characters or needless extra periods or trailing numbers after the 1st period */
 	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
+	console.log("now your'e a man! ", tip);
+	
 	var tipFloat = parseFloat(tip);
 
 	/*re-populate the optional custom tip textfield*/
@@ -96,6 +109,8 @@ function tip_entered(){
 	var maximumTipAllowed = subTotal * 0.32;
 
 	var roundedMaxTip = (Math.round(maximumTipAllowed*100)/100).toFixed(2);
+	
+	//return;
 	
 	/*if(tip > maximumTipAllowed){*/
 	if(tipFloat > roundedMaxTip){ /*APPBUG-4270*/
@@ -130,7 +145,18 @@ function tip_entered(){
 	    $jq(etids.inp_tipTextBox).attr('invalid','');
 	}else{ /*if the tip is a proper number, including zero */
 		$jq(etids.div_toolTipTextBox).html('');
-		$jq(etids.btn_tipApply).prop('disabled', false);
+		
+		if(tipFloat >= 0 && !isNaN(tip) && (tip.length > 0) ){
+			//$jq(etids.btn_tipApply).prop('disabled', false);
+			button_enableDisable(etids.btn_tipApply, true);
+			
+			console.log("kyle");
+		}else{
+			console.log("stan");
+			
+			button_enableDisable(etids.btn_tipApply, false);
+		}
+			
 		$jq(etids.sel_tipDropdown).val('Other Amount');
 		
 		/*forcibly hide the excessive amount tooltip box */
@@ -140,6 +166,10 @@ function tip_entered(){
 	    /* remove invalid property from input field */
 	    $jq(etids.inp_tipTextBox).attr('invalid',null);
 	}
+	
+	//cartcontent.update();
+	
+	console.log("everything cool updated with "+ tip +"?");
 }
 
 /* APPDEV-4904, get the chosen payment type for the customer */
@@ -185,6 +215,10 @@ function set_current_payment_choice_JSonly(arr){
 function cart_content_template_htmlstr(){
 	if( (window.FreshDirect.cartTemplateObj) && (window.FreshDirect.cartTemplateObj.data) && (window.FreshDirect.cartTemplateObj.processFn) ){
 		var data = window.FreshDirect.cartTemplateObj.data;
+		
+		//window.cartdata = data;
+		
+		console.log("data = ", data);
 		
 		var processFn = window.FreshDirect.cartTemplateObj.processFn;
 						
@@ -575,8 +609,9 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					$jq(etids.sel_tipDropdown).hide();
 					$jq(etids.inp_tipTextBox).show().focus().select();
 					
+					/*APPBUG-4963, immediately disable the 'add tip' button, because there is nothing in the blank field */
 					/*APPBUG-4219, disable the button if one switches to 'other amount' */
-					/*$jq( etids.btn_tipApply ).prop("disabled", "disabled");*/
+					$jq( etids.btn_tipApply ).prop("disabled", "disabled").removeClass("green").addClass("grey");
 				}
 			}
 		},
@@ -584,6 +619,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 			value: function(e){
 				e.preventDefault();
 				e.stopPropagation();
+
 				$jq(etids.btn_tipApply).show();
 				$jq(etids.btn_tipApplied).hide();
 

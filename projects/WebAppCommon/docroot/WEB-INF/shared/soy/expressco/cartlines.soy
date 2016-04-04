@@ -542,9 +542,12 @@
 								{/if}
 								<br/>
 								<input type="hidden" name="action" value="applyETip" />
+
 								{if $tipApplied}
 									<button id="tipApplied" class="cssbutton grey" disabled>Tip Added</button>
 									<button id="tipApply" style="display:none" aria-hidden="true" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
+								{elseif ($etipTotal < 1) and $customTip and not $isEBTused}
+									<button id="tipApply" class="cssbutton grey" disabled {if $isEBTused}title="Disabled for EBT purchases"{/if}>Add Tip</button>
 								{else}
 									<button id="tipApply" class="cssbutton {if $isEBTused}grey{else}green{/if}" {if $isEBTused}disabled title="Disabled for EBT purchases"{/if}>Add Tip</button>
 									<button id="tipApplied" style="display:none" aria-hidden="true" class="cssbutton grey" disabled>Tip Added</button>
