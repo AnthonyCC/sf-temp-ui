@@ -1593,10 +1593,10 @@ public class FDStoreProperties {
 		
 		 //Product Family 
         defaults.put(PROP_PRODUCTFAMILY, "true");
-        defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1api.freshdirect.com/");
-        defaults.put(PROP_OMS_API_URL, "http://crmdev5.freshdirect.com/");
+        defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
+        defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
         
-        defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.freshdirect.com/givex/giftcard");
+        defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.nj01/givex/giftcard/");
         
         
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
@@ -1680,8 +1680,8 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
         		
 
-        defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev07.nyc1.freshdirect.com:7001");
-        defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev04.nyc1.freshdirect.com:7001");
+        defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
+        defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev06.nj01:7001");
         
 		refresh();
     }
