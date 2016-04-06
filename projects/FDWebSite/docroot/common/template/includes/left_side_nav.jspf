@@ -124,7 +124,9 @@ if (catImage!=null) {
 	/* buf.append("\" WIDTH=\"").append(catImage.getWidth());
 	buf.append("\" HEIGHT=\"").append(catImage.getHeight());
 	buf.append("\" border=\"0\">"); */
-	buf.append("<div>ABOUT US </div>");
+	/*buf.append("<div>ABOUT US </div>"); */ /* NO! bad dev! go to your corner */
+	buf.append("<div>"+topCategory.getFullName()+"</div>");
+	
 	buf.append("</a></td></tr>");
 
 	displayedRows++;
