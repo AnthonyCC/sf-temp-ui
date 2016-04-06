@@ -60,9 +60,7 @@
 {template .evenBetterItem}
 	{let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soData and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<div>evenBetter.soy</div>
 	<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
-		<div>this is: $isEligibleForStandingOrders: {$isEligibleForStandingOrders}</div>
 		<div class="pdp-evenbetter-image">
 			<div class="portrait-item-burst_wrapper">
 				<img src="{$productImage}" alt="{$productNameNoBrand}" data-evenbetteritem-trigger class="portrait-item-productimage">
