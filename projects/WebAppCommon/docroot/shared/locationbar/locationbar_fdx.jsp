@@ -156,7 +156,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 <%-- ZIP/ADDRESS area --%>
 	<%
-		String zipAddDisplayString = "Change Zip Code";
+		String zipAddDisplayString = "Delivery Information";
 		boolean isEligibleForPreReservation = false;
 		FDReservation userReservervation = null;
 		SimpleDateFormat dateFormatterNoYear = new SimpleDateFormat("EEE MM/dd");
@@ -309,24 +309,50 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			<%
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
-				<div class="text">Change zip code.</div>
-				<span id="newzip">
-					<label for="newziptext"></label>
-					<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
-					<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
-				</span>
+				<div class="locabar_addresses-change-zip-cont">
+					<div class="text">Change zip code.</div>
+					<span id="newzip">
+						<label for="newziptext"></label>
+						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
+						<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
+					</span>
+				</div>
 			</tmpl:put><%
 			
 
 			String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-			if (hasFdServices) {
+			if (hasFdServices) { //non-recognized and in deliverable zip
 				%><tmpl:put name="address">
-					<div class="text bold text12"><%="".equals(shortAddress) ? "" : shortAddress %></div>
-					<div class="text" style="margin-bottom: 1.5em;">Shopping in <%= selectedAddress.getZipCode() %> zip code.</div>
-					<tmpl:get name="address_change_zip"/>
+					<% if (user == null || user.getLevel() == FDUserI.GUEST) { %>
+						<div class="locabar_addresses-anon-deliverable">
+							<div class="locabar_addresses-anon-deliverable-header">About FreshDirect Delivery</div>
+							<div class="locabar_addresses-anon-deliverable-item-icon-truck">
+								<div><a href="/browse.jsp?id=gro_gear_dlvpass">DeliveryPass</a></div>
+								<div class="locabar_addresses-anon-deliverable-item-secondary">No Delivery fees!</div>
+							</div>
+							<div class="locabar_addresses-anon-deliverable-item-icon-info">
+								<div><a href="/help/delivery_info.jsp">About Delivery</a></div>
+							</div>
+							<div class="locabar_addresses-anon-deliverable-item-icon-clock">
+								<div><a href="/help/delivery_info_check_slots.jsp">Available Timeslots</a></div>
+							</div>
+						</div>
+					<% } %>
+					<%--
+						<div class="text bold text12"><%="".equals(shortAddress) ? "" : shortAddress %></div>
+						<div class="text" style="margin-bottom: 1.5em;">Shopping in <%= selectedAddress.getZipCode() %> zip code.</div>
+					 --%>
+					<div class="locabar_addresses-anon-deliverable-change-zip-cont">
+						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-cont">Zip Code: <span class="bold"><%= selectedAddress.getZipCode() %></span> <button type="button" class="cssbutton small green transparent locabar_addresses-anon-deliverable-change-zip-toggle-btn">Change</button></div>
+						<div class="locabar_addresses-anon-deliverable-change-zip-toggle-target" style="display:none;">
+							<tmpl:get name="address_change_zip"/>
+						</div>
+						<button type="button" class="cssbutton green locabar_addresses-anon-deliverable-add-address-btn">Add Delivery Address</button>
+					</div>
 				</tmpl:put><%
 			} else { //non-recognized and not in deliverable zip
-				%><tmpl:put name="address"><div style="display: inline-block;" class="section-warning">
+				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
+					<div style="display: inline-block;" class="section-warning">
 						<div style="margin: 0 0 1em 10px;">
 							<div class="text13 bold"><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= selectedAddress.getZipCode() %></div>
 							<div>FreshDirect is not available in<br /> this zip code.</div>
@@ -343,6 +369,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								</div>
 							</form>
 						<% } %>
+					</div>
 				</div></tmpl:put>
 				<tmpl:put name="location_out_of_area_alert">
 					<div id="sitemessage" class="alerts invisible" data-type="sitemessage">
@@ -413,7 +440,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					</div>
 				</div>
 				
-				<div id="locabar_addresses" class="locabar_triggers_menu posAbs">
+				<div id="locabar_addresses" class="locabar_addresses locabar_triggers_menu posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
@@ -422,7 +449,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% if (user != null && user.getLevel() != FDUserI.GUEST) { %><a href="/your_account/delivery_information.jsp" class="locabar_addresses-dlvadd-edit">Edit</a><% } %>
 						</div>
 					<% } %>
-					
 					<tmpl:get name="address" />
 					
 					<% if (user != null &&  user.getLevel() != FDUserI.GUEST) { %>
@@ -447,7 +473,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals(selectedAddress.getId()) ) { %>
 								<div class="locabar_addresses-reservation-none">
 									<div class="locabar_addresses-reservation-view-cont">
-										<a href="<%=temp_delivery_link %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
+										<a href="<%=temp_delivery_link %>" style="display: none" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
 									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
 										<div class="locabar_addresses-reservation-make-cont" style="display: none;">

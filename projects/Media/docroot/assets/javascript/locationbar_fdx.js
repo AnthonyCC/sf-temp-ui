@@ -118,6 +118,8 @@ $jq('#selectAddressList').iconselectmenu({
 function iconselectmenuSetEvents() {
 	$jq('#locabar_addresses_choices li.ui-menu-item').on('mouseenter mouseleave', function(e){
 		var $makeResvButton = $jq('.locabar_addresses-reservation-make');
+		var $viewTsButton = $jq('.locabar_addresses-reservation-view');
+		
 		var $makeResvCont = $jq('.locabar_addresses-reservation-make-cont');
 		if (e.type === 'mouseenter') {
 			var $refIcon = $jq(this).find('.address-icon:first');
@@ -129,6 +131,11 @@ function iconselectmenuSetEvents() {
 				$jq('.locabar_addresses-reservation-make-notFor').html('&nbsp;');
 				
 				$makeResvButton.removeClass('disabled');
+
+				if ($makeResvButton) {
+					$viewTsButton.hide();
+				}
+				
 				$makeResvCont.show();
 			} else {
 				if ($refIcon.hasClass('address-type-cos')) {
@@ -138,6 +145,8 @@ function iconselectmenuSetEvents() {
 				}
 				$makeResvButton.addClass('disabled');
 				$makeResvCont.hide();
+				
+				$viewTsButton.show();
 			}
 			
 		} else if (e.type === 'mouseleave') {
@@ -146,9 +155,11 @@ function iconselectmenuSetEvents() {
 			if ($makeResvButton.data('resvDisabled')) {
 				$makeResvButton.addClass('disabled');
 				$makeResvCont.hide();
+				$viewTsButton.show();
 			} else {
 				$makeResvButton.removeClass('disabled');
 				$makeResvCont.show();
+				$viewTsButton.hide();
 			}
 		}
 	});
@@ -298,4 +309,18 @@ $jq(document).ready(function() {
 		$jq('#locabar-messages-open').parent('.locabar_triggers').removeClass('alertOpen');
 		$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
 	});
+	if ($jq('#locabar_addresses .locabar_addresses-anon-deliverable').length) {
+		$jq('#locabar_addresses').addClass('anon-deliverable');
+		$jq('#locabar_addresses .ui-arrow.ui-top').addClass('anon-deliverable');
+	}
+});
+
+$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', function() {
+	$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-target').show();
+	$jq(this).hide();
+});
+
+
+$jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function() {
+	window.location = '/registration/signup.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
 });

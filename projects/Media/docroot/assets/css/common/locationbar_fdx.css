@@ -25,7 +25,7 @@
 		margin: 0;
 		height: 40px!important;
 		/*width: 130px;*/
-		width:216px;
+		width: 210px;
 		padding: 3px 15px;
 		font-size: 16px!important;
 		background-color: #eee;
@@ -738,7 +738,7 @@
 	right: 0px;
 }
 #locabar_addresses .locabar_addresses-ts-info {
-	background-image: url('/media/layout/nav/globalnav/fdx/locabar-info.png');
+	background-image: url('/media/layout/nav/globalnav/fdx/locabar-clock.png');
 	background-repeat: no-repeat;
 	background-position: center center;
 	height: 22px;
@@ -752,7 +752,6 @@
 #locabar_addresses {
 	display: inline-block;
 	background-color: #fff;
-	padding: 30px 15px 5px 15px;
 	margin: 15px 0 0 0;
 	color: #656565;
 	font-size: 14px!important;
@@ -1211,9 +1210,6 @@
     margin-top: 10px;
     margin-bottom:6px;
 }
-.locabar_addresses-reservation-none .cssbutton.green.transparent.locabar_addresses-reservation-view {
-    border: none;
-}
 .locabar_addresses-reservation-existing {
 	font-weight: bold;
 	font-size: 13px;
@@ -1499,4 +1495,85 @@ option.address-icon {
 }
 .selectedAddressIsHome-false {
 	color: #c2c2c2;
+}
+
+.locabar_addresses-anon-deliverable {
+	padding: 20px 15px 5px 15px;
+	background-color: #f7f7f7;
+	line-height: 1.8em;
+}
+.locabar_addresses-anon-deliverable-header {
+	font-weight: bold;
+}
+.locabar_addresses-anon-deliverable-item-icon-truck,
+.locabar_addresses-anon-deliverable-item-icon-info,
+.locabar_addresses-anon-deliverable-item-icon-clock
+{
+	min-height: 24px;
+    padding-left: 50px; /* widest + 10px */
+    background-position-y: 0;
+    background-repeat: no-repeat;
+}
+.locabar_addresses-anon-deliverable>div {
+    padding-bottom: 10px;
+}
+
+.locabar_addresses-anon-deliverable-item-secondary {
+	line-height: 0.9em;
+	font-size: 0.9em;
+    font-style: italic;
+}
+
+.locabar_addresses-anon-deliverable-item-icon-info,
+.locabar_addresses-anon-deliverable-item-icon-clock
+{
+	background-position-x: 8px;
+}
+
+.locabar_addresses-anon-deliverable-item-icon-truck {
+    background-image: url('/media/layout/nav/globalnav/fdx/locabar-dlv-truck.png');
+}
+.locabar_addresses-anon-deliverable-item-icon-info {
+    background-image: url('/media/layout/nav/globalnav/fdx/locabar-dlv-info.png');
+}
+.locabar_addresses-anon-deliverable-item-icon-clock {
+    background-image: url('/media/layout/nav/globalnav/fdx/locabar-dlv-clock.png');
+}
+.locabar_addresses-change-zip-cont {
+	padding: 10px 15px 20px 15px;
+}
+.locabar_addresses-anon-deliverable-change-zip-cont {
+	padding: 20px;
+}
+.locabar_addresses-anon-deliverable-change-zip-cont .locabar_addresses-change-zip-cont,
+.locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont
+ {
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 0;
+}
+.locabar_addresses-anon-deliverable-change-zip-toggle-btn {
+	margin-left: 20px;
+}
+.locabar_addresses-anon-deliverable-add-address-btn {
+	width: 100%;
+}
+.locabar_addresses-anon-deliverable-change-zip-toggle-cont {
+	padding: 0 0 15px 0;
+}
+.locabar_addresses-anon-nondeliverable {
+	padding: 20px 20px 5px 20px;
+}
+.locabar_addresses-anon-deliverable-header {
+	font-weight: bold;
+}
+#locabar_addresses .ui-arrow.ui-top.anon-deliverable:after {
+	background-color: #f7f7f7;
+}
+#locabar_addresses {
+	padding: 30px 15px 5px 15px;
+}
+#locabar_addresses.anon-deliverable {
+	min-width: 331px;
+	padding: 0;
 }
