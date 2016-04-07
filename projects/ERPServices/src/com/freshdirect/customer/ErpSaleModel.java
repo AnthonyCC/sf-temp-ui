@@ -250,9 +250,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	public List<ErpAuthorizationModel> getApprovedAuthorizations() {
 		List<String> capturedAuthCodes = new ArrayList<String>();
+		List<String> capturedSeqNums = new ArrayList<String>();
 		for (ErpTransactionModel o : transactions) {
 			if (o instanceof ErpCaptureModel) {
 				capturedAuthCodes.add(((ErpCaptureModel) o).getAuthCode());
+				capturedSeqNums.add(((ErpCaptureModel) o).getSequenceNumber());
 			}
 		}
 
@@ -262,7 +264,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) o;
 
 				if (EnumPaymentResponse.APPROVED.equals(auth.getResponseCode())) {
-					if (!capturedAuthCodes.contains(auth.getAuthCode())) {
+					if ((EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) &&
+							EnumCardType.PAYPAL.equals(auth.getCardType()) && !capturedSeqNums.contains(auth.getSequenceNumber())) ||
+						!capturedAuthCodes.contains(auth.getAuthCode())
+							) {
 						lst.add(auth);
 					}
 				}
