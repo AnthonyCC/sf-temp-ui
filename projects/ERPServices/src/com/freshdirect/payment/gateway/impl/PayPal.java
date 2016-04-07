@@ -457,8 +457,10 @@ public class PayPal implements Gateway {
 		Transaction trxn = result.getTransaction();
 		response.setStatusMessage(result.getMessage());
 		response.setEwalletId("" + EnumEwalletType.PP.getValue());
-		response.setEwalletTxId(trxn.getId());
-		response.getBillingInfo().setTransactionRef(trxn.getPayPalDetails().getAuthorizationId());
+		if(trxn != null && trxn.getPayPalDetails() != null){
+			response.setEwalletTxId(trxn.getId());
+			response.getBillingInfo().setTransactionRef(trxn.getPayPalDetails().getAuthorizationId());
+		}
 		response.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
 	}
 
