@@ -88,9 +88,11 @@ public class FDOrderTranslator {
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			} else {
 				String customerId=cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";
-				LOGGER.warn("Defaulting DeliveryPlantInfo for customer : "+customerId+ " and eStore :"+cart.getEStoreId());
-				ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo(cart.getEStoreId());
-				deliveryInfo.setDeliveryPlantInfo(dpi);
+				if(null !=cart.getDeliveryAddress()){
+					LOGGER.warn("Defaulting DeliveryPlantInfo for customer : "+customerId+ " and eStore :"+cart.getEStoreId());
+					ErpDeliveryPlantInfoModel dpi=FDUserUtil.getDefaultDeliveryPlantInfo(cart.getEStoreId());
+					deliveryInfo.setDeliveryPlantInfo(dpi);
+				}
 			}
 			if(deliveryReservation!=null)
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
