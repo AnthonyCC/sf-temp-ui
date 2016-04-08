@@ -944,6 +944,7 @@
 
 #locabar_modify_order_trigger #locabar_orders .locabar-modify-order-dropdown{
 	padding: 30px 20px 12px 20px;
+	min-width: 320px;
 }
 
 #locabar_modify_order_trigger #locabar_orders .locabar-modify-order-dropdown .so-alert-line-separator{
