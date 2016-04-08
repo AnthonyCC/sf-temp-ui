@@ -132,7 +132,7 @@ function iconselectmenuSetEvents() {
 				
 				$makeResvButton.removeClass('disabled');
 
-				if ($makeResvButton) {
+				if ($makeResvButton.length > 0) {
 					$viewTsButton.hide();
 				}
 				
@@ -159,7 +159,10 @@ function iconselectmenuSetEvents() {
 			} else {
 				$makeResvButton.removeClass('disabled');
 				$makeResvCont.show();
-				$viewTsButton.hide();
+
+				if ($makeResvButton.length > 0) {
+					$viewTsButton.hide();
+				}
 			}
 		}
 	});
