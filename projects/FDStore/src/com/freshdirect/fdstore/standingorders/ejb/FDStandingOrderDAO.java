@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -1620,7 +1621,7 @@ public class FDStandingOrderDAO {
 		try {
 			FDCachedFactory.getProductInfo(sourceSku).getVersion();
 			FDProductInfo fdProductInfo = FDCachedFactory.getProductInfo(sourceSku);
-			if (fdProductInfo.isDiscontinued("1000","1000") == true) {//::FDX:: 
+			if (true==fdProductInfo.isDiscontinued(ZonePriceListing.DEFAULT_SALES_ORG,ZonePriceListing.DEFAULT_DIST_CHANNEL)) {//::FDX:: 
 				isSkuValidButDiscontinued = true;
 			}
 			else{
