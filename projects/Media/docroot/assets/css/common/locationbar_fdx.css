@@ -1576,3 +1576,8 @@ option.address-icon {
 	min-width: 331px;
 	padding: 0;
 }
+#locabar_orders .section-header {
+	max-height: 540px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
