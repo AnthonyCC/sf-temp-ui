@@ -105,12 +105,17 @@ var FreshDirect = FreshDirect || {};
 	var BASIC_ATC = ATC_BUS.filter(function(event){ return requiredValidator(event.items)}).toProperty();
 	
 	Bacon.combineWith(function(value,usqState){
-		value.usqState = usqState;
+		//value.usqState = usqState;
+		value.usqState = fd.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1');
 		return value;
 	},BASIC_ATC.map(function(event){
 		event.containsAlcoholic=usqValidator(event.items);
 		return event;
 	}),fd.USQWarning.Popup.state).flatMapLatest(function(value){
+		 if(FreshDirect.hasOwnProperty("standingorder") && FreshDirect.standingorder.isItSOAlcoholPopup){
+			 FreshDirect.standingorder.isItSOAlcoholPopup = false;
+			 return false;
+		 }
 		if(value.containsAlcoholic && !value.usqState && fd.USQWarning.Popup.isClosed()){
 			fd.USQWarning.Popup.open();
 			return fd.USQWarning.Popup.state.changes().flatMapLatest(function(accepted){
@@ -154,6 +159,9 @@ var FreshDirect = FreshDirect || {};
 	}
 
   function eventATC (e) {
+		if(FreshDirect.hasOwnProperty("standingorder")){
+			FreshDirect.standingorder.isItSOAlcoholPopup = false;
+		}
 		var items = fd.modules.common.productSerialize(e.target, true, true),
         cartdata = fd.modules.common.getCartData(e.target),
         amount,

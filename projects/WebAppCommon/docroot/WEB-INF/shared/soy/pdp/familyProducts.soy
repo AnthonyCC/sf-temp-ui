@@ -96,7 +96,7 @@
 					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
 						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
 						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
-						<button data-component="showSOButton" class="cssbutton cssbutton-flat green">Standing Order</button>
+						<button type="button" fd-login-required fd-login-successpage-current data-component="showSOButton" class="cssbutton cssbutton-flat green">Standing Order</button>
 					{else}
 						<button type="button" data-component="ATCButton" class="cssbutton orange small">add to cart</button>
 						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>

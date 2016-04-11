@@ -68,7 +68,7 @@
      	onclickValue += "return false;";
 
 		Map<String,String> dataMap = new HashMap<String,String>();
-		dataMap.put( "mediaContent", fetchMedia("/media/editorial/site_pages/health_warning_overlay.html", user, false));
+		dataMap.put( "mediaContent", fetchMedia("/media/editorial/site_pages/health_warning_overlay_2016.html", user, false));
 		
 		/* render js to page so onclick has a method to call */
 	%>

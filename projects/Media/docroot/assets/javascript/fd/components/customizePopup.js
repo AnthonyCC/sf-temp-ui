@@ -181,25 +181,37 @@ var FreshDirect = FreshDirect || {};
         }
       }
     }
-    
-
 
 	$('#' + customizePopup.popupId).removeClass('soShow');
     if ($(element).data('soshow')) {
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
 
-    var item = fd.modules.common.productSerialize(element).pop();
-    var cartData = fd.modules.common.getCartData(element);
-    var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
-
-    customizePopup.open({
-      element:element,
-      item:item,
-      cartData:cartData,
-      hasApply:$(element).data('hasapply') || false,
-      cmEventSource:cmEventSourceElement.data('cmeventsource')
-    });
+    if($(element).data('soshow')){
+    	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+    		var item = fd.modules.common.productSerialize(element).pop();
+            var cartData = fd.modules.common.getCartData(element);
+            var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
+            customizePopup.open({
+            	element:element,
+            	item:item,
+            	cartData:cartData,
+            	hasApply:$(element).data('hasapply') || false,
+            	cmEventSource:cmEventSourceElement.data('cmeventsource')
+            });
+    	}
+    } else {
+    	var item = fd.modules.common.productSerialize(element).pop();
+        var cartData = fd.modules.common.getCartData(element);
+        var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
+        customizePopup.open({
+          element:element,
+          item:item,
+          cartData:cartData,
+          hasApply:$(element).data('hasapply') || false,
+          cmEventSource:cmEventSourceElement.data('cmeventsource')
+        });
+    }
   });
 
 

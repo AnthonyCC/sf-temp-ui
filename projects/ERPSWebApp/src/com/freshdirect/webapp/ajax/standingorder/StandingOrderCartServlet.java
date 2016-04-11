@@ -151,7 +151,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			
 			    FDProduct product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(reqData.getItems().get(0).getSkuCode()));
 
-				if(product.isAlcohol()){
+				if(product.isAlcohol() && !"Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
 					so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 					if(!so.isAlcoholAgreement()){
 						isAlcoholPopupDisplay=true;

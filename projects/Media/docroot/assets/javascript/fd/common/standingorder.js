@@ -1,74 +1,126 @@
+FreshDirect.standingorder = FreshDirect.standingorder || {};
+FreshDirect.standingorder.USQPopupOpen = false;
+FreshDirect.standingorder.isItSOAlcoholPopup = false;
+FreshDirect.standingorder.alcoholVerified = "N";
+FreshDirect.standingorder.healthWarningCookie = null;
 /* refactor these addToSo calls to make them all one */
 function addToSoEvenBetter($clickedButton) {
-	var that = $clickedButton;
-	var ids = $jq(that).parent().find('.so-select').val().split(':');
-	$jq.post('/api/standingOrderCartServlet',
-		{
-			data: JSON.stringify({
-				actiontype: 'AddProductToSO',
-				standingOrderId: ids[0],
-				listId: ids[1],
-				items: FreshDirect.components.AddToCart.atcFilter(
-					FreshDirect.modules.common.productSerialize($jq('#evenBetterPopup .pdp-evenbetter-atc'))
-				)
-			})
-		},
-		function(data) {
-			addToSoSuccessHandler(that, data);
-		}
-	).fail(function(data) {
-		addToSoErrorHandler(data);
-	});
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+		var that = $clickedButton;
+		var ids = $jq(that).parent().find('.so-select').val().split(':');
+		$jq.post('/api/standingOrderCartServlet',
+			{
+				data: JSON.stringify({
+					actiontype: 'AddProductToSO',
+					standingOrderId: ids[0],
+					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
+					listId: ids[1],
+					items: FreshDirect.components.AddToCart.atcFilter(
+						FreshDirect.modules.common.productSerialize($jq('#evenBetterPopup .pdp-evenbetter-atc'))
+					)
+				})
+			},
+			function(data) {
+				addToSoSuccessHandler(that, data);
+			}
+		).fail(function(data) {
+			addToSoErrorHandler(data);
+		});
+	}
 }
 function addToSoCustomize($clickedButton) {
-	console.log('addToSoCustomize');
-	var that = $clickedButton;
-	var ids = $jq(that).parent().find('.so-select').val().split(':');
-	$jq.post('/api/standingOrderCartServlet',
-		{
-			data: JSON.stringify({
-				actiontype: 'AddProductToSO',
-				standingOrderId: ids[0],
-				listId: ids[1],
-				items: FreshDirect.components.AddToCart.atcFilter(
-					FreshDirect.modules.common.productSerialize($jq(that).closest('form[fdform="customize"]'))
-				)
-			})
-		},
-		function(data) {
-			addToSoSuccessHandler(that, data);
-		}
-	).fail(function(data) {
-		addToSoErrorHandler(data);
-	});
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+		var that = $clickedButton;
+		var ids = $jq(that).parent().find('.so-select').val().split(':');
+		$jq.post('/api/standingOrderCartServlet',
+			{
+				data: JSON.stringify({
+					actiontype: 'AddProductToSO',
+					standingOrderId: ids[0],
+					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
+					listId: ids[1],
+					items: FreshDirect.components.AddToCart.atcFilter(
+						FreshDirect.modules.common.productSerialize($jq(that).closest('form[fdform="customize"]'))
+					)
+				})
+			},
+			function(data) {			
+				addToSoSuccessHandler(that, data);
+			}
+		).fail(function(data) {
+			addToSoErrorHandler(data);
+		});
+	}
 }
 
 $jq('button[data-component="addToSOButton"]').on('click', function() {
-	console.log('addtoSo');
-	var ids = $jq('.so-select').val().split(':');
-	var that = this;
-	$jq.post('/api/standingOrderCartServlet',
-		{
-			data: JSON.stringify({
-				actiontype: 'AddProductToSO',
-				standingOrderId: ids[0],
-				listId: ids[1],
-				items: FreshDirect.components.AddToCart.atcFilter(
-					FreshDirect.modules.common.productSerialize($jq('.pdp-productconfig'))
-				)
-			})
-		},
-		function(data) {
-			addToSoSuccessHandler(that, data);
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+		var ids = $jq('.so-select').val().split(':');
+		var that = this;
+		$jq.post('/api/standingOrderCartServlet',
+			{
+				data: JSON.stringify({
+					actiontype: 'AddProductToSO',
+					standingOrderId: ids[0],
+					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
+					listId: ids[1],
+					items: FreshDirect.components.AddToCart.atcFilter(
+						FreshDirect.modules.common.productSerialize($jq('.pdp-productconfig'))
+					)
+				})
+			},
+			function(data) {
+				addToSoSuccessHandler(that, data);
+			}
+		).fail(function(data) {
+			addToSoErrorHandler(data);
+		});
+	}
+});
+
+function healthWarningOnClick(accept){	
+	if(accept){
+		$jq('button[data-component="addToSOButton"]').trigger("alcohol-accepted");
+		FreshDirect.modules.common.utils.createCookie('freshdirect.healthwarning','1@'+FreshDirect.USQLegalWarning.getJSessionId());
+	}
+	if($jq("#USQPopup").hasClass("soShow")){
+		FreshDirect.standingorder.isItSOAlcoholPopup = true;
+		if(FreshDirect.USQWarning.Popup.isOpen()){
+			FreshDirect.USQWarning.Popup.close();
 		}
-	).fail(function(data) {
-		addToSoErrorHandler(data);
-	});
+	}
+}
+
+$jq(document).on('click','[data-component="ATCButton"]', function() {
+	if(FreshDirect.hasOwnProperty("standingorder")){
+		FreshDirect.standingorder.isItSOAlcoholPopup = false;
+	}
 });
 
 function addToSoSuccessHandler($contextElem, data) {
+	FreshDirect.standingorder.alcoholVerified = "N";
 	if (!data.success) {
 		return addToSoErrorHandler(data);
+	}
+	if(data.alcohol){
+		FreshDirect.standingorder.healthWarningCookie = FreshDirect.modules.common.utils.readCookie("freshdirect.healthwarning");
+		FreshDirect.standingorder.USQPopupOpen = true;
+		FreshDirect.USQWarning.Popup.open();
+		$jq('button[data-component="addToSOButton"]').on("alcohol-accepted", function(){
+			if($jq("#USQPopup").hasClass("soShow") && FreshDirect.USQWarning.Popup.isOpen()){				
+				FreshDirect.standingorder.alcoholVerified = "Y";
+				$jq($contextElem).click();
+				FreshDirect.USQWarning.Popup.close();
+			}
+		});
+		return false;
+	}
+
+	if(FreshDirect.USQWarning.Popup.isOpen()){
+		FreshDirect.USQWarning.Popup.close();
+	}
+	if(!FreshDirect.standingorder.healthWarningCookie){		
+		FreshDirect.modules.common.utils.eraseCookie("freshdirect.healthwarning");
 	}
 	
 	var $soResultsCont = $jq($contextElem.closest('.so-container')).find('.so-results-content');

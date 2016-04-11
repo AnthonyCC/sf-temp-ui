@@ -75,21 +75,21 @@
  * @param? customAlignPopup
  */
 {template .soShowBtn}
-	<button type="button" data-component-extra="showSOButton" class="customize cssbutton cssbutton-flat green" data-component="customizeButton" data-alignpopupfunction="{if $customAlignPopupFunction}{$customAlignPopupFunction}{else}transactionalCustomize{/if}" data-alignpopup="{if $customAlignPopup}{$customAlignPopup}{else}tc-bc{/if}" data-soshow="true" aria-haspopup="true" data-hasapply="true">Standing Order</button>
+	<button type="button" fd-login-required fd-login-successpage-current data-component-extra="showSOButton" class="customize cssbutton cssbutton-flat green" data-component="customizeButton" data-alignpopupfunction="{if $customAlignPopupFunction}{$customAlignPopupFunction}{else}transactionalCustomize{/if}" data-alignpopup="{if $customAlignPopup}{$customAlignPopup}{else}tc-bc{/if}" data-soshow="true" aria-haspopup="true" data-hasapply="true">Standing Order</button>
 {/template}
 
 /**
  *
  */
 {template .soAddBtn}
-	<button data-component="addToSOButton" class="cssbutton cssbutton-flat green">Add</button>
+	<button type="button" fd-login-required fd-login-successpage-current data-component="addToSOButton" class="cssbutton cssbutton-flat green">Add</button>
 {/template}
 
 /**
  *
  */
 {template .soCreateBtn}
-	<button data-component="createSOButton" class="cssbutton cssbutton-flat green">Create Standing Order</button>
+	<button type="button" data-component="createSOButton" class="cssbutton cssbutton-flat green">Create Standing Order</button>
 {/template}
 
 /**

@@ -65,7 +65,7 @@ var FreshDirect = FreshDirect || {};
         } else {
             this.opened = true;
             this.container.show();
-            changeSizeOfBack()
+            changeSizeOfBack();
         }
         //hiding the background body scrollbar and adding margin with width of scrollbar, so the content will not move
         $("body").css("overflow","hidden");
@@ -102,6 +102,11 @@ var FreshDirect = FreshDirect || {};
   function changeSizeOfBack(){
 	  $('head').append('<style>#USQPopup:before{height:100%;}</style>');
 	  $('head').append('<style>#USQPopup:before{width:100%;}</style>');
+	  $("#USQPopup.soShow").removeClass("soShow");
+	  if(FreshDirect.hasOwnProperty("standingorder") && FreshDirect.standingorder.USQPopupOpen){
+		  $("#USQPopup").addClass("soShow");
+		  FreshDirect.standingorder.USQPopupOpen = false;
+      }
 	  
 	  if ($("#USQPopup").height() < $("#USQPopup div.USQPopupContent").height()){
 			var sumH = $("#USQPopup div.USQPopupContent").height() + 70;

@@ -65,13 +65,17 @@ var FreshDirect = FreshDirect || {};
 		        return false;
 			});
 			$('#'+this.popupId+' .cssbutton[data-component="showSOButton"]').on('click', function(e) {
-				e.stopPropagation();
-				$(this).closest('.pdp-evenbetter-soPreShow').toggleClass('pdp-evenbetter-soPreShow pdp-evenbetter-soShow');
-		        return false;
+				if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+					e.stopPropagation();
+					$(this).closest('.pdp-evenbetter-soPreShow').toggleClass('pdp-evenbetter-soPreShow pdp-evenbetter-soShow');
+					return false;
+				}
 			});
 			$('#'+this.popupId+' button[data-component="addToSOButton"]').on('click', function() {
-				addToSoEvenBetter($jq(this));
-				return false;
+				if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
+					addToSoEvenBetter($jq(this));
+					return false;
+				}
 			});
           
           // make ID-s unique
