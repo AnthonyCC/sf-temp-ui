@@ -35,11 +35,11 @@ window.close = window.reallyClose;
 
 try {
   document.addEventListener("DOMContentLoaded", function () {
-    if (window.parent &&
-        window.parent.FreshDirect &&
-        window.parent.FreshDirect.components &&
-        window.parent.FreshDirect.components.ifrPopup) {
-      window.parent.FreshDirect.components.ifrPopup.reposition();
+    if (window.top &&
+        window.top.FreshDirect &&
+        window.top.FreshDirect.components &&
+        window.top.FreshDirect.components.ifrPopup) {
+      window.top.FreshDirect.components.ifrPopup.reposition(true);
     }
   });
 } catch (e) {}

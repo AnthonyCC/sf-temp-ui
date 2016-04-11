@@ -8,7 +8,18 @@ var FreshDirect = FreshDirect || {};
   var POPUPWIDGET = fd.modules.common.popupWidget;
   var maxwidth, maxheight;
 
-  var reposition = function () {
+  var reposition = function (resetHW) {
+    // check parent
+    if (window.top !== window) {
+      window.top.FreshDirect.components.ifrPopup.reposition(resetHW);
+      return;
+    }
+
+    if (resetHW) {
+      maxheight = resetHW.height || 0;
+      maxwidth = resetHW.width || 0;
+    }
+
     var $ifr = $('#ifrPopup iframe'),
         $container = $('#ifrPopup .fixedPopupContent'),
         windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
