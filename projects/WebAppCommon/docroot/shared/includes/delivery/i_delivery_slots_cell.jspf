@@ -21,7 +21,13 @@
 	if(StandingOrderHelper.isSO3StandingOrder(user)){
 		isSelectedSlotId=StandingOrderHelper.findSO3MatchTimeslot(slot,user.getCurrentStandingOrder());
 	}
-
+	String soFirstNextTextCell=null;
+	
+	if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
+		soFirstNextTextCell = "Next";
+	} else if(StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())){
+		soFirstNextTextCell = "First";
+	}
 	if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
 		request.setAttribute("shownCTSlot", "TRUE");
 	}
@@ -160,7 +166,7 @@
 												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
 													? "tsEcoFriendlyTimeC"
 													: "" 
-					)+"\">"+slot.getDisplayString(true)+ "<span class=\"so-first-delivery\">(" + soFirstNextText + " Delivery "+slot.getFormattedSoFirstDeliveryDate()+")</span>" +"</div>\n");
+					)+"\">"+slot.getDisplayString(true)+ "<span class=\"so-first-delivery\">(" + soFirstNextTextCell + " Delivery "+slot.getFormattedSoFirstDeliveryDate()+")</span>" +"</div>\n");
 	
 	
 	/* add hidden ts info */
