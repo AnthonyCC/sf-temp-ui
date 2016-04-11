@@ -30,6 +30,13 @@
 			zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
 			request.setAttribute("SHOW_WINDOWS_STEERING","false");
 		}
+		String soFirstNextText=null;
+
+		if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
+			soFirstNextText = "Next";
+		} else if(StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())){
+			soFirstNextText = "First";
+		}
 		
 	%>
 
