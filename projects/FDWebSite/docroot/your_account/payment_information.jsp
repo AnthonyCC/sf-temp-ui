@@ -178,8 +178,8 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <% if (isCheckEligible && !isECheckRestricted) { %>
               	 <script> 
-               		$('#add-new-payment-method-checking-acc-disabled-master').css("display","none"); 
-               		$('#add-new-payment-method-checking-acc').css("display","inline-block"); 
+               		$jq('#add-new-payment-method-checking-acc-disabled-master').css("display","none"); 
+               		$jq('#add-new-payment-method-checking-acc').css("display","inline-block"); 
                	</script>  
                      <% if (hasCheck) { %>
               <tr valign="top">
