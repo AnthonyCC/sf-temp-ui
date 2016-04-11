@@ -1385,14 +1385,16 @@ option.address-icon {
 #errorsoalerts .so-error-alert{
 	padding: 15px 44px 15px 30px;
 }
-#activatesoalert .so-activate-alert-img
-{
+#activatesoalert .so-activate-alert-img{
 	float: left;
 	margin-top: 9px;
     background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning-small.png');
     min-height: 26px;
     min-width: 28px;
     background-repeat: no-repeat;
+}
+#activatesoalert .so-activate-alert-img{
+	display: none;
 }
 #errorsoalerts .so-error-alert-img{
 	float: left;
@@ -1402,7 +1404,6 @@ option.address-icon {
     background-image: url('/media/layout/nav/globalnav/fdx/locabar-error-alert.png');
     background-repeat: no-repeat;
 }
-
 #activatesoalert .so-activate-alert-message,
 #errorsoalerts .so-error-alert-message{
 	float: left;
@@ -1411,10 +1412,19 @@ option.address-icon {
     padding: 12px 0 0 28px;
     max-width: 620px;
 }
+#activatesoalert .so-activate-alert-message{
+	font-size: 13px;
+	padding: 12px 0 0 0;
+	max-width: 670px;
+}
 #activatesoalert .so-activate-alert-message-bold,
 #errorsoalerts .so-error-alert-message-bold{
 	display: inline-block;
+	font-size: 16px;
 	font-weight: bold;
+}
+#activatesoalert .so-activate-alert-message-bold{
+	font-size: 15px;
 }
 #activatesoalert .so-activate-alert-button-container,
 #errorsoalerts .so-error-alert-button-container{

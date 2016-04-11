@@ -184,10 +184,12 @@
 				<div class="so-activate-alert-img">					
 				</div>
 				<div class="so-activate-alert-message">
-					<div class="so-activate-alert-message-bold">{$item.soName} is ready for delivery.</div> Review and activate.
+					<div class="so-activate-alert-message-bold">Congratulations! Your "{$item.soName}" Standing Order has met the order minimum and can now be activated.</div>
+					<br>
+					Note: You must activate before {$item.cutOffFormattedDeliveryDate} @ {$item.cutOffDeliveryTime} or you will lose your delivery time.
 				</div>
 				<div class="so-activate-alert-button-container">
-					<button class="so-activate-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/quickshop/standing_orders.jsp?soid={$item.id}#soid_{$item.id}'">View Standing Order</button>
+					<button class="so-activate-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/quickshop/standing_orders.jsp?soid={$item.id}#soid_{$item.id}'">Review & Activate</button>
 				</div>
 				<div class="clear"></div>
 			</div>
