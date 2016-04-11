@@ -2015,7 +2015,7 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>DARK STORE</title>
+						<title>DARK STORE TARGETING</title>
 						<fields>
 							<CmsField><attribute>WebPageDarkStore</attribute></CmsField>												
 						</fields>
