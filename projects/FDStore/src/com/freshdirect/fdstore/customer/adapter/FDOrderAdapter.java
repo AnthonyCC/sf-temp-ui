@@ -1199,7 +1199,7 @@ public class FDOrderAdapter implements FDOrderI {
 	
 	public double getBouncedCheckTotal(){
 		double bouncedCheckTotal = 0;
-		if(sale.getChargeInvoice().getCharge(EnumChargeType.BOUNCED_CHECK) != null){
+		if(null != sale && null != sale.getChargeInvoice() && sale.getChargeInvoice().getCharge(EnumChargeType.BOUNCED_CHECK) != null){
 			bouncedCheckTotal = sale.getChargeInvoice().getCharge(EnumChargeType.BOUNCED_CHECK).getAmount();
 		}
 		return bouncedCheckTotal;
