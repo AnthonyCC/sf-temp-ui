@@ -199,22 +199,28 @@ body[developer] *:focus {
 	/*display: inline;*/
 	position: relative;
 	line-height: 2.7em;
+	display: inline-block;
+}
+
+.skucontrol-variations .skucontrol-variations-item .select-wrapper{
+	display: inline-block;
 }
 
 .select-wrapper:after {
 	font-family: 'freshdirect_icons';
-  speak: none;
-  font-style: normal;
-  font-weight: bold;
-  font-variant: normal;
-  text-transform: none;
-  vertical-align: text-bottom;
-  -webkit-font-smoothing: antialiased;
-  content: "\e874";
-  position: absolute;
-  right: 10px;
-  top: -2px;
-  pointer-events: none;
+	speak: none;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	text-transform: none;
+	vertical-align: text-bottom;
+	-webkit-font-smoothing: antialiased;
+	content: "\e874";
+	position: absolute;
+	/*right: 10px;*/
+	margin-left: -20px;
+	top: -2px;
+	pointer-events: none;
 }
 
 .fake-radio:before {
