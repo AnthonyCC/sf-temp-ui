@@ -128,7 +128,8 @@ h2#account_address_title {
 #EC_phone, 
 #ET_cardHolderName, 
 #ET_cardNum,
-#ET_phone
+#ET_phone,
+#EC_cardNumVerify
 { display: block; }
 
 
