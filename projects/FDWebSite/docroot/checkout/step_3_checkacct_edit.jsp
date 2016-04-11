@@ -75,8 +75,9 @@ Learn more about how this service works.
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>">
 	<TR VALIGN="TOP">
 			<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" ALIGN="RIGHT">
-				<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
-				<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
+				<a href="<%=cancelPage%>">
+				 <button class="cssbutton green transparent small">CANCEL</button></a>
+				 <button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 			</TD>
 	</TR>
 </TABLE>

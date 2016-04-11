@@ -29,7 +29,6 @@
             </div>
           </div>
           <div class="itemlist-item-header-buttons">
-            <!--  button class="editinlist save">save changes</button -->
             <button class="deletefromlist">delete from list</button>
             <!--  button class="addtolist">add to list</button -->
           </div>
@@ -75,7 +74,6 @@
           </div>
         </div>
         <div class="itemlist-item-header-buttons">
-          <!--  button class="editinlist save">save changes</button -->
           <button class="deletefromlist">delete from list</button>
           <!-- button   class="addtolist">add to list</button -->
         </div>
@@ -164,7 +162,6 @@
             </div>
           </div>
           <div class="itemlist-item-header-buttons">
-            <!--  button class="editinlist save">save changes</button -->
             <button class="deletefromlist">delete from list</button>
             <!--  button class="addtolist">add to list</button -->
           </div>
@@ -210,7 +207,6 @@
           </div>
         </div>
         <div class="itemlist-item-header-buttons">
-          <!--  button class="editinlist save">save changes</button -->
           <button class="deletefromlist">delete from list</button>
           <!-- button   class="addtolist">add to list</button -->
         </div>

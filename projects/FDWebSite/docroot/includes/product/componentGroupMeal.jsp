@@ -606,10 +606,10 @@ if (isAvailable ) {
 			String referer = request.getParameter("referer");
 			if (referer==null) referer = request.getHeader("Referer");
 			if (referer==null) referer = "/view_cart.jsp";			%>
-			<input type="image" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><BR>
-			<input type="image" name="remove_from_cart" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><BR>
+			<button class="cssbutton orange small icon-cart-new-after" name="save_changes">SAVE CHANGES</button><BR>
+			<button class="cssbutton green small icon-cancel-circle-after">REMOVE ITEM</button><BR>
 			<input type="hidden" name="referer" value="<%= referer %>">
-			<a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><BR>
+			<a href="<%=referer%>"><button class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</button></a><BR>
         <% } else if (CartName.MODIFY_LIST.equals(cartMode) ||
 	              CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
 
@@ -644,12 +644,8 @@ if (isAvailable ) {
 	       <%
 	       } else {
 	       %>
-               <input type="image" name="save_changes" src="/media_stat/images/buttons/list_save_changes.gif" 
-	              onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
-	              HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
-
-               <input type="image" name="remove_from_list" src="/media_stat/images/buttons/remove_item.gif" HSPACE="2" BORDER="0" 
-	              onclick="document.productForm.list_action.value='remove';document.productForm.submit();"><BR><FONT CLASS="space4pix"><BR></FONT>
+               <button class="cssbutton purple nontrasparent small icon-list-white-after" name="save_changes" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br>
+               <button class="cssbutton green small icon-cancel-circle-after" onclick="document.productForm.list_action.value='remove';document.productForm.submit();">REMOVE ITEM</button><BR><FONT CLASS="space4pix"><BR></FONT>
                <%
 	       } // cartMode
 	       %>

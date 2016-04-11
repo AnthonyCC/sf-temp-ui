@@ -209,7 +209,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		<%}%>
 		<% if (__noErr) { %>
 			<% if (abstractTimeslots) { %>
-				<button class="imgButtonOrange" type="submit">Click here to save your standing order</button>
+				<button class="cssbutton orange small" type="submit">Click here to save your standing order</button> 
 			<% } else { %>
 				<%@ include file="/includes/i_cart_next_step_button.jspf" %>
 			<% } %>
@@ -416,7 +416,7 @@ if (!abstractTimeslots && user.isPromoConflictResolutionApplied()) {
 
 <% if (__noErr) { %>
 	<% if (abstractTimeslots) { %>
-		<button class="imgButtonOrange" type="submit">Click here to save your standing order</button>
+		<button class="cssbutton orange small" type="submit">Click here to save your standing order</button> 
 	<% } else { %>
 		 <% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 	<% } %>

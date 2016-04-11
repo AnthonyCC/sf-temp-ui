@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -249,7 +250,6 @@ import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 
 /**

@@ -366,10 +366,12 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         if (referer==null) referer = request.getHeader("Referer");
         if (referer==null) referer = "/view_cart.jsp";
         %>
-        <input type="image" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><BR>
-        <input type="image" name="remove_from_cart" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><BR>
+        <button class="cssbutton orange small icon-cart-new-after" name="save_changes">SAVE CHANGES</button><BR><br>
+        <button class="cssbutton green small icon-cancel-circle-after" name="remove_from_cart">REMOVE ITEM</button><BR><br>
         <input type="hidden" name="referer" value="<%= referer %>">
-        <a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><BR>
+        <a href="<%=referer%>">
+       		<button class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</button>
+        </a><BR>
         <%
     } else {
         %>

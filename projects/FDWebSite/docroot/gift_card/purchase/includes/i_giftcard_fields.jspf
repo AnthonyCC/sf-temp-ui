@@ -86,7 +86,7 @@ if (editThisRecipId) {
     fldMessage = recipModel.getPersonalMessage();
 
 	// Add to recipient list button image
-	addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/save_changes_btn.gif\" width=\"95\" height=\"25\" alt=\"SAVE CHANGES\" border=\"0\" />";
+	addEditButton = "<button class='cssbutton green small' style='vertical-align:top;'>SAVE CHANGES</button>";
 }
 
     
@@ -284,7 +284,7 @@ if (request.getParameter("fldMessage") !=null) {
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
-	<tr valign="top">
+	<tr>
 		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
 			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR" border="0" /></a>
 			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />

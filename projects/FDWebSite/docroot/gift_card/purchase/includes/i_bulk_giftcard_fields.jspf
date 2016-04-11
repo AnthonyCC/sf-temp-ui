@@ -69,7 +69,7 @@ if (editThisRecipId) {
     fldMessage = recipModel.getPersonalMessage();
     fdQuantity  = recipModel.getQuantity();
 	// Add to recipient list button image
-	addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/save_changes_btn.gif\" width=\"95\" height=\"25\" alt=\"SAVE CHANGES\" border=\"0\" id=\"checkout_credit_card_edit\" />";
+	addEditButton = "<button class='cssbutton green small' style='vertical-align:top;'>SAVE CHANGES</button>";
 }
     
 // get the stuff from off the fields in the request object

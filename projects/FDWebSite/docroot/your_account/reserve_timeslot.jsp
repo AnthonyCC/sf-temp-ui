@@ -115,8 +115,8 @@ String actionName = request.getParameter("actionName");
 					<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
 						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
 					<%} else {%>
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery_cancel.gif" alt="Cancel Reservation" onclick="reserveTimeslot.actionName.value='cancelReservation'">&nbsp;&nbsp;&nbsp;
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery_save_changes.gif" alt="Save Changes" onclick="reserveTimeslot.actionName.value='changeReservation'">
+						<button class="cssbutton red nontransparent small" onclick="reserveTimeslot.actionName.value='cancelReservation'">CANCEL RESERVATION</button>
+						<button class="cssbutton orange small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
 					<%}%>
 				</td>
 			</tr>

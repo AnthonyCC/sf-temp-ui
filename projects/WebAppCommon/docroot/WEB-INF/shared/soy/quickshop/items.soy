@@ -131,8 +131,8 @@
 		</div>
 		<div class="itemlist-item-header-buttons">
 			{if $type == 'shopfromlists' and not $replaced}
-				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save">save changes</button>
-				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
+				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">save changes</button>
+				<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true">delete from list</button>
 			{/if}
 			<button class="addtolist">add to list</button>
 		</div>
@@ -462,7 +462,7 @@
 	</div>
 	<div class="itemlist-item-header-buttons">
 		{if $type == 'shopfromlists'}
-			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
+			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true">delete from list</button>
 		{/if}
 	</div>
 	<div class="itemlist-item-header">
@@ -477,7 +477,6 @@
 			<div>Item Unavailable</div>
 		</div>		
 	</div>
-</li>
 {/template}
 
 /**
@@ -495,7 +494,7 @@
 		</div>
 		<div class="itemlist-item-header-buttons">
 		{if $type == 'shopfromlists'}
-			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist" aria-haspopup="true">delete from list</button>
+			<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true">delete from list</button>
 		{/if}
 		</div>
 		<div class="itemlist-item-header">

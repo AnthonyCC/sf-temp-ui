@@ -906,10 +906,13 @@ if ( skuSize == 0 ) {
         					if ( referer == null ) 
         						referer = "/view_cart.jsp";
        						%>
-       						<input type="image" id="save_changes" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><br/>
-       						<input type="image" id="remove_from_cart" name="remove_from_cart" onclick="remove_from_cart();" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><br/>
+       						<button class="cssbutton orange small icon-cart-new-after" id="save_changes" name="save_changes">SAVE CHANGES</button><br/><br/>
+       						<button class="cssbutton green small icon-cancel-circle-after" id="remove_from_cart" name="remove_from_cart" onclick="remove_from_cart();">REMOVE ITEM</button><br/>
+       						<br/>
        						<% if (!refererPassed) { %><input type="hidden" name="referer" value="<%=referer%>"><% } %>
-       						<a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><br/>
+       						<a href="<%=referer%>">
+       							<button class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</button>
+       						</a><br/>
 							<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
        						<%
    							// CCL
@@ -932,9 +935,8 @@ if ( skuSize == 0 ) {
 							<input type="hidden" name="list_action" value="">
 
 							<% if ( CartName.ACCEPT_ALTERNATIVE.equals(__cartMode) ) { %>
-						       	 <input type="image" name="save_changes" src="/media_stat/images/template/quickshop/alt_replace_item_btn.gif" 
-							       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
-							       hspace="2" border="0"><br/><font class="space4pix"><br/></font>
+								<button class="cssbutton purple nontransparent icon-file2-after" name="save_changes" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">REPLACE ITEM</button>
+						       	 <br/><font class="space4pix"><br/></font>
 							       
 							<% } else { %>
 						        <input type="image" name="save_changes" src="/media_stat/images/buttons/list_save_changes.gif" 

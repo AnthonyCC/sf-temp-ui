@@ -124,9 +124,10 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">
 	<a href="<%=success_page%>">
-		<img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0">
+		<button class="cssbutton green transparent small">CANCEL</button>
 	</a>
-	<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
+	<button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
+	</TD>
 </TR>
 </TABLE>
 <br>

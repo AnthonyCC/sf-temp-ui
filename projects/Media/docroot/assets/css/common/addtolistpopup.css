@@ -41,7 +41,6 @@
   margin-left: 8px;
 }
 
-.saverecipepopup p button,
 .saverecipepopup .buttons button {
   display: inline-block;
 	padding: 0;
@@ -50,6 +49,10 @@
 	overflow: hidden;
 	cursor: pointer;
   margin-left: 8px;
+}
+
+.saverecipepopup p button {
+	margin-left: 8px;
 }
 
 .addtolistpopup p,
@@ -105,17 +108,11 @@
   font-weight:bold;
 }
 
-.saverecipepopup p button.saverecipe-button-go,
 .saverecipepopup .buttons button.addtolist-button-ok,
 .editinlistpopup .buttons button.editinlist-button-save {
   background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
 }
 
-.saverecipepopup p button.saverecipe-button-go {
-    width: 35px;
-    height: 27px;
-    background-position: -282px -115px;
-}
 .saverecipepopup p button.saverecipe-button-go:hover,
 .saverecipepopup p button.saverecipe-button-go:focus {
     background-position: -100px -253px;

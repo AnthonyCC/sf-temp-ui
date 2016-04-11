@@ -58,7 +58,11 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></TD>
 			</tr>
 			<tr>
-				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top"><br class="space2pix" /><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery" /></a><input type="image" src="/media_stat/images/buttons/save_address.gif" alt="Save Address" border="0" hspace="4" vspace="4" name="edit_delivery_address" class="edit_delivery_address"></td>
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top">
+					<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">
+					<button class="cssbutton green transparent small" name="cancel_delivery">CANCEL</button></a>
+					<button class="cssbutton green small" name="edit_delivery_address">SAVE ADDRESS</button>
+				</td>
 			</tr>
 			<tr>
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0" /></td>

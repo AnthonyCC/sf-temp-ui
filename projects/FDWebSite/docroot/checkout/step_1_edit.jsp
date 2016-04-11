@@ -198,10 +198,10 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 					<img src="/media_stat/images/navigation/delivery_address.gif" WIDTH="133" HEIGHT="15" border="0" alt="DELIVERY ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT>
 <%}%>
 		</TD>
-		<TD WIDTH="200" ALIGN="RIGHT">
+		<TD WIDTH="300" ALIGN="RIGHT">
 			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
-			<image src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a>
-			<input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
+			<button class="cssbutton green transparent small">CANCEL</button></a>
+			<button class="cssbutton orange small" name="checkout_delivery_address_edit">SAVE CHANGES</button>
 		</TD>
 	</TR>
 	</TABLE>
@@ -237,7 +237,8 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 <%	} else { %>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" ALIGN="RIGHT">
 			<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">
-			<img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_delivery_address_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0" class="edit_delivery_address" />
+			<button class="cssbutton green transparent small">CANCEL</button></a>
+			<button class="cssbutton orange small" name="checkout_delivery_address_edit" >SAVE CHANGES</button>
 		</TD>
 <%	} %>
 		</TR>

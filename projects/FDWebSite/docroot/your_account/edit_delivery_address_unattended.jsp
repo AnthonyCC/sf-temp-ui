@@ -45,7 +45,9 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
 			</tr>
 		<tr>
-			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><font class="space2pix"><br /></font><input type="image" src="/media_stat/images/buttons/submit_orange.gif" height="22" width="103" alt="Save Unattended Delivery Choice" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
+			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><br />
+				<button class="cssbutton orange small" name="edit_delivery_address">SUBMIT</button>
+			</td>
 		</tr>
 		</table>
 		<br />

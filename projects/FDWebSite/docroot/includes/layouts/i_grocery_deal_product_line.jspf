@@ -125,7 +125,7 @@
         String sideBarIndex = "ccl_sidebar_" + itemShownIndex;
 %>
      <a href="/unsupported.jsp"
-            onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=<%=sideBarIndex%>')"><img src="/media_stat/images/buttons/icon_list_save.gif" alt="Add this item to a list" border="0"></a>
+            onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=<%=sideBarIndex%>')"><button class="cssbutton purple nontransparent small icon-file-before notext"></a>
 <%   } %>
 </TD>
 </fd:CCLCheck>
