@@ -34,7 +34,13 @@ if(StandingOrderHelper.isSO3StandingOrder(user)){
 	address = currentStandingOrder.getDeliveryAddress();
 	/* STANDING ORDER - UNFINISHED CODE */
 } 
+String soFirstNextText=null;
 
+if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
+	soFirstNextText = "Next";
+} else if(StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())){
+	soFirstNextText = "First";
+}
  
 %>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%= address %>" timeSlotId="<%=timeSlotId%>" deliveryInfo="<%= true %>" timeSlotContext="<%= timeSlotCtx %>" forceOrder="<%= forceOrder %>" generic="<%=genericTimeSlot%>" >
@@ -178,6 +184,18 @@ if(StandingOrderHelper.isSO3StandingOrder(user)){
 					<td>
 						<table cellpadding="0" cellspacing="0" width="100%">
 							<tr>
+								<% if(soFirstNextText != null){ %>
+									<td valign="middle" align="left">
+										<div class="so-timeslot-legend-first-next">
+											<div class="so-timeslot-legend-first-next-ball">?</div><%= soFirstNextText %> Delivery	
+											<div style="position: relative;">
+												<div class="so-timeslot-legend-first-next-popup">
+													<p>Dates reflect the first date your selected time slot can be guaranteed on a recurring basis for your standing order.</p>
+												</div>
+											</div>
+										</div>
+									</td>
+								<% } %>
 								<td valign="middle" align="right">
 							 	<table>
 									<tr>

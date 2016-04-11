@@ -21,13 +21,7 @@
 	if(StandingOrderHelper.isSO3StandingOrder(user)){
 		isSelectedSlotId=StandingOrderHelper.findSO3MatchTimeslot(slot,user.getCurrentStandingOrder());
 	}
-	String soFirstNextText=null;
-	
-	if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())){
-		soFirstNextText = "Next";
-	} else {
-		soFirstNextText = "First";
-	}
+
 	if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
 		request.setAttribute("shownCTSlot", "TRUE");
 	}
