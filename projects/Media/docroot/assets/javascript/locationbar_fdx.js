@@ -15,14 +15,16 @@ $jq(document).on('ready', function() {
 		at: 'right bottom+8',
 		of: '#locabar_popupcart_trigger'
 	});
-	window.setTimeout(function() {
+	
+	//window.setTimeout(function() {
 		/* add an additional align for timing */
-		$jq( '#locabar_popupcart' ).position({
-			my: 'right top',
-			at: 'right bottom-12',
-			of: '#locabar_popupcart_trigger'
-		});
-	}, 1000);
+		//$jq( '#locabar_popupcart' ).position({
+		//	my: 'right top',
+		//	at: 'right bottom-12',
+		//	of: '#locabar_popupcart_trigger'
+		//});
+		//if ($jq( '#locabar_popupcart' ).css('top') === '10px' 
+		//}, 1000);
 });
 
 /* right align this one arrow */
