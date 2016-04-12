@@ -2,71 +2,82 @@ package com.freshdirect.webapp.ajax.expresscheckout.receipt.data;
 
 public class SuccessPageData {
 
-	private String header;
-	private String rightBlock;
-	private String orderId;
-	private ReceiptData receipt;
+    private String header;
+    private String rightBlock;
+    private String orderId;
+    private ReceiptData receipt;
     private String soName;
     private String soOrderDate;
-    
-	public String getHeader() {
-		return header;
-	}
+    private boolean isOrderModifiable;
 
-	public void setHeader(String header) {
-		this.header = header;
-	}
+    public String getHeader() {
+        return header;
+    }
 
-	public String getRightBlock() {
-		return rightBlock;
-	}
+    public void setHeader(String header) {
+        this.header = header;
+    }
 
-	public void setRightBlock(String rightBlock) {
-		this.rightBlock = rightBlock;
-	}
+    public String getRightBlock() {
+        return rightBlock;
+    }
 
-	public String getOrderId() {
-		return orderId;
-	}
+    public void setRightBlock(String rightBlock) {
+        this.rightBlock = rightBlock;
+    }
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
+    public String getOrderId() {
+        return orderId;
+    }
 
-	public ReceiptData getReceipt() {
-		return receipt;
-	}
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
-	public void setReceipt(ReceiptData receipt) {
-		this.receipt = receipt;
-	}
+    public ReceiptData getReceipt() {
+        return receipt;
+    }
 
-	/**
-	 * @return the soName
-	 */
-	public String getSoName() {
-		return soName;
-	}
+    public void setReceipt(ReceiptData receipt) {
+        this.receipt = receipt;
+    }
 
-	/**
-	 * @param soName the soName to set
-	 */
-	public void setSoName(String soName) {
-		this.soName = soName;
-	}
+    /**
+     * @return the soName
+     */
+    public String getSoName() {
+        return soName;
+    }
 
-	/**
-	 * @return the soOrderDate
-	 */
-	public String getSoOrderDate() {
-		return soOrderDate;
-	}
+    /**
+     * @param soName
+     *            the soName to set
+     */
+    public void setSoName(String soName) {
+        this.soName = soName;
+    }
 
-	/**
-	 * @param soOrderDate the soOrderDate to set
-	 */
-	public void setSoOrderDate(String soOrderDate) {
-		this.soOrderDate = soOrderDate;
-	}
-	
+    /**
+     * @return the soOrderDate
+     */
+    public String getSoOrderDate() {
+        return soOrderDate;
+    }
+
+    /**
+     * @param soOrderDate
+     *            the soOrderDate to set
+     */
+    public void setSoOrderDate(String soOrderDate) {
+        this.soOrderDate = soOrderDate;
+    }
+
+    public boolean isOrderModifiable() {
+        return isOrderModifiable;
+    }
+
+    public void setOrderModifiable(boolean isOrderModifiable) {
+        this.isOrderModifiable = isOrderModifiable;
+    }
+
 }

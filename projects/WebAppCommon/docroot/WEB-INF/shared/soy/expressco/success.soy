@@ -7,6 +7,7 @@
 * @param? rightBlock Media string from CMS
 * @param? soName
 * @param? soOrderDate
+* @param? orderModifiable
 */
 {template .successpage autoescape="false"}
 {if $orderId}
@@ -19,6 +20,7 @@
     {param rightBlock: $rightBlock /}
     {param soName: $soName /}
     {param soOrderDate: $soOrderDate /}
+    {param orderModifiable: $orderModifiable /}
   {/call}
 {/if}
 {/template}
@@ -38,6 +40,7 @@
  * @param? receipt
  * @param? soName
  * @param? soOrderDate
+ * @param? orderModifiable
  */
 {template .successtotal autoescape="false"}
 <div class="successtotal">
@@ -49,6 +52,7 @@
       {param total: $receipt.total /}
       {param soName: $soName /}
       {param soOrderDate: $soOrderDate /}
+      {param orderModifiable: $orderModifiable /}
     {/call}
   </div>
   <div class="successtotal-right">
@@ -128,6 +132,7 @@
 * @param total Value of Subtotal
 * @param? soName
 * @param? soOrderDate
+* @param orderModifiable
 */
 {template .receiptBox autoescape="false"}
 <div class="orderbox">
@@ -147,6 +152,10 @@
     </ul>
   {/if}
   <p class="estimated">{$totalLabel}: {$total}</p>
-  
+  {if $orderModifiable}
+  <div class="successmodifyorderbutton-cont">
+  <button class="cssbutton orange" onclick="location.href='/your_account/modify_order.jsp?orderId={$orderId}&amp;action=modify'">Modify Order</button>
+  </div>
+  {/if}
 </div>
 {/template}
