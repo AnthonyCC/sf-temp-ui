@@ -92,7 +92,15 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 											if(itr.hasNext()){
 											String str=itr.next();
 										%>
-											<a href="<%= folderMap.get(str)%>"><%= str %></a><br />
+											<% if (str == "Reserve Delivery (in Your Account)") { %>
+												<% if (user != null && !(EnumServiceType.HOME).equals(user.getSelectedServiceType())) { %>
+													<span class="selectedAddressIsHome-false"><%= str %></span><br />
+												<% } else { %>
+													<a href="<%= folderMap.get(str)%>"><%= str %></a><br />
+												<% } %>
+											<% } else { %>
+												<a href="<%= folderMap.get(str)%>"><%= str %></a><br />
+											<% } %>
 										<% } else { %>
 											&nbsp;<br />
 										<% } %>
