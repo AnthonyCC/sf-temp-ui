@@ -103,8 +103,14 @@ $jq('#selectAddressList').iconselectmenu({
 				selectAddressList: key
 			},
 			success: function(data){
-				window.location.reload();
-				//console.log('locationhandler success');
+				var $refIcon = $jq(event.currentTarget).find('.address-icon:first');
+				
+				if (window.location.pathname === '/your_account/reserve_timeslot.jsp' && !$refIcon.hasClass('address-type-home')) {
+					window.location = '/your_account/delivery_info_avail_slots.jsp';
+				} else { //just reload the page
+					window.location.reload();
+				}
+				
 			},
 			error: function(data){
 				/* this needs fixing */

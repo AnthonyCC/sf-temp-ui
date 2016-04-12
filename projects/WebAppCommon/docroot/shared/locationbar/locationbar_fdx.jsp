@@ -473,7 +473,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% if (userReservervation == null || !(userReservervation.getAddressId()).equals(selectedAddress.getId()) ) { %>
 								<div class="locabar_addresses-reservation-none">
 									<div class="locabar_addresses-reservation-view-cont">
-										<a href="<%=temp_delivery_link %>" style="display: none" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
+										<a href="<%=temp_delivery_link %>" style="<%= ((foundSelectedAddress && (foundSelectedAddressType == "HOME"))) ? " display: none;" : "" %>" class="cssbutton green transparent cssbutton-flat locabar_addresses-reservation-view">View Timeslots</a>
 									</div>
 									<% if (foundSelectedAddress && (foundSelectedAddressType != "HOME")) { %>
 										<div class="locabar_addresses-reservation-make-cont" style="display: none;">
