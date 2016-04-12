@@ -28,9 +28,6 @@ $jq( document ).ready(function() {
     		$jq("#soFreq").select2({
 				minimumResultsForSearch: Infinity
 			});
-			$jq("#soFreq").on("select2:select", function (e) {
-				$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
-			});
 			$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
 		}
 	}
@@ -113,9 +110,6 @@ function submitFormNewSO(action, id, name){
 	    		populateDrawer(newsoID);
 	    		$jq("#soFreq").select2({
 					minimumResultsForSearch: Infinity
-				});
-				$jq("#soFreq").on("select2:select", function (e) {
-					$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
 				});
 	    		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
 	    		soSaved(id, false, true);
@@ -252,9 +246,6 @@ function submitFormManageSO(id,action,name,freq){
       			$jq("#soFreq").select2({
       				minimumResultsForSearch: Infinity
         		});
-      			$jq("#soFreq").on("select2:select", function (e) {
-      				$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
-      			});
       			// Catches all updates
       			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false) });
       			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true) });
@@ -371,6 +362,7 @@ function selectFrequency(item){
 		freq = item.value;
 		$jq("#soFreq2").val(freq);
 		$jq("#soFreq2").select2("val", freq);
+		$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
 		submitFormManageSO("","selectFreq",null,freq);
 	}
 	if(item.id == "soFreq2"){
