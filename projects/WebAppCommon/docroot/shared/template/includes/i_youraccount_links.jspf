@@ -95,7 +95,7 @@
 				folderMap.put("Standing Orders","/quickshop/qs_standing_orders.jsp");
 			}
 		/* 2-5 */
-			folderMap.put("Order Receipts","/your_account/order_history.jsp");
+			folderMap.put("Order History","/your_account/order_history.jsp");
 		/* 2-6 */
 			folderMap.put("Store Credits","/your_account/credits.jsp");
 		/* 2-7 */
