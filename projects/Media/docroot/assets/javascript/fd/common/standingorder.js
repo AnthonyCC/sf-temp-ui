@@ -5,78 +5,50 @@ FreshDirect.standingorder.alcoholVerified = "N";
 FreshDirect.standingorder.healthWarningCookie = null;
 /* refactor these addToSo calls to make them all one */
 function addToSoEvenBetter($clickedButton) {
-	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
-		var that = $clickedButton;
-		var ids = $jq(that).parent().find('.so-select').val().split(':');
-		$jq.post('/api/standingOrderCartServlet',
-			{
-				data: JSON.stringify({
-					actiontype: 'AddProductToSO',
-					standingOrderId: ids[0],
-					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
-					listId: ids[1],
-					items: FreshDirect.components.AddToCart.atcFilter(
-						FreshDirect.modules.common.productSerialize($jq('#evenBetterPopup .pdp-evenbetter-atc'))
-					)
-				})
-			},
-			function(data) {
-				addToSoSuccessHandler(that, data);
-			}
-		).fail(function(data) {
-			addToSoErrorHandler(data);
-		});
-	}
-}
-function addToSoCustomize($clickedButton) {
-	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
-		var that = $clickedButton;
-		var ids = $jq(that).parent().find('.so-select').val().split(':');
-		$jq.post('/api/standingOrderCartServlet',
-			{
-				data: JSON.stringify({
-					actiontype: 'AddProductToSO',
-					standingOrderId: ids[0],
-					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
-					listId: ids[1],
-					items: FreshDirect.components.AddToCart.atcFilter(
-						FreshDirect.modules.common.productSerialize($jq(that).closest('form[fdform="customize"]'))
-					)
-				})
-			},
-			function(data) {			
-				addToSoSuccessHandler(that, data);
-			}
-		).fail(function(data) {
-			addToSoErrorHandler(data);
-		});
-	}
+	var that = $clickedButton;
+	var ids = $jq(that).parent().find('.so-select').val().split(':');
+	var element = $jq('#evenBetterPopup .pdp-evenbetter-atc');
+	AddProductToSO(element, ids, that);
 }
 
-$jq('button[data-component="addToSOButton"]').on('click', function() {
-	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
-		var ids = $jq('.so-select').val().split(':');
-		var that = this;
-		$jq.post('/api/standingOrderCartServlet',
-			{
-				data: JSON.stringify({
-					actiontype: 'AddProductToSO',
-					standingOrderId: ids[0],
-					alcoholVerified: FreshDirect.standingorder.alcoholVerified,
-					listId: ids[1],
-					items: FreshDirect.components.AddToCart.atcFilter(
-						FreshDirect.modules.common.productSerialize($jq('.pdp-productconfig'))
-					)
-				})
-			},
-			function(data) {
-				addToSoSuccessHandler(that, data);
-			}
-		).fail(function(data) {
-			addToSoErrorHandler(data);
-		});
-	}
+function addToSoCustomize($clickedButton) {	
+	var that = $clickedButton;	
+	var ids = $jq(that).parent().find('.so-select').val().split(':');
+	var element = $jq(that).closest('form[fdform="customize"]');
+	AddProductToSO(element, ids, that);
+}
+
+$jq('button[data-component="addToSOButton"]').on('click', function() {	
+	var that = this;
+	var ids = $jq('.so-select').val().split(':');
+	var element = $jq('.pdp-productconfig');
+	AddProductToSO(element, ids, that);
 });
+
+function AddProductToSO(element, ids, that){
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){		
+		if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize(element, true, true))){
+			$jq.post('/api/standingOrderCartServlet',
+				{
+					data: JSON.stringify({
+						actiontype: 'AddProductToSO',
+						standingOrderId: ids[0],
+						alcoholVerified: FreshDirect.standingorder.alcoholVerified,
+						listId: ids[1],
+						items: FreshDirect.components.AddToCart.atcFilter(
+							FreshDirect.modules.common.productSerialize(element)
+						)
+					})
+				},
+				function(data) {
+					addToSoSuccessHandler(that, data);
+				}
+			).fail(function(data) {
+				addToSoErrorHandler(data);
+			});
+		}
+	}
+}
 
 function healthWarningOnClick(accept){	
 	if(accept){
