@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +17,7 @@ import org.mockejb.jndi.MockContextFactory;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
@@ -28,14 +28,12 @@ import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.AttributesI;
-import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDMaterial;
+import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -44,8 +42,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.aspects.BaseProductInfoAspect;
@@ -57,7 +53,6 @@ import com.freshdirect.fdstore.content.TestFDInventoryCache;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
-import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.smartstore.fdstore.RecommendationEventLoggerMockup;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.util.ConfigurationContext;
@@ -86,7 +81,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 		super.setUp();
 
 		// setup CMS content database
-		List list = new ArrayList();
+		List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
 		list.add(new XmlTypeService(
 				"classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 		list.add(new XmlTypeService(
@@ -102,7 +97,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 
 
 		// set the context factory to the mockejb context factory
-		Hashtable          env                = new Hashtable();
+		Map<String,String>          env                = new HashMap<String,String>();
 		FDStoreProperties.set("fdstore.initialContextFactory", "org.mockejb.jndi.MockContextFactory");
 
 		env.put(Context.PROVIDER_URL, FDStoreProperties.getProviderURL() );
@@ -256,7 +251,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 			Date now = new Date();
 			String[] materials = {"000000000123"};
 			TestFDInventoryCache inventoryCache = new TestFDInventoryCache();
-			List erpEntries = new ArrayList();
+			List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 			FDProductInfo                productInfo;
 
 			if (sku.endsWith("_unavailable")) {
@@ -329,7 +324,7 @@ class TestSmartStoreConfigurationStrategy extends SmartStoreConfigurationStrateg
 	String customerPK = "12345678";
 
 	// List<FDCustomerProductListLineItem>
-	List productList;
+	List<FDCustomerProductListLineItem> productList;
 	
 	public static ConfigurationStrategy getInstance() {
 		if (instance == null) {
@@ -341,9 +336,9 @@ class TestSmartStoreConfigurationStrategy extends SmartStoreConfigurationStrateg
 		}
 
 		// setup a list of bought items with personal configs
-		List plist = new ArrayList();
+		List<FDCustomerProductListLineItem> plist = new ArrayList<FDCustomerProductListLineItem>();
 		
-		Map opts = new HashMap();
+		Map<String,String> opts = new HashMap<String,String>();
 		opts.put("var1", "VariationOption1");
 		opts.put("var2", "VariationOption1");
 		opts.put("var3", "VariationOption1");
@@ -359,7 +354,7 @@ class TestSmartStoreConfigurationStrategy extends SmartStoreConfigurationStrateg
 	}
 
 
-	public void setProductList(List productList) {
+	public void setProductList(List<FDCustomerProductListLineItem> productList) {
 		this.productList = productList;
 	}
 
@@ -373,8 +368,8 @@ class TestSmartStoreConfigurationStrategy extends SmartStoreConfigurationStrateg
 	}
 
 	// List<FDCustomerProductListLineItem>
-	protected List getUserLineItems(String erpCustomerPK, List skuCodes) throws FDResourceException {
-		return productList == null ? Collections.EMPTY_LIST : productList;
+	protected List<FDCustomerProductListLineItem> getUserLineItems(String erpCustomerPK) throws FDResourceException {
+		return productList == null ? Collections.<FDCustomerProductListLineItem>emptyList() : productList;
 	}
 }
 
@@ -395,7 +390,7 @@ class TestFDProduct extends FDProduct {
 
 	public TestFDProduct(String skuCode, int version, Date pricingDate,
 			FDMaterial material, FDVariation[] variations,
-			FDSalesUnit[] salesUnits, Pricing pricing, ArrayList nutrition) {
+			FDSalesUnit[] salesUnits, Pricing pricing, List<FDNutrition> nutrition) {
 		super(skuCode, version, pricingDate, material, variations, salesUnits, pricing,
 				nutrition,null);
 	}
@@ -464,9 +459,9 @@ class TestFDProduct extends FDProduct {
 		zpList.addZonePrice(zpModel);
 		CharacteristicValuePrice cvp[]	= {};
 		SalesUnitRatio sur[]			= {};
-		Pricing       pricing        = new Pricing(zpList, cvp, sur);
+		Pricing       pricing        = new Pricing(zpList, cvp, sur, false);
 
-		ArrayList     nutrition      = null;
+		List<FDNutrition>     nutrition      = null;
 		
 		return new TestFDProduct(
 				sku,

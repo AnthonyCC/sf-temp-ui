@@ -84,7 +84,8 @@ public class ZonePricingTest extends TestCase {
                             .addZonePrice(new ZonePriceModel(ZonePriceListing.DEFAULT_ZONE_INFO, new MaterialPrice[]{ new MaterialPrice(20, "db", 0.0)} ))
                             .addZonePrice(new ZonePriceModel(new ZoneInfo("cheap-zone","A","X"), new MaterialPrice[] { new MaterialPrice(15, "db", 0.0)})),
                         new CharacteristicValuePrice[0],
-                        new SalesUnitRatio[0]
+                        new SalesUnitRatio[0],
+                        false
                 ) 
         , null, salesUnits, null, null));
         aspectSystem.add(fpr);

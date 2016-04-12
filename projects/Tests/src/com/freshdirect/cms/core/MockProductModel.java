@@ -27,8 +27,10 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
@@ -38,6 +40,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.YmalSet;
@@ -200,7 +203,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getBrands()
 	 */
 	@Override
-	public List getBrands() {
+	public List<BrandModel> getBrands() {
 		return brands;
 	}
 
@@ -233,7 +236,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getComponentGroups()
 	 */
 	@Override
-	public List getComponentGroups() {
+	public List<ComponentGroupModel> getComponentGroups() {
 		return null;
 	}
 
@@ -284,7 +287,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getCountryOfOrigin()
 	 */
 	@Override
-	public List getCountryOfOrigin() throws FDResourceException {
+	public List<String> getCountryOfOrigin() throws FDResourceException {
 		return null;
 	}
 
@@ -366,7 +369,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getDisplayableBrands()
 	 */
 	@Override
-	public List getDisplayableBrands() {
+	public List<BrandModel> getDisplayableBrands() {
 		return null;
 	}
 
@@ -376,7 +379,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getDisplayableBrands(int)
 	 */
 	@Override
-	public List getDisplayableBrands(int numberOfBrands) {
+	public List<BrandModel> getDisplayableBrands(int numberOfBrands) {
 		return null;
 	}
 
@@ -479,7 +482,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getHowtoCookitFolders()
 	 */
 	@Override
-	public List getHowtoCookitFolders() {
+	public List<CategoryModel> getHowtoCookitFolders() {
 		return null;
 	}
 
@@ -499,7 +502,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getNewWineRegion()
 	 */
 	@Override
-	public List getNewWineRegion() {
+	public List<DomainValue> getNewWineRegion() {
 		return null;
 	}
 
@@ -509,7 +512,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getNewWineType()
 	 */
 	@Override
-	public List getNewWineType() {
+	public List<DomainValue> getNewWineType() {
 		return null;
 	}
 
@@ -662,7 +665,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getProductBundle()
 	 */
 	@Override
-	public List getProductBundle() {
+	public List<ProductModel> getProductBundle() {
 		return null;
 	}
 
@@ -804,7 +807,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getRating()
 	 */
 	@Override
-	public List getRating() {
+	public List<DomainValue> getRating() {
 		return null;
 	}
 
@@ -865,7 +868,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getRelatedRecipes()
 	 */
 	@Override
-	public List getRelatedRecipes() {
+	public List<Recipe> getRelatedRecipes() {
 		return null;
 	}
 
@@ -1076,7 +1079,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getUsageList()
 	 */
 	@Override
-	public List getUsageList() {
+	public List<Domain> getUsageList() {
 		return null;
 	}
 
@@ -1086,7 +1089,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getVariationMatrix()
 	 */
 	@Override
-	public List getVariationMatrix() {
+	public List<Domain> getVariationMatrix() {
 		return null;
 	}
 
@@ -1096,7 +1099,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getVariationOptions()
 	 */
 	@Override
-	public List getVariationOptions() {
+	public List<Domain> getVariationOptions() {
 		return null;
 	}
 
@@ -1117,7 +1120,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getWeRecommendImage()
 	 */
 	@Override
-	public List getWeRecommendImage() {
+	public List<ProductModel> getWeRecommendImage() {
 		return null;
 	}
 
@@ -1127,7 +1130,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getWeRecommendText()
 	 */
 	@Override
-	public List getWeRecommendText() {
+	public List<ProductModel> getWeRecommendText() {
 		return null;
 	}
 
@@ -1177,7 +1180,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getWineClassifications()
 	 */
 	@Override
-	public List getWineClassifications() {
+	public List<DomainValue> getWineClassifications() {
 		return null;
 	}
 
@@ -1317,7 +1320,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getWineVarietal()
 	 */
 	@Override
-	public List getWineVarietal() {
+	public List<DomainValue> getWineVarietal() {
 		return null;
 	}
 
@@ -1337,7 +1340,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalCategories()
 	 */
 	@Override
-	public List getYmalCategories() {
+	public List<CategoryModel> getYmalCategories() {
 		return null;
 	}
 
@@ -1347,7 +1350,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalProducts()
 	 */
 	@Override
-	public List getYmalProducts() {
+	public List<ProductModel> getYmalProducts() {
 		return null;
 	}
 
@@ -1368,7 +1371,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getYmalRecipes()
 	 */
 	@Override
-	public List getYmalRecipes() {
+	public List<Recipe> getYmalRecipes() {
 		return null;
 	}
 
@@ -1378,7 +1381,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.ProductModel#getYmals()
 	 */
 	@Override
-	public List getYmals() {
+	public List<ContentNodeModel> getYmals() {
 		return null;
 	}
 
@@ -1718,7 +1721,7 @@ public class MockProductModel extends MockContentNodeModel implements
 	 * @see com.freshdirect.fdstore.content.YmalSource#getRelatedProducts()
 	 */
 	@Override
-	public List getRelatedProducts() {
+	public List<ProductModel> getRelatedProducts() {
 		return null;
 	}
 

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -143,7 +141,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     			};
     		};
     		;
-            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail,false);
         } else if (tomorrowAvailable.contains(sku)) {
             // return this item as available by tomorrow, but not today
             Date tomorrow = DateUtil.addDays(now, 1);
@@ -166,7 +164,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     			};
     		};
             //productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,null,null, dummyList, null, null, null);
-            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail,false);
         } else {
             // fallback: return any unknown item as unavailable
             // a 0 units available starting now
@@ -186,7 +184,7 @@ public class FDFactoryProductInfoAspect extends BaseProductInfoAspect {
     			};
     		};
             
-            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail);
+            productInfo = new FDProductInfo(sku,1, materials,inventoryCache, dummyList,plantInfo,mAvail,false);
         }
 
         return productInfo;

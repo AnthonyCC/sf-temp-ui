@@ -853,4 +853,16 @@ public class SimpleCartLine implements FDCartLineI {
 		return null;
 	}
 
+    @Override
+    public void setTaxCode(String taxCode) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getTaxCode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

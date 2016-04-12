@@ -100,7 +100,7 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
 		};
 		;
 		
-		return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
+		return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail, false);
         
     }
     

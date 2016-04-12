@@ -246,7 +246,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 			
 			
 			
-			return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail);
+			return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail,false);
 		}
 	}
 	
