@@ -2149,4 +2149,9 @@ inner:
 	public String getPairItText() {
 		return getAttribute("PAIR_IT_TEXT", "");
 	}
+	
+	@Override
+	public void setParentNode(ContentNodeModel parentNode) {
+	    super.setParentNode(parentNode);
+	}
 }

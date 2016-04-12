@@ -2121,4 +2121,8 @@ public class MockProductModel extends MockContentNodeModel implements
 	public String getPairItText() {
 		return null;
 	}
+
+	@Override
+	public void setParentNode(ContentNodeModel parentNode) {
+	}
 }

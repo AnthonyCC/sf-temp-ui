@@ -1102,4 +1102,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public String getPairItHeading();
 	
 	public String getPairItText();
+	
+	public void setParentNode(ContentNodeModel parentNode);
 }

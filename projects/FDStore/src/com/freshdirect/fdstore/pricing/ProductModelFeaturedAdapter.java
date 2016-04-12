@@ -1379,4 +1379,9 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public String getPairItText() {
 		return productModel.getPairItText();
 	}
+
+    @Override
+    public void setParentNode(ContentNodeModel parentNode) {
+        productModel.setParentNode(parentNode);
+    }
 }

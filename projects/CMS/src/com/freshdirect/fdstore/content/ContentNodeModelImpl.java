@@ -152,7 +152,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         this.priority = priority;
     }
 
-    protected void setParentNode(ContentNodeModel parentNode) {
+    public void setParentNode(ContentNodeModel parentNode) {
         if (!fresh && this.parentNode != parentNode) {
                 throw new IllegalStateException("Cannot reparent node " + key
                                 + " from " + this.parentNode + " to " + parentNode

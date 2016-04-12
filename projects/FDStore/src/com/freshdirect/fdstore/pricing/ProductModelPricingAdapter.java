@@ -1549,4 +1549,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public String getPairItText() {
 		return prodModel.getPairItText();
 	}
+
+	@Override
+	public void setParentNode(ContentNodeModel parentNode) {
+	    prodModel.setParentNode(parentNode);
+	}
 }

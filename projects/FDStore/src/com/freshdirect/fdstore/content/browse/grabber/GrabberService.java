@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.cache.CacheEntryIdentifier;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FilterCacheStrategy;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductContainer;
@@ -124,8 +125,11 @@ public class GrabberService implements GrabberServiceI {
 				
 		// unwrap product models
 		filteredProductModels = new ArrayList<ProductModel>();
+		final ContentNodeModel parentCategory = grabberModel.getParentNode();
 		for (FilteringProductItem i : itemz) {
-			filteredProductModels.add(i.getProductModel());
+			final ProductModel productModel = (ProductModel) i.getProductModel().clone();
+			productModel.setParentNode(parentCategory);
+            filteredProductModels.add(productModel);
 		}
 		
 		return filteredProductModels;
