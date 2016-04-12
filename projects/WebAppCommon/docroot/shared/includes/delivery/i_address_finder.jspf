@@ -110,9 +110,10 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 									<fd:LocationHandler/>
 								<%
 									AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+									String pageAddrId = selectedAddress.getPK().getId();
 								%>
 									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
-										<option value="<%= homeAddress.getPK().getId() %>" <%= (selectedAddress != null && selectedAddress.equals(homeAddress)) ? "selected=\"selected\"" : "" %>>
+										<option value="<%= homeAddress.getPK().getId() %>" <%= ((homeAddress.getPK().getId()).equals(address.getPK().getId())) ? "selected=\"selected\"" : "" %>>
 											<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
 										</option>
 									</logic:iterate>
