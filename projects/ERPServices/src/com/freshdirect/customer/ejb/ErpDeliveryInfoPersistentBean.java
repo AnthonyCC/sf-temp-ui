@@ -169,7 +169,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		
 		if (EnumUnattendedDeliveryFlag.OPT_IN.equals(address.getUnattendedDeliveryFlag())) {
 			unattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
-			if (unattendedDeliveryInstructions == null) unattendedDeliveryInstructions = "OK";
+			if (unattendedDeliveryInstructions == null || unattendedDeliveryInstructions.trim().length()==0) unattendedDeliveryInstructions = "OK";
 		}
 		
 		ps.setString(32, unattendedDeliveryInstructions);
