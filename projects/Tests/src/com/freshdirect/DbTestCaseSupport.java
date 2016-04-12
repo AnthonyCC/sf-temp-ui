@@ -40,7 +40,7 @@ import com.freshdirect.common.context.StoreContext;
 public abstract class DbTestCaseSupport extends TestCase {
 
 	
-	private final static String JDBC_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=scan-dev.dev.nyc1.freshdirect.com)(PORT=1521))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=appunit_test)))";
+	private final static String JDBC_URL = "jdbc:oracle:thin:@//dbdevscan.nj01:1521/appunit_test";
 
 	private final static String JDBC_USER = "fdstore";
 	
