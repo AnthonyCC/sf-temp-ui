@@ -488,7 +488,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 				promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 				promotion.setCombineOffer(true);
-				promotion.setMinSubtotal(String.valueOf(FDUserI.FDX_MINIMUM_ORDER_AMOUNT));
+				//promotion.setMinSubtotal(String.valueOf(FDUserI.FDX_MINIMUM_ORDER_AMOUNT));
 				promotion.setDescription(formatPromoDescription(PROMO_FREE_DELIVERY_DESCRIPTION, "Free Delivery"));
 				promotion.setOfferDesc(formatAudienceDescription(OFFER_FREE_DELIVERY_DESCRIPTION, "Free Delivery", zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 				promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
