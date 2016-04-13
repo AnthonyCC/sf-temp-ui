@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +56,8 @@ public class FDTimeslotUtil implements Serializable {
 		Calendar endCal = Calendar.getInstance();
 		endCal.setTime(endDate);
 		
-		Collections.sort( timeslots );
+		//Collections.sort( timeslots );
+		sortTimeslotAtCheckout(timeslots);
 		
 		for ( FDTimeslot timeslot : timeslots ) {
 			
@@ -182,11 +184,36 @@ public class FDTimeslotUtil implements Serializable {
 		}
 		
 		if ( slots.size() > 0 ) {
-			Collections.sort(slots);
+			sortTimeslotAtCheckout(slots);
 			return slots;
 		} else {
 			return Collections.<FDTimeslot> emptyList();
 		}
+	}
+	
+	public void sortTimeslotAtCheckout(List<FDTimeslot> timeslots){
+		Collections.sort(timeslots, new Comparator<FDTimeslot>(){
+
+			@Override
+			public int compare(FDTimeslot t1, FDTimeslot t2) {
+				if(t1.getStartTime().compareTo(t2.getStartTime()) <0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) >0){
+					return t1.getCutoffTime().compareTo(t2.getCutoffTime());
+				}
+				else if(t1.getStartTime().compareTo(t2.getStartTime()) <0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) <0){
+					return t1.getStartTime().compareTo(t2.getStartTime());
+				}
+				else if(t1.getStartTime().compareTo(t2.getStartTime()) >0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) <0){
+					return t1.getCutoffTime().compareTo(t2.getCutoffTime());
+				}
+				else if(t1.getStartTime().compareTo(t2.getStartTime()) >0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) >0){
+					return t1.getStartTime().compareTo(t2.getStartTime());
+				}
+				else{
+				    return t1.getStartTime().compareTo(t2.getStartTime());
+				}
+			}
+			
+		});
 	}
 	
 	public Date getMaxCutoffForDate( String zoneCode, Date day ) {
