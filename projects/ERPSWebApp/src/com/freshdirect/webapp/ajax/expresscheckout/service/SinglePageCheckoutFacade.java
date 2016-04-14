@@ -387,10 +387,15 @@ public class SinglePageCheckoutFacade {
             if (modifyCartPreSelectionCompleted == null) {
                 ActionResult actionResult = new ActionResult();
                 String addressId = cart.getDeliveryReservation().getAddressId();
-                DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true,
-                        actionResult, null, null, null, null, null, null);
+
+                ErpAddressModel deliveryAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
+
+                if (deliveryAddress != null) {
+                    DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true,
+                            actionResult, null, null, null, null, null, null);
+                }
                 try {
-                    if (cart.getDeliveryReservation() != null) {
+                    if (cart.getDeliveryReservation() != null && deliveryAddress != null) {
                         TimeslotService.defaultService().reserveDeliveryTimeslot(cart.getDeliveryReservation().getTimeslotId(), session);
                     }
                 } catch (ReservationException e) {
