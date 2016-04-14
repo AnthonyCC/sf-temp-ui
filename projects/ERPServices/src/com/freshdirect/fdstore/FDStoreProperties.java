@@ -1623,7 +1623,7 @@ public class FDStoreProperties {
         defaults.put(CTCAPACITY_ELIGIBLE_PROFILES, "MktgSegment");
         defaults.put(PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED, "false");
         defaults.put(PROP_EXTERNAL_ACCOUNTMGR_HOME, "freshdirect.fdstore.ExternalAccountManager");
-        defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.42.36.54/dl");
+        defaults.put(PROP_MIDDLETIER_PROVIDER_URL, "http://8.41.212.54/dl");
         defaults.put(PROP_ATP_AVAILABILTY_MOCK_ENABLED, "false");
         defaults.put(PROP_HOLIDAY_MEAL_BUNDLE_CATEGORY_ID, "meals_entrees_holiday_thanksgiving");
         defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
