@@ -706,7 +706,7 @@
     top: -33px;
     border: 0;
     padding: 8px 17px;
-    background-color: #669933;
+    background-color: #458d4e;
     color: #ffffff;
     font-size: 12px;
     line-height: 12px;
@@ -1144,11 +1144,7 @@
 	cursor: default;
 }
 
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsSelectedSlotPropE,
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsChefstablePropE,
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEcoFriendlyPropE,
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEarlyAmPropE,
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsNeighbourhoodPropE{
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsSelectedSlotPropE{
 	float: right;
 }
 
@@ -1164,7 +1160,7 @@
 .standing-orders-3 #ec-drawer .tsTableC .tsCont .so-first-delivery,
 .standing-orders-3 #ec-drawer .tsTableE .tsCont.tsSoldoutC .so-first-delivery,
 .standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsSelectedSlotPropE .tsSelectedSlotE,
-.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEcoFriendlyPropE .tsEcoFriendlyE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEcoFriendlyPropE,
 .standing-orders-3 #ec-drawer #timeslots_grid .cutoff_tr,
 .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE,
 .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC,
@@ -1172,6 +1168,31 @@
 .standing-orders-3 #ec-drawer #timeslots_grid .tsChefstableE,
 .standing-orders-3 #ec-drawer #timeslots_grid .tsEcoFriendlyE,
 .standing-orders-3 #ec-drawer #timeslots_grid .tsEarlyAmE,
-.standing-orders-3 #ec-drawer #timeslots_grid .tsNeighbourhoodE{
+.standing-orders-3 #ec-drawer #timeslots_grid .tsNeighbourhoodE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsChefstablePropE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEcoFriendlyPropE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsEarlyAmPropE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsDiscountPropE,
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsContent div.tsNeighbourhoodPropE,
+.standing-orders-3 #ec-drawer .tsTable .tsEcoFriendlyPropC img,
+.standing-orders-3 #ec-drawer .tsTable .tsNeighbourhoodPropC img,
+.standing-orders-3 #ec-drawer .tsTable .tsChefstablePropC img,
+.standing-orders-3 #ec-drawer .tsTable .tsEarlyAmPropC img,
+.standing-orders-3 #ec-drawer .tsTable .tsDiscountPropC font{
 	display: none;
+}
+
+.standing-orders-3 #ec-drawer .tsTableE .tsCol div.tsAlcoholResPropE{
+	float: right;
+	margin-left: -6px;
+}
+
+.standing-orders-3 #ec-drawer .timeslots_legend_ecofriendly,
+.standing-orders-3 #ec-drawer .timeslots_legend_neighbourhood,
+.standing-orders-3 #ec-drawer .timeslots_legend_early_delivery{
+	display: none;
+}
+
+.standing-orders-3 #ec-drawer .tsEcoFriendlyTimeC{
+	color: #333;
 }
