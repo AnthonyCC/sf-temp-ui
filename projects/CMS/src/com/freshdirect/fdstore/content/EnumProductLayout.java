@@ -16,7 +16,8 @@ public enum EnumProductLayout implements Serializable {
 	NEW_WINE_PRODUCT("New Wine Product", 8, "/includes/product/new_wine_product.jsp", false),
 	@Deprecated
 	CONFIGURED_PRODUCT("Configured Product Layout", 9, "/includes/product/configProduct.jsp", false),
-    HOLIDAY_MEAL_BUNDLE_PRODUCT("Holiday Meal Bundle Product Layout", 10, "/hmb/product.jsp", true);
+    HOLIDAY_MEAL_BUNDLE_PRODUCT("Holiday Meal Bundle Product Layout", 10, "/hmb/product.jsp", true),
+    RECIPE_MEALKIT_PRODUCT("Recipe MealKit Product Layout", 11, "", true);
 
     private int id;
 	private String	name;

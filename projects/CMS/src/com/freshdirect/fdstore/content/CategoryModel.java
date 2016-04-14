@@ -1169,6 +1169,8 @@ public class CategoryModel extends ProductContainer {
 			case PRODUCTS_ASSORTMENTS:
                 //$FALL-THROUGH$
             case HOLIDAY_MEAL_BUNDLE_CATEGORY:
+                //$FALL-THROUGH$
+            case RECIPE_MEALKIT_CATEGORY:
 				return specialLayout;
 			default:
 				return null;

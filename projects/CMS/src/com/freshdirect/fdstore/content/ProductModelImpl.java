@@ -2112,6 +2112,8 @@ inner:
 			case MULTI_ITEM_MEAL:
                 //$FALL-THROUGH$
 			case HOLIDAY_MEAL_BUNDLE_PRODUCT:
+			    //$FALL-THROUGH$
+			case RECIPE_MEALKIT_PRODUCT:
 				return specialLayout;
 			default:
 				return null;

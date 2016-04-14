@@ -881,6 +881,7 @@
 				<EnumValue value="7" label="Component Group Meal"/>
                 <EnumValue value="8" label="New Wine Product"/>
                 <EnumValue value="10" label="Holiday Meal Bundle"/>
+				<EnumValue value="11" label="Recipe Mealkit"/>
 			</EnumDef>
 			<!-- LAYOUT needs to be on Product for inheritance, even though no prods override -->
 			<EnumDef type="I" name="LAYOUT"  label="Layout" inheritable="true">
@@ -926,6 +927,7 @@
 
                 <EnumValue value="200" label="President's Picks"/><!-- promo page -->
                 <EnumValue value="201" label="E-Coupons"/><!-- E-Coupons -->
+                <EnumValue value="301" label="Recipe Mealkit Category"/> <!-- Handpicked MealKit Category -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
