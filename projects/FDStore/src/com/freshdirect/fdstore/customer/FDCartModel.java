@@ -962,9 +962,16 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public void setDeliveryAddress(ErpAddressModel deliveryAddress) {
-		if(null == this.deliveryAddress && null !=deliveryAddress){
+		if(null !=deliveryAddress){
 			LOGGER.info("Setting delivery address for customer: "+(deliveryAddress.getCustomerId()));
-			LOGGER.info(Arrays.toString(Thread.currentThread().getStackTrace()));
+			if(null == this.deliveryAddress){
+				LOGGER.info(Arrays.toString(Thread.currentThread().getStackTrace()));
+				if(null == this.deliveryPlantInfo){
+					LOGGER.info("delivery plant info is null in the cart for customer: "+(deliveryAddress.getCustomerId())+ " . It has to be set");
+				}
+			}
+		}else{
+			LOGGER.info("clearing delivery address for customer: "+(deliveryAddress.getCustomerId()));
 		}
 		this.deliveryAddress = deliveryAddress;
 		//
@@ -2064,13 +2071,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public  void setDeliveryPlantInfo(ErpDeliveryPlantInfoModel deliveryPlantInfo) {
-		if(null !=deliveryAddress){
-			if(null == deliveryPlantInfo ){
-				LOGGER.info("clearing delivery plant info for customer: "+ (deliveryAddress.getCustomerId()));
+		
+		if(null == deliveryPlantInfo ){
+			LOGGER.info("clearing delivery plant info for customer: "+ (deliveryAddress.getCustomerId()));
+			if(null !=deliveryAddress){
 				LOGGER.info(Arrays.toString(Thread.currentThread().getStackTrace()));
-			} else if(null == this.deliveryPlantInfo){
-				LOGGER.info("Setting delivery plant info for customer: "+(deliveryAddress.getCustomerId()));
 			}
+		} else {
+			LOGGER.info("Setting delivery plant info for customer: "+(deliveryAddress.getCustomerId()));
 		}
 		 this.deliveryPlantInfo=deliveryPlantInfo;
 	}
