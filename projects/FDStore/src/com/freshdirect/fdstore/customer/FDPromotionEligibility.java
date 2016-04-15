@@ -34,7 +34,7 @@ public class FDPromotionEligibility implements Serializable {
 	
 	
 	public FDPromotionEligibility(){
-		System.out.println("this is FDPromotionEligibility");
+		
 	}
 	
 	public boolean isEligible(String promotionCode) {
