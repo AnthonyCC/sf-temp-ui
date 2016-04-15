@@ -971,7 +971,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				}
 			}
 		}else{
-			LOGGER.info("clearing delivery address for customer: "+(deliveryAddress.getCustomerId()));
+			LOGGER.info("clearing delivery address for customer: "+(null !=deliveryAddress ?deliveryAddress.getCustomerId():""));
 		}
 		this.deliveryAddress = deliveryAddress;
 		//
@@ -2073,12 +2073,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public  void setDeliveryPlantInfo(ErpDeliveryPlantInfoModel deliveryPlantInfo) {
 		
 		if(null == deliveryPlantInfo ){
-			LOGGER.info("clearing delivery plant info for customer: "+ (deliveryAddress.getCustomerId()));
+			LOGGER.info("clearing delivery plant info for customer: "+ (null !=deliveryAddress ?deliveryAddress.getCustomerId():""));
 			if(null !=deliveryAddress){
 				LOGGER.info(Arrays.toString(Thread.currentThread().getStackTrace()));
 			}
 		} else {
-			LOGGER.info("Setting delivery plant info for customer: "+(deliveryAddress.getCustomerId()));
+			LOGGER.info("Setting delivery plant info for customer: "+(null !=deliveryAddress ?deliveryAddress.getCustomerId():""));
 		}
 		 this.deliveryPlantInfo=deliveryPlantInfo;
 	}
