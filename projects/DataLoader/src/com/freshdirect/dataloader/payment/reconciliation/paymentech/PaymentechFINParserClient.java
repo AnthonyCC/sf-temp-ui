@@ -239,7 +239,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		appendGCSettlements(gcSettlementInfos);
 		
 		try {
-			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
+			if (DataLoaderProperties.isPayPalSettlementEnabled() && (this.ppReconSB!=null)) {
 				List ppSettlementInfos = this.ppReconSB.processPPSettlements(settlementIds);
 				if (ppSettlementInfos != null)
 					appendPPSettlements(ppSettlementInfos);
