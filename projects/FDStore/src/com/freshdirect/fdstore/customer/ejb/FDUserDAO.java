@@ -62,60 +62,67 @@ public class FDUserDAO {
 		return buff.toString();
 	}
 
-	private static FDUser createUser(Connection conn, String cookie, String street, String apt, String zipCode, String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId) throws SQLException {
-		
-		System.out.println("inside the create user .. creating the user");
-		String id = SequenceGenerator.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDUSER (ID, COOKIE, ZIPCODE, DEPOT_CODE, SERVICE_TYPE, CREATED, ADDRESS1, APARTMENT,ZP_SERVICE_TYPE) values (?,?,?,?,?,SYSDATE,?,?,?)");
-		ps.setString(1, id);
-		ps.setString(2, cookie);
-		if (zipCode != null) {
-			ps.setString(3, zipCode);
-		} else {
-			ps.setNull(3, Types.VARCHAR);
-		}
-		if (depotCode != null) {
-			ps.setString(4, depotCode);
-		} else {
-			ps.setNull(4, Types.VARCHAR);
-		}
-		if(serviceType != null){
-			ps.setString(5, serviceType.getName());
-		} else {
-			ps.setNull(5, Types.VARCHAR);
-		}
-		if(street != null){
-			ps.setString(6, street);
-		} else {
-			ps.setNull(6, Types.VARCHAR);
-		}
-		if(apt != null){
-			ps.setString(7, apt);
-		} else {
-			ps.setNull(7, Types.VARCHAR);
-		}
-		//Add for zone pricing.
-		if(serviceType != null){
-			ps.setString(8, serviceType.getName());
-		} else {
-			ps.setNull(8, Types.VARCHAR);
-		}
-		
-		
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not created");
-		}
+	private static FDUser createUser(Connection conn, String cookie, String street, String apt,
+			String zipCode, String depotCode, EnumServiceType serviceType, EnumEStoreId eStoreId)
+			throws SQLException {
+		PreparedStatement ps = null;
+		String id = null;
+		try {
 
-		ps.close();
+			LOGGER.info("inside the create user .. creating the user");
+			id = SequenceGenerator.getNextId(conn, "CUST");
+			ps = conn
+					.prepareStatement("INSERT INTO CUST.FDUSER (ID, COOKIE, ZIPCODE, DEPOT_CODE, SERVICE_TYPE, CREATED, ADDRESS1, APARTMENT,ZP_SERVICE_TYPE) values (?,?,?,?,?,SYSDATE,?,?,?)");
+			ps.setString(1, id);
+			ps.setString(2, cookie);
+			if (zipCode != null) {
+				ps.setString(3, zipCode);
+			} else {
+				ps.setNull(3, Types.VARCHAR);
+			}
+			if (depotCode != null) {
+				ps.setString(4, depotCode);
+			} else {
+				ps.setNull(4, Types.VARCHAR);
+			}
+			if (serviceType != null) {
+				ps.setString(5, serviceType.getName());
+			} else {
+				ps.setNull(5, Types.VARCHAR);
+			}
+			if (street != null) {
+				ps.setString(6, street);
+			} else {
+				ps.setNull(6, Types.VARCHAR);
+			}
+			if (apt != null) {
+				ps.setString(7, apt);
+			} else {
+				ps.setNull(7, Types.VARCHAR);
+			}
+			// Add for zone pricing.
+			if (serviceType != null) {
+				ps.setString(8, serviceType.getName());
+			} else {
+				ps.setNull(8, Types.VARCHAR);
+			}
+
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not created");
+			}
+		} finally {
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
 
 		createFDUserEStore(conn, zipCode, serviceType, eStoreId, id);
 		FDUser user = new FDUser(new PrimaryKey(id));
 		user.setCookie(cookie);
 		user.setZipCode(zipCode);
 		user.setDepotCode(depotCode);
-		
+
 		setAddressbyZipCode(conn, zipCode, user);
-		
 		// no need to create children, a new user doesn't have a cart yet
 		return user;
 	}
@@ -129,34 +136,39 @@ public class FDUserDAO {
 	 * @throws SQLException
 	 */
 	private static void createFDUserEStore(Connection conn, String zipCode,
-			EnumServiceType serviceType, EnumEStoreId eStoreId, String id)
-			throws SQLException {
-		PreparedStatement ps;
-		ps = conn.prepareStatement("INSERT INTO CUST.FDUSER_ESTORE (FDUSER_ID, E_STORE, ZIPCODE, SERVICE_TYPE, ZP_SERVICE_TYPE, CREATED) values (?,?,?,?,?,SYSDATE)");
-		ps.setString(1, id);
-		ps.setString(2, eStoreId.getContentId());
-		if (zipCode != null) {
-			ps.setString(3, zipCode);
-		} else {
-			ps.setNull(3, Types.VARCHAR);
-		}
-		if(serviceType != null){
-			ps.setString(4, serviceType.getName());
-		} else {
-			ps.setNull(4, Types.VARCHAR);
-		}
-		//Add for zone pricing.
-		if(serviceType != null){
-			ps.setString(5, serviceType.getName());
-		} else {
-			ps.setNull(5, Types.VARCHAR);
-		}		
-		
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not created");
+			EnumServiceType serviceType, EnumEStoreId eStoreId, String id) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			ps = conn
+					.prepareStatement("INSERT INTO CUST.FDUSER_ESTORE (FDUSER_ID, E_STORE, ZIPCODE, SERVICE_TYPE, ZP_SERVICE_TYPE, CREATED) values (?,?,?,?,?,SYSDATE)");
+			ps.setString(1, id);
+			ps.setString(2, eStoreId.getContentId());
+			if (zipCode != null) {
+				ps.setString(3, zipCode);
+			} else {
+				ps.setNull(3, Types.VARCHAR);
+			}
+			if (serviceType != null) {
+				ps.setString(4, serviceType.getName());
+			} else {
+				ps.setNull(4, Types.VARCHAR);
+			}
+			// Add for zone pricing.
+			if (serviceType != null) {
+				ps.setString(5, serviceType.getName());
+			} else {
+				ps.setNull(5, Types.VARCHAR);
+			}
+
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not created");
+			}
+		} finally {
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
 		}
 
-		ps.close();
 	}
 
 	private static void setAddressbyZipCode(Connection conn,

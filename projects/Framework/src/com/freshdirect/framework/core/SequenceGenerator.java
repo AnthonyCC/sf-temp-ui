@@ -27,14 +27,24 @@ public class SequenceGenerator {
 	}
 
 	private static String query(Connection conn, String query) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet rs = ps.executeQuery();
-		if (!rs.next()) {
-			throw new SQLException("Unable to get next sequence number from Oracle sequence");
-		}
-        String response= String.valueOf(rs.getObject(1));   
-		rs.close();
-		ps.close();
+		ResultSet rs=null;
+		PreparedStatement ps=null;
+		String response=null;
+		try{
+			 ps = conn.prepareStatement(query);
+		     rs = ps.executeQuery();
+		    if (!rs.next()) {
+			 throw new SQLException("Unable to get next sequence number from Oracle sequence");
+		    }
+             response= String.valueOf(rs.getObject(1));   
+		}finally{
+        	if(rs!=null && !rs.isClosed()){
+        		rs.close();
+        	}if(ps!=null && !ps.isClosed()){
+        		ps.close();
+        	}
+        }
+
         
 		return response;
 	}
