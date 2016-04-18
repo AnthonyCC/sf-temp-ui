@@ -1715,6 +1715,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 		clonedMatModel.setDaysFresh(materialModel.getDaysFresh());
 		clonedMatModel.setMaterialType(materialModel.getMaterialType());
 		clonedMatModel.setTaxable(materialModel.isTaxable());
+		clonedMatModel.setTaxCode(materialModel.getTaxCode());
 		clonedMatModel.setAlcoholicContent(materialModel.getAlcoholicContent());
 		clonedMatModel.setQuantityCharacteristic(materialModel.getQuantityCharacteristic());
 		clonedMatModel.setSalesUnitCharacteristic(materialModel.getSalesUnitCharacteristic());
