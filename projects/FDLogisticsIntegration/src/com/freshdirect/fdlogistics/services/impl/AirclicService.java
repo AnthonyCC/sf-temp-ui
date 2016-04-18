@@ -183,12 +183,14 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	@SuppressWarnings("unchecked")
 	@Override
 	public DeliverySummary getDeliverySummary(String orderId,
-			String routeNo, String date) throws FDLogisticsServiceException {
+			String routeNo, String date,String erpOrderId) throws FDLogisticsServiceException {
 
 		DeliveryRequest request = new DeliveryRequest();
 		request.setOrderId(orderId);
 		request.setRouteNo(routeNo);
 		request.setDeliveryDate(date);
+		request.setErpOrderId(erpOrderId);
+		
 		String inputJson = buildRequest(request);
 		DeliverySummary response =  getData(inputJson, getEndPoint(GET_DELIVERYSUMMARY_API), DeliverySummary.class);
 		

@@ -34,7 +34,8 @@
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<%
 		List cartonInfo = ((FDOrderAdapter)order).getCartonContents();
-		DeliverySummary model = AirclicManager.getInstance().lookUpDeliverySummary(order.getErpSalesId(),shippingInfo.getTruckNumber(), CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()));
+		DeliverySummary model = AirclicManager.getInstance().lookUpDeliverySummary(order.getErpSalesId(),shippingInfo.getTruckNumber(),
+				CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()),order.getSapOrderId());
 		Map<String, List<String>> cartonExceptionMap = model.getExceptions();
 		
 		if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { 

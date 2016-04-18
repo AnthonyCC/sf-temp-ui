@@ -191,10 +191,10 @@ public class ExternalInterfaceController extends BaseController {
     				String estDeliveryTime=request.getParameter("estDeliveryTime");
     				FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
     				fDDeliveryManager.captureFdxDeliveryInfo(erpOrderId,deliveryTime,nexStopErpOrderId,estDeliveryTime);
-    				responseMessage = Message.createSuccessMessage("T005 Successfull.");
+    				responseMessage = Message.createSuccessMessage("T005 Successful.");
     			} catch(Exception e) {
     				responseMessage=Message.createFailureMessage("T005 Failed.");
-    				LOGGER.info("T005_EXP: Unable to save fdx delivery info Relay received ");
+    				LOGGER.info("T005_EXP: Unable to save fdx delivery info received ");
     			}  
     			if(responseMessage == null) {
     				LOGGER.info("T005: Failed fdx delivery info Relay ");

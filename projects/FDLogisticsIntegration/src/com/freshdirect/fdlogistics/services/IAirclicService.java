@@ -38,12 +38,12 @@ public interface IAirclicService {
 			String deliveryDate) throws FDLogisticsServiceException;
 
 	public DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
-
+	
 	public RouteNextelResponse getRouteNextels(String orderId, String route,
 			String date) throws FDLogisticsServiceException;
 
 	public DeliverySummary getDeliverySummary(String orderId,
-			String routeNo, String date) throws FDLogisticsServiceException;
+			String routeNo, String date,String erpOrderId) throws FDLogisticsServiceException;
 
 	public Map<String, DeliveryException> getCartonScanInfo() throws FDLogisticsServiceException;
 

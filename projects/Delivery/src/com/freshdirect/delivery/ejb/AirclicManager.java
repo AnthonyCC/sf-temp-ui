@@ -340,7 +340,7 @@ public class AirclicManager {
 	}
 
 	public DeliverySummary lookUpDeliverySummary(String orderId,
-			String routeNo, String date) throws FDResourceException {
+			String routeNo, String date,String erpOrderId) throws FDResourceException {
 		DeliverySummary response = deliverySummaryCache.get(orderId);
 		try {
 			if(response == null){
@@ -349,7 +349,7 @@ public class AirclicManager {
 				//IOrderService orderService = LogisticsServiceLocator
 					//	.getInstance().getOrderService();
 				if (!ErpServicesProperties.isAirclicBlackhole()) {
-					response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date));
+					response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date,erpOrderId));
 					//response = orderService.getDeliverySummary(response, orderId);
 					deliverySummaryCache.put(orderId, response);	
 				}
