@@ -54,9 +54,7 @@ Please enter new EBT card information.
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
 		<TR VALIGN="BOTTOM">
 				<TD WIDTH="<%= W_YA_ADD_CREDITCARD %>" ALIGN="RIGHT">
-					<a href="<%=cancelPage%>">
-						<button class="cssbutton green transparent small">CANCEL</button>
-					</a>
+					<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 					<button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 				</TD>
 </TR>

@@ -47,20 +47,20 @@ body[developer] *:focus {
 }
 
 [fdform] input,
-[fdform] input[type="text"], 
-[fdform] input[type="email"], 
-[fdform] input[type="password"], 
-[fdform] input[type="url"], 
-[fdform] input[type="tel"], 
-[fdform] input[type="number"], 
-[fdform] input[type="search"], 
-[fdform] input[type="file"], 
-[fdform] input[type="date"], 
-[fdform] input[type="datetime-local"], 
-[fdform] input[type="month"], 
-[fdform] input[type="time"], 
-[fdform] input[type="week"], 
-[fdform] textarea, 
+[fdform] input[type="text"],
+[fdform] input[type="email"],
+[fdform] input[type="password"],
+[fdform] input[type="url"],
+[fdform] input[type="tel"],
+[fdform] input[type="number"],
+[fdform] input[type="search"],
+[fdform] input[type="file"],
+[fdform] input[type="date"],
+[fdform] input[type="datetime-local"],
+[fdform] input[type="month"],
+[fdform] input[type="time"],
+[fdform] input[type="week"],
+[fdform] textarea,
 .select-wrapper > select,
 [fdform] select {
 	border-top: 2px solid transparent;
@@ -118,8 +118,8 @@ body[developer] *:focus {
 
 
 [fdform] input:hover,
-[fdform] input:focus, 
-[fdform] textarea:hover,  
+[fdform] input:focus,
+[fdform] textarea:hover,
 [fdform] textarea:focus {
   border-color: #68aa6d;
   border-right: 2px solid #68aa6d;
@@ -138,7 +138,7 @@ body[developer] *:focus {
 }
 
 [fdform] input:disabled,
-[fdform] input[type="text"]:disabled, 
+[fdform] input[type="text"]:disabled,
 .select-wrapper > select:disabled,
 [fdform] select:disabled {
 	background: #eee;
@@ -148,10 +148,10 @@ body[developer] *:focus {
 [fdform] input:disabled:hover,
 [fdform] input:disabled:focus,
 [fdform] input:disabled:active,
-[fdform] input[type="text"]:disabled, 
+[fdform] input[type="text"]:disabled,
 [fdform] input[type="text"]:disabled:hover,
-[fdform] input[type="text"]:disabled:active, 
-[fdform] input[type="text"]:disabled:focus, 
+[fdform] input[type="text"]:disabled:active,
+[fdform] input[type="text"]:disabled:focus,
 .select-wrapper > select:disabled:active,
 .select-wrapper > select:disabled:hover,
 .select-wrapper > select:disabled:focus,
@@ -193,8 +193,8 @@ body[developer] *:focus {
 .select-wrapper > select::-ms-expand,
 [fdform] select::-ms-expand {
     display: none;
-}  
-   
+}
+
 .select-wrapper {
 	display: inline;
 	position: relative;
@@ -205,19 +205,18 @@ body[developer] *:focus {
 
 .select-wrapper:after {
 	font-family: 'freshdirect_icons';
-	speak: none;
-	font-style: normal;
-	font-weight: bold;
-	font-variant: normal;
-	text-transform: none;
-	vertical-align: text-bottom;
-	-webkit-font-smoothing: antialiased;
-	content: "\e874";
-	position: absolute;
-	right: 10px;
-	margin-left: -20px;
-	top: -2px;
-	pointer-events: none;
+  speak: none;
+  font-style: normal;
+  font-weight: bold;
+  font-variant: normal;
+  text-transform: none;
+  vertical-align: text-bottom;
+  -webkit-font-smoothing: antialiased;
+  content: "\e874";
+  position: absolute;
+  right: 10px;
+  top: -2px;
+  pointer-events: none;
 }
 
 .fake-radio:before {
@@ -265,9 +264,9 @@ input[type="radio"]:disabled + .fake-radio:before {
   content: '\a0';
   box-shadow: 0 0 0 1px #c2c2c2;
   position: absolute;
-  left:0; 
+  left:0;
   top: -2px;
-  width: 17px; 
+  width: 17px;
   height: 17px;
   background: #fafafa;
 }
@@ -279,9 +278,9 @@ input[type="radio"]:disabled + .fake-radio:before {
 [type="checkbox"]:disabled + .fake-checkbox:after {
   content: '\a0';
   position: absolute;
-  top: -2px; 
+  top: -2px;
   left: 0;
-  width: 17px; 
+  width: 17px;
   height: 17px;
   background: #ddd;
   border: 1px solid #c2c2c2;
@@ -291,9 +290,9 @@ input[type="radio"]:disabled + .fake-radio:before {
 .fake-checkbox:after {
   content: '\a0';
   position: absolute;
-  top: -2px; 
+  top: -2px;
   left: 0;
-  width: 17px; 
+  width: 17px;
   height: 17px;
   font-size: 17px;
   line-height: 17px;
@@ -311,7 +310,7 @@ input[type="radio"]:disabled + .fake-radio:before {
 [type="checkbox"]:checked + .fake-checkbox:after {
   content: '\2713';
   position: absolute;
-  top: -2px; 
+  top: -2px;
   left: 0;
   background: #4fa157;
   color: #fafafa;

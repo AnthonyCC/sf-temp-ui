@@ -59,8 +59,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 			</tr>
 			<tr>
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top">
-					<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">
-					<button class="cssbutton green transparent small" name="cancel_delivery">CANCEL</button></a>
+					<a class="cssbutton green transparent small" href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">CANCEL</a>
 					<button class="cssbutton green small" name="edit_delivery_address">SAVE ADDRESS</button>
 				</td>
 			</tr>

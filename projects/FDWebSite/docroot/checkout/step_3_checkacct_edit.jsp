@@ -75,8 +75,7 @@ Learn more about how this service works.
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>">
 	<TR VALIGN="TOP">
 			<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL%>" ALIGN="RIGHT">
-				<a href="<%=cancelPage%>">
-				 <button class="cssbutton green transparent small">CANCEL</button></a>
+				<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 				 <button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 			</TD>
 	</TR>

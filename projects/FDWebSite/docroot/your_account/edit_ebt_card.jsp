@@ -88,10 +88,8 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= W_YA_EDIT_CREDITCARD %>" ALIGN="RIGHT">
-		<a href="<%=cancelPage%>">
-			<button class="cssbutton green transparent small">CANCEL</button>
-		</a>
-		<button class="cssbutton orange small" name="checkout_credit_card_edit"> SAVE CHANGES</button>
+		<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
+		<button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 	</TD>
 </TR>
 </TABLE>

@@ -58,10 +58,8 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 				<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
 			</tr>
 		<tr>
-			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>" align="right" valign="middle">
-				<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">
-					<button class="cssbutton green transparent small">CANCEL</button>
-				</a>
+			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>" align="right" valign="middle"><br>
+				<a class="cssbutton green transparent small" href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">CANCEL</a>
 				<button class="cssbutton orange small" name="edit_delivery_address">SAVE CHANGES</button>
 			</td>
 		</tr>

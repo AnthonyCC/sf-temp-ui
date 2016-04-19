@@ -176,10 +176,8 @@ if (isValidPaymentId) {
 		</TD>
 		<%if (!proceedThruCheckout) { %>
 		<TD WIDTH="300" ALIGN="RIGHT">
-			<a href="<%=cancelPage%>">
-				<button class="cssbutton green transparent small">CANCEL</button>
-			</a>
-			<button class="cssbutton orange small" name="checkout_credit_card_edit" >CANCEL</button>
+			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
+			<button class="cssbutton orange small" name="checkout_credit_card_edit" >SAVE CHANGES</button>
 		</TD>
 		<%}%>
 	</tr>

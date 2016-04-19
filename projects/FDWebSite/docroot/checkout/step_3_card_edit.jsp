@@ -79,8 +79,7 @@ final int W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL = 970;
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL%>">
 		<TR VALIGN="TOP">
 				<TD WIDTH="<%=W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL%>" ALIGN="RIGHT">
-					<a href="<%=cancelPage%>">
-						<button class="cssbutton green transparent small">CANCEL</button></a>
+					<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 						<button  class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 				</TD>
 		</TR>

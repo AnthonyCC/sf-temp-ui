@@ -260,8 +260,7 @@ String addCCPage = fromCheckout1 ? "/checkout/step_3_card_add.jsp" : "/your_acco
 		</TD>
 		<%if (!proceedThruCheckout) { %>
 		<TD WIDTH="300" ALIGN="RIGHT">
-			<a href="<%=cancelPage%>">
-			<button class="cssbutton green transparent small">CANCEL</button></a>
+			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 			<button class="cssbutton orange small">SAVE CHANGES</button>
 		</TD>
 		<%}%>
