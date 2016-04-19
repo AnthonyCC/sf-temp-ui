@@ -22,6 +22,7 @@ public class PageViewTagModelBuilder  {
 	private static final String INDEX_FILE = "index.jsp";
 	private static final int INDEX_FILE_SUFFIX_LENGTH = INDEX_FILE.length();
     private static final String HOLIDAY_MEAL_BUNDLE_DIRECTORY_PATH_NAME = "hmb";
+    private static final String RECIPE_MEALKITS_DIRECTORY_PATH_NAME = "handpick";
 
 	private PageViewTagInput input;
 	
@@ -104,10 +105,10 @@ public class PageViewTagModelBuilder  {
 				tagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
 				tagModel.setPageId(uriAfterSlash.substring(slashAfterDirNamePos+1));
 				decoratePageIdWithCatId(tagModel);
-            } else if (HOLIDAY_MEAL_BUNDLE_DIRECTORY_PATH_NAME.equals(dirName)) {
+            } else if (HOLIDAY_MEAL_BUNDLE_DIRECTORY_PATH_NAME.equals(dirName) || RECIPE_MEALKITS_DIRECTORY_PATH_NAME.equals(dirName)) {
                 findCurrentFolder(input.id);
                 processDeptOrCat();
-            }
+            } 
 
 		//uri has only a file name	
 		} else {

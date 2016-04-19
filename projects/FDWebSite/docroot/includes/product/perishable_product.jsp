@@ -236,8 +236,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				<% if ( hasNutriOrIngrd ) { %>
                 	<br/><a href="javascript:pop('/shared/nutrition_info.jsp?catId=<%=productNode.getParentNode().getContentName()%>&productId=<%=productNode.getContentName()%>',335,375)">Nutrition, Ingredients, and Allergens</a>
 				<% } else { %>
-					<br/>Please check product label for nutrition, ingredients, and allergens.
-				<% } %>
+					<%if(!EnumProductLayout.RECIPE_MEALKIT_PRODUCT.equals(productNode.getProductLayout())){ %>
+					<br/>Please check product label for nutrition, ingredients, and allergens. <%=productNode.getProductLayout() %>
+				<% }} %>
 				<br/><br/>
 
 			<% } %>

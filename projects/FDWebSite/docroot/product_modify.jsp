@@ -101,12 +101,15 @@ This item is now in your cart. After making changes to it, click "save changes" 
 	request.setAttribute("templateLine",templateLine);
 
 EnumProductLayout prodPageLayout = productNode.getProductLayout();
+System.out.println("prodPageLayout: " + prodPageLayout);
 // if this is the wine product layout, then modification always uses the perishable product layout
-if (prodPageLayout.equals(EnumProductLayout.WINE)) prodPageLayout= EnumProductLayout.PERISHABLE;
+if (prodPageLayout.equals(EnumProductLayout.WINE)  ||
+    prodPageLayout.equals(EnumProductLayout.RECIPE_MEALKIT_PRODUCT)) prodPageLayout= EnumProductLayout.PERISHABLE;
 
 // if this is configuredProduct layout, then use the ComponentGroup layout to render the modify screen
 if (prodPageLayout.equals(EnumProductLayout.CONFIGURED_PRODUCT) || 
-        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
+        prodPageLayout.equals(EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)) 
+    prodPageLayout= EnumProductLayout.COMPONENTGROUP_MEAL;
 
 String productPage = prodPageLayout.getLayoutPath();
 %>

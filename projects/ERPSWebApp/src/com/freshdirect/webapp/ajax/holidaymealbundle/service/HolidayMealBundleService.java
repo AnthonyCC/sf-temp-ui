@@ -149,10 +149,10 @@ public class HolidayMealBundleService {
     }
 
     private boolean isCategoryModelLayoutTypeHolidayMealBundle(ContentNodeModel contentNodeModel) {
-        return contentNodeModel instanceof CategoryModel && EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout());
+        return contentNodeModel instanceof CategoryModel && (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout()));
     }
 
     public boolean isProductModelLayoutTypeHolidayMealBundle(ContentNodeModel contentNodeModel) {
-        return contentNodeModel instanceof ProductModel && EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT.equals(((ProductModel) contentNodeModel).getSpecialLayout());
+        return contentNodeModel instanceof ProductModel && (EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT.equals(((ProductModel) contentNodeModel).getSpecialLayout()));
     }
 }

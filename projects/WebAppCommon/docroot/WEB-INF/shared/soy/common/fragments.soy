@@ -14,16 +14,16 @@
 {/template}
 
 /**
- * @param scaleUnit
  * @param price
  * @param? wasPrice wasPrice
  * @param? aboutPriceText aboutPriceText
+ * @param? scaleUnit
  */
 {template .price autoescape="false"}
 	{if $wasPrice}
 		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>${$wasPrice}</s>
 	{else}
-		{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}
+		{call common.formatDecimalPrice}{param price:$price /}{/call}{if $scaleUnit}/{$scaleUnit}{/if}
 	{/if}
 	{if $aboutPriceText}
 		<span class="about-price">{$aboutPriceText}</span>

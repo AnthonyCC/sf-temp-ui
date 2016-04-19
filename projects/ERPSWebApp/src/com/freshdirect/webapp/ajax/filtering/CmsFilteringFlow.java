@@ -58,6 +58,7 @@ import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
+import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -71,6 +72,7 @@ public class CmsFilteringFlow {
 	private static String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
 	private static String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
     private static String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
+    private static String RECIPE_MEALKIT_LAYOUT_URL_FS = "/handpick/category.jsp?id=%s";
 	private static String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
 	private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 	
@@ -618,6 +620,7 @@ public class CmsFilteringFlow {
 		browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
 		
         browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
+        browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
 
 		return browseDataContext;
 	}
@@ -677,8 +680,12 @@ public class CmsFilteringFlow {
             if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
                 throw new InvalidFilteringArgumentException("Node has holiday meal bundle layout: " + id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT,
                         String.format(HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS, id));
+            } else if (EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+                throw new InvalidFilteringArgumentException("Node has recipe mealkit layout: " + id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT,
+                        String.format(RECIPE_MEALKIT_LAYOUT_URL_FS, id));
             } else {
-			throw new InvalidFilteringArgumentException("Node has special layout: "+id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT, String.format(SPECIAL_LAYOUT_URL_FS, id));
+                throw new InvalidFilteringArgumentException("Node has special layout: " + id, InvalidFilteringArgumentException.Type.SPECIAL_LAYOUT,
+                        String.format(SPECIAL_LAYOUT_URL_FS, id));
             }
         }
 		

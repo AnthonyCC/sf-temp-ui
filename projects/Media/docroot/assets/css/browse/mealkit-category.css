@@ -1,0 +1,134 @@
+/* reset */
+.mealkit ul, li{
+  list-style-type:none;
+  margin:0;
+}
+
+.mealkit section.deptnav{
+  margin:0;
+}
+
+/* layout */
+.mealkit-products-list{
+  display: flex;
+  flex-direction: row;
+  flex-wrap:wrap;
+
+  display: -ms-flexbox;
+  -ms-flex-direction:row;
+  -ms-flex-wrap:wrap;
+
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-flex-wrap:wrap;
+
+  flex-wrap:wrap;
+  max-width:970px;
+  padding:0;
+}
+
+.ie8 .mealkit-products-list {
+  display:block;
+}
+
+.mealkit-products-list-item {
+  padding:20px 15px 20px 15px;
+  width:278px;
+  position:relative;
+  margin-right:20px;
+  margin-bottom:20px;
+  border:1px solid #e1e1e1;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.mealkit-products-list-item:nth-child(3n){
+  margin-right:0;
+}
+
+.ie8 .mealkit-products-list-item {
+  display:inline-block;
+  vertical-align:top;
+  min-height:500px;
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.mealkit-products-list-item-imagewrapper{
+  text-align:center;
+}
+
+.mealkit-products-list-item-imagewrapper a,
+.mealkit-products-list-item-imagewrapper a:hover,
+.mealkit-products-list-item-imagewrapper a:active {
+  text-decoration: none;
+}
+
+.mealkit-products-list-item-image{
+  width:280px;/* product-large width */
+  height: 222px;
+}
+
+.mealkit-products-list-item-head{
+  margin:10px 0 0 0;
+  font-weight:bold;
+  color:#333;
+}
+
+.mealkit-products-list-item-subhead{
+  margin:0 0 26px 0;
+}
+
+.recipes-title {
+	font-weight: bold;
+	font-size: 17px;
+}
+
+.mealkit-products-list-item-infos {
+	line-height: 30px;
+	margin-bottom: 50px;
+}
+.mealkit-products-list-item-price {
+ text-align: left;
+  margin: 0;
+  font-size:17px;
+  color:#333;
+  font-weight: bold;
+}
+
+.mealkit-products-list-item-price span {
+	font-weight: normal;
+}
+
+.mealkit-products-list-button {
+	margin: 20px auto 0;
+	text-align: center;
+	height:36px;
+}
+
+.mealkit-products-list-button button {
+  width:100px;
+  position: absolute;
+  bottom: 20px;
+  left: 100px;
+}
+
+.mealkit-category-head {
+  border-bottom:1px dashed #333;
+  padding-bottom:4px;
+  margin-bottom:20px;
+  font-size:22px;
+  font-weight:bold;
+  color:#333;
+  
+}
+
+/* styles */
+.mealkit-products-list {
+   font-family:Verdana,Geneva,sans-serif;
+}
+
+.mealkit-products-list-item {
+  font-size:16px;
+  background: #fcfcfc;
+}

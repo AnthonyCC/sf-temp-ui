@@ -167,7 +167,8 @@ public class UnavailabilityPopulator {
                             + "\">Click here</a> to select other options.");
 				}
 	
-                line.setDescription(hasProductSpecialLayout(cartLine.lookupProduct(), EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT) ? "" : description.toString());
+                line.setDescription((hasProductSpecialLayout(cartLine.lookupProduct(), EnumProductLayout.HOLIDAY_MEAL_BUNDLE_PRODUCT)
+                        || hasProductSpecialLayout(cartLine.lookupProduct(), EnumProductLayout.RECIPE_MEALKIT_PRODUCT)) ? "" : description.toString());
 				data.getNonReplaceableLines().add(line);
 				
 			} else if (info instanceof FDMuniAvailabilityInfo) {
