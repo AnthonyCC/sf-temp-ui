@@ -149,10 +149,10 @@ function closeSettingsDelete(id){
 	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
 };
 
-function deleteSO(name, id){
+function deleteSO(id){
 	var soID = "#soid_" + id;
 	var usoID = "#usoid_" + id;
-	submitFormManageSO(id,"delete",name,null);
+	submitFormManageSO(id,"delete",null,null);
 	if($jq(usoID).length > 0){
 		openUpcomingOrderCancel(id);
 	}	
