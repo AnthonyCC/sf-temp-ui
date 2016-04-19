@@ -230,7 +230,7 @@
 							<tr>
 								<td class="gc_table_footer">
 									<div align="right"><input type="button" onclick="lookupDeliveryManifest();" class="button" value="Refresh" name="Refresh Manifest"></div>
-									<div id="manifestDetail" style="height:550px;text-align:left;">
+									<div id="manifestDetail" style="height:650px;text-align:left;">
 										<script>
 										
 										</script>
