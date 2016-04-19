@@ -655,6 +655,8 @@
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
+			<AttributeDef name="PrimaryText" type="S" label="Primary Text" inheritable="false"/>
+			<AttributeDef name="SecondaryText" type="S" label="Secondary Text" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">

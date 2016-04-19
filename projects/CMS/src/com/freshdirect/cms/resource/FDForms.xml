@@ -387,6 +387,8 @@
 						<fields>
 							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
 							<CmsField><attribute>tabletThumbnailImage</attribute></CmsField>
+							<CmsField><attribute>PrimaryText</attribute></CmsField>
+							<CmsField><attribute>SecondaryText</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
