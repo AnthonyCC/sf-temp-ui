@@ -1,7 +1,8 @@
+FreshDirect.standingorder = FreshDirect.standingorder || {};
+FreshDirect.standingorder.isSelectFrequencyChanged = false;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
-FreshDirect.standingorder = FreshDirect.standingorder || {};
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -357,21 +358,29 @@ function getSOData(id, action){
 };
 
 function selectFrequency(item){
-	var freq;
-	if(item.id == "soFreq" && item.value != $jq("#soFreq2").val()){
-		freq = item.value;
-		$jq("#soFreq2").val(freq);
-		$jq("#soFreq2").select2("val", freq);
-		$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
-		submitFormManageSO("","selectFreq",null,freq);
-	}
-	if(item.id == "soFreq2"){
-		freq = item.value;
-		if($jq("#soFreq").length > 0 && item.value != $jq("#soFreq").val()){
-			$jq("#soFreq").val(freq);
-			$jq("#soFreq").select2("val", freq);
+	if(FreshDirect.standingorder.isSelectFrequencyChanged){
+		FreshDirect.standingorder.isSelectFrequencyChanged = false;
+	} else {
+		var freq;
+		if(item.id == "soFreq" && !FreshDirect.standingorder.isSelectFrequencyChanged){
+			FreshDirect.standingorder.isSelectFrequencyChanged = true;
+			freq = item.value;
+			$jq("#soFreq2").val(freq);
+			$jq("#soFreq2").select2("val", freq);
+			submitFormManageSO("","selectFreq",null,freq);
+			if($jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.cancel.cssbutton").css("display") == "none"){
+				$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
+			}
 		}
-		submitFormManageSO("","selectFreq",null,freq);
+		if(item.id == "soFreq2"){
+			freq = item.value;
+			if($jq("#soFreq").length > 0 && item.value != $jq("#soFreq").val() && !FreshDirect.standingorder.isSelectFrequencyChanged){
+				FreshDirect.standingorder.isSelectFrequencyChanged = true;
+				$jq("#soFreq").val(freq);
+				$jq("#soFreq").select2("val", freq);
+			}
+			submitFormManageSO("","selectFreq",null,freq);
+		}
 	}
 };
 
