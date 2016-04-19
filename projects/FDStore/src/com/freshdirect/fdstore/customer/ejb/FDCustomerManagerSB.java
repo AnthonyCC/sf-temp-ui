@@ -557,10 +557,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public void cancelReservation (FDIdentity identity, FDReservation reservation, EnumReservationType type, FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException, RemoteException;
 	
-	public List<ReservationInfo> getRecurringReservationList() throws FDResourceException, RemoteException;
-	
-	public List<ReservationInfo> getRecurringReservationList(int day_of_week) throws FDResourceException, RemoteException;
-
 	public void storeCustomerRequest(FDCustomerRequest cr) throws FDResourceException, RemoteException;
 	
 	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException, RemoteException;

@@ -1353,7 +1353,7 @@ public class FDDeliveryManager {
 	
 
 		try {
-			LOGGER.debug("Sending Address For Routing System# " + address.getAddress1()+" : "+address.getZipCode());		
+			LOGGER.info("Sending Address To Logistics System# " + address.getAddress1()+" : "+address.getZipCode());		
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.processAddress(LogisticsDataEncoder.encodeAddress((AddressModel)address));
 			LogisticsDataDecoder.decodeResult(result);

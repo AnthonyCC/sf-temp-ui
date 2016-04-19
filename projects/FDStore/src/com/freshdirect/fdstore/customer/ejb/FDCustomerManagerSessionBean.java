@@ -948,7 +948,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			addressModel.setId(shippingAddress.getId());
 			addressModel.setAddress1(shippingAddress.getAddress1());
 			addressModel.setAddress2(shippingAddress.getAddress2());
-			if(shippingAddress.getAddressInfo() == null){
+			if(shippingAddress.getAddressInfo() == null ||
+					(shippingAddress.getAddressInfo()!=null && 
+					StringUtils.isBlank(shippingAddress.getAddressInfo().getScrubbedStreet()))){
 				AddressInfo info = new AddressInfo();
 				info.setScrubbedStreet(shippingAddress.getScrubbedStreet());
 				addressModel.setAddressInfo(info);
@@ -1045,10 +1047,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-
-	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException, FDResourceException {
-		return loadAddressFromResultSet(rs,true);
-	}
 	
 	private ErpAddressModel loadAddressFromResultSet(ResultSet rs, boolean loadunAttendDlvFlag) throws SQLException, FDResourceException {
 		ErpAddressModel address;
@@ -1092,6 +1090,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				.getString("ALT_DEST")));
 		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
+		
+		if(address.getAddressInfo()!=null){
+			AddressInfo info = address.getAddressInfo();
+			info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+			address.setAddressInfo(info);
+		}
 		
 
 		return address;
@@ -4708,71 +4712,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 */
 	}
 
-	private static final String RECURRING_RSV_QUERY = "SELECT CI.CUSTOMER_ID, CI.EMAIL, CI.RSV_DAY_OF_WEEK, CI.RSV_START_TIME, CI.RSV_END_TIME, "
-			+ "A.ID AS ADDRESS_ID, A.ADDRESS1, A.ADDRESS2, A.APARTMENT, A.CITY, A.STATE, A.ZIP, A.SCRUBBED_ADDRESS, A.LONGITUDE, A.LATITUDE, A.SERVICE_TYPE,A.FIRST_NAME,A.LAST_NAME, FDC.ID FDCID  "
-			+ "FROM CUST.CUSTOMERINFO CI, CUST.ADDRESS A, CUST.FDCUSTOMER FDC "
-			+ "WHERE RSV_ADDRESS_ID IS NOT NULL AND CI.RSV_ADDRESS_ID = A.ID and CI.CUSTOMER_ID = FDC.ERP_CUSTOMER_ID and CI.RSV_DAY_OF_WEEK = ?";
-
-	public List<ReservationInfo> getRecurringReservationList() throws FDResourceException {
-		Calendar cal = Calendar.getInstance();
-		int day_of_week = cal.get(Calendar.DAY_OF_WEEK);
-		return getRRList(day_of_week);
-	}
-
-	public List<ReservationInfo> getRecurringReservationList(int day_of_week) throws FDResourceException {
-		return getRRList(day_of_week);
-	}
-
-	private List<ReservationInfo> getRRList(int day_of_week) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(RECURRING_RSV_QUERY);
-			ps.setInt(1, day_of_week);
-			ResultSet rs = ps.executeQuery();
-			List<ReservationInfo> rsvInfo = new ArrayList<ReservationInfo>();
-			while (rs.next()) {
-				String customerId = rs.getString("CUSTOMER_ID");
-				String fdCustomerId = rs.getString("FDCID");
-				int dayOfWeek = rs.getInt("RSV_DAY_OF_WEEK");
-				Date startTime = rs.getTimestamp("RSV_START_TIME");
-				Date endTime = rs.getTimestamp("RSV_END_TIME");
-				rsvInfo.add(new ReservationInfo(customerId, fdCustomerId, dayOfWeek,
-						startTime, endTime, getAddressFromResultSet(rs)));
-			}
-			rs.close();
-			ps.close();
-			return rsvInfo;
-		} catch (SQLException e) {
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-
-	private ContactAddressModel getAddressFromResultSet(ResultSet rs)
-			throws SQLException {
-		ContactAddressModel address = new ContactAddressModel();
-		address.setPK(new PrimaryKey(rs.getString("ADDRESS_ID")));
-		address.setAddress1(rs.getString("ADDRESS1"));
-		address.setAddress2(rs.getString("ADDRESS2"));
-		address.setApartment(rs.getString("APARTMENT"));
-		address.setCity(rs.getString("CITY"));
-		address.setState(rs.getString("STATE"));
-		address.setZipCode(rs.getString("ZIP"));
-		address.setServiceType(EnumServiceType.getEnum(rs
-				.getString("SERVICE_TYPE")));
-
-		AddressInfo info = new AddressInfo();
-		info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
-		info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
-		info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
-		address.setAddressInfo(info);
-		address.setFirstName(rs.getString("FIRST_NAME"));
-		address.setLastName(rs.getString("LAST_NAME"));
-		address.setCustomerId(rs.getString("CUSTOMER_ID"));
-		return address;
-	}
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.

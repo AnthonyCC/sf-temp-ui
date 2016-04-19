@@ -75,6 +75,7 @@ public class ErpAddressModel extends ContactAddressModel {
 
 		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
 		this.unattendedDeliveryInstructions = "";
+		this.setAddressInfo(new AddressInfo());
 		
 	}
 

@@ -18,6 +18,7 @@ import java.util.Set;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -1351,6 +1352,11 @@ public class FDUserDAO {
 				addressModel = new ErpAddressModel();					
 				addressModel.setApartment(rs.getString("APARTMENT"));
 				addressModel.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+				if(addressModel.getAddressInfo()!=null){
+					AddressInfo info = addressModel.getAddressInfo();
+					info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+					addressModel.setAddressInfo(info);
+				}
 				addressModel.setPK(new PrimaryKey(rs.getString("ID")));
 				addressModel.setAddress1((rs.getString("ADDRESS1")));
 				addressList.add(addressModel);	
