@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -480,6 +481,7 @@ public class UserUtil {
                 } else if ((currentLines > 0) && (loginLines == 0)) {
                     // keep current cart                	
                     loginUser.setShoppingCart(currentUser.getShoppingCart());
+                    loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser.getUserContext()));
                     loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());                                     
                     
                 }

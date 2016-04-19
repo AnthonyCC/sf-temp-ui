@@ -615,7 +615,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		ErpAddressModel shippingAddress = FDCustomerManager.getAddress( identity, addressPK );
 
 		if ( shippingAddress == null ) {
-			throw new FDResourceException( "Specified address doesn't exist" );
+			throw new FDResourceException( "Specified address doesn't exist: "+addressPK );
 		}
 
 		// Suppress the Address Validation if the address is already scrubbed.

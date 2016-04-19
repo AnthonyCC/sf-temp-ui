@@ -26,6 +26,7 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -100,7 +101,9 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 //				else {
 //					this.successPage="/login/index.jsp";
 //				}
-				
+				if(null == user.getShoppingCart().getDeliveryPlantInfo()){
+					user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user.getUserContext()));
+				}
 				user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());	
 				
 				//evaluate the coupons, after the merge cart.
