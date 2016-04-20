@@ -5,6 +5,7 @@ package com.freshdirect.customer;
 
 import java.io.Serializable;
 
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -21,6 +22,7 @@ public class ErpDeliveryPlantInfoModel implements Serializable {
     private String distChannel;
     private String plantId;
     private String division;
+    private CatalogKey catalogKey;
     
 	/**
 	 * @return the salesOrg
@@ -69,6 +71,12 @@ public class ErpDeliveryPlantInfoModel implements Serializable {
 	 */
 	public void setDivision(String division) {
 		this.division = division;
+	}
+	public CatalogKey getCatalogKey() {
+		return catalogKey;
+	}
+	public void setCatalogKey(CatalogKey catalogKey) {
+		this.catalogKey = catalogKey;
 	}
 	@Override
 	public int hashCode() {

@@ -10,6 +10,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -85,6 +86,7 @@ public class FDOrderTranslator {
 				dpi.setSalesOrg(cart.getDeliveryPlantInfo().getSalesOrg());
 				dpi.setDistChannel(cart.getDeliveryPlantInfo().getDistChannel());
 				dpi.setDivision(cart.getDeliveryPlantInfo().getDivision());
+				dpi.setCatalogKey(cart.getDeliveryPlantInfo().getCatalogKey());
 				deliveryInfo.setDeliveryPlantInfo(dpi);
 			} else {
 				String customerId=cart.getDeliveryAddress()!=null?cart.getDeliveryAddress().getCustomerId():"";

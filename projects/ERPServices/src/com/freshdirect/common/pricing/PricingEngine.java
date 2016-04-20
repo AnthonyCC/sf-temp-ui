@@ -178,12 +178,14 @@ public class PricingEngine {
 				try{
 					MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneInfo());
 					if(grpMaterialPrice != null) {
+						ZoneInfo grpScalePriceZoneInfo = GroupScaleUtil.getGroupPricingZoneId(group, ctx.getZoneInfo());
 						//Group Price exists for this zone.
 						if(grpQuantity > 0 && grpQuantity >= grpMaterialPrice.getScaleLowerBound()){
 							//Required when multiple group scale prices are supported.
 							// find pricing condition for quantity (in scaleUnit)
 							//MaterialPrice grpMaterialPrice = GroupScaleUtil.getGroupScalePriceByQty(group, ctx.getZoneId(), grpQuantity);
-							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,ctx.getZoneInfo());		
+//							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,ctx.getZoneInfo());		
+							return calculateGrpScalePrice(pricing, configuration, grpQuantity, grpMaterialPrice,grpScalePriceZoneInfo);
 						} else {
 							return calculateSimplePrice(pricing, configuration, ctx.getZoneInfo());
 						}

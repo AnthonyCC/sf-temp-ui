@@ -7,11 +7,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
@@ -103,12 +105,12 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
 
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE,SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION, HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE, CATALOG_KEY) " +
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
         "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?,?,?,?,?,?,?,?,(SELECT SERVICE_TYPE FROM " +
-        " CUST.ADDRESS WHERE ID=?))";	
+        " CUST.ADDRESS WHERE ID=?), ?)";	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);		
 		PreparedStatement ps = conn.prepareStatement(STORE_DELIVERY_INFO);
@@ -184,6 +186,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setString(38, this.model.getDeliveryPlantInfo().getDistChannel());
 			ps.setString(39, this.model.getDeliveryPlantInfo().getPlantId());
 			ps.setString(40, this.model.getDeliveryPlantInfo().getDivision());
+			if(null !=model.getDeliveryPlantInfo().getCatalogKey()){
+				ps.setString(47, model.getDeliveryPlantInfo().getCatalogKey().toString());
+			}else{
+				ps.setNull(47, Types.VARCHAR);
+			}
 		}else{
 			ps.setString(37, "");
 			ps.setString(38, "");
@@ -197,7 +204,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setDouble(43, this.model.getMinDurationForModStart());  
 		ps.setDouble(44, this.model.getMinDurationForModification());
 		ps.setString(45, this.model.getOrderMobileNumber()!=null?this.model.getOrderMobileNumber().getPhone():"");
-		ps.setString(46, address.getId());
+		ps.setString(46, address.getId());		
         
 		
 		try {
@@ -222,7 +229,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) as PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, " +
 		"'('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE, ALT_PHONE_EXT, " +
-		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE,CATALOG_KEY FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
@@ -258,6 +265,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		deliveryPlantInfo.setDistChannel(rs.getString("DISTRIBUTION_CHANNEL"));
 		deliveryPlantInfo.setPlantId(rs.getString("PLANT_ID"));
 		deliveryPlantInfo.setDivision(rs.getString("DIVISION"));
+		deliveryPlantInfo.setCatalogKey(null !=rs.getString("CATALOG_KEY")?CatalogKey.parse(rs.getString("CATALOG_KEY")):null);
 		
 		ErpAddressModel address = new ErpAddressModel();
 		address.setFirstName(rs.getString("FIRST_NAME"));

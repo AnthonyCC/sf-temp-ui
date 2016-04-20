@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer;
 
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -26,6 +27,8 @@ public class FDUserUtil {
 		delPlantInfo.setPlantId(userContext.getFulfillmentContext().getPlantId());
 		delPlantInfo.setSalesOrg(userContext.getPricingContext().getZoneInfo().getSalesOrg());
 		delPlantInfo.setDistChannel(userContext.getPricingContext().getZoneInfo().getDistributionChanel());
+		CatalogKey catalogKey = new CatalogKey(userContext.getStoreContext().getEStoreId().name(),Long.parseLong(userContext.getFulfillmentContext().getPlantId()),userContext.getPricingContext().getZoneInfo());
+		delPlantInfo.setCatalogKey(catalogKey);
 		return delPlantInfo;
 	}
 

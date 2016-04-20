@@ -22,6 +22,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -223,6 +224,8 @@ public class FDUserDAO {
 		delPlantInfo.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 		delPlantInfo.setSalesOrg(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
 		delPlantInfo.setDistChannel(user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+		CatalogKey catalogKey = new CatalogKey(user.getUserContext().getStoreContext().getEStoreId().name(),Long.parseLong(user.getUserContext().getFulfillmentContext().getPlantId()),user.getUserContext().getPricingContext().getZoneInfo());
+		delPlantInfo.setCatalogKey(catalogKey);
 		cart.setDeliveryPlantInfo(delPlantInfo);
 		user.setShoppingCart(cart);
 	}

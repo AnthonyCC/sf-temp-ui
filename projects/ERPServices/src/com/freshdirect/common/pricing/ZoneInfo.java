@@ -180,8 +180,11 @@ public final class ZoneInfo implements java.io.Serializable, Comparable<ZoneInfo
 	    comparison = this.distributionChanel.compareTo(other.distributionChanel);
 	    if (comparison != EQUAL) return comparison;
 
-	    comparison = this.parent.compareTo(other.parent);
+	    comparison = (null == this.parent && null == other.parent) ? EQUAL: (null == this.parent ? -1: this.parent.compareTo(other.parent));
 	    if (comparison != EQUAL) return comparison;
+	    
+	    /*comparison = this.parent.compareTo(other.parent);
+	    if (comparison != EQUAL) return comparison;*/
 	    
 	    //verify that compareTo is consistent with equals (optional)
 	    assert this.equals(other) : "compareTo inconsistent with equals.";

@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.UserContext;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -70,6 +71,8 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		delPlantInfo.setPlantId(user.getUserContext().getFulfillmentContext().getPlantId());
 		delPlantInfo.setSalesOrg(user.getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
 		delPlantInfo.setDistChannel(user.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+		CatalogKey catalogKey = new CatalogKey(user.getUserContext().getStoreContext().getEStoreId().name(),Long.parseLong(user.getUserContext().getFulfillmentContext().getPlantId()),user.getUserContext().getPricingContext().getZoneInfo());
+		delPlantInfo.setCatalogKey(catalogKey);
 		cartCurrent.setDeliveryPlantInfo(delPlantInfo);
 		
 		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
