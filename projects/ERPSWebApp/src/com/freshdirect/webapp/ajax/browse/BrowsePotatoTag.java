@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.SkipPageException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
@@ -70,10 +71,10 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 					
 					try {
 						request.getRequestDispatcher(url).forward(request,ctx.getResponse());
+						throw new SkipPageException();
 					} catch (ServletException se) {
 						throw new JspException(se);
 					}
-					break;					
 				}
 				case TERMINATE:{
 					LOGGER.error(e.getMessage());
