@@ -282,7 +282,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		AddressInfo info = new AddressInfo();
 		info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setAddressInfo(info);
-
+		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")));
 		address.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
 		address.setAltLastName(rs.getString("ALT_LAST_NAME"));

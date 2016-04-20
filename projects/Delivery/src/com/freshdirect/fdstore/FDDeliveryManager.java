@@ -293,26 +293,6 @@ public class FDDeliveryManager {
 		this.refreshSiteAnnouncementsCache();
 		return this.announcementList;
 	}
-
-/*	public EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
-		try {
-			FDDeliveryServiceSelectionResult serviceResult = this.getDeliveryServicesByAddress(addressModel);
-			
-			EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(addressModel.getServiceType());
-			
-			if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)||EnumDeliveryStatus.COS_ENABLED.equals(dlvStatus)) {
-				return addressModel.getServiceType();
-			} else { 
-				return EnumServiceType.PICKUP;
-			}
-		}catch (FDInvalidAddressException  fdia) {
-	            LOGGER.info("Invalid address", fdia);
-	    }catch (FDResourceException  fde) {
-	            LOGGER.info("Unexpected exception happened while getting delivery service type", fde);
-	            throw fde;
-	    }
-	    return null;
-    }*/
 	
 	public FDDeliveryAddressVerificationResponse scrubAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
 		return this.scrubAddress(address, true);

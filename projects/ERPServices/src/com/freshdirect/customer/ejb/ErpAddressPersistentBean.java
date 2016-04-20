@@ -147,6 +147,8 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		model.setUnattendedDeliveryFlag(this.unattendedDeliveryFlag);
 		model.setUnattendedDeliveryInstructions(this.unattendedDeliveryInstructions);
 		model.setCustomerId(this.customerId);
+		if(this.addressInfo!=null)
+			model.setScrubbedStreet(this.addressInfo.getScrubbedStreet());
 		return model;
 	}
 

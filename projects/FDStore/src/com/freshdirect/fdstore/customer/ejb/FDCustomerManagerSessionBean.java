@@ -1081,6 +1081,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setAltContactPhone(new PhoneNumber(rs
 				.getString("ALT_CONTACT_PHONE")));
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		
+		if(address.getAddressInfo()!=null){
+			AddressInfo info = address.getAddressInfo();
+			info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+			if(loadunAttendDlvFlag){
+				info.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
+				info.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
+			}
+			address.setAddressInfo(info);
+		}
+		
 		if(loadunAttendDlvFlag){
 			address.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG")));
 		}
@@ -1091,11 +1102,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 		
-		if(address.getAddressInfo()!=null){
-			AddressInfo info = address.getAddressInfo();
-			info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
-			address.setAddressInfo(info);
-		}
+		
 		
 
 		return address;
