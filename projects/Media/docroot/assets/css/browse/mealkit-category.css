@@ -84,9 +84,20 @@
 	font-size: 17px;
 }
 
+.mealkit-products-list-content {
+	margin-bottom: 130px;
+}
+
+.mealkit-products-list-item-header-wrapper {
+	height: 110px;
+}
+
 .mealkit-products-list-item-infos {
 	line-height: 30px;
-	margin-bottom: 50px;
+	margin-bottom: 30px;
+	position: absolute;
+	bottom:56px;
+	left: 20px;
 }
 .mealkit-products-list-item-price {
  text-align: left;

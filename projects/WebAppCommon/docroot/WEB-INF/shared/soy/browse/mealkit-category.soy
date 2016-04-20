@@ -61,14 +61,18 @@
  */
 {template .specialMealkitProduct autoescape="false"}
 <li class="mealkit-products-list-item">
-  <div class="mealkit-products-list-item-imagewrapper">
-    <a href="/pdp.jsp?productId={$productId}&catId={$catId}">
-      {if $productDetailImage}<img src="{$productDetailImage}" alt="{if $description}{$description}{/if}" class="mealkit-products-list-item-image" />{/if}
-    </a>
-  </div>
-  <p class="mealkit-products-list-item-head">{if $description}{$description}{/if}</p>
-  <p class="mealkit-products-list-item-subhead">{if $salesUnitDescrPDP}{$salesUnitDescrPDP}{/if}</p>
-  <p>{if $productQualityNote}{$productQualityNote}{/if}</p>
+	<div class="mealkit-products-list-content">
+		  <div class="mealkit-products-list-item-imagewrapper">
+		    <a href="/pdp.jsp?productId={$productId}&catId={$catId}">
+		      {if $productDetailImage}<img src="{$productDetailImage}" alt="{if $description}{$description}{/if}" class="mealkit-products-list-item-image" />{/if}
+		    </a>
+		  </div>
+		  <div class="mealkit-products-list-item-header-wrapper">
+			  <p class="mealkit-products-list-item-head">{if $description}{$description}{/if}</p>
+			  <p class="mealkit-products-list-item-subhead">{if $salesUnitDescrPDP}{$salesUnitDescrPDP}{/if}</p>
+		  </div>
+		  <p>{if $productQualityNote}{$productQualityNote}{/if}</p>
+	</div>
   <div class="mealkit-products-list-item-infos">
 	  <div class="recipes-title">3 Recipes</div>
 	  <p class="mealkit-products-list-item-price">
