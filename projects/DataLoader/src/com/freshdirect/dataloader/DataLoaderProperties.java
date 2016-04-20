@@ -62,6 +62,7 @@ public class DataLoaderProperties {
 	private final static String PROP_PP_SETTLEMENT_CBR_EVENTCODES = "dataloader.pp.cbr.eventcodes";
 	private final static String PROP_PP_SETTLEMENT_MISC_FEE_EVENTCODES = "dataloader.pp.cbp.eventcodes"; //charge back processing fee
 	private final static String PROP_PP_SETTLEMENT_REF_EVENTCODES = "dataloader.pp.ref.eventcodes";
+	private final static String PROP_PP_SETTLEMENT_IGNORABLE_EVENTCODES = "dataloader.pp.ignorable.eventcodes";
 	private final static String PROP_PP_SETTLEMENT_FD_ACCOUNTID = "dataloader.pp.fd.accountid";
 	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	private final static String PROP_PP_SFTP_DELETE_FILES="dataloader.paypal.sftp.deleteFiles";
@@ -117,6 +118,7 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PP_SETTLEMENT_CBR_EVENTCODES, "T1202, T1205, T1207, T1208");
 		defaults.put(PROP_PP_SETTLEMENT_MISC_FEE_EVENTCODES, "T0100, T0106, T0107, T1108");
 		defaults.put(PROP_PP_SETTLEMENT_REF_EVENTCODES, "T1107");
+		defaults.put(PROP_PP_SETTLEMENT_IGNORABLE_EVENTCODES, "T0400, T0300, T0301");
 		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
 		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
 		defaults.put(PROP_PP_SETTLEMENT_ENABLED, "false");
@@ -306,5 +308,9 @@ public class DataLoaderProperties {
 	
 	public static String getPPREFEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_REF_EVENTCODES);
+	}
+	
+	public static String getPPIgnorableEventCodes() {
+		return config.getProperty(PROP_PP_SETTLEMENT_IGNORABLE_EVENTCODES);
 	}
 }

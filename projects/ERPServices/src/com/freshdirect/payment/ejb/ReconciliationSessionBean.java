@@ -295,7 +295,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport {
 	}
 	
 
-	private final static String summaryQuery = "select batch_number from cust.settlement where process_period_start = ? and process_period_end = ? ";
+	private final static String summaryQuery = "select batch_number from cust.settlement where process_period_start = ? and process_period_end = ? and" +
+			" (settlement_source is null or settlement_source != 'PP')";
 	
 	public void addSettlementSummary(ErpSettlementSummaryModel model) {
 		Connection conn = null;

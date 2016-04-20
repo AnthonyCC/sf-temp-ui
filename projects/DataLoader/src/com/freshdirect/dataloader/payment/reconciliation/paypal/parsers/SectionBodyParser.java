@@ -1,10 +1,12 @@
 package com.freshdirect.dataloader.payment.reconciliation.paypal.parsers;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.helpers.ISO8601DateFormat;
 
 import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.FlatFileParser.Field;
 import com.freshdirect.dataloader.payment.reconciliation.paypal.EnumPayPalRecordType;
@@ -92,6 +94,37 @@ public class SectionBodyParser extends PayPalSettlementParser {
 		client.accept(record);
 	}
 
+    /** a convenience method to return a token value from a HashMap of
+     * tokens by a field name
+     * @param tokens a HashMap of parsed tokens
+     * @param fieldName the name of the field to retreive the value of
+     * @throws BadDataException any problems encountered retreiving the token's value
+     * @return the token's value as a String
+     */
+    protected String getString(Map<String, String> tokens, String fieldName) throws BadDataException {
+    	String s = null;
+        try {
+        	s = super.getString(tokens, fieldName);
+        } catch (BadDataException e) {
+        	s = s=tokens.get(fieldName).trim();
+        	String txEventCode = getString(tokens, TRANSACTION_EVENT_CODE);
+        	if (txEventCode != null) {
+        		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+		        	String invoiceId = getString(tokens, INVOICE_ID);
+		        	String ppRefId = getString(tokens, PAYPAL_REFERENCE_ID);
+		        	if (invoiceId == null || invoiceId.equals("")) {
+		        		throw new BadDataException("Required field \"" + INVOICE_ID + "\" was empty");
+		        	} else if (ppRefId == null || ppRefId.equals("")) {
+		        		throw new BadDataException("Required field \"" + PAYPAL_REFERENCE_ID + "\" was empty");
+		        	}
+		        	throw e;
+        		}
+        	}
+        }
+        return s;
+    }
+	
+	
 	public void setClient(SynchronousParserClient client) {
 		this.client = client;
 	}

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.log4j.Category;
 
+import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.PaymentechFINParserClient;
@@ -91,27 +92,30 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	public void process(SectionBodyDataRecord record) {
 		ErpSettlementTransactionModel model = new ErpSettlementTransactionModel();
 
-		model.setTransactionId(record.getTransactionId());
-		model.setGatewayOrderId(record.getInvoiceId());
-		model.setPaypalReferenceId(record.getPaypalReferenceId());
-		model.setPaypalReferenceIdType(record.getPaypalReferenceIdType());
-		model.setTransactionEventCode(record.getTransactionEventCode());
-		model.setTransactionInitiationDate(record.getTransactionInitiationDate());
-		model.setTransactionCompletionDate(record.getTransactionCompletionDate());
-		model.setTransactionDebitOrCredit(record.getTransactionDebitOrCredit());
-		model.setGrossTransactionAmount(record.getGrossTransactionAmount());
-		model.setGrossTransactionCurrency(record.getGrossTransactionCurrency());
-		model.setFeeDebitOrCredit(record.getFeeDebitOrCredit());
-		model.setFeeAmount(record.getFeeAmount());
-		model.setFeeCurrency(record.getFeeCurrency());
-		model.setConsumerId(record.getConsumerId());
-		model.setPaymentTrackingId(record.getPaymentTrackingId());
-		model.setCustomField(record.getCustomField());
-		model.setStoreId(record.getStoreId());
-		model.setCreditTransactionalFee(record.getCreditTransactionalFee());
-		model.setCreditPromotionalFee(record.getCreditPromotionalFee());
-		model.setCreditTerm(record.getCreditTerm());
-		settlements.add(model);
+		String txEventCode = record.getTransactionEventCode();
+		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+			model.setTransactionId(record.getTransactionId());
+			model.setGatewayOrderId(record.getInvoiceId());
+			model.setPaypalReferenceId(record.getPaypalReferenceId());
+			model.setPaypalReferenceIdType(record.getPaypalReferenceIdType());
+			model.setTransactionEventCode(record.getTransactionEventCode());
+			model.setTransactionInitiationDate(record.getTransactionInitiationDate());
+			model.setTransactionCompletionDate(record.getTransactionCompletionDate());
+			model.setTransactionDebitOrCredit(record.getTransactionDebitOrCredit());
+			model.setGrossTransactionAmount(record.getGrossTransactionAmount());
+			model.setGrossTransactionCurrency(record.getGrossTransactionCurrency());
+			model.setFeeDebitOrCredit(record.getFeeDebitOrCredit());
+			model.setFeeAmount(record.getFeeAmount());
+			model.setFeeCurrency(record.getFeeCurrency());
+			model.setConsumerId(record.getConsumerId());
+			model.setPaymentTrackingId(record.getPaymentTrackingId());
+			model.setCustomField(record.getCustomField());
+			model.setStoreId(record.getStoreId());
+			model.setCreditTransactionalFee(record.getCreditTransactionalFee());
+			model.setCreditPromotionalFee(record.getCreditPromotionalFee());
+			model.setCreditTerm(record.getCreditTerm());
+			settlements.add(model);
+		}
 		if (record.getTransactionDebitOrCredit().equals("CR")) {
 			currSectionTotalTransactionCredits += record.getGrossTransactionAmount();
 		}
@@ -125,15 +129,19 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			currSectionTotalFeeDebits += record.getFeeAmount();
 		}
 		
-		if (record.getInvoiceId() == null || StringUtil.isEmpty(record.getInvoiceId())) {
-			throw new RuntimeException("Unrecognized order id " + record.getInvoiceId());
+		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
+			if (record.getInvoiceId() == null || StringUtil.isEmpty(record.getInvoiceId())) {
+				throw new RuntimeException("Unrecognized order id " + record.getInvoiceId());
+			} else {
+				String orderId = record.getInvoiceId().substring(0, record.getInvoiceId().indexOf("X"));
+				ErpSummaryDetailModel detailModel = new ErpSummaryDetailModel(EnumSummaryDetailType.PAYPAL);
+				detailModel.setNetAmount(new Money(record.getGrossTransactionAmount()).getDollar());
+				detailModel.setTransactionFees(new Money(record.getFeeAmount()).getDollar());
+				detailModel.setPmType(EnumPaymentMethodType.PAYPAL);
+				settlementDetails.add(detailModel);
+			}
 		}
-		String orderId = record.getInvoiceId().substring(0, record.getInvoiceId().indexOf("X"));
-		ErpSummaryDetailModel detailModel = new ErpSummaryDetailModel(EnumSummaryDetailType.PAYPAL);
-		detailModel.setNetAmount(new Money(record.getGrossTransactionAmount()).getDollar());
-		detailModel.setTransactionFees(new Money(record.getFeeAmount()).getDollar());
-		detailModel.setPmType(EnumPaymentMethodType.PAYPAL);
-		settlementDetails.add(detailModel);
+
 		currSectionRowCnt++;
 		currFileRowCnt++;
 		currReportRowCnt++;
@@ -146,6 +154,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			currSectionTotalTransactionCredits = 0;
 			currSectionTotalTransactionDebits = 0;
 			currSectionTotalFeeCredits = 0;
+			currSectionTotalFeeDebits = 0;
 			return;
 		}
 		//payable, available and total balances are being ignored.
@@ -171,7 +180,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 				record.getTotalTransactionFeeCredits() != currSectionTotalFeeCredits ||
 				record.getTotalTransactionFeeDebits() != currSectionTotalFeeDebits) {
 			StringBuffer buffer = new StringBuffer(300);
-			buffer.append("Amounts of Section with Account Id ");
+			buffer.append("PayPal :: Amounts of Section with Account Id ");
 			buffer.append(currAccountId );
 			buffer.append("\n");
 			buffer.append(" Total Current section Trxn Credits = ");
@@ -213,7 +222,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	
 	public void process(SectionRecordCntDataRecord record) {
 		StringBuffer buffer = new StringBuffer(300);
-		buffer.append("Rows of Section ");
+		buffer.append("PayPal :: Rows of Section ");
 		buffer.append(currAccountId);
 		buffer.append(" do not match. Settlement File of ");
 		buffer.append(batchDate);
@@ -248,7 +257,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 				totalSectionFeeCredits != record.getTotalTransactionFeeCredits() ||
 				totalSectionFeeDebits != record.getTotalTransactionFeeDebits()) {
 			StringBuffer buffer = new StringBuffer(300);
-			buffer.append("Amounts of Sections ");
+			buffer.append("PayPal :: Amounts of Sections ");
 			buffer.append(" do not match with Report total. Settlement File of ");
 			buffer.append(batchDate);
 			buffer.append(" may be corrupted");
@@ -283,7 +292,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	public void process(FileFooterDataRecord record) {
 		if (!(currFileRowCnt == record.getRowCount())) {
 			StringBuilder msg= new StringBuilder(300);
-			msg.append("Rows of File ");
+			msg.append("PayPal :: Rows of File ");
 			msg.append(currFile);
 			msg.append(" do not match with Sections. Settlement File of ");
 			msg.append("batchDate");
