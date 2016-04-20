@@ -26,6 +26,8 @@ public class Idea {
 	
 	private Image featureImage;
 	private String featureText;
+	private String primaryText;
+	private String secondaryText;
 	private String destinationSection;
 	private String destinationId;
 	private String bannerType;
@@ -62,6 +64,8 @@ public class Idea {
 		idea.setDestinationId(category.getId());
 		idea.setDestinationSection("category");
 		idea.setFeatureText(categoryModel.getFullName());
+		idea.setPrimaryText(categoryModel.getPrimaryText());
+		idea.setSecondaryText(categoryModel.getSecondaryText());
 		
 		//APPDEV- 4368:: Need Indicator for Empty Picks List Begin
 		/**
@@ -195,6 +199,22 @@ public class Idea {
 
 	public void setFeatureText(String featureText) {
 		this.featureText = featureText;
+	}
+	
+	public String getPrimaryText() {
+		return primaryText;
+	}
+	
+	public void setPrimaryText(String primaryText) {
+		this.primaryText = primaryText;
+	}
+	
+	public String getSecondaryText() {
+		return secondaryText;
+	}
+
+	public void setSecondaryText(String secondaryText) {
+		this.secondaryText = secondaryText;
 	}
 
 	public String getDestinationSection() {

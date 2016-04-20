@@ -267,6 +267,14 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 		return this.getAttribute("FULL_NAME", null);
 	}
 	
+	public String getPrimaryText(){
+		return this.getAttribute("PrimaryText", null);
+	}
+	
+	public String getSecondaryText(){
+		return this.getAttribute("SecondaryText", null);
+	}
+	
 	public String getGlanceName(){
 		return this.getAttribute("GLANCE_NAME", null);
 	}
