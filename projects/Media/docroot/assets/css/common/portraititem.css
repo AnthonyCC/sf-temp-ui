@@ -14,6 +14,48 @@
   font-weight:normal;
   text-align: left;
 }
+.isHookLogic-false{
+	float:left;
+	/*max-width: 575px;*/
+}
+
+.isHookLogic-false .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(4n){
+	padding-right:10px;
+	border-right: 1px solid #ddd;
+}
+
+.isHookLogic-true{
+	float:right;
+	position: absolute;
+    left: 812px;
+	max-width:138px;
+}
+.isHookLogic-true ul.products.transactional{
+	margin: 22px 0 32px;
+	padding: 0;
+	display: table;
+}
+.isHookLogic-true .portrait-item{
+	vertical-align:top;
+	/*border-left: 1px solid #ddd;*/
+	padding-left:10px;
+	width:140px;
+}
+.isHookLogic-true .portrait-item:before{
+	content: "FEATURED PRODUCT";
+	background-color:#B5B5B5;
+	display:block;
+	color:white;
+	text-align:center;
+	margin-bottom: 7px;
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+.portrait-item.isHookLogic-true .portrait-item-productimage{
+	max-height:105px;
+	max-width:105px;
+}
 
 .portrait-item-price-deal,
 .portrait-item a.portrait-item-price-deal,
@@ -72,6 +114,11 @@
   width: 100%;
   clear: both;
   min-height: 29px;
+}
+
+.portrait-item > form.atc > .atc-info,
+.portrait-item > .atc-info {
+	min-height: 0px;
 }
 
 #transactionalPopup .portrait-item > .atc-info {

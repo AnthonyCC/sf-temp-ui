@@ -227,6 +227,34 @@ public class ErpServicesProperties {
 	private final static String PROP_PP_SETTLEMENT_FD_ACCOUNTID = "dataloader.pp.fd.accountid";
 	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	
+	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
+	
+	public final static String PROP_HOOK_LOGIC_URL="fdstore.erp.hooklogic.url";
+	public final static String PROP_HOOK_LOGIC_CONFIRMATION_URL="fdstore.erp.hooklogic.confirmation.url";
+	
+	
+	public final static String PROP_HOOK_LOGIC_API_KEY="fdstore.Erp.hookloigc.apikey";
+	private final static String PROP_HL_READ_TIMEOUT_PERIOD = "fdstore.HL.read.timeout.period";
+	private final static String PROP_HL_CONNECTION_TIMEOUT_PERIOD = "fdstore.HL.connection.timeout.period";
+	public final static String PROP_ORDER_PRODUCT_FEED_FILENAME="fdstore.Erp.order.feed.filename";
+	public final static String PROP_HLCODE="fdstore.erp.hl.code";
+	public final static String PROP_HL_CLIENT_ID="fdstore.erp.hl.clientid";
+	
+	public final static String PROP_HOOK_LOGIC_CULTURE="fdstore.erp.hl.culture";
+	
+	public final static String PROP_HOOK_LOGIC_IC="fdstore.erp.hl.ic";
+	
+	public final static String PROP_HOOK_LOGIC_PLATFORM="fdstore.erp.hl.platform";
+	
+	public final static String PROP_HOOK_LOGIC_MEDIASOURCE="fdstore.erp.hl.mediasource";
+	
+	public final static String PROP_HOOK_LOGIC_HLPT="fdstore.erp.hl.hlpt";
+	
+	public final static String PROP_HOOK_LOGIC_CONFIRMAITON_HLPT="fdstore.erp.hl.confirmaiton.hlpt";
+	
+	
+	public final static String PROP_HOOK_LOGIC_STRATEGY="fdstore.erp.hl.strategy";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -402,6 +430,23 @@ public class ErpServicesProperties {
 		defaults.put(PROP_EWALLET_NOTIFY_EMAIL_ENABLED, "true");
 		defaults.put(PROP_EWALLET_POSTBACK_CHUNK_SIZE, "0");
 		defaults.put(PROP_EWALLET_POSTBACK_MAXDAYS, "7");
+		defaults.put(PROP_GIVEX_SERVER_SEC_URL, "https://149.99.39.146:50081/1.0/trans/");
+		defaults.put(PROP_HOOK_LOGIC_API_KEY, "ba0f338d-f678-4fc3-a81b-d24d5ac4ffd1");//Test API Key
+		defaults.put(PROP_HOOK_LOGIC_URL, "http://uat1.hlserve.com/delivery/api/search?");
+		defaults.put(PROP_HOOK_LOGIC_CONFIRMATION_URL, "http://uat1.hlserve.com/delivery/api/confirmation?");
+		defaults.put(PROP_ORDER_PRODUCT_FEED_FILENAME, "freshdirect_daily_orders_");
+		defaults.put(PROP_HLCODE, "HOOKLOGICSFTP");
+		defaults.put(PROP_HL_CLIENT_ID, "258");
+		defaults.put(PROP_HOOK_LOGIC_CULTURE, "en-US");
+		defaults.put(PROP_HOOK_LOGIC_IC, "core");
+		defaults.put(PROP_HOOK_LOGIC_PLATFORM, "web");
+		defaults.put(PROP_HOOK_LOGIC_MEDIASOURCE, "");
+		defaults.put(PROP_HOOK_LOGIC_HLPT, "S");
+		defaults.put(PROP_HOOK_LOGIC_CONFIRMAITON_HLPT, "C");
+		defaults.put(PROP_HOOK_LOGIC_STRATEGY, "inmarket");
+		
+		
+		
 		
 		defaults.put(PROP_PP_SETTLEMENT_STL_EVENTCODES, "T0006, T0003");
 		defaults.put(PROP_PP_SETTLEMENT_STF_EVENTCODES, "");
@@ -411,6 +456,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PP_SETTLEMENT_REF_EVENTCODES, "T1107");
 		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
 		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
+		
+		defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
+		defaults.put(PROP_HL_READ_TIMEOUT_PERIOD, "10");//secs
+		defaults.put(PROP_HL_CONNECTION_TIMEOUT_PERIOD, "10");//secs
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -422,6 +471,24 @@ public class ErpServicesProperties {
 
 	/**
 	 *  A method to set a specific property.
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
+	 *  
 	 *  Use with care - it's here for testing purposes only.
 	 *  
 	 *  @param key the name of the property to set.
@@ -995,4 +1062,80 @@ public class ErpServicesProperties {
 	public static String getPPREFEventCodes() {
 		return config.getProperty(PROP_PP_SETTLEMENT_REF_EVENTCODES);
 	}
+
+
+	public static String getHLBrandProductAdvertiseURL() {
+		return config.getProperty(PROP_HOOK_LOGIC_URL);
+	}
+	
+	public static String getHLBrandProductAdvertiseConfirmationURL() {
+		return config.getProperty(PROP_HOOK_LOGIC_CONFIRMATION_URL);
+	}
+	
+	public static String getHLBrandProductAdvertiseAPIKey() {
+		return config.getProperty(PROP_HOOK_LOGIC_API_KEY);
+	}
+	
+	
+	public static   String getBrandProductAdProviderPlatform(){
+		return config.getProperty(PROP_HOOK_LOGIC_PLATFORM);
+	}
+	
+	public static   String getBrandProductAdProviderCulture() {
+		return config.getProperty(PROP_HOOK_LOGIC_CULTURE);
+	}
+	public static   String getBrandProductAdProviderIc(){
+		return config.getProperty(PROP_HOOK_LOGIC_IC);
+	}
+	
+	public static   String getBrandProductAdProviderMediaSource() {
+		return config.getProperty(PROP_HOOK_LOGIC_MEDIASOURCE);
+	}
+	
+	public static   String getBrandProductAdProviderHlpt(){
+		return config.getProperty(PROP_HOOK_LOGIC_HLPT);
+	}
+	
+	public static   String getBrandProductAdProviderConformationHlpt(){
+		return config.getProperty(PROP_HOOK_LOGIC_CONFIRMAITON_HLPT);
+	}
+	
+	
+	
+	public static   String getBrandProductAdProviderStrategy() {
+		return config.getProperty(PROP_HOOK_LOGIC_STRATEGY);	
+	}
+	
+	
+	public static boolean isHookLogicEnabled() {
+    	return (Boolean.valueOf(config.getProperty(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
+    }
+	
+	public static Integer getHLReadTimeoutPeriod() {
+		try {
+			return Integer.parseInt(config.getProperty(PROP_HL_READ_TIMEOUT_PERIOD));
+		} catch (NumberFormatException e) {
+			return 10;
+		}
+	}
+	
+	public static Integer getHLConnectionTimeoutPeriod() {
+		try {
+			return Integer.parseInt(config.getProperty(PROP_HL_CONNECTION_TIMEOUT_PERIOD));
+		} catch (NumberFormatException e) {
+			return 10;
+		}
+	}
+	
+	public static String getOrderProductFeedFileName() {
+		return config.getProperty(PROP_ORDER_PRODUCT_FEED_FILENAME);
+	}
+	
+	public static String getHLCode() {
+		return config.getProperty(PROP_HLCODE);
+	}
+	public static String getHLClientId() {
+		return config.getProperty(PROP_HL_CLIENT_ID);
+	}
+	
 }

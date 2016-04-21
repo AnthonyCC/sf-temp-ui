@@ -834,6 +834,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_MICROSITE_URL						= "fdstore.extole.microsite.url";
 	public static final String PROP_EXTOLE_MICROSITE_SUB_URL					= "fdstore.extole.microsite.sub.url";
 	public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL				= "fdstore.extole.microsite.global.nav.url";
+	public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME                   = "freshdirect.fdstore.fdBrandProductsAdManager";
 	
 	
 
@@ -846,6 +847,9 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_LICENSE_KEY ="fdstore.tax.avalara.license.key";
     private final static String PROP_AVALARA_ACCOUNT_NUMBER ="fdstore.tax.avalara.account.number";
 	private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";    
+	
+		
+	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
     
 	// PayPal
 	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
@@ -1673,6 +1677,7 @@ public class FDStoreProperties {
     	defaults.put(PROP_EXTOLE_MICROSITE_URL, "https://refer.freshdirect.com/myaccountscre");
 		defaults.put(PROP_EXTOLE_MICROSITE_SUB_URL, "https://refer.freshdirect.com/myaccountsub");
 		defaults.put(PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL, "https://refer.freshdirect.com/globalnav");
+		 defaults.put(PROP_FD_BRAND_PRODUCTS_AD_HOME,  "freshdirect.fdstore.BrandProductsAdManager");
 		
         
         defaults.put(PROP_FEATURE_ROLLOUT_NEW_SO, "true");
@@ -1682,6 +1687,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
+    	defaults.put(PROP_HOOK_lOGIC_ENABLE, "true");
         		
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
@@ -4225,6 +4231,9 @@ public class FDStoreProperties {
 	public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }
+	 public static String getFDBrandProductsAdManagerHome() {
+	        return get(PROP_FD_BRAND_PRODUCTS_AD_HOME);
+	    }
 	
 	public static boolean isPayPalEnabled() {
         return Boolean.valueOf(get(PROP_EWALLET_PAYPAL_ENABLED)).booleanValue();
@@ -4241,4 +4250,10 @@ public class FDStoreProperties {
     public static String getErpsyLinkStorefrontFDX() {
         return get(PROP_ERPSYLINK_STOREFRONT_FDX);
     }
+	
+	public static boolean isHookLogicEnabled() {
+    	return (Boolean.valueOf(get(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
+    }
+ 	
+	
 }

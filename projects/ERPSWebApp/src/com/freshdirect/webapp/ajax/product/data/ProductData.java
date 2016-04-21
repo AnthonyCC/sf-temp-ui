@@ -6,6 +6,7 @@ import java.util.Map;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.holidaymealbundle.data.HolidayMealBundleContainer;
@@ -225,6 +226,10 @@ public class ProductData extends BasicProductData implements SkuData {
 		this.priority = priority;
 	}
 
+	//Required for HookLogic
+	private String clickBeacon;
+	private String imageBeacon; 
+	
 	public Map<String, Object> getSoData() {
 		return soData;
 	}
@@ -824,4 +829,21 @@ public class ProductData extends BasicProductData implements SkuData {
         }
         return null;
     }
+	public String getClickBeacon() {
+		return clickBeacon;
+	}
+
+	public void setClickBeacon(String clickBeacon) {
+		this.clickBeacon = clickBeacon;
+	}
+
+	public String getImageBeacon() {
+		return imageBeacon;
+	}
+
+	public void setImageBeacon(String imageBeacon) {
+		this.imageBeacon = imageBeacon;
+	}
+    
+    
 }

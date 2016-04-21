@@ -80,6 +80,10 @@
   margin: 32px 0 29px;
   padding: 0;
   display: table;
+  width:650px;
+}
+.browseContent .sectionContent ul.products.page2plus {
+  width:800px;
 }
 
 .ie8 .browseContent .sectionContent ul.products {
@@ -102,7 +106,8 @@
   padding: 0 9px 0 9px;
   margin: 0;
   border-right: 1px solid #ddd;
-  display: table-cell;
+  /*display: table-cell;*/
+  display: inline-block;
 }
 
 .ie8 .browseContent .sectionContent ul.products li.portrait-item {
@@ -110,8 +115,9 @@
 }
 
 .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item {
-  width: 174px;
-  max-width: 174px;
+	/*width: 174px;
+	max-width: 174px;*/
+	margin-bottom: 30px;
 }
 
 .browseContent .sectionContent ul.products li.portrait-item:nth-child(5n) {

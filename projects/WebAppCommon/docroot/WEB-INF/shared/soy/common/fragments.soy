@@ -68,7 +68,7 @@
   {/call}
 {else}
   {call common.fixedProductList data="all"}
-    {param itemPerLine:5 /}
+    {param itemPerLine:4 /}
     {param showConfig: $showConfig /}
     {param fromProducts: $fromProducts /}
     {param numProducts: $numProducts /}
@@ -90,18 +90,40 @@
 {let $fProducts: $fromProducts ? $fromProducts : 0 /}
 {let $l: $nProducts - $fProducts /}
 {let $lines: ceiling($l / $ipl) /}
+<ul class="products transactional" data-ipl="{$ipl}">
 {for $line in range(0, $lines)}
-  <ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+  <!--<ul class="products transactional{if $line == $lines - 1} lastLine{/if} soprano" data-ipl="{$ipl}">-->
     {for $col in range(0, $ipl)}
       {if $fProducts + $col + $line * $ipl < $nProducts}
         {let $product: $productList[$fProducts + $col + $line * $ipl] /}
+        {let $xtraClass: 'browseTransactionalProduct fakeRow_'+$line /}
         {call common.transactionalGridItem}
           {param item:$product /}
-          {param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+          {param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine' ) /}
           {param showConfig: $showConfig /}
         {/call}
       {/if}
     {/for}
-  </ul>
+  <!--</ul>-->
 {/for}
+</ul>
+{/template}
+
+/**
+* @param? fromProducts
+* @param? numProducts
+* @param products
+* @param? itemPerLine
+*/
+{template .simpleFixedProductList autoescape="false"}
+	{let $ipl: $itemPerLine ? $itemPerLine : 1 /}
+	{let $len: length($products) /}
+	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
+	{let $l: $nProducts - $fProducts /}
+	{call common.fixedProductList}
+		{param productList:$products /}
+		{param numProducts:$nProducts /}
+		{param itemPerLine:$ipl /}
+	{/call}
 {/template}

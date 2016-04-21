@@ -54,6 +54,9 @@ public class SearchResults implements Serializable, Cloneable {
 	private List<ProductModel> ddppProducts = new ArrayList<ProductModel>(); //ddpp products on 'search like' pages
 	private Map<String, ArrayList<ProductModel>> assortProducts = new HashMap<String, ArrayList<ProductModel>>(); //staff picks
 
+	private List<FilteringSortingItem<ProductModel>> adProducts = new ArrayList<FilteringSortingItem<ProductModel>>();
+	private String pageBeacon;
+
 	private final List<FilteringSortingItem<Recipe>> recipes;
 	private final List<FilteringSortingItem<CategoryModel>> categories;
 	private boolean phrase; // tells whether the original search was quoted or not
@@ -194,4 +197,20 @@ public class SearchResults implements Serializable, Cloneable {
 	public void setAssortProducts(Map<String, ArrayList<ProductModel>> assortProducts) {
 		this.assortProducts = assortProducts;
 	}
+	public List<FilteringSortingItem<ProductModel>> getAdProducts() {
+		return adProducts;
+	}
+
+	public void setAdProducts(List<FilteringSortingItem<ProductModel>> adProducts) {
+		this.adProducts = adProducts;
+	}
+	public String getPageBeacon() {
+		return pageBeacon;
+	}
+
+	public void setPageBeacon(String pageBeacon) {
+		this.pageBeacon = pageBeacon;
+	}
+
+	
 }

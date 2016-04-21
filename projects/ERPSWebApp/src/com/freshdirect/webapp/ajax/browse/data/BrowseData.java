@@ -318,6 +318,29 @@ public class BrowseData implements Serializable {
 			temp.add(productData);
 			this.getCats().put(curCat, temp);
 		}
+	
+	public static class HLBrandAdProducts implements Serializable {
+		
+		private static final long serialVersionUID = -5076065046727187803L;
+		private List<ProductData> products = new ArrayList<ProductData>();
+		private String pageBeacon = null;;
+
+		public List<ProductData> getProducts() {
+			return products;
+		}
+
+		public void setProducts(List<ProductData> products) {
+			this.products = products;
+		}
+
+		public String getPageBeacon() {
+			return pageBeacon;
+		}
+
+		public void setPageBeacon(String pageBeacon) {
+			this.pageBeacon = pageBeacon;
+		}
+			
 		
 	}
 		
@@ -461,6 +484,7 @@ public class BrowseData implements Serializable {
 	private SearchParams searchParams = new SearchParams();
 	private DDPPProducts ddppProducts = new DDPPProducts();
 	private AssortProducts assortProducts = new AssortProducts();
+	private HLBrandAdProducts adProducts = new HLBrandAdProducts();
     private String topMedia;
 	
 	public PagerData getPager() {
@@ -514,5 +538,11 @@ public class BrowseData implements Serializable {
     public void setTopMedia(String topMedia) {
         this.topMedia = topMedia;
     }
+	public HLBrandAdProducts getAdProducts() {
+		return adProducts;
+	}
+	public void setAdProducts(HLBrandAdProducts adProducts) {
+		this.adProducts = adProducts;
+	}
 
 }

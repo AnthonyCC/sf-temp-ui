@@ -22,6 +22,7 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 				<xs:element name="ratings" type="ratings"  maxOccurs="1" minOccurs="0"/>				
 				<xs:element name="inventories" type="inventories"  maxOccurs="1" minOccurs="0"/>
 				<xs:element name="images" type="images"  maxOccurs="1" minOccurs="0"/>
+				<xs:element name="brands" type="brands"  maxOccurs="1" minOccurs="0"/>
 			</xs:sequence>
 
 			<xs:attribute name="skuCode" type="xs:string" use="required"/> 
@@ -188,6 +189,17 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 			<xs:sequence>	
 				<xs:element type="xs:date" name="startDate" />
 				<xs:element type="xs:string" name="quantity" />									
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="brands">
+<xs:sequence>
+	<xs:element name="brand" maxOccurs="unbounded" minOccurs="0">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element type="xs:string" name="brandName" />									
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

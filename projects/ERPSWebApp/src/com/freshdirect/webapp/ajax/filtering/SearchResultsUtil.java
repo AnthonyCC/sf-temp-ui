@@ -11,8 +11,15 @@ import java.util.Map.Entry;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
+import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentKeyFactory;
@@ -21,6 +28,7 @@ import com.freshdirect.fdstore.content.ContentUtil;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
@@ -105,6 +113,79 @@ public class SearchResultsUtil {
 		
 		return searchResults;
 	}
+	
+	
+public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDSessionUser user) {
+		
+	
+		List<ProductModel> adPrducts = new ArrayList<ProductModel>();
+		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();
+		
+				
+		try {
+			
+			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
+			hLBrandProductAdRequest.setSearchKeyWord(nav.getSearchParams());
+			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
+			if(hlBrandProductAdResponse!=null){
+			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();
+			
+			if(null !=hlBrandAdProductsMeta){
+				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
+					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
+					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+					searchResults.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+					
+					try {
+						ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+						
+						if(null !=productModel){
+							ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
+							adPrducts.add(pm);
+						}
+					} catch (FDSkuNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		}
+		else{//TODO: Test data. Need to be removed.
+				try {
+					ProductModel pm = ContentFactory.getInstance().getProduct("DAI0067053");//hlBrandProductAdMetaInfo.getParentSKU());
+					if(null !=pm){
+						adPrducts.add(pm);
+						adPrducts.add(pm);
+						adPrducts.add(pm);
+					}
+				} catch (FDSkuNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BrandProductAdServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		List<FilteringSortingItem<ProductModel>> searchProductResults = new ArrayList<FilteringSortingItem<ProductModel>>();
+		if(null !=adPrducts){
+			for (ProductModel productModel : adPrducts) {
+				FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(productModel);
+//				item.putSortingValue(EnumSortingValue.PHRASE, 1);
+				searchProductResults.add(item);
+			}
+		}
+		
+//		searchResults = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), nav.getSearchParams(), true);
+		searchResults.setAdProducts(searchProductResults);
+		
+		return searchResults;
+	}
+	
 	
 	public static SearchResults getProductsWithCoupons(FDSessionUser user) {
 		

@@ -1,5 +1,4 @@
 package com.freshdirect.fdstore.content.productfeed;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,8 +21,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -49,10 +50,14 @@ import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
+import com.freshdirect.fdstore.content.productfeed.Brands;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.productfeed.Attributes.ProdAttribute;
+import com.freshdirect.fdstore.content.productfeed.Brands.Brand;
 import com.freshdirect.fdstore.content.productfeed.Configurations.Configuration;
 import com.freshdirect.fdstore.content.productfeed.Configurations.Configuration.VariationOption;
 import com.freshdirect.fdstore.content.productfeed.GroupPrices.GroupPrice;
@@ -65,6 +70,7 @@ import com.freshdirect.fdstore.content.productfeed.Ratings.Rating;
 import com.freshdirect.fdstore.content.productfeed.SaleUnits.SaleUnit;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 
 
 public class FDProductFeedSessionBean extends SessionBeanSupport {
@@ -81,6 +87,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	private static final String PRODUCT_ZOOM_IMAGE = "PRODUCT_ZOOM_IMAGE";
 	private static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
 	private static final String URL_DOMAIN ="https://www.freshdirect.com";
+	private static final String BRAND ="BRAND";
 		    
     /** Constructor
      */
@@ -91,8 +98,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     /**
      * Template method that returns the cache key to use for caching resources.
      *
-     * @return the bean's home interface name
-     */
+     * @return the bean's home interface name     */
     protected String getResourceCacheKey() {
         return "com.freshdirect.content.productfeed.ejb.FDProductFeedHome";
     }
@@ -130,7 +136,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
 				ContentKey key = (ContentKey) i.next();
 				String skucode = key.getId();
-//			    if(skucode.equals("VAR3770250") || skucode.equals("MEA1075690")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
+	//if(skucode.equals("HMR0066220") || skucode.equals("MEA1075690")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
+		//	if(skucode.startsWith("GRO")) {
 					ProductModel productModel =null;
 					FDProductInfo fdProductInfo = null;
 					FDProduct fdProduct = null;
@@ -167,9 +174,11 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 											
 						populateInventoryInfo(fdProductInfo,  product);
 						
-						populateImages(productModel, product);	
+						populateImages(productModel, product);
+						
+						populateBrands(productModel, product);
 					}
-//				}
+			//	}
 			}
 		}
 	}
@@ -186,8 +195,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 				try {
 					byte[] buffer = new byte[1024];
 					Marshaller mar =jaxbCtx.createMarshaller();
-					mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+					CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler();
+					mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler); 
 					
+					mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
 					SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
 					String fileName = "FDProductFeed_" + df.format(new Date());
 					
@@ -354,6 +367,25 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	//Start :: Add Brand info for Hook logic	
+	private void populateBrands(ProductModel productModel, Product product) {
+		
+			Brands brands = new Brands();
+			product.setBrands(brands);
+			
+			if(null !=productModel.getBrands()){
+				for (Iterator iterator = productModel.getBrands().iterator(); iterator
+						.hasNext();) {
+					BrandModel brandModel = (BrandModel) iterator.next();
+					Brand brand = new Brand();
+					brands.getBrand().add(brand);
+					brand.setBrandName(brandModel.getFullName());						
+			}					
+		}
+	  }
+		//End:: Add Brand info for Hook logic
+	
+	
 	private void populateAttributes(FDProductInfo fdProductInfo, FDProduct fdProduct, Product product,ProductModel productModel) {
 		
 		Attributes attributes = new Attributes();
@@ -562,5 +594,6 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			nutrition.setValue(BigDecimal.valueOf(fdNutrition.getValue()));
 			
 		}
-	}   
+	}  
+	
 }

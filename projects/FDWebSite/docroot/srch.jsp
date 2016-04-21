@@ -1,7 +1,6 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.net.URLEncoder"%>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.Map" %>
+<%@page import="java.util.HashMap, java.util.ArrayList, java.util.Iterator,  java.util.Map,  java.util.Set"%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -160,12 +159,34 @@
     <div class="browse-filtertags">
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
     </div>
+    
+   
+	<div class="isHookLogic-false">
+	    <c:choose>
+	      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
+	        <div class="browse-sections-top transactional">
+	          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
+	        </div>
+	
+	        <div class="srch-carousel">
+	          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+	        </div>
+	        
+	        <div class="browse-sections-bottom transactional">
+	          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
+	        </div>
+	      </c:when>
+	      <c:otherwise>
+	        <div class="browse-sections transactional">
+	          <soy:render template="browse.content" data="${browsePotato.sections}" />
+	        </div>
+	      </c:otherwise>
+	    </c:choose>
+    </div>
 
-    <c:choose>
-      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
-        <div class="browse-sections-top transactional">
-          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
-        </div>
+    <div class="browse-adproducts transactional isHookLogic-true">
+    	<soy:render template="common.simpleFixedProductList" data="${browsePotato.adProducts}" />
+	</div>
 
         <div class="srch-carousel">
           <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />

@@ -18,6 +18,11 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
+import com.freshdirect.fdstore.brandads.FDBrandProductsAdGateway;
+import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
+import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -32,6 +37,7 @@ import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SearchResults;
@@ -259,6 +265,9 @@ public class CmsFilteringFlow {
 					}
 				}
 				searchResults = ContentSearch.getInstance().searchProducts(searchParams);
+				if(FDStoreProperties.isHookLogicEnabled()){
+					searchResults=SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);	
+				}
 				collectSearchRelevancyScores(searchResults);
 				break;
 			case NEWPRODUCTS:
@@ -464,6 +473,34 @@ public class CmsFilteringFlow {
 			}
 		}
 
+		//set HookLogic adProducts for 'search like' pages.
+		if(FDStoreProperties.isHookLogicEnabled()){
+			browseDataContext.getAdProducts().setPageBeacon(searchResults.getPageBeacon());
+			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
+				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
+					try {
+						ProductData productData = ProductDetailPopulator.createProductData(user, product.getModel());
+						productData.setFeatured(true);
+						//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
+						productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
+						productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getImpBeacon());
+						if (nav.getPageType()!=null){
+							productData.setPageType(nav.getPageType().toString());
+							
+						}
+						browseDataContext.getAdProducts().getProducts().add(productData);
+						
+					} catch (FDResourceException e) {
+						LOG.warn("Getting HookLogic products failed!", e);
+					} catch (FDSkuNotFoundException e) {
+						LOG.warn("Getting HookLogic products failed!", e);
+					} catch (HttpErrorResponse e) {
+						LOG.warn("Getting HookLogic products failed!", e);
+					}
+				}
+			}
+		}
+		
 		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
 		if(browseDataContext.getNavigationModel().getBrandFilterLocation()!=null){
 			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			

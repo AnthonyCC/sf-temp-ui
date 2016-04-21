@@ -38,6 +38,8 @@ public class FeedUploader {
         LOGGER.info("FTP: connecting to host " + ftpUrl);
         
         try {
+        	
+        	client.setFileType(client.BINARY_FILE_TYPE);
             client.connect(ftpUrl);
             
             if (!client.login(ftpUser, ftpPassword)) {
@@ -47,6 +49,12 @@ public class FeedUploader {
 
             File tmpFile = new File(prodFeedFilePath);
     		fis = new FileInputStream(tmpFile);
+
+			if(ftpDirectory == null) {
+				ftpDirectory = "";
+			}
+			client.changeWorkingDirectory(ftpDirectory);
+    		
             if (!client.storeFile(tmpFile.getName(), fis)) {
             	throw new FDResourceException("feed ftp file store failed "+ ftpUrl);
             }

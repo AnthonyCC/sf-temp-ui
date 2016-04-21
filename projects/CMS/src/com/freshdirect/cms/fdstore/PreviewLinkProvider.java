@@ -35,7 +35,7 @@ public class PreviewLinkProvider {
 	 * 
 	 * @return Preview URL
 	 */
-	public static String getLink(ContentKey key, ContentKey storeKey) {
+	public static String getLink(ContentKey key, ContentKey storeKey, boolean isAbsoluteUrl) {
 		ContentType type = key.getType();
 		String id = key.getId();
 
@@ -103,7 +103,7 @@ public class PreviewLinkProvider {
 			}
 		}
 
-		if (uri != null) {
+		if (uri != null && isAbsoluteUrl) {
 			if (storeKey != null) {
 				ContentNodeI theStoreNode = storeKey.lookupContentNode();
 				if (theStoreNode != null) {
@@ -114,7 +114,12 @@ public class PreviewLinkProvider {
 				}
 			}
 		}
-
+System.out.println("URI:::::::::"+uri);
 		return uri;
+	}
+	
+	
+	public static String getLink(ContentKey key, ContentKey storeKey) {
+		return getLink(key, storeKey, true); 
 	}
 }
