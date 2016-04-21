@@ -71,6 +71,16 @@ public class CmsFilteringNavigator {
 	
 	private String ppPreviewId = null;
 	
+	private String picksId = null;
+	
+	public String getPicksId() {
+		return picksId;
+	}
+
+	public void setPicksId(String picksId) {
+		this.picksId = picksId;
+	}
+
 	private int productHits = 0;
 	private int recipeHits = 0;
 	/**
@@ -158,6 +168,9 @@ public class CmsFilteringNavigator {
 					} else if("activeTab".equalsIgnoreCase(param)) {
 						
 						cmsFilteringNavigator.setActiveTab(paramValue.toLowerCase());
+
+					} else if("picksId".equalsIgnoreCase(param)) {
+						cmsFilteringNavigator.setPicksId(paramValue);
 						
 					} else if("pageType".equalsIgnoreCase(param)) {
 
@@ -179,6 +192,7 @@ public class CmsFilteringNavigator {
 		}
 
 		String id = cmsFilteringNavigator.getId();
+		String picksId = cmsFilteringNavigator.getPicksId();
 
 		cmsFilteringNavigator.parseFilteringFlowType(request);
 		int pageSpecificPageSize;
@@ -195,6 +209,9 @@ public class CmsFilteringNavigator {
 			case PRES_PICKS:
 				pageSpecificPageSize = FDStoreProperties.getPresPicksPageSize();
 				break;
+			case STAFF_PICKS:
+				pageSpecificPageSize = FDStoreProperties.getStaffPicksPageSize();
+				break;
 			case SEARCH:
 				pageSpecificPageSize = FDStoreProperties.getSearchPageSize();
 				break;
@@ -206,7 +223,13 @@ public class CmsFilteringNavigator {
 		pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
 		cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 		
-		if ((id == null || id.equals("")) && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS))) {
+		if (
+			(id == null || id.equals("")) && 
+			(cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE)
+				|| cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS)
+				|| cmsFilteringNavigator.getPageType().equals(FilteringFlowType.STAFF_PICKS)
+			)
+		) {
 			throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
 		}
 		
@@ -251,8 +274,14 @@ public class CmsFilteringNavigator {
 				queryString.append("id=").append(id);
 				queryString.append("&");
 				break;
-			case PRES_PICKS:
+			case PRES_PICKS: /* BROWSE could be combined in here */
 				queryString.append("id=").append(id);
+				queryString.append("&");
+				break;
+			case STAFF_PICKS:
+				queryString.append("id=").append(id);
+				queryString.append("&");
+				queryString.append("picksId=").append(picksId);
 				queryString.append("&");
 				break;
 			case SEARCH:
@@ -429,6 +458,8 @@ public class CmsFilteringNavigator {
 		}
 		if (FilteringFlowType.PRES_PICKS.toString().equalsIgnoreCase(pageTypeReqParam)) {
 			pageType = FilteringFlowType.PRES_PICKS;
+		} else if (FilteringFlowType.STAFF_PICKS.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.STAFF_PICKS;
 		} else if (id != null && !"".equals(id) || FilteringFlowType.BROWSE.toString().equalsIgnoreCase(pageTypeReqParam)) {
 			pageType = FilteringFlowType.BROWSE;
 		} else if (FilteringFlowType.NEWPRODUCTS.toString().equalsIgnoreCase(pageTypeReqParam)) {

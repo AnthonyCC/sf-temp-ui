@@ -339,7 +339,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private final Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
-	private final Map<ZoneInfo, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductAssortmentPromotionDataRef>();
+	private final Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
 	
 	private String promotionPageType;
 	
@@ -587,6 +587,7 @@ public class CategoryModel extends ProductContainer {
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
     	ZoneInfo pricingZone = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
     	String currentProductPromotionType = getProductPromotionType();
+    	
     	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
     		prodList =getStaticProducts();
 	
@@ -1095,7 +1096,6 @@ public class CategoryModel extends ProductContainer {
 	
 	private synchronized boolean loadProductPromotion(ZoneInfo pricingZone, String promotionPageType){
 		String currentProductPromotionType = getProductPromotionType();
-		
 		if (currentProductPromotionType == null ){
 			promotionPageType = currentProductPromotionType;
 			return false;
@@ -1230,9 +1230,10 @@ public class CategoryModel extends ProductContainer {
 	
 	public List<ProductModel> getAssortmentPromotionPageProducts(String promotionId) {
 		List<ProductModel> prodList =new ArrayList<ProductModel>();
-		String zoneId = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getPricingZoneId();
+//		String zoneId = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getPricingZoneId();
+		ZoneInfo zoneInfo = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
 		if (EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName().equalsIgnoreCase(getProductPromotionType())) {
-			loadProductAssortmentPromotion(zoneId, promotionId);
+			loadProductAssortmentPromotion(zoneInfo, promotionId);
 			try {
 				if(null != productAssortmentPromotionDataRefMap.get(promotionId) && null !=productAssortmentPromotionDataRefMap.get(promotionId).get()) {
 					prodList = new ArrayList<ProductModel>();
@@ -1245,17 +1246,16 @@ public class CategoryModel extends ProductContainer {
 		return prodList;
 	}
 	
-	private synchronized boolean loadProductAssortmentPromotion(String zoneId, String promotionId){
-		/*::FDX::String currentProductPromotionType = getProductPromotionType();		
+	private synchronized boolean loadProductAssortmentPromotion(ZoneInfo zoneInfo, String promotionId){		
+		String currentProductPromotionType = getProductPromotionType();		
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
 			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && isValidAssortmentPromotion(currentProductPromotionType,promotionId)){
-				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneId, promotionId, currentProductPromotionType));
+				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneInfo, promotionId, currentProductPromotionType));
 			}
 			return true;
-        }//::FDX::*/
-		return true;
+        }
 	}
 	
 	public Image getGlobalNavPostNameImage() {

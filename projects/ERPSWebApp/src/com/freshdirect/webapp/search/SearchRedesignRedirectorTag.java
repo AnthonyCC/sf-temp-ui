@@ -55,6 +55,9 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 					if ("picks_love".equals(id)) {
 						redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.PRES_PICKS.toString().toLowerCase() + "&id=picks_love";
 					}
+					if ("prod_assort".equals(id)) {
+						redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.STAFF_PICKS.toString().toLowerCase() + "&id=" + id;
+					}
 					break;
 				case ECOUPON:
 					redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.ECOUPON.toString().toLowerCase();

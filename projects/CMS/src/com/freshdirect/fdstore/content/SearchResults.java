@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -50,6 +52,8 @@ public class SearchResults implements Serializable, Cloneable {
 	
 	private final List<FilteringSortingItem<ProductModel>> products;
 	private List<ProductModel> ddppProducts = new ArrayList<ProductModel>(); //ddpp products on 'search like' pages
+	private Map<String, ArrayList<ProductModel>> assortProducts = new HashMap<String, ArrayList<ProductModel>>(); //staff picks
+
 	private final List<FilteringSortingItem<Recipe>> recipes;
 	private final List<FilteringSortingItem<CategoryModel>> categories;
 	private boolean phrase; // tells whether the original search was quoted or not
@@ -182,5 +186,12 @@ public class SearchResults implements Serializable, Cloneable {
 
 	public void setDDPPProducts(List<ProductModel> ddppProducts) {
 		this.ddppProducts = ddppProducts;
+	}
+	
+	public Map<String, ArrayList<ProductModel>> getAssortProducts() {
+		return assortProducts;
+	}
+	public void setAssortProducts(Map<String, ArrayList<ProductModel>> assortProducts) {
+		this.assortProducts = assortProducts;
 	}
 }

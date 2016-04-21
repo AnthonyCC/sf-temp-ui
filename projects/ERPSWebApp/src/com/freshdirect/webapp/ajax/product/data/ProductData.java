@@ -200,12 +200,41 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected Map<String, Object> soData;
 	
 	@Override
-    public Map<String, Object> getSoData() {
+	/* staff picks */
+	protected String erpCategory;
+	protected int erpCatPosition;
+	protected int priority;
+	
+	public String getErpCategory() {
+		return erpCategory;
+	}
+
+	public void setErpCategory(String erpCategory) {
+		this.erpCategory = erpCategory;
+	}
+
+	public int getErpCatPosition() {
+		return erpCatPosition;
+	}
+
+	public void setErpCatPosition(int erpPosition) {
+		this.erpCatPosition = erpPosition;
+	}
+
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public Map<String, Object> getSoData() {
 		return soData;
 	}
 
 	@Override
-    public void setSoData(Map<String, Object> soData) {
+	public void setSoData(Map<String, Object> soData) {
 		this.soData = soData;
 	}
 	

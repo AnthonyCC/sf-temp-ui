@@ -191,7 +191,9 @@
   display:none;
 }
 
-[data-pagetype="PRES_PICKS"] .ddpp-oas{
+[data-pagetype="PRES_PICKS"] .ddpp-oas,
+[data-pagetype="STAFF_PICKS"] .ddpp-oas
+{
   display:block;
   max-width: 220px;
   max-height: 275px;
@@ -205,6 +207,9 @@
 }
 
 .srch .leftnav [data-id="pres_picks_id"]{
+  display:none;
+}
+.srch .leftnav [data-id="prod_assort_id"]{
   display:none;
 }
 
@@ -233,8 +238,16 @@
   display:none;
 }
 
-[data-pagetype="PRES_PICKS"] .srch .ddpp-bottom{
+[data-pagetype="PRES_PICKS"] .srch .ddpp-bottom,
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom
+{
   display:block;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom .legaltext,
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-bottom .ddpp-hr.bottom
+{
+  display: none;
 }
 
 .srch .ddppBotAds{
@@ -306,4 +319,12 @@
 	padding-right: 1em;
 	padding-bottom: 0.5em;
 	display: inline-block;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp-list {
+	padding-top: 0;
+}
+
+[data-pagetype="STAFF_PICKS"] .srch .ddpp {
+	padding-top: 10px;
 }

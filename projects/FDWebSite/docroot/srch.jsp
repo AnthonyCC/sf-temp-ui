@@ -1,5 +1,7 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.net.URLEncoder"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -49,7 +51,15 @@
 
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${empty browsePotato.descriptiveContent.oasSitePage ? 'www.freshdirect.com/search.jsp' : browsePotato.descriptiveContent.oasSitePage }" />
-<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom,PPSearchContent" />
+
+<c:choose>
+	<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
+		<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,SPBottom1,SPBottom2,SPBottom3,PPSearchContent" />
+	</c:when>
+	<c:otherwise>
+		<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom,PPSearchContent" />
+	</c:otherwise>
+</c:choose>
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
@@ -93,16 +103,23 @@
     <section class="page-type">
         <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
     </section>
-    <section class="srch-ddpp">
+    <section class="srch-ddpp"><%-- this does the featured items --%>
         <soy:render template="srch.ddppWrapper" data="${browsePotato.ddppproducts}" />
     </section>
-    <section class="ddpp-oas">
-      <div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
-        <script type="text/javascript">
-            OAS_AD('PPSuperBuy');
-        </script>
-      </div>
-    </section>
+	<c:choose>
+		<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}"><%-- DEBUG: this should switch to new type --%>
+			<%--do nothing --%>
+		</c:when>
+		<c:otherwise>
+			<section class="ddpp-oas">
+			  <div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
+			    <script type="text/javascript">
+			        OAS_AD('PPSuperBuy');
+			    </script>
+			  </div>
+			</section>
+		</c:otherwise>
+    </c:choose>
     <nav class="tabs" role="tablist">
       <soy:render template="srch.searchTabs" data="${browsePotato.searchParams}" />
     </nav>
@@ -159,8 +176,9 @@
         </div>
       </c:when>
       <c:otherwise>
-        <div class="browse-sections transactional">
-          <soy:render template="browse.content" data="${browsePotato.sections}" />
+        <div class="browse-sections transactional"><%-- this does the main prod grid --%>
+			<soy:render template="browse.content" data="${browsePotato.sections}" />
+			<%--soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}" / --%>
         </div>
       </c:otherwise>
     </c:choose>
@@ -194,6 +212,7 @@
     		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="${browsePotato.searchParams.searchParams}" searchResultsSize="${browsePotato.searchParams.tabs[0].hits}" suggestedTerm="${browsePotato.searchParams.searchTerm}" recipeSearchResultsSize="${browsePotato.searchParams.tabs[1].hits}"/>
 		</c:otherwise>
     </c:choose>
+   
     <div class="ddpp-bottom">
             <hr class="ddpp-hr top" />
             <table class="ddppBotAds">
@@ -201,29 +220,58 @@
                     <td align="center" colspan="3" class='ddppBotAd-width'>
                     </td>
                 </tr>
-                <tr>
-                    <td align="center">
-                        <div class="oas-cnt PPLeftBottom" id="oas_b_PPLeftBottom">
-                            <script type="text/javascript">
-                                    OAS_AD('PPLeftBottom');
-                            </script>
-                        </div>
-                    </td>
-                    <td align="center" class="ddppBotAd-sep">
-                        <div class="PPMidBottom" id="oas_b_PPMidBottom">
-                            <script type="text/javascript">
-                                    OAS_AD('PPMidBottom');
-                            </script>
-                        </div>
-                    </td>
-                    <td align="center">
-                        <div class="PPRightBottom" id="oas_b_PPRightBottom">
-                            <script type="text/javascript">
-                                    OAS_AD('PPRightBottom');
-                            </script>
-                        </div>
-                    </td>
-                </tr>
+                <c:choose>
+                	<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
+		                <tr>
+		                    <td align="center">
+		                        <div class="oas-cnt SPBottom1" id="oas_b_SPBottom1">
+		                            <script type="text/javascript">
+		                                    OAS_AD('SPBottom1');
+		                            </script>
+		                        </div>
+		                    </td>
+		                    <td align="center" class="">
+		                        <div class="oas-cnt SPBottom2" id="oas_b_SPBottom2">
+		                            <script type="text/javascript">
+		                                    OAS_AD('SPBottom2');
+		                            </script>
+		                        </div>
+		                    </td>
+		                    <td align="center">
+		                        <div class="oas-cnt SPBottom3" id="oas_b_SPBottom3">
+		                            <script type="text/javascript">
+		                                    OAS_AD('SPBottom3');
+		                            </script>
+		                        </div>
+		                    </td>
+		                </tr>
+					</c:when>
+	    			<c:otherwise>
+		                <tr>
+		                    <td align="center">
+		                        <div class="oas-cnt PPLeftBottom" id="oas_b_PPLeftBottom">
+		                            <script type="text/javascript">
+		                                    OAS_AD('PPLeftBottom');
+		                            </script>
+		                        </div>
+		                    </td>
+		                    <td align="center" class="ddppBotAd-sep">
+		                        <div class="oas-cnt PPMidBottom" id="oas_b_PPMidBottom">
+		                            <script type="text/javascript">
+		                                    OAS_AD('PPMidBottom');
+		                            </script>
+		                        </div>
+		                    </td>
+		                    <td align="center">
+		                        <div class="oas-cnt PPRightBottom" id="oas_b_PPRightBottom">
+		                            <script type="text/javascript">
+		                                    OAS_AD('PPRightBottom');
+		                            </script>
+		                        </div>
+		                    </td>
+		                </tr>
+	    			</c:otherwise>
+				</c:choose>
             </table>
             <hr class="ddpp-hr bottom" />
             <center class="legaltext">

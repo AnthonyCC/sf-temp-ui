@@ -2,7 +2,9 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -289,6 +291,35 @@ public class BrowseData implements Serializable {
 		}
 		
 	}
+	
+	public static class AssortProducts implements Serializable {
+		private static final long serialVersionUID = 2252485502495019016L;
+		private Map<String, List<ProductData>> cats = new HashMap<String, List<ProductData>>();
+		private List<ProductData> products = new ArrayList<ProductData>();
+
+		public List<ProductData> getProducts(String cat) {
+			if (cats.containsKey(cat)) {
+				return cats.get(cat);
+			} else {
+				return new ArrayList<ProductData>();
+			}
+		}
+
+		public Map<String, List<ProductData>> getCats() {
+			return cats;
+		}
+
+		public void setCats(Map<String, List<ProductData>> cats) {
+			this.cats = cats;
+		}
+
+		public void addProdDataToCat(String curCat, ProductData productData) {
+			List<ProductData> temp = this.getProducts(curCat);
+			temp.add(productData);
+			this.getCats().put(curCat, temp);
+		}
+		
+	}
 		
 	public static class SearchParams implements Serializable {
 
@@ -429,6 +460,7 @@ public class BrowseData implements Serializable {
 	private PagerData pager; //not a *DataContainer inner class which only encapsulates lists and primitives
 	private SearchParams searchParams = new SearchParams();
 	private DDPPProducts ddppProducts = new DDPPProducts();
+	private AssortProducts assortProducts = new AssortProducts();
     private String topMedia;
 	
 	public PagerData getPager() {
@@ -467,6 +499,13 @@ public class BrowseData implements Serializable {
 	public void setDDPPProducts(DDPPProducts ddppProducts) {
 		this.ddppProducts = ddppProducts;
     }
+
+	public AssortProducts getAssortProducts() {
+		return assortProducts;
+	}
+	public void setAssortProducts(AssortProducts assortProducts) {
+		this.assortProducts = assortProducts;
+	}
 
     public String getTopMedia() {
         return topMedia;

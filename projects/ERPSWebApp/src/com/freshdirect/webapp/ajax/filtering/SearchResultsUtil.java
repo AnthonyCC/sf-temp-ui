@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -48,6 +49,44 @@ public class SearchResultsUtil {
 	    }
 		
 		List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
+		
+		List<ProductModel> nonfeatProds = new ArrayList<ProductModel>();
+		
+		nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,isPpPreview);
+		List<FilteringSortingItem<ProductModel>> searchProductResults = new ArrayList<FilteringSortingItem<ProductModel>>();
+		if(null !=nonfeatProds){
+			for (ProductModel productModel : nonfeatProds) {
+				FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(productModel);
+				item.putSortingValue(EnumSortingValue.PHRASE, 1);
+				searchProductResults.add(item);
+			}
+		}
+		
+		SearchResults searchResults = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
+		searchResults.setDDPPProducts(featProds);
+		
+		return searchResults;
+	}
+	
+	public static SearchResults getStaffPicksProducts(CmsFilteringNavigator nav) {
+		/* close to the same as PP */
+		/* added some mods, don't over-write */
+		
+		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
+		CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(nav.getId());
+		
+		boolean isPpPreview = (category==null ||null == category.getProductPromotionType() || null == nav.getPpPreviewId()) ? false : true;
+	    if(category!=null) {
+			if(!isPpPreview){
+				/* this needs to come from URL */
+				promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());  //category.getProducts();
+			}else{
+				promotionProducts = category.getPromotionPageProductsForPreview(nav.getPpPreviewId());
+			}
+	    }
+	    
+	    //for staffpicks
+		List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts, isPpPreview, FDStoreProperties.getStaffPicksPageFeatLimit()); 
 		
 		List<ProductModel> nonfeatProds = new ArrayList<ProductModel>();
 		

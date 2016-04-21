@@ -20,6 +20,7 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<SortOptionModel> searchPageSortOptions = new ArrayList<SortOptionModel>();
 	private List<SortOptionModel> newProductsPageSortOptions = new ArrayList<SortOptionModel>();
 	private List<SortOptionModel> presidentsPicksPageSortOptions = new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> staffPicksPageSortOptions = new ArrayList<SortOptionModel>();
 	private List<SortOptionModel> eCouponsPageSortOptions = new ArrayList<SortOptionModel>();
 	private List<CategoryModel> tabletFeaturedCategories = new ArrayList<CategoryModel>();
 	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>();
@@ -116,6 +117,11 @@ public class StoreModel extends ContentNodeModelImpl {
 		ContentNodeModelUtil.refreshModels(this, "presidentsPicksPageSortOptions", presidentsPicksPageSortOptions, false);
 		return new ArrayList<SortOptionModel>(presidentsPicksPageSortOptions);
 	}
+	
+	public List<SortOptionModel> getStaffPicksPageSortOptions() {
+		ContentNodeModelUtil.refreshModels(this, "staffPicksPageSortOptions", staffPicksPageSortOptions, false);
+		return new ArrayList<SortOptionModel>(staffPicksPageSortOptions);
+	}
 
 	public List<SortOptionModel> getECouponsPageSortOptions() {
 		ContentNodeModelUtil.refreshModels(this, "eCouponsPageSortOptions", eCouponsPageSortOptions, false);
@@ -178,5 +184,9 @@ public class StoreModel extends ContentNodeModelImpl {
 
 	public Html getExpressCheckoutTextMessageAlertHeader() {
 		return FDAttributeFactory.constructHtml(this, "expressCheckoutTextMessageAlertHeader");
+	}
+
+	public Html getStaffPicksPageTopMediaBanner() {
+		return FDAttributeFactory.constructHtml(this, "staffPicksPageTopMediaBanner");
 	}
 }

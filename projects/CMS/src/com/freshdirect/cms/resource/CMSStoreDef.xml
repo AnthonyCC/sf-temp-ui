@@ -157,6 +157,9 @@
 			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="President's Picks Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
+			<RelationshipDef name="staffPicksPageSortOptions" cardinality="Many" label="Staff's Picks Page Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
 			<RelationshipDef name="eCouponsPageSortOptions" cardinality="Many" label="e-Coupons Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
@@ -170,6 +173,9 @@
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
             <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="President Picks Page Top Media Banner">
+                <DestinationDef contentType="Html"/>
+            </RelationshipDef>
+            <RelationshipDef name="staffPicksPageTopMediaBanner" cardinality="One" label="Staff Picks Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
 			<RelationshipDef name="tabletFeaturedCategories" label="Tablet Featured Categories" cardinality="Many">

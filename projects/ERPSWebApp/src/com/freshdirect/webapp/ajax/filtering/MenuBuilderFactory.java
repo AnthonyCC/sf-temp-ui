@@ -114,10 +114,19 @@ public class MenuBuilderFactory {
 		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
-			if (nav.getPageType() == FilteringFlowType.PRES_PICKS) { //workaround in favor of frontend........
+			if (
+				nav.getPageType() == FilteringFlowType.PRES_PICKS
+				|| nav.getPageType() == FilteringFlowType.STAFF_PICKS //not sure what this workaround does...
+			) { //workaround in favor of frontend........
 				MenuBoxData domain = new MenuBoxData();
-				domain.setName("pres_picks_id");
-				domain.setId("pres_picks_id");
+				if (nav.getPageType() == FilteringFlowType.PRES_PICKS) {
+					domain.setName("pres_picks_id");
+					domain.setId("pres_picks_id");
+				} else if (nav.getPageType() == FilteringFlowType.STAFF_PICKS) {
+					domain.setName("prod_assort_id"); //by workaround, it means, a ref css can style
+					domain.setId("prod_assort_id"); //the ui leftnav gets this as a data-id
+					
+				}
 				domain.setBoxType(MenuBoxType.CATEGORY);
 				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
 				domain.setSelectionType(MenuBoxSelectionType.SINGLE);

@@ -899,6 +899,10 @@ public class BrowseDataBuilderFactory {
 				case PRES_PICKS:
 					sorters = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions();
 					break;
+					
+				case STAFF_PICKS:
+					sorters = ContentFactory.getInstance().getStore().getStaffPicksPageSortOptions();
+					break;
 				
 				case SEARCH:
 					sorters = ContentFactory.getInstance().getStore().getSearchPageSortOptions();
@@ -981,6 +985,26 @@ public class BrowseDataBuilderFactory {
 				Recommendations daiRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (daiRecommendations != null && daiRecommendations.getAllProducts().size() > 0) {
 					browseData.getCarousels().setCarousel3(createCarouselData(null, daiRecommendations.getVariant().getServiceConfig().get("prez_title_dai"), daiRecommendations.getAllProducts(), user, "", daiRecommendations.getVariant().getId()));
+				}
+				break;
+				
+			case STAFF_PICKS:
+				/* currently just does the same as Picks */
+				SessionInput si_staffPicks = new SessionInput(user);
+				si_staffPicks.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
+				Recommendations groRecommendations_staffPicks = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si_staffPicks);
+				if (groRecommendations_staffPicks != null && groRecommendations_staffPicks.getAllProducts().size() > 0) {
+					browseData.getCarousels().setCarousel1(createCarouselData(null, groRecommendations_staffPicks.getVariant().getServiceConfig().get("prez_title_gro"), groRecommendations_staffPicks.getAllProducts(), user, "", groRecommendations_staffPicks.getVariant().getId()));
+				}
+				si_staffPicks.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
+				Recommendations froRecommendations_staffPicks = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si_staffPicks);
+				if (froRecommendations_staffPicks != null && froRecommendations_staffPicks.getAllProducts().size() > 0) {
+					browseData.getCarousels().setCarousel2(createCarouselData(null, froRecommendations_staffPicks.getVariant().getServiceConfig().get("prez_title_fro"), froRecommendations_staffPicks.getAllProducts(), user, "", froRecommendations_staffPicks.getVariant().getId()));
+				}
+				si_staffPicks.setCurrentNode(ContentFactory.getInstance().getContentNode("dai"));
+				Recommendations daiRecommendations_staffPicks = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si_staffPicks);
+				if (daiRecommendations_staffPicks != null && daiRecommendations_staffPicks.getAllProducts().size() > 0) {
+					browseData.getCarousels().setCarousel3(createCarouselData(null, daiRecommendations_staffPicks.getVariant().getServiceConfig().get("prez_title_dai"), daiRecommendations_staffPicks.getAllProducts(), user, "", daiRecommendations_staffPicks.getVariant().getId()));
 				}
 				break;
 			

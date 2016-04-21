@@ -30,18 +30,42 @@
 {template .bottomContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
 {if $sections and $l != 0}
-  <div class="browseContent">
-    {foreach $section in $sections}
-      {call browse.section}
-        {param section:$section /}
-        {param lastLevel:$sectionMaxLevel /}
-        {param level:1 /}
-        {param fromProducts:$l /}
-        {param noFilterTags:true /}
-        {param abFeatures:$abFeatures /}
-      {/call}
-    {/foreach}
-  </div>
+	<div class="browseContent">
+		{foreach $section in $sections}
+			{call browse.section}
+				{param section:$section /}
+				{param lastLevel:$sectionMaxLevel /}
+				{param level:1 /}
+				{param fromProducts:$l /}
+				{param noFilterTags:true /}
+				{param abFeatures:$abFeatures /}
+			{/call}
+		{/foreach}
+	</div>
 {/if}
 {/template}
 
+
+/**
+ * @param cats - cats we're treating as "sections"
+ * @param? limit
+ */
+{template .staffPicksContent autoescape="false"}
+	{let $l: $limit or $limit == 0 ? $limit : 25 /}
+	
+	<div class="browseContent">
+		{foreach $cat in keys($cats)}
+			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">
+				<h2 class="staffpicks-cat-header last">{$cat}</h2>
+				
+				<div class="staffpicks-cat-content">
+					{call common.productList}
+						{param numProducts:$l /}
+						{param productList:$cats[$cat] /}
+					{/call}
+				</div>
+			</section>
+		{/foreach}
+	</div>
+	
+{/template}

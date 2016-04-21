@@ -270,6 +270,9 @@ public class CmsFilteringFlow {
 			case PRES_PICKS:
 				searchResults = SearchResultsUtil.getPresidentsPicksProducts(nav);
 				break;
+			case STAFF_PICKS:
+				searchResults = SearchResultsUtil.getStaffPicksProducts(nav);
+				break;
 			default:
 				LOG.error("Invalid page type: "+ nav.getPageType());
 				throw new InvalidFilteringArgumentException("Invalid page type: "+ nav.getPageType(), InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, FALLBACK_URL);
@@ -355,6 +358,20 @@ public class CmsFilteringFlow {
 					descriptiveContent.setMediaLocation("TOP");
 				}
 				break;
+			case STAFF_PICKS:
+				descriptiveContent.setPageTitle("FreshDirect - Staff Picks");
+				ContentNodeModel staffPicksNode=ContentFactory.getInstance().getContentNode(nav.getId());
+				if(staffPicksNode!=null) {
+					descriptiveContent.setOasSitePage(staffPicksNode.getPath());
+				} else {
+					descriptiveContent.setOasSitePage("www.freshdirect.com/staffpicks");
+				}
+				Html staffPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getStaffPicksPageTopMediaBanner();
+				if (staffPicksPageTopMediaBanner != null) {
+					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(staffPicksPageTopMediaBanner, user));
+					descriptiveContent.setMediaLocation("TOP");
+				}
+				break;
 			case NEWPRODUCTS:
 				descriptiveContent.setPageTitle("FreshDirect - New products");
 				descriptiveContent.setOasSitePage("www.freshdirect.com/newproducts");
@@ -381,14 +398,62 @@ public class CmsFilteringFlow {
 		}
 
 		//set ddpp products for 'search like' pages
+		/* if we need to populate the normal products into the assortProducts browseData
+		 * uncomment this section */
+		/* UNCOMMENT START */
+//		if (FilteringFlowType.STAFF_PICKS.equals(nav.getPageType())) {
+//			for (FilteringSortingItem<ProductModel> item : searchResults.getProducts()) {
+//				ProductModel prodModel = item.getModel();
+//				try {
+//					ProductData productData = ProductDetailPopulator.createProductData(user, prodModel);
+//					productData.setFeatured(((ProductModelPromotionAdapter)prodModel).isFeatured());
+//					productData.setFeaturedHeader(((ProductModelPromotionAdapter)prodModel).getFeaturedHeader());
+//					
+//					String curCat = ((ProductModelPromotionAdapter) prodModel).getErpCategory();
+//					if (curCat == null || curCat.trim() == "") {
+//						curCat = "<!-- ERROR -->"; //lump all the bad products together. remember, cat gets displayed by front end
+//					}
+//					productData.setErpCategory(curCat);
+//					productData.setErpCatPosition(((ProductModelPromotionAdapter)prodModel).getErpCatPosition());
+//					productData.setPriority(((ProductModelPromotionAdapter)prodModel).getPriority());
+//					
+//					
+//					browseDataContext.getAssortProducts().addProdDataToCat(curCat, productData);
+//					//.getProducts(curCat).add(productData);
+//					
+//				} catch (FDResourceException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (FDSkuNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (HttpErrorResponse e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				
+//				
+//			}
+//		}
+		/* UNCOMMENT END */
 		for (ProductModel product : searchResults.getDDPPProducts()) {
 			try {
 				ProductData productData = ProductDetailPopulator.createProductData(user, product);
 				productData.setFeatured(((ProductModelPromotionAdapter)product).isFeatured());
 				productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
+				
+				String curCat = ((ProductModelPromotionAdapter) product).getErpCategory();
+				if (curCat == null || curCat.trim() == "") {
+					curCat = "ERROR"; //lump all the bad products together
+				}
+				productData.setErpCategory(curCat);
+				productData.setErpCatPosition(((ProductModelPromotionAdapter)product).getErpCatPosition());
+				productData.setPriority(((ProductModelPromotionAdapter)product).getPriority());
+				
 				if (nav.getPageType()!=null){
 					productData.setPageType(nav.getPageType().toString());
 				}
+				
 				browseDataContext.getDDPPProducts().getProducts().add(productData);
 			} catch (FDResourceException e) {
 				LOG.warn("Getting DDPP products failed!", e);

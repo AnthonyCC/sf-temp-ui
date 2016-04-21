@@ -97,7 +97,12 @@ public class ProductPromotionUtil {
 		return zoneProductModelsMap;
 	}	
 	
+
 	public static List<ProductModel> getFeaturedProducts(List<ProductModel> products,boolean isPreview){
+		return getFeaturedProducts(products, isPreview, 3);
+	}
+	
+	public static List<ProductModel> getFeaturedProducts(List<ProductModel> products,boolean isPreview, int limit){
 		List<ProductModel> featProducts = new ArrayList<ProductModel>();
 		if(null != products){
 			int i=0;
@@ -109,7 +114,7 @@ public class ProductPromotionUtil {
 						featProducts.add(productModel);
 						iterator.remove();
 						i++;
-						if(i>=3)break;//Need only 3 featured products to show.
+						if(i>=limit)break;//Need only 3 featured products to show. (that's now default)
 					}					
 				}				
 				

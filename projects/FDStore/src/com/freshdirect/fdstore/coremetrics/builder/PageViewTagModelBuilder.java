@@ -116,6 +116,7 @@ public class PageViewTagModelBuilder  {
 			
 			if ("search".equalsIgnoreCase(fileName) || "srch".equalsIgnoreCase(fileName) && (input.page == null || "SEARCH".equalsIgnoreCase(input.page))){
 				
+				//when does this happen?
 				if ("pres_picks".equalsIgnoreCase(input.page) && input.ppParentType != null) {
 					// DDPP / President's Picks case
 					// rule: category ID := embodying content ID
@@ -132,7 +133,10 @@ public class PageViewTagModelBuilder  {
 
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
-			} else if ("browse".equals(fileName) || "browse_special".equals(fileName) || uriAfterSlash.contains("srch.jsp") && "PRES_PICKS".equalsIgnoreCase(input.page)) {
+			} else if ("browse".equals(fileName) || "browse_special".equals(fileName) 
+					|| uriAfterSlash.contains("srch.jsp") && "PRES_PICKS".equalsIgnoreCase(input.page)
+					|| uriAfterSlash.contains("srch.jsp") && "STAFF_PICKS".equalsIgnoreCase(input.page)
+			) {
 				findCurrentFolder( input.id );
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
