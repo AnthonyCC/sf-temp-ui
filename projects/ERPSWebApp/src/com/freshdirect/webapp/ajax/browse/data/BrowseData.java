@@ -318,7 +318,7 @@ public class BrowseData implements Serializable {
 			temp.add(productData);
 			this.getCats().put(curCat, temp);
 		}
-	
+	}
 	public static class HLBrandAdProducts implements Serializable {
 		
 		private static final long serialVersionUID = -5076065046727187803L;
