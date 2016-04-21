@@ -40,6 +40,7 @@
       	{param  productId:$product.productId /}
       	{param  catId:$product.catId /}
       	{param  price:$product.price /}
+      	{param  utSalesUnit:$product.utSalesUnit /}
       {/call}
      {/if}
     {/foreach}
@@ -58,6 +59,7 @@
  * @param? productId
  * @param? catId
  * @param? price
+ * @param? utSalesUnit
  */
 {template .specialMealkitProduct autoescape="false"}
 <li class="mealkit-products-list-item">
@@ -80,7 +82,7 @@
 		      {call common.price} 
 		        {param price:$unitPrice /}
 		      {/call}
-		      <span> Per serving</span>
+		      <span> {if $utSalesUnit}{$utSalesUnit}{/if}</span>
 		  {/if}
 		</p>
 		<p class="mealkit-products-list-item-price">

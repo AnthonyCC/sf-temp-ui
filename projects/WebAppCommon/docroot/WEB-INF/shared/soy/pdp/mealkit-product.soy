@@ -4,11 +4,12 @@
  * @param productName
  * @param? salesUnitDescrPDP
  * @param? unitPrice
+ * @param? utSalesUnit
  */
 {template .mealkitProductTitle}
 	<p class="mealkit-product-title">{$productName}</p>
 	<p class="mealkit-product-subtitle">{if $salesUnitDescrPDP}<br/>{$salesUnitDescrPDP}{/if}</p>
-	<p class="mealkit-product-subtitle">{if $unitPrice}<br/>${$unitPrice} Per Serving{/if}</p>
+	<p class="mealkit-product-subtitle">{if $unitPrice}<br/>${$unitPrice}{/if} {if $utSalesUnit}{$utSalesUnit}{/if}</p>
 <!--bundle-title-ends -->
 {/template}
 

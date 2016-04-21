@@ -1177,7 +1177,7 @@ public class ProductDetailPopulator {
 				String unitPrice = UnitPriceUtil.getUnitPrice(su, item.getPrice());
 				if(unitPrice != null) {
 					item.setUtPrice( unitPrice );
-					item.setUtSalesUnit( su.getUnitPriceUOM() );
+					item.setUtSalesUnit( UnitPriceUomMapper.getMapping(su.getUnitPriceUOM()) );
 				}
 			}
 		}
