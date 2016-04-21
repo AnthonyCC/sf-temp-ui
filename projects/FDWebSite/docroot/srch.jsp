@@ -177,9 +177,10 @@
 	        </div>
 	      </c:when>
 	      <c:otherwise>
-	        <div class="browse-sections transactional">
-	          <soy:render template="browse.content" data="${browsePotato.sections}" />
-	        </div>
+	          <div class="browse-sections transactional"><%-- this does the main prod grid --%>
+				<soy:render template="browse.content" data="${browsePotato.sections}" />
+				<%--soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}" / --%>
+        		</div>
 	      </c:otherwise>
 	    </c:choose>
     </div>
@@ -187,22 +188,6 @@
     <div class="browse-adproducts transactional isHookLogic-true">
     	<soy:render template="common.simpleFixedProductList" data="${browsePotato.adProducts}" />
 	</div>
-
-        <div class="srch-carousel">
-          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
-        </div>
-        
-        <div class="browse-sections-bottom transactional">
-          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
-        </div>
-      </c:when>
-      <c:otherwise>
-        <div class="browse-sections transactional"><%-- this does the main prod grid --%>
-			<soy:render template="browse.content" data="${browsePotato.sections}" />
-			<%--soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}" / --%>
-        </div>
-      </c:otherwise>
-    </c:choose>
 
     <div class="pager-holder bottom">
       <c:if test="${not empty browsePotato.pager}">
