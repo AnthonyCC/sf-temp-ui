@@ -97,7 +97,7 @@ function addToSoSuccessHandler($contextElem, data) {
 	
 	var $soResultsCont = $jq($contextElem.closest('.so-container')).find('.so-results-content');
 
-	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soId='+data.id+'">'+data.name+'</a>');
+	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">'+data.name+'</a>');
 	$soResultsCont.find('.so-results-items-total').html(data.productCount+', '+'<span class="total">$'+data.amount+'</span>');
 	$soResultsCont.find('.so-results-changes-required').html(data.message);
 
