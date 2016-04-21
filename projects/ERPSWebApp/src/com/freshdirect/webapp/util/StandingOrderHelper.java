@@ -634,7 +634,8 @@ public class StandingOrderHelper {
 		if(null!=so.getLastError()){
 			map.put("lastError", so.getLastError().name());
 		} else {
-			map.put("lastError", null);
+			String lastError= isValidStandingOrder(so, false) && amount<FDStoreProperties.getStandingOrderHardLimit() ? "MINORDER":null;
+			map.put("lastError", lastError);
 		}
 		//map.put("dayOfWeek", so.getNextDeliveryDate()!=null?DateUtil.formatFullDayOfWk(so.getNextDeliveryDate()):null);
 		map.put("dayOfWeek", so.getDayOfWeek(so, isUpcomingDelivery));
