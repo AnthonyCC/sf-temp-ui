@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.standingorder;
 
 public class StandingOrderResponseData {
 
+	private String id;
 	private String name ;
 	private String productCount;
 	private String message ;
@@ -77,6 +78,18 @@ public class StandingOrderResponseData {
 	 */
 	public void setAlcohol(boolean isAlcohol) {
 		this.isAlcohol = isAlcohol;
+	}
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

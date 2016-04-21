@@ -832,9 +832,9 @@ public class StandingOrderHelper {
 
 		try {
 			if (null != so) {
+				orderResponseData.setName(so.getCustomerListName());
+				orderResponseData.setId(so.getId());
 				if (isPdp) {
-					orderResponseData.setName(so.getCustomerListName());
-
 					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
 					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
 					if (orderResponseData.getAmount() <= FDStoreProperties.getStandingOrderHardLimit()) {
