@@ -45,15 +45,11 @@
   
   <tmpl:put name="content" direct='true'>
     <soy:render template="browse.specialMealkitLayoutMedia" data="${browsePotato}" />
-  
     <soy:render template="browse.specialMealkitLayoutContent" data="${browsePotato}" />
-	
     <script>
         window.FreshDirect = window.FreshDirect || {};
         window.FreshDirect.browse = window.FreshDirect.browse || {};
-
         window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
-  
 </tmpl:insert>

@@ -11,11 +11,11 @@
 <potato:images images="imagePotato" productId='${param.productId}' categoryId='${param.catId}' />
 
 <div class="mealkit-product">
+	<c:if test="${not empty param.modify}"><p class="thxgiving-bundle-modify-title">Modify Item In Cart</p></c:if>
 	<div>
 		<soy:render template="pdp.mealkitProductImage" data="${imagePotato}" />
 	</div>
 	<div id="mealkit-product-left">
-	  <!--<c:if test="${not empty param.modify}"><p class="thxgiving-bundle-modify-title">Modify Item In Cart</p></c:if>-->
 	  <soy:render template="pdp.mealkitProductTitle" data="${productPotato}" />
 	  
 	  <div class="mealkit-product-actions">

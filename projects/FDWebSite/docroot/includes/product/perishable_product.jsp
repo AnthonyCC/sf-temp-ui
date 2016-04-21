@@ -222,9 +222,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 				FDProduct fdprod = dfltSku.getProduct();
 				boolean hasNutriOrIngrd = ( fdprod.hasNutritionFacts() || fdprod.hasNutritionPanel() || fdprod.hasIngredients() );
 				%>
-
+				
 				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-
+				
 				<% Html productDesc = productNode.getProductDescription(); %>
 
 				<% if ( productDesc != null ) { %>

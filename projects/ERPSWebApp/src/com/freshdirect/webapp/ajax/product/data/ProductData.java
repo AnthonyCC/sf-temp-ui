@@ -112,8 +112,6 @@ public class ProductData extends BasicProductData implements SkuData {
     protected String taxAndDeposit;
     protected String aboutPriceText;
 
-    protected double unitPrice;
-
     // APPDEV-3438
     private String utPrice;
     private String utSalesUnit;
@@ -182,7 +180,6 @@ public class ProductData extends BasicProductData implements SkuData {
     private boolean isFreeSamplePromoProduct;
 
     private HolidayMealBundleContainer holidayMealBundleContainer;
-    private List<ProductData> crossSellProducts;
 
     private String productQualityNote;
 
@@ -199,7 +196,6 @@ public class ProductData extends BasicProductData implements SkuData {
 	 */
 	protected Map<String, Object> soData;
 	
-	@Override
 	/* staff picks */
 	protected String erpCategory;
 	protected int erpCatPosition;
@@ -822,19 +818,10 @@ public class ProductData extends BasicProductData implements SkuData {
         this.holidayMealBundleContainer = holidayMealBundleContainer;
     }
 
-    public List<ProductData> getCrossSellProducts() {
-        return crossSellProducts;
-    }
-
-    public void setCrossSellProducts(List<ProductData> crossSellProducts) {
-        this.crossSellProducts = crossSellProducts;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public double getUnitPrice() {
-        return unitPrice;
+    public Double getUnitPrice() {
+        if(null != utPrice && !"".equals(utPrice)){
+            return Double.parseDouble(utPrice);
+        }
+        return null;
     }
 }

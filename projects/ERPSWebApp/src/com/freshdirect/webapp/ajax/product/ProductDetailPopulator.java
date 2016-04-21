@@ -340,8 +340,6 @@ public class ProductDetailPopulator {
 		// Populate transient-data
 		postProcessPopulate( user, data, sku.getSkuCode(), showCouponStatus, lineData );
 
-        populateCrossSellProducts(user, product, data);
-
 		return data;
 	}
 	
@@ -1180,7 +1178,6 @@ public class ProductDetailPopulator {
 				if(unitPrice != null) {
 					item.setUtPrice( unitPrice );
 					item.setUtSalesUnit( su.getUnitPriceUOM() );
-                    item.setUnitPrice(Double.parseDouble(unitPrice));
 				}
 			}
 		}
@@ -1640,23 +1637,4 @@ public class ProductDetailPopulator {
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
-	
-    private static void populateCrossSellProducts(FDUserI user, ProductModel productModel, ProductData productData) {
-
-        List<ProductData> crossSellProductDatas = new ArrayList<ProductData>();
-        List<ProductModel> crossSellProducts = productModel.getCrossSellProducts();
-        if (crossSellProducts != null && !crossSellProducts.isEmpty()) {
-            for (ProductModel crossSellProductModel : crossSellProducts)
-                try {
-                    crossSellProductDatas.add(ProductDetailPopulator.createProductData(user, crossSellProductModel));
-                } catch (FDResourceException e) {
-                    LOG.warn("Resource not found in cross-sell product populate. This is unexpected. Skipping item.");
-                } catch (FDSkuNotFoundException e) {
-                    LOG.warn("Sku not found in cross-sell product populate. This is unexpected. Skipping item.");
-                } catch (HttpErrorResponse e) {
-                    LOG.warn("HttpErrorResponse. This is unexpected. Skipping item.");
-                }
-        }
-        productData.setCrossSellProducts(crossSellProductDatas);
-    }
 }
