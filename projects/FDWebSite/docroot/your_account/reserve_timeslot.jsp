@@ -116,7 +116,7 @@ String actionName = request.getParameter("actionName");
 						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
 					<%} else {%>
 						<button class="cssbutton red nontransparent small" onclick="reserveTimeslot.actionName.value='cancelReservation'">CANCEL RESERVATION</button>
-						<button class="cssbutton orange small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
+						<button class="cssbutton green small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
 					<%}%>
 				</td>
 			</tr>

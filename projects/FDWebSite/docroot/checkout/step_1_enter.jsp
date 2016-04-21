@@ -96,7 +96,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 		</TD>
 		<TD WIDTH="300" ALIGN="RIGHT">
 				<a class="cssbutton green transparent small" href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">CANCEL</a>
-				<button class="cssbutton orange small" name="checkout_delivery_address_add">SAVE CHANGES</button>
+				<button class="cssbutton green small" name="checkout_delivery_address_add">SAVE CHANGES</button>
 		</TD>
 	</TR>
 	</TABLE>
@@ -112,7 +112,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	<TR VALIGN="TOP">
 			<TD WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" ALIGN="RIGHT">
 				<a class="cssbutton green transparent small" href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">CANCEL</a>
-				<button class="cssbutton orange small" name="checkout_delivery_address_add">SAVE CHANGES</button>
+				<button class="cssbutton green small" name="checkout_delivery_address_add">SAVE CHANGES</button>
 			</TD>
 </TR>
 </TABLE>

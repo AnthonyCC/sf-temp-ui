@@ -48,7 +48,7 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 				<td colspan="2" style="padding-left:10px;">
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="25" border="0"><br>
 					<a class="cssbutton green transparent small" href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">CANCEL</a>
-					<button class="cssbutton orange small" name="update_user">SAVE CHANGES</button>
+					<button class="cssbutton green small" name="update_user">SAVE CHANGES</button>
 				</td>
 			</tr>
 			<tr>

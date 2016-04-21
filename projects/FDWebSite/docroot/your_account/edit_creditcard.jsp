@@ -79,7 +79,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	<TR VALIGN="TOP">
 		<TD WIDTH="<%= W_YA_EDIT_CREDITCARD %>" ALIGN="RIGHT">
 			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
-			<button class="cssbutton orange small">SAVE CHANGES</button>
+			<button class="cssbutton green small">SAVE CHANGES</button>
 		</TD>
 </TR>
 </TABLE>

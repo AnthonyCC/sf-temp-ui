@@ -202,7 +202,7 @@ double cartTotal = user.getShoppingCart().getTotal();
 		<TR VALIGN="TOP">
 			<TD WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" ALIGN="RIGHT">
 				<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
-				<button class="cssbutton orange small">SAVE CHANGES</button>
+				<button class="cssbutton green small">SAVE CHANGES</button>
 			</TD>
 		</TR>
 	</TABLE>

@@ -200,7 +200,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 		</TD>
 		<TD WIDTH="300" ALIGN="RIGHT">
 			<a class="cssbutton green transparent small" href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">CANCEL</a>
-			<button class="cssbutton orange small" name="checkout_delivery_address_edit">SAVE CHANGES</button>
+			<button class="cssbutton green small" name="checkout_delivery_address_edit">SAVE CHANGES</button>
 		</TD>
 	</TR>
 	</TABLE>
@@ -236,7 +236,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 <%	} else { %>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" ALIGN="RIGHT">
 			<a class="cssbutton green transparent small" href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>">CANCEL</a>
-			<button class="cssbutton orange small" name="checkout_delivery_address_edit" >SAVE CHANGES</button>
+			<button class="cssbutton green small" name="checkout_delivery_address_edit" >SAVE CHANGES</button>
 		</TD>
 <%	} %>
 		</TR>

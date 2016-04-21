@@ -46,7 +46,7 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 			</tr>
 		<tr>
 			<td width="<%= W_YA_EDIT_DELIVERY_ADDR %>"><br />
-				<button class="cssbutton orange small" name="edit_delivery_address">SUBMIT</button>
+				<button class="cssbutton green small" name="edit_delivery_address">SUBMIT</button>
 			</td>
 		</tr>
 		</table>

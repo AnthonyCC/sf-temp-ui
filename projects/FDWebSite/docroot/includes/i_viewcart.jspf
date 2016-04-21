@@ -140,7 +140,7 @@ asyncPixelWithTimeout();
 			<% if (user.isEligibleForClientCodes()) { %>
 			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
 			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
-				<button class="cssbutton khaki small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
+				<button class="cssbutton green small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
 			</span>
 			<% } %>
 			<% if (FDStoreProperties.isAnnotationMode()) {
@@ -766,7 +766,7 @@ asyncPixelWithTimeout();
 			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" width="100" height="17" border="0" alt="UPDATE CART" VSPACE="2" HSPACE="0">
 			<% if (user.isEligibleForClientCodes()) { %>
 			<span class="title11" id="clicode_save_2" style="display: none;">&nbsp;
-			<button class="cssbutton khaki small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
+			<button class="cssbutton green small" name="save_client_codes" onclick="return FreshDirect.ClientCodes.setDirty();">SAVE CLIENT CODES</button>
 			</span>
 			<% } %>
 		</td>

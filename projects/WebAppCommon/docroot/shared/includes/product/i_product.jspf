@@ -907,11 +907,12 @@ if ( skuSize == 0 ) {
         						referer = "/view_cart.jsp";
        						%>
        						<button class="cssbutton orange small icon-cart-new-after" id="save_changes" name="save_changes">SAVE CHANGES</button><br/><br/>
-       						<button class="cssbutton green small icon-cancel-circle-after" id="remove_from_cart" name="remove_from_cart" onclick="remove_from_cart();">REMOVE ITEM</button><br/>
+       						<input type="submit" id="remove_from_cart" name="remove_from_cart.x" class="cssbutton green small icon-cancel-circle-after">
+       						
+       						<!--  <button class="cssbutton green small icon-cancel-circle-after" id="remove_from_cart" name="remove_from_cart" onclick="remove_from_cart();">REMOVE ITEM</button><br/>-->
        						<br/>
        						<% if (!refererPassed) { %><input type="hidden" name="referer" value="<%=referer%>"><% } %>
-       						<a href="<%=referer%>">
-       							<button class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</button>
+       						<a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE
        						</a><br/>
 							<%--input type="hidden" name="alcoholic_0" id="alcoholic_0" value="quantity_0"/ --%>
        						<%

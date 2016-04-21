@@ -268,7 +268,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 		<%if (!proceedThruCheckout) { %>
 		<TD WIDTH="300" ALIGN="RIGHT">
 			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
-			<button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
+			<button class="cssbutton green small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 		</TD>
 		<%}%>
 	</TR>

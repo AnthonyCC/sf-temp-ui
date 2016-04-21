@@ -170,7 +170,7 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 		<TR VALIGN="TOP">
 			<TD ALIGN="RIGHT">
 				<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
-					<button class="cssbutton orange small" name="checkout_credit_card_edit" >SAVE CHANGES</button>
+					<button class="cssbutton green small" name="checkout_credit_card_edit" >SAVE CHANGES</button>
 			</TD>
 		</TR>
 	</TABLE>

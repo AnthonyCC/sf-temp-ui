@@ -43,7 +43,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 	<TR VALIGN="TOP">
 				<TD WIDTH="<%= W_YA_ADD_CHECKACCT %>" ALIGN="RIGHT">
 					<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
-					<button class="cssbutton orange small" name="checkout_credit_card_edit">SAVE CHANGES</button>
+					<button class="cssbutton green small" name="checkout_credit_card_edit">SAVE CHANGES</button>
 				</TD>
 </TR>
 </TABLE>
