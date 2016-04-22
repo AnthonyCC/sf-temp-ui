@@ -106,12 +106,12 @@ public class SectionBodyParser extends PayPalSettlementParser {
         try {
         	s = super.getString(tokens, fieldName);
         } catch (BadDataException e) {
-        	s = s=tokens.get(fieldName).trim();
-        	String txEventCode = getString(tokens, TRANSACTION_EVENT_CODE);
+        	s=tokens.get(fieldName).trim();
+        	String txEventCode = tokens.get(TRANSACTION_EVENT_CODE);
         	if (txEventCode != null) {
         		if (!DataLoaderProperties.getPPIgnorableEventCodes().contains(txEventCode)) {
-		        	String invoiceId = getString(tokens, INVOICE_ID);
-		        	String ppRefId = getString(tokens, PAYPAL_REFERENCE_ID);
+		        	String invoiceId = tokens.get(INVOICE_ID);
+		        	String ppRefId = tokens.get(PAYPAL_REFERENCE_ID);
 		        	if (invoiceId == null || invoiceId.equals("")) {
 		        		throw new BadDataException("Required field \"" + INVOICE_ID + "\" was empty");
 		        	} else if (ppRefId == null || ppRefId.equals("")) {

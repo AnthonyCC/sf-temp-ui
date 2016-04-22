@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
+import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -248,11 +249,14 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				ppReconSB.updatePayPalStatus(settlementIds);
 			}
 		} catch (RemoteException e) {
-			LOGGER.error("Could not process PayPal transactions ", e);
+			LOGGER.fatal("Could not process PayPal transactions ", e);
+			SettlementLoaderUtil.sendSettlementFailureEmail(e);
 		} catch (CreateException e) {
-			LOGGER.error("Could not process PayPal transactions ", e);
+			LOGGER.fatal("Could not process PayPal transactions ", e);
+			SettlementLoaderUtil.sendSettlementFailureEmail(e);
 		} catch (ErpTransactionException e) {
-			LOGGER.error("Could not process PayPal transactions ", e);
+			LOGGER.fatal("Could not process PayPal transactions ", e);
+			SettlementLoaderUtil.sendSettlementFailureEmail(e);
 		}
 		
 		double netDeposit = this.netSales - Math.abs(this.netDeductions);

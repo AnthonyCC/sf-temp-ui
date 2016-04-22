@@ -75,6 +75,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				ps.setDate(1, new java.sql.Date(date.getTime()));
 
 				rs = ps.executeQuery();
+				
 				while (rs.next()) {
 					String locked = rs.getString("IS_LOCKED");
 					String processed = rs.getString("ALL_RECORDS_PROCESSED");
@@ -82,9 +83,11 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					if ("Y".equals(processed)) {
 						throw new EJBException("The batch for date " + date + " are already processed.");
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						ps = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
-						ps.setString(1, settlementId);
-						ps.executeUpdate();
+						Connection conn2 = this.getConnection();
+						PreparedStatement ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
+						ps2.setString(1, settlementId);
+						ps2.executeUpdate();
+						resetConnection(ps2, null, conn2);
 						settlementIds.add(settlementId);
 					} else if (locked.equals(PAYPAL_SETTLEMENT_IS_LOCKED)) {
 						throw new EJBException("[PayPal Batch] Some other process should be running for the same date " + date);
@@ -92,9 +95,12 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						throw new EJBException("Invalid locking state exists for date " + date);
 					}
 				}
+
 				//new process
 				if (settlementIds.isEmpty()) {
+					resetConnection(ps, rs, conn);
 					byte i = 1;
+					conn = this.getConnection();
 					ps = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
 					settlementId = SequenceGenerator.getNextId(conn, "CUST");
 					ps.setString(i++, settlementId);
@@ -117,17 +123,17 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			} else {
 				ps = conn.prepareStatement(ACQUIRE_PENDING_PP_LOCK_QUERY);
 				rs = ps.executeQuery();
-
 				while (rs.next()) {
 					String locked = rs.getString("IS_LOCKED");
-					Date processDate = rs.getDate("PROCESS_PERIOD_START");
 					String id = rs.getString("ID");
 					if ("Y".equals(locked)) {
 						LOGGER.info("Ignoring acquiring lock for settlement id." + id);
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						ps = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
-						ps.setString(1, id);
-						ps.executeUpdate();
+						Connection conn2 = this.getConnection();
+						PreparedStatement ps2 = conn2.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
+						ps2.setString(1, id);
+						ps2.executeUpdate();
+						resetConnection(ps2, null, conn2);
 						settlementIds.add(id);
 					}
 				}
@@ -207,6 +213,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				ps = conn.prepareStatement(RELEASE_PP_LOCK_UDPATE);
 				ps.setString(1, settlementId);
 				ps.executeUpdate();
+				resetConnection(ps, null, conn);
 			} catch (SQLException e) {
 				LOGGER.debug("SQLException: ", e);
 				throw new EJBException("SQLException: ", e);
@@ -401,12 +408,14 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				if (rs.next()) {
 					Date processedDate = rs.getDate("PROCESSED_TIME_DATE");
 					allRecordsProcessed = rs.getString("ALL_RECORDS_PROCESSED");
+					String affiliate = rs.getString("AFFILIATE_ACCOUNT_ID");
+					if (affiliate != null) {
+						summary.setAffiliateAccountId(rs.getString("AFFILIATE_ACCOUNT_ID"));
+						summary.setTotalTransactionFeeCredit(rs.getLong("TOTAL_TRANS_FEE_CREDIT"));
+						summary.setTotalTransactionFeeDebit(rs.getLong("TOTAL_TRANS_FEE_DEBIT"));
 					
-					summary.setAffiliateAccountId(rs.getString("AFFILIATE_ACCOUNT_ID"));
-					summary.setTotalTransactionFeeCredit(rs.getLong("TOTAL_TRANS_FEE_CREDIT"));
-					summary.setTotalTransactionFeeDebit(rs.getLong("TOTAL_TRANS_FEE_DEBIT"));
-					
-					ppStlmnts.add(summary);
+						ppStlmnts.add(summary);
+					}
 				}
 			}
 			if (ppStlmnts.isEmpty()) {
@@ -463,8 +472,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					trxn.setConsumerId(rs.getString("CONSUMER_ID"));
 					trxn.setPaymentTrackingId(rs.getString("PAYMENT_TRACKING_ID"));
 					ppStlmntTrxns.add(trxn);
-					stlmntSummary.setSettlementTrxns(ppStlmntTrxns);
 				}
+				stlmntSummary.setSettlementTrxns(ppStlmntTrxns);
 				ppStlmntTrxns = new ArrayList<ErpSettlementTransactionModel>();
 			}catch(SQLException e){
 				LOGGER.debug("SQLException: ", e);
@@ -634,5 +643,15 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			ps.setString(1, settlement_id);
 			ps.executeUpdate();
 		}
+	}
+	
+	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) throws SQLException {
+		if (ps != null)
+			ps.close();
+		if (rs != null)
+			rs.close();
+		if (conn != null)
+			conn.close();
+		//conn = this.getConnection();
 	}
 }
