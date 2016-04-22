@@ -478,25 +478,31 @@ public class CmsFilteringFlow {
 			browseDataContext.getAdProducts().setPageBeacon(searchResults.getPageBeacon());
 			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
 				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
-					try {
-						ProductData productData = ProductDetailPopulator.createProductData(user, product.getModel());
-						productData.setFeatured(true);
-						//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
-						productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
-						productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getImpBeacon());
-						if (nav.getPageType()!=null){
-							productData.setPageType(nav.getPageType().toString());
-							
+					
+						if(product.getModel()!=null){
+							ProductData productData = null;
+							try {
+								productData = ProductDetailPopulator.createProductData(user, product.getModel());
+							} catch (FDResourceException e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							} catch (FDSkuNotFoundException e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							} catch (HttpErrorResponse e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							}
+							if(null != productData){
+								productData.setFeatured(true);
+								//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
+								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
+								productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getImpBeacon());
+								if (nav.getPageType()!=null){
+									productData.setPageType(nav.getPageType().toString());
+									
+								}
+								browseDataContext.getAdProducts().getProducts().add(productData);
+							}
 						}
-						browseDataContext.getAdProducts().getProducts().add(productData);
-						
-					} catch (FDResourceException e) {
-						LOG.warn("Getting HookLogic products failed!", e);
-					} catch (FDSkuNotFoundException e) {
-						LOG.warn("Getting HookLogic products failed!", e);
-					} catch (HttpErrorResponse e) {
-						LOG.warn("Getting HookLogic products failed!", e);
-					}
+					
 				}
 			}
 		}

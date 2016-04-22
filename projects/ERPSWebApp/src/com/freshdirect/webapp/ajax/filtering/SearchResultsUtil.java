@@ -150,21 +150,9 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 					
 				}
 			}
-		}
-		else{//TODO: Test data. Need to be removed.
-				try {
-					ProductModel pm = ContentFactory.getInstance().getProduct("DAI0067053");//hlBrandProductAdMetaInfo.getParentSKU());
-					if(null !=pm){
-						adPrducts.add(pm);
-						adPrducts.add(pm);
-						adPrducts.add(pm);
-					}
-				} catch (FDSkuNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		} catch (FDResourceException e) {
+		  }
+	    }
+      }catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BrandProductAdServiceException e) {

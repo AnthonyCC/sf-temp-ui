@@ -227,8 +227,7 @@ public class ErpServicesProperties {
 	private final static String PROP_PP_SETTLEMENT_FD_ACCOUNTID = "dataloader.pp.fd.accountid";
 	private final static String PROP_PP_SETTLEMENT_FDW_ACCOUNTID = "dataloader.pp.fdw.accountid";
 	
-	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
-	
+		
 	public final static String PROP_HOOK_LOGIC_URL="fdstore.erp.hooklogic.url";
 	public final static String PROP_HOOK_LOGIC_CONFIRMATION_URL="fdstore.erp.hooklogic.confirmation.url";
 	
@@ -236,7 +235,6 @@ public class ErpServicesProperties {
 	public final static String PROP_HOOK_LOGIC_API_KEY="fdstore.Erp.hookloigc.apikey";
 	private final static String PROP_HL_READ_TIMEOUT_PERIOD = "fdstore.HL.read.timeout.period";
 	private final static String PROP_HL_CONNECTION_TIMEOUT_PERIOD = "fdstore.HL.connection.timeout.period";
-	public final static String PROP_ORDER_PRODUCT_FEED_FILENAME="fdstore.Erp.order.feed.filename";
 	public final static String PROP_HLCODE="fdstore.erp.hl.code";
 	public final static String PROP_HL_CLIENT_ID="fdstore.erp.hl.clientid";
 	
@@ -434,7 +432,6 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HOOK_LOGIC_API_KEY, "ba0f338d-f678-4fc3-a81b-d24d5ac4ffd1");//Test API Key
 		defaults.put(PROP_HOOK_LOGIC_URL, "http://uat1.hlserve.com/delivery/api/search?");
 		defaults.put(PROP_HOOK_LOGIC_CONFIRMATION_URL, "http://uat1.hlserve.com/delivery/api/confirmation?");
-		defaults.put(PROP_ORDER_PRODUCT_FEED_FILENAME, "freshdirect_daily_orders_");
 		defaults.put(PROP_HLCODE, "HOOKLOGICSFTP");
 		defaults.put(PROP_HL_CLIENT_ID, "258");
 		defaults.put(PROP_HOOK_LOGIC_CULTURE, "en-US");
@@ -457,7 +454,6 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PP_SETTLEMENT_FD_ACCOUNTID, "995LDYH3WGHZ6");
 		defaults.put(PROP_PP_SETTLEMENT_FDW_ACCOUNTID, "9GBL2Z78NQM7L");
 		
-		defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
 		defaults.put(PROP_HL_READ_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_HL_CONNECTION_TIMEOUT_PERIOD, "10");//secs
 		
@@ -1107,10 +1103,6 @@ public class ErpServicesProperties {
 	}
 	
 	
-	public static boolean isHookLogicEnabled() {
-    	return (Boolean.valueOf(config.getProperty(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
-    }
-	
 	public static Integer getHLReadTimeoutPeriod() {
 		try {
 			return Integer.parseInt(config.getProperty(PROP_HL_READ_TIMEOUT_PERIOD));
@@ -1127,9 +1119,6 @@ public class ErpServicesProperties {
 		}
 	}
 	
-	public static String getOrderProductFeedFileName() {
-		return config.getProperty(PROP_ORDER_PRODUCT_FEED_FILENAME);
-	}
 	
 	public static String getHLCode() {
 		return config.getProperty(PROP_HLCODE);
