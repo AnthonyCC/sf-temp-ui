@@ -389,3 +389,7 @@ span.cssbutton.notext[class*=" icon-"] {
   cursor: not-allowed;
   box-shadow: none;
 }
+
+.remove-item-button {
+	padding-right: 0;
+}

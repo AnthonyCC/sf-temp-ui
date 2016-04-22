@@ -606,10 +606,10 @@ if (isAvailable ) {
 			String referer = request.getParameter("referer");
 			if (referer==null) referer = request.getHeader("Referer");
 			if (referer==null) referer = "/view_cart.jsp";			%>
-			<button class="cssbutton orange small icon-cart-new-after" name="save_changes">SAVE CHANGES</button><BR>
-			<button class="cssbutton green small icon-cancel-circle-after">REMOVE ITEM</button><BR>
+			<button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES">SAVE CHANGES</button><br/>
+       		<button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button">Remove Item</button><br/>
 			<input type="hidden" name="referer" value="<%= referer %>">
-			<a href="<%=referer%>"><button class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</button></a><BR>
+			<a class="cssbutton green transparent small icon-arrow-left-before" href="<%=referer%>">NO CHANGE</a><BR>
         <% } else if (CartName.MODIFY_LIST.equals(cartMode) ||
 	              CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
 
@@ -637,15 +637,12 @@ if (isAvailable ) {
                <%
 	       if (CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
 	       %>
-	       <input type="image" name="save_changes" src="/media_stat/images/template/quickshop/alt_replace_item_btn.gif" 
-	       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
-	       HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
-
+	       <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br/><br/>
 	       <%
 	       } else {
 	       %>
-               <button class="cssbutton purple nontrasparent small icon-list-white-after" name="save_changes" onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br>
-               <button class="cssbutton green small icon-cancel-circle-after" onclick="document.productForm.list_action.value='remove';document.productForm.submit();">REMOVE ITEM</button><BR><FONT CLASS="space4pix"><BR></FONT>
+	       <button type="submit" class="cssbutton green small icon-cart-new-after" id="save_changes.x" name="save_changes.x" value="SAVE CHANGES"  onclick="document.productForm.list_action.value='modify';document.productForm.submit();">SAVE CHANGES</button><br/><br/>
+           <button type="submit" id="remove_from_cart" name="remove_from_cart.x" value="REMOVE ITEM" class="cssbutton transparent white icon-trash-new-before remove-item-button" onclick="document.productForm.list_action.value='remove';document.productForm.submit();">Remove Item</button><br/><br/>
                <%
 	       } // cartMode
 	       %>
@@ -657,10 +654,8 @@ if (isAvailable ) {
 	      <% if (request.getParameter("recipeId") != null) { %>
 	      <input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
 	      <% } %>
-
     
-              <a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" HSPACE="2" BORDER="0"></a><BR><FONT CLASS="space4pix"><BR></FONT>
-
+              <a href="<%=referer%>" class="cssbutton green transparent small icon-arrow-left-before">NO CHANGE</a><BR><BR>
 	
 	<% } else {   %>
 		<input type="image" id="addMultipleToCart" name="addMultipleToCart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
