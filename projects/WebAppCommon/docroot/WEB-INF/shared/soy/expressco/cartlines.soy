@@ -1046,7 +1046,7 @@
 	{if $subTotalBox}					
 		{foreach $box in $subTotalBox}
 		<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
-		{if ($avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id=='subtotal' and $cartlineType == 'YOUR_CART') or($avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id == 'totalAvalaratax' and $cartlineType == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
+		{if ($avalaraEnabled and $box.id=='totaltax' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id=='subtotal' and $cartlineType == 'YOUR_CART') or ($avalaraEnabled and $box.id == 'totalAvalaratax' and $cartlineType == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
 										
 		{else}		  
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
@@ -1133,12 +1133,8 @@
 										{/if} /*end if $eTippingEnabled */
 										
 										{let $deliveryUsed: 1 /}
-									{else}
-										{if $box.id=='totalAvalaratax'}
-										
-										{else}
+									{else}				
 										{$box.text}
-										{/if}
 									{/if} /*end if/else $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */
 								{/if} /*end if/else $box.other and $box.other.promoCode */
 							{/if} /*end if/else $box.id == 'freefood' */
@@ -1149,11 +1145,8 @@
 								
 								{let $deliveryUsed: 1 /}
 							{else}
-								{if $box.id=='totalAvalaratax'}
-								
-								{else}
+
 								{$box.value}
-								{/if}
 							{/if}
 						</div>
 						{/if}
@@ -1207,7 +1200,7 @@
 				
 				{if $box.other}
 					<div class='subtotal__rowcell-right'>
-						{if $box.other.mark}{$box.other.mark}{/if}
+					{if ($avalaraEnabled and $box.id != 'subtotal') or not $avalaraEnabled }	{if $box.other.mark}{$box.other.mark}{/if}{/if}
 						{if $box.id == 'redemptionpromo'}
 							<form fdform="promotionremove" action="#"
 							fdform-endpoint-submit="/api/expresscheckout/promotion"
