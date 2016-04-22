@@ -152,7 +152,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			}
 		  }
 	    }
-      }catch (FDResourceException e) {
+      catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BrandProductAdServiceException e) {
