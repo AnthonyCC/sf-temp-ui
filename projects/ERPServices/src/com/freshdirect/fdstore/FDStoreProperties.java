@@ -835,6 +835,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_MICROSITE_SUB_URL					= "fdstore.extole.microsite.sub.url";
 	public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL				= "fdstore.extole.microsite.global.nav.url";
 	public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME                   = "freshdirect.fdstore.fdBrandProductsAdManager";
+	public final static String PROP_HL_PRODUCTS_COUNT                   		= "freshdirect.fdstore.hlproductscount";
 	
 	
 
@@ -1692,7 +1693,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev06.nj01:7001");
-        
+        defaults.put(PROP_HL_PRODUCTS_COUNT, 5);
 		refresh();
     }
 
@@ -4255,5 +4256,8 @@ public class FDStoreProperties {
     	return (Boolean.valueOf(get(PROP_HOOK_lOGIC_ENABLE))).booleanValue();
     }
  	
+	public static int getHlProductsCount() {
+        return Integer.parseInt(get(PROP_HL_PRODUCTS_COUNT));
+    }
 	
 }

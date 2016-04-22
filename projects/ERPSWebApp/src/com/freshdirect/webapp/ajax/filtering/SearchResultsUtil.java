@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -33,6 +35,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.ConfigurationContext;
@@ -41,7 +44,9 @@ import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy;
 
 public class SearchResultsUtil {
-
+	
+	private static final Logger LOG = LoggerFactory.getInstance( SearchResults.class );
+	
 	public static SearchResults getPresidentsPicksProducts(CmsFilteringNavigator nav) {
 		
 		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
@@ -117,7 +122,7 @@ public class SearchResultsUtil {
 	
 public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDSessionUser user) {
 		
-	
+
 		List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();
 		
@@ -141,34 +146,26 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 						
 						if(null !=productModel){
 							ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(), hlBrandProductAdMetaInfo.getImpBeacon());
-							adPrducts.add(pm);
+								adPrducts.add(pm);
 						}
 					} catch (FDSkuNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.info("FDSkuNotFoundException while populating HookLogicproduct : ", e);
 					}
 					
 				}
 			}
 		  }
 	    }
-      catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BrandProductAdServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+      catch (Exception e) {
+			LOG.info("Exception while populating HookLogicproduct: ", e);
 		}
 		List<FilteringSortingItem<ProductModel>> searchProductResults = new ArrayList<FilteringSortingItem<ProductModel>>();
 		if(null !=adPrducts){
 			for (ProductModel productModel : adPrducts) {
 				FilteringSortingItem<ProductModel> item = new FilteringSortingItem<ProductModel>(productModel);
-//				item.putSortingValue(EnumSortingValue.PHRASE, 1);
 				searchProductResults.add(item);
 			}
 		}
-		
-//		searchResults = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), nav.getSearchParams(), true);
 		searchResults.setAdProducts(searchProductResults);
 		
 		return searchResults;

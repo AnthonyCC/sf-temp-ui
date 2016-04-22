@@ -39,20 +39,17 @@ public class FDBrandProductsManagerDAO implements Serializable{
 		List<HLOrderFeedDataModel> list = null;
 		ResultSet rs=null;
 		PreparedStatement ps = null;
+
 		String QUERY = "select fdu.id as puserid, s.customer_id as cuserid,s.id as order_id, ol.sku_code as sku,ol.base_price as price ,ol.quantity as quantity,sa.amount as order_total," +
 						" to_char(sa.action_date, 'YYYY/MM/DD HH:MI:SS') as order_date from cust.sale s, cust.salesaction sa, cust.orderline ol,cust.fduser fdu,cust.fdcustomer fdc where " +
 						" ol.salesaction_id=sa.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') and sa.action_date=s.cromod_date " +
 						"and fdc.erp_customer_id=s.customer_id and fdu.fdcustomer_id=fdc.id and s.type='REG' and s.status <> 'CAN' and sa.action_date  BETWEEN  to_date(?, 'YYYY/MM/DD HH:MI:SS') " +
-						"and  to_date(to_char(sysdate, 'YYYY/MM/DD HH:MI:SS'), 'YYYY/MM/DD HH:MI:SS') order by s.id";
+						"and  to_date(?, 'YYYY/MM/DD HH:MI:SS') order by s.id";
 		
-			/*String QUERY = "select fdu.id as puserid, s.customer_id as cuserid,s.id as order_id, ol.sku_code as sku,ol.base_price as price ,ol.quantity as quantity,sa.amount as order_total, " +
-			"to_char(sa.action_date, 'YYYY/MM/DD HH:MI:SS') as order_date from cust.sale s, cust.salesaction sa, cust.orderline ol,cust.fduser fdu,cust.fdcustomer fdc where" +
-			" ol.salesaction_id=sa.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') and sa.action_date=s.cromod_date	and " +
-			"fdc.erp_customer_id=s.customer_id and fdu.fdcustomer_id=fdc.id and s.type='REG' and s.id in ('10295931811','10295940917','10295940983','10295941001','10295941082') and sa.action_date>=to_date(?, 'YYYY/MM/DD HH:MI:SS') and s.status <>'CAN' order by s.id";*/
-						//SYSDATE - 30/1440
 	try {
 				ps = conn.prepareStatement(QUERY);
 				ps.setDate(1, new java.sql.Date(productsOrderFeedDate.getTime()));
+				ps.setDate(2, new java.sql.Date(new Date().getTime()));
 				rs = ps.executeQuery();
 				
 			while (rs.next()) {
@@ -77,8 +74,8 @@ public class FDBrandProductsManagerDAO implements Serializable{
 			}
 		} 
 		catch (SQLException e) {
-			LOGGER.error( "fdBrandProductsManagerDAO CONNECTION failed with SQLException: ", e );
-			throw new FDResourceException("fdBrandProductsManager DAO CONNECTION failed with SQLException: " + e.getMessage(), e);
+			LOGGER.error( "fdBrandProductsManagerDAO connection failed with SQLException: ", e );
+			throw new FDResourceException("fdBrandProductsManager DAO connection failed with SQLException: " + e.getMessage(), e);
 		}
 		 finally {
 			if(null !=rs){

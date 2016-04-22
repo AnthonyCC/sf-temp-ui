@@ -62,8 +62,8 @@ try {
 							}
 					} 
 				}
-			else{	//30 minute back from system time.
-					String productsOrderfeedtime="30";
+			else{	//10 minute back from system time.
+					String productsOrderfeedtime="10";
 					productsOrderFeedDate = productsOrderFeedtime(productsOrderfeedtime);
 					sb.submittedOrderdDetailsToHL(productsOrderFeedDate);
 				}
@@ -117,13 +117,12 @@ public static Context getInitialContext() throws NamingException {
 private static Date productsOrderFeedtime(String productsOrderfeedtime) throws ParseException{
 	int minute = Integer.parseInt(productsOrderfeedtime);
 	DateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-	Date currentDate = new Date();
+	
 	Calendar cal = Calendar.getInstance();
-	cal.setTime(currentDate);
+	//cal.setTime(currentDate);
 	cal.add(Calendar.MINUTE, -minute);
-	return  cal.getTime();
-	
-	
+	return sdfDate.parse(sdfDate.format(cal.getTime()));
+	   
 	
 	}
 }

@@ -479,7 +479,7 @@ public class CmsFilteringFlow {
 			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
 				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
 					
-						if(product.getModel()!=null){
+						if(product.getModel()!=null && !product.getModel().isUnavailable()) {
 							ProductData productData = null;
 							try {
 								productData = ProductDetailPopulator.createProductData(user, product.getModel());
@@ -500,6 +500,9 @@ public class CmsFilteringFlow {
 									
 								}
 								browseDataContext.getAdProducts().getProducts().add(productData);
+								if(browseDataContext.getAdProducts().getProducts().size() >=FDStoreProperties.getHlProductsCount()){//DISPLAY ONLY 5 HOOKLOGIC PRODUCTS
+									break;
+								} 
 							}
 						}
 					
