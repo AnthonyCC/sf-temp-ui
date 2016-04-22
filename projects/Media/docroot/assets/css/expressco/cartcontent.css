@@ -1050,6 +1050,7 @@ label[for="dontupdatecartlines"] {
 
 .total .st_val_ssOrderTotal{
 	margin-left: 4px;
+	vertical-align: top;
 }
 
 .eTippingEnabled #subtotalbox2 .subtotal__row{
