@@ -14,7 +14,7 @@
 
 <%	// Default values
 	// if ( facility == null ) facility = "recommenderbox";
-	if ( excludeAlcoholicContent == null ) excludeAlcoholicContent = false;
+	if ( excludeAlcoholicContent == null ) {excludeAlcoholicContent = false;}
 %>
 <fd:ProductGroupRecommender id="recommendedProducts" itemCount="16" siteFeature="<%= siteFeature %>" facility="<%= facility %>" currentNode="<%= currentNode %>" excludeAlcoholicContent="<%= excludeAlcoholicContent %>">
 	<div class="rightnav-ymal">

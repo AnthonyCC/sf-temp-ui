@@ -30,7 +30,7 @@
 <%@ attribute name="excludeAlcoholicContent" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ attribute name="currentNode" required="false" rtexprvalue="true" type="com.freshdirect.fdstore.content.ContentNodeModel" %>
 <%
-	if ( excludeAlcoholicContent == null ) excludeAlcoholicContent = false;
+	if ( excludeAlcoholicContent == null ) {excludeAlcoholicContent = false;}
 %>
 	<fd:ProductGroupRecommender siteFeature="<%= siteFeature %>" facility="<%= facility %>" id="recommendedProducts" itemCount="<%=maxItems%>" currentNode="<%= currentNode %>" excludeAlcoholicContent="<%= excludeAlcoholicContent %>">
 		<comp:gridCarousel id="<%= id %>" width="<%= width %>" numItems="<%= numItems %>" recommendations="<%= recommendedProducts %>" trkCode="<%= trkCode %>" maxItems="<%= maxItems %>" user="<%= user %>" />

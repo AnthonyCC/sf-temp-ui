@@ -722,8 +722,12 @@ public class FourMinuteMealsHelper {
 		List<ProductModelPricingAdapter> pricedProducts = new ArrayList<ProductModelPricingAdapter>( newCache.allProducts.size() );
 		for ( ProductModel p : newCache.allProducts ) {
 			pricedProducts.add( ProductPricingFactory.getInstance().getPricingAdapter( p, PricingContext.DEFAULT ) );
-		}		
-		double maxPrice = Collections.max( pricedProducts, PRICE_COMPARATOR_ASC ).getPriceCalculator().getDefaultPriceValue();
+		}
+		
+        double maxPrice = 0;
+        if (!pricedProducts.isEmpty()) {
+            maxPrice = Collections.max(pricedProducts, PRICE_COMPARATOR_ASC).getPriceCalculator().getDefaultPriceValue();
+        }
 
 		
 		// init price filter infos
@@ -789,7 +793,6 @@ public class FourMinuteMealsHelper {
 		
 		LOGGER.debug(  "4mm filtering started." );
 		long startTime = System.currentTimeMillis();
-//		long time = startTime;
 
 		boolean filterForSides = false;
 		
@@ -839,9 +842,6 @@ public class FourMinuteMealsHelper {
 			}
 		}
 
-//		LOGGER.debug( "Phase1[base filters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
-		
 		if( caloriesFilters != null && caloriesFilters.size() > 0) {
 			// take the first one
 			int ndx = cache.caloriesFilterIds.indexOf( caloriesFilters.get( 0 ) );
@@ -864,10 +864,6 @@ public class FourMinuteMealsHelper {
 			pricedWorkSet.add( ProductPricingFactory.getInstance().getPricingAdapter( prod , pricingContext ) );
 		}
 
-//		LOGGER.debug( "Phase2[pricing adapters] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
-
-
 		// filter by price
 		if ( priceFilters != null && priceFilters.size() > 0 ) {
 			// take the first one
@@ -887,9 +883,6 @@ public class FourMinuteMealsHelper {
 				}
 			}
 		}
-		
-//		LOGGER.debug( "Phase3[price filter] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
 		
 		// filtering done, workset contains the result
 		
@@ -924,9 +917,6 @@ public class FourMinuteMealsHelper {
 			info.setCount( Collections.disjoint( workSet, cache.ingredientProducts.get( iId ) ) ? 0 : 1 );
 			infos.put( iId, info );
 		}
-
-//		LOGGER.debug( "Phase4[base filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
 
 		if ( priceFilters != null && priceFilters.size() > 0 ) {
 			String priceFilter = priceFilters.get( 0 );
@@ -985,8 +975,6 @@ public class FourMinuteMealsHelper {
 
 		result.setFilterInfos( infos );
 		
-//		LOGGER.debug( "Phase5[price filter infos] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
 
 		
 		
@@ -1111,8 +1099,6 @@ public class FourMinuteMealsHelper {
 			result.setMultiList( separatedList );
 		} 
 		
-//		LOGGER.debug( "Phase6[sorting by "+sortMode+"] took " + (System.currentTimeMillis()-time)/1000.0f + " seconds." );
-//		time = System.currentTimeMillis();
 
 			
 		LOGGER.debug( "4mm filtering done. Returning " + result.getResultSize() + " items. Took " + (System.currentTimeMillis()-startTime)/1000.0f + " seconds." );
@@ -1191,7 +1177,6 @@ public class FourMinuteMealsHelper {
 			if("Calories".equals(nutr.getName())) {
 				double cal = nutr.getValue();
 				newCache.calories.put(prod, cal);
-//				System.out.println(prod.getFullName() + " " + cal + " " +  nutr.getUnitOfMeasure());
 				break;
 			}
 		}
