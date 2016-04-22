@@ -18,13 +18,13 @@ public class FreshnessFilter extends AbstractRangeFilter {
 	}
 
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
-		if (ctx == null || ctx.getProductModel() == null) {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+		if (productItem == null || productItem.getProductModel() == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
 		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		// Perishable product - freshness warranty
-		FDProductInfo productInfo = ctx.getFdProductInfo();
+		FDProductInfo productInfo = productItem.getFdProductInfo();
 		if (productInfo.getFreshness(plantID) != null) {
 			// method above returns either a positive integer encoded in string
 			// or null

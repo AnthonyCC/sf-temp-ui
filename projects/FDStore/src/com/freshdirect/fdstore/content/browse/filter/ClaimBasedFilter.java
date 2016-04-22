@@ -32,20 +32,20 @@ public class ClaimBasedFilter extends AbstractProductItemFilter {
 	}
 
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
-		if (ctx == null || ctx.getProductModel() == null || claimCode == null) {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+		if (productItem == null || productItem.getProductModel() == null || claimCode == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
 
 		try {
-			FDProduct fdProd = ctx.getFdProduct();
+			FDProduct fdProd = productItem.getFdProduct();
 			for (EnumClaimValue claim : fdProd.getClaims()) {
 				if (claimCode.equalsIgnoreCase(claim.getCode())) {
 					return invertChecker(true);
 				}
 			}
 		} catch (FDResourceException e) {
-			LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
+			LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName());
 			return false;
 		}
 

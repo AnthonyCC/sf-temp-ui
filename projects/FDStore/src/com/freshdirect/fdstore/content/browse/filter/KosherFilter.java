@@ -34,13 +34,13 @@ public class KosherFilter extends AbstractProductItemFilter {
 	private static final int NON_KOSHER_PRI = 999;
 	
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
-		if (ctx == null || ctx.getProductModel() == null) {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+		if (productItem == null || productItem.getProductModel() == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
 
 		try {
-			FDProduct fdProd = ctx.getFdProduct();
+			FDProduct fdProd = productItem.getFdProduct();
 			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 			FDKosherInfo kInfo = fdProd.getKosherInfo(plantID);
 			
@@ -48,7 +48,7 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 			return invertChecker(EnumKosherSymbolValue.NONE.getPriority() < kosherPriority && kosherPriority < NON_KOSHER_PRI);
 		} catch (FDResourceException e) {
-			//LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
+			LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName());
 			return false;
 		}
 	}

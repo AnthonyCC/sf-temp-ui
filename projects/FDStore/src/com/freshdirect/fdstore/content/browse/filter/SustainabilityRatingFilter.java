@@ -17,12 +17,12 @@ public class SustainabilityRatingFilter extends AbstractRangeFilter {
 	}
 
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
-		if (ctx == null || ctx.getProductModel() == null) {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+		if (productItem == null || productItem.getProductModel() == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
         
-		FDProductInfo productInfo = ctx.getFdProductInfo();
+		FDProductInfo productInfo = productItem.getFdProductInfo();
 		EnumSustainabilityRating sustainabilityRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
 		if (sustainabilityRating != null && sustainabilityRating.getId() >= 2) {
 			return invertChecker(isWithinRange( sustainabilityRating.getId() ));

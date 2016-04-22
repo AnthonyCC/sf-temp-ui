@@ -5,12 +5,14 @@ import java.util.Comparator;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDNutrition;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class NutritionComparator implements Comparator<FilteringProductItem> {
+
 	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionComparator.class ); 
 	
 	private ErpNutritionType.Type erpNutritionTypeType;
@@ -20,7 +22,7 @@ public class NutritionComparator implements Comparator<FilteringProductItem> {
 	}
 	
 	@Override
-	public int compare(FilteringProductItem o1, FilteringProductItem o2) {
+	public int compare(FilteringProductItem productItem1, FilteringProductItem productItem2) {
 		int compareValue;
 		
 		if (erpNutritionTypeType == null){
@@ -28,20 +30,30 @@ public class NutritionComparator implements Comparator<FilteringProductItem> {
 			compareValue = 0;
 
 		} else {
-			Double p1 = getNutritionValue(o1);
-			Double p2 = getNutritionValue(o2);
+		    boolean unavailable1 = productItem1.getProductModel().isUnavailable();
+		    boolean unavailable2 = productItem2.getProductModel().isUnavailable();
+		    if (unavailable1 && unavailable2) {
+		        return 0;
+		    } else if (unavailable1) {
+		        return 1;
+		    } else if (unavailable2) {
+		        return -1;
+		    }
+
+			Double nutritionValue1 = getNutritionValue(productItem1);
+			Double nutritionValue2 = getNutritionValue(productItem2);
 			
-			if (p1==null) {
-				if (p2==null) {
+			if (nutritionValue1==null) {
+				if (nutritionValue2==null) {
 					compareValue = 0;
 				} else {
 					compareValue = 1; //null value goes in the back
 				}
 			} else {
-				if (p2==null) {
+				if (nutritionValue2==null) {
 					compareValue = -1;  //null value goes in the back
 				} else {
-					compareValue = p1 > p2 ? 1 : (p1 < p2 ? -1 : 0);
+					compareValue = nutritionValue1 > nutritionValue2 ? 1 : (nutritionValue1 < nutritionValue2 ? -1 : 0);
 					if (erpNutritionTypeType.isGood()){
 						compareValue *= -1;
 					}
@@ -51,14 +63,13 @@ public class NutritionComparator implements Comparator<FilteringProductItem> {
 		return compareValue;
 	}
 
-	/** based on ContentNodeComparator.getNutritionValue()**/
-	private Double getNutritionValue(FilteringProductItem filteringProductItem){
+	private Double getNutritionValue(FilteringProductItem productItem){
 		Double nutritionValue = null;
-		try {            
-			FDNutrition servingSizeFdNutrition = filteringProductItem.getFdProduct().getNutritionItemByType(ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE));
-
+		try {
+		    FDProduct product = productItem.getFdProduct();
+			FDNutrition servingSizeFdNutrition = product.getNutritionItemByType(ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE));
 			if (servingSizeFdNutrition!=null && servingSizeFdNutrition.getValue() != 0){ //missing serving size will go to the bottom of the list
-				FDNutrition fdNutrition = filteringProductItem.getFdProduct().getNutritionItemByType(erpNutritionTypeType);
+				FDNutrition fdNutrition = product.getNutritionItemByType(erpNutritionTypeType);
 				
 				if (fdNutrition!=null){
 					nutritionValue = fdNutrition.getValue() * 1000;
@@ -67,8 +78,8 @@ public class NutritionComparator implements Comparator<FilteringProductItem> {
 					}
 				}
 			}
-		} catch (FDException e) {
-        	LOGGER.error(e);
+		} catch (FDResourceException e) {
+        	LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName(), e);
         }
 		return nutritionValue;
 	}

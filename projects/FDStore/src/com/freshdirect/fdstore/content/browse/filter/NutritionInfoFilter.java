@@ -47,14 +47,14 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 	}
 	
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
 
-		if (ctx == null || ctx.getProductModel() == null || claimCode == null) {
+		if (productItem == null || productItem.getProductModel() == null || claimCode == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
 
 		try {
-			FDProduct fdProd = ctx.getFdProduct();
+			FDProduct fdProd = productItem.getFdProduct();
 			
 			Collection<? extends NutritionValueEnum> values = getValues(fdProd);
 			if(values==null){
@@ -66,10 +66,10 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 					return invertChecker(true);
 				}
 			}
-		} catch (FDResourceException e) {
-			//LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
-			return false;
-		}
+        } catch (FDResourceException e) {
+            LOGGER.error("Failed to obtain fdProduct for product " + productItem.getProductModel().getContentName(), e);
+            return false;
+        }
 
 		return invertChecker(false);
 	}

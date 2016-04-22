@@ -9,6 +9,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+//TODO remove this class
 public class SustainabilityRatingComparator implements Comparator<FilteringProductItem> {
 	
 	private static final Logger LOGGER = LoggerFactory.getInstance(SustainabilityRatingComparator.class); 

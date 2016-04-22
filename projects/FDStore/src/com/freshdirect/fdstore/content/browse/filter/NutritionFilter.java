@@ -14,7 +14,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class NutritionFilter extends AbstractRangeFilter {
 	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionFilter.class ); 
 
-	ErpNutritionType.Type nutritionType;
+	private ErpNutritionType.Type nutritionType;
 
 	public NutritionFilter(ProductFilterModel model, String parentId) {
 		super(model, parentId);
@@ -29,12 +29,12 @@ public class NutritionFilter extends AbstractRangeFilter {
 	}
 
 	@Override
-	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
-		if (ctx == null || ctx.getProductModel() == null || nutritionType == null) {
+	public boolean apply(FilteringProductItem productItem) throws FDResourceException {
+		if (productItem == null || productItem.getProductModel() == null || nutritionType == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
 		
-		FDProduct fdPrd = ctx.getFdProduct();
+		FDProduct fdPrd = productItem.getFdProduct();
 		
 		final String displayName = nutritionType.getDisplayName();
 		for (FDNutrition nutrition : fdPrd.getNutrition()) {
