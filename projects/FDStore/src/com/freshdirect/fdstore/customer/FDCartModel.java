@@ -1476,13 +1476,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			taxationType = mi.getTaxationType();
 		}
 	
-		 for( FDCartLineI cartline : orderLines ) {
-             cartline.setDepositValue(depositRate);
-             if(!FDStoreProperties.getAvalaraTaxEnabled()){
-                   cartline.setTaxRate(taxRate);
-                   cartline.setTaxationType(taxationType);
-             }
-      }
+		if (null != orderLines) {
+			for (FDCartLineI cartline : orderLines) {
+				cartline.setDepositValue(depositRate);
+				if (!FDStoreProperties.getAvalaraTaxEnabled()) {
+					cartline.setTaxRate(taxRate);
+					cartline.setTaxationType(taxationType);
+				}
+			}}
 	}
 
 	public List<ErpDiscountLineModel> getDiscounts() {

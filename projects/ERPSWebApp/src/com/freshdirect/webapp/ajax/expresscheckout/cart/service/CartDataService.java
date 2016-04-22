@@ -583,7 +583,9 @@ public class CartDataService {
                 cartData.setTipApplied(cart.isTipApplied());
 
             }
-
+		if(StandingOrderHelper.isSO3StandingOrder(user)){
+			cartData.setUserCorporate(true);
+		}
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);

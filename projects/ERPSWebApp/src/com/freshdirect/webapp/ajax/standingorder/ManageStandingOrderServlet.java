@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -32,13 +33,12 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemsPopulator;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
@@ -135,6 +135,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if(!so.getStandingOrderCart().getOrderLines().isEmpty()){
 							so.getStandingOrderCart().refreshAll(true);
 						}
+						
 						u.setSoTemplateCart(so.getStandingOrderCart());
 						u.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
 						pageContext.setAttribute(pendinExternalgName,
@@ -144,6 +145,12 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
 						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
 						
+						if(so.getAddressId()!=null){
+							ErpAddressModel erpAddressModel=so.getDeliveryAddress();
+							u.getSoTemplateCart().setDeliveryAddress(erpAddressModel);
+							u.getSoTemplateCart().recalculateTaxAndBottleDeposit(erpAddressModel.getZipCode());
+							u.getSoTemplateCart().updateSurcharges(new FDRulesContextImpl(u));
+						}
 						writeResponseData( response, potato );
 						 
 						pageContext.setAttribute(spName, potato);
