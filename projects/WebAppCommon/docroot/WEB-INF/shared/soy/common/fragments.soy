@@ -58,22 +58,14 @@
 * @param? abFeatures
 */
 {template .productList autoescape="false"}
-{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
-{if $version == '4_0'}
-  {call common.fixedProductList data="all"}
-    {param itemPerLine:4 /}
-    {param showConfig: $showConfig /}
-    {param fromProducts: $fromProducts /}
-    {param numProducts: $numProducts /}
-  {/call}
-{else}
-  {call common.fixedProductList data="all"}
-    {param itemPerLine:4 /}
-    {param showConfig: $showConfig /}
-    {param fromProducts: $fromProducts /}
-    {param numProducts: $numProducts /}
-  {/call}
-{/if}
+	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
+	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 4 /}
+	{call common.fixedProductList data="all"}
+		{param itemPerLine:$itemPerLineFinal /}
+		{param showConfig: $showConfig /}
+		{param fromProducts: $fromProducts /}
+		{param numProducts: $numProducts /}
+	{/call}
 {/template}
 
 /**
@@ -82,9 +74,10 @@
 * @param productList
 * @param? itemPerLine
 * @param? showConfig
+* @param? isHookLogic
 */
 {template .fixedProductList autoescape="false"}
-{let $ipl: $itemPerLine ? $itemPerLine : 5 /}
+{let $ipl: $itemPerLine ? $itemPerLine : 4 /}
 {let $len: length($productList) /}
 {let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
 {let $fProducts: $fromProducts ? $fromProducts : 0 /}
@@ -96,7 +89,7 @@
     {for $col in range(0, $ipl)}
       {if $fProducts + $col + $line * $ipl < $nProducts}
         {let $product: $productList[$fProducts + $col + $line * $ipl] /}
-        {let $xtraClass: 'browseTransactionalProduct fakeRow_'+$line /}
+        {let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ')  /}
         {call common.transactionalGridItem}
           {param item:$product /}
           {param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine' ) /}
@@ -123,6 +116,7 @@
 	{let $l: $nProducts - $fProducts /}
 	{call common.fixedProductList}
 		{param productList:$products /}
+		{param isHookLogic:true /}
 		{param numProducts:$nProducts /}
 		{param itemPerLine:$ipl /}
 	{/call}

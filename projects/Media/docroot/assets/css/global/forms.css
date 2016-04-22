@@ -220,15 +220,15 @@ body[developer] *:focus {
 }
 
 .fake-radio:before {
-  background: #fafafa;
-  box-shadow: 0 0 0 1px #c2c2c2;
-  content: '\a0';
-  display: inline-block;
-  height: 18px;
-  width: 18px;
-  border-radius: 9px;
-  vertical-align: top;
-  margin-right: 10px;
+	background: #fafafa;
+	box-shadow: 0 0 0 1px #c2c2c2;
+	content: '\a0';
+	display: inline-block;
+	height: 18px;
+	width: 18px;
+	border-radius: 9px;
+	vertical-align: top;
+	margin-right: 10px;
 }
 
 input[type="radio"]:checked + .fake-radio:before {

@@ -45,7 +45,6 @@
   {param itemId:$item.itemId /}
   {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
   {param soData:$item.soData /}
-  {param isHookLogic:$item.itemId /}
 {/call}
 {/template}
 
@@ -128,7 +127,6 @@
   {param replacement:$item.replacement /}
   {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
   {param soData:$item.soData /}
-  {param isHookLogic:$item.isHookLogic /}
 {/call}
 {/template}
 
@@ -173,13 +171,12 @@
  * @param productNameNoBrand
  * @param? freeSamplePromoProduct free sample product
  * @param? soData standing order data
- * @param? isHookLogic
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
 {let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 <li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
-  <div class="portrait-item-productimage_wrapper"> hooky : {$isHookLogic}
+  <div class="portrait-item-productimage_wrapper">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage">
       {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
@@ -304,14 +301,13 @@
  * @param? useReplacement use replacement item
  * @param? freeSamplePromoProduct free sample product
  * @param? soData standing order data
- * @param? isHookLogic
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
 	{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 
-	<li class="portrait-item {if $isHookLogic} isHookLogic-{$isHookLogic}{/if} {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" id="{$productId ? $productId : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}" id="{$productId ? $productId : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
 		<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 			<div class="portrait-item-burst_wrapper">
 				<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
