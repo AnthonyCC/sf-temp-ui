@@ -208,7 +208,7 @@ Cloneable, PrioritizedI {
 	
 	
 	public SkuModel getDefaultTemporaryUnavSku() {
-		return getDefaultSku();
+		return productModel.getDefaultTemporaryUnavSku();
 	}
 
 	
@@ -1066,27 +1066,27 @@ Cloneable, PrioritizedI {
 
 	
 	public boolean isAvailableWithin(int days) {		 
-		return getDefaultSku().isAvailableWithin(days);
+		return productModel.isAvailableWithin(days);
 	}
 
 	
 	public boolean isDiscontinued() {		 
-		return getDefaultSku().isDiscontinued();
+		return productModel.isDiscontinued();
 	}
 
 	
 	public boolean isOutOfSeason() {		 
-		return getDefaultSku().isOutOfSeason();
+		return productModel.isOutOfSeason();
 	}
 
 	
 	public boolean isTempUnavailable() {		 
-		return getDefaultSku().isTempUnavailable();
+		return productModel.isTempUnavailable();
 	}
 
 	
 	public boolean isUnavailable() {		 
-		return getDefaultSku().isUnavailable();
+		return productModel.isUnavailable();
 	}
 
 	
