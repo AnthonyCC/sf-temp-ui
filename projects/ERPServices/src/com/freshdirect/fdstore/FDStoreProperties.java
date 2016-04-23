@@ -1693,7 +1693,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev06.nj01:7001");
-        defaults.put(PROP_HL_PRODUCTS_COUNT, 5);
+        defaults.put(PROP_HL_PRODUCTS_COUNT, "5");
 		refresh();
     }
 

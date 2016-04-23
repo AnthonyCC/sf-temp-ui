@@ -269,6 +269,19 @@ var FreshDirect = FreshDirect || {};
             // fix for: icon font does not appear on :before in IE8, only on hover
             $('#'+popupId + ' ' + "[data-component='addToListButton']").trigger('focus');
           }
+          
+
+
+          /* hooklogic click event */
+          $('#'+popupId + ' [data-hooklogic-beacon-click]').on('click', 'a,button', function(event) {
+          	/* exclusion elems */
+          	if (
+          		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
+          	) { return; }
+
+          	var url = $('#'+popupId + ' [data-hooklogic-beacon-click]:first').data('hooklogic-beacon-click');
+          	$('#'+popupId).append('<img class="hl-beacon-click" src="'+url+'&rand='+new Date().getTime()+'" style="display: none;" />');
+          });
 
           }, this));
         }

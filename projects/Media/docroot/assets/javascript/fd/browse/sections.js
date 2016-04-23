@@ -110,6 +110,10 @@ var FreshDirect = FreshDirect || {};
 		
 		//var fakeClassPrefix = "fakeRow_";
 		
+		function fireHookLogicBeaconImpression($elem) {
+			$elem.append('<img src="'+$elem.data('hooklogic-beacon-impress')+'" style="display: none;" />');
+		}
+
 		//make an array of last in line of each conventional row
 		if( $(prodSelector).length > 0 ){
 			$(prodSelector).each(function( index ) {
@@ -137,6 +141,9 @@ var FreshDirect = FreshDirect || {};
 					$(this).hide();
 				}else{
 					$(this).show();
+					
+
+					fireHookLogicBeaconImpression($(this));
 					
 					//first, get the rowclass of this hooklogic product
 					var el = $(this);//get the element whose class value has to be extracted
