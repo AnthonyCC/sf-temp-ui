@@ -85,6 +85,7 @@
 
 .browseContent .sectionContent .isHookLogic-true ul.products{
 	width:180px;
+	margin-bottom:0px;
 }
 
 .ie8 .browseContent .sectionContent ul.products {

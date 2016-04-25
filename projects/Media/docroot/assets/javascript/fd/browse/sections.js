@@ -59,191 +59,184 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
-  if (window.srch) {
-    var topSections = Object.create(WIDGET,{
-      signal:{
-        value:'sections'
-      },
-      template:{
-        value:srch.topContent
-      },
-      placeholder:{
-        value:'.browse-sections-top'
-      }
-    });
+	if(window.srch){
+		var topSections = Object.create(WIDGET,{
+			signal:{
+				value:'sections'
+			},
+			template:{
+				value:srch.topContent
+			},
+			placeholder:{
+				value:'.browse-sections-top'
+			}
+		});
 
-    var bottomSections = Object.create(WIDGET,{
-      signal:{
-        value:'sections'
-      },
-      template:{
-        value:srch.bottomContent
-      },
-      placeholder:{
-        value:'.browse-sections-bottom'
-      }
-    });
+		var bottomSections = Object.create(WIDGET,{
+			signal:{
+				value:'sections'
+			},
+			template:{
+				value:srch.bottomContent
+			},
+			placeholder:{
+				value:'.browse-sections-bottom'
+			}
+		});
     
-    var adProductSection = Object.create(WIDGET,{
-        signal:{
-          value:'adProducts'
-        },
-        template:{
-          value:common.simpleFixedProductList
-        },
-        placeholder:{
-          value:'.browse-adproducts'
-        }
-      });
+		var adProductSection = Object.create(WIDGET,{
+			signal:{
+				value:'adProducts'
+			},
+			template:{
+				value:common.simpleFixedProductList
+			},
+			placeholder:{
+				value:'.browse-adproducts'
+			}
+		});
     
-	adProductSection.fixThoseHooklogicDisplayHeights = function(){
-		var hookLogicRowLimit = 4;
-		var modIndex = 0;
-		
-		//var HLselector = ".browse-adproducts.isHookLogic-true ul.products.transactional";
-		var HLprodSelector = ".browse-adproducts.isHookLogic-true .portrait-item.browseTransactionalProduct";
-		
-		//var prodSelector = ".sectionContent ul.products.transactional";
-		//var prodSelector = ".isHookLogic-false portrait-item.browseTransactionalProduct.lastInLine";
-		var prodSelector = ".isHookLogic-false .lastInLine";
-		var prodSelectorIdArr = [];
-		
-		//var fakeClassPrefix = "fakeRow_";
-		
-		function fireHookLogicBeaconImpression($elem) {
-			$elem.append('<img src="'+$elem.data('hooklogic-beacon-impress')+'" style="display: none;" />');
-		}
-
-		//make an array of last in line of each conventional row
-		if( $(prodSelector).length > 0 ){
-			$(prodSelector).each(function( index ) {
-				prodSelectorIdArr.push( $(this).attr("id") );
-			});
-		}
-		
-		console.log( "prodSelectorIdArr = ", prodSelectorIdArr );
-		
-		if( $(HLprodSelector).length > 0 ){
-			$(HLprodSelector).each(function( index ) {
-				/*var hlItemHeight = $(this).height();
-				var regularRowHeight = $( prodSelector + ":nth-of-type("+ index +")" ).height();
-				
-				if( hlItemHeight < regularRowHeight ){
-					$(this).css("min-height", regularRowHeight );
-				}else{
-					$( prodSelector + ":nth-of-type("+ index +")" ).css("min-height", hlItemHeight );
-				}
-				*/
-				
-				
-				//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
-				if(index > hookLogicRowLimit || ($(".pagination-pager-button.green.selected").attr("data-page") != "1") ){
-					$(this).hide();
-				}else{
-					$(this).show();
-					
-
-					fireHookLogicBeaconImpression($(this));
-					
-					//first, get the rowclass of this hooklogic product
-					var el = $(this);//get the element whose class value has to be extracted
-					var fr_val = el.attr('class').match(/\bfakeRow_(\d+)\b/)[1];
-					
-					console.log("frau fr_val = " + fr_val);
-					
-					//correct the classnames of regular product rows
-					//$(".browse-sections-top ul.products.transactional .browseTransactionalProduct.fakeRows:nth-of-type(3)")
-					
-					console.log( "(fr_val * 3) = " + (fr_val * 3) );
-					
-					/*$(".browse-sections-top ul.products.transactional .browseTransactionalProduct.fakeRows").each(function(index2){
-						if( index2 < (index * 3)){
-							return true;
-						}
-						
-						var prodClassAttr = $(this).attr("class");
-						
-						console.log('$(this).attr("class") = ' + $(this).attr("class"));
-						
-						$(this).attr("class", prodClassAttr.replace(/fakeRow_(\d+)/g, "zzzzzzfakeRow_"+fr_val) );
-						
-						console.log('$(this).attr("class") = ' + $(this).attr("class"));
-						
-						if( index2 >= ((index * 3) + 3) ){
-							return false;
-						}
-					})*/
-				}
-				
-				
-
-				
-				
-
-				
-				/*
-				if(index > hookLogicRowLimit ){
-					$(this).hide();
-				}else{
-					var sendbefore = "#" + $(prodSelector)[index].id;
-					
-					$(this).addClass("isHookLogic-true").removeClass("lastInLine");
-					
-					//$(this).insertAfter( $(sendbefore) );
-				}*/
-				
-				//$(this).find("portrait-item").appendTo(  $( ".sectionContent ul.products.transactional:nth-of-type("+ index +")" )  );
-			});
-		}
-		
-		/*height fixes*/
-		$(".fakeRows").each(function(){
+		adProductSection.fixThoseHooklogicDisplayHeights = function(){
+			var hookLogicRowLimit = 4;
+			var modIndex = 0;
+	
+			var prodSelector = ".browse-sections-top .portrait-item.regularProduct";
+			var HLprodSelector = "#searchPanel > .browse-adproducts.isHookLogic-true .portrait-item.isHookLogicProduct";
+			var paginationSelectedSelector = ".pagination-pager-button.green.selected";
 			
-		})
-		
-		if( $(".pagination-pager-button.green.selected").attr("data-page") != "1" ){
-			$(".browseContent .sectionContent ul.products").addClass("page2plus");
-		}else{
-			$(".browseContent .sectionContent ul.products").removeClass("page2plus");
-		}
-		
-		//if( $.contains( $(".isHookLogic-false .browse-sections-top .products.transactional"), $(".isHookLogic-true") ) == false ){
-		if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-true") ) == false ){
-			$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
+			var finalFakeRow = 0;
+			var HLmaxLen = Math.min( $(HLprodSelector).length, (hookLogicRowLimit+1) );
 			
-			console.log("some people call me a joeyjowjow");
-		}
-	}
+			//var fakeClassPrefix = "fakeRow_";
+			
+			function fireHookLogicBeaconImpression($elem) {
+				//console.log("$elem = ", $elem);
+				
+				//$elem.append('<img src="'+$elem.data('hooklogic-beacon-impress')+'" style="display: none;" />');
+			}
+			
+			//if there are some hookLogic products returned
+			if( $(HLprodSelector).length > 0 ){
+				finalFakeRow = HLmaxLen;
+				
+				$(HLprodSelector).each(function( index ) {
+					
+					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
+					if(index > hookLogicRowLimit || ($(paginationSelectedSelector).attr("data-page") != "1") ){
+						$(this).hide();
+					}else{
+						$(this).show();
+						
+						//starting number of what will be selected
+						var reg_prod_start = (index * 3) + 1;					
+						var reg_prod_end = reg_prod_start + 2;
+	
+						fireHookLogicBeaconImpression($(this));
+						
+						//first, get the rowclass of this hooklogic product
+						var el = $(this);//get the element whose class value has to be extracted
+						var fr_val = el.attr('class').match(/\bfakeRow_(\d+)\b/)[1];
+						
+						var regProds = prodSelector+":nth-of-type(n+"+reg_prod_start+"):nth-of-type(-n+"+reg_prod_end+")";
+	
+						$(regProds).each(function(index2){
+							$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
+						});
+					}//end if/else index > hookLogicRowLimit ...
+				});
+				
+				//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
+				$(prodSelector).removeClass('lastInLine');
+				
+				//what about product rows which wrap below hookLogic section?  this would be the first one
+				var afterRowStartAt = (HLmaxLen * 3) + 1;
+				
+				//loop through said products
+				for(var i=afterRowStartAt; i<$(prodSelector).length; i++){
+					var thisProd = prodSelector+":nth-of-type("+i+")";
+					
+					//what fake row number does this product go to?
+					var toRowNum = Math.floor( (i) / 4 ) + 1;
+					
+					//now correct the fake row class for this regular product
+					$(thisProd).attr("class", $(thisProd).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+toRowNum) );
+					
+					//
+					finalFakeRow = Math.max( HLmaxLen, toRowNum);
+				}
+			}
+			
+			//if( $.contains( $(".isHookLogic-false .browse-sections-top .products.transactional"), $(".isHookLogic-true") ) == false ){
+			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-true") ) == false ){
+				$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
+			}
+			
+			//get started
+			var tallestColumnH = 0;
+			
+			var colLength = 0;
+			
+			/*height fixes*/
+			for(var i=0; i<(finalFakeRow+1); i++){
+				tallestColumnH = 0;
+				
+				colLength = $(".browse-sections-top li.portrait-item.fakeRow_"+i).length;
+				
+				$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
+					tallestColumnH = Math.max(tallestColumnH, $(this).height());
+					
+					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){
+						console.log( "colLength = " + colLength );
+						
+						//$(this).css("background-color", "green");
+					}
+				});
+				
+				//set this to be the height of the tallest row item
+				$(".browse-sections-top li.fakeRow_"+i).css("min-height", tallestColumnH);
+				
+				if(i >= HLmaxLen){
+					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
+				}
+			}
+		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
-    topSections.listen();
-    bottomSections.listen();
+		topSections.listen();
+		bottomSections.listen();
     
-    adProductSection.listen();
+		//new for HookLogic
+		adProductSection.listen();
     
-	//adProductSection.fixThoseHooklogicDisplayHeights();
-  }
-
-  sections.listen();
-  superSections.listen();
-
-  $(document).on('click', '.browse-sections [data-component="categorylink"]', sections.handleClick.bind(sections));
-  $(document).on('click', '.superDepartment [data-component="categorylink"]', superSections.handleClick.bind(superSections));
-  
-  /*$(document).on('page-change', function(){
-	  console.log("i'm testy");
-	  
-	  adProductSection.fixThoseHooklogicDisplayHeights();
-  });
-  
-  $(document).on('change', function(){
-	  console.log("i'm righty");
-	  
-	  adProductSection.fixThoseHooklogicDisplayHeights();
-  });*/
-  
-	$( document ).ajaxComplete(function() {
 		adProductSection.fixThoseHooklogicDisplayHeights();
+	}//end if(window.srch)
+	
+	window.isHLchangable = false;
+
+	sections.listen();
+	superSections.listen();
+
+	$(document).on('click', '.browse-sections [data-component="categorylink"]', sections.handleClick.bind(sections));
+	$(document).on('click', '.superDepartment [data-component="categorylink"]', superSections.handleClick.bind(superSections));
+
+	// page button change
+	$(document).on('page-change', function(){
+		window.isHLchangable = true;
+	});
+  
+	//fires upon using search box
+	//$(document).on('change', function(){
+	$(".tabs li span, .searchbutton, .menuBox li span, .menupopup li span, .sorter button span").click(function(){
+		window.isHLchangable = true;
 	});
 
-  fd.modules.common.utils.register("browse", "sections", sections, fd);
+	//this always fires upon each set of products load success
+	$( document ).ajaxSuccess(function(e) {
+		if( window.isHLchangable == true ){
+			adProductSection.fixThoseHooklogicDisplayHeights();
+		}
+		
+		window.isHLchangable = false;
+	});
+
+	fd.modules.common.utils.register("browse", "sections", sections, fd);
 }(FreshDirect));
