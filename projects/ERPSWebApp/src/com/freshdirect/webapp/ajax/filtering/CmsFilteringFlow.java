@@ -475,7 +475,10 @@ public class CmsFilteringFlow {
 
 		//set HookLogic adProducts for 'search like' pages.
 		if(FDStoreProperties.isHookLogicEnabled()){
-			browseDataContext.getAdProducts().setPageBeacon(searchResults.getPageBeacon());
+			String pageBeacon=searchResults.getPageBeacon();
+			StringBuffer updatedPageBeacon = new StringBuffer(pageBeacon);
+			browseDataContext.getAdProducts().setPageBeacon(updatedPageBeacon.toString());
+			updatedPageBeacon = updatedPageBeacon.append("&aShown=");
 			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
 				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
 					
@@ -491,6 +494,7 @@ public class CmsFilteringFlow {
 								LOG.warn("Exception while populating HookLogic returned product: ", e);
 							}
 							if(null != productData){
+								updatedPageBeacon = updatedPageBeacon.append(productData.getSkuCode()).append(",");
 								productData.setFeatured(true);
 								//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
 								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
@@ -507,6 +511,8 @@ public class CmsFilteringFlow {
 						}
 					
 				}
+			}else{
+				updatedPageBeacon.append("none");
 			}
 		}
 		
