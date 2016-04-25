@@ -142,6 +142,12 @@ var FreshDirect = FreshDirect || {};
 						$(regProds).each(function(index2){
 							$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
 						});
+						
+						//used to randomize the next url
+						var randomTime = new Date().getTime();
+						
+						//beckoning for page beacon
+						$(".browse-sections-top .browseContent").append("<img src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 					}//end if/else index > hookLogicRowLimit ...
 				});
 				
@@ -197,11 +203,6 @@ var FreshDirect = FreshDirect || {};
 					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
 				}
 			}//end for var i=0; ...
-			
-			var randomTime = new Date().getTime();
-			
-			//beckoning for page beacon
-			$(".browse-sections-top .browseContent").append("<img src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
 		topSections.listen();
