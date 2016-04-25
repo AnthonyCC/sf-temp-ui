@@ -1653,8 +1653,8 @@ public class FDStoreProperties {
         defaults.put(PROP_FDX_APP_APPLE_URL, "https://itunes.apple.com/us/app/foodkick/id1049036650?pt=309390&ct=FKWeb&mt=8");
         
         defaults.put(PROP_FDX_LOCATIONBAR, "true");
-        defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "false");
-        defaults.put(PROP_ETIPPING_ENABLED, "false"); 
+        defaults.put(PROP_FDX_LOCATIONBAR_FDXTAB, "true");
+        defaults.put(PROP_ETIPPING_ENABLED, "true"); 
         
         // Extole related
         
