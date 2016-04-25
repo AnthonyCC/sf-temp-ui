@@ -1,6 +1,5 @@
 package com.freshdirect.payment.gateway.ewallet.impl;
 
-import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -67,6 +66,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		List<String> settlementIds = new ArrayList<String>();
 		String settlementId = null;
+		PreparedStatement ps2 = null;
 		LOGGER.debug("Acquiring PayPal Settlements lock for date - " + date);
 		try {
 			conn = this.getConnection();
@@ -83,7 +83,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					if ("Y".equals(processed)) {
 						throw new EJBException("The batch for date " + date + " are already processed.");
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						PreparedStatement ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
+						ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps2.setString(1, settlementId);
 						ps2.executeUpdate();
 						resetConnection(ps2, null, null);
@@ -94,12 +94,12 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 						throw new EJBException("Invalid locking state exists for date " + date);
 					}
 				}
+				
+				resetConnection(ps, rs, null);
 
 				//new process
 				if (settlementIds.isEmpty()) {
-					resetConnection(ps, rs, conn);
 					byte i = 1;
-					conn = this.getConnection();
 					ps = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
 					settlementId = SequenceGenerator.getNextId(conn, "CUST");
 					ps.setString(i++, settlementId);
@@ -128,7 +128,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					if ("Y".equals(locked)) {
 						LOGGER.info("Ignoring acquiring lock for settlement id." + id);
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						PreparedStatement ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
+						ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps2.setString(1, id);
 						ps2.executeUpdate();
 						resetConnection(ps2, null, null);
@@ -369,7 +369,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			LOGGER.debug("Processing PayPal Settlements.");
 			conn = this.getConnection();
 
-			String allRecordsProcessed = null;
+			//String allRecordsProcessed = null;
 			for (String settlementId : ppStlmntIds) {
 				ErpSettlementSummaryModel summary = new ErpSettlementSummaryModel();
 				summary.setId(settlementId);
@@ -377,8 +377,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				ps.setString(1, settlementId);
 				rs = ps.executeQuery();
 				if (rs.next()) {
-					Date processedDate = rs.getDate("PROCESSED_TIME_DATE");
-					allRecordsProcessed = rs.getString("ALL_RECORDS_PROCESSED");
+					//Date processedDate = rs.getDate("PROCESSED_TIME_DATE");
+					//allRecordsProcessed = rs.getString("ALL_RECORDS_PROCESSED");
 					String affiliate = rs.getString("AFFILIATE_ACCOUNT_ID");
 					if (affiliate != null) {
 						summary.setAffiliateAccountId(rs.getString("AFFILIATE_ACCOUNT_ID"));
@@ -394,32 +394,10 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				return null;
 			}
 			
-		}catch(SQLException e){
-			LOGGER.debug("SQLException: ", e);
-			throw new EJBException("SQLException: ", e);
-		}finally{
-			try{
-				if(rs != null){
-					rs.close();
-					rs = null;
-				}
-				if(ps != null){
-					ps.close();
-					ps = null;
-				}
-				if(conn != null){
-					conn.close();
-					conn = null;
-				}
-			}catch(SQLException se){
-				LOGGER.warn("Exception while trying to cleanup: ", se);
-			}
-		}
-		
-		List<ErpSettlementTransactionModel> ppStlmntTrxns = new ArrayList<ErpSettlementTransactionModel>();
-		for (ErpSettlementSummaryModel stlmntSummary: ppStlmnts) {
-			try {
-				conn = getConnection();
+			resetConnection(ps, rs, null);
+						
+			List<ErpSettlementTransactionModel> ppStlmntTrxns = new ArrayList<ErpSettlementTransactionModel>();
+			for (ErpSettlementSummaryModel stlmntSummary: ppStlmnts) {
 				ps = conn.prepareStatement(GET_PP_SETTLEMENT_TRXNS);
 				ps.setString(1, stlmntSummary.getId());
 				rs = ps.executeQuery();
@@ -446,30 +424,30 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 				}
 				stlmntSummary.setSettlementTrxns(ppStlmntTrxns);
 				ppStlmntTrxns = new ArrayList<ErpSettlementTransactionModel>();
-			}catch(SQLException e){
-				LOGGER.debug("SQLException: ", e);
-				throw new EJBException("SQLException: ", e);
-			}finally{
-				try{
-					if(rs != null){
-						rs.close();
-						rs = null;
-					}
-					if(ps != null){
-						ps.close();
-						ps = null;
-					}
-					if(conn != null){
-						conn.close();
-						conn = null;
-					}
-				}catch(SQLException se){
-					LOGGER.warn("Exception while trying to cleanup: ", se);
+			}
+		}	
+		catch(SQLException e){
+			LOGGER.debug("SQLException: ", e);
+			throw new EJBException("SQLException: ", e);
+		}finally{
+			try{
+				if(rs != null){
+					rs.close();
+					rs = null;
 				}
+				if(ps != null){
+					ps.close();
+					ps = null;
+				}
+				if(conn != null){
+					conn.close();
+					conn = null;
+				}
+			}catch(SQLException se){
+				LOGGER.warn("Exception while trying to cleanup connections : ", se);
 			}
 		}
-
-
+		
 		return ppStlmnts;
 	}
 	
@@ -483,7 +461,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-
+	
 	
 	public static ReconciliationHome lookupReconciliationHome() throws EJBException {
 		Context ctx = null;
@@ -521,60 +499,62 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			" ALL_RECORDS_PROCESSED = 'Y' where id = ?  and settlement_source = 'PP' ";
 	private static final String UPDATE_PP_SETTLEMENT_TX = "update CUST.SETTLEMENT_TRANSACTION set PROCESSED_TIME_DATE = systimestamp, " +
 			" STATUS = 'C' where settlement_id = ? ";
+			
 	public void updatePayPalStatus(List<String> settlementIds) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 
 		LOGGER.debug("Updating status PayPal Settlements.");
+		
+		try {
+			conn = this.getConnection();
+		} catch (SQLException e) {
+			LOGGER.info("Error in getting the DB Connection in updatePayPalStatus method of PayPalReconciliationSessionBean");
+		}
 
-		for (String settlementId : settlementIds) {
-			
+		for (String settlementId : settlementIds) {			
 			try{
-				conn = this.getConnection();
 				ps = conn.prepareStatement(UPDATE_PP_SETTLEMENT);
 				ps.setString(1, settlementId);
 				ps.executeUpdate();
+				resetConnection(ps, null, null);
 			} catch (Exception e) {
-				LOGGER.error("Update failed. Ignoring " + e);
-			} finally {
-				try{
-					if(ps != null){
-						ps.close();
-						ps = null;
-					}
-					if(conn != null){
-						conn.close();
-						conn = null;
-					}
-				}catch(SQLException se){
-					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
-				}
-			}
+				LOGGER.error("Update of settlement failed for id " + settlementId);
+				LOGGER.error("\n"+e);
+			} 
 			
 			try {
-				conn = this.getConnection();
 				ps = conn.prepareStatement(UPDATE_PP_SETTLEMENT_TX);
 				ps.setString(1, settlementId);
 				ps.executeUpdate();
+				resetConnection(ps, null, null);
 			} catch (SQLException e) {
-				LOGGER.info("Update of trxn records failed in settlement id " + settlementId);
-			} finally {
-				try{
-
-					if(ps != null){
-						ps.close();
-						ps = null;
-					}
-					if(conn != null){
-						conn.close();
-						conn = null;
-					}
-				}catch(SQLException se){
-					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
+				LOGGER.error("Update of trxn records failed in settlement id " + settlementId);
+				LOGGER.error("\n"+e);
+			} 
+		}
+		
+		try{
+			resetConnection(null, null, conn);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("Exception closing the CONN. Can be ignored: ", e);
+		}
+		finally {
+			try{
+				if(ps != null){
+					ps.close();
+					ps = null;
 				}
+				if(conn != null){
+					conn.close();
+					conn = null;
+				}
+			}catch(SQLException se){
+				LOGGER.warn("Exception closing the PS or CONN. Can be ignored: ", se);
 			}
 		}
-
 	}
 	
 	private void cleanUp(Date date) throws SQLException {
@@ -585,6 +565,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	private final static String ppSummaryUpdate = "delete from cust.settlement where id = ? and settlement_source = 'PP'";
 	private final static String ppSummaryTrxnUpdate = "delete from cust.settlement_transaction where settlement_id = ?";
 	private final static String ppSummaryDtlUpdate = "delete from cust.settlement_detail where settlement_id = ?";
+	
 	private void cleanUp(Date date, String affiliateAccountId) throws SQLException {
 		Connection conn = this.getConnection();
 		PreparedStatement ps = null;
@@ -614,6 +595,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			ps.setString(1, settlement_id);
 			ps.executeUpdate();
 		}
+		resetConnection(ps, rs, conn);
 	}
 	
 	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) {
