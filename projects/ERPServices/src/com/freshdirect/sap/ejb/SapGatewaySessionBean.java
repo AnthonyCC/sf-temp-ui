@@ -137,7 +137,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(new SapCancelSalesOrder(webOrderNumber, sapOrderNumber));
 	}
 
-	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order) {
+	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order, boolean isPlantChanged) {
 		LOGGER.info("Sending change sales order request " + webOrderNumber + " (" + sapOrderNumber + ") ");
 		if (SapProperties.isBlackhole()) {
 			//This method will check the local inventory stored in ERPS.INVENTORY to do real time ATP check when SAP is down
@@ -147,7 +147,11 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
-		this.enqueue(new SapChangeSalesOrder(webOrderNumber, sapOrderNumber, order));
+		if(isPlantChanged) { //check for plant change 
+			this.enqueue(new SapCreateSalesOrder(order, null)); //currently only supports plant switch for regular orders
+		} else {
+			this.enqueue(new SapChangeSalesOrder(webOrderNumber, sapOrderNumber, order));
+		}
 	}
 
 	public void sendReturnInvoice(SapPostReturnCommand command) {

@@ -31,7 +31,7 @@ public interface SapGatewaySB extends EJBObject {
 	
 	public void sendCancelSalesOrder(String webOrderNumber, String sapOrderNumber) throws RemoteException;
 
-	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order) throws RemoteException;
+	public void sendChangeSalesOrder(String webOrderNumber, String sapOrderNumber, SapOrderI order, boolean isPlantChanged) throws RemoteException;
 	
 	public void sendReturnInvoice(SapPostReturnCommand command) throws RemoteException;
 

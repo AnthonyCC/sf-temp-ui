@@ -320,7 +320,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void createOrderComplete(String sapOrderNumber) throws ErpTransactionException {
 
 		if(EnumSaleType.REGULAR.equals(type)) {
-				assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED });
+				//assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED });
 		}
 		else if(EnumSaleType.SUBSCRIPTION.equals(type)) {
 				assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.MODIFIED,EnumSaleStatus.NOT_SUBMITTED });
@@ -1052,6 +1052,27 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				lastOrder = (ErpAbstractOrderModel) o;
 			}
 		}
+		return lastOrder;
+	}
+	
+	public ErpAbstractOrderModel getPreviousOrderTransaction() {
+		// get transaction sorted by date
+		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(transactions);
+		Collections.sort(txList, ErpTransactionModel.TX_DATE_COMPARATOR);
+
+		List<ErpAbstractOrderModel> orders = new ArrayList<ErpAbstractOrderModel>();
+
+		// find the current state (last create or modify tx)
+		ErpAbstractOrderModel lastOrder = null;
+		for ( ErpTransactionModel o : txList ) {
+			if (o instanceof ErpAbstractOrderModel) {
+				orders.add((ErpAbstractOrderModel) o);
+			}
+		}
+		
+		if(orders!=null && orders.size()!=0 && orders.get(orders.size()-2)!=null)
+		lastOrder = orders.get(orders.size()-2);
+		
 		return lastOrder;
 	}
 

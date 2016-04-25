@@ -389,6 +389,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 */
 	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType, String regionId) throws ErpTransactionException {
         try {
+        		
+        	  boolean isPlantChanged = false;
               ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 
               // check state
@@ -418,13 +420,32 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
               PrimaryKey customerPk = saleEB.getCustomerPk();
               SapOrderAdapter sapOrder = this.adaptOrder(customerPk, order, cra);
               sapOrder.setWebOrderNumber(saleId);
+              
+              ErpCustomerManagerSessionBean erp = new ErpCustomerManagerSessionBean();
+              ErpSaleModel erpSaleModel = erp.getOrder(new PrimaryKey(saleId));            
+              ErpAbstractOrderModel  previousOrder =  erpSaleModel.getPreviousOrderTransaction();
+            
+      		if (previousOrder != null
+					&& previousOrder.getDeliveryInfo() != null
+					&& previousOrder.getDeliveryInfo().getDeliveryPlantInfo() != null
+					&& previousOrder.getDeliveryInfo().getDeliveryPlantInfo()
+							.getPlantId() != null
+					&& order != null
+					&& order.getDeliveryInfo() != null
+					&& order.getDeliveryInfo().getDeliveryPlantInfo() != null
+					&& order.getDeliveryInfo().getDeliveryPlantInfo()
+							.getPlantId() != null) {
+          	if(!previousOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId().equals(order.getDeliveryInfo().getDeliveryPlantInfo().getPlantId())){
+				isPlantChanged = true;
+			}
+      		}
 
               if (sapOrderNumber == null) {
                     // it's not in SAP yet, create it
                     sapSB.sendCreateSalesOrder(sapOrder,saleType);
               } else {
                     // it's already in SAP, so call change
-                    sapSB.sendChangeSalesOrder(saleId, sapOrderNumber, sapOrder);
+                    sapSB.sendChangeSalesOrder(saleId, sapOrderNumber, sapOrder, isPlantChanged);
               }
 
         } catch (CreateException ce) {
@@ -517,6 +538,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			boolean sendToSap) throws ErpFraudException, ErpTransactionException {
 
 		try {
+			
+			boolean isPlantChanged = false;
 
 			LOGGER.info("Modify order - start. saleId=" + saleId);
 
@@ -531,6 +554,20 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			// reverse credits applied to the last order Transaction
 			ErpAbstractOrderModel originalOrder = saleEB.getCurrentOrder();
+			if (originalOrder != null
+					&& originalOrder.getDeliveryInfo() != null
+					&& originalOrder.getDeliveryInfo().getDeliveryPlantInfo() != null
+					&& originalOrder.getDeliveryInfo().getDeliveryPlantInfo()
+							.getPlantId() != null
+					&& order != null
+					&& order.getDeliveryInfo() != null
+					&& order.getDeliveryInfo().getDeliveryPlantInfo() != null
+					&& order.getDeliveryInfo().getDeliveryPlantInfo()
+							.getPlantId() != null) {
+			if(!originalOrder.getDeliveryInfo().getDeliveryPlantInfo().getPlantId().equals(order.getDeliveryInfo().getDeliveryPlantInfo().getPlantId())){
+				isPlantChanged = true;
+			}
+			}
 			List<ErpAppliedCreditModel> credits = originalOrder.getAppliedCredits();
 			HashMap<String, List<Double>> creditsMap = new HashMap<String, List<Double>>();
 			List<Double> creditAmts = null;;
@@ -557,7 +594,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 
-				sapSB.sendChangeSalesOrder(saleId, sale.getSapOrderNumber(), sapOrder);
+				sapSB.sendChangeSalesOrder(saleId, sale.getSapOrderNumber(), sapOrder, isPlantChanged);
 			}
 			
 			reconcileCustomerCredits(erpCustomerPk, order);

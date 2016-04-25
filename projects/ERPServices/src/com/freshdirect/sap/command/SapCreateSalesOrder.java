@@ -59,8 +59,11 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 
 	public void execute() throws SapException {
 		BapiSalesOrderCreate bapi = null;
-		
-		bapi=BapiFactory.getInstance().getSalesOrderCreateBuilder(saleType);
+		if(saleType != null) {
+			bapi=BapiFactory.getInstance().getSalesOrderCreateBuilder(saleType);
+		} else {
+			bapi=BapiFactory.getInstance().getSalesOrderPlantChangeBuilder();
+		}
 		SalesOrderHelper helper = new SalesOrderHelper(bapi);
 
 		this.buildOrderHeader(bapi,saleType);

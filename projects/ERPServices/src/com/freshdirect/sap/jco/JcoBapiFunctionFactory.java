@@ -51,11 +51,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 				functionName = "ZBAPI_SALESORDER_XOR_CREATE";
 			} else if (EnumSaleType.DONATION.equals(saleType)) {
 				functionName = "ZBAPI_SALESORDER_XOR_CREATE";
+			} else {
+				functionName = "ZBAPI_SALESORDER_CREATEFROMDAT";
 			}
-			else {
-				return new JcoBapiSalesOrderCreate();
-			}
-			return new JcoBapiSalesOrderCreate(functionName);
+			return new JcoBapiSalesOrderCreate(functionName); 
 		} catch (JCoException e) {
 			throw new SapException(e);
 		}
@@ -217,6 +216,17 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		} 
 		catch (JCoException e)
 		{
+			throw new SapException(e);
+		}
+	}
+
+	@Override
+	public BapiSalesOrderCreate getSalesOrderPlantChangeBuilder()
+			throws SapException {
+		// TODO Auto-generated method stub
+		try {
+			return new JcoBapiSalesOrderCreate("ZBAPI_SALESORDER_SAREA_CHANGE");
+		} catch (JCoException e) {
 			throw new SapException(e);
 		}
 	}

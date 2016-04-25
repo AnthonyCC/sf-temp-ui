@@ -35,6 +35,14 @@ public abstract class BapiFactory {
 	 */
 	public abstract BapiSalesOrderCreate getSalesOrderCreateBuilder(
 			EnumSaleType saleType) throws SapException;
+	
+	
+	/**
+	 * @param saleType
+	 * @return BapiSalesOrderCreate
+	 * @throws SapException
+	 */
+	public abstract BapiSalesOrderCreate getSalesOrderPlantChangeBuilder() throws SapException;
 
 	/**
 	 * @return BapiMaterialAvailability
