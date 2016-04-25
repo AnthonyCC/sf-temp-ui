@@ -234,7 +234,7 @@ public class SettlementTransactionPersistentBean extends DependentPersistentBean
         		"CREDIT_TX_FEE, CREDIT_PROMOTIONAL_FEE, CREDIT_TERM, STATUS " + //4
         		") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'P')" );
         int i = 1;
-        String orderId = this.gatewayOrderId != null ? this.gatewayOrderId.substring(0, this.gatewayOrderId.indexOf("X")) : null;
+        String orderId = (this.gatewayOrderId != null && !"".equals(this.gatewayOrderId)) ? this.gatewayOrderId.substring(0, this.gatewayOrderId.indexOf("X")) : null;
         ps.setString(i++, id);
         ps.setString(i++, this.getParentPK().getId());
     	ps.setString(i++, this.transactionId);

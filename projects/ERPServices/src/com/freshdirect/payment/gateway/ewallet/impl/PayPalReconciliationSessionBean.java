@@ -83,11 +83,10 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					if ("Y".equals(processed)) {
 						throw new EJBException("The batch for date " + date + " are already processed.");
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						Connection conn2 = this.getConnection();
 						PreparedStatement ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps2.setString(1, settlementId);
 						ps2.executeUpdate();
-						resetConnection(ps2, null, conn2);
+						resetConnection(ps2, null, null);
 						settlementIds.add(settlementId);
 					} else if (locked.equals(PAYPAL_SETTLEMENT_IS_LOCKED)) {
 						throw new EJBException("[PayPal Batch] Some other process should be running for the same date " + date);
@@ -129,11 +128,10 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 					if ("Y".equals(locked)) {
 						LOGGER.info("Ignoring acquiring lock for settlement id." + id);
 					} else if (locked == null || StringUtils.isEmpty(locked) || locked.equals("N")) {
-						Connection conn2 = this.getConnection();
-						PreparedStatement ps2 = conn2.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
+						PreparedStatement ps2 = conn.prepareStatement(ACQUIRE_PP_LOCK_UDPATE);
 						ps2.setString(1, id);
 						ps2.executeUpdate();
-						resetConnection(ps2, null, conn2);
+						resetConnection(ps2, null, null);
 						settlementIds.add(id);
 					}
 				}
@@ -142,22 +140,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			LOGGER.debug("SQLException: ", e);
 			throw new EJBException("SQLException: ", e);
 		} finally {
-			try{
-				if(rs != null){
-					rs.close();
-					rs = null;
-				}
-				if(ps != null){
-					ps.close();
-					ps = null;
-				}
-				if(conn != null){
-					conn.close();
-					conn = null;
-				}
-			}catch(SQLException se){
-				LOGGER.warn("Exception while trying to acquire PP Lock: ", se);
-			}
+			resetConnection(ps, rs, conn);
 		}
 		return settlementIds;
 	}
@@ -207,31 +190,19 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		LOGGER.debug("Releasing PayPal Settlements Lock.");
 
-		for (String settlementId : settlementIds) {
-			try {
-				conn = this.getConnection();
+		try {
+			conn = this.getConnection();
+			for (String settlementId : settlementIds) {
 				ps = conn.prepareStatement(RELEASE_PP_LOCK_UDPATE);
 				ps.setString(1, settlementId);
 				ps.executeUpdate();
-				resetConnection(ps, null, conn);
-			} catch (SQLException e) {
-				LOGGER.debug("SQLException: ", e);
-				throw new EJBException("SQLException: ", e);
-			} finally {
-				try{
-					if(ps != null){
-						ps.close();
-						ps = null;
-					}
-					if(conn != null){
-						conn.close();
-						conn = null;
-					}
-				}catch(SQLException se){
-					LOGGER.warn("Exception while trying to release lock. Can be ignored: ", se);
-				}
+				resetConnection(ps, null, null);
 			}
-
+		} catch (SQLException e) {
+			LOGGER.debug("SQLException: ", e);
+			throw new EJBException("SQLException: ", e);
+		} finally {
+			resetConnection(null, null, conn);
 		}
 	}
 	
@@ -645,13 +616,17 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) throws SQLException {
+	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) {
+		try {
 		if (ps != null)
 			ps.close();
 		if (rs != null)
 			rs.close();
 		if (conn != null)
 			conn.close();
+		} catch (SQLException e) {
+			LOGGER.warn("[PayPal Batch]", e);
+		}
 		//conn = this.getConnection();
 	}
 }
