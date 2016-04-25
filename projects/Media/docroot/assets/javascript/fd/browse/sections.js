@@ -185,9 +185,7 @@ var FreshDirect = FreshDirect || {};
 				$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
 					tallestColumnH = Math.max(tallestColumnH, $(this).height());
 					
-					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){
-						console.log( "colLength = " + colLength );
-						
+					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
 						//$(this).css("background-color", "green");
 					}
 				});
@@ -198,7 +196,12 @@ var FreshDirect = FreshDirect || {};
 				if(i >= HLmaxLen){
 					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
 				}
-			}
+			}//end for var i=0; ...
+			
+			var randomTime = new Date().getTime();
+			
+			//beckoning for page beacon
+			$(".browse-sections-top .browseContent").append("<img src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
 		topSections.listen();
@@ -230,8 +233,14 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	//this always fires upon each set of products load success
-	$( document ).ajaxSuccess(function(e) {
-		if( window.isHLchangable == true ){
+	$( document ).ajaxSuccess(function(event, xhr, settings) {
+		
+		//update the page beacon url
+		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined && xhr.responseJSON.adProducts.pageBeacon !== undefined && xhr.responseJSON.adProducts.pageBeacon.length > 3 ){
+			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
+		}
+		
+		if( window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) ){
 			adProductSection.fixThoseHooklogicDisplayHeights();
 		}
 		
