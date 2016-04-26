@@ -635,6 +635,10 @@ public class StandingOrderHelper {
 			map.put("lastError", so.getLastError().name());
 		} else {
 			String lastError= isValidStandingOrder(so, false) && amount<FDStoreProperties.getStandingOrderHardLimit() ? "MINORDER":null;
+			if("MINORDER".equals(lastError)){
+				map.put("errorHeader", FDStandingOrder.ErrorCode.MINORDER.getErrorHeader());
+				map.put("errorDetails",FDStandingOrder.ErrorCode.MINORDER.getErrorDetail(null));
+			}
 			map.put("lastError", lastError);
 		}
 		//map.put("dayOfWeek", so.getNextDeliveryDate()!=null?DateUtil.formatFullDayOfWk(so.getNextDeliveryDate()):null);
