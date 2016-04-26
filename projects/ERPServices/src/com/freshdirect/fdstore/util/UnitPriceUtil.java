@@ -40,6 +40,8 @@ public class UnitPriceUtil {
 				formattedUnitPriceUOM = "sq ft";
 			} else if("YD".equalsIgnoreCase(unitPriceUOM)){
 				formattedUnitPriceUOM = "yd";
+			} else if ("SS1".equalsIgnoreCase(unitPriceUOM)){
+			    formattedUnitPriceUOM = "Per Serving";
 			}
 			
 		}
