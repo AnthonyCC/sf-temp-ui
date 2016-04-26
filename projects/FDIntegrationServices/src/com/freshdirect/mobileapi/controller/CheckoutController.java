@@ -863,7 +863,7 @@ public class CheckoutController extends BaseController {
 
         //TODO: Not only find out availability but also get error on which specific products weren't available
         //And what to do...choose another date? or remove item?
-        Double subTotal = null;
+        Double subTotal = user.getShoppingCart().getSubTotal();
         
         if (!isProductFullyAvailable) {
         	Cart cart = user.getShoppingCart();
