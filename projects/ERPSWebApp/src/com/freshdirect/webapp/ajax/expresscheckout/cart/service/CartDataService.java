@@ -710,7 +710,7 @@ public class CartDataService {
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri);
-        CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
+        //CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
