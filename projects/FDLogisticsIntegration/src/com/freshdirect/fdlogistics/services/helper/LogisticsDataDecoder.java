@@ -392,7 +392,7 @@ public class LogisticsDataDecoder {
 		address.setState(scrubbedAddress.getState());
 		address.setZipCode(scrubbedAddress.getZipCode());
 		address.setAddressInfo(scrubbedAddress.getAddressInfo());
-		address.setServiceType(scrubbedAddress.getServiceType());
+		//address.setServiceType(scrubbedAddress.getServiceType());
 		return address;
 	}
 	private static List<FDDeliveryZoneInfo> decodeDeliveryZoneInfo(
