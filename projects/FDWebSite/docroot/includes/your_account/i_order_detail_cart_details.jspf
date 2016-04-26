@@ -90,15 +90,6 @@ if(cart.hasInvoice()) {
 	<td colspan="2"></td>
 </tr>
 
-	<% if (isFdxOrder) { %>
-	<tr class="orderSummary" align="right">
-		<td colspan="3" align="right">Tip :</td>
-		<td align="right"><%=currencyFormatter.format(cart.getTip())%></td>
-		<td colspan="3"></td>
-	</tr>
-	<% } %>
-
-
 <tr align="right" class="orderSummary">
 	<% if(!isEBTPayment_cd){
 		if (cart.isDlvPassApplied()) {
