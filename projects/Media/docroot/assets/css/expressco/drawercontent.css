@@ -150,6 +150,11 @@
   color:#333;
 }
 
+.timeslot_pattern_notification{
+  display: inline-block;
+  margin: 0;
+}
+
 [data-drawer-default-content] .drawer__item {
   margin: 0;
   padding: 0;
