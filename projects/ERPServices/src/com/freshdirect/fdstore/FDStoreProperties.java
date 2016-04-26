@@ -1689,7 +1689,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
     	defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
-    	defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, 15);// default is last 15 mins orders.
+    	defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
         		
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");

@@ -59,8 +59,8 @@ try {
 					} 
 				}
 			else{	//10 minute back from system time.
-					String noOfMins=Integer.toString(FDStoreProperties.getHlOrderFeedMins());
-					orderFeedDateFrom = getDate(noOfMins);
+					Integer noOfMins=FDStoreProperties.getHlOrderFeedMins();
+					orderFeedDateFrom = getDate(noOfMins.toString());
 					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
 				}
 		
