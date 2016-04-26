@@ -110,8 +110,6 @@ var FreshDirect = FreshDirect || {};
 			//var fakeClassPrefix = "fakeRow_";
 			
 			function fireHookLogicBeaconImpression($elem) {
-				//console.log("$elem = ", $elem);
-				
 				//$elem.append('<img src="'+$elem.data('hooklogic-beacon-impress')+'" style="display: none;" />');
 			}
 			
@@ -142,14 +140,18 @@ var FreshDirect = FreshDirect || {};
 						$(regProds).each(function(index2){
 							$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
 						});
-						
-						//used to randomize the next url
-						var randomTime = new Date().getTime();
-						
-						//beckoning for page beacon
-						$(".browse-sections-top .browseContent").append("<img src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 					}//end if/else index > hookLogicRowLimit ...
-				});
+				}); //end loop through hook logic items
+				
+				if($(paginationSelectedSelector).attr("data-page") == "1"){
+					//used to randomize the next url
+					var randomTime = new Date().getTime();
+					
+					//beckoning for page beacon
+					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
+					
+					console.log("woke up this morning");
+				}
 				
 				//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
 				$(prodSelector).removeClass('lastInLine');
