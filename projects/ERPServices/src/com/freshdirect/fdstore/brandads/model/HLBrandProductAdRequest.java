@@ -1,8 +1,14 @@
 package com.freshdirect.fdstore.brandads.model;
 
-public class HLBrandProductAdRequest {
+import java.io.Serializable;
 
-    private String searchKeyWord;
+public class HLBrandProductAdRequest implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2993393411190405320L;
+	private String searchKeyWord;
     private String userId;
 
     public String getSearchKeyWord() {

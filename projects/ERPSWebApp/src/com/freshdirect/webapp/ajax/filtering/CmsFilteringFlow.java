@@ -475,10 +475,7 @@ public class CmsFilteringFlow {
 
 		//set HookLogic adProducts for 'search like' pages.
 		if(FDStoreProperties.isHookLogicEnabled()){
-			String pageBeacon=searchResults.getPageBeacon();
-			StringBuffer updatedPageBeacon = new StringBuffer(pageBeacon);
-			browseDataContext.getAdProducts().setPageBeacon(updatedPageBeacon.toString());
-			updatedPageBeacon = updatedPageBeacon.append("&aShown=");
+			  StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
 			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
 				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
 					
@@ -493,8 +490,8 @@ public class CmsFilteringFlow {
 							} catch (HttpErrorResponse e) {
 								LOG.warn("Exception while populating HookLogic returned product: ", e);
 							}
-							if(null != productData){
-								updatedPageBeacon = updatedPageBeacon.append(productData.getSkuCode()).append(",");
+							if(null != productData && null != productData.getSkuCode()){
+								updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
 								productData.setFeatured(true);
 								//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
 								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
@@ -511,9 +508,14 @@ public class CmsFilteringFlow {
 						}
 					
 				}
+			
 			}else{
 				updatedPageBeacon.append("none");
-			}
+			  }
+			if(null!=searchResults.getPageBeacon()){
+				StringBuffer PageBeacon=new StringBuffer(searchResults.getPageBeacon());
+				browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
+				}
 		}
 		
 		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
