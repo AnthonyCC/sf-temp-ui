@@ -849,8 +849,8 @@ public class FDStoreProperties {
     private final static String PROP_AVALARA_ACCOUNT_NUMBER ="fdstore.tax.avalara.account.number";
 	private static final String PROP_AVALARA_COMPANY_CODE = "fdstore.tax.avalara.company.code";    
 	
-		
 	private final static String PROP_HOOK_lOGIC_ENABLE = "fdstore.hooklogic.enabled";
+	private final static String PROP_HOOK_LOGIC_ORDER_FEED_MINS = "fdstore.hooklogic.orderfeed.minutes";
     
 	// PayPal
 	private static final String PROP_EWALLET_PAYPAL_ENV_PROP_NAME = "paypal.environment";
@@ -1689,6 +1689,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
         defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
     	defaults.put(PROP_HOOK_lOGIC_ENABLE, "false");
+    	defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, 15);// default is last 15 mins orders.
         		
 
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
@@ -4258,6 +4259,9 @@ public class FDStoreProperties {
  	
 	public static int getHlProductsCount() {
         return Integer.parseInt(get(PROP_HL_PRODUCTS_COUNT));
+    }
+	public static int getHlOrderFeedMins() {
+        return Integer.parseInt(get(PROP_HOOK_LOGIC_ORDER_FEED_MINS));
     }
 	
 }

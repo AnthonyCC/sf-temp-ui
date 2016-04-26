@@ -1,7 +1,5 @@
 package com.freshdirect.dataloader.orderproductfeed;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -11,10 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -30,28 +26,28 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
-public class FDOrderProductFeedGeneratorCron {
+public class FDOrderFeedGeneratorCron {
 
-	private static final Logger LOGGER = LoggerFactory.getInstance(FDOrderProductFeedGeneratorCron.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(FDOrderFeedGeneratorCron.class);
 	
 	public static void main(String[] args) throws Exception{
 
-		Date productsOrderFeedDate=null;
+		Date orderFeedDateFrom=null;
 		Context ctx = null;
 		List<String> ordersList = null;
 try {
-		LOGGER.info("FDOrderProductFeedGeneratorCron Started.");	
+		LOGGER.info("FDOrderFeedGeneratorCron Started.");	
 		ctx = getInitialContext();
 		FDBrandProductsAdManagerHome managerHome = (FDBrandProductsAdManagerHome) ctx.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
 		FDBrandProductsAdManagerSB sb = managerHome.create();
-		
+		LOGGER.info("with arguments: "+ args);
 		if (args.length >= 1) {
 				for (String arg : args) {
-						if (arg.startsWith("productsOrderfeedtime=")){
-							String productsOrderfeedtime=arg.substring("productsOrderfeedtime=".length());
-							if(null !=productsOrderfeedtime && !productsOrderfeedtime.trim().equalsIgnoreCase("")){
-								productsOrderFeedDate = productsOrderFeedtime(productsOrderfeedtime);
-								sb.submittedOrderdDetailsToHL(productsOrderFeedDate);
+						if (arg.startsWith("minutes=")){
+							String noOfMins=arg.substring("minutes=".length());
+							if(null !=noOfMins && !noOfMins.trim().equalsIgnoreCase("")){
+								orderFeedDateFrom = getDate(noOfMins);
+								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
 							} 
 						}else if(arg.startsWith("orders=")){
 								String orders=arg.substring("orders=".length());
@@ -63,9 +59,9 @@ try {
 					} 
 				}
 			else{	//10 minute back from system time.
-					String productsOrderfeedtime="10";
-					productsOrderFeedDate = productsOrderFeedtime(productsOrderfeedtime);
-					sb.submittedOrderdDetailsToHL(productsOrderFeedDate);
+					String noOfMins=Integer.toString(FDStoreProperties.getHlOrderFeedMins());
+					orderFeedDateFrom = getDate(noOfMins);
+					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
 				}
 		
 	
@@ -81,7 +77,7 @@ try {
 			email(Calendar.getInstance().getTime(), _msg);		
 		}
 	} 
-	LOGGER.info("FDOrderProductFeedGeneratorCron Stopped.");
+	LOGGER.info("FDOrderFeedGeneratorCron Stopped.");
 
 
 }
@@ -114,8 +110,8 @@ public static Context getInitialContext() throws NamingException {
 	return new InitialContext(h);
 }
 
-private static Date productsOrderFeedtime(String productsOrderfeedtime) throws ParseException{
-	int minute = Integer.parseInt(productsOrderfeedtime);
+private static Date getDate(String noOfMins) throws ParseException{
+	int minute = Integer.parseInt(noOfMins);
 	DateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 	
 	Calendar cal = Calendar.getInstance();
