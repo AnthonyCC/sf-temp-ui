@@ -320,7 +320,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void createOrderComplete(String sapOrderNumber) throws ErpTransactionException {
 
 		if(EnumSaleType.REGULAR.equals(type)) {
-				//assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED });
+				assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED, EnumSaleStatus.MODIFIED });
 		}
 		else if(EnumSaleType.SUBSCRIPTION.equals(type)) {
 				assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.MODIFIED,EnumSaleStatus.NOT_SUBMITTED });
