@@ -9,6 +9,7 @@
 	}
 	.pdp-atc.soShow {
 		height: auto;
+		padding: 10px 10px 20px;
 	}
 	#transactionalPopup .portrait-item-soPreShow .quantity_plus, #transactionalPopup .portrait-item-soPreShow .quantity_minus,
 	#transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_plus, #transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_minus,
