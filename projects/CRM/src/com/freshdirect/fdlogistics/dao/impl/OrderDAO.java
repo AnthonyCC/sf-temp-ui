@@ -21,10 +21,9 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.fdlogistics.dao.IOrderDAO;
-import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.logistics.controller.data.request.OrderSearchCriteria;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
 import com.freshdirect.logistics.controller.data.response.DiscountTimeslot;
@@ -38,10 +37,8 @@ import com.freshdirect.logistics.delivery.dto.OrdersDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
-import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
 import com.freshdirect.logistics.delivery.model.RouteStop;
-import com.freshdirect.logistics.framework.util.TimeOfDay;
 
 @Component
 public class OrderDAO extends BaseDAO implements IOrderDAO {

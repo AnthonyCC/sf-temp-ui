@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.controller.data.Result;
-import com.freshdirect.logistics.framework.util.LoggerFactory;
 
 @Controller
 @RequestMapping("/fdlogistics")

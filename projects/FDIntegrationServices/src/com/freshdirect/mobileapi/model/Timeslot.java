@@ -7,12 +7,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdlogistics.model.FDZoneNotFoundException;
-import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 public class Timeslot {

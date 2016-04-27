@@ -15,8 +15,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.delivery.helper.RequestContextUtil;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryApartmentRange;
@@ -31,7 +29,6 @@ import com.freshdirect.logistics.delivery.model.EnumAddressExceptionReason;
 import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
-import com.freshdirect.logistics.delivery.model.InvalidAddressException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;

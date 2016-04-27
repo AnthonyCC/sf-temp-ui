@@ -14,7 +14,6 @@ import com.freshdirect.logistics.delivery.dto.OrdersDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
-import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.RouteStop;
 
 public interface IOrderService {

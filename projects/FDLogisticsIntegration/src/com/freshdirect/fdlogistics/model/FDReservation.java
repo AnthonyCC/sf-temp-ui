@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationClass;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;

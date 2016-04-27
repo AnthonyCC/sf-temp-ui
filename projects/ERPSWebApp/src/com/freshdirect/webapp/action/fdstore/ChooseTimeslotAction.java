@@ -5,6 +5,7 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.MasqueradeContext;
@@ -133,6 +134,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				try {
 					FDReservation dlvRsv = cart.getDeliveryReservation();
 					FDReservation advRsv = user.getReservation();
+					boolean hasSteeringDiscount = false;
 					if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
 						if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
 							try {
@@ -163,30 +165,39 @@ public class ChooseTimeslotAction extends WebActionSupport {
 								LOGGER.warn("Error releasing reservation", fdre);
 							}
 						}
-						boolean hasSteeringDiscount = false;
+						
 						if(user.getSteeringSlotIds().contains(timeSlot.getId())){
 							hasSteeringDiscount = true;
 						}
 						// reserve the new slot
 						LOGGER.debug("Attempting to reserve timeslot, with CT = " + chefsTable);
-						String custId = user.getIdentity().getErpCustomerPK();
-						FDReservation timeSlotResrv =
-							FDDeliveryManager.getInstance().reserveTimeslot(
-								timeSlot.getId(),
-								custId,
-								EnumReservationType.STANDARD_RESERVATION,
-								TimeslotLogic.encodeCustomer(erpAddress, user),
-								chefsTable,
-								null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
-						TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
-						if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
-							setDeliveryTimeslot(session, timeSlotResrv);
-						} else {
-							setSODeliveryTimeslot(session, timeSlotResrv);
-						}
-						LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
+						
+						reserveTimeslot(user, timeSlot, erpAddress, chefsTable, isForced, hasSteeringDiscount, event, session);
+						
 					}
 					}
+					
+					if(cart instanceof FDModifyCartModel && 
+							((FDModifyCartModel) cart).getOriginalOrder().getDeliveryAddress().getScrubbedStreet()!=null && 
+							cart.getDeliveryAddress().getScrubbedStreet()!=null && 
+							((FDModifyCartModel) cart).getOriginalOrder().getDeliveryAddress().getZipCode()!=null &&
+							cart.getDeliveryAddress().getZipCode() != null){
+						
+						if(!(((FDModifyCartModel) cart).getOriginalOrder().getDeliveryAddress().getScrubbedStreet()
+						.equalsIgnoreCase(cart.getDeliveryAddress().getScrubbedStreet()) ||
+								((FDModifyCartModel) cart).getOriginalOrder().getDeliveryAddress().getZipCode()
+								.equalsIgnoreCase(cart.getDeliveryAddress().getZipCode()))){
+							FDReservation rsvInCart = cart.getDeliveryReservation();
+							if(rsvInCart!=null && StringUtils.isNotBlank(rsvInCart.getId())){
+								LOGGER.info("releaseReservation by ID: " + rsvInCart.getPK().getId());
+								FDDeliveryManager.getInstance().releaseReservation(rsvInCart.getPK().getId(),erpAddress, event, false);
+								reserveTimeslot(user, timeSlot, erpAddress, chefsTable, true, hasSteeringDiscount, event, session);
+							}
+							
+					}
+							
+								
+							}
 				}catch (ReservationUnavailableException re) {
 							actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 				}catch (ReservationException re) {
@@ -197,6 +208,28 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			
 			} 
 		return actionResult;
+	}
+	
+	private static void reserveTimeslot(FDSessionUser user,
+			FDTimeslot timeSlot, ErpAddressModel erpAddress,
+			boolean chefsTable, boolean isForced, boolean hasSteeringDiscount,
+			TimeslotEvent event, HttpSession session) throws FDResourceException, ReservationException {
+		String custId = user.getIdentity().getErpCustomerPK();
+		FDReservation timeSlotResrv =
+				FDDeliveryManager.getInstance().reserveTimeslot(
+					timeSlot.getId(),
+					custId,
+					EnumReservationType.STANDARD_RESERVATION,
+					TimeslotLogic.encodeCustomer(erpAddress, user),
+					chefsTable,
+					null, isForced,event, hasSteeringDiscount, (timeSlot.getDlvfeeTier()!=null)?timeSlot.getDlvfeeTier().name():null);
+			TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
+			if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+				setDeliveryTimeslot(session, timeSlotResrv);
+			} else {
+				setSODeliveryTimeslot(session, timeSlotResrv);
+			}
+			LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
 	}
 	
 	public static ActionResult reserveDeliveryTimeSlot(HttpSession session, String deliveryTimeSlotId, String chefsTableValue, ActionResult actionResult) throws ReservationException, FDResourceException{

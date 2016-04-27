@@ -6,8 +6,6 @@ import java.util.Set;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.logistics.controller.data.ApartmentRange;
-import com.freshdirect.logistics.controller.data.response.DeliveryZone;
 import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 
 public class FDDeliveryAddressCheckResponse implements Serializable  {

@@ -8,7 +8,6 @@ package com.freshdirect.fdlogistics.model;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.logistics.delivery.model.DlvServiceSelectionResult;
 import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 
 /**

@@ -8,8 +8,6 @@ import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.logistics.controller.data.PickupData;
-import com.freshdirect.logistics.delivery.model.Pickup;
 
 public class Depot {
 
