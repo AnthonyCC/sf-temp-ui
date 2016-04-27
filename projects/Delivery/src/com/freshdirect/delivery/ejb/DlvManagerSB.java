@@ -43,4 +43,5 @@ public interface DlvManagerSB extends EJBObject {
 	public Set<StateCounty> getCountiesByState(String state) throws RemoteException, FDResourceException;
 	public StateCounty lookupStateCountyByZip(String zipcode) throws RemoteException, FDResourceException;
 	public Map<String, DeliveryException> getCartonScanInfo() throws RemoteException, FDResourceException;
+	public void queryForMissingFdxOrders() throws RemoteException;
 }   

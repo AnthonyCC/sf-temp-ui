@@ -45,7 +45,6 @@ public interface SaleCronSB extends EJBObject{
 	
 	public void settleEBTSales(List<String> saleIds)throws FinderException, RemoteException, ErpTransactionException, SapException, RemoteException;
 
-	public void queryForMissingFdxOrders() throws RemoteException;
 	
 	
 }

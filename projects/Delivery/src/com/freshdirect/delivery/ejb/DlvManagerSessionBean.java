@@ -11,6 +11,7 @@ package com.freshdirect.delivery.ejb;
  * @author knadeem
  * @version
  */
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
@@ -36,6 +39,9 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
+import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.announcement.EnumPlacement;
@@ -49,8 +55,10 @@ import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -67,6 +75,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 	
@@ -558,4 +567,99 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	private final static String QUERY_ORDERS_MISSING_IN_LOGISTICS =
+			"SELECT O.ORDER_ID FROM CUST.LOGISTICS_FDX_ORDER  O WHERE  O.SENT_TO_LOGISTICS IS NULL";
+
+	private final static String UPDATE_STATUS_OF_SENT_ORDERS =
+			"UPDATE CUST.LOGISTICS_FDX_ORDER SET SENT_TO_LOGISTICS='X' WHERE ORDER_ID=?";
+
+	
+	
+	
+public void queryForMissingFdxOrders() {
+		
+		
+		Connection con = null;
+		try {
+			con = getConnection();
+			List<CreateOrderRequest> list = this.queryForFdxSales(con, QUERY_ORDERS_MISSING_IN_LOGISTICS);	
+			if(list.size()>0)
+			sendOrdersToLogistics(con,list);
+		} catch (Exception e) {
+			LOGGER.warn(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+	}
+	public void sendOrdersToLogistics(Connection con,List<CreateOrderRequest> list) throws FDResourceException  {
+		for(CreateOrderRequest command:list){
+		FDDeliveryManager.getInstance().submitOrder(command.getOrderId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
+				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),
+				command.getErpOrderId());
+		updateStatusOfOrder(con,command);
+		}    	
+	}
+	
+	private List<CreateOrderRequest> queryForFdxSales(Connection conn, String query) throws SQLException, FDResourceException, RemoteException, CreateException {
+		List<CreateOrderRequest> ordersList = new ArrayList<CreateOrderRequest>();
+		List<String> list = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			list.add(rs.getString("ORDER_ID"));
+		}
+		LOGGER.info(list);
+		rs.close();
+		ps.close();
+		ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+		
+		for(String orderId:list)
+		{
+			ErpSaleModel order = sb.getOrder(new PrimaryKey(orderId));
+		
+			CreateOrderRequest c=new CreateOrderRequest(orderId, order.getRecentOrderTransaction().getPaymentMethod().getReferencedOrder(),order.getRecentOrderTransaction().getTip(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryReservationId(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getFirstName(),order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getLastName(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getInstructions(),order.getRecentOrderTransaction().getDeliveryInfo().getServiceType().getName(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
+					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone(),
+					order.getSapOrderNumber());
+			ordersList.add(c);
+		}
+		return ordersList;
+	}
+	
+	public void updateStatusOfOrder(Connection con,CreateOrderRequest order)  {
+		
+
+		try {
+			PreparedStatement ps = con.prepareStatement(UPDATE_STATUS_OF_SENT_ORDERS);
+			
+			ps.setString(1,order.getOrderId());
+			 ps.executeUpdate();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+		
+		}
+		
+		}
+			
+	private ErpCustomerManagerHome getErpCustomerManagerHome() {
+		try {
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
 }

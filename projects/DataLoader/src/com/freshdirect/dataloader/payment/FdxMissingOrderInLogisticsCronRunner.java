@@ -25,10 +25,9 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
-import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
-import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
+import com.freshdirect.delivery.DlvProperties;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -41,11 +40,9 @@ public class FdxMissingOrderInLogisticsCronRunner {
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-
-			SaleCronSB sb = home.create();
-			
-			sb.queryForMissingFdxOrders();
+			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
+			DlvManagerSB dlvManagerSB = dlvManager.create();
+			dlvManagerSB.queryForMissingFdxOrders();
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
