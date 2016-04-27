@@ -247,6 +247,7 @@ import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
+import com.freshdirect.sap.command.SapCreateSalesOrder;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -3088,7 +3089,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				this.doEmail(FDEmailFactory.getInstance()
 						.createModifyOrderEmail(fdInfo, fdOrder));
 				
-				//if its fdx estore then make a call to logistics to store fdx order.
+				//this is duplicate call- this is already taken care ofin SAPResultListener
+				/*//if its fdx estore then make a call to logistics to store fdx order.
 				if(EnumEStoreId.FDX.name().equalsIgnoreCase(order.geteStoreId().name())){
 					FDDeliveryManager.getInstance().modifyOrder(saleId, null,
 							order.getTip(), newReservationId,
@@ -3097,8 +3099,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							order.getDeliveryInfo().getDeliveryAddress().getInstructions(),
 							(order.getDeliveryInfo().getDeliveryAddress().getServiceType()!=null?order.getDeliveryInfo().getDeliveryAddress().getServiceType().getName():null),
 							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?
-							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null, orderMobileNumber);
-				}
+							order.getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():null, orderMobileNumber,order.getSapOrderId());
+				}*/
 			}
 			
 			// Order Modification for SMS

@@ -371,9 +371,10 @@ public class LogisticsDataEncoder {
 	}
 
 	public static CreateOrderRequest encodeUpdateOrderRequest(String orderId,
-			String parentOrderId, double tip, String reservationId,String firstName,String lastName, String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber) {
+			String parentOrderId, double tip, String reservationId,String firstName,String lastName, 
+			String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber,String erpOrderId) {
 		CreateOrderRequest request = new CreateOrderRequest(orderId, parentOrderId, tip, reservationId,
-				firstName,lastName, deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber);
+				firstName,lastName, deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber,erpOrderId);
 		return request;
 	}
 	
