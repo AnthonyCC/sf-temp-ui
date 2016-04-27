@@ -300,29 +300,17 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	}
 	
-	public void logFailedFdxOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+	public void logFailedFdxOrder(String orderId) throws FDResourceException {
 		
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.LOGISTICS_FDX_ORDER(ORDER_ID, PARENT_ID,  TIP,  RESERVATION_ID, FIRST_NAME,LAST_NAME,MOBILE_NUMBER, "
-			+ "DELIVERY_INSTRUCTIONS, UNATTENDED_INSTRUCTIONS,SERVICE_TYPE,STATUS)"
-			+ " SELECT ?,?,?,?,?,?,?,?,?,?,? FROM DUAL  where NOT EXISTS (select * from CUST.LOGISTICS_FDX_ORDER where order_id=? and status='NEW')");
+			ps = conn.prepareStatement("INSERT INTO CUST.LOGISTICS_FDX_ORDER(ORDER_ID,SENT_TO_LOGISTICS)"
+			+ " SELECT ?,? FROM DUAL  where NOT EXISTS (select * from CUST.LOGISTICS_FDX_ORDER where order_id=? and SENT_TO_LOGISTICS IS NULL)");
 			ps.setString(1, orderId);
-			ps.setString(2,parentOrderId );
-			ps.setDouble(3,tip );
-			ps.setString(4,reservationId );
-			ps.setString(5, firstName);
-			ps.setString(6,lastName );
-			ps.setString(7,orderMobileNumber );
-			ps.setString(8, deliveryInstructions);
-			ps.setString(9, unattendedInstr);
-			ps.setString(10,serviceType );
-			ps.setString(11, "NEW");
-			ps.setString(12, orderId);
+			ps.setString(2, "");
+			ps.setString(3, orderId);
 			ps.execute();
 		} catch(SQLException e) {
 			throw new FDResourceException(e);

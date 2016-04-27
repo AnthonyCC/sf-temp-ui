@@ -2,9 +2,15 @@ package com.freshdirect.delivery.routing.ejb;
 
 
 
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import javax.ejb.EJBException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
@@ -100,8 +106,11 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     
     private void process(OrderCreateCommand command) throws FDResourceException {
     	LOGGER.info("receiving createOrderStatus from queue..."+ command.getSaleId());
-		FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber());
+    	
+    	FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
+		command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),command.getErpOrderId());
+    	
+    	
 	}	
     
     private void process(OrderCancelCommand command) throws FDResourceException {
@@ -112,7 +121,9 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     private void process(OrderModifyCommand command) throws FDResourceException {
     	LOGGER.info("receiving modifyOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().modifyOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber());
+				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber()
+				,command.getErpOrderId());
 	}	
+    
 }
 

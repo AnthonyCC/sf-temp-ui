@@ -1240,20 +1240,19 @@ public class FDDeliveryManager {
 	}
 	public void submitOrder(String orderId, String parentOrderId, double tip,
 			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+			String unattendedInstr, String orderMobileNumber,String erpOrderId) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.submitOrder(
 					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,
-							firstName,lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
+							firstName,lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber,erpOrderId));
 			
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			try {
 					DlvManagerSB sb = getDlvManagerHome().create();
-					sb.logFailedFdxOrder(orderId,parentOrderId,tip,reservationId,firstName,lastName,
-							deliveryInstructions,serviceType,unattendedInstr,orderMobileNumber);
+					sb.logFailedFdxOrder(orderId);
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1315,13 +1314,13 @@ public class FDDeliveryManager {
  
 	
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
-			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber) throws FDResourceException {
+			String reservationId, String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr, String orderMobileNumber,String erpOrderId) throws FDResourceException {
 		
 		try {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result result = logisticsService.modifyOrder(
 					LogisticsDataEncoder.encodeUpdateOrderRequest(orderId, parentOrderId, tip, reservationId,
-							firstName, lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber));
+							firstName, lastName,deliveryInstructions,serviceType,unattendedInstr, orderMobileNumber,erpOrderId));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);

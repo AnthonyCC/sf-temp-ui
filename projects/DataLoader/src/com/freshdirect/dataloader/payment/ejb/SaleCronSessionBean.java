@@ -1468,12 +1468,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		return list;
 	}
 	
-	private final static String QUERY_SALE_ELIGIBLE_FOR_PICKING =
-			"SELECT ORDER_ID, PARENT_ID,  TIP, RESERVATION_ID, MOBILE_NUMBER, DELIVERY_INSTRUCTIONS, UNATTENDED_INSTRUCTIONS, " +
-			"SERVICE_TYPE, FIRST_NAME, LAST_NAME FROM CUST.LOGISTICS_FDX_ORDER WHERE STATUS='NEW'";
+	private final static String QUERY_ORDERS_MISSING_IN_LOGISTICS =
+			"SELECT O.ORDER_ID, P.REFERENCED_ORDER AS PARENT_ID, NVL((SELECT AMOUNT FROM CUST.CHARGELINE CC WHERE TYPE='TIP' AND CC.SALESACTION_ID=SA.ID ),0) AS " +
+			"TIP, D.RESERVATION_ID, D.MOBILE_NUMBER, D.DELIVERY_INSTRUCTIONS, D.UNATTENDED_INSTR AS UNATTENDED_INSTRUCTIONS, S.SAP_NUMBER, " +
+			"D.SERVICE_TYPE, D.FIRST_NAME, D.LAST_NAME FROM CUST.LOGISTICS_FDX_ORDER  O, CUST.PAYMENTINFO P, CUST.DELIVERYINFO D,CUST.SALESACTION SA,CUST.SALE S WHERE O.ORDER_ID=SA.SALE_ID AND " +
+			"SA.ID=D.SALESACTION_ID AND P.SALESACTION_ID=SA.ID  AND O.SENT_TO_LOGISTICS IS NULL AND SA.SALE_ID=S.ID";
 
-	private final static String UPDATE_SALE_ELIGIBLE_FOR_PICKING =
-			"UPDATE CUST.LOGISTICS_FDX_ORDER SET STATUS='SENT TO LOGISTICS' WHERE ORDER_ID=?";
+	private final static String UPDATE_STATUS_OF_SENT_ORDERS =
+			"UPDATE CUST.LOGISTICS_FDX_ORDER SET SENT_TO_LOGISTICS='X' WHERE ORDER_ID=?";
 
 	public void queryForMissingFdxOrders() {
 		
@@ -1481,7 +1483,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			List<CreateOrderRequest> list = this.queryForFdxSales(con, QUERY_SALE_ELIGIBLE_FOR_PICKING);	
+			List<CreateOrderRequest> list = this.queryForFdxSales(con, QUERY_ORDERS_MISSING_IN_LOGISTICS);	
 			if(list.size()>0)
 			sendOrdersToLogistics(con,list);
 		} catch (Exception e) {
@@ -1500,7 +1502,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	public void sendOrdersToLogistics(Connection con,List<CreateOrderRequest> list) throws FDResourceException  {
 		for(CreateOrderRequest command:list){
 		FDDeliveryManager.getInstance().submitOrder(command.getOrderId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber());
+				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),
+				command.getErpOrderId());
 		updateStatusOfOrder(con,command);
 		}    	
 	}
@@ -1509,7 +1512,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 
 		try {
-			PreparedStatement ps = con.prepareStatement(UPDATE_SALE_ELIGIBLE_FOR_PICKING);
+			PreparedStatement ps = con.prepareStatement(UPDATE_STATUS_OF_SENT_ORDERS);
 			
 			ps.setString(1,order.getOrderId());
 			 ps.executeUpdate();
@@ -1532,14 +1535,16 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		while (rs.next()) {
 			list.add(new CreateOrderRequest(
 					rs.getString("ORDER_ID"),
-					rs.getString("PARENT_ID"), rs.getDouble("TIP"),
+					rs.getString("PARENT_ID"), 
+					rs.getDouble("TIP"),
 					rs.getString("RESERVATION_ID"),
-					rs.getString("MOBILE_NUMBER"),
-					rs.getString("DELIVERY_INSTRUCTIONS"),
-					rs.getString("UNATTENDED_INSTRUCTIONS"),
-					rs.getString("SERVICE_TYPE"),
 					rs.getString("FIRST_NAME"),
-					rs.getString("LAST_NAME")));
+					rs.getString("LAST_NAME"),
+					rs.getString("DELIVERY_INSTRUCTIONS"),
+					rs.getString("SERVICE_TYPE"),
+					rs.getString("UNATTENDED_INSTRUCTIONS"),
+					rs.getString("MOBILE_NUMBER"),
+					rs.getString("SAP_NUMBER")));
 		}
 		LOGGER.info(list);
 		rs.close();
