@@ -204,11 +204,16 @@
 		display: inline-block;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .atc-info {
-		width: 130px;
+		width: 124px;
+		margin-left: 131px;
 		display: inline-block;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
 		margin-left: 10px;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
+		margin: auto;
+		margin-right: 4px;
 	}
 	
 /* new */

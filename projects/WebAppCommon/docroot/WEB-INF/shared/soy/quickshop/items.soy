@@ -245,14 +245,14 @@
 					{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
 					{/if}
 				{/if}
-				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
-					{call common.soResults /}
-					{call common.soShowBtn /}
-				{/if}
 				{call common.atcInCart}
 					{param amount:$item.inCartAmount /}
 					{param atcItemId:$item.itemId /}
 				{/call}
+				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
+					{call common.soResults /}
+					{call common.soShowBtn /}
+				{/if}
 			</div>
 			{call common.productData}
 				{param productId:$item.productId /}
