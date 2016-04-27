@@ -27,6 +27,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
+import com.freshdirect.delivery.DlvProperties;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -39,11 +42,10 @@ public class ReleaseModificationLockCronRunner {
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
-
-			SaleCronSB sb = home.create();
 			
-			sb.unlockInModifyOrders();
+			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
+			DlvManagerSB dlvManagerSB = dlvManager.create();
+			dlvManagerSB.unlockInModifyOrders();
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

@@ -21,8 +21,6 @@ public interface SaleCronSB extends EJBObject{
 
 	public int cutoffSales() throws RemoteException;
 	
-	public int unlockInModifyOrders() throws RemoteException;
-	
 	public void captureSales(long timeout) throws RemoteException;
 
 	public void cancelAuthorizationFailed() throws RemoteException;

@@ -32,6 +32,8 @@ import java.util.StringTokenizer;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
@@ -661,5 +663,63 @@ public void queryForMissingFdxOrders() {
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
+	private final static String UNLOCK_INMODIFY_ORDERS =
+			"UPDATE CUST.SALE S1 SET S1.IN_MODIFY = NULL WHERE S1.ID IN ( "+
+			"SELECT S.ID FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE "+
+			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.ID = DI.SALESACTION_ID AND DI.DELIVERY_TYPE = 'X' AND DI.STARTTIME>=TRUNC(SYSDATE) "+
+			"AND CASE WHEN S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24 < DI.CUTOFFTIME THEN DI.CUTOFFTIME ELSE S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24  "+
+			"END < SYSDATE  AND IN_MODIFY = 'X' AND S.LOCK_TIMESTAMP IS NOT NULL )";
+	
+	private int unlockInModifyOrders(Connection conn) throws SQLException {
+		try {
+			PreparedStatement ps = conn.prepareStatement(UNLOCK_INMODIFY_ORDERS);
+			int affected = ps.executeUpdate();
+			ps.close();
+			return affected;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int unlockInModifyOrders() {
+		Connection con = null;
+		UserTransaction utx = null;
+		int affected = 0;
+
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			
+			affected = this.unlockInModifyOrders(con);
+			
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+
+
+		return affected;
+	}
+	
+	
+	
 	}
 }
