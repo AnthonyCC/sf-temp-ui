@@ -609,10 +609,13 @@ public void queryForMissingFdxOrders() {
 		}    	
 	}
 	
-	private List<CreateOrderRequest> queryForFdxSales(Connection conn, String query) throws SQLException, FDResourceException, RemoteException, CreateException {
+	private List<CreateOrderRequest> queryForFdxSales(Connection conn, String query) throws FDResourceException {
 		List<CreateOrderRequest> ordersList = new ArrayList<CreateOrderRequest>();
 		List<String> list = new ArrayList<String>();
-		PreparedStatement ps = conn.prepareStatement(query);
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(query);
+		
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			list.add(rs.getString("ORDER_ID"));
@@ -634,6 +637,15 @@ public void queryForMissingFdxOrders() {
 					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone(),
 					order.getSapOrderNumber());
 			ordersList.add(c);
+		}
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		}catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			throw new FDResourceException(e);
+		}catch (CreateException e) {
+			// TODO Auto-generated catch block
+			throw new FDResourceException(e);
 		}
 		return ordersList;
 	}
@@ -663,6 +675,7 @@ public void queryForMissingFdxOrders() {
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
+	}
 	private final static String UNLOCK_INMODIFY_ORDERS =
 			"UPDATE CUST.SALE S1 SET S1.IN_MODIFY = NULL WHERE S1.ID IN ( "+
 			"SELECT S.ID FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND S.CROMOD_DATE = SA.ACTION_DATE "+
@@ -670,7 +683,7 @@ public void queryForMissingFdxOrders() {
 			"AND CASE WHEN S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24 < DI.CUTOFFTIME THEN DI.CUTOFFTIME ELSE S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24  "+
 			"END < SYSDATE  AND IN_MODIFY = 'X' AND S.LOCK_TIMESTAMP IS NOT NULL )";
 	
-	private int unlockInModifyOrders(Connection conn) throws SQLException {
+	private int unlockInModifyOrders(Connection conn) {
 		try {
 			PreparedStatement ps = conn.prepareStatement(UNLOCK_INMODIFY_ORDERS);
 			int affected = ps.executeUpdate();
@@ -719,7 +732,4 @@ public void queryForMissingFdxOrders() {
 		return affected;
 	}
 	
-	
-	
-	}
 }
