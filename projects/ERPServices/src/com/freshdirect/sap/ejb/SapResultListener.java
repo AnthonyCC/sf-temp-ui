@@ -302,7 +302,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 								saleEB.getCurrentOrder().getDeliveryInfo().getServiceType().getName():null
 								,saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
 								(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber()!=null)? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo().getOrderMobileNumber().getPhone()): null
-										,  ((SapCreateSalesOrder) command).getSapOrderNumber());
+										, saleEB.getSapOrderNumber() );
 					}
 				}
 
