@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,17 +40,18 @@ public class FDBrandProductsManagerDAO implements Serializable{
 		List<HLOrderFeedDataModel> list = null;
 		ResultSet rs=null;
 		PreparedStatement ps = null;
-
+		DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss aa");
+		
 		String QUERY = "select fdu.id as puserid, s.customer_id as cuserid,s.id as order_id, ol.sku_code as sku,ol.base_price as price ,ol.quantity as quantity,sa.amount as order_total," +
 						" to_char(sa.action_date, 'YYYY/MM/DD HH:MI:SS') as order_date from cust.sale s, cust.salesaction sa, cust.orderline ol,cust.fduser fdu,cust.fdcustomer fdc where " +
 						" ol.salesaction_id=sa.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') and sa.action_date=s.cromod_date " +
-						"and fdc.erp_customer_id=s.customer_id and fdu.fdcustomer_id=fdc.id and s.type='REG' and s.status <> 'CAN' and sa.action_date  BETWEEN  to_date(?, 'YYYY/MM/DD HH:MI:SS') " +
-						"and  to_date(?, 'YYYY/MM/DD HH:MI:SS') order by s.id";
+						"and fdc.erp_customer_id=s.customer_id and fdu.fdcustomer_id=fdc.id and s.type='REG' and s.status <> 'CAN' and sa.action_date  BETWEEN  to_date(?, 'YYYY/MM/DD HH:MI:SS AM') " +
+						"and  to_date(?, 'YYYY/MM/DD HH:MI:SS AM') order by s.id";
 		
 	try {
 				ps = conn.prepareStatement(QUERY);
-				ps.setDate(1, new java.sql.Date(productsOrderFeedDate.getTime()));
-				ps.setDate(2, new java.sql.Date(new Date().getTime()));
+				ps.setString(1, sdf.format(productsOrderFeedDate.getTime()));
+				ps.setString(2, sdf.format(new Date().getTime()));
 				rs = ps.executeQuery();
 				
 			while (rs.next()) {

@@ -58,7 +58,7 @@ try {
 							}
 					} 
 				}
-			else{	//10 minute back from system time.
+			else{	//15 minute back from system time.
 					Integer noOfMins=FDStoreProperties.getHlOrderFeedMins();
 					orderFeedDateFrom = getDate(noOfMins.toString());
 					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
@@ -112,7 +112,7 @@ public static Context getInitialContext() throws NamingException {
 
 private static Date getDate(String noOfMins) throws ParseException{
 	int minute = Integer.parseInt(noOfMins);
-	DateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	DateFormat sdfDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss aa");
 	
 	Calendar cal = Calendar.getInstance();
 	//cal.setTime(currentDate);
