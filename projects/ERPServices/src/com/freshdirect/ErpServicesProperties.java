@@ -232,9 +232,9 @@ public class ErpServicesProperties {
 	public final static String PROP_HOOK_LOGIC_CONFIRMATION_URL="fdstore.erp.hooklogic.confirmation.url";
 	
 	
-	public final static String PROP_HOOK_LOGIC_API_KEY="fdstore.Erp.hookloigc.apikey";
-	private final static String PROP_HL_READ_TIMEOUT_PERIOD = "fdstore.HL.read.timeout.period";
-	private final static String PROP_HL_CONNECTION_TIMEOUT_PERIOD = "fdstore.HL.connection.timeout.period";
+	public final static String PROP_HOOK_LOGIC_API_KEY="fdstore.erp.hookloigc.apikey";
+	private final static String PROP_HL_READ_TIMEOUT_PERIOD = "fdstore.erp.hl.read.timeout.period";
+	private final static String PROP_HL_CONNECTION_TIMEOUT_PERIOD = "fdstore.erp.hl.connection.timeout.period";
 	public final static String PROP_HLCODE="fdstore.erp.hl.code";
 	public final static String PROP_HL_CLIENT_ID="fdstore.erp.hl.clientid";
 	

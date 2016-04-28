@@ -94,7 +94,12 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_CUSERID, hLOrderFeedDataModel.getcUserId());
 		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
-		sendGetRequest(urlToCall);
+		String jsonResponse = sendGetRequest(urlToCall);
+		HLBrandProductAdResponse pageBeanconResponse = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
+		StringBuilder pageBeancon = new StringBuilder();
+		if(null!=pageBeanconResponse && pageBeanconResponse.getPageBeacon()!=null)
+			sendGetRequest(pageBeancon.append("http:"+pageBeanconResponse.getPageBeacon()));
+		
 		LOGGER.info("Succesfully submitted Orderd details to HL");	
 	}
 	

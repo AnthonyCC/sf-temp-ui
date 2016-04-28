@@ -38,8 +38,7 @@ public class FeedUploader {
         LOGGER.info("FTP: connecting to host " + ftpUrl);
         
         try {
-        	
-        	client.setFileType(client.BINARY_FILE_TYPE);
+        	//client.setFileType(client.BINARY_FILE_TYPE);
             client.connect(ftpUrl);
             
             if (!client.login(ftpUser, ftpPassword)) {

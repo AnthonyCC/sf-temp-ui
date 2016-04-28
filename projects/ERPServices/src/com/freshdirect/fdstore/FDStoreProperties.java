@@ -835,7 +835,7 @@ public class FDStoreProperties {
 	public static final String PROP_EXTOLE_MICROSITE_SUB_URL					= "fdstore.extole.microsite.sub.url";
 	public static final String PROP_EXTOLE_MICROSITE_GLOBAL_NAV_URL				= "fdstore.extole.microsite.global.nav.url";
 	public final static String PROP_FD_BRAND_PRODUCTS_AD_HOME                   = "freshdirect.fdstore.fdBrandProductsAdManager";
-	public final static String PROP_HL_PRODUCTS_COUNT                   		= "freshdirect.fdstore.hlproductscount";
+	public final static String PROP_HL_PRODUCTS_COUNT                   		= "fdstore.hlproductscount";
 	
 	
 
