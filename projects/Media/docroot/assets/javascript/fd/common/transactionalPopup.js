@@ -273,7 +273,7 @@ var FreshDirect = FreshDirect || {};
 
 
           /* hooklogic click event */
-          $('#'+popupId + ' [data-hooklogic-beacon-click]').on('click', 'a,button', function(event) {
+          $('#'+popupId + ' [data-hooklogic-beacon-click]').closest('#'+popupId).on('click', 'a,button,.portrait-item-productimage_wrapper', function(event) {
           	/* exclusion elems */
           	if (
           		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
