@@ -140,7 +140,11 @@ var FreshDirect = FreshDirect || {};
 						var regProds = prodSelector+":nth-of-type(n+"+reg_prod_start+"):nth-of-type(-n+"+reg_prod_end+")";
 	
 						$(regProds).each(function(index2){
-							$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
+							var attr = $(this).attr("class");
+							
+							if( (typeof attr !== typeof undefined) && (attr !== false) && attr.indexOf("fakeRow_") != -1 ){
+								$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
+							}
 						});
 					}//end if/else index > hookLogicRowLimit ...
 				}); //end loop through hook logic items
@@ -167,7 +171,11 @@ var FreshDirect = FreshDirect || {};
 					var toRowNum = Math.floor( (i) / 4 ) + 1;
 					
 					//now correct the fake row class for this regular product
-					$(thisProd).attr("class", $(thisProd).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+toRowNum) );
+					var attr = $(thisProd).attr("class");
+					
+					if( (typeof attr !== typeof undefined) && (attr !== false) && attr.indexOf("fakeRow_") != -1 ){
+						$(thisProd).attr("class", $(thisProd).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+toRowNum) );
+					}
 					
 					//
 					finalFakeRow = Math.max( HLmaxLen, toRowNum);
@@ -203,7 +211,7 @@ var FreshDirect = FreshDirect || {};
 					tallestColumnH = Math.max(tallestColumnH, $(this).height());
 					
 					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
-						//$(this).css("background-color", "green");
+						$(this).css("background-color", "green");
 					}else{
 						//$(this).css("background-color", "pink");
 					}
@@ -218,6 +226,13 @@ var FreshDirect = FreshDirect || {};
 					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
 				}
 			}//end for var i=0; ...
+			
+			//correct for when there are filter tags
+			if( $('.filterTags').length > 0 ){
+				$(".isHookLogic-true").first().css("margin-top", $('.filterTags').first().height() + "px" );
+			}else{
+				$(".isHookLogic-true").first().css("margin-top", "0px" );
+			}
 		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
 		topSections.listen();
@@ -244,7 +259,7 @@ var FreshDirect = FreshDirect || {};
   
 	//fires upon using search box
 	//$(document).on('change', function(){
-	$(".tabs li span, .searchbutton, .menuBox li span, .menupopup li span, .sorter button span").click(function(){
+	$(".tabs li span, .searchbutton, .menuBox li span, .menupopup li span, .sorter button span, .pagination-showall-cssbutton").click(function(){
 		window.isHLchangable = true;
 	});
 
