@@ -35,54 +35,61 @@ public class FDOrderFeedGeneratorCron {
 		Date orderFeedDateFrom=null;
 		Context ctx = null;
 		List<String> ordersList = null;
-try {
-		LOGGER.info("FDOrderFeedGeneratorCron Started.");	
-		ctx = getInitialContext();
-		FDBrandProductsAdManagerHome managerHome = (FDBrandProductsAdManagerHome) ctx.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
-		FDBrandProductsAdManagerSB sb = managerHome.create();
-		if (args.length >= 1) {
-			for (String arg : args) {
-				if (arg.startsWith("minutes=")) {
-					String noOfMins = arg.substring("minutes=".length());
-					if (null != noOfMins
-							&& !noOfMins.trim().equalsIgnoreCase("")) {
-						orderFeedDateFrom = getDate(noOfMins);
-						sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-					}
-				} else if (arg.startsWith("orders=")) {
-					String orders = arg.substring("orders=".length());
-					String[] order = orders.split(",");
-					ordersList = new ArrayList<String>(Arrays.asList(order));
-					sb.submittedOrderdDetailsToHL(ordersList);
-		
-				}
-				break;
-			}
-		} else {
+		if(FDStoreProperties.isHookLogicEnabled()){
 			try {
-				orderFeedDateFrom = sb.getLastSentFeedOrderTime();
+				LOGGER.info("FDOrderFeedGeneratorCron Started.");
+				ctx = getInitialContext();
+				FDBrandProductsAdManagerHome managerHome = (FDBrandProductsAdManagerHome) ctx
+						.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
+				FDBrandProductsAdManagerSB sb = managerHome.create();
+				if (args.length >= 1) {
+					for (String arg : args) {
+						if (arg.startsWith("minutes=")) {
+							String noOfMins = arg.substring("minutes=".length());
+							if (null != noOfMins
+									&& !noOfMins.trim().equalsIgnoreCase("")) {
+								orderFeedDateFrom = getDate(noOfMins);
+								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+							}
+						} else if (arg.startsWith("orders=")) {
+							String orders = arg.substring("orders=".length());
+							String[] order = orders.split(",");
+							ordersList = new ArrayList<String>(Arrays.asList(order));
+							sb.submittedOrderdDetailsToHL(ordersList);
+	
+						}
+						break;
+					}
+				} else {
+					try {
+						orderFeedDateFrom = sb.getLastSentFeedOrderTime();
+					} catch (Exception e) {
+						LOGGER.warn("Exception while getting lastSentFeedOrderTime: "
+								+ e);
+					}
+					if (null == orderFeedDateFrom) {
+						// 15 minute back from system time.
+						Integer noOfMins = FDStoreProperties.getHlOrderFeedMins();
+						orderFeedDateFrom = getDate(noOfMins.toString());
+					}
+					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+				}
+	
 			} catch (Exception e) {
-				LOGGER.warn("Exception while getting lastSentFeedOrderTime: "+ e);
-			}
-			if (null == orderFeedDateFrom) {
-				// 15 minute back from system time.
-				Integer noOfMins = FDStoreProperties.getHlOrderFeedMins();
-				orderFeedDateFrom = getDate(noOfMins.toString());
-			}
-			sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-		}		
-			
-	} 	catch (Exception e) {
-		StringWriter sw = new StringWriter();
-		e.printStackTrace(new PrintWriter(sw));
-		String _msg=sw.getBuffer().toString();
-		LOGGER.info(new StringBuilder("FDOrderProductFeedGeneratorCron failed with Exception...").append(_msg).toString());
-		LOGGER.error(_msg);
-		if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1) {
-			email(Calendar.getInstance().getTime(), _msg);		
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));
+				String _msg = sw.getBuffer().toString();
+				LOGGER.info(new StringBuilder(
+						"FDOrderProductFeedGeneratorCron failed with Exception...")
+						.append(_msg).toString());
+				LOGGER.error(_msg);
+				if (_msg != null
+						&& _msg.indexOf("timed out while waiting to get an instance from the free pool") == -1) {
+					email(Calendar.getInstance().getTime(), _msg);
+				}
+			} 
 		}
-	} 
-	LOGGER.info("FDOrderFeedGeneratorCron Stopped.");
+		LOGGER.info("FDOrderFeedGeneratorCron Stopped.");
 
 
 }
