@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.brandads;
 
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -68,6 +69,20 @@ public class FDBrandProductsAdManager {
 	}
 	
 
-	
+	public Date getLastSentFeedOrderTime() throws FDResourceException {
+		lookupManagerHome();
+		
+		try {
+			FDBrandProductsAdManagerSB sb = managerHome.create();			
+			return sb.getLastSentFeedOrderTime();
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+		
+	}
 
 }

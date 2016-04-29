@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.brandads;
 
+import java.util.Date;
+
 public class HLOrderFeedDataModel implements java.io.Serializable {
 
 
@@ -18,6 +20,7 @@ public class HLOrderFeedDataModel implements java.io.Serializable {
 	private String price;
 	private String quantity;
 	private String orderTotal;
+	private Date orderCroModDate;
 	
 	public String getProdctSku() {
 		return prodctSku;
@@ -87,6 +90,12 @@ public class HLOrderFeedDataModel implements java.io.Serializable {
 		this.orderTotal = orderTotal;
 	}
 	
+	public Date getOrderCroModDate() {
+		return orderCroModDate;
+	}
+	public void setOrderCroModDate(Date orderCroModDate) {
+		this.orderCroModDate = orderCroModDate;
+	}
 	@Override
 	public String toString() {
 		return "HLOrderFeedDataModel [clientId=" + clientId

@@ -40,32 +40,37 @@ try {
 		ctx = getInitialContext();
 		FDBrandProductsAdManagerHome managerHome = (FDBrandProductsAdManagerHome) ctx.lookup(FDStoreProperties.getFDBrandProductsAdManagerHome());
 		FDBrandProductsAdManagerSB sb = managerHome.create();
-		LOGGER.info("with arguments: "+ args);
 		if (args.length >= 1) {
-				for (String arg : args) {
-						if (arg.startsWith("minutes=")){
-							String noOfMins=arg.substring("minutes=".length());
-							if(null !=noOfMins && !noOfMins.trim().equalsIgnoreCase("")){
-								orderFeedDateFrom = getDate(noOfMins);
-								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-							} 
-						}else if(arg.startsWith("orders=")){
-								String orders=arg.substring("orders=".length());
-								String[] order = orders.split(",");								
-								ordersList = new ArrayList<String>(Arrays.asList(order));
-								sb.submittedOrderdDetailsToHL(ordersList);
-								
-							}
-					} 
-				}
-			else{	//15 minute back from system time.
-					Integer noOfMins=FDStoreProperties.getHlOrderFeedMins();
-					orderFeedDateFrom = getDate(noOfMins.toString());
-					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
-				}
+			for (String arg : args) {
+				if (arg.startsWith("minutes=")) {
+					String noOfMins = arg.substring("minutes=".length());
+					if (null != noOfMins
+							&& !noOfMins.trim().equalsIgnoreCase("")) {
+						orderFeedDateFrom = getDate(noOfMins);
+						sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+					}
+				} else if (arg.startsWith("orders=")) {
+					String orders = arg.substring("orders=".length());
+					String[] order = orders.split(",");
+					ordersList = new ArrayList<String>(Arrays.asList(order));
+					sb.submittedOrderdDetailsToHL(ordersList);
 		
-	
-			
+				}
+				break;
+			}
+		} else {
+			try {
+				orderFeedDateFrom = sb.getLastSentFeedOrderTime();
+			} catch (Exception e) {
+				LOGGER.warn("Exception while getting lastSentFeedOrderTime: "+ e);
+			}
+			if (null == orderFeedDateFrom) {
+				// 15 minute back from system time.
+				Integer noOfMins = FDStoreProperties.getHlOrderFeedMins();
+				orderFeedDateFrom = getDate(noOfMins.toString());
+			}
+			sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+		}		
 			
 	} 	catch (Exception e) {
 		StringWriter sw = new StringWriter();

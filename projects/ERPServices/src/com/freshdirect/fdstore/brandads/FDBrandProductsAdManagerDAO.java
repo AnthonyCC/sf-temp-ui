@@ -6,11 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +20,13 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.core.SequenceGenerator;
 //import com.freshdirect.fdstore.content.ContentFactory;
 //import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-public class FDBrandProductsManagerDAO implements Serializable{
+public class FDBrandProductsAdManagerDAO implements Serializable{
 	
 	/**
 	 * 
@@ -32,21 +35,21 @@ public class FDBrandProductsManagerDAO implements Serializable{
 	/**
 	 * 
 	 */
-	private static Category LOGGER = LoggerFactory.getInstance( FDBrandProductsManagerDAO.class );
+	private static Category LOGGER = LoggerFactory.getInstance( FDBrandProductsAdManagerDAO.class );
 
 	public  Map<String, List<HLOrderFeedDataModel>> getOrderProductFeedDataInfo(Connection conn, Date productsOrderFeedDate) throws SQLException, FDResourceException{
 		
-		Map<String, List<HLOrderFeedDataModel>> map = new HashMap<String, List<HLOrderFeedDataModel>>();
+		Map<String, List<HLOrderFeedDataModel>> map = new LinkedHashMap<String, List<HLOrderFeedDataModel>>();
 		List<HLOrderFeedDataModel> list = null;
 		ResultSet rs=null;
 		PreparedStatement ps = null;
 		DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss aa");
 		
-		String QUERY = "select fdu.id as puserid, s.customer_id as cuserid,s.id as order_id, ol.sku_code as sku,ol.base_price as price ,ol.quantity as quantity,sa.amount as order_total," +
+		String QUERY = "select fdu.id as puserid, s.customer_id as cuserid,s.id as order_id, s.cromod_date, ol.sku_code as sku,ol.base_price as price ,ol.quantity as quantity,sa.amount as order_total," +
 						" to_char(sa.action_date, 'YYYY/MM/DD HH:MI:SS') as order_date from cust.sale s, cust.salesaction sa, cust.orderline ol,cust.fduser fdu,cust.fdcustomer fdc where " +
 						" ol.salesaction_id=sa.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') and sa.action_date=s.cromod_date " +
 						"and fdc.erp_customer_id=s.customer_id and fdu.fdcustomer_id=fdc.id and s.type='REG' and s.status <> 'CAN' and sa.action_date  BETWEEN  to_date(?, 'YYYY/MM/DD HH:MI:SS AM') " +
-						"and  to_date(?, 'YYYY/MM/DD HH:MI:SS AM') order by s.id";
+						"and  to_date(?, 'YYYY/MM/DD HH:MI:SS AM') order by s.cromod_date";
 		
 	try {
 				ps = conn.prepareStatement(QUERY);
@@ -71,6 +74,7 @@ public class FDBrandProductsManagerDAO implements Serializable{
 				hlOrderFeedDataModel.setpUserId(rs.getString("puserid"));
 				hlOrderFeedDataModel.setQuantity(rs.getString("quantity"));
 				hlOrderFeedDataModel.setProdctSku(rs.getString("sku"));
+				hlOrderFeedDataModel.setOrderCroModDate(rs.getTimestamp("cromod_date"));
 				list.add(hlOrderFeedDataModel);
 				map.put(orderId, list);
 			}
@@ -141,5 +145,60 @@ try {
 	}	
 	return map;
 }
+
+	private static final String GET_LAST_SENT_ORDER_TIME = "SELECT MAX(LAST_ORDER_CROMOD_TIME) FROM MIS.HL_ORDER_FEED_LOG";
+	public Date getLastSentFeedOrderTime(Connection conn) throws SQLException{
+		Date date = null;
+		PreparedStatement ps = null;
+		ResultSet rs=null;
+		try{
+			ps = conn.prepareStatement(GET_LAST_SENT_ORDER_TIME);
+			rs = ps.executeQuery();
+			if(rs.next()){
+				date = rs.getDate(1);
+			}
+		}finally {
+			if(null !=rs){
+				rs.close();
+			}
+			if(null !=ps){
+				ps.close();
+			}
+		}	
+		return date;
+	}
+	
+	private static final String INSERT_ORDER_FEED_LOG = "INSERT INTO MIS.HL_ORDER_FEED_LOG (ID,START_TIME,END_TIME,LAST_ORDER_CROMOD_TIME,DETAILS) VALUES (?,?,?,?,?)";
+	public void insertOrderFeedLog(Connection conn, HLOrderFeedLogModel orderFeedLogModel) throws SQLException{
+		PreparedStatement ps = null;
+		if(null !=orderFeedLogModel){
+			try {
+				String id = getNextId(conn);
+				ps = conn.prepareStatement(INSERT_ORDER_FEED_LOG);
+				ps.setString(1, id);
+				ps.setTimestamp(2, new Timestamp(orderFeedLogModel.getStartTime().getTime()));
+				ps.setTimestamp(3, new Timestamp(orderFeedLogModel.getEndTime().getTime()));
+				ps.setTimestamp(4, new Timestamp(orderFeedLogModel.getLastSentOrderTime().getTime()));
+				ps.setString(5, orderFeedLogModel.getDetails());
+				
+				if (ps.executeUpdate() != 1) {
+					LOGGER.error( "insertOrderFeedLog() -row not created");
+					throw new SQLException("insertOrderFeedLog() - row not created");
+				}
+			} catch (Exception e) {
+				LOGGER.error( "insertOrderFeedLog() failed with Exception: ", e );
+				throw new SQLException(e);
+			} finally {
+				if(null !=ps){
+					ps.close();
+				}
+			}
+		}
+	}
+	
+
+	protected String getNextId(Connection conn) throws SQLException {
+		return SequenceGenerator.getNextId(conn, "MIS");
+	}
 }
 

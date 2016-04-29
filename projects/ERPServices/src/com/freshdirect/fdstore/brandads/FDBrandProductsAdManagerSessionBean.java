@@ -49,10 +49,10 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		try{
 			LOGGER.info("Sending sumbmitted order details to the Hooklogic");
 			conn= getConnection();
-			FDBrandProductsManagerDAO fdBrandProductsManagerDAO=new FDBrandProductsManagerDAO(); 
+			FDBrandProductsAdManagerDAO fdBrandProductsManagerDAO=new FDBrandProductsAdManagerDAO(); 
 			map=fdBrandProductsManagerDAO.getOrderProductFeedDataInfo(conn, productsOrderFeedDate);
 			
-			sendOrderDetailsToHL(map);
+			sendOrderDetailsToHL(map, true);
 			
 			
 		} catch (Exception e) {
@@ -66,15 +66,15 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		
 		Connection	conn=null;
 		Map<String, List<HLOrderFeedDataModel>> map = null;
-		FDBrandProductsManagerDAO fdBrandProductsManagerDAO=null;
+		FDBrandProductsAdManagerDAO fdBrandProductsManagerDAO=null;
 		
 	try{
 		LOGGER.info("Sending sumbmitted order details to the Hooklogic");
 		conn= getConnection();
-		 fdBrandProductsManagerDAO=new FDBrandProductsManagerDAO(); 
+		 fdBrandProductsManagerDAO=new FDBrandProductsAdManagerDAO(); 
 		for (String order : orders) {
 		map=fdBrandProductsManagerDAO.getOrderProductFeedDataInfo(conn, order);
-		sendOrderDetailsToHL(map);
+		sendOrderDetailsToHL(map, false);
 		}
 		
 	} catch (Exception e) {
@@ -87,8 +87,11 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 	
 
 	private void sendOrderDetailsToHL(
-			Map<String, List<HLOrderFeedDataModel>> map)
+			Map<String, List<HLOrderFeedDataModel>> map, boolean isOrderFeedLog)
 			throws BrandProductAdServiceException {
+		String lastOrderId = null;
+		Date lastOrderTime = null;
+		Date startTime = new Date();
 		if(null != map){
 			LOGGER.info("Found "+map.entrySet().size()+"  orders to be sent to HL");
 			for (Entry<String, List<HLOrderFeedDataModel>> entry : map.entrySet()) {
@@ -96,6 +99,7 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 				StringBuffer price=new StringBuffer("");
 				StringBuffer quantity=new StringBuffer("");
 				StringBuffer sku=new StringBuffer("");
+				
 				for (HLOrderFeedDataModel s :  entry.getValue()) {
 		            	 	orderFeedDataModel.setPrice((s.getPrice()!=null && "".equals(price.toString()) ? price.append(s.getPrice()).toString():price.append("|"+s.getPrice()).toString()));
 		            	 	orderFeedDataModel.setSku((s.getProdctSku()!=null && "".equals(sku.toString()) ? sku.append(s.getProdctSku()).toString():sku.append("|"+s.getProdctSku()).toString()));
@@ -104,14 +108,55 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 			            	orderFeedDataModel.setpUserId(s.getpUserId());
 			            	orderFeedDataModel.setcUserId(s.getcUserId());
 			            	orderFeedDataModel.setOrderId(s.getOrderId());
+			            	lastOrderId = s.getOrderId();
+			            	lastOrderTime = s.getOrderCroModDate();
 			            	orderFeedDataModel.setOrderTotal(s.getOrderTotal());
-		           }
-				FDBrandProductsAdGateway.submittedOrderdDetailsToHL(orderFeedDataModel);
+		        }
+				try {
+					FDBrandProductsAdGateway.submittedOrderdDetailsToHL(orderFeedDataModel);
+				} catch (BrandProductAdServiceException e) {
+					LOGGER.warn("Failed to send order details to HL. Order Id: "+lastOrderId );
+				}
 		    }
+			if(isOrderFeedLog){
+				insertOrderFeedLog(lastOrderId, lastOrderTime, startTime);
+			}
 			LOGGER.info("Completed sending order details to HL");
 		}
 	}
+
+	private void insertOrderFeedLog(String lastOrderId, Date lastOrderTime,
+			Date startTime){
+		Date endTime = new Date();
+		try {
+			if(null !=lastOrderId && null !=lastOrderTime){
+				HLOrderFeedLogModel orderFeedLogModel = new HLOrderFeedLogModel();
+				orderFeedLogModel.setStartTime(startTime);
+				orderFeedLogModel.setEndTime(endTime);
+				orderFeedLogModel.setLastSentOrderTime(lastOrderTime);
+				orderFeedLogModel.setDetails(""+lastOrderId);
+				Connection conn = getConnection();
+				FDBrandProductsAdManagerDAO dao = new FDBrandProductsAdManagerDAO();
+				dao.insertOrderFeedLog(conn, orderFeedLogModel);
+			}
+		} catch (SQLException e) {
+			LOGGER.warn("Exception in insertOrderFeedLog(): "+e);
+		}
+	}
 	
+	public Date getLastSentFeedOrderTime() throws FDResourceException, RemoteException{
+		Date lastSentFeedOrderTime = null;
+		Connection	conn=null;
+		FDBrandProductsAdManagerDAO fdBrandProductsManagerDAO = new FDBrandProductsAdManagerDAO();
+		try {
+			conn = getConnection();
+			lastSentFeedOrderTime = fdBrandProductsManagerDAO.getLastSentFeedOrderTime(conn);
+		} catch (SQLException e) {
+			LOGGER.error("Exception while getting lastSentFeedOrderTime: "+e);
+			throw new FDResourceException("Exception while getting lastSentFeedOrderTime: "+e);
+		}
+		return lastSentFeedOrderTime;
+	}
 }
 	
 		
