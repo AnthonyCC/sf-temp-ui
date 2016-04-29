@@ -121,7 +121,9 @@ var FreshDirect = FreshDirect || {};
 					
 					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
 					if(index > hookLogicRowLimit || ($(paginationSelectedSelector).attr("data-page") != "1") ){
-						$(this).hide();
+						//$(this).hide();
+						
+						console.log("they asked us to stay for tea and have some fun");
 					}else{
 						$(this).show();
 						
@@ -149,8 +151,6 @@ var FreshDirect = FreshDirect || {};
 					
 					//beckoning for page beacon
 					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
-					
-					console.log("woke up this morning");
 				}
 				
 				//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
@@ -175,8 +175,12 @@ var FreshDirect = FreshDirect || {};
 			}
 			
 			//if( $.contains( $(".isHookLogic-false .browse-sections-top .products.transactional"), $(".isHookLogic-true") ) == false ){
-			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-true") ) == false ){
-				$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
+			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-spacer") ) == false ){
+				//$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
+				
+				var hltH = $(".isHookLogic-true").height();
+				
+				$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
 			}
 			
 			//get started
@@ -184,22 +188,31 @@ var FreshDirect = FreshDirect || {};
 			
 			var colLength = 0;
 			
+			var HLselectorClass = '';
+			
 			/*height fixes*/
 			for(var i=0; i<(finalFakeRow+1); i++){
 				tallestColumnH = 0;
 				
 				colLength = $(".browse-sections-top li.portrait-item.fakeRow_"+i).length;
 				
-				$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
+				HLselectorClass = ".browse-sections-top li.portrait-item.fakeRow_"+i+", .isHookLogic-true li.portrait-item.fakeRow_"+i;
+				
+				//$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
+				$(HLselectorClass).each(function(index3){
 					tallestColumnH = Math.max(tallestColumnH, $(this).height());
 					
 					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
-						//$(this).css("background-color", "green");
+						$(this).css("background-color", "green");
+					}else{
+						//$(this).css("background-color", "pink");
 					}
+					
+					console.log("werewolves of london = " + i, ", index3 = " + index3);
 				});
 				
 				//set this to be the height of the tallest row item
-				$(".browse-sections-top li.fakeRow_"+i).css("min-height", tallestColumnH);
+				$(HLselectorClass).css("min-height", tallestColumnH);
 				
 				if(i >= HLmaxLen){
 					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
@@ -239,7 +252,8 @@ var FreshDirect = FreshDirect || {};
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
 		
 		//update the page beacon url
-		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined && xhr.responseJSON.adProducts.pageBeacon !== undefined && xhr.responseJSON.adProducts.pageBeacon.length > 3 ){
+		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined && xhr.responseJSON.adProducts.pageBeacon !== undefined &&  xhr.responseJSON.adProducts.pageBeacon != null &&
+		xhr.responseJSON.adProducts.pageBeacon.length > 3 ){
 			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
 		}
 		
