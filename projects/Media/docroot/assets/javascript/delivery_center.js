@@ -33,7 +33,7 @@
 			function lookupDeliveryManifest(){
 				$jq("#manifestDetail").html('');
 				$jq("#manifestDetail").append(loadingStr).find('div:first').css({height:"550px"});
-				jsonrpcClient.manager.getDeliveryManifest(manifestCallBack, orderNo, date);
+				jsonrpcClient.manager.getDeliveryManifest(manifestCallBack, orderNo, date,estoreId);
 			}
 			function lookupOrderCallLog(){
 				$jq("#callLogInfo").html('');
@@ -245,7 +245,7 @@
 				result += "<tr><td colspan=\"2\"><b>SIGNATURE</b><br/>By signing I am acknowledging<br/>only that I have received <br/>as listed below.<br/><br/></td></tr>";
 				result += "<tr><td colspan=\"2\"><b>Customer Signature</b><br/>&nbsp;</td></tr>";
 				if(hasSignature){
-					result += "<tr><td colspan=\"2\"><iframe src=\"/api/viewsignature.jsp?orderId="+orderNo+"\" /></td></tr>"
+					result += "<tr><td colspan=\"2\"><iframe src=\"/api/viewsignature.jsp?orderId="+orderNo+"&estoreId="+estoreId+"\" /></td></tr>"
 				}
 				
 				$jq('#manifestDetail').html("<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" class=\"gc_table2footer\">" + result + "</table>");
