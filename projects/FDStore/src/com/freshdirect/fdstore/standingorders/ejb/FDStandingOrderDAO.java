@@ -809,7 +809,7 @@ public class FDStandingOrderDAO {
 		"select  so.id ,cl.name,c.user_id ,NVL(A.COMPANY_NAME,'--') as COMPANY_NAME,	SO.CUSTOMER_ID ,	SO.START_TIME, SO.END_TIME, A.ADDRESS1||', '||a.ADDRESS2||', '||a.APARTMENT||', '||a.CITY||', '||a.STATE||', '||a.ZIP as ADDRESS,"+
 		"NVL(CI.BUSINESS_PHONE||'-'||CI.BUSINESS_EXT,'--') as BUSINESS_PHONE,		NVL(CI.CELL_PHONE,'--') as CELL_PHONE,	SO.NEXT_DATE "+ 
 		"from cust.address a,cust.customerinfo ci,cust.customer c,CUST.STANDING_ORDER so,CUST.CUSTOMERLIST cl,CUST.SO_HOLIDAY_ALT_DATE soh "+ 
-		"where 	SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id and SO.CUSTOMERLIST_ID=CL.ID and SO.ERROR_HEADER is null and SO.DELETED='0' and SO.NEXT_DATE <= trunc( sysdate+7) "+
+		"where 	SO.ADDRESS_ID=a.id(+) and c.id=ci.customer_id and so.customer_id=c.id and SO.CUSTOMERLIST_ID=CL.ID and SO.ERROR_HEADER is null and SO.DELETED='0' and (SO.IS_ACTIVATED IS  NULL OR SO.IS_ACTIVATED='Y') and SO.NEXT_DATE <= trunc( sysdate+7) "+
 		" and SO.NEXT_DATE=SOH.CURRENT_DELIVERY_DATE(+) and so.id=SOH.SO_ID(+)  and (SOH.ALTERNATE_DELIVERY_DATE is null OR SOH.ALTERNATE_DELIVERY_DATE <= trunc( sysdate+7))  order by so.next_date desc";
 	
 	public FDStandingOrderInfoList getMechanicalFailedStandingOrdersCustInfo(Connection conn) throws SQLException {
