@@ -93,7 +93,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_QUANTITY, hLOrderFeedDataModel.getQuantity());
 		urlParameters.put(HOOKLOGIC_CUSERID, hLOrderFeedDataModel.getcUserId());
 		
-		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
+		StringBuilder urlToCall = getBaseUrlOfOrderFeed(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse pageBeanconResponse = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
 		StringBuilder pageBeancon = new StringBuilder();
@@ -165,6 +165,31 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
         
 	}
 	
+	
+	private StringBuilder getBaseUrlOfOrderFeed(StringBuilder urlToCallStr, TreeMap<String,String> urlParameters) throws BrandProductAdServiceException {
+		
+        
+		  StringBuilder urlToCall = new StringBuilder();
+	        
+    try {
+        if ( urlToCallStr != null ) {
+            boolean first = true;
+            for ( String key : urlParameters.keySet() ) {
+                if ( first) {
+                    first = false;
+                } else {
+                    urlToCall.append("&");
+                }
+                urlToCall.append(key).append("=").append(urlParameters.get(key));
+            }
+            urlToCallStr.append(urlToCall);
+        }
+    }catch(Exception unsup){
+    	throw new BrandProductAdServiceException(unsup);
+    }
+    return urlToCallStr;
+    
+	}
 
 	private static  HLBrandProductAdResponse parseResponse(String responseStr, Class _class){
 		
