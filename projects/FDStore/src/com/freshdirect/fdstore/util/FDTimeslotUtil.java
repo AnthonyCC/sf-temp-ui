@@ -196,22 +196,11 @@ public class FDTimeslotUtil implements Serializable {
 
 			@Override
 			public int compare(FDTimeslot t1, FDTimeslot t2) {
-				if(t1.getStartTime().compareTo(t2.getStartTime()) <0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) >0){
+				if(t1.getCutoffTime().compareTo(t2.getCutoffTime()) == 0)
+					return t1.getStartTime().compareTo(t2.getStartTime());
+				else
 					return t1.getCutoffTime().compareTo(t2.getCutoffTime());
 				}
-				else if(t1.getStartTime().compareTo(t2.getStartTime()) <0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) <0){
-					return t1.getStartTime().compareTo(t2.getStartTime());
-				}
-				else if(t1.getStartTime().compareTo(t2.getStartTime()) >0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) <0){
-					return t1.getCutoffTime().compareTo(t2.getCutoffTime());
-				}
-				else if(t1.getStartTime().compareTo(t2.getStartTime()) >0 && t1.getCutoffTime().compareTo(t2.getCutoffTime()) >0){
-					return t1.getStartTime().compareTo(t2.getStartTime());
-				}
-				else{
-				    return t1.getStartTime().compareTo(t2.getStartTime());
-				}
-			}
 			
 		});
 	}
