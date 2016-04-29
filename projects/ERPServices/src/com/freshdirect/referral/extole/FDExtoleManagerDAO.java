@@ -186,39 +186,41 @@ public class FDExtoleManagerDAO implements Serializable {
 			FDRafCreditModel earnedReward = null;
 			for (Iterator<FDRafCreditModel> iterator = rewards.iterator(); iterator	.hasNext();) {
 				earnedReward = (FDRafCreditModel) iterator.next();
-				int i = 1;
-				earnedReward.setId(String.valueOf(getNextId(conn)));
-				ps.setString(i++, earnedReward.getId());
-				ps.setString(i++, earnedReward.getAdvocateCustomerId());
-		 		ps.setString(i++, earnedReward.getStatus().getValue()); 
-			  	ps.setTimestamp(i++, new Timestamp(earnedReward.getCreationTime().getTime()));
-			  	ps.setTimestamp(i++, new Timestamp(earnedReward.getModifiedTime().getTime()));
-			 	ps.setString(i++, earnedReward.getAdvocateFirstName());
-				ps.setString(i++, earnedReward.getAdvocateLastName());
-				ps.setString(i++, null !=earnedReward.getAdvocateEmail()?earnedReward.getAdvocateEmail().toLowerCase():null);
-				ps.setString(i++, earnedReward.getAdvocatePartnerUid());
-				ps.setString(i++, earnedReward.getFriendFirstName());
-				ps.setString(i++, earnedReward.getFriendLastName());
-				ps.setString(i++, null !=earnedReward.getFriendEmail()?earnedReward.getFriendEmail().toLowerCase():null);
-				ps.setString(i++, earnedReward.getFriendPartnerUid());
-				ps.setString(i++, earnedReward.getRewardType());
-				if(null != earnedReward.getRewardDate()){
-				ps.setDate(i++,	new Date(earnedReward.getRewardDate().getTime()));
-				} else {
-				ps.setNull(i++, Types.TIMESTAMP);	
-				}
-				ps.setString(i++, earnedReward.getRewardSetName());
-				ps.setString(i++, earnedReward.getRewardSetId());
-				ps.setDouble(i++, earnedReward.getRewardValue());
-				ps.setString(i++, earnedReward.getRewardDetail());
-
-				try {
-					int rowsaffected = ps.executeUpdate();
-					if (rowsaffected != 1) {			
-						LOGGER.warn(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail());
+				if(null !=earnedReward && null != earnedReward.getAdvocateEmail() && null !=earnedReward.getFriendEmail()){
+					int i = 1;
+					earnedReward.setId(String.valueOf(getNextId(conn)));
+					ps.setString(i++, earnedReward.getId());
+					ps.setString(i++, earnedReward.getAdvocateCustomerId());
+			 		ps.setString(i++, earnedReward.getStatus().getValue()); 
+				  	ps.setTimestamp(i++, new Timestamp(earnedReward.getCreationTime().getTime()));
+				  	ps.setTimestamp(i++, new Timestamp(earnedReward.getModifiedTime().getTime()));
+				 	ps.setString(i++, earnedReward.getAdvocateFirstName());
+					ps.setString(i++, earnedReward.getAdvocateLastName());
+					ps.setString(i++, null !=earnedReward.getAdvocateEmail()?earnedReward.getAdvocateEmail().toLowerCase():null);
+					ps.setString(i++, earnedReward.getAdvocatePartnerUid());
+					ps.setString(i++, earnedReward.getFriendFirstName());
+					ps.setString(i++, earnedReward.getFriendLastName());
+					ps.setString(i++, null !=earnedReward.getFriendEmail()?earnedReward.getFriendEmail().toLowerCase():null);
+					ps.setString(i++, earnedReward.getFriendPartnerUid());
+					ps.setString(i++, earnedReward.getRewardType());
+					if(null != earnedReward.getRewardDate()){
+					ps.setDate(i++,	new Date(earnedReward.getRewardDate().getTime()));
+					} else {
+					ps.setNull(i++, Types.TIMESTAMP);	
 					}
-				} catch (SQLException e) {
-					LOGGER.error(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail(), e);
+					ps.setString(i++, earnedReward.getRewardSetName());
+					ps.setString(i++, earnedReward.getRewardSetId());
+					ps.setDouble(i++, earnedReward.getRewardValue());
+					ps.setString(i++, earnedReward.getRewardDetail());
+	
+					try {
+						int rowsaffected = ps.executeUpdate();
+						if (rowsaffected != 1) {			
+							LOGGER.warn(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail());
+						}
+					} catch (SQLException e) {
+						LOGGER.error(" Could not insert this record for : " + earnedReward.getAdvocateEmail() + "," + earnedReward.getFriendEmail(), e);
+					}
 				}
 			}
 			ps.close();
