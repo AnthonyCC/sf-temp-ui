@@ -203,7 +203,7 @@ var FreshDirect = FreshDirect || {};
 					tallestColumnH = Math.max(tallestColumnH, $(this).height());
 					
 					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
-						$(this).css("background-color", "green");
+						//$(this).css("background-color", "green");
 					}else{
 						//$(this).css("background-color", "pink");
 					}
@@ -252,7 +252,8 @@ var FreshDirect = FreshDirect || {};
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
 		
 		//update the page beacon url
-		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined && xhr.responseJSON.adProducts.pageBeacon !== undefined &&  xhr.responseJSON.adProducts.pageBeacon != null &&
+		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
+		xhr.responseJSON.adProducts.pageBeacon !== undefined &&  xhr.responseJSON.adProducts.pageBeacon != null &&
 		xhr.responseJSON.adProducts.pageBeacon.length > 3 ){
 			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
 		}
