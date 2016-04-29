@@ -35,7 +35,7 @@ public interface IAirclicService {
 	public AirclicCartonScanHistory getCartonScanHistory(List<String> cartonList) throws FDLogisticsServiceException;
 
 	public DeliveryManifest getDeliveryManifest(String orderId,
-			String deliveryDate) throws FDLogisticsServiceException;
+			String deliveryDate,String companyCode) throws FDLogisticsServiceException;
 
 	public DeliveryETA getDeliveryETA(String orderId) throws FDLogisticsServiceException;
 	
@@ -43,7 +43,7 @@ public interface IAirclicService {
 			String date) throws FDLogisticsServiceException;
 
 	public DeliverySummary getDeliverySummary(String orderId,
-			String routeNo, String date,String erpOrderId) throws FDLogisticsServiceException;
+			String routeNo, String date,String erpOrderId,String companyCode) throws FDLogisticsServiceException;
 
 	public Map<String, DeliveryException> getCartonScanInfo() throws FDLogisticsServiceException;
 
@@ -53,7 +53,7 @@ public interface IAirclicService {
 	public CartonStatusesResponse getCartonStatusByOrderId(String companycode,
 			DeliverySignatureRequest request) throws FDLogisticsServiceException;
 
-	public byte[] getSignature(String orderId) throws FDLogisticsServiceException;
+	public byte[] getSignature(String orderId,String companyCode) throws FDLogisticsServiceException;
 
 	public DeliveryETAWindow getDeliveryETAWindow(String orderId) throws FDLogisticsServiceException;
 

@@ -29,7 +29,8 @@
 			var jsonrpcClient = new JSONRpcClient("/api/message.jsp");
 
 			jsonrpcClient.manager.lookUpDeliverySummary(deliverySummaryCallBack, '<%= _order.getErpSalesId() %>','<%= _shippingInfo.getTruckNumber() %>'
-															,'<%=  CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>','<%= order.getSapOrderId() %>');
+															,'<%=  CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()) %>','<%= order.getSapOrderId() %>'
+															,'<%= order.getEStoreId() %>');
 			
 			
 			function  deliverySummaryCallBack(summaryResult) {

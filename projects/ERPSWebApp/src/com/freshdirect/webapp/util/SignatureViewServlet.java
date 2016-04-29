@@ -16,10 +16,11 @@ public class SignatureViewServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String type = request.getParameter("type");
 		String order = request.getParameter("orderId");
+		String estoreId = request.getParameter("estoreId");
 		ServletOutputStream out = response.getOutputStream();
 		try {
 			if(type == null || type.trim().length() == 0) {
-				byte[] _image = AirclicManager.getInstance().getSignature(order);
+				byte[] _image = AirclicManager.getInstance().getSignature(order,estoreId);
 				if(_image != null){
 					response.setContentType("image/jpeg");
 					out.write(_image);

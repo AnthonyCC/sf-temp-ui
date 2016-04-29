@@ -102,11 +102,11 @@ public class AirclicManager {
 		return result;
 	}
 
-	public byte[] getSignature(String orderId) throws FDResourceException {
+	public byte[] getSignature(String orderId,String companyCode) throws FDResourceException {
 		try {
 			IAirclicService airclicService = LogisticsServiceLocator
 					.getInstance().getAirclicService();
-			return airclicService.getSignature(orderId);
+			return airclicService.getSignature(orderId,companyCode);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		}
@@ -290,7 +290,7 @@ public class AirclicManager {
 		}
 	}
 
-	public DeliveryManifest getDeliveryManifest(String orderId, String date)
+	public DeliveryManifest getDeliveryManifest(String orderId, String date,String companyCode)
 			throws FDResourceException {
 		
 		DeliveryManifest result = deliveryManifestCache.get(orderId);
@@ -298,7 +298,7 @@ public class AirclicManager {
 			if(result == null){
 				IAirclicService airclicService = LogisticsServiceLocator
 						.getInstance().getAirclicService();
-				result = airclicService.getDeliveryManifest(orderId, date);
+				result = airclicService.getDeliveryManifest(orderId, date,companyCode);
 				deliveryManifestCache.put(orderId, result);
 			}
 		} catch (FDLogisticsServiceException e) {
@@ -340,7 +340,7 @@ public class AirclicManager {
 	}
 
 	public DeliverySummary lookUpDeliverySummary(String orderId,
-			String routeNo, String date,String erpOrderId) throws FDResourceException {
+			String routeNo, String date,String erpOrderId,String companyCode) throws FDResourceException {
 		DeliverySummary response = deliverySummaryCache.get(orderId);
 		try {
 			if(response == null){
@@ -349,7 +349,7 @@ public class AirclicManager {
 				//IOrderService orderService = LogisticsServiceLocator
 					//	.getInstance().getOrderService();
 				if (!ErpServicesProperties.isAirclicBlackhole()) {
-					response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date,erpOrderId));
+					response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date,erpOrderId,companyCode));
 					//response = orderService.getDeliverySummary(response, orderId);
 					deliverySummaryCache.put(orderId, response);	
 				}

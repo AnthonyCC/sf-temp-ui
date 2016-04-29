@@ -126,12 +126,12 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	
 	@Override
 	public DeliveryManifest getDeliveryManifest(String orderId,
-			String deliveryDate) throws FDLogisticsServiceException {
+			String deliveryDate,String companyCode) throws FDLogisticsServiceException {
 		DeliveryRequest request =  new DeliveryRequest();
 		request.setDeliveryDate(deliveryDate);
 		request.setOrderId(orderId);
 		String inputJson = buildRequest(request);
-		DeliveryManifest response =  getData(inputJson, getEndPoint(GET_MANIFEST_API), DeliveryManifest.class);
+		DeliveryManifest response =  getData(inputJson, isDispatchedEndPoint(GET_MANIFEST_API, companyCode.toLowerCase()), DeliveryManifest.class);
 		
 		DeliveryManifest deliveryInfo =  getData(null, getOMSEndPoint(GET_ORDER_MANIFEST_API)+orderId, DeliveryManifest.class);
 		
@@ -183,7 +183,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	@SuppressWarnings("unchecked")
 	@Override
 	public DeliverySummary getDeliverySummary(String orderId,
-			String routeNo, String date,String erpOrderId) throws FDLogisticsServiceException {
+			String routeNo, String date,String erpOrderId,String companyCode) throws FDLogisticsServiceException {
 
 		DeliveryRequest request = new DeliveryRequest();
 		request.setOrderId(orderId);
@@ -192,7 +192,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 		request.setErpOrderId(erpOrderId);
 		
 		String inputJson = buildRequest(request);
-		DeliverySummary response =  getData(inputJson, getEndPoint(GET_DELIVERYSUMMARY_API), DeliverySummary.class);
+		DeliverySummary response =  getData(inputJson, isDispatchedEndPoint(GET_DELIVERYSUMMARY_API,companyCode.toLowerCase()), DeliverySummary.class);
 		
 		String ivr_response  =  getData(null, getOMSEndPoint(GET_DELIVERYREQ_API+orderId), String.class);
 		ListOfObjects<CallLogModel> modelList = new ListOfObjects<CallLogModel>();
@@ -277,9 +277,9 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	
 	
 	@Override
-	public byte[] getSignature(String orderId) throws FDLogisticsServiceException {
+	public byte[] getSignature(String orderId,String companyCode) throws FDLogisticsServiceException {
 
-		return getData(null, getEndPoint(SIGNATURE_API)+orderId, byte[].class);
+		return getData(null, isDispatchedEndPoint(SIGNATURE_API, companyCode.toLowerCase())+orderId, byte[].class);
 			
 	}
 
