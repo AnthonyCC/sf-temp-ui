@@ -117,9 +117,9 @@ private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id
 	
 	
 	
-	public static final String PRODUCT_FAMILY_SKU_SELECT_SQL= "SELECT DISTINCT p.sku_code FROM erps.product p, erps.materialproxy mpx, erps.material m,erps.product_family_master pm, "+
+	public static final String PRODUCT_FAMILY_SKU_SELECT_SQL= "SELECT DISTINCT M.SKUCODE FROM  erps.material m, erps.product_family_master pm, "+
 														   	  "(SELECT MAX(version) v, sap_id s FROM erps.material WHERE sap_id IN <XYZ> GROUP BY sap_id) T "+
-														   	  " WHERE p.id = mpx.product_id AND  m.id= mpx.mat_id AND m.version=T.v AND M.SAP_ID=T.s and pm.FAMILY_ID=?";
+														   	  " WHERE  m.version=T.v AND M.SAP_ID=T.s and pm.FAMILY_ID=?";
 	
 	
 	
@@ -148,7 +148,7 @@ private static final String PRODUCT_FAMILY_INFO_WITH_MATID_SQL="select Family_id
 	    	   ps.setString(1,familyId);
 	    	   rs = ps.executeQuery();
 	             while (rs.next()) {
-	            	 String skuCode=rs.getString("SKU_CODE");	            
+	            	 String skuCode=rs.getString("SKUCODE");	            
 	            	 skuList.add(skuCode);
 	             }
 	       }catch(SQLException e){
