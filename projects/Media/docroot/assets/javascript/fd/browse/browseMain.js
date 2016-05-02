@@ -69,6 +69,15 @@ var FreshDirect = FreshDirect || {};
           fd.browse.searchTabs && fd.browse.searchTabs.serialize(),
           fd.browse.pageType && fd.browse.pageType.serialize()
         );
+    
+    /* add additional query params, if needed */
+    var picksId = $.QueryString["picksId"]; /* comes from common_javascript.js */
+    if (picksId) {
+    	data = $.extend(data,
+            {"picksId": picksId}
+    	);
+    }
+    
 
     // remove id if searchParams are provided
     if (data.searchParams && data.id) {
@@ -108,6 +117,7 @@ var FreshDirect = FreshDirect || {};
   if (window.history && window.history.pushState) {
     window.onpopstate = function (e) {
       if (e.state && e.state.searchParams) {
+
         DISPATCHER.signal('server', {
           url: '/api/filter?'+window.decodeURIComponent(e.state.searchParams),
           spinner: {
