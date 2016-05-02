@@ -476,7 +476,8 @@ public class CmsFilteringFlow {
 		//set HookLogic adProducts for 'search like' pages.
 		if(FDStoreProperties.isHookLogicEnabled()){
 			  StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
-			if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
+			try{
+			  if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
 				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
 					
 						if(product.getModel()!=null && !product.getModel().isUnavailable()) {
@@ -488,6 +489,9 @@ public class CmsFilteringFlow {
 							} catch (FDSkuNotFoundException e) {
 								LOG.warn("Exception while populating HookLogic returned product: ", e);
 							} catch (HttpErrorResponse e) {
+								LOG.warn("Exception while populating HookLogic returned product: ", e);
+							}
+							catch (Exception e) {
 								LOG.warn("Exception while populating HookLogic returned product: ", e);
 							}
 							if(null != productData && null != productData.getSkuCode()){
@@ -516,7 +520,10 @@ public class CmsFilteringFlow {
 				StringBuffer PageBeacon=new StringBuffer(searchResults.getPageBeacon());
 				browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
 				}
+		}catch (Exception e) {
+			LOG.warn("Exception while populating HookLogic products: ", e);
 		}
+ }
 		
 		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
 		if(browseDataContext.getNavigationModel().getBrandFilterLocation()!=null){
