@@ -103,15 +103,19 @@
 }
 
 .browseContent .sectionContent ul.products li.portrait-item {
-  /*width: 136px;
-  max-width: 136px;*/
-  width: 166px;
-  max-width: 166px;
-  padding: 0 9px 0 9px;
-  margin: 0;
-  border-right: 1px solid #ddd;
-  /*display: table-cell;*/
-  display: inline-block;
+	/*width: 136px;
+	max-width: 136px;*/
+	width: 166px;
+	max-width: 166px;
+	padding: 0 9px 0 9px;
+	margin: 0;
+	/*border-right: 1px solid #ddd;*/
+	/*display: table-cell;*/
+	display: inline-block;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item,  li.isHookLogicProduct{
+	border-left: 1px solid #ddd;
 }
 
 .ie8 .browseContent .sectionContent ul.products li.portrait-item {
@@ -129,7 +133,7 @@
 }
 
 .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(5n) {
-  border-right: 1px solid #ddd;
+	/*border-right: 1px solid #ddd;*/
 }
 
 .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(4n) {
@@ -144,7 +148,7 @@
 .browseContent .sectionContent ul.products li.portrait-item.lastInLine {
   padding-right: 0;
   margin-right: 0;
-  border: none;
+  /*border: none;*/
 }
 
 ul.products .description-skin{

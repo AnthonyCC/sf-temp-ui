@@ -186,7 +186,9 @@ var FreshDirect = FreshDirect || {};
 			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-spacer") ) == false ){
 				//$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
 				
-				var hltH = $(".isHookLogic-true").height();
+				var hltH = $(".isHookLogic-true").height() - 55;
+				
+				console.log("hltH = " + hltH);
 				
 				$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
 			}
@@ -211,12 +213,12 @@ var FreshDirect = FreshDirect || {};
 					tallestColumnH = Math.max(tallestColumnH, $(this).height());
 					
 					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
-						$(this).css("background-color", "green");
+						//$(this).css("background-color", "#88FF88");
 					}else{
 						//$(this).css("background-color", "pink");
 					}
 					
-					console.log("werewolves of london = " + i, ", index3 = " + index3);
+					//console.log("werewolves of london = " + i, ", index3 = " + index3);
 				});
 				
 				//set this to be the height of the tallest row item

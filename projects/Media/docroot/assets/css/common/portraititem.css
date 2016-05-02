@@ -20,7 +20,6 @@
 
 .isHookLogic-false .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(4n){
 	padding-right:10px;
-	border-right: 1px solid #ddd;
 }
 
 .isHookLogic-false .browseContent .sectionContent .isHookLogic-true ul.products li.portrait-item, .lastInLine{
