@@ -192,9 +192,12 @@ var FreshDirect = FreshDirect || {};
 				
 				var hltH = $(".isHookLogic-true").height() - 55;
 				
-				console.log("hltH = " + hltH);
+				//console.log("hltH = " + hltH);
 				
-				$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
+				
+				if( $(".isHookLogic-spacer").length < 1 ){
+					$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
+				}
 			}
 			
 			//get started
@@ -300,7 +303,7 @@ var FreshDirect = FreshDirect || {};
 			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
 		}
 		
-		if( window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) ){
+		if( window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) || (settings.url.indexOf("cartdata?change=") != -1 ) ){
 			adProductSection.fixThoseHooklogicDisplayHeights();
 		}
 		
