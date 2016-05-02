@@ -683,53 +683,33 @@ public void queryForMissingFdxOrders() {
 			"AND CASE WHEN S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24 < DI.CUTOFFTIME THEN DI.CUTOFFTIME ELSE S.LOCK_TIMESTAMP + DI.MOD_CUTOFF_Y/60/24  "+
 			"END < SYSDATE  AND IN_MODIFY = 'X' AND S.LOCK_TIMESTAMP IS NOT NULL )";
 	
-	private int unlockInModifyOrders(Connection conn) {
+	public int unlockInModifyOrders() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		int affected = 0;
+
 		try {
-			PreparedStatement ps = conn.prepareStatement(UNLOCK_INMODIFY_ORDERS);
-			int affected = ps.executeUpdate();
-			ps.close();
+			conn = this.getConnection();
+			ps = conn.prepareStatement(UNLOCK_INMODIFY_ORDERS);
+			affected = ps.executeUpdate();
 			return affected;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return 0;
-	}
-	
-	public int unlockInModifyOrders() {
-		Connection con = null;
-		UserTransaction utx = null;
-		int affected = 0;
-
-		try {
-			utx = this.getSessionContext().getUserTransaction();
-			utx.begin();
-			con = this.getConnection();
-			
-			affected = this.unlockInModifyOrders(con);
-			
-			utx.commit();
-		} catch (Exception e) {
-			LOGGER.warn(e);
-			try {
-				utx.rollback();
-			} catch (SystemException se) {
-				LOGGER.warn("Error while trying to rollback transaction", se);
-			}
-			throw new EJBException(e);
 		} finally {
 			try {
-				if (con != null) {
-					con.close();
-					con = null;
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
 				}
 			} catch (SQLException se) {
 				LOGGER.warn("Exception while trying to cleanup", se);
 			}
 		}
-
-
-		return affected;
+		return 0;
 	}
 	
 }
