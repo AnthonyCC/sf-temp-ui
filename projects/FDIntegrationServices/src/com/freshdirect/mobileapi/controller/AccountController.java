@@ -17,6 +17,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -208,15 +210,15 @@ public class AccountController extends BaseController {
 
     private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user) throws FDException, JsonException, ServiceException {
         String addressId = null;
-        
+        StoreModel store = ContentFactory.getInstance().getStore();
         //FDX-1873 - Show timeslots for anonymous address
-        if(user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) {
+        if((user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) || store.getContentName().equals("FreshDirect")) {
         	addressId = user.getReservationAddressId();
         }
         ShipToAddress anonymousAddress = null;
         
         if (addressId == null) {
-        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0) {
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0 && (!store.getContentName().equals("FreshDirect"))) {
     			anonymousAddress = ShipToAddress.wrap(user.getAddress());
     		} else {
 	        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
@@ -231,7 +233,7 @@ public class AccountController extends BaseController {
     		}        	
         }
         
-        if (anonymousAddress != null) {
+        if (anonymousAddress != null && (!store.getContentName().equals("FreshDirect"))) {
         	
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
