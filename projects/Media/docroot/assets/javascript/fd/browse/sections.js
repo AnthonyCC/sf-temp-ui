@@ -117,13 +117,17 @@ var FreshDirect = FreshDirect || {};
 			if( $(HLprodSelector).length > 0 ){
 				finalFakeRow = HLmaxLen;
 				
+				
+				
 				$(HLprodSelector).each(function( index ) {
 					
 					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
-					if(index > hookLogicRowLimit || ($(paginationSelectedSelector).attr("data-page") != "1") ){
-						//$(this).hide();
+					if(index > hookLogicRowLimit || ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1") ){
+						$(this).hide();
 						
-						console.log("they asked us to stay for tea and have some fun");
+						console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
+						
+						console.log('$(paginationSelectedSelector).attr("data-page") = ', $(paginationSelectedSelector).attr("data-page"));
 					}else{
 						$(this).show();
 						
@@ -255,8 +259,12 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('click', '.superDepartment [data-component="categorylink"]', superSections.handleClick.bind(superSections));
 
 	// page button change
-	$(document).on('page-change', function(){
+	$(document).on('page-change', function(x){
 		window.isHLchangable = true;
+		
+		console.log("x = ", x);
+		
+		//class="pagination-pager-button cssbutton green transparent"
 	});
   
 	//fires upon using search box
@@ -264,9 +272,26 @@ var FreshDirect = FreshDirect || {};
 	$(".tabs li span, .searchbutton, .menuBox li span, .menupopup li span, .sorter button span, .pagination-showall-cssbutton").click(function(){
 		window.isHLchangable = true;
 	});
+	
+	/*window.onpopstate = function() {
+		alert("pop!");
+		
+		window.isHLchangable = true;
+	}*/
+	
+	$(window).on('popstate', function(event) {
+		//alert("pop");
+		
+		window.isHLchangable = true;
+		
+		//change it here for the back button
+		adProductSection.fixThoseHooklogicDisplayHeights();
+	});
 
 	//this always fires upon each set of products load success
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
+		
+		console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
 		
 		//update the page beacon url
 		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
