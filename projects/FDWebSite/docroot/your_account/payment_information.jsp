@@ -104,6 +104,8 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 
 <fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
      
+     <input type="hidden" name="isPayPalDown" id= "isPayPalDown" value="false">
+     
 <!--  MP Use Case #4 implemenation. Please use this component -->
       
        		<fd:GetStandingOrderHelpInfo id="helpSoInfo">
@@ -132,7 +134,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
        								<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
        							</div>
        							<input id="PP-connect" type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal" style="display: none;">
-       							
+       							<input type="hidden" name="isPayPalWalletConnected" id= "isPayPalWalletConnected" value=<%=isPayPalWalletConnected%>
        						<% } else { %>
        						         <div id="PP_ERROR_WRAPPER">
 	              						<!-- <div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
@@ -267,81 +269,102 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 
 <script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
 <script type="text/javascript" language="Javascript">
+var checkout;
+jQuery(document).ready(function($) {
 
-jQuery(document).ready(function($){
-    $('#PP-connect').click(function() {
-              console.log("-- Connect With Paypal click handler  --");
-              $.ajax({
-            	  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
-                            type: 'post',
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function(result){
-                            	if(result.submitForm.success){
-                            		$('#PP_ERROR').css("display","none");
-	                            	//var x = document.getElementById("PP_button");
-	                            	var deviceObj = "";
-	                    	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-	                    	    		  dataCollector: {
-	                    	    			    paypal: true
-	                    	    			  },
-	                    	    		  onReady: function (integration) {
-	                    	    			 // alert("integration.deviceData :"+integration.deviceData);
-	                    	    		    checkout = integration;
-	                    	    		    checkout.paypal.initAuthFlow();
-	                    	    		    deviceObj = JSON.parse(integration.deviceData);
-	                    	    		    
-	                    	    		  },
-	                    	    		  onPaymentMethodReceived: function (payload) {
-	
-	                    	    	        $.ajax({
-	                    	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
-	                    	                      		"\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
-	                    	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
-	                    	                      type: 'post',
-	                    	                      success: function(id, result){
-	//                     	                    	  $('#PP_logo').css("display","inline-block");
-	//                     	                    	  $('#PP-connect').css("display","none");
-	//                     	                    	  $('#pp_wallet_cards').append("<tr><td class=wallet-title-header>PayPal<div class=disconnectWallet id=deletePPWallet><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteWalletPP class=disconnect-cssbutton-green>UNLINK</span></div></td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>");
-	//                     	                    	  $('#pp_wallet_cards').append("<tr height=14></tr><tr><td width=280 class=wallet-first-card><font class=text12> <img src=https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png><br><br>"+id.submitForm.result.eWalletResponseData.paymentMethod.name+"<br>"+id.submitForm.result.eWalletResponseData.paymentMethod.emailID+"</font><br></td></tr>");
-	                    	                    	  location.reload(true);
-	                    	                      }
-	                    	    	        });
-	                    	    		    
-	
-	                    	    		  },
-	                    	    		  paypal: {
-	                    	    		    singleUse: false,
-	                    	    		    headless: true
-	                    	    		  }
-	                    	    		  
-	                    	    		});
-	                    	    			
-	                            }else{
-	                            	$('#PP_ERROR').css("display","inline-block");
-	                            }
-                            	
-                            }
-              	         
-       });
-    });
-    
-    
+    var isPayPalPaired = $('#isPayPalWalletConnected').val();
+    if (isPayPalPaired != 'true') {
+        // Brain Tree setup-- Start 
+        brainTreeSetup($);
+    }
+    // Brain Trees setup -- END
+
+    if (document.querySelector('#PP-connect') != null) {
+        document.querySelector('#PP-connect').addEventListener('click', function(event) {
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+            if (checkout != null) {
+                checkout.paypal.initAuthFlow();
+            }
+            var isPayPalDown = $('#isPayPalDown').val();
+            if (isPayPalDown == 'true') {
+            	$('#PP_ERROR').css("display", "inline-block");
+            }else{
+            	$('#PP_ERROR').css("display", "none");
+            }
+        });
+    }
+
     $('#deletePPWallet').click(function() {
-    	 $.ajax({
-             url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
-             type: 'post',
-             contentType: "application/json; charset=utf-8",
-             dataType: "json",
-             success: function(result1){ 
-           	  /* $('#pp_wallet_cards').css("display","none"); */
-           	    $('#pp_wallet_cards').empty();
-           	    $('#PP_logo').css("display","none");
-           	    $('#PP-connect').css("display","inline-block");
-             } 
-       });
+        $.ajax({
+            url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(result1) {
+                /* $('#pp_wallet_cards').css("display","none"); */
+                $('#pp_wallet_cards').empty();
+                $('#PP_logo').css("display", "none");
+                $('#PP-connect').css("display", "inline-block");
+                $("#isPayPalWalletConnected").val("false");
+                $('#PP_ERROR').css("display", "none");
+                brainTreeSetup($);
+            }
+        });
     });
-}); 
- 
+});
+
+function brainTreeSetup($){
+	$.ajax({
+        url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(result) {
+            if (result.submitForm.success) {
+                $('#PP_ERROR').css("display", "none");
+                $("#isPayPalDown").val("false");
+                //var x = document.getElementById("PP_button");
+                var deviceObj = "";
+                braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
+                    dataCollector: {
+                        paypal: true
+                    },
+                    onReady: function(integration) {
+                        // alert("integration.deviceData :"+integration.deviceData);
+                        checkout = integration;
+                        // 	                    	    		    checkout.paypal.initAuthFlow();
+                        deviceObj = JSON.parse(integration.deviceData);
+
+                    },
+                    // For saving the PayPal payment Method to FD 
+                    onPaymentMethodReceived: function(payload) {
+
+                        $.ajax({
+                            url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
+                                "\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\"" + payload.nonce + "\",\"email\":\"" + payload.details.email + "\",\"firstName\":\"" + payload.details.firstName + "\"," +
+                                "\"lastName\":\"" + payload.details.lastName + "\" ,\"deviceId\":\"" + deviceObj.correlation_id + "\"}}",
+                            type: 'post',
+                            success: function(id, result) {
+                                location.reload(true);
+                            }
+                        });
+                    },
+                    paypal: {
+                        singleUse: false,
+                        headless: true
+                    }
+                });
+            } else {
+            	$("#isPayPalDown").val("true");
+            }
+
+        }
+
+    });
+}
 </script>  
 </tmpl:insert>

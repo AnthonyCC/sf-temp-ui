@@ -20,6 +20,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 <potato:cartData />
 
 <input type="hidden" id="ppDeviceId" value="">
+<input type="hidden" name="isPayPalDown" id= "isPayPalDown" value="false">
 
 <tmpl:insert template='/expressco/includes/ec_template.jsp'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
@@ -165,28 +166,82 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 <script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
 <script>
+var checkout;
 	//While loading the screen get the Device ID from braintress
 	jQuery(document).ready(function($){
+		 $("#isPayPalDown").val("false");
 	       $.ajax({
 		  			url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"get_pp_device_data\",\"ewalletType\":\"PP\"}}",
 	          type: 'post',
 	          contentType: "application/json; charset=utf-8",
 	          dataType: "json",
 	          success: function(result){
-	        	  if(result.submitForm.success){
+	        	  if(result.submitForm.success && result.submitForm.result.eWalletResponseData.token != null){
+	        		  $('#PP_ERROR').css("display", "none");
+	                  $("#isPayPalDown").val("false");
 		          	var deviceObj = "";
 		  	    	braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
 		 	    		  dataCollector: {
 		 	    			    paypal: true
 		 	    			  },
 		 	    		  onReady: function (integration) {
+		 	    			 checkout = integration;
 		 	    		    deviceObj = JSON.parse(integration.deviceData);
 		 	    		 $('#ppDeviceId').val(deviceObj.correlation_id);
+		 	    		  },
+		 	    		 onPaymentMethodReceived: function (payload) {
+		 	    		    $.ajax({
+		 	                      url:"/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPP\",\"formdata\":{\"action\":\"PP_Pairing_End\",\"ewalletType\":" +
+		 	                      		"\"PP\",\"paymentMethodNonce\":\""+payload.nonce+"\",\"email\":\""+payload.details.email+"\",\"firstName\":\""+payload.details.firstName+"\"," +
+		 	                      				"\"lastName\":\""+payload.details.lastName+"\" ,\"deviceId\":\""+deviceObj.correlation_id+"\"}}",
+		 	                      type: 'post',
+		 	                      success: function(id, result){
+		 	                    	 //location.reload(true);
+		 	                    	 window.location.assign("/expressco/checkout.jsp");
+		 	                      }
+		 	    	        });
+		 	    		  },
+		 	    		  paypal: {
+		 	    		    singleUse: false,
+		 	    		    headless: true
 		 	    		  }
 		  	    	});
-	        	  }
-	          }
+	        	  }else {
+	              	$("#isPayPalDown").val("true");
+	              }
+	          },
+	        failure:function (id, result) {
+	  			$("#isPayPalDown").val("true");
+	  		},
+	  		error:function (id, result) {
+	  			$("#isPayPalDown").val("true");
+	  		},
+	  		fail:function (id, result) {
+	  			$("#isPayPalDown").val("true");
+	  		}
 		 });
+	       
+	       if (document.querySelector('#PP_button') != null) {
+	           document.querySelector('#PP_button').addEventListener('click', function(event) {
+	               if (event.preventDefault) {
+	                   event.preventDefault();
+	               } else {
+	                   event.returnValue = false;
+	               }
+	               console.log("-- Connect With Paypal click handler  --");
+	               if (checkout != null) {
+	                   checkout.paypal.initAuthFlow();
+	               }
+	               
+	               var isPayPalDown = $('#isPayPalDown').val();
+	               if (isPayPalDown == 'true') {
+	               	$('#PP_ERROR').css("display", "inline-block");
+	               }else{
+	               	$('#PP_ERROR').css("display", "none");
+	               }
+	           });
+	       }
+
 	});
 </script>
 </tmpl:insert>
