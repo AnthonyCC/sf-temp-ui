@@ -29,6 +29,7 @@ insert into persona_permission values(1,4);
 insert into persona_permission values(1,5);
 insert into persona_permission values(1,6);
 insert into persona_permission values(1,7);
+insert into persona_permission values(1,8);
 insert into persona_permission values(1,13);
 insert into persona_permission values(1,14);
 insert into persona_permission values(1,15);
