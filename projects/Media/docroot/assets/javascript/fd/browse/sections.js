@@ -194,7 +194,6 @@ var FreshDirect = FreshDirect || {};
 				
 				//console.log("hltH = " + hltH);
 				
-				
 				if( $(".isHookLogic-spacer").length < 1 ){
 					$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
 				}
@@ -204,16 +203,24 @@ var FreshDirect = FreshDirect || {};
 			var tallestColumnH = 0;
 			
 			var colLength = 0;
-			
+			var itemClass = '';
+			var regularRowClass = '';
 			var HLselectorClass = '';
 			
 			/*height fixes*/
 			for(var i=0; i<(finalFakeRow+1); i++){
 				tallestColumnH = 0;
 				
-				colLength = $(".browse-sections-top li.portrait-item.fakeRow_"+i).length;
+				itemClass = "li.portrait-item.fakeRow_"+i;
+				regularRowClass = ".browse-sections-top "+itemClass;
 				
-				HLselectorClass = ".browse-sections-top li.portrait-item.fakeRow_"+i+", .isHookLogic-true li.portrait-item.fakeRow_"+i;
+				colLength = $( regularRowClass ).length;
+				
+				$( itemClass ).first().css("border", "none");
+
+				
+				//both regular products and the HL product of this class
+				HLselectorClass = regularRowClass+", .isHookLogic-true "+itemClass;
 				
 				//$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
 				$(HLselectorClass).each(function(index3){
@@ -234,7 +241,8 @@ var FreshDirect = FreshDirect || {};
 				if(i >= HLmaxLen){
 					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
 				}
-			}//end for var i=0; ...
+				
+			}//end for var i=0; i<(finalFakeRow+1); i++...
 			
 			//correct for when there are filter tags
 			if( $('.filterTags').length > 0 ){

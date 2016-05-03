@@ -10,15 +10,16 @@
  */
 {template .topContent autoescape="false"}
 {let $l: $limit or $limit == 0 ? $limit : 25 /}
-{call browse.content}
-  {param sections:$sections /}
-  {param sectionMaxLevel:$sectionMaxLevel /}
-  {param allSectionsEmpty:$allSectionsEmpty /}
-  {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
-  {param filterLabels:$filterLabels /}
-  {param numProducts:$l /}
-  {param abFeatures:$abFeatures /}
-{/call}
+	{call browse.content}
+		{param sections:$sections /}
+		{param sectionMaxLevel:$sectionMaxLevel /}
+		{param allSectionsEmpty:$allSectionsEmpty /}
+		{param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
+		{param filterLabels:$filterLabels /}
+		{param numProducts:$l /}
+		{param abFeatures:$abFeatures /}
+		{param ifSingleUL:true /}
+	{/call}
 {/template}
 
 /**

@@ -8,30 +8,30 @@
  * @param? numProducts
  * @param? fromProducts
  * @param? abFeatures
+ * @param? ifSingleUL
  */
 {template .content autoescape="false"}
-
-{if $allSectionsEmpty}
-<div class="browse-empty-section">
-  No products meet your selected preferences.
-</div>
-{/if}
-<div class="browseContent">
-  {if $sections}
-    {foreach $section in $sections}
-      {call browse.section}
-        {param section:$section /}
-        {param lastLevel:$sectionMaxLevel /}
-        {param level:1 /}
-        {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
-        {param filterLabels:$filterLabels.filterLabels /}
-        {param numProducts:$numProducts /}
-        {param fromProducts:$fromProducts /}
-        {param abFeatures:$abFeatures /}
-      {/call}
-    {/foreach}
-  {/if}
-  <div class="browse-loading">Loading products</div>
-</div>
+	{if $allSectionsEmpty}
+		<div class="browse-empty-section">
+			No products meet your selected preferences.
+		</div>
+	{/if}
+	<div class="browseContent">
+		{if $sections}
+			{foreach $section in $sections}
+				{call browse.section}
+					{param section:$section /}
+					{param lastLevel:$sectionMaxLevel /}
+					{param level:1 /}
+					{param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
+					{param filterLabels:$filterLabels.filterLabels /}
+					{param numProducts:$numProducts /}
+					{param fromProducts:$fromProducts /}
+					{param abFeatures:$abFeatures /}
+					{param ifSingleUL:$ifSingleUL /}
+				{/call}
+			{/foreach}
+		{/if}
+		<div class="browse-loading">Loading products</div>
+	</div>
 {/template}
-
