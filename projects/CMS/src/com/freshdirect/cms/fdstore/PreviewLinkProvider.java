@@ -104,6 +104,9 @@ public class PreviewLinkProvider {
 		}
 
 		if (uri != null && isAbsoluteUrl) {
+			return uri;
+		}
+		if (uri != null) {
 			if (storeKey != null) {
 				ContentNodeI theStoreNode = storeKey.lookupContentNode();
 				if (theStoreNode != null) {
@@ -114,7 +117,6 @@ public class PreviewLinkProvider {
 				}
 			}
 		}
-System.out.println("URI:::::::::"+uri);
 		return uri;
 	}
 	
