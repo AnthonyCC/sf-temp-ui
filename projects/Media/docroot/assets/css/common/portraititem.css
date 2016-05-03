@@ -15,13 +15,18 @@
   text-align: left;
 }
 .isHookLogic-false{
-	float:left;
+	/* APPBUG-4609 */
+	/*float:left;*/
 }
 
 .isHookLogic-false .browseContent .sectionContent ul.products[data-ipl="4"] li.portrait-item:nth-child(4n){
 	padding-right:10px;
 }
 
+.isHookLogic-false .prod0 {
+	/* APPBUG-4619 */
+	border-left: none !important;
+}
 .isHookLogic-false .browseContent .sectionContent .isHookLogic-true ul.products li.portrait-item, .lastInLine{
 	border-right: none!important;
 }

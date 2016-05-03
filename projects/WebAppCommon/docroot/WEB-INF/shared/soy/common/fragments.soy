@@ -89,7 +89,7 @@
     {for $col in range(0, $ipl)}
       {if $fProducts + $col + $line * $ipl < $nProducts}
         {let $product: $productList[$fProducts + $col + $line * $ipl] /}
-        {let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ')  /}
+        {let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ') + 'prod'+$col  /}
         {call common.transactionalGridItem}
           {param item:$product /}
           {param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine' ) /}
