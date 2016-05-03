@@ -478,40 +478,44 @@ public class CmsFilteringFlow {
 			  StringBuffer updatedPageBeacon = new StringBuffer("&aShown=");
 			try{
 			  if(null !=searchResults.getAdProducts() && !searchResults.getAdProducts().isEmpty()){
-				for (FilteringSortingItem<ProductModel> product : searchResults.getAdProducts()) {
-					
-						if(product.getModel()!=null && !product.getModel().isUnavailable()) {
-							ProductData productData = null;
-							try {
-								productData = ProductDetailPopulator.createProductData(user, product.getModel());
-							} catch (FDResourceException e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							} catch (FDSkuNotFoundException e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							} catch (HttpErrorResponse e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							}
-							catch (Exception e) {
-								LOG.warn("Exception while populating HookLogic returned product: ", e);
-							}
-							if(null != productData && null != productData.getSkuCode()){
-								updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
-								productData.setFeatured(true);
-								//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
-								productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getClickBeacon());
-								productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getModel()).getImpBeacon());
-								if (nav.getPageType()!=null){
-									productData.setPageType(nav.getPageType().toString());
-									
+				  List<FilteringProductItem> items = ProductItemFilterUtil.createFilteringProductItemsFromSearchResults(searchResults.getAdProducts());
+				  items = ProductItemFilterUtil.getFilteredProducts(items, navigationModel.getActiveFilters(), true, true);
+				  if(null !=items){
+						for (FilteringProductItem product : items) {
+							
+								if(product.getProductModel()!=null && !product.getProductModel().isUnavailable()) {
+									ProductData productData = null;
+									try {
+										productData = ProductDetailPopulator.createProductData(user, product.getProductModel());
+									} catch (FDResourceException e) {
+										LOG.warn("Exception while populating HookLogic returned product: ", e);
+									} catch (FDSkuNotFoundException e) {
+										LOG.warn("Exception while populating HookLogic returned product: ", e);
+									} catch (HttpErrorResponse e) {
+										LOG.warn("Exception while populating HookLogic returned product: ", e);
+									}
+									catch (Exception e) {
+										LOG.warn("Exception while populating HookLogic returned product: ", e);
+									}
+									if(null != productData && null != productData.getSkuCode()){
+										updatedPageBeacon.append((("&aShown=".equals(updatedPageBeacon.toString()))?productData.getSkuCode():","+productData.getSkuCode()));
+										productData.setFeatured(true);
+										//productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
+										productData.setClickBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getClickBeacon());
+										productData.setImageBeacon(((ProductModelBrandAdsAdapter)product.getProductModel()).getImpBeacon());
+										if (nav.getPageType()!=null){
+											productData.setPageType(nav.getPageType().toString());
+											
+										}
+										browseDataContext.getAdProducts().getProducts().add(productData);
+										if(browseDataContext.getAdProducts().getProducts().size() >=FDStoreProperties.getHlProductsCount()){//DISPLAY ONLY 5 HOOKLOGIC PRODUCTS
+											break;
+										} 
+									}
 								}
-								browseDataContext.getAdProducts().getProducts().add(productData);
-								if(browseDataContext.getAdProducts().getProducts().size() >=FDStoreProperties.getHlProductsCount()){//DISPLAY ONLY 5 HOOKLOGIC PRODUCTS
-									break;
-								} 
-							}
+							
 						}
-					
-				}
+				  }
 			
 			}else{
 				updatedPageBeacon.append("none");
