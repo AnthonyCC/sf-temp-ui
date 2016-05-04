@@ -18,11 +18,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
-import com.freshdirect.fdstore.brandads.FDBrandProductsAdGateway;
-import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
-import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -61,18 +56,21 @@ import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
+import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
+import com.freshdirect.webapp.ajax.browse.service.ProductService;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class CmsFilteringFlow {
 	
-	private static final Logger LOG = LoggerFactory.getInstance( CmsFilteringFlow.class );
+    private static final Logger LOG = LoggerFactory.getInstance( CmsFilteringFlow.class );
 	
 	private static String FALLBACK_URL = "/";
 	private static String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
@@ -720,7 +718,10 @@ public class CmsFilteringFlow {
 		// inject references
 		browseDataContext.setNavigationModel(navigationModel);
 		browseDataContext.setCurrentContainer(contentNodeModel);
-		savePageTypeForCaching(nav.getPageType(), browseDataContext);
+
+        applyCategoryAggregationForGroundAndBurgers(nav, user, browseDataContext, contentNodeModel);
+
+        savePageTypeForCaching(nav.getPageType(), browseDataContext);
 
 		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
 			// menu availability check
@@ -754,6 +755,30 @@ public class CmsFilteringFlow {
 
 		return browseDataContext;
 	}
+
+    /**
+     * Aggregate Ground & Burgers sub-category products into single section and remove sub-category titles
+     * 
+     * @param nav
+     * @param user
+     * @param browseDataContext
+     * @param contentNodeModel
+     */
+    private void applyCategoryAggregationForGroundAndBurgers(CmsFilteringNavigator nav, FDSessionUser user, BrowseDataContext browseDataContext, ContentNodeModel contentNodeModel) {
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.browseaggregatedcategories1_0, nav.getRequestCookies(), user)
+                && FDStoreProperties.getBrowseAggregatedCategories().contains(contentNodeModel.getContentKey().getEncoded())) {
+            SectionContext mainSectionContext = browseDataContext.getSectionContexts().get(0);
+            SectionContext mergedSectionContext = new SectionContext();
+            mergedSectionContext.setProductItems(new ArrayList<FilteringProductItem>());
+            for (SectionContext subSectionContext : mainSectionContext.getSectionContexts()) {
+                mergedSectionContext.getProductItems().addAll(subSectionContext.getProductItems());
+            }
+            List<SectionContext> subSectionContexts = mainSectionContext.getSectionContexts();
+            subSectionContexts.clear();
+            subSectionContexts.add(mergedSectionContext);
+            ProductService.defaultService().removeSkuDuplicates(mergedSectionContext.getProductItems());
+        }
+    }
 
 	private boolean checkWineDepartment(NavigationModel navigationModel) {
 		boolean result = false;

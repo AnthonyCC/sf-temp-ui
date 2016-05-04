@@ -863,6 +863,8 @@ public class FDStoreProperties {
 	public static final String PROP_ERPSYLINK_STOREFRONT_FD = "fdstore.erpsylink.storefront.fd";
 	public static final String PROP_ERPSYLINK_STOREFRONT_FDX = "fdstore.erpsylink.storefront.fdx";
 	
+    private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
+
     static {      	    	
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1525,6 +1527,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         //defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1695,6 +1698,8 @@ public class FDStoreProperties {
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FD, "http://web01.web.stdev01.nj01:7001");
         defaults.put(PROP_ERPSYLINK_STOREFRONT_FDX, "http://web01.web.stdev06.nj01:7001");
         defaults.put(PROP_HL_PRODUCTS_COUNT, "5");
+
+        defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
 		refresh();
     }
 
@@ -4264,4 +4269,20 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_HOOK_LOGIC_ORDER_FEED_MINS));
     }
 	
+    public static Set<String> getBrowseAggregatedCategories() {
+        Set<String> result = new HashSet<String>();
+        String aggregatedCategoriesText = get(PROP_BROWSE_AGGREGATED_CATEGORIES);
+        if (aggregatedCategoriesText != null) {
+            String[] aggregatedCategoryItems = aggregatedCategoriesText.split(",");
+            if (aggregatedCategoryItems != null) {
+                for (String aggregatedCategoryItem : aggregatedCategoryItems) {
+                    if (aggregatedCategoryItem != null) {
+                        result.add(aggregatedCategoryItem);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 }

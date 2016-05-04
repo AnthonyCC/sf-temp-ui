@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,7 +20,6 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.webapp.ajax.JsonHelper;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.features.service.FeaturesService;
@@ -83,6 +83,7 @@ public class CmsFilteringNavigator {
 
 	private int productHits = 0;
 	private int recipeHits = 0;
+    private Cookie[] requestCookies;
 	/**
 	 * Creates a CmsFilteringNavigator instance out of request parameter map.
 	 * 
@@ -232,7 +233,7 @@ public class CmsFilteringNavigator {
 		) {
 			throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
 		}
-		
+        cmsFilteringNavigator.setRequestCookies(request.getCookies());
 		return cmsFilteringNavigator;
 	}
 
@@ -502,4 +503,12 @@ public class CmsFilteringNavigator {
 	public void setListSearchParams(String listSearchParams) {
 		this.listSearchParams = listSearchParams;
 	}
+
+    public Cookie[] getRequestCookies() {
+        return requestCookies;
+    }
+
+    public void setRequestCookies(Cookie[] requestCookies) {
+        this.requestCookies = requestCookies;
+    }
 }
