@@ -301,7 +301,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
 		product.setProdId(productModel.getContentName());
 		product.setProdName(productModel.getFullName());
-		product.setProdUrl(URL_DOMAIN+PreviewLinkProvider.getLink(productModel.getContentKey(),ContentFactory.getInstance().getStoreKey()));
+		product.setProdUrl(URL_DOMAIN+PreviewLinkProvider.getLink(productModel.getContentKey(),ContentFactory.getInstance().getStoreKey(),true));
 		populateParentInfo(productModel, product);
 		product.setDeptId(productModel.getDepartment().getContentName());
 		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel())?fdProductInfo.getAvailabilityStatus(zone.getSalesOrg(),zone.getDistributionChanel()).getStatusCode():"");

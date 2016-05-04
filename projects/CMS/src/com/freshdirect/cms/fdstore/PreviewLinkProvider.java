@@ -122,6 +122,6 @@ public class PreviewLinkProvider {
 	
 	
 	public static String getLink(ContentKey key, ContentKey storeKey) {
-		return getLink(key, storeKey, true); 
+		return getLink(key, storeKey, false); 
 	}
 }
