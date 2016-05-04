@@ -199,7 +199,7 @@ var FreshDirect = FreshDirect || {};
 				}
 			}
 			
-			$(".isHookLogic-false .browse-sections-top .products.transactional").css("min-height", $(".isHookLogic-true").height() );
+			$(".isHookLogic-false .browse-sections-top .products.transactional").css("min-height", $(".isHookLogic-true").outerHeight(true) );
 			
 			//get started
 			var tallestColumnH = 0;
