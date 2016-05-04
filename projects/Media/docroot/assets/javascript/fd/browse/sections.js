@@ -158,7 +158,9 @@ var FreshDirect = FreshDirect || {};
 					var randomTime = new Date().getTime();
 					
 					//beckoning for page beacon
-					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
+					if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
+						$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
+					}
 				}
 				
 				//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
@@ -302,7 +304,7 @@ var FreshDirect = FreshDirect || {};
 	//this always fires upon each set of products load success
 	$( document ).ajaxSuccess(function(event, xhr, settings) {
 		
-		console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
+		//console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
 		
 		//update the page beacon url
 		if( xhr.responseJSON !== undefined && xhr.responseJSON.adProducts !== undefined &&
