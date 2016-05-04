@@ -117,8 +117,6 @@ var FreshDirect = FreshDirect || {};
 			if( $(HLprodSelector).length > 0 ){
 				finalFakeRow = HLmaxLen;
 				
-				
-				
 				$(HLprodSelector).each(function( index ) {
 					
 					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
@@ -200,6 +198,8 @@ var FreshDirect = FreshDirect || {};
 					$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
 				}
 			}
+			
+			$(".isHookLogic-false .browse-sections-top .products.transactional").css("min-height", $(".isHookLogic-true").height() );
 			
 			//get started
 			var tallestColumnH = 0;
