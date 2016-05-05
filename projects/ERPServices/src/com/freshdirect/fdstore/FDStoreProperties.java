@@ -961,7 +961,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_AD_SERVER_PROFILE_ATTRIBS, "");
 
-        defaults.put(PROP_AD_SERVER_USES_DEFERRED_IMAGE_LOADING, "true");
+        defaults.put(PROP_AD_SERVER_USES_DEFERRED_IMAGE_LOADING, "false");
 
         defaults.put(PROP_PAYMENT_METHOD_MANAGER_HOME,
             "freshdirect.paymentmethod.PaymentMethodManager");

@@ -17,6 +17,6 @@ if (sp != null) {
   <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 </head>
 <body class="OASonly">
-  <div id="OAS_<%= lp %>"></div>
+  <div id="OAS_<%= lp %>"><script type="text/javascript">OAS_AD('<%= lp %>');</script></div>
 </body>
 <html>
