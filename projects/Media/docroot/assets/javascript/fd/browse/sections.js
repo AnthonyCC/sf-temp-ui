@@ -122,10 +122,6 @@ var FreshDirect = FreshDirect || {};
 					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
 					if(index > hookLogicRowLimit || ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1") ){
 						$(this).hide();
-						
-						console.log("window.FreshDirect.browse.data.pager.activePage = " + window.FreshDirect.browse.data.pager.activePage);
-						
-						console.log('$(paginationSelectedSelector).attr("data-page") = ', $(paginationSelectedSelector).attr("data-page"));
 					}else{
 						$(this).show();
 						
@@ -218,8 +214,8 @@ var FreshDirect = FreshDirect || {};
 				
 				colLength = $( regularRowClass ).length;
 				
-				$( itemClass ).first().css("border", "none");
-
+				//$( itemClass ).first().css("border", "none");
+				$( regularRowClass ).first().css("border", "none");
 				
 				//both regular products and the HL product of this class
 				HLselectorClass = regularRowClass+", .isHookLogic-true "+itemClass;
