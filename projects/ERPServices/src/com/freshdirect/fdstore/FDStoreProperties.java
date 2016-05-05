@@ -644,6 +644,8 @@ public class FDStoreProperties {
 	private final static String PROP_IP_LOCATOR_ENABLED = "fdstore.iplocator.enabled";
 	private final static String PROP_IP_LOCATOR_CLIENT_ID = "fdstore.iplocator.clientid";
 	private final static String PROP_IP_LOCATOR_URL = "fdstore.iplocator.url";
+	private final static String PROP_IP_LOCATORV4_URL = "fdstore.iplocatorv4.url";
+	private final static String PROP_IP_LOCATORV4_ENABLED = "fdstore.iplocatorv4.enabled";
 	private final static String PROP_IP_LOCATOR_TIMEOUT = "fdstore.iplocator.timeout";
 	private final static String PROP_IP_LOCATOR_ROLLOUT_PERCENT = "fdstore.iplocator.rolloutpercent";
 	private final static String PROP_IP_LOCATOR_EVENT_LOG_ENABLED = "fdstore.iplocator.eventlogenabled";
@@ -1489,6 +1491,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_IP_LOCATOR_ENABLED, "true");
 		defaults.put(PROP_IP_LOCATOR_CLIENT_ID, "103310996");
 		defaults.put(PROP_IP_LOCATOR_URL, "https://iplocator.melissadata.net/v2/REST/Service.svc/doIPLocation");
+		defaults.put(PROP_IP_LOCATORV4_URL, "http://globalip.melissadata.net/v4/WEB/iplocation/doiplocation");
+		defaults.put(PROP_IP_LOCATORV4_ENABLED, "true");
 		defaults.put(PROP_IP_LOCATOR_TIMEOUT, "3000");
 		defaults.put(PROP_IP_LOCATOR_ROLLOUT_PERCENT, "100");
 		defaults.put(PROP_IP_LOCATOR_EVENT_LOG_ENABLED, "true");
@@ -3648,7 +3652,16 @@ public class FDStoreProperties {
 	public static String getIpLocatorUrl() {
 	   	return get(PROP_IP_LOCATOR_URL);
 	}
+	
+	public static String getIpLocatorV4Url() {
+	   	return get(PROP_IP_LOCATORV4_URL);
+	}
+	
+	public static boolean isIpLocatorV4Enabled() {
+	   	return (Boolean.valueOf(get(PROP_IP_LOCATORV4_ENABLED))).booleanValue();
+	}
 
+	
 	public static int getIpLocatorTimeout() {
 		 return Integer.parseInt(get(PROP_IP_LOCATOR_TIMEOUT));
 	}

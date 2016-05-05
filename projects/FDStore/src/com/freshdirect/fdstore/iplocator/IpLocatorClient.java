@@ -12,12 +12,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Category;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -33,10 +38,64 @@ public class IpLocatorClient {
 		return new IpLocatorClient();
 	}
 	
-	public IpLocatorData getData(String ip) throws IpLocatorException{
-		String rawResponse = doRequest(ip);
-		Document doc = parseResponse(rawResponse);
-		return extractData(doc);
+	public static void main(String a[]) throws Exception {
+		IpLocatorClient.getInstance().getDataV4("8.42.37.100"); //"8.41.212.56"
+	}
+
+	public IpLocatorData getDataV4(String ip) throws IpLocatorException {
+		
+		String urlStr = FDStoreProperties.getIpLocatorV4Url() + "?id=" + FDStoreProperties.getIpLocatorClientId() + "&ip=" + StringUtil.encodeUrl(ip);
+		IpLocatorData ipLocatorData = null;
+		LOGGER.info("IP Locator V4 URL: " + urlStr);
+		HttpMethod request = null;
+		
+		try {
+			request = new GetMethod(urlStr);
+			
+			HttpClient client = new HttpClient();
+			client.setTimeout(FDStoreProperties.getIpLocatorTimeout());
+			client.executeMethod(request);
+			
+			ObjectMapper mapper = new ObjectMapper(); 
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			 
+			IpLocatorResponse response = mapper.readValue(request.getResponseBodyAsStream(), IpLocatorResponse.class);
+			
+			
+			IpLocatorRecord record = null;
+			
+			if(response != null && response.getRecords() != null && response.getRecords().size() > 0) {
+				
+				record = response.getRecords().get(0);
+				
+				ipLocatorData = new IpLocatorData();				
+				ipLocatorData.setZipCode(record.getPostalCode());
+				ipLocatorData.setRegion(record.getRegion());
+				ipLocatorData.setCity(record.getCity());
+				ipLocatorData.setCountryCode(record.getCountryAbbreviation());
+			}
+				
+			LOGGER.debug("IP Locator V4 Result >"+ ipLocatorData);
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw new IpLocatorException(e);
+		} finally {
+			if(request != null) {
+				request.releaseConnection();
+			}
+		}
+		
+		return ipLocatorData;
+	}
+
+	public IpLocatorData getData(String ip) throws IpLocatorException {
+		if(FDStoreProperties.isIpLocatorV4Enabled()) {
+			return getDataV4(ip);
+		} else {
+			String rawResponse = doRequest(ip);
+			Document doc = parseResponse(rawResponse);
+			return extractData(doc);
+		}
 	}
 	
 	private String doRequest(String ip) throws IpLocatorException{
