@@ -160,6 +160,9 @@
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
     </div>
     
+    <div class="browse-adproducts transactional isHookLogic-true">
+    	<soy:render template="common.simpleFixedProductList" data="${browsePotato.adProducts}" />
+	</div>
    
 	<div class="isHookLogic-false">
 	    <c:choose>
@@ -184,10 +187,6 @@
 	      </c:otherwise>
 	    </c:choose>
     </div>
-
-    <div class="browse-adproducts transactional isHookLogic-true">
-    	<soy:render template="common.simpleFixedProductList" data="${browsePotato.adProducts}" />
-	</div>
 
     <div class="pager-holder bottom">
       <c:if test="${not empty browsePotato.pager}">
