@@ -228,7 +228,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						}
 					}
 
-					if(EnumSaleType.REGULAR.equals(saleType)) {
+					if(EnumSaleType.REGULAR.equals(saleType) || saleType == null) {
 						
 						if(((ErpSaleModel)saleEB.getModel()).getCurrentOrder() !=null && 
 								((ErpSaleModel)saleEB.getModel()).getCurrentOrder().getPaymentMethod() !=null && 
