@@ -37,6 +37,7 @@
     position:absolute;
     left:751px;
     background-color:white;
+    z-index:3;
 }
 .isHookLogic-false .isHookLogic-spacer{
 	display:block;
