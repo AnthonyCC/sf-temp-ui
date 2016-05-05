@@ -6,7 +6,7 @@
 		
 		FDFolder
 		
-	-->
+	 -->
 	<ContentTypeDef name="FDFolder">
 		<AttributeDefs>
 			<AttributeDef type="S" name="name" />
