@@ -634,7 +634,7 @@ public void queryForMissingFdxOrders() {
 					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getFirstName(),order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getLastName(),
 					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getInstructions(),order.getRecentOrderTransaction().getDeliveryInfo().getServiceType().getName(),
 					order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getDeliveryAddress().getAltDelivery().getName():"none",
-					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone(),
+					order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber()!=null?order.getRecentOrderTransaction().getDeliveryInfo().getOrderMobileNumber().getPhone():null,
 					order.getSapOrderNumber());
 			ordersList.add(c);
 		}
