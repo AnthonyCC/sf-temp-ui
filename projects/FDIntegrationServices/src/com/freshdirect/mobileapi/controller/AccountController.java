@@ -212,13 +212,14 @@ public class AccountController extends BaseController {
         String addressId = null;
         StoreModel store = ContentFactory.getInstance().getStore();
         //FDX-1873 - Show timeslots for anonymous address
-        if((user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress())) || store.getContentName().equals("FreshDirect")) {
+        if((user.getAddress() == null || (user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress()))) {
         	addressId = user.getReservationAddressId();
         }
         ShipToAddress anonymousAddress = null;
         
         if (addressId == null) {
-        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0 && (!store.getContentName().equals("FreshDirect"))) {
+        	if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().trim().length() > 0 
+        			&& user.getAddress().isCustomerAnonymousAddress()) {
     			anonymousAddress = ShipToAddress.wrap(user.getAddress());
     		} else {
 	        	if(user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null ) {
@@ -233,7 +234,7 @@ public class AccountController extends BaseController {
     		}        	
         }
         
-        if (anonymousAddress != null && (!store.getContentName().equals("FreshDirect"))) {
+        if (anonymousAddress != null) {
         	
         	TimeSlotCalculationResult timeSlotResult = anonymousAddress.getDeliveryTimeslot(user, false);
             DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
