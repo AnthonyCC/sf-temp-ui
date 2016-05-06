@@ -1070,8 +1070,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 		}
 		
-		if(orders!=null && orders.size()!=0 && orders.get(orders.size()-2)!=null)
-		lastOrder = orders.get(orders.size()-2);
+		if(orders!=null && orders.size()>1){
+			lastOrder = orders.get(orders.size()-2);
+		}
 		
 		return lastOrder;
 	}
