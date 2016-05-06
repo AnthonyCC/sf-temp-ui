@@ -72,6 +72,7 @@ public class FDOrderFeedGeneratorCron {
 						Integer noOfMins = FDStoreProperties.getHlOrderFeedMins();
 						orderFeedDateFrom = getDate(noOfMins.toString());
 					}
+					LOGGER.info("FDOrderFeedGeneratorCron - sending orders from: "+orderFeedDateFrom);
 					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
 				}
 	
@@ -80,7 +81,7 @@ public class FDOrderFeedGeneratorCron {
 				e.printStackTrace(new PrintWriter(sw));
 				String _msg = sw.getBuffer().toString();
 				LOGGER.info(new StringBuilder(
-						"FDOrderProductFeedGeneratorCron failed with Exception...")
+						"FDOrderFeedGeneratorCron failed with Exception...")
 						.append(_msg).toString());
 				LOGGER.error(_msg);
 				if (_msg != null
@@ -96,7 +97,7 @@ public class FDOrderFeedGeneratorCron {
 	private static void email(Date processDate, String exceptionMsg) {
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="FDOrderProductFeedGeneratorCron: "+ (processDate != null ? dateFormatter.format(processDate) : " ");
+			String subject="FDOrderFeedGeneratorCron for HookLogic: "+ (processDate != null ? dateFormatter.format(processDate) : " ");
 			StringBuffer buff = new StringBuffer();
 			buff.append("<html>").append("<body>");			
 			if(exceptionMsg != null) {
@@ -110,7 +111,7 @@ public class FDOrderFeedGeneratorCron {
 					subject, buff.toString(), true, "");
 			
 			}catch (MessagingException e) {
-			LOGGER.warn("Error Sending FDOrderProductFeedGeneratorCron report email: ", e);
+			LOGGER.warn("Error Sending FDOrderFeedGeneratorCron report email: ", e);
 			}
 	
 	}

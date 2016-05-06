@@ -108,17 +108,19 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 			            	orderFeedDataModel.setpUserId(s.getpUserId());
 			            	orderFeedDataModel.setcUserId(s.getcUserId());
 			            	orderFeedDataModel.setOrderId(s.getOrderId());
-			            	lastOrderId = s.getOrderId();
-			            	lastOrderTime = s.getOrderCroModDate();
+			            	/*lastOrderId = s.getOrderId();
+			            	lastOrderTime = s.getOrderCroModDate();*/
 			            	orderFeedDataModel.setOrderTotal(s.getOrderTotal());
 		        }
 				try {
 					FDBrandProductsAdGateway.submittedOrderdDetailsToHL(orderFeedDataModel);
+					lastOrderId = orderFeedDataModel.getOrderId();
+	            	lastOrderTime = orderFeedDataModel.getOrderCroModDate();
 				} catch (BrandProductAdServiceException e) {
 					LOGGER.warn("Failed to send order details to HL. Order Id: "+lastOrderId );
 				}
 		    }
-			if(isOrderFeedLog){
+			if(isOrderFeedLog && null !=lastOrderTime){
 				insertOrderFeedLog(lastOrderId, lastOrderTime, startTime);
 			}
 			LOGGER.info("Completed sending order details to HL");

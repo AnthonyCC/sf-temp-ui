@@ -62,6 +62,7 @@ public class FDBrandProductsAdGateway {
 			getService().submittedOrderdDetailsToHL(hLOrderFeedDataModel);
 		} catch (BrandProductAdServiceException e) {
 			LOG.error("Exception while sending the order details to HL for order: "+hLOrderFeedDataModel.getOrderId(),e);
+			throw e;
 		}
 		
 	}

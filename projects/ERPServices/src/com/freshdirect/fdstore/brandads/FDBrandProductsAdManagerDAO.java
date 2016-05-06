@@ -156,7 +156,7 @@ try {
 			ps = conn.prepareStatement(GET_LAST_SENT_ORDER_TIME);
 			rs = ps.executeQuery();
 			if(rs.next()){
-				date = rs.getDate(1);
+				date = rs.getTimestamp(1);
 			}
 		}finally {
 			if(null !=rs){
