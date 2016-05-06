@@ -718,7 +718,7 @@ section#section_slideshow{
 	    }
 
 		@include breakpoint_mixin(1000px){
-			top: calc(60vh + 50px);
+			top: calc(450px + 5vh);
 		}
 		
 		@include breakpoint_mixin(789px, min-height){

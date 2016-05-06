@@ -55,9 +55,9 @@
 
     String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
-	if (successPage == null) { 
+	if ( (successPage == null) || (successPage == "undefined") || (successPage == "ndefined") ) { 
 	
-		    successPage = "/login/index.jsp";
+		    successPage = "/index.jsp";
 	}
 	
 	

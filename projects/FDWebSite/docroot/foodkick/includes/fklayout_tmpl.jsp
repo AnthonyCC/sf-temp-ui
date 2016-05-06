@@ -18,11 +18,11 @@
 		<meta property="og:url" content="http://foodkick.com" />  
 		
 		<!--[if lt IE 9]>
-		   <script src="<%=JS_DIR %>/modernizr-custom.js"></script>
-		   <script src="<%=JS_DIR %>/fk_ie8.js"></script>
+		   <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/modernizr-custom.js"></script>
+		   <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/fk_ie8.js"></script>
 		<![endif]-->
-		<link href="<%=BOOTSTRAP_DIR %>/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="<%=CSS_DIR %>/foodkick.css" rel="stylesheet" type="text/css" />
+		<link href="<%=FK_CONFIG_DIRS.get("BOOTSTRAP_DIR") %>/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="<%=FK_CONFIG_DIRS.get("CSS_DIR") %>/foodkick.css" rel="stylesheet" type="text/css" />
 		<script src="ad_server_opt.js.jsp"></script>
 		<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
 		<script type="text/javascript">cmSetClientID("51640000|33000004",true,"data.coremetrics.com","freshdirect.com");</script>
@@ -33,14 +33,14 @@
 		<nav>
 			<div id="locationbar">
 				<div id="locationbar_inner">
-					<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+					<a href="<%=FK_CONFIG_URLS.get("FD_SITE_LINK") %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
 				</div>
 			</div>
 		
 			<ul>
 				<li class="mobile mobile_dropdown_master">
 					<a href="#" class="mobile_link" id="mobile_link_home">
-						<img src="<%=SVG_SRC %>hamburger_helper.svg" />
+						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>hamburger_helper.svg" />
 					</a>
 					<ul class="dropdown mobile_dropdown" id="mobile_dropdown_menu">
 						<li><a href="<%=url_prefix %>#How_it_works">How It Works</a></li>
@@ -50,7 +50,7 @@
 						<li><a href="<%=url_prefix %>#Get_Foodkick">Get Foodkick</a></li>
 						
 						<li>
-							<a href="<%=FD_SITE_LINK %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
+							<a href="<%=FK_CONFIG_URLS.get("FD_SITE_LINK") %>" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a>
 						</li>
 					</ul>
 				</li>
@@ -59,7 +59,7 @@
 				<li class="standard_link"><a href="<%=url_prefix %>#Featured_Food">Featured Food</a></li>
 				<li class="logo_link">
 					<a href="<%=url_prefix %>#slideshow">
-						<img src="<%=SVG_SRC %>freshkick_logo_v2.svg" />
+						<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>freshkick_logo_v2.svg" />
 					</a>
 				</li>
 				<!--  <li class="standard_link"><a href="<%=url_prefix %>#MYFOODKICK">#MYFOODKICK</a></li> -->
@@ -80,13 +80,12 @@
 				<%-- 
 				<button class="download_button white" onclick="location.href='<%=FK_IOSAPP_DLINK %>'">Download the APP</button>
 				--%>
-				
-				<%=iosapp_button(FK_IOSAPP_DLINK, "Download the APP", "white") %>
+				<%=iosapp_button( (String)FK_CONFIG_URLS.get("FK_IOSAPP_DLINK"), "Download the APP", "white") %>
 			</div>
 				
 			<section id="footer_subsection">
 				<section>
-					<img src="<%=SVG_SRC %>freshkick_logo_recommended_white.svg" />
+					<img src="<%=FK_CONFIG_DIRS.get("SVG_SRC") %>freshkick_logo_recommended_white.svg" />
 					<div>&copy;FRESH DIRECT, LLC</div>
 				</section>
 				<section>
@@ -123,7 +122,7 @@
 						<li class="last"><a style="<%=svg_bg("footer/snapchat.svg") %>;" href="#footer_anchor">&nbsp;</a></li>
 					</ul>
 					
-					<img src="<%=IMAGES_DIR %>/footer/tiles.jpg" />
+					<img src="<%=FK_CONFIG_DIRS.get("IMAGES_DIR") %>/footer/tiles.jpg" />
 				</section>
 			</section>
 		</footer>
@@ -131,7 +130,7 @@
 	
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
 	<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
-	<script src="<%=JS_DIR %>/foodkick.js"></script>
+	<script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/foodkick.js"></script>
 	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
 	
 	<tmpl:get name='special_js'/>

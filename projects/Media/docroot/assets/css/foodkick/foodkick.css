@@ -430,7 +430,7 @@ section#section_slideshow {
         left: calc(50% - 120px); } }
     @media (min-width: 1000px) {
       section#section_slideshow .download_button {
-        top: calc(60vh + 50px); } }
+        top: calc(450px + 5vh); } }
     @media (min-height: 789px) {
       section#section_slideshow .download_button {
         top: 520px; } }

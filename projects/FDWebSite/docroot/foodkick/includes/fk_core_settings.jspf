@@ -1,4 +1,30 @@
+<%@ page import='java.util.HashMap'  %>
+<%@ page import='org.json.JSONObject' %>
+<%@ page import='com.freshdirect.fdstore.fk.GetJsonObj' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties %>
+
+<%
+//core directory for settings and CMS content
+String FK_EDITORIAL_DIR = "/media/editorial/foodkick/";
+
+//core file for settings
+String FK_CONFIG_PATH = FK_EDITORIAL_DIR + "fk_config.json";
+
+//
+JSONObject jsonObject = GetJsonObj.file2jsonObj( FK_CONFIG_PATH, request );
+
+//common directories for assets
+JSONObject FK_CONFIG_DIRS_OBJ = (JSONObject) jsonObject.get("file_sources");
+HashMap FK_CONFIG_DIRS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+
+//common urls used by foodkick
+JSONObject FK_CONFIG_URLS_OBJ = (JSONObject) jsonObject.get("urls");
+HashMap FK_CONFIG_URLS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+
+//override with value from properties file
+FK_CONFIG_DIRS.put("FK_IOSAPP_DLINK", FDStoreProperties.getFdxAppUrl_Apple());
+%>
+
 <%!
 public final String FKAPP_DIR = "/foodkick";
 //public final String ASSETS_DIR = "assets";
