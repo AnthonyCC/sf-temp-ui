@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.taglib.promotion;
 
-public class PromoFilterCriteria {
+import java.io.Serializable;
+
+public class PromoFilterCriteria implements Serializable{
 
 	private String offerType;
 	private String customerType;
