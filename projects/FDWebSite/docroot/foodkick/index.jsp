@@ -11,7 +11,7 @@
 		<%-- <jsp:include page="${FK_EDITORIAL_DIR}disclaimer.jspf" /> --%>
 		<%-- <%@include file="/media/editorial/foodkick/disclaimer.jspf"%> --%>
 		
-		<jsp:directive.include file="/media/editorial/foodkick/disclaimer.jspf" />
+		<fd:IncludeMedia name="${FK_EDITORIAL_DIR}disclaimer.html" />
 		
 		<%-- <jsp:directive.include file="<%= wut %>disclaimer.jspf" /> --%>
 	<!-- end special_disclaimer -->
