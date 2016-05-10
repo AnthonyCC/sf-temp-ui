@@ -21,6 +21,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -419,7 +420,7 @@ public class CheckoutController extends BaseController {
         	user.setRefreshCouponWalletRequired(true);
         	user.setCouponEvaluationRequired(true);
         }
-        if(EnumCouponContext.VIEWCART.equals(ctx) && FDStoreProperties.getAvalaraTaxEnabled()){
+        if((EnumCouponContext.VIEWCART.equals(ctx) && FDStoreProperties.getAvalaraTaxEnabled()) || (EnumCouponContext.CHECKOUT.equals(ctx) && EnumEStoreId.FDX.equals(user.getFDSessionUser().getUserContext().getStoreContext().getEStoreId()))){
         	AvalaraContext avalaraContext =  new AvalaraContext(user.getFDSessionUser().getShoppingCart());
         	cart.getAvalaraTax(avalaraContext);
         }
@@ -881,8 +882,9 @@ public class CheckoutController extends BaseController {
         	}
         }
         else{
-        	if(subTotal != null && subTotal > user.getShoppingCart().getDeliveryReservation().getMinOrderAmt())
+        	if(subTotal != null && subTotal > user.getShoppingCart().getDeliveryReservation().getMinOrderAmt()) {
 				callAvalaraForTax(user);
+        	}
         }
 
         return result;
