@@ -3646,7 +3646,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						&& !cem.isMailSent() && !complaintInfo.getComplaint()
 						.dontSendEmail());
 				if (sendMail && otherEmailConditions) {
-					EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					//fix APPDEV-5089
+
+					FDOrderI orderI=getOrder(saleId);
+					EnumEStoreId estoreId=orderI.getEStoreId()!=null? orderI.getEStoreId() : EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
+					
+					//EnumEStoreId estoreId = EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId()));
 					this.doEmail(FDEmailFactory.getInstance()
 							.createConfirmCreditEmail(fdInfo, saleId,
 									complaintInfo.getComplaint(), estoreId));
