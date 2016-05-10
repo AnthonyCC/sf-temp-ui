@@ -235,16 +235,20 @@ public class CmsFilteringFlow {
 		return null;
 	}
 
-	private void populateSearchCarouselProductLimit(int activePage,
-			BrowseDataContext browseDataContext) {
-		final int searchCarouselProductLimit;
+	private void populateSearchCarouselProductLimit(int activePage,	BrowseDataContext browseDataContext) {
+		int searchCarouselProductLimit;
+		int noOfAdProducts = (null != browseDataContext.getAdProducts() && null !=browseDataContext.getAdProducts().getProducts()) ? browseDataContext.getAdProducts().getProducts().size() :0;
 		if (activePage == 0) {
 			searchCarouselProductLimit = 0;
 		} else {
 			searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
 		}
+		if(searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts){
+			searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
+		}
 		browseDataContext.getSections().setLimit(searchCarouselProductLimit);
-	}		
+	} 
+
 
 	public BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		NavigationModel navigationModel = new NavigationModel();
