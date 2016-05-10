@@ -31,6 +31,7 @@ import com.freshdirect.mobileapi.service.ServiceException;
 public class PickslistController extends BaseController {
 
 	private static final String ACTION_GET_ALL = "getAll";
+	private static final String ACTION_GET_ALL_IPHONE = "getAlliPhone";
 	private static final String ACTION_GET_DETAIL = "getDetail";
 
 	@Override
@@ -40,7 +41,9 @@ public class PickslistController extends BaseController {
 			ServiceException, NoSessionException {
 		if (ACTION_GET_ALL.equals(action)) {
 			return getAll(model, user);
-		} else if (ACTION_GET_DETAIL.equals(action)) {
+		}else if (ACTION_GET_ALL_IPHONE.equals(action)) {
+			return getAlliPhone(model, user);
+		}else if (ACTION_GET_DETAIL.equals(action)) {
 			return getDetail(request, model, user);
 		}
 		throw new UnsupportedOperationException();
@@ -87,6 +90,18 @@ public class PickslistController extends BaseController {
 		return model;
 	}
 
+	private ModelAndView getAlliPhone(final ModelAndView model, final SessionUser user) throws JsonException {
+		final StoreModel store = ContentFactory.getInstance().getStore();
+		final List<Idea> picksList = new ArrayList<Idea>();
+		for (final CategoryModel categoryModel : store.getiPhoneHomePagePicksLists()) {
+			picksList.add(ideaFor(categoryModel, Idea.ThumbnailType.TabletThumbnail));
+		}
+		final PicksListResponse response = new PicksListResponse();
+		response.setPicksList(picksList);
+		setResponseMessage(model, response, user);
+		return model;
+	}
+	
 	@Override
 	protected boolean validateUser() {
 		return false;

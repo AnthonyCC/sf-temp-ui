@@ -25,6 +25,7 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<CategoryModel> tabletFeaturedCategories = new ArrayList<CategoryModel>();
 	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>();
 	private List<CategoryModel> tabletIdeasFeaturedPicksLists = new ArrayList<CategoryModel>();
+	private List<CategoryModel> iPhoneHomePagePicksLists = new ArrayList<CategoryModel>();
 	private List<RecipeTagModel> tabletIdeasRecipeTags = new ArrayList<RecipeTagModel>();
 	private List<BannerModel> tabletHomeScreenPopUpShopBanners = new ArrayList<BannerModel>();
 	private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
@@ -151,6 +152,11 @@ public class StoreModel extends ContentNodeModelImpl {
 	public List<CategoryModel> getTabletIdeasFeaturedPicksLists() {
 		ContentNodeModelUtil.refreshModels(this, "tabletIdeasFeaturedPicksLists", tabletIdeasFeaturedPicksLists, false);
 		return new ArrayList<CategoryModel>(tabletIdeasFeaturedPicksLists);
+	}
+	
+	public List<CategoryModel> getiPhoneHomePagePicksLists() {
+		ContentNodeModelUtil.refreshModels(this, "iPhoneHomePagePicksLists", iPhoneHomePagePicksLists, false);
+		return new ArrayList<CategoryModel>(iPhoneHomePagePicksLists);
 	}
 
 	public List<RecipeTagModel> getTabletIdeasRecipeTags() {

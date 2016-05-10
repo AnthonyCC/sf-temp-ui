@@ -1028,6 +1028,10 @@
 		<to last="true">/pickslist.do?action=getAll&amp;ver=$1</to>
 	</rule>
 	<rule>
+		<from>^/v/([0-9]+)/pickslistiPhone/getall/(.*)</from>
+		<to last="true">/pickslist.do?action=getAlliPhone&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/pickslist/getdetail/(.*)</from>
 		<to last="true">/pickslist.do?action=getDetail&amp;ver=$1&amp;pickslistId=$2</to>
 	</rule>
