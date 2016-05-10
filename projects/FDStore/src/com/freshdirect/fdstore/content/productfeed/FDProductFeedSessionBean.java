@@ -196,8 +196,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 					byte[] buffer = new byte[1024];
 					Marshaller mar =jaxbCtx.createMarshaller();
 
-					CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler();
-					mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler); 
+					/*CharacterEscapeHandler escapeHandler=new JaxbCharacterEscapeHandler();
+					mar.setProperty("com.sun.xml.bind.characterEscapeHandler", escapeHandler); */
 					
 					mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			
