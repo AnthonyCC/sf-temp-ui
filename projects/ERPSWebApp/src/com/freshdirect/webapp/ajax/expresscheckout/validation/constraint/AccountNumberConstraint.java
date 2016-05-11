@@ -7,8 +7,7 @@ public class AccountNumberConstraint extends RegexConstraint {
 	}
 
 	private static final String ERROR_MESSAGE = "Account number is invalid.";
-	private static final String REGEX = "^\\d{13}$";
-
+    private static final String REGEX="^\\d{5,17}$";
 	@Override
 	public String getErrorMessage() {
 		return ERROR_MESSAGE;
