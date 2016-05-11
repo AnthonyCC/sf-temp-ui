@@ -12,13 +12,21 @@
 final int W_ADDRESS_FINDER_TOTAL = 970;
 %>
 
+<fd:LocationHandler/>
+<% 
+	/* this needs to be AFTER <fd:LocationHandler/> */
+	List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
+
+	AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
+	String pageAddrId = (selectedAddress!= null && selectedAddress.getPK() != null) ? selectedAddress.getPK().getId() : (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR) ;
+%>
 <%
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
 int page_type = TimeslotLogic.PAGE_NORMAL;
 if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	shipToAddresses = AddressFinder.getShipToAddresses(user);
-	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
+	address = AddressFinder.getShipToAddress(user, pageAddrId, timeSlotCtx, request);
 %>
 
 <%
@@ -67,7 +75,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				<tr>
 					<td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td>
 				</tr>
-			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
+			<%} else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){ %>
 				<tr>
 					<td colspan="3" class="title16">
 						<table>
@@ -98,10 +106,9 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 					<td>&nbsp;</td>
 				
 			<% 
-			if ((shipToAddresses.size() > 1 && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && shipToAddresses.size()>1 && !isCheckAddress)) { 
+			if (( (shipToAddresses.size() + allPickupDepots.size() > 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() > 1) && !isCheckAddress)) { 
 			%>
 					<td class="text12">
-						<fd:LocationHandler/>
 						<script>
 
 							$jq(document).on('change','#addressId',function(e){
@@ -124,10 +131,6 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
 						<SELECT name="addressId" id="addressId" CLASS="text12" style="width: 250px;">
 								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
-								<%
-									AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
-									String pageAddrId = selectedAddress.getPK().getId();
-								%>
 									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
 										<option value="<%= homeAddress.getPK().getId() %>" <%= ((homeAddress.getPK().getId()).equals(address.getPK().getId())) ? "selected=\"selected\"" : "" %>>
 											<%= homeAddress.getAddress1() %>, <%= homeAddress.getCity() %>, <%= homeAddress.getZipCode() %>
@@ -135,29 +138,37 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 									</logic:iterate>
 								<% } else { %>
 									<% 
-
-									List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 									String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
+									
 									
 									for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 										ErpAddressModel addr = (ErpAddressModel)saItr.next();
 										String id = "";
 										id = addr.getPK().getId();
 									%>
-										<OPTION value="<%= id %>" <%= id.equals(address.getPK().getId()) ? "SELECTED" : "" %>>
+										<OPTION value="<%= id %>" <%= id.equals(pageAddrId) ? "SELECTED" : "" %>>
 											<%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%>
 										</OPTION>
 									<% } %>
 									<%-- PICKUP addresses --%>
 									<logic:iterate id="pickupAddress" collection="<%= allPickupDepots %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 										<% if (pickupAddress != null) { %>
-										<option value="DEPOT_<%= pickupAddress.getId() %>" <%= ((pickupAddress.getId()).equals(selectedPickupId)) ? "selected=\"selected\"" : "" %>>
-											<%=LocationHandlerTag.formatAddressTextWithZip(pickupAddress.getAddress())%>
-										</option>
+											<%
+												String pickupId = pickupAddress.getId();
+												if ((pickupId).equals(selectedPickupId)) {
+													address= new ErpAddressModel(pickupAddress.getAddress());
+													address.setId(pickupAddress.getId());
+													pageAddrId = "DEPOT_"+selectedPickupId;
+												}
+											%>										
+											<option value="DEPOT_<%= pickupAddress.getId() %>" <%= ((pickupAddress.getId()).equals(selectedPickupId)) ? "selected=\"selected\"" : "" %>>
+												<%=LocationHandlerTag.formatAddressTextWithZip(pickupAddress.getAddress())%>
+											</option>
 										<% } %>
 									</logic:iterate>
 								<% } %>
 						</SELECT><br /><br />
+						
 						</FORM>
 					</td>
 					<%if (!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
