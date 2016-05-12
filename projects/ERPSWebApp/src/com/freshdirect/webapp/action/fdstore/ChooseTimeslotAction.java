@@ -153,7 +153,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						
 						LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
 							} else {
-								if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (addressId != null && !addressId.equals(dlvRsv.getAddressId()))) {
+								if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (TimeslotLogic.isAddressChange(dlvRsv.getAddress(), erpAddress, addressId, dlvRsv.getAddressId()))) {
 						// new reservation or different timeslot selected
 									if (dlvRsv != null && !(cart instanceof FDModifyCartModel) && EnumReservationType.STANDARD_RESERVATION.equals(dlvRsv.getReservationType())) {
 										// release prev reservation, unless it's a
