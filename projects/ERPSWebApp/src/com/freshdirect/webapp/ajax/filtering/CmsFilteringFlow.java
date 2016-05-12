@@ -243,7 +243,8 @@ public class CmsFilteringFlow {
 		} else {
 			searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
 		}
-		if(searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts){
+		/* hooklogic should only show (or "count") on the first page */
+		if(activePage == 1 && searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts){
 			searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
 		}
 		browseDataContext.getSections().setLimit(searchCarouselProductLimit);
