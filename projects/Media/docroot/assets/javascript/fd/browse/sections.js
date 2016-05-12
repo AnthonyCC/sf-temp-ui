@@ -215,7 +215,8 @@ var FreshDirect = FreshDirect || {};
 				colLength = $( regularRowClass ).length;
 				
 				//$( itemClass ).first().css("border", "none");
-				$( regularRowClass ).first().css("border", "none");
+				/* this logic is wrong */
+				//$( regularRowClass ).first().css("border", "none");
 				
 				//both regular products and the HL product of this class
 				HLselectorClass = regularRowClass+", .isHookLogic-true "+itemClass;

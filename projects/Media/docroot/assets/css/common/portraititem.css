@@ -35,14 +35,16 @@
 	float:right;
 	margin-right: 30px;
     position:absolute;
-    left:751px;
+    /* left:751px; *//* four across*/
+    left: 815px; /* five across */
     background-color:white;
     z-index:3;
 }
 .isHookLogic-false .isHookLogic-spacer{
 	display:block;
 	/*display:none;*/
-	width: 190px;
+	/*width: 190px;*//* four across */
+	width: 160px;/* five across */
     float: right;
 }
 .isHookLogic-true, .isHookLogic-true *{

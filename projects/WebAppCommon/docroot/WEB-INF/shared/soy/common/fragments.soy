@@ -60,7 +60,7 @@
 */
 {template .productList autoescape="false"}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
-	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 4 /}
+	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 5 /}
 	{call common.fixedProductList data="all"}
 		{param itemPerLine:$itemPerLineFinal /}
 		{param showConfig: $showConfig /}
@@ -80,7 +80,7 @@
 * @param? ifSingleUL
 */
 {template .fixedProductList autoescape="false"}
-	{let $ipl: $itemPerLine ? $itemPerLine : 4 /}
+	{let $ipl: $itemPerLine ? $itemPerLine : 5 /}
 	{let $len: length($productList) /}
 	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
 	{let $fProducts: $fromProducts ? $fromProducts : 0 /}

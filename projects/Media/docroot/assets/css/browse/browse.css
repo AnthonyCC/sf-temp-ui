@@ -103,10 +103,12 @@
 }
 
 .browseContent .sectionContent ul.products li.portrait-item {
-	/*width: 136px;
-	max-width: 136px;*/
-	width: 166px;
-	max-width: 166px;
+	/* five across */
+	width: 136px;
+	max-width: 136px;
+	/* four across */
+	/*width: 166px;
+	max-width: 166px;*/
 	padding: 0 9px 0 9px;
 	margin: 0;
 	/*border-right: 1px solid #ddd;*/
