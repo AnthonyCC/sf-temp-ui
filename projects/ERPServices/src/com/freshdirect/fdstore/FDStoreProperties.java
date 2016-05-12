@@ -864,7 +864,9 @@ public class FDStoreProperties {
 	//erpsy linking
 	public static final String PROP_ERPSYLINK_STOREFRONT_FD = "fdstore.erpsylink.storefront.fd";
 	public static final String PROP_ERPSYLINK_STOREFRONT_FDX = "fdstore.erpsylink.storefront.fdx";
-	
+
+	private static final String PROP_ADDRESS_MISMATCH_ENABLED = "fdstore.address.mismatch.enabled";
+
     private static final String PROP_BROWSE_AGGREGATED_CATEGORIES = "fdstore.browse.aggregated.categories";
 
     static {      	    	
@@ -1704,6 +1706,8 @@ public class FDStoreProperties {
         defaults.put(PROP_HL_PRODUCTS_COUNT, "5");
 
         defaults.put(PROP_BROWSE_AGGREGATED_CATEGORIES, "Category:bgril,Category:cchm,Category:cbrst,Category:bground");
+        defaults.put(PROP_ADDRESS_MISMATCH_ENABLED, "true");
+        
 		refresh();
     }
 
@@ -4261,6 +4265,10 @@ public class FDStoreProperties {
 	
 	public static boolean isMasterpassEnabled() {
         return Boolean.valueOf(get(PROP_EWALLET_MASTERPASS_ENABLED)).booleanValue();
+    }
+	
+	public static boolean isAddressMismatchEnabled() {
+        return Boolean.valueOf(get(PROP_ADDRESS_MISMATCH_ENABLED)).booleanValue();
     }
 
     public static String getErpsyLinkStorefrontFD() {

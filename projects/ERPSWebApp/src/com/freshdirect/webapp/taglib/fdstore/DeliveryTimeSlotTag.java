@@ -544,7 +544,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			rsv = user.getReservation();
 			if(rsv != null){
 				preReserveSlotId = rsv.getTimeslotId();
-				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
+				hasPreReserved = address.getPK()!=null && !TimeslotLogic.isAddressChange(rsv.getAddress(), cart.getDeliveryAddress(), rsv.getAddressId(), address.getPK().getId());
 			}
 			if (cart.getDeliveryReservation() != null) {
 				rsv = cart.getDeliveryReservation();
@@ -558,7 +558,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 						timeSlotId = "";											
 				}else{
 					if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
-							&& address.getPK().getId().equals(rsv.getAddressId())) && cart.getDeliveryReservation() != null){
+							&& !TimeslotLogic.isAddressChange(rsv.getAddress(), cart.getDeliveryAddress(), rsv.getAddressId(), address.getPK().getId())) && cart.getDeliveryReservation() != null){
 						timeSlotId = rsv.getTimeslotId();
 					}else{
 						timeSlotId = "";
@@ -568,7 +568,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 			if(cart instanceof FDModifyCartModel && rsv != null && !EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && "".equals(preReserveSlotId) && !hasPreReserved){
 				preReserveSlotId = rsv.getTimeslotId();
-				hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
+				hasPreReserved = address.getPK()!=null && !TimeslotLogic.isAddressChange(rsv.getAddress(), cart.getDeliveryAddress(), rsv.getAddressId(), address.getPK().getId());
 			}
 			
 		} else {

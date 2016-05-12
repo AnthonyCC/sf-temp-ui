@@ -2,6 +2,7 @@ package com.freshdirect.fdlogistics.model;
 
 import java.util.Date;
 
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
@@ -27,6 +28,7 @@ public class FDReservation extends ModelSupport {
 	private EnumRegionServiceType regionSvcType;
 	private FDDeliveryETAModel deliveryETA;
 	private String deliveryFeeTier;
+	private ErpAddressModel address;
 
 	public FDReservation(
 		PrimaryKey pk,
@@ -53,6 +55,34 @@ public class FDReservation extends ModelSupport {
 		this.regionSvcType = regionSvcType;
 		this.deliveryFeeTier = deliveryFeeTier;
 	}
+	
+	public FDReservation(
+			PrimaryKey pk,
+			FDTimeslot timeslot,
+			Date expirationDateTime,
+			EnumReservationType type,
+			String customerId,
+			String addressId,
+			ErpAddressModel address,
+			boolean chefsTable,
+			String orderId,
+			int statusCode, EnumReservationClass rsvClass, boolean hasSteeringDiscount,
+			EnumRegionServiceType regionSvcType, String deliveryFeeTier) {
+			this.setPK(pk);
+			this.timeslot = timeslot;
+			this.expirationDateTime = expirationDateTime;
+			this.type = type;
+			this.customerId = customerId;
+			this.addressId = addressId;
+			this.address = address;
+			this.chefsTable = chefsTable;
+			this.orderId = orderId;
+			this.statusCode=statusCode;
+			this.rsvClass=rsvClass;
+			this.hasSteeringDiscount = hasSteeringDiscount;
+			this.regionSvcType = regionSvcType;
+			this.deliveryFeeTier = deliveryFeeTier;
+		}
 	
 	
 	public EnumReservationType getType() {
@@ -165,6 +195,14 @@ public class FDReservation extends ModelSupport {
 
 	public void setDeliveryFeeTier(String deliveryFeeTier) {
 		this.deliveryFeeTier = deliveryFeeTier;
+	}
+
+	public ErpAddressModel getAddress() {
+		return address;
+	}
+
+	public void setAddress(ErpAddressModel address) {
+		this.address = address;
 	}
 
 }

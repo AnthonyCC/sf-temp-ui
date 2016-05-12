@@ -16,10 +16,12 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -61,6 +63,7 @@ public class TimeslotService {
         FDReservation reservation = cart.getDeliveryReservation();
         ErpAddressModel addressModel=null;
         addressModel=cart.getDeliveryAddress();
+        ErpAddressModel originalAddress = (cart.getDeliveryReservation()!=null)?cart.getDeliveryReservation().getAddress():null;
         if(StandingOrderHelper.isSO3StandingOrder(user)){
         	StandingOrderHelper.loadSO3CartTimeSlot(timeslotData,user.getCurrentStandingOrder());
         } else if (reservation != null) {
@@ -76,13 +79,14 @@ public class TimeslotService {
                     dlvAddressId = addressModel.getId();
                 }
 
-                // Make the comparison, abort load if mismatch detected
-                if (!(timeslotAddressId != null && dlvAddressId != null && timeslotAddressId.equals(dlvAddressId))) {
-                    // timeslot has different address than the selected
-                    LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID=" + reservation.getTimeslotId() + ")");
+               if(TimeslotLogic.isAddressChange(originalAddress, addressModel, timeslotAddressId, dlvAddressId)){
+                         // timeslot has different address than the selected
+                         LOG.warn("Delivery address does not match timeslot address. Discard selected timeslot (ID=" + reservation.getTimeslotId() + ")");
 
-                    return timeslotData;
+                         return timeslotData;
+                    
                 }
+                		
             }
            
             Date startTime = reservation.getStartTime();

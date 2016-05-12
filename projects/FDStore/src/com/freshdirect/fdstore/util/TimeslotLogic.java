@@ -538,6 +538,20 @@ public class TimeslotLogic {
 		return customer;
 	}
 	
+	public static boolean isAddressChange(ErpAddressModel originalAddress, ErpAddressModel addressModel, String timeslotAddressId, String dlvAddressId){
+		
+		if(FDStoreProperties.isAddressMismatchEnabled() && originalAddress!=null && addressModel!=null 
+	         		&& originalAddress.getAddressInfo()!=null && addressModel.getAddressInfo()!=null
+	         		&& originalAddress.getAddressInfo().getScrubbedStreet()!=null && addressModel.getAddressInfo().getScrubbedStreet()!=null
+	         		&& originalAddress.getZipCode() !=null && addressModel.getZipCode()!=null){
+			return !(originalAddress.getAddressInfo().getScrubbedStreet().equalsIgnoreCase(addressModel.getAddressInfo().getScrubbedStreet()) &&
+       			 originalAddress.getZipCode().equalsIgnoreCase(addressModel.getZipCode()));
+		}else 
+			return timeslotAddressId != null && dlvAddressId != null && !(timeslotAddressId.equals(dlvAddressId));
+		
+
+	}
+	
 	public static OrderContext getOrderContext(FDUserI user) {
 		OrderContext context = new OrderContext();
 			if(user!=null && user.getIdentity()!=null){

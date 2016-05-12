@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
 import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
@@ -153,7 +154,7 @@ public class LogisticsDataDecoder {
 				.getId()), decodeTimeslot(reservation.getTimeslot()), reservation
 				.getExpirationDateTime(), EnumReservationType
 				.getEnum(reservation.getType()), reservation
-				.getCustomerId(), reservation.getAddress().getId(), reservation.isChefsTable(), reservation.getOrderId(), reservation
+				.getCustomerId(), reservation.getAddress().getId(), new ErpAddressModel(decodeAddress(reservation.getAddress())), reservation.isChefsTable(), reservation.getOrderId(), reservation
 						.getStatusCode(), EnumReservationClass.getEnum(reservation.getRsvClass()), reservation.isSteeringDiscount(), 
 						EnumRegionServiceType.getEnum(reservation.getRegionServiceType()), reservation.getDeliveryFeeTier());
 	}
