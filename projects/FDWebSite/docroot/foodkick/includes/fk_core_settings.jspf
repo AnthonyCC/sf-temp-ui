@@ -9,20 +9,73 @@ String FK_EDITORIAL_DIR = "/media/editorial/foodkick/";
 
 //core file for settings
 String FK_CONFIG_PATH = FK_EDITORIAL_DIR + "fk_config.json";
+		
+		
+/*
+defaults in case the media/editorial/foodkick/fk_config.json file doesn't load or play nice
+*/
 
-//
+//for the folders
+HashMap<String, String> FK_CONFIG_DIRS = new HashMap();
+
+FK_CONFIG_DIRS.put("FKAPP_DIR", "/foodkick");
+FK_CONFIG_DIRS.put("ASSETS_DIR", "/assets");
+FK_CONFIG_DIRS.put("CSS_DIR", FK_CONFIG_DIRS.get("ASSETS_DIR") + "/css/foodkick");
+FK_CONFIG_DIRS.put("JS_DIR", FK_CONFIG_DIRS.get("ASSETS_DIR") + "/javascript/foodkick");
+
+//technically refreshing
+FK_CONFIG_DIRS.put("BOOTSTRAP_DIR", FK_CONFIG_DIRS.get("ASSETS_DIR") + "/javascript/bootstrap/bootstrap-3.3.4-dist");
+FK_CONFIG_DIRS.put("ANGULAR_DIR", FK_CONFIG_DIRS.get("ASSETS_DIR") + "/javascript/angularjs/angular-1.3.15");
+
+//imagery
+FK_CONFIG_DIRS.put("IMAGES_DIR", "/media_stat/foodkick");
+FK_CONFIG_DIRS.put("CMS_IMAGES_DIR", "/media/images/fdx");
+FK_CONFIG_DIRS.put("CMS_IMAGES_DIR_LP", FK_CONFIG_DIRS.get("CMS_IMAGES_DIR") + "/landing_page");
+FK_CONFIG_DIRS.put("SVG_SRC", "s.jsp?f=");
+
+//cms
+FK_CONFIG_DIRS.put("CMS_EDITORIAL_DIR", "/media/editorial");
+FK_CONFIG_DIRS.put("CMS_EDITORIAL_DIR_LP", FK_CONFIG_DIRS.get("CMS_EDITORIAL_DIR") + "/foodkick");
+
+//freshdirect main page
+FK_CONFIG_DIRS.put("FD_SITE_LINK", "https://www.freshdirect.com/index.jsp");
+
+
+//for the remote urls / app urls
+HashMap<String, String> FK_CONFIG_URLS = new HashMap();
+
+FK_CONFIG_URLS.put("FD_SITE_LINK", "https://www.freshdirect.com/index.jsp");
+FK_CONFIG_URLS.put("FK_IOSAPP_DLINK", "https://itunes.apple.com/us/app/foodkick/id1049036650?pt=309390&ct=FKWeb&mt=8");
+FK_CONFIG_URLS.put("FK_IOSAPP_OPEN", "foodkick://open");
+FK_CONFIG_URLS.put("FK_IOSAPP_PRODUCT_PAGE", "foodkick://product?id=");
+FK_CONFIG_URLS.put("FK_IOSAPP_CATEGORY_PAGE", "foodkick://category?id=");
+FK_CONFIG_URLS.put("FK_IOSAPP_ORDERDETAILS_PAGE", "foodkick://orderdetails?id=");
+FK_CONFIG_URLS.put("FK_IOSAPP_HOME", "foodkick://home");
+FK_CONFIG_URLS.put("FK_IOSAPP_SHOP", "foodkick://shop");
+FK_CONFIG_URLS.put("FK_IOSAPP_ME", "foodkick://me");
+FK_CONFIG_URLS.put("FK_IOSAPP_BAG", "foodkick://bag");
+		
+
+//import setting overrides from the json file. overrides defaults above
 JSONObject jsonObject = GetJsonObj.file2jsonObj( FK_CONFIG_PATH, request );
 
-//common directories for assets
-JSONObject FK_CONFIG_DIRS_OBJ = (JSONObject) jsonObject.get("file_sources");
-HashMap FK_CONFIG_DIRS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
 
-//common urls used by foodkick
-JSONObject FK_CONFIG_URLS_OBJ = (JSONObject) jsonObject.get("urls");
-HashMap FK_CONFIG_URLS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+//common directories for assets
+if( jsonObject != null ){
+	JSONObject FK_CONFIG_DIRS_OBJ = (JSONObject) jsonObject.get("file_sources");
+	//HashMap FK_CONFIG_DIRS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+	FK_CONFIG_DIRS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+	
+	//common urls used by foodkick
+	JSONObject FK_CONFIG_URLS_OBJ = (JSONObject) jsonObject.get("urls");
+	//HashMap FK_CONFIG_URLS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+	FK_CONFIG_URLS = GetJsonObj.configJson2hm( FK_CONFIG_DIRS_OBJ );
+}
+
 
 //override with value from properties file
 FK_CONFIG_DIRS.put("FK_IOSAPP_DLINK", FDStoreProperties.getFdxAppUrl_Apple());
+
 %>
 
 <%!

@@ -1,5 +1,6 @@
 <%@ include file="includes/fk_presenter_vars.jspf" %>
 <%@ page import="java.util.Calendar" %>
+
 <tmpl:insert template='includes/fklayout_tmpl.jsp'>
 	<tmpl:put name='title'>Same-Day Food Delivery NYC | FoodKick</tmpl:put>
 	<tmpl:put name='content'>
@@ -7,7 +8,7 @@
 	</tmpl:put>
 	<tmpl:put name='special_disclaimer'>
 	<!-- begin special_disclaimer -->
-		<%-- <fd:IncludeMedia name="${FK_EDITORIAL_DIR}disclaimer.jspf" /> --%>
+		<%-- <fd:IncludeMedia name="${FK_EDITORIAL_DIRf}disclaimer.jspf" /> --%>
 		<%-- <jsp:include page="${FK_EDITORIAL_DIR}disclaimer.jspf" /> --%>
 		<%-- <%@include file="/media/editorial/foodkick/disclaimer.jspf"%> --%>
 		
@@ -18,8 +19,7 @@
 	</tmpl:put>
 
 	<tmpl:put name='special_js'>
-	
-	<!-- begin special_js -->
+		<!-- begin special_js -->
 		<script src="<%=FK_CONFIG_DIRS.get("ANGULAR_DIR") %>/angular.min.js"></script>
 		<script src="<%=FK_CONFIG_DIRS.get("ANGULAR_DIR") %>/angular-animate.min.js"></script>
 		<script src="<%=FK_CONFIG_DIRS.get("ANGULAR_DIR") %>/angular-sanitize.min.js"></script>
@@ -33,6 +33,6 @@
 			window.CMS_IMAGES_DIR_LP = "<%=FK_CONFIG_DIRS.get("CMS_IMAGES_DIR_LP")%>";
 		</script>
 		<script src="${FK_EDITORIAL_DIR}lp_top_carousel.js"></script>
-	<!-- end special_js -->
+		<!-- end special_js -->
 	</tmpl:put>
 </tmpl:insert>
