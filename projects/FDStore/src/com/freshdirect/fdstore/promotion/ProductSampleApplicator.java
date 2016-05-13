@@ -35,6 +35,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	@Override
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		boolean isApplied = false;
 		try {
 			int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
 			if(e == PromotionStrategyI.DENY) return false;
@@ -44,7 +45,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 			
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
 			if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < this.minSubtotal) {
-				return false;
+				return isApplied;
 			}else{
 				FDCartModel cart= context.getShoppingCart();
 				List<FDCartLineI> orderLines=cart.getOrderLines();
@@ -60,7 +61,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
                                 orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
 								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
                                 quantity += orderLine.getQuantity();
-	
+                                isApplied = true;
 								try {
 									orderLine.refreshConfiguration();
 								} catch (FDInvalidConfigurationException ex) {
@@ -74,7 +75,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
-		return true;
+		return isApplied;
 				
 	}
 
