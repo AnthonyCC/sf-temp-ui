@@ -15,6 +15,7 @@
 	#transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_plus, #transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_minus,
 	.portrait-item-soPreShow .quantity_plus, .portrait-item-soPreShow .quantity_minus,
 	.soShow .quantity_plus, .soShow .quantity_minus {
+		background: none;
 		background: initial;
 		border-radius: 0;
 		text-indent: 0;
