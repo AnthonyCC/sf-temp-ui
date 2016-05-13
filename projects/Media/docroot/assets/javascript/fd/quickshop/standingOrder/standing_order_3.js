@@ -1,5 +1,6 @@
 FreshDirect.standingorder = FreshDirect.standingorder || {};
 FreshDirect.standingorder.isSelectFrequencyChanged = false;
+var newsoID;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
@@ -24,7 +25,7 @@ $jq( document ).ready(function() {
 	   		$jq(".standing-orders-3-char-count").text($jq(this).val().length + "/25");
 		});
 		if($jq(".standing-orders-3-name-input[name='soName']").val() != ""){
-			isNewSOCreated = true
+			isNewSOCreated = true;
 			populateDrawer(newsoID);
     		$jq("#soFreq").select2({
 				minimumResultsForSearch: Infinity
@@ -44,14 +45,14 @@ $jq( document ).ready(function() {
 	            "color": "#464646"
 	        }, 500);
 	    } else {
-	    	$jq(".standing-orders-3-char-count").css("display", "none")
+	    	$jq(".standing-orders-3-char-count").css("display", "none");
 	        $jq("button.standing-orders-3-start-button").prop("disabled", true);
 	        $jq(".standing-orders-3-background-container").stop().fadeTo(500, 1);
 	        $jq(".standing-orders-3-intro-h-bottom").stop().animate({
 	            "color": "#ffffff"
 	        }, 500);
 	        if ($jq("#so-error-message").length) {
-	            $jq("#so-error-message").css("display", "none")
+	            $jq("#so-error-message").css("display", "none");
 	        }
 	    }
 	    $jq(".standing-orders-3-char-count").text($jq(this).val().length + "/25");
@@ -76,7 +77,7 @@ $jq( document ).ready(function() {
 // new_standing_order
 function standingOrderNewCancel(){
 	window.location.href="/quickshop/standing_orders.jsp";
-};
+}
 
 function newStandingOrderNameInputChangeOK(){
 	$jq('#newsoErroMessage').text("");
@@ -87,13 +88,14 @@ function newStandingOrderNameInputChangeOK(){
 		soName = $jq(".standing-orders-3-name-input[name='soName']").val();
 		submitFormNewSO("changename", newsoID, soName);
 	}
-};
+}
 
 function submitFormNewSO(action, id, name){
+	var dataString = "";
 	if(action == "create"){
-		var dataString = "action=create&soName=" + name + "&isSO=true";
+		dataString = "action=create&soName=" + name + "&isSO=true";
 	} else if (action == "changename"){
-		var dataString = "soId=" + id + "&action=changename&soName=" + name + "&isSO=true&frequency=" + null;
+		dataString = "soId=" + id + "&action=changename&soName=" + name + "&isSO=true&frequency=" + null;
 	}
 	$jq.ajax({
 	    url: '/api/manageStandingOrder',
@@ -115,15 +117,15 @@ function submitFormNewSO(action, id, name){
 	    		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container").addClass("show");
 	    		soSaved(id, false, true);
 	    	}
-	    	$jq("#cartcontent").on( "cartcontent-update", function(){ soSaved(id, false, true) });
-  			$jq("#cartcontent").on( "quantity-change", function(){ soSaved(id, false, true) });
-  			$jq("#cartcontent").on( "cartline-delete", function(){ soSaved(id, false, true) });
-  			$jq("#ec-drawer").on( "address-update", function(){ soSaved(id, false, true) });
-  			$jq("#ec-drawer").on( "timeselector-update", function(){ soSaved(id, false, true) });
-  			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soSaved(id, false, true) });
+	    	$jq("#cartcontent").on( "cartcontent-update", function(){ soSaved(id, false, true); });
+  			$jq("#cartcontent").on( "quantity-change", function(){ soSaved(id, false, true); });
+  			$jq("#cartcontent").on( "cartline-delete", function(){ soSaved(id, false, true); });
+  			$jq("#ec-drawer").on( "address-update", function(){ soSaved(id, false, true); });
+  			$jq("#ec-drawer").on( "timeselector-update", function(){ soSaved(id, false, true); });
+  			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soSaved(id, false, true); });
 	    }
 	});
-};
+}
 
 //manage_standing_orders
 function openUpcomingOrderCancel(id){
@@ -131,23 +133,23 @@ function openUpcomingOrderCancel(id){
 	closeUpcomingOrderCancel();
 	$jq(usoID + " .td-so-cancel .td-so-cancel-popup").addClass("open");
 	$jq(usoID + " td").addClass("cancel");
-};
+}
 
 function closeUpcomingOrderCancel(){
 	$jq(".td-so-cancel .td-so-cancel-popup.open").removeClass("open");
 	$jq(".table-so-upcoming-deliveries td.cancel").removeClass("cancel");
-};
+}
 
 function openSettingsDelete(id){
 	var soID = "#soid_" + id;
 	$jq(".standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
 	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup").addClass("open");
-};
+}
 
 function closeSettingsDelete(id){
 	var soID = "#soid_" + id;
 	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
-};
+}
 
 function deleteSO(id){
 	var soID = "#soid_" + id;
@@ -158,12 +160,12 @@ function deleteSO(id){
 	}	
 	closeSettingsDelete(id);
 	$jq(soID).remove();
-};
+}
 
 function openSOSettings(id) {			
 	closeSOSettings();
 	submitFormManageSO(id,'settings',null,null);
-};
+}
 
 function closeSOSettings(){
 	$jq(".standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
@@ -174,7 +176,7 @@ function closeSOSettings(){
 		$jq("#ec-drawer").remove();
 		$jq("#cartcontent").remove();
 	}
-};
+}
 
 function changeSOName(id){
 	var soID = "#soid_" + id;
@@ -184,7 +186,7 @@ function changeSOName(id){
 	$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-name-change-input[name = 'soName']").blur(function(){
 		$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-name-change-input-container").removeClass("open");
 	});
-};
+}
 
 function standingOrdersNameInputChangeOK(id){
 	var usoID = "#usoid_" + id;
@@ -248,15 +250,15 @@ function submitFormManageSO(id,action,name,freq){
       				minimumResultsForSearch: Infinity
         		});
       			// Catches all updates
-      			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false) });
-      			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true) });
-      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true) });
-      			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false) });
-      			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false) });
-      			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false) });
+      			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false); });
+      			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true); });
+      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); });
+      			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false); });
+      			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
+      			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
             }
             if('selectFreq'==action){
-            	if(typeof data.timeslot !== "undefined" && typeof data.timeslot.soFreq !== "undefined" && data.timeslot.soFreq != null){
+            	if(typeof data.timeslot !== "undefined" && typeof data.timeslot.soFreq !== "undefined" && data.timeslot.soFreq !== null){
       		      	document.getElementById("soFreq").selectedIndex = data.timeslot.soFreq;
       		    	document.getElementById("soFreq2").selectedIndex = data.timeslot.soFreq;
             	}
@@ -273,10 +275,10 @@ function submitFormManageSO(id,action,name,freq){
             }
         }
  	});
-};
+}
 
 function populateCartContent(){
-	if(null!=FreshDirect.expressco.cartcontent){
+	if(FreshDirect.expressco.cartcontent !== null){
   		FreshDirect.expressco.cartcontent.listen();
   		FreshDirect.expressco.cartcontent.watchChanges();
   		FreshDirect.expressco.cartcontent.update();
@@ -327,7 +329,7 @@ function getSOData(id, action){
         success: function(data){
         	if('selectFreq'==action){
         		soSaved(id, data.activated, false);
-        		if(data.frequencyDesc != null && data.dayOfWeek != null){
+        		if(data.frequencyDesc !== null && data.dayOfWeek !== null){
         			$jq(soID + " .standing-orders-3-so-settings-item .standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-frequency").html(data.frequencyDesc + " " + data.dayOfWeek + " /");
         		}
         	}
@@ -355,7 +357,7 @@ function getSOData(id, action){
         	}
         }
  	});
-};
+}
 
 function selectFrequency(item){
 	if(FreshDirect.standingorder.isSelectFrequencyChanged){
@@ -382,7 +384,7 @@ function selectFrequency(item){
 			submitFormManageSO("","selectFreq",null,freq);
 		}
 	}
-};
+}
 
 function selectWeeklyFrequency(){
 	$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").one("click", function(){
@@ -392,13 +394,13 @@ function selectWeeklyFrequency(){
 
 function activateSo(id){
 	submitFormManageSO(id,"activate",null,null);
-};
+}
 
 function updateSOItem(id, data){
 	var soID = "#soid_" + id;
 	var softLimit = FreshDirect.standingorder.softLimitDisplay || "50";
-	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit}));
-};
+	$jq(soID + " .standing-orders-3-so-settings-item").html(standingorder.standingOrderSettingsItem({item:data, softLimit:softLimit}));
+}
 
 function hideShopNowButtuns(){
 	$jq(".standing-orders-3 #cartcontent.show").removeClass("show");
@@ -412,4 +414,4 @@ function showShopNowButtuns(){
 	} else {
 		$jq(".standing-orders-3 .standing-orders-3-newso-drawer-container .standing-orders-3-newso-shop-buttons-container").addClass("show");
 	}
-};
+}
