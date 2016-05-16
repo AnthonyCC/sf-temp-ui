@@ -102,6 +102,10 @@
   margin-bottom: 11px;
 }
 
+.browseContent .sectionContent ul.products li.portrait-item.regularProduct {
+	margin: 20px 0 10px 0;
+}
+
 .browseContent .sectionContent ul.products li.portrait-item {
 	/* five across */
 	width: 136px;
