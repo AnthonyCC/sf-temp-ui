@@ -14,7 +14,7 @@
 	<xsl:variable name="purple" select="'#732484'" />
 	<xsl:variable name="border_color" select="'#D8D8D8'" />
 	<xsl:variable name="fontsize_p" select="'16px'" />
-	<xsl:variable name="fontfamily" select="'Arial, Helvetica, sans-serif'" />
+	<xsl:variable name="fontfamily" select="'font-family:Arial, Helvetica, sans-serif;'" />
 	<xsl:variable name="list_style" select="concat('background-image:url(', $img_dir, '/check.jpg);background-repeat:no-repeat; margin-bottom:0px; padding-top: 3px; padding-left:25px; min-height:20px; background-position: 0px 1px;')" />
 	
 	<xsl:template match="fdemail">
@@ -30,47 +30,49 @@
 	</xsl:template>
 
 	<xsl:template name="mail_body">
-		<div style="text-align:center; color:white; font-size:9pt; padding:15px 10px 5px;background-color: {$purple};">
-			<span>Welcome to FoodKick! + 30 Days of Free Delivery</span>
-			<span style="padding-left: 92px;">&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: white;">Web</a></span>
+		<div style="{$fontfamily} text-align:center; color:white; font-size:9pt; padding:15px 10px 5px;background-color: {$purple};">
+			<span style="{$fontfamily} ">Welcome to FoodKick! + 30 Days of Free Delivery</span>
+			<span style="padding-left: 92px; {$fontfamily}">&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: white;">Web</a></span>
 		</div>
 		
-		<div style="background-color: #ffffff; border: 1px solid {$border_color}; margin: 5px; padding: 0px 20px 20px; text-align:center;">
-			<div style="text-align:center;"><img src="{$site}/media/images/email/foodkick/hero.png" /></div>
+		<div style="{$fontfamily} background-color: #ffffff; border: 1px solid {$border_color}; margin: 5px auto; padding: 0px 25px 20px 0px; max-width:486px; text-align:center; box-sizing: border-box;">
+			<!--<div style="text-align:center;"><img src="{$site}/media/images/email/foodkick/hero.png" /></div>-->
 			
 			<div style="margin: 10px auto; font-size: {$fontsize_p}; text-align: center;">
-
-				
-				<table width="100%" bgcolor="#FFFFFF" align="center">
+				<table width="452" bgcolor="#FFFFFF" align="center">
+					<tr>
+						<td width="33%">&nbsp;</td>
+						<td width="452"><img src="{$site}/media/images/email/foodkick/hero.png" /></td>
+						<td width="33%">&nbsp;</td>
+					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
 						<td width="452">
-
 							<div style="color: {$purple}; font-size: 26px; font-family:{$fontfamily}; font-weight: bold; margin: 27px 0 1px;">
 								Welcome to Life on FoodKick!
 							</div>
 							
-							<p style="margin-bottom:7px;">
+							<p style="margin-bottom:7px; {$fontfamily}">
 								Get the food and booze that makes the moment-we'll bring it to your door in as little as one hour. Plus, your first 30 days of delivery are FREE!*
 							</p>
-							<p style="margin-bottom:7px;">
+							<p style="margin-bottom:7px; {$fontfamily}">
 								We're always in the palm of your hand giving you the inside scoon on:
 							</p>
 							
-							<p style="{$list_style}">
+							<p style="{$list_style} {$fontfamily}">
 								Customizable meal hacks from the freshest ingredients
 							</p>
-							<p style="{$list_style}">
+							<p style="{$list_style} {$fontfamily}">
 								The perfect food and booze pairing recommendations from our squad
 							</p>
-							<p style="{$list_style}">
+							<p style="{$list_style} {$fontfamily}">
 								Pantry staples and home essentials
 							</p>
-							<p style="{$list_style}">
+							<p style="{$list_style} {$fontfamily}">
 								Wines, spirits, and beers to cheers
 							</p>
 							
-							<p style="margin-bottom:20px;">
+							<p style="margin-bottom:20px; {$fontfamily}">
 								<b>No need to plan or run errands ever again.</b> <br/>
 								Even for TP.  Now, place an order and get back to doing you.
 							</p>
@@ -82,16 +84,16 @@
 											background-color: {$purple};
 											color: white;
 											width: 276px;
-											height:64px;
 											margin: auto;
 											font-size: 19px;
 											vertical-align: middle;
 											padding-top: 14px;
 											padding-bottom: 12px;
 											letter-spacing: 1.5px;
-											font-family: {$fontfamily};
+											{$fontfamily}
 											font-weight: bold;
 											text-decoration: none;
+											box-sizing: border-box;
 											display: block;">
 											<a href="{$site}/media/editorial/foodkick/ua_router.html" style="color:white;text-decoration:none">LET&#8217;S KICK IT</a>
 											
@@ -103,13 +105,18 @@
 						</td>
 						<td width="33%">&nbsp;</td>
 					</tr>
+					<tr>
+						<td width="33%">&nbsp;</td>
+						<td width="452">
+							<h2 style="color:{$purple};text-align:center;font-size:1.3em; margin-top: 28px; margin-bottom: 45px; {$fontfamily}">Get your first 30 days of delivery FREE!</h2>
+							<img src="{$img_dir}/insta.jpg" />
+							<p style="font-size: 18px; line-height: 25px; {$fontfamily}">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>
+						</td>
+						<td width="33%">&nbsp;</td>
+					</tr>
 				</table>
 				
-				<h2 style="color:{$purple};text-align:center;font-size:1.3em; margin-top: 28px; margin-bottom: 45px;">Get your first 30 days of delivery FREE!</h2>
-				
-				<img src="{$img_dir}/insta.jpg" />
-				
-				<p style="font-size: 18px; line-height: 25px;">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>
+
 			</div>
 			<!-- <div style="text-align: center; padding: 3px; height: 30px; margin: 10px 0;"><a style="height: 100%; width: 100%; display: inline-block; padding: 0; margin: 0; font-size: 14px; color: {$purple}; font-weight: bold; line-height: 28px; text-decoration: none;" href="#">START HERE</a></div> -->
 		</div>

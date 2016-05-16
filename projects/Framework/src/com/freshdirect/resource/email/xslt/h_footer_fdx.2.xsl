@@ -1,33 +1,36 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt='http://xsltsl.org/date-time' version="1.0">
 	<xsl:output method="html"/>
+	<!--<xsl:variable name="border_color" select="'#D8D8D8'" />-->
 	<xsl:variable name="sociallink_styles" select="'text-decoration: none; border: none;padding-right:20px;display:inline-block'" />
-	<xsl:variable name="whitebutton_styles" select="concat('border: ', $border_color, ' 1px solid; height: 100%; width: auto; display: inline-block;padding: 8px 30px 6px; margin: 0;font-size: 16px;background-color: white;color: #732484;font-weight: bold;height: 20px;text-decoration: none;font-family: Arial;width:195px;text-align:center;')" />
+	<xsl:variable name="whitebutton_styles" select="concat('border: ', $border_color, ' 1px solid; display: inline-block;padding: 8px 5px 6px; margin: 0;font-size: 16px;background-color: white;color: #732484;font-weight: bold;height: 36px;text-decoration: none;font-family: Arial;width:158px;text-align:center; box-sizing: border-box;')" />
 	
 	<xsl:template name="h_footer_fdx2">
-		
 		<div style="margin: 5px;">
-			<table cellpadding="0" cellspacing="0" width="100%" style="padding: 0; margin: 0; border-collapse: collapse; border-spacing: 0; border-style: none;">
+			<table cellpadding="0" cellspacing="0" width="478" style="padding: 0; margin: auto; border-collapse: collapse; border-spacing: 0; border-style: none; box-sizing: border-box;">
 				<!--<tr>
 					<td width="50%" style="text-align: center; padding: 0 5px 5px 0;"><a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">Check/Change an Order</a></td>
 					<td style="text-align: center; padding: 0 0 5px 5px;"><a href="#" style="border: 1px solid {$border_color}; height: 100%; width: auto; display: inline-block; padding: 10px 30px; margin: 0; font-size: 18px; background-color: #732484; color: #fff; font-weight: bold; line-height: 28px; text-decoration: none;">Contact Us</a></td>
 				</tr>-->
 				<tr>
-					<td colspan="2" style="height: 14px;"><img src="/images/clear.gif" width="1" height="10" border="0" alt="" style="display:none" /></td>
+					<td colspan="3" style="height: 14px;"><img src="/images/clear.gif" width="1" height="10" border="0" alt="" style="display:none" /></td>
 				</tr>
 				<tr>
-					<td style="text-align: right; padding: 0 5px 5px 0; width: 50%;">
+					<td style="text-align: right; padding: 0 5px 5px 0; width: 33%;">
+						<a href="mailto:sidekicks@foodkick.com" style="{$whitebutton_styles}">Contact Us</a>
+					</td>
+					<td style="text-align: center; padding: 0 5px 5px 0; width: 33%;">
 						<a href="https://foodkick.freshdirect.com" style="{$whitebutton_styles}">Go to FoodKick</a>
 					</td>
-					<td style="text-align: left; padding: 0 0 5px 5px;">
+					<td style="text-align: left; padding: 0 0px 5px 0;">
 						<a href="https://foodkick.freshdirect.com/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="height: 14px;"><img src="/images/clear.gif" width="1" height="10" border="0" alt="" style="display:none" /></td>
+					<td colspan="3" style="height: 14px;"><img src="/images/clear.gif" width="1" height="10" border="0" alt="" style="display:none" /></td>
 				</tr>
 				<tr>
-					<td colspan="2" style="background-color: #ffffff; border: 1px solid {$border_color}; margin: 5px; padding: 20px;">
+					<td colspan="3" style="background-color: #ffffff; border: 1px solid {$border_color}; margin: 5px; padding: 20px;">
 						<table cellpadding="0" cellspacing="0" width="100%" style="padding: 0; margin: 0; border-collapse: collapse; border-spacing: 0; border-style: none;" class="section email-footer-block">
 							<tr>
 								<td width="50%" style="font-family:Georgia, Times New Roman, Times, serif;font-size: 22px; font-weight: bold; padding-right: 10px;" align="center" valign="middle">
@@ -49,7 +52,7 @@
 				</tr>
 			</table>
 			
-			<div style="color: #888; padding: 20px;">
+			<div style="color: #888; padding: 20px;  {$fontfamily}">
 				<p>This Offer is for free delivery on qualifying order for a thirty (30) day period.
 				Offer applies to first-time customers only.  Free delivery means <u>no delivery or service fees</u>.
 				<u>Eligible orders</u> must (a) exceed minimum purchase requirements before taxes &amp; fees,
