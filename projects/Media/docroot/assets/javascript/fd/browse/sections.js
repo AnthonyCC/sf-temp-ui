@@ -110,7 +110,7 @@ var FreshDirect = FreshDirect || {};
 			var end = start + regItemsPerRow - 1;
 			var index = 0;
 			
-			while (end < $regProdArr.length) {
+			while (end < $regProdArr.length && !$regProdArr.slice(start, start+1).hasClass('fakeRowTop_'+index)) { /* avoid repeats if possible */
 				var rowHeights = [0];
 				
 				$regProdArr.slice(start, end+1).each(function(){
@@ -129,12 +129,6 @@ var FreshDirect = FreshDirect || {};
 				
 					
 				$hlProdArr.slice(index, index+1).each(function() {
-					if ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1" ){
-						$(this).hide();
-					}else{
-						$(this).show();
-					}
-					
 					$(this).addClass('fakeRowTop_'+index);
 					rowHeights.push($(this).outerHeight(true));
 				});
@@ -147,9 +141,14 @@ var FreshDirect = FreshDirect || {};
 				
 				index++;
 			}
+
+			if ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1" ){
+				$hlProdArr.hide();
+			}else{
+				$hlProdArr.show();
+			}
 			
-			
-			if($(paginationSelectedSelector).attr("data-page") == "1"){
+			if($(paginationSelectedSelector).attr("data-page") == "1" && $hlProdArr.length > 0){
 				//used to randomize the next url
 				var randomTime = new Date().getTime();
 				
@@ -190,7 +189,7 @@ var FreshDirect = FreshDirect || {};
 		adProductSection.listen();
     
 		//needed?
-		//adProductSection.fixThoseHooklogicDisplayHeights(197);
+		adProductSection.fixThoseHooklogicDisplayHeights();
 	}//end if(window.srch)
 	
 	window.isHLchangable = false;
