@@ -33,10 +33,9 @@
 
 .isHookLogic-true{
 	float:right;
-	margin-right: 30px;
     position:absolute;
     /* left:751px; *//* four across*/
-    left: 815px; /* five across */
+	right: 0;
     background-color:white;
     z-index:3;
 }
@@ -48,10 +47,10 @@
     float: right;
 }
 .isHookLogic-true, .isHookLogic-true *{
-	max-width:200px;
+	max-width: 155px;
 }
 .isHookLogic-true ul.products.transactional{
-	margin: 22px 0 32px;
+	/*margin: 22px 0 32px;*/
 	padding: 0;
 	display: table;
 }
@@ -59,7 +58,7 @@
 	vertical-align:top;
 	/*border-left: 1px solid #ddd;*/
 	padding-left:10px;
-	width:140px;
+	width: 136px;
 	margin-bottom:20px;
 	/*display:block!important;*/
 	/*border:1px solid magenta;

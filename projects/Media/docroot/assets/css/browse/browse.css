@@ -80,7 +80,7 @@
 	margin: 32px 0 29px;
 	padding: 0;
 	display: table;
-	width:800px;
+	width: 775px;
 }
 
 .browseContent .sectionContent .isHookLogic-true ul.products{
@@ -102,14 +102,9 @@
   margin-bottom: 11px;
 }
 
-.browseContent .sectionContent ul.products li.portrait-item.regularProduct {
-	margin: 20px 0 10px 0;
-}
-
 .browseContent .sectionContent ul.products li.portrait-item {
 	/* five across */
-	width: 136px;
-	max-width: 136px;
+	max-width: 132px;
 	/* four across */
 	/*width: 166px;
 	max-width: 166px;*/
@@ -118,6 +113,10 @@
 	/*border-right: 1px solid #ddd;*/
 	/*display: table-cell;*/
 	display: inline-block;
+}
+
+.browse-sections-top .products.transactional>.portrait-item.regularProduct {
+	margin: 10px 0 20px 0;
 }
 
 .browseContent .sectionContent ul.products li.portrait-item,  li.isHookLogicProduct{

@@ -97,90 +97,68 @@ var FreshDirect = FreshDirect || {};
 		});
     
 		adProductSection.fixThoseHooklogicDisplayHeights = function(){
-			var hookLogicRowLimit = 4;
-			var modIndex = 0;
-	
-			var prodSelector = ".browse-sections-top .portrait-item.regularProduct";
+			var prodSelector = ".browse-sections-top .products.transactional>.portrait-item.regularProduct";
 			var HLprodSelector = "#searchPanel > .browse-adproducts.isHookLogic-true .portrait-item.isHookLogicProduct";
 			var paginationSelectedSelector = ".pagination-pager-button.green.selected";
 			
-			var finalFakeRow = 0;
+			var hookLogicRowLimit = 4;
 			var HLmaxLen = Math.min( $(HLprodSelector).length, (hookLogicRowLimit+1) );
+			var $regProdArr = $(prodSelector);
+			var $hlProdArr = $(HLprodSelector);
+			var regItemsPerRow = 4 + (($hlProdArr.length === 0)?1:0);
+			var start = 0;
+			var end = start + regItemsPerRow - 1;
+			var index = 0;
 			
-			//var fakeClassPrefix = "fakeRow_";
-			
-			function fireHookLogicBeaconImpression($elem) {
-				//$elem.append('<img src="'+$elem.data('hooklogic-beacon-impress')+'" style="display: none;" />');
-			}
-			
-			//if there are some hookLogic products returned
-			if( $(HLprodSelector).length > 0 ){
-				finalFakeRow = HLmaxLen;
+			while (end < $regProdArr.length) {
+				var rowHeights = [0];
 				
-				$(HLprodSelector).each(function( index ) {
+				$regProdArr.slice(start, end+1).each(function(){
+					var classNames = $(this).attr("class");
+					if (classNames) {
+						$(this).attr("class", classNames.replace(/fakeRow_(\d+)/g, 'fakeRowTop_'+index) );
+					}
 					
-					//hide the hooklogic product if it is sixth or greater or if it is beyond page 1
-					if(index > hookLogicRowLimit || ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1") ){
+					//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
+					$(this).removeClass('lastInLine');
+					
+					rowHeights.push($(this).outerHeight(true));
+				});
+				start += regItemsPerRow;
+				end = start + regItemsPerRow - 1;
+				
+					
+				$hlProdArr.slice(index, index+1).each(function() {
+					if ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1" ){
 						$(this).hide();
 					}else{
 						$(this).show();
-						
-						//starting number of what will be selected
-						var reg_prod_start = (index * 3) + 1;					
-						var reg_prod_end = reg_prod_start + 2;
-	
-						fireHookLogicBeaconImpression($(this));
-						
-						//first, get the rowclass of this hooklogic product
-						var el = $(this);//get the element whose class value has to be extracted
-						var fr_val = el.attr('class').match(/\bfakeRow_(\d+)\b/)[1];
-						
-						var regProds = prodSelector+":nth-of-type(n+"+reg_prod_start+"):nth-of-type(-n+"+reg_prod_end+")";
-	
-						$(regProds).each(function(index2){
-							var attr = $(this).attr("class");
-							
-							if( (typeof attr !== typeof undefined) && (attr !== false) && attr.indexOf("fakeRow_") != -1 ){
-								$(this).attr("class", $(this).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+index) );
-							}
-						});
-					}//end if/else index > hookLogicRowLimit ...
-				}); //end loop through hook logic items
-				
-				if($(paginationSelectedSelector).attr("data-page") == "1"){
-					//used to randomize the next url
-					var randomTime = new Date().getTime();
-					
-					//beckoning for page beacon
-					if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
-						$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 					}
+					
+					$(this).addClass('fakeRowTop_'+index);
+					rowHeights.push($(this).outerHeight(true));
+				});
+				
+				if (index === hookLogicRowLimit || index === $hlProdArr.length-1) {
+					regItemsPerRow++;
 				}
 				
-				//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
-				$(prodSelector).removeClass('lastInLine');
+				$('.fakeRowTop_'+index).css('min-height', Math.max.apply(null, rowHeights)+'px');
 				
-				//what about product rows which wrap below hookLogic section?  this would be the first one
-				var afterRowStartAt = (HLmaxLen * 3) + 1;
+				index++;
+			}
+			
+			
+			if($(paginationSelectedSelector).attr("data-page") == "1"){
+				//used to randomize the next url
+				var randomTime = new Date().getTime();
 				
-				//loop through said products
-				for(var i=afterRowStartAt; i<$(prodSelector).length; i++){
-					var thisProd = prodSelector+":nth-of-type("+i+")";
-					
-					//what fake row number does this product go to?
-					var toRowNum = Math.floor( (i) / 4 ) + 1;
-					
-					//now correct the fake row class for this regular product
-					var attr = $(thisProd).attr("class");
-					
-					if( (typeof attr !== typeof undefined) && (attr !== false) && attr.indexOf("fakeRow_") != -1 ){
-						$(thisProd).attr("class", $(thisProd).attr("class").replace(/fakeRow_(\d+)/g, "fakeRow_"+toRowNum) );
-					}
-					
-					//
-					finalFakeRow = Math.max( HLmaxLen, toRowNum);
+				//beckoning for page beacon
+				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
+					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
 				}
 			}
+				
 			
 			//if( $.contains( $(".isHookLogic-false .browse-sections-top .products.transactional"), $(".isHookLogic-true") ) == false ){
 			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-spacer") ) == false ){
@@ -197,57 +175,11 @@ var FreshDirect = FreshDirect || {};
 			
 			$(".isHookLogic-false .browse-sections-top .products.transactional").css("min-height", $(".isHookLogic-true").outerHeight(true) );
 			
-			//get started
-			var tallestColumnH = 0;
-			
-			var colLength = 0;
-			var itemClass = '';
-			var regularRowClass = '';
-			var HLselectorClass = '';
-			
-			/*height fixes*/
-			for(var i=0; i<(finalFakeRow+1); i++){
-				tallestColumnH = 0;
-				
-				itemClass = "li.portrait-item.fakeRow_"+i;
-				regularRowClass = ".browse-sections-top "+itemClass;
-				
-				colLength = $( regularRowClass ).length;
-				
-				//$( itemClass ).first().css("border", "none");
-				/* this logic is wrong */
-				//$( regularRowClass ).first().css("border", "none");
-				
-				//both regular products and the HL product of this class
-				HLselectorClass = regularRowClass+", .isHookLogic-true "+itemClass;
-				
-				//$(".browse-sections-top li.portrait-item.fakeRow_"+i).each(function(index3){
-				$(HLselectorClass).each(function(index3){
-					tallestColumnH = Math.max(tallestColumnH, $(this).height());
-					
-					if( (index3 == (colLength-1)) && (i >= HLmaxLen) ){						
-						//$(this).css("background-color", "#88FF88");
-					}else{
-						//$(this).css("background-color", "pink");
-					}
-					
-					//console.log("werewolves of london = " + i, ", index3 = " + index3);
-				});
-				
-				//set this to be the height of the tallest row item
-				$(HLselectorClass).css("min-height", tallestColumnH);
-				
-				if(i >= HLmaxLen){
-					//$(".browse-sections-top .sectionContent li.portrait-item.fakeRow_"+i).last().addClass('lastInLine');
-				}
-				
-			}//end for var i=0; i<(finalFakeRow+1); i++...
-			
 			//correct for when there are filter tags
 			if( $('.filterTags').length > 0 ){
-				$(".isHookLogic-true").first().css("margin-top", $('.filterTags').first().height() + "px" );
+				$(".isHookLogic-true").first().css("margin-top", $('.filterTags').first().outerHeight(true)+5 + "px" );
 			}else{
-				$(".isHookLogic-true").first().css("margin-top", "0px" );
+				$(".isHookLogic-true").first().css("margin-top", "30px" );
 			}
 		}//end adProductSection.fixThoseHooklogicDisplayHeights
 
@@ -257,7 +189,8 @@ var FreshDirect = FreshDirect || {};
 		//new for HookLogic
 		adProductSection.listen();
     
-		adProductSection.fixThoseHooklogicDisplayHeights();
+		//needed?
+		//adProductSection.fixThoseHooklogicDisplayHeights(197);
 	}//end if(window.srch)
 	
 	window.isHLchangable = false;
@@ -272,7 +205,6 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('page-change', function(x){
 		window.isHLchangable = true;
 		
-		console.log("x = ", x);
 		
 		//class="pagination-pager-button cssbutton green transparent"
 	});
