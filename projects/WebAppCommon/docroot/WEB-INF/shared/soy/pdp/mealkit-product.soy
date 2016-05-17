@@ -68,7 +68,7 @@ class="action-item heating-instructions icon-clock-before"><span class="action-i
 {call pdp.subtotal data="all" /}
 <input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
 <div class="atc-button-wrapper">
-  <button class="cssbutton orange medium addtocart-button icon-cart-before" alt="" data-component="ATCButton">Add to Cart</button>
+  <button class="cssbutton orange medium addtocart-button icon-cart-before" alt="" data-component="ATCButton" type="button">Add to Cart</button>
   {call common.atcInCart}
     {param atcItemId:'pdp_'+$catId+'_'+$productId+'_'+$skuCode /}
     {param amount:$inCartAmount /}
