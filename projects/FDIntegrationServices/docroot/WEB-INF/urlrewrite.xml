@@ -708,6 +708,11 @@
 		<from>^/v/([0-9]+)/(.*)/cart/removemultipleitems/</from>
 		<to last="true">/cart.do?action=removemultipleitems&amp;ver=$1</to>
 	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/product/multipleproductdetail/</from>
+		<to last="true">/product.do?action=multipleproductdetail&amp;ver=$1</to>
+	</rule>
 
 	<!-- Smart Store -->
 	<rule>

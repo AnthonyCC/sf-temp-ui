@@ -578,6 +578,13 @@ function loadStuff() {
 	'\n}';
   	$("#payload").val(postdata);
   	
+  } else if (loaddata == "MultipleProductDetail") {
+  	$("#url").val("/saptest12@freshdirect.com/product/multipleproductdetail/");
+  	var postdata = '{'+
+  	'  "ids" : ["-2093500227","545704818"]'+
+	'\n}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "ProductGetPrice") {
   	$("#url").val("/product/getprice/catid/crt/id/crt_jumbo");
   	var postdata = '\n	{'+
@@ -1262,6 +1269,7 @@ function doStuff() {
   
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>
+  <option value="MultipleProductDetail">PRODUCT - Multiple Product Detail</option>
   <option value="ProductRecommended">PRODUCT - Product Recommended</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>
   <option value="ProductGetPrice">PRODUCT - Pricing API</option>

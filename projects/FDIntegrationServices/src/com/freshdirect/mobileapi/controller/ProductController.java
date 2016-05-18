@@ -25,8 +25,10 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.controller.data.ProductList;
 import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
+import com.freshdirect.mobileapi.controller.data.request.MultipleRequest;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.Price;
 import com.freshdirect.mobileapi.controller.data.response.WhatsGoodCategories;
@@ -59,6 +61,8 @@ public class ProductController extends BaseController {
     }
 
     public static final String MORE_INFO_ACTION = "moreInfo";
+    
+    public static final String MULTIPLE_PRODUCT_DETAIL = "multipleproductdetail";
 
     public static final String GET_PRICE_ACTION = "getprice";
 
@@ -111,6 +115,9 @@ public class ProductController extends BaseController {
                 model = getRelatedProducts(model, request, response, user);
             } else if(GET_RECOMMENDED_PRODUCTS_ACTION.equals(action)){
             	model = getRecommendedProducts(model, request, response, user);
+            } else if(MULTIPLE_PRODUCT_DETAIL.equals(action)){
+            	MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
+                model = getMultipleProductDetail(model, reqestMessage, response, user);
             }else {
                 model = getProduct(model, request, response, user);
             }
@@ -350,6 +357,60 @@ public class ProductController extends BaseController {
         }
         setResponseMessage(model, responseMessage, user);
         return model;
+
+    }
+    
+    private ModelAndView getMultipleProductDetail(ModelAndView model, MultipleRequest request, HttpServletResponse response, SessionUser user)
+            throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
+    	
+    	List<String> idlist = request.getIds();
+    	List<com.freshdirect.mobileapi.controller.data.Product> productList = new ArrayList<com.freshdirect.mobileapi.controller.data.Product>();
+    	
+    	for (String productid : idlist)
+    	{ 
+    		com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user);
+    		
+    		Message responseMessage;
+            if (product == null){
+            	responseMessage = Message.createFailureMessage("Could not find product");
+            	continue;
+            } else if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+                responseMessage = new Product(product);
+    			if (null != ((Product) responseMessage).getProductTerms()) {
+    				try {
+    					((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+    				} catch (IOException e) {
+    					throw new FDException(e);
+    				} catch (TemplateException e) {
+    					throw new FDException(e);
+    				}
+    			}
+                responseMessage.setStatus(Message.STATUS_FAILED);
+                responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+            } else {
+                try {
+                    responseMessage = new Product(product);
+                    if (null != ((Product) responseMessage).getProductTerms()) {
+                        ((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+                    }
+                } catch (ModelException e) {
+                    throw new FDException(e);
+                } catch (IOException e) {
+                    throw new FDException(e);
+                } catch (TemplateException e) {
+                    throw new FDException(e);
+                }
+            }
+            if(((Product)responseMessage).isAvailable()){
+            	productList.add((Product)responseMessage);
+            }
+    	}
+    	
+    	ProductList pl = new ProductList();
+    	pl.setNoOfProducts(productList.size());
+    	pl.setProducts(productList);
+    	setResponseMessage(model, pl, user);
+    	return model;
 
     }
 
