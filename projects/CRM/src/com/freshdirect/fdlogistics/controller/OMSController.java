@@ -285,17 +285,16 @@ public class OMSController extends BaseController  {
 					DlvPaymentManager.getInstance().deliveryConfirm(dcorder.getOrderId());
 					order.setException("");
 				}else
-					{
 					if (EnumSaleStatus.PAYMENT_PENDING.equals(saleInfo.getStatus()) 
 						|| EnumSaleStatus.SETTLED.equals(saleInfo.getStatus()) 
 						|| EnumSaleStatus.CAPTURE_PENDING.equals(saleInfo.getStatus())) { 
 					order.setException("");
-				}
-				else{
+					}
+					else{
 					order.setException("Order is not in correct status to confirm");
 					partialCount++;
 				}
-					}
+					
 			}
 			
 			} catch (FDResourceException e) {
