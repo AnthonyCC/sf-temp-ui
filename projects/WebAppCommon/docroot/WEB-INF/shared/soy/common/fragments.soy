@@ -77,34 +77,33 @@
 * @param? itemPerLine
 * @param? showConfig
 * @param? isHookLogic
-* @param? ifSingleUL
 */
 {template .fixedProductList autoescape="false"}
-	{let $ipl: $itemPerLine ? $itemPerLine : 5 /}
+
+	{let $ipl: $itemPerLine ? $itemPerLine : 4 /}
 	{let $len: length($productList) /}
 	{let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
 	{let $fProducts: $fromProducts ? $fromProducts : 0 /}
 	{let $l: $nProducts - $fProducts /}
 	{let $lines: ceiling($l / $ipl) /}
-
-	{if $ifSingleUL}<ul class="products transactional" data-ipl="{$ipl}">{/if}
+	
 	{for $line in range(0, $lines)}
-		{if not $ifSingleUL}<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">{/if}
-			{for $col in range(0, $ipl)}
-				{if $fProducts + $col + $line * $ipl < $nProducts}
-					{let $product: $productList[$fProducts + $col + $line * $ipl] /}
-					{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ')  /}
-					{call common.transactionalGridItem}
-						{param item:$product /}
-						{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine' ) /}
-						{param showConfig: $showConfig /}
-					{/call}
-				{/if}
-			{/for}
-		{if not $ifSingleUL}</ul>{/if}
+		<ul class="products transactional{if $line == $lines - 1} lastLine{/if}" data-ipl="{$ipl}">
+  		{for $col in range(0, $ipl)}
+      		{if $fProducts + $col + $line * $ipl < $nProducts}
+	        	{let $product: $productList[$fProducts + $col + $line * $ipl] /}
+	        	{let $xtraClass: 'browseTransactionalProduct fakeRows fakeRow_' + $line + (($isHookLogic == true)? ' isHookLogicProduct ' : ' regularProduct ') + ' prod'+$col + (($col==0)?' firstInLine':'')  /}
+	        	{call common.transactionalGridItem}
+	          		{param item:$product /}
+	          		{param extraClass:(($col != ($ipl-1) and $fProducts + $col + $line * $ipl != $nProducts - 1) ? $xtraClass : $xtraClass+' lastInLine') /}
+	          		{param showConfig: $showConfig /}
+	        	{/call}
+      		{/if}
+    	{/for}
+    	</ul>
 	{/for}
-	{if $ifSingleUL}</ul>{/if}
 {/template}
+
 
 /**
 * @param? fromProducts

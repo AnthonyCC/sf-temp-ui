@@ -97,88 +97,21 @@ var FreshDirect = FreshDirect || {};
 		});
     
 		adProductSection.fixThoseHooklogicDisplayHeights = function(){
-			var prodSelector = ".browse-sections-top .products.transactional>.portrait-item.regularProduct";
-			var HLprodSelector = "#searchPanel > .browse-adproducts.isHookLogic-true .portrait-item.isHookLogicProduct";
-			var paginationSelectedSelector = ".pagination-pager-button.green.selected";
+			/* make all items in row the same min height (the height of the tallest elem in row) */
+			$('ul.products.transactional').each(function (i,e) {
+				var $children = $(this).children('li.browseTransactionalProduct');
+				$children.css('min-height', Math.max.apply(null, 
+					$children.map(function() {
+						return $jq(this).outerHeight(true);
+					})
+				)+'px');
+			});
 			
-			var hookLogicRowLimit = 4;
-			var HLmaxLen = Math.min( $(HLprodSelector).length, (hookLogicRowLimit+1) );
-			var $regProdArr = $(prodSelector);
-			var $hlProdArr = $(HLprodSelector);
-			var regItemsPerRow = 4 + (($hlProdArr.length === 0)?1:0);
-			var start = 0;
-			var end = start + regItemsPerRow - 1;
-			var index = 0;
-			
-			while (end < $regProdArr.length && !$regProdArr.slice(start, start+1).hasClass('fakeRowTop_'+index)) { /* avoid repeats if possible */
-				var rowHeights = [0];
-				
-				$regProdArr.slice(start, end+1).each(function(){
-					var classNames = $(this).attr("class");
-					if (classNames) {
-						$(this).attr("class", classNames.replace(/fakeRow_(\d+)/g, 'fakeRowTop_'+index) );
-					}
-					
-					//remove 'lastInLine' classname to these products. being done here because there is no need for this without hookLogic products present
-					$(this).removeClass('lastInLine');
-					
-					rowHeights.push($(this).outerHeight(true));
-				});
-				start += regItemsPerRow;
-				end = start + regItemsPerRow - 1;
-				
-					
-				$hlProdArr.slice(index, index+1).each(function() {
-					$(this).addClass('fakeRowTop_'+index);
-					rowHeights.push($(this).outerHeight(true));
-				});
-				
-				if (index === hookLogicRowLimit || index === $hlProdArr.length-1) {
-					regItemsPerRow++;
-				}
-				
-				$('.fakeRowTop_'+index).css('min-height', Math.max.apply(null, rowHeights)+'px');
-				
-				index++;
-			}
-
-			if ( $.isNumeric( $(paginationSelectedSelector).attr("data-page") ) && $(paginationSelectedSelector).attr("data-page") != "1" ){
-				$hlProdArr.hide();
-			}else{
-				$hlProdArr.show();
-			}
-			
-			if($(paginationSelectedSelector).attr("data-page") == "1" && $hlProdArr.length > 0){
-				//used to randomize the next url
-				var randomTime = new Date().getTime();
-				
-				//beckoning for page beacon
+			/* add page beacon (if it doesn't already exist) */
+			if(FreshDirect.browse.data.pager.activePage == 1){
 				if ($(".browse-sections-top .browseContent .HLpageBeaconImg").length === 0) { /* only one instance at a time */
-					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + randomTime + "' />");
+					$(".browse-sections-top .browseContent").append("<img class='HLpageBeaconImg' src='" + window.FreshDirect.browse.data.adProducts.pageBeacon + "&random=" + new Date().getTime() + "' />");
 				}
-			}
-				
-			
-			//if( $.contains( $(".isHookLogic-false .browse-sections-top .products.transactional"), $(".isHookLogic-true") ) == false ){
-			if( $.contains( $(".isHookLogic-false"), $(".isHookLogic-spacer") ) == false ){
-				//$(".isHookLogic-true").clone().prependTo( $(".isHookLogic-false .browse-sections-top .products.transactional") );
-				
-				var hltH = $(".isHookLogic-true").height() - 55;
-				
-				//console.log("hltH = " + hltH);
-				
-				if( $(".isHookLogic-spacer").length < 1 ){
-					$(".isHookLogic-false .browse-sections-top .products.transactional").prepend("<div class='isHookLogic-spacer' style='height:"+hltH+"px; '></div>");
-				}
-			}
-			
-			$(".isHookLogic-false .browse-sections-top .products.transactional").css("min-height", $(".isHookLogic-true").outerHeight(true) );
-			
-			//correct for when there are filter tags
-			if( $('.filterTags').length > 0 ){
-				$(".isHookLogic-true").first().css("margin-top", $('.filterTags').first().outerHeight(true)+5 + "px" );
-			}else{
-				$(".isHookLogic-true").first().css("margin-top", "30px" );
 			}
 		}//end adProductSection.fixThoseHooklogicDisplayHeights
 

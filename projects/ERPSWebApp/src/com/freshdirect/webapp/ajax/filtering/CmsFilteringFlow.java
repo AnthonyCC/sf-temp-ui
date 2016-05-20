@@ -150,7 +150,9 @@ public class CmsFilteringFlow {
 			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);			
 				
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
-			
+            
+            /* insert HL products into the correct spot(s) in the results */
+            insertHookLogicProductsIntoBrowseData(browseData, user);
 				
 			// -- PAGING --
 			if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
@@ -174,6 +176,23 @@ public class CmsFilteringFlow {
 			populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
 		}
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}
+	
+	/* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
+	public void insertHookLogicProductsIntoBrowseData(BrowseData browseData, FDSessionUser user) {
+        List<ProductData> prodList = browseData.getSections().getSections().get(0).getProducts();
+        List<ProductData> hlProdList = browseData.getAdProducts().getProducts();
+        int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 : 4;
+        int hlIndex = itemsPerRow-1;
+        Iterator<ProductData> iterator = hlProdList.iterator();
+        while (iterator.hasNext()) {
+        	ProductData result = iterator.next();
+        	prodList.add(hlIndex, result);
+        	hlIndex += itemsPerRow;
+        }
+        
+        /* leave the items, so they can be inserted on ajax filtering */
+        //browseData.getAdProducts().setProducts(new ArrayList<ProductData>()); //remove list so it's not sent to page
 	}
 
 	private boolean isCarouselsBottomAndOnLastPage(BrowseData browseData, PagerData pagerData) {
@@ -237,15 +256,10 @@ public class CmsFilteringFlow {
 
 	private void populateSearchCarouselProductLimit(int activePage,	BrowseDataContext browseDataContext) {
 		int searchCarouselProductLimit;
-		int noOfAdProducts = (null != browseDataContext.getAdProducts() && null !=browseDataContext.getAdProducts().getProducts()) ? browseDataContext.getAdProducts().getProducts().size() :0;
 		if (activePage == 0) {
 			searchCarouselProductLimit = 0;
 		} else {
 			searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
-		}
-		/* hooklogic should only show (or "count") on the first page */
-		if(activePage == 1 && searchCarouselProductLimit > 0 && noOfAdProducts > 0 && searchCarouselProductLimit >= noOfAdProducts){
-			searchCarouselProductLimit = searchCarouselProductLimit - noOfAdProducts;
 		}
 		browseDataContext.getSections().setLimit(searchCarouselProductLimit);
 	} 
