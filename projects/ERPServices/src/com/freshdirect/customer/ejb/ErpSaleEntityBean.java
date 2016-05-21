@@ -655,20 +655,33 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	String saleUpdateWithNoWaveSQL =
 		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
 
+	String saleUpdateforFDX =
+			"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
+
 	public void store(Connection conn) throws SQLException {
 		if (isModified()) {
 			PreparedStatement ps = null;
 			ErpShippingInfo sInfo = model.getShippingInfo();
+			if(model.geteStoreId()!=null && model.geteStoreId().getContentId()!=null && "FDX".equalsIgnoreCase(model.geteStoreId().getContentId()))
+			{
+				ps = conn.prepareStatement(saleUpdateforFDX);
+			}
+			else
+			{
 			if (sInfo != null && sInfo.getWaveNumber() != null) {
 				ps = conn.prepareStatement(saleUpdateWithWaveSQL);
 			} else {
 				ps = conn.prepareStatement(saleUpdateWithNoWaveSQL);
 			}
+			}
 			int index = 1;
 			ps.setString(index++, model.getStatus().getStatusCode());
 			ps.setString(index++, model.getSapOrderNumber());
+			if(model.geteStoreId()==null || model.geteStoreId().getContentId()==null || !"FDX".equalsIgnoreCase(model.geteStoreId().getContentId()))
+			{
 			ps.setString(index++, sInfo != null ? sInfo.getTruckNumber() : null);
 			ps.setString(index++, sInfo != null ? sInfo.getStopSequence() : null);
+			}
 			ps.setInt(index++, sInfo != null ? sInfo.getRegularCartons() : 0);
 			ps.setInt(index++, sInfo != null ? sInfo.getFreezerCartons() : 0);
 			ps.setInt(index++, sInfo != null ? sInfo.getAlcoholCartons() : 0);
