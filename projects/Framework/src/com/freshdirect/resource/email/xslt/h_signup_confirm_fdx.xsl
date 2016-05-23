@@ -9,49 +9,64 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 
-	<xsl:variable name="site" select="'https://www.freshdirect.com'" />
+	<!--<xsl:variable name="site" select="'https://www.freshdirect.com'" />-->
+	<xsl:variable name="site" select="'https://foodkick.freshdirect.com'" />
+	<xsl:variable name="editorial_dir" select="concat($site, '/media/editorial/foodkick')" />
 	<xsl:variable name="img_dir" select="concat($site, '/media/images/email/foodkick')" />
 	<xsl:variable name="purple" select="'#732484'" />
-	<xsl:variable name="litegrey" select="'#FFFFFF'" />
+	<xsl:variable name="litegrey" select="'#f4f4f2'" />
 	<xsl:variable name="white" select="'#FFFFFF'" />
 	<xsl:variable name="border_color" select="'#D8D8D8'" />
-	<xsl:variable name="fontsize_p" select="'16px'" />
+	<xsl:variable name="fontsize_p" select="'1em'" />
+	<xsl:variable name="layout_w" select="'452'" />
 	<xsl:variable name="fontfamily" select="'font-family:Arial, Helvetica, sans-serif;'" />
 
 	<xsl:variable name="list_img_tag"><img src="{$img_dir}/check.jpg" style="position:relative;top:5px; margin-right:3px;" /></xsl:variable>
-	<xsl:variable name="list_style" select="concat( $fontfamily, 'margin-bottom:0px; padding-top: 3px; padding-left:0px; min-height:20px; background-position: 0px 1px;')" />
+	<xsl:variable name="list_style" select="concat( $fontfamily, 'margin-bottom:0px; padding-top: 3px; padding-left:0px; min-height:20px; background-position: 0px 1px; text-align:left;')" />
+	<xsl:variable name="cell_style" select="concat( $fontfamily, 'text-align:left; white-space:nowrap;')" />
 	
 	<xsl:template match="fdemail">
 	<html>
 		<head>
 			<title>Congrats! You're In!</title>
 			<link rel="stylesheet" href="{$site}/assets/css/emails.css" />
+			<style>
+				p {
+				font-family: {$fontfamily} !important;
+				}
+			</style>
 		</head>
-		<body bgcolor="#f4f4f2" text="" margin="0" style="background-color:#f4f4f2; margin:0px; color: #333333; {$fontfamily}">
+		<body bgcolor="{$litegrey}" text="" margin="0" style="background-color:{$litegrey}; margin:0px; color: #333333; {$fontfamily}">
 			<xsl:call-template name="mail_body" />
 		</body>
 	</html>
 	</xsl:template>
 
 	<xsl:template name="mail_body">
-		<div style="{$fontfamily} text-align:center; color:{$white}; font-size:9pt; padding:15px 10px 5px;background-color: {$purple};">
-			<span style="{$fontfamily} ">Welcome to FoodKick! + 30 Days of Free Delivery</span>
-			<span style="padding-left: 92px; {$fontfamily}">&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a></span>
-		</div>
+		<table style="text-align:center; background-color: {$purple}; white-space:nowrap; min-height:24px; width:100%;">
+			<tr>
+				<td style="padding-right: 23px;">
+					<table width="{$layout_w}" style="width:{$layout_w}px; background-color: {$purple}; {$fontfamily} color:{$white}; font-size:0.9em; margin:auto">
+						<tr>
+							<td align="left" style="background-color: {$purple}; text-align:left; {$fontfamily} white-space:nowrap; width:300px">Welcome to FoodKick! + 30 Days of Free Delivery</td>
+							<td align="right" style="text-align:right; {$fontfamily} white-space:nowrap; width:152px">&nbsp;&nbsp;&nbsp;&nbsp;View <a href="http://www.foodkick.com" style="color: {$white};">Web</a></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 		
-		<div align="center" style="{$fontfamily} margin: 5px auto; padding: 0px 25px 0px 5px; /*max-width:486px;*/ text-align:center; box-sizing: border-box;">
-			<!--<div style="text-align:center;"><img src="{$site}/media/images/email/foodkick/hero.png" /></div>-->
-			
+		<div align="center" style="{$fontfamily} margin: 5px auto; padding: 0px 25px 0px 5px; text-align:center; box-sizing: border-box;">
 			<div style="margin: 10px auto; font-size: {$fontsize_p}; text-align: center;">
-				<table width="452" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px;">
+				<table width="{$layout_w}" bgcolor="{$white}" align="center" style="border: 1px solid {$border_color}; background-color:{$white}; padding: 0px 0px 10px 0px;">
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="452"><img src="{$site}/media/images/email/foodkick/hero.png" /></td>
+						<td width="452"><img src="{$img_dir}/hero.png" /></td>
 						<td width="33%">&nbsp;</td>
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="452">
+						<td width="{$layout_w}" align="left" style="text-align:left;">
 							<div style="color: {$purple}; font-size: 26px; {$fontfamily} font-weight: bold; margin: 27px 0 1px;">
 								Welcome to Life on FoodKick!
 							</div>
@@ -87,8 +102,17 @@
 									<td style="margin:0px;padding:0px">
 										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;" />
 									</td>
+									<!--
 									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold; background-color: {$purple};">
 										<a href="{$site}/media/editorial/foodkick/ua_router.html" style=" color: {$white}; text-decoration:none;">LET&#8217;S KICK IT</a>
+									</td>
+									//-->
+									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold;">
+										<a href="{$editorial_dir}/ua_router.html" style=" color: {$white}; text-decoration:none;">
+											<!--<img src="{$img_dir}/button2.png" width="1" height="32" border="0" alt="" />-->
+											
+											<img src="http://i.imgur.com/Y6lnAVB.png" width="277" height="49" border="0" alt="" />
+										</a>
 									</td>
 									<td style="margin:0px;padding:0px">
 										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;" />
@@ -100,7 +124,7 @@
 					</tr>
 					<tr>
 						<td width="33%">&nbsp;</td>
-						<td width="452">
+						<td width="{$layout_w}">
 							<h2 style="color:{$purple};text-align:center;font-size:1.3em; margin-top: 28px; margin-bottom: 45px; {$fontfamily}">Get your first 30 days of delivery FREE!</h2>
 							<img src="{$img_dir}/insta.jpg" />
 							<p style="font-size: 18px; line-height: 25px; {$fontfamily}">Follow us on Instagram and tap the Like2Buy link in our bio to shop our featured products and get daily foodspiration!</p>

@@ -10,7 +10,7 @@
 
 	<xsl:variable name="sociallink_styles" select="'text-decoration: none; border: none;padding-right:20px;display:inline-block'" />
 	<xsl:variable name="whitebutton_cell_styles" select="concat('text-align: center; padding: 10px 5px 5px 10px; width: 33%; background-color:', $white, '; border: ', $border_color, ' 1px solid; white; white-space: nowrap;')" />
-	<xsl:variable name="whitebutton_styles" select="concat('padding: 8px 5px 6px; margin: 10px;font-size: 16px;color: #732484;font-weight: bold;height: 36px;text-decoration: none; ', $fontfamily, 'width:158px;text-align:center; box-sizing: border-box;  white-space: nowrap;')" />
+	<xsl:variable name="whitebutton_styles" select="concat('padding: 8px 5px 6px; margin: 10px;font-size: ', $fontsize_p, ';color: #732484;font-weight: bold;height: 36px;text-decoration: none; ', $fontfamily, 'width:158px;text-align:center; box-sizing: border-box;  white-space: nowrap;')" />
 	
 	<xsl:template name="h_footer_fdx2">
 		<div style="margin: 0px auto; text-align: center;">
@@ -28,11 +28,11 @@
 					</td>
 					<td style="padding:0px"> &nbsp; </td>
 					<td style="{$whitebutton_cell_styles}">
-						<a href="https://foodkick.freshdirect.com" style="{$whitebutton_styles}">Go to FoodKick</a>
+						<a href="{$site}" style="{$whitebutton_styles}">Go to FoodKick</a>
 					</td>
 					<td style="padding:0px"> &nbsp; </td>
 					<td style="{$whitebutton_cell_styles}">
-						<a href="https://foodkick.freshdirect.com/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a>
+						<a href="{$site}/foodkick/faq.jsp" style="{$whitebutton_styles}">FAQs</a>
 					</td>
 				</tr>
 
@@ -44,16 +44,16 @@
 							<tr>
 								<td width="50%" style="font-family:Georgia, Times New Roman, Times, serif;font-size: 22px; font-weight: bold; padding-right: 10px;" align="center" valign="middle">
 									Spread the
-									<img src="http://www.freshdirect.com/media/images/email/foodkick/heart.png" alt="love" style="margin-bottom: -5px;" />
+									<img src="{$img_dir}/heart.png" alt="love" style="margin-bottom: -5px;" />
 									tell a friend
 								</td>
 							</tr>
 							<tr>
 								<td align="center" style="padding-top:20px">
-									<a href="https://www.facebook.com/FoodKick/" style="{$sociallink_styles}"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_facebook.png" alt="Facebook" style="text-decoration: none; border: none;padding-right:30px;" border="0" /></a>
-									<a href="https://twitter.com/foodkick" style="{$sociallink_styles}"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_twitter.png" alt="Twitter"  style="text-decoration: none; border: none;margin-right:30px;" border="0" /></a>
-									<!-- <img src="http://www.freshdirect.com/media/images/email/foodkick/logo_pinterest.png" alt="Pinterest" /> -->
-									<a href="https://instagram.com/foodkick/" style="{$sociallink_styles}"><img src="http://www.freshdirect.com/media/images/email/foodkick/logo_instagram.png" alt="Instagram" style="text-decoration: none; border: none;" border="0" /></a>
+									<a href="https://www.facebook.com/FoodKick/" style="{$sociallink_styles}"><img src="{$img_dir}/logo_facebook.png" alt="Facebook" style="text-decoration: none; border: none;padding-right:30px;" border="0" /></a>
+									<a href="https://twitter.com/foodkick" style="{$sociallink_styles}"><img src="{$img_dir}/logo_twitter.png" alt="Twitter"  style="text-decoration: none; border: none;margin-right:30px;" border="0" /></a>
+									<!-- <img src="{$img_dir}/logo_pinterest.png" alt="Pinterest" /> -->
+									<a href="https://instagram.com/foodkick/" style="{$sociallink_styles}"><img src="{$img_dir}/logo_instagram.png" alt="Instagram" style="text-decoration: none; border: none;" border="0" /></a>
 								</td>
 							</tr>
 						</table>
@@ -85,7 +85,7 @@
 								<br /><br />Please add <xsl:value-of select="//fromEmail"/> to your address book to ensure our emails reach your inbox.<br /><br />
 							</xsl:if>
 							<!-- For FoodKick online Help or to contact us, please <a href="#">click here.</a><br /><br /> -->
-							For FoodKick online Help or to contact us, please <a href="#" style="color: #888;">click here.</a><br /><br />
+							For FoodKick online Help or to contact us, please <a href="mailto:sidekicks@foodkick.com" style="color: #888;">click here.</a><br /><br />
 							23-30 Borden Ave. Long Island City, NY 11101<br /><br />
 							<!-- <a href="#">Customer Agreement</a><br /> -->
 							
