@@ -97,10 +97,10 @@
 								Seriously, even for TP.  Go ahead and place an order now, so you can get back to doing you.
 							</p>
 							
-							<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px;" cellpadding="0" cellspacing="0">
+							<table width="276" align="center" style="width: 276px; height:52px; color: {$white}; font-size: 19px; border:none;" cellpadding="0" cellspacing="0" border="0">
 								<tr>
-									<td style="margin:0px;padding:0px">
-										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;" />
+									<td style="margin:0px;padding:0px;border:none">
+										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;border:none" />
 									</td>
 									<!--
 									<td style=" font-size: 19px; vertical-align: middle; text-align: center; {$fontfamily} font-weight: bold; background-color: {$purple};">
@@ -114,8 +114,8 @@
 											<img src="http://i.imgur.com/Y6lnAVB.png" width="277" height="49" border="0" alt="" />
 										</a>
 									</td>
-									<td style="margin:0px;padding:0px">
-										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;" />
+									<td style="margin:0px;padding:0px;border:none;">
+										<img src="/images/clear.gif" width="1" height="32" border="0" alt="" style="display:none;border:none" />
 									</td>
 								</tr>
 							</table>
