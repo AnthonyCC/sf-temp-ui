@@ -75,6 +75,8 @@ public abstract class FDAbstractCache<K,V> {
 
 			} catch (InterruptedException ex) {
 				// do nothing
+			} catch (Exception e){
+				//do nothing				
 			}
 		}
 	}

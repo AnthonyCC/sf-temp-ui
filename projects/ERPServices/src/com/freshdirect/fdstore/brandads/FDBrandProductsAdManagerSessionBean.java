@@ -108,6 +108,7 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 			            	orderFeedDataModel.setpUserId(s.getpUserId());
 			            	orderFeedDataModel.setcUserId(s.getcUserId());
 			            	orderFeedDataModel.setOrderId(s.getOrderId());
+			            	orderFeedDataModel.setOrderCroModDate(s.getOrderCroModDate());
 			            	/*lastOrderId = s.getOrderId();
 			            	lastOrderTime = s.getOrderCroModDate();*/
 			            	orderFeedDataModel.setOrderTotal(s.getOrderTotal());
