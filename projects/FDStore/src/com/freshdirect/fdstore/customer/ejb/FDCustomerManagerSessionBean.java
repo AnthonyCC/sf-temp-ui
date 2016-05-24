@@ -889,10 +889,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					AddressModel addressModel = null; 
 					if(isAddressScrubbed(address)){
 						addressModel = mapToAddressModel(address);
-						// Get the GEO code
-						getAddressGeoCode(addressModel);
-						// Verify the Delivery Service type
-						//address.setServiceType(FDDeliveryManager.getInstance().getDeliveryServiceType(addressModel));
+						if(addressModel.getLongitude() == 0.0 
+								|| addressModel.getLatitude() == 0.0)
+							getAddressGeoCode(addressModel);
 					}else{
 						FDDeliveryManager.getInstance().scrubAddress(address);
 					}

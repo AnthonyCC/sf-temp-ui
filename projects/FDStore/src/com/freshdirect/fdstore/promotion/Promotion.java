@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.logistics.framework.util.LoggerFactory;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class Promotion extends ModelSupport implements PromotionI {
 	private static final Logger LOGGER = LoggerFactory.getInstance(Promotion.class.getSimpleName());

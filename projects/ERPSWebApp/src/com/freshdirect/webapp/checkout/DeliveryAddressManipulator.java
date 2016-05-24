@@ -646,7 +646,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			LOGGER.debug("setRegularDeliveryAddress[checkAddressForRestrictions:FAILED] :"+result);
 			return;
 		}
-
+		if(address.getLongitude() == 0.0 
+				|| address.getLatitude() == 0.0)
 		getAddressGeoCode(address);
 		
 		int validCount = user.getOrderHistory().getValidOrderCount();
@@ -842,18 +843,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 			AddressModel addrModel = location.getAddress();
 			try {
-				FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( addrModel );
-				String geocodeResult = geocodeResponse.getResult();
-
-				if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
-					//
-					// since geocoding is not happening silently ignore it
-					LOGGER.warn( "GEOCODE FAILED FOR ADDRESS in setDepotDeliveryLocation :" + addrModel );
-				} else {
-					LOGGER.debug( "setDepotDeliveryLocation : geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
-					addrModel = geocodeResponse.getAddress();
-				}
-
+				FDDeliveryManager.getInstance().scrubAddress(addrModel);
 			} catch ( FDInvalidAddressException iae ) {
 				LOGGER.warn( "GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :" + addrModel + "EXCEPTION :" + iae );
 			}
