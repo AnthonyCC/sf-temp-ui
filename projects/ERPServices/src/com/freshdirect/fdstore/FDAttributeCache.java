@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -27,7 +26,6 @@ public class FDAttributeCache extends FDAbstractCache {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( FDAttributeCache.class );
 	private static FDAttributeCache instance;
-	private static final Map EMPTY=new HashMap();
 	
 	private FDAttributeCache() {
 		super(DateUtil.MINUTE * FDStoreProperties.getAttributesRefreshPeriod());
@@ -49,16 +47,12 @@ public class FDAttributeCache extends FDAbstractCache {
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		} catch (AttributeException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		}
-		return EMPTY;
 	}
 	
 	@Override

@@ -6,12 +6,15 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class FDAbstractCache<K,V> {
-	
+	private static Category LOGGER = LoggerFactory.getInstance(FDAbstractCache.class);
 	protected final ServiceLocator serviceLocator;
 	
 	private final long refreshDelay;
@@ -74,8 +77,10 @@ public abstract class FDAbstractCache<K,V> {
 				}
 
 			} catch (InterruptedException ex) {
+				LOGGER.warn("Failed to refresh due to " + ex);
 				// do nothing
 			} catch (Exception e){
+				LOGGER.warn("Failed to refresh due to " + e);
 				//do nothing				
 			}
 		}
