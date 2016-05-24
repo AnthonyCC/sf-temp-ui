@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="hosted-config"/>
+	<classpathentry exported="true" kind="lib" path="hosted-config"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gxt.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CMS"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.2.jar"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-dev-oophm.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-user.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-maps.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/ColorPicker-GWT-1.6.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="con" path="com.bea.workshop.wls.syslib"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/gxt.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CMS"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.2.jar"/>
+	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/gwt/gwt-dev-oophm.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/gwt/gwt-user.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/gwt/gwt-maps.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/gwt/ColorPicker-GWT-1.6.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

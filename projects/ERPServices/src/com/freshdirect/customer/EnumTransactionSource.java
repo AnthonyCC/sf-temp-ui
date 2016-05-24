@@ -51,6 +51,8 @@ public enum EnumTransactionSource {
 				return FDX_IPHONE;	
 			case 9:
 				return FRIDGE;	
+			case 10:
+				return ANDROID_PHONE;
 			default:
 				return null;
 		}
@@ -76,6 +78,8 @@ public enum EnumTransactionSource {
 			return FDX_IPHONE;
 		}else if(FRIDGE.getCode().equalsIgnoreCase(code)){
 			return FRIDGE;
+		}else if(ANDROID_PHONE.getCode().equalsIgnoreCase(code)){
+			return ANDROID_PHONE;
 		}else{
 			try {
 				return getTransactionSource( Integer.parseInt(code) );
