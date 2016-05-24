@@ -2,6 +2,7 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( FDCOOLInfoCache.class );
 	private static FDCOOLInfoCache instance;
+	private static final Map EMPTY=new HashMap();
 	
 	private FDCOOLInfoCache() {
 		super(DateUtil.MINUTE * FDStoreProperties.getCOOLInfoRefreshPeriod());
@@ -43,12 +45,16 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
-			throw new FDRuntimeException(e);
+			LOGGER.error("Failed to refresh due to " + e);
+			//throw new FDRuntimeException(e);
 		} catch (EJBException e) {
-			throw new FDRuntimeException(e);
+			LOGGER.error("Failed to refresh due to " + e);
+			//throw new FDRuntimeException(e);
 		} catch (CreateException e) {
-			throw new FDRuntimeException(e);
+			LOGGER.error("Failed to refresh due to " + e);
+			//throw new FDRuntimeException(e);
 		} 
+		return EMPTY;
 	}
 	
 	protected Date getModifiedDate(Object item) {
