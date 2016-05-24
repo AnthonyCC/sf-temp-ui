@@ -174,7 +174,7 @@ var FreshDirect = FreshDirect || {};
 			window.FreshDirect.browse.data.adProducts.pageBeacon = xhr.responseJSON.adProducts.pageBeacon;
 		}
 		
-		if( window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) || (settings.url.indexOf("cartdata?change=") != -1 ) ){
+		if( (adProductSection && adProductSection.hasOwnProperty('fixThoseHooklogicDisplayHeights')) && (window.isHLchangable == true || (settings.url.indexOf("/api/filter?data=") != -1 ) || (settings.url.indexOf("cartdata?change=") != -1 )) ){
 			adProductSection.fixThoseHooklogicDisplayHeights();
 		}
 		
