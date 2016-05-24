@@ -365,16 +365,19 @@ public class ProductController extends BaseController {
     	
     	List<String> idlist = request.getIds();
     	List<com.freshdirect.mobileapi.controller.data.Product> productList = new ArrayList<com.freshdirect.mobileapi.controller.data.Product>();
+    	List<String> errorlist = new ArrayList<String>();
     	
     	for (String productid : idlist)
     	{ 
     		com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user);
     		
-    		Message responseMessage;
-            if (product == null){
-            	responseMessage = Message.createFailureMessage("Could not find product");
+    		if (product == null){
+            	errorlist.add("Could not find product - " + productid);
             	continue;
-            } else if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+            } 
+    		
+    		Message responseMessage;
+            if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
                 responseMessage = new Product(product);
     			if (null != ((Product) responseMessage).getProductTerms()) {
     				try {
@@ -401,14 +404,16 @@ public class ProductController extends BaseController {
                     throw new FDException(e);
                 }
             }
-            if(((Product)responseMessage).isAvailable()){
-            	productList.add((Product)responseMessage);
-            }
+            productList.add((Product)responseMessage);
     	}
     	
     	ProductList pl = new ProductList();
     	pl.setNoOfProducts(productList.size());
     	pl.setProducts(productList);
+    	for(int count = 0; count < errorlist.size(); count++)
+    	{
+    		pl.addErrorMessage(errorlist.get(count));
+    	}
     	setResponseMessage(model, pl, user);
     	return model;
 
