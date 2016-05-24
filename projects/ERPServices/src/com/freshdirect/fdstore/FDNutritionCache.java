@@ -2,7 +2,6 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -21,7 +20,7 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 	
 	private static Category LOGGER = LoggerFactory.getInstance( FDNutritionCache.class );
 	private static FDNutritionCache instance;
-	private static final Map EMPTY=new HashMap();
+	
 	private FDNutritionCache() {
 		super(DateUtil.MINUTE * FDStoreProperties.getNutritionRefreshPeriod());
 	}
@@ -37,20 +36,16 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 		try{
 			LOGGER.info("REFRESHING");
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
-			Map<String,ErpNutritionModel> data = new HashMap<String,ErpNutritionModel>();//sb.loadNutrition(since);
+			Map<String,ErpNutritionModel> data = sb.loadNutrition(since);
 			
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
 			e.printStackTrace();
-			
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		}
-		return EMPTY;
 	}
 	
 	public ErpNutritionModel getNutrition(String skuCode) {

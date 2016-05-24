@@ -3,7 +3,6 @@ package com.freshdirect.fdstore;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -22,8 +21,6 @@ public class FDInventoryCache extends FDAbstractCache {
 	private static Category LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
 	
 	private static FDInventoryCache instance;
-	
-	private static final Map EMPTY=new HashMap();
 	
 	private FDInventoryCache(){
 		super(DateUtil.MINUTE * FDStoreProperties.getInventoryRefreshPeriod());
@@ -45,13 +42,10 @@ public class FDInventoryCache extends FDAbstractCache {
 			//LOGGER.debug("REFRESHED ENTRIES: " + data);
 			return data;
 		} catch (RemoteException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
-			LOGGER.error("Failed to refresh due to " + e);
-			//throw new FDRuntimeException(e);
+			throw new FDRuntimeException(e);
 		}
-		return EMPTY;
 	}
 	
 	protected Date getModifiedDate(Object item) {
