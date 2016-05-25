@@ -369,42 +369,32 @@ public class ProductController extends BaseController {
     	
     	for (String productid : idlist)
     	{ 
-    		com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user);
+    		try{
+    			com.freshdirect.mobileapi.model.Product product = com.freshdirect.mobileapi.model.Product.getProduct(productid, "xxx", null, user);
     		
-    		if (product == null){
-            	errorlist.add("Could not find product - " + productid);
-            	continue;
-            } 
+    			if (product == null){
+    				errorlist.add("Could not find product - " + productid);
+    				continue;
+    			} 
     		
-    		Message responseMessage;
-            if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
-                responseMessage = new Product(product);
-    			if (null != ((Product) responseMessage).getProductTerms()) {
-    				try {
-    					((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
-    				} catch (IOException e) {
-    					throw new FDException(e);
-    				} catch (TemplateException e) {
-    					throw new FDException(e);
-    				}
-    			}
-                responseMessage.setStatus(Message.STATUS_FAILED);
-                responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
-            } else {
-                try {
-                    responseMessage = new Product(product);
-                    if (null != ((Product) responseMessage).getProductTerms()) {
+    			Message responseMessage;
+    			responseMessage = new Product(product);
+    			if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+    				if (null != ((Product) responseMessage).getProductTerms()) {
                         ((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
                     }
-                } catch (ModelException e) {
-                    throw new FDException(e);
-                } catch (IOException e) {
-                    throw new FDException(e);
-                } catch (TemplateException e) {
-                    throw new FDException(e);
-                }
-            }
-            productList.add((Product)responseMessage);
+    				responseMessage.setStatus(Message.STATUS_FAILED);
+    				responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+    			} else {
+    				if (null != ((Product) responseMessage).getProductTerms()) {
+                        ((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+                    }
+    			}
+    			productList.add((Product)responseMessage);
+    		} catch (Exception e) {
+				errorlist.add("Could not get details - " + productid + ". Reason - " + e.toString());
+            	continue;
+			}
     	}
     	
     	ProductList pl = new ProductList();
@@ -416,7 +406,6 @@ public class ProductController extends BaseController {
     	}
     	setResponseMessage(model, pl, user);
     	return model;
-
     }
 
     /**
