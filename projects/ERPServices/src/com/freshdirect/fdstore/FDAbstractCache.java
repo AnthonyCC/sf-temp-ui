@@ -73,14 +73,19 @@ public abstract class FDAbstractCache<K,V> {
 				
 				while(true) {
 					Thread.sleep(refreshDelay);
-					refresh();
+					try {
+						refresh();
+					} catch (Exception e) {
+						LOGGER.warn("Failed to refresh due to " + e);
+						//do nothing - keep the thread running
+					}
 				}
 
 			} catch (InterruptedException ex) {
-				LOGGER.warn("Failed to refresh due to " + ex);
+				LOGGER.warn("RefreshThread is stopped, as it failed to refresh due to " + ex);
 				// do nothing
 			} catch (Exception e){
-				LOGGER.warn("Failed to refresh due to " + e);
+				LOGGER.warn("RefreshThread is stopped, as it failed to refresh due to " + e);
 				//do nothing				
 			}
 		}
