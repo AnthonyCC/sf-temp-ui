@@ -106,8 +106,8 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				<tr>
 					<td>&nbsp;</td>
 				
-			<% 
-			if (( (shipToAddresses.size() + allPickupDepots.size() > 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() > 1) && !isCheckAddress)) { 
+			<%
+			if (( (shipToAddresses.size() + allPickupDepots.size() >= 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() >= 1) && !isCheckAddress)) { 
 			%>
 					<td class="text12">
 						<script>
