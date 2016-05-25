@@ -1051,7 +1051,7 @@
 		{if ($avalaraEnabledRevised and $box.id=='totaltax' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id=='subtotal' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id == 'totalAvalaratax' and $cartlineTypeRevised == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
 		
 		{else}	
-				<div class='1 subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
+				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
 						data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
@@ -1116,7 +1116,7 @@
 					
 					{if $cartlineTypeRevised == 'YOUR_CART'}
 						{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' and $box.id!='totaltax' and $box.id!='subtotal'}
-							<div class='3 subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
+							<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 								{if $box.id == 'freefood'}
 									<a href='/shared/promotion_popup.jsp?promoCode=signup'
 									data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
