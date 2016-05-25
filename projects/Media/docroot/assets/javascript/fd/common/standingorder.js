@@ -95,7 +95,7 @@ function addToSoSuccessHandler($contextElem, data) {
 		FreshDirect.modules.common.utils.eraseCookie("freshdirect.healthwarning");
 	}
 	
-	var $soResultsCont = $jq($contextElem.closest('.so-container')).find('.so-results-content');
+	var $soResultsCont = $jq($jq($contextElem).closest('.so-container')).find('.so-results-content');
 
 	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">'+data.name+'</a>');
 	$soResultsCont.find('.so-results-items-total').html(data.productCount+', '+'<span class="total">$'+data.amount+'</span>');
