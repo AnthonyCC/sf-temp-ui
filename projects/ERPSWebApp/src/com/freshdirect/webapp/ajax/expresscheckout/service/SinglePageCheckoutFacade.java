@@ -15,7 +15,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -390,7 +392,10 @@ public class SinglePageCheckoutFacade {
 
                 ErpAddressModel deliveryAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
 
-                if (deliveryAddress != null) {
+				//if the address is a depot if has to call the setDeliveryAddress to get the new zoneinfo.APPDEV-5170
+                FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepotByLocationId(addressId);
+        
+                if (deliveryAddress != null || depot!=null) {
                     DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true,
                             actionResult, null, null, null, null, null, null);
                 }
