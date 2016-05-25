@@ -83,7 +83,7 @@
 							</p>
 
 							<p style="{$list_style}">
-								<xsl:copy-of select="$list_img_tag"/> Farm-frsh produce, meat, fish and dairy
+								<xsl:copy-of select="$list_img_tag"/> Farm-fresh produce, meat, fish and dairy
 							</p>
 							<p style="{$list_style}">
 								<xsl:copy-of select="$list_img_tag"/> Pantry staples and home essentials
