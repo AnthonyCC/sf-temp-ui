@@ -123,34 +123,46 @@ if(user != null) {
 				</div>
 				
 				<%-- nav links next to search field --%>
-        <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
-          <div class="topnavitem" id="topnavitem_signup">						
-            <a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
-          </div>
-        <% } %>
+		        <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
+		        	<div class="topnavitem" id="topnavitem_signup">						
+						<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
+					</div>
+		        <% } %>
+		        
+		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+					<div class="topnavitem" id="topnavitem_standingorders">
+		            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
+		        	</div>
+		        <% } %>
 				<div class="topnavitem" id="topnavitem_reorder">
-          <a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
+          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
 				</div>
 
 				<div class="topnavitem" id="topnavitem_help">
-				<%
-				//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
-					if(user.isCorporateUser()){
-						%><a href="/index.jsp">Home delivery?</a><%			
-					}else {
-						%><a href="/cos.jsp">Office delivery?</a><%			
-					}
-				//}
-				/*
-				we are currently having this always show here,
-				because the parent conditional seems to always be false on pages which use this file,
-				regardless of user status, even if incognito.
-				the mockups imply that one or the other should always show
-				*/
-				%>
-				
 			        <a href="/help/index.jsp?trk=gnav">Help</a>
 			    </div>
+		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+					<% /* nothing in this space */ %>
+		        <% } else { %>
+					<%
+					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+						%><div class="topnavitem" id="topnavitem_dlvType"><%
+						if(user.isCorporateUser()){
+							%><a href="/index.jsp">Home delivery?</a><%			
+						}else {
+							%><a href="/cos.jsp">Office delivery?</a><%			
+						}
+						%></div><%
+					//}
+					/*
+					we are currently having this always show here,
+					because the parent conditional seems to always be false on pages which use this file,
+					regardless of user status, even if incognito.
+					the mockups imply that one or the other should always show
+					*/
+					%>
+				<% } %>
+				
 			    <br style="clear: both;" />
 			</div>
 		<% } else { %>
