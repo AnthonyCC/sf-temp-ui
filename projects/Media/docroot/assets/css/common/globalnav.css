@@ -136,6 +136,13 @@ body{
 .globalnav_top #topnavitem_help a{
 	margin-right: 26px;
 }
+.globalnav_top #topnavitem_dlvType a {
+	margin-right: 26px;
+}
+.globalnav_top #topnavitem_standingorders a{
+	margin-right: 0;
+	margin-top: 0;
+}
 
 a#yourAccount_reorder{
 	text-decoration: none;
