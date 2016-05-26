@@ -11,7 +11,7 @@ public enum EnumTransactionSource {
 	IPHONE_WEBSITE("IPW", "iPhone"),	
 	STANDING_ORDER("STO", "Standing Order"),
 	ANDROID_WEBSITE("ANW", "Android"),
-	ANDROID_PHONE("ANP", "Android Phone"),
+	ANDROID_PHONE("ANP", "FDX Android"),
 	FDX_IPHONE("IFX", "FDX iPhone"),
 	FRIDGE("FDG", "FRIDGE");
 	;
